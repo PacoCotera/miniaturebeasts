@@ -6,623 +6,644 @@
    "w": 128,
    "h": 160,
    "sha256": "d3aa8a43881b95d52ed78cf035dac8643233179592bd45c40df2b8cef5367694",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
    "w": 16,
    "h": 16,
    "sha256": "ba04d424fcd53fb300a642358bb9b2da5096c778d5cb833af6c6d1a6dc765fdf",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-gate-blend-16x16-settled": {
    "file": "pods/cross-gate-blend-16x16-settled.png",
    "w": 16,
    "h": 16,
    "sha256": "9e0444ab9e6f371a6307413bcef1c5e824e7f0f957e9bcf422c4fa506b3fadd5",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-gate-blend-8x8": {
    "file": "pods/cross-gate-blend-8x8.png",
    "w": 8,
    "h": 8,
    "sha256": "8eb3aac297fd3ccb663795c9f4113b5940b5352540a0452c6a7a378ba702fff0",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-gate-switch-16x16": {
    "file": "pods/cross-gate-switch-16x16.png",
    "w": 16,
    "h": 16,
    "sha256": "2ca26eec73d550318e55f183ee2e09d1d1f3cdf4bc3088db4bdc4d49f3bfc70c",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-gate-switch-16x16-settled": {
    "file": "pods/cross-gate-switch-16x16-settled.png",
    "w": 16,
    "h": 16,
    "sha256": "2152bf6a474f2b169b9ef412e799326ee7aeb6098e1be71a224dcfb0a663139a",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-gate-switch-8x8": {
    "file": "pods/cross-gate-switch-8x8.png",
    "w": 8,
    "h": 8,
    "sha256": "ae7d00efe7f256dfc2ad5e23512000388af472a1d49af3e8fb4117aa4f2e0973",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-kin-surface-10x10": {
    "file": "pods/cross-kin-surface-10x10.png",
    "w": 10,
    "h": 10,
    "sha256": "d18f82132ca78262ae2e06b3016a51601e9340f3b7a38be567d493cf1b3b0a77",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-tick-a-12x8": {
    "file": "pods/cross-tick-a-12x8.png",
    "w": 12,
    "h": 8,
    "sha256": "4539ae6bfbbfa62972075265d67dd5536190d5f2e6bf098c7754f34904797847",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-tick-a-6x4": {
    "file": "pods/cross-tick-a-6x4.png",
    "w": 6,
    "h": 4,
    "sha256": "a9d07450926f58f081c7774aab0534b5f9d8229b5c0d80071bc28e6fdd581de1",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-tick-b-12x8": {
    "file": "pods/cross-tick-b-12x8.png",
    "w": 12,
    "h": 8,
    "sha256": "8cac5d2a5243f9afc8c3144199b39c394948e0f797bc8ad1d4cf3091e5bb9d91",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-tick-b-6x4": {
    "file": "pods/cross-tick-b-6x4.png",
    "w": 6,
    "h": 4,
    "sha256": "d89f93b591fae42be614c1616411570225f42fa45db618c1d955a3c7e5f0e424",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-wish-hollow-12x12": {
    "file": "pods/cross-wish-hollow-12x12.png",
    "w": 12,
    "h": 12,
    "sha256": "bb19523ae540fcffa7061ac26c7bd92a87e5da2df33512d5f90c96409e93ca78",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-wish-hollow-8x8": {
    "file": "pods/cross-wish-hollow-8x8.png",
    "w": 8,
    "h": 8,
    "sha256": "280840fc28793fa7391aadceb530219af565dec0a846c4cd18b6fdc8fbba3f4c",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-wish-lit-12x12": {
    "file": "pods/cross-wish-lit-12x12.png",
    "w": 12,
    "h": 12,
    "sha256": "a1eaf9cc0929aa603ed7e2bf88441124220263361ed605aceb7dffd17c67f628",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "cross-wish-lit-8x8": {
    "file": "pods/cross-wish-lit-8x8.png",
    "w": 8,
    "h": 8,
    "sha256": "ce5c2c4385a408ac220804eba86a3ddd6a59808f35a28314dc18d8b4abdacfe3",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "face-24-empty": {
    "file": "pods/face-24-empty.png",
    "w": 24,
    "h": 24,
    "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "face-belatz-24": {
    "file": "pods/face-belatz-24.png",
    "w": 24,
    "h": 24,
    "sha256": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "face-belatz-24-away": {
    "file": "pods/face-belatz-24-away.png",
    "w": 24,
    "h": 24,
    "sha256": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "face-loika-24": {
    "file": "pods/face-loika-24.png",
    "w": 24,
    "h": 24,
    "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "face-loika-24-away": {
    "file": "pods/face-loika-24-away.png",
    "w": 24,
    "h": 24,
    "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "find-crystal-112x112": {
+   "file": "pods/find-crystal-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "find-crystal-16x16": {
    "file": "pods/find-crystal-16x16.png",
    "w": 16,
    "h": 16,
    "sha256": "2981e3b57aedf6eb40e3aff0a39a288f735b42f3261e1d54d2ca0a647b52567d",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "find-pearl-112x112": {
+   "file": "pods/find-pearl-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "find-pearl-16x16": {
    "file": "pods/find-pearl-16x16.png",
    "w": 16,
    "h": 16,
    "sha256": "56c395c1433bd66f4d7843c7e6a449bc9f60b725d0a2f3948c1fe861c4218ab0",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "find-shard-112x112": {
+   "file": "pods/find-shard-112x112.png",
+   "w": 112,
+   "h": 112,
+   "sha256": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "find-shard-16x16": {
    "file": "pods/find-shard-16x16.png",
    "w": 16,
    "h": 16,
    "sha256": "0efb62f44b4cb30eee324d83c75908aa6f849cb0df1d42edf40ff03ba847a47c",
-   "signed": "named with --ids"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-bottom-line-1024x38": {
    "file": "pods/frame-bottom-line-1024x38.png",
    "w": 1024,
    "h": 38,
    "sha256": "1322d4e5234ce0ce4999bf7e6bf37bd97615b7e7969a3987065cacadfbd644c2",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-cap-back-16": {
    "file": "pods/frame-cap-back-16.png",
    "w": 16,
    "h": 16,
    "sha256": "1f21328e7dad2eb3edaa360d477f2ec2425701f7c44a39bf77ef90602875b9d5",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-cap-confirm-16": {
    "file": "pods/frame-cap-confirm-16.png",
    "w": 16,
    "h": 16,
    "sha256": "c0f9568865dc612d3450bf0ba3169916b810f5cba725bef231b2e8486efa5558",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-cap-confirm-16-dim": {
    "file": "pods/frame-cap-confirm-16-dim.png",
    "w": 16,
    "h": 16,
    "sha256": "06e96d5e1a12bf938007aeae54ca2f7728a70c4948d1b34452b722875c723cce",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-companion-outline-16x24": {
    "file": "pods/frame-companion-outline-16x24.png",
    "w": 16,
    "h": 24,
    "sha256": "390ee6f7c05da87c416b0ef686c1cedfcdb7b1dc3dd137bfde2ce8312162fd66",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-companion-solid-16x24": {
    "file": "pods/frame-companion-solid-16x24.png",
    "w": 16,
    "h": 24,
    "sha256": "6fc434b6d4c8a66cc99f5a33f6dd6c5e62d8cbca6505932b4447a9e9071bb233",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-lamp-12-amber": {
    "file": "pods/frame-lamp-12-amber.png",
    "w": 12,
    "h": 12,
    "sha256": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-lamp-8-mint": {
    "file": "pods/frame-lamp-8-mint.png",
    "w": 8,
    "h": 8,
    "sha256": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-lamp-8-stone": {
    "file": "pods/frame-lamp-8-stone.png",
    "w": 8,
    "h": 8,
    "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-room-habitat-24": {
    "file": "pods/frame-room-habitat-24.png",
    "w": 24,
    "h": 24,
    "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-room-home-24": {
    "file": "pods/frame-room-home-24.png",
    "w": 24,
    "h": 24,
    "sha256": "de9371c0b273375c856335554ca9741221698a349a6f135ce09f808d828c2dc0",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-room-library-24": {
    "file": "pods/frame-room-library-24.png",
    "w": 24,
    "h": 24,
    "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-room-research-24": {
    "file": "pods/frame-room-research-24.png",
    "w": 24,
    "h": 24,
    "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-sun-16": {
    "file": "pods/frame-sun-16.png",
    "w": 16,
    "h": 16,
    "sha256": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "frame-top-bar-1024x40": {
    "file": "pods/frame-top-bar-1024x40.png",
    "w": 1024,
    "h": 40,
    "sha256": "9d40520a555e4f43bf79a87e949a0856da79d0539468a11b75e0773dfa6de65a",
-   "signed": "Top bar and bottom line (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "glint-star-12x12": {
    "file": "pods/glint-star-12x12.png",
    "w": 12,
    "h": 12,
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
    "w": 24,
    "h": 16,
    "sha256": "ae714dc2e8583f348ce682f5865e4baa35cab0d27f9afa718a7fb77275e7bdff",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-breed-28x16": {
    "file": "pods/mark-breed-28x16.png",
    "w": 28,
    "h": 16,
    "sha256": "a3d0ea28fb1eb1549e6d027e7dbc6c0b0f9ef086ec45f4eb89b071989644176b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-can-grow-16": {
    "file": "pods/mark-can-grow-16.png",
    "w": 16,
    "h": 16,
    "sha256": "8178d7b260b50f20d23ddd61b7b56bd34922b184646fcb5fdc676e870c9faa83",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C01-24x24": {
    "file": "pods/mark-clan-C01-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "46576dd881a42220f99c0570b05c4a1555a29aad0188f7b5de5761ebdcce9588",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C02-24x24": {
    "file": "pods/mark-clan-C02-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "ef1f2925cc4b4f0e7ade7928525554d629288d1adbdce1aad071ba955735ba7f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C03-24x24": {
    "file": "pods/mark-clan-C03-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "1dfa9dc17e01b0ad16259ad3f3473adb7071572e13d5bc2ed3128bb52ebb8398",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C04-24x24": {
    "file": "pods/mark-clan-C04-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "392542bef06b18eb3faa1578230c65d79e7ea81b60adaa7bff4c76fe599e4864",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C05-24x24": {
    "file": "pods/mark-clan-C05-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "3eb9eea26987eb5ea74f3a183fbee524506bf41acee653bf2b96e7954c7326d1",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C06-24x24": {
    "file": "pods/mark-clan-C06-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "9fdd0e2848e0c9328e47be07cbbc7fed162bbb9fb0722f79bfda7e3cab12326e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C07-24x24": {
    "file": "pods/mark-clan-C07-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "62fba1c53d5c87da4046c72d7e641dcd73b140873f4cea9014e67199c4146c4b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C08-24x24": {
    "file": "pods/mark-clan-C08-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "9097e55abab1b417b12144b07af491cd8b7e9398aade0aeeb00adfe9b69b1708",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C09-24x24": {
    "file": "pods/mark-clan-C09-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "47826d455126adc3c54248c2ec5e83261de0934cfe3a9398b1dc042e20e0903e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C10-24x24": {
    "file": "pods/mark-clan-C10-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "9679996bafd3aaed4e2f8e93f8f291cd8bbc534436cc979f495248f24bb966a3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C11-24x24": {
    "file": "pods/mark-clan-C11-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "228b8828fbea5dccc71610d818351107f861283d7b1dae17d06b93975cb21fb9",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C12-24x24": {
    "file": "pods/mark-clan-C12-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "23faf90ea2b2fb501f67162b93c04138291e3e9c6b1ddd38acdd4f69a4088e43",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C13-24x24": {
    "file": "pods/mark-clan-C13-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "fe92cfcdce4ab7d8aa4804c726c737f9728ae27ad36d1e66df3a4e6ccf71d3c8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C14-24x24": {
    "file": "pods/mark-clan-C14-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "5fe7a00c64a4b1ef5d6bb947c2522ce8e96297f5b04f6c35cd567bdf5dd0e925",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C15-24x24": {
    "file": "pods/mark-clan-C15-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "1bac22024812da90a0ebf74064e16915cfddffe926092609248a53432bd266de",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-clan-C16-24x24": {
    "file": "pods/mark-clan-C16-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "e63c0262e1bba6b08f2f5ecefb5bab00f16d23a3e873385af95fa97e09afdf5f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-first-16x16": {
    "file": "pods/mark-first-16x16.png",
    "w": 16,
    "h": 16,
    "sha256": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-line-only-16x8": {
    "file": "pods/mark-line-only-16x8.png",
    "w": 16,
    "h": 8,
    "sha256": "0b4cccdefa46d108fd343bd8a211ccb6ac47d41d11aea769056008feb5a06f28",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-line-seed-12x16": {
    "file": "pods/mark-line-seed-12x16.png",
    "w": 12,
    "h": 16,
    "sha256": "5d2480ccc01fab311f73a90c355cd9891f1c6a409f14b400a89533954241fae7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-line-seed-pair-20x16": {
    "file": "pods/mark-line-seed-pair-20x16.png",
    "w": 20,
    "h": 16,
    "sha256": "0bd94a522721d74f9fb156df37e731a09252e01a8225302f8220df37ed3a4203",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-only-72x8": {
    "file": "pods/mark-only-72x8.png",
    "w": 72,
    "h": 8,
    "sha256": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-seed-32x40": {
    "file": "pods/mark-seed-32x40.png",
    "w": 32,
    "h": 40,
    "sha256": "cb7f974be2f58ccdc9fbe0cc3cc9613b6894916e570226d668dd697bee42c01d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-seed-32x40-mask": {
    "file": "pods/mark-seed-32x40-mask.png",
    "w": 32,
    "h": 40,
    "sha256": "e55f75b18f438d0432f380cfbbb087d294ed289fa646ab2b9d0fa4ee9b8642fa",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-seed-40x52": {
    "file": "pods/mark-seed-40x52.png",
    "w": 40,
    "h": 52,
    "sha256": "8b5bc9b231a740c43a7de055a6db671d70478d6f685dea0ee1c9ee0262c35fcc",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-seed-40x52-mask": {
    "file": "pods/mark-seed-40x52-mask.png",
    "w": 40,
    "h": 52,
    "sha256": "2fefb4b797ef82dcbe5a3c4a5b7d3e68239fa7d3aa7fde396eef55e46cf66b5c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-frost-24x24": {
    "file": "pods/mark-species-frost-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "769e742f41ced3d94829cb53c2384d0d328c9ceb8d9968882588828bade9299d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S01-24x24": {
    "file": "pods/mark-species-S01-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "26c19b7d0b3073573eee1e199ce66967e7c9f74eddbaba12b61c3aa410536f5f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S02-24x24": {
    "file": "pods/mark-species-S02-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "cfbb5ac00d1430fa9e4e3bdfdfa6d1b401b5c6e177884b2a6836c82081fd4d84",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S03-24x24": {
    "file": "pods/mark-species-S03-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "eb25449c2f9fcafb8ea76d262ca0d0bc3538458d493df728b1c06ade139c4615",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S04-24x24": {
    "file": "pods/mark-species-S04-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "ddff45e0e334b762b37dad7f59fe285d119d47a4fc739199f385393e52aa69dd",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S05-24x24": {
    "file": "pods/mark-species-S05-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "cb294db4bcffb60012ff8b513ca53136c56f8acba1174915c20bcfa8e44f60f5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S06-24x24": {
    "file": "pods/mark-species-S06-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "23bcbf4c3c059ea1ef6c69a7fc81cb63ce0d73925fe19e9c8a8315d73c849cda",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S07-24x24": {
    "file": "pods/mark-species-S07-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "2a4be6b63f285dccbac6d0498f3e6d17b79a5bf0d9b55091c19ac9789abc6453",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S08-24x24": {
    "file": "pods/mark-species-S08-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "aabcd1b4fb7de76fc44e7cd8269ae8c21cf220dbd1532bf53f522f6b58246fc3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S09-24x24": {
    "file": "pods/mark-species-S09-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "1fdec141e949b11ce9d424e1e35a5ac24a2e50a1f462f42c8f0bf2b23e862a70",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S10-24x24": {
    "file": "pods/mark-species-S10-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "ccfcd8acf6e8a87e51d0768aade8fd1a6b7369628e0e63e4023a4c4f488aa5e6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S11-24x24": {
    "file": "pods/mark-species-S11-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "3e4f0f01b2574b5c570c2901d17d63ece52f2f4ea5506f059a6e6f7c85380e34",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S12-24x24": {
    "file": "pods/mark-species-S12-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "7373a8c5dcdfa37b8963be8f58b794c928580b8d8b48151b3b97fd26358e5228",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S13-24x24": {
    "file": "pods/mark-species-S13-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "5c20add176b1cbeafce0695218cd1160ba85630c9e787ab3bc65361499629043",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S14-24x24": {
    "file": "pods/mark-species-S14-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "393645557b1bd3acbd1da62129ee2565a1ab281a4f09cae4128f5c63902fc523",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S15-24x24": {
    "file": "pods/mark-species-S15-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "f294b8296a9fefb31c940178c69044b013747486660eca404a74fbec116e18c3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-species-S16-24x24": {
    "file": "pods/mark-species-S16-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mark-waiting-24": {
    "file": "pods/mark-waiting-24.png",
    "w": 24,
    "h": 24,
    "sha256": "12920d916e647e00fc37823a11d2d7777118730628d3b107043c08740ea2534d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
    "w": 128,
    "h": 160,
    "sha256": "c154fe87d41a767734d48e56fa73625f85b1c1b12d415257fb7b5d31fca86e15",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S01-128x160-mist": {
    "file": "pods/mibi-halo-S01-128x160-mist.png",
    "w": 128,
    "h": 160,
    "sha256": "5619aaef87b0584c604a111b0edd21ecb284eab0c4e8e9ffc869d138758cc52d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S02-128x160-clear": {
    "file": "pods/mibi-halo-S02-128x160-clear.png",
    "w": 128,
    "h": 160,
    "sha256": "83ffd00ea6d0975571ec9b582bd70ed68a7eb5b6d993eb85d27488b4f2394186",
-   "signed": "held (masters-pods d6e0e3e), not final",
+   "signed": "held (masters-pods b3b7e04), not final",
    "status": "held"
   },
   "mibi-halo-S02-128x160-mist": {
@@ -630,7 +651,7 @@
    "w": 128,
    "h": 160,
    "sha256": "7e1079b5f89cfa854eb8428cafd28c29d345a88f50b2d4d16b6c485d5f37dfca",
-   "signed": "held (masters-pods d6e0e3e), not final",
+   "signed": "held (masters-pods b3b7e04), not final",
    "status": "held"
   },
   "mibi-halo-S03-128x160-clear": {
@@ -638,7 +659,7 @@
    "w": 128,
    "h": 160,
    "sha256": "2c7c7d161e02b0e5549e595e558f747b617d80f621e787975f37428075ba8898",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S03-128x160-mist": {
@@ -646,15 +667,29 @@
    "w": 128,
    "h": 160,
    "sha256": "fe24941aea9e171818ad8deeee18fa5abb8d19bd6501bd52ca1f89d46acf05a6",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
+  },
+  "mibi-halo-S04-128x160-clear": {
+   "file": "pods/mibi-halo-S04-128x160-clear.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "e303d1816992299b6f39aa67bf4a9e9520491ed24733db5f0be9d4dca153b34f",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mibi-halo-S04-128x160-mist": {
+   "file": "pods/mibi-halo-S04-128x160-mist.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "3ce9bdda586b501804a29f27531a35a54cb2f9f48ea553fedba9f9fb5038362a",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S05-128x160-clear": {
    "file": "pods/mibi-halo-S05-128x160-clear.png",
    "w": 128,
    "h": 160,
    "sha256": "1183cd5f09c3808c9b91b3fff3fef116a0b066a3e26eff037f2d12d5b6819ddb",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S05-128x160-mist": {
@@ -662,7 +697,7 @@
    "w": 128,
    "h": 160,
    "sha256": "369706b46151d1c14928c17772d6195220ebbc7d5e36729a1bd010182f2e6fff",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S06-128x160-clear": {
@@ -670,7 +705,7 @@
    "w": 128,
    "h": 160,
    "sha256": "deafeb1b05e98cec4be4dff3458363663cd4ffcaa631480310b1e5e9ca92e546",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S06-128x160-mist": {
@@ -678,15 +713,29 @@
    "w": 128,
    "h": 160,
    "sha256": "c6a56dc33e1f4aa46089f3bbfb4784b7a9059dfe4dd29236329161a580c6605d",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
+  },
+  "mibi-halo-S07-128x160-clear": {
+   "file": "pods/mibi-halo-S07-128x160-clear.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c0475e521f4531f2fb7c2485539a47b0204fe3b65bbe827025b94e6278512dbb",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mibi-halo-S07-128x160-mist": {
+   "file": "pods/mibi-halo-S07-128x160-mist.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "32b869b2f20128988dd1795c06d4d4ac3ec085d829a03ff027802b18d50769f7",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S08-128x160-clear": {
    "file": "pods/mibi-halo-S08-128x160-clear.png",
    "w": 128,
    "h": 160,
    "sha256": "7513b13735882338fba06593cf9a19f732ecbe0b53be50bf173be6d67903e531",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S08-128x160-mist": {
@@ -694,7 +743,7 @@
    "w": 128,
    "h": 160,
    "sha256": "d6fe20e434e8e28b00d71c7d6bb360a0746a592392076a729f765b23f4ecb466",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S09-128x160-clear": {
@@ -702,21 +751,21 @@
    "w": 128,
    "h": 160,
    "sha256": "e319c67694ed7b4a6ba0b9c7c72db7d06a7be46c88663613f0f61fd94c77fee5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S09-128x160-mist": {
    "file": "pods/mibi-halo-S09-128x160-mist.png",
    "w": 128,
    "h": 160,
    "sha256": "4650036f78db14ccbf50bf64d64000d4bd68ac80788acba798b467a27e324b1e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S10-128x160-clear": {
    "file": "pods/mibi-halo-S10-128x160-clear.png",
    "w": 128,
    "h": 160,
    "sha256": "80ff01077d8b752093fceac2e5f97dedf00a9df905f99f085e66977666d54734",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S10-128x160-mist": {
@@ -724,7 +773,7 @@
    "w": 128,
    "h": 160,
    "sha256": "0b2d9b6cf39d1f93bcf54cfea3a392b26178324d30921c25849a3aff019e6019",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S11-128x160-clear": {
@@ -732,7 +781,7 @@
    "w": 128,
    "h": 160,
    "sha256": "786b2c2ed77ef5b2e38e9a75d6bb4527f298212b5abe5459f5cf136de67b7c4f",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S11-128x160-mist": {
@@ -740,7 +789,7 @@
    "w": 128,
    "h": 160,
    "sha256": "8f3aad67db3335b74f35a5000429733a9bd5e02755142a92b93eb4162554f54b",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S12-128x160-clear": {
@@ -748,21 +797,21 @@
    "w": 128,
    "h": 160,
    "sha256": "0907254c6b8d5d1dae3e7435721f3071d71343761dc37dfcf2d3dc5c860097e1",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S12-128x160-mist": {
    "file": "pods/mibi-halo-S12-128x160-mist.png",
    "w": 128,
    "h": 160,
    "sha256": "82bdc838d923f2449b332343d9ce7705a779a959facc0e6c6e1b067517165a6f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "mibi-halo-S13-128x160-clear": {
    "file": "pods/mibi-halo-S13-128x160-clear.png",
    "w": 128,
    "h": 160,
    "sha256": "2457a36267085a64a742c2039681885e32360c08389eab5f43628966b0fcb2b8",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S13-128x160-mist": {
@@ -770,7 +819,7 @@
    "w": 128,
    "h": 160,
    "sha256": "032cb4c2e929cb5000e16f98de9d79f2d7488f37a488e3ebe6025a24a8e17425",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S14-128x160-clear": {
@@ -778,7 +827,7 @@
    "w": 128,
    "h": 160,
    "sha256": "b7f8026d712ce37f52398910d1e78ca5fa1e01f537a822864a0623aa8f3479ae",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S14-128x160-mist": {
@@ -786,7 +835,7 @@
    "w": 128,
    "h": 160,
    "sha256": "a5b652ab09b9aba4ea94bd41ef3e1e333385633d2431fe2b8fd507b1ba040596",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S15-128x160-clear": {
@@ -794,7 +843,7 @@
    "w": 128,
    "h": 160,
    "sha256": "1efcb8c1197de140eaa6b58bd75de3d1aa331ee0352ab6ceda829c6698e4de61",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S15-128x160-mist": {
@@ -802,7 +851,7 @@
    "w": 128,
    "h": 160,
    "sha256": "61bff9237bafd7eba65feb9ce2728044593ddef6bdbbe6882da8934745ee9864",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S16-128x160-clear": {
@@ -810,7 +859,7 @@
    "w": 128,
    "h": 160,
    "sha256": "a8f7cd38110febcd7e755b6371c20e918b4e16959b389dd419ed61763938e57a",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "mibi-halo-S16-128x160-mist": {
@@ -818,7 +867,7 @@
    "w": 128,
    "h": 160,
    "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
-   "signed": "placeholder (masters-pods d6e0e3e), not final",
+   "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
   },
   "page-mark-new-10": {
@@ -826,14 +875,14 @@
    "w": 6,
    "h": 6,
    "sha256": "0e12dd402268ed52bfbfb61538f7fe3164d5a23d1b321fce6d004f771c41146d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "page-pane-256x440": {
    "file": "pods/page-pane-256x440.png",
    "w": 256,
    "h": 440,
    "sha256": "4172d7ef216a1e2e71413366054199d45f84167fa0bf49bd0019b216b034e256",
-   "signed": "Page pane (signed)",
+   "signed": "signed (masters-pods b3b7e04)",
    "slice": [
     64,
     64,
@@ -842,1965 +891,1951 @@
    ],
    "tile": 32
   },
-  "page-pane-408x440": {
-   "file": "pods/page-pane-408x440.png",
-   "w": 408,
-   "h": 440,
-   "sha256": "ddcb1dcf18b91a7b1736f6148e79f922c7211efc876c0a27b91fdcaa8590e0f3",
-   "signed": "Page pane (signed)"
-  },
   "panel-place-320x224": {
    "file": "pods/panel-place-320x224.png",
    "w": 320,
    "h": 224,
    "sha256": "f7c11d6e4958160cefe39c7686c60b57f6a3828f62a5c456fa039829f29d47f7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-cave-48x48": {
    "file": "pods/place-cave-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "5260edf77a2d46b9f3ff088c202de35758f99d6c0c3cb42597aa8d335d73e19e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-cave-64x64": {
    "file": "pods/place-cave-64x64.png",
    "w": 64,
    "h": 64,
    "sha256": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-meadow-48x48": {
    "file": "pods/place-meadow-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "a1a6dcbf600a44bf8e952c5c68594947c9d4fe6f89a8e0f89327e26542e56733",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-meadow-64x64": {
    "file": "pods/place-meadow-64x64.png",
    "w": 64,
    "h": 64,
    "sha256": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-pond-48x48": {
    "file": "pods/place-pond-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "7e44aa1254c0eb9e49811be69d161ee872d775f514f13f1cdd74e0932eb50c14",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-pond-64x64": {
    "file": "pods/place-pond-64x64.png",
    "w": 64,
    "h": 64,
    "sha256": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-rock-48x48": {
    "file": "pods/place-rock-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "a3e585738f8180863894eeb5db2de0a1d9498d1a2a42cb91bb5232c97068e329",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-rock-64x64": {
    "file": "pods/place-rock-64x64.png",
    "w": 64,
    "h": 64,
    "sha256": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-wood-48x48": {
    "file": "pods/place-wood-48x48.png",
    "w": 48,
    "h": 48,
    "sha256": "673d78a5141073ff3e7a1d433f2a018ffe281eab3155bab58e1b8e194879fd79",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-wood-64x64": {
    "file": "pods/place-wood-64x64.png",
    "w": 64,
    "h": 64,
    "sha256": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-message-640x36": {
    "file": "pods/plate-message-640x36.png",
    "w": 640,
    "h": 36,
    "sha256": "bd62ebb7c44911d7c56d573cf18195c7ca1089633726ef3a2801345ac6490ac1",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-message-640x56": {
    "file": "pods/plate-message-640x56.png",
    "w": 640,
    "h": 56,
    "sha256": "cbae9a27e051728c9beab62a2dc2fecea0cd74c6403fc20644e16f36d69ca54b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-message-640x76": {
    "file": "pods/plate-message-640x76.png",
    "w": 640,
    "h": 76,
    "sha256": "9bc8d345e227eb3c5a90e6bc426908af5c07dfd4663d567053a072b66ee8d466",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-112x24": {
    "file": "pods/plate-name-112x24.png",
    "w": 112,
    "h": 24,
    "sha256": "6232526688c52dec4806df6494edb59dcc1889604b27d9741007694e965b118a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-128x24": {
    "file": "pods/plate-name-128x24.png",
    "w": 128,
    "h": 24,
    "sha256": "b939a7c978f1621612e44c2c2d0f1da67553373743ac44092ba624f001860649",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-144x24": {
    "file": "pods/plate-name-144x24.png",
    "w": 144,
    "h": 24,
    "sha256": "00e7086c5147e962dec8ef636f833756e5be0d2f2bdc6dc65cfc1a39bd2efc02",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-160x24": {
    "file": "pods/plate-name-160x24.png",
    "w": 160,
    "h": 24,
    "sha256": "a3731c896b5362d972164666ef8b5232821834df54c14e4741fd8f5e2898cd65",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-176x24": {
    "file": "pods/plate-name-176x24.png",
    "w": 176,
    "h": 24,
    "sha256": "c6f91b05a938b290bea46442b32b6db54808e73f9cc3cfd8f86acf8783ed0c01",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-192x24": {
    "file": "pods/plate-name-192x24.png",
    "w": 192,
    "h": 24,
    "sha256": "cc39683c42448db5bcc2416df020ef1a29fb49043d340839a2db6652110b2f40",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-208x24": {
    "file": "pods/plate-name-208x24.png",
    "w": 208,
    "h": 24,
    "sha256": "087f6276eed23c5e0ffbaf6ae791a3ea8d851263da5ab39cb84fc1310f82ee38",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-224x24": {
    "file": "pods/plate-name-224x24.png",
    "w": 224,
    "h": 24,
    "sha256": "2453edfaed652aeff47100a505d10145c7234fad3140abd1ed83dda3644a5a44",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-80x24": {
    "file": "pods/plate-name-80x24.png",
    "w": 80,
    "h": 24,
    "sha256": "c5d249822e5c02ae07015c2d000b2996f488117553d33923318fd5ee0146f323",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "plate-name-96x24": {
    "file": "pods/plate-name-96x24.png",
    "w": 96,
    "h": 24,
    "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-band": {
    "file": "pods/pod-collection-band.png",
    "w": 88,
    "h": 112,
    "sha256": "40c7875589d5628dd6843c2c1377a1d6ba6d666d5a79c0792dd0e80de7ce2a6e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-crack": {
    "file": "pods/pod-collection-crack.png",
    "w": 88,
    "h": 112,
    "sha256": "17a81668f422106b98c1fe8099cfa30de96bb0c3f4dc2997cdde2ccd80d86166",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-identified": {
    "file": "pods/pod-collection-identified.png",
    "w": 88,
    "h": 112,
    "sha256": "f302ffdbb9265161502bdff66a51437dcee14d762ff58058075468e6aad03b83",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-mask-accent": {
    "file": "pods/pod-collection-mask-accent.png",
    "w": 88,
    "h": 112,
    "sha256": "75382937b4f51a9468a8e9d42562265a203b14392b6915d32e58955f4cccde09",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-mask-body": {
    "file": "pods/pod-collection-mask-body.png",
    "w": 88,
    "h": 112,
    "sha256": "cb6d1fbd43a0e64cdd908a6957381616da934ae80f87bbc8e569d4085ea99f54",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-bands": {
    "file": "pods/pod-collection-pattern-bands.png",
    "w": 88,
    "h": 112,
    "sha256": "18c15519b022d588f1cbd3ae9d979a07f31540b7c3d2c9d547dfc1a3a0bf8e29",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-dots": {
    "file": "pods/pod-collection-pattern-dots.png",
    "w": 88,
    "h": 112,
    "sha256": "78d2c5c603a1db34a9b960d8c9db8d5b9ebd0e850df8c4e1a371017890e523bf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-plates": {
    "file": "pods/pod-collection-pattern-plates.png",
    "w": 88,
    "h": 112,
    "sha256": "737fb9351928aa6ffd609b4ed3d5511eb720cbb4b65c407a89ca4324abaa6e6e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-plates-relief": {
    "file": "pods/pod-collection-pattern-plates-relief.png",
    "w": 88,
    "h": 112,
    "sha256": "d2cdbdcc612d0f0fc91c46c0d46250b3ef02eef36b187176ae64bf374116be64",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-ribs": {
    "file": "pods/pod-collection-pattern-ribs.png",
    "w": 88,
    "h": 112,
    "sha256": "690f559ff60f070c4b31d6acfad9bbb1e8a71afa5412634e27f5e57910e93d1c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-segments": {
    "file": "pods/pod-collection-pattern-segments.png",
    "w": 88,
    "h": 112,
    "sha256": "662285338b7c4a074027383862b6115dd6eac9397e556146973fc4237feb61bf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-segments-relief": {
    "file": "pods/pod-collection-pattern-segments-relief.png",
    "w": 88,
    "h": 112,
    "sha256": "ec97b1a473cad64ab0aac3361e0f365a088f2700823fbcf9f840ebd68df5e689",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-pattern-stripes": {
    "file": "pods/pod-collection-pattern-stripes.png",
    "w": 88,
    "h": 112,
    "sha256": "baaf0fe4a2eab57b3848dfc0031b1d0ab7170969045c384cadbbdd808b0e0e99",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-sealed": {
    "file": "pods/pod-collection-sealed.png",
    "w": 88,
    "h": 112,
    "sha256": "b0aa805cb460488fea08274a3cfe5595955092fd2b164e7b06b2f91b001039a0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-shade": {
    "file": "pods/pod-collection-shade.png",
    "w": 88,
    "h": 112,
    "sha256": "be65bbf24cf1b84818d24123a24f9e334be5a1dcee8875087fdec5608b0a0bb5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-shadow": {
    "file": "pods/pod-collection-shadow.png",
    "w": 104,
    "h": 14,
    "sha256": "f4a6dd5d9934b1eb845dd55b74057a3391d3af29aab4b536f408f8ca3450e0b9",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-collection-unknown": {
    "file": "pods/pod-collection-unknown.png",
    "w": 88,
    "h": 112,
    "sha256": "f6a1ad4e46d4d276ca860ed7b01520201d7091549855155929a8cdc296674cf0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-band": {
    "file": "pods/pod-large-band.png",
    "w": 144,
    "h": 176,
    "sha256": "26e706be7751274e14eac8873afbb86d9ffcc1f95bc342b4eceb67fdaa0d0642",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-crack": {
    "file": "pods/pod-large-crack.png",
    "w": 144,
    "h": 176,
    "sha256": "b88323a6204d9518fc46acf518ac303914e332a51782fce993648e8a299fc02e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-identified": {
    "file": "pods/pod-large-identified.png",
    "w": 144,
    "h": 176,
    "sha256": "7145f5546a3dcc85bb4a77a9d2b194c5d0e68b0f5ad32c0a034b8cc1789fec8d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-mask-accent": {
    "file": "pods/pod-large-mask-accent.png",
    "w": 144,
    "h": 176,
    "sha256": "913fd9738ff560fb3be026e7835a49ec4d698501c1de4dfca9a52c5f573f9434",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-mask-body": {
    "file": "pods/pod-large-mask-body.png",
    "w": 144,
    "h": 176,
    "sha256": "a9524bbfe27f48686bd9d3aa74f96e418cc874c4d12e28c20bf791240f47a631",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-bands": {
    "file": "pods/pod-large-pattern-bands.png",
    "w": 144,
    "h": 176,
    "sha256": "68513470ac4c65cf8557e8d8be7dc9c9a3cbdd7923d6691bf05fca58e471b034",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-dots": {
    "file": "pods/pod-large-pattern-dots.png",
    "w": 144,
    "h": 176,
    "sha256": "859429db53a1b2b897d51cd87b70f954d70544908e5f7adddf1a6896abde4966",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-plates": {
    "file": "pods/pod-large-pattern-plates.png",
    "w": 144,
    "h": 176,
    "sha256": "f336309ce217bccf29058f5de627a95044b7de7789c9fe3e3b9d7dee74992dff",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-plates-relief": {
    "file": "pods/pod-large-pattern-plates-relief.png",
    "w": 144,
    "h": 176,
    "sha256": "cd234f7baee6e47a1f34bdbb91c4632880f721956b50034affb042432f597a9b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-ribs": {
    "file": "pods/pod-large-pattern-ribs.png",
    "w": 144,
    "h": 176,
    "sha256": "c4710d092453bbf531ea08c26e6dbc31eff00867e3a6a50d0f995cb95e96893c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-segments": {
    "file": "pods/pod-large-pattern-segments.png",
    "w": 144,
    "h": 176,
    "sha256": "ea2ab984a9056434c21742e36c1266075208ccac99d3f606bae286655f62f1d6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-segments-relief": {
    "file": "pods/pod-large-pattern-segments-relief.png",
    "w": 144,
    "h": 176,
    "sha256": "931926452b0ed79c820f694185ef94fdee59a2525bfad55dce0a9a4721f38db6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-pattern-stripes": {
    "file": "pods/pod-large-pattern-stripes.png",
    "w": 144,
    "h": 176,
    "sha256": "157551c0b72f4b77c5982606cd93190244321be6538ea9391960e63e7985e1f0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-sealed": {
    "file": "pods/pod-large-sealed.png",
    "w": 144,
    "h": 176,
    "sha256": "8dfdb43c2915f69b00d8429f328a9e88dcf710629e1a19b7224455432f60dd5b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-shade": {
    "file": "pods/pod-large-shade.png",
    "w": 144,
    "h": 176,
    "sha256": "0078c3a94d11bc6458e3da03cc6dfed0279a19426e8cabee078c76bda4cda977",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-shadow": {
    "file": "pods/pod-large-shadow.png",
    "w": 160,
    "h": 14,
    "sha256": "6a99a9bfb6d15d1a9e9c18c1cab99c09d30cca8dd70e7a12d7e6c7a99587b811",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-large-unknown": {
    "file": "pods/pod-large-unknown.png",
    "w": 144,
    "h": 176,
    "sha256": "e7d0644ea30d3177b4967b3515995fce4435194ac481700184f3910dc3b017c0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-band": {
    "file": "pods/pod-medium-band.png",
    "w": 120,
    "h": 152,
    "sha256": "6b6b42f6a86e27e12eae7073f469071184c2801a68ff49fab75f72ba06a0bcf8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-crack": {
    "file": "pods/pod-medium-crack.png",
    "w": 120,
    "h": 152,
    "sha256": "42a03dfaaae851ecd8ad428d2aa6a71804b2b3f41dd770881dfed6daf23228ca",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-identified": {
    "file": "pods/pod-medium-identified.png",
    "w": 120,
    "h": 152,
    "sha256": "4706d8a9c724944b16c03a970cedf53533a77c1e72680c91b2604bf82c24dbe7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-mask-accent": {
    "file": "pods/pod-medium-mask-accent.png",
    "w": 120,
    "h": 152,
    "sha256": "757f873989bde006abf8145514063f2e33dce204fadbc4840202b72f9b340521",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-mask-body": {
    "file": "pods/pod-medium-mask-body.png",
    "w": 120,
    "h": 152,
    "sha256": "0795d489e1736e302b3cb250bc9a714668e733a9c88232aa82b5db33c38e576c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-bands": {
    "file": "pods/pod-medium-pattern-bands.png",
    "w": 120,
    "h": 152,
    "sha256": "814190d730b755459dd7568733d11d3b3f4a70a3e2b13f871528eee6fc988b7c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-dots": {
    "file": "pods/pod-medium-pattern-dots.png",
    "w": 120,
    "h": 152,
    "sha256": "cdcc38c0c3afa30b7aa6be4b948f2eed92a01e07a45fe9a86609786105276df0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-plates": {
    "file": "pods/pod-medium-pattern-plates.png",
    "w": 120,
    "h": 152,
    "sha256": "b276930aa37c0de4f84567d0dac8ef4e4abb594b4fb4901dd2e898ccd300cf91",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-plates-relief": {
    "file": "pods/pod-medium-pattern-plates-relief.png",
    "w": 120,
    "h": 152,
    "sha256": "45a06968545a317b7bc7d41dbcba9f715a170e3ed440c0e316cc1021bceb7df7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-ribs": {
    "file": "pods/pod-medium-pattern-ribs.png",
    "w": 120,
    "h": 152,
    "sha256": "feb61cc0ee19f9aaa6eb2ed87d053c95bba27f3062b1450cfd0889f1a5c257e0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-segments": {
    "file": "pods/pod-medium-pattern-segments.png",
    "w": 120,
    "h": 152,
    "sha256": "3c4d3fba32c0932e4b10df31589a181eafb760d41d8e90b47537296316bfe404",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-segments-relief": {
    "file": "pods/pod-medium-pattern-segments-relief.png",
    "w": 120,
    "h": 152,
    "sha256": "216795a3630ebaa07fd7189bfa9464b584b41acf979f29a84396c6f3a46f93a5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-pattern-stripes": {
    "file": "pods/pod-medium-pattern-stripes.png",
    "w": 120,
    "h": 152,
    "sha256": "fea9283a49769eb66f89254d9e96097a69e1da89123065a4807ca41c52813c7f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-sealed": {
    "file": "pods/pod-medium-sealed.png",
    "w": 120,
    "h": 152,
    "sha256": "a1dec3284a7207c6e1d9a9f65fe3db7b56fcf4572314d3206c040a8c4f9149b6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-shade": {
    "file": "pods/pod-medium-shade.png",
    "w": 120,
    "h": 152,
    "sha256": "6b131c952a2e200178c5bd97713c4e523f8c625b943833b60c11bcdc13a25f81",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-shadow": {
    "file": "pods/pod-medium-shadow.png",
    "w": 136,
    "h": 14,
    "sha256": "7c9bb668a59879981815b7ac097617f97a526fb5428a1ed799cd2ebf2b8991e6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-medium-unknown": {
    "file": "pods/pod-medium-unknown.png",
    "w": 120,
    "h": 152,
    "sha256": "4094787088cc3f4152b25030ad8b2497eed27de1bcb17aa629a7112333e475c5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-band": {
    "file": "pods/pod-small-band.png",
    "w": 104,
    "h": 128,
    "sha256": "f91394c40e6cd6277bc6599d5a233d70fe23aaf181c492d50e5fd1a2d65f564d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-crack": {
    "file": "pods/pod-small-crack.png",
    "w": 104,
    "h": 128,
    "sha256": "216a424afa504aff374fc0c0437d8340c5c81dab9e09e061eeb685587f01823b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-identified": {
    "file": "pods/pod-small-identified.png",
    "w": 104,
    "h": 128,
    "sha256": "9c1dc72ddb4eae4f2cee550ffe6ce6a48eeceed384175cc465c8ec846f7d01d9",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-mask-accent": {
    "file": "pods/pod-small-mask-accent.png",
    "w": 104,
    "h": 128,
    "sha256": "f761108a4689813bbc48ca63d3adf20708fdc58bfcd28606ee79d29527a429fa",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-mask-body": {
    "file": "pods/pod-small-mask-body.png",
    "w": 104,
    "h": 128,
    "sha256": "18b8e8cb35d042f91f4e90c311e6ec5b5b46479c62530d2bfdce1f0bbbe8ac2f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-bands": {
    "file": "pods/pod-small-pattern-bands.png",
    "w": 104,
    "h": 128,
    "sha256": "7a10e629abf7ae9b1b03cc4a295383d9d32d0bcf34dbd6647d0f4d72a313dff0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-dots": {
    "file": "pods/pod-small-pattern-dots.png",
    "w": 104,
    "h": 128,
    "sha256": "5439673315ecd330b9ef5a354ed25f790902edaff75e046d4075a18cc3825023",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-plates": {
    "file": "pods/pod-small-pattern-plates.png",
    "w": 104,
    "h": 128,
    "sha256": "cab089c1ec60448397f97b815dafe135dae3738f372aa4d07cf0dd91a922094a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-plates-relief": {
    "file": "pods/pod-small-pattern-plates-relief.png",
    "w": 104,
    "h": 128,
    "sha256": "c7821cea46f90198676d78423d6220147679a9fe56b09fcedf26a10d591d6b5e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-ribs": {
    "file": "pods/pod-small-pattern-ribs.png",
    "w": 104,
    "h": 128,
    "sha256": "7c71a7dff30f373059b05945b0c74a73f7df375df56edb28dde28ab76e7e4192",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-segments": {
    "file": "pods/pod-small-pattern-segments.png",
    "w": 104,
    "h": 128,
    "sha256": "9518344333a8d7ef7054c32d10951bbebda492eef8d05f922d5f9ff45f2ea71b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-segments-relief": {
    "file": "pods/pod-small-pattern-segments-relief.png",
    "w": 104,
    "h": 128,
    "sha256": "4ad85f18ab68e14842678e3bbe6eca0fe593d404ab5c0a9a35b34d752df04aeb",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-pattern-stripes": {
    "file": "pods/pod-small-pattern-stripes.png",
    "w": 104,
    "h": 128,
    "sha256": "907b0a6a63703ea6c0d968ef5bcd661451c038bc1fc7e08a05511a74b38fcef5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-sealed": {
    "file": "pods/pod-small-sealed.png",
    "w": 104,
    "h": 128,
    "sha256": "66a625fd972a4ef17c6262fbc73f84b046810b37e5659e9edfbafcbcdbdca3ce",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-shade": {
    "file": "pods/pod-small-shade.png",
    "w": 104,
    "h": 128,
    "sha256": "ac7a024e69031773f101666c580f53f8cf9911af9818bc9d7a9620f3208a23fa",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-shadow": {
    "file": "pods/pod-small-shadow.png",
    "w": 120,
    "h": 14,
    "sha256": "c0826b447b2f6e5a22c5f6b3d928eaca57629ae99d8218c7a76d8c0f356ebfc6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-small-unknown": {
    "file": "pods/pod-small-unknown.png",
    "w": 104,
    "h": 128,
    "sha256": "d394efb849f88bcdc23846b5f66e711dd4f361059f9444bff9803f16c3da5244",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-band": {
    "file": "pods/pod-well-band.png",
    "w": 40,
    "h": 48,
    "sha256": "6968e2fa959f8a3c69ef59e1af276288247e9fadb97e0855628f5df570b0a02d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-crack": {
    "file": "pods/pod-well-crack.png",
    "w": 40,
    "h": 48,
    "sha256": "d32a99fc6c672a57965797d177fc4821be099b56ecbc3fce028d23bd8331ff2c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-identified": {
    "file": "pods/pod-well-identified.png",
    "w": 40,
    "h": 48,
    "sha256": "1def9aa52197d5dff7755d2b6f8ae71dfbffc498ffc6c2d4e6b08e086974426c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-mask-accent": {
    "file": "pods/pod-well-mask-accent.png",
    "w": 40,
    "h": 48,
    "sha256": "2236fa0afe54c90eccbe22a55f0861209641132041b8f5e923135de4d1fe86ae",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-mask-body": {
    "file": "pods/pod-well-mask-body.png",
    "w": 40,
    "h": 48,
    "sha256": "ed6c5626f1ff3e74f50ec3674a1af844ae585fba844d47bde7ffad4a3eab1a56",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-bands": {
    "file": "pods/pod-well-pattern-bands.png",
    "w": 40,
    "h": 48,
    "sha256": "bc43435d4fca6bc4c628c8830e81ff002ed4e5114aab575a6dddd23a49553ad7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-dots": {
    "file": "pods/pod-well-pattern-dots.png",
    "w": 40,
    "h": 48,
    "sha256": "dca28c8ee4a97cc5cba1652d6f0cef0bc5985475fc8ae504074d8b4c36d9fdce",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-plates": {
    "file": "pods/pod-well-pattern-plates.png",
    "w": 40,
    "h": 48,
    "sha256": "f6a16282f9c548688af899f0abc68fee04d47632687c03ebbe54a8c1f5246e63",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-plates-relief": {
    "file": "pods/pod-well-pattern-plates-relief.png",
    "w": 40,
    "h": 48,
    "sha256": "1b9836f619a3efeb7f63e27850a1e1bd8537bfaf557167e245a2c82f2708fae2",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-ribs": {
    "file": "pods/pod-well-pattern-ribs.png",
    "w": 40,
    "h": 48,
    "sha256": "576aee5a7d62b1aa76f3011da9ee2ef3ca8aea5a4e9f7650d60f502f38de9c67",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-segments": {
    "file": "pods/pod-well-pattern-segments.png",
    "w": 40,
    "h": 48,
    "sha256": "b4c76252c8c7c9dee9d0f1e77cee8852ddc495d5389e636641a1e03d5f3fa64d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-segments-relief": {
    "file": "pods/pod-well-pattern-segments-relief.png",
    "w": 40,
    "h": 48,
    "sha256": "e3ecdb30617ef724bf0858de2d06be49d89305ba11824dbdf61ba4280c1aad7b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-pattern-stripes": {
    "file": "pods/pod-well-pattern-stripes.png",
    "w": 40,
    "h": 48,
    "sha256": "e631f0f010b5d2ce0bd486e5f6a9b7c1e4eeb64ca9198a8763387ece878ee147",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-sealed": {
    "file": "pods/pod-well-sealed.png",
    "w": 40,
    "h": 48,
    "sha256": "c57634f8f3735888659c0de006931b5b65d8599f303c665d967200308668b1d5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-shade": {
    "file": "pods/pod-well-shade.png",
    "w": 40,
    "h": 48,
    "sha256": "c40fd8f578ee4403b4fad2973c0ce3f2b7ff09bc079287e953d72218726c6e1b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-shadow": {
    "file": "pods/pod-well-shadow.png",
    "w": 56,
    "h": 14,
    "sha256": "e250f80ed856145e2b6252291f31cee3ff3543eda23a6f51d157ac8c73f67094",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "pod-well-unknown": {
    "file": "pods/pod-well-unknown.png",
    "w": 40,
    "h": 48,
    "sha256": "05d476feb77e39341e24a64adef2a40c56740c05fe1747066c511e7bfa930550",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-character-read-24x24": {
    "file": "pods/rail-emblem-character-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "73e8b0c40c09597463f2bdf80c2d648dc69bc83e3c9ef070fdb2a29a6fcf4948",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-character-sealed-24x24": {
    "file": "pods/rail-emblem-character-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "5e3233e2b16fd2b4a13ef96a27a8fce1c7936927ebca47b0abf824f27dd9168d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-character-unread-24x24": {
    "file": "pods/rail-emblem-character-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "96acef814e4e4bac154ddc26631e39585529024c9e423dd5a186d2e1490e3079",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-charge-read-24x24": {
    "file": "pods/rail-emblem-charge-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-charge-sealed-24x24": {
    "file": "pods/rail-emblem-charge-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-charge-unread-24x24": {
    "file": "pods/rail-emblem-charge-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-coat-read-24x24": {
    "file": "pods/rail-emblem-coat-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "ca8bcf94563be3f860b5f981edcbe3a523410aa777337b16e82ac450dac42cea",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-coat-sealed-24x24": {
    "file": "pods/rail-emblem-coat-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "2db580c2927ca9bb4d8351b9008310f9c190f2eb8760b06cb020aa6e15354b98",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-coat-unread-24x24": {
    "file": "pods/rail-emblem-coat-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "01e18c2125c141a6b1bfc9162f52500d022f99f570cb664d35b4748e7542b18a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-face-read-24x24": {
    "file": "pods/rail-emblem-face-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "0065f37420c576fbf533f34d25040031697021577e0749f80828e266576e53ea",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-face-sealed-24x24": {
    "file": "pods/rail-emblem-face-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "fbe93db1122fbdc9de0965a5dcb2e9a03fdd41e60a3a330e409a9b11df4fdbb7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-face-unread-24x24": {
    "file": "pods/rail-emblem-face-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "34e7df89deba960389ce267c49c38716eeefd1bb88b3ed0b78ad9a69288f940a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-glow-read-24x24": {
    "file": "pods/rail-emblem-glow-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "d3f6c2fba002309bd75d2ca460ecdbbb7d1028c147abc5184b8660caa1d3e7e4",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-glow-sealed-24x24": {
    "file": "pods/rail-emblem-glow-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "dd36c355b9bb32becb2ba43bfa045b92e52f3eeabe6eedf23800dda7d3086b2e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-glow-unread-24x24": {
    "file": "pods/rail-emblem-glow-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "ad415891525695b590521aa8dfc96420985676ebbe70bf9c4c6d4ad8db290aac",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-legs-tail-read-24x24": {
    "file": "pods/rail-emblem-legs-tail-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "d0701d8efc3807cf9131c465cff360f20517ee6c38afd42d20faaedb642d8621",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-legs-tail-sealed-24x24": {
    "file": "pods/rail-emblem-legs-tail-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "c9e45c73b91c36a8c898a35febc013909e22845efc18c4e69bd274f8fe434386",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-legs-tail-unread-24x24": {
    "file": "pods/rail-emblem-legs-tail-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "57c57f43be31091a193fb4fe1af57ad26405c3beebe7b36661d7134940412d4e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-movement-read-24x24": {
    "file": "pods/rail-emblem-movement-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-movement-sealed-24x24": {
    "file": "pods/rail-emblem-movement-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-movement-unread-24x24": {
    "file": "pods/rail-emblem-movement-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-shape-read-24x24": {
    "file": "pods/rail-emblem-shape-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-shape-sealed-24x24": {
    "file": "pods/rail-emblem-shape-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-shape-unread-24x24": {
    "file": "pods/rail-emblem-shape-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-stamina-read-24x24": {
    "file": "pods/rail-emblem-stamina-read-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "a969f9ba8ea742268fbea0b079bf8dfd640c6d8a2bd518d35d0759d6c159e927",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-stamina-sealed-24x24": {
    "file": "pods/rail-emblem-stamina-sealed-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "4d05d9639f062d230508d318b1b9ab80dcebf922a067f6972b76c8234f94de8f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-emblem-stamina-unread-24x24": {
    "file": "pods/rail-emblem-stamina-unread-24x24.png",
    "w": 24,
    "h": 24,
    "sha256": "87a1dd57ed7ef2ce89fb766094fea0fd176c8d39c787d46a760bcb4a1ed85bdc",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-open-compact-72x40": {
    "file": "pods/rail-tab-fill-open-compact-72x40.png",
    "w": 72,
    "h": 40,
    "sha256": "c9716f7c35e7f00d7af4617908e44999536eb90aa67e7447ed63535b91425947",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-open-full-152x40": {
    "file": "pods/rail-tab-fill-open-full-152x40.png",
    "w": 152,
    "h": 40,
    "sha256": "66d692a7d95fa61dc4c78799a685571daa63b7ecedec1fd471a7719518ab97da",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-read-compact-72x40": {
    "file": "pods/rail-tab-fill-read-compact-72x40.png",
    "w": 72,
    "h": 40,
    "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-read-full-152x40": {
    "file": "pods/rail-tab-fill-read-full-152x40.png",
    "w": 152,
    "h": 40,
    "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-sealed-compact-72x40": {
    "file": "pods/rail-tab-fill-sealed-compact-72x40.png",
    "w": 72,
    "h": 40,
    "sha256": "af0c823e9bd9f97b4d31719243ee92c4e6cfb923ebd23b9336227dd79deae76d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-sealed-full-152x40": {
    "file": "pods/rail-tab-fill-sealed-full-152x40.png",
    "w": 152,
    "h": 40,
    "sha256": "fa6d3290988ca481e815a8fb6030a955221c85c659dc42e2f12fc8738db56cad",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-unread-compact-72x40": {
    "file": "pods/rail-tab-fill-unread-compact-72x40.png",
    "w": 72,
    "h": 40,
    "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "rail-tab-fill-unread-full-152x40": {
    "file": "pods/rail-tab-fill-unread-full-152x40.png",
    "w": 152,
    "h": 40,
    "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n1-s1-176x176": {
    "file": "pods/ring-arc-collection-n1-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "642a7984006a2d0437aaeedaabe72992dc8934b57e1ca1d08f8517dbb5457a06",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n1-track-176x176": {
    "file": "pods/ring-arc-collection-n1-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "3b6ff44cd73e70549adc6ca89efd1fc8d6c2d7708c9e5b516d199f3202e2128c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n2-s1-176x176": {
    "file": "pods/ring-arc-collection-n2-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "37ee769cdfbdc701fc522eaf7ee86f2192da1accbaa3fa5f979c85acb0aca0f9",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n2-s2-176x176": {
    "file": "pods/ring-arc-collection-n2-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "79b653cb1a39daa00270565a4338570766cdeb37504a24e511cc638c2f6cc38c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n2-track-176x176": {
    "file": "pods/ring-arc-collection-n2-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "440f924aed498462492ebe2bc176f39175a363875eaf9f18eb4094c4a3894910",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n3-s1-176x176": {
    "file": "pods/ring-arc-collection-n3-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "9f578a253f7ea2d6a91458a6019f27b341140a0789bedd52268d25eedc858627",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n3-s2-176x176": {
    "file": "pods/ring-arc-collection-n3-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "b7fd8cd76f8acd48706375b86cbb299cde987e247e3a52b9213d493772592b04",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n3-s3-176x176": {
    "file": "pods/ring-arc-collection-n3-s3-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "f9ff2c9605182c495a9e5c151f1ae0d241c3b8318f9dadf7f9992957bb34678b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n3-track-176x176": {
    "file": "pods/ring-arc-collection-n3-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "1172792e18466a549cb05638b80f4b89ea0564d896fe4eb1d40e93c18348554d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n4-s1-176x176": {
    "file": "pods/ring-arc-collection-n4-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "02ec0981ee40097fc6bb318a6c8a6cd55b094e3e19963abf5351cdc05e223291",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n4-s2-176x176": {
    "file": "pods/ring-arc-collection-n4-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "9faa5036ed282c7bde6c90e1f63e4f9fe5bf0159410607cb74e692ed006ea15f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n4-s3-176x176": {
    "file": "pods/ring-arc-collection-n4-s3-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "89f6691e2612e8562da6a55d8b91222a1d0735ad42cd9aef9d84f6fdc0b408ec",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n4-s4-176x176": {
    "file": "pods/ring-arc-collection-n4-s4-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "482de3fd0cf9faefb7850e49cdeb0cc6788e5524bf09c5d216ad125c3aeef111",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n4-track-176x176": {
    "file": "pods/ring-arc-collection-n4-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "7bc0ec1d057fd176c89b5a091ac8e90859aca91eed38b1f105d10f1223165118",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n5-s1-176x176": {
    "file": "pods/ring-arc-collection-n5-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "72eab24dcf3f7c30ff8e0ff380fa08bcde3060eb9748b9c653408fdb46725f54",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n5-s2-176x176": {
    "file": "pods/ring-arc-collection-n5-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "fa3b507f26aad0d24918708fd871b9f2c800ff6c8a2ecd01e66714eda33b835b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n5-s3-176x176": {
    "file": "pods/ring-arc-collection-n5-s3-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "3dc23d2f55d77f623ee5c37e6e40ec68057ad16f9aa85854b75e8e51e021dba7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n5-s4-176x176": {
    "file": "pods/ring-arc-collection-n5-s4-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "6763f1d9207fa294d1d7c3ea4a9f388edfe5f4731889bda6ef6b5e25229fcf04",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n5-s5-176x176": {
    "file": "pods/ring-arc-collection-n5-s5-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "c2e7d1fd3e3c9ac2b6a2aeb66884c58e2a1381dc3f6b1916502b7f5afb4b60bf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n5-track-176x176": {
    "file": "pods/ring-arc-collection-n5-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "8affe3297f9fbf35767dd5faa777f511229e96e9be9663c69fae51cc11c6aab6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-s1-176x176": {
    "file": "pods/ring-arc-collection-n6-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "9838d2d241bfb4c5cee9ef5435d828e68cdbbff40f597ed3672a5dd7cfdd8ccd",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-s2-176x176": {
    "file": "pods/ring-arc-collection-n6-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "728f159cdb3c170313619d8673f8ade9082e3fbb3a6fcc5f0f62d7974e0f6ec6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-s3-176x176": {
    "file": "pods/ring-arc-collection-n6-s3-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "312cb0536506e2a4c224b53ebb6d37e568c47343558c9122c73bfd02cccfea8d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-s4-176x176": {
    "file": "pods/ring-arc-collection-n6-s4-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "e20e2009febfa27e30313c4da6daf3b909d59897dc14354a81a8965db8662899",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-s5-176x176": {
    "file": "pods/ring-arc-collection-n6-s5-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "5b54063e7119fb28f32fddb8c483db203993a11bef71c99ad7b14bf28be56e52",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-s6-176x176": {
    "file": "pods/ring-arc-collection-n6-s6-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "4b84259b4f982650783c4d4ea8c5b81a9245610557d9cb5b493ef2dacabc5b28",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n6-track-176x176": {
    "file": "pods/ring-arc-collection-n6-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "90e188cf167107d5fa336f090ce8a3b3573b832a0659bafeb0653e8956a80714",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s1-176x176": {
    "file": "pods/ring-arc-collection-n7-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "03cd67997a96fe300167eeba6066bfd5ec77cb900b1456ae2d0b07963496e800",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s2-176x176": {
    "file": "pods/ring-arc-collection-n7-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "f4ca17d5bda85e227eb06031cc8b5fe7daa990d61824b8cc2865343f78982f9e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s3-176x176": {
    "file": "pods/ring-arc-collection-n7-s3-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "108bb6e8c9d4dfde790aa97276e3e80ca798c07ecbac7f0894f692d48f96a262",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s4-176x176": {
    "file": "pods/ring-arc-collection-n7-s4-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "925e909ffc151ed240e6a86dcb92cc557b894dc5c7f6e10e9a7d4237b6788f19",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s5-176x176": {
    "file": "pods/ring-arc-collection-n7-s5-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "d4bd41d843285d8e2e823ae175b945cfd935e7e755bbe7039b8f186c1491386a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s6-176x176": {
    "file": "pods/ring-arc-collection-n7-s6-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "359ad6a640028f517ad028955ce3d809ea622cd79041e77041a5d40f6fac870d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-s7-176x176": {
    "file": "pods/ring-arc-collection-n7-s7-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "6700fcb869ad9dfdd31832e673b4bfdea471a51101a9f2ae2a928c0142f1fce2",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n7-track-176x176": {
    "file": "pods/ring-arc-collection-n7-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "36a701e3120618d145e6133b6748f5281dfc903d68e253b2fa8c33aa2dba33a8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s1-176x176": {
    "file": "pods/ring-arc-collection-n8-s1-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "05095aa67ae06b423eb0a419f63abde5f938d032337424bc1f2276b6bcf17ab7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s2-176x176": {
    "file": "pods/ring-arc-collection-n8-s2-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "7e516892cfa662716761585097a865204ee62fa688c450e73eaed49914d32b84",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s3-176x176": {
    "file": "pods/ring-arc-collection-n8-s3-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "11c84597cb0073cfb76ad99b469031640da51e966abdb4fdadbcc01a59127fb3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s4-176x176": {
    "file": "pods/ring-arc-collection-n8-s4-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "cecefcc4c6e838e0fb1bdef1996bc0174b499f5965f1dcceebb8c0a395d52cdf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s5-176x176": {
    "file": "pods/ring-arc-collection-n8-s5-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "9dea32b67f166cde7afe3a82e4a38f8c3fec73468342015afc9966754cf2b2a3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s6-176x176": {
    "file": "pods/ring-arc-collection-n8-s6-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "60a1b59e7974a66a7a8cf1a2b9179c3b0856c4cd5e9671a9993288a3576c978e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s7-176x176": {
    "file": "pods/ring-arc-collection-n8-s7-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "0c59fe3b9890ac15f1415d604eaaca5369c03e8d445ec9fac9d37d00332fab91",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-s8-176x176": {
    "file": "pods/ring-arc-collection-n8-s8-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "1e605c7b7d9e4d3e0472b7da50323e33758662804f06b72230529b6f44b71edd",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-collection-n8-track-176x176": {
    "file": "pods/ring-arc-collection-n8-track-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "a29040b53d2c434f461849d351022175cea080f10c1f2c4b1233c10184979f4b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n4-s0": {
    "file": "pods/ring-arc-idle-n4-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "50b6ed428e312010f0dd045c976c4e5b3af89d6160894e741882787769299487",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n4-s1": {
    "file": "pods/ring-arc-idle-n4-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "a0db353a94e4867a80139a4a62b6b57b2eace7c0682ee04a9b46e098a0e15d6c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n4-s2": {
    "file": "pods/ring-arc-idle-n4-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "d49332d4601961807227c6d868e61846ba190bf4cd319d209f4c0db9af2e2bb6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n4-s3": {
    "file": "pods/ring-arc-idle-n4-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "8ad8ca16f73a3b97d85f9a9df7dcd9d5fcb7571f2a82612656a157231e22c0f7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n4-track": {
    "file": "pods/ring-arc-idle-n4-track.png",
    "w": 80,
    "h": 80,
    "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n5-s0": {
    "file": "pods/ring-arc-idle-n5-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "fcb068d422d94244574b015bdf1da5b3260eea0fa87049644c57be29676d6b70",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n5-s1": {
    "file": "pods/ring-arc-idle-n5-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "f1b8220765a3424e77bf0fe2a94dbe300ee1d1aa1ebe38b6c4f47aee6efdfdc1",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n5-s2": {
    "file": "pods/ring-arc-idle-n5-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "60a0a58eae7171468d263de81824177a3b8e8e72d2a63f63c973a60818a882f8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n5-s3": {
    "file": "pods/ring-arc-idle-n5-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "e2c2719dc120977b0e075c7d2ab16807b17d6983af06449e1c2e8b5e20e2e0d1",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n5-s4": {
    "file": "pods/ring-arc-idle-n5-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "effe613df5fd7202e30714c332f2710936d0891e49b1eb08dde572eab3aee4c6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n5-track": {
    "file": "pods/ring-arc-idle-n5-track.png",
    "w": 80,
    "h": 80,
    "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-s0": {
    "file": "pods/ring-arc-idle-n6-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "a1ee1105f7cd9dea6a4e76badb80daf3b2abe8df391c6d1ed3190262d9d6391e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-s1": {
    "file": "pods/ring-arc-idle-n6-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "4fea1016823ce5ce2567d12395a3cbcaa4172de6fe424875ceb54df606cea617",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-s2": {
    "file": "pods/ring-arc-idle-n6-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "6b7a4eba192c73a84e0c00f5c5e5fa38bdce3e2d48aee857dabb7d019f45c763",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-s3": {
    "file": "pods/ring-arc-idle-n6-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "1098a3d4f6a737fa5e4926f8ba8db7d20511b79947c66b4b465896a39c2bee96",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-s4": {
    "file": "pods/ring-arc-idle-n6-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "48d1752c59d3990c387b77ae768376d7d2f16302227b1cc845cd5c96c97341cf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-s5": {
    "file": "pods/ring-arc-idle-n6-s5.png",
    "w": 80,
    "h": 80,
    "sha256": "182f8fdbdbbcfc855085662d18edd572c64d63d54d91d19280c9e6c29837aff1",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n6-track": {
    "file": "pods/ring-arc-idle-n6-track.png",
    "w": 80,
    "h": 80,
    "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s0": {
    "file": "pods/ring-arc-idle-n7-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "f741cc832a26bce17ee4c0df35c5631f1de28b8f4baae7be111489a9161eddcf",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s1": {
    "file": "pods/ring-arc-idle-n7-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "34c436bf091ac593b04bd95376d9be1d43004ab8431d1ffe372ca7fb4b8c99c7",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s2": {
    "file": "pods/ring-arc-idle-n7-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "cfcf83eafcf854e2013f484999f054ebf3405d33b06508d0c3a3fa90280f3d01",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s3": {
    "file": "pods/ring-arc-idle-n7-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "86dbd19a862c0d8b202745bb7318040e030e913e8d96d664f7515f595e25499d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s4": {
    "file": "pods/ring-arc-idle-n7-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "1f6b740755905ac89a54a2d771f1329d823862c8a1eae5e75ea52c3655e7d53f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s5": {
    "file": "pods/ring-arc-idle-n7-s5.png",
    "w": 80,
    "h": 80,
    "sha256": "961cc8012e50292bdf5621146aa44edbe20d2ac7bfdefc6e9d74ce3d4d20b3e6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-s6": {
    "file": "pods/ring-arc-idle-n7-s6.png",
    "w": 80,
    "h": 80,
    "sha256": "ea16f17f35bd4f3cfc40a932453968eb2e0601d47b65f39c2a172c3788033bef",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n7-track": {
    "file": "pods/ring-arc-idle-n7-track.png",
    "w": 80,
    "h": 80,
    "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s0": {
    "file": "pods/ring-arc-idle-n8-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "894993823c214db340461c5e3322a53969e1083d6c38d4403428ef4a58037cd9",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s1": {
    "file": "pods/ring-arc-idle-n8-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "b0935f79c791b20c7aeca967f391c8e98f9e6a3d4f2c8085130b77af45456b95",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s2": {
    "file": "pods/ring-arc-idle-n8-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "688c5be0cdbe143c16e7ee066bcc465770330ffa9e6e3c8b195c89405a7c6482",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s3": {
    "file": "pods/ring-arc-idle-n8-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "bfc20fe510687e8c177bc2dc0104a61fc3ea8e855d205c0ed789c1b2e62189e5",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s4": {
    "file": "pods/ring-arc-idle-n8-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "8d3c8a081ae7cefaa7f3e5da7fde67b20dff202bc0f823b3fc86f79cdc53f0db",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s5": {
    "file": "pods/ring-arc-idle-n8-s5.png",
    "w": 80,
    "h": 80,
    "sha256": "8b6bea6d0e80551099d12e6466f9c30d1354209a90a2efc6f55b40221b60d781",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s6": {
    "file": "pods/ring-arc-idle-n8-s6.png",
    "w": 80,
    "h": 80,
    "sha256": "64c855357c05d15865f4aee92ca37d3d0a75b184f2e593d273e8a0e7a2aa32aa",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-s7": {
    "file": "pods/ring-arc-idle-n8-s7.png",
    "w": 80,
    "h": 80,
    "sha256": "6cff2127d26d5207ad8f83aec95854d1a208eb5c7294f692a3720e748533a6f0",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-idle-n8-track": {
    "file": "pods/ring-arc-idle-n8-track.png",
    "w": 80,
    "h": 80,
    "sha256": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n4-s0": {
    "file": "pods/ring-arc-selected-n4-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "068bbb8bf1fb828cba419fc219824aae58ef470728f0eac1c652251bee9cc19d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n4-s1": {
    "file": "pods/ring-arc-selected-n4-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "6b61ab4beb4dcecd0158447f7197e7a7afb66827b5f3fff4c5179be2bb6fa035",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n4-s2": {
    "file": "pods/ring-arc-selected-n4-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "c5e155e9df75e208b63b4a5f5d9be56153fcea4f314869c297d4e02047bc584b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n4-s3": {
    "file": "pods/ring-arc-selected-n4-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "ccce4cc66663230e3064b7a8fb59356e1fb261952ef3a47458aed1c0b26f9005",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n4-track": {
    "file": "pods/ring-arc-selected-n4-track.png",
    "w": 80,
    "h": 80,
    "sha256": "a7ad1a5f51622d076a937f7eaa4d68e31fd1fc5e38c9a1bcca9ff61a8c3408b2",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n5-s0": {
    "file": "pods/ring-arc-selected-n5-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "f65c0b2930c4b23058b9dbdb0ed45a256ef1aafdbe136b814d05bfd5ab1cc3ab",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n5-s1": {
    "file": "pods/ring-arc-selected-n5-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "60e69b8e98c1118d677c27c911434300e93183722ea7a77d82b98dfe190912a8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n5-s2": {
    "file": "pods/ring-arc-selected-n5-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "8d3ed6f2d42d0ef47b1faa24d4b3532b74a4f57bc9be1bd9ad15969ef520dfdd",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n5-s3": {
    "file": "pods/ring-arc-selected-n5-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "bfff8099145c03ac04955cbff9a8f350121a7b70ae756799b395be5b5b108733",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n5-s4": {
    "file": "pods/ring-arc-selected-n5-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "74c378b89180851da449f8d1fec5fe334c04efb242f9538e3366813bfbce0f43",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n5-track": {
    "file": "pods/ring-arc-selected-n5-track.png",
    "w": 80,
    "h": 80,
    "sha256": "800b21b19de75dd213da1ec05382b251b45dc28a867a67196ab401c3eb5ca9ac",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-s0": {
    "file": "pods/ring-arc-selected-n6-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "7e6f21b9b349782b7584b63b1917c5ab8dad42395c20d2dfcb61fc6b61b5d137",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-s1": {
    "file": "pods/ring-arc-selected-n6-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "23b7a6045da1244cfa887d0a6bf32f329095d5b17ccb0364f2cff9351442a144",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-s2": {
    "file": "pods/ring-arc-selected-n6-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "e5e42aac48540a80282b5a0127f5dbdb99de787c1f10756462dbb80470771de6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-s3": {
    "file": "pods/ring-arc-selected-n6-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "69dd493d9733873ff22439262c51cbd2841a2d48ba8f6049a1c8af80ecbb376b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-s4": {
    "file": "pods/ring-arc-selected-n6-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "b867f7fbdb9ee0b47a74ad60532f92e0154cb1b8bc3537b575c05f1c7c396f55",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-s5": {
    "file": "pods/ring-arc-selected-n6-s5.png",
    "w": 80,
    "h": 80,
    "sha256": "791c64a7f90d37cf2110b3d0dcce27105024f44dd75e4f2c34ff52791ef8d536",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n6-track": {
    "file": "pods/ring-arc-selected-n6-track.png",
    "w": 80,
    "h": 80,
    "sha256": "4a8f184b41d2ebcbd64188c7a84809bf6d4b11df64f2b97524cba228a12bfaae",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s0": {
    "file": "pods/ring-arc-selected-n7-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "88218cf229ccb36eeb4b42aac5059dae47f399de50bd23f7010da33e31fb4cc3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s1": {
    "file": "pods/ring-arc-selected-n7-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "d0d0c15bafd16ecd7d1f24f0b114c5ea67b043c163b44d3f7876cca477a4db80",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s2": {
    "file": "pods/ring-arc-selected-n7-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "b6c7910935f88fbc2a364a5de527595eaf8559029ef8da8c368d0103c7e9f4c4",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s3": {
    "file": "pods/ring-arc-selected-n7-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "3bcc0d2b49642824e4e0773515b25de5d2857a98c6ea0a7080bc35a84c3081f3",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s4": {
    "file": "pods/ring-arc-selected-n7-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "98f4efb9b8aedb903758dd2ffb0d6da38b7f91d860b6b92e42bb4fb65289e873",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s5": {
    "file": "pods/ring-arc-selected-n7-s5.png",
    "w": 80,
    "h": 80,
    "sha256": "77ddd025aa9dd8d7bf7de276a045069afcd1ed7f9f23f36512edec533fac5966",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-s6": {
    "file": "pods/ring-arc-selected-n7-s6.png",
    "w": 80,
    "h": 80,
    "sha256": "de37e8578c124185ba70c2b657122bab3435bfc0da109f75fb04b6a38c4056ec",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n7-track": {
    "file": "pods/ring-arc-selected-n7-track.png",
    "w": 80,
    "h": 80,
    "sha256": "78d3529dba705c2946933645e1f17a6d48436a9786ef9496f6382fa600382b20",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s0": {
    "file": "pods/ring-arc-selected-n8-s0.png",
    "w": 80,
    "h": 80,
    "sha256": "092e81713eddbb24311367ca83945d0067b89b8d3f25961cad125121e7c014ee",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s1": {
    "file": "pods/ring-arc-selected-n8-s1.png",
    "w": 80,
    "h": 80,
    "sha256": "2be7f10c2caa7b916ccd6c0b5a70e5bb6d1c9861e292809af2f16fa8be7c881b",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s2": {
    "file": "pods/ring-arc-selected-n8-s2.png",
    "w": 80,
    "h": 80,
    "sha256": "ccd56f0c6d8e103dde3b7ce85a185b15db1ea5411ba00473844b6bd6e501da4f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s3": {
    "file": "pods/ring-arc-selected-n8-s3.png",
    "w": 80,
    "h": 80,
    "sha256": "3f0777a85cb3b44cc5473a460dd82e922a5e8d0ea361b58e31705d782fed14af",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s4": {
    "file": "pods/ring-arc-selected-n8-s4.png",
    "w": 80,
    "h": 80,
    "sha256": "d32811299947b640af3d8b498a90deb7b59c8f7353dee9887350836e1a96895f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s5": {
    "file": "pods/ring-arc-selected-n8-s5.png",
    "w": 80,
    "h": 80,
    "sha256": "e1cd66ad372760040847015e94311a9c699971254cc7146afe6a5698336de5f4",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s6": {
    "file": "pods/ring-arc-selected-n8-s6.png",
    "w": 80,
    "h": 80,
    "sha256": "f76b8760b730cd12165834b527c0158518b830cdad0754ae7cc6eb9742eb095c",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-s7": {
    "file": "pods/ring-arc-selected-n8-s7.png",
    "w": 80,
    "h": 80,
    "sha256": "b591c0e411682b50269dc29ef510df94066a9f6f32f0f836b592b8ba353f283d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-arc-selected-n8-track": {
    "file": "pods/ring-arc-selected-n8-track.png",
    "w": 80,
    "h": 80,
    "sha256": "eed42ea9a69ff11f6fb6a53c5e40bb3dde3add689cfa024cb716a5ed97d69ab9",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-collection-closed-176x176": {
    "file": "pods/ring-collection-closed-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-collection-idle-176x176": {
    "file": "pods/ring-collection-idle-176x176.png",
    "w": 176,
    "h": 176,
    "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
-   "signed": "signed (masters-pods d6e0e3e)"
-  },
-  "ring-column": {
-   "file": "pods/ring-column.png",
-   "w": 160,
-   "h": 522,
-   "sha256": "d12e5bdc2e2183d5517c7f3997dd15bf0775bbb71e0f03f58ef9d8332961608e",
-   "signed": "List column plate (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-column-112x522": {
    "file": "pods/ring-column-112x522.png",
    "w": 112,
    "h": 522,
    "sha256": "d196eb9b72a86516f0280103f66e89e460cfc8dc2501f3a25da44b4382494314",
-   "signed": "List column plate (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-hatch-80x56": {
    "file": "pods/ring-hatch-80x56.png",
    "w": 80,
    "h": 56,
    "sha256": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-kin-56x56": {
    "file": "pods/ring-kin-56x56.png",
    "w": 56,
    "h": 56,
    "sha256": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-well-empty-80x80": {
    "file": "pods/ring-well-empty-80x80.png",
    "w": 80,
    "h": 80,
    "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-well-idle-80x80": {
    "file": "pods/ring-well-idle-80x80.png",
    "w": 80,
    "h": 80,
    "sha256": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "ring-well-selected-80x80": {
    "file": "pods/ring-well-selected-80x80.png",
    "w": 80,
    "h": 80,
    "sha256": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-bench-stage": {
    "file": "pods/room-bench-stage.png",
    "w": 1024,
    "h": 522,
    "sha256": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-bench-stage-chapter": {
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
    "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
    "w": 1024,
    "h": 522,
    "sha256": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-bench-stage-compare": {
    "file": "pods/room-bench-stage-compare.png",
    "w": 1024,
    "h": 522,
    "sha256": "448dad6e5615e144e0952609de261eb795cba0f86fff9479a67bf429cd88fb3e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-bench-stage-overview": {
    "file": "pods/room-bench-stage-overview.png",
    "w": 1024,
    "h": 522,
    "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-cradle": {
    "file": "pods/room-cradle.png",
    "w": 224,
    "h": 96,
    "sha256": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",
    "w": 224,
    "h": 96,
    "sha256": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-shelf": {
    "file": "pods/room-shelf.png",
    "w": 288,
    "h": 72,
    "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",
    "w": 152,
    "h": 152,
    "sha256": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "room-stamp-case-152x152-front": {
    "file": "pods/room-stamp-case-152x152-front.png",
    "w": 152,
    "h": 152,
    "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "stamp-label-120x120": {
    "file": "pods/stamp-label-120x120.png",
    "w": 120,
    "h": 120,
    "sha256": "474f93f940e3d682378c8943d2532816f5b811a52bbfba97bbb344eb53faef39",
-   "signed": "Stamp label (signed)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S01-crown-leaf-crest-104x160": {
    "file": "pods/trait-S01-crown-leaf-crest-104x160.png",
    "w": 104,
    "h": 160,
    "sha256": "a135a009ac3e8a4c6b6882c410f74aacd7be4583e27ba0235b9c644f993daa56",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-crown-leaf-crest-104x64": {
@@ -2808,7 +2843,7 @@
    "w": 104,
    "h": 64,
    "sha256": "3a55004a949cde0626bbc53c8c2e1afb78a35dcee18270d093cd566e205ec564",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-crown-leaf-crest-104x96": {
@@ -2816,7 +2851,7 @@
    "w": 104,
    "h": 96,
    "sha256": "d163453d2723f249a8209be31780a42a52e59da00eea58e7afabea5676c82ca4",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-crown-leaf-crest-128x160": {
@@ -2824,14 +2859,14 @@
    "w": 128,
    "h": 160,
    "sha256": "6342f0e32e187c98092aeca0911e76a1dbe2660e14ba7b7fefa761f55dc35353",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S01-crown-leaf-crest-144x176": {
    "file": "pods/trait-S01-crown-leaf-crest-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "18a163cb2a8f7d98db14ae54112f0b371176577117fa62ecff2875b7a873cc79",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-eyes-between-small-and-large-104x160": {
@@ -2839,7 +2874,7 @@
    "w": 104,
    "h": 160,
    "sha256": "aac1a5ab70270075b5df898f1a47ba876b552cac24a9cca6eda3fe6fe7e94244",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-eyes-between-small-and-large-104x64": {
@@ -2847,7 +2882,7 @@
    "w": 104,
    "h": 64,
    "sha256": "f57402d091ba61705cd3cd8f5cefc8cf150c19314e17e26a4d08b4cacb16295a",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-eyes-between-small-and-large-104x96": {
@@ -2855,7 +2890,7 @@
    "w": 104,
    "h": 96,
    "sha256": "529885a951dcf212fd105b49ac81e8a7fab47db0bb3330a047b78901b5aaa925",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-eyes-between-small-and-large-128x160": {
@@ -2863,14 +2898,14 @@
    "w": 128,
    "h": 160,
    "sha256": "41a4514d6c17b579315f23337ef552747470a3db4b1526ef3fe700faa019c15d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S01-eyes-between-small-and-large-144x176": {
    "file": "pods/trait-S01-eyes-between-small-and-large-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "9d0276fee7cd1eca2331612d49df2c04dd5147e55dab26003b41cc307d8e9b98",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-markings-plain-104x160": {
@@ -2878,7 +2913,7 @@
    "w": 104,
    "h": 160,
    "sha256": "7d404a64c1ee72b6bbc50668b4027e10d49194de1a49d9f87071941d0ec24bad",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-markings-plain-104x64": {
@@ -2886,7 +2921,7 @@
    "w": 104,
    "h": 64,
    "sha256": "5d2d115179cb4898e4d7b4679cfa9a0e806615bf47841268909c430e24896aae",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-markings-plain-104x96": {
@@ -2894,7 +2929,7 @@
    "w": 104,
    "h": 96,
    "sha256": "826839c602e9bc4c6de189e557d5f671b12abcf6424668c48665d79d6bf63a1c",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S01-markings-plain-128x160": {
@@ -2902,14 +2937,14 @@
    "w": 128,
    "h": 160,
    "sha256": "3dce76216eda4ae4f87f4dc8376d2f281b90746bf0e708e99a5ea289d06fb218",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S01-markings-plain-144x176": {
    "file": "pods/trait-S01-markings-plain-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "69d906a5e09b0c41340423798ecac272fe01539d598c6e63c6f9bc348d39b615",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-beak-between-104x160": {
@@ -2917,7 +2952,7 @@
    "w": 104,
    "h": 160,
    "sha256": "2302f810da46dd0f0b007259c42f38b31bea3bf769719308c2db6fd29009b114",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-beak-between-104x64": {
@@ -2925,7 +2960,7 @@
    "w": 104,
    "h": 64,
    "sha256": "df7c9303c8bf112ed3a9d57c83d25524ca50d1028aa08aad6f3a7e77e687bd2f",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-beak-between-104x96": {
@@ -2933,7 +2968,7 @@
    "w": 104,
    "h": 96,
    "sha256": "6c967892d4dcaea767572f096fa288a0affe38bf1982bcbf5195b06da066bc05",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-beak-between-128x160": {
@@ -2941,22 +2976,45 @@
    "w": 128,
    "h": 160,
    "sha256": "510275cff0d9eb7e99a0dbea84fd816370f86480493ba0ed2f725e31caf7af7d",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S09-beak-between-144x176": {
    "file": "pods/trait-S09-beak-between-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "dc74dbbd281771dcb427bd20161022c3716003338a37a80cfc38ce0ae516505a",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
+  },
+  "trait-S09-carriage-straight-128x160": {
+   "file": "pods/trait-S09-carriage-straight-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "c6dd1bfa50b5b961e38cc01b8ed555aaab7c7900e9fd878bd5c6b4f46151b169",
+   "signed": "new (masters-pods b3b7e04), not final",
+   "status": "new"
+  },
+  "trait-S09-colour-cobalt-128x160": {
+   "file": "pods/trait-S09-colour-cobalt-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "d6d01e978a5be71cc267a116a84ac22343096aed69aeeefc51827453369dd6e3",
+   "signed": "new (masters-pods b3b7e04), not final",
+   "status": "new"
+  },
+  "trait-S09-crest-between-128x160": {
+   "file": "pods/trait-S09-crest-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "b7195edc6d6cd03c0ba7a13866ad78b3457ccba69e802d666ab330fca1e3cea9",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S09-crown-tall-104x160": {
    "file": "pods/trait-S09-crown-tall-104x160.png",
    "w": 104,
    "h": 160,
    "sha256": "e9a366c43453863e7076efb83de4a8459a550f4a6c7aa8b05c74620905b407dd",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-crown-tall-104x64": {
@@ -2964,7 +3022,7 @@
    "w": 104,
    "h": 64,
    "sha256": "415c9c7f29b4f532bf002899dbafb78c951e60836f628cf9ff08d03333c5d582",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-crown-tall-104x96": {
@@ -2972,7 +3030,7 @@
    "w": 104,
    "h": 96,
    "sha256": "962202cbebe72ce880255aa63c38267ecdfbf47658a53b5c1d8d19f6db5c4222",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-crown-tall-128x160": {
@@ -2980,7 +3038,7 @@
    "w": 128,
    "h": 160,
    "sha256": "d8e5cf5596aba1b567ecb0fa891e59c3081962da1d18754ed147ec5884b52e6c",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-crown-tall-144x176": {
@@ -2988,15 +3046,37 @@
    "w": 144,
    "h": 176,
    "sha256": "28278adfdb4c001201d477b194dec4c1916e15afeae00a1c6a88e737bb0621f5",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
+  },
+  "trait-S09-eyes-small-128x160": {
+   "file": "pods/trait-S09-eyes-small-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "a624e46131dc03db6d6452e0e16b82cb3d28c35369e53e81b99cc40bb02d6f34",
+   "signed": "new (masters-pods b3b7e04), not final",
+   "status": "new"
+  },
+  "trait-S09-feathers-between-128x160": {
+   "file": "pods/trait-S09-feathers-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "36190da9a96d71b715b1c384f9e883fa844d977c49c7c651743581c70cd35957",
+   "signed": "signed (masters-pods b3b7e04)"
+  },
+  "trait-S09-fluff-between-128x160": {
+   "file": "pods/trait-S09-fluff-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "45a9d45607ed9f3f136354173ba9d0f902e0d463555fa6fec5d32a5278a8035f",
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S09-head-between-small-and-large-104x160": {
    "file": "pods/trait-S09-head-between-small-and-large-104x160.png",
    "w": 104,
    "h": 160,
    "sha256": "bb858be98ceac17a00cc89ff1f3cbfa4a7a5c021082d154518c82f7e67c350fc",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-head-between-small-and-large-104x64": {
@@ -3004,7 +3084,7 @@
    "w": 104,
    "h": 64,
    "sha256": "23f26a34ea591d784f2f71ee1ff894719ab7711e86c03f777bb250a08c3caca5",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-head-between-small-and-large-104x96": {
@@ -3012,7 +3092,7 @@
    "w": 104,
    "h": 96,
    "sha256": "0fccd0def8cfe582c7ca478077ff28196189b7e0747e826c7e2ea200e9b93bd9",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-head-between-small-and-large-128x160": {
@@ -3020,7 +3100,7 @@
    "w": 128,
    "h": 160,
    "sha256": "cc3bc0e45f20d7f7873c93f097cd26da9236615074a8fd36bfb45497ae90cd44",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-head-between-small-and-large-144x176": {
@@ -3028,7 +3108,15 @@
    "w": 144,
    "h": 176,
    "sha256": "b31476b5e8c6ec98ec55c7ab180fa0ab66067056b864d2a6677663162734af24",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
+   "status": "new"
+  },
+  "trait-S09-sheen-between-128x160": {
+   "file": "pods/trait-S09-sheen-between-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "02002406ef348847e14cd49d139e71c9b1e9fd6c6a9b49143d1e56def314e9ce",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-tail-between-104x160": {
@@ -3036,7 +3124,7 @@
    "w": 104,
    "h": 160,
    "sha256": "9cf7643e4ba644f6a4364439b92b6251d87d8d4d254ab352ecf41b521e223a6a",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-tail-between-104x64": {
@@ -3044,7 +3132,7 @@
    "w": 104,
    "h": 64,
    "sha256": "4e129a3d3258cea80cd0ca1b7cd18ac1f4948e437e440c7128ca585afb690ae8",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-tail-between-104x96": {
@@ -3052,7 +3140,7 @@
    "w": 104,
    "h": 96,
    "sha256": "00e0f7c04aaf85944fd9ec99b68c4fdf82c327e785a24c1444b02bac49e8d473",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-tail-between-128x160": {
@@ -3060,7 +3148,7 @@
    "w": 128,
    "h": 160,
    "sha256": "111af3b48bde099e971654ca36e9aa4a40c887a57e224a0247b06b4ee44410b8",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S09-tail-between-144x176": {
@@ -3068,7 +3156,15 @@
    "w": 144,
    "h": 176,
    "sha256": "8d43595f0a092c85515b5d75d20f553e2778fe63a2a81192eca4235c69fd032c",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
+   "status": "new"
+  },
+  "trait-S09-tufts-body-only-128x160": {
+   "file": "pods/trait-S09-tufts-body-only-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "f5cefd818d6eda5154e149ea8f55a8efd466984231adfd91e8225df5b7169642",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-colour-marigold-104x160": {
@@ -3076,7 +3172,7 @@
    "w": 104,
    "h": 160,
    "sha256": "e918fea72b763bdef9f676b2acf677fa341ae10572306b253a719e0e5d8acf11",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-colour-marigold-104x64": {
@@ -3084,7 +3180,7 @@
    "w": 104,
    "h": 64,
    "sha256": "bb178796811734b16cf20e3b751c4b6124093d95e2675de2a49e9f18b3cd63e3",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-colour-marigold-104x96": {
@@ -3092,7 +3188,7 @@
    "w": 104,
    "h": 96,
    "sha256": "4cfb1060ff3898f6650ce52b1d6fdbbd00e651b22af06c1c160d3f05b3481cae",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-colour-marigold-128x160": {
@@ -3100,14 +3196,14 @@
    "w": 128,
    "h": 160,
    "sha256": "56440c699fe8b31e5cb042faa2f857fedb58255d9ca3097dbe08bd5d0ec5b0c4",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S12-colour-marigold-144x176": {
    "file": "pods/trait-S12-colour-marigold-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "7e0ac0c46e375d5f172081d1226e40eff0a76542a58dd35479a676980c3c4ae4",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-haunch-between-104x160": {
@@ -3115,7 +3211,7 @@
    "w": 104,
    "h": 160,
    "sha256": "27ffdfc8cd3febf6961a064c419770b43afa9184682ab89ba8afb03c461d8e23",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-haunch-between-104x64": {
@@ -3123,7 +3219,7 @@
    "w": 104,
    "h": 64,
    "sha256": "b431d03234b86531dcf8b66b42097a664fdfac9e31b71e55f575a33c4950099f",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-haunch-between-104x96": {
@@ -3131,7 +3227,7 @@
    "w": 104,
    "h": 96,
    "sha256": "ab94f92b531dfeb2e5d6d233d08f34b9e445b4ef9d2dee9e14b39671f13488dc",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-haunch-between-128x160": {
@@ -3139,14 +3235,14 @@
    "w": 128,
    "h": 160,
    "sha256": "6d06df6c776c246751769dc38f7ec6d28ec0633df595545d7daf09612ea393a6",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S12-haunch-between-144x176": {
    "file": "pods/trait-S12-haunch-between-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "b65e1d9dbdaea7b629c87c5523c73c81a10b66855137e36271016b84b51397c8",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-pattern-plain-104x160": {
@@ -3154,7 +3250,7 @@
    "w": 104,
    "h": 160,
    "sha256": "8989e2769f82cd272d0d169805e298c8790d00dd965810e4b4532a54ec3e3f65",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-pattern-plain-104x64": {
@@ -3162,7 +3258,7 @@
    "w": 104,
    "h": 64,
    "sha256": "fdede88a1f2a940ad92841509776dd525d5c9d73ca5ecc1cdce6cc0b5e04e8c5",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-pattern-plain-104x96": {
@@ -3170,7 +3266,7 @@
    "w": 104,
    "h": 96,
    "sha256": "643cd3feaa1e217d91350f8ae846675f4515a63ccb4f5924404af8ede37b45ac",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-pattern-plain-128x160": {
@@ -3178,14 +3274,14 @@
    "w": 128,
    "h": 160,
    "sha256": "0aa03765c666a84efcd3620d2832259526030a4e61260917ed8d857556bfb887",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S12-pattern-plain-144x176": {
    "file": "pods/trait-S12-pattern-plain-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "49851d7dc1be77fee21e4a97f3f9e66c61e25c56181d1883b51688fd5a59deba",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-translucency-between-104x160": {
@@ -3193,7 +3289,7 @@
    "w": 104,
    "h": 160,
    "sha256": "da9545cb8fdea8d62135b92e5c8d88fd5615369efdab6498c9b6938aff8b91b0",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-translucency-between-104x64": {
@@ -3201,7 +3297,7 @@
    "w": 104,
    "h": 64,
    "sha256": "2adfa6407afbfef08595a1b93526b4da4ea113baa46459ef1aacd2b06aa9875a",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-translucency-between-104x96": {
@@ -3209,7 +3305,7 @@
    "w": 104,
    "h": 96,
    "sha256": "f2188e73c8ce543ad16ac405afde12f550b20a6caf4417bb2ca1a2e759d8de13",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-translucency-between-128x160": {
@@ -3217,14 +3313,14 @@
    "w": 128,
    "h": 160,
    "sha256": "82002c13694d777d096b963ca5b81bdb7be4f9a7e5c41e7daae62580f101bdb2",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S12-translucency-between-144x176": {
    "file": "pods/trait-S12-translucency-between-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "71814d956b88488715f6a44f0b3f0bc3b0d3b0a93a35a149fa91c35688f0aff3",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-trim-butter-104x160": {
@@ -3232,7 +3328,7 @@
    "w": 104,
    "h": 160,
    "sha256": "0795c3b2c6788ac30a5be7a6aa7909e95749e5e02ef170e4c762b73d1ab58121",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-trim-butter-104x64": {
@@ -3240,7 +3336,7 @@
    "w": 104,
    "h": 64,
    "sha256": "5eabf3180efaf9639d83f7952e2fb267dd72ec55fd826213a3fe417670d66b8d",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-trim-butter-104x96": {
@@ -3248,7 +3344,7 @@
    "w": 104,
    "h": 96,
    "sha256": "69a8a71aaa85b1f903330bff6e33400c8a96578242fe93a47275edf9bb8d1657",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   },
   "trait-S12-trim-butter-128x160": {
@@ -3256,14 +3352,14 @@
    "w": 128,
    "h": 160,
    "sha256": "23ee88b38ab308da4f7e256706e2c97ce6f69b4b6e06e07d4aff9666d7b0e555",
-   "signed": "signed (masters-pods d6e0e3e)"
+   "signed": "signed (masters-pods b3b7e04)"
   },
   "trait-S12-trim-butter-144x176": {
    "file": "pods/trait-S12-trim-butter-144x176.png",
    "w": 144,
    "h": 176,
    "sha256": "5854821ebbf957c3ef2f558baf5e58790a8cb021ede9cd432b85e39ac24725fd",
-   "signed": "new (masters-pods d6e0e3e), not final",
+   "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
   }
  }
