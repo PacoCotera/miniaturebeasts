@@ -5,8 +5,8 @@
  "over": ["habitat"],
  "spec": "design/style-guide/station-layouts.md#the-namer",
  "frame": "frame.json",
- "wireframes": ["design/style-guide/station-layouts/11a-namer-open.png", "design/style-guide/station-layouts/11b-namer-typing.png", "design/style-guide/station-layouts/11c-namer-accents.png", "design/style-guide/station-layouts/11d-namer-refused.png", "design/style-guide/station-layouts/11e-namer-nav.png"],
- "note": "The one home of the namer's numbers, transcribed from station-layouts.md (The namer) and its wireframes 11a to 11e. Rectangles are [x, y, w, h] in screen pixels. The namer gives one mibi a name with the six keys alone. It stands over Habitat's right column (the card and the modules) and leaves Habitat's living window and the mibi in it uncovered, so the player names what they see.",
+ "wireframes": ["design/style-guide/station-layouts/12-namer-open.png", "design/style-guide/station-layouts/12b-namer-typing.png", "design/style-guide/station-layouts/12c-namer-accents.png", "design/style-guide/station-layouts/12d-namer-refused.png", "design/style-guide/station-layouts/12e-namer-nav.png"],
+ "note": "The one home of the namer's numbers, transcribed from station-layouts.md (The namer) and its wireframes 12 to 12e. Rectangles are [x, y, w, h] in screen pixels. The namer gives one mibi a name with the six keys alone. It stands over Habitat's right column (the card and the modules) and leaves Habitat's living window and the mibi in it uncovered, so the player names what they see.",
  "overlay": {
   "layer": "the face's top layer, over the screen it opens from and under the message plate",
   "beneath": "the screen beneath keeps drawing (its living window plays) and takes no key; its regions do not move",

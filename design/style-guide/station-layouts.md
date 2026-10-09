@@ -1922,27 +1922,27 @@ Rendered at their size, not masters: the parents' portraits and the ghost (48×4
 
 ## The namer
 
-The namer gives one mibi a name with the Station's six keys. It opens at the meet after a hatch, filled with the mibi's default name, and from Habitat on the mibi shown, any time. It is an overlay: a panel over Habitat's right column, so the mibi being named stays in view in Habitat's living window. Naming happens on the Station only; the Companion shows the name it was given at the last dock. The rules for names (which characters, how long, which are refused) belong to the game's rules; this section lays out the screen that follows them. The numbers live in `prototypes/ui/specs/station/namer.json`. Wireframes, 1×: [11a](station-layouts/11a-namer-open.svg), [11b](station-layouts/11b-namer-typing.svg), [11c](station-layouts/11c-namer-accents.svg), [11d](station-layouts/11d-namer-refused.svg), [11e](station-layouts/11e-namer-nav.svg), each with its PNG.
+The namer gives one mibi a name with the Station's six keys. It opens at the meet after a hatch, filled with the mibi's default name, and from Habitat on the mibi shown, any time. It is an overlay: a panel over Habitat's right column, so the mibi being named stays in view in Habitat's living window. Naming happens on the Station only; the Companion shows the name it was given at the last dock. The rules for names (which characters, how long, which are refused) belong to the game's rules; this section lays out the screen that follows them. The numbers live in `prototypes/ui/specs/station/namer.json`. Wireframes, 1×: [12](station-layouts/12-namer-open.svg), [12b](station-layouts/12b-namer-typing.svg), [12c](station-layouts/12c-namer-accents.svg), [12d](station-layouts/12d-namer-refused.svg), [12e](station-layouts/12e-namer-nav.svg), each with its PNG.
 
-<img src="station-layouts/11a-namer-open.png" width="1024" alt="The namer, opened at the meet">
+<img src="station-layouts/12-namer-open.png" width="1024" alt="The namer, opened at the meet">
 
-*11a. The namer opened by the meet's first ✓: the default name "Fig" selected, capitals for the first letter, the ring on Done, so `✓ Keep Fig` skips in one press. The new mibi stays in view. 1×, measured.*
+*12. The namer opened by the meet's first ✓: the default name "Fig" selected, capitals for the first letter, the ring on Done, so `✓ Keep Fig` skips in one press. The new mibi stays in view. 1×, measured.*
 
-<img src="station-layouts/11b-namer-typing.png" width="1024" alt="The namer, typing">
+<img src="station-layouts/12b-namer-typing.png" width="1024" alt="The namer, typing">
 
-*11b. Typing: "Bea" and the caret, small letters after the first, the ring on n, `✓ Type n`, `← Delete`. 1×, measured.*
+*12b. Typing: "Bea" and the caret, small letters after the first, the ring on n, `✓ Type n`, `← Delete`. 1×, measured.*
 
-<img src="station-layouts/11c-namer-accents.png" width="1024" alt="The namer, the accents page">
+<img src="station-layouts/12c-namer-accents.png" width="1024" alt="The namer, the accents page">
 
-*11c. The accents page: one column a vowel, one row an accent (acute, grave, circumflex, diaeresis), then ç ñ œ ÿ; "Zo" typed, the ring on é. 1×, measured.*
+*12c. The accents page: one column a vowel, one row an accent (acute, grave, circumflex, diaeresis), then ç ñ œ ÿ; "Zo" typed, the ring on é. 1×, measured.*
 
-<img src="station-layouts/11d-namer-refused.png" width="1024" alt="The namer, a letter refused">
+<img src="station-layouts/12d-namer-refused.png" width="1024" alt="The namer, a letter refused">
 
-*11d. The widest name the rules allow, ten Ws (290 px at 28 px semibold), fills the field; the letter keys and the ✓ cap dim, and a press is refused in words on the say line, in amber. 1×, measured.*
+*12d. The widest name the rules allow, ten Ws (290 px at 28 px semibold), fills the field; the letter keys and the ✓ cap dim, and a press is refused in words on the say line, in amber. 1×, measured.*
 
-<img src="station-layouts/11e-namer-nav.png" width="1024" alt="The namer's navigation map">
+<img src="station-layouts/12e-namer-nav.png" width="1024" alt="The namer's navigation map">
 
-*11e. How the namer opens, how the pad walks its keys, what ✓ and ← do, and how it closes. 1×.*
+*12e. How the namer opens, how the pad walks its keys, what ✓ and ← do, and how it closes. 1×.*
 
 ### 1. Purpose
 
@@ -2135,10 +2135,11 @@ Habitat's own spec carries these; the namer depends on them.
 
 ### Not designed yet
 
-- **Habitat's card name** is 200 px wide at 28 px beside the stamp label; the widest name needs 296 (and "Momo-Mumbo" 206). Habitat's spec places a 296 px name box, or sets the card's name at 20 px.
-- **Habitat's strip** sets names at 16 px in about 56 px of a 128 px tile; the widest needs 160. Habitat's spec gives the strip its rule (thumbnail only, the name on the bottom line, as with ten bays).
+- **For Habitat's spec**, the name boxes that do not hold the widest name:
+  - **The card's name:** 200 px wide at 28 px beside the stamp label; the widest name needs 296 (and "Momo-Mumbo" 206). Either a 296 px name box, or the card's name at 20 px (200).
+  - **The strip's names:** about 56 px of a 128 px tile at 16 px; the widest needs 160. Either 160 px, or thumbnails only with the focused name on the bottom line, as with ten bays.
+  - **The bottom line's `✓ Take {name} with you`** with its price "at the next dock": 411 px with the widest name (366 with "Momo-Mumbo"), over the action zone's 356. Shorter words for the verb or the price.
 - **The guide's "Carried by" line** gives each name 120 px at 16 px; the widest needs 160, and dropping names cannot fit one name that is too wide alone.
-- **`✓ Take {name} with you` and its price "at the next dock"** need 411 px with the widest name, and 366 with "Momo-Mumbo", over the action zone's 356. The wording of that price.
 - **The Companion's HUD** draws the partner's name only when it fits beside the counters, and drops it otherwise.
 - **The overlay on the face**: how a spec of kind `overlay` is drawn over the screen beneath, and how focus passes to it and back.
 - **The pool for Suggest**: how many names it peeks, and what shows when it has none.

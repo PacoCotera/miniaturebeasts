@@ -276,7 +276,7 @@ const namerMove = (graph, T, cur, key) => { const grp = (id) => id.split(".")[0]
   const edge = graph[grp(cur)]?.[key]; if (edge === undefined) return cur; for (const e of [edge].flat()) { const r = one(e); if (r) return r; } return cur; };
 
 test("the namer spec file agrees with its wireframes, names a word or composition for every region, and leaves Habitat's window uncovered", () => {
-  const nm = namerSpec(), R = nm.regions, A = boxesOf("11a-namer-open.svg"), B = boxesOf("11b-namer-typing.svg"), C = boxesOf("11c-namer-accents.svg");
+  const nm = namerSpec(), R = nm.regions, A = boxesOf("12-namer-open.svg"), B = boxesOf("12b-namer-typing.svg"), C = boxesOf("12c-namer-accents.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
   for (const k of ["panel", "field", "say", "keys", "shift", "space", "page", "suggest", "done"]) is(R[k].rect, k);
   for (const k of ["panel", "field", "say", "keys", "shift", "space", "page", "suggest"]) is(R[k].rect, k + " (open)", A);
