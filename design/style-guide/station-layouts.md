@@ -1288,7 +1288,7 @@ Habitat shows one resident up close, so the player can spend time with it, take 
 
 - "its painting is on its way · placeholder" inside the window: it moves to the lamp plus the bottom line.
 - "+2 ❀" and "✓ again" on the Wild module: they belong on the bottom line.
-- "after a first outing" on the heart: it belongs in the bottom line's subject.
+- "after a first expedition" on the heart: it belongs in the bottom line's subject.
 - The paper-and-wood card colours: the card is cool chrome.
 - The four chapter thumbnails become seven, one per chapter.
 
@@ -1324,7 +1324,7 @@ The window fills the left (16 to 624) above the strip, with the resident centred
 | Waiting lamp | 40, 432, 16, 16 | Until the painting lands |
 | Card | 640, 48, 368, 216 | Cool chrome pane |
 | Name | 656, 64, 200, 32 | 28 px. A heart shows beside it when bonded |
-| Lines | 656, 104, 200, 68 | Three lines of 16 px on a 24 px pitch: "your Loika, adult", the ability, the memory (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was "Loika · adult"). The species word is a focus target with `mark-guide-16` 4 px after it, on the line's centre: the way to the species' guide |
+| Lines | 656, 104, 200, 68 | Three lines of 16 px on a 24 px pitch: "your Loika, adult", the ability, the memory. The species word is a focus target with `mark-guide-16` 4 px after it, on the line's centre: the way to the species' guide |
 | Code | 656, 180, 200, 20 | 16 px |
 | **Stamp label** | 872, 64, 120, 120 | In the card's corner, 400 px from the resident |
 | Chapter plates | 656 + 48i, 208, 40, 40 | Seven on a 48 px pitch. Eight (a signature chapter) shrink to 32×32 on a 40 px pitch, 312 px in all |
@@ -1341,13 +1341,13 @@ The window fills the left (16 to 624) above the strip, with the resident centred
 | --- | --- |
 | Pad | Spatial: resident, Door, Bond, Cross, Wild, strip tiles. On a tile, that resident comes into the window (300 ms) |
 | ✓ on the resident or a tile | `✓ Spend time with Fig`: its species moment plays for about 2 s. Rewards nothing |
-| ✓ on the species word | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library". In Habitat's fixed pad order the species word is a row of its own between the stage and the chapter plates (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
+| ✓ on the species word | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library". In Habitat's fixed pad order the species word is a row of its own between the stage and the chapter plates |
 | ✓ on Door | `✓ Take Fig with you · now` (docked) or `· at the next dock`. On the mibi already with you there is no ✓ cap |
-| ✓ ✓ on Bond | The first ✓ arms ("Again: bond with Fig"); the second bonds. Before a first outing there is no ✓ cap, and the subject says "bond is offered after a first outing" |
+| ✓ ✓ on Bond | The first ✓ arms ("Again: bond with Fig"); the second bonds. Before a first expedition there is no ✓ cap, and the subject says "bond is offered after a first expedition" |
 | ✓ on Cross (M4) | Opens Cross |
 | ✓ ✓ on Wild | `✓ Return Fig to the wild · +2 ❀`, then the second ✓. Refused, with no ✓ cap and the reason as the subject, for a bonded mibi, a juvenile or the one with you |
 | ✓ on a portrait offer (M6) | `✓ Portray Fig · 1 sitting` |
-| ← | Home, however Habitat was opened (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "or the Library, if Habitat was opened from a Book"; stack navigation) |
+| ← | Home, however Habitat was opened (stack navigation) |
 
 ### Placeholders on Habitat
 
