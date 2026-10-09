@@ -1129,14 +1129,14 @@ The Book is each species' field guide: its face, the looks found so far, its lin
 | **Place stamps** (40×40) and **the frame plate** (104×144) | Where it lives and its body plan, as pictures |
 | **The clarity line** (16 px), under the habit line | That the face is the species' type, not one of the player's mibis (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
 | **Page-turn corner** | That the guide waits on the fold-out second spread (Book: the guide spread) |
-| **Stamp label** (120) | The face's stamp: the type specimen's, or the portrayed mibi's (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was the face mibi's) |
+| **Stamp label** (120) | The face's stamp: the type specimen's (`frame.typeSpecimen`), with no mibi name under it, until a portrait; then the portrayed mibi's (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was the face mibi's; no name until a portrait *ruled by the UI designer in review, 2026-10-09*) |
 | **Family tree** panel (184×160) | Lineage, read without text |
 | **Pinned wish** (184×112) | The wish, as a plate of its looks |
 
 **Cut:**
 
 - The stub's text lines ("Coat: plain, … · more?") become plates.
-- "clan … · 4 chapters" goes: the clan shows on the spread's rule, and the chapters show as tabs.
+- "clan … · 4 chapters" goes: the clan shows on the spread's rule, and the chapters show on the guide spread. The build stub's line under the name (180, 440) is dropped, not moved (*ruled by the UI designer in review, 2026-10-09*).
 - The plate's lanterns at the page corners go (storybook).
 - The chapter tabs and the look plates move to the guide spread (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*).
 
@@ -1169,14 +1169,14 @@ The book is open across the stage. On the left page: the face's mat, with the na
 | **Face or portrait (focal)** | 48, 80, 304, 312 | Mounted as a framed plate. A "released" mark at the plate's foot for a portrayed mibi that went back to the wild |
 | Name label | 88, 408, 224, 40 | 28 px, centred on x 200 (a name is the 28 px role; the Book section's "3×" predates the Inter sizes) |
 | Habit line | 48, 456, 304, 20 | 16 px, centred |
-| Clarity line | 48, 480, 304, 20 | 16 px `stone`, centred on x 200. With no portrait: "A typical Belatz, not one of yours." With a portrait: "Fig, your Belatz, sat for this."; released: "Fig sat for this, now in the wild." (`faceOf`; library.json `faceSpread`) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
+| Clarity line | 48, 480, 304, 20 | 16 px `stone`, cap top at y 480, centred on the face plate: x 180 on the build stub's plate (30, 60, 300, 330), x 200 once the M5 face spread lands (*ruled by the UI designer in review, 2026-10-09*). With no portrait: "A typical Belatz, not one of yours." With a portrait: "Fig, your Belatz, sat for this."; released: "Fig sat for this, now in the wild." (`faceOf`; library.json `faceSpread`) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
 | Place stamps | 376 + 48c, 80 + 48r, 40×40 | Up to four, in two rows |
 | Frame plate | 376, 192, 104, 144 | |
 | Tabs and trait rows | | Moved to the guide spread (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: were the tabs at 536, 64 and the trait rows at 536, 112 + 104r or 112 + 72r) |
-| **Stamp label** | 832, 112, 120, 120 | |
+| **Stamp label** | 832, 112, 120, 120 | At this rect, never the stub's 112 at (886, 406); the type specimen's stamp with no mibi name until a portrait (*ruled by the UI designer in review, 2026-10-09*) |
 | Family tree | 800, 248, 184, 160 | Empty ruled panel until M4 |
 | Pinned wish | 800, 424, 184, 112 | Empty ruled panel until the wish exists; `wish-mark-24` at (808, 432). The stamp label shows the type specimen's stamp until a portrait, then the portrayed mibi's |
-| Page-turn corner | 968, 512, 24, 24 | The spread's corner; only when the species is found and so has a guide |
+| Page-turn corner | 968, 512, 24, 24 | `book-corner-turn-24x24`, a new master the art director signs; only when `book(st, id).guide` is not null (the species found). Until it is signed, the stand-in is "▶" 16 px `bark` centred in the slot, under the same condition. Nothing else overlaps this rect (*ruled by the UI designer in review, 2026-10-09*: was "the spread's page-turn corner, existing") |
 
 ### 6. Interactions
 
@@ -1185,7 +1185,7 @@ The build stub has ← only; the rest arrives with M5.
 | Input | What happens, and how it shows |
 | --- | --- |
 | Pad | Spatial: face, places, frame plate, stamp, tree, wish. ▶ from the right-most target turns to the guide spread (300 ms) |
-| ✓ on the face | `✓ Visit Fig` opens Habitat on a living mibi. On a released one there is no ✓ cap |
+| ✓ on the face | `✓ Visit Fig` opens Habitat only when `faceOf(st, id)` is a living mibi (a portrait whose mibi is not released). The type face and a released portrait have no ✓ cap (*ruled by the UI designer in review, 2026-10-09*: replaces `visitTarget`, which fell back to any living mibi of the species) |
 | ✓ on the wish | `✓ Find a pair` (M4) |
 | ✓ on "more?", the stamp or the tree | Read-only: no ✓ cap |
 | ← | The spread: the way back reads "← Library" (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "Spread") |
@@ -1206,6 +1206,9 @@ The build stub has ← only; the rest arrives with M5.
 - The text field guide becomes tabs and plates.
 - The stamp moves from 112 at (886, 406) to the 120 label at (832, 112).
 - The tree and wish panels are added as empty frames.
+- The "clan … · n chapters" line under the name goes; the clarity line takes its place at y 480.
+- ✓ Visit on the face follows `faceOf`, no longer `visitTarget`.
+- The focus ring on the tome's paper is `rust` (frame.json `focus.ring.onPaper`).
 
 ---
 
@@ -1235,7 +1238,7 @@ The guide shows the species whole: every chapter at once, every trait with how m
 | **One column per chapter**, headed by its **panel** (`guide-panel-<chapter>-<w>x80`, tinted by the species) with the chapter's word | The chapters all at once, a picture naming each before its word |
 | **A trait cell** per trait: its word and **one pip per look**, filled found, dotted unseen, in groups of five | Progress on every cell, without a digit |
 | **A sealed chapter**: a shut panel with its notch, no traits | Locked against found, at a glance |
-| **The detail band**: the open trait's word, its found looks as plates and one dotted "more?" slot, and "Carried by" with your mibis' names | The one place that carries the words; the door to one mibi |
+| **The detail band**: the open trait's word, its found looks as plates and one dashed "more?" slot, and "Carried by" with your mibis' names | The one place that carries the words; the door to one mibi |
 | **Wish marks** (`wish-mark-12`) on a pinned trait and its plate | The wish, where it was pinned |
 | **The seal** (`guide-seal-32`) beside the name | The guide complete; absent until then |
 
@@ -1260,21 +1263,22 @@ The guide shows the species whole: every chapter at once, every trait with how m
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Boards | 8, 48, 1008, 504 | |
-| Fold-out | 24, 56, 976, 488 | `library-foldout-1008x504` |
+| Fold-out | 24, 56, 976, 488 | `library-foldout-1008x504`. This edge box is only the registered stand-in for that master while it is unsigned (*ruled by the UI designer in review, 2026-10-09*) |
 | **Face** | 40, 64, 128, 112 | `guide-face-<SNN>-128x112`, placed 1:1 |
 | Name | 176, 64, 200, 36 | 28 px semibold `ink` |
 | Species line | 176, 104, 248, 40 | 16 px `stone`, two lines on 20: "Every look a Belatz can carry," / "found across your Belatz." (the plural is the frame's `species.plural`) |
 | Seal | 384, 64, 32, 32 | `guide-seal-32`, only when `fieldGuide().complete` |
 | Detail band | 432, 64, 552, 112 | 1 px `clay` edge, no fill |
 | Open trait | 448, 68, 120, 28 | 20 px medium `ink` |
-| Carried by | 448, 104, 120, 60 | "Carried by" 16 px `stone`, then the names 16 px `ink` on two lines at most, joined by ", ", ending "and more" when they overflow; "none of yours yet" when none. Each name is a focus target |
-| Plates, up to six slots | from 576, 80: 56×56 on a 64 pitch | `trait-<SNN>-<trait>-<look>-56x56`; the found looks in the frame's order, then the dotted "more?" slot when looks are unseen |
+| Carried by | 448, 104, 120, 60 | "Carried by" 16 px `stone`, cap top y 104; then the names 16 px `ink`, joined by ", ", on at most two lines with cap tops at y 124 and 144, inside x 448 to 568. When they overflow, "and more" (16 px `stone`) ends line 2 with no comma before it, and names are dropped from the end until it fits; never a third line. "none of yours yet" when none. Each name is a focus target (*ruled by the UI designer in review, 2026-10-09*) |
+| Plates, up to six slots | from 576, 80: 56×56 on a 64 pitch | `trait-<SNN>-<trait>-<look>-56x56`; the found looks in the frame's order, then the dashed "more?" slot (a 1 px `clay` edge, 2 on and 2 off) when looks are unseen |
 | Plates, seven slots or more | from 576, rows at y 72 and 120: 40×40 on a 48 pitch, eight a row | `…-40x40`; the "more?" slot 56×40 so its word stays whole. Ten looks and "more?" (S09 Colour) take one row of eight and one of three |
-| Open look | a 2 px `clay` rule 2 px under its plate | The look "Carried by" names: the plate under the ring, or the last one it was on; on arrival the pinned look, else the first found |
+| Plate keyline | x − 1, y − 1, w + 2, h + 2 | 1 px `bark` round every look plate, at 56 and at 40, drawn by the build whether or not the plate's master is signed. None on "more?", the face or the panels. `bark`, because `clay` means open state. 1 px of paper stays between it and the open rule and between it and the ring (*ruled by the UI designer in review, 2026-10-09*) |
+| Open look | a 2 px `clay` rule 2 px under its plate (y + h + 2) | The look "Carried by" names: the plate under the ring, or the last one it was on; on arrival the pinned look, else the first found. The ring on that plate may cover its rule |
 | Columns, one to seven chapters | 128 wide on a 136 pitch, from x0 | x0 = ⌊(512 − (136n − 8) / 2) / 8⌋ × 8: 40 for seven |
 | Columns, eight chapters | 112 wide on a 120 pitch, from x 32 | 952 px; never a scroll. More than eight comes back to the UI designer |
 | Column rules | x0 + pitch × i − 4, y 184 to 504 | 1 px `sand` |
-| Panel | x, 184, w, 80 | See the tint rule below; the chapter's word 16 px `ink`, centred, at y 240 |
+| Panel | x, 184, w, 80 | See the tint rule below; the chapter's word 16 px `ink`, centred, at y 240: pods.json `strings.legsTail.heading` for legs-tail, otherwise the frame's `chapters[].name` as written; the build never recases (*ruled by the UI designer in review, 2026-10-09*) |
 | Trait cell | x, 272 + 40r, w, 32 | The word 16 px `ink`; `wish-mark-12` at (x + w − 12, y + 4) when a look of it is pinned; the pips at y + 24. At most six rows (S09 Coat), the sixth ending at y 504 |
 | Pips | 6×6 on an 8 pitch, 4 px more between groups of five | Pip k at x + 8k + 4⌊k / 5⌋. Found: a `bark` rect. Unseen: `guide-pip-unseen-6x6`. Ten looks take 84 px, inside the 112 column |
 | Open cell | x − 2, y − 4, w + 4, 40 | 1 px `clay` edge: the trait in the detail band; the ring sits on top of it when it has the focus |
@@ -1296,6 +1300,7 @@ The guide shows the species whole: every chapter at once, every trait with how m
 | ✓ on a carrier name | `✓ Visit Fig`, the context "Fig carries this look": a jump to Habitat on that mibi, where ← reads Home |
 | The notice | "a pod carries your wish" when `wishCarriers(st, id).pods` is not empty; otherwise none |
 | ← | "← Library", from either spread |
+| The ring | `rust` on the paper (frame.json `focus.ring.onPaper`), the same geometry, on the Library, the face spread and the guide spread (*ruled by the UI designer in review, 2026-10-09*) |
 
 ### Bound to the rules
 
@@ -1305,7 +1310,7 @@ Every field comes from `prototypes/station/src/library.mjs` and the frame; nothi
 - The seal: `fieldGuide().complete`. The guide exists only when `book(st, id).guide` is not null (the species found).
 - The wish marks and actions: `wishOf`, `wishPinBlock`, `wishPin`, `wishUnpin`; the notice: `wishCarriers`.
 - "Carried by": the mibis of the species, not released, whose read chapters hold the trait's chapter and whose `chapterLooks` give the look: the test `wishCarriers` already applies to pinned looks, generalised to any look and exported beside it as a pure function. Pods are not listed.
-- The face spread's clarity line: `faceOf`; its ✓ Visit: `visitTarget`, unchanged.
+- The face spread's clarity line: `faceOf`; its ✓ Visit only when `faceOf(st, id)` is a living mibi, with no ✓ cap for the type face (*ruled by the UI designer in review, 2026-10-09*: replaces `visitTarget`, unchanged).
 
 ### Masters for the guide
 
@@ -1319,6 +1324,7 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | `guide-panel-sealed-128x80`, `guide-panel-sealed-112x80` | 128×80, 112×80 | A shut panel: slats and the 8×4 notch; no tint |
 | `guide-face-<SNN>-128x112` | 128×112 | One per species, S01 to S16: the type, head and shoulders, painted from the type specimen |
 | `guide-seal-32` | 32×32 | The guide complete |
+| `book-corner-turn-24x24` | 24×24 | The face spread's page-turn corner at (968, 512), only when the species has a guide. Stand-in until signed: "▶" 16 px `bark` centred |
 | `guide-pip-unseen-6x6` | 6×6 | A dotted hollow pip in `clay` |
 | `wish-mark-12` | 12×12 | A pinned look, on its cell and its plate |
 | `wish-mark-24` | 24×24 | The pinned wish panel's corner, on the face spread |
@@ -1326,7 +1332,7 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | `trait-<SNN>-<trait>-<look>-56x56`, `…-40x40` | 56×56, 40×40 | The look plates, rendered at their size |
 | `rail-emblem-<chapter>-sealed-24x24` | 24×24 | Existing; on the sealed panel |
 
-The tint has no master: the build draws it from the palette.
+The tint has no master: the build draws it from the palette. Nor do the plates' `bark` keylines, the dashed "more?" edge, or, while their masters are unsigned, the fold-out's edge box and the ▶ stand-in.
 
 ### Changes from the current build
 
