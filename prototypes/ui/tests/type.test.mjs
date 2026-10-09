@@ -86,9 +86,15 @@ test("every character the Station can set is in the atlases (or is one of the ic
   const face = T.face(16), icons = new Set(["⚡", "◆", "❀", "★", "✕"]), missing = new Map();
   const files = []; const walk = (d) => { for (const f of readdirSync(d)) { const p = path.join(d, f); if (statSync(p).isDirectory()) walk(p); else if (/\.(mjs|json)$/.test(f)) files.push(p); } };
   walk(path.join(root, "../station/src")); walk(path.join(root, "../workbench/frames")); files.push(path.join(root, "../workbench/framework/describe.mjs")); for (const f of readdirSync(path.join(root, "specs/station"))) files.push(path.join(root, "specs/station", f));
-  for (const f of files) for (const line of readFileSync(f, "utf8").split("\n")) {
-    if (/^\s*\/\//.test(line)) continue;
-    for (const m of line.replace(/\/\/.*$/, "").matchAll(/"([^"\\]*(?:\\.[^"\\]*)*)"|`([^`]*)`/g)) for (const ch of m[1] ?? m[2]) if (ch.codePointAt(0) > 126 && !icons.has(ch) && !face.glyphs.has(ch.codePointAt(0))) missing.set(ch, path.basename(f));
+  const PROSE = new Set(["note", "derived", "decided", "fit", "confirmed", "podNote", "onlyWhen", "spec"]);   // a spec file's notes are for readers, never set on the screen
+  const check = (text, f) => { for (const ch of text) if (ch.codePointAt(0) > 126 && !icons.has(ch) && !face.glyphs.has(ch.codePointAt(0))) missing.set(ch, path.basename(f)); };
+  const walkJson = (o, f) => { for (const [k, v] of Object.entries(o)) { if (PROSE.has(k)) continue; if (typeof v === "string") check(v, f); else if (v && typeof v === "object") walkJson(v, f); } };
+  for (const f of files) {
+    if (/specs[\\/]station[\\/].*\.json$/.test(f)) { walkJson(JSON.parse(readFileSync(f, "utf8")), f); continue; }
+    for (const line of readFileSync(f, "utf8").split("\n")) {
+      if (/^\s*\/\//.test(line)) continue;
+      for (const m of line.replace(/\/\/.*$/, "").matchAll(/"([^"\\]*(?:\\.[^"\\]*)*)"|`([^`]*)`/g)) check(m[1] ?? m[2], f);
+    }
   }
   assert.deepEqual([...missing], [], "characters in strings that the atlases lack");
 });

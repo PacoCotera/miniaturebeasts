@@ -5,20 +5,30 @@
 // (today: drawn placeholders and the rig's renders; a master is a PNG file named in `file`, nothing else).
 const ENTRIES = new Map();
 const BUILT = new Map();
-const hits = { built: 0, cached: 0 };
 
 // Register an asset (idempotent for an id already registered with the same size).
 //   slice: [left, top, right, bottom] marks a nine-slice picture (its edges and middle are tiled, never scaled)
-export function registerAsset({ id, w, h, policy = "stationChrome", status = "placeholder", until = null, file = null, hash = null, slice = null, build }) {
+export function registerAsset({ id, w, h, policy = "stationChrome", status = "placeholder", until = null, file = null, hash = null, slice = null, tile = null, build }) {
   if (file && !/\.png$/i.test(file)) throw new Error(`asset ${id}: ${file} is not a PNG (PNG only)`);
   const have = ENTRIES.get(id);
   if (have) {
     if (have.w !== w || have.h !== h) throw new Error(`asset ${id} registered twice at different sizes: ${have.w}×${have.h} and ${w}×${h}`);
-    if (have.status === "empty" && build) { Object.assign(have, { policy, status, until, file, hash, slice, build }); return have; }   // a stand-in fills an empty slot
+    if (have.status === "empty" && build) { Object.assign(have, { policy, status, until, file, hash, slice, tile, build }); return have; }   // a stand-in fills an empty slot
     return have;
   }
-  const e = { id, w, h, policy, status, until, file, hash, slice, build };
+  const e = { id, w, h, policy, status, until, file, hash, slice, tile, build };
   ENTRIES.set(id, e); return e;
+}
+// Place a signed master over its stand-in by id (technical-architecture.md §5.5): the master must be the stand-in's size, 1:1, or it is refused
+// loudly; the entry becomes status `master`, names its file and hash, and builds from the decoded picture. A master placed before its stand-in
+// is registered takes the id first, and a stand-in of another size then throws at registration. `picture` is anything with w, h and canvas().
+export function placeMaster({ id, w, h, file, hash, policy = "painted", signed = null, slice = null, tile = null, status = "master" }, picture) {
+  if (!/\.png$/i.test(file)) throw new Error(`master ${id}: ${file} is not a PNG (PNG only)`);
+  if (picture.w !== w || picture.h !== h) throw new Error(`master ${id}: the file is ${picture.w}×${picture.h}, the index says ${w}×${h}`);
+  const have = ENTRIES.get(id);
+  if (have && (have.w !== w || have.h !== h)) throw new Error(`master ${id} is ${w}×${h}; its stand-in is ${have.w}×${have.h}: a master takes its stand-in's size, never scaled`);
+  ENTRIES.set(id, { id, w, h, policy: have?.policy === "type" ? "type" : policy, status, until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => picture });
+  BUILT.delete(id); return ENTRIES.get(id);
 }
 // A slot: a place the design needs a picture where none is signed yet (a mark, a key cap, a face). It is in the manifest as status `empty` at its
 // exact size, with what it waits for; nothing is drawn there, and the layout does not move when it fills. A placed master of the same id and
@@ -35,17 +45,15 @@ export const hasAsset = (id) => ENTRIES.has(id);
 export const assetEntry = (id) => ENTRIES.get(id) ?? null;
 // The built picture (anything with w, h and canvas()) or null when the id is unknown. `env` reaches the builder (palette lookup).
 export function asset(id, env = null) {
-  let b = BUILT.get(id); if (b) { hits.cached++; return b; }
+  let b = BUILT.get(id); if (b) return b;
   const e = ENTRIES.get(id); if (!e) return null;
   if (!e.build) return null; b = e.build(e, env); if (!b) return null;
   if (b.w !== e.w || b.h !== e.h) throw new Error(`asset ${id} built at ${b.w}×${b.h}, registered at ${e.w}×${e.h}`);
-  hits.built++; BUILT.set(id, b); return b;
+  BUILT.set(id, b); return b;
 }
 export const dropAsset = (id) => { BUILT.delete(id); ENTRIES.delete(id); };
 // The manifest as data: every entry without its builder.
 export const manifest = () => [...ENTRIES.values()].map(({ build, ...rest }) => rest);
-export const placeholders = () => manifest().filter((e) => e.status === "placeholder");
-export const builtCount = () => BUILT.size;
-export const cacheStats = () => ({ ...hits, size: BUILT.size });
-// Forget built pictures matching a prefix (a rig render when its genome changes); the entries stay registered.
-export const evict = (prefix) => { for (const k of [...BUILT.keys()]) if (k.startsWith(prefix)) BUILT.delete(k); };
+// Every entry that is not final: a built stand-in (placeholder), or a placed master the studio's record does not call signed (held, new, placeholder). Only `master` and `empty` are not in this register.
+export const NOT_FINAL = ["placeholder", "held", "new"];
+export const placeholders = () => manifest().filter((e) => NOT_FINAL.includes(e.status));

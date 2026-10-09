@@ -11,11 +11,11 @@ export function frame(ctx, props) {
 }
 export { topBar, bottomLine, messagePlate };
 export { panel, hairline } from "./panel.mjs";
-export { focusRing } from "./focusRing.mjs";
+export { focusRing, circleRing } from "./focusRing.mjs";
 export { stampLabel, stampCell } from "./stampLabel.mjs";
 export { chapterRail } from "./chapterRail.mjs";
 export { slantRail } from "./slantRail.mjs";
 export { chapterPage } from "./chapterPage.mjs";
 export { textRun, runWidth, wrap, clip, iconAsset } from "./text.mjs";
-export { list } from "./list.mjs";
+export { list, kinHatch, placeRect, kinRect } from "./list.mjs";
 export { specimen, ribbon } from "./specimen.mjs";

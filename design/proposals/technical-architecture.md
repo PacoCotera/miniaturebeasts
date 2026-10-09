@@ -152,7 +152,7 @@ The Station has two halves. **The face** (screens, focus, animation, drawing) mu
 A screen spec mirrors `station-layouts.md`, region by region (Pods shortened):
 
 ```json
-{ "screen": "pods", "device": "station", "spec": "design/style-guide/station-layouts.md#pods-list-and-read",
+{ "screen": "pods", "device": "station", "spec": "design/style-guide/station-layouts.md#pods-collection-pod-overview-chapter-page",
   "regions": {
     "list":  { "rect": [0, 40, 160, 522], "component": "list", "item": "well", "pitch": 72 },
     "rail":  { "rect": [176, 48, 832, 56], "component": "chapterRail" },
@@ -176,9 +176,9 @@ The other contracts:
 
 The numbers get **one home**: the spec file. The UI designer keeps writing the reasoning in `station-layouts.md`. Its tables and the wireframes in `station-layouts/` are generated from the spec files, so the document and the build can't disagree. A builder never retypes a rectangle. CI compares every drawn region's box in the scene with its spec.
 
-<img src="../style-guide/station-layouts/02-pods-read.svg" width="1024" alt="Pods Read wireframe">
+<img src="../style-guide/station-layouts/02b-pods-overview.png" width="1024" alt="Pods overview wireframe">
 
-*Pods, Read. Wireframe, layout only, measured; shown at 1×. Today drawn by hand from the same numbers as the tables; under this proposal, generated from the spec file the screen draws from.*
+*Pods, pod overview. Wireframe, layout only, measured; shown at 1×. Today drawn by hand from the same numbers as the tables; under this proposal, generated from the spec file the screen draws from.*
 
 ### 5.4 How a builder adds a screen
 

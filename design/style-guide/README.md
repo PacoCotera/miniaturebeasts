@@ -55,7 +55,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 | --- | --- | --- |
 | Name, display | 3× | 4× (28 px caps) |
 | Title | 3× (21 px caps) | 3× |
-| Body, HUD, bottom line | 2× (14 px caps), cream on ink | Inter 16 px body and readouts, 20 px titles, 28 px names |
+| Body, HUD, bottom line | 2× (14 px caps), cream on ink | Inter 16 px body and readouts, 20 px titles, 28 px names. One exception: on Pods the pod's name label under the dish is 20 px medium (owner, 2026-10-08: "yes, name can be smaller, at 20px") |
 | Context | mist (N5) | mist on chrome |
 | Confirm's verb · Call · ticking counter | orange O3 · teal T3 · yellow Y2 flash | the same hues |
 | Warning | red R1 on paper | red, with a shape |

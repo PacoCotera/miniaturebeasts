@@ -4,9 +4,9 @@
 
 ## The frame
 
-- **Top bar, 40 px.** The screen's name at 3× and the world turn at the left; Energy, Data and Essence centred, ticking when they change; the Companion's state at the right with its lamp ("Companion away · since 16:05 · with Dot").
+- **Top bar, 40 px.** Where you are, what you hold, who is out, when: the room's mark and the screen's title at the left; Energy, Data and Essence centred, ticking when they change; the Companion's glyph and lamp with the face of the mibi out with it, then the world turn as a sun mark, at the right. Marks, not words, but for the title. The zones, rules and states are in [Station layouts, The frame](station-layouts.md#the-frame) (*corrected by the UI designer, 2026-10-08: was the screen's name and the turn at the left and the Companion's state in words at the right, "Companion away · since 16:05 · with Dot"*).
 - **Stage, 522 px.** The instrument and its one living window.
-- **Bottom line, 38 px.** `✓ action · price · ← where` | the subject | what needs you. Read-only focus draws no ✓ cap.
+- **Bottom line, 38 px.** The one action (the ✓ cap and the verb in orange, the price, the ← cap and where it leads) | the context (mist, the only part that shrinks) | the notice (amber, with its lamp). Read-only focus draws no ✓ cap. Every word is a slot the copywriter fills to its zone's rule (*corrected by the UI designer, 2026-10-08: was `✓ action · price · ← where` | the subject | what needs you*).
 - **Focus.** A warm cream ring that walks between drawn things; the focused thing lifts slightly. Never a list cursor.
 
 ## Instrument and living window

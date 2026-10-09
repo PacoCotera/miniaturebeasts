@@ -16,7 +16,8 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTypeNode } from "../../ui/type-node.mjs";
 import { SIZES } from "../../ui/type.mjs";
-import { railTabs, pageGrid, repeat } from "../../ui/layout.mjs";
+import { slantTabs, pageGrid, pageSize } from "../../ui/layout.mjs";
+import { placeRect, kinRect } from "../../ui/components/list.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -53,11 +54,11 @@ if (rec.textApiCalls !== 0) fail(`the page called the canvas text API ${rec.text
 
 // ---- 3. regions against the spec files, on the screens on the layer
 console.log("== regions against the spec files");
-const R = pods.regions, F = frame.regions, W = R.well;
+const R = pods.regions, F = frame.regions;
 const textBox = (n) => { const w = type.measure(n.text, n.px), x = n.align === "center" ? n.rect[0] - Math.round(w / 2) : n.align === "right" ? n.rect[0] - w : n.rect[0]; return [x, n.rect[1], w, type.face(n.px).cap]; };
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 // the scene ids of the text drawn in each region (the page and Compare's two pages); whether a region may hold digits is the spec's `noDigits` flag
-const NO_DIGIT_IDS = { page: "page", pageA: "compareA", pageB: "compareB" };
+const NO_DIGIT = { page: () => R.chapter.page.noDigits, pageA: () => R.compareA.noDigits, pageB: () => R.compareB.noDigits, "specimen.name": (c) => R[c.view]?.name.noDigits, "specimen.origin": () => R.overview.origin.noDigits };
 let regionsChecked = 0;
 for (const s of rec.shots.filter((x) => x.check.layered)) {
   const c = s.check, got = [];
@@ -67,31 +68,43 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     if (id === "top") must(eq(rect, F.top.rect), `top bar ${rect} is not ${F.top.rect}`);
     else if (id === "line") must(eq(rect, F.line.rect), `bottom line ${rect} is not ${F.line.rect}`);
     else if (id === "plate") { const w = rect[2], cx = rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (rect[1] + rect[3] === F.plate.bottom || rect[1] === F.plate.topOverFocal), `message plate ${rect}`); }
-    else if (id === "list") must(eq(rect, R.list.rect), `list ${rect} is not ${R.list.rect}`);
-    else if (id === "list.well") { const i = +r.id.match(/\.w(\d+)\./)[1]; must(eq(rect, repeat(W.rect, i, W.pitch)), `well slot ${i} ${rect}`); }
-    else if (id === "hatch") must(eq(rect, R.hatch.rect), `hatch ${rect} is not ${R.hatch.rect}`);
-    else if (id === "pod") { const sizes = Object.values(pods.classes.pod), w = rect[2], h = rect[3], lift = R.pod.feet - (rect[1] + h); must(sizes.some(([a, b]) => a === w && b === h) && rect[0] + w / 2 === R.pod.axis && (lift === 0 || lift === 4), `pod ${rect} is not a size class bottom-centred on (${R.pod.axis}, ${R.pod.feet})`); }
-    else if (id === "name") must(within(textBox(r), R.name.rect) && Math.abs(textBox(r)[0] + textBox(r)[2] / 2 - R.name.centre) <= 1, `name ${textBox(r)} is not inside ${R.name.rect} centred on ${R.name.centre}`);
-    else if (id === "origin") must(within(textBox(r), R.origin.rect), `origin ${textBox(r)} is not inside ${R.origin.rect}`);
-    else if (id === "ribbon") must(eq(rect, R.ribbon.rect), `ribbon ${rect} is not ${R.ribbon.rect}`);
-    else if (id === "stamp") must(eq(rect, R.stamp.rect) && rect[2] === 120 && rect[3] === 120, `stamp label ${rect} is not 120×120 at ${R.stamp.rect}`);
-    else if (id === "stamp.image") { const L = R.stamp.rect; must(rect[2] === rect[3] && rect[2] <= 104 && rect[2] >= 34 && Math.abs(rect[0] + rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(rect[1] + rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${rect} is not at most 104 px square and centred on its label ${L}`); }
-    else if (id === "page") must(eq(rect, R.page.rect), `page ${rect} is not ${R.page.rect}`);
+    else if (id === "place") { const i = +r.id.match(/^list\.p(\d+)$/)[1]; must(eq(rect, placeRect(R.collection, i)), `place ${i} ${rect} is not ${placeRect(R.collection, i)}`); }
+    else if (id === "place.pod") { const i = +r.id.match(/^list\.p(\d+)\./)[1], p = placeRect(R.collection, i), K = R.collection; must(eq(rect, [p[0] + K.pod.centre[0] - K.pod.size[0] / 2, p[1] + K.pod.centre[1] - K.pod.size[1] / 2, ...K.pod.size]), `place pod ${rect} is not the collection class centred on the ring`); }
+    else if (id === "place.name") { const i = +r.id.match(/^list\.p(\d+)\./)[1], p = placeRect(R.collection, i), N = R.collection.name, box = [p[0] + N.at[0], p[1] + N.at[1], N.plate.max, N.h]; must(within(textBox(r), box), `place name ${textBox(r)} is not inside ${box}`); }
+    else if (id === "place.find") { const i = +r.id.match(/^list\.p(\d+)\./)[1], p = placeRect(R.collection, i), A = R.collection.place.at; must(eq(rect, [p[0] + A[0], p[1] + A[1], A[2], A[3]]), `place picture ${rect}`); }
+    else if (id === "waiting") must(eq(rect, R.collection.waiting.rect), `waiting mark ${rect} is not ${R.collection.waiting.rect}`);
+    else if (id === "kin") { const i = +r.id.match(/^kin\.k(\d+)\./)[1]; must(eq(rect, kinRect(R.overview.kin, i)), `kin ${i} ${rect} is not ${kinRect(R.overview.kin, i)}`); }
+    else if (id === "find") must(eq(rect, R.overview.originPicture.rect), `the find's picture ${rect} is not ${R.overview.originPicture.rect}`);
+    else if (id === "figure") must(eq(rect, R.overview.figure.rect), `figure ${rect} is not ${R.overview.figure.rect}`);
+    else if (id === "hatch") must(eq(rect, R.overview.hatch.rect), `hatch ${rect} is not ${R.overview.hatch.rect}`);
+    else if (id === "pod") { const Rv = R[c.view], sizes = Object.values(pods.classes.pod), w = rect[2], h = rect[3], lift = Rv.pod.feet - (rect[1] + h); must(sizes.some(([a, b]) => a === w && b === h) && rect[0] + w / 2 === Rv.pod.axis && (lift === 0 || lift === 4), `pod ${rect} is not a size class bottom-centred on (${Rv.pod.axis}, ${Rv.pod.feet})`); }
+    else if (id === "name") { const Rv = R[c.view]; must(within(textBox(r), Rv.name.rect) && Math.abs(textBox(r)[0] + textBox(r)[2] / 2 - Rv.name.centre) <= 1, `name ${textBox(r)} is not inside ${Rv.name.rect} centred on ${Rv.name.centre}`); }
+    else if (id === "origin") must(within(textBox(r), R.overview.origin.rect), `origin ${textBox(r)} is not inside ${R.overview.origin.rect}`);
+    else if (id === "ribbon") must(eq(rect, R.overview.ribbon.rect), `ribbon ${rect} is not ${R.overview.ribbon.rect}`);
+    else if (id === "stamp") must(eq(rect, R.overview.stamp.rect) && rect[2] === 120 && rect[3] === 120, `stamp label ${rect} is not 120×120 at ${R.overview.stamp.rect}`);
+    else if (id === "stamp.image") { const L = R.overview.stamp.rect; must(rect[2] === rect[3] && rect[2] <= 104 && rect[2] >= 34 && Math.abs(rect[0] + rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(rect[1] + rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${rect} is not at most 104 px square and centred on its label ${L}`); }
+    else if (id === "page") { const Pg = R.chapter.page, n = c.traits ?? 0; must(eq(rect, [Pg.rect[0], Pg.rect[1], ...pageSize(Pg, n)]), `page ${rect} is not at ${Pg.rect.slice(0, 2)} the ${pageSize(Pg, n)} the spec gives for ${n} traits`); }
+    else if (id === "page.seal") { const Pg = R.chapter.page, want = [Pg.rect[0] + Pg.sealedFind[0], Pg.rect[1] + Pg.sealedFind[1], Pg.sealedFind[2], Pg.sealedFind[3]]; must(eq(rect, want), `the find that opens a shut chapter ${rect} is not ${want}`); }
     else if (id === "compareA" || id === "compareB") must(eq(rect, R[id].rect), `${id} ${rect} is not ${R[id].rect}`);
-    else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, t = railTabs(R.rail, n, c.cmp ? -1 : -1).tabs[i]; must(t && rect[0] === t[0] && rect[2] === t[2] && rect[3] === t[3] && (rect[1] === t[1] || rect[1] === t[1] - frame.focus.lift.chrome), `rail tab ${i} ${rect} is not ${t}`); got.push(i); }
+    else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, S = frame.regions.rail.slant, want = (o) => { const t = slantTabs(frame.regions.rail, n, o).tabs[i]?.rect; return t && [t[0] + S, t[1] + 1, t[2] - S, t[3] - 2]; }, hit = Array.from({ length: n + 1 }, (_, o) => want(o - 1)).find((w) => w && rect[0] === w[0] && rect[2] === w[2] && rect[3] === w[3] && (rect[1] === w[1] || rect[1] === w[1] - frame.focus.lift.chrome)); must(!!hit, `rail tab ${i} ${rect} is not the slanted tab's body in ${n} tabs`); got.push(i); }
     else if (id === "page.cell" || id === "page.diff" || id === "page.bracket") {
-      const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\./), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", spec = R[key].grid ? R[key] : R.compareA, region = { ...spec, rect: R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]], [pw, ph] = g.picture, D = pods.page.diff;
+      const m = r.id.match(/^(page|pageA|pageB)\.c(\d+)\./), key = m[1] === "page" ? "page" : m[1] === "pageA" ? "compareA" : "compareB", base = key === "page" ? R.chapter.page : R[key].grid ? R[key] : R.compareA, region = { ...base, rect: key === "page" ? base.rect : R[key].rect }, traits = c.regions.filter((q) => q.region === "page.cell" && q.id.startsWith(m[1] + ".c")).length, g = pageGrid(region, traits), cell = g.cells[+m[2]], [pw, ph] = g.picture, D = pods.page.diff;
       const want = id === "page.cell" ? [cell[0], cell[1], pw, ph] : id === "page.diff" ? [cell[0], cell[1], pw, D.edge] : [cell[0] + Math.round(pw / 2) - D.bracket[0] / 2, cell[1] + D.inset, D.bracket[0], D.bracket[1]];
       must(cell && eq(rect, want), `${r.id} ${rect} is not the grid's ${want}`);
     }
     else must(false, `region "${id}" (${r.id}) is not in the spec`);
   }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
-  if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp) must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
+  if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp && c.view !== "collection") must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
   for (const t of c.texts) if (t.id === "line.subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`);
-  for (const t of c.texts) { const key = t.id.startsWith("specimen.name") ? "name" : t.id.startsWith("specimen.origin") ? "origin" : NO_DIGIT_IDS[t.id.split(".")[0]]; if (key && R[key].noDigits && /\d/.test(t.text)) must(false, `a digit in "${t.text}" in region ${key}, which the spec marks noDigits`); }
+  for (const t of c.texts) { const key = t.id.startsWith("specimen.name") ? "specimen.name" : t.id.startsWith("specimen.origin") ? "specimen.origin" : /^list\.p\d+\.name$/.test(t.id) ? "place.name" : t.id.split(".")[0]; const flag = key === "place.name" ? R.collection.name.noDigits : NO_DIGIT[key]?.(c); if (flag && /\d/.test(t.text)) must(false, `a digit in "${t.text}" in region ${key}, which the spec marks noDigits`); }
   console.log(`${s.name.padEnd(24)} ${c.regions.length} drawn regions, rail ${got.length}/${c.pod ? c.pod.chapters : "-"} tabs, placeholders registered ${c.placeholders}`);
 }
+// every Pods state is recorded, with the regions it must draw
+{ const need = { collection: ["place", "place.pod", "place.name"], overview: ["pod", "name", "hatch"], chapter: ["pod", "name", "page", "rail.tab"], compare: ["compareA", "compareB", "rail.tab"] };
+  for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.layered && x.check.mode === mode); if (!shots.length) { fail(`no screenshot point records Pods in its ${mode} state`); continue; }
+    for (const id of ids) if (!shots.some((x) => x.check.regions.some((r) => r.region === id))) fail(`Pods in its ${mode} state: no drawn region "${id}" in any of its ${shots.length} screenshot points`); }
+  regionsChecked++; }
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
 const onLayer = rec.shots.filter((x) => x.check.layered).map((x) => x.name), adapter = rec.shots.filter((x) => !x.check.layered).map((x) => x.name);
 console.log(`on the screen layer (${onLayer.length}): ${onLayer.join(", ")}`);

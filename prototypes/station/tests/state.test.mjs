@@ -154,6 +154,8 @@ test("compare: the traits read on both pods that differ; return a pod for +1 Ess
   S.read(st, a, "face", settings); S.read(st, b, "face", settings);
   const d = S.compareDiff(st, a, b);
   assert.ok(Array.isArray(d)); for (const id of d) assert.ok(["crown", "eye-rings"].includes(id));
+  const fr = S.frameFor(a), lineOf = (p, id) => traitState(fr, fr.chapters.flatMap((c) => c.traits).find((x) => x.id === id), p.genome).line;
+  for (const id of d) assert.notEqual(lineOf(a, id), lineOf(b, id), `${id}: marked only where the two read differently`);
   const s0 = st.s, r = S.returnPod(st, t, settings, 1);
   assert.equal(r.ok, true); assert.equal(st.s, s0 + 1); assert.equal(st.tray.length, 2);
   assert.deepEqual(st.returned.at(-1), { id: t.id, sp: 1, g: "rock", k: "12" });
@@ -312,4 +314,44 @@ test("the cross: refusals before cost; a child of two founders with real parents
   assert.equal(S.kinshipOf(st, sib.mibis[0], sib.parents[0]), 0.25);
   assert.equal(S.kinshipOf(st, sib.mibis[0], a), 0, "unrelated lines");
   assert.match(S.kinshipWord(0.25), /close kin/); assert.match(S.kinshipWord(0), /wild founders/);
+});
+
+test("a mibi keeps the frame version it was born with: a v2-born genome stamps S1v2 after the registry moved to v3", () => {
+  const fr = frameOf("S01") ?? frameOf(frameIds()[0]), born3 = podGenome(fr, 4242), born2 = { ...born3, frameVersion: 2 };
+  assert.equal(born3.frameVersion, 3, "a genome sampled now is born at the current frame version");
+  assert.equal(stampFrameOf(fr, born2).version, 2); assert.equal(stampFrameOf(fr, born3).version, 3);
+  assert.equal(stampGenome(fr, born2, []).version, 2); assert.equal(stampGenome(fr, born3, []).version, 3);
+  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born2, read: [] }) ?? "", /^S1v2-/);
+  assert.match(S.stampCodeOf({ species: fr.species.id, genome: born3, read: [] }) ?? "", /^S1v3-/);
+  assert.equal(stampFrameOf(fr).version, 3, "with no genome the current version stands");
+});
+
+test("p.first: written once per trait at read time, only when the look is new; an older save loads with none and shows no mark", () => {
+  // an older save: a pod with no `first` field at all
+  const old = fixture(); const stOld = S.freshSt("w1", 1, 1000); Object.assign(stOld, old.st ?? {}); delete stOld.schema;
+  const pod = { id: "old-1", sp: 0, g: "meadow", how: "calm", gs: 4242, k: null, idd: 1, read: [] }; stOld.tray = [pod]; S.normalize(stOld);
+  assert.deepEqual(stOld.tray[0].first, [], "the default is an empty list: no mark on an older pod");
+  // a fresh world: the first read of a species shows new looks, so the traits are written once; the same read again changes nothing
+  const st = S.freshSt("w9", 1, 1000); S.normalize(st); st.d = 50; st.e = 5;
+  S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const a = st.tray[0]; S.skipIdentify(st, a);
+  const r = S.read(st, a, "coat", settings); assert.ok(r.ok && r.newLooks.length > 0, "the first pod of a species brings new looks");
+  const firstTraits = [...a.first]; assert.ok(firstTraits.length > 0 && new Set(firstTraits).size === firstTraits.length, "one entry per trait");
+  assert.ok(firstTraits.every((t) => frameOf("S01").chapters.find((c) => c.id === "coat").traits.some((x) => x.id === t)));
+  S.read(st, a, "coat", settings); assert.deepEqual(a.first, firstTraits, "a read chapter read again writes nothing");
+  // a second pod showing the same looks adds none for a trait whose looks the guide already holds
+  S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const b = st.tray[1]; S.skipIdentify(st, b); S.read(st, b, "coat", settings);
+  assert.deepEqual(b.first, [], "the same genome brings nothing new: no mark");
+});
+
+test("compare: two pods whose loci differ but whose lines read the same carry no mark", () => {
+  const fr = frameOf("S09"), ts = fr.chapters.flatMap((c) => c.traits), gs = Array.from({ length: 150 }, (_, i) => podGenome(fr, i + 1));
+  let found = 0;
+  for (const t of ts) for (let i = 0; i < gs.length && !found; i++) for (let j = i + 1; j < gs.length && !found; j++) {
+    const a = gs[i], b = gs[j];
+    if (t.loci.some((id) => JSON.stringify([...a.loci[id]].sort()) !== JSON.stringify([...b.loci[id]].sort())) && traitState(fr, t, a).line === traitState(fr, t, b).line) {
+      found = 1; const mk = (g, id) => ({ id, sp: 1, species: "S09", idd: 1, genome: g, read: fr.chapters.map((c) => c.id) });
+      assert.equal(S.compareDiff({}, mk(a, "x"), mk(b, "y")).includes(t.id), false, `${t.id}: same line, no mark`);
+    }
+  }
+  assert.ok(found, "such a pair exists among 150 genomes");
 });

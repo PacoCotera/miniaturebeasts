@@ -36,7 +36,8 @@ void face_selftest_scene(void) {
   text(5, "Identify \xc2\xb7 1 \xc2\xb7 \xe2\x86\x90 Home \xe2\x9c\x93 \xc3\x91" "and\xc3\xba 0123456789", 16, 100, 0xf1ebdf, 16, 12);
   text(6, "T12 Crate", 16, 140, 0xc6c4d8, 28, 20);
   ring(1, 20, 20, 2, 6, 0, 0xffe6ad);    /* 2 * 8 corners + 4 tiled pixels */
-  face_node(7, FN_NINE, 100, 220, 200, 80, 0, 1, 8);
+  face_node(7, FN_NINE, 100, 220, 200, 80, (8u << 24) | (8u << 16) | (8u << 8) | 8u, 1, 0);   /* insets 8, the whole 4 px strip tiled */
+  ring(3, 40, 40, 2, 0, 0, 0xffe6ad); face_node(10, FN_NINE, 300, 220, 120, 90, (12u << 24) | (6u << 16) | (4u << 8) | 5u, 3, 8);   /* asymmetric insets and an 8 px tile */
   ring(2, 176, 24, 2, 0, 1, 0xffe6ad);
   face_node(8, FN_SPRITE, 400, 300, 176, 24, 0, 2, 0);
   uint8_t *p = face_asset(0, 8, 8);

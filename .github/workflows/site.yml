@@ -68,6 +68,9 @@ jobs:
           set -euo pipefail
           node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
+      - name: Placed masters match their index
+        # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.
+        run: node prototypes/ui/tools/place-masters.mjs --check
       - name: Station face fonts re-baked and compared
         # The face's Inter fonts are generated C (prototypes/face/src/fonts) from the committed TrueType files by lv_font_conv,
         # pinned here to the version the sources were baked with; the bake is reproducible, so a diff means the sources or the

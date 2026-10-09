@@ -82,7 +82,7 @@ export function normalize(st, now = Date.now()) {
   for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases"]) if (!Array.isArray(st[k])) st[k] = [];
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
-  for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
+  for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
   for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (!m.from) m.from = { n: 0, g: "", how: "" }; }
   syncKnown(st);
   return st;
@@ -220,8 +220,9 @@ export function read(st, p, chapterId, settings = DEFAULT_SETTINGS) {
   const fr = frameFor(p), ch = chapterOf(fr, chapterId), cost = readCost(st, p, chapterId, settings), first = !st.readEver;
   st.d -= cost; st.readEver = true; p.read.push(chapterId);
   const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(chapterId)) once.push(chapterId);
+  p.first = p.first || [];
   const looks = chapterLooks(fr, ch, p.genome), newLooks = [];
-  for (const [t, ls] of looks) { const had = guideLooks(st, fr.species.id, t); for (const l of ls) if (!had.includes(l)) newLooks.push(l); guideAdd(st, fr.species.id, t, ls); }
+  for (const [t, ls] of looks) { const had = guideLooks(st, fr.species.id, t); let brought = false; for (const l of ls) if (!had.includes(l)) { newLooks.push(l); brought = true; } if (brought && !p.first.includes(t)) p.first.push(t); guideAdd(st, fr.species.id, t, ls); }   // p.first: the traits whose look this pod showed first, written at read time (the page's new mark stays)
   logEv(st, "Read " + fr.species.name + " " + ch.name + " on " + p.id + (first ? " · free (the first read ever)" : cost ? " · −" + cost + " Data" : " · free") + (newLooks.length ? " · new: " + newLooks.join(", ") : ""));
   return { ok: true, cost, first, chapter: ch, newLooks };
 }
@@ -233,6 +234,8 @@ export function glint(st, p, chapterId) {
   if (!(st.readOnce[fr.species.id] || []).includes(chapterId)) return false;
   return chapterLooks(fr, ch, p.genome).some(([t, ls]) => { const seen = guideLooks(st, fr.species.id, t); return ls.some((l) => !seen.includes(l)); });
 }
+// The pod that most needs the player: a new one (unidentified), then one that glints, then the first.
+export const neediestPod = (st) => st.tray.find((p) => !p.idd) || st.tray.find((p) => podGlints(st, p)) || st.tray[0] || null;
 export const podGlints = (st, p) => { const fr = frameFor(p); return !!fr && fr.chapters.some((c) => glint(st, p, c.id)); };
 // Progress: traits read ÷ traits in chapters that are not sealed (shown only as the ring, no digits).
 export function progress(p, settings = DEFAULT_SETTINGS) {
@@ -245,7 +248,7 @@ export const fullyRead = (p, settings) => p.idd && progress(p, settings) >= 1;
 export function compareDiff(st, a, b) {
   if (!a || !b || a === b || !a.idd || !b.idd || speciesOf(a) !== speciesOf(b)) return null;
   const fr = frameFor(a), diff = [];
-  for (const ch of fr.chapters) if (a.read.includes(ch.id) && b.read.includes(ch.id)) for (const t of ch.traits) if (t.loci.some((id) => JSON.stringify([...a.genome.loci[id]].sort()) !== JSON.stringify([...b.genome.loci[id]].sort()))) diff.push(t.id);
+  for (const ch of fr.chapters) if (a.read.includes(ch.id) && b.read.includes(ch.id)) for (const t of ch.traits) if (traitState(fr, t, a.genome).line !== traitState(fr, t, b.genome).line) diff.push(t.id);   // what each pod reads as: the mark never sits on two identical lines
   return diff;
 }
 export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;

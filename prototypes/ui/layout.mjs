@@ -41,7 +41,7 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
   if (n > rail.max) return { tabs: [], run: 0, x0: rail.pods.x, overflow: true };
   const compact = n > rail.fullUpTo, widths = Array.from({ length: n }, (_, i) => (!compact || i === open ? rail.full : rail.compact));
   const run = widths.reduce((a, b) => a + b, 0) + rail.slant;
-  const x0 = where === "centred" ? Math.floor((rail.centred.on - run / 2) / rail.centred.snap) * rail.centred.snap : rail.pods.x;
+  const x0 = where === "centred" || rail.pods.x === "centred" ? Math.floor((rail.centred.on - run / 2) / rail.centred.snap) * rail.centred.snap : rail.pods.x;
   let x = x0; const tabs = widths.map((w, i) => { const r = { rect: [x, rail.y, w, rail.h], full: w === rail.full }; x += w; return r; });
   return { tabs, run, x0, overflow: false };
 }
@@ -49,6 +49,12 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
 // taken at the row's centre and floored, so every row of a tab is the same width.
 export const slantAt = (rail, r) => Math.floor((rail.slant * (r + 0.5)) / rail.h);
 
+// The page's size by its trait count: the spec's table (page.sizeByCount, [w, h] by count 1 to 8; a shut chapter is the one-trait size), else the region's own rectangle.
+export function pageSize(page, n) {
+  const t = page.sizeByCount; if (!t) return page.rect.slice(2);
+  return t[String(Math.max(1, Math.min(n, Object.keys(t).length)))].slice();
+}
+export const pageHeight = (page, n) => pageSize(page, n)[1];
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture
 // size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {

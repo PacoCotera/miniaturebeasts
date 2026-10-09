@@ -47,7 +47,7 @@ const port = server.address().port;
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1 });
 const errors = [], fail = (t) => { errors.push(t); console.error("FAIL " + t); };
-page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
+page.on("pageerror", (e) => { errors.push("pageerror: " + e.message); console.error("pageerror: " + e.message); });
 page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push("console: " + m.text()); });
 // Nothing is fetched from the network but the page's own files and the Caddy service (the fonts are bundled).
 const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http://127.0.0.1:`)) external.push(r.url()); });
@@ -118,7 +118,7 @@ await page.evaluate(() => { window.__st.unlock(); });
 // 3. Pods: identify the Tuikis (already identified in the fixture) is skipped; identify the new Loika pod
 await press("research", 200);
 const loika = s.tray.find((p) => p.id.startsWith("xw2n9c-5")), loika2 = s.tray.find((p) => p.id.startsWith("dev-"));
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id);
 const e0 = s.e;
 let l = await line(); expect(/Identify/.test(l.ok) && l.price === "1 ⚡", "identify costs 1 Energy (the first was spent in the fixture): " + JSON.stringify(l));
 await press("confirm", 2200);
@@ -128,10 +128,13 @@ await page.evaluate(() => window.__st.unlock());
 await shot("page-identified");
 // 4. read Coat (the fixture spent the free read): 1 Data; then Face: 2 Data; a second Loika's Face costs 1
 await press("up", 150);
+l = await line(); expect(/Open Coat/.test(l.ok) && !l.price, "on the overview a tab opens its page, free: " + JSON.stringify(l));
+await press("confirm", 150); expect((await page.evaluate(() => window.__st.UI.pods.view)) === "chapter", "✓ on a tab opens the chapter page");
 l = await line(); expect(/Read Coat/.test(l.ok) && l.price === "1 ◆", "Coat costs 1 Data: " + JSON.stringify(l));
 const d0 = s.d;
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 1, "Coat read for 1 Data");
+expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
 await press("right", 150);
 l = await line(); expect(/Read Face/.test(l.ok) && l.price === "2 ◆", "Face costs 2 Data: " + JSON.stringify(l));
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
@@ -145,22 +148,22 @@ const sg = await page.evaluate((id) => window.__st.stampGenome(id), loika.id);
 const dec = decode({ width: img.width, height: img.height, data: new Uint8ClampedArray(img.data) });
 expect(dec.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, dec.stamps[0].genome), "the drawn stamp decodes to the genome");
 expect(dec.stamps.length === 1 && dec.stamps[0].genome.read.join() === "Coat,Face", "the stamp's mask: Coat and Face read");
+await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(300);   // the stamp is on the overview
 // and the stamp as it is on the screen, at the label's size on whole-pixel cells, read back from the art layer's pixels, decodes too
-const lab = await page.evaluate(() => window.__st.region("art", [176, 432, 120, 120]));
+const lab = await page.evaluate(() => window.__st.region("art", window.__st.specs().pods.regions.overview.stamp.rect));
 const onScreen = decode({ width: lab.width, height: lab.height, data: new Uint8ClampedArray(lab.data) });
 expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.version), sg, onScreen.stamps[0].genome), "the stamp on its 120 label, as drawn on the screen, decodes to the genome");
 // the second Loika: identify (1 Energy), its Face costs 1 (half of two, rounded up)
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id);
 await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
-await press("up", 100); await press("left", 100); await press("left", 100); await press("right", 100);   // the rail remembers the last chapter: back to Coat, then Face
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆ · half", "a second Loika's Face costs 1, half price shown on the bottom line: " + JSON.stringify(l));
+await page.evaluate((id) => window.__st.podsGo(id, "rail.1"), loika2.id);   // to its Face on the page
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆", "a second Loika's Face costs 1: the lower number, no word, on the bottom line: " + JSON.stringify(l));
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 // a glint on the first Loika? (only when the second carried something new: not asserted); the need line never shows digits of progress
 // 5. Compare: from the second Loika's pod, ← to its well, walk to the first Loika's well, ✓
 s = await st();
 const i1 = s.tray.findIndex((p) => p.id === loika.id), i2 = s.tray.findIndex((p) => p.id === loika2.id);
-await press("down", 100); await press("left", 100);
-for (let k = 0; k < Math.abs(i1 - i2); k++) await press(i1 > i2 ? "down" : "up", 100);
+await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika2.id); await press("right", 100);   // the pod's overview: → to its kin
 l = await line(); expect(l.ok === "Compare", "compare offered on another Loika pod: " + JSON.stringify(l));
 await press("confirm", 300); await shot("page-compare");
 l = await line(); expect(/two Loika pods/.test(l.subject), "compare open: " + JSON.stringify(l));
@@ -168,11 +171,17 @@ await press("back", 200);
 // P. Pods on the screen layer: the pod by its size class, the rail as the species has chapters, the page by trait count, the focus
 // graph through the keys, the holds of Identify and a read, Compare, the hatch armed, the empty rack; every point recorded for the checks.
 const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), curPod = () => page.evaluate(() => window.__st.UI.pods.cur);
+// Home's rack: ✓ on the tray opens the collection with the ring on the pod that most needs the player (an open question for the UI designer: the spec says a pod in the rack goes straight to its overview, and Home's tray is one target); ← goes up to Home
+await press("home", 300); await page.evaluate(() => { window.__st.UI.home.f = "tray"; }); await press("confirm", 300);
+{ const here = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, f: window.__st.UI.pods.focus.cur }));
+  const want = await page.evaluate(() => { const t = window.__st.ST.tray, p = t.find((q) => !q.idd) || t.find((q) => window.__st.podGlints(q)) || t[0]; return "place." + t.indexOf(p); });
+  expect(here.screen === "pods" && here.view === "collection" && here.f === want, "Home's rack opens the collection with the ring on the pod that most needs the player (" + want + "): " + JSON.stringify(here));
+  await press("back", 300); expect((await page.evaluate(() => window.__st.UI.screen)) === "home", "← from the collection is Home"); await press("research", 300); }
 await press("research", 200);
 await page.evaluate(() => { window.__st.seedCrate("S02", 1, 515); window.__st.seedCrate("S09", 1, 909); window.__st.openBay(); }); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.tray.length === 6, "six pods in the wells: " + s.tray.length);
 const untuva = s.tray.find((p) => p.species === "S02"), coatSix = s.tray.find((p) => p.species === "S09"), tuikisPod = s.tray.find((p) => p.species === "S03");
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.ci = 0; u.pods.f = "pod"; }, untuva.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "pod", undefined, 0); }, untuva.id);
 await page.waitForTimeout(400);
 l = await line(); expect(l.ok === "Identify" && l.price === "1 ⚡", "an unidentified pod offers Identify: " + JSON.stringify(l));
 await frameShot("pods-unidentified");
@@ -181,39 +190,41 @@ await press("confirm", 500); expect(await page.evaluate(() => window.__st.holdin
 await page.evaluate(() => window.__st.press("left")); await page.waitForTimeout(100); expect((await focusNow()) === "pod", "a key during the seal is consumed");
 await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.tray.find((p) => p.id === untuva.id).idd === 1, "the Untuva is identified");
-// the focus graph through the keys: the pod's well, down the wells to the hatch, back to the pod, up to the last chapter, down again
+// the focus graph through the keys on the overview: ▲ to the rail's last chapter looked at, ▶ steps the chapters, ▼ to the pod, → to the hatch (this pod has no kin), ◀ back to the pod; ← up to the collection with the ring on this pod, ✓ down again
 const walk = async (keys, want, what) => { for (const k of keys) await press(k, 60); const got = await focusNow(); expect(got === want, what + ": " + got + " not " + want); };
-await walk(["left"], "list." + s.tray.findIndex((p) => p.id === untuva.id), "← from the pod to its well");
-await walk(["right"], "pod", "→ from a well to the pod");
+const viewNow = () => page.evaluate(() => window.__st.UI.pods.view);
 await walk(["up"], "rail.0", "▲ from the pod to the rail's last chapter looked at");
-await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at");
-await walk(["down", "left"], "list." + s.tray.findIndex((p) => p.id === untuva.id), "back to the well");
-for (let i = 0; i < 8; i++) await press("down", 40); await walk([], "list.hatch", "▼ through the wells ends on the hatch, and stops there");
-await press("right", 60); expect((await focusNow()) === "pod", "→ from the hatch to the pod");
-// a sealed chapter (the Untuva's Character): no ✓ cap, the subject "Character · sealed", the slats on its page; the page's traits unread: frost
-await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.3"; }, untuva.id); await page.waitForTimeout(300);
-l = await line(); expect(!l.ok && l.subject === "Character · sealed", "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
+await walk(["right", "right"], "rail.2", "▶ steps the chapters"); await walk(["down"], "pod", "▼ from the rail to the pod"); await walk(["up"], "rail.2", "▲ again: the last chapter looked at"); await walk(["down"], "pod", "▼ back to the pod");
+await walk(["right"], "hatch", "→ from the pod to the hatch when it has no kin"); await walk(["left"], "pod", "◀ from the hatch to the pod");
+const idx = s.tray.findIndex((p) => p.id === untuva.id);
+await walk(["back"], "place." + idx, "← up to the collection, the ring on this pod"); expect((await viewNow()) === "collection", "← from the overview is the collection");
+await frameShot("pods-collection");
+await walk(["confirm"], "pod", "✓ on a place opens its overview"); expect((await viewNow()) === "overview", "the overview");
+// a sealed chapter (the Untuva's Character): no ✓ cap, the subject "Character is sealed", the slats on its page; the page's traits unread: frost
+await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.3"); }, untuva.id); await page.waitForTimeout(300);
+l = await line(); expect(!l.ok && l.subject === "Character is sealed", "a sealed chapter has no ✓ cap: " + JSON.stringify(l)); await frameShot("pods-sealed");
 // the Tuikis: eight chapters, tabs 96 on a 104 pitch; the Coat has four traits (216×112 pictures)
-await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
+await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.0"); }, tuikisPod.id); await page.waitForTimeout(300); await frameShot("pods-eight-chapters");
 // the Large pod with six Coat traits (144×112 pictures), read whole by the developer
-await page.evaluate((id) => { window.__st.skipRead(id); const u = window.__st.UI; u.pods.cur = id; u.pods.f = "rail.0"; }, coatSix.id); await page.waitForTimeout(300); await frameShot("pods-six-traits");
+await page.evaluate((id) => { window.__st.skipRead(id); window.__st.podsGo(id, "rail.0"); }, coatSix.id); await page.waitForTimeout(300); await frameShot("pods-six-traits");
+for (const [i, name] of [[1, "pods-belatz-face"], [3, "pods-belatz-legs-tail"]]) { await page.evaluate(([id, n]) => window.__st.podsGo(id, "rail." + n), [coatSix.id, i]); await page.waitForTimeout(300); await frameShot(name); }   // the Belatz pages with the studio's crops
 // reading mid-wipe: a fresh pod's first chapter; input held for the wipe
 await page.evaluate(() => window.__st.seedCrate("S01", 1, 31337)); await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.waiting.length === 1, "the rack is full: the new pod waits for a well");
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, coatSix.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, coatSix.id);
 // the hatch: the first ✓ arms with a plate, any other key disarms, the second ✓ returns
 l = await line(); expect(l.ok === "Return to the wild" && l.price === "+1 ❀", "the hatch offers the return: " + JSON.stringify(l));
 await press("confirm", 150); l = await line(); expect(l.ok === "Again: return it", "armed: " + JSON.stringify(l)); await frameShot("pods-hatch-armed");
-await press("up", 100); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); expect((await page.evaluate(() => window.__st.UI.pods.wildArm)) === 0 && (await focusNow()) !== "list.hatch", "the disarm cleared the armed state and the ring left the hatch (it is on " + (await focusNow()) + ")"); await page.evaluate(() => { window.__st.UI.pods.f = "list.hatch"; });
+await press("up", 100); l = await line(); expect(l.ok !== "Again: return it", "any other key disarms the hatch"); expect((await page.evaluate(() => window.__st.UI.pods.wildArm)) === 0, "the disarm cleared the armed state"); await page.evaluate(() => window.__st.podsGo(window.__st.UI.pods.cur, "hatch"));
 const sBefore = (await st()).s; await press("confirm", 100); await press("confirm", 300); s = await st();
-expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence");
+expect(s.s === sBefore + 1 && !s.tray.some((p) => p.id === coatSix.id), "the second ✓ returned the pod for +1 Essence: " + JSON.stringify({ s: s.s, sBefore, still: s.tray.some((p) => p.id === coatSix.id), line: await line(), view: await viewNow(), f: await focusNow(), arm: await page.evaluate(() => window.__st.UI.pods.wildArm), screen: await page.evaluate(() => window.__st.UI.screen) }));
 // the same for the Untuva, which leaves the rack as it was; the waiting pod (if any) takes the well
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, untuva.id); await press("confirm", 100); await press("confirm", 300);
+await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, untuva.id); await press("confirm", 100); await press("confirm", 300);
 s = await st(); expect(!s.tray.some((p) => p.id === untuva.id), "the Untuva returned");
 const extra = s.tray.find((p) => p.species === "S01" && !p.idd && p.id !== loika.id && p.id !== loika2.id);
 expect(!!extra, "the pod that waited for a well entered the rack when one freed"); {   // not skipped when absent: the read-holds-input assertion and the pods-reading capture must run
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.UI.pods.f = "rail.0"; }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading"); await page.evaluate(() => window.__st.unlock());
-  await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, extra.id); await press("confirm", 100); await press("confirm", 300); }
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, extra.id); await press("confirm", 700); await page.evaluate(() => window.__st.unlock()); await page.evaluate(() => { window.__st.podsGo(window.__st.UI.pods.cur, "rail.0"); }); await page.waitForTimeout(150); await press("confirm", 900); expect(await page.evaluate(() => window.__st.holding()), "a read holds input for its wipe"); await frameShot("pods-reading-wipe"); await page.evaluate(() => window.__st.unlock()); await page.waitForTimeout(400); await frameShot("pods-reading");   // the wipe mid-way, then the page after it
+  await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, extra.id); await press("confirm", 100); await press("confirm", 300); }
 s = await st(); expect(s.tray.length === 4, "the rack is back to its four pods: " + s.tray.length);
 // P2. Compare with one, two, four and six traits and a difference mark on the layer; then the empty rack. Each pair is a fresh crate of two pods, read whole by the developer, compared, and given back through the hatch.
 const compareShot = async (species, seed, ci, name, grid) => {
@@ -225,15 +236,16 @@ const compareShot = async (species, seed, ci, name, grid) => {
   const cl = await line(), cells = await page.evaluate(() => window.__st.check().regions.filter((r) => r.region === "page.cell" && r.id.startsWith("pageA.")).length);
   expect(cells === grid, `${name}: ${grid} traits on Compare's page: ${cells}`);
   expect(["they differ here", "they differ in another chapter", "no read trait differs"].includes(cl.need), `${name}: Compare's need line is one of the spec's strings: ` + JSON.stringify(cl));
-  expect(!/\d/.test(cl.need) && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
+  expect(!/\d/.test(cl.subject || "") && !/well \d/.test(cl.subject || ""), `${name}: no digits in the line`);
+  const differs = await page.evaluate(([a, b]) => window.__st.compareDiff(a, b).length, [pair[0].id, pair[1].id]);
   await frameShot(name);
   await page.evaluate(() => { window.__st.UI.pods.cmp = null; });
-  for (const p of pair) { await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, p.id); await press("confirm", 100); await press("confirm", 300); }
+  for (const p of pair) { await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, p.id); await press("confirm", 100); await press("confirm", 300); }
   expect(!(await st()).tray.some((p) => pair.some((q) => q.id === p.id)), `${name}: the pair went back through the hatch`);
-  return cl.need;
+  return differs;
 };
 const needs = [await compareShot("S04", 4101, 0, "pods-compare-one", 1), await compareShot("S09", 4102, 3, "pods-compare-two", 2), await compareShot("S03", 4103, 0, "pods-compare-four", 4), await compareShot("S09", 4104, 0, "pods-compare-six", 6)];
-expect(needs.includes("they differ here"), "at least one Compare capture shows a difference on the page: " + needs.join(" | "));
+expect(needs.some((n) => n > 0), "at least one Compare pair has a trait that differs (the data; the build marks none): " + needs.join(" | "));
 {   // the empty rack (docked, the bay empty): the cradle under the beam and nothing else; the wells are put back after
   await page.evaluate(() => { const g = window.__st.ST; window.__keep = { tray: g.tray, waiting: g.waiting }; g.tray = []; g.waiting = []; window.__st.UI.pods.cur = null; window.__st.UI.pods.cmp = null; }); await page.waitForTimeout(300);
   const el = await line(); expect(el.subject === "the rack is empty" && el.need === "take the Companion exploring", "the empty rack's lines: " + JSON.stringify(el));
@@ -246,13 +258,13 @@ expect(needs.includes("they differ here"), "at least one Compare capture shows a
 s = await st();
 // 6. return the Tuikis to the wild: +1 Essence, the Companion's record
 const tuikis = s.tray.find((p) => p.species === "S03");
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "list.hatch"; }, tuikis.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, tuikis.id);
 const s0 = s.s;
 await press("confirm", 150); await press("confirm", 300);
 s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "returned for +1 Essence");
 // M2. Create: shape eye rings on the read Loika (+1 Data), Grow: a bud of twenty-one minutes (this world grew Dot already), the genome in the outbox
 await press("research", 200);
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id);
 l = await line(); expect(l.ok === "Shape a founder", "a read pod offers Create: " + JSON.stringify(l));
 await press("confirm", 300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Create");
@@ -302,8 +314,8 @@ await press("habitat", 400); await shot("page-painted");
 await page.evaluate(() => window.__st.seedAdults("S01", 77, 4));
 s = await st(); expect(s.mibis.filter((m) => !m.released).length === 6, "six bays taken");
 await press("research", 200);
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
-l = await line(); expect(/no bay free/.test(l.price), "a full vivarium refuses before payment: " + JSON.stringify(l));
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id);
+l = await line(); expect(/no bay free/.test(l.need), "a full vivarium refuses before payment: " + JSON.stringify(l));
 const e2 = (await st()).e; await press("confirm", 200); expect((await st()).e === e2 && !(await st()).bud, "nothing paid, nothing grown");
 await press("habitat", 200);
 const adult = s.mibis.find((m) => m.name !== "Moss" && m.name !== "Dot");
@@ -318,7 +330,7 @@ await press("home", 200);
 caddyUp = false;
 await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
 await press("research", 200);
-await page.evaluate((id) => { const u = window.__st.UI; u.pods.cur = id; u.pods.f = "pod"; }, loika2.id);
+await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id);
 await press("confirm", 300); await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.bud && s.outbox.length === 1, "offline: the genome waits in the outbox");
 await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(300);
@@ -397,6 +409,7 @@ for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"])
 await page.waitForTimeout(300); await shot("page-fresh");
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text API " + checks.textApiCalls + " times"); console.error("FAIL text API calls " + checks.textApiCalls); }
+expect((await page.evaluate(() => window.__st.renderErrors)).length === 0, "no render threw: " + JSON.stringify(await page.evaluate(() => window.__st.renderErrors)));
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);

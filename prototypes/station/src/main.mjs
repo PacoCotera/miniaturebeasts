@@ -19,8 +19,9 @@ import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
+import { loadMasters } from "./masters.mjs";
 import { bootFace } from "./face-lvgl.mjs";
-import { manifest as manifestOf, registerAsset, asset as assetOf, assetEntry } from "../../ui/assets.mjs";
+import { manifest as manifestOf, registerAsset, asset as assetOf, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
 const $ = (id) => document.getElementById(id);
@@ -41,12 +42,13 @@ async function loadFrames() {
 // is one legacy node whose callback draws as before through the renderer's primitives (the adapter of T1).
 const scene = new Scene(SW, SH);
 let SC = null, CTX = null;
+const renderErrors = [];   // every throw of a render, kept for the checks to read
 const legacy = (id, draw) => ({ id, kind: "legacy", rect: [0, 0, SW, SH], always: true, draw });
 // ?face=lvgl: the LVGL face (prototypes/face) draws the screen; the JavaScript layer keeps the rules, the views and the timeline (technical-architecture.md §8).
 const FACE_FLAG = new URLSearchParams(location.search).get("face") === "lvgl";
 let FACE = null;
 // The LVGL face draws the frame, the stage's ground and the focus ring for now; each screen's stage comes over with its screen. A screen on the layer says what the face draws (faceNodes); the others get the frame alone.
-const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), slice: (id) => assetEntry(id)?.slice ?? null, picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; const g = a.canvas().getContext("2d"); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; } };
+const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), slice: (id) => assetEntry(id)?.slice ?? null, tile: (id) => assetEntry(id)?.tile ?? 0, picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; const g = a.canvas().getContext("2d"); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; } };
 function faceNodes() {
   const screen = screenOf(UI.screen), F = SPECS.frame, stage = { id: "stage", kind: "rect", rect: F.regions.stage.rect.slice(), colour: F.colours.stageGround };
   return [stage, ...(screen.faceNodes ? screen.faceNodes(CTX) : frameFor(CTX, UI.screen, lineFor()))];
@@ -67,7 +69,7 @@ function frame(t) {
   if (G.ready) {
     if (FX.hatch && FX.hatch.go && t - FX.hatch.at >= HATCH_MS) { FX.hatch.go = false; UI.hab.id = FX.hatch.id; UI.hab.f = "door"; UI.hab.from = null; goScreen("habitat"); }   // meet the mibi
     if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && t > FX.lockUntil) UI.idle = true;   // the vivarium plays alone
-    try { render(); } catch (e) { if (errN++ < 3) console.error(e); }
+    try { render(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
   }
   requestAnimationFrame(frame);
@@ -149,6 +151,7 @@ const bootLayer = async () => {
   const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
   for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
+  await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
 };
@@ -173,14 +176,16 @@ function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null;
   return { screen: UI.screen, idle: UI.idle, size: [SC.w, SC.h], page: [vis.width, vis.height], art: SC.offPalette("art"), type: SC.offPalette("type"), typeLog: SC.typeLog.map((r) => ({ text: r.text, face: r.face, family: r.family, px: r.px, weight: r.weight, atlas: r.atlas })),
     typeMissing: [...SC.type.missing], renderer: { sizes: SC.sizeErrors.length, missing: SC.missing.length }, regions: scene.regions(), texts: scene.texts(), layered: !!screenOf(UI.screen).nodes && !UI.idle,
-    pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, cmp: !!UI.pods.cmp, placeholders: manifestOf().filter((e) => e.status === "placeholder").length };
+    pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null, traits: UI.screen === "pods" && UI.pods.view === "chapter" && fr && pod.idd ? (() => { const c = fr.chapters[Math.min(UI.pods.ci | 0, fr.chapters.length - 1)]; return c && c.sealed && !G.settings.sealedOpen ? 1 : (c?.traits.length ?? 0); })() : null, placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }
 
 // Test hooks (not part of play).
-window.__st = { ready, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
+window.__st = { ready, renderErrors, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), faceNodes: () => (FACE ? JSON.parse(JSON.stringify(faceNodes())) : null), targets: () => screenOf(UI.screen).targets?.() ?? null, act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel } : null; }, get msg() { return FX.msg; }, capture: () => (FACE ? vis : SC.capture()).toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
+  podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
+  podsGo: (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") goScreen("pods"); },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };

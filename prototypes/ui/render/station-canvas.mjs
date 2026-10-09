@@ -56,7 +56,8 @@ export class StationCanvas {
     if (!a || !e?.slice) { this.missing.push(id); this.flag(rect); return; }
     const [l, t, r, b] = e.slice, [x, y, w, h] = rect, cv = a.canvas(), layer = this.layerOf(id);
     if (w < l + r || h < t + b) { this.sizeErrors.push({ asset: id, slot: [w, h], asset_size: [a.w, a.h] }); this.flag(rect); return; }
-    const cols = [[0, l, x, l], [l, a.w - l - r, x + l, w - l - r], [a.w - r, r, x + w - r, r]], rows = [[0, t, y, t], [t, a.h - t - b, y + t, h - t - b], [a.h - b, b, y + h - b, b]];
+    const tile = e.tile, mw = tile ? Math.min(tile, a.w - l - r) : a.w - l - r, mh = tile ? Math.min(tile, a.h - t - b) : a.h - t - b;   // the middles tile by their `tile` (the whole strip when none)
+    const cols = [[0, l, x, l], [l, mw, x + l, w - l - r], [a.w - r, r, x + w - r, r]], rows = [[0, t, y, t], [t, mh, y + t, h - t - b], [a.h - b, b, y + h - b, b]];
     for (const [sy, sh, dy, dh] of rows) for (const [sx, sw, dx, dw] of cols) {
       if (!sw || !sh || !dw || !dh) continue;
       for (let ty = 0; ty < dh; ty += sh) for (let tx = 0; tx < dw; tx += sw) this.part(layer, cv, sx, sy, Math.min(sw, dw - tx), Math.min(sh, dh - ty), dx + tx, dy + ty, clip);
