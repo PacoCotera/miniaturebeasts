@@ -9,6 +9,27 @@
 - **Bottom line, 38 px.** The one action (the ✓ cap and the verb in orange, the price, the ← cap and where it leads) | the context (mist, the only part that shrinks) | the notice (amber, with its lamp). Read-only focus draws no ✓ cap. Every word is a slot the copywriter fills to its zone's rule (*corrected by the UI designer, 2026-10-08: was `✓ action · price · ← where` | the subject | what needs you*).
 - **Focus.** A warm cream ring that walks between drawn things; the focused thing lifts slightly. Never a list cursor.
 
+## Keys and navigation
+
+**Decided** (owner, 2026-10-09, on the navigation map). One navigation model for the whole Station: Home is the hub, every screen has one parent, and each key means one thing everywhere. The map is [nav-map.png](station-layouts/nav-map.png); the parents, the back words, the room keys and Home's pad order are in `prototypes/ui/specs/station/frame.json` (`navigation`).
+
+<img src="station-layouts/nav-map.png" width="1024" alt="The Station's navigation map">
+
+*The navigation map, 1× wireframe. Status: Decided.*
+
+| Key | Means, on every screen |
+| --- | --- |
+| **Pad** (◀ ▲ ▶ ▼) | Moves the ring inside this screen; on Create and Cross it changes the focused choice. It never leaves the screen and never spends |
+| **✓** | Does the bottom line's action, exactly as written. No ✓ cap: nothing happens. A dimmed cap: a message plate says why, and nothing is spent. An act that cannot be undone arms first, and the line reads "Again: …" |
+| **←** | Goes up one level, to the screen's parent in the tree, and the bottom line names it: a title (Home, Pods, Library, Habitat) or, below a pod's overview, the pod's name ("Loika"). On Home there is no ← cap, and ← does nothing (no plate) |
+| **Home, Research, Library, Habitat** | Open the top of their room from anywhere, even from inside that room: Home with the ring on the room, Pods on its collection with the ring on the pod that most needs the player, the Library on its spread, Habitat on the mibi last seen. They never spend |
+
+- **The tree.** Home is the top. Under Home: Pods (the collection), the Incubator, the Probe bench, Idle, the Library and Habitat. Under the collection: a pod's overview. Under the overview: its chapter page, Compare and Create. Under the Library: the Book. Under Habitat: Cross. The Incubator and the Probe bench are Home's modules (reached from Home's instrument column, ← Home) and keep the Research room's mark.
+- **Stack navigation.** A ✓ that lands in another part of the tree is a jump: Grow it (Create) and Cross them (Cross) to the Incubator, Open (the Incubator) to Habitat, Visit (the Book) to Habitat. After a jump, ← goes to the parent of the screen you are on, never back along the way you came: the Incubator after Grow reads "← Home", Habitat after a Book's Visit reads "← Home".
+- **Home's pad.** A fixed order, not the nearest thing: ◀ ▶ cross between the vivarium's residents and the instrument column; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest. The Home key on Home puts the ring back on the room, where ✓ does what needs you.
+- **Idle.** The first press only wakes the screen; nothing else happens.
+- **Leaving Create or Cross** by a room key drops the unpaid choices; coming back starts fresh (owner, 2026-10-09: "forget").
+
 ## Instrument and living window
 
 | | Instrument | Living window |
@@ -55,7 +76,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** Warm daylight inside the vivarium from the top left; even cool light on the chrome.
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
 - **Type.** 3× screen name; 2× readouts, three words or fewer each.
-- **Chrome.** `✓ Look at Bean · ← the room` | `Bean · Untuva · adult` | `an Untuva pod waits · needs 2 ❀`.
+- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` | `an Untuva pod waits · needs 2 ❀`.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -160,7 +181,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** Warm key light on the founder from the top left; the rest cool.
 - **Palette.** The founder's own colours; frost pale blue-white; the price icons in their hues.
 - **Type.** 2× trait lines ("stripes · hides spots", "only spots"; at most six words, a blend "A to B", an asleep line "bare · asleep: bands or patches"); the total in the bottom line.
-- **Chrome.** `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Pods`.
+- **Chrome.** `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Loika` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Pods`; Create's parent is the pod's overview).
 - **Motion.** A roll swaps the trait's picture, the founder's part and the stamp's cells in 200 ms; on Grow the stamp prints on its label, the code appears, the pod glides into the chamber in 600 ms.
 
 **Decided 2026-10-08 (concept round).** Reference `art/concept-station/create/`, candidate CR-C2. The painted master places the accepted Pip asset (the same drawing on every Station screen; Pip is not regenerated). Roll pictures are flank close-ups of the changed part, not whole founders. The still-sealed doings chapters are named in one status-bar line ("Face and Stamina stay a surprise"), not as greyed tabs.
@@ -252,7 +273,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Light.** Warm on the portrait; cool, even light on the archive.
 - **Palette.** The tome's cream, the species' hues on plates.
 - **Type.** 3× species name on a paper label, with one 2× habit line under it; no paragraphs.
-- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Spread`.
+- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Library` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Spread`). `✓ Visit Fig` is a jump: on Habitat, ← reads Home.
 - **Motion.** Tabs turn in 200 ms; the portrait lives.
 
 **Decided 2026-10-08 (owner; `art/concept-station/library-book/`, BK-D-r2-a1).** The Book is accepted. The portrait is mounted as a framed plate, not painted straight onto the page; the family tree panel stays under the stamp at about its present size (about 180×160 px); the name sits on a paper label with the habit line under it. For the master, the label's copy and the names go through the copywriter's rules and this guide's type first: consistent case (the owner flagged a mix of lower and upper case) and the typeface.
@@ -398,7 +419,7 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 - **Light.** Daylight to dusk to night in the vivarium; at night a soft cool moonlight and the residents' own glows.
 - **Palette.** The vivarium's; the strip in chrome.
 - **Type.** 2× status.
-- **Chrome.** None. Any press wakes and does what it says; waking never rewards.
+- **Chrome.** None. The first press only wakes; nothing else happens, and waking never rewards (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "any press wakes and does what it says").
 - **Motion.** Continuous and slow; nothing blinks for attention.
 
 **Pass when**
