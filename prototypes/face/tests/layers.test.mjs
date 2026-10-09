@@ -8,6 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
+import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), frameSpec = JSON.parse(readFileSync(path.join(specs, "frame.json"), "utf8")), podsSpec = JSON.parse(readFileSync(path.join(specs, "pods.json"), "utf8"));
@@ -17,12 +18,17 @@ const inPalette = new Set(palette.map(([, hex]) => hex.toLowerCase())), rgbs = p
 const hex = (r, g, b) => "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
 
 // The table (the art director's, 2026-10-09). Art: rail emblems, the material icons, the species marks, the small marks (can-grow, waiting, line-seed, asleep), finds at 16, the glint star, the cell outline,
-// the kin ring and the hatch (stand-ins until their masters come), the beam, the rings the face composes. Everything else is a painted master: pods, trait crops, figures and the halo, plates,
+// the beam, the rings the face composes. Everything else is a painted master: pods, trait crops, figures and the halo, plates,
 // rail tab grounds, clan marks, place pictures at 64 and 112, room stages, collection rings, panels and wells, the stamp and its case.
-const ART = [/^emblem:/, /^icon:/, /^grow:/, /^waiting:/, /^kinring:/, /^hatch:/, /^beam:/, /^glint|^star/, /^mark-(species|asleep|line-seed|can-grow|waiting)/, /^place:[a-z]+:16$/, /^cell-outline/];
+const ART = [/^emblem:/, /^icon:/, /^grow:/, /^waiting:/, /^beam:/, /^glint|^star/, /^mark-(species|asleep|line-seed|can-grow|waiting)/, /^place:[a-z]+:16$/, /^cell-outline/];
 const isArt = (id) => ART.some((re) => re.test(id));
+// The signed masters that are placed (ui/assets/masters/pods) are used as they are: the kin ring, the hatch and the "differs" lamp have left the palette, so they are painted. (Art while a placeholder, painted once
+// the master is placed: the art director's rule; until the asset message carries the policy the words tag the placed masters.)
+const MASTERS = { "kinring:56": "ring-kin-56x56.png", "hatch:80x56": "ring-hatch-80x56.png", "frame-lamp-12-amber:12x12": "frame-lamp-12-amber.png" };
+const realMaster = (id) => { const f = MASTERS[id]; if (!f) return null; const png = decodePNG(readFileSync(path.resolve(here, "../../ui/assets/masters/pods", f))); return { w: png.width, h: png.height, data: png.data }; };
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 const standIn = (id, w, h, slice, tile, salt = 0) => {
+  const real = realMaster(id); if (real) return real;
   const d = new Uint8ClampedArray(w * h * 4), k = hash(id) + salt;
   let rgb; if (isArt(id)) rgb = rgbs[k % rgbs.length]; else { rgb = [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)]; while (inPalette.has(hex(...rgb))) rgb[0]++; }
   for (let i = 0; i < w * h; i++) { d[i * 4] = rgb[0]; d[i * 4 + 1] = rgb[1]; d[i * 4 + 2] = rgb[2]; d[i * 4 + 3] = 255; }
@@ -59,3 +65,17 @@ for (const [id, c] of artSeen) {
     assert.notEqual(same, changed, `${id} is drawn in "${c.name}" but does not show with chrome and art`);
   });
 }
+
+test("the placed masters of the kin ring, the hatch and the differs lamp are off the palette, so they are painted: pass 2 reads 0 and pass 3 shows them", { skip }, async () => {
+  for (const id of Object.keys(MASTERS)) { const m = realMaster(id); let off = 0; for (let i = 0; i < m.data.length; i += 4) if (m.data[i + 3] > 0 && !inPalette.has(hex(m.data[i], m.data[i + 1], m.data[i + 2]))) off++; assert.ok(off > 0, `${id} is on the palette; it could be art`); }
+  const ov = cases.find((c) => c.state === "overview" && /identified pod with kin/.test(c.name)), cmp = cases.find((c) => c.state === "compare");
+  // Compare with a difference lamp: the first cell of page A differs, the lamp is the placed master
+  const lamp = JSON.parse(JSON.stringify(cmp)); lamp.props.regions.pageA.differs = "frame-lamp-12-amber:12x12"; lamp.props.regions.pageA.cells[0].diff = true; lamp.pictures.push({ id: "frame-lamp-12-amber:12x12", w: 12, h: 12 });
+  for (const c of [ov, lamp]) {
+    const f = await setup(c); assert.equal(f.props(c.props), 0, f.errors().join("; ")); frames(f);
+    f.pass(2); assert.equal(f.offPalette(), 0, c.name + ": pass 2"); f.pass(3); assert.ok(f.offPalette() > 0);
+  }
+  const f = await setup(lamp); f.props(lamp.props); frames(f); f.pass(3); const withLamp = f.offPalette();
+  const g = await setup({ ...lamp, pictures: lamp.pictures.filter((p) => p.id !== "frame-lamp-12-amber:12x12") }); g.props(lamp.props); frames(g); g.pass(3);
+  assert.ok(withLamp > g.offPalette(), "the lamp is drawn in Compare");
+});

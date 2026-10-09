@@ -108,11 +108,11 @@ void word_kin(const char *base) {
   int n = v_plen("regions.kin"), pw = sa(base, "kin.pod", 0, 0), ph = sa(base, "kin.pod", 1, 0);
   for (int i = 0; i < n; i++) {
     int r[4]; layout_kin_rect(S, v_fmt("%s.kin", base), i, r); char kid[40]; snprintf(kid, sizeof kid, "kin.k%d", i);
-    v_region("kin", LAYER_ART); v_sprite(v_fmt("%s.ring", kid), v_pstr(v_fmt("regions.kin.%d.ring", i)), r[0], r[1], r[2], r[3]);
-    const char *pod = v_pstr(v_fmt("regions.kin.%d.pod", i)); if (has(pod)) { v_layer(LAYER_PAINTED); v_sprite(v_fmt("%s.pod", kid), pod, r[0] + (r[2] - pw) / 2, r[1] + (r[3] - ph) / 2, pw, ph); }
+    v_region("kin", LAYER_PAINTED); v_sprite(v_fmt("%s.ring", kid), v_pstr(v_fmt("regions.kin.%d.ring", i)), r[0], r[1], r[2], r[3]);
+    const char *pod = v_pstr(v_fmt("regions.kin.%d.pod", i)); if (has(pod)) { v_sprite(v_fmt("%s.pod", kid), pod, r[0] + (r[2] - pw) / 2, r[1] + (r[3] - ph) / 2, pw, ph); }
   }
   const char *hatch = v_pstr("regions.hatch");
-  if (has(hatch)) { int hr[4]; srect(base, "hatch.rect", hr); v_region("hatch", LAYER_ART); v_sprite("kin.hatch", hatch, hr[0], hr[1], hr[2], hr[3]); }
+  if (has(hatch)) { int hr[4]; srect(base, "hatch.rect", hr); v_region("hatch", LAYER_PAINTED); v_sprite("kin.hatch", hatch, hr[0], hr[1], hr[2], hr[3]); }
 }
 
 /* the stamp label in its case (station-layouts.md, "The stamp label"): the dim glass case under it, a 120 x 120 bone plate with a slate edge, the stamp centred on it, the case's front glass over it */

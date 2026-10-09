@@ -100,7 +100,7 @@ void word_page(const char *key) {
       int nx = (hasCell ? cx + v_half(pw - nw - dot) : cx) + lamp;
       v_region(cellReg, LAYER_TYPE); v_text(v_fmt("%s.name", cid), nm, nx, ny, nw, 16, nameC);
       v_region(cellReg, LAYER_ART);
-      if (lamp) layer(v_fmt("%s.differs", cid), nx - lamp, ny + 4, sa(base, "differs.size", 0, 0), sa(base, "differs.size", 1, 0), differs);
+      if (lamp) { v_layer(LAYER_PAINTED); layer(v_fmt("%s.differs", cid), nx - lamp, ny + 4, sa(base, "differs.size", 0, 0), sa(base, "differs.size", 1, 0), differs); v_layer(LAYER_ART); }
       if (dot) layer(v_fmt("%s.new", cid), nx + nw + newGapAfter, ny + line / 2 - newSize1 / 2, newSize0, newSize1, newMark);
     }
     if (!hasCell) {   /* a cut line drops its trailing separator */

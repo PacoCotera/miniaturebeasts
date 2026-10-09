@@ -40,7 +40,7 @@ void word_topBar(void) {
   colour("topRule", c);
   for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = fi("regions.topRules.y0"), y1 = fi("regions.topRules.y1"); v_rect(id, fi(p), y0, 1, y1 - y0, c); }
   /* where you are: the room's mark, then the one word */
-  v_region("title", LAYER_ART);
+  v_region("title", LAYER_PAINTED);   /* the top bar's marks (room, companion, face, sun) are painted masters: placed, they leave the palette */
   char screen[32], room[24]; spec_str(P, "frame.top.screen", screen, sizeof screen);
   snprintf(a, sizeof a, "regions.title.marks.%s", screen); fs(a, room, sizeof room);
   rect_of("regions.title.mark", rr);
@@ -79,17 +79,17 @@ void word_topBar(void) {
   }
   /* who is out, and with whom: marks only */
   int docked = spec_bool(P, "frame.top.companion.docked", 0), glyph[4], lampAt[4], face[4]; rect_of("regions.companion.glyph", glyph); rect_of("regions.companion.lampAt", lampAt); rect_of("regions.companion.face", face);
-  v_region("companion", LAYER_ART);
+  v_region("companion", LAYER_PAINTED);
   fs(docked ? "regions.marks.companion.docked" : "regions.marks.companion.away", a, sizeof a); mark("top.comp", a, glyph);
   fs(docked ? "regions.marks.lamp8.docked" : "regions.marks.lamp8.away", a, sizeof a);
   v_layer(LAYER_PAINTED);   /* the frame's lamps are painted masters (the art director's layer table) */
   if (!mark("top.lamp", a, lampAt)) { v_region("companion", LAYER_CHROME); colour(docked ? "lampOn" : "lampOff", c); v_rect("top.lamp", lampAt[0], lampAt[1], lampAt[2], lampAt[3], c); }
-  v_region("companion", LAYER_ART);
+  v_region("companion", LAYER_PAINTED);
   char mibi[48]; spec_str(P, "frame.top.companion.withMibi", mibi, sizeof mibi);
   if (!*mibi) fs("regions.marks.face.empty", a, sizeof a);
   else { char t[96]; fs(docked ? "regions.marks.face.docked" : "regions.marks.face.away", t, sizeof t); char *at = strstr(t, "{mibi}"); if (at) snprintf(a, sizeof a, "%.*s%s%s", (int)(at - t), t, mibi, at + 6); else snprintf(a, sizeof a, "%s", t); }
   if (!mark("top.face", a, face)) {   /* until the face is painted, the ring alone: the ellipse op in the face-ring role */
-    colour(docked ? "faceRing" : "faceRingAway", c); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", face[2], face[3], fi("focus.ring.width"), c);
+    v_layer(LAYER_ART); colour(docked ? "faceRing" : "faceRingAway", c); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", face[2], face[3], fi("focus.ring.width"), c);
     snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", b); prim_node(v_id("top.face.ring"), FN_COMPOSED, face[0], face[1], face[2], face[3], 0, 0, 0);
   }
   /* when: the sun mark, then the turn's figure, right-aligned to 1008 */
@@ -100,7 +100,7 @@ void word_topBar(void) {
   { char *at = strstr(tmpl, "{n}"); if (at) snprintf(fig, sizeof fig, "%.*s%s%s", (int)(at - tmpl), tmpl, num, at + 3); else snprintf(fig, sizeof fig, "%s", tmpl); }
   int fw = v_measure(fig, W_px), fx = W_right - fw, tflash = spec_bool(P, "frame.top.turnFlash", 0);
   { anim_state_t t; if (anim_get(ANIM_FLASH, "turn", &t) && (t.elapsed / 160) % 2 == 0) tflash = 1; }   /* the turn's flash: a second, blinking on for 160 ms and off for 160 */
-  v_region("time", LAYER_ART);
+  v_region("time", LAYER_PAINTED);
   { int sun[4] = { fx - W_gap - mk[0], tr[1] + 4, mk[0], mk[1] }; fs("regions.marks.sun", a, sizeof a); mark("top.sun", a, sun); }
   if (tflash) { v_region("time", LAYER_CHROME); colour("flash", c); v_rect("top.turn.flash", fx - 3, tr[1], fw + 6, tr[3], c); }
   v_region("time", LAYER_TYPE); colour(tflash ? "flashInk" : "turn", c); v_text("top.turn", fig, fx, tr[1] + 4, fw, W_px, c);

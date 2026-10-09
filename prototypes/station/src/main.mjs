@@ -208,3 +208,28 @@ window.__st = { ready, renderErrors, caddy: { state: caddy.state, status: caddy.
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   podsGo: (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") goScreen("pods"); },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };
+
+// Test hook (not part of play): Pods drawn by the C words, in the face's test mode, with the pictures the page itself makes ready (the placed masters, the generated stand-ins, the pod from its layers). A second face is
+// booted, the state's props (views/pods-props.mjs) and the frame's go in, and the pixels outside the palette are read on pass 1 (chrome) and pass 2 (chrome and art). With `attribute`, a failing reading names the
+// pictures whose removal lowers it (the ones tagged art that are painted).
+window.__st.wordsCheck = async ({ attribute = true } = {}) => {
+  const [{ podsProps }, { registerPictures, iconRequests }, { pinnedPictures }] = await Promise.all([import("./views/pods-props.mjs"), import("./pictures.mjs"), import("../../ui/specs/derive.mjs")]);
+  const P = UI.pods, m = { st: G.st, settings: G.settings, docked: docked(), crates: bayCrates().length, ui: P, focus: P.focus.cur, present: {} };
+  const body = podsProps(m, SPECS.pods, SPECS.frame), reqs = [...body.requests, ...iconRequests()];
+  registerPictures(reqs, { podById, frameOf });
+  const ids = new Set(reqs.map((r) => r.id)); (function walk(o) { if (typeof o === "string") { if (assetEntry(o)) ids.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v); })([SPECS.frame.regions, body.props]);
+  const pinned = pinnedPictures(SPECS.pods, SPECS.frame); for (const p of pinned) ids.add(p.id);
+  const frame = { top: { screen: "pods", title: "Pods", turn: G.st.turn + 1, turnFlash: false, materials: { e: G.st.e, d: G.st.d, s: G.st.s }, flash: {}, companion: { docked: docked(), withMibi: null } }, line: body.line, plate: { text: "" } };
+  const pic = (id) => { const p = faceEnv.picture(id); if (!p) return null; const sl = faceEnv.slice(id); return sl ? { ...p, slice: sl, tile: faceEnv.tile(id) } : p; };
+  const run = async (blank = null) => {
+    const f = await bootFace(undefined, { test: true }); sendBoot(f);
+    f.pin(pinned, pic);
+    for (const id of ids) f.handleOf(id, (x) => { const p = pic(x); if (p && x === blank) p.data = new Uint8ClampedArray(p.data.length); return p; });
+    if (f.props({ screen: "pods", ...body.props, frame }) !== 0) throw new Error("props refused: " + f.errors().join("; "));
+    for (let i = 0; i < 3; i++) f.frame(16 * (i + 1));
+    const out = {}; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); out.errors = f.errors(); out.refused = f.refused(); return out;
+  };
+  const r = await run();
+  if (attribute && r.pass2 > 0) { r.offenders = []; for (const id of ids) { const x = await run(id); if (x.pass2 < r.pass2) r.offenders.push([id, r.pass2 - x.pass2]); } r.offenders.sort((a, b) => b[1] - a[1]); }
+  return r;
+};
