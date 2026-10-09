@@ -6,10 +6,11 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 pal = {n: tuple(int(h[i:i + 2], 16) for i in (1, 3, 5)) for n, h in json.load(open("../../../prototypes/ui/palettes/station.json"))["colours"]}
 GROUND = pal["ground"]; st = json.load(open("slices/status.json")); man = json.load(open("slices/manifest.json"))
+REDONE = {"trait-S01-eyes-between-small-and-large-128x160", "trait-S01-markings-plain-128x160", "trait-S09-beak-between-128x160"}      # pass 79: redone at target size by guideplates2.py
 SIZES = {56: (34, 42), 40: (24, 30)}; made = []
 for f in sorted(glob.glob("slices/trait-S??-*-128x160.png")):
     n = os.path.basename(f)[:-4]
-    if st.get(n, {}).get("status") != "signed": continue
+    if st.get(n, {}).get("status") != "signed" or n in REDONE: continue
     src = Image.open(f).convert("RGB").crop((16, 20, 112, 140))
     for s, (w, h) in SIZES.items():
         out = Image.new("RGB", (s, s), GROUND); out.paste(src.resize((w, h), Image.LANCZOS), ((s - w) // 2, (s - h) // 2))
