@@ -627,6 +627,8 @@
      112,
      112
     ],
+    "sealedFindSlot": "find-{kind}-112x112",
+    "sealedFindSlotNote": "the studio's picture of the find that opens a shut chapter, by the frame's chapter.findKind (crystal, pearl or shard); a null kind, or a picture not yet signed, leaves the flat ground cell alone",
     "sealedFindNote": "UI designer, 2026-10-09: the find centred in the one cell's rectangle (24, 48, 128, 184) of the 176×248 sealed pane, screen (456, 196); was (236, 164) on the 584 pane, which ran 28 px past the 248 pane's foot",
     "grid": {
      "1-4": {

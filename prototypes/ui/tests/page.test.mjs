@@ -19,6 +19,9 @@ test("the open page has no pane: one hairline rule as wide as the grid the count
     assert.deepEqual(line.rect, [R.rect[0] + 24, R.rect[1] + 36, w - 24, 1], `${n} traits: the rule runs from the first column to the last, the page ${w} wide`);
   }
   const sealed = chapterPage(ctx, "page", R, { colours, cells: [], heading: { emblem: "e", word: "Character" }, count: 1, sealedFind: true, region: "page" }).nodes;
+  registerAsset({ id: "t:find", w: 112, h: 112, status: "master", build: () => ({ w: 112, h: 112, canvas: () => null }) });
+  const shown = chapterPage(ctx, "page", R, { colours, cells: [], heading: { emblem: "e", word: "Character" }, count: 1, sealedFind: true, sealedPicture: "t:find", region: "page" }).nodes;
+  assert.deepEqual(shown.find((q) => q.id === "page.findpic").rect, [R.rect[0] + 32, R.rect[1] + 84, 112, 112], "the find's picture 1:1 over the flat cell"); assert.ok(!sealed.some((q) => q.id === "page.findpic"), "nothing until it is signed"); dropAsset("t:find");
   assert.deepEqual(sealed.find((q) => q.id === "page.rule").rect, [R.rect[0] + 24, R.rect[1] + 36, 128, 1], "a shut chapter takes the one-trait size");
   registerAsset({ id: "t:pane", w: 256, h: 440, status: "master", slice: [64, 64, 16, 16], tile: 32, build: () => ({ w: 256, h: 440, canvas: () => null }) });
   const C = pods.regions.compareA, nine = chapterPage(ctx, "pageA", C, { colours, cells: cells(2), pane: "t:pane", region: "pageA" }).nodes.find((q) => q.kind === "nineSlice");

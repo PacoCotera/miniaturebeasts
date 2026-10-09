@@ -167,8 +167,9 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
     if (wipeOf != null && wipeOf < 1) cell.wipe = wipeOf;
     return cell;
   });
-  const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone until its picture is painted
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), colours: { ...C.page, diff: C.diff } };
+  const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone, and the studio's picture of the find by the chapter's findKind over it once signed
+  const sealedPicture = sealedFind && ch.findKind && region.sealedFindSlot ? slot(req, region.sealedFindSlot.replace("{kind}", ch.findKind), [0, 0, region.sealedFind[2], region.sealedFind[3]], "the find picture master") : null;
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), colours: { ...C.page, diff: C.diff } };
 }
 
 function compareView(view, m, spec, ctx, req) {
