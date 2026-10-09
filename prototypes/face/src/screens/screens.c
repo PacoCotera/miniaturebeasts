@@ -17,7 +17,7 @@ static void frame_words(void) {
 int screens_props(const char *json, int len) {
   if (spec_load("props", json, (size_t)len) < 0) { wire_error(spec_error()); return -1; }
   if (!spec_has("frame")) { wire_error("props: the frame spec has not been sent"); return -1; }
-  prim_begin();
+  prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();   /* a screen draws its words when the props carry its regions */ }
   frame_words();
   prim_end();

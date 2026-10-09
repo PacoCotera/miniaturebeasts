@@ -104,3 +104,7 @@ const char *v_pstr(const char *path) { static char ring[32][V_STR]; static int k
 int v_pint(const char *path, int dflt) { return spec_int("props", path, dflt); }
 int v_pbool(const char *path, int dflt) { return spec_bool("props", path, dflt); }
 int v_plen(const char *path) { return spec_len("props", path); }
+
+static int g_focal[4], g_has_focal;
+void v_set_focal(const int box[4]) { if (box) { memcpy(g_focal, box, sizeof g_focal); g_has_focal = 1; } else g_has_focal = 0; }
+const int *v_focal(void) { return g_has_focal ? g_focal : NULL; }

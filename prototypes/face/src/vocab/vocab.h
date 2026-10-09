@@ -31,6 +31,9 @@ void v_clip(const char *s, int maxw, int px, char *out, int cap);
 /* A fixed rectangle of the spec, [x, y, w, h], at a path of the frame spec; 0 when it is not a 4-array. */
 int v_spec_rect(const char *screen, const char *path, int r[4]);
 void v_error(const char *what);
+/* The screen's focal box (the message plate keeps off it): set by the screen's words, cleared at the start of each draw. NULL when the screen has none. */
+void v_set_focal(const int box[4]);
+const int *v_focal(void);
 int v_fdiv(int a, int b);                              /* floor(a / b) for b > 0, as Math.floor does */
 int v_half(int a);                                     /* Math.round(a / 2) on an integer: floor((a + 1) / 2) */
 /* An id built from a printf format (ids of nodes and pictures). */

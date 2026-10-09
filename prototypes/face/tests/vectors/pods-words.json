@@ -141,7 +141,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 982,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Untuva is fully read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -265,9 +291,24 @@
      "id": "pod:S06:i:88x112",
      "w": 88,
      "h": 112
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "b8dbde94"
+   "hash": "9e24521e"
   },
   {
    "state": "overview",
@@ -335,7 +376,35 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Identify",
+      "price": "",
+      "dim": false,
+      "back": "Pods",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -382,9 +451,24 @@
      "id": "hatch:80x56",
      "w": 80,
      "h": 56
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "d64e2831"
+   "hash": "4c44e012"
   },
   {
    "state": "overview",
@@ -452,7 +536,34 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Return to the wild",
+      "price": "+1 ❀",
+      "back": "Pods",
+      "subject": "Back to the meadow",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -499,9 +610,24 @@
      "id": "hatch:80x56",
      "w": 80,
      "h": 56
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "fdd7d191"
+   "hash": "3057b521"
   },
   {
    "state": "overview",
@@ -569,7 +695,35 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Identify",
+      "price": "",
+      "dim": false,
+      "back": "Pods",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -616,9 +770,24 @@
      "id": "hatch:80x56",
      "w": 80,
      "h": 56
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "0cb93c67"
+   "hash": "f75cc014"
   },
   {
    "state": "overview",
@@ -756,7 +925,34 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Return to the wild",
+      "price": "+1 ❀",
+      "back": "Pods",
+      "subject": "Back to the meadow",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -877,9 +1073,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "81d720b5"
+   "hash": "54fa4fb1"
   },
   {
    "state": "overview",
@@ -1017,7 +1228,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Coat",
+      "back": "Pods",
+      "subject": "Untuva is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -1138,9 +1375,24 @@
      "id": "emblem:character:sealed:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "bb90806b"
+   "hash": "aeaa10e1"
   },
   {
    "state": "overview",
@@ -1299,7 +1551,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Compare",
+      "back": "Pods",
+      "subject": "Loika is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -1430,9 +1708,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "fa021fd5"
+   "hash": "b4db4596"
   },
   {
    "state": "overview",
@@ -1570,7 +1863,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 997,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -1691,9 +2010,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "e1e7a84a"
+   "hash": "4c56504d"
   },
   {
    "state": "overview",
@@ -1845,7 +2179,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 998,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -1971,9 +2331,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "c82ed76f"
+   "hash": "23530d0f"
   },
   {
    "state": "overview",
@@ -2139,7 +2514,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 995,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -2265,9 +2666,24 @@
      "id": "emblem:character:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "9a76d519"
+   "hash": "717e0849"
   },
   {
    "state": "overview",
@@ -2416,7 +2832,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 993,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Character",
+      "back": "Pods",
+      "subject": "Character is sealed",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -2547,9 +2989,24 @@
      "id": "emblem:character:sealed:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "36d18602"
+   "hash": "bb6e7099"
   },
   {
    "state": "overview",
@@ -2712,7 +3169,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 991,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Movement",
+      "back": "Pods",
+      "subject": "Movement is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -2848,9 +3331,24 @@
      "id": "emblem:movement:read:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "d7e6220b"
+   "hash": "d93d8502"
   },
   {
    "state": "overview",
@@ -2988,7 +3486,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -3109,9 +3633,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "4b808e50"
+   "hash": "03a82834"
   },
   {
    "state": "chapter",
@@ -3248,7 +3787,35 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read Coat",
+      "price": "",
+      "dim": false,
+      "back": "Loika",
+      "subject": "Coat is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -3344,9 +3911,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "e4b25919"
+   "hash": "bff0528a"
   },
   {
    "state": "chapter",
@@ -3504,7 +4086,32 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 997,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Loika",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -3620,9 +4227,24 @@
      "id": "mark-line-seed-pair-20x16:20x16",
      "w": 20,
      "h": 16
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "20fdbc2d"
+   "hash": "0964f2da"
   },
   {
    "state": "chapter",
@@ -3779,7 +4401,32 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 996,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Hiljan",
+      "subject": "Shape is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -3885,9 +4532,24 @@
      "id": "trait-S04-topline-arched-128x160:128x160",
      "w": 128,
      "h": 160
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "ff726db4"
+   "hash": "a5c75678"
   },
   {
    "state": "chapter",
@@ -4100,7 +4762,32 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 987,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Rupar",
+      "subject": "Movement is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -4221,9 +4908,24 @@
      "id": "trait-S08-pace-steady-128x160:128x160",
      "w": 128,
      "h": 160
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "c387dffc"
+   "hash": "01cf3a9b"
   },
   {
    "state": "chapter",
@@ -4426,7 +5128,32 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 993,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Untuva",
+      "subject": "Coat is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -4542,9 +5269,24 @@
      "id": "mark-line-seed-12x16:12x16",
      "w": 12,
      "h": 16
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "551eec3f"
+   "hash": "51cb328c"
   },
   {
    "state": "chapter",
@@ -4695,7 +5437,35 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read Face",
+      "price": "1 ◆",
+      "dim": false,
+      "back": "Pesko",
+      "subject": "Face is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -4796,9 +5566,24 @@
      "id": "emblem:movement:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "1f504b06"
+   "hash": "a0b0aecf"
   },
   {
    "state": "chapter",
@@ -4944,7 +5729,35 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read Face",
+      "price": "2 ◆",
+      "dim": false,
+      "back": "Loika",
+      "subject": "Face is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -5040,9 +5853,24 @@
      "id": "emblem:stamina:unread:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "3183180f"
+   "hash": "98a5fe7f"
   },
   {
    "state": "compare",
@@ -5187,7 +6015,32 @@
      "armed": false,
      "targets": []
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 991,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Loika",
+      "subject": "two Loika pods",
+      "need": "no read trait differs"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -5273,9 +6126,24 @@
      "id": "trait-S01-crown-leaf-crest-184x256:184x256",
      "w": 184,
      "h": 256
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "2e0be7e7"
+   "hash": "196b1de0"
   },
   {
    "state": "compare",
@@ -5416,7 +6284,32 @@
      "armed": false,
      "targets": []
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 994,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Loika",
+      "subject": "two Loika pods",
+      "need": "no read trait differs"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -5502,9 +6395,24 @@
      "id": "trait-S01-crown-leaf-crest-184x256:184x256",
      "w": 184,
      "h": 256
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "b75e7a5c"
+   "hash": "02577ae9"
   },
   {
    "state": "compare",
@@ -5638,7 +6546,32 @@
      "armed": false,
      "targets": []
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 992,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Hiljan",
+      "subject": "two Hiljan pods",
+      "need": "no read trait differs"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -5729,9 +6662,519 @@
      "id": "trait-S04-eyes-small-close-376x264:376x264",
      "w": 376,
      "h": 264
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "6f242423"
+   "hash": "f286a9b3"
+  },
+  {
+   "state": "overview",
+   "name": "a message over the pod",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": null,
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:0/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb::95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S01-9bae06fb",
+       "ring": "kinring:56",
+       "pod": "pod:S01:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ]
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Coat",
+      "back": "Pods",
+      "subject": "Loika is unread",
+      "need": null
+     },
+     "plate": {
+      "text": "The incubator is warm and the egg is turning slowly in its cradle, which is a good sign for the hatch."
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb::95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "14ec2d88"
+  },
+  {
+   "state": "collection",
+   "name": "a message on the rack",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      }
+     ]
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": "Saved."
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:-:s:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-128x24:128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "a6a53220"
   },
   {
    "state": "collection",
@@ -5800,7 +7243,32 @@
      "armed": false,
      "targets": []
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Home",
+      "subject": "the rack is empty",
+      "need": "take the Companion exploring"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -5824,9 +7292,24 @@
      "id": "ring-collection-idle-176x176:176x176",
      "w": 176,
      "h": 176
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "cac92cc9"
+   "hash": "6248da41"
   },
   {
    "state": "collection",
@@ -5916,7 +7399,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -5955,9 +7464,24 @@
      "id": "place:meadow:48",
      "w": 48,
      "h": 48
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "02f39995"
+   "hash": "a44597d4"
   },
   {
    "state": "collection",
@@ -6071,7 +7595,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Tuikis is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -6140,9 +7690,24 @@
      "id": "pod:S04:i:88x112",
      "w": 88,
      "h": 112
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "8c7ba9bb"
+   "hash": "a003ec20"
   },
   {
    "state": "collection",
@@ -6223,7 +7788,33 @@
       }
      ]
     },
-    "frame": {}
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Loika is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
    },
    "pictures": [
     {
@@ -6272,9 +7863,24 @@
      "id": "waiting:24",
      "w": 24,
      "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
     }
    ],
-   "hash": "a9b4bddc"
+   "hash": "a20d28bf"
   }
  ]
 }

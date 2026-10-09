@@ -152,7 +152,7 @@ void word_messagePlate(void) {
   char buf[V_STR * 4]; int n = v_wrap(s, maxW - 2 * pad, px, buf, sizeof buf, 8), widest = 0; const char *l = buf;
   for (int i = 0; i < n; i++) { int w = v_run_width(l, px); if (w > widest) widest = w; l += strlen(l) + 1; }
   int focal[4], hasf = spec_len(P, "frame.plate.focal") == 4; for (int i = 0; i < 4 && hasf; i++) { char p[40]; snprintf(p, sizeof p, "frame.plate.focal.%d", i); focal[i] = spec_int(P, p, 0); }
-  int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, fi("regions.plate.bottom"), fi("regions.plate.topOverFocal"), n, widest, hasf ? focal : NULL, rc);
+  int rc[4]; layout_plate_position(maxW, pad, lead, line, centre, fi("regions.plate.bottom"), fi("regions.plate.topOverFocal"), n, widest, hasf ? focal : v_focal(), rc);   /* the props may name a box; else the screen's own focal region */
   v_region("plate", LAYER_CHROME);
   colour("plateShadow", c); v_rect("plate.shadow", rc[0], rc[1] + 3, rc[2], rc[3], c);
   colour("plate", c); colour("plateEdge", c2); word_panel("plate", rc[0], rc[1], rc[2], rc[3], c, c2);
