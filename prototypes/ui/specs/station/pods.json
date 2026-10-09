@@ -39,7 +39,10 @@
      240
     ],
     "radius": 6,
-    "component": "panel"
+    "component": "panel",
+    "slice": "panel-place-320x224",
+    "nineSlice": false,
+    "on": "room-bench-stage-collection"
    },
    "ring": {
     "centre": [
@@ -100,7 +103,8 @@
      "max": 224,
      "h": 24
     },
-    "noDigits": true
+    "noDigits": true,
+    "slice": "plate-name (the hugging nine-slice series)"
    },
    "place": {
     "at": [
