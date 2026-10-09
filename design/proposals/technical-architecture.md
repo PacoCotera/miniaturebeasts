@@ -1,6 +1,6 @@
 # Technical architecture: one loop, three screens
 
-**Decided** 2026-10-08: decisions 2 and 3 of section 7 were taken as recommended, so this document is the architecture every Station, Companion and Caddy build follows. **Decision 1 (the Station as a web page on the Pi) was withdrawn by the owner the same day:** the Station's hardware is the Raspberry Pi 4 and will not grow to carry a browser; everything is optimised for underpowered hardware; no hardware prototyping until the loop is complete in software. The replacement for the Station's device runtime is proposed in section 4.3 and is decision 1 of section 7 (**Proposal**). Written by the architect, 2026-10-08, for the owner. It answers the owner's direction of today: review the technical architecture of the Station and the Caddy (and, with them, the Companion), and choose the tooling and frameworks that draw the screens and handle interaction on hardware we can actually ship. **Decided** marks owner decisions restated here; everything else is **Proposal**. Section 7 holds the three decisions.
+**Decided** (owner, 2026-10-08): the three decisions of section 7, so this document is the architecture every Station, Companion and Caddy build follows. The Station's device runtime is **S1** (§4.3): an LVGL 9 face in C on the Raspberry Pi 4, with the logic run headless by Node beside it and no browser on the Pi. The Pi 4 is the ceiling; everything is optimised for underpowered hardware; no hardware prototyping until the loop is complete in software. **Decided** (owner, 2026-10-08 and 2026-10-09 11:27): the sandbox draws the Station through that same LVGL face, compiled to WebAssembly (§8), and the JavaScript drawing layer (the screen layer of decision 2, built as T1) is deprecated and frozen: no new screen or screen feature is built on it. The build plan for the face is [lvgl-switch.md](lvgl-switch.md), which governs where the two documents differ. Written by the architect for the owner, answering the direction to review the technical architecture of the Station and the Caddy (and, with them, the Companion) and to choose the tooling and frameworks that draw the screens and handle interaction on hardware we can ship. **Decided** marks owner decisions restated here; everything else is **Proposal**.
 
 **Decided 2026-10-08 (owner).**
 
@@ -12,9 +12,9 @@
 
 ## 1. What this is for
 
-The kit has three screens and one game. Today each screen is built by drawing pixels at numbers typed into code. That is fast for the first screen and slow for every one after it, and it gets worse as more people work on the code at once.
+The kit has three screens and one game. Without this architecture each screen is built by drawing pixels at numbers typed into code. That is fast for the first screen and slow for every one after it, and it gets worse as more people work on the code at once.
 
-**An example.** The layout spec says the stamp is "a 120×120 label, one rule, every screen that shows it". Today the Station draws it in six places at five sizes: 196 px on Pods, 120 on Create and the Incubator, 96 on Cross, 88 on Habitat, 112 on the Library. To apply the rule, a builder edits six screen files and checks each by eye. Under this proposal the stamp label is one component and each screen's spec gives it a rectangle. The rule lives in one place, and CI measures it.
+**An example.** The layout spec says the stamp is "a 120×120 label, one rule, every screen that shows it". At the diagnosis (§2) the Station drew it in six places at five sizes: 196 px on Pods, 120 on Create and the Incubator, 96 on Cross, 88 on Habitat, 112 on the Library. To apply the rule, a builder edits six screen files and checks each by eye. On the face the stamp label is one C word and each screen's spec gives it a rectangle. The rule lives in one place, and CI measures it.
 
 The architecture has three jobs:
 
@@ -23,6 +23,8 @@ The architecture has three jobs:
 3. **The port is cheap.** What we prove in the browser carries to the devices as data and tests. It is not rewritten from memory.
 
 ## 2. Diagnosis
+
+Measured on `main` on 2026-10-08, before T1. It is the finding this architecture answers, not a description of the code now; the face's state is lvgl-switch.md and `prototypes/face/README.md`.
 
 ### 2.1 What we found
 
@@ -55,7 +57,7 @@ The architecture has three jobs:
 
 ## 3. Development strategy
 
-**Decided (owner, today):** define the loop first, then port.
+**Decided (owner, 2026-10-08):** define the loop first, then port.
 
 **Proposal.** The browser sandbox stays the place where the loop and its interactions are defined and validated, at each device's true resolution and colour depth. The architecture is built so that what is proven there moves to the devices as **data and tests**, not as code read and retyped.
 
@@ -67,12 +69,14 @@ The architecture has three jobs:
 | Species frames, catalogue, genome and stamp formats; **on the Station, the rules, genome, rig, stamp and Caddy client as code** (§4.3) | Input (GPIO keys to the same key events) and storage (flash or SD on the ESP32s, a file on the Pi; same save layout) | The developer panel's HTML (its settings contract carries; the device gets a hidden menu) |
 | The Caddy service's four routes and their contracts | The Caddy service itself, as ESP-IDF firmware | |
 
+**On the Station nothing of the face is re-expressed.** The sandbox's Station face is the device's own C, compiled to WebAssembly (§8, lvgl-switch.md): the component library, the renderer, focus and input run the same on the Pi, which adds only its platform layer, the Node host and the image cache (lvgl-switch.md §2.9). The middle column above holds for the Companion and the Caddy, whose words are the Station's `common/` words under their own profiles (lvgl-switch.md §2.2).
+
 **What guarantees fidelity:**
 
 - **Device-pixel surfaces.** Each target draws into a buffer of exactly its size: 1024×600, 450×600, 792×272, and 384 dots a line for the printer. The page may enlarge the finished frame by whole numbers for viewing, but never the drawing.
-- **Palette enforced by construction.** The Companion and Caddy renderers write palette indexes, not colours, so an off-palette pixel cannot exist. On the Station, layers are kept apart (palette chrome and pixel art; painted art; type), so the art layer is checked at exactly 0, not under 8%.
-- **A closed primitive set** on all three devices: rectangles, sprites (indexed, or 32-bit with straight alpha on the Station's painted layer), nine-slices, glyph runs from baked atlases, and the dither and shade tables. Each is defined exactly, so the device renderer can produce the same pixels, Inter included, since the sandbox and the device draw the same baked glyphs.
-- **Measured in CI,** with the sign-off's checks (grain, type, palette, size), plus the scene-level checks in §5.6.
+- **Palette enforced by construction.** The Companion and Caddy renderers write palette indexes, not colours, so an off-palette pixel cannot exist. On the Station, every primitive carries its layer (chrome, art, painted, type), and in test mode the face renders chrome only and chrome with art as separate passes, so those are checked at exactly 0 off palette, not under 8% (lvgl-switch.md §2.8).
+- **A closed primitive set** on all three devices: rectangles, text runs from fonts baked by `lv_font_conv`, sprites (indexed, or 32-bit with straight alpha on the Station's painted layer), nine-slices, clip, and composed pictures for fine line work (lvgl-switch.md §2.2). It is the face's `prim/`, the only code that creates LVGL objects, so the sandbox and the device draw the same pixels, Inter included.
+- **Measured in CI,** with the sign-off's checks (grain, type, palette, size), from the face's logs and framebuffer (§5.6).
 
 ## 4. Options per device
 
@@ -93,8 +97,8 @@ The Companion's pixel model (a 48-entry palette, indexes in memory, a lookup to 
 
 | Option | Strengths | Weaknesses | Verdict |
 | --- | --- | --- | --- |
-| **(a) LVGL in C on all three, and LVGL compiled to WebAssembly for the sandbox** | One UI codebase; the sandbox shows exactly the device's pixels; MIT licence; v1 compiled for the ESP32-S3 | The rules would move to C now, so the workbench, rig and stamp (JavaScript) would have to be copied or bridged, which breaks "imported, never copied". The compile-and-debug loop is slow just when the loop is still changing. LVGL is a widget toolkit: our vocabulary (rail, stamp label, message plate) still has to be built on top. The rig would need a native port for the Station | Not now. It pays the port cost before the loop is stable, against the owner's order of work |
-| **(b) Browser now, with a declarative, data-driven screen layer, and a documented port later** | Fastest iteration; the imports stay imports; the journey and sign-off checks already run here; the spec becomes data a port can use | We build and keep the screen layer ourselves. Discipline is needed so it stays small | **Recommended for the sandbox,** for all three screens |
+| **(a) LVGL in C on all three, and LVGL compiled to WebAssembly for the sandbox** | One UI codebase; the sandbox shows exactly the device's pixels; MIT licence; v1 compiled for the ESP32-S3 | The rules would move to C now, so the workbench, rig and stamp (JavaScript) would have to be copied or bridged, which breaks "imported, never copied". The compile-and-debug loop is slow just when the loop is still changing. LVGL is a widget toolkit: our vocabulary (rail, stamp label, message plate) still has to be built on top. The rig would need a native port for the Station | **Decided for the Station's face** (owner, 2026-10-08, §8), without the weakness on the rules: they stay JavaScript behind the bridge (props in, intents out; lvgl-switch.md §2.1), so nothing is copied. The Companion and the Caddy follow on the same C words (§6, C2 and P1) |
+| **(b) Browser now, with a declarative, data-driven screen layer, and a documented port later** | Fastest iteration; the imports stay imports; the journey and sign-off checks already run here; the spec becomes data a port can use | We build and keep the screen layer ourselves. Discipline is needed so it stays small | The sandbox page stays the place the loop is defined, with its spec files, views and rules. Its JavaScript screen layer is **deprecated and frozen** (owner, 2026-10-09 11:27; §5.1) |
 | **(c) A browser on the Station** (Chromium in kiosk mode on the Pi) | The Station would never port | A full browser on underpowered hardware, with no GPU acceleration to lean on | **Withdrawn by the owner, 2026-10-08.** Replaced by §4.3 |
 | **(d1) Slint** (declarative markup; Linux and ESP32-S3) | Declarative screens, close to our spec-as-data idea; Espressif component tested on the S3 | Rust or C++ toolchain; on embedded it is GPLv3 or a paid licence (the royalty-free licence excludes embedded); younger on the S3 than LVGL | Credible fallback for the Companion and Caddy |
 | **(d2) Embedded Rust** (embedded-graphics and similar) | Safe, small | Drawing primitives only: the same hand-drawing problem in a new language | No |
@@ -120,32 +124,34 @@ The Station has two halves. **The face** (screens, focus, animation, drawing) mu
 | **S5 SDL2 + our own C renderer** | Light | Light | We write anti-aliased text, images and the face ourselves, apart from the ESP32s' LVGL: the hand-drawing problem again | No |
 | **S6 Slint on Linux** | Light; software renderer | Light | A device counts as embedded, so GPLv3 or paid; a different toolkit from the ESP32s unless all three move | Only as the all-device fallback named in decision 3 |
 
-**Proposal: S1.** The face is LVGL 9 in C on the Linux DRM driver, drawing in software, with the Companion's and Caddy's component library. It adds two layers: painted art as 32-bit images with straight alpha, and anti-aliased Inter at 16, 20 and 28 px from atlases baked from the bundled OFL file. The logic is the sandbox's own modules, run headless by Node as a service. It writes the save to a file atomically, talks to the Caddy over Wi-Fi, and puts rig renders and the stamp into an image cache the face reads by asset id. The seam is §5.2's view contract. **Fallback: S2**, at the price of a second genome model.
+**Decided** (owner, 2026-10-08): **S1.** The face is LVGL 9 in C on the Linux DRM driver, drawing in software, with the Companion's and Caddy's component library. It adds two layers: painted art as 32-bit images with straight alpha, and anti-aliased Inter at 16, 20 and 28 px from atlases baked from the bundled OFL file. The logic is the sandbox's own modules, run headless by Node as a service. It writes the save to a file atomically, talks to the Caddy over Wi-Fi, and puts rig renders and the stamp into an image cache the face reads by asset id. The seam is the bridge contract of lvgl-switch.md §2.1 (props in, intents out), the same bytes the sandbox carries. **Fallback: S2**, at the price of a second genome model.
 
 ## 5. The structure
 
 ### 5.1 Layers
 
+**Decided** (owner, 2026-10-08 and 2026-10-09 11:27). JavaScript decides what each region shows; the LVGL face, in C, decides where it goes, how it looks, how focus moves and how it animates. The face's own layers (platform, bridge, prim, vocab, layout, screens) and the rule of the split are [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face).
+
 ```
- keys ─▶ input & focus ─▶ intent ─▶ rules (pure) ─▶ state + events
-                                                        │
- spec (data) ─▶ layout ─▶ components ◀── view (pure) ◀──┘
-                              │
-                            scene (retained, layered) ─▶ renderer per target ─▶ device-pixel frame
- edges: storage · Caddy client · placeholder register · developer tools · assets
+ keys ─▶ FACE: input & focus graph ─▶ intent ─▶ JS: intent table ─▶ rules (pure) ─▶ state + events
+                                                                                       │
+ spec (data) ─▶ FACE: spec loader ─▶ words + layout rules ◀── props ◀── JS: view (pure) ◀┘
+                         │
+                     FACE: primitives ─▶ LVGL ─▶ framebuffer ─▶ page canvas (sandbox) | DRM (Pi)
+ edges (JS): storage · Caddy client · placeholder register · developer tools · asset manifest and producers
 ```
 
 | Module | Holds | Never |
 | --- | --- | --- |
-| **Rules and state** (`state.mjs` as today; the Companion's `rules/` after its split) | The save's part and every rule as a pure function; returns new state and presentation events | Draws, reads keys, touches storage |
-| **Views** (`views/<screen>.mjs`) | Pure selectors from state and focus to a screen's props (what each region shows) | Coordinates |
-| **Screen specs** (`prototypes/ui/specs/<device>/<screen>.json`) | Regions, components, focus graph, strings, the spec's limits | Logic |
-| **Layout** (`ui/layout.mjs`) | Reads a spec; places regions; applies the few rules the style guide states (rail compaction, page grid by trait count, message plate position) | A general layout engine |
-| **Components** (`ui/components/`) | Each piece of the vocabulary once: frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport | Read the save |
-| **Scene** (`ui/scene.mjs`) | A retained tree of nodes on layers (art, painted, type), with dirty rectangles | Pixels |
-| **Renderers** (`ui/render/`) | `station-canvas` (layered), `indexed` (48 colours or four grays), `print` (1 bit, 384 dots); on the devices, the same three in C on LVGL | Game logic |
-| **Input and focus** (`ui/focus.mjs`, `ui/timeline.mjs`) | Key events, the focus graph with spatial fallback, arm-then-confirm, input holds during reveals | Rule calls (it emits intents) |
-| **Edges** | `storage` (the save adapter: `localStorage` in the sandbox, a file written by the logic process on the Pi, flash on the ESP32), `caddy` client, `art` placeholder register, `dev` tools, the asset manifest | Mix with each other |
+| **Rules and state** (`state.mjs` and the Station's other rule modules; the Companion's `rules/` after its split) | The save's part and every rule as a pure function; returns new state and presentation events | Draws, reads keys, touches storage |
+| **Views** (`views/<screen>.mjs`) | Pure selectors from state and focus to a screen's props: what each region shows, and the focus targets by id | Coordinates, geometry |
+| **Intent tables** (`intents/<screen>.mjs`) | The face's `{ target, verb }` to one rule call; arm-then-confirm; the screen's UI state | DOM, canvas or drawing imports |
+| **Screen specs** (`prototypes/ui/specs/<device>/<screen>.json`, with `<screen>.props.json`) | Regions with their word or composition, the focus graph, strings, the spec's limits, the props schema | Logic |
+| **Timeline** (`ui/timeline.mjs`) | Which event plays and whether input is held; sends `event` messages | Positions or in-between states |
+| **The face** (`prototypes/face/src/`, C) | Platform, bridge, primitives, the vocabulary's words, the layout rules, the screens' binding tables, focus and animation (lvgl-switch.md §2.2) | Reads the save, calls a rule, decides content |
+| **Edges** | `storage` (the save adapter: `localStorage` in the sandbox, a file written by the Node host on the Pi, flash on the ESP32), `caddy` client, `art` placeholder register, `dev` tools, the asset manifest and the asset producers | Mix with each other |
+
+**Deprecated and frozen** (lvgl-switch.md §5): the JavaScript layout (`ui/layout.mjs`), components (`ui/components/`), scene (`ui/scene.mjs`), the layered canvas renderer (`ui/render/station-canvas.mjs`), the atlas type (`ui/type.mjs`) and the drawing half of `station/src/gfx.mjs`. The freeze check fails on any change to them and on any new import of them; each is deleted when its last screen moves to the face, and all by L3. They are not the architecture a build follows. `ui/focus.mjs` is kept until L3 only as the JavaScript run of the focus vectors.
 
 ### 5.2 Contracts and data shapes
 
@@ -164,17 +170,17 @@ A screen spec mirrors `station-layouts.md`, region by region (Pods shortened):
              "rail": { "down": "pod" }, "fallback": "spatial" } }
 ```
 
-The other contracts:
+The other contracts (the wire format and every message are lvgl-switch.md §2.1):
 
-- **View:** `view(state, focus) → props`, for example `{ pod: { asset, sealed }, rail: { chapters: [{ id, read, glint, sealed }] }, line: { ok, price, back, subject, need } }`. Pure and tested in Node.
-- **Intent:** a key goes through the focus graph, which gives either a focus move or `{ target, verb }`. The screen's intent table maps it to one rule call, which returns `{ st, events }`.
-- **Event:** `{ kind: "wipe", target: "page", ms: 2000, hold: true }`. The timeline plays it and holds input. No global timestamps.
-- **Scene node:** `{ kind: rect | sprite | nineSlice | glyphs | clip, layer, rect, asset?, font?, colour }`. Colours are palette names, except on the painted and type layers. `font` names a baked atlas (`inter-16`, `mibi-7x9@2`), never a CSS font string.
-- **Asset:** `{ id, file, w, h, policy: palette48 | stationChrome | painted | gray4 | print1, status: placeholder | master, until, hash }`. Files are PNG: indexed for the palette policies, 32-bit with straight alpha for `painted`. A build tool converts them to LVGL's binary formats.
+- **View:** `view(state, focus) → props`, for example `{ pod: { asset, sealed }, rail: { chapters: [{ id, read, glint, sealed }] }, line: { ok, price, back, subject, need } }`. Props name what, never where. Pure, tested in Node against the screen's props schema, and sent to the face as a `props` message.
+- **Intent:** a key goes through the face's focus graph, which gives either a focus move (a `focus` message) or `{ target, verb }` (an `intent` message). The screen's intent table maps it to one rule call, which returns `{ st, events }`.
+- **Event:** `{ kind: "wipe", target: "page", ms: 2000, hold: true }`. The JavaScript timeline decides that it plays and holds input; the face plays it. No global timestamps.
+- **Primitive:** the face's closed set (rect, text, sprite, nine-slice, clip, composed picture), each carrying its layer and the region that drew it. Colours are palette names, except on the painted and type layers. Fonts are LVGL fonts baked from the bundled file (`inter-16`, `inter-20`, `inter-28`; Mibi 7×9 when the Companion comes), never a CSS font string.
+- **Asset:** `{ id, file, w, h, policy: palette48 | stationChrome | painted | gray4 | print1, status: placeholder | master, until, hash }`. Files are PNG: indexed for the palette policies, 32-bit with straight alpha for `painted`. `bake-images.mjs` converts them to LVGL's binary images (lvgl-switch.md §2.4).
 
 ### 5.3 How the layout spec becomes code
 
-The numbers get **one home**: the spec file. The UI designer keeps writing the reasoning in `station-layouts.md`. Its tables and the wireframes in `station-layouts/` are generated from the spec files, so the document and the build can't disagree. A builder never retypes a rectangle. CI compares every drawn region's box in the scene with its spec.
+The numbers get **one home**: the spec file. The UI designer keeps writing the reasoning in `station-layouts.md`. Its tables and the wireframes in `station-layouts/` are generated from the spec files, so the document and the build can't disagree. A builder never retypes a rectangle. CI compares every drawn region's box in the face's region log with its spec, or with `ui/specs/derive.mjs` for a derived one (lvgl-switch.md §2.8).
 
 <img src="../style-guide/station-layouts/02b-pods-overview.png" width="1024" alt="Pods overview wireframe">
 
@@ -182,13 +188,15 @@ The numbers get **one home**: the spec file. The UI designer keeps writing the r
 
 ### 5.4 How a builder adds a screen
 
-1. The UI designer's spec lands, following the screen design method, with its spec file.
-2. The builder writes the view (state to props) and its tests.
-3. The builder maps regions to existing components. A new component means a new word in the vocabulary, so it goes back to the UI designer and the architect.
-4. The focus graph is part of the spec; the builder only fills in ties.
-5. Every asset is registered in the manifest at its size, with placeholders flagged.
-6. Intents map to rule calls; anything new in the rules lands in `state.mjs` with tests.
-7. The journey gains the screen's steps and screenshots; the checks run; the sign-off is filled in.
+A screen is built on the LVGL face, never on the JavaScript drawing layer (§5.1). The face's side is lvgl-switch.md §2; the gate it passes is lvgl-switch.md §4.
+
+1. **The spec lands one milestone ahead** (lvgl-switch.md §3). The UI designer delivers the layout section and the spec file, `prototypes/ui/specs/station/<screen>.json`, following the screen design method: every drawn region names its word (`component`) or composition (`build`), and the file carries the focus graph and the strings. A screen without its spec file waits. It is never built from the old screen's numbers.
+2. **The view, as props.** The builder writes `views/<screen>.mjs`: state and focus to props, naming what each region shows (strings, states, counts, asset ids, flags, and the focus targets by id with their enabled flags), never where. Its schema is `<screen>.props.json` beside the spec file, and its Node tests assert props only.
+3. **The intent table.** The builder writes `intents/<screen>.mjs`: each `{ target group, verb }` from the face to one rule call, with arm-then-confirm and the screen's UI state. Anything new in the rules lands in its rule module with tests. The view and the intent table import no DOM, canvas or `gfx.mjs`, so they run in the Node host as well as the page.
+4. **The C words.** The face binds the spec's regions to words of the closed vocabulary in the screen's binding table (`prototypes/face/src/screens/`); a derived rect comes from a rule in `layout/`. A new word, composition or layout rule goes to the UI designer and the architect first.
+5. **Focus is spec data.** The graph per state lives in the spec file, with the edge forms of lvgl-switch.md §2.6.1 (names, selectors, `nearestIn`, ordered lists, `order`, `axis`). The view supplies only `focus.targets`, `focus.resolve` and `focus.set`. No target rectangles and no focus order in JavaScript.
+6. **Assets.** Every asset is registered in the manifest at its size, with placeholders flagged; masters are baked to LVGL images; nothing is scaled.
+7. **The gate.** The journey gains the screen's steps on the face; regions, pixels, palette, type, goldens, budgets and reduced motion pass (lvgl-switch.md §4); the sign-off is filled in; the docs the screen touches show the current state.
 
 ### 5.5 Art placed 1:1 and registered
 
@@ -196,22 +204,24 @@ A sprite node names an asset id. Its slot's size must equal the asset's size, an
 
 ### 5.6 Tests that measure the sign-off
 
-The sign-off's measured checks are approved. The scene makes them exact, with no monkey-patching:
+The sign-off's measured checks are approved. The face's test mode makes them exact, with no monkey-patching (lvgl-switch.md §2.8 holds the full list, with the goldens and the freeze):
 
 | Sign-off check | Measured from |
 | --- | --- |
-| Screen size | Each renderer's frame size, asserted |
-| Palette | The art layer has 0 pixels off palette on every screen; the Companion and Caddy have 0 by construction |
-| Type | The type layer's run log: every Station string in Inter at 16, 20 or 28 px from the bundled file; the Companion's in Mibi 7×9 at 2× or 3× |
+| Screen size | The face's frame size, asserted |
+| Palette | The chrome and chrome-with-art passes have 0 pixels off palette on every screen; the Companion and Caddy have 0 by construction |
+| Type | The text word's log: every Station string in Inter at 16, 20 or 28 px from the baked fonts; the Companion's in Mibi 7×9 at 2× or 3× |
 | Grain (G2) | Journey screenshots, as specified |
-| Rail chapters, digits, stamp, placeholders | The scene: tab count against the frame; no digits in text on regions marked `noDigits`; stamp label at 120 or less and 96 px or more from the focal box; every sprite resolves in the manifest |
-| Regions against the spec (**new**) | The scene's boxes against the spec file. A new check, so it needs the owner's approval (decision 2) |
+| Rail chapters, digits, stamp, placeholders | The face's logs: tab count against the frame; no digits in text on regions marked `noDigits`; stamp label at 120 or less and 96 px or more from the focal box; every sprite resolves in the manifest |
+| Regions against the spec | The face's region log against the spec file. **Decided** (owner, 2026-10-08, decision 2) |
 
 ### 5.7 Conformance review checklist (for every build)
 
-- [ ] No rule outside `state.mjs` (or the Companion's `rules/`); rules are pure and tested.
-- [ ] No coordinates in screen code; every region comes from its spec file.
-- [ ] Only vocabulary components; any new one approved by the UI designer and the architect.
+- [ ] No rule outside the rule modules (or the Companion's `rules/`); rules are pure and tested.
+- [ ] No coordinates in screen code; every region comes from its spec file; no geometry in JavaScript outside `ui/specs/derive.mjs`.
+- [ ] Only the vocabulary's C words; any new word, composition or layout rule approved by the UI designer and the architect.
+- [ ] Nothing drawn by, changed in, or newly importing the deprecated JavaScript drawing layer (the freeze check green).
+- [ ] The view and the intent table DOM-free and running in the Node host.
 - [ ] Focus from the spec's graph; no hand-made target rectangles.
 - [ ] Every sprite in the manifest at its size; placeholders registered; nothing scaled.
 - [ ] Colours by palette name; the art layer at 0 off palette.
@@ -227,49 +237,41 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 
 | | Ships | Relative to the plan |
 | --- | --- | --- |
-| **T1 Screen layer and Pods** | `prototypes/ui/`: scene, layered Station renderer, layout, focus, timeline, the frame components (top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page); Pods from its spec; Inter bundled, Google Fonts removed; the palette checked per layer. Screens not yet moved draw into the art layer through an adapter | **Replaces the pending layout pass** for Pods. Doing the pass on the old code first would mean doing it twice |
-| **T2 Layout pass on the layer** | Home, Create, Incubator and Habitat from their specs; the old per-screen geometry deleted as each screen moves; the regions check | The rest of the pending layout pass |
-| **M5 Library** | Spread and Book built on the layer from their specs | Waits for T1 (it needs the stamp label, tabs and pages); runs beside T2 |
-| **M6 Sitting and the whole journey** | As planned, on the layer; Cross and Sitting once their specs exist | Unchanged in scope |
-| **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change | Independent of the Station; can run beside T2 |
-| **C2 Companion on the layer** | HUD 32, view 532, line 36; Mibi 7×9; the map viewport for 48 px tiles, with the art redraw | Lands with the 48 px redraw |
-| **H0 Host-build proof** (software only, optional, after T2) | The C component library on LVGL, built for Linux in CI, draws Pods and the Companion's HUD and bottom line from the specs and the props the journey records; its frames are compared with the sandbox's (exact on the palette and type layers, since both draw the same atlases) | No hardware (**Decided:** none until the loop is complete in software). A new check, so it needs the owner's approval when proposed |
-| **P1 Port** | In order: the shared C face on Linux (the host build grown), then the **Station** (S1: the face on the Pi, the logic process, the image cache, the save file, GPIO keys), then the Companion and the Caddy firmware from the specs, assets and test vectors | **After the loop is stable** (owner's order). Hardware work starts here |
+| **T1 Screen layer and Pods** | Built: `prototypes/ui/` with Pods from its spec, Inter bundled, Google Fonts removed. Its drawing modules are deprecated and frozen (§5.1) | Its spec files, timeline, manifest and checks carry to the face |
+| **L2.0 to L2.5, then L3** | Every Station screen on the LVGL face, in lvgl-switch.md §3's order: L2.0 the platform and Pods on C words; L2.1 the Library, Book and field guide; L2.2 Home, Rest, Dock and arrival, Idle; L2.3 Cross; L2.4 Create and the Incubator; L2.5 Habitat and the Probe bench. L3 deletes the JavaScript drawing layer | **Replace T2 and M5 on the JavaScript layer.** Each milestone passes the gate of lvgl-switch.md §4 |
+| **M6 Sitting and the whole journey** | As planned, on the face; the Sitting's first screen at L2.5, or built straight on the face when its spec lands | Unchanged in scope |
+| **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change | Independent of the Station |
+| **C2 Companion on the face** | HUD 32, view 532, line 36; Mibi 7×9; the map viewport for 48 px tiles, with the art redraw; the `common/` words under the Companion's profile, with its indexed world view inside (lvgl-switch.md §2.2) | Lands with the 48 px redraw |
+| **H0 Host-build proof** | The native builds of the face: headless, SDL and aarch64 under qemu-user, with framebuffer hashes equal to WebAssembly's (lvgl-switch.md §2.9) | Part of L2.0. No hardware (**Decided:** none until the loop is complete in software) |
+| **P1 Port** | The **Station** (S1: the face's DRM platform on the Pi, the Node host, the image cache, the save file, GPIO keys), then the Companion and the Caddy firmware from the C words, specs, assets and test vectors | **After the loop is stable** (owner's order). Hardware work starts here |
 
-**The price of the Station decision.** With the withdrawn browser, the Station's port was a system image, a save service and key input, with no screens. Under S1, P1 adds the Station's eleven screens on the C component library, about as much screen work again as the Companion's nine or so. On top come the Station-only components (chapter rail, chapter page, stamp label, specimen, living window, the Library's spread and Book), the painted and type layers, and the props-and-intents seam. Against S2, it avoids porting the genome, rig, stamp, cross and Caddy client and keeping them twice. The face is built once for three devices.
+**The Station at the port.** The Station's screens are built once, on the LVGL face in the sandbox (L2.0 to L3), and the same C runs on the Pi. P1 adds no Station screen: only the platform layer (DRM display, keys), the Node host over the socket, the image cache and the save file. Against S2, it avoids porting the genome, rig, stamp, cross and Caddy client and keeping them twice. The face is built once for three devices.
 
-**What T1 does now so this port stays cheap** (T1 stands as commissioned; these are additions for its builder):
-
-1. **Type from baked atlases, not `fillText`.** Bake Inter at 16, 20 and 28 px (and Mibi 7×9) with LVGL's font converter, which runs in Node, into one atlas format with its metrics and kerning. The sandbox's type layer blits those glyphs and measures text from the atlas metrics. The device then draws the same pixels, and the type check reads the run log.
-2. **A closed primitive set on the Station too.** Components use only rect, sprite, nine-slice, glyph runs and clip. No canvas paths, gradients, shadows, filters, transforms or `globalAlpha`. The focus ring and rounded panels become nine-slices or sprites. Painted light is an asset, never code.
-3. **Image formats.** PNG only, indexed or 32-bit with straight alpha, registered at their pixel size; no WebP or run-time SVG.
-4. **Rig renders through the asset cache.** Components ask for `{ kind: placeholder | closeUp | stamp, sha, w, h }` by asset id and never call the rasteriser themselves. This is where the device's logic process plugs in.
-5. **Views, layout and scene run in Node.** No DOM or canvas imports outside the renderer. Props, intents and events are plain JSON. The journey can then record them, which H0 needs.
+**What keeps the port cheap** is the face's own rules (lvgl-switch.md §2.2 to §2.5): a closed primitive set in `prim/`, the only code that creates LVGL objects (no paths, gradients, shadows, filters, transforms or opacity on chrome and art; painted light is an asset); fonts baked by `lv_font_conv` from the bundled file; PNG masters, indexed or 32-bit with straight alpha, baked to LVGL images at their pixel size; rig renders through the asset cache by id, never called by a word; and views, intent tables and events as plain JSON that run in Node.
 
 | Risk | Mitigation |
 | --- | --- |
-| The screen layer grows into a framework project | Its vocabulary is closed (station-layouts.md); rectangles are absolute from the spec; no general layout engine |
-| T1 delays M5 | T1 replaces the layout pass rather than adding to it; M5 then builds faster on shared components |
+| The face's vocabulary grows into a framework project | Its vocabulary is closed (station-layouts.md); rectangles are absolute from the spec; layout rules are a closed list; no general layout engine |
 | Spec files and the document drift apart | One home for the numbers; tables and wireframes generated from it |
-| Node's memory or the rig's speed on the Pi 4 proves too much | Rig work is background and cached by genome hash; the seam lets S2 replace the logic process without touching the face; measured when hardware work starts |
-| Inter from LVGL's atlases reads differently from the browser's today | T1 moves the sandbox to the same atlases now, so the owner judges the type the device will draw |
-| The device port differs from the sandbox's pixels | A closed, exact primitive set; frame comparison from a host build |
+| Node's memory or the rig's speed on the Pi 4 proves too much | Rig work is background and cached by genome hash; the seam lets S2 replace the logic process without touching the face; measured when hardware work starts (lvgl-switch.md §2.10) |
+| Inter from LVGL's fonts reads differently from the browser's | The sandbox draws with LVGL's fonts, so the owner judges the type the device will draw |
+| The device port differs from the sandbox's pixels | The same C face on both; golden framebuffer hashes equal on WebAssembly, native x86-64 and aarch64 |
 | Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay |
 | The Station palette is unsettled (69 in code, 96 in the UI kit, painted art on top) | The renderer takes the palette as data; the UI designer and the art director fix it; the check follows |
 
 ## 7. Decisions
 
-**Decided** 2026-10-08: 2 and 3 as recommended. The first decision 1 (a browser on the Pi) was withdrawn by the owner; decision 1 below replaces it and is open.
+**Decided** (owner, 2026-10-08): all three as recommended. Decision 2's screen layer is deprecated and frozen (owner, 2026-10-09 11:27): the sandbox draws the Station through the LVGL face (§8, lvgl-switch.md), and the regions check stands, measured on the face.
 
-1. **The Station's runtime. Decided 2026-10-08: S1.** The face is LVGL 9 in C on the Pi's display, the same component library as the Companion and the Caddy, with painted art and anti-aliased Inter from baked atlases. The logic (rules, genome, rig, stamp, Caddy client, the save) is the sandbox's own JavaScript, run headless by Node beside it as a service, with no browser. *Recommended: yes, with the logic ported to C as the fallback.* It fits well within a Pi 4 of 2 GB or less (under 300 MB resident, a few per cent of CPU at rest). It gives three devices one face. It keeps the genome model in one language, imported, never copied. Its price is the Station's screens in the port (§6); the fallback adds a second genome model to maintain.
-2. **The sandbox gets its own small, declarative screen layer now** (screen specs as data, a component library, a retained scene, a focus model), built as T1 in place of the pending layout pass and before M5, with the regions check added to CI. *Recommended: yes.* It is the separation of concerns the owner asked for. Adopting LVGL-in-WebAssembly now would move the rules to C before the loop is stable and would copy what must be imported.
+1. **The Station's runtime. Decided 2026-10-08: S1.** The face is LVGL 9 in C on the Pi's display, the same component library as the Companion and the Caddy, with painted art and anti-aliased Inter from baked atlases. The logic (rules, genome, rig, stamp, Caddy client, the save) is the sandbox's own JavaScript, run headless by Node beside it as a service, with no browser. *Recommended: yes, with the logic ported to C as the fallback.* It fits well within a Pi 4 of 2 GB or less (under 300 MB resident, a few per cent of CPU at rest). It gives three devices one face. It keeps the genome model in one language, imported, never copied. The Station's screens are built once, on the face in the sandbox (§6); the fallback adds a second genome model to maintain.
+2. **The sandbox gets its own small, declarative screen layer now** (screen specs as data, a component library, a retained scene, a focus model), built as T1, with the regions check added to CI. **Decided** 2026-10-08. Its spec files, the regions check and the separation of concerns stand. Its JavaScript drawing (components, layout, scene, renderer) is deprecated and frozen (owner, 2026-10-09 11:27): the Station's components are the face's C words, and the rules stay JavaScript behind the bridge, so nothing is copied.
 3. **The Companion and Caddy port to native C on ESP-IDF with LVGL 9** for chrome and our own indexed renderer for the world view, started only when the loop is stable. *Recommended: yes, with Slint as the fallback.* LVGL is MIT-licensed and proven on the S3. The palette model is the sandbox's own. Slint on embedded is GPLv3 or paid, and younger on the S3.
 
-**Overall recommendation.** Keep the browser as the place where the game is defined, and give it what it lacks: a screen layer between the pure rules and the pixels. Once the loop holds, port all three faces to one LVGL component library in C, with no browser anywhere. The Companion and the Caddy carry specs, assets, fonts, palettes, the save and test vectors as data. The Station keeps its JavaScript logic, headless, behind the same view contract the sandbox uses. The port is then a translation checked by measurement, not a rewrite, and it fits the hardware we have.
+**Overall.** The sandbox page is where the game is defined: rules, views, intent tables, spec files and assets in JavaScript and data. Its Station face is the device's own: LVGL 9 in C, compiled to WebAssembly, driven through props in and intents out. On the Pi the same face runs natively beside the same JavaScript logic under Node, with no browser. Once the loop holds, the Companion and the Caddy port to the same C words, carrying specs, assets, fonts, palettes, the save and test vectors as data. The port is a platform layer and a host, checked by golden framebuffers, not a rewrite, and it fits the hardware we have.
 
 ## 8. Assessment: the real LVGL face in the sandbox now
 
-**Proposal**, 2026-10-08, at the owner's question "are you even considering the LVGL framework? can we draw that?". **Decided:** the Station's device face is LVGL 9 in C (S1), and the Companion and the Caddy port to LVGL 9. The question here is only *when* the sandbox starts drawing through that same face. Can we? Yes. LVGL compiles to WebAssembly with Emscripten and draws through its SDL driver, or through a small display driver that copies dirty rectangles onto the page's canvas. The existing JavaScript logic drives it through the props-in, intents-out contract of §5.2.
+**Decided** (owner, 2026-10-08): switch now (§8.5). The build plan is [lvgl-switch.md](lvgl-switch.md), which governs where the two differ. This section is the assessment, made at the owner's question "are you even considering the LVGL framework? can we draw that?". **Decided:** the Station's device face is LVGL 9 in C (S1), and the Companion and the Caddy port to LVGL 9. The question was only *when* the sandbox starts drawing through that same face. Can we? Yes. LVGL compiles to WebAssembly with Emscripten and draws through its SDL driver, or through a small display driver that copies dirty rectangles onto the page's canvas. The existing JavaScript logic drives it through the props-in, intents-out contract of §5.2.
 
 **What it looks like.** The Station page loads `face.wasm`. The views compute Pods' props in JavaScript as they do today, and pass them as JSON. The C face sets LVGL objects from the spec file's rectangles, draws, and sends `{ target, verb }` back when a key is pressed. The rules never leave JavaScript, so the loop's mechanics still change at JavaScript speed.
 
@@ -287,7 +289,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 
 ### 8.2 Toolchain, build and speed
 
-| | Today (T1) | LVGL face in the sandbox |
+| | The JavaScript layer (T1) | LVGL face in the sandbox |
 | --- | --- | --- |
 | Toolchain | None beyond Node | Emscripten SDK pinned in CI and in builders' environments (about 1 GB installed, cached); CMake |
 | Source | About 900 lines of JavaScript | LVGL 9.6.0 unmodified, the 39 MB tree already in the repository (`v1/native/vendor/lvgl`, moved to a shared home, no new download); our face in C |
@@ -306,26 +308,26 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | Debugging C from a browser | Real, which is why the native Linux build comes with L0 |
 | The Companion's indexed renderer inside LVGL | LVGL draws into 16- or 32-bit buffers, not palette indexes. The world view keeps our indexed renderer writing an 8-bit indexed image that LVGL shows. Chrome is drawn with anti-aliasing off, in palette colours, and checked at zero from the framebuffer. Palette enforcement by construction holds for the world view only |
 | LVGL's XML components | Not in the open-source 9.6 tree we vendor, so we don't rely on them; our spec files feed absolute positions |
-| Screens built twice | While the JavaScript layer stays, every new Station screen (T2, M5, M6) is built once in JavaScript and again in C at P1 |
+| Screens built twice | Closed by decision (owner, 2026-10-09 11:27): no new screen or screen feature is built on the JavaScript drawing layer, and the freeze check enforces it (lvgl-switch.md §5.1), so every Station screen is built once, in C |
 | Slower iteration while art and layouts still move | Limited: rules, views and spec numbers stay hot-reloadable; only new or changed components compile |
 
 ### 8.4 Migration, with Pods working throughout
 
-| | Ships | Days (one builder) |
+| | Ships | Status |
 | --- | --- | --- |
-| **L0 Toolchain** | Emscripten in CI; the face as an empty 1024×600 LVGL display in the Station page behind `?face=lvgl`, the JavaScript layer still the default; the native Linux build; size and phone checks | 2–3 |
-| **L1 The frame in LVGL** | Top bar, bottom line, message plate, focus ring, panel from `frame.json`, driven by today's views over the bridge; fonts from the converter | 4–5 |
-| **L2 Pods to parity** | List, rail, page, specimen, stamp label; the focus graph and animations; the painted slices as LVGL images; checks on the framebuffer; the journey run against both faces | 5–7 |
-| **L3 Switch** | LVGL becomes the default; the JavaScript layer's drawing modules are deleted; T2, M5 and M6 continue on the LVGL face. **Superseded** by the development spec [lvgl-switch.md](lvgl-switch.md) (2026-10-09): L2.0 to L2.5 for every screen, then L3 | 1–2 |
+| **L0 Toolchain** | Emscripten in CI; the face as a 1024×600 LVGL display in the Station page behind `?face=lvgl`; the native Linux build; size and phone checks | Built |
+| **L1 The frame in LVGL** | Top bar, bottom line, message plate, focus ring, panel from `frame.json`; fonts from the converter | Built |
+| **L2 Pods to parity** | Pods drawn by the face, at pixel parity with the JavaScript capture | Built (ee1be339) |
+| **L2.0 to L2.5, then L3** | Every screen on C words behind the bridge, in lvgl-switch.md §3's order, each through the gate of §4; L3 deletes the JavaScript drawing layer. They replace T2 and M5 on the JavaScript layer | [lvgl-switch.md](lvgl-switch.md) §3 and §4 |
 
-**The price, honestly: 12 to 17 working days**, about three weeks, before the next new Station screen ships. Of those, roughly 9 to 12 are C work P1 needs anyway (the shared face, Station components, fonts and assets through LVGL). The rest, 3 to 5 days, is new: the WebAssembly glue, the bridge and the three-pass checks. Keeping the layer costs nothing now. At P1 it costs rebuilding in C every Station screen made in JavaScript in the meantime (Home, Create, Incubator, Habitat, the Library, Cross, Sitting), plus a period when sandbox and device faces can disagree.
+The day estimates are withdrawn: L0 to L2 took about five hours against the 11 to 15 days estimated (lvgl-switch.md §4). Milestones are sized relative to L2.
 
-### 8.5 Decision for the owner
+### 8.5 Decision
 
-**Switch the sandbox's Station face to LVGL now, or keep the JavaScript layer until the loop is stable and port then?** *Recommended: switch now*, through L0 to L3, before T2 and M5 build more screens.
+**Decided** (owner, 2026-10-08): the sandbox's Station face switches to LVGL now, before more screens are built on the JavaScript layer. **Decided** (owner, 2026-10-09 11:27): "deprecate the javascript layer"; no new screen or screen feature is built on it, and the remaining screens move to the face (L2 for every screen, then L3).
 
-- The device face is already decided as LVGL, so every Station screen built on the JavaScript layer would be built twice.
-- What the owner judges in the sandbox becomes exactly what the Pi will draw.
+- The device face is LVGL, so no Station screen is built twice.
+- What the owner judges in the sandbox is exactly what the Pi will draw.
 - The loop's speed is kept where it matters: rules, views and spec numbers stay in JavaScript and data.
 
-The cost is about three weeks before the next new screen, most of it pulled forward from the port. The Companion follows on the same build at C2, keeping its indexed world view.
+The Companion follows on the same C words at C2, keeping its indexed world view.

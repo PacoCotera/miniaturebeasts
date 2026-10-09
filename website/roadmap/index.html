@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172e25">
+<title>Roadmap · Miniature Beasts</title>
+<meta name="description" content="Every part of the Miniature Beasts kit: what it does today, what is being made and what comes after. Every item links to its notes, in the open.">
+<style>
+/* Tokens and type roles as the homepage (homepage-spec.md §3); layout from roadmap-page.md. */
+:root {
+  color-scheme: light;
+  --forest: #172e25;
+  --paper: #f5f2e9;
+  --sage: #dce3c5;
+  --panel: #e6e8dd;
+  --ink: #222e26;
+  --muted: #61725f;
+  --on-dark: #e5eadd;
+  --lime: #dcdf9b;
+  --orange: #ee9b58;
+  --line: #c9cec2;
+
+  /* The four type sizes. No others. */
+  --fs-display: clamp(2.75rem, 5vw, 4.5rem);
+  --fs-section: clamp(2rem, 3.4vw, 3.25rem);
+  --fs-body: 1.0625rem;
+  --fs-caption: 0.8125rem;
+
+  --content: 1200px;
+  --gutter: 32px;
+  --pad: 112px;
+  --radius: 12px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-synthesis: none;
+  scroll-behavior: smooth;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  overflow-x: clip;
+}
+
+h1, h2, h3, p, figure, ul, ol { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+img { display: block; width: 100%; height: auto; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: .2em; }
+/* Focus: 3 px ink on light grounds (the orange ring is 2.0:1 on paper); orange stays the ring on forest (§9). */
+a:focus-visible, summary:focus-visible, button:focus-visible { outline: 3px solid var(--ink); outline-offset: 4px; }
+.top a:focus-visible, .end a:focus-visible { outline-color: var(--orange); }
+
+.vh {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+
+/* Type roles */
+h1 {
+  font-size: var(--fs-display);
+  font-weight: 800;
+  line-height: .98;
+  letter-spacing: -.03em;
+  max-width: 20ch;
+}
+h1 span { color: var(--lime); }
+h2, .wordmark-lg {
+  font-size: var(--fs-section);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -.02em;
+  max-width: 22ch;
+}
+.copy { max-width: 36em; }
+.eyebrow, .label {
+  font-size: var(--fs-caption);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  line-height: 1.55;
+}
+.eyebrow { margin-bottom: 12px; color: var(--muted); }
+.caption {
+  font-size: var(--fs-caption);
+  line-height: 1.55;
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+/* Layout */
+.wrap {
+  max-width: calc(var(--content) + 2 * var(--gutter));
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+.section { padding: var(--pad) 0; }
+.head {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: 24px 48px;
+  align-items: end;
+}
+.head .copy { padding-bottom: .2em; }
+
+/* Buttons and nav */
+.button {
+  display: inline-block;
+  font: inherit;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 14px 22px;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+}
+.button.primary { background: var(--orange); color: var(--forest); }
+.button.ghost { box-shadow: inset 0 0 0 1.5px var(--on-dark); color: var(--on-dark); padding: 10px 18px; background: none; }
+.button.ghost.light { box-shadow: inset 0 0 0 1.5px var(--ink); color: var(--ink); }
+.button:hover { filter: brightness(1.06); }
+.link { font-weight: 700; color: var(--on-dark); }
+
+.skip {
+  position: absolute; left: 16px; top: -100px; z-index: 5;
+  background: var(--paper); color: var(--ink); padding: 12px; font-weight: 700;
+}
+.skip:focus { top: 16px; }
+
+/* Dark block 1: masthead + hero */
+.top { background: var(--forest); color: var(--on-dark); }
+.masthead {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  padding-top: 24px; padding-bottom: 24px;
+}
+.wordmark { font-weight: 800; text-transform: uppercase; letter-spacing: .04em; text-decoration: none; }
+.masthead nav { display: flex; align-items: center; gap: 28px; font-weight: 700; }
+.masthead nav a:not(.button) { text-decoration: none; }
+.masthead nav a:not(.button):hover { text-decoration: underline; }
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  column-gap: 48px;
+  align-items: start;
+  padding-top: 48px;
+  padding-bottom: 64px;
+}
+.hero .eyebrow { color: var(--lime); }
+.hero .copy { margin-top: 24px; }
+.updated { margin-top: 24px; color: rgb(229 234 221 / .75); }
+
+/* The glance (§4) */
+.glance {
+  border: 1px solid rgb(229 234 221 / .2);
+  border-radius: var(--radius);
+  padding: 8px 24px;
+}
+.glance[hidden] { display: none; }
+.glance table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.glance col.name { width: 192px; }
+.glance tr + tr { border-top: 1px solid rgb(229 234 221 / .2); }
+.glance th, .glance td { height: 48px; padding: 0; text-align: left; vertical-align: middle; }
+.glance th { font-weight: 700; }
+.glance th a { text-decoration: none; }
+.glance th a:hover { text-decoration: underline; }
+.glance .n { display: inline-flex; gap: .3em; color: rgb(229 234 221 / .75); white-space: nowrap; }
+.glance .n strong { color: var(--lime); }
+
+/* Toolbar */
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 48px; }
+.toolbar[hidden] { display: none; }
+
+/* The board (§4) */
+.mod { padding: 48px 0; }
+.mod + .mod > .wrap::before {
+  content: "";
+  display: block;
+  border-top: 1px solid var(--line);
+  margin-top: -48px;
+  margin-bottom: 48px;
+}
+.mod-name { display: flex; align-items: center; gap: 20px; }
+.mod-name img { width: 80px; height: 80px; border-radius: 8px; flex: none; }
+.lanes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 32px; align-items: start; }
+.lanes h3 {
+  display: flex; align-items: center; gap: 8px;
+  font-size: var(--fs-caption); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; line-height: 1.55;
+  color: var(--ink);
+}
+.lanes h3 svg { width: 12px; height: 12px; flex: none; color: var(--forest); }
+.cards { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.slot { height: 50px; border: 1px dashed var(--line); border-radius: 8px; }
+
+/* An item (§5): the homepage FAQ disclosure as a card */
+.card { border: 1px solid transparent; border-radius: 8px; background: var(--panel); }
+.card.next, .card.later { background: none; border-color: var(--line); }
+.card summary {
+  font-weight: 700; cursor: pointer; list-style: none;
+  display: flex; justify-content: space-between; gap: 16px;
+  padding: 11px 15px;
+}
+.card summary::-webkit-details-marker { display: none; }
+.card summary::after { content: "+"; font-weight: 400; }
+.card[open] summary::after { content: "−"; }
+.card .body { padding: 0 15px 13px; }
+.card .more { margin-top: 8px; font-size: var(--fs-caption); font-weight: 700; line-height: 1.55; }
+
+/* Dark block 2: end + footer */
+.end { background: var(--forest); color: var(--on-dark); }
+.end .section { padding-bottom: 64px; }
+.end .eyebrow { color: var(--lime); }
+.end h2 + .copy { margin-top: 24px; }
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 28px; margin-top: 32px; }
+.end .caption { color: rgb(229 234 221 / .75); }
+footer { padding-bottom: 32px; }
+.foot {
+  border-top: 1px solid rgb(229 234 221 / .2);
+  padding-top: 48px;
+  display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 16px 32px;
+}
+.wordmark-lg { text-transform: uppercase; text-decoration: none; max-width: none; }
+.foot nav { display: flex; flex-wrap: wrap; gap: 8px 28px; font-weight: 700; }
+.foot nav a { text-decoration: none; }
+.foot nav a:hover { text-decoration: underline; }
+.foot-lines { margin-top: 24px; }
+.foot-lines .caption { max-width: none; }
+.build { text-align: right; margin-top: 24px; max-width: none; color: rgb(229 234 221 / .45) !important; }
+
+/* Phone (§8) */
+#board { padding-bottom: 64px; }
+@media (max-width: 760px) {
+  #board { padding-bottom: 40px; }
+  :root { --gutter: 16px; --pad: 64px; }
+  .masthead nav a:not(.button) { display: none; }
+  .head { grid-template-columns: 1fr; gap: 12px; }
+  .head .copy { padding-bottom: 0; }
+
+  .hero { grid-template-columns: 1fr; row-gap: 32px; padding-top: 24px; padding-bottom: 48px; }
+  .glance { padding: 4px 16px; }
+  .glance col.name { width: 96px; }
+  .glance th, .glance td { height: 56px; }
+  .glance th { font-size: var(--fs-caption); line-height: 1.3; }
+  .glance .n { display: block; line-height: 1.3; }
+  .glance .n strong, .glance .n span { display: block; }
+  .glance .n span { font-size: var(--fs-caption); }
+
+  .toolbar { padding-top: 40px; }
+  .toolbar .caption { max-width: 20ch; }
+
+  .mod { padding: 40px 0; }
+  .mod + .mod > .wrap::before { margin-top: -40px; margin-bottom: 40px; }
+  .mod-name { gap: 16px; }
+  .mod-name img { width: 56px; height: 56px; }
+  .lanes { grid-template-columns: 1fr; margin-top: 24px; }
+  .lane.empty { display: none; }
+
+  .end .section { padding-top: 64px; padding-bottom: 48px; }
+  .build { text-align: left; }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#board">Skip to the roadmap</a>
+
+<div class="top">
+  <header class="wrap masthead">
+    <a class="wordmark" href="../">Miniature Beasts</a>
+    <nav aria-label="Main">
+      <a href="../">Home</a>
+      <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+      <a class="button ghost" href="../sandbox/exploration/">Play</a>
+    </nav>
+  </header>
+
+  <section class="wrap hero" aria-labelledby="hero-title">
+    <div>
+      <p class="eyebrow">Roadmap</p>
+      <h1 id="hero-title">What’s here.<br><span>What’s coming.</span></h1>
+      <p class="copy">Every part of the kit: what it does today, what is being made and what comes after. Every item links to its notes, in the open.</p>
+      <p class="caption updated" id="updated" hidden></p>
+    </div>
+    <div class="glance" id="glance" hidden>
+      <table>
+        <caption class="vh">How many items each part has in each stage</caption>
+        <colgroup><col class="name"><col><col><col><col></colgroup>
+        <tbody id="glance-rows"></tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<main id="board">
+  <div class="wrap toolbar" id="toolbar" hidden>
+    <p class="caption">Open any item for what it does.</p>
+    <button class="button ghost light" type="button" id="open-all" aria-pressed="false">Open all</button>
+  </div>
+  <div id="modules">
+    <noscript><div class="mod"><div class="wrap"><p class="copy">The roadmap did not load. <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/ROADMAP.md">Read it on GitHub.</a></p></div></div></noscript>
+  </div>
+</main>
+
+<div class="end">
+  <section class="section" id="open" aria-labelledby="end-title">
+    <div class="wrap">
+      <p class="eyebrow">Made in the open</p>
+      <h2 id="end-title">Play it today.<br>Follow every change.</h2>
+      <p class="copy">The field test runs in your browser now. The code, the design and this roadmap are open source, made in public.</p>
+      <div class="actions">
+        <a class="button primary" href="../sandbox/exploration/">Play the field test</a>
+        <a class="link" href="https://github.com/PacoCotera/miniaturebeasts">Source on GitHub</a>
+      </div>
+    </div>
+  </section>
+  <footer class="wrap">
+    <div class="foot">
+      <a class="wordmark-lg" href="../">Miniature Beasts</a>
+      <nav aria-label="Footer">
+        <a href="https://github.com/PacoCotera/miniaturebeasts">GitHub</a>
+        <a href="./" aria-current="page">Roadmap</a>
+        <a href="https://github.com/PacoCotera/miniaturebeasts/blob/main/LICENSING.md">Licensing</a>
+      </nav>
+    </div>
+    <div class="foot-lines">
+      <p class="caption">A project by Dirty Pawz Press · Mexico City</p>
+      <p class="caption">Software AGPL-3.0 · Hardware CERN-OHL-S-2.0 · Documentation and art CC BY-SA 4.0</p>
+    </div>
+    <p class="caption build" id="build">build pending</p>
+  </footer>
+</div>
+<script>
+(() => {
+  const REPO = 'https://github.com/PacoCotera/miniaturebeasts/';
+  // Stage order, lane label and glance word (§4). Marks: 12×12, currentColor, beside the lane label only.
+  const STAGES = [
+    { id: 'live', label: 'Live', mark: '<circle cx="6" cy="6" r="6" fill="currentColor"/>' },
+    { id: 'building', label: 'Building', mark: '<circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 1a5 5 0 0 0 0 10z" fill="currentColor"/>' },
+    { id: 'next', label: 'Next', mark: '<circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="2"/>' },
+    { id: 'later', label: 'Later', mark: '<circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 1.93"/>' },
+  ];
+  const KNOWN = new Set(STAGES.map(s => s.id));
+
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+    for (const k of kids) n.append(k);   // strings become text nodes, never HTML
+    return n;
+  };
+  const mark = (s) => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 12 12');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.innerHTML = s.mark;   // fixed markup above, never data
+    return svg;
+  };
+  const href = (link) => REPO + (link.endsWith('/') ? 'tree/main/' : 'blob/main/') + link;
+
+  function render(data) {
+    const updated = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })
+      .format(new Date(data.updated + 'T00:00:00Z'));
+    const up = document.getElementById('updated');
+    up.textContent = 'Updated ' + updated;
+    up.hidden = false;
+
+    const rows = document.getElementById('glance-rows');
+    const board = document.getElementById('modules');
+    board.replaceChildren();
+
+    for (const m of data.modules) {
+      const items = m.items.filter(it => {
+        if (KNOWN.has(it.status)) return true;
+        console.warn('roadmap: skipped an item with an unknown status', it.status, it.title);
+        return false;
+      });
+
+      // The glance: one row per module, a count and its stage in words, a blank cell for an empty stage.
+      const tr = el('tr', {}, el('th', { scope: 'row' }, el('a', { href: '#' + m.id }, m.name)));
+      for (const s of STAGES) {
+        const n = items.filter(it => it.status === s.id).length;
+        tr.append(el('td', {}, n
+          ? el('span', { class: 'n' }, el('strong', {}, String(n)), el('span', {}, ' ' + s.id))
+          : el('span', { class: 'vh' }, '0 ' + s.id)));
+      }
+      rows.append(tr);
+
+      // The board: head, then four lanes in stage order.
+      const name = el('div', { class: 'mod-name' });
+      if (m.image) name.append(el('img', { src: '../' + m.image, width: '80', height: '80', alt: '', loading: 'lazy' }));
+      name.append(el('h2', { id: m.id + '-title' }, m.name));
+      const lanes = el('div', { class: 'lanes' });
+      for (const s of STAGES) {
+        const here = items.filter(it => it.status === s.id);
+        const lane = el('div', { class: 'lane' + (here.length ? '' : ' empty') }, el('h3', {}, mark(s), s.label));
+        const cards = el('div', { class: 'cards' });
+        if (here.length) {
+          for (const it of here) {
+            cards.append(el('details', { class: 'card ' + s.id },
+              el('summary', {}, it.title),
+              el('div', { class: 'body' },
+                el('p', {}, it.text),
+                el('p', { class: 'more' }, el('a', { href: href(it.link) }, 'Read on GitHub')))));
+          }
+        } else {
+          cards.append(el('div', { class: 'slot', 'aria-hidden': 'true' }), el('p', { class: 'vh' }, 'Nothing here yet.'));
+        }
+        lane.append(cards);
+        lanes.append(lane);
+      }
+      board.append(el('section', { class: 'mod', id: m.id, 'aria-labelledby': m.id + '-title' },
+        el('div', { class: 'wrap' },
+          el('div', { class: 'head' }, name, el('p', { class: 'copy' }, m.oneLine)),
+          lanes)));
+    }
+    document.getElementById('glance').hidden = false;
+    document.getElementById('toolbar').hidden = false;
+    if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
+  }
+
+  function failed() {
+    document.getElementById('updated').hidden = true;
+    document.getElementById('modules').replaceChildren(
+      el('div', { class: 'mod' }, el('div', { class: 'wrap' }, el('p', { class: 'copy' },
+        'The roadmap did not load. ',
+        el('a', { href: REPO + 'blob/main/ROADMAP.md' }, 'Read it on GitHub.')))));
+  }
+
+  // Open all: opens every card, then closes every card; not persisted.
+  const toggle = document.getElementById('open-all');
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-pressed') !== 'true';
+    for (const d of document.querySelectorAll('#modules details')) d.open = open;
+    toggle.setAttribute('aria-pressed', String(open));
+    toggle.textContent = open ? 'Close all' : 'Open all';
+  });
+
+  fetch('../roadmap.json')
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(render)
+    .catch(e => { console.warn('roadmap: did not load', e); failed(); });
+
+  fetch('../build.json').then(r => r.json()).then(b => {
+    const p = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {timeZone: 'America/Mexico_City', hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}).formatToParts(new Date(b.built)).map(x => [x.type, x.value]));
+    document.getElementById('build').textContent = 'build ' + b.short + ' · ' + p.year + '-' + p.month + '-' + p.day + ' ' + p.hour + ':' + p.minute;
+  }).catch(() => { document.getElementById('build').textContent = 'local build'; });
+})();
+</script>
+</body>
+</html>

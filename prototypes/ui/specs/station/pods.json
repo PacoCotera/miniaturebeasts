@@ -26,6 +26,7 @@
   "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture",
   "stand-in card fill": "withdrawn (UI designer, 2026-10-09, the owner's choice of the open page (B) and the owner's corrections (\"too tight… the bird head at 75%… a bit more spacing between cells\")): the cell's tone is colours.page.cell (`ground`) on the chapter page and on Compare. Was `cardFill` until the cards existed",
   "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered",
+  "ring forms": "`ring` is the target group's focus ring form (frame.json focus.ring.forms). A place wears the circle 4 px outside its collection ring: radius 84 round (x + 96, y + 112), the ring's centre (regions.collection.ring.centre), the picture [x + 12, y + 28, 168, 168]. A kin wears the circle 4 px outside its own: radius (w >> 1) + 4 round the box's centre. The pod and the hatch wear the round ring 4 px outside their boxes; the pod's ring rides its 4 px lift and is never drawn on the dish. A tab wears the tab ring (frame.json focus.ring.tab)",
   "ordered edges at L2.0": "UI designer, 2026-10-09, on the architect's ruling of 12:25 (lvgl-switch.md §2.6.1): with L2.0's focus port, focus.overview.pod.right becomes [\"kin.first\", \"hatch\"] and focus.overview.hatch.up [\"kin.first\", \"none\"], so a pod with no kin keeps today's moves when the view resolves kin.first to null. At L2.1, when the figure is a target, pod.right becomes [\"figure\", \"kin.first\", \"hatch\"]. Written here, not in focus.overview, until the port lands: today's focus.mjs and specs.test.mjs take no lists",
   "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane"
  },
@@ -90,7 +91,7 @@
     },
     "paint": "colours.collectionRingPaint: the paint reference for the masters; the build draws no arcs",
     "focus": {
-     "shape": "circle",
+     "form": "targets.place.ring",
      "radius": 84,
      "width": 2,
      "colour": "focus"
@@ -115,14 +116,14 @@
     "px": 20,
     "weight": 500,
     "plate": {
+     "series": "plate-name",
      "pad": 12,
      "round": 16,
      "min": 80,
      "max": 224,
      "h": 24
     },
-    "noDigits": true,
-    "slice": "plate-name (the hugging nine-slice series)"
+    "noDigits": true
    },
    "place": {
     "at": [
@@ -239,6 +240,7 @@
     "centre": 256,
     "noDigits": true,
     "plate": {
+     "series": "plate-name",
      "pad": 12,
      "round": 16,
      "min": 80,
@@ -519,6 +521,7 @@
     "centre": 216,
     "noDigits": true,
     "plate": {
+     "series": "plate-name",
      "pad": 12,
      "round": 16,
      "min": 80,
@@ -1213,25 +1216,26 @@
  "targets": {
   "place": {
    "group": "place",
-   "shape": "round",
+   "ring": { "circle": { "radius": 84, "centre": [96, 112] } },
    "state": "collection"
   },
   "pod": {
    "group": "pod",
-   "shape": "ellipse",
+   "ring": "round",
    "state": "overview"
   },
   "tab": {
    "group": "rail",
-   "ring": "frame.focus.ring.tab"
+   "ring": "tab"
   },
   "kin": {
    "group": "kin",
-   "shape": "circle",
+   "ring": { "circle": { "outside": 4 } },
    "state": "overview"
   },
   "hatch": {
    "group": "hatch",
+   "ring": "round",
    "state": "overview"
   }
  },

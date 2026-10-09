@@ -3,7 +3,7 @@ name: Sandbox
 on:
   push:
     branches: [main]
-    paths: ['website/**', 'prototypes/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs']
+    paths: ['website/**', 'prototypes/**', 'v1/native/vendor/lvgl/**', 'ops/sandbox/**', 'ops/ledger/**', '.github/workflows/site.yml', '.github/smoke.mjs', '.github/roadmap.test.mjs']
   pull_request:
     # The gates hold before a merge, not after it (lvgl-switch.md §6 Q2 v), on every pull request into main, whatever it touches: the Sandbox `build` check is one main will require.
     # The release and the gh-pages steps below run on main only.
@@ -95,7 +95,7 @@ jobs:
         # the painting landing, the service down and back); station-build.md §5.
         run: |
           set -euo pipefail
-          node --test prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs
+          node --test .github/roadmap.test.mjs prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/station/tools/journey.mjs
       - name: Placed masters match their index
         # Every master placed in prototypes/ui/assets/masters (by ui/tools/place-masters.mjs) is checked against its index entry: file present, size, SHA-256.
