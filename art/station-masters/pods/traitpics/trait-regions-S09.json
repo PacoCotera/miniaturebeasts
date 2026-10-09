@@ -1,0 +1,1505 @@
+{
+ "species": "S09",
+ "painting": "prototypes/workbench/grow/out/S09/3982a7117cfa0fc3/station-side-600x620.png",
+ "size": [
+  600,
+  620
+ ],
+ "note": "hand-placed rectangles on the standard painting for round 1; the rig's index pass would place them exactly",
+ "traits": {
+  "coat/Colour": {
+   "chapter": "coat",
+   "trait": "Colour",
+   "look": "cobalt and jade",
+   "rect": [
+    295,
+    285,
+    435,
+    465
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      293,
+      285,
+      437,
+      465
+     ],
+     "source_px": [
+      144,
+      180
+     ],
+     "slice": "trait-S09-colour-cobalt-and-jade-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      291,
+      285,
+      439,
+      465
+     ],
+     "source_px": [
+      148,
+      180
+     ],
+     "slice": "trait-S09-colour-cobalt-and-jade-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      295,
+      267,
+      435,
+      483
+     ],
+     "source_px": [
+      140,
+      216
+     ],
+     "slice": "trait-S09-colour-cobalt-and-jade-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      268,
+      285,
+      462,
+      465
+     ],
+     "source_px": [
+      194,
+      180
+     ],
+     "slice": "trait-S09-colour-cobalt-and-jade-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      219,
+      285,
+      511,
+      465
+     ],
+     "source_px": [
+      292,
+      180
+     ],
+     "slice": "trait-S09-colour-cobalt-and-jade-104x64",
+     "flag": null
+    }
+   }
+  },
+  "coat/Fluff": {
+   "chapter": "coat",
+   "trait": "Fluff",
+   "look": "short, straight",
+   "rect": [
+    395,
+    205,
+    525,
+    335
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      395,
+      189,
+      525,
+      351
+     ],
+     "source_px": [
+      130,
+      162
+     ],
+     "slice": "trait-S09-fluff-short-straight-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      388,
+      182,
+      532,
+      358
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-fluff-short-straight-144x176",
+     "flag": "the part is 130x130 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      395,
+      170,
+      525,
+      370
+     ],
+     "source_px": [
+      130,
+      200
+     ],
+     "slice": "trait-S09-fluff-short-straight-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      390,
+      205,
+      530,
+      335
+     ],
+     "source_px": [
+      140,
+      130
+     ],
+     "slice": "trait-S09-fluff-short-straight-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      354,
+      205,
+      566,
+      335
+     ],
+     "source_px": [
+      212,
+      130
+     ],
+     "slice": "trait-S09-fluff-short-straight-104x64",
+     "flag": null
+    }
+   }
+  },
+  "coat/Sheen": {
+   "chapter": "coat",
+   "trait": "Sheen",
+   "look": "between",
+   "rect": [
+    200,
+    285,
+    300,
+    400
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      186,
+      262,
+      314,
+      422
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-sheen-between-128x160",
+     "flag": "the part is 100x115 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      178,
+      254,
+      322,
+      430
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-sheen-between-144x176",
+     "flag": "the part is 100x115 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      198,
+      262,
+      302,
+      422
+     ],
+     "source_px": [
+      104,
+      160
+     ],
+     "slice": "trait-S09-sheen-between-104x160",
+     "flag": "the part is 100x115 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x96": {
+     "window": [
+      188,
+      285,
+      312,
+      400
+     ],
+     "source_px": [
+      124,
+      115
+     ],
+     "slice": "trait-S09-sheen-between-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      157,
+      285,
+      343,
+      400
+     ],
+     "source_px": [
+      186,
+      115
+     ],
+     "slice": "trait-S09-sheen-between-104x64",
+     "flag": null
+    }
+   }
+  },
+  "coat/Feathers": {
+   "chapter": "coat",
+   "trait": "Feathers",
+   "look": "between",
+   "rect": [
+    165,
+    95,
+    355,
+    310
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      165,
+      84,
+      355,
+      321
+     ],
+     "source_px": [
+      190,
+      237
+     ],
+     "slice": "trait-S09-feathers-between-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      165,
+      86,
+      355,
+      319
+     ],
+     "source_px": [
+      190,
+      233
+     ],
+     "slice": "trait-S09-feathers-between-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      165,
+      56,
+      355,
+      349
+     ],
+     "source_px": [
+      190,
+      293
+     ],
+     "slice": "trait-S09-feathers-between-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      144,
+      95,
+      376,
+      310
+     ],
+     "source_px": [
+      232,
+      215
+     ],
+     "slice": "trait-S09-feathers-between-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      85,
+      95,
+      435,
+      310
+     ],
+     "source_px": [
+      350,
+      215
+     ],
+     "slice": "trait-S09-feathers-between-104x64",
+     "flag": null
+    }
+   }
+  },
+  "coat/Tufts": {
+   "chapter": "coat",
+   "trait": "Tufts",
+   "look": "tail",
+   "rect": [
+    30,
+    190,
+    125,
+    275
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      14,
+      152,
+      142,
+      312
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-tufts-tail-128x160",
+     "flag": "the part is 95x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      6,
+      144,
+      150,
+      320
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-tufts-tail-144x176",
+     "flag": "the part is 95x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      26,
+      152,
+      130,
+      312
+     ],
+     "source_px": [
+      104,
+      160
+     ],
+     "slice": "trait-S09-tufts-tail-104x160",
+     "flag": "the part is 95x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x96": {
+     "window": [
+      26,
+      184,
+      130,
+      280
+     ],
+     "source_px": [
+      104,
+      96
+     ],
+     "slice": "trait-S09-tufts-tail-104x96",
+     "flag": "the part is 95x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x64": {
+     "window": [
+      8,
+      190,
+      147,
+      275
+     ],
+     "source_px": [
+      139,
+      85
+     ],
+     "slice": "trait-S09-tufts-tail-104x64",
+     "flag": null
+    }
+   }
+  },
+  "coat/Trim": {
+   "chapter": "coat",
+   "trait": "Trim",
+   "look": "cream",
+   "rect": [
+    205,
+    395,
+    330,
+    565
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      200,
+      395,
+      336,
+      565
+     ],
+     "source_px": [
+      136,
+      170
+     ],
+     "slice": "trait-S09-trim-cream-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      196,
+      392,
+      340,
+      568
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-trim-cream-144x176",
+     "flag": "the part is 125x170 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      205,
+      384,
+      330,
+      576
+     ],
+     "source_px": [
+      125,
+      192
+     ],
+     "slice": "trait-S09-trim-cream-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      175,
+      395,
+      360,
+      565
+     ],
+     "source_px": [
+      185,
+      170
+     ],
+     "slice": "trait-S09-trim-cream-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      129,
+      395,
+      406,
+      565
+     ],
+     "source_px": [
+      277,
+      170
+     ],
+     "slice": "trait-S09-trim-cream-104x64",
+     "flag": null
+    }
+   }
+  },
+  "face/Head": {
+   "chapter": "face",
+   "trait": "Head",
+   "look": "between small and medium",
+   "rect": [
+    480,
+    190,
+    600,
+    350
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      472,
+      190,
+      600,
+      350
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-head-between-small-and-medium-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      456,
+      182,
+      600,
+      358
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-head-between-small-and-medium-144x176",
+     "flag": "the part is 120x160 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      480,
+      178,
+      600,
+      362
+     ],
+     "source_px": [
+      120,
+      184
+     ],
+     "slice": "trait-S09-head-between-small-and-medium-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      427,
+      190,
+      600,
+      350
+     ],
+     "source_px": [
+      173,
+      160
+     ],
+     "slice": "trait-S09-head-between-small-and-medium-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      340,
+      190,
+      600,
+      350
+     ],
+     "source_px": [
+      260,
+      160
+     ],
+     "slice": "trait-S09-head-between-small-and-medium-104x64",
+     "flag": null
+    }
+   }
+  },
+  "face/Beak": {
+   "chapter": "face",
+   "trait": "Beak",
+   "look": "short",
+   "rect": [
+    545,
+    255,
+    600,
+    315
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      472,
+      205,
+      600,
+      365
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-beak-short-128x160",
+     "flag": "the part is 55x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      456,
+      197,
+      600,
+      373
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-beak-short-144x176",
+     "flag": "the part is 55x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      496,
+      205,
+      600,
+      365
+     ],
+     "source_px": [
+      104,
+      160
+     ],
+     "slice": "trait-S09-beak-short-104x160",
+     "flag": "the part is 55x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x96": {
+     "window": [
+      496,
+      237,
+      600,
+      333
+     ],
+     "source_px": [
+      104,
+      96
+     ],
+     "slice": "trait-S09-beak-short-104x96",
+     "flag": "the part is 55x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x64": {
+     "window": [
+      496,
+      253,
+      600,
+      317
+     ],
+     "source_px": [
+      104,
+      64
+     ],
+     "slice": "trait-S09-beak-short-104x64",
+     "flag": "the part is 55x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged"
+    }
+   }
+  },
+  "face/Crest": {
+   "chapter": "face",
+   "trait": "Crest",
+   "look": "between",
+   "rect": [
+    480,
+    125,
+    560,
+    215
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      456,
+      90,
+      584,
+      250
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-crest-between-128x160",
+     "flag": "the part is 80x90 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      448,
+      82,
+      592,
+      258
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-crest-between-144x176",
+     "flag": "the part is 80x90 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      468,
+      90,
+      572,
+      250
+     ],
+     "source_px": [
+      104,
+      160
+     ],
+     "slice": "trait-S09-crest-between-104x160",
+     "flag": "the part is 80x90 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x96": {
+     "window": [
+      468,
+      122,
+      572,
+      218
+     ],
+     "source_px": [
+      104,
+      96
+     ],
+     "slice": "trait-S09-crest-between-104x96",
+     "flag": "the part is 80x90 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x64": {
+     "window": [
+      447,
+      125,
+      593,
+      215
+     ],
+     "source_px": [
+      146,
+      90
+     ],
+     "slice": "trait-S09-crest-between-104x64",
+     "flag": null
+    }
+   }
+  },
+  "face/Crown": {
+   "chapter": "face",
+   "trait": "Crown",
+   "look": "tall",
+   "rect": [
+    470,
+    195,
+    570,
+    255
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      456,
+      145,
+      584,
+      305
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-crown-tall-128x160",
+     "flag": "the part is 100x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      448,
+      137,
+      592,
+      313
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-crown-tall-144x176",
+     "flag": "the part is 100x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      468,
+      145,
+      572,
+      305
+     ],
+     "source_px": [
+      104,
+      160
+     ],
+     "slice": "trait-S09-crown-tall-104x160",
+     "flag": "the part is 100x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x96": {
+     "window": [
+      468,
+      177,
+      572,
+      273
+     ],
+     "source_px": [
+      104,
+      96
+     ],
+     "slice": "trait-S09-crown-tall-104x96",
+     "flag": "the part is 100x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x64": {
+     "window": [
+      468,
+      193,
+      572,
+      257
+     ],
+     "source_px": [
+      104,
+      64
+     ],
+     "slice": "trait-S09-crown-tall-104x64",
+     "flag": "the part is 100x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged"
+    }
+   }
+  },
+  "face/Eyes": {
+   "chapter": "face",
+   "trait": "Eyes",
+   "look": "small",
+   "rect": [
+    535,
+    225,
+    585,
+    275
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      472,
+      170,
+      600,
+      330
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-eyes-small-128x160",
+     "flag": "the part is 50x50 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      456,
+      162,
+      600,
+      338
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-eyes-small-144x176",
+     "flag": "the part is 50x50 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      496,
+      170,
+      600,
+      330
+     ],
+     "source_px": [
+      104,
+      160
+     ],
+     "slice": "trait-S09-eyes-small-104x160",
+     "flag": "the part is 50x50 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x96": {
+     "window": [
+      496,
+      202,
+      600,
+      298
+     ],
+     "source_px": [
+      104,
+      96
+     ],
+     "slice": "trait-S09-eyes-small-104x96",
+     "flag": "the part is 50x50 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x64": {
+     "window": [
+      496,
+      218,
+      600,
+      282
+     ],
+     "source_px": [
+      104,
+      64
+     ],
+     "slice": "trait-S09-eyes-small-104x64",
+     "flag": "the part is 50x50 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged"
+    }
+   }
+  },
+  "shape/Waist": {
+   "chapter": "shape",
+   "trait": "Waist",
+   "look": "thick",
+   "rect": [
+    310,
+    330,
+    420,
+    420
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      301,
+      295,
+      429,
+      455
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-waist-thick-128x160",
+     "flag": "the part is 110x90 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      293,
+      287,
+      437,
+      463
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-waist-thick-144x176",
+     "flag": "the part is 110x90 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      310,
+      290,
+      420,
+      460
+     ],
+     "source_px": [
+      110,
+      170
+     ],
+     "slice": "trait-S09-waist-thick-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      310,
+      324,
+      420,
+      426
+     ],
+     "source_px": [
+      110,
+      102
+     ],
+     "slice": "trait-S09-waist-thick-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      292,
+      330,
+      438,
+      420
+     ],
+     "source_px": [
+      146,
+      90
+     ],
+     "slice": "trait-S09-waist-thick-104x64",
+     "flag": null
+    }
+   }
+  },
+  "shape/Topline": {
+   "chapter": "shape",
+   "trait": "Topline",
+   "look": "arched",
+   "rect": [
+    200,
+    260,
+    420,
+    325
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      200,
+      155,
+      420,
+      430
+     ],
+     "source_px": [
+      220,
+      275
+     ],
+     "slice": "trait-S09-topline-arched-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      200,
+      158,
+      420,
+      427
+     ],
+     "source_px": [
+      220,
+      269
+     ],
+     "slice": "trait-S09-topline-arched-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      200,
+      123,
+      420,
+      462
+     ],
+     "source_px": [
+      220,
+      339
+     ],
+     "slice": "trait-S09-topline-arched-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      200,
+      191,
+      420,
+      394
+     ],
+     "source_px": [
+      220,
+      203
+     ],
+     "slice": "trait-S09-topline-arched-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      200,
+      225,
+      420,
+      360
+     ],
+     "source_px": [
+      220,
+      135
+     ],
+     "slice": "trait-S09-topline-arched-104x64",
+     "flag": null
+    }
+   }
+  },
+  "shape/Haunch": {
+   "chapter": "shape",
+   "trait": "Haunch",
+   "look": "small",
+   "rect": [
+    200,
+    285,
+    310,
+    400
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      191,
+      262,
+      319,
+      422
+     ],
+     "source_px": [
+      128,
+      160
+     ],
+     "slice": "trait-S09-haunch-small-128x160",
+     "flag": "the part is 110x115 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "144x176": {
+     "window": [
+      183,
+      254,
+      327,
+      430
+     ],
+     "source_px": [
+      144,
+      176
+     ],
+     "slice": "trait-S09-haunch-small-144x176",
+     "flag": "the part is 110x115 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+    },
+    "104x160": {
+     "window": [
+      200,
+      258,
+      310,
+      427
+     ],
+     "source_px": [
+      110,
+      169
+     ],
+     "slice": "trait-S09-haunch-small-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      193,
+      285,
+      317,
+      400
+     ],
+     "source_px": [
+      124,
+      115
+     ],
+     "slice": "trait-S09-haunch-small-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      162,
+      285,
+      348,
+      400
+     ],
+     "source_px": [
+      186,
+      115
+     ],
+     "slice": "trait-S09-haunch-small-104x64",
+     "flag": null
+    }
+   }
+  },
+  "shape/Body": {
+   "chapter": "shape",
+   "trait": "Body",
+   "look": "pear",
+   "rect": [
+    290,
+    285,
+    440,
+    470
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      290,
+      284,
+      440,
+      471
+     ],
+     "source_px": [
+      150,
+      187
+     ],
+     "slice": "trait-S09-body-pear-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      289,
+      285,
+      441,
+      470
+     ],
+     "source_px": [
+      152,
+      185
+     ],
+     "slice": "trait-S09-body-pear-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      290,
+      262,
+      440,
+      493
+     ],
+     "source_px": [
+      150,
+      231
+     ],
+     "slice": "trait-S09-body-pear-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      265,
+      285,
+      465,
+      470
+     ],
+     "source_px": [
+      200,
+      185
+     ],
+     "slice": "trait-S09-body-pear-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      215,
+      285,
+      515,
+      470
+     ],
+     "source_px": [
+      300,
+      185
+     ],
+     "slice": "trait-S09-body-pear-104x64",
+     "flag": null
+    }
+   }
+  },
+  "shape/Build": {
+   "chapter": "shape",
+   "trait": "Build",
+   "look": "low",
+   "rect": [
+    150,
+    250,
+    450,
+    470
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      150,
+      172,
+      450,
+      548
+     ],
+     "source_px": [
+      300,
+      376
+     ],
+     "slice": "trait-S09-build-low-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      150,
+      177,
+      450,
+      543
+     ],
+     "source_px": [
+      300,
+      366
+     ],
+     "slice": "trait-S09-build-low-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      150,
+      129,
+      450,
+      591
+     ],
+     "source_px": [
+      300,
+      462
+     ],
+     "slice": "trait-S09-build-low-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      150,
+      222,
+      450,
+      498
+     ],
+     "source_px": [
+      300,
+      276
+     ],
+     "slice": "trait-S09-build-low-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      121,
+      250,
+      479,
+      470
+     ],
+     "source_px": [
+      358,
+      220
+     ],
+     "slice": "trait-S09-build-low-104x64",
+     "flag": null
+    }
+   }
+  },
+  "legs-tail/Carriage": {
+   "chapter": "legs-tail",
+   "trait": "Carriage",
+   "look": "straight",
+   "rect": [
+    130,
+    250,
+    300,
+    360
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      130,
+      199,
+      300,
+      411
+     ],
+     "source_px": [
+      170,
+      212
+     ],
+     "slice": "trait-S09-carriage-straight-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      130,
+      201,
+      300,
+      409
+     ],
+     "source_px": [
+      170,
+      208
+     ],
+     "slice": "trait-S09-carriage-straight-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      130,
+      174,
+      300,
+      436
+     ],
+     "source_px": [
+      170,
+      262
+     ],
+     "slice": "trait-S09-carriage-straight-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      130,
+      227,
+      300,
+      383
+     ],
+     "source_px": [
+      170,
+      156
+     ],
+     "slice": "trait-S09-carriage-straight-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      126,
+      250,
+      304,
+      360
+     ],
+     "source_px": [
+      178,
+      110
+     ],
+     "slice": "trait-S09-carriage-straight-104x64",
+     "flag": null
+    }
+   }
+  },
+  "legs-tail/Tail": {
+   "chapter": "legs-tail",
+   "trait": "Tail",
+   "look": "between",
+   "rect": [
+    30,
+    185,
+    215,
+    335
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      30,
+      144,
+      215,
+      376
+     ],
+     "source_px": [
+      185,
+      232
+     ],
+     "slice": "trait-S09-tail-between-128x160",
+     "flag": null
+    },
+    "144x176": {
+     "window": [
+      30,
+      147,
+      215,
+      373
+     ],
+     "source_px": [
+      185,
+      226
+     ],
+     "slice": "trait-S09-tail-between-144x176",
+     "flag": null
+    },
+    "104x160": {
+     "window": [
+      30,
+      118,
+      215,
+      402
+     ],
+     "source_px": [
+      185,
+      284
+     ],
+     "slice": "trait-S09-tail-between-104x160",
+     "flag": null
+    },
+    "104x96": {
+     "window": [
+      30,
+      175,
+      215,
+      345
+     ],
+     "source_px": [
+      185,
+      170
+     ],
+     "slice": "trait-S09-tail-between-104x96",
+     "flag": null
+    },
+    "104x64": {
+     "window": [
+      1,
+      185,
+      244,
+      335
+     ],
+     "source_px": [
+      243,
+      150
+     ],
+     "slice": "trait-S09-tail-between-104x64",
+     "flag": null
+    }
+   }
+  }
+ }
+}

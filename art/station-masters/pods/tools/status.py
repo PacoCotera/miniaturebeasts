@@ -65,6 +65,7 @@ for n in m:
     elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 23 verdict", "placeholder, re-cut from the standard painting when it lands")
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
+    elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")
     elif re.match(r"mark-(seed|only|asleep|breed)", n): sign(n, "new", None, "a trait kind mark (Marks on a picture), round 1; awaiting verdict")
     elif n == "ring-kin-56x56": sign(n, "signed", "pass 29 verdict", "the kin ring")
     elif n == "mark-waiting-24": sign(n, "signed", "pass 32 verdict", "the waiting mark: three pod silhouettes")
