@@ -113,7 +113,7 @@ The Companion's pixel model (a 48-entry palette, indexes in memory, a lookup to 
 
 **Decided (owner, 2026-10-08):** the Pi 4 is the ceiling and the hardware won't grow; optimise for underpowered hardware.
 
-The Station has two halves. **The face** (screens, focus, animation, drawing) must be light on a CPU-only Pi. **The logic** (rules, genome model, cross, stamp, rig, rasteriser, controls, derivation, Caddy client) is JavaScript imported from the workbench and the stamp: about 3,600 dense lines, still changing. Its heavy work runs in the background (a controls-and-placeholder set took about five seconds a mibi on the VM, while a bud grows for twenty minutes).
+The Station has two halves. **The face** (screens, focus, animation, drawing) must be light on a CPU-only Pi. **The logic** (rules, genome model, cross, stamp, rig, rasteriser, controls, derivation, Caddy client) is JavaScript imported from the workbench and the stamp: about 3,600 dense lines, still changing. Its heavy work runs in the background (a controls-and-placeholder set took about five seconds a mibi on the sandbox server, while a bud grows for twenty minutes).
 
 | Option | RAM (resident, Proposal) | CPU and boot | Upkeep | Verdict |
 | --- | --- | --- | --- | --- |

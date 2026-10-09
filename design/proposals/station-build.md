@@ -107,7 +107,7 @@ The order in which the screens move to the LVGL face, and the spec file each nee
 
 ## 4. The Grow painting
 
-**Where the control passes are rendered.** The decided component split puts the rig, the control passes and the placeholder on the Station (art pipeline §1.1). On the sandbox the Station is a browser page and the Caddy a VM service, so there is a choice.
+**Where the control passes are rendered.** The decided component split puts the rig, the control passes and the placeholder on the Station (art pipeline §1.1). On the sandbox the Station is a browser page and the Caddy a service on the sandbox server, so there is a choice.
 
 | | Station page renders and uploads them | Caddy service renders them from the genome |
 | --- | --- | --- |
@@ -148,7 +148,7 @@ The journey grows with each milestone, so every push to main proves the loop tha
 
 ## 6. Milestones
 
-Each milestone pushes to main, passes CI, deploys to the sandbox and is playable from a fresh world. Three prerequisites land in their own homes first: **S1**, the stamp's frames from the workbench registry (before M1); **G1**, the Grow service's output-root flag and the VM's setup (unit, proxy route, Python imaging library, key file; before M3); **W1**, the workbench cross with numbers, kinship and the penalty, tested there (before M4).
+Each milestone pushes to main, passes CI, deploys to the sandbox and is playable from a fresh world. Three prerequisites land in their own homes first: **S1**, the stamp's frames from the workbench registry (before M1); **G1**, the Grow service's output-root flag and the sandbox server's setup (unit, proxy route, Python imaging library, key file; before M3); **W1**, the workbench cross with numbers, kinship and the penalty, tested there (before M4).
 
 | | Ships | The owner sees |
 | --- | --- | --- |
@@ -177,7 +177,7 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 
 ## 8. Decisions
 
-**Decided** (owner, 2026-10-08): all three as recommended. The Caddy service on the VM renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle with a 5 USD daily ceiling; pods come from the Companion page's save, with dev seeds for testing.
+**Decided** (owner, 2026-10-08): all three as recommended. The Caddy service on the sandbox server renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle and a daily limit; pods come from the Companion page's save, with dev seeds for testing.
 
 1. **Where the control passes are rendered.** *Recommended:* by the Caddy service on the sandbox server from the genome, with the Station rendering only the placeholder; it reuses the Grow controls as they stand and lets only valid genomes reach the painter. The device build moves it to the Station.
 2. **The real painting service in the first build, or a mock.** *Recommended:* build against the mock through M2, then run the real painter on the sandbox from M3 behind the developer toggle and a daily limit; CI always mocks. The owner sees real paintings land where it matters, at a known run-rate.
