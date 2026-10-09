@@ -9130,5 +9130,265 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+ },
+ "guide-panel-coat-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "fd05f1e7a85e33a0e33194cc9b259b0141999771449403fe2704e8ae30ff35cc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-face-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "c85d1f5cd474f06d99c03b82e1209ef755498ad9f3983f86cc484590316589f2",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-shape-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "71ae79099d1bf2afe0419730b43c06484ef8771862a3253e8dadf97767714d3c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-legs-tail-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "76cf47e8c594885ab545218c3c2512f74eea31a20c6560ee6b048afcc363e2b9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-movement-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "b5806923f3377e52decb5d9e09714825f5c9f6ccc43bcc5e33d1b0d070de53ec",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-stamina-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "fee748dda3f38ac026c47614d20e529ab5d007d149c844bf9c8818cfe8602dfd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-character-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "8151e174acb1f451fa502f3bf7166a94da3f68c503f01b42986661d85a8018f9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-glow-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "bc5ea1bae371b593ba4e296db4ae7710902d075eb00dcd9b9b99b68414af39ae",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-charge-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "8d1ba97516aa0c744c8e2f128f1df6f826eccb65db9a7ad019fa4e964d7a88b6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-sealed-128x80": {
+  "size": [
+   128,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "a shut panel: slats (a lit clay line over a bark shade line on a 4 px pitch), the 8x4 notch at the bottom centre, the edge and the grain; untinted, no emblem (the build places the sealed rail emblem); hand-drawn at 128, never scaled (pass 76)",
+  "sha256": "2028a81b910d4e7524a564eb9db479bc909e29e089754eef71ee7b1fae00ac97",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-coat-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "df751f8c3f5fcbbace472d730bf0a878b35407e66d5ce8b2ad424743e87183b4",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-face-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "cb5453b87dcad2cc27b9a206c3ab6523e77b082f6b50739b0e86f082656a267f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-shape-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "94b8982e312be68c1b8f17244374ab3d7d0c7fcdb103ba43808bfefc23f53526",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-legs-tail-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "3c676d0b360b9dc3c2a9192548162f9dddd7e7be2d70af5bec88cbcab7a6b74a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-movement-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "d88c358dc2bb32c4d2d17387411afa6925d925ccbe823ec69910a4f24f381f0f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-stamina-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "1793da0383ce2453a73b920185e8698a9aef14bf95d4ec0dfd0a81d700fb1951",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-character-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "eca435a306e571f1f15f4c4874de424f4c24d6a8956d38ab2b6b6639b27f5aa3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-glow-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "54a69dad99a4f042cba26432b63dd3ad8023a9e7d7989065f61ff8f8f0e1de99",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-charge-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the chapter's shared untinted master: a bark edge, a faint clay grain, the ink emblem 40x40 at (w/2 - 20, 8), open ground for the tint; hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "51d7ed659c03b250b0f1a066281605bcef3f37c77560bcd2bad81d4f9a63ee07",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-sealed-112x80": {
+  "size": [
+   112,
+   80
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "a shut panel: slats (a lit clay line over a bark shade line on a 4 px pitch), the 8x4 notch at the bottom centre, the edge and the grain; untinted, no emblem (the build places the sealed rail emblem); hand-drawn at 112, never scaled (pass 76)",
+  "sha256": "63893cb1cd3592b901394e34b2b8a6dc7e4080a8d57b9197a73e8a06812a22c0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
  }
 }
