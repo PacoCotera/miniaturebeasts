@@ -8334,9 +8334,9 @@
   "src": "halo-S04-clear.jpg over the S04 silhouette from the species frame's placeholder render (side view)",
   "made": "the S04 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "e303d1816992299b6f39aa67bf4a9e9520491ed24733db5f0be9d4dca153b34f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "status_note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "mibi-halo-S04-128x160-mist": {
   "size": [
@@ -8347,9 +8347,9 @@
   "src": "halo-S04-clear.jpg over the S04 silhouette from the species frame's placeholder render (side view)",
   "made": "the S04 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "3ce9bdda586b501804a29f27531a35a54cb2f9f48ea553fedba9f9fb5038362a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "status_note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "mibi-halo-S07-128x160-clear": {
   "size": [
@@ -8360,9 +8360,9 @@
   "src": "halo-S07-clear.jpg over the S07 silhouette from the species frame's placeholder render (side view)",
   "made": "the S07 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "c0475e521f4531f2fb7c2485539a47b0204fe3b65bbe827025b94e6278512dbb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "status_note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "mibi-halo-S07-128x160-mist": {
   "size": [
@@ -8373,9 +8373,9 @@
   "src": "halo-S07-clear.jpg over the S07 silhouette from the species frame's placeholder render (side view)",
   "made": "the S07 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "32b869b2f20128988dd1795c06d4d4ac3ec085d829a03ff027802b18d50769f7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "status_note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "find-crystal-112x112": {
   "size": [
@@ -8386,9 +8386,9 @@
   "src": "source/raw/find-vybronic-crystal.jpg (gemini-3-pro-image)",
   "made": "the find picture of the vybronic crystal: the painting's ground keyed to the cell tone `ground` (22, 42, 55), the object reduced (never enlarged, x0.203) into the centred 84x84 of the 112x112, saturation x0.85, brightness gain 0.712 (mean grey 135.9 before, the large pod's 108.1); no frame",
   "sha256": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "status_note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
  },
  "find-pearl-112x112": {
   "size": [
@@ -8399,9 +8399,9 @@
   "src": "source/raw/find-tide-pearl.jpg (gemini-3-pro-image)",
   "made": "the find picture of the tide pearl: the painting's ground keyed to the cell tone `ground` (22, 42, 55), the object reduced (never enlarged, x0.153) into the centred 84x84 of the 112x112, saturation x0.85, brightness gain 0.583 (mean grey 156.8 before, the large pod's 108.1); no frame",
   "sha256": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "status_note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
  },
  "find-shard-112x112": {
   "size": [
@@ -8412,9 +8412,9 @@
   "src": "source/raw/find-storm-glass-shard.jpg (gemini-3-pro-image)",
   "made": "the find picture of the storm glass shard: the painting's ground keyed to the cell tone `ground` (22, 42, 55), the object reduced (never enlarged, x0.123) into the centred 84x84 of the 112x112, saturation x0.85, brightness gain 1.000 (mean grey 80.8 before, the large pod's 108.1); no frame",
   "sha256": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "status_note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
  },
  "trait-S09-colour-cobalt-128x160": {
   "size": [
@@ -8423,8 +8423,8 @@
   ],
   "rect": null,
   "src": "source/raw/plate-S09-colour.jpg (gemini-3-pro-image)",
-  "made": "the Colour plate of the Belatz (cobalt): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.151) into the centred 96x120 at (16, 20), no frame",
-  "sha256": "9bb05b4f3eacc4fb87d9f7371387c0f7d4d7123e42d0658eb29df5701e541e27",
+  "made": "the Colour plate of the Belatz (cobalt), pass 66: the pass 65 painting's texture masked to a rounded body patch 80x96 centred at (64, 80) with a soft 3.5 px fluff edge, hue held to cobalt (0.58-0.63), lit from the top left, the lower part about 15 levels darker, on the cell tone ground, no frame",
+  "sha256": "9ee254d7f0352e11c20c2e4c2e49c1dab45b830be0e4c310f2969f0e5bc299d4",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
@@ -8436,8 +8436,8 @@
   ],
   "rect": null,
   "src": "source/raw/plate-S09-fluff.jpg (gemini-3-pro-image)",
-  "made": "the Fluff plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.110) into the centred 96x120 at (16, 20), no frame; the object ran off the painting's top edge: a keyed fade (smoothstep, 12 px) along it",
-  "sha256": "b8559cacf2965c2b652b87632ec78d3420873fd228d0a544857bac729e897340",
+  "made": "the Fluff plate of the Belatz (between), pass 66: the pass 65 painting reduced (x0.110, never enlarged) into the centred 96x120; where the body ran off the painting's top edge, an elliptical fade along the back contour (a 40 px radius dome, softened over 12 px) replaces the straight fade",
+  "sha256": "740ac48e28a6e21a7b4a3963f37627121a2a13131bef3a368004aaa93ee05e4f",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
@@ -8464,9 +8464,9 @@
   "src": "source/raw/plate-S09-feathers.jpg (gemini-3-pro-image)",
   "made": "the Feathers plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.124) into the centred 96x120 at (16, 20), no frame",
   "sha256": "36190da9a96d71b715b1c384f9e883fa844d977c49c7c651743581c70cd35957",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 65 verdict",
+  "status_note": "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame"
  },
  "trait-S09-tufts-body-only-128x160": {
   "size": [
@@ -8490,9 +8490,9 @@
   "src": "source/raw/plate-S09-crest.jpg (gemini-3-pro-image)",
   "made": "the Crest plate of the Belatz (between): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.150) into the centred 96x120 at (16, 20), no frame",
   "sha256": "b7195edc6d6cd03c0ba7a13866ad78b3457ccba69e802d666ab330fca1e3cea9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 65 verdict",
+  "status_note": "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame"
  },
  "trait-S09-eyes-small-128x160": {
   "size": [
@@ -8501,8 +8501,8 @@
   ],
   "rect": null,
   "src": "source/raw/plate-S09-eyes.jpg (gemini-3-pro-image)",
-  "made": "the Eyes plate of the Belatz (small): a Pro painting, its ground keyed to the cell tone `ground` (22, 42, 55), the content reduced (never enlarged, x0.127) into the centred 96x120 at (16, 20), no frame",
-  "sha256": "72d9175c740917d5516aa2b28cbd3ca65c427e298346d1ee9cbf64b9bb10e889",
+  "made": "the Eyes plate of the Belatz (small), pass 66: the pass 65 painting reduced to 60 percent of the fit (x0.076, never enlarged), the content 58x55 centred at (64, 80) on the cell tone ground, so the iris is about 22 px; no frame",
+  "sha256": "a624e46131dc03db6d6452e0e16b82cb3d28c35369e53e81b99cc40bb02d6f34",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"

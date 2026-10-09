@@ -1,0 +1,44 @@
+[
+ {
+  "name": "plate66-S09-sheen",
+  "prompt": "Output a NEW image: a plate of the Sheen trait, a medium sheen. A patch of the reference bird's cobalt-blue back with the soft edge of one wing at one side, painted with the fluffy feather texture of the reference painting (soft, fluffy feathers, not hard scales, not a pattern of scales). The plumage is matte: no gloss, no highlight band, no shine painted in. Cobalt blue only with the wing's natural muted cream feather tips; no green. The patch is a roundish body shape with a soft fluffy edge. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text.",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird; this is the individual the plate is of."
+   ]
+  ],
+  "tries": 2
+ },
+ {
+  "name": "plate66-S09-tufts",
+  "prompt": "Output a NEW image: a plate of the Tufts trait, fur on the body only. A close view of the reference bird's cobalt-blue body, a rounded body shape, with four to six separate small tufts of fluffy feather-fur standing proud of the silhouette's edge, each tuft small and distinct (about one tenth of the plate's width), clearly separate from one another with plain ground between them. Cobalt blue body; a little soft green only where the reference painting has it, at the neck and the wing joints; it must not read as moss, no green mass. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text.",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird; this is the individual the plate is of."
+   ]
+  ],
+  "tries": 2
+ },
+ {
+  "name": "plate66-S09-carriage",
+  "prompt": "Output a NEW image: a plate of the Carriage trait, the tail held straight. The whole reference bird in plain side view: head, body and tail laid out along one near-level horizontal axis (the tail straight out behind, level with the body, not curled and not angled up or down), the legs plumb and straight down, the beak forward. The painting's palette (cobalt blue with cream and muted green accents) and its soft fluffy feathers. Small and complete, nothing cropped. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text.",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird; this is the individual the plate is of."
+   ]
+  ],
+  "tries": 2
+ }
+]

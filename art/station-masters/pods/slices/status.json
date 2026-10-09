@@ -2550,39 +2550,39 @@
   "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
  },
  "mibi-halo-S04-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "mibi-halo-S04-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "mibi-halo-S07-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "mibi-halo-S07-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
  },
  "find-crystal-112x112": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
  },
  "find-pearl-112x112": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
  },
  "find-shard-112x112": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
  },
  "trait-S09-colour-cobalt-128x160": {
   "status": "new",
@@ -2600,9 +2600,9 @@
   "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
  },
  "trait-S09-feathers-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 65 verdict",
+  "note": "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame"
  },
  "trait-S09-tufts-body-only-128x160": {
   "status": "new",
@@ -2610,9 +2610,9 @@
   "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
  },
  "trait-S09-crest-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 65 verdict",
+  "note": "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame"
  },
  "trait-S09-eyes-small-128x160": {
   "status": "new",
