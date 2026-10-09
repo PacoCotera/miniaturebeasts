@@ -189,7 +189,7 @@
     162,
     125
    ],
-   "source": "the crown part only (the face below it is taken out)",
+   "source": "the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve",
    "crops": {
     "128x160": {
      "window": [
@@ -274,7 +274,7 @@
     138,
     98
    ],
-   "source": "the tail alone, tip to root, inside a margin (the wing and the body behind it taken out)",
+   "source": "the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines",
    "crops": {
     "128x160": {
      "window": [

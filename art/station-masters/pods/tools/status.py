@@ -30,7 +30,7 @@ for n in m:
     elif re.match(r"pod-(large|medium|small)-", n): sign(n, "signed", "pass 6", "layers signed across passes 4 to 7b; the 33 are standing")
     elif n.startswith("pod-collection-") and not n.endswith("-unknown"): sign(n, "new", None, "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict")
     elif n.startswith("pod-well-"): sign(n, "signed", "passes 8 and 9 (verdict)", "the 40x48 well pod class, centred; signed with the layer set")
-    elif re.match(r"trait-picture-standin-(376x264|184x256|184x104|120x96)$", n): sign(n, "new", None, "the stand-in card at Compare's four sizes, the signed cut (no text); awaiting verdict")
+    elif re.match(r"trait-picture-standin-(376x264|184x256|184x104|120x96)$", n): sign(n, "signed", "pass 47 verdict", "the stand-in card at Compare's four sizes, the signed cut (no text)")
     elif n == "room-bench-stage-compare": sign(n, "new", None, "Compare's bench: the chapter bench without the beam and the dish glow; awaiting verdict")
     elif n.startswith("trait-picture-standin-"): sign(n, "signed", "pass 42 (signed on delivery)", "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)")
     elif n.startswith("trait-picture-frame-"):
@@ -68,7 +68,7 @@ for n in m:
     elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 42 (S13 mist at a 10 percent cap, signed on delivery)" if re.match(r"mibi-halo-S13-.*mist", n) else "pass 41 (the low mists signed)" if re.match(r"mibi-halo-S(03|10|11|14)-.*mist", n) else "pass 37 (re-fit verdict)", "placeholder, re-cut from the standard painting when it lands")
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
-    elif re.match(r"trait-S09-(beak|crown|head|tail)-", n): sign(n, "new", None, "returned at pass 45 and re-cut in pass 46 (a new key: the paper flood from the border, no choke; head whole, crown only, tail framed); awaiting verdict")
+    elif re.match(r"trait-S09-(beak|crown|head|tail)-", n): sign(n, "new", None, "re-cut in pass 48 (the key no longer reads a pale feather as shadow, islands under 40 px dropped; the crown cut along the skull, the tail inside a polygon with a faded root); awaiting verdict")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")
     elif n in ("mark-asleep-24x16", "mark-breed-28x16"): sign(n, "signed", "pass 38 verdict", "")
     elif n == "mark-only-72x8": sign(n, "signed", "pass 41 verdict", "the quiet engraved line")

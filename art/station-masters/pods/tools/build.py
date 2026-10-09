@@ -42,7 +42,6 @@ def benchvariants():
     the overview (B) on x 256 (cone 136,104,240,320), the chapter page (C) on x 216 (cone 96,104,240,320). The same stage rectangle as room-bench-stage (0,40,1024,522), the same wall, the
     vignette centred on the axis; the cone's pool is part of the wall, as before."""
     save("room-bench-stage-collection", bench_grade(bench_window("bench-e2.jpg", -2000, 1244, 0.31, target=(632, 384)), cx=512), [0, 40, 1024, 522], "the collection's bench: the same generated glass wall with no cone of light (the window lies wholly in the wall's own left strip, mirrored), graded as room-bench-stage with the vignette centred on x 512", "bench-e2")
-    save("room-bench-stage-compare", bench_grade(bench_window("bench-e2.jpg", -1500, 1244, 0.31, target=(632, 384)), cx=512), [0, 40, 1024, 522], "Compare's bench: the chapter bench without the beam and the dish glow (two pages on the pane, no pod on stage): the same generated glass wall windowed inside its own left strip so no cone or pool shows, graded as the others with the vignette centred on x 512", "bench-e2")
     for nm, ax in (("overview", 256), ("chapter", 216)):
         save(f"room-bench-stage-{nm}", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31, target=(ax, 384)), cx=ax), [0, 40, 1024, 522], f"the generated glass wall re-windowed so the cone's pool is on x {ax} (the {nm}); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage", "bench-e2")
 def collectionring():
@@ -76,6 +75,16 @@ def collectionring():
         for sg in segs: un |= sg
         save(f"ring-arc-collection-n{n}-track-176x176", render(bevel, un, sand), rect, f"the unread arcs for {n} chapters: bevel band in {n} arcs 2 px apart from 12 o'clock, hairline edges", "procedural, supersampled 8x")
         for i, sg in enumerate(segs): save(f"ring-arc-collection-n{n}-s{i + 1}-176x176", render(bone, sg, white), rect, f"chapter {i + 1} of {n} read: the bone arc over the track", "procedural, supersampled 8x")
+    # Compare's bench: the chapter bench's OWN wall with the beam and the dish glow painted out (no tiling, so its mullions are the chapter's and the wall does not jump when the room switches): the smooth
+    # illumination (a 14 px blur) is replaced by the flanks' level interpolated across and smoothed down the rows, and the wall's structure is its own column profile taken below the pool (rows 470 to 520).
+    ch = Image.open(OUT + "room-bench-stage-chapter.png").convert("RGB"); A = np.asarray(ch).astype(float); H_, W_, _ = A.shape
+    S_ = np.asarray(ch.filter(ImageFilter.GaussianBlur(14))).astype(float); Dc = (A / np.maximum(S_, 1.0))[470:520].mean(0)
+    def vs(v, r=60):
+        kk = np.exp(-0.5 * (np.arange(-3 * r, 3 * r + 1) / r) ** 2); kk /= kk.sum(); p = np.pad(v, ((3 * r, 3 * r), (0, 0)), mode="edge"); return np.stack([np.convolve(p[:, c], kk, "valid") for c in range(3)], 1)
+    fl = vs(S_[:, 6:50].mean(1)); fr = vs(S_[:, 430:480].mean(1)); xx_ = np.arange(W_)[None, :, None]; t_ = np.clip((xx_ - 28) / (455 - 28), 0, 1)
+    base = (1 - t_) * fl[:, None, :] + t_ * fr[:, None, :]; new = base * Dc[None, :, :]
+    exc = np.clip((S_.mean(2) - base.mean(2)) / 3.0, 0, 1); exc = np.asarray(Image.fromarray((exc * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(6))).astype(float) / 255; exc = np.clip(exc * 2.2, 0, 1)[..., None]
+    save("room-bench-stage-compare", Image.fromarray(np.clip(A * (1 - exc) + new * exc, 0, 255).astype(np.uint8)), [0, 40, 1024, 522], "Compare's bench: the chapter bench's own wall with the beam and the dish glow painted out (two pages on the pane, no pod on stage); no tiling, the mullions are the chapter's", "room-bench-stage-chapter")
 def opaque_cut(path, thr=9, soft=14, closing=10):
     """Cut an object off its flat ground as an opaque silhouette (holes closed), keeping its own colours."""
     im = load(path); bg = border_median(im); a = np.asarray(im).astype(float); diff = np.abs(a - bg).max(2)

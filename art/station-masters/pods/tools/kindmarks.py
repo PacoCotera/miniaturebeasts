@@ -130,19 +130,18 @@ p = card("dark", 104, 64, [lambda q: put(q, "mark-seed-32x40", 104 - 40, 64 - 48
 os.makedirs("marks", exist_ok=True); sheet.convert("RGB").save("marks/kindmarks-round1-1x.png"); sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).convert("RGB").save("marks/kindmarks-round1-2x-proof.png")
 
 # ---- pass 47: compare-mark-differs-12x12, typed pixel by pixel (no generator): a "not the same" sign, two short strokes, the lower shifted right; aqua with a 1 px ink keyline
-rows = ["............",
-        ".iiiiiiii...",
-        ".immmmmmi...",     # the upper stroke: mint lit top row
-        ".iaaaaaai...",
-        ".iiiiiiii...",
-        "............",
-        "....iiiiiiii",
-        "....immmmmmi",
-        "....iaaaaaai",
-        "....iiiiiiii",
-        "............",
+rows = ["............",     # row 0 empty; the sign occupies rows 1 to 10 (10 rows, centred in 12: one empty row above and one below)
+        "iiiiiiiii...",    # row 1: the upper stroke's keyline, x 0 to 8
+        "immmmmmmi...",    # row 2: mint lit top row, 7 px inside the keyline (x 1 to 7)
+        "iaaaaaaai...",    # row 3: aqua, 7 px
+        "iiiiiiiii...",    # row 4
+        "............",    # row 5: the gap
+        "............",    # row 6
+        "...iiiiiiiii",    # row 7: the lower stroke's keyline, x 3 to 11
+        "...immmmmmmi",    # row 8
+        "...iaaaaaaai",    # row 9
+        "...iiiiiiiii",    # row 10
         "............"]
-rows = [r[:12] for r in rows]
 assert len(rows) == 12 and all(len(r) == 12 for r in rows)
 cmk = Image.new("RGBA", (12, 12), (0, 0, 0, 0)); pc = {"i": INK, "a": PAL["aqua"], "m": PAL["mint"]}
 for y, r in enumerate(rows):
@@ -150,9 +149,10 @@ for y, r in enumerate(rows):
         if ch in pc: cmk.putpixel((x, y), pc[ch] + (255,))
 cmk.save("slices/compare-mark-differs-12x12.png", optimize=True)
 man = json.load(open("slices/manifest.json"))
-man["compare-mark-differs-12x12"] = {"size": [12, 12], "rect": None, "src": "typed by hand", "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes, the lower shifted right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel; placed 1:1 after a trait's name on the name line", "sha256": hashlib.sha256(open("slices/compare-mark-differs-12x12.png", "rb").read()).hexdigest()}
+man["compare-mark-differs-12x12"] = {"size": [12, 12], "rect": None, "src": "typed by hand", "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes of 7 px (inside a 9 px keyline), the lower shifted 3 px right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel, centred vertically (rows 1 to 10 of 12); placed 1:1 after a trait's name on the name line", "sha256": hashlib.sha256(open("slices/compare-mark-differs-12x12.png", "rb").read()).hexdigest()}
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 pane = Image.open("slices/page-pane-256x440.png").convert("RGBA").crop((100, 100, 160, 130)); sh = Image.new("RGBA", (200, 40), (0, 0, 0, 255)); sh.alpha_composite(pane.resize((60, 30)), (0, 5))
 from PIL import ImageFont
 f16 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 16); d_ = ImageDraw.Draw(sh); sh.paste(Image.new("RGBA", (200, 40), (21, 36, 46, 255)), (0, 0)); d_.text((8, 20), "Markings", font=f16, fill=BONE + (255,), anchor="lm")
 sh.alpha_composite(cmk, (8 + int(d_.textlength("Markings", font=f16)) + 4, 14)); sh.convert("RGB").save("marks/compare-mark-1x.png"); sh.resize((800, 160), Image.NEAREST).convert("RGB").save("marks/compare-mark-4x-proof.png")
+bg = Image.new("RGBA", (12, 12), (21, 36, 46, 255)); bg.alpha_composite(cmk); bg.resize((240, 240), Image.NEAREST).convert("RGB").save("marks/compare-mark-alone-20x-proof.png"); bg.resize((48, 48), Image.NEAREST).convert("RGB").save("marks/compare-mark-alone-4x.png")
