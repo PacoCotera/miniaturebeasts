@@ -22,7 +22,7 @@ Energy runs the machines, Data reads genomes, Essence grows bodies (**Decided**)
 
 | | Energy | Data | Essence |
 | --- | --- | --- | --- |
-| **Field, starter place** (meadow, pond edge) | 3–5 calm, 8–15 in a storm (**Decided**) | **2** per walk *(tuned)* | 3 |
+| **Field, starter place** (meadow, pond edge) | **3** calm (**Decided 2026-10-09**, §9; was 3–5), 8–15 in a storm (**Decided**) | **2** per walk *(tuned)* | 3 |
 | **Field, early place** | as above | **4** *(tuned)* | 3–4 |
 | **Field, mid place** (wood, rock field) | as above | **6** *(tuned)* | 4 |
 | **Field, late place** (behind a gate) | as above | **8** *(tuned)* | 5 |
@@ -34,6 +34,7 @@ Energy runs the machines, Data reads genomes, Essence grows bodies (**Decided**)
 | **Read a chapter** (first ever free) | — | 1 per trait; half, rounded up, once read on an earlier pod of the species (**Decided**) | — |
 | **Shape a trait at Grow** | — | +1 per trait changed (**Decided**); +1 bud minute | — |
 | **Grow a founder** | 2 | — | 4 (**Decided**) |
+| **Grow now** (the instant grow, §5, §9) | — | — | 1 per 2 minutes left on the bud, rounded up (**Decided 2026-10-09**) |
 | **Cross two adults** | 2 | — | 4 (**Decided**) |
 | **The find that opens a sealed chapter** | brought back from a walk by the partner the species names (an Untuva sniffs up the crystal); no price; the chapter then reads as any other | | |
 | **Mend the Shield** beyond two bars | 1 a bar (**Decided**) | — | — |
@@ -101,7 +102,7 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 **The generation budget.** Twenty minutes is the art pipeline's latency budget (v2 §2): at 20–105 seconds a call the full unique set of four calls fits with retries at one and five minutes, so a connected kit opens a unique juvenile almost every time. One incubator, one or two buds a day in practice and six to ten bays bound the spend at about 40–60 mibis a kit-year, the pipeline's cost assumption. Returning a mibi and growing another costs twenty minutes, 2 Energy and a net 2 Essence, so a render is never free to churn; the Caddy's monthly call cap is the backstop.
 
-**Decided 2026-10-08.** *The paragraph above is superseded:* no render is painted at Grow. Every mibi opens in the standard look rendered from the rig; the unique cloud-painted render is a prize earned by a research item, so the spend is bounded by prizes, not by buds ([art-pipeline](art-pipeline.md) §1). **The first bud ever grows in five minutes** (§8.2, decided). **An instant grow exists, for a cost** (the price to be set with the real economy; for testing it sits under the developer-tools toggle with every other timer). *2026-10-08, the words:* the prize is the **portrait**, paid with **a sitting** earned by research ([the portrait](the-portrait.md)); the sitting's wait is its own, a few hours, and never the bud's.
+**Decided 2026-10-08.** *The paragraph above is superseded:* no render is painted at Grow. Every mibi opens in the standard look rendered from the rig; the unique cloud-painted render is a prize earned by a research item, so the spend is bounded by prizes, not by buds ([art-pipeline](art-pipeline.md) §1). **The first bud ever grows in five minutes** (§8.2, decided). **An instant grow exists, for a cost** (**Decided 2026-10-09**, §9: **1 Essence per 2 minutes left on the bud, rounded up**, no Energy, no Data; the developer-tools toggle still covers it with every other timer). *2026-10-08, the words:* the prize is the **portrait**, paid with **a sitting** earned by research ([the portrait](the-portrait.md)); the sitting's wait is its own, a few hours, and never the bud's.
 
 **Decided 2026-10-08 (the standard painting, [art pipeline](art-pipeline.md) §1.1).** *"No render is painted at Grow" is superseded.* Every mibi's standard look is the **cloud painting made at Grow** (about $0.35 a mibi), so **Grow needs the connection for the painting**: on a connected kit it lands inside the bud's twenty minutes; offline, the bud still grows and opens on time, the juvenile steps out in the **placeholder** (the stylised rig pass, [the placeholder brief](plain-renderer.md)), and the painting lands when the Caddy reconnects. Nothing in the game waits for it, and the placeholder is never the final look. The spend is bounded by the bud (one at a time, twenty minutes) and by a **daily grow cap** behind the developer toggle, so the "generation budget" paragraph above stands again in spirit: the bud is the latency budget, at 40–60 mibis a kit-year. The instant grow shortens the bud, not the painting: a mibi grown now may open in the placeholder for a minute.
 
@@ -131,3 +132,22 @@ All three **Decided 2026-10-08** as recommended.
 1. **Six bays, not eight.** Six keeps pods precious (**Decided:** no multitude of mibis) and makes the first shelf a goal inside the Pip week; eight pushes the first return and upgrade to week three. *Recommended: six.* **Decided: six.**
 2. **The first bud ever grows in five minutes, not twenty,** so the first turn at the bench ends with a meet (r7's best moment); it opens plain and swaps later, as the pipeline allows. *Recommended: yes.* **Decided: yes** (it opens in the standard look, which is the game's art; nothing swaps unless the mibi sits for its portrait, [the portrait](the-portrait.md)). *2026-10-08 (the standard painting):* it opens in its standard painting if the kit is connected and the painting came in five minutes, else in the placeholder, and the painting lands at the next fresh draw.
 3. **A returned mibi's place can shed a pod of its lineage.** It makes the return a meaning, not a refund, and is the one way a player's shaping reaches the wild. The limits: one pod per returned mibi, a turn later, every read still paid. *Recommended: yes.* **Decided: yes.**
+
+## 9. Tuned 2026-10-09: calm Energy and the Essence sink
+
+**Decided 2026-10-09 (owner):** calm Energy per walk aims at **3**, reached by raising the warm stones; Essence gets a **sink**. The rules below are game design's, worked from the field test ([exploration prototype](../../prototypes/exploration/README.md), "Measured with scripted play") and the Station loop report (`prototypes/station/tools/loop-report.mjs`, branch `loop-m5m6`, seed 4242).
+
+**1. Warm stones: 7 to 9 in reach, was 3 to 5.** Each still holds +1, never more (**Decided**); only a Call finds one; the lean toward the start (0.25) and the arrival guard stay. *Why this number:* the field test's calm expedition (median 226 actions, about a 15-minute walk) brought home a median of 2 Energy, of which a median of 1 was a warm stone drawn from a mean of 3.9 in reach (twelve with 3, ten with 4, eight with 5); the rest was charge left by earlier storms. A walk draws about one warm stone in four in reach, because it enters six or seven of the reach's 15 to 25 cells. One more drawn needs about four more in reach: a mean of 8 gives a median of 2 warm plus about 1 left charge, **3 Energy**. Count, not yield, because +1 a stone is decided; count, not placement, because the draw rate per stone is measured and a sharper lean is not. Warmth stays scarce: about one warm stone per two or three cells of the reach, none seen without a Call.
+
+As data (`prototypes/exploration/index.html`): `WARM_MIN = 3, WARM_MAX = 5` becomes `WARM_MIN = 7, WARM_MAX = 9`; `WARM_NEAR = 0.25` unchanged.
+
+**2. The Essence sink is the instant grow: "Grow now" costs 1 Essence per 2 minutes left on the bud, rounded up.** No Energy and no Data: Essence grows bodies, so hurrying a body is paid in living matter, and Energy is already the scarce currency (the loop report ends the first crate with 1 Energy at 3 a walk). The player meets it in the Incubator on the first bud ever (5 minutes: 3 Essence) and every bud after; a full twenty-minute bud costs 10, a shaped one 11, a bud nearly done 1. *Why not the shelves:* they cost 8 Energy and 8 Data too, which the first crate cannot pay, and they are only a stand-in until the second vivarium (§6). *Why per minute:* a flat price is a bad buy on a bud with five minutes left and a bargain on a full one; per minute, the price is always the wait.
+
+Worked on the loop report at 3 Energy a walk: the player grows now whenever it would otherwise wait for a bud with nothing else to do: the second founder with 5 minutes left (3 Essence) and the cross with 20 left (10). Essence earned 24, spent 8 on bodies and 13 on growing now: **surplus at the first crate 3** (was 16), never below 3 along the way. Energy surplus 1, Data 5, unchanged.
+
+**What the builders change:**
+- **Companion** (`prototypes/exploration/index.html`): `WARM_MIN = 7, WARM_MAX = 9`; the README's "3 to 5" and the Observer's numbers follow; re-measure calm Energy (target median 3 over the same 30 calm expeditions).
+- **Station** (`prototypes/station/src/state.mjs`): `instantGrowCost` takes the bud and the time and returns `{ e: 0, d: 0, s: price(Math.ceil(minutesLeft / 2)) }`, with `minutesLeft = B.minutes * (1 − budProgress)`; `DEFAULT_SETTINGS.instantGrow` and the developer presets give way to this rule (the "free" preset stays for testing). The Incubator's "Grow now" line shows the price as it falls.
+- **Loop report** (`tools/headless.mjs`, `tools/loop-report.mjs`): `WALK.e` 4 becomes 3; the player grows now in `waitBud` when minutes are left and it can pay.
+
+**Watch for:** a first walk in a world with no storm yet has no left charge, so its median is about 2; the guarantee of one Energy source in reach still holds. Faster surveys raise calm Energy (about one per place entered): if places shrink, the warm count comes down with them.
