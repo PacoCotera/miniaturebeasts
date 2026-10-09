@@ -102,7 +102,7 @@
      48,
      48
     ],
-    "slice": "place-{place}-48"
+    "slice": "place-{place}-48x48"
    },
    "grow": {
     "at": [
@@ -279,7 +279,8 @@
      64,
      64
     ],
-    "slice": "place-{place}-64"
+    "slice": "place-{place}-64x64",
+    "note": "a new master painted from the same painting at 64, never scaled"
    },
    "origin": {
     "rect": [
