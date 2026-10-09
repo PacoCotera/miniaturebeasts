@@ -100,7 +100,7 @@ test("identify: 1 Energy, the first ever free; a new species is learned once and
   st.e = 1;
   const r1 = S.identify(st, st.tray[0], settings); assert.equal(r1.ok, true); assert.equal(r1.free, true); assert.equal(r1.newSp, true); assert.equal(st.e, 1);
   const r2 = S.identify(st, st.tray[1], settings); assert.equal(r2.ok, true); assert.equal(r2.free, false); assert.equal(r2.newSp, false); assert.equal(st.e, 0);
-  const r3 = S.identify(st, st.tray[2], settings); assert.equal(r3.ok, false); assert.match(r3.msg, /needs 1 ⚡ more/);
+  const r3 = S.identify(st, st.tray[2], settings); assert.equal(r3.ok, false); assert.match(r3.msg, /needs ⚡ 1 more/);
   assert.deepEqual(st.knownIds, ["S01"]); assert.deepEqual(st.known, [0]); assert.deepEqual(st.met, [0]);
   st.e = 1; assert.equal(S.identify(st, st.tray[2], settings).newSp, true); assert.deepEqual(st.known, [0, 1]);
 });
@@ -121,7 +121,7 @@ test("reads: 1 Data a trait, the first read ever free, half rounded up once the 
   assert.equal(S.readCost(st, t, "coat", settings), coat.traits.length);
   assert.equal(S.readCost(st, t, "face", settings), 3);
   st.d = 1; assert.equal(S.read(st, t, "face", settings).ok, false);
-  assert.match(S.readBlock(st, t, "face", settings), /needs 2 ◆ more/);
+  assert.match(S.readBlock(st, t, "face", settings), /needs ◆ 2 more/);
   assert.equal(S.readBlock(st, { ...t, idd: 0 }, "face", settings), "identify it first");
   assert.equal(S.progress(a, settings), 3 / 5);
   assert.equal(S.readCost(st, a, "face", { ...settings, economy: "free" }), 0);

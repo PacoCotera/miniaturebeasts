@@ -110,10 +110,10 @@ test("the welcome sitting: at the first dock at which a mibi comes home from a w
 test("the offer and its refusals: no sitting, a mibi that needs a walk, a pose it has not done, a place it has not been, one sitting each", () => {
   const st = world(2), [a, b] = st.mibis; walked(st, a);
   assert.match(T.beginSitting(st, a, "calm", "wood", settings, T0).msg, /no sitting held/); T.devGrantSitting(st, T0);
-  assert.match(T.beginSitting(st, b, "calm", "meadow", settings, T0).msg, /needs a walk first/, "no habit seen");
+  assert.match(T.beginSitting(st, b, "calm", "meadow", settings, T0).msg, /no pose seen yet/, "no habit seen");
   assert.match(T.beginSitting(st, a, "sniff", "wood", settings, T0).msg, /pick a pose/); assert.match(T.beginSitting(st, a, "calm", "cave", settings, T0).msg, /pick a place/);
   assert.match(T.beginSitting(st, null, "calm", "wood", settings, T0).msg, /pick a mibi/);
-  const o = T.offer(st, a); assert.deepEqual([o.held, o.poses, o.places, o.block], [true, ["calm"], ["meadow", "wood"], ""]); assert.match(T.offer(st, b).block, /needs a walk/);
+  const o = T.offer(st, a); assert.deepEqual([o.held, o.poses, o.places, o.block], [true, ["calm"], ["meadow", "wood"], ""]); assert.match(T.offer(st, b).block, /no pose seen yet/);
   assert.ok(st.sitting, "a refusal keeps the sitting"); assert.deepEqual(money(st), [0, 0, 0]);
   assert.ok(T.beginSitting(st, a, "calm", "wood", settings, T0).ok);
   T.devGrantSitting(st, T0); assert.match(T.beginSitting(st, a, "calm", "wood", settings, T0).msg, /one sitting each, ever/); assert.ok(T.offer(st, a).portrayed);
@@ -122,9 +122,9 @@ test("the offer and its refusals: no sitting, a mibi that needs a walk, a pose i
 test("begin: the frame leaves the slot, the crate goes to the bay, the mibi is marked, nothing is spent; a juvenile may sit; a second sitting may begin while a crate waits", () => {
   const st = world(2), m = walked(st, st.mibis[0]); m.born = st.turn;   // a juvenile
   assert.equal(S.mibiStage(st, m), "juvenile"); T.devGrantSitting(st, T0);
-  const r = T.beginSitting(st, m, "calm", "wood", settings, T0); assert.ok(r.ok); assert.equal(st.sitting, null); assert.equal(st.sittingCrates.length, 1);
+  const r = T.beginSitting(st, m, "calm", "wood", settings, T0); assert.ok(r.ok); assert.equal(st.sitting, null); assert.equal(m.portrait.stage, S.mibiStage(st, m, settings), "the stage it sat at"); assert.equal(st.sittingCrates.length, 1);
   assert.deepEqual({ ...st.sittingCrates[0] }, { id: "sit1", mibiId: m.id, pose: "calm", place: "wood", start: T0, source: "dev", painted: false, opened: false });
-  assert.deepEqual({ ...m.portrait }, { state: "painting", pose: "calm", place: "wood", crate: "sit1", start: T0 }); assert.deepEqual(money(st), [0, 0, 0]);
+  assert.deepEqual({ ...m.portrait }, { state: "painting", pose: "calm", place: "wood", crate: "sit1", start: T0, stage: "juvenile" }); assert.deepEqual(money(st), [0, 0, 0]);
   const n = walked(st, st.mibis[1], "shake-dry", "pond"); T.devGrantSitting(st, T0 + 1); assert.ok(T.beginSitting(st, n, "shake-dry", "pond", settings, T0 + 1).ok); assert.equal(st.sittingCrates.length, 2, "two crates wait");
 });
 
@@ -134,7 +134,7 @@ test("the crate: the lamp fills with the start and the rule; in the first build 
   assert.equal(T.crateLamp(c, settings, T0), 0); assert.equal(T.crateLamp(c, settings, T0 + 1.5 * H), 0.5); assert.equal(at(H), "filling"); assert.equal(T.bayState(st, sv, settings, T0 + H).amber, false);
   assert.equal(T.openSittingCrate(st, c.id, settings, T0 + H).msg, "the crate is still filling");
   assert.equal(at(3 * H), "ready", "no portrait is painted in the first build: the wait alone binds"); assert.equal(T.crateLamp(c, settings, T0 + 3 * H), 1);
-  const bay = T.bayState(st, sv, settings, T0 + 3 * H); assert.deepEqual([bay.sitting, bay.total, bay.amber, bay.label], [1, 1, true, "Open the bay · 1 crate"]);
+  const bay = T.bayState(st, sv, settings, T0 + 3 * H); assert.deepEqual([bay.sitting, bay.total, bay.amber, bay.label], [1, 1, true, "Open the bay"]);
   // the rule is the developer's: a minute, or now, recomputed from the same start
   assert.equal(at(61000, { ...settings, sittingWait: "minute" }), "ready"); assert.equal(at(59000, { ...settings, sittingWait: "minute" }), "filling"); assert.equal(at(0, { ...settings, sittingWait: "now" }), "ready");
   assert.equal(T.sittingWaitMs(settings), 3 * H); assert.equal(T.sittingWaitMs({}), 3 * H, "three hours without a setting");

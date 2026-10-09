@@ -10,7 +10,7 @@
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf, chapterLooks } from "./genome.mjs";
-import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, withId, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -101,11 +101,16 @@ export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
 }
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
-export function portraitBlock(st, m) {
+// Who is out with the Companion: the one it carries (an away request does not count until the dock). Until the carried set is built this is the one mibi.
+export const carriedIds = (st, sv) => (withId(sv) != null ? [withId(sv)] : []);
+// A juvenile may sit (the portrait keeps the stage it sat at); a mibi out with the Companion sits only while the Companion is docked (a sitting begun while docked goes on after undocking).
+export function portraitBlock(st, m, sv) {
   if (!m) return "pick a mibi";
   if (m.released) return m.name + " has gone";
+  if (!docked(st) && carriedIds(st, sv).includes(m.id)) return m.name + " is out with you · it sits when the Companion is home";   // stand-in words until the copywriter's
   if (m.portrait) return "one sitting each, ever";
-  if (!habitsOf(m).length || !placesOf(m).length) return m.name + " needs a walk first";
+  if (!habitsOf(m).length) return "no pose seen yet";
+  if (!placesOf(m).length) return m.name + " needs a walk first";
   return "";
 }
 // The welcome sitting (the-portrait.md §2, §8): at the first dock at which a mibi comes home from a walk with the player; one per player; it waits for the slot if one is
@@ -125,25 +130,27 @@ export function dock(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 
 // --- the ceremony: pose, place, confirm ---------------------------------------------------------------------------------------
 // The offer on Habitat: the mibi, the poses it can take (habits seen), the places (where it has been).
-export function offer(st, m) {
-  const block = st.sitting ? portraitBlock(st, m) : "no sitting held";
-  return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? habitsOf(m).slice() : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
+// Poses are offered in the species frame's habit order, not the order they were seen.
+const inFrameOrder = (m, hs) => { const order = frameFor(m)?.habits || []; const at = (h) => { const i = order.indexOf(h); return i < 0 ? order.length : i; }; return hs.slice().sort((a, b) => at(a) - at(b)); };
+export function offer(st, m, sv) {
+  const block = st.sitting ? portraitBlock(st, m, sv) : "no sitting held";
+  return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? inFrameOrder(m, habitsOf(m)) : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
 }
-export function beginBlock(st, m, pose, place) {
+export function beginBlock(st, m, pose, place, sv) {
   if (!st.sitting) return "no sitting held";
-  const b = portraitBlock(st, m); if (b) return b;
+  const b = portraitBlock(st, m, sv); if (b) return b;
   if (!habitsOf(m).includes(pose)) return "pick a pose " + m.name + " has done";
   if (!placesOf(m).includes(place)) return "pick a place " + m.name + " has been";
   return "";
 }
 // Begin: the frame leaves the slot and the crate goes to the bay; it costs the sitting and nothing else. A second sitting may begin while a crate waits (sitting crates do not count
 // against the bay's three); a welcome that was waiting for the slot is given now.
-export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, now = Date.now()) {
-  const b = beginBlock(st, m, pose, place); if (b) return { ok: false, msg: "Begin the sitting · " + b };
+export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, now = Date.now(), sv) {
+  const b = beginBlock(st, m, pose, place, sv); if (b) return { ok: false, msg: "Begin the sitting · " + b };
   const source = st.sitting.source; st.sitting = null;
   st.crateN = (st.crateN || 0) + 1;
   const crate = { id: "sit" + st.crateN, mibiId: m.id, pose, place, start: now, source, painted: false, opened: false };
-  st.sittingCrates.push(crate); m.portrait = { state: "painting", pose, place, crate: crate.id, start: now };
+  st.sittingCrates.push(crate); m.portrait = { state: "painting", pose, place, crate: crate.id, start: now, stage: mibiStage(st, m, settings) };   // the portrait shows this stage forever
   logEv(st, m.name + " sits for its portrait · " + pose + " · " + place);
   const w = st.welcomePending ? checkWelcome(st, now) : null;
   return { ok: true, crate, wait: sittingWaitMs(settings), welcome: w };
@@ -168,7 +175,7 @@ export const readyCrates = (st, settings, now) => st.sittingCrates.filter((c) =>
 // Home's bay: the walk crates (when docked) and the sittings' crates that are ready; amber when anything waits.
 export function bayState(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const walk = docked(st) ? bayCrates(st, sv).length : 0, sitting = readyCrates(st, settings, now).length, total = walk + sitting;
-  return { walk, sitting, total, amber: total > 0, label: total ? "Open the bay · " + plural(total, "crate") : "" };
+  return { walk, sitting, total, amber: total > 0, label: total ? "Open the bay" : "" };
 }
 export function openSittingCrate(st, crateId, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const c = st.sittingCrates.find((x) => x.id === crateId); if (!c) return { ok: false, msg: "no such crate" };

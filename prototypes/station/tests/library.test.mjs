@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, frameIds, podGenome, traitState } from "../src/genome.mjs";
+import { setFrames, frameOf, frameIds, podGenome, traitState, chapterLooks } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import { traitLooks } from "../../workbench/framework/describe.mjs";
@@ -118,7 +118,7 @@ test("the wish glint marks the chapter arc that holds a piece of the wish: eithe
   assert.ok(pick, "a trait that hides a look"); const [ch, t] = pick, hidden = traitState(fr, t, m.genome).hides;
   assert.deepEqual(L.wishChapters(st, m), [], "no wish, no glint"); S.guideAdd(st, "S01", t.id, [hidden]); assert.ok(L.wishPin(st, "S01", t.id, hidden).ok);
   assert.deepEqual(L.wishChapters(st, m), [ch.id], "the hidden copy counts"); assert.ok(L.wishGlint(st, m, ch.id)); assert.ok(!L.wishGlint(st, m, "nope"));
-  m.read = m.read.filter((c) => c !== ch.id); assert.deepEqual(L.wishChapters(st, m), [], "a chapter not yet read is not marked (the owner's to decide)");
+  m.read = m.read.filter((c) => c !== ch.id); assert.deepEqual(L.wishMarks(st, m), [{ chapter: ch.id, read: false }], "a chapter not yet read is marked, as unread: where, never what");
 });
 
 test("the wish in the cross forecast: a switch lights the seeds that show the pinned look, a blend marks the pinned bin when the range reaches it; closeness is the pinned traits lit, never a number", () => {
@@ -134,4 +134,35 @@ test("the wish in the cross forecast: a switch lights the seeds that show the pi
   // a pinned look the pair cannot reach lights nothing
   const unreach = L.possibleLooks(fr, tr(sw.trait)).find((l) => !sw.seeds.some((sd, i) => traitState(fr, tr(sw.trait), withLoci({ [sw.locus]: sd.copies })).shows === l));
   if (unreach) { S.guideAdd(st, "S01", sw.trait, [unreach]); L.wishPin(st, "S01", sw.trait, unreach); const r = L.wishForecast(st, a, b, settings), z = r.pinned.find((x) => x.trait === sw.trait); assert.deepEqual(z.seeds, []); assert.ok(!z.lit); assert.ok(!r.lit.includes(sw.trait)); }
+});
+
+// ---- the wish may mark an unread chapter, but never say what (the game designer's brief) ----
+function wished() {   // an adult with a trait that hides a look, the hidden look pinned
+  const st = fresh(); st.knownIds.push("S01"); const fr = frameOf("S01"); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0];
+  const [ch, t] = fr.chapters.flatMap((c) => c.traits.map((q) => [c, q])).find(([c, q]) => traitState(fr, q, m.genome).kind === "hides"), hidden = traitState(fr, t, m.genome).hides;
+  S.guideAdd(st, "S01", t.id, [hidden]); assert.ok(L.wishPin(st, "S01", t.id, hidden).ok); return { st, fr, m, ch, t, hidden };
+}
+test("W1 to W3, W7: a marked unread chapter reads read:false and reveals nothing, spends nothing and writes nothing; reading it flips the one boolean", () => {
+  const { st, fr, m, ch } = wished(); m.read = m.read.filter((c) => c !== ch.id);
+  const marks = L.wishMarks(st, m, settings); assert.deepEqual(marks, [{ chapter: ch.id, read: false }]); for (const x of marks) assert.deepEqual(Object.keys(x), ["chapter", "read"]);
+  assert.deepEqual(L.wishChapters(st, m, settings), [ch.id]); assert.ok(L.wishGlint(st, m, ch.id, settings));
+  // an identified pod with the look only in a hidden copy, in an unread chapter
+  const p = { id: "p9", sp: m.sp, species: "S01", genome: m.genome, idd: 1, read: [], g: "meadow", how: "calm", gs: 1, k: null }; st.tray.push(p);
+  const before = JSON.stringify({ d: st.d, guide: st.guide, first: p.first, read: p.read, readOnce: st.readOnce }); assert.deepEqual(L.wishMarks(st, p, settings), [{ chapter: ch.id, read: false }]);
+  assert.equal(JSON.stringify({ d: st.d, guide: st.guide, first: p.first, read: p.read, readOnce: st.readOnce }), before, "marking writes nothing");
+  p.read.push(ch.id); assert.deepEqual(L.wishMarks(st, p, settings), [{ chapter: ch.id, read: true }]);
+  // W2: an unidentified pod gives nothing
+  p.idd = 0; assert.deepEqual(L.wishMarks(st, p, settings), []);
+  // W8: the carriers and the held share still need the chapter read
+  const q = { ...m, read: m.read.filter((c) => c !== ch.id) }; assert.equal(L.wishHeld(st, "S01", q), 0, "wishHeld is 0 while the only carrying chapter is unread");
+  void fr;
+});
+test("W4 to W6: a shut sealed chapter is unmarked (marked when sealedOpen), a released mibi is never marked, an unpinned look takes the mark away", () => {
+  const { st, m, t, hidden } = wished(); assert.equal(L.wishMarks(st, { ...m, released: true }, settings).length, 0, "released");
+  assert.ok(L.wishUnpin(st, "S01", t.id).ok); assert.deepEqual(L.wishMarks(st, m, settings), [], "unpinned");
+  const s2 = fresh(); s2.knownIds.push("S02"); const f2 = frameOf("S02"), sealed = f2.chapters.find((c) => c.sealed); S.seedAdults(s2, "S02", 5, 1, settings); const x = s2.mibis[0];
+  const pick = sealed.traits.find((q) => chapterLooks(f2, sealed, x.genome).some(([tt, ls]) => tt === q.id && ls.length)); assert.ok(pick, "a trait of the sealed chapter");
+  const look = chapterLooks(f2, sealed, x.genome).find(([tt]) => tt === pick.id)[1][0]; s2.wish.S02 = { [pick.id]: look };
+  assert.deepEqual(L.wishMarks(s2, x, { ...settings, sealedOpen: false }), [], "shut"); assert.ok(L.wishMarks(s2, x, { ...settings, sealedOpen: true }).some((q) => q.chapter === sealed.id), "open");
+  void hidden;
 });
