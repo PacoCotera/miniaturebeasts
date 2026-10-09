@@ -286,7 +286,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Place c, r (c 0–2, r 0–1) | 16 + 336c, 48 + 240r, 320, 224 | A recessed place, `panel` with a `hairline` edge, 6 px corners; the focus target, the focus ring 4 px outside it. Every place drawn; an empty place is the empty ring. Was the well slot (16, 48 + 72i, 80, 72) |
-| Ring | centred on place + (96, 112), radius 80, an 8 px band | One arc per chapter in ring order, 2 px apart: filled `bone` when read, `bevel` when not; the band closes when every chapter is read. Was the 66 px well ring on its 80×80 slice |
+| Ring | centred on place + (96, 112), radius 80, an 8 px band | One arc per chapter in ring order, 2 px apart: filled `bone` when read, `bevel` when not, the band's edges `hairline`: the one home of these colours is `pods.json` `colours.collectionRing` (`read`, `unread`, `edge`) ({D}: the well-era keys `ringRead`, `ringCurrent`, `ringUnread`, `ringSealed`, `ringBase` and `ringDot` are gone, and `ringRead` had said `bevel`); the band closes when every chapter is read. Was the 66 px well ring on its 80×80 slice |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph. Was the 40×48 list pod |
 | Name label | place + (184, 64), hugging, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify |
 | Place picture | place + (184, 104, 48, 48) | The origin as a picture |
@@ -376,16 +376,16 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | --- | --- | --- |
 | A | Pad | The ring moves between places. On opening, it lands on the pod that most needs the player: a new one, then a glinting one, then the first |
 | A | ✓ | `✓ Open`: the pod's overview (B). The context and the notice describe the focused pod |
-| A | ← | Home |
+| A | ← | Home: the way back reads "← Home" |
 | B | Pad | Between the pod, the tabs, the kin and the hatch: ▲ from the pod to the rail; ▶ from the pod to the first kin; ▼ from the kin to the hatch; ◀ from the hatch to the pod |
 | B | ✓ on the pod | Sealed: `✓ Identify · 1 ⚡`. A chapter read: `✓ Shape a founder` opens Create; dimmed, with the reason in the notice, when the incubator is busy or no bay is free |
-| B | ✓ on a tab | Opens that chapter's page (C), free |
+| B | ✓ on a tab | `✓ Open Coat`, with no price: opening a chapter is free. The read and its price are on the page (C), where ✓ reads, and the price is on the bottom line while the open tab has the focus there. So no price shows on a tab, and none shows for an action that costs nothing (*decided by the UI designer, 2026-10-09*, with the game designer's brief: "price only on the bottom line when a tab has focus" is met on C) |
 | B | ✓ on a kin pod | `✓ Compare · free` |
 | B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   +1 ❀`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms |
-| B | ← | Back to A, the ring on this pod |
+| B | ← | Back to A, the ring on this pod: the way back reads "← Pods" |
 | C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
 | C | ✓ | On an unread chapter, `✓ Read Coat   3 ◆` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |
-| C | ← | Back to B, the ring on that tab. From Compare, ← closes it |
+| C | ← | Back to B, the ring on that tab: the way back reads the pod's name, "← Loika", because ← goes up one level to that pod. The longest name today, "Untuva", is 54 px at 16 px, inside the way back's 60 px for its word; a name that does not fit reads "← Back". From Compare, ← closes it, "← Loika" too (*decided by the UI designer, 2026-10-09*) |
 | Home | ✓ on a pod in the rack | Straight to its overview (B); ← from there goes to A |
 | All | Can't | A dimmed ✓ with the shortfall; a message plate on press. A glint says "something new waits" in the notice, never what it is |
 
