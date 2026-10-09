@@ -121,7 +121,7 @@ JavaScript decides what each region shows; the LVGL face, in C, decides where it
 | **The face** (`prototypes/face/src/`, C) | Platform, bridge, primitives, the vocabulary's words, the layout rules, the screens' binding tables, focus and animation (lvgl-switch.md §2.2) | Reads the save, calls a rule, decides content |
 | **Edges** | `storage` (the save adapter: `localStorage` in the sandbox, a file written by the Node host on the Pi, flash on the ESP32), `caddy` client, `art` placeholder register, `dev` tools, the asset manifest and the asset producers | Mix with each other |
 
-**Deprecated and frozen:** the JavaScript drawing layer, listed in lvgl-switch.md §5.2. No screen or screen feature is built on it, and the freeze check (lvgl-switch.md §5.1) fails on any change to it and on any new import of it. Each module is deleted when its last screen moves to the face, and all by L3. `ui/focus.mjs` is kept until L3 only as the JavaScript run of the focus vectors.
+**Deleted:** the JavaScript drawing layer, listed in lvgl-switch.md §5.2. The import guard (lvgl-switch.md §5.1) fails when a removed path exists again or is imported, when canvas drawing appears in the Station's JavaScript, and when an LVGL object is created outside the face's primitives. A screen not yet on the face draws "not built yet" (lvgl-switch.md §2.2). `ui/focus.mjs` is kept as the second run of the focus vectors.
 
 ### 5.2 Contracts and data shapes
 
@@ -158,7 +158,7 @@ The numbers have **one home**: the spec file. The UI designer writes the reasoni
 
 ### 5.4 How a builder adds a screen
 
-A screen is built on the LVGL face, never on the JavaScript drawing layer (§5.1). The face's side is lvgl-switch.md §2; the gate it passes is lvgl-switch.md §4.
+A screen is built on the LVGL face, the Station's only face (§5.1); until it is, the face draws it as "not built yet". The face's side is lvgl-switch.md §2; the gate it passes is lvgl-switch.md §4.
 
 1. **The spec lands one milestone ahead** (lvgl-switch.md §3). The UI designer delivers the layout section and the spec file, `prototypes/ui/specs/station/<screen>.json`, following the screen design method: every drawn region names its word (`component`) or composition (`build`), and the file carries the focus graph and the strings. A screen without its spec file waits. It is never built from the old screen's numbers.
 2. **The view, as props.** The builder writes `views/<screen>.mjs`: state and focus to props, naming what each region shows (strings, states, counts, asset ids, flags, and the focus targets by id with their enabled flags), never where. Its schema is `<screen>.props.json` beside the spec file, and its Node tests assert props only.
@@ -174,7 +174,7 @@ A sprite node names an asset id. Its slot's size must equal the asset's size, an
 
 ### 5.6 Tests that measure the sign-off
 
-The sign-off's measured checks run in CI. The face's test mode makes them exact, with no monkey-patching (lvgl-switch.md §2.8 holds the full list, with the goldens and the freeze):
+The sign-off's measured checks run in CI. The face's test mode makes them exact, with no monkey-patching (lvgl-switch.md §2.8 holds the full list, with the goldens and the import guard):
 
 | Sign-off check | Measured from |
 | --- | --- |
@@ -190,7 +190,7 @@ The sign-off's measured checks run in CI. The face's test mode makes them exact,
 - [ ] No rule outside the rule modules (or the Companion's `rules/`); rules are pure and tested.
 - [ ] No coordinates in screen code; every region comes from its spec file; no geometry in JavaScript outside `ui/specs/derive.mjs`.
 - [ ] Only the vocabulary's C words; any new word, composition or layout rule approved by the UI designer and the architect.
-- [ ] Nothing drawn by, changed in, or newly importing the deprecated JavaScript drawing layer (the freeze check green).
+- [ ] Nothing imports a removed path, no canvas drawing in the Station's JavaScript, no LVGL object created outside `prim/` (the import guard green, no exemption).
 - [ ] The view and the intent table DOM-free and running in the Node host.
 - [ ] Focus from the spec's graph; no hand-made target rectangles.
 - [ ] Every sprite in the manifest at its size; placeholders registered; nothing scaled.
@@ -207,9 +207,9 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 
 | | Ships | Note |
 | --- | --- | --- |
-| **T1 Screen layer and Pods** | `prototypes/ui/` with Pods from its spec, Inter bundled. Its drawing modules are deprecated and frozen (§5.1) | Its spec files, timeline, manifest and checks carry to the face |
+| **T1 Screen layer and Pods** | `prototypes/ui/` with Pods from its spec, Inter bundled. Its drawing modules are deleted at L2.0 B4a (lvgl-switch.md §5.2) | Its spec files, timeline, manifest and checks carry to the face |
 | **L0 to L2** | The toolchain, the frame and Pods drawn by the LVGL face (§8) | The face's first screen |
-| **L2.0 to L2.5, then L3** | Every Station screen on the LVGL face, in lvgl-switch.md §3's order: L2.0 the platform and Pods on C words; L2.1 the Library, Book and field guide; L2.2 Home, Rest, Dock and arrival, Idle; L2.3 Cross; L2.4 Create and the Incubator; L2.5 Habitat and the Probe bench. L3 deletes the JavaScript drawing layer | Each milestone passes the gate of lvgl-switch.md §4 |
+| **L2.0 to L2.5, then L3** | Every Station screen on the LVGL face, in lvgl-switch.md §3's order: L2.0 the platform and Pods on C words, with B4a removing the JavaScript face (the sandbox boots the LVGL face; a screen not yet on it shows "not built yet"); L2.2 Home, Rest, Dock and arrival, Idle; L2.1 the Library, Book and field guide; L2.3 Cross; L2.4 Create and the Incubator; L2.5 Habitat and the Probe bench. L3 closes out the switch | Each milestone passes the gate of lvgl-switch.md §4 |
 | **M6 Sitting and the whole journey** | On the face; the Sitting's first screen at L2.5, or built straight on the face when its spec lands | |
 | **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change | Independent of the Station |
 | **C2 Companion on the face** | HUD 32, view 532, line 36; Mibi 7×9; the map viewport for 48 px tiles, with the art redraw; the `common/` words under the Companion's profile, with its indexed world view inside (lvgl-switch.md §2.2) | Lands with the 48 px redraw |

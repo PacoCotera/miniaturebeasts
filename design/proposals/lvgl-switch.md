@@ -1,23 +1,23 @@
 # The LVGL switch: development spec
 
-This is the build specification of the Station's face, for the builders of the face and of the Station's screens, and for their reviewers. The Station's screens are drawn by an LVGL 9 face in C: compiled to WebAssembly in the sandbox, and native on the Raspberry Pi under S1, with the logic run headless by Node beside it ([technical-architecture.md §4.3](technical-architecture.md#43-the-stations-runtime-within-the-pi-4)). The JavaScript drawing layer is deprecated and frozen: no new screen or screen feature is built on it, every remaining screen moves to the face (L2 for every screen, then L3), and the field guide is built on LVGL. Rules, views, specs and assets stay in JavaScript and data. The structure the face belongs to, its layers and the conformance checklist are [technical-architecture.md](technical-architecture.md); this document holds the face itself.
+This is the build specification of the Station's face, for the builders of the face and of the Station's screens, and for their reviewers. The Station's screens are drawn by an LVGL 9 face in C: compiled to WebAssembly in the sandbox, and native on the Raspberry Pi under S1, with the logic run headless by Node beside it ([technical-architecture.md §4.3](technical-architecture.md#43-the-stations-runtime-within-the-pi-4)). The face is the sandbox's only Station face: the JavaScript drawing layer is deleted (§5.2) and an import guard keeps it out (§5.1), a screen not yet on the face shows "not built yet" (§2.2), and every screen, the field guide among them, is built on LVGL. Rules, views, specs and assets stay in JavaScript and data. The structure the face belongs to, its layers and the conformance checklist are [technical-architecture.md](technical-architecture.md); this document holds the face itself.
 
 ## 0. Summary
 
 - **What the face is.** A face that takes *props* and gives back *intents*. The vocabulary's words, the layout rules, text fitting, the focus graph and animation are C. The views, rules, intent tables, spec files and assets are JavaScript and data. The same wire format runs in the page (WebAssembly) and over a local socket on the Pi (§2).
-- **The plan.** Six milestones to L3. L2.0 builds the platform and puts Pods on C words. Then, in order: the Library with the field guide; Home with Rest, Dock and Idle; Cross with the splice; Create and the Incubator; Habitat and the Probe bench. L3 deletes the JavaScript drawing layer. Each milestone is gated by region and pixel checks against the spec and by the journey running green on the LVGL face (§3, §4).
-- **The default face.** Each screen becomes the sandbox's default as soon as it passes its gate, and its JavaScript drawing is deleted in the same change. Unmoved screens stay on the JavaScript face until their turn.
-- **The freeze.** A CI check fails on any change to a deprecated drawing module, and on any new import of one (§5).
+- **The plan.** L2.0 builds the platform, puts Pods on C words, and in its build B4a removes the JavaScript Station face. Then five screen milestones, in order: Home with Rest, Dock and Idle; the Library with the field guide; Cross with the splice; Create and the Incubator; Habitat and the Probe bench. L3 closes out the switch. Each screen milestone is gated by region checks against the spec, by goldens signed against the wireframes, and by the journey running green on the face (§3, §4).
+- **The default face.** The sandbox boots the LVGL face, with no flag. A screen with no binding table on the face draws "not built yet" inside the frame, and its navigation works (§2.2). A screen draws itself from the change that passes its gate.
+- **The import guard.** A CI check fails when a removed path exists again or is imported, when canvas drawing appears in the Station's JavaScript, or when an LVGL object is created outside the face's primitives (§5).
 - **What is built.** The face's source files, and what each one does, are listed in its README (`prototypes/face/README.md`).
 
 ## 1. What the face takes over from the JavaScript layer
 
-The page draws a screen through the face with `?face=lvgl` (`prototypes/station/src/main.mjs` `render()`), and through the frozen JavaScript layer otherwise, until the screen passes its gate. The JavaScript layer draws in two ways: a retained scene (`ui/scene.mjs`) through the layered canvas renderer (`ui/render/station-canvas.mjs`), and `legacy` screens whose own `draw()` runs through the drawing half of `gfx.mjs`. Every module of that layer, and the milestone that deletes it, is §5.2.
+The page draws every screen through the face; `prototypes/station/src/main.mjs` is the host. A screen with a binding table in `prototypes/face/src/screens/` draws from its view's props; every other screen sends the state `notBuilt` and draws the `notBuilt` composition (§2.2). The JavaScript drawing layer (a retained scene through a layered canvas renderer, and `legacy` screens drawn through the drawing half of `gfx.mjs`) is deleted; its paths, and what stays, are §5.2.
 
 What the face takes over, and why the plan has the shape it has:
 
 1. **The vocabulary moves into C.** The Companion and the Caddy need the words in C (technical-architecture.md §4.2 and §4.3), so no screen gains words in JavaScript.
-2. **Views become pure props.** A view that computes geometry through the JavaScript layout and text modules, or returns scene nodes, gets a props refactor when its screen moves (§2.1).
+2. **Views become pure props.** Each screen's view is written as props when the screen comes to the face, with no geometry and no scene nodes (§2.1).
 3. **No synchronous measure.** A synchronous `measure` cannot cross the Pi's process boundary (S1: Node and the face are two processes). Text fitting is the face's job, and views that choose words by width use a metrics table that equals LVGL's (§2.5).
 4. **Fine line work is one picture.** The splice's wires and the guide's dashes cannot be one object a pixel run: in the JavaScript layer, S09's Cross chapter view with every chapter read is **1,772 nodes**, 1,765 of them rects of 4 px² or less, and the guide spread 247 nodes (S09: 182 rects, 39 texts, 6 sprites) plus 20 masters. The word draws such work into a picture of its own (§2.2).
 5. **Every check reads the face.** Journey, palette, type and regions are measured from the face's logs and framebuffer (§2.8).
@@ -67,7 +67,7 @@ Messages from the face to JavaScript:
 
 The contract number is 1. The sandbox's transport is `face_send(len)` over the face's own `face_in_buf`, so the host never allocates in the face's heap.
 
-**The intent table stays JavaScript.** Each screen's intent table (for Pods, `INTENTS` and `act` in `screens/pods.mjs` until its `intents/` module) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the bond heart) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline: while `TL.holding()` the dispatcher drops intents, and the face, which also knows from the event's `hold` that one is playing, does not move focus.
+**The intent table stays JavaScript.** Each screen's intent table (for Pods, `intents/pods.mjs`) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the bond heart) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline: while `TL.holding()` the dispatcher drops intents, and the face, which also knows from the event's `hold` that one is playing, does not move focus.
 
 **Screen glue becomes DOM-free.** For S1 the screens' JavaScript must run in Node. Each screen becomes three modules: `views/<screen>.mjs` (state and focus to props), `intents/<screen>.mjs` (the intent table and the screen's UI state), and its spec file. None of them imports `gfx.mjs`, `document` or a canvas. The page and the Pi host differ only in the save adapter and the transport.
 
@@ -86,10 +86,25 @@ vocab/      common/  frame topBar bottomLine messagePlate focusRing panel list t
             station/ chapterRail chapterPage stampLabel specimen leaves
             (later)  companion/ hud mapViewport · caddy/ …
 layout/     the spec's derived rules: railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc
-screens/    one binding table a screen: region id → word, and the compositions the UI designer named (module, rest knob, with-you bed, report card, idle line, splice, guide spread)
+screens/    one binding table a screen: region id → word, and the compositions the UI designer named (module, rest knob, with-you bed, report card,
+            idle line, not built yet, splice, guide spread, name tag, chapter plates, bay strip, Shield plates)
 ```
 
 `idleLine` is a composition in `screens/`, not a word. It lives in the frame's binding table (`screens/frame.c`), because Idle is a state of the frame (`props.idle`), and it owns the two regions of `frame.json` `idle.regions`: `strip` (built with the `panel` word) and `line` (built with the `text` word, which fits it to the spec's one line), with colours and rules as `frame.json` gives them. Each of the two regions names both its word and the composition (`"component": "panel", "build": "idleLine"` and `"component": "text", "build": "idleLine"`), so the region log records the word that drew it. Its props are one string, `props.frame.idle.line`; an empty string sets no type, and what the strip shows then is the spec's. It adds no word and no layout rule. Used by Idle alone; a second user brings it back to the UI designer and the architect.
+
+`notBuilt` is the second composition in the frame's binding table, beside `idleLine`. A screen with no binding table in `screens/` sends `state: "notBuilt"`, and the face draws the frame (the title from `frame.json` `strings.titles`, the counters, the Companion mark, the bottom line, the message plate), the stage ground, and one text region built with the `text` word, its rect, size, colour role, alignment and words from `frame.json` `notBuilt`. It draws no picture, no target and no ring. Navigation works as on any screen: room keys, ← to the parent, Dock, plates. Idle, until L2.2 builds `idleLine`, draws the same text region with no frame, and its first key sends `wake`. It adds no word and no layout rule.
+
+The compositions of Home, Habitat and the Probe bench, each in its screen's binding table and built from words already in the vocabulary:
+
+- **`module`** (Home, Habitat, the Probe bench): a `panel` with its engraved word at the spec's `word` offset and its object, and the spec's `lamp` rect, or `"lamp": null` for none (Habitat's modules).
+- **`nameTag`** (Home and Habitat, one composition shared): a `panel` and its `text`, the height, size, weight, padding, rounding, least and most width from each screen's spec.
+- **`chapterPlates`** (Habitat's card): a `list` by `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40` with the rail's 24×24 emblem at (8, 8).
+- **`bayStrip`** (Habitat): a `list` by `listPitch` with forms (§2.3), each tile a `panel` and its thumbnail, a free bay a composed `dash` outline.
+- **`shieldPlates`** (the Probe bench): one sprite a place, the places a table by tier.
+
+A further screen using one of them goes to the UI designer and the architect first.
+
+**Overlays.** A spec of `"kind": "overlay"` (the namer, `namer.json`, over Habitat) is drawn on LVGL's top layer over the screen it opens from. The focus ring and the message plate are on the top layer too, in the order overlay, ring, plate: the ring over the overlay's targets, a plate over both. The screen beneath keeps drawing and takes no key (§2.6). Props that name an overlay whose `over` does not list the current screen are refused.
 
 The ninth derived rule, the `leaves` word and the frame word's `stage` part:
 
@@ -97,7 +112,7 @@ The ninth derived rule, the `leaves` word and the frame word's `stage` part:
 - **`leaves`** (`vocab/station/`). Leaves that fill as a bud grows, in two forms. The grid form, for Create and Home's Incubator module, takes from the spec `leaf` (the leaf's size), `pitch`, `perRow`, `rowPitch`, `rows`, `max` and `pictures: { empty, full }`. The arc form, for the Incubator, places its leaves by `"layout": ["leafArc"]`. Props: `{ total, full, rows }`, with `0 ≤ full ≤ total ≤ max`, `rows` from 0 to 11, and `rows = 0` when `full = total`; the props schema (§2.1) holds these bounds. Leaf `i` (from 0, `i < total`) is full when `i < full`; filling when `i = full < total`, drawn as its empty sprite with the bottom `rows` rows of the full sprite over it (a window of the full picture); else empty. One sprite per leaf, on the art layer. The word plays the Incubator's `growNow` fill (§2.7).
 - **The frame word's `stage` part.** The first child of the screen tree, under every other region. With a `slice` it is one sprite of that picture on the painted layer; with none it is a rect in `colours.stageGround` on the chrome layer. The loader refuses a stage whose rect differs from `frame.json` `regions.stage.rect` (0, 40, 1024, 522), or a slice that is not 1024×522.
 
-- **Primitives.** Rectangle; text (a run of Inter, with ⚡ ◆ ❀ ✕ placed inline as 16 px sprites, as `components/text.mjs` `runs` does); sprite (a picture 1:1, or a window of a larger one); nine-slice (corners 1:1, edges and middle tiled, never scaled; `scene.c` `views_of`); and clip, a real face primitive (an LVGL parent object that clips its children, LVGL's default with `LV_OBJ_FLAG_OVERFLOW_VISIBLE` left clear). Every primitive carries its **layer** (`chrome`, `art`, `painted`, `type`) and its **region id** for the checks.
+- **Primitives.** Rectangle; text (a run of Inter, with ⚡ ◆ ❀ ✕ placed inline as 16 px sprites); sprite (a picture 1:1, or a window of a larger one); nine-slice (corners 1:1, edges and middle tiled, never scaled; `scene.c` `views_of`); and clip, a real face primitive (an LVGL parent object that clips its children, LVGL's default with `LV_OBJ_FLAG_OVERFLOW_VISIBLE` left clear). Every primitive carries its **layer** (`chrome`, `art`, `painted`, `type`) and its **region id** for the checks.
 - **Composed pictures.** A component that needs fine line work (the splice's 1 px wires, ticks and dashed edges; the guide's dashed slots, pips and tint lattice) draws it once, per props change, into a picture the face owns. It shows that picture as one sprite. It is still the closed set (a sprite) and still exact in palette colours with no anti-aliasing, but it costs one object instead of 1,765. The drawing code is a small set of C helpers (`hline`, `vline`, `dash`, `dot`, `lattice`, `bayerPick` for the `dither` event of §2.7, and `ring` and `tabRing` for the focus ring, §2.6) writing palette colours into an ARGB8888 buffer. No paths, no anti-aliasing, no opacity.
 
 The focus ring is composed by the face. Its pictures are generated palette geometry (one palette role, alpha 0 or 255, no anti-aliasing; no signed master exists), and their sizes come from the face's own region table, so the host neither derives nor uploads them, and the contract stays 1 with no new message.
@@ -131,8 +146,8 @@ The spec files (`prototypes/ui/specs/station/*.json`) are the one home of the nu
 1. **Loading.** The face parses each spec with a small vendored JSON parser (jsmn, MIT, one header, recorded in `THIRD_PARTY_NOTICES.md`) into a region tree: id, rect, word or `build`, its parameters, colours by palette name, strings, and the focus section.
 2. **Instantiation.** For each screen, one LVGL screen object, built once and kept. Each region becomes one container at its spec rect, absolute (no flex, no grid: `lv_conf.h` already has `LV_USE_FLEX 0`, `LV_USE_GRID 0`). The word's constructor builds its children inside, and `user_data` holds the region id. Switching screens is `lv_screen_load`, with the transition of §2.7.
 3. **States.** A spec with `states` (Pods: collection, overview, chapter, and Compare) marks which regions exist in each state. `props.state` picks one. Regions outside the state are hidden, not destroyed.
-4. **Derived geometry.** Where the spec names a rule rather than a rect (the rail's compaction and slants, the page grid by trait count, the plate's position over a focal box, the list's pitch, the splice's row plan, the guide's columns, pips in fives, the Incubator's leaf arcs), the word calls the C function of that name in `layout/`, with the spec's table and the counts from props. The rules are the closed list in `station-layouts.md`. A rule that is not in `layout/` is refused at load, not improvised.
-5. **The oracle stays in JavaScript.** The same derived rules, as pure functions of the spec, move from `ui/layout.mjs`, `components/list.mjs` (`placeRect`, `kinRect`), `cross-layout.mjs` and `views/guide.mjs` (`guideLayout`) into `prototypes/ui/specs/derive.mjs`. They draw nothing. They are the reference the regions check compares the face against (§2.7), and later they generate the ESP32 tables. Two independent implementations of each rule, checked against each other on every capture, catch the mistakes a single one would hide.
+4. **Derived geometry.** Where the spec names a rule rather than a rect (the rail's compaction and slants, the page grid by trait count, the plate's position over a focal box, the list's pitch, the splice's row plan, the guide's columns, pips in fives, the Incubator's leaf arcs), the word calls the C function of that name in `layout/`, with the spec's table and the counts from props. `listPitch` may carry `forms`, `{ <name>: { upTo, first, pitch, grid } }`: n items take the form with the smallest `upTo` at least n (Habitat's bay strip, full tiles then compact). A form with no `upTo`, two forms with one `upTo`, or a grid shorter than its `upTo` is refused at load. The rules are the closed list of nine in `station-layouts.md`. A rule that is not in `layout/` is refused at load, not improvised.
+5. **The oracle stays in JavaScript.** The same derived rules, as pure functions of the spec, are in `prototypes/ui/specs/derive.mjs`, the splice's row plan among them; the guide's columns and pips join them at L2.1. They draw nothing. They are the reference the regions check compares the face against (§2.7), and later they generate the ESP32 tables. Two independent implementations of each rule, checked against each other on every capture, catch the mistakes a single one would hide.
 6. **Lint.** Every drawn region in a spec names its word (`component`) or composition (`build`). `specs.test.mjs` asserts it, and `cross.json` and `library.json` gain the names when their screens move.
 
 ### 2.4 Assets
@@ -148,10 +163,10 @@ The spec files (`prototypes/ui/specs/station/*.json`) are the one home of the nu
 ### 2.5 Fonts and text
 
 - **Fonts.** Inter 16, 20 and 28 px stay LVGL C fonts baked by `tools/bake-fonts.sh` from `ui/fonts/inter/src`. CI already re-bakes them and diffs. Mibi 7×9 at 2× and 3× is baked the same way when the Companion comes.
-- **Fitting is the face's job.** Wrap, clip with an ellipsis, centring, the cap-top placement (`scene.c` already converts the spec's cap top to LVGL's line top), and the name plate's width rounded to its step (`views/pods.mjs` `plateWidth`) all move into the text and panel words. Props carry the whole string and the spec carries the box and the line limit.
+- **Fitting is the face's job.** Wrap, clip with an ellipsis, centring, the cap-top placement (`scene.c` already converts the spec's cap top to LVGL's line top), and the name plate's width rounded to its step (`derive.mjs` `plateWidth`, the oracle) all move into the text and panel words. Props carry the whole string and the spec carries the box and the line limit.
 - **A metrics table for the views that choose words by width.** Some content choices depend on width, such as the ← word that fits (`nav.mjs` `backWord(…, fits)`) and number words against figures. For those, the native build exports `face/dist/metrics.json` from the compiled fonts: integer advances and kerning pairs, exactly what `lv_text_get_width` sums. `ui/specs/measure.mjs` sums the same table in JavaScript. A Node test asserts equality with the WebAssembly face on a corpus of every Station string (the strings in the spec files and the views' templates). There is no synchronous call across the bridge.
 - **Coverage.** Every character the Station can set must be in the baked ranges. `type.test.mjs`'s coverage test is re-pointed from the atlases to the C fonts' ranges.
-- **Retired at L3:** the atlas form (`ui/fonts/atlas/*`, `ui/tools/bake-type.mjs`, `ui/type.mjs`, `ui/type-node.mjs`), used only by the JavaScript type layer.
+- **Deleted at B4a:** the atlas form (`ui/fonts/atlas/*`, `ui/tools/bake-type.mjs`, `ui/type.mjs`, `ui/type-node.mjs`), used only by the JavaScript type layer (§5.2).
 
 ### 2.6 The focus graph
 
@@ -159,9 +174,10 @@ Focus is the face's because the face knows where every target is drawn. Views gi
 
 - **Inputs.** From the spec: one graph per state (for example `pods.json` `focus.collection` and so on, `home.json` `focus`). From props: `focus.targets`, the ids and enabled flags of what can be focused now, with no rectangles. `focus.resolve` gives the view's answers to the spec's selectors (`list.current`, `rail.last`, `kin.first`). `focus.set` is an explicit jump requested by an intent result (go to a state, open a pod).
 - **The rectangles** are the target regions as their words drew them, read from the face's region table, so the ring and the spatial fallback use real boxes.
-- **The algorithm** is `ui/focus.mjs` ported exactly: an explicit edge, a selector, `none`, an axis that stops at the ends without wrapping, then the spatial fallback (nearest along the direction, crosswise distance weighted 2.2), with the edge forms and the integer arithmetic of §2.6.1. Its tests (`ui.test.mjs` "focus follows the graph …") become JSON vectors that both the C test binary and, until L3, the JavaScript module run.
+- **The algorithm** is `ui/focus.mjs` ported exactly: an explicit edge, a selector, `none`, an axis that stops at the ends without wrapping, then the spatial fallback (nearest along the direction, crosswise distance weighted 2.2), with the edge forms and the integer arithmetic of §2.6.1. Its tests (`ui.test.mjs` "focus follows the graph …") become JSON vectors that both the C test binary and `ui/focus.mjs` run. `focus.mjs` is kept for good as the vectors' second run, so two implementations check each other on every change.
 - **Two graph primitives** make Home's and Habitat's fixed orders spec data, not code (`nav.mjs` `homeMove`, `habitatMove`, deleted when their screens move): `order: [ids]` (a column walked in a fixed order) and `nearestIn: group` (spatial, restricted to one group, landing on the row nearest the ring). The UI designer writes them into `home.json` and the Habitat spec. `nav.mjs` keeps the tree (parents, ← words, room keys), which is logic. The exact semantics are §2.6.1.
-- **The ring** is the `focusRing` word: shapes from `frame.json` `focus.ring` (round, circle, tab ring, the ellipse under a creature's feet) composed by the face with `ring` and `tabRing` (the round one a nine-slice of a composed 20×20 source, §2.2), the form per target group from the spec's `ring`, plus the creature's `lift`. The frozen layer's amber pulsing ring (`gfx.mjs` `focusRing`) is deleted with its screens.
+- **The ring** is the `focusRing` word: shapes from `frame.json` `focus.ring` (round, circle, tab ring, the ellipse under a creature's feet) composed by the face with `ring` and `tabRing` (the round one a nine-slice of a composed 20×20 source, §2.2), the form per target group from the spec's `ring`, plus the creature's `lift`. The JavaScript layer's amber pulsing ring (`gfx.mjs` `focusRing`) is deleted at B4a (§5.2).
+- **Overlays.** While an overlay is open (§2.2), its graph is the only one and the screen beneath takes no key. The props that close it carry `focus.set`, which hands the ring back to a target of the screen beneath.
 - **Keys.** Directions move the ring and send `focus`, except a stepper key, which sends `intent` with `step:<key>` and leaves the ring where it is (§2.6.1). ✓ and ← on a target send `intent`. Room keys send `intent` with `room:<k>` from any screen. On Idle the first press sends `wake` and nothing else (`main.mjs` `act`). The Caddy's Dock key never reaches the face: in the sandbox the page sends it straight to JavaScript, as `act("dock")` does, and on the Pi it arrives at Node over Wi-Fi.
 - **Latency.** The ring moves on the frame of the key press. The bottom line follows when the new props arrive: the same frame in the sandbox, one or two frames on the Pi (budget §2.9).
 
@@ -196,7 +212,7 @@ One semantics, run by `ui/focus.mjs` and the C port alike, so the JSON vectors g
 
 Each score is the JavaScript one multiplied by a positive constant (200, 10 and 10, on doubled centres), so the choice is the same. On an equal score the target earlier in `props.focus.targets` wins. `ahead` works for all four keys: Home writes it on the residents' ▲ ▼ and on ◀ (`"left": { "nearestIn": "resident", "ahead": true }`), which also reaches two residents at the same height.
 
-**Vectors.** `prototypes/face/tests/vectors/focus.json` holds every case: those of `ui.test.mjs` "focus follows the graph …", `nav.test.mjs`'s Home walk, the `vectors` of `home.json` `focus`, ties, the thresholds at exactly 6 px (not taken) and 6.5 px (taken) for `ahead`, and 4 px and 4.5 px for the spatial fallback, the `roomKey` origin, each ordered-list case (first entry present; first absent and second present; all absent with `"none"` last; all absent falling to the axis and to the fallback), each stepper case (each listed key giving `{ to: cur, verb }` on an enabled and a disabled target; a key the group does not list moving by steps 1 to 3), and each refusal, the stepper's included. `face_test` and `focus.mjs` both run it. `focus.mjs` is changed to this integer form at L2.0 (it is kept, not frozen, §5.2); `nav.mjs` `homeMove` is deleted at L2.2 when `home.json` carries Home's graph.
+**Vectors.** `prototypes/face/tests/vectors/focus.json` holds every case: those of `ui.test.mjs` "focus follows the graph …", `nav.test.mjs`'s Home walk, the `vectors` of `home.json` `focus`, ties, the thresholds at exactly 6 px (not taken) and 6.5 px (taken) for `ahead`, and 4 px and 4.5 px for the spatial fallback, the `roomKey` origin, each ordered-list case (first entry present; first absent and second present; all absent with `"none"` last; all absent falling to the axis and to the fallback), each stepper case (each listed key giving `{ to: cur, verb }` on an enabled and a disabled target; a key the group does not list moving by steps 1 to 3), and each refusal, the stepper's included. `face_test` and `focus.mjs` both run it. `focus.mjs` is changed to this integer form at L2.0 and kept as the vectors' second run (§5.2); `nav.mjs` `homeMove` is deleted at L2.2 when `home.json` carries Home's graph.
 
 ### 2.7 Animation
 
@@ -209,11 +225,11 @@ The rule: **the timeline in JavaScript decides that something plays and whether 
 | `ribbon` | `TL.play` 6 s and up, shown from 70% of the seal | The ribbon word |
 | `plate` (4 s) | `game.mjs` `msg` | The message plate word |
 | Counters' tick (70 ms a unit, 240 ms flash) and the turn's flash (1 s, 160 ms blink) | `present.mjs` `createFramePresenter` | The top bar word, from old and new values |
-| Screen change (180 ms, 16-level Bayer) | `main.mjs` `ditherFill` | A `dither` transition: 16 lattice pictures over the stage. No opacity |
+| Screen change (180 ms, 16-level Bayer) | `main.mjs`, the host | A `dither` transition: 16 lattice pictures over the stage. No opacity |
 | A region's picture changing (Create's founder: 200 ms, 16 levels) | — | A `dither` event between the two pictures, composed by `bayerPick` (below) |
 | Grow now's fill on the Incubator | — | The `leaves` word's `growNow`: one whole leaf a step over 400 ms (§2.2) |
 | Arrival (3 s a crate, input locked; crates slide 500 ms, staggered 250 ms), hatch (2.6 s), wake, Rest | `home.mjs`, `incubator.mjs`, `FX` fields | Named events on Home and the Incubator with whole-pixel slides |
-| Residents walking | `screens/frame.mjs` `stepResidents` (random walk, `mulberry32`) | The living window word: positions stepped in C from a seed and bounds in props, the same seed giving the same path. Their boxes are focus targets (§2.6) |
+| Residents walking | — | The living window word: positions stepped in C from a seed and bounds in props, the same seed giving the same path. Their boxes are focus targets (§2.6) |
 
 **The `dither` event.** A `dither` event changes the picture on one region from one picture to another. The event carries `from`, the previous picture's id, which stays loaded until the event ends; the props carry the new one. At time `t` of the event's `ms`, the level is `L = min(16, floor(16·t / ms))`, and a pixel at screen coordinates (x, y) shows the new picture where `BAYER[(y & 3)·4 + (x & 3)] < L`, else the old one, with `BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5]`. Whole pixels are copied: no blend, no opacity. The frame is composed by `bayerPick`, a helper in `prim/composed` beside `lattice` (§2.2), and shown as one sprite. A new event on the region while one plays cuts the playing one to its end first. With `motion: false` the event is a cut to the new picture. Its first user is Create's founder (200 ms, 16 levels).
 
@@ -221,19 +237,18 @@ Constraints: positions move in whole pixels. No LVGL opacity is used on the chro
 
 ### 2.8 Checks against the LVGL framebuffer
 
-Everything the sign-off measures (technical-architecture.md §5.6) is re-pointed at the face. In test mode (`?face=lvgl&test`, or the native headless binary) the face writes a log at each capture point and can render passes.
+Everything the sign-off measures (technical-architecture.md §5.6) is re-pointed at the face. In test mode (`?test`, or the native headless binary) the face writes a log at each capture point and can render passes.
 
 | Check | Measured from | In CI |
 | --- | --- | --- |
 | **Regions** | The face's region log, `{ region, rect }` per drawn region, written by `prim/` from the word that drew it. Each is compared with its spec rect, or with `ui/specs/derive.mjs` for a derived one. One generic loop over every screen, in place of a hand-written case per region | The regions check, on the face |
-| **Pixels, during the switch** | Framebuffer against the JavaScript renderer's capture of the same state, outside the type boxes: at most 0.2% of pixels differing by more than 3 per channel (L2's measure in `frame-check.mjs`). Ink of each text run within its region, and within 4 px of the JavaScript run (L1's measure) | Until L3, per screen |
-| **Pixels, after a screen moves** | **Golden framebuffers**: the hash of each journey capture point, committed in `prototypes/face/golden/<screen>.json`, with the PNG for review. WebAssembly, native x86-64 and native aarch64 (under qemu-user in CI) must give the same hash, as WebAssembly and native do (`5fc5fdc5`, `3456b1be`) | Per screen, from its milestone |
+| **Pixels** | **Golden framebuffers**: the hash of each journey capture point, committed in `prototypes/face/golden/<screen>.json`, with the PNG for review. WebAssembly, native x86-64 and native aarch64 (under qemu-user in CI) must give the same hash, as WebAssembly and native do (`5fc5fdc5`, `3456b1be`) | Per screen, from its milestone |
 | **Palette** | Three passes per capture point: chrome only, chrome and art, everything. 0 pixels off palette on the first two; type pixels tinted from palette colours | Every capture point |
-| **Type** | The text word's log: string, font id, px. Every run Inter 16, 20 or 28 from the baked fonts; no refused glyph; no digits in `noDigits` regions | Every capture point |
+| **Type** | The text word's log: string, font id, px. Every run Inter 16, 20 or 28 from the baked fonts; no refused glyph; no digits in `noDigits` regions; each run's ink inside its region (`station/tools/checks.mjs`) | Every capture point |
 | **Size, stamp label, rail tabs, placeholders** | Frame size asserted; stamp label 120×120 with the stamp ≤ 104 inside; tab count equals the chapters; placeholders counted from the manifest | Every capture point |
 | **Refusals and budgets** | `refused` = 0; objects ≤ 400 a screen; pictures ≤ 200; props ≤ 32 KB; printed per capture point | Printed; fail on refusals only, the budgets fail from L3 |
-| **Same play, both faces** | The journey's key presses on both faces give the same sequence of focused targets and the same final save (hash of the save JSON) | The journey, until L3 |
-| **Freeze** | §5 | Every run |
+| **Journey sequence** | The journey's key presses on the face give the sequence of focused targets and intents committed in `prototypes/face/golden/journey-<screen>.json`. The final save's hash is compared only with a pinned clock | Per screen, from its milestone |
+| **Import guard** | §5.1 | Every run |
 
 ### 2.9 Native Linux and WebAssembly builds
 
@@ -248,7 +263,7 @@ Everything the sign-off measures (technical-architecture.md §5.6) is re-pointed
 - `platform/` is the only per-target code. `face.c` is platform-neutral.
 - The Node host, `prototypes/station/host/main.mjs`, imports the same views, intents, rules, asset producers and save adapter as the page. It writes the save to a file atomically and connects to the face's socket. It is what runs on the Pi under S1.
 - System packages come from the runner's apt (`libsdl2-dev`, `libdrm-dev`, `gcc-aarch64-linux-gnu`, `qemu-user`). There is no new paid or networked service.
-- Clean builds on CI take 35 s (WebAssembly) and 39 s (native) (`prototypes/face/README.md`). Budget for the whole face job after L3: at most 4 minutes with the SDK cached, and the full sandbox job at most 12 minutes (5 min 13 s measured at L0).
+- Clean builds on CI take 35 s (WebAssembly) and 39 s (native) (`prototypes/face/README.md`). Budget for the whole face job after B4b: at most 4 minutes with the SDK cached, and the full sandbox job at most 12 minutes (5 min 13 s measured at L0).
 
 ### 2.10 Performance budgets for the Pi 4 proof
 
@@ -270,9 +285,9 @@ If a budget is missed on hardware, the levers in order are: partial redraw disci
 
 ### 2.11 What stays where
 
-| Stays JavaScript and data | Moves into C | Deleted at L3 |
+| Stays JavaScript and data | Moves into C | Deleted at B4a |
 | --- | --- | --- |
-| `state.mjs`, `sitting.mjs`, `library.mjs`, `genome.mjs`, `splice.mjs`, `caddy.mjs`, `game.mjs` (minus drawing), `nav.mjs` (tree, words, room keys); views as props; intent tables; the timeline (holds); `dev.mjs`; the spec files and `ui/specs/derive.mjs`, `measure.mjs`; the manifest; asset producers (`art.mjs`, `pictures.mjs`, `podmasters.mjs`, `podlayers.mjs`, `podsprites.mjs`, `pixels.mjs`); the ring oracle `ui/rings.mjs` (vectors), beside `derive.mjs`; `png.mjs`; the journey and checks | The words, the layout rules, text fitting, the focus graph, animation, the ring and its pixels, clip, composed pictures, transitions, Idle's composition | §5.2 |
+| `state.mjs`, `sitting.mjs`, `library.mjs`, `genome.mjs`, `splice.mjs`, `caddy.mjs`, `game.mjs` (minus drawing), `nav.mjs` (tree, words, room keys); views as props (`views/frame.mjs`, `views/pods-props.mjs`); intent tables (`intents/`); the timeline (holds); `dev.mjs`; the spec files and `ui/specs/derive.mjs`, `measure.mjs`; the manifest; asset producers (`art.mjs`, `pictures.mjs`, `podmasters.mjs`, `podlayers.mjs`, `podsprites.mjs`, `pixels.mjs`); the ring oracle `ui/rings.mjs` (vectors), beside `derive.mjs`; the focus vectors' second run `ui/focus.mjs`; `png.mjs`; `face-lvgl.mjs` as the transport; the journey and checks | The words, the layout rules, text fitting, the focus graph, animation, the ring and its pixels, clip, composed pictures, transitions, Idle's composition, not built yet | The JavaScript drawing layer, §5.2 |
 
 The developer panel stays a DOM panel under the device in the sandbox (station-build.md §2.5: never a device key). On the Pi, developer settings are flags of the Node host. The face draws neither.
 
@@ -280,60 +295,65 @@ The developer panel stays a DOM panel under the device in the sandbox (station-b
 
 | Milestone | Screens | Why here |
 | --- | --- | --- |
-| **L2.0 Platform, and Pods on C words** | Bridge, spec loader, primitives with clip and composed pictures, the frame words, Pods' words, focus, animation, test logs, native SDL and aarch64 builds, the freeze | Pods is at pixel parity on the face and has a JavaScript reference to compare with. It is the safest place to prove the C words and the bridge before any new screen depends on them |
-| **L2.1 Library: spread, Book and the field guide** | `library.json`, spread, Book face, guide spread, detail band | Its spec carries nine rulings, and its rules exist. It is built on LVGL first and is never drawn in JavaScript on `main` |
-| **L2.2 Home, Rest, Dock and arrival, Idle** | `home.json`, the Idle composition, the report card | The hub: the journey starts and ends there. Residents prove the living window's animation, and Dock proves the event path |
+| **L2.0 Platform, and Pods on C words** | Bridge, spec loader, primitives with clip and composed pictures, the frame words, Pods' words, focus, animation, test logs, native SDL and aarch64 builds | Pods' word vectors, recorded against the JavaScript drawing, are the parity record. It is the safest place to prove the C words and the bridge before any new screen depends on them |
+| **L2.0 B4a: the JavaScript face removed** | Every screen: the sandbox boots the LVGL face, a screen with no binding table draws "not built yet", the JavaScript drawing layer is deleted, the import guard | With Pods on the face, every later screen is built on LVGL alone, with nothing to keep in step |
+| **L2.2 Home, Rest, Dock and arrival, Idle** | `home.json`, the Idle composition, the report card | The hub: the journey starts and ends there, and Home closes the playability gap first (§4). Residents prove the living window's animation, and Dock proves the event path |
+| **L2.1 Library: spread, Book and the field guide** | `library.json`, spread, Book face, guide spread, detail band | Its spec carries nine rulings, and its rules exist |
 | **L2.3 Cross with the splice** | `cross.json` | The heaviest screen (1,772 nodes in the JavaScript layer). It needs the composed pictures from L2.0 and the rail from Pods |
 | **L2.4 Create and the Incubator** | `create.json` and `incubator.json`, from `station-layouts.md` "Create" and "Incubator" | Share the rail, the stamp label and the specimen chamber with Pods |
 | **L2.5 Habitat and the Probe bench** (and the Sitting's first screen when its spec lands) | New spec files; the Probe bench needs its layout section first | Last, because their specs are the least ready |
-| **L3 Switch** | — | LVGL is the only face; the JavaScript drawing layer is deleted |
+| **L3 Close-out** | — | Every screen on the face: goldens for each, the budgets failing CI, the Node host playing the whole journey |
 
 **The spec dependency.** The UI designer delivers each spec file one milestone ahead: Idle (`frame.json` `idle`) with L2.2, `create.json` and `incubator.json` before L2.4, Habitat and the Probe bench before L2.5. Habitat and the Probe bench have no spec file yet, and the Probe bench has no layout section in `station-layouts.md` (`station-screens.md` describes it). A milestone without its spec waits. It is never built from the old screen's numbers.
 
 ## 4. Milestones
 
-Every milestone ships to the sandbox and plays from a fresh world. The save does not change in any of them. A milestone merges only when the documents it touches, in both repositories and on the website, show the current state. Sizes are relative to L2 as built (L0 to L2 took about five hours of work); no milestone carries a day estimate.
+Every milestone ships to the sandbox and plays from a fresh world. The save does not change in any of them. From B4a until Home (L2.2) and Create and the Incubator (L2.4) are on the face, a fresh world plays Pods only: Dock, then the developer panel's "Open the bay". That is the playability gap; the panel gains no button for an unbuilt screen, and `loop.test.mjs` and the journey's rule steps, through the test hooks, keep the whole loop tested meanwhile. A milestone merges only when the documents it touches, in both repositories and on the website, show the current state. Sizes are relative to L2 as built (L0 to L2 took about five hours of work); no milestone carries a day estimate.
 
 ### The gate every screen milestone passes (L2.1 to L2.5)
 
 1. **Regions:** every region the face draws in each of the screen's states equals its spec, read from the region log. Zero departures.
-2. **Pixels:** against the JavaScript capture of the same state, at most 0.2% of pixels outside the type boxes differ by more than 3 per channel, and every text run's ink lies inside its region and within 4 px of the JavaScript run. A new feature with no JavaScript twin (the field guide) is held to the spec through checks 1, 3 and 4 and to the designer's signed wireframe. Its golden capture is committed only once the UI designer and the art director sign it.
+2. **Pixels:** each capture point's golden (§2.8) is held to the spec through checks 1, 3 and 4 and to the signed wireframes, and is committed only once the UI designer and the art director sign it. Every text run's ink lies inside its region.
 3. **Palette:** chrome and art passes have 0 pixels off palette at every capture point.
 4. **Type:** every run is Inter at its size from the face's fonts, with no refusal and no digits in `noDigits` regions.
-5. **Journey green on `?face=lvgl`:** the screen's journey steps pass on the LVGL face with the same focused-target sequence, the same intents and the same final save hash as on the JavaScript face (while it exists).
+5. **Journey green on the face:** the milestone's pending steps (`journey-pending/<milestone>.mjs`, printed on every run) become the screen's journey steps and pass on the face, and their focused targets and intents equal the signed `prototypes/face/golden/journey-<screen>.json` (§2.8; the save hash only with a pinned clock).
 6. **Goldens:** each capture point's hash is committed, equal on WebAssembly, native x86-64 and native aarch64.
 7. **Budgets:** no refusal; objects, pictures and props sizes printed under budget.
 8. **Reduced motion:** with `motion: false` every capture point equals its end state.
 9. **Conformance:** technical-architecture.md §5.7 checklist, plus: no coordinates in the view, no geometry in JavaScript outside `derive.mjs`, the screen glue DOM-free and running in the Node host.
-10. **Deletion:** the screen becomes the sandbox's default, and its JavaScript drawing is deleted in the same change (its `draw`, `nodes`, `faceNodes`, and the views' node-emitting code), and its paths leave the freeze list (§5.1).
+10. **Not built yet, replaced:** the screen's binding table lands in `prototypes/face/src/screens/`, its view sends its own states in place of `notBuilt`, and the import guard (§5.1) stays green with no exemption.
 
 ### L2.0 Platform, and Pods on C words (size: about 2 × L2)
 
-- **Scope.** The bridge (`bridge/`, `face-lvgl.mjs` rewritten as a transport), the spec loader, the primitives with layer and region tags, real clip, composed pictures, the frame words (top bar, bottom line, message plate, focus ring, panel), Pods' words (list, specimen, stamp label, chapter rail, chapter page) and their layout rules. Then the focus graph with `order` and `nearestIn`; animation for `seal`, `wipe`, `ribbon`, `plate`, counters, turn flash and the screen transition; the metrics table; `bake-images.mjs`; test mode with logs and three passes; `face_sdl`, `face_drm` (cross-built) and qemu hashes; the Node host running Pods. The freeze check lands as this milestone's first commit, after `gfx.mjs` is split into `pixels.mjs` (kept) and the drawing half (frozen).
-- **Acceptance.** The four Pods states and Compare pass the gate (checks 1 to 9) against the JavaScript captures. `frame-check.mjs`'s measures still pass. `face_test` passes the focus, layout and metrics vectors. The Node host plays Pods against `face_sdl` from a fresh world. Pods' view imports neither `ui/layout.mjs` nor `ui/components/*`.
-- **Tests.** `face_test` (native C: JSON vectors exported from `ui.test.mjs`, `rail.test.mjs` and `page.test.mjs`, and the focus tests). `metrics.test.mjs` (JavaScript metrics equal the WebAssembly face on every Station string). `bridge.test.mjs` (contract round trip, refusals, a version mismatch). `pods-view.test.mjs` asserts props only.
-- **CI gates.** Face builds (WebAssembly, native, aarch64), `face_test`, the journey on both faces, goldens for Pods, the freeze check.
+- **Scope.** The bridge (`bridge/`, `face-lvgl.mjs` rewritten as a transport), the spec loader, the primitives with layer and region tags, real clip, composed pictures, the frame words (top bar, bottom line, message plate, focus ring, panel), Pods' words (list, specimen, stamp label, chapter rail, chapter page) and their layout rules. Then the focus graph with `order` and `nearestIn`; animation for `seal`, `wipe`, `ribbon`, `plate`, counters, turn flash and the screen transition; the metrics table; `bake-images.mjs`; test mode with logs and three passes; `face_sdl`, `face_drm` (cross-built) and qemu hashes; the Node host running Pods. `gfx.mjs` is split into `pixels.mjs` (kept) and the drawing half (deleted at B4a).
+- **Builds.** L2.0 lands in three builds.
+  - **B3:** Pods' words, the focus port, the rings, the plates, the metrics table and `bake-images.mjs`. Pods' word vectors (`prototypes/face/tests/vectors/pods-words.json`, `frame-words.json`, `focus-ring-words.json`), recorded against the JavaScript drawing, are the parity record.
+  - **B4a, the JavaScript face removed,** in three changes. B4a-1 moves what stays off what goes, with nothing visible changed: pictures as `{ w, h, rgba() }` (`ui/assets.mjs`, the masters, `podsprites.mjs`, `podmasters.mjs`, `art.mjs`; `face-lvgl.mjs` takes RGBA), `beamArt` from `screens/frame.mjs` into `art.mjs`, `cross-layout.mjs` into `ui/specs/derive.mjs` as the oracle of `splicePlan`, DOM-free `intents/` for the frame, Home, the Incubator, the Library, Habitat, Create and Pods, and `present.mjs` sending the tick and flash events. B4a-2 boots the sandbox on the face: `main.mjs` is the host with no flag, sending the frame's props for every screen, Pods' props, and `notBuilt` for every other screen (§2.2); room keys, ← and Idle's wake work on every screen; the developer panel gains "Open the bay"; `face-check.mjs` loads `/sandbox/station/`; `frame-check.mjs` is deleted. B4a-3 deletes the JavaScript drawing layer and its tests and images (§5.2), moves the face's node exports into a test build (`-DFACE_NODE_API`) used by the face tests, and adds the import guard (§5.1).
+  - **B4b:** `face_sdl`, `face_drm`, the aarch64 hash under qemu-user, `station/host/` on `face_sdl`, Pods' goldens and Pods' journey-sequence golden.
+- **Acceptance.** The four Pods states and Compare pass the gate's checks 1, 3, 4 and 6 to 9; for check 2, the word vectors are the parity record and Pods' goldens are signed at B4b. `face_test` passes the focus, layout and metrics vectors. The sandbox boots the face, every screen with no binding table draws "not built yet", and room keys, ← and Idle's wake work from each. The Node host plays Pods against `face_sdl` from a fresh world.
+- **Tests.** `face_test` (native C: JSON vectors exported from `ui.test.mjs`, `rail.test.mjs` and `page.test.mjs`, and the focus tests). `metrics.test.mjs` (JavaScript metrics equal the WebAssembly face on every Station string). `bridge.test.mjs` (contract round trip, refusals, a version mismatch). `pods-props.test.mjs` asserts props only.
+- **CI gates.** Face builds (WebAssembly, native, aarch64), `face_test`, the journey on the face, goldens for Pods, the import guard.
 - **Focus.** The port implements §2.6.1 whole: the four edge forms with the ordered list, `order`, `nearestIn` with `ahead`, the `roomKey` origin and the integer scores, with `focus.json`'s vectors green in `face_test` and in `focus.mjs`. Pods' view resolves `kin.first` to `null` when the pod has no kin, and the UI designer writes the way on into `pods.json` so the single edges' moves are kept: `overview.pod.right` `["kin.first", "hatch"]` and `overview.hatch.up` `["kin.first", "none"]`. At L2.1, when the figure becomes a target, `pod.right` becomes `["figure", "kin.first", "hatch"]`; before Identify the figure is not present and the list goes on to the kin.
-- **Pods' two captions.** `pods.json` `regions.overview.thisPod` (144, 520, 224, 24; string `thisPod`, always in the overview) and `regions.overview.figure.caption` (432, 400, 128, 24; string `theSpecies`, only when the pod is identified) are drawn by the text word at L2.0; the frozen JavaScript face never draws them. Measured on `pods.json`: in the overview both lie on the bench ground (0, 40, 1024, 522) and overlap no other region. They are a new feature with no JavaScript twin, held to gate checks 1, 3 and 4: check 1 finds each in the region log at its spec rect in every overview capture where it shows (the caption only when identified, and absent before); check 3 and check 4 as for any run (Inter 16 from the face's fonts, `mist`, no refusal). In check 2 both rects are masked out of the pixel comparison with the JavaScript capture and their two runs are left out of the "within 4 px of the JavaScript run" clause; the clause that each run's ink lies inside its region still applies. The goldens of the overview captures that show them are committed only once the UI designer and the art director sign them, as the gate says for any new feature.
-
-### L2.1 Library: spread, Book and the field guide (size: about 1 × L2)
-
-- **Scope.** `library.json` and the guide's rules and model (`library.mjs`, `guide.mjs`, on `main` without drawing). Views as props: the spread, the Book face, the guide spread with columns by chapter, tinted panels as composed lattices, pips in fives, the detail band with plates and carriers, the page turn. The intent table from `screens/library.mjs` and the guide's moves (`guideMove`). Spread and Book focus from the spec. Masters by id; the fold-out and page-turn stand-ins registered.
-- **Acceptance.** The gate. The spread and Book face are compared against the JavaScript captures (check 2). The guide is held to `library.json`, the nine rulings and the signed wireframes (`10a`, `10b`), with its goldens signed by the UI designer and the art director. The guide journey's captures (`guide-*`, `book-*`, the no-carrier case) are produced from the LVGL face.
-- **Tests.** `guide.test.mjs`, re-pointed at props. `library.test.mjs` unchanged.
-- **CI gates.** The gate's checks for `library`.
+- **Pods' two captions.** `pods.json` `regions.overview.thisPod` (144, 520, 224, 24; string `thisPod`, always in the overview) and `regions.overview.figure.caption` (432, 400, 128, 24; string `theSpecies`, only when the pod is identified) are drawn by the text word at L2.0. Measured on `pods.json`: in the overview both lie on the bench ground (0, 40, 1024, 522) and overlap no other region. They are a new feature with no JavaScript twin, held to gate checks 1, 3 and 4: check 1 finds each in the region log at its spec rect in every overview capture where it shows (the caption only when identified, and absent before); check 3 and check 4 as for any run (Inter 16 from the face's fonts, `mist`, no refusal). Each run's ink lies inside its region. The goldens of the overview captures that show them are committed only once the UI designer and the art director sign them, as the gate says.
 
 ### L2.2 Home, Rest, Dock and arrival, Idle (size: about 1.5 × L2)
 
 - **Scope.** `home.json` loaded. The living window (residents seeded in props, walking in C, bed, with-you mark), the modules (bay with crates, rack, small Incubator, Probe cradle, rest knob), the arrival events, the report card, the arrival ribbon. Idle as a state of the frame (`props.idle`): the vivarium full-screen and its line, with the first press sending `wake`. Home's focus order as `order` and `nearestIn` in `home.json`, replacing `nav.mjs` `homeMove`.
-- **Scope rulings.** Home has no status strip: Home's layout has none (`station-layouts.md` Home §2: the modules show it by shape), so no region, word or props carry it, and `home.mjs` `drawStatusStrip` goes with the rest of Home's drawing (§5.2). Idle's line is the `idleLine` composition (§2.2), in the frame's binding table. Home's graph uses §2.6.1 as written in `home.json`: `order` for the column, `nearestIn` for ◀ ▶ between the column and the residents and from the room (origin `roomAt`'s centre), `nearestIn` with `ahead` for the residents' ▲ ▼ and ◀. The journey's resident moves are deterministic because the residents' boxes come from the seed and the face's clock, which the test steps (§2.7).
+- **Scope rulings.** Home has no status strip: Home's layout has none (`station-layouts.md` Home §2: the modules show it by shape), so no region, word or props carry it. Idle's line is the `idleLine` composition (§2.2), in the frame's binding table. Home's graph uses §2.6.1 as written in `home.json`: `order` for the column, `nearestIn` for ◀ ▶ between the column and the residents and from the room (origin `roomAt`'s centre), `nearestIn` with `ahead` for the residents' ▲ ▼ and ◀. The journey's resident moves are deterministic because the residents' boxes come from the seed and the face's clock, which the test steps (§2.7).
 - **Acceptance.** The gate. `page-home`, `page-arrival` and `page-fresh` captures on the face. Dock while idle wakes, docks and lands on Home (`dockKey(fromIdle)`). The arrival holds input for its length. With the same seed, the residents' paths give the same framebuffer hashes on all three builds.
 - **Tests.** `nav.test.mjs`'s Home walk becomes focus vectors; the arrival as a timeline test.
 - **CI gates.** The gate for `home` and `idle`.
 
+### L2.1 Library: spread, Book and the field guide (size: about 1 × L2)
+
+- **Scope.** `library.json` and the guide's rules and model (`library.mjs`, `guide.mjs`, on `main` without drawing). Views as props: the spread, the Book face, the guide spread with columns by chapter, tinted panels as composed lattices, pips in fives, the detail band with plates and carriers, the page turn. The intent table `intents/library.mjs` and the guide's moves (`guideMove`). Spread and Book focus from the spec. Masters by id; the fold-out and page-turn stand-ins registered.
+- **Acceptance.** The gate. The spread, the Book face and the guide are held to `library.json`, the nine rulings and the signed wireframes (`10a`, `10b`), with their goldens signed by the UI designer and the art director. The guide journey's captures (`guide-*`, `book-*`, the no-carrier case) are produced from the LVGL face.
+- **Tests.** `guide.test.mjs`, re-pointed at props. `library.test.mjs` unchanged.
+- **CI gates.** The gate's checks for `library`.
+
 ### L2.3 Cross with the splice (size: about 1 × L2)
 
-- **Scope.** `views/cross.mjs` rewritten to props: the forecast's chapters, loci, gates, seeds, ranges, kinship and the wish, as data. `cross-layout.mjs` moves to `derive.mjs` (oracle) and `layout/splicePlan` (C). Wires, ticks, dashed edges and gates are composed pictures per chapter block. Portraits, the ghost and seeds are generated pictures by id. Partner ◀▶ and the chapter walk ▲▼ are steppers.
+- **Scope.** `views/cross.mjs` as props: the forecast's chapters, loci, gates, seeds, ranges, kinship and the wish, as data. The splice's row plan is `layout/splicePlan` (C), with its oracle in `derive.mjs`. Wires, ticks, dashed edges and gates are composed pictures per chapter block. Portraits, the ghost and seeds are generated pictures by id. Partner ◀▶ and the chapter walk ▲▼ are steppers.
 - **Acceptance.** The gate. The S09 chapter view with everything read (1,772 nodes in the JavaScript layer) draws in at most 400 objects. The splice's row plan equals `derive.mjs` for all sixteen frames (the test of `cross-splice.test.mjs` on the C side). `cross-overview`, `cross-chapter`, `page-cross`, `page-child` and `page-cross-siblings` are captured on the face.
 - **Tests.** `cross-splice.test.mjs` and `cross-read.test.mjs` re-pointed at props; nothing of an unread chapter is in the props (the read-only rule, enforced at the contract).
 - **CI gates.** The gate for `cross`.
@@ -347,67 +367,72 @@ Every milestone ships to the sandbox and plays from a fresh world. The save does
 
 ### L2.5 Habitat and the Probe bench (size: about 1 × L2)
 
-- **Scope.** The two new spec files. Habitat's resident large, card, stamp, with-you door, bond heart (arm-then-confirm), bays strip, the meet and placeholder-to-painting landing, and the door to the Cross and the guide. The Probe bench's plates, switch and slot. Habitat's rows as `order` data, replacing `habitatMove`. The Sitting's first screen goes here if its spec has landed; otherwise it is built straight on the face when it does.
-- **Acceptance.** The gate. `page-habitat`, `page-meet`, `page-meet-placeholder`, `page-painted` and `page-offline` captured on the face.
+- **Scope.** The two new spec files. Habitat's resident large, card, stamp, with-you door, bond heart (arm-then-confirm), bays strip, the meet and placeholder-to-painting landing, and the door to the Cross and the guide. The Probe bench's plates, switch and slot. The compositions `module` (with `lamp: null` on Habitat), `nameTag`, `chapterPlates`, `bayStrip` and `shieldPlates`, and `listPitch`'s forms (§2.2, §2.3). Habitat's graph as data: named edges, `nearestIn` with `ahead`, ordered lists, the strip's `axis`, replacing `nav.mjs` `habitatMove`. The overlay on the top layer (§2.2, §2.6), with the namer when its spec lands. The Sitting's first screen goes here if its spec has landed; otherwise it is built straight on the face when it does.
+- **Acceptance.** The gate. `page-habitat`, `page-habitat-empty`, `page-habitat-compact`, `page-meet`, `page-meet-placeholder`, `page-painted`, `page-offline`, `page-bench`, `page-bench-away`, `page-bench-armed`, `page-bench-tier2` and `page-namer` captured on the face; `page-meet`, `page-meet-placeholder` and `page-painted` differ from one another.
 - **CI gates.** The gate for `habitat` and `bench`.
 
-### L3 Switch (size: about 0.5 × L2)
+### L3 Close-out
 
-- **Scope.** `?face=lvgl` becomes the only face and the flag is removed. Everything in §5.2 is deleted. The journey and checks read only the face. The parity check against JavaScript captures is retired (there is nothing left to compare with); the goldens are the reference. The test hooks are re-pointed (`capture` from the framebuffer, `check` from the face's log). The README, `station-build.md` and technical-architecture.md §5 and §6 are updated to the face, and the freeze check is replaced by an import guard (nothing may import from the deleted paths, and `prototypes/ui` holds no drawing).
-- **Acceptance.** The full journey is green on the face alone. `checks.mjs` has zero failures on every capture point. Every screen has goldens. The budgets fail CI from here. The Node host plays the whole journey against `face_sdl` from a fresh world.
-- **CI gates.** As L2.5, minus the JavaScript-face journey and the parity step.
+- **Scope.** The switch closed: every Station screen has its binding table, so no screen draws `notBuilt`, and `journey-pending/` holds no step. The goldens are the reference for every screen.
+- **Acceptance.** The full journey is green on the face. `checks.mjs` has zero failures on every capture point. Every screen has goldens and a journey-sequence golden. The budgets fail CI from here. The Node host plays the whole journey against `face_sdl` from a fresh world.
+- **CI gates.** As L2.5, with the budgets failing.
 
-## 5. Freezing the JavaScript drawing layer, and what L3 deletes
+## 5. The import guard, and what B4a deletes
 
-### 5.1 The freeze, from L2.0's first commit
+### 5.1 The import guard
 
-`prototypes/face/deprecated.json` lists every deprecated drawing module with its SHA-256 at the freeze commit, and the set of modules allowed to import each one. `prototypes/face/tools/freeze-check.mjs` runs in the site workflow, which runs on every pull request into `main` as well as on `main`, and fails if:
+`prototypes/face/removed.json` lists every path B4a deletes (§5.2). `prototypes/face/tools/guard.mjs` runs in the site workflow, which runs on every pull request into `main` as well as on `main`, and fails when:
 
-1. a listed file's content differs from its hash;
-2. a file not in the allowed set imports a listed module (an import scan over `prototypes/**/*.mjs`), so no new screen can be built on the layer;
-3. a screen registered in `registerScreen` gains `draw`, `nodes` or `faceNodes` without being in the face's migrated list;
-4. a path leaves the list without its file being deleted, or without its screen's goldens present in `prototypes/face/golden/` (the only way out is migration).
+1. a path in `removed.json` exists again;
+2. any file imports a removed path (an import scan over `prototypes/**/*.mjs`);
+3. `canvas`, `getContext` or `putImageData` appears under `prototypes/station/src/` or `prototypes/ui/`, except in `face-lvgl.mjs` `present()` and in the image decoders `guard.mjs` names, until `png.mjs` decodes their images;
+4. JavaScript outside `prototypes/face/tests/` names an export of the face's node API, which only the test build (`-DFACE_NODE_API`) has;
+5. `registerScreen` is given `draw`, `nodes` or `faceNodes`;
+6. an LVGL object is created (`lv_*_create`) in `prototypes/face/src/` outside `prim/`; the display and the input device (`lv_display_create`, `lv_indev_create`) are the platform's.
 
-Deleting a listed file always passes. A fix that a frozen file genuinely needs before its screen moves (a crash, a rule that changed underneath it) goes in with an `exemption` entry naming the commit and the reason, signed off by the architect in review. The check prints every exemption on every run.
+The guard has no exemptions.
 
-### 5.2 The freeze list, and what L3 deletes
+### 5.2 What B4a deletes, and what stays
 
-| Path | Lines | Freeze | Deleted |
-| --- | --- | --- | --- |
-| `prototypes/ui/scene.mjs`, `context.mjs`, `layout.mjs` (its rules copied to `specs/derive.mjs` first), `type.mjs`, `type-node.mjs` | 80, 3, 76, 32, 11 | L2.0 | L3 |
-| `prototypes/ui/render/station-canvas.mjs`, `browser.mjs`, `canvas-assets.mjs` | 126, 16, 7 | L2.0 | L3 |
-| `prototypes/ui/components/*.mjs` (14 files: bottomLine, chapterPage, chapterRail, focusRing, frame, list, mark, messagePlate, panel, slantRail, specimen, stampLabel, text, topBar) | 500 | L2.0 | L3 (Pods' at L2.0, the shared ones at L3) |
-| `prototypes/ui/fonts/atlas/*`, `prototypes/ui/tools/bake-type.mjs` | data, 80 | L2.0 | L3 (after `metrics.json` replaces them) |
-| `prototypes/station/src/gfx.mjs`: the drawing half (`R`, `blit`, `text`, `textW`, `wrapText`, `clipText`, `panel`, `ditherFill`, `focusRing`, `bindCanvas`); `PB` and the palette helpers move to `pixels.mjs` first | 207 before the split | L2.0 | L3 |
-| `prototypes/station/src/screens/home.mjs`, `bench.mjs`, `incubator.mjs`, `create.mjs`, `habitat.mjs`, `library.mjs`: the drawing (their intent logic moves to `intents/`) | 165, 64, 60, 78, 100, 77 | L2.0 | At each screen's milestone |
-| `prototypes/station/src/screens/frame.mjs` (drawing: `stageBg`, `benchArt`, `lampPool`, `beam`, `drawResidents`) | 95 | L2.0 | L2.2 (residents) and L3 |
-| `prototypes/station/src/screens/pods.mjs` `nodes`, `faceNodes`, `ringNodes`, `sharedFrame` | part of 166 | L2.0 | L2.0 |
-| `prototypes/station/src/screens/cross.mjs` (drawing), `views/cross.mjs` (node emission), `cross-layout.mjs` (moved to `derive.mjs`) | 91, 223, 28 | L2.0 | L2.3 |
-| `prototypes/station/src/face-lvgl.mjs` (the node path: `scene`, `keyOf`, the clip cut) | 94 | Replaced at L2.0 by the bridge transport | L2.0 |
-| `prototypes/face/src/scene.c`'s node API (`face_node`, `FN_*` from the page) | — | Kept internally as `prim/` | Its page-facing exports at L3 |
-| `main.mjs`: `legacy`, the `Scene`, `bootStationCanvas`, `SC`, `checkSnapshot`'s canvas reads | — | Rewritten (not frozen) | L3 |
-| Tests of the deleted modules: `ui.test.mjs`'s scene, layout and component tests (its timeline and manifest tests stay), `rail.test.mjs`, `page.test.mjs`, `type.test.mjs` (the closed-set lint becomes a C lint; coverage re-pointed) | — | Their vectors exported to `face_test` at L2.0 | L3 |
-| Tools: `frame-check.mjs`'s canvas comparison | — | — | L3 (the goldens replace it) |
+Lines measured on `main` at `1f5aa8e2` (`views/pods.mjs` at B3).
 
-**Kept** (not frozen): `ui/assets.mjs`, `ui/png.mjs`, `ui/podlayers.mjs`, `ui/rings.mjs` (the oracle of the ring ops and the generator of `rings.json`), `ui/timeline.mjs`, `ui/focus.mjs` (until L3, as the JavaScript run of the focus vectors; then deleted with the vectors kept), `ui/palettes/`, `ui/specs/`, `ui/fonts/inter/` (the source the C fonts are baked from), `ui/assets/`, `ui/tools/place-masters.mjs`, `ui/tests/specs.test.mjs`, `masters.test.mjs`, `podlayers.test.mjs`.
+| Path | Lines |
+| --- | --- |
+| `prototypes/ui/scene.mjs`, `context.mjs`, `layout.mjs` (its rules in `specs/derive.mjs`), `type.mjs`, `type-node.mjs` | 80, 3, 76, 32, 11 |
+| `prototypes/ui/render/station-canvas.mjs`, `browser.mjs`, `canvas-assets.mjs` | 126, 16, 7 |
+| `prototypes/ui/components/*.mjs` (14 files: bottomLine, chapterPage, chapterRail, focusRing, frame, list, mark, messagePlate, panel, slantRail, specimen, stampLabel, text, topBar) | 500 |
+| `prototypes/ui/fonts/atlas/*`, `prototypes/ui/tools/bake-type.mjs` (`metrics.json` and the C fonts in their place) | data, 80 |
+| `prototypes/station/src/gfx.mjs`, the drawing half (`PB` and the palette helpers are in `pixels.mjs`) | 75 |
+| `prototypes/station/src/screens/*.mjs`: home, bench, incubator, create, habitat, library, frame, pods, cross (their intent logic in `intents/`, `beamArt` in `art.mjs`) | 166, 65, 61, 79, 101, 78, 96, 166, 92 |
+| `prototypes/station/src/views/cross.mjs`, `views/pods.mjs`, `cross-layout.mjs` (in `derive.mjs`) | 223, 250, 28 |
+| `prototypes/station/src/face-lvgl.mjs`'s node path (`scene`, `keyOf`, the clip cut); the file stays as the transport | — |
+| The face's node API (`face_node`, `face_node_tag`, `face_node_refused` in `face.c`): out of the page's exports, into the test build (`-DFACE_NODE_API`) the face tests use | — |
+| `main.mjs`: the `?face` flag, `legacy`, the `Scene`, `bootStationCanvas`, `SC`, `checkSnapshot`'s canvas reads; the file stays as the host | — |
+| Tests of the deleted modules: `ui.test.mjs`'s scene, layout and component tests (its timeline and manifest tests stay), `rail.test.mjs`, `page.test.mjs`, `type.test.mjs` (the closed-set lint a C lint; coverage on the C fonts' ranges), `pods-view.test.mjs` | — |
+| Tools: `prototypes/face/tools/frame-check.mjs` (its measures in the words, animation and ring tests, the regions loop and `checks.mjs`); `freeze-check.mjs`, `deprecated.json` and `freeze.test.mjs` (the import guard in their place) | 198, 151, data, — |
+| The JavaScript face's images; the journey captures them from the face | — |
+
+**Kept:** `ui/assets.mjs`, `ui/png.mjs`, `ui/podlayers.mjs`, `ui/rings.mjs` (the oracle of the ring ops and the generator of `rings.json`), `ui/timeline.mjs`, `ui/focus.mjs` (the second run of the focus vectors, for good), `ui/specs/` (`derive.mjs`, `measure.mjs`), `ui/palettes/`, `ui/fonts/inter/` (the source the C fonts are baked from), `ui/assets/`, `ui/tools/place-masters.mjs`; `ui/tests/specs.test.mjs`, `masters.test.mjs`, `podlayers.test.mjs`; every rule module and the asset producers; `station/src/views/frame.mjs`, `views/pods-props.mjs` and `intents/`; `face-lvgl.mjs` as the transport; the logic the Node host runs headless under S1.
 
 ## 6. Risks
 
 | Risk | Assessment | Mitigation |
 | --- | --- | --- |
 | **Object counts.** The splice draws 1,765 one-pixel rects (measured, S09) and the guide's dashes do the same at a smaller scale | High: over a 512-object table, and slow on the Pi | Composed pictures (§2.2); object budget asserted; table grown so a breach is measured |
-| **The views carry geometry** (Pods via `ui/layout.mjs` and `components/list.mjs`; Cross and the guide emit nodes) | Certain: each screen's move includes a view refactor, larger than "views stay" suggests | Props schemas per screen; geometry to `derive.mjs` (oracle) and `layout/` (C); the conformance item "no coordinates in the view" checked in review |
+| **Views written as props** (Cross's and the guide's JavaScript views emitted nodes) | Certain: each screen milestone includes its view, larger than "views stay" suggests | Props schemas per screen; geometry to `derive.mjs` (oracle) and `layout/` (C); the conformance item "no coordinates in the view" checked in review |
 | **Synchronous measure** across the Pi's process boundary | Certain under S1 | Fitting in the face; the metrics table with its equality test |
-| **Two faces drifting** during the switch | Medium | The freeze check; parity only until the goldens are signed; deletion per milestone (§4, gate check 10) |
+| **The playability gap** from B4a until Home and Create and the Incubator are on the face | Certain: a fresh world plays Pods only, through Dock and "Open the bay" | L2.2 comes first; `loop.test.mjs` and the journey's rule steps keep the loop tested through the hooks; the developer panel gains no button per unbuilt screen (§4) |
+| **Deleted code still reached** (the Companion, the Caddy, the website, the face's node exports) | Low | The import guard (§5.1); the Companion and the Caddy import nothing deleted; the website only links to the sandbox |
+| **The parity record** | Low: B3's word vectors are the last comparison with the JavaScript drawing | B3 merges with its layer fixes before B4a; Pods' goldens are signed at B4b |
 | **Missing spec files** for Habitat and the Probe bench | Certain; it can stall L2.5 | The UI designer delivers one milestone ahead (§3); no build from old numbers |
-| **Type shifts.** LVGL's whole-pixel advances move the last letters 1 to 4 px against the atlases (L1, measured) | Low, known | The face is the reference after L3; the UI designer re-signs the type on each screen's goldens |
+| **Type shifts.** LVGL's whole-pixel advances move the last letters 1 to 4 px against the atlases (L1, measured) | Low, known | The face is the reference; the UI designer re-signs the type on each screen's goldens |
 | **Builders' speed in C** | Medium: a component change is a compile (5 to 40 s) and debugging in the browser is clumsy | `face_sdl` with a debugger; spec edits hot without compile; words small and tested natively |
 | **Determinism across builds** (WebAssembly, x86-64, aarch64) | Low: equal hashes measured for WebAssembly and native; aarch64 not yet measured | Hash equality is a gate from L2.0; any difference is investigated before goldens are committed |
 | **A new vendored dependency** (jsmn) | Low | MIT, one header, notices updated; a 300-line parser of our own is the fallback |
 | **The Pi proof waits for hardware** | Medium: the budgets are unproven until then | Hardware-independent budgets asserted now; native timings printed; levers in §2.10 that do not change the contract |
 | **Two processes on the Pi** (face and Node) | Medium | The face keeps drawing the last props and shows a still frame if Node restarts; it reconnects; it holds no game state; `hello` checks the contract version |
-| **CI time** with the journey run twice | Medium: about 2.5 min a journey | Until L3 only; budget of 12 min for the job; the journey steps of unmoved screens skipped on the LVGL run |
+| **CI time** | Low: about 5 min for the job after B4a, the journey run once, on the face | Budgets: the face job at most 4 min after B4b, the whole job at most 12 min |
 
 ## 7. Files this spec touches when built
 
-New: `prototypes/face/src/{platform,bridge,spec,prim,vocab,layout,screens}/`; `prototypes/face/src/vendor/jsmn.h`; `prototypes/face/tools/{freeze-check,bake-images}.mjs`; `prototypes/face/deprecated.json`; `prototypes/face/golden/`; `prototypes/face/tests/vectors/`; `prototypes/station/host/`; `prototypes/station/src/{intents,pixels.mjs}`; `prototypes/ui/specs/{derive,measure}.mjs` and `*.props.json`. Changed: `prototypes/face/{CMakeLists.txt,build.sh,lv_conf.h,README.md}`, `prototypes/station/src/{main.mjs,face-lvgl.mjs,views/*}`, `prototypes/station/tools/{journey,checks}.mjs`, `.github/workflows/site.yml`, `THIRD_PARTY_NOTICES.md`.
+New: `prototypes/face/src/{platform,bridge,spec,prim,vocab,layout,screens}/`; `prototypes/face/src/vendor/jsmn.h`; `prototypes/face/tools/{guard,bake-images}.mjs`; `prototypes/face/removed.json`; `prototypes/face/golden/` (with `journey-<screen>.json`); `prototypes/face/tests/vectors/`; `prototypes/station/host/`; `prototypes/station/src/{intents,pixels.mjs}`; `prototypes/station/tools/journey-pending/`; `prototypes/ui/specs/{derive,measure}.mjs` and `*.props.json`. Changed: `prototypes/face/{CMakeLists.txt,build.sh,lv_conf.h,README.md}`, `prototypes/face/tools/face-check.mjs`, `prototypes/station/src/{main.mjs,face-lvgl.mjs,dev.mjs,present.mjs,art.mjs,views/*}`, `prototypes/station/tools/{journey,checks}.mjs`, `.github/workflows/site.yml`, `THIRD_PARTY_NOTICES.md`. Deleted: the paths of §5.2.
