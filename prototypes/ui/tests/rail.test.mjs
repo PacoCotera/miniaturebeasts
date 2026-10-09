@@ -30,7 +30,7 @@ test("a tab leans 16 px over its 40 rows, and neighbours share one slant", () =>
 });
 
 test("the focus ring on a tab is the box (x - 4, 42, w + 24, 42), 2 px, square at the top, with no pixel above y 42", () => {
-  const r = frame.focus.ring, a = tabRingMask(136, { tab: r.tab, width: r.width });
+  const r = frame.focus.ring, a = tabRingMask(136, { tab: r.tab, width: r.width, tabTop: frame.regions.rail.y });
   assert.deepEqual([a.w, a.h], [136 + 24, 42]);
   const at = (c, y) => a.mask[(y - 42) * a.w + c];
   assert.ok([...Array(a.w).keys()].filter((c) => c >= 2 && c < a.w - 18).every((c) => at(c, 42) && at(c, 43)), "the top run is 2 px and runs the width between the slants");

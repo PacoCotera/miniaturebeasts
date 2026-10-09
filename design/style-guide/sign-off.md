@@ -99,7 +99,7 @@ Judged a third time, after the placeholder pods were placed (the code of ebfb3b8
 
 ### Section 3, the Station frame on the LVGL face (L1, L1b): by the builder
 
-The frame (top bar, bottom line, message plate, focus ring) and the slanted chapter rail, drawn by LVGL 9.6 behind `?face=lvgl`; the JavaScript page is the default and untouched. Captures: `prototypes/face/img/l1-*.png` (the frame, the plate, the counter's tick; the canvas renderer's frame beside the face's) and `l1b-rail*.png` (the rail, the ring on a tab).
+The frame (top bar, bottom line, message plate, focus ring) and the slanted chapter rail, drawn by LVGL 9.6 behind `?face=lvgl`; the JavaScript page is the default, and its chrome changes with this stage: every screen on it now draws the one frame from the frame spec (the title and room-mark slot, the counters, the bottom line with its zones and hairlines at x 404 and 620, the message plate) through the same scene nodes as the face; the old per-screen top bar and bottom line are deleted, and the Companion's words and the dots between the bottom line's groups are gone with them. Captures: `prototypes/face/img/l1-*.png` (the frame, the plate, the counter's tick; the canvas renderer's frame beside the face's) and `l1b-rail*.png` (the rail, the ring on a tab).
 
 | Art direction | Capabilities |
 | --- | --- |

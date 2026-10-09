@@ -9,7 +9,7 @@
 //          open: index (the open chapter: its tab is lighter, and full when the rail is compact), where: "pods" | "centred", colours: { changed }, star (asset id), clashMark }
 import { slantTabs, slantAt } from "../layout.mjs";
 import { registerAsset } from "../assets.mjs";
-import { tabEndMask, tabRingMask } from "../rings.mjs";
+import { tabEndMask } from "../rings.mjs";
 import { cutOutline } from "./panel.mjs";
 import { focusRing } from "./focusRing.mjs";
 
@@ -58,4 +58,3 @@ export function slantRail(ctx, id, props) {
   nodes.push(...rings);
   return { nodes, tabs: placed.tabs.map((t) => t.rect), run: placed.run, x0: placed.x0, overflow: placed.overflow };
 }
-export { tabRingMask };

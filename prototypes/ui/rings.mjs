@@ -31,9 +31,9 @@ export function tabEndMask(side, part, slant, h, shift) {
 }
 // The tab's focus ring (box w + 2 * outside + slant wide, `H` tall, from y `top`): the two slanted lines 4 px outside the tab, the sides leaning
 // with the tab down to its bottom edge (y `slantTo`, 80) and dropping straight to the bottom run (y `bottom`, 84); a top run, square against the top bar; the bottom
-// corners rounded; `width` thick all round.
+// corners rounded; `width` thick all round. `spec.tabTop` is the rail's top edge.
 export function tabRingMask(w, spec) {
-  const { slant, outside, top, bottom, radiusBottom, slantTo } = spec.tab, width = spec.width, tabTop = spec.tabTop ?? 40, tabH = slantTo - tabTop;
+  const { slant, outside, top, bottom, radiusBottom, slantTo } = spec.tab, width = spec.width, tabTop = spec.tabTop, tabH = slantTo - tabTop;   // tabTop is the rail's y (frame.json regions.rail.y), given by the caller
   const W = w + 2 * outside + slant, H = bottom - top, m = new Uint8Array(W * H), lean = (y) => (slant * Math.min(Math.max(y - tabTop, 0), tabH)) / tabH;
   const left = (y) => lean(y), right = (y) => W - slant + lean(y), r = radiusBottom;
   const inside = (px, y, inset, rr) => {

@@ -65,9 +65,12 @@ expect(eq(px(D, 500, 100), rgbOf(C.stageGround)), "the stage ground is " + C.sta
 const regions = { title: Rg.title.rect, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: Rg.action.rect, back: Rg.back.rect };
 for (const x of Rg.topRules.x) expect(eq(px(D, x, 20), rgbOf(C.topRule)) && eq(px(D, x - 1, 20), rgbOf(C.chrome)), `a 1 px hairline rule at x ${x} in the top bar`);
 const rows = [];
+const L0 = await face.evaluate(() => window.__st.lineFor()), needNow = L0.need != null ? L0.need : await face.evaluate(() => window.__st.need().text);
+const present = { back: !!L0.back, need: !!needNow, subject: !!L0.subject, action: !!L0.ok };   // what the screen's line says: a slot that says something has ink in both renderers; a missing way back is a failure, not a skip
+expect(present.back, "the screen's line has a way back");
 for (const [name, r] of Object.entries(regions)) {
   const a = ink(D, r), b = ink(R, r);
-  if (!a && !b) continue;
+  if (name in present && !present[name]) { expect(!a && !b, `${name}: the line says nothing here, so no ink in either renderer`); continue; }
   expect(a && b, `${name}: ink in both renderers`); if (!a || !b) continue;
   const left = a[0] - b[0], right = a[0] + a[2] - (b[0] + b[2]), top = a[1] - b[1], bottom = a[1] + a[3] - (b[1] + b[3]);
   rows.push(`${name.padEnd(10)} face ${a.join(",")}  js ${b.join(",")}  edges ${left}/${right} (x)  ${top}/${bottom} (y)`);
@@ -122,23 +125,32 @@ const T = await shot(face, "l1b-rail.png", 400), nodes = await face.evaluate(() 
 const tabs = nodes.filter((n) => /^rail\.\d+$/.test(n.id)).sort((a, b) => a.id.localeCompare(b.id, "en", { numeric: true }));
 expect(tabs.length >= 1, "the rail has tabs"); 
 tabs.forEach((t, i) => { expect(t.rect[1] === 1 + RL.y && t.rect[3] === RL.h - 2, `tab ${i}: the body hangs from y ${RL.y}, ${RL.h} tall with its rim rows`); });
-let at = RL.pods.x; const tabX = []; for (let i = 0; i < tabs.length; i++) { const w = tabs.length <= RL.fullUpTo ? RL.full : tabs[i].rect[2] + RL.slant === RL.full ? RL.full : RL.compact; tabX.push([at, w]); at += w; }
+const openAt = await face.evaluate(() => window.__st.UI.pods.ci | 0);   // the rule's widths from the spec: six or fewer chapters all full; more, compact with the open tab full
+let at = RL.pods.x; const tabX = []; for (let i = 0; i < tabs.length; i++) { const w = tabs.length <= RL.fullUpTo || i === openAt ? RL.full : RL.compact; tabX.push([at, w]); at += w; }
 tabs.forEach((t, i) => expect(t.rect[0] === tabX[i][0] + RL.slant && t.rect[2] === tabX[i][1] - RL.slant, `tab ${i} starts where the one before ends (x ${tabX[i][0]}, width ${tabX[i][1]})`));
 expect(at + RL.slant - RL.pods.x === (tabs.length <= RL.fullUpTo ? RL.full * tabs.length + RL.slant : RL.compact * (tabs.length - 1) + RL.full + RL.slant), "the run is the sum of the widths plus the slant");
 // the pixels: each tab's two slants carry the hairline at the column the line gives, row by row; the body's middle is the fill; the top rule above is the bar's
 tabX.forEach(([x0, w], i) => {
   const rimN = nodes.find((q) => q.id === `rail.${i}.et`), rim = rgbOf(rimN.colour);
-  for (const r of [10, 20, 30, 38]) {
+  for (const r of [0, 10, 20, 30, 38, 39]) {
     const y = 40 + r, xl = x0 + lean(r), xr = x0 + w + lean(r);
     expect(eq(px(T, xl, y), rim), `tab ${i} row ${r}: the left slant hairline at x ${xl}`);
     expect(eq(px(T, xr, y), rim) || eq(px(T, xr, y), rgbOf(C.ring)) || eq(px(T, xr - 1, y), rgbOf(C.ring)), `tab ${i} row ${r}: the right slant hairline at x ${xr}`);
   }
   expect(eq(px(T, x0 + 16, 40), rim) && eq(px(T, x0 + 16, 79), rim), `tab ${i}: the top and bottom edges are the hairline (y 40 and 79)`);
+  // the colours from the spec: the rim is the rail's edge colour; the body fill is the state's (unread, read, open or sealed)
+  const body = nodes.find((q) => q.id === `rail.${i}`), fills = Object.values(RL.states).filter((q) => q && q.fill).map((q) => q.fill);
+  expect(rimN.colour === RL.states.edge && fills.includes(body.colour), `tab ${i}: the rim is ${RL.states.edge} and the body one of the states' fills (${body.colour})`);
+  expect(eq(px(T, x0 + 22, 78), rgbOf(body.colour)), `tab ${i}: the body's fill is ${body.colour} at (${x0 + 22}, 78)`);
+  // the label and the pips at the heights the spec gives
+  const emb = nodes.find((q) => q.id === `rail.${i}.emblem`), pip = nodes.find((q) => new RegExp(`^rail\\.${i}\\.pip\\.0(\\.t)?$`).test(q.id)), L = w === RL.full ? RL.full_layout : RL.compact_layout;
+  expect(emb && emb.rect[1] === (L.labelY ?? L.emblemY), `tab ${i}: the emblem at y ${L.labelY ?? L.emblemY}: ${emb && emb.rect}`);
+  if (pip) expect(pip.rect[1] === L.pipsY, `tab ${i}: the pips at y ${L.pipsY}: ${pip.rect}`);
 });
 const ringRgbT = rgbOf(C.ring), fi = nodes.findIndex((n) => /^rail\.\d+\.focus$/.test(n.id)); expect(fi >= 0, "the focused tab wears the ring"); const ringNode = nodes[fi];
 const [bx, by, bw, bh] = ringNode.rect, focusTab = tabX[+ringNode.id.split(".")[1]];
 expect(bx === focusTab[0] - 4 && by === 42 && bw === focusTab[1] + 24 && bh === 42, `the ring's box is (x - 4, 42, w + 24, 42): ${ringNode.rect}`);
-{ const m = tabRingMask(focusTab[1], { tab: frame.focus.ring.tab, width: frame.focus.ring.width }); let miss = 0, on = 0;   // the face drew the ring's mask, pixel for pixel
+{ const m = tabRingMask(focusTab[1], { tab: frame.focus.ring.tab, width: frame.focus.ring.width, tabTop: frame.regions.rail.y }); let miss = 0, on = 0;   // the face drew the ring's mask, pixel for pixel
   for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) if (m.mask[j * m.w + i]) { on++; if (!eq(px(T, bx + i, by + j), ringRgbT)) miss++; }
   expect(on > 200 && miss === 0, `the face drew the tab ring's ${on} pixels exactly (${miss} missing)`); }
 for (let i = bx; i < bx + bw; i++) for (const j of [40, 41]) if (eq(px(T, i, j), ringRgbT)) expect(false, "no ring pixel above y 42");

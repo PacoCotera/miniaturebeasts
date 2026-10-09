@@ -2,7 +2,7 @@
 import { SW, SH, LINE_H, C, R, blit, text, panel, focusRing, art, PB, clock } from "../gfx.mjs";
 import { probeArt, vivArt } from "../art.mjs";
 import { G, UI, msg, save, goScreen, registerScreen, docked, bayCrates, effWithId, atHome, mibiById } from "../game.mjs";
-import { stageBg, drawTop, lampPool, tgt, navSpatial, DIRS, drawResidents } from "./frame.mjs";
+import { stageBg, lampPool, tgt, navSpatial, DIRS, drawResidents } from "./frame.mjs";
 import { drawBed } from "./home.mjs";
 import * as S from "../state.mjs";
 
@@ -10,8 +10,7 @@ const B = () => UI.bench;
 const benchTargets = () => [tgt("plate", 120, 380, 300, 60), tgt("switch", 520, 120, 420, 90), tgt("slot", 520, 260, 420, 160)];
 const P2 = () => ({ e: S.price(S.PRICE.tier2E, G.settings), d: S.price(S.PRICE.tier2D, G.settings) });
 function draw() {
-  stageBg(); drawTop("Probe bench");
-  const pr = docked() ? G.st.probe : null, b = B();
+  stageBg();   const pr = docked() ? G.st.probe : null, b = B();
   lampPool(270, 300, 230, 200);
   blit(art("cradleBig", () => { const pb = new PB(340, 80); pb.ell(170, 44, 168, 34, C.hairline); pb.ell(170, 36, 150, 24, C.bar); pb.outline(() => C.panel); return pb; }), 100, 300);
   if (pr) blit(probeArt(7), 172, 120); else { text("The Probe is away", 270, 220, C.fog, 3, "center"); text("with the Companion", 270, 260, C.mist, 2, "center"); }

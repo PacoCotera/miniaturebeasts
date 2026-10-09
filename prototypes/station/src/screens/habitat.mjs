@@ -6,7 +6,7 @@ import { landedSet, lampText } from "../caddy.mjs";
 import { openCross } from "./cross.mjs";
 import { emblemArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, docked, effWithId, mibiById } from "../game.mjs";
-import { stageBg, drawTop, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
+import { stageBg, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
 import { frameOf, codeText } from "../genome.mjs";
 
@@ -22,8 +22,7 @@ function targets() {
   return t;
 }
 function draw() {
-  stageBg(); drawTop("Habitat");
-  const m = shown(), h = H(), NOW = clock.now;
+  stageBg();   const m = shown(), h = H(), NOW = clock.now;
   if (!m) { blit(vivArt(600, 380), 20, 56); text("No mibis yet", 320, 200, C.fog, 3, "center"); text("Grow a founder from a read pod · the next build", 320, 246, C.mist, 2, "center"); return; }
   h.id = m.id; if (UI.meet === m.id) { UI.meet = null; FX.meetId = m.id; }
   const fr = frameOf(S.speciesOf(m));
