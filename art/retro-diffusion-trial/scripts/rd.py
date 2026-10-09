@@ -5,12 +5,17 @@ The payload JSON may contain "@file" references for image fields:
   {"input_palette": "@/path/to/palette.png", "reference_images": ["@a.png", "@b.png"]}
 Files are read, converted to RGB PNG and base64-encoded. The sidecar written next to
 the output records the exact request with image fields replaced by file name + sha256,
-plus the response metadata (cost, balance, model, task id). The key is read only from
-the environment and never written.
+plus the response metadata (model, task id). The cost and the balance go to the ledger
+outside this repository (ops/ledger, MB_LEDGER). The key is read only from the
+environment and never written.
 """
 import base64, hashlib, io, json, os, sys, time, uuid
 import urllib.request, urllib.error
 from PIL import Image
+
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(0, os.path.join(REPO, "ops", "ledger"))
+import ledger  # noqa: E402  the paid-call ledger (MB_LEDGER), outside this repository
 
 API = "https://api.retrodiffusion.ai/v2/inferences"
 KEY = os.environ["RETRO_DIFFUSION_API_KEY"]
@@ -60,8 +65,9 @@ def main():
     if check:
         payload["check_cost"] = True
         status, res = request("POST", API, payload)
-        print(name, "check_cost", status, json.dumps(res)[:300])
+        print(name, "check_cost", status, json.dumps(ledger.strip(res))[:300])
         return
+    ledger.require_ledger()  # every paid call is logged: without the ledger no call is made
     if "--task" in sys.argv:
         acc = {"task_id": sys.argv[sys.argv.index("--task") + 1]}
         status = 202
@@ -84,7 +90,7 @@ def main():
     record["status"] = task.get("status")
     if task.get("status") != "succeeded":
         record["error"] = task.get("error")
-        print(name, "FAILED", json.dumps(task)[:500])
+        print(name, "FAILED", json.dumps(ledger.strip(task))[:500])
         json.dump(record, open(os.path.join(outdir, name + ".json"), "w"), indent=2)
         sys.exit(2)
     res = task["result"]
@@ -100,11 +106,13 @@ def main():
         urllib.request.urlretrieve(url, os.path.join(outdir, fn))
         outs.append(fn)
     record["outputs"] = outs
-    record["response"] = {k: v for k, v in res.items()
-                          if k not in ("base64_images", "output_urls")}
-    json.dump(record, open(os.path.join(outdir, name + ".json"), "w"), indent=2)
-    print(name, "ok", outs, "cost", res.get("balance_cost"), "balance", res.get("remaining_balance"),
-          "model", res.get("model"), f"{record['seconds']}s")
+    record["response"] = ledger.strip({k: v for k, v in res.items()
+                                       if k not in ("base64_images", "output_urls")})
+    sidecar = os.path.join(outdir, name + ".json")
+    json.dump(record, open(sidecar, "w"), indent=2)
+    ledger.record("retro-diffusion-trial/rd.py", os.path.relpath(os.path.abspath(sidecar), REPO), task_id, "retrodiffusion", res.get("model"),
+                  cost_usd=res.get("balance_cost"), credit_cost=res.get("credit_cost"), balance_after=res.get("remaining_balance"), status=task.get("status"))
+    print(name, "ok", outs, "model", res.get("model"), f"{record['seconds']}s")
 
 
 if __name__ == "__main__":
