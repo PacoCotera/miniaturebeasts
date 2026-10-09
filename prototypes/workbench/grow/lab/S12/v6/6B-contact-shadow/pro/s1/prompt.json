@@ -13,14 +13,12 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
- "costUSD": 0.1706,
  "step1": {
   "shared": "v5's drawing"
  },
  "step2": {
   "callId": "55f8a4cb-ec63-4e15-b01d-6373566509d8",
   "status": "ok",
-  "costUSD": 0.17055,
   "seconds": 19.5,
   "imageOrder": [
    "drawing",

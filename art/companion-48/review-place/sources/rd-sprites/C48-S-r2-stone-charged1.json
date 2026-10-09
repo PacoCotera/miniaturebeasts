@@ -19,21 +19,16 @@
  "time": "2026-10-08T18:04:54Z",
  "checkCost": {
   "created_at": 1791482694,
-  "credit_cost": 0,
-  "balance_cost": 0.18,
   "output_images": [],
   "base64_images": [],
   "output_urls": [],
   "model": "check_cost",
-  "remaining_credits": 0,
-  "remaining_balance": 3.3000000000000087
+  "remaining_credits": 0
  },
  "result": {
   "status": "succeeded",
   "task_id": "dabf798d-0236-4610-a92e-38b138568039",
   "seconds": 31.2,
-  "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 3.12,
   "model": "rd_pro",
   "file": "C48-S-r2-stone-charged1-rd.png",
   "sha256": "282129159643aab305cea8f32fc193bd11e537520949433dfd1b036869015160"

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "critter-art-comparison-run/1",
-  "workflow": "GPT-6.1 Sol High-directed built-in image tool",
+  "workflow": "ChatGPT built-in image tool (gpt-image, per the PNG's Content Credentials)",
   "rasterBackend": "unverified; no model parameter exposed by tool",
   "callCount": 1,
   "promptFile": "prompt.txt",

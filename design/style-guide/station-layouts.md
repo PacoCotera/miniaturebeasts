@@ -99,14 +99,14 @@ The material icons are the kit's 16 px icons, as on the Companion.
 
 | Region | Rectangle | Holds |
 | --- | --- | --- |
-| Top bar | 0, 0, 1024, 40 | Chrome ground (`bar`), with a 1 px rule on its bottom edge |
+| Top bar | 0, 0, 1024, 40 | Chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
 | Title | 16, 8, 232, 24 | The room's mark 24×24, then the title, 20 px medium |
 | Materials | 384, 8, 256, 24 | As above |
 | Companion | 816, 8, 64, 24 | The glyph, its lamp and the face |
 | When (the world turn) | 904, 8, 104, 24 | The sun mark and the figure, right-aligned to x 1008 |
 | Top rules | x 256 and x 888, y 8 to 32 | 1 px hairlines |
-| Stage | 0, 40, 1024, 522 | The screen's own layout |
-| Bottom line | 0, 562, 1024, 38 | Chrome ground, with a 1 px rule on its top edge |
+| Stage | 0, 40, 1024, 522 | The screen's own layout, on its painted slice; with no slice, flat `ground` |
+| Bottom line | 0, 562, 1024, 38 | Chrome ground (`ground`), with a 1 px `void` rule on its top edge |
 | Action | 16, 570, 376, 24 | ✓ cap, verb, then the price, 24 px apart |
 | Context (subject) | 408, 570, 208, 24 | Centred on x 512, 16 px, `mist`. May end in "…" |
 | Notice (what needs you) | 624, 570, 280, 24 | Right-aligned to x 904, 16 px, `amber`, with its 12×12 lamp |
@@ -2416,6 +2416,78 @@ Habitat's own spec carries these; the namer depends on them.
 - **Rename.** Habitat's name tag is the focus target `name`, ring round, in Habitat's pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props' `focus.set` puts the ring back on that target.
 - **The `named` flash.** The regions that show the name (its name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
 - **The name boxes.** Habitat's name boxes follow the name label's rule above.
+
+---
+
+## Not built yet
+
+A screen the face does not draw yet shows the frame, the stage's ground and one line saying so. The numbers live in `prototypes/ui/specs/station/frame.json` `notBuilt`. Wireframes: [13-not-built.svg](station-layouts/13-not-built.svg) and [13b-not-built-idle.svg](station-layouts/13b-not-built-idle.svg), each with its 1× PNG; the magenta marks are measurements, everything else is drawn in its palette colour.
+
+<table><tr>
+<td valign="top"><img src="station-layouts/13-not-built.png" width="480" alt="Home, not built yet"><br><em>13. Home, not built yet, where the sandbox opens: the frame, the flat ground and the line; the notice on a fresh world. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/13b-not-built-idle.png" width="480" alt="Idle, not built yet"><br><em>13b. Idle, not built yet: the ground edge to edge and the line, no frame. 1×, measured.</em></td>
+</tr></table>
+
+### 1. Purpose
+
+Say plainly that this screen is not built yet, keep the frame and every way out working, and promise nothing the screen cannot do. **Reads first:** the line; then the title, which names the screen. The sandbox opens on Home, the hub: from there the Research key reaches Pods.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The frame**, as on every screen | Where you are (the title), what you hold, who is out, when, what needs you, and the way back |
+| **The stage's ground**, flat | The stage with nothing on it: no picture stands in for art that is not made |
+| **One line** | That the screen is not built yet |
+
+**Not drawn:** any picture or placeholder, any target, the focus ring, the ✓ cap and its verb, the context's words.
+
+### 3. Placement
+
+The line sits centred on the stage, a little above its middle, where the eye lands on an empty stage. The title stays where it always is, so the screen's name and the line read together and the line never repeats the name.
+
+### 4. Art direction
+
+Cool and quiet, the instrument at rest. The stage is the frame's stage part with no slice, flat `ground`, the same colour as the chrome; the frame's two `void` rules at y 39 and y 562 mark its edges. No warm light: the screen has no living window. The line is `fog` (8.6:1 on `ground`), below the title's `bone` and above the context's `mist`.
+
+### 5. Composition
+
+| Region (`frame.json` `notBuilt`) | Rectangle | Word or build | Notes |
+| --- | --- | --- | --- |
+| Stage | 0, 40, 1024, 522 | the frame's stage part, no slice | `colours.stageGround`, `ground` |
+| `line` | 16, 280, 992, 32 | text, in build `notBuilt` | 20 px medium, `fog`, centred on x 512; cap top on y 288, baseline y 303. One line, six words or fewer, no digits |
+| `ground` (Idle only) | 0, 0, 1024, 600 | panel, in build `notBuilt` | Fill `ground`, no rule, no edge, under the line |
+
+`notBuilt` is a composition in the frame's binding table, as `idleLine` is; it adds no word and no layout rule.
+
+**The bottom line:**
+
+| Zone | Shows |
+| --- | --- |
+| The one action | Nothing: no ✓ cap, no verb, no price |
+| The context | Nothing |
+| The notice | The frame's notice, as on every screen, `amber` with its lamp |
+| The way back | The ← cap and the parent's word: Home on the Incubator, the Probe bench, the Library and Habitat; Library on the Book; Habitat on Cross; the pod's label on Create. None on Home |
+
+**Idle not built yet** has no frame: no top bar, no bottom line, no message plate, no ring. The frame going away is what tells the player Idle is on. The `ground` fills the screen and the line sits in the same rectangle as on a framed screen.
+
+### 6. Interactions
+
+| Input | What happens |
+| --- | --- |
+| ✓, the pad | Nothing: no ring, no plate |
+| ← | To the screen's parent ([Keys and navigation](station-screens.md#keys-and-navigation)); on Home nothing |
+| A room key | Opens its room's top screen, built or not |
+| Dock | Docks or lifts the Companion and lands on Home. With Home not built, no arrival plays and nothing is held: the counters and the turn take their new values at once, and the notice names the crates |
+| 60 s without a press | Idle, not built yet |
+| Any key on Idle | Sends `wake` and nothing else: back to the screen under Idle (180 ms dither, held) |
+
+**Words:**
+
+| Where | Line |
+| --- | --- |
+| A framed screen | "this screen is not built yet" |
+| Idle | "Idle is not built yet" |
 
 ---
 

@@ -18,11 +18,9 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "The v5 art direction, species notes and description template.",
- "costUSD": 0.3254,
  "step1": {
   "callId": "4373d46c-3167-41fc-9b76-e34c27a01abc",
   "status": "ok",
-  "costUSD": 0.16746,
   "seconds": 17.1,
   "imageOrder": [
    "index",
@@ -152,7 +150,6 @@
  "step2": {
   "callId": "16dff9ec-1281-4ba4-a5a6-83adaac3d15b",
   "status": "ok",
-  "costUSD": 0.15793,
   "seconds": 16.9,
   "imageOrder": [
    "drawing",

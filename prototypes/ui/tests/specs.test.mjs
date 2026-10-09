@@ -484,3 +484,21 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   assert.equal(si.events.begin.holdMs, Math.max(...si.events.begin.steps.map((s) => s.at + (s.ms ?? 0))));
   assert.ok(!JSON.stringify(si.colours).includes("amber")); assert.deepEqual(paletteBad(si.colours), []);
 });
+
+test("the not-built composition agrees with its wireframes: one line on the stage's ground, the frame kept on screens and gone on Idle", () => {
+  const N = frame.notBuilt, R = N.regions, B = boxesOf("13-not-built.svg"), I = boxesOf("13b-not-built-idle.svg");
+  lintRegions({ screen: "frame.notBuilt", regions: R });
+  assert.ok(B.has(R.line.rect.join(",")) && I.has(R.line.rect.join(",")), `line ${R.line.rect} is in both wireframes`);
+  assert.ok(B.has(frame.regions.stage.rect.join(",")), "the stage in the screen's wireframe"); assert.ok(I.has(R.ground.rect.join(",")), "the ground in Idle's");
+  for (const k of ["action", "subject", "need", "back"]) assert.ok(B.has(frame.regions[k].rect.join(",")), `${k} zone in the screen's wireframe`);
+  assert.ok(inside(R.line.rect, frame.regions.stage.rect), "the line on the stage");
+  assert.equal(R.line.rect[0] + R.line.rect[2] / 2, R.line.centre); assert.equal(R.line.centre, 512);
+  assert.deepEqual([R.line.px, R.line.weight], [20, frame.type.weight[20]]); assert.ok(R.line.capTop % 8 === 0, "the cap top on the grid");
+  assert.deepEqual(N.frame, { screen: true, idle: false }); assert.equal(N.boot, "home"); assert.equal(R.ground.on, "idle");
+  assert.equal(frame.colours.stageGround, "ground", "the stage with no slice is the instrument's ground"); assert.equal(N.colours.ground, frame.colours.stageGround);
+  assert.deepEqual(paletteBad(N.colours), []); assert.deepEqual(paletteBad(frame.idle.colours), []);
+  for (const k of ["line", "idle"]) { const s = N.strings[k]; assert.ok(s.split(/\s+/).length <= R.line.words, `${k}: six words or fewer`); assert.ok(!/\d/.test(s), `${k}: no digits`); assert.ok(!s.endsWith("."), `${k}: no full stop`); }
+  assert.equal(N.strings.line, N.strings.line.toLowerCase(), "the line in lower case, as the frame's notices; the title names the screen");
+  assert.ok(N.strings.idle.startsWith("Idle "), "Idle has no title, so its line names it");
+  assert.equal(N.strings.subject, "");
+});

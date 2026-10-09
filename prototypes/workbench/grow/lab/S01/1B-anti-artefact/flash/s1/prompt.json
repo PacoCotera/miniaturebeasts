@@ -13,11 +13,9 @@
  "model": "gemini-3.1-flash-image",
  "sample": 1,
  "changed": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
- "costUSD": 0.0892,
  "step1": {
   "callId": "d4d29f6d-b88a-47cc-9761-b4ffb61c1472",
   "status": "ok",
-  "costUSD": 0.08842,
   "seconds": 8.1,
   "imageOrder": [
    "index",
@@ -148,7 +146,6 @@
  "step2": {
   "callId": "1c47dea4-a6f9-403f-9a18-52b25fccea2e",
   "status": "no-image",
-  "costUSD": 0.00078,
   "seconds": 2.0,
   "imageOrder": [
    "drawing",
