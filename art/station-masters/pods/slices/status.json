@@ -1285,58 +1285,58 @@
   "note": "the new-to-the-field-guide mark as pods.json now specifies it: a flat bone dot 6x6, 1 px white lit edge, no keyline; awaiting verdict"
  },
  "place-meadow-48x48": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview place picture, round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1",
+  "note": ""
  },
  "place-pond-48x48": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview place picture, round 1; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1",
+  "note": ""
  },
  "place-rock-48x48": {
   "status": "new",
   "signed_in": null,
-  "note": "the collection overview place picture, round 1; awaiting verdict"
+  "note": "the collection overview place picture, redone in round 2; awaiting verdict"
  },
  "place-wood-48x48": {
   "status": "new",
   "signed_in": null,
-  "note": "the collection overview place picture, round 1; awaiting verdict"
+  "note": "the collection overview place picture, redone in round 2; awaiting verdict"
  },
  "place-cave-48x48": {
   "status": "new",
   "signed_in": null,
-  "note": "the collection overview place picture, round 1; awaiting verdict"
+  "note": "the collection overview place picture, redone in round 2; awaiting verdict"
  },
  "mibi-halo-S01-128x160-clear": {
   "status": "new",
   "signed_in": null,
-  "note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  },
  "mibi-halo-S01-128x160-mist": {
   "status": "new",
   "signed_in": null,
-  "note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  },
  "mibi-halo-S09-128x160-clear": {
   "status": "new",
   "signed_in": null,
-  "note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  },
  "mibi-halo-S09-128x160-mist": {
   "status": "new",
   "signed_in": null,
-  "note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  },
  "mibi-halo-S12-128x160-clear": {
   "status": "new",
   "signed_in": null,
-  "note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  },
  "mibi-halo-S12-128x160-mist": {
   "status": "new",
   "signed_in": null,
-  "note": "the halo figure, round 1 (S01, S09, S12, mist and clear); awaiting picks"
+  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
  }
 }
