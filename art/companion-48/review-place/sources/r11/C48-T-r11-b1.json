@@ -1,0 +1,52 @@
+{
+ "id": "C48-T-r11-b1",
+ "tag": "C48-T-r11-b1",
+ "model": "gemini-3-pro-image",
+ "operation": "generate",
+ "prompt": "A single meadow tree for a cosy top-down 3/4 pixel-art game, painted large and clean on a flat solid magenta (#FF00FF) background. Use the reference image only for the CHARACTER of its canopy: a big rounded mass built of many overlapping LEAF CLUSTERS, every cluster with a NOTCHED, ragged, broken edge (small leaf points and gaps along the rim, never a smooth circle, never a bubble or a ball), clusters of unequal size packed tightly with dark gaps between them, the whole silhouette irregular and scalloped. Light from the TOP LEFT: the top-left edges of the clusters are a bright fresh green with a few pale leaf flecks, the bodies a mid green, the gaps and the lower right of the canopy a very deep blue-green. The outline is a very dark blue-green, never black. A short sturdy trunk below with a SHORT root flare, warm brown bark lit from the left. No ground, no shadow, no grass, no text. Flat colour shapes with a few highlight strokes, like a hand-painted game sprite, not a photograph and not a 3D render.\n",
+ "imageInputs": [
+  {
+   "path": "review-place/sources/r11/concept-tree-ref.png",
+   "sha256": "8b8359a0f3203b3ba2826eb87b7a286565b4661e3e9f28d087e976d0473ac2d8"
+  }
+ ],
+ "requested": {
+  "aspectRatio": "1:1",
+  "imageSize": "1K"
+ },
+ "time": "2026-10-08T23:26:21Z",
+ "result": {
+  "status": "success",
+  "png": {
+   "file": "C48-T-r11-b1-canvas.png",
+   "width": 1024,
+   "height": 1024,
+   "sha256": "bbbd8b898b57c643d303b235c0406e1234913c96504fd21c5c17f2dc8ee10c97"
+  },
+  "finishReason": "STOP",
+  "seconds": 17.5,
+  "usage": {
+   "promptTokenCount": 496,
+   "candidatesTokenCount": 1346,
+   "totalTokenCount": 2069,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 238
+    },
+    {
+     "modality": "IMAGE",
+     "tokenCount": 258
+    }
+   ],
+   "candidatesTokensDetails": [
+    {
+     "modality": "IMAGE",
+     "tokenCount": 1120
+    }
+   ],
+   "thoughtsTokenCount": 227,
+   "serviceTier": "standard"
+  }
+ }
+}

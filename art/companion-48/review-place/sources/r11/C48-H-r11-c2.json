@@ -1,0 +1,52 @@
+{
+ "id": "C48-H-r11-c2",
+ "tag": "C48-H-r11-c2",
+ "model": "gemini-3-pro-image",
+ "operation": "generate",
+ "prompt": "Redraw the small thatched log hut in the reference image, keeping its round log wall (continuous horizontal log courses, each one unbroken line bowed like the front of a cylinder), its ONE small glowing window, its small side porch at the front left (two wooden posts, its own lean-to roof of planks, a stone step, a plank door tall enough for a standing person) and its ring of grey base stones, BUT with a much LOWER, calmer roof: a VERY FLAT, wide, shallow cone, like a broad straw hat or a Mongolian yurt roof, whose height from the eave to the apex is only HALF the height of the log wall below it (so the whole roof, fringe included, is at most 40 percent of the hut's total height and the log wall is clearly the larger part), with exactly ONE thin ring band across it, and plain CALM straw thatch in just TWO values (a mid straw and a darker straw, fine vertical strands, no dense bright highlights, no many-ringed tiers, no tall pointed cupola). The roof's lower edge is one smooth continuous elliptical arc overhanging the wall on both sides with a short ragged fringe. Paint it on a flat solid magenta (#FF00FF) background. No grass patch and no cast shadow disc, only the base stones. Warm brown wood and straw colours only. Light from the top left. Dark brown outline, never black. Flat colour shapes, hand-painted game sprite, not a photograph, no text, no people.\n",
+ "imageInputs": [
+  {
+   "path": "review-place/sources/r11/C48-H-r11-a1-canvas.png",
+   "sha256": "81672004c4edbc24c9aa7f8b9c9ffe8b317785897c985ddf44c3aeb49c30f8c0"
+  }
+ ],
+ "requested": {
+  "aspectRatio": "1:1",
+  "imageSize": "1K"
+ },
+ "time": "2026-10-08T23:33:14Z",
+ "result": {
+  "status": "success",
+  "png": {
+   "file": "C48-H-r11-c2-canvas.png",
+   "width": 1024,
+   "height": 1024,
+   "sha256": "7e1b1d9612b779e6ea2e6760488656110c5165616569d3c1c9da50e195aa8deb"
+  },
+  "finishReason": "STOP",
+  "seconds": 16.1,
+  "usage": {
+   "promptTokenCount": 571,
+   "candidatesTokenCount": 1338,
+   "totalTokenCount": 2129,
+   "promptTokensDetails": [
+    {
+     "modality": "TEXT",
+     "tokenCount": 313
+    },
+    {
+     "modality": "IMAGE",
+     "tokenCount": 258
+    }
+   ],
+   "candidatesTokensDetails": [
+    {
+     "modality": "IMAGE",
+     "tokenCount": 1120
+    }
+   ],
+   "thoughtsTokenCount": 220,
+   "serviceTier": "standard"
+  }
+ }
+}
