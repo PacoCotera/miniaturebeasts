@@ -5454,9 +5454,9 @@
   "src": "geometry, seeded stipple",
   "made": "the unidentified pod's mark, veiled: a 22 px disc in frostS at alpha 0.22 with a frostD stipple (about 0.5 alpha above the veil) and a faint lit rim; its mean grey over black 53.6, the name plate's 137.1",
   "sha256": "769e742f41ced3d94829cb53c2384d0d328c9ceb8d9968882588828bade9299d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: reads as a white button; a veiled frostS mark in round 2"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the veiled frost mark"
  },
  "mark-clan-C01-24x24": {
   "size": [
@@ -5524,7 +5524,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C04 (Lathreta), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (the clan's second pigment, because plan and anchor collide with another clan)",
+  "made": "clan C04 (Lathreta), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "392542bef06b18eb3faa1578230c65d79e7ea81b60adaa7bff4c76fe599e4864",
   "status": "new",
   "signed_in": null,
@@ -5596,8 +5596,8 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C08 (Kremnion), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in butter #fff0b8 (the clan's second pigment, because plan and anchor collide with another clan)",
-  "sha256": "4ea2aac24b3af6134e88e765de36b7fbed3b64e8beb8652dffb82b202a364f7d",
+  "made": "clan C08 (Kremnion), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in charcoal #465459 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "sha256": "9097e55abab1b417b12144b07af491cd8b7e9398aade0aeeb00adfe9b69b1708",
   "status": "new",
   "signed_in": null,
   "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
@@ -5632,8 +5632,8 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C10 (Kolymba), plan B3\u00b7L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in russet #ae674d",
-  "sha256": "e1c267d3a864d67dc059f2565740eef3f38dd92620795bee4745f77d6d144d24",
+  "made": "clan C10 (Kolymba), plan B3\u00b7L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in peach #ffd7c5 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "sha256": "9679996bafd3aaed4e2f8e93f8f291cd8bbc534436cc979f495248f24bb966a3",
   "status": "new",
   "signed_in": null,
   "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
@@ -5686,8 +5686,8 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C13 (Lepidos), plan B3\u00b7L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
-  "sha256": "b442d8cc88c20739e706a4304ac8affd4a2e9f31423c7033edd2796ccf07e6a5",
+  "made": "clan C13 (Lepidos), plan B3\u00b7L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in slate #718489 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "sha256": "2a67a5c41ab76a1a6975a3168fee97d36fcc714ab086fe4837a4747a476165b5",
   "status": "new",
   "signed_in": null,
   "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
@@ -5796,9 +5796,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "ea2ab984a9056434c21742e36c1266075208ccac99d3f606bae286655f62f1d6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-large-pattern-plates": {
   "size": [
@@ -5813,7 +5813,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
-  "sha256": "899c15789cce8092a9dbe3184a956c2f557089267555d7338a7af07b49490c77",
+  "sha256": "f336309ce217bccf29058f5de627a95044b7de7789c9fe3e3b9d7dee74992dff",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
@@ -5850,9 +5850,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "3c4d3fba32c0932e4b10df31589a181eafb760d41d8e90b47537296316bfe404",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-medium-pattern-plates": {
   "size": [
@@ -5867,7 +5867,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
-  "sha256": "a5e6ed27b00cb0f39953769c50f1827dcd4d2d44d00fcf5de65a5cdf94539201",
+  "sha256": "b276930aa37c0de4f84567d0dac8ef4e4abb594b4fb4901dd2e898ccd300cf91",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
@@ -5904,9 +5904,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "9518344333a8d7ef7054c32d10951bbebda492eef8d05f922d5f9ff45f2ea71b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-small-pattern-plates": {
   "size": [
@@ -5921,7 +5921,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
-  "sha256": "d2fcdeb269aa7722dd0e0529b36373a61158b601a4d79ae189ebfa74bf719af6",
+  "sha256": "cab089c1ec60448397f97b815dafe135dae3738f372aa4d07cf0dd91a922094a",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
@@ -5958,9 +5958,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "662285338b7c4a074027383862b6115dd6eac9397e556146973fc4237feb61bf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-collection-pattern-plates": {
   "size": [
@@ -5975,7 +5975,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
-  "sha256": "95b5ded19686ec12fc347a182453cd372057bca3b81a8ac210b53fe5245fdd03",
+  "sha256": "737fb9351928aa6ffd609b4ed3d5511eb720cbb4b65c407a89ca4324abaa6e6e",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
@@ -6012,9 +6012,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "b4c76252c8c7c9dee9d0f1e77cee8852ddc495d5389e636641a1e03d5f3fa64d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-well-pattern-plates": {
   "size": [
@@ -6029,7 +6029,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
-  "sha256": "697544fc2ccad34751210aac28e8bc7d97193935fec41b0778a6931e6f5a5fab",
+  "sha256": "f6a16282f9c548688af899f0abc68fee04d47632687c03ebbe54a8c1f5246e63",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
@@ -7015,9 +7015,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "931926452b0ed79c820f694185ef94fdee59a2525bfad55dce0a9a4721f38db6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-large-pattern-plates-relief": {
   "size": [
@@ -7032,7 +7032,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
-  "sha256": "b713c540552cad4a048279d774b742c4e569fb148787366c1d18a97a69f8dd23",
+  "sha256": "cd234f7baee6e47a1f34bdbb91c4632880f721956b50034affb042432f597a9b",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
@@ -7051,9 +7051,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "216795a3630ebaa07fd7189bfa9464b584b41acf979f29a84396c6f3a46f93a5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-medium-pattern-plates-relief": {
   "size": [
@@ -7068,7 +7068,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
-  "sha256": "d460d6c2cdd0503571caf0a553e3428f5547c2ff099ac216f2efec7610c78821",
+  "sha256": "45a06968545a317b7bc7d41dbcba9f715a170e3ed440c0e316cc1021bceb7df7",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
@@ -7087,9 +7087,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "4ad85f18ab68e14842678e3bbe6eca0fe593d404ab5c0a9a35b34d752df04aeb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-small-pattern-plates-relief": {
   "size": [
@@ -7104,7 +7104,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
-  "sha256": "a01ee74b1041da5caedc7e9cca4a6fdc712399e4013d22b6941b4cd1f8afc3ab",
+  "sha256": "c7821cea46f90198676d78423d6220147679a9fe56b09fcedf26a10d591d6b5e",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
@@ -7123,9 +7123,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "ec97b1a473cad64ab0aac3361e0f365a088f2700823fbcf9f840ebd68df5e689",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-collection-pattern-plates-relief": {
   "size": [
@@ -7140,7 +7140,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
-  "sha256": "64c20be84dd13ce03a0b1bd2288dc9990a6535c0ce9a8bb7a93f6bfb6d84c0de",
+  "sha256": "d2cdbdcc612d0f0fc91c46c0d46250b3ef02eef36b187176ae64bf374116be64",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
@@ -7159,9 +7159,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-segments-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "e3ecdb30617ef724bf0858de2d06be49d89305ba11824dbdf61ba4280c1aad7b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "status_note": "the segments layer and its relief"
  },
  "pod-well-pattern-plates-relief": {
   "size": [
@@ -7176,7 +7176,7 @@
   ],
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
-  "sha256": "595d7ecc7152e640d9d911845cab3eda9c964e6143589e726b9e2891d752e0c8",
+  "sha256": "1b9836f619a3efeb7f63e27850a1e1bd8537bfaf557167e245a2c82f2708fae2",
   "status": "new",
   "signed_in": null,
   "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"

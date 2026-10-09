@@ -647,27 +647,34 @@ def segments_layers(w, h, f, n=4):
         rel = rel + above * 0.20 - lip * 0.32
     return col * zf * 0.55, 0.5 + rel * zf
 def plates_layers(w, h, f, tier):
-    """Plates: overlapping, slightly curved plates in a staggered mosaic with vertical as well as horizontal seams, larger toward the belly and smaller toward the cap, following the curvature (rows are
-    latitude bands bent like the segments' hoops, the vertical seams meridians a little slanted, every second row offset by half a plate). tier: 'big' (large, medium, small), 'mid' (collection) or
-    'well' (the 40x48 class: fewer, wider plates so the seams stay visible). Returns (colour, relief): the colour layer a light mosaic of seams (white with alpha) with only a faint tone per plate; the relief
-    layer the shade-convention grey: a lit upper edge on each plate and a soft shadow under its lower edge (cast on the row below), a thin dark trough along each vertical seam."""
+    """Plates: overlapping, slightly curved scutes in a staggered mosaic with vertical as well as horizontal seams, larger toward the belly and smaller toward the cap, following the curvature (rows are
+    latitude bands bent like the segments' hoops, the vertical seams meridians a little slanted, every second row offset by half a plate). Each plate's lower edge is a shallow arc, bulging down at its
+    middle like a scute, and the plates overlap downward like shingles. tier: 'big' (large, medium, small), 'mid' (collection) or 'well' (the 40x48 class: fewer, wider plates so the seams stay visible).
+    Returns (colour, relief): the colour layer a light mosaic of seams (white with alpha) with only a faint tone per plate; the relief layer the shade-convention grey: a lit upper edge on each plate along
+    the overlapping rim of the plate above, a 1 to 2 px overhanging shadow cast onto the plate below, and a thin dark trough along each vertical seam."""
     lon, lat, z = _sphere(w, h); px = _px(w, h, f); latc = lat + 0.14 * np.sin(lon) ** 2
     edges, counts = {"big": ([-0.78, -0.62, -0.44, -0.22, 0.05, 0.38, 0.80], [16, 14, 12, 10, 8, 6]), "mid": ([-0.78, -0.55, -0.28, 0.05, 0.40, 0.80], [11, 9, 8, 7, 6]), "well": ([-0.78, -0.40, -0.02, 0.38, 0.80], [8, 7, 6, 5])}[tier]
-    col = np.zeros_like(lat); rel = np.zeros_like(lat); zf = np.clip(z * 1.5, 0, 1)
-    for k in range(len(counts)):
-        e0, e1 = edges[k], edges[k + 1]; row = (latc >= e0) & (latc < e1); nk = counts[k]; t = (latc - e0) / (e1 - e0)
-        slant = (latc - e0) * 0.16; u = (lon + slant) / np.pi * nk + (0.5 if k % 2 else 0.0); ph = u % 1.0; idx = np.floor(u)
+    col = np.zeros_like(lat); rel = np.zeros_like(lat); zf = np.clip(z * 1.5, 0, 1); R = len(counts)
+    def phase(k):                                                                      # a plate's horizontal phase and index in row k
+        slant = (latc - edges[k]) * 0.16; u = (lon + slant) / np.pi * counts[k] + (0.5 if k % 2 else 0.0); return u % 1.0, np.floor(u)
+    # the row boundaries: T[j] is the lower edge of row j - 1 and the upper edge of row j; each is a shallow arc following the plates of the row above (bulging down at each plate's middle)
+    T = []
+    for j in range(R + 1):
+        if j == 0 or j == R: T.append(np.full_like(lat, edges[j])); continue
+        ph, _ = phase(j - 1); arc = 1 - (2 * ph - 1) ** 2; T.append(edges[j] + 0.16 * (edges[j] - edges[j - 1]) * arc)
+    for k in range(R):
+        row = (latc >= T[k]) & (latc < T[k + 1]); nk = counts[k]; ph, idx = phase(k)
         rnd = (np.sin(idx * 12.9898 + k * 78.233) * 43758.5453) % 1.0
-        wv = max(0.022, px * 1.25) * nk / np.pi                                                                  # the vertical seam, in plate widths
-        wh = max(0.012, px * 1.25)
+        wv = max(0.022, px * 1.25) * nk / np.pi; wh = max(0.012, px * 1.25)
         seam_v = np.clip(1 - np.minimum(ph, 1 - ph) / wv, 0, 1) ** 1.2
-        seam_h = np.clip(1 - np.abs(latc - e0) / wh, 0, 1) ** 1.2
+        d_top = latc - T[k]
+        seam_h = np.clip(1 - np.abs(d_top) / wh, 0, 1) ** 1.2
         tone = 0.05 + 0.08 * rnd
         c_row = np.maximum.reduce([np.zeros_like(lat) + tone, seam_v * 0.72, seam_h * 0.8])
-        lit_top = np.exp(-(np.clip(latc - e0, 0, None) / max(0.018, px * 1.5))) * (latc >= e0)                  # a lit upper edge on the plate
-        shadow = np.exp(-(np.clip(latc - e0, 0, None) / max(0.040, px * 3.0))) * (latc >= e0) * (1 if k > 0 else 0)  # the shadow the plate above casts under its lower edge, on the top of this row
+        lit = np.exp(-(np.clip(d_top, 0, None) / max(0.010, px * 0.55))) * (d_top >= 0) * (1 if k > 0 else 0.4)          # the lit rim of the plate above, at the boundary
+        shadow = np.exp(-(np.clip(d_top - px * 0.35, 0, None) / max(0.020, px * 1.1))) * (d_top >= 0) * (1 if k > 0 else 0)  # the overhanging shadow, 1 to 2 px, on this (the lower) plate
         trough = np.clip(1 - np.minimum(ph, 1 - ph) / (wv * 1.6), 0, 1) ** 1.5
-        col = np.where(row, c_row, col); rel = np.where(row, 0.15 * lit_top - 0.26 * shadow - 0.10 * trough, rel)
+        col = np.where(row, c_row, col); rel = np.where(row, 0.22 * lit - 0.34 * shadow - 0.10 * trough, rel)
     return col * zf, 0.5 + rel * zf
 def pods():
     BB = (376, 288, 1704, 1760); bw, bh = BB[2] - BB[0], BB[3] - BB[1]

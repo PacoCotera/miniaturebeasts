@@ -1,5 +1,5 @@
 """Round 2 of the who-it-is marks (the lead's verdict): the frost mark veiled, and the clan roundels by plan.
-python3 -I tools/marks3.py   (rewrites mark-species-frost-24x24 and mark-clan-<CNN>-24x24, prints the clan table and the collision check, writes marks/marks-round2-1x.png)
+python3 -I tools/marks3.py   (rewrites mark-species-frost-24x24 and mark-clan-<CNN>-24x24, prints the clan table and the collision check, writes marks/marks-round3-1x.png)
 - frost: a veiled mark, not a light: a 22 px disc in frostS at a low alpha with a frostD texture at about 0.5 alpha; its mean grey (over black) is held under the name plate's.
 - clan: the roundel's SHAPE follows the clan's plan (one shape per plan code: ten plans, ten shapes), a 2 px ring in the clan's anchor pigment and a solid 8 px centre; the centre takes the anchor
   too unless plan plus anchor collide with another clan (then it takes the clan's second pigment). No symbols."""
@@ -64,22 +64,27 @@ frames = {f"S{i:02d}": json.load(open(os.path.join(REPO, f"prototypes/workbench/
 clans = []
 for sp, d in frames.items():
     t = d["taxonomy"]; clans.append({"clan": t["clan"], "name": t["clanName"], "plan": t["planCode"], "anchor": d["signature"]["anchor"], "second": d["signature"].get("second"), "species": sp})
-key = lambda c: (PLAN_SHAPE[c["plan"]], c["anchor"])
+# the collision check (round 3): circle, octagon and both hexagons are one shape family (too alike at 24 px); every other shape is its own family
+FAMILY = {"circle": "round", "octagon": "round", "hexagon (flat)": "round", "hexagon (pointy)": "round"}
+fam = lambda c: FAMILY.get(PLAN_SHAPE[c["plan"]], PLAN_SHAPE[c["plan"]])
+DOT = {"C04": "cream", "C08": "charcoal", "C13": None, "C10": None}                   # the lead's assignments: C04 keeps its second (cream), C08 takes charcoal; C13 and C10 take their own second pigment (sand / bone if the taxonomy named none)
 for c in clans:
-    c["collide"] = sum(1 for o in clans if o is not c and key(o) == key(c)) > 0
-    c["dot"] = (c["second"] if c["collide"] and c["second"] else c["anchor"])
-print("clan plan -> shape | anchor | second | dot")
-for c in clans: print(c["clan"], c["name"], c["plan"], "->", PLAN_SHAPE[c["plan"]], "|", c["anchor"], "|", c["second"], "|", c["dot"], "(second pigment: collision)" if c["collide"] else "")
-bad = [(a["clan"], b["clan"]) for a, b in itertools.combinations(clans, 2) if PLAN_SHAPE[a["plan"]] == PLAN_SHAPE[b["plan"]] and (a["anchor"], a["dot"]) == (b["anchor"], b["dot"])]
-share_ring = [(a["clan"], b["clan"]) for a, b in itertools.combinations(clans, 2) if PLAN_SHAPE[a["plan"]] == PLAN_SHAPE[b["plan"]] and a["anchor"] == b["anchor"]]
-inks_both = [(a["clan"], b["clan"]) for a, b in itertools.combinations(clans, 2) if PLAN_SHAPE[a["plan"]] == PLAN_SHAPE[b["plan"]] and a["anchor"] != b["anchor"] and a["dot"] != b["dot"]]
-print("pairs identical in shape and both inks:", bad, "| same shape and same ring (told apart by the dot only):", share_ring)
+    c["collide"] = sum(1 for o in clans if o is not c and fam(o) == fam(c) and o["anchor"] == c["anchor"]) > 0
+    if c["clan"] in DOT:
+        c["dot"] = DOT[c["clan"]] or c["second"] or ("sand" if c["clan"] == "C13" else "bone")
+    else: c["dot"] = c["anchor"]
+PIG.setdefault("sand", "#e6c98c"); PIG.setdefault("bone", "#f1ebdf")
+print("clan plan -> shape (family) | anchor | second | dot")
+for c in clans: print(c["clan"], c["name"], c["plan"], "->", PLAN_SHAPE[c["plan"]], f"({fam(c)})", "|", c["anchor"], "|", c["second"], "|", c["dot"], "(assigned dot: collision in its family)" if c["clan"] in DOT else "")
+bad = [(a["clan"], b["clan"]) for a, b in itertools.combinations(clans, 2) if fam(a) == fam(b) and (a["anchor"], a["dot"]) == (b["anchor"], b["dot"])]
+share_ring = [(a["clan"], b["clan"]) for a, b in itertools.combinations(clans, 2) if fam(a) == fam(b) and a["anchor"] == b["anchor"]]
+print("pairs in one family with identical ring and dot:", bad, "| same family and same ring, told apart by the dot:", share_ring)
 assert not bad
 shape_of = {c["clan"]: PLAN_SHAPE[c["plan"]] for c in clans}
 masks = {}
 for c in clans:
     im = roundel(shape_of[c["clan"]], rgb(PIG[c["anchor"]]), rgb(PIG[c["dot"]])); masks[c["clan"]] = np.asarray(im)[..., 3] > 0
-    save(f"mark-clan-{c['clan']}-24x24", im, [232, 488, 24, 24], f"clan {c['clan']} ({c['name']}), plan {c['plan']}: a {shape_of[c['clan']]} roundel, a 2 px ring in {c['anchor']} {PIG[c['anchor']]} and a solid 8 px centre in {c['dot']} {PIG[c['dot']]}" + (" (the clan's second pigment, because plan and anchor collide with another clan)" if c["collide"] else ""), "geometry, species frames")
+    save(f"mark-clan-{c['clan']}-24x24", im, [232, 488, 24, 24], f"clan {c['clan']} ({c['name']}), plan {c['plan']}: a {shape_of[c['clan']]} roundel, a 2 px ring in {c['anchor']} {PIG[c['anchor']]} and a solid 8 px centre in {c['dot']} {PIG[c['dot']]}" + (f" (dot assigned: it collides in its shape family with another clan of the same anchor)" if c["clan"] in DOT else ""), "geometry, species frames")
 worst = max(((np.logical_and(masks[a], masks[b]).sum() / np.logical_or(masks[a], masks[b]).sum(), a, b) for a, b in itertools.combinations(masks, 2) if shape_of[a] != shape_of[b]), key=lambda t: t[0])
 print("most similar pair of different shapes (mask IoU):", round(worst[0], 2), worst[1], worst[2])
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
@@ -91,4 +96,4 @@ for k, c in enumerate(clans):
     sheet.alpha_composite(Image.open(f"slices/mark-clan-{c['clan']}-24x24.png").convert("RGBA"), (x0 + 8, y0 + 8)); d.text((x0 + 38, y0 + 10), c["clan"], font=f12, fill=(170, 180, 190, 255)); d.text((x0 + 38, y0 + 24), shape_of[c["clan"]][:16], font=f12, fill=(110, 124, 142, 255))
 yb = 2 * 64 + 6; bg = Image.new("RGBA", (30, 30), PAL["panel"] + (255,)); sheet.alpha_composite(bg, (8, yb)); sheet.alpha_composite(Image.open("slices/mark-species-frost-24x24.png").convert("RGBA"), (11, yb + 3))
 d.text((46, yb + 8), "frost mark over the panel", font=f12, fill=(170, 180, 190, 255))
-os.makedirs("marks", exist_ok=True); sheet.convert("RGB").save("marks/marks-round2-1x.png"); sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).convert("RGB").save("marks/marks-round2-2x-proof.png")
+os.makedirs("marks", exist_ok=True); sheet.convert("RGB").save("marks/marks-round3-1x.png"); sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).convert("RGB").save("marks/marks-round3-2x-proof.png")

@@ -1645,9 +1645,9 @@
   "note": "geometry from the signed glyph data accepted"
  },
  "mark-species-frost-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: reads as a white button; a veiled frostS mark in round 2"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the veiled frost mark"
  },
  "mark-clan-C01-24x24": {
   "status": "new",
@@ -1740,9 +1740,9 @@
   "note": "the ribs pattern layer, five classes"
  },
  "pod-large-pattern-segments": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-large-pattern-plates": {
   "status": "new",
@@ -1755,9 +1755,9 @@
   "note": "the ribs pattern layer, five classes"
  },
  "pod-medium-pattern-segments": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-medium-pattern-plates": {
   "status": "new",
@@ -1770,9 +1770,9 @@
   "note": "the ribs pattern layer, five classes"
  },
  "pod-small-pattern-segments": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-small-pattern-plates": {
   "status": "new",
@@ -1785,9 +1785,9 @@
   "note": "the ribs pattern layer, five classes"
  },
  "pod-collection-pattern-segments": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-collection-pattern-plates": {
   "status": "new",
@@ -1800,9 +1800,9 @@
   "note": "the ribs pattern layer, five classes"
  },
  "pod-well-pattern-segments": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-well-pattern-plates": {
   "status": "new",
@@ -2080,9 +2080,9 @@
   "note": "the collection place's glass card, a fixed master placed 1:1 at every place (628fb6b6); awaiting verdict"
  },
  "pod-large-pattern-segments-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-large-pattern-plates-relief": {
   "status": "new",
@@ -2090,9 +2090,9 @@
   "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
  },
  "pod-medium-pattern-segments-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-medium-pattern-plates-relief": {
   "status": "new",
@@ -2100,9 +2100,9 @@
   "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
  },
  "pod-small-pattern-segments-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-small-pattern-plates-relief": {
   "status": "new",
@@ -2110,9 +2110,9 @@
   "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
  },
  "pod-collection-pattern-segments-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-collection-pattern-plates-relief": {
   "status": "new",
@@ -2120,9 +2120,9 @@
   "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
  },
  "pod-well-pattern-segments-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
  },
  "pod-well-pattern-plates-relief": {
   "status": "new",
