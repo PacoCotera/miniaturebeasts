@@ -77,10 +77,10 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Instrument.** The right third, four stacked modules, each with a status lamp and a few-word readout: the sample bay (crates behind a door), the pod rack (six wells, shells in place colours, a star where one glints), the incubation chamber (a dome and its ring of leaves), the Probe dock (the Probe and its Shield plates).
 - **Composition.** The vivarium's glass sits in a thin bezel; the modules align to one column with 8 px gaps. Nothing overlaps the vivarium.
 - **Lively / quiet.** Lively: residents, plants, water, the embryo's glow. Quiet: the modules; one lamp pulses slowly when its module needs you.
-- **Light.** Warm daylight inside the vivarium from the top left; even cool light on the chrome.
+- **Light.** Inside the vivarium, the same light as Idle: the warm key light from the top left, by the time of day; even cool light on the chrome (*the art director, 2026-10-09 12:40*: was "warm daylight").
 - **Palette.** Deep blue-teal chrome; the vivarium's greens and warm earth; amber only on the lamp that needs you.
 - **Type.** 3× screen name; 2× readouts, three words or fewer each.
-- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` | `an Untuva pod waits · needs 2 ❀`.
+- **Chrome.** `✓ Look at Bean`, no ← on Home (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← the room`) | `Bean · Untuva · adult` (*the UI designer, 2026-10-09*: now "an adult Untuva"; the name is on the tag under the resident, the owner's decision of 2026-10-07) | `an Untuva pod waits · needs 2 ❀`.
 - **Motion.** Residents move smoothly at the panel's rate; module doors and lamps move only on events.
 
 **Pass when**
@@ -124,6 +124,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 <img src="../proposals/station-screens/02-dock-arrival.svg" width="600" alt="Dock and arrival wireframe">
 
 *Dock and arrival wireframe. Layout only.*
+
+The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival) (*L2.2, UI designer, 2026-10-09; Proposal*). The ribbon has no digits there and says the crate only: "First crate home" (*the copywriter, 2026-10-09 12:22*: was "Expedition 4 home · 2 pods · explored 9 of 21"); how far the land is explored is on the report card.
 
 ---
 
@@ -446,13 +448,13 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 
 **Vibe.** Vivarium: the pets at ease, nothing asking for you.
 
-**Purpose.** The Station at rest, always on. **Reads first:** the residents.
+**Purpose.** A living view the Station can show permanently, always on: the vivarium, something worth looking at all day; never a screen off or a sleep (*clarified by the owner, 2026-10-09 12:20*: "idle doesn't mean screen off, means a view that can be shown permanently, vivarium or something interesting to look at"; was "The Station at rest, always on"). **Reads first:** the residents.
 
 - **Living window.** The whole screen: the vivarium at 1024×600, its light following the time of day, residents keeping their routines.
 - **Instrument.** Reduced to one status line on a thin cool strip at the foot ("Companion away · with Dot · an embryo is growing") and nothing else.
 - **Composition.** The vivarium edge to edge; the strip 32 px.
 - **Lively / quiet.** Lively: everything in the vivarium. Quiet: the strip.
-- **Light.** Daylight to dusk to night in the vivarium; at night a soft cool moonlight and the residents' own glows.
+- **Light.** Day to dusk to night in the vivarium, always the warm key light from the top left; at night warm and low (the glow-moss and the residents' own glows), the moon only a cool rim; mean L* 30 or more at night, mean red at least mean blue in every light; Home's glass shows the same light (*the art director, 2026-10-09 12:40*: was "at night a soft cool moonlight").
 - **Palette.** The vivarium's; the strip in chrome.
 - **Type.** 2× status.
 - **Chrome.** None. The first press only wakes; nothing else happens, and waking never rewards (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "any press wakes and does what it says").
@@ -465,7 +467,7 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 - [ ] The status line is the only text.
 - [ ] Night is calm, never gloomy.
 
-No wireframe; the layout is Home's vivarium at full frame.
+The measured layout is [Station layouts, Idle](station-layouts.md#idle) (*L2.2, UI designer, 2026-10-09; Proposal*: was "no wireframe; the layout is Home's vivarium at full frame"): the vivarium 1024×568, the strip 32 px, one sentence of six words or fewer, a state of the frame.
 
 <img src="../../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept">
 
