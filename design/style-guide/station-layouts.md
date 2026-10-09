@@ -196,7 +196,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 - **Room:** the research bench, a modern digital lab.
 - **The pod is the only warm thing,** lit by a cool cone of light onto its frosted dish (224×96, never squashed) on the thick glass slab.
-- **The figure suggests the type.** It is the species' silhouette in a soft halo: one painted master per species, drawn from the standard painting's silhouette, the art director directing its look. It is cooler and dimmer than the pod and never shows the individual's colours or marks, so the player never takes it for the mibi they will get. Before Identify it is an empty halo (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was a ghost mibi drawn where read and misty where unread).
+- **The figure suggests the type.** It is the species' silhouette in a soft halo: two painted slices per species (mist and clear, cross-faded by the chapters read), drawn from the standard painting's silhouette, the art director directing its look. It is cooler and dimmer than the pod and never shows the individual's colours or marks, so the player never takes it for the mibi they will get. Before Identify it is an empty halo (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was a ghost mibi drawn where read and misty where unread).
 - **Everything else is cool:** the deep blue-teal ground, slate and graphite chrome, frost on what is unread.
 - **The page lights warm from inside only once it is read.**
 - **The stamp is a plain bone label** inside a small, dim, unlit glass case, its front glass bringing it below the pod's brightness.
@@ -228,7 +228,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Shelf slab | 112, 368, 288, 72 | Was 488, 368 |
 | Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. Was centred on x 632 |
 | Who it is: marks | glyph (200, 488, 24, 24), clan (232, 488, 24, 24), first of its kind (268, 492, 16, 16) | Marks, no words |
-| **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392; slice `figure-<species>-128x160`, one painted master per species. It suggests the type; it never shows the individual's colours or marks. Before Identify, an empty halo. Was the page (152, 112, 256, 440) beside the pod |
+| **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392, in two painted slices per species on the same 128×160 origin: `mibi-halo-<SNN>-128x160-mist` (everything unread, diffused) and `mibi-halo-<SNN>-128x160-clear` (the crisp glow figure). The build cross-fades them by the share of chapters read: the clear layer's alpha is chapters read ÷ chapters, over the mist; nothing is blurred by the build. It suggests the type; it never shows the individual's colours or marks. Before Identify, the empty halo (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was one slice, `figure-<species>-128x160`). Was the page (152, 112, 256, 440) beside the pod |
 | Where it came from | place picture 600, 120, 64, 64; sentence 680, 128, 328, 40 | The copywriter's sentence, "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits. Was the caption under the name (520, 488, 224, 40) |
 | Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred. Was in the well column (16, 488, 80, 56) |
@@ -331,7 +331,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Place stamp | not drawn in the list (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 16×16) (*dropped with the well column, 2026-10-09*) | The place stamp set |
 | Stamp | whole-pixel cells, at most 104 px, on the 120 label | The stamp's label art |
 | Collection pod | 88×112 (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod renderer's masters |
-| The figure | 128×160, one per species, slice `figure-<species>-128x160` (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The figure master, from the standard painting's silhouette |
+| The figure | 128×160, two slices per species on one origin: `mibi-halo-<SNN>-128x160-mist` and `mibi-halo-<SNN>-128x160-clear`, cross-faded by chapters read (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was `figure-<species>-128x160`) | The figure masters, from the standard painting's silhouette |
 | Collection ring and arcs | 160 across (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod list master |
 
 ### Changes from the current build
