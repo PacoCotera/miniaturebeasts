@@ -39,11 +39,11 @@ const LAND = ["groundName"];
 
 // endExpedition with the world stubbed: `explored` decides the branch, worldTurn moves the counter as the page does.
 function ending({ explored, trips, ex }) {
-  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [] };
+  const S = { exp: ex, expN: ex.n, turn: 3, trips, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [], mibis: [], carried: [] };
   const turned = [];
   const t = load(["endExpedition", "holdEmpty", ...TRIP], {
     S, G: { land: [] }, LAND_NAME: [], TIER_NAME: ["", "starter"], BAY: 3,
-    withMibi: () => null, exploredAny: () => explored, reachCounts: () => ({ surveyed: explored ? 1 : 0, total: 9 }),
+    carriedMibis: () => [], exploredAny: () => explored, reachCounts: () => ({ surveyed: explored ? 1 : 0, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, dropPods: () => {},
     worldTurn: () => { turned.push(S.expN); S.turn++; S.expN++; return []; },
     logEv: () => {}, transition: () => {}, save: () => {},
@@ -56,7 +56,7 @@ const expedition = (o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: 
 test("a trip is recorded only when the world turns", () => {
   const home = ending({ explored: true, trips: [], ex: expedition({ pt: { id: 2 }, tripPlaces: ["wood"] }) });
   assert.equal(home.turned.length, 1);
-  assert.deepEqual(plain(home.S.trips), [{ v: 1, n: 5, partner: 2, places: ["wood"], storm: false }]);
+  assert.deepEqual(plain(home.S.trips), [{ v: 1, n: 5, partner: 2, places: ["wood"], storm: false, carried: [] }]);
 
   const none = ending({ explored: false, trips: [], ex: expedition({ tripPlaces: ["wood"] }) });
   assert.equal(none.turned.length, 0);
@@ -65,14 +65,15 @@ test("a trip is recorded only when the world turns", () => {
 
 test("a Probe break that explored is a trip", () => {
   const { S } = ending({ explored: true, trips: [], ex: expedition({ reason: "break", tripStorm: true }) });
-  assert.deepEqual(plain(S.trips), [{ v: 1, n: 5, partner: null, places: [], storm: true }]);
+  assert.deepEqual(plain(S.trips), [{ v: 1, n: 5, partner: null, places: [], storm: true, carried: [] }]);
 });
 
 test("the walk with the mibi writes no trip", () => {
   const m = { id: 1, sp: 0, name: "Dot", outings: 0 };
-  const S = { exp: null, with: 1, turn: 2, walkTurn: -1, trips: [{ v: 1, n: 1, partner: 1, places: [], storm: false }], mibis: [m] };
+  const S = { exp: null, carried: [1], turn: 2, walkTurn: -1, trips: [{ v: 1, n: 1, partner: 1, places: [], storm: false }], mibis: [m], ui: {} };
   const before = JSON.stringify(S.trips);
-  const t = load(["walk", "canWalk"], { S, withMibi: () => m, isDocked: () => false, FX: {}, NOW: 0, lockInput: () => {}, fxMsg: () => {}, logEv: () => {} });
+  const t = load(["walk", "canWalk", "walkAll", "careLines", "carriedMibis", "mibiById", "bondCheck", "growCheck", "listWords", "partnerMibi", "isAdult", "mibiStage", "stageAt"],
+    { S, isDocked: () => false, isCarried: q => S.carried.includes(q.id), FX: {}, NOW: 0, lockInput: () => {}, fxMsg: () => {}, logEv: () => {}, CARE_TEXT: { walked: () => "" }, BOND_TENDS: 3, BOND_OUTINGS: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6 });
   t.walk(m);
   assert.equal(m.outings, 1, "the walk happened");
   assert.equal(JSON.stringify(S.trips), before);
@@ -80,10 +81,10 @@ test("the walk with the mibi writes no trip", () => {
 
 test("partner: a juvenile is never the Probe partner; no partner gives null", () => {
   const juvenile = { id: 4, born: 3 }, adult = { id: 7, born: 0 };
-  const S = { turn: 3, with: 4, mibis: [juvenile, adult] };
-  const t = load(["partnerMibi", "withMibi", "mibiById", "isAdult", "mibiStage", ...TRIP], { S, JUVENILE_TURNS: 2, ELDER_TURNS: 10 });
+  const S = { turn: 3, carried: [4], lead: null, mibis: [juvenile, adult] };
+  const t = load(["partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt", ...TRIP], { S, JUVENILE_TURNS: 2, ELDER_TURNS: 10 });
   assert.equal(t.partnerMibi(), null, "a juvenile with you is not the partner");
-  S.with = 7; assert.equal(t.partnerMibi().id, 7);
+  S.carried = [7]; assert.equal(t.partnerMibi().id, 7);
   assert.equal(t.tripRecord(expedition({ pt: null })).partner, null);
   assert.equal(t.tripRecord(expedition({ pt: { id: 7, elder: false } })).partner, 7);
 });
@@ -134,14 +135,14 @@ test("the last 40 trips are kept, oldest first", () => {
 
 test("old saves: no trips list, an expedition without the new fields", () => {
   const t = load(TRIP, {});
-  assert.deepEqual(plain(t.tripRecord({ n: 3 })), { v: 1, n: 3, partner: null, places: [], storm: false });
+  assert.deepEqual(plain(t.tripRecord({ n: 3 })), { v: 1, n: 3, partner: null, places: [], storm: false, carried: [] });
   assert.equal(t.tripsWith(undefined, t.tripRecord({ n: 3 })).length, 1);
   // the page's load gives a save without `trips` an empty list
   const saved = { v: 8, seed: 7, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, store = { "mb-save-v8": JSON.stringify(saved) };
   const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
     SAVE_KEY: "mb-save-v8", SAVE_V: 8, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o,
-    layoutCache: { clear() {} }, genWorld() {}, indexCreatures() {}, S: null };
-  const l = load(["load"], ctx);
+    layoutCache: { clear() {} }, genWorld() {}, indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2 };
+  const l = load(["load", "migrateCarried", "normalizeCare"], ctx);
   assert.equal(l.load(), true);
   assert.deepEqual(plain(vm.runInContext("S.trips", l.ctx)), []);
 });
