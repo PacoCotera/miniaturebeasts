@@ -339,17 +339,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:-:s:120x152",
        "identified": null
       },
-      "cutMilli": null,
       "name": "Unknown",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "mibi-halo-empty-128x160:128x160",
       "who": [
@@ -500,17 +500,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:-:s:120x152",
        "identified": null
       },
-      "cutMilli": null,
       "name": "Unknown",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "mibi-halo-empty-128x160:128x160",
       "who": [
@@ -660,17 +660,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S03-0f81b211",
        "sizeClass": "medium",
        "sealed": "pod:-:s:120x152",
        "identified": null
       },
-      "cutMilli": null,
       "name": "Unknown",
       "origin": [
        "Found at the pond edge,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:pond:64",
       "figure": "mibi-halo-empty-128x160:128x160",
       "who": [
@@ -800,6 +800,15 @@
   {
    "state": "overview",
    "name": "the seal half cleared",
+   "events": [
+    {
+     "kind": "seal",
+     "target": "dev-1:S01-9bae06fb",
+     "ms": 2000,
+     "hold": true
+    }
+   ],
+   "at": 1000,
    "props": {
     "t": "props",
     "screen": "pods",
@@ -821,17 +830,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": 500,
       "name": "Loika",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S01:0/4",
       "who": [
@@ -1104,6 +1113,15 @@
   {
    "state": "overview",
    "name": "a ribbon in the origin's place",
+   "events": [
+    {
+     "kind": "ribbon",
+     "target": "dev-1:S02-8a384b4e",
+     "ms": 7400,
+     "from": 1400
+    }
+   ],
+   "at": 2000,
    "props": {
     "t": "props",
     "screen": "pods",
@@ -1125,11 +1143,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S02-8a384b4e",
        "sizeClass": "large",
        "sealed": "pod:S02:s:144x176",
        "identified": "pod:S02:i:144x176"
       },
-      "cutMilli": null,
       "name": "Untuva",
       "origin": [
        "Found in the meadow,",
@@ -1428,17 +1446,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S01:0/4",
       "who": [
@@ -1762,17 +1780,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S01:2/4",
       "who": [
@@ -2065,17 +2083,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S04-2d0430da",
        "sizeClass": "medium",
        "sealed": "pod:S04:s:120x152",
        "identified": "pod:S04:i:120x152"
       },
-      "cutMilli": null,
       "name": "Hiljan",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S04:2/5",
       "who": [
@@ -2387,17 +2405,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S08-39c6e15a",
        "sizeClass": "large",
        "sealed": "pod:S08:s:144x176",
        "identified": "pod:S08:i:144x176"
       },
-      "cutMilli": null,
       "name": "Rupar",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S08:2/6",
       "who": [
@@ -2723,17 +2741,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S02-8a384b4e",
        "sizeClass": "large",
        "sealed": "pod:S02:s:144x176",
        "identified": "pod:S02:i:144x176"
       },
-      "cutMilli": null,
       "name": "Untuva",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S02:3/4",
       "who": [
@@ -3047,17 +3065,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S06-454cfde4",
        "sizeClass": "medium",
        "sealed": "pod:S06:s:120x152",
        "identified": "pod:S06:i:120x152"
       },
-      "cutMilli": null,
       "name": "Pesko",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S06:5/5",
       "who": [
@@ -3369,6 +3387,15 @@
   {
    "state": "overview",
    "name": "a read wipe in progress",
+   "events": [
+    {
+     "kind": "wipe",
+     "target": "face",
+     "ms": 2000,
+     "hold": true
+    }
+   ],
+   "at": 1000,
    "props": {
     "t": "props",
     "screen": "pods",
@@ -3390,19 +3417,19 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
-      "figure": "figure:S01:1/4",
+      "figure": "figure:S01:2/4",
       "who": [
        "mark-species-S01-24x24:24x24",
        "mark-clan-C01-24x24:24x24",
@@ -3426,11 +3453,11 @@
        {
         "id": "face",
         "word": "Face",
-        "state": "unread",
+        "state": "read",
         "pips": 2,
-        "filled": 0,
+        "filled": 2,
         "glint": false,
-        "emblem": "emblem:face:unread:24"
+        "emblem": "emblem:face:read:24"
        },
        {
         "id": "movement",
@@ -3455,7 +3482,7 @@
      "page": null,
      "stamp": {
       "size": 95,
-      "asset": "stamp:S01-9bae06fb:coat:95",
+      "asset": "stamp:S01-9bae06fb:coat,face:95",
       "case": {
        "back": "room-stamp-case-152x152:152x152",
        "front": "room-stamp-case-152x152-front:152x152"
@@ -3511,7 +3538,7 @@
       "turnFlash": false,
       "materials": {
        "e": 99,
-       "d": 999,
+       "d": 997,
        "s": 99
       },
       "flash": {},
@@ -3523,7 +3550,7 @@
      "line": {
       "ok": "Open Face",
       "back": "Pods",
-      "subject": "Face is unread",
+      "subject": "Face is read",
       "need": null
      },
      "plate": {
@@ -3563,7 +3590,7 @@
      "h": 24
     },
     {
-     "id": "figure:S01:1/4",
+     "id": "figure:S01:2/4",
      "w": 128,
      "h": 160
     },
@@ -3588,7 +3615,7 @@
      "h": 152
     },
     {
-     "id": "stamp:S01-9bae06fb:coat:95",
+     "id": "stamp:S01-9bae06fb:coat,face:95",
      "w": 95,
      "h": 95
     },
@@ -3637,7 +3664,7 @@
      "h": 24
     },
     {
-     "id": "emblem:face:unread:24",
+     "id": "emblem:face:read:24",
      "w": 24,
      "h": 24
     },
@@ -3667,7 +3694,7 @@
      "h": 16
     }
    ],
-   "hash": "03a82834"
+   "hash": "8f27d35d"
   },
   {
    "state": "chapter",
@@ -3693,11 +3720,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [],
       "ribbon": null
@@ -3747,6 +3774,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "coat",
       "heading": {
        "emblem": "emblem:coat:unread:24",
        "word": "Coat"
@@ -3972,11 +4000,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [],
       "ribbon": null
@@ -4026,6 +4054,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "face",
       "heading": {
        "emblem": "emblem:face:read:24",
        "word": "Face"
@@ -4289,11 +4318,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S04-2d0430da",
        "sizeClass": "medium",
        "sealed": "pod:S04:s:120x152",
        "identified": "pod:S04:i:120x152"
       },
-      "cutMilli": null,
       "name": "Hiljan",
       "origin": [],
       "ribbon": null
@@ -4352,6 +4381,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "shape",
       "heading": {
        "emblem": "emblem:shape:read:24",
        "word": "Shape"
@@ -4595,11 +4625,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S08-39c6e15a",
        "sizeClass": "large",
        "sealed": "pod:S08:s:144x176",
        "identified": "pod:S08:i:144x176"
       },
-      "cutMilli": null,
       "name": "Rupar",
       "origin": [],
       "ribbon": null
@@ -4667,6 +4697,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "movement",
       "heading": {
        "emblem": "emblem:movement:read:24",
        "word": "Movement"
@@ -4972,11 +5003,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S02-8a384b4e",
        "sizeClass": "large",
        "sealed": "pod:S02:s:144x176",
        "identified": "pod:S02:i:144x176"
       },
-      "cutMilli": null,
       "name": "Untuva",
       "origin": [],
       "ribbon": null
@@ -5026,6 +5057,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "coat",
       "heading": {
        "emblem": "emblem:coat:read:24",
        "word": "Coat"
@@ -5334,11 +5366,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S06-454cfde4",
        "sizeClass": "medium",
        "sealed": "pod:S06:s:120x152",
        "identified": "pod:S06:i:120x152"
       },
-      "cutMilli": null,
       "name": "Pesko",
       "origin": [],
       "ribbon": null
@@ -5397,6 +5429,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "face",
       "heading": {
        "emblem": "emblem:face:unread:24",
        "word": "Face"
@@ -5632,11 +5665,11 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [],
       "ribbon": null
@@ -5686,6 +5719,7 @@
      },
      "page": {
       "region": "page",
+      "chapter": "face",
       "heading": {
        "emblem": "emblem:face:unread:24",
        "word": "Face"
@@ -5957,6 +5991,7 @@
      },
      "pageA": {
       "region": "compareA",
+      "chapter": "face",
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -5996,6 +6031,7 @@
      },
      "pageB": {
       "region": "compareB",
+      "chapter": "face",
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -6235,6 +6271,7 @@
      },
      "pageA": {
       "region": "compareA",
+      "chapter": "face",
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -6274,6 +6311,7 @@
      },
      "pageB": {
       "region": "compareB",
+      "chapter": "face",
       "heading": {
        "pod": "pod:S01:i:40x48",
        "who": [
@@ -6518,6 +6556,7 @@
      },
      "pageA": {
       "region": "compareA",
+      "chapter": "face",
       "heading": {
        "pod": "pod:S04:i:40x48",
        "who": [
@@ -6547,6 +6586,7 @@
      },
      "pageB": {
       "region": "compareB",
+      "chapter": "face",
       "heading": {
        "pod": "pod:S04:i:40x48",
        "who": [
@@ -6723,6 +6763,14 @@
   {
    "state": "overview",
    "name": "a message over the pod",
+   "events": [
+    {
+     "kind": "plate",
+     "target": "msg",
+     "ms": 4000
+    }
+   ],
+   "at": 1000,
    "props": {
     "t": "props",
     "screen": "pods",
@@ -6744,17 +6792,17 @@
        "plate": "plate-name"
       },
       "pod": {
+       "id": "dev-1:S01-9bae06fb",
        "sizeClass": "medium",
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
-      "cutMilli": null,
       "name": "Loika",
       "origin": [
        "Found in the meadow,",
        "it lay buried."
       ],
-      "ribbon": null,
+      "ribbon": "New species",
       "originPicture": "place:meadow:64",
       "figure": "figure:S01:0/4",
       "who": [
@@ -6892,7 +6940,8 @@
       "need": null
      },
      "plate": {
-      "text": "The incubator is warm and the egg is turning slowly in its cradle, which is a good sign for the hatch."
+      "text": "The incubator is warm and the egg is turning slowly in its cradle, which is a good sign for the hatch.",
+      "timed": true
      }
     }
    },
@@ -7047,6 +7096,14 @@
   {
    "state": "collection",
    "name": "a message on the rack",
+   "events": [
+    {
+     "kind": "plate",
+     "target": "msg",
+     "ms": 4000
+    }
+   ],
+   "at": 3999,
    "props": {
     "t": "props",
     "screen": "pods",
@@ -7161,7 +7218,8 @@
       "need": null
      },
      "plate": {
-      "text": "Saved."
+      "text": "Saved.",
+      "timed": true
      }
     }
    },

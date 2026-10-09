@@ -8,6 +8,7 @@
 #include "../../spec/spec.h"
 #include "../../layout/layout.h"
 #include "../../bridge/wire.h"
+#include "../../anim/anim.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -54,9 +55,9 @@ void word_specimen(const char *base) {
     int shadow[4] = { axis - v_half(sw), feet - v_half(sh), sw, sh }; layer("specimen.shadow", shadow, v_pstr("regions.specimen.room.shadow"));
     v_region("pod", LAYER_ART); v_sprite("specimen.pod", sealed, rect[0], rect[1], rect[2], rect[3]);
     const char *idpic = v_pstr("regions.specimen.pod.identified");
-    int milli = v_pint("regions.specimen.cutMilli", -1);   /* Identify clears the seal from the top down: the cut in thousandths of the pod's height (until the seal is an event, B3d) */
-    if (milli >= 0 && has(idpic)) {
-      int cut = (h * milli + 500) / 1000;
+    anim_state_t sa_; char pid[48]; snprintf(pid, sizeof pid, "%s", v_pstr("regions.specimen.pod.id"));
+    if (anim_get(ANIM_SEAL, pid, &sa_) && has(idpic)) {   /* Identify clears the seal from the top down over the event's length: the identified picture above the cut, the sealed one below */
+      int cut = (2 * h * sa_.elapsed + sa_.ms) / (2 * sa_.ms);   /* round(h * elapsed / ms) */
       v_region("specimen", LAYER_ART);
       prim_node(v_id("specimen.id"), FN_CLIP, rect[0], rect[1], w, cut, 0, 1, 0);
       v_sprite("specimen.idpic", idpic, rect[0], rect[1], w, h);
@@ -72,8 +73,8 @@ void word_specimen(const char *base) {
     v_region("name", LAYER_ART); if (has(series)) v_sprite("specimen.plate", v_fmt("%s-%dx%d:%dx%d", series, pw, plateH, pw, plateH), ncx - v_half(pw), nrect[1], pw, plateH);
     v_region("name", LAYER_TYPE); centred("specimen.name", text, ncx, cap_top(npx, nrect[1], nrect[3]), npx, name);
   }
-  const char *ribbon = v_pstr("regions.specimen.ribbon");
-  if (has(ribbon)) {
+  const char *ribbon = v_pstr("regions.specimen.ribbon"); anim_state_t ra_; char rpid[48]; snprintf(rpid, sizeof rpid, "%s", v_pstr("regions.specimen.pod.id"));
+  if (has(ribbon) && anim_get(ANIM_RIBBON, rpid, &ra_) && ra_.elapsed >= ra_.from) {   /* a ribbon in the origin's place, from `from` ms into its event */
     int rr[4]; srect(base, "ribbon.rect", rr); int rpx = si(base, "ribbon.px", 20); char fill[24], edge[24], rtext[24];
     colour("ribbonFill", fill, sizeof fill); colour("ribbonEdge", edge, sizeof edge); colour("ribbonText", rtext, sizeof rtext);
     v_region("ribbon", LAYER_CHROME); word_panel("specimen.ribbon", rr[0], rr[1], rr[2], rr[3], fill, edge);

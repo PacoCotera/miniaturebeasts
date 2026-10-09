@@ -4,6 +4,7 @@
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
+#include "../anim/anim.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -21,6 +22,7 @@ static void draw(void) {
   prim_end();
   wire_changed();
 }
+void screens_redraw(void) { if (spec_has("props") && spec_has("frame")) draw(); }
 int screens_props(const char *json, int len) {
   if (spec_load("props", json, (size_t)len) < 0) { wire_error(spec_error()); return -1; }
   if (!spec_has("frame")) { wire_error("props: the frame spec has not been sent"); return -1; }
@@ -37,6 +39,7 @@ static void say(const char *kind, const char *target, const char *verb) {
   wire_emit(b);
 }
 void screens_key(int code) {
+  if (anim_holding()) return;   /* an event holds input: no key is acted on (§2.1) */
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (strcmp(screen, "pods") != 0 || spec_len("props", "regions") < 0 || !spec_has("pods")) return;
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());

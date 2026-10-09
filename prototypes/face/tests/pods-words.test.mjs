@@ -30,6 +30,7 @@ for (const c of cases) {
   test(`Pods ${c.state}: ${c.name}`, { skip }, async () => {
     const f = await setup(c);
     assert.equal(f.props(c.props), 0, f.errors().join("; ")); frames(f);
+    if (c.events) { const t0 = f.t; for (const e of c.events) assert.equal(f.send({ t: "event", ...e }), 0, f.errors().join("; ")); f.frame(t0 + c.at); }   // the events begin now; the scene is drawn `at` ms into them
     assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0, "no node refused");
     assert.equal(f.hash(), c.hash);
   });

@@ -7,6 +7,7 @@
 #include "spec/spec.h"
 #include "vocab/words.h"
 #include "screens/screens.h"
+#include "anim/anim.h"
 #include "vocab/vocab.h"
 #include "platform/platform.h"
 #include "lvgl.h"
@@ -55,6 +56,7 @@ void face_frame(uint32_t ms) {
   static uint32_t last; static int started;
   if (!started) { started = 1; last = ms; }
   lv_tick_inc(ms - last); last = ms;
+  { int playing = anim_active(); anim_tick(ms); if (playing || anim_active()) screens_redraw(); }   /* an event plays: the words are drawn again at this frame's time */
   g_ndirty = 0;
   double t0 = platform_now_ms();
   lv_timer_handler();

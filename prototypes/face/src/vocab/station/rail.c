@@ -7,6 +7,7 @@
 #include "../../prim/prim.h"
 #include "../../spec/spec.h"
 #include "../../layout/layout.h"
+#include "../../anim/anim.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -47,6 +48,7 @@ void word_rail(void) {
     v_region("rail.tab", LAYER_ART);
     v_sprite(v_fmt("%s.lr", tid), v_fmt("tab:left:rim:%s", rim), x, y, S, h); v_sprite(v_fmt("%s.rr", tid), v_fmt("tab:right:rim:%s", rim), x + w, y, S, h);
     int pipCx, pipY, tpips = v_pint(v_fmt("regions.rail.tabs.%d.pips", i), 0), filled = v_pint(v_fmt("regions.rail.tabs.%d.filled", i), 0);
+    { anim_state_t wa; char tid2[48]; snprintf(tid2, sizeof tid2, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.id", i))); if (anim_get(ANIM_WIPE, tid2, &wa) && filled == tpips) filled = (wa.elapsed * tpips + wa.ms - 1) / wa.ms; }   /* Read: the pips fill ceil(p * n) over the event */
     const char *emblem = v_pstr(v_fmt("regions.rail.tabs.%d.emblem", i));
     if (full) {
       char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.word", i)));

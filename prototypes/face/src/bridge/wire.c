@@ -1,5 +1,6 @@
 #include "wire.h"
 #include "../screens/screens.h"
+#include "../anim/anim.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../face.h"
@@ -22,7 +23,7 @@ static uint32_t g_seq; static int g_seq_set;
 static char g_props_screen[32]; static char *g_props;
 static char g_ids[MAX_IDS][96]; static int g_nids;
 
-void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; }
+void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; anim_reset(); }
 char *wire_in_buf(void) { return g_in; }
 int wire_test_mode(void) { return g_test; }
 void wire_changed(void) { g_dirty_log = 1; }
@@ -137,13 +138,18 @@ static int on_asset(const msg_t *m) {
   int tl = key(m, "tile"); if (tl >= 0) { int v; if (!num(m, tl, &v) || v < 0 || v > 1024) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: tile is an integer from 0 to 1024"); } g_tile[slot] = v; }
   g_last_asset = slot; return 0;
 }
-static const char *KINDS[] = { "seal", "wipe", "ribbon", "plate", "tick", "flash", "dither", "arrival", "hatch", "wake", "rest" };
 static int on_event(const msg_t *m) {
   char k[24]; if (!str(m, key(m, "kind"), k, sizeof k)) return fail("event: kind is required");
-  int ok = 0; for (size_t i = 0; i < sizeof KINDS / sizeof *KINDS; i++) if (strcmp(KINDS[i], k) == 0) ok = 1;
-  if (!ok) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
-  int ms = 0; if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
-  g_nevents++; g_dirty_log = 1; return 0;
+  int kind = anim_kind(k);
+  if (kind < 0) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
+  int ms = 0, from = 0, to = 0; char target[48] = "";
+  if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
+  if (key(m, "from") >= 0 && !num(m, key(m, "from"), &from)) return fail("event: from must be a number");
+  if (key(m, "to") >= 0 && !num(m, key(m, "to"), &to)) return fail("event: to must be a number");
+  if (key(m, "target") >= 0 && !str(m, key(m, "target"), target, sizeof target)) return fail("event: target must be a string of at most 47 bytes");
+  int hold = flag(m, key(m, "hold"));
+  if (anim_add(kind, target, ms, hold, from, to, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
+  g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
 }
 static const struct { const char *name; int code; } KEYS[] = { { "up", 17 }, { "down", 18 }, { "right", 19 }, { "left", 20 }, { "confirm", 10 }, { "back", 27 }, { "home", 2 }, { "research", 114 }, { "library", 108 }, { "habitat", 98 }, { "dock", 100 } };
 static int on_key(const msg_t *m) {

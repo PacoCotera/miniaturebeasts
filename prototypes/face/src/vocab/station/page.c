@@ -9,6 +9,7 @@
 #include "../../spec/spec.h"
 #include "../../layout/layout.h"
 #include "../../bridge/wire.h"
+#include "../../anim/anim.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -70,9 +71,9 @@ void word_page(const char *key) {
     int cx = cells[i][0], cy = cells[i][1], frost = v_pbool(v_fmt("%s.frost", C), 0), diff = v_pbool(v_fmt("%s.diff", C), 0), isNew = v_pbool(v_fmt("%s.isNew", C), 0);
     const char *crop = v_pstr(v_fmt("%s.crop", C)); char cropC[96]; snprintf(cropC, sizeof cropC, "%s", crop);
     if (!frost) {
-      int wipe = v_pint(v_fmt("%s.wipeMilli", C), -1);   /* until the wipe is an event (B3d): the cell revealed from the top, in thousandths */
-      if (wipe >= 0 && wipe < 1000) {
-        int cut = (wipe * ph + 500) / 1000;
+      anim_state_t wa; char chap[48]; snprintf(chap, sizeof chap, "%s", v_pstr(v_fmt("%s.chapter", P)));
+      if (anim_get(ANIM_WIPE, chap, &wa)) {   /* Read: the page wipes, each cell revealed from the top over the event */
+        int cut = (2 * ph * wa.elapsed + wa.ms) / (2 * wa.ms);
         v_region(cellReg, LAYER_CHROME); prim_node(v_id(v_fmt("%s.wipe", cid)), FN_CLIP, cx, cy, pw, cut, 0, has(cropC) && wire_has_asset(cropC) ? 2 : 1, 0);
         v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC);
         v_rect(v_fmt("%s.wipeline", cid), cx + 6, cy + cut, pw - 12, 2, wipeC);

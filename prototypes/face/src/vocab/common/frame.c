@@ -6,6 +6,7 @@
 #include "../../prim/prim.h"
 #include "../../spec/spec.h"
 #include "../../layout/layout.h"
+#include "../../anim/anim.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -53,8 +54,13 @@ void word_topBar(void) {
   int mrect[4]; rect_of("regions.materials.rect", mrect);
   int widths[3], total = 0; char txt[3][16], fl[3];
   for (int i = 0; i < 3; i++) {
-    snprintf(a, sizeof a, "frame.top.materials.%c", K[i]); snprintf(txt[i], sizeof txt[i], "%d", spec_int(P, a, 0));
+    int shown; snprintf(a, sizeof a, "frame.top.materials.%c", K[i]); shown = spec_int(P, a, 0);
     snprintf(a, sizeof a, "frame.top.flash.%c", K[i]); fl[i] = (char)spec_bool(P, a, 0);
+    { /* a counter counts up toward its value one unit every 70 ms, the first at once, with a 240 ms tick behind the figure that changed (a `tick` event: from, to) */
+      anim_state_t t; char who[2] = { K[i], 0 };
+      if (anim_get(ANIM_TICK, who, &t) && t.to > t.from) { int n = t.to - t.from, steps = t.elapsed / 70 + 1; if (steps > n) steps = n; shown = t.from + steps; if (t.elapsed - (steps - 1) * 70 < 240) fl[i] = 1; }
+    }
+    snprintf(txt[i], sizeof txt[i], "%d", shown);
     widths[i] = M_icon + M_gap + v_measure(txt[i], M_px); total += widths[i];
   }
   total += M_between * 2;
@@ -91,6 +97,7 @@ void word_topBar(void) {
   char num[16]; snprintf(num, sizeof num, "%d", spec_int(P, "frame.top.turn", 0));
   { char *at = strstr(tmpl, "{n}"); if (at) snprintf(fig, sizeof fig, "%.*s%s%s", (int)(at - tmpl), tmpl, num, at + 3); else snprintf(fig, sizeof fig, "%s", tmpl); }
   int fw = v_measure(fig, W_px), fx = W_right - fw, tflash = spec_bool(P, "frame.top.turnFlash", 0);
+  { anim_state_t t; if (anim_get(ANIM_FLASH, "turn", &t) && (t.elapsed / 160) % 2 == 0) tflash = 1; }   /* the turn's flash: a second, blinking on for 160 ms and off for 160 */
   v_region("time", LAYER_ART);
   { int sun[4] = { fx - W_gap - mk[0], tr[1] + 4, mk[0], mk[1] }; fs("regions.marks.sun", a, sizeof a); mark("top.sun", a, sun); }
   if (tflash) { v_region("time", LAYER_CHROME); colour("flash", c); v_rect("top.turn.flash", fx - 3, tr[1], fw + 6, tr[3], c); }
@@ -148,6 +155,7 @@ void word_bottomLine(void) {
 void word_messagePlate(void) {
   char s[V_STR], c[24], c2[24];
   if (spec_str(P, "frame.plate.text", s, sizeof s) <= 0) return;
+  if (spec_bool(P, "frame.plate.timed", 0) && !anim_get(ANIM_PLATE, "msg", NULL)) return;   /* a timed plate is shown while its `plate` event plays (4 s) */
   int maxW = fi("regions.plate.maxWidth"), pad = fi("regions.plate.pad"), px = fi("regions.plate.px"), centre = fi("regions.plate.centre"), lead = fi("regions.plate.lead"), line = fi("regions.plate.line");
   char buf[V_STR * 4]; int n = v_wrap(s, maxW - 2 * pad, px, buf, sizeof buf, 8), widest = 0; const char *l = buf;
   for (int i = 0; i < n; i++) { int w = v_run_width(l, px); if (w > widest) widest = w; l += strlen(l) + 1; }

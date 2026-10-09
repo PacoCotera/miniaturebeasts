@@ -20,7 +20,7 @@ const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
 
-// m: { st, settings, docked, crates, ui: { view, cur, ci, cmp, wildArm }, focus: id | null, present: { idCut: { pod, p } | null, read: { pod, chapter, p } | null, ribbon: pod id | null } }
+// m: { st, settings, docked, crates, ui: { view, cur, ci, cmp, wildArm }, focus: id | null }   (what is playing is the timeline's: it sends events, the view sends end states)
 // Pods is three states (station-layouts.md, Pods): the collection, a pod's overview, a chapter's page; Compare is the overview's. The view reads `ui.view`.
 export function podsBuild(m, spec) {
   const { st, settings, ui } = m, requests = [], focus = m.focus ?? null;
@@ -39,7 +39,7 @@ export function podsBuild(m, spec) {
   view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
   if (view.mode === "chapter") {
     const ch = chapters[ci];
-    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, m.present || {}, null), pane: null };
+    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, null), pane: null };
   } else {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
@@ -71,20 +71,19 @@ function tabEnds(req, frame) {
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
 function railOf(m, spec, cur, chapters, req, open, focused) {
   if (!cur.idd || !chapters.length) return null;
-  const { st, settings, present = {} } = m;
+  const { st, settings } = m;
   tabEnds(req, m.frameSpec);
   return { focused, open, star: req({ kind: "star", id: "star:12" }), tabs: chapters.map((c) => {
-    const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, maxTraits(spec.regions.chapter.page)), wipe = present.read && present.read.pod === cur.id && present.read.chapter === c.id ? present.read.p : null;
-    return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
+    const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, maxTraits(spec.regions.chapter.page));
+    return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? n : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
   }) };
 }
 
 // The pod under the beam, in the room of this state: its layers as placed masters at the spec's sizes (an empty slot where none is cut to size), the pod, its name, and, on the overview, the origin, the figure and the marks that say who it is.
 function specimenOf(m, spec, cur, R, req, mode) {
-  const { st, settings, present = {} } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
+  const { st, settings } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
   const sizeClass = shellFrame(st, cur)?.pod?.sizeClass ?? "medium", box = spec.classes.pod[sizeClass], N = R.name;
   const nameText = cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod;
-  const idCut = present.idCut && present.idCut.pod === cur.id ? present.idCut.p : null;
   const sp = shellFrame(st, cur) ? S.speciesOf(cur) : null;
   const out = {
     beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
@@ -95,15 +94,15 @@ function specimenOf(m, spec, cur, R, req, mode) {
       plate: plateSeries(req, N),
     },
     pod: {
-      sizeClass,
+      id: cur.id, sizeClass,
       sealed: req({ kind: "pod", id: `pod:${sp ?? "-"}:s:${box.join("x")}`, species: sp, state: "sealed", size: box }),
       identified: cur.idd ? req({ kind: "pod", id: `pod:${S.speciesOf(cur)}:i:${box.join("x")}`, species: S.speciesOf(cur), state: "identified", size: box }) : null,
     },
-    cutMilli: cur.idd && idCut != null ? Math.round(idCut * 1000) : null, name: nameText, origin: [], ribbon: null,
+    name: nameText, origin: [], ribbon: null,
   };
   if (mode === "overview") {
     out.origin = S.podOriginLines(cur);   // the whole lines: the face wraps them to the origin region and keeps the first R.origin.lines
-    out.ribbon = present.ribbon === cur.id ? spec.strings.newSpecies : null;
+    out.ribbon = spec.strings.newSpecies;   // what the ribbon says; the face shows it while a `ribbon` event for this pod plays
     out.captions = { pod: spec.strings.thisPod, figure: cur.idd ? spec.strings.theSpecies : null };   // the two labels the overview adds (no JavaScript twin): the pod's under the marks, the species' under the figure once identified
     out.originPicture = PLACE_KEYS.includes(cur.g) ? req({ kind: "place", id: `place:${cur.g}:${R.originPicture.rect[2]}`, place: cur.g, size: R.originPicture.rect[2] }) : null;
     const [fw, fh] = R.figure.rect.slice(2), total = fr ? fr.chapters.length : 0, read = fr ? fr.chapters.filter((c) => cur.read.includes(c.id)).length : 0;
@@ -152,9 +151,9 @@ function collectionView(view, m, spec, req) {
 }
 
 // One chapter's page: the cells on the grid by the trait count, each a picture rendered at its size, the marks inside it.
-function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key = "page") {
+function pageView(m, spec, p, fr, ch, word, region, req, diffIds, key = "page") {
   const { st, settings } = m, C = spec.colours, read = p.read.includes(ch.id), sealed = !!ch.sealed && !settings.sealedOpen, traits = ch.traits.slice(0, maxTraits(region)), grid = pageGrid(region, traits.length);
-  const [pw, ph] = grid.picture ?? [0, 0], wipeOf = present.read && present.read.pod === p.id && present.read.chapter === ch.id ? present.read.p : null;
+  const [pw, ph] = grid.picture ?? [0, 0];
   const cells = traits.map((t) => {
     const cell = { name: t.name, lines: [], glyphs: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
     if (!read) { cell.frost = true; const O = region.unread?.outline; if (O && O.slice) cell.outline = slot(req, O.slice, [0, 0, ...O.size], "the unread cell's outline master"); return cell; }   // the dotted outline is the studio's nine-slice, placed over the cell's rectangle once signed
@@ -170,21 +169,20 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
       if (state.kind === "asleep") cell.glyphs.push({ key: "asleep", asset: glyph("asleep") });
       if (state.doing) cell.glyphs.push({ key: "doing", asset: glyph("doing") });
     }
-    if (wipeOf != null && wipeOf < 1) cell.wipeMilli = Math.round(wipeOf * 1000);   // thousandths of the cell revealed from the top, until the wipe is an event (B3d)
     return cell;
   });
   const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone, and the studio's picture of the find by the chapter's findKind over it once signed
   const sealedPicture = sealedFind && ch.findKind && region.sealedFindSlot ? slot(req, region.sealedFindSlot.replace("{kind}", ch.findKind), [0, 0, region.sealedFind[2], region.sealedFind[3]], "the find picture master") : null;
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region) };
+  return { region: key, chapter: ch.id, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, sealedPicture, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region) };
 }
 
 function compareView(view, m, spec, req) {
-  const { st, settings, ui, present = {} } = m, R = spec.regions, C = spec.colours, c = ui.cmp, A = S.podById(st, c.a), B = S.podById(st, c.b);
+  const { st, settings, ui } = m, R = spec.regions, C = spec.colours, c = ui.cmp, A = S.podById(st, c.a), B = S.podById(st, c.b);
   const fr = A && podFrame(A); if (!A || !B || !fr) return { ...view, mode: "collection", cur: null, broken: true };
   const chs = fr.chapters, ci = clamp(c.ci, 0, chs.length - 1), ch = chs[ci], diff = S.compareDiff(st, A, B) || [];
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
-    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, present, ids, key), pane: region.pane };
+    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, ids, key), pane: region.pane };
     page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), who: whoOf(p, fr, R.compareA.who, req) };
     return page;
   };
