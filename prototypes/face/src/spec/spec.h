@@ -11,6 +11,8 @@ int spec_has(const char *screen);
 int spec_count(void);
 /* A number at a path, or dflt when it is absent or not a number. */
 int spec_int(const char *screen, const char *path, int dflt);
+/* true or false at a path, as 1 or 0; dflt when it is absent or not a boolean. */
+int spec_bool(const char *screen, const char *path, int dflt);
 /* A string at a path copied into buf (NUL ended); 0 and buf empty when it is absent or not a string. Returns the length. */
 int spec_str(const char *screen, const char *path, char *buf, int cap);
 /* The size of the array or object at a path, or -1 when it is absent or a scalar. */

@@ -70,6 +70,12 @@ int spec_int(const char *screen, const char *path, int dflt) {
   int i = at(s, path); if (i < 0 || s->tok[i].type != JSMN_PRIMITIVE) return dflt;
   int v; return json_int(s->js + s->tok[i].start, s->tok[i].end - s->tok[i].start, &v) ? v : dflt;
 }
+int spec_bool(const char *screen, const char *path, int dflt) {
+  const spec_t *s = find(screen); if (!s) return dflt;
+  int i = at(s, path); if (i < 0 || s->tok[i].type != JSMN_PRIMITIVE) return dflt;
+  int l = s->tok[i].end - s->tok[i].start; const char *p = s->js + s->tok[i].start;
+  return l == 4 && strncmp(p, "true", 4) == 0 ? 1 : l == 5 && strncmp(p, "false", 5) == 0 ? 0 : dflt;
+}
 /* a JSON string's bytes decoded to UTF-8 (\" \\ \/ \b \f \n \r \t and \uXXXX, surrogate pairs joined); returns the length written, never beyond cap - 1 */
 static int unescape(const char *src, int len, char *buf, int cap) {
   int o = 0;

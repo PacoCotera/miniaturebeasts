@@ -65,6 +65,7 @@ int prim_palette_add(const char *name, uint32_t rgb) {
   uint32_t h = mix(rgb) & 1023; while (g_hash[h] && g_hash[h] != (rgb & 0xffffff) + 1) h = (h + 1) & 1023; g_hash[h] = (rgb & 0xffffff) + 1;
   return 0;
 }
+int prim_palette_rgb(const char *name, uint32_t *rgb) { for (int i = 0; i < g_npal; i++) if (strcmp(g_pal[i].name, name) == 0) { *rgb = g_pal[i].rgb; return 0; } return -1; }
 int prim_palette_has(uint32_t rgb) { rgb &= 0xffffff; uint32_t h = mix(rgb) & 1023; while (g_hash[h]) { if (g_hash[h] == rgb + 1) return 1; h = (h + 1) & 1023; } return 0; }
 static int colour_of(const char *name, int len, uint32_t *rgb) {
   for (int i = 0; i < g_npal; i++) if ((int)strlen(g_pal[i].name) == len && strncmp(g_pal[i].name, name, (size_t)len) == 0) { *rgb = g_pal[i].rgb; return 0; }

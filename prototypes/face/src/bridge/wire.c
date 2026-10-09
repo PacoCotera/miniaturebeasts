@@ -1,4 +1,5 @@
 #include "wire.h"
+#include "../screens/screens.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../face.h"
@@ -109,6 +110,7 @@ static int on_spec(const msg_t *m) {
   if (spec_load(screen, m->js + m->tok[j].start, (size_t)(m->tok[j].end - m->tok[j].start)) < 0) return fail(spec_error());
   return 0;
 }
+int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int slot_of(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int on_asset(const msg_t *m) {
   char id[96]; int w = 0, h = 0, drop = flag(m, key(m, "drop"));
@@ -147,7 +149,9 @@ static int on_props(const msg_t *m, int len) {
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
   int r = key(m, "regions"); if (r >= 0 && m->tok[r].type != JSMN_OBJECT) return fail("props: regions must be an object");
   free(g_props); g_props = (char *)malloc((size_t)len + 1); if (!g_props) return -1; memcpy(g_props, m->js, (size_t)len); g_props[len] = 0;
-  strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1; return 0;
+  strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1;
+  if (key(m, "frame") >= 0) return screens_props(g_props, len);   /* props that carry the frame are drawn by the words */
+  return 0;
 }
 int wire_send(const char *json, int len) {
   if (len <= 0 || len > WIRE_IN_CAP) return fail("message: empty or larger than the in-buffer");

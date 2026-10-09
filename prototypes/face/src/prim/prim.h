@@ -39,6 +39,7 @@ void prim_palette_clear(void);
 int prim_palette_add(const char *name, uint32_t rgb);
 int prim_palette_count(void);
 int prim_palette_has(uint32_t rgb);
+int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by name: 0, or -1 when the palette has no such name */
 /* The composed picture's ops, JSON: [["h", x, y, len, "colour"], ["v", x, y, len, "colour"], ["dash", x, y, len, "h"|"v", on, off, "colour"], ["dot", x, y, "colour"],
    ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"]] with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */
