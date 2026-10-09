@@ -306,7 +306,10 @@ def framemarks():
     f = load("mibi-face.jpg"); Wf, Hf = f.size; cx, cy, side = int(Wf * 0.53), int(Hf * 0.60), int(Wf * 0.92)
     face = f.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)).convert("RGBA").resize((20 * 8, 20 * 8), Image.LANCZOS)
     S = 8
-    def ring_img(ringcol, with_face, dim=1.0):
+    bz = Image.open("source/raw/belatz-portrait-600x620.png").convert("RGBA"); kz = color_to_alpha(bz, border_median(bz), 0.05)            # Belatz: the head and crest of the standard painting, keyed off its cream ground and laid on the same dark ground as Loika's
+    gnd = Image.new("RGBA", kz.size, tuple(int(v) for v in border_median(f)) + (255,)); gnd.alpha_composite(kz)
+    face_b = gnd.crop((60, 150, 230, 400)).resize((20 * 8, 20 * 8), Image.LANCZOS) if False else gnd.crop((50, 190, 240, 380)).resize((20 * 8, 20 * 8), Image.LANCZOS)
+    def ring_img(ringcol, with_face, dim=1.0, face=face):
         yy, xx = np.mgrid[0:24 * S, 0:24 * S].astype(float); x = (xx + 0.5) / S - 12; y = (yy + 0.5) / S - 12; r = np.hypot(x, y)
         out = np.zeros((24 * S, 24 * S, 4)); ring = np.clip(12 - r, 0, 1) * np.clip(r - 10, 0, 1) if False else (np.clip(12.0 - r, 0, 1) * np.clip(r - 10.0, 0, 1))
         lit = np.clip(0.5 - (x + y) / 24.0, 0, 1); rc = np.array(ringcol)[None, None, :] * dim * (0.8 + 0.4 * lit[..., None])
@@ -321,6 +324,8 @@ def framemarks():
     teal = (31, 157, 143)
     save("face-loika-24", ring_img(teal, True), [856, 8, 24, 24], "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring", "mibi-face")
     save("face-loika-24-away", ring_img(teal, True, 0.5), [856, 8, 24, 24], "the Companion away: the mibi out with it, the face full on a dimmed ring", "mibi-face")
+    save("face-belatz-24", ring_img(teal, True, 1.0, face_b), [856, 8, 24, 24], "Belatz with the Companion: the head of the Grow service's standard painting (S09/3982a7117cfa0fc3) reduced to a 20 px disc inside its 2 px teal ring", "belatz-portrait")
+    save("face-belatz-24-away", ring_img(teal, True, 0.5, face_b), [856, 8, 24, 24], "Belatz, the Companion away: the face full on a dimmed ring", "belatz-portrait")
     save("face-24-empty", ring_img(teal, False), [856, 8, 24, 24], "no mibi with you: an empty teal ring", "procedural, supersampled 8x")
 def framecaps():
     """The bottom line's key caps, 16x16, art layer (station.json colours only): the confirm tick (orange), the same tick in mist for the unavailable state

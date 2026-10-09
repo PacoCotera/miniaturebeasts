@@ -4238,5 +4238,41 @@
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-belatz-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "belatz-portrait",
+  "made": "Belatz with the Companion: the head of the Grow service's standard painting (S09/3982a7117cfa0fc3) reduced to a 20 px disc inside its 2 px teal ring",
+  "sha256": "f4fe3132044f74b6830ed4c1ded05f26afbed40f03c20296e8ebd1ac1420a3ad",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "face-belatz-24-away": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   856,
+   8,
+   24,
+   24
+  ],
+  "src": "belatz-portrait",
+  "made": "Belatz, the Companion away: the face full on a dimmed ring",
+  "sha256": "f6f99976b95767af329a6d1b85a62b3faccb168ce95fc0ecab32f0f5259197d0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
  }
 }

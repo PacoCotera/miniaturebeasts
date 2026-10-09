@@ -27,6 +27,8 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
 | `face-24-empty` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | no mibi with you: an empty teal ring |
+| `face-belatz-24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | Belatz with the Companion: the head of the Grow service's standard painting (S09/3982a7117cfa0fc3) reduced to a 20 px disc inside its 2 px teal ring |
+| `face-belatz-24-away` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | Belatz, the Companion away: the face full on a dimmed ring |
 | `face-loika-24` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring |
 | `face-loika-24-away` | 24×24 | (856, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion away: the mibi out with it, the face full on a dimmed ring |
 | `glint-star-12x12` | 12×12 | (·, ·, 12, 12) | signed (well rings verdict) | the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30) |
@@ -336,7 +338,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 ## Pass 9 - frame ids as the spec names them, and the key caps
 
-Renamed, pixels kept: `frame-room-{home,research,library,habitat}-24`, `frame-sun-16`, and the face as `face-loika-24`, `face-loika-24-away`, `face-24-empty`. The lamp is one painted shape per colour, so the ids are `frame-lamp-8-mint`, `frame-lamp-8-stone` and `frame-lamp-12-amber`. Only Loika's face is painted so far (no Belatz painting exists in the repository); a `face-belatz-24` needs the standard painting of that mibi.
+Renamed, pixels kept: `frame-room-{home,research,library,habitat}-24`, `frame-sun-16`, and the face as `face-loika-24`, `face-loika-24-away`, `face-24-empty`. The lamp is one painted shape per colour, so the ids are `frame-lamp-8-mint`, `frame-lamp-8-stone` and `frame-lamp-12-amber`. `face-belatz-24` and `face-belatz-24-away` are painted from the Grow service's standard painting of Belatz (`prototypes/workbench/grow/out/S09/3982a7117cfa0fc3/station-portrait-600x620.png`, copied to `source/raw/belatz-portrait-600x620.png`): the head and crest, keyed off the painting's cream ground, laid on Loika's dark ground and reduced to the 20 px disc in the 2 px teal ring; nothing scaled from the Companion. The head reads as a blue bird with a crest and a beak; at 20 px the green shoulder at the right edge is the weakest part.
 
 The key caps:
 
