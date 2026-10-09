@@ -69,3 +69,44 @@ test("a founder of a species with a sealed chapter opens without it while it is 
     const o = S.openBud(st, null, s, T0 + 60 * MIN); assert.deepEqual(o.mibi.read, want, "the hatch agrees");
   }
 });
+
+// ---- 3. names never carry a digit ----
+test("N1 the first two names are Dot and Moss; a fresh save has no names used", () => {
+  const st = S.freshSt("w1", 1, T0); assert.deepEqual(st.namesUsed, []); assert.equal(S.drawName(st), "Dot"); assert.equal(S.drawName(st), "Moss"); assert.deepEqual(st.namesUsed, ["dot", "moss"]);
+});
+test("N2 no name carries a digit over 5,000 draws; N4 the pool's order: names, heads × tails, head + tail + tail, all unique", () => {
+  const st = S.freshSt("w1", 1, T0), pool = { names: ["Dot", "Moss", "Bean"], heads: ["Ka", "Lo", "Mi", "Ne", "Pu", "Ro", "Su", "Te", "Va", "Wi", "Xe", "Yo"], tails: ["ri", "sa", "mo", "vu", "li", "po", "ke", "na", "do", "fi", "gu", "ha"] };
+  const seen = new Set(); for (let i = 0; i < 5000; i++) { const n = S.drawName(st, pool); assert.ok(!/\d/.test(n), n); assert.ok([...n].length <= S.NAME_MAX, n); assert.ok(!seen.has(S.nameKey(n)), "unique " + n); seen.add(S.nameKey(n)); }
+  const s2 = S.freshSt("w1", 1, T0), p2 = { names: ["A", "B"], heads: ["Ka", "Lo"], tails: ["ri", "sa"] };
+  assert.deepEqual(Array.from({ length: 12 }, () => S.drawName(s2, p2)), ["A", "B", "Kari", "Lori", "Kasa", "Losa", "Kariri", "Loriri", "Kasari", "Losari", "Karisa", "Lorisa"]);
+});
+test("N3 a released name is never redrawn, and a migrated name blocks its look-alike", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 3, 2, settings); const [dot] = st.mibis; assert.equal(dot.name, "Dot"); dot.released = true; assert.ok(st.namesUsed.includes("dot"));
+  assert.equal(S.drawName(st), "Bean", "Dot and Moss are used, the third name is next"); st.mibis.push({ ...dot, id: 99, name: "Fíg", released: false }); S.normalize(st); assert.ok(st.namesUsed.includes("fig"));
+  assert.notEqual(S.drawName(st), "Fig", "FIG blocks Fig");
+  const s2 = S.freshSt("w1", 1, T0); s2.mibis.push({ ...dot, id: 5, name: "DOT" }); S.normalize(s2); assert.equal(S.drawName(s2), "Moss", "a migrated DOT blocks Dot");
+});
+test("nameKey and nameProblem: lowercase, accents and separators gone; the refusals of the naming board", () => {
+  assert.equal(S.nameKey("Mo-Mo"), "momo"); assert.equal(S.nameKey("Mómo"), "momo"); assert.equal(S.nameKey("Mo Mo"), "momo"); assert.equal(S.nameKey("Œuf"), "oeuf"); assert.equal(S.nameKey("ŒUF"), "oeuf");
+  for (const bad of ["A", "Elevenchars", "-Mo", "Mo-", "Mo--Mo", "Mo -Mo", "Loika", "loika", "LOIKA", "Aulaka", "Lóika"]) assert.notEqual(S.nameProblem(bad), "", bad);
+  for (const ok of ["Mo", "Mo-Mo", "Tenletters", "Bean", "Pip"]) assert.equal(S.nameProblem(ok), "", ok);
+  const st = S.freshSt("w1", 1, T0); assert.equal(S.claimName(st, "Mo-Mo").ok, true); assert.equal(S.claimName(st, "Mómo").ok, false); assert.ok(st.namesUsed.includes("momo")); assert.equal(S.claimName(st, "X").ok, false);
+  assert.equal(S.drawName(st, { names: ["Mo Mo", "Nib"] }), "Nib", "a player's name blocks the pool's look-alike");
+});
+test("N5 a save with digit names: renamed in id order, the references follow, and a second normalize changes nothing", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 3, 2, settings); const [a, b] = st.mibis;
+  a.name = "Pebble 2"; b.name = "Moss 2"; a.code = "CODEAAAAA"; b.code = "CODEBBBBB";
+  const child = { ...a, id: 7, name: "Wren", parents: [{ id: a.id, name: "Pebble 2" }, { id: b.id, name: "Moss 2" }], from: { n: 0, g: "meadow", how: "cross", podId: null, of: ["Pebble 2", "Moss 2"] } }; st.mibis.push(child);
+  st.releases.push({ id: a.id, name: "Pebble 2", species: "S01" }); st.guideNotes.S01 = [{ name: "Pebble 2", code: "CODEAAAAA", turn: 1 }, { name: "Other", code: "ZZZ", turn: 1 }];
+  delete st.namesUsed; st.log = [];   // an old save: no names used yet
+  S.normalize(st); const names = st.mibis.map((m) => m.name); assert.ok(names.every((n) => !/\d/.test(n)), names.join());
+  assert.equal(a.name, "Dot", "id order, first of the pool that is free (Dot and Moss are free: their holders were Pebble 2 and Moss 2)"); assert.equal(b.name, "Moss");
+  assert.deepEqual(child.parents.map((q) => q.name), [a.name, b.name]); assert.deepEqual(child.from.of, [a.name, b.name]); assert.equal(st.releases[0].name, a.name); assert.equal(st.guideNotes.S01[0].name, a.name); assert.equal(st.guideNotes.S01[1].name, "Other");
+  assert.equal(st.log.filter((l) => / · Renamed /.test(l)).length, 2);
+  const once = JSON.stringify(st); S.normalize(st); assert.equal(JSON.stringify(st), once, "idempotent");
+});
+test("N6 the three callers draw as drawName does", () => {
+  const st = fresh(); const names = []; for (let i = 0; i < 3; i++) { const p = podOf(st, "S01", chapters("S01")); st.firstMibi = false; S.grow(st, p, {}, settings, T0); names.push(S.openBud(st, null, settings, T0 + 60 * MIN).mibi.name); }
+  S.seedAdults(st, "S01", 5, 2, settings); names.push(...st.mibis.slice(3).map((m) => m.name)); S.seedSiblings(st, "S01", 9, settings); names.push(...st.mibis.slice(5).map((m) => m.name));
+  const ref = S.freshSt("w1", 1, T0); assert.deepEqual(names, names.map(() => S.drawName(ref)), "the same sequence"); assert.equal(new Set(names.map(S.nameKey)).size, names.length);
+});
