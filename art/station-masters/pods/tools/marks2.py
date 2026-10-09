@@ -17,7 +17,7 @@ col = np.where(((r < 25.9) | (r > 27.1))[..., None], hair[None, None, :] * 0.8 +
 cov = m.reshape(N, S, N, S).mean((1, 3)); c = (col * m[..., None]).reshape(N, S, N, S, 3).sum((1, 3)) / np.maximum(m.reshape(N, S, N, S).sum((1, 3)), 1)[..., None]
 save("ring-kin-56x56", Image.fromarray(np.clip(np.dstack([c, cov * 255]), 0, 255).astype(np.uint8), "RGBA"), [None, None, 56, 56], "the kin ring: a 3 px band (r 25 to 28) in bevel with hairline edges, painted at 8x with soft edges and a gentle light from the upper left; centred on the 40x48 pod in the 56x56 cell (rings from (600, 224) on a 64 px pitch)", "procedural, supersampled 8x")
 # (d) typed rows. can-grow: a bud with two leaves on a stem (16x16); waiting: three pods receding (24x24). base/lit colours: a quiet sprout green with a lime lit edge; mist with a fog lit edge
-cangrow = ["................", ".......++.......", "......+###......", ".....+#####.....", ".....+#####.....", ".....+#####.....", "......+###......", ".......###......", "..++...###...++.", ".+####.###.####.", "..+#####.#####..", "...+###.#.###...", "....+##.#.##....", ".......###......", ".......###......", "................"]
+cangrow = ["................", ".......+#.......", "......+###......", "..+#..+###..#l..", "..+##.+###.##l..", "...+##.+#.##l...", "....+##ll##l....", ".....+#ll#l.....", ".......ll.......", ".......ll.......", ".......ll.......", ".......ll.......", ".......ll.......", ".......ll.......", "......llll......", "................"]   # a bud on top, two leaves opening upward in a V from the stem
 waiting = ["........................"] * 24
 spans = {4: [(3, "+###")], 5: [(2, "+#####")], 6: [(2, "+#####")], 7: [(2, "+#####")], 8: [(2, "+#####")], 9: [(3, "+###")],
          6.5: [], 8: [(2, "+#####"), (11, "+##")], 7: [(2, "+#####"), (11, "+##")], 9: [(3, "+###"), (11, "+##")], 10: [(12, "##")]}
@@ -28,17 +28,32 @@ def blob(cx, cy, rw, rh):
         for x in range(cx - rw, cx + rw + 1):
             if ((x - cx) / (rw + 0.5)) ** 2 + ((y - cy) / (rh + 0.5)) ** 2 <= 1.0: out.append((x, y))
     return out
-for (cx, cy, rw, rh) in ((5, 14, 4, 5), (14, 15, 3, 4), (21, 16, 2, 3)):                  # three pods, large to small, receding to the right: waiting beyond the rack
-    pts = blob(cx, cy, rw, rh); S_ = set(pts)
-    for (x, y) in pts: rows[y][x] = "+" if ((x - 1, y) not in S_ or (x, y - 1) not in S_) else "#"
+def podshape(x0, base_y, w, h):
+    """One pod silhouette, w x h, standing on base_y: the cap (the top 2 rows, narrower), a 1 px darker seam under it, the body widest at the base (a rounded bottom corner)."""
+    pts = []
+    for j in range(h):
+        y = base_y - h + 1 + j
+        if j < 2: half = (w - 4) / 2.0                                    # the cap
+        else:
+            t = (j - 2) / max(h - 3, 1); half = w / 2.0 * (0.72 + 0.28 * np.sin(t * np.pi / 2))        # wider toward the base
+        if j == h - 1: half = max(half - 1.0, 1.0)                                                    # a rounded foot
+        for x in range(int(np.floor(x0 + w / 2.0 - half + 0.5)), int(np.floor(x0 + w / 2.0 + half + 0.5))): pts.append((x, y, j))
+    return pts
+for (x0, w, h) in ((1, 10, 12), (10, 8, 10), (17, 6, 8)):                 # three pods on one baseline (row 21), slightly overlapping, large to small
+    pts = podshape(x0, 21, w, h); S_ = {(x, y) for x, y, j in pts}
+    for (x, y, j) in pts:
+        if not (0 <= x < 24 and 0 <= y < 24): continue
+        if j == 2: rows[y][x] = "s"                                          # the 1 px darker cap seam
+        else: rows[y][x] = "+" if ((x - 1, y) not in S_ or (x, y - 1) not in S_) else "#"
 waiting = ["".join(r) for r in rows]
-for nm, rws, base, lit, rect, made in (("mark-can-grow-16", cangrow, "sprout", "lime", [None, None, 16, 16], "the can-grow mark: a bud with two leaves on a stem, in the emblem manner (a quiet sprout green with a lime lit edge upper left); at the place + (184, 168)"),
-                                         ("mark-waiting-24", waiting, "mist", "fog", [16, 528, 24, 24], "the waiting-beyond-the-rack mark: three pods receding to the right, large to small, mist with a fog lit edge upper left; one quiet mark, never a number; at (16, 528)")):
+leafc = "leaf"
+for nm, rws, base, lit, rect, made in (("mark-can-grow-16", cangrow, "grass", "sprout", [None, None, 16, 16], "the can-grow mark: a bud on top and two leaves opening upward in a V from the stem, in the emblem manner (grass with leaf for the shade and the stem, the lit edge upper left in sprout); at the place + (184, 168)"),
+                                         ("mark-waiting-24", waiting, "mist", "fog", [16, 528, 24, 24], "the waiting-beyond-the-rack mark: three pods in the pod's silhouette (wider at the base, a 1 px darker cap seam, about 10x12, 8x10 and 6x8) on one common baseline, bottom-aligned and slightly overlapping, mist with a fog lit edge upper left; one quiet mark, never a number; at (16, 528)")):
     assert all(len(r) == len(rws) for r in rws), nm
     im = Image.new("RGBA", (len(rws), len(rws)), (0, 0, 0, 0))
     for y, rw in enumerate(rws):
         for x, ch in enumerate(rw):
-            if ch in "#+": im.putpixel((x, y), PAL[lit if ch == "+" else base] + (255,))
+            if ch in "#+ls": im.putpixel((x, y), PAL[lit if ch == "+" else (leafc if ch == "l" else ("stone" if ch == "s" else base))] + (255,))
     save(nm, im, rect, made, "typed by hand")
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 sheet = Image.new("RGBA", (200, 72), (42, 46, 56, 255))
