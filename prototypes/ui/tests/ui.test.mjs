@@ -183,7 +183,7 @@ test("the chapter rail draws emblem, word and pips per tab, no words of status, 
 });
 
 test("the chapter page lays the cells on the grid with the marks inside each picture", () => {
-  const region = { rect: [528, 112, 480, 440], heading: [16, 8], grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 112] } } };
+  const region = { rect: [528, 112, 480, 440], heading: [16, 8], nameGap: 8, nameLine: 20, grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 112] } } };
   const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white", diff: { edge: "aqua", bracket: "aqua", keyline: "ink" } };
   const marks = { seed: [40, 52], seedSmall: [32, 40], smallUnder: 120, only: [72, 8], asleep: [24, 16], doing: [28, 16], key: [44, 64] };
   const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eyes", lines: ["thin rings · hides wide pale rings"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }, { picture: "pic:d", name: "Tail", lines: ["shows long"], marks: [], diff: true }];

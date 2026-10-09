@@ -47,7 +47,7 @@ const port = server.address().port;
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1 });
 const errors = [], fail = (t) => { errors.push(t); console.error("FAIL " + t); };
-page.on("pageerror", (e) => errors.push("pageerror: " + e.message));
+page.on("pageerror", (e) => { errors.push("pageerror: " + e.message); console.error("pageerror: " + e.message); });
 page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push("console: " + m.text()); });
 // Nothing is fetched from the network but the page's own files and the Caddy service (the fonts are bundled).
 const external = []; page.on("request", (r) => { if (!r.url().startsWith(`http://127.0.0.1:`)) external.push(r.url()); });
@@ -171,6 +171,11 @@ await press("back", 200);
 // P. Pods on the screen layer: the pod by its size class, the rail as the species has chapters, the page by trait count, the focus
 // graph through the keys, the holds of Identify and a read, Compare, the hatch armed, the empty rack; every point recorded for the checks.
 const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), curPod = () => page.evaluate(() => window.__st.UI.pods.cur);
+// Home's rack: ✓ on the tray opens the collection with the ring on the pod that most needs the player (an open question for the UI designer: the spec says a pod in the rack goes straight to its overview, and Home's tray is one target); ← goes up to Home
+await press("home", 300); await page.evaluate(() => { window.__st.UI.home.f = "tray"; }); await press("confirm", 300);
+{ const here = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, f: window.__st.UI.pods.focus.cur }));
+  expect(here.screen === "pods" && here.view === "collection" && /^place\.\d$/.test(here.f), "Home's rack opens the collection with the ring on a place: " + JSON.stringify(here));
+  await press("back", 300); expect((await page.evaluate(() => window.__st.UI.screen)) === "home", "← from the collection is Home"); await press("research", 300); }
 await press("research", 200);
 await page.evaluate(() => { window.__st.seedCrate("S02", 1, 515); window.__st.seedCrate("S09", 1, 909); window.__st.openBay(); }); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.tray.length === 6, "six pods in the wells: " + s.tray.length);
@@ -401,6 +406,7 @@ for (const k of ["KeyR", "ArrowRight", "Enter", "KeyL", "KeyB", "KeyD", "KeyH"])
 await page.waitForTimeout(300); await shot("page-fresh");
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text API " + checks.textApiCalls + " times"); console.error("FAIL text API calls " + checks.textApiCalls); }
+expect((await page.evaluate(() => window.__st.renderErrors)).length === 0, "no render threw: " + JSON.stringify(await page.evaluate(() => window.__st.renderErrors)));
 const checksFile = process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);

@@ -28,22 +28,30 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   const setText = (str) => { const b = enc.encode(str), cap = M._face_text_size() - 1, p = M._face_text(); if (b.length > cap) throw new Error(`the face's text buffer holds ${cap} bytes; "${String(str).slice(0, 24)}…" is ${b.length}`); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
   const measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
   // A picture's pixels into the face (RGBA from a canvas, stored as B, G, R, A); once per asset id.
-  const handles = new Map();
+  // The table holds 256 pictures: a picture's slot is kept while its scene draws it and recycled, least recently used first, when a scene needs a slot and none is free;
+  // a single scene that needs more than the table holds is refused loudly.
+  const handles = new Map(); let sceneNo = 0;
   function handleOf(id, picture) {
-    let h = handles.get(id); if (h != null) return h;
+    const have = handles.get(id); if (have) { have.used = sceneNo; return have.h; }
     const pic = picture(id); if (!pic) return -1;
-    h = handles.size; if (h >= M._face_asset_limit()) throw new Error(`the face's picture table is full (${h} pictures); ${id} cannot be added`);
+    const limit = M._face_asset_limit();
+    let h = handles.size;
+    if (h >= limit) {
+      let victim = null; for (const [k, v] of handles) if (v.used < sceneNo && (!victim || v.used < victim[1].used)) victim = [k, v];
+      if (!victim) throw new Error(`the face's picture table is full (${limit} pictures all in this scene); ${id} cannot be added`);
+      handles.delete(victim[0]); h = victim[1].h;
+    }
     const p = M._face_asset(h, pic.w, pic.h); if (!p) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h})`);
     const d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
-    handles.set(id, h); return h;
+    handles.set(id, { h, used: sceneNo }); return h;
   }
   // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) }, slice(assetId) -> [l, t, r, b] | null, tile(assetId) -> px (0: the whole strip) }.
   // A frame identical to the last one is not sent again. Returns the nodes the face cannot draw (a kind outside the closed set, a picture it lacks).
   let lastKey = null;
   const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour ?? ""); mix(n.text ?? ""); mix(n.px ?? ""); mix(n.asset ?? ""); for (const c of n.children || []) { mix(c.id); mix(c.rect); mix(c.asset ?? ""); } } return h >>> 0; };
   function scene(nodes, env) {
-    const key = keyOf(nodes); if (key === lastKey) return []; lastKey = key;
+    const key = keyOf(nodes); if (key === lastKey) return []; lastKey = key; sceneNo++;
     const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };
     M._face_scene_begin();
     for (const n of nodes) {

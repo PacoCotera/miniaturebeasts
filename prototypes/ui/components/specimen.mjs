@@ -8,7 +8,7 @@ import { isFilled } from "../assets.mjs";
 import { SIZES } from "../type.mjs";
 
 // One line of text centred on x: its box measured from the atlas, so the node's rectangle is the run's own.
-const centred = (ctx, id, text, cx, y, px, colour, region = null) => { const w = ctx.measure(text, px); return { id, kind: "text", rect: [cx - Math.round(w / 2), y, w, Math.round(px * 1.25)], text, px, weight: SIZES[px], colour, align: "left", ...(region ? { region } : {}) }; };
+const centred = (ctx, id, text, cx, y, px, colour, region = null) => { const w = ctx.measure(text, px); return { id, kind: "text", rect: [cx - Math.round(w / 2), y, w, ctx.line(px)], text, px, weight: SIZES[px], colour, align: "left", ...(region ? { region } : {}) }; };
 const capTop = (ctx, px, y, pitch) => y + Math.floor((pitch - ctx.cap(px)) / 2);
 // A layer of the room: the sprite at its rectangle when its picture is there (a placed master at that exact size), nothing when its slot is still empty.
 export const layer = (id, rect, asset, region = null) => (asset && isFilled(asset) ? [{ id, kind: "sprite", rect: rect.slice(), asset, ...(region ? { region } : {}) }] : []);
@@ -29,13 +29,13 @@ export function specimen(ctx, id, spec, props) {
   nodes.push(...layer(id + ".cradleFront", R.cradleFront.rect, room.cradleFront));   // the dish's near lip, over the pod's foot
   const N = R.name, O = R.origin;
   if (props.name) {
-    const pw = room.plate ? Number(room.plate.match(/:(\d+)x/)[1]) : 0;
+    const pw = room.plateW || 0;
     if (pw) nodes.push(...layer(id + ".plate", [N.centre - Math.round(pw / 2), N.rect[1], pw, N.plate.h], room.plate));
     nodes.push(centred(ctx, id + ".name", props.name, N.centre, capTop(ctx, N.px, N.rect[1], N.rect[3]), N.px, Cc.name, "name"));
   }
   if (props.ribbon) nodes.push(...ribbon(ctx, id + ".ribbon", spec, props.ribbon, props.ribbonColours, R.ribbon));
   else if (O) (props.origin || []).forEach((l, i) => nodes.push(O.align === "left"
-    ? { id: `${id}.origin.${i}`, kind: "text", rect: [O.rect[0], capTop(ctx, O.px, O.rect[1] + O.pitch * i, O.pitch), Math.round(ctx.measure(l, O.px)), Math.round(O.px * 1.25)], text: l, px: O.px, weight: SIZES[O.px], colour: Cc.origin, align: "left", ...(i === 0 ? { region: "origin" } : {}) }
+    ? { id: `${id}.origin.${i}`, kind: "text", rect: [O.rect[0], capTop(ctx, O.px, O.rect[1] + O.pitch * i, O.pitch), Math.round(ctx.measure(l, O.px)), ctx.line(O.px)], text: l, px: O.px, weight: SIZES[O.px], colour: Cc.origin, align: "left", ...(i === 0 ? { region: "origin" } : {}) }
     : centred(ctx, `${id}.origin.${i}`, l, O.centre, capTop(ctx, O.px, O.rect[1] + O.pitch * i, O.pitch), O.px, Cc.origin, i === 0 ? "origin" : null)));
   // the overview's own parts: the figure beside the pod, the marks that say who it is, the find's picture
   if (props.figure && R.figure) nodes.push(...layer(id + ".figure", R.figure.rect, props.figure, "figure"));

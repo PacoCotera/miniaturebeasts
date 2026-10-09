@@ -17,7 +17,7 @@ export function tabRingAsset(w, colour, spec) {
   registerAsset({ id, w: W, h: H, status: "master", until: null, build: (e, env) => env.mask(e.w, e.h, tabRingMask(w, { tab: t, width: r.width, tabTop: spec.regions.rail.y }).mask, colour) });
   return { id, w: W, h: H };
 }
-// The well's ring: a circle of radius r (outer) round the well's centre, 2 px wide; `at` is the circle's centre on the screen. Pods spec: regions.well.focus.
+// A circle ring: radius r (outer) round a centre `at` on the screen, `width` px wide (a place round its ring, a kin round its own; Pods spec: regions.collection.ring.focus).
 export function circleRing(id, at, radius, width, colour = "focus") {
   const d = 2 * radius;
   return [{ id, kind: "sprite", rect: [at[0] - radius, at[1] - radius, d, d], asset: ringAsset("ellipse", d, d, colour, width, 0), shape: "circle" }];

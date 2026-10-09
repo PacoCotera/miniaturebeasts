@@ -4,12 +4,12 @@
 // its size: the pod from the frame's parameters, the close-ups through the rig's camera at the picture's own size, the
 // stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
-import { PB, C, HEX, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
+import { PB, C, HEX, art, fromRGBA, bay } from "./gfx.mjs";
 import { podSprite } from "./podsprites.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { assetEntry, placeMaster, registerSlot, asset as assetOf } from "../../ui/assets.mjs";
-import { ringArt, wellArt, emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
+import { emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
 import { beamArt } from "./screens/frame.mjs";
 import { shapeTrait, stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
@@ -17,8 +17,6 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
-// A picture placed 1:1 in the middle of a larger transparent one (the list's 80×80 ring slice holds the 64×64 stand-in).
-const centred = ([w, h], pic) => { const pb = new PB(w, h); pb.blit(pic, Math.round((w - pic.w) / 2), Math.round((h - pic.h) / 2)); return pb; };
 // The pod at the exact size of its box, never scaled: the stage's three classes from the signed layers recoloured by the species' pair (podmasters.mjs); the list's 40×48
 // box holds the 32×40 placeholder sprite placed 1:1 in its middle until its master is re-cut; a class whose layers are not placed is an empty (transparent) picture.
 const UNKNOWN_PAIR = () => [HEX[C.stone], HEX[C.bone]];   // only until the signed pod-<class>-unknown pictures are placed
@@ -33,27 +31,13 @@ function podPicture(species, state, [bw, bh], env) {
   }
   return new PB(bw, bh);
 }
-const cradlePB = () => { const pb = new PB(224, 40); pb.ell(112, 24, 110, 15, C.slate); pb.ell(112, 20, 100, 12, C.stone, { sh: [C.mist, C.night] }); pb.outline(() => C.ink); return pb; };
 const hatchPB = (w = 112) => { const pb = new PB(w, 56); pb.rect(0, 2, w, 52, C.slate); pb.rect(4, 6, w - 8, 44, C.night); pb.rect(8, 24, w - 16, 8, C.void); pb.ell(w / 2, 28, 5.5, 11.5, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; };
 // The find's place picture at the size it is asked for (drawn at that size, never scaled): a frame, a dark inner square and the place's colour in the middle.
 const placePB = (place, size = 16) => { const pb = new PB(size, size), c = C[PLACE_COL[place] || "mist"], k = size / 16; pb.rect(k, k, size - 2 * k, size - 2 * k, c); pb.rect(3 * k, 3 * k, size - 6 * k, size - 6 * k, C.ink); pb.rect(5 * k, 5 * k, size - 10 * k, size - 10 * k, c); return pb; };
 // A recessed place of the collection: `panel` with a one-pixel `hairline` edge and 6 px corners.
-const placePanelPB = (w, h, r = 6) => {
+const placePanelPB = (w, h, r) => {
   const pb = new PB(w, h), inside = (x, y) => { if (x < 0 || y < 0 || x >= w || y >= h) return false; const cx = x < r ? r : x >= w - r ? w - 1 - r : x, cy = y < r ? r : y >= h - r ? h - 1 - r : y; return (x - cx) ** 2 + (y - cy) ** 2 <= (r - 0.5) ** 2 + r * 0.5; };
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inside(x, y)) pb.set(x, y, inside(x - 1, y) && inside(x + 1, y) && inside(x, y - 1) && inside(x, y + 1) ? C.panel : C.hairline);
-  return pb;
-};
-// The collection's progress ring (160 across, an 8 px band): one arc per chapter from the top, clockwise, 2 px apart; `bone` when read, `bevel` when not; the band closes when every chapter is read.
-// An unidentified pod, or an empty place, has the base band alone.
-const collectionRingPB = (read, size = 160, band = 8) => {
-  const pb = new PB(size, size), R = size / 2, n = read ? read.length : 0, closed = n > 0 && read.every(Boolean), step = n ? (2 * Math.PI) / n : 0, mid = R - band / 2;
-  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
-    const dx = x + 0.5 - R, dy = y + 0.5 - R, d = Math.hypot(dx, dy); if (d > R || d <= R - band) continue;
-    if (!n) { pb.set(x, y, C.hairline); continue; }
-    if (closed) { pb.set(x, y, C.bone); continue; }
-    const a = (Math.atan2(dx, -dy) + 2 * Math.PI) % (2 * Math.PI), k = Math.min(n - 1, Math.floor(a / step)), edge = Math.min(a - k * step, (k + 1) * step - a) * mid;
-    if (edge >= 1) pb.set(x, y, read[k] ? C.bone : C.bevel);
-  }
   return pb;
 };
 // A kin's ring: the small pod's circle, a 2 px band in `hairline`.
@@ -94,8 +78,8 @@ export function stampPicture(frame, genome, readIds) {
 }
 
 // A picture that is a placed master of another id at exactly this size takes that master (a mark, a place picture, the unknown pod); otherwise the stand-in builds.
-const masterAt = (masterId, w, h) => { const m = assetEntry(masterId); return m && m.status === "master" && m.w === w && m.h === h ? m : null; };
-const putOrMaster = (id, masterId, w, h, until, build, extra = {}) => { const m = masterId && masterAt(masterId, w, h); if (m) { if (!hasAsset(id)) placeMaster({ id, w, h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile }, assetOf(masterId)); return id; } return put(id, w, h, until, build, extra); };
+const masterAt = (masterId, w, h) => { const m = assetEntry(masterId); return m && m.status !== "empty" && m.file && m.w === w && m.h === h ? m : null; };   // a placed master of any record status (signed, new, held, placeholder), not a built stand-in
+const putOrMaster = (id, masterId, w, h, until, build, extra = {}) => { const m = masterId && masterAt(masterId, w, h); if (m) { if (!hasAsset(id)) placeMaster({ id, w, h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(masterId)); return id; } return put(id, w, h, until, build, extra); };
 
 // Register what a view asked for. `env`: { podById, frameOf }. Returns nothing; the ids are in the requests.
 export function registerPictures(reqs, env) {
@@ -103,24 +87,20 @@ export function registerPictures(reqs, env) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
       case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${podClass(r.size)}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${podClass(r.size)}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
-      case "well": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, wellArt(r.current, 30))); break;
-      case "ring": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31))); break;
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
-      case "placepanel": put(r.id, r.size[0], r.size[1], "the collection's place master", () => placePanelPB(r.size[0], r.size[1])); break;
-      case "cring": put(r.id, r.size, r.size, "the pod list master", () => collectionRingPB(r.read, r.size)); break;
-      case "kinring": put(r.id, r.size, r.size, "the pod list master", () => kinRingPB(r.size)); break;
+      case "placepanel": putOrMaster(r.id, `panel-place-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the collection's place master", () => placePanelPB(r.size[0], r.size[1], r.radius)); break;
+      case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size)); break;
       case "seal": put(r.id, r.size, r.size, "the chapter seals' master", () => sealPB(r.size)); break;
-      case "grow": put(r.id, 16, 16, "the can-grow mark's master", growPB); break;
-      case "waiting": put(r.id, 24, 24, "the waiting mark's master", waitingPB); break;
+      case "grow": putOrMaster(r.id, "mark-can-grow-16", 16, 16, "the can-grow mark's master", growPB); break;
+      case "waiting": putOrMaster(r.id, "mark-waiting-24", 24, 24, "the waiting mark's master", waitingPB); break;
       case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha, r.size), { policy: "painted" }); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
         const m = assetEntry(r.master), e = assetEntry(r.id);
-        if (m && m.status === "master" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile }, assetOf(r.master)); }
+        if (m && m.file && m.status !== "empty" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(r.master)); }
         else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], policy: "painted", until: r.until });
         break;
       }
       case "hatch": putOrMaster(r.id, `ring-hatch-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0])); break;
-      case "cradle": put(r.id, 224, 40, "the pod renderer's masters", cradlePB); break;
       case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1])); break;
       case "emblem": putOrMaster(r.id, `rail-emblem-${r.chapter}-${r.state || "unread"}-24x24`, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
       case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB); break;

@@ -40,7 +40,7 @@ test("the focus ring on a tab is the box (x - 4, 42, w + 24, 42), 2 px, square a
 });
 
 test("a rail of six builds from the spec: nodes at the tab positions, one word per full tab, pips on the 8 px pitch", () => {
-  const ctx = makeCtx(frame, { measure: (t) => t.length * 9, face: () => ({ cap: 12 }) });
+  const ctx = makeCtx(frame, { measure: (t) => t.length * 9, face: () => ({ cap: 12, ascent: 16, descent: -4 }) });
   const tabs = ["Coat", "Face", "Build", "Movement", "Legs & tail", "Voice"].map((word, i) => ({ id: "c" + i, word, state: i === 0 ? "read" : "unread", pips: 3, filled: i === 0 ? 3 : 0, emblem: "emblem:" + i, glint: i === 1 }));
   const out = slantRail(ctx, "rail", { tabs, focused: 1, open: 0, colours: { changed: "amber" }, star: "star:12", ground: "ground" });
   assert.equal(out.tabs.length, 6); assert.equal(out.nodes.filter((n) => n.kind === "text").length, 6);

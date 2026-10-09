@@ -1,8 +1,8 @@
 // The list (Pods' collection, station-layouts.md, Pods §5 A): every rack place, six on a 3 × 2 grid, each a recessed place (a panel
-// picture with its hairline edge), the progress ring (160 across, one arc per chapter), the pod in the ring (the collection class),
+// picture with its hairline edge), the progress ring (the studio's masters in layers: the idle base, the track and the read segments, or the closed band), the pod in the ring (the collection class),
 // the name label on its plate, the find as a place picture, the can-grow mark and the glint star on the ring's band; an empty place is
 // the empty ring. Then the waiting mark under the places. The focus ring is the screen's, on a place's rectangle.
-// props: { places: [{ panel, ring, pod, name, plate, find, grow, glint } | null] (asset ids; a null place is not in the rack), waiting: asset id | null,
+// props: { places: [{ panel, ringLayers, pod, name, plate, plateW, find, grow, glint } | null] (asset ids; a null place is not in the rack), waiting: asset id | null,
 //          colours: { name } }
 // Plate and name: the plate's left edge on the label's x, the name centred on the plate, the plate as wide as the name needs (at least 80, at most 224, in 16s).
 import { layer } from "./specimen.mjs";
@@ -15,14 +15,12 @@ export function list(ctx, id, spec, props) {
   props.places.forEach((w, i) => {
     const r = placeRect(L, i), [x, y] = r, pid = `${id}.p${i}`;
     nodes.push({ id: pid, kind: "sprite", rect: r, asset: w.panel, region: "place" });
-    const layers = (w.ringLayers || []).filter(isFilled), whole = layers.length === (w.ringLayers || []).length && layers.length > 0;   // the studio's ring masters 1:1 on the slice's origin when every layer is placed; the build's own ring until they are
-    if (whole) layers.forEach((a, k) => nodes.push({ id: `${pid}.ring.${k}`, kind: "sprite", rect: [x + L.ring.slice[0], y + L.ring.slice[1], L.ring.slice[2], L.ring.slice[3]], asset: a }));
-    else nodes.push({ id: pid + ".ring", kind: "sprite", rect: [x + L.ring.centre[0] - L.ring.outer, y + L.ring.centre[1] - L.ring.outer, 2 * L.ring.outer, 2 * L.ring.outer], asset: w.ring });
+    (w.ringLayers || []).filter(isFilled).forEach((a, k) => nodes.push({ id: `${pid}.ring.${k}`, kind: "sprite", rect: [x + L.ring.slice[0], y + L.ring.slice[1], L.ring.slice[2], L.ring.slice[3]], asset: a }));   // the studio's ring masters, 1:1 on the slice's origin (empty slots until they are placed)
     if (w.empty) return;
     if (w.pod) nodes.push({ id: pid + ".pod", kind: "sprite", rect: [x + L.pod.centre[0] - L.pod.size[0] / 2, y + L.pod.centre[1] - L.pod.size[1] / 2, L.pod.size[0], L.pod.size[1]], asset: w.pod, region: "place.pod" });
-    const [nx, ny] = [x + L.name.at[0], y + L.name.at[1]], pw = w.plate ? Number(w.plate.match(/:(\d+)x/)[1]) : 0, tw = Math.round(ctx.measure(w.name, L.name.px, L.name.weight));
+    const [nx, ny] = [x + L.name.at[0], y + L.name.at[1]], pw = w.plateW || 0, tw = Math.round(ctx.measure(w.name, L.name.px, L.name.weight));
     nodes.push(...layer(pid + ".plate", [nx, ny, pw, L.name.plate.h], w.plate));
-    nodes.push({ id: pid + ".name", kind: "text", rect: [nx + Math.round(((pw || tw) - tw) / 2), ny + Math.floor((L.name.h - ctx.cap(L.name.px)) / 2), tw, Math.round(L.name.px * 1.25)], text: w.name, px: L.name.px, weight: L.name.weight, colour: Cc.name, align: "left", region: "place.name" });
+    nodes.push({ id: pid + ".name", kind: "text", rect: [nx + Math.round(((pw || tw) - tw) / 2), ny + Math.floor((L.name.h - ctx.cap(L.name.px)) / 2), tw, ctx.line(L.name.px)], text: w.name, px: L.name.px, weight: L.name.weight, colour: Cc.name, align: "left", region: "place.name" });
     if (w.find) nodes.push({ id: pid + ".find", kind: "sprite", rect: [x + L.place.at[0], y + L.place.at[1], L.place.at[2], L.place.at[3]], asset: w.find, region: "place.find" });
     if (w.grow) nodes.push({ id: pid + ".grow", kind: "sprite", rect: [x + L.grow.at[0], y + L.grow.at[1], L.grow.at[2], L.grow.at[3]], asset: w.grow });
     if (w.glint) nodes.push({ id: pid + ".glint", kind: "sprite", rect: [x + L.glint.at[0], y + L.glint.at[1], L.glint.at[2], L.glint.at[3]], asset: w.glint });

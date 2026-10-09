@@ -15,7 +15,7 @@ export async function loadMasters(base) {
     if (sha !== e.sha256) throw new Error(`master ${id}: ${e.file} does not match the index (sha256 ${sha.slice(0, 12)}…)`);
     const bmp = await createImageBitmap(new Blob([bytes], { type: "image/png" }), { premultiplyAlpha: "none", colorSpaceConversion: "none" });
     let cv = null; const make = () => { cv = document.createElement("canvas"); cv.width = bmp.width; cv.height = bmp.height; cv.getContext("2d").drawImage(bmp, 0, 0); return cv; };
-    placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null }, { w: bmp.width, h: bmp.height, canvas: () => cv || make() });
+    placeMaster({ id, w: e.w, h: e.h, file: e.file, hash: e.sha256, signed: e.signed, slice: e.slice ?? null, tile: e.tile ?? null, status: e.status ?? "master" }, { w: bmp.width, h: bmp.height, canvas: () => cv || make() });
   }));
   return { placed: ids.length };
 }

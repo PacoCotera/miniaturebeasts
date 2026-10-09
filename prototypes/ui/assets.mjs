@@ -23,12 +23,12 @@ export function registerAsset({ id, w, h, policy = "stationChrome", status = "pl
 // Place a signed master over its stand-in by id (technical-architecture.md §5.5): the master must be the stand-in's size, 1:1, or it is refused
 // loudly; the entry becomes status `master`, names its file and hash, and builds from the decoded picture. A master placed before its stand-in
 // is registered takes the id first, and a stand-in of another size then throws at registration. `picture` is anything with w, h and canvas().
-export function placeMaster({ id, w, h, file, hash, policy = "painted", signed = null, slice = null, tile = null }, picture) {
+export function placeMaster({ id, w, h, file, hash, policy = "painted", signed = null, slice = null, tile = null, status = "master" }, picture) {
   if (!/\.png$/i.test(file)) throw new Error(`master ${id}: ${file} is not a PNG (PNG only)`);
   if (picture.w !== w || picture.h !== h) throw new Error(`master ${id}: the file is ${picture.w}×${picture.h}, the index says ${w}×${h}`);
   const have = ENTRIES.get(id);
   if (have && (have.w !== w || have.h !== h)) throw new Error(`master ${id} is ${w}×${h}; its stand-in is ${have.w}×${have.h}: a master takes its stand-in's size, never scaled`);
-  ENTRIES.set(id, { id, w, h, policy: have?.policy === "type" ? "type" : policy, status: "master", until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => picture });
+  ENTRIES.set(id, { id, w, h, policy: have?.policy === "type" ? "type" : policy, status, until: null, file, hash, slice: slice ?? have?.slice ?? null, tile: tile ?? have?.tile ?? null, signed, build: () => picture });
   BUILT.delete(id); return ENTRIES.get(id);
 }
 // A slot: a place the design needs a picture where none is signed yet (a mark, a key cap, a face). It is in the manifest as status `empty` at its

@@ -68,10 +68,10 @@ for (const x of Rg.separators.x) expect(eq(px(D, x, 580), rgbOf(C.dot)) && eq(px
   console.log(`face against the canvas renderer outside the type: ${diff} of ${total} pixels differ ${JSON.stringify(firsts)}`);
   expect(diff <= total * 0.001, `the face draws the screen as the canvas renderer does outside the type (${diff} of ${total} differ)`); }
 // where the ink of each region lies, against the JavaScript renderer's (the engines place glyphs by their own rounding: within 3 px)
-const regions = { title: Rg.title.rect, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: Rg.action.rect, back: Rg.back.rect };
+const TX = Rg.action.rect[0] + Rg.action.capSize[0] + Rg.action.capGap, regions = { title: Rg.title.text, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: [TX, Rg.action.rect[1], Rg.action.rect[2] - (TX - Rg.action.rect[0]), Rg.action.rect[3]], back: Rg.back.rect };   // the verb's own region: after the cap
 for (const x of Rg.topRules.x) expect(eq(px(D, x, 20), rgbOf(C.topRule)) && eq(px(D, x - 1, 20), rgbOf(C.chrome)), `a 1 px hairline rule at x ${x} in the top bar`);
 const rows = [];
-const L0 = await face.evaluate(() => window.__st.lineFor()), needNow = L0.need != null ? L0.need : await face.evaluate(() => window.__st.need().text);
+const L0 = await face.evaluate(() => window.__st.lineFor()), needNow = L0.need ?? "";   // Pods says its own notice (the shared need line is empty here)
 const present = { back: !!L0.back, need: !!needNow, subject: !!L0.subject, action: !!L0.ok };   // what the screen's line says: a slot that says something has ink in both renderers; a missing way back is a failure, not a skip
 expect(present.back, "the screen's line has a way back");
 for (const [name, r] of Object.entries(regions)) {
@@ -81,7 +81,7 @@ for (const [name, r] of Object.entries(regions)) {
   const left = a[0] - b[0], right = a[0] + a[2] - (b[0] + b[2]), top = a[1] - b[1], bottom = a[1] + a[3] - (b[1] + b[3]);
   rows.push(`${name.padEnd(10)} face ${a.join(",")}  js ${b.join(",")}  edges ${left}/${right} (x)  ${top}/${bottom} (y)`);
   expect(Math.abs(top) <= 2 && Math.abs(bottom) <= 2, `${name}: the ink sits on the same lines (${top}/${bottom})`);
-  const align = name === "subject" || name === "materials" ? Math.abs((a[0] + a[2] / 2) - Rg[name].centre) : name === "need" || name === "companion" || name === "back" ? Math.abs(a[0] + a[2] - Rg[name].right) : name === "title" ? Math.abs(a[0] - Rg.title.text[0]) : Math.abs(a[0] - (Rg.action.rect[0] + Rg.action.capSize[0] + Rg.action.capGap));   // the title after the room's mark, the verb after the cap's room
+  const align = name === "subject" || name === "materials" ? Math.abs((a[0] + a[2] / 2) - Rg[name].centre) : name === "need" || name === "companion" || name === "back" ? Math.abs(a[0] + a[2] - Rg[name].right) : name === "title" ? Math.abs(a[0] - Rg.title.text[0]) : Math.abs(a[0] - TX);   // the title after the room's mark, the verb after the cap's room
   expect(align <= 3, `${name}: aligned as the spec says (off by ${align.toFixed(1)})`);
 }
 console.log(rows.join("\n"));
@@ -94,17 +94,19 @@ const ringRgb = rgbOf(C.ring), RG = frame.focus.ring, FT = frame.focus.feet;
 const ringCheck = async (what) => {
   const img = await shot(face, `l1-ring-${what}.png`, 200), nodes = await face.evaluate(() => window.__st.faceNodes()), tg = await face.evaluate(() => ({ cur: window.__st.UI.pods.focus.cur, targets: window.__st.targets() }));
   const target = tg.targets.find((x) => x.id === tg.cur), [tx, ty, tw, th] = target.rect, n = nodes.find((q) => q.id === "focus");
-  const kr = tw / 2 + RG.outside, want = what === "feet" ? [tx + Math.round(tw / 2) - Math.round((tw + FT.widen) / 2), ty + th - Math.round(FT.height / 2), tw + FT.widen, FT.height] : what === "circle" ? [tx + tw / 2 - kr, ty + th / 2 - kr, 2 * kr, 2 * kr] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
-  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "feet" ? "box + 16 by 24 under its feet" : what === "circle" ? "kin: the circle of radius " + kr + " round its centre" : "±4 px"}: ${n && n.rect} (want ${want})`);
-  const [x, y, w, h] = want, mask = what === "feet" || what === "circle" ? ringMask(w, h, RG.width, 0, "ellipse") : ringMask(w, h, RG.width, RG.radius); let on = 0, miss = 0, stray = 0;
+  const kr = tw / 2 + RG.outside, PR = pods.regions.collection.ring, want = what === "place" ? [tx + PR.centre[0] - PR.focus.radius, ty + PR.centre[1] - PR.focus.radius, 2 * PR.focus.radius, 2 * PR.focus.radius] : what === "circle" ? [tx + tw / 2 - kr, ty + th / 2 - kr, 2 * kr, 2 * kr] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
+  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "circle" || what === "place" ? "circle round its centre" : "±4 px"}: ${n && n.rect} (want ${want})`);
+  const [x, y, w, h] = want, mask = what === "place" || what === "circle" ? ringMask(w, h, RG.width, 0, "ellipse") : ringMask(w, h, RG.width, RG.radius); let on = 0, miss = 0, stray = 0;
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const c = eq(px(img, x + i, y + j), ringRgb); if (mask[j * w + i]) { on++; if (!c) miss++; } else if (c && (i < RG.width || j < RG.width || i >= w - RG.width || j >= h - RG.width)) stray++; }
   expect(on > 0 && miss === 0 && stray === 0, `${what}: the face drew the ring's ${on} pixels (${RG.width} px wide${what === "round" ? ", radius " + RG.radius : ""}) exactly: ${miss} missing, ${stray} stray`);
 };
-await ringCheck("feet");
+await ringCheck("round");   // the pod is focused: the rounded rectangle round its box, never an ellipse on the dish
 await face.evaluate(() => { const g = window.__st.ST, p = g.tray.find((q) => q.idd), q = JSON.parse(JSON.stringify(p)); q.id = "kin-check"; g.tray.push(q); window.__st.podsGo(p.id, "pod"); });   // a second pod of the species: the pod's kin
 const tg = await face.evaluate(() => window.__st.targets()), well = tg.find((t) => /^kin\.\d+$/.test(t.id)), round = tg.find((t) => t.id === "hatch");
 await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, well.id); await ringCheck("circle");
 await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, round.id); await ringCheck("round");
+await face.evaluate(() => { const s = window.__st; s.podsGo(s.ST.tray[0].id, "place.0", "collection"); }); await ringCheck("place");
+await face.evaluate(() => { const s = window.__st; s.podsGo(s.ST.tray.find((q) => q.idd).id, "pod", "overview"); });
 await face.evaluate(() => { window.__st.UI.pods.focus.cur = "pod"; });
 await shot(face, "l1-pods-frame.png");
 // the verb on the bottom line is in the action's colour (the ✓ cap is a slot until its master lands)
@@ -162,9 +164,28 @@ expect(bx === focusTab[0] - 4 && by === 42 && bw === focusTab[1] + 24 && bh === 
   for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) if (m.mask[j * m.w + i]) { on++; if (!eq(px(T, bx + i, by + j), ringRgbT)) miss++; }
   expect(on > 200 && miss === 0, `the face drew the tab ring's ${on} pixels exactly (${miss} missing)`); }
 for (let i = bx; i < bx + bw; i++) for (const j of [40, 41]) if (eq(px(T, i, j), ringRgbT)) expect(false, "no ring pixel above y 42");
-{ const m = tabRingMask(focusTab[1], { tab: frame.focus.ring.tab, width: frame.focus.ring.width }), cols = Array.from({ length: m.w }, (_, i) => i).filter((i) => m.mask[2 * m.w + i] === 0 && m.mask[m.w + i] && m.mask[i]);   // the top run's columns: rows 42 and 43 in the ring, 44 not (an emblem may stand under it in the same cream)
+{ const m = tabRingMask(focusTab[1], { tab: frame.focus.ring.tab, width: frame.focus.ring.width, tabTop: frame.regions.rail.y }), cols = Array.from({ length: m.w }, (_, i) => i).filter((i) => m.mask[2 * m.w + i] === 0 && m.mask[m.w + i] && m.mask[i]);   // the top run's columns: rows 42 and 43 in the ring, 44 not (an emblem may stand under it in the same cream)
   expect(cols.length > 8 && cols.every((i) => eq(px(T, bx + i, 42), ringRgbT) && eq(px(T, bx + i, 43), ringRgbT)) && cols.some((i) => !eq(px(T, bx + i, 44), ringRgbT)), "the top run is 2 px at y 42"); }
 await shot(face, "l1b-rail-ring-on-tab.png", 50);
+// Every state of Pods against the canvas renderer's, outside the type: the collection, the overview, the chapter page and Compare. Each runs the same setup on a page of each engine.
+const SETUPS = {
+  collection: () => { const s = window.__st; s.podsGo(s.ST.tray[0].id, "place.0", "collection"); },
+  overview: () => { const s = window.__st, p = s.ST.tray.find((q) => q.idd); s.podsGo(p.id, "pod", "overview"); },
+  chapter: () => { const s = window.__st, p = s.ST.tray.find((q) => q.idd); s.skipRead(p.id); s.podsGo(p.id, "rail.0", "chapter"); },
+  compare: () => { const s = window.__st, p = s.ST.tray.find((q) => q.idd), q = JSON.parse(JSON.stringify(p)); q.id = "kin-compare"; s.ST.tray.push(q); s.skipRead(p.id); s.skipRead(q.id); s.podsGo(p.id, "pod", "overview"); s.UI.pods.cmp = { a: p.id, b: q.id, ci: 0 }; },
+};
+for (const [name, setup] of Object.entries(SETUPS)) {
+  const js = await open("dev"); await js.evaluate(setup); await js.waitForTimeout(500); const Rs = await pixels(js); await js.close();
+  const fc = await open("face=lvgl&dev"); await fc.evaluate(setup); await fc.waitForTimeout(500); const Ds = await pixels(fc), nodesS = await fc.evaluate(() => window.__st.faceNodes());
+  expect(await fc.evaluate(() => window.__st.face.refused()) === 0, `${name}: no node refused by the face`);
+  expect(await fc.evaluate(() => window.__st.renderErrors.length) === 0, `${name}: no render threw`);
+  const mode = await fc.evaluate(() => (window.__st.UI.pods.cmp ? "compare" : window.__st.UI.pods.view)); expect(mode === name, `${name}: the screen is in its state (${mode})`);
+  const boxes = nodesS.filter((n) => n.kind === "text").map((n) => [n.rect[0] - 4, n.rect[1] - 8, n.rect[2] + 8, n.rect[3] + 12]);
+  let diff = 0, total = 0; for (let j = 0; j < 600; j++) for (let i = 0; i < 1024; i++) { if (boxes.some((b) => i >= b[0] && i < b[0] + b[2] && j >= b[1] && j < b[1] + b[3])) continue; total++; const a = px(Ds, i, j), b = px(Rs, i, j); if (Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) > 3) diff++; }
+  console.log(`${name.padEnd(10)} face against the canvas renderer outside the type: ${diff} of ${total} pixels differ`);
+  expect(diff <= total * 0.002, `${name}: the face draws the state as the canvas renderer does outside the type (${diff} of ${total} differ)`);
+  await fc.close();
+}
 expect(errors.length === 0, "no page errors: " + errors.join(" | "));
 await browser.close(); server.close();
 if (fails.length) { console.error("frame check failed"); process.exit(1); }

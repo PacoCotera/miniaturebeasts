@@ -323,3 +323,20 @@ test("a mibi keeps the frame version it was born with: a v2-born genome stamps S
   assert.match(S.stampCodeOf({ species: fr.species.id, genome: born3, read: [] }) ?? "", /^S1v3-/);
   assert.equal(stampFrameOf(fr).version, 3, "with no genome the current version stands");
 });
+
+test("p.first: written once per trait at read time, only when the look is new; an older save loads with none and shows no mark", () => {
+  // an older save: a pod with no `first` field at all
+  const old = fixture(); const stOld = S.freshSt("w1", 1, 1000); Object.assign(stOld, old.st ?? {}); delete stOld.schema;
+  const pod = { id: "old-1", sp: 0, g: "meadow", how: "calm", gs: 4242, k: null, idd: 1, read: [] }; stOld.tray = [pod]; S.normalize(stOld);
+  assert.deepEqual(stOld.tray[0].first, [], "the default is an empty list: no mark on an older pod");
+  // a fresh world: the first read of a species shows new looks, so the traits are written once; the same read again changes nothing
+  const st = S.freshSt("w9", 1, 1000); S.normalize(st); st.d = 50; st.e = 5;
+  S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const a = st.tray[0]; S.skipIdentify(st, a);
+  const r = S.read(st, a, "coat", settings); assert.ok(r.ok && r.newLooks.length > 0, "the first pod of a species brings new looks");
+  const firstTraits = [...a.first]; assert.ok(firstTraits.length > 0 && new Set(firstTraits).size === firstTraits.length, "one entry per trait");
+  assert.ok(firstTraits.every((t) => frameOf("S01").chapters.find((c) => c.id === "coat").traits.some((x) => x.id === t)));
+  S.read(st, a, "coat", settings); assert.deepEqual(a.first, firstTraits, "a read chapter read again writes nothing");
+  // a second pod showing the same looks adds none for a trait whose looks the guide already holds
+  S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const b = st.tray[1]; S.skipIdentify(st, b); S.read(st, b, "coat", settings);
+  assert.deepEqual(b.first, [], "the same genome brings nothing new: no mark");
+});

@@ -7,7 +7,7 @@ import { chapterPage } from "../components/chapterPage.mjs";
 import { makeCtx } from "../context.mjs";
 
 const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")), pods = JSON.parse(readFileSync(new URL("../specs/station/pods.json", import.meta.url), "utf8"));
-const ctx = makeCtx(frame, { measure: (t) => t.length * 9, face: () => ({ cap: 12 }) });
+const ctx = makeCtx(frame, { measure: (t) => t.length * 9, face: () => ({ cap: 12, ascent: 16, descent: -4 }) });
 const cells = (n) => Array.from({ length: n }, (_, i) => ({ name: "T" + i, lines: [], frost: true, marks: [] }));
 const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white" };
 

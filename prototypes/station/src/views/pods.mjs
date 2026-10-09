@@ -40,8 +40,8 @@ export function podsView(m, spec, ctx) {
   view.box = view.specimen.pod ? [R.pod.axis - Math.round(view.specimen.pod.size[0] / 2), R.pod.feet - view.specimen.pod.size[1], ...view.specimen.pod.size] : null;
   view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
   if (view.mode === "chapter") {
-    const ch = chapters[ci], rect = pageRect(R.page, Math.min(ch.traits.length, 8));
-    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, m.present || {}, null), pane: slot(req, `page-pane-${rect[2]}x${rect[3]}`, rect, "the page pane master (a nine-slice)") };
+    const ch = chapters[ci], rect = pageRect(R.page, Math.min(ch.traits.length, maxTraits(R.page)));
+    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, m.present || {}, null), pane: R.page.pane };
   } else {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
@@ -57,6 +57,10 @@ export function podsView(m, spec, ctx) {
   view.targets = targetsOf(view, st, spec, ctx, cur);
   return view;
 }
+// The name plate's width: the name and its padding, rounded up to the series' step, between its least and its most.
+const plateWidth = (ctx, N, text) => Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((ctx.measure(text, N.px, N.weight) + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
+// The most traits a page holds: the upper end of its grid table.
+const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
 const pageRect = (page, n) => { const key = Object.keys(page.heightByCount).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); }); return [page.rect[0], page.rect[1], page.rect[2], page.heightByCount[key] ?? page.rect[3]]; };
 
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
@@ -64,7 +68,7 @@ function railOf(m, spec, cur, chapters, req, open, focused) {
   if (!cur.idd || !chapters.length) return null;
   const { st, settings, present = {} } = m;
   return { colours: spec.colours.rail, ground: spec.colours.ground, focused, open, slats: "slats:", star: req({ kind: "star", id: "star:12" }), tabs: chapters.map((c) => {
-    const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, 6), wipe = present.read && present.read.pod === cur.id && present.read.chapter === c.id ? present.read.p : null;
+    const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, maxTraits(spec.regions.chapter.page)), wipe = present.read && present.read.pod === cur.id && present.read.chapter === c.id ? present.read.p : null;
     return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
   }) };
 }
@@ -74,7 +78,7 @@ function specimenOf(m, spec, ctx, cur, R, req, mode) {
   const { st, settings, present = {} } = m, C = spec.colours, fr = cur.idd ? podFrame(cur) : null;
   const sizeClass = shellFrame(st, cur)?.pod?.sizeClass ?? "medium", box = spec.classes.pod[sizeClass], N = R.name;
   const nameText = cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod;
-  const platew = Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((ctx.measure(nameText, N.px, N.weight) + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
+  const platew = plateWidth(ctx, N, nameText);
   const idCut = present.idCut && present.idCut.pod === cur.id ? present.idCut.p : null;
   const sp = shellFrame(st, cur) ? S.speciesOf(cur) : null;
   const out = {
@@ -83,7 +87,7 @@ function specimenOf(m, spec, ctx, cur, R, req, mode) {
       bench: slot(req, `room-bench-stage-${mode}`, spec.regions.bench.rect, "the state's room master"), benchAny: slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master"), shelf: slot(req, "room-shelf", R.shelf.rect, "the shelf master, cut to the spec's size"),
       cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), cradleFront: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer"),
       shadow: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + spec.shadow.widen, spec.shadow.h], "the contact shadow"),
-      plate: slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master"),
+      plate: slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master"), plateW: platew,
     },
     pod: {
       size: box,
@@ -111,19 +115,20 @@ function specimenOf(m, spec, ctx, cur, R, req, mode) {
 function collectionView(view, m, spec, ctx, req) {
   const { st, settings, ui } = m, R = spec.regions.collection, L = R.places, N = R.name, C = spec.colours;
   view.mode = "collection";
-  const rack = Math.min(settings.rack || S.RACK, L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2) }), d = 2 * R.ring.outer;
+  const rack = Math.min(settings.rack || S.RACK, L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2), radius: L.radius });
   const places = [];
+  const RM = R.ring.masters, RS = R.ring.slice, rs = (id) => slot(req, id, [0, 0, RS[2], RS[3]], "the collection ring master"), from = RM.segmentFrom ?? 0;
   for (let i = 0; i < rack; i++) {
-    const q = st.tray[i], empty = req({ kind: "cring", id: `cring:${d}:-`, size: d, read: null }), RS = R.ring.slice, rs = (id) => slot(req, id, [0, 0, RS[2], RS[3]], "the collection ring master");
-    if (!q) { places.push({ empty: true, panel, ring: empty, ringLayers: [rs("ring-collection-idle-176x176")] }); continue; }
-    const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, closed = !!flags && flags.length > 0 && flags.every(Boolean);
-    const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod, platew = Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((ctx.measure(name, N.px, N.weight) + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
+    const q = st.tray[i], idle = rs(RM.idle);
+    if (!q) { places.push({ empty: true, panel, ringLayers: [idle] }); continue; }
+    const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, n = flags ? flags.length : 0, closed = n > 0 && flags.every(Boolean);
+    const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod, platew = plateWidth(ctx, N, name);
     const sp = shellFrame(st, q) ? S.speciesOf(q) : null, size = R.pod.size;
+    const layer = (tpl, k) => rs(tpl.replace("{N}", n).replace("{i}", k));
     places.push({
-      panel, ring: flags ? req({ kind: "cring", id: `cring:${d}:${flags.map(Number).join("")}`, size: d, read: flags }) : empty,
-      ringLayers: !flags || flags.length < 1 || flags.length > 8 ? [rs("ring-collection-idle-176x176")] : closed ? [rs("ring-collection-closed-176x176")] : [rs(`ring-arc-collection-n${flags.length}-track`), ...flags.flatMap((r, i) => (r ? [rs(`ring-arc-collection-n${flags.length}-s${i}`)] : []))],
+      panel, ringLayers: [idle, ...(!n || n < RM.chapters[0] || n > RM.chapters[1] ? [] : closed ? [rs(RM.closed)] : [layer(RM.track), ...flags.flatMap((r, k) => (r ? [layer(RM.segment, k + from)] : []))])],   // the idle base, then the track and the read segments, or the closed band when every chapter is read
       pod: req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }),
-      name, plate: slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master"),
+      name, plate: slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master"), plateW: platew,
       find: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}:${R.place.at[2]}`, place: q.g, size: R.place.at[2] }) : null,
       grow: q.idd && q.read.length && !closed ? req({ kind: "grow", id: "grow:16" }) : null,
       glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : null,
@@ -139,7 +144,7 @@ function collectionView(view, m, spec, ctx, req) {
 
 // One chapter's page: the cells on the grid by the trait count, each a picture rendered at its size, the marks inside it.
 function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key = "page") {
-  const { st, settings } = m, C = spec.colours, read = p.read.includes(ch.id), sealed = !!ch.sealed && !settings.sealedOpen, traits = ch.traits.slice(0, 8), grid = pageGrid(region, traits.length);
+  const { st, settings } = m, C = spec.colours, read = p.read.includes(ch.id), sealed = !!ch.sealed && !settings.sealedOpen, traits = ch.traits.slice(0, maxTraits(region)), grid = pageGrid(region, traits.length);
   const [pw, ph] = grid.picture ?? [0, 0], wipeOf = present.read && present.read.pod === p.id && present.read.chapter === ch.id ? present.read.p : null;
   const cells = traits.map((t) => {
     const cell = { name: t.name, lines: [], marks: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
@@ -161,7 +166,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   for (const c of cells) if (c.wipe != null) frost(pw, ph);
   const unreadFrame = pw ? slot(req, `trait-picture-frame-${pw}x${ph}-unread`, [0, 0, pw, ph], "the unread frame master") : null;
   const sealedFind = sealed && region.sealedFind ? req({ kind: "seal", id: `seal:${region.sealedFind[2]}`, size: region.sealedFind[2] }) : null;
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > 8, frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
 }
 
 function compareView(view, m, spec, ctx, req) {
@@ -171,12 +176,12 @@ function compareView(view, m, spec, ctx, req) {
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
     const page = pageView(m, spec, p, fr, ch, null, region, req, present, ids, key);
-    page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:32x40`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
+    page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
     return page;
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
-  view.rail = { colours: C.rail, ground: C.ground, focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, 6), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
+  view.rail = { colours: C.rail, ground: C.ground, focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.targets = [];
   return view;

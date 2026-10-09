@@ -5,7 +5,7 @@
 // rest are listed as not signed. Re-running is idempotent. `--check` verifies the installed files against the index (size, hash) and exits 1 on a difference.
 //   node prototypes/ui/tools/place-masters.mjs --from art/station-masters/pods [--ids pod-large-identified,room-shelf] [--group pods] [--dry]
 //   node prototypes/ui/tools/place-masters.mjs --check
-import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSync } from "node:fs";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -40,9 +40,9 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   const manifest = JSON.parse(readFileSync(path.join(from, "slices/manifest.json"), "utf8")), readme = readFileSync(path.join(from, "README.md"), "utf8");
   const signed = headings ? signedIds(readme) : new Map(), want = new Map([...signed].filter(([id]) => manifest[id]));
   // --status: the studio's own record (slices/status.json): `signed` slices are placed as signed; `placeholder`, `held` and `new` (cut, not yet signed) ones are placed too, flagged in the index as not final (never shown to the owner as final); `withdrawn` is not placed
-  const flags = new Map();
+  const flags = new Map(), statuses = new Map();
   if (byStatus) { const st = JSON.parse(readFileSync(path.join(from, "slices/status.json"), "utf8"));
-    for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held", "new"].includes(e.status)) { want.set(id, e.signed_in ? `signed, ${e.signed_in}` : e.status); if (e.status !== "signed") flags.set(id, `${e.status === "new" ? "cut, awaiting the art director" : e.status}, not final${e.note ? ": " + e.note : ""}`); } }
+    for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held", "new"].includes(e.status)) { want.set(id, `signed (${by ?? "the studio's record"})`); statuses.set(id, e.status); if (e.status !== "signed") flags.set(id, `${e.status} (${by ?? "the studio's record"}), not final`); } }
   for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, "named with --ids"); }
   const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} };
   const placed = [], skipped = [];
@@ -51,10 +51,11 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
     if (w !== m.size[0] || h !== m.size[1]) throw new Error(`${id}: the file is ${w}×${h}, its manifest says ${m.size.join("×")}`);
     if (sha(buf) !== m.sha256) throw new Error(`${id}: the file does not match its manifest hash`);
     const file = `${group}/${id}.png`; placed.push(id);
-    index.masters[id] = { file, w, h, sha256: m.sha256, signed: flags.get(id) ?? by ?? who, ...(m.nine ? { slice: [m.nine.insets.left, m.nine.insets.top, m.nine.insets.right, m.nine.insets.bottom], tile: m.nine.edgeTile } : {}) };   // a nine-slice master: its insets [l, t, r, b] and the edge tile
+    index.masters[id] = { file, w, h, sha256: m.sha256, signed: flags.get(id) ?? (byStatus ? who : by ?? who), ...(statuses.has(id) && statuses.get(id) !== "signed" ? { status: statuses.get(id) } : {}), ...(m.nine ? { slice: [m.nine.insets.left, m.nine.insets.top, m.nine.insets.right, m.nine.insets.bottom], tile: m.nine.edgeTile } : {}) };   // a nine-slice master: its insets [l, t, r, b] and the edge tile
     if (!dryRun) { mkdirSync(path.join(root, group), { recursive: true }); copyFileSync(src, path.join(root, file)); }
   }
   for (const id of Object.keys(manifest)) if (!want.has(id)) skipped.push(id);
+  if (byStatus) for (const id of Object.keys(index.masters)) if (index.masters[id].file.startsWith(group + "/") && !want.has(id)) { if (!dryRun) rmSync(path.join(root, index.masters[id].file), { force: true }); delete index.masters[id]; }   // what the record no longer places leaves with its file
   index.masters = Object.fromEntries(Object.entries(index.masters).sort(([a], [b]) => a.localeCompare(b)));
   if (!dryRun) { mkdirSync(root, { recursive: true }); writeFileSync(idxFile, JSON.stringify(index, null, 1) + "\n"); }
   return { placed, skipped };

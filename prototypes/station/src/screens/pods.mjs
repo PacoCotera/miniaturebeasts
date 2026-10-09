@@ -5,8 +5,8 @@
 // (views/pods.mjs); each region is drawn by its vocabulary component; the focus follows the spec's graph. This module is
 // the glue: the region-to-component map, the intent table onto the rules in state.mjs (unchanged), and the events the
 // timeline plays (the seal clearing, the wipe) with the input holds they carry.
-import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
-import { clock, motion } from "../gfx.mjs";
+import { G, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
+import { motion } from "../gfx.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
 import { layer } from "../../../ui/components/specimen.mjs";
 import { list, kinHatch, specimen, stampLabel, slantRail, chapterPage, focusRing, circleRing } from "../../../ui/components/frame.mjs";
@@ -141,11 +141,12 @@ function nodes(ctx) {
   out.push(...sharedFrame(ctx));
   return out;
 }
-// The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own. A place, the pod and the hatch wear the rounded rectangle (the art director: the ring follows its target and is never drawn on the dish), a kin its circle.
+// The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own. A place wears the circle round its ring, a kin the circle round its own; the pod and the hatch the rounded rectangle (the art director: the ring follows its target and is never drawn on the dish).
 function ringNodes() {
   const v = last, F = P().focus, t = v.mode === "compare" ? null : v.targets.find((x) => x.id === F.cur);
   if (!t || t.group === "rail") return [];
   const ring = SPECS.frame.focus.ring;
+  if (t.group === "place") { const K = SPECS.pods.regions.collection.ring.focus, c = SPECS.pods.regions.collection.ring.centre; return circleRing("focus", [t.rect[0] + c[0], t.rect[1] + c[1]], K.radius, K.width, K.colour); }   // a place: the circle 4 px outside its ring
   if (t.group === "kin") return circleRing("focus", [t.rect[0] + t.rect[2] / 2, t.rect[1] + t.rect[3] / 2], t.rect[2] / 2 + ring.outside, ring.width, "focus");
   return focusRing("focus", t.rect, SPECS.frame, { shape: "round" });
 }
