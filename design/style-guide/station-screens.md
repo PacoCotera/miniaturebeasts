@@ -351,24 +351,29 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 **Purpose.** Pick two adults of one species, see what their child could be, cross them; see how close a pairing gets to a wish. **Reads first:** the two parents, then the forecast.
 
-- **Living window.** The two parents left and right in rich treatment (about 240×250 each), alive and aware of each other. Between them the child to be, misty: never a promise.
-- **Instrument.** Each parent's genome ring on a plate beneath it. Under the child, one row per trait: four seed pictures, quarters drawn (one spotted, two hiding spots, one plain), never odds as numbers. A pinned wish as a small plate of its looks; traits that can reach it wear its mark. An ineligible pair greys out with the reason.
-- **Composition.** Parents in the outer thirds; child and forecast centred; the wish plate top right.
-- **Lively / quiet.** Lively: the parents. Quiet: forecast, plates.
-- **Light.** Warm key light on the parents from the top left; the forecast on a cool pane.
-- **Palette.** The parents' own colours; seeds pearl with a ghost inside; the wish mark in one accent.
-- **Type.** 3× parents' names; 2× trait words; no digits but the price.
-- **Chrome.** `✓ Cross them · 2 ⚡ 4 ❀ · ← Habitat`; an ineligible pair draws no ✓ cap and says why in the middle.
-- **Motion.** A parent swaps in 300 ms; on Cross the two rings slide together, one track from each, into the child's ring, and its pod glides into the incubation chamber in 600 ms.
+- **Living window.** The two parents left and right as 48×48 portraits at the heads of their columns. Between them the child to be, misty, never a promise, with the kinship word on its pill (*corrected by the UI designer, 2026-10-09, with the splice*: the parents were about 240×250 each).
+- **Instrument: the splice** (*corrected by the UI designer, 2026-10-09, the experts' decision with the owner's leave*: was the parents' genome rings on plates, a forecast row per trait and a wish plate).
+  - **Overview.** Each parent is a column of chapter modules, and each locus leaves it as two wires, its two copies. A gate per locus splices them: a switch passes one copy of two, a blend mixes them. The wires run inward to the child: four seeds for a switch, and for a blend a track with both parents' values and the stretch where the child can land.
+  - **Chapter view.** One chapter's traits, each copy's look printed on its wire. ▲ ▼ walk from the overview through the chapters.
+  - **Kinship and the wish.** Kinship is `amber`: a narrowed range, and seeds where a hidden look can surface. A pinned trait's glint is lit when a child can reach it.
+  - **What is not shown.** "Only what you have read, and an indication of everything missing" (owner, 2026-10-09): an unread chapter draws frost and "read Rook's Shape", and never a hidden copy.
+- **Composition** (*corrected by the UI designer, 2026-10-09*: was parents in the outer thirds, child and forecast centred, the wish plate top right). The parents' heads sit at the outer edges, the child's head between them, and the splice under them, flowing inward. The chapter view hangs the shared chapter rail.
+- **Lively / quiet.** Lively: the parents. Quiet: the splice.
+- **Light.** Warm key light on the parents from the top left; the splice in the instrument's cool, even light on the bench.
+- **Palette.** The parents' own colours in their portraits and pictures. Wires by kind: switch `lilac`, blend `aqua`, settled `bevel`, unread `frostS`, sealed `hairline`. Kinship in `amber`, and the wish in `yellow`, its one accent.
+- **Type.** The parents' names in 20 px medium; trait names, words and the looks on the wires in 16 px; no digits but the price.
+- **Chrome.** `✓ Cross them · 2 ⚡ 4 ❀ · ← Habitat`. The notice names the first missing read ("read Rook's Shape"). An ineligible pair draws no ✓ cap, and its reason takes the notice (*corrected by the UI designer, 2026-10-09*: the reason was said in the middle).
+- **Motion.** A partner swaps in 300 ms and the wires re-route with it. A chapter opens or closes in 200 ms. On Cross, the gates take one copy each, and the child's pod glides into the incubation chamber in 600 ms.
 
 **Pass when**
 - [ ] No odds as numbers, no percentages, no promise of a result.
 - [ ] Each forecast reads as four seeds without colour.
 - [ ] Only adults of one species can be paired; a refusal comes before any spend.
-- [ ] The child's ring visibly takes one track from each parent.
+- [ ] Each switch gate visibly passes one copy from each parent, and each blend gate mixes the two.
+- [ ] Nothing of an unread or sealed chapter is drawn but frost, the words to read it, or its find.
 - [ ] A wish reads as knowledge, never material.
 
-No wireframe yet; the layout follows the brief in the [research loop](../proposals/research-loop.md#8-the-loop-step-by-step-the-brief-screens-are-judged-against).
+Wireframes: [09a-cross-overview.png](station-layouts/09a-cross-overview.png) and [09b-cross-chapter.png](station-layouts/09b-cross-chapter.png); measurements in [station-layouts.md, Cross: the splice](station-layouts.md#cross-the-splice), and numbers in `prototypes/ui/specs/station/cross.json`.
 
 ---
 
