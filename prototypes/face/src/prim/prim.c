@@ -1,4 +1,5 @@
 #include "prim.h"
+#include "ring.h"
 #include "lvgl.h"
 #include "src/lvgl_private.h"
 #include <stdio.h>
@@ -110,6 +111,26 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops) {
       int np = tok[pairs].size, q = pairs + 1; int ax[16], ay[16]; if (np > 16) return -1;
       for (int k = 0; k < np; k++) { if (tok[q].type != JSMN_ARRAY || tok[q].size != 2) return -1; ax[k] = tokint(ops, &tok[q + 1]); ay[k] = tokint(ops, &tok[q + 2]); q += 3; }
       for (int yy = 0; yy < lh; yy++) for (int xx = 0; xx < lw; xx++) for (int k = 0; k < np; k++) if (xx % mod == ax[k] && yy % mod == ay[k]) { put(px, w, h, x + xx, y + yy, rgb); break; }
+    } else if (nl == 4 && strncmp(name, "ring", 4) == 0 && tok[i].size == 9) {   /* ["ring", shape, x, y, w, h, width, radius, colour] */
+      if (!COL(7)) return -1;
+      int ell = tok[j].end - tok[j].start == 7 && strncmp(ops + tok[j].start, "ellipse", 7) == 0, rnd = tok[j].end - tok[j].start == 5 && strncmp(ops + tok[j].start, "round", 5) == 0;
+      if (tok[j].type != JSMN_STRING || (!ell && !rnd)) return -1;
+      int x = A(1), y = A(2), bw = A(3), bh = A(4), width = A(5), radius = A(6);
+      if (g_bad || width > 4096 || radius > 4096 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, width, radius, ell) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
+      free(mask);
+    } else if (nl == 7 && strncmp(name, "tabRing", 7) == 0 && tok[i].size == 13) {   /* ["tabRing", x, y, body, width, slant, outside, top, slantTo, bottom, radius, tabTop, colour] */
+      if (!COL(11)) return -1;
+      int x = A(0), y = A(1); ring_tab_t t = { A(2), A(3), A(4), A(5), A(6), A(7), A(8), A(9), A(10) };
+      if (g_bad) return -1;
+      { const int *q = &t.body; for (int k = 0; k < 9; k++) if (q[k] < -4096 || q[k] > 4096) return -1; }   /* the products stay far inside int64 */
+      uint8_t *mask = (uint8_t *)malloc(1024 * 64); int bw = ring_tab_w(&t), bh = ring_tab_h(&t);
+      if (!mask) return -1;
+      if (bw < 1 || bh < 1 || bw * bh > 1024 * 64 || x < 0 || y < 0 || x + bw > w || y + bh > h || ring_tab_mask(mask, &t) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
+      free(mask);
     } else return -1;
 #undef A
 #undef COL
