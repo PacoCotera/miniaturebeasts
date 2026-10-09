@@ -6,6 +6,7 @@ import { speciesArt, emblemArt, stampArt } from "../art.mjs";
 import { G, UI, msg, goScreen, registerScreen } from "../game.mjs";
 import { stageBg } from "./frame.mjs";
 import * as S from "../state.mjs";
+import * as Lib from "../library.mjs";
 import { frameOf, frameIds, speciesIndex } from "../genome.mjs";
 
 const L = () => UI.lib;
@@ -45,7 +46,7 @@ function drawBook() {
 const ls_col = (seen) => (seen.some(([, ls]) => ls.length) ? C.bark : C.clay);
 function draw() { if (L().f === "book") drawBook(); else drawSpread(); }
 function line() {
-  if (L().f === "book") { const fr = frameOf(L().sp); return { back: "Spread", subject: fr ? fr.species.name + " · " + S.plural(G.st.mibis.filter((m) => S.speciesOf(m) === L().sp).length, "mibi") : "" }; }
+  if (L().f === "book") { const fr = frameOf(L().sp), visit = Lib.visitTarget(G.st, L().sp); return { ok: visit ? "Visit " + visit.name : "", back: "Library", subject: fr ? fr.species.name + " · " + S.plural(G.st.mibis.filter((m) => S.speciesOf(m) === L().sp).length, "mibi") : "" }; }
   const id = pageOf()[L().i], fr = id && frameOf(id);
   if (!fr) return { back: "Home", subject: "an empty frame" };
   if (known(id)) return { ok: "Open", back: "Home", subject: fr.species.name + " · found" };
@@ -54,7 +55,11 @@ function line() {
 }
 function act(k) {
   const l = L();
-  if (l.f === "book") { if (k === "back") l.f = "spread"; return; }
+  if (l.f === "book") {
+    if (k === "back") l.f = "spread";
+    else if (k === "confirm") { const m = Lib.visitTarget(G.st, l.sp); if (m) { UI.hab.id = m.id; UI.hab.f = "stage"; goScreen("habitat"); } }   // Visit: a jump to Habitat; ← there goes Home
+    return;
+  }
   const n = pageOf().length, pages = Math.ceil(frameIds().length / 16), row = (l.i % 8) >> 2, col = l.i % 4, pg = l.i >> 3;
   // ◀ ▶ walk a row across both pages of the spread; past the edge turns the spread
   if (k === "left") { if (l.i === 0 || (pg === 0 && col === 0)) { if (l.page > 0) { l.page--; l.i = 8 + row * 4 + 3; } } else if (col === 0) l.i = row * 4 + 3; else l.i--; }
@@ -65,6 +70,8 @@ function act(k) {
   else if (k === "confirm") { const id = pageOf()[l.i]; if (id && (known(id) || met(id))) { l.sp = id; l.f = "book"; } else msg("Nothing is known of this frame yet"); }
 }
 function enter() { const l = L(); if (l.page == null) { l.page = 0; l.i = 0; } if (l.sp && !known(l.sp) && !met(l.sp)) l.sp = null; }
+// The Library key: the spread (the current frame stays), never spends.
+export function openTop() { enter(); L().f = "spread"; }
 // Open a species' book (a new species at Identify opens its page).
 export function openBook(id) { const l = L(); enter(); const i = frameIds().indexOf(id); if (i >= 0) { l.page = Math.floor(i / 16); l.i = i % 16; } l.sp = id; l.f = "book"; }
 registerScreen("library", { draw, line, act, enter });

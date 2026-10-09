@@ -65,7 +65,7 @@ function identify(p) {
   const r = S.identify(G.st, p, G.settings); if (!r.ok) { if (r.msg) msg(r.msg); return; }
   const ms = ID_MS;   // the seal clears over 2 s, whether or not the species is new
   TL.play({ kind: "seal", target: p.id, ms, hold: true });
-  if (r.newSp) { TL.play({ kind: "ribbon", target: p.id, ms: 6000 + Math.round(ms * 0.7), from: Math.round(ms * 0.7) }); G.openBook?.(r.species); }   // the ribbon says it; no plate
+  if (r.newSp) TL.play({ kind: "ribbon", target: p.id, ms: 6000 + Math.round(ms * 0.7), from: Math.round(ms * 0.7) });   // the ribbon says it; no plate, and the Library stays where it is
   save();
 }
 function read(p, ch) {
@@ -78,8 +78,9 @@ const INTENTS = {
   pod: (q, f, p) => {
     if (!q.idd) return identify(q);
     if (q.read.length) return openCreate(q);
-    const chs = chaptersOf(q), i = chs.findIndex((c) => !q.read.includes(c.id) && !(c.sealed && !G.settings.sealedOpen));   // ✓ Read its chapters: the ring to the first unread tab, no spend
-    if (chs.length) f.set("rail." + (i >= 0 ? i : 0));
+    const chs = chaptersOf(q), i = chs.findIndex((c) => !q.read.includes(c.id) && !(c.sealed && !G.settings.sealedOpen));   // ✓ on an identified, unread pod opens its first unread chapter: the page, no spend
+    if (i >= 0) { p.ci = i; return go("chapter", "rail." + i); }
+    if (chs.length) f.set("rail.0");
   },
   rail: (q, f, p, id) => {
     const ch = chaptersOf(q)[+id.slice(5)]; if (!ch) return;
@@ -111,6 +112,12 @@ function act(k) {
   const q = cur(); if (k !== "confirm" || !q || !F.cur) return;
   const id = F.cur, group = id.split(".")[0];
   INTENTS[group]?.(q, F, p, id);
+}
+
+// The Research key: the collection, the ring on the pod that most needs the player (never spends).
+export function openTop() {
+  const p = P(); p.cmp = null; p.wildArm = 0; const q = S.neediestPod(G.st); if (q) p.cur = q.id;
+  p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? placeOf(q.id) : null);
 }
 
 // --- the scene: each region of the spec drawn by its vocabulary component, the state's own ---

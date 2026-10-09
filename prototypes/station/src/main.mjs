@@ -14,7 +14,10 @@ import { HATCH_MS } from "./screens/incubator.mjs";
 import { stepResidents, clearResidents, hm, frameFor } from "./screens/frame.mjs";
 import { dockKey, openBay } from "./screens/home.mjs";
 import { drawIdle } from "./screens/bench.mjs";
-import { openBook } from "./screens/library.mjs";
+import { openBook, openTop as libraryTop } from "./screens/library.mjs";
+import { openTop as podsTop } from "./screens/pods.mjs";
+import { openTop as habitatTop } from "./screens/habitat.mjs";
+import { roomTop } from "./nav.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { stampArt } from "./art.mjs";
@@ -67,7 +70,7 @@ let errN = 0;
 function frame(t) {
   clock.now = t;
   if (G.ready) {
-    if (FX.hatch && FX.hatch.go && t - FX.hatch.at >= HATCH_MS) { FX.hatch.go = false; UI.hab.id = FX.hatch.id; UI.hab.f = "door"; UI.hab.from = null; goScreen("habitat"); }   // meet the mibi
+    if (FX.hatch && FX.hatch.go && t - FX.hatch.at >= HATCH_MS) { FX.hatch.go = false; UI.hab.id = FX.hatch.id; UI.hab.f = "door"; goScreen("habitat"); }   // meet the mibi
     if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && t > FX.lockUntil) UI.idle = true;   // the vivarium plays alone
     try { render(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
@@ -75,18 +78,28 @@ function frame(t) {
   requestAnimationFrame(frame);
 }
 
+// A room key opens the top of its room from anywhere, even from inside it, and never spends. Leaving Create or Cross by one forgets the unpaid choices (owner, 2026-10-09).
+export function openRoom(k) {
+  UI.create = null; UI.cross = null;
+  if (k === "home") UI.home.f = "room";
+  else if (k === "research") podsTop();
+  else if (k === "library") libraryTop();
+  else if (k === "habitat") habitatTop();
+  goScreen({ home: "home", research: "pods", library: "library", habitat: "habitat" }[k]);
+}
+
 // --- the Station's keys: pad, Home/Research/Library/Habitat, ← and ✓, plus the Caddy's Dock/Lift key ---
 export function act(k) {
   if (!G.ready) return;
   if (FACE) FACE.key(k);
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); }   // a press wakes the screen and still does what it says; a landed painting shows from here
-  if (k === "dock") { dockKey(); return; }
+  const wasIdle = UI.idle;
+  if (UI.idle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); if (k !== "dock") return; }   // the first press on Idle only wakes the screen (a landed painting shows from here); the Caddy's Dock key is a world event, not a Station press: it wakes and docks
+  if (k === "dock") { dockKey(wasIdle); return; }
   if (clock.now < FX.lockUntil || TL.holding()) return;                  // presses during a reveal or an arrival are consumed (the timeline's holds, and the screens not yet moved)
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (UI.report && !arriving() && UI.screen === "home") UI.report = null;
-  const views = { home: "home", research: "pods", library: "library", habitat: "habitat" };
-  if (views[k]) { if (k === "habitat") UI.hab.from = null; goScreen(views[k]); return; }
+  if (roomTop(k)) { openRoom(k); return; }
   screenOf(UI.screen).act(k);
 }
 const stationEl = $("station");
@@ -186,6 +199,6 @@ window.__st = { ready, renderErrors, caddy: { state: caddy.state, status: caddy.
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
-  podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
+  isAdult: (m) => S.isAdult(G.st, m, G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   podsGo: (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") goScreen("pods"); },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };

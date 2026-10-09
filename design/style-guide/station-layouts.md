@@ -388,7 +388,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
   - The page grid is the same as Read, scaled to 408 px wide: two columns of 184 with an 8 px gap, pictures 184×104 for three or four traits; three columns of 120, pictures 120×96, for five or six.
   - *corrected by the UI designer against the build, 2026-10-08:* one trait: one cell (16, 56, 376, 376), picture 376×264; two traits: cells (16, 56, 184, 376) and (208, 56, 184, 376), pictures 184×256. The rows sit at y 56 and 248 on the page, cells 184 tall, so the heading's 40 px pod clears the first row by 8 px (the rows were Read's 48 and 248, and the pod touched the pictures).
   - Traits that differ carry the signed amber lamp `frame-lamp-12-amber` on their name's line, before the name, on both pages (Marks after the name, Compare), so the notice "they differ here" points at something on the page. *Set by the UI designer, 2026-10-09, with the open page*: was the master `compare-mark-differs-12x12` 4 px after the name; *before that, decided after the art director's fourth look:* a master rather than no mark, because with five or six traits a page cannot be scanned for the one difference. Was a 2 px aqua edge on the picture and a bracket at its top centre, both drawn by the build; before that the cream ring.
-  - The bottom line: `← Pods` | "two Loika pods" | "they differ here" when the open chapter holds a difference, "they differ in another chapter" when only another does, "no read trait differs". Never a count.
+  - The bottom line: `← Loika` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Pods`) | "two Loika pods" | "they differ here" when the open chapter holds a difference, "they differ in another chapter" when only another does, "no read trait differs". Never a count.
   - The rail stays.
 
 
@@ -617,13 +617,13 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | The ring moves to the nearest drawn thing that way: residents (feet ellipse), modules (rounded rectangle), rest knob. From the room, the first press picks the nearest |
+| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was the nearest drawn thing that way) |
 | ✓ on the room (no focus) | Does what needs you: `✓ Open the bay · 2 crates`, `✓ Look at the new pod`, `✓ Open the incubator`, `✓ Meet Moss`. With nothing needed there is no ✓ cap |
 | ✓ on a resident | `✓ Look at Bean` opens Habitat on Bean |
 | ✓ on Bay | `✓ Open the bay · 2 crates` when docked with crates; otherwise no ✓ cap, and the subject says why ("closed while the Companion is away") |
 | ✓ on Rack, Incubator or Probe | Opens Pods, the Incubator or the Probe bench |
 | ✓ on the rest knob | `✓ Rest` starts idle; any press wakes |
-| ← | Focus back to the room. On the room, nothing: no message plate, and the bottom line shows no `← where` (*decided by the UI designer, 2026-10-08: was "a message plate says Home is the top view". Both places a plate can take on Home, its bottom edge at y 550 or its top at y 112, are over the living window, which carries no words; and the top bar already names Home. A ← with nowhere to go is not a mistake to explain*) |
+| ← | Nothing, wherever the ring is: Home is the top, so there is no ← cap; the Home key puts the ring back on the room (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "focus back to the room"). On the room, likewise nothing: no message plate, and the bottom line shows no `← where` (*decided by the UI designer, 2026-10-08: was "a message plate says Home is the top view". Both places a plate can take on Home, its bottom edge at y 550 or its top at y 112, are over the living window, which carries no words; and the top bar already names Home. A ← with nowhere to go is not a mistake to explain*) |
 | Any press while the report card shows | Closes the card and does what it does (above): ✓ follows the bottom line, the pad moves the ring, ← only closes it |
 | During arrival | Presses are consumed; focus stays on the room |
 
@@ -678,7 +678,7 @@ Create is where the player shapes a founder from a read pod and sees what it wil
 | **The opened pod** with its origin | Where the founder comes from |
 | **The empty chamber** with the leaves it will take, drawn as hairlines | Where it goes, and how long it will grow, as a picture |
 | **Stamp label** (120) and a **blank code rule** | The stamp fills with the changes; the code prints on the rule at Grow |
-| **Bottom line** | `✓ Grow it · price · ← Pods`; the subject; what stays a surprise |
+| **Bottom line** | `✓ Grow it · price · ← Loika`; the subject; what stays a surprise |
 
 **Cut:**
 
@@ -750,8 +750,8 @@ The rail is centred across the top. The three roll pictures sit in a row under i
 | ▲ ▼ | Roll the focused trait among its three pictures; the founder's part and the stamp's cells redraw in 200 ms; the price updates (+1 ◆ a change) |
 | ▲ ▼ on a doing | No roll; the picture wears the two joined rings and the line says "breed to change" |
 | ▲ ▼ where the pod carries one look | No roll; the line says "one look here"; a message plate on press |
-| ✓ | `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Pods`, checked whole and then paid. Refused before paying when the incubator is busy, a bay is not free, or the shape clashes (no ✓ cap, and the reason on the right) |
-| ← | Back to Pods with nothing spent |
+| ✓ | `✓ Grow it · 2 ⚡ 4 ❀ 1 ◆ · ← Loika`, checked whole and then paid. Refused before paying when the incubator is busy, a bay is not free, or the shape clashes (no ✓ cap, and the reason on the right) |
+| ← | Back to the pod's overview with nothing spent: the way back reads the pod's name, "← Loika" (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "← Pods") |
 
 ### Placeholders on Create
 
@@ -970,7 +970,7 @@ The window fills the left (16 to 624) above the strip, with the resident centred
 | ✓ on Cross (M4) | Opens Cross |
 | ✓ ✓ on Wild | `✓ Return Fig to the wild · +2 ❀`, then the second ✓. Refused, with no ✓ cap and the reason as the subject, for a bonded mibi, a juvenile or the one with you |
 | ✓ on a portrait offer (M6) | `✓ Portray Fig · 1 sitting` |
-| ← | Home (or the Library, if Habitat was opened from a Book) |
+| ← | Home, however Habitat was opened (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "or the Library, if Habitat was opened from a Book"; stack navigation) |
 
 ### Placeholders on Habitat
 
@@ -1169,7 +1169,7 @@ The build stub has ← only; the rest arrives with M5.
 | ✓ on a look plate | `✓ Add to the wish` (with the wish) |
 | ✓ on the wish | `✓ Find a pair` (M4) |
 | ✓ on "more?", the stamp or the tree | Read-only: no ✓ cap |
-| ← | Spread |
+| ← | The spread: the way back reads "← Library" (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "Spread") |
 
 ### Placeholders on the Book
 

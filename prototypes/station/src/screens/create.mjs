@@ -62,7 +62,7 @@ function line() {
   const cost = S.growCost(G.st, cr.choices, G.settings), b = S.growBlock(G.st, p, cr.choices, G.settings, cr.clash), list = reviewTraits(p), fr = podFrame(p);
   const looks = list.map(({ t }) => traitState(fr, t, S.founderGenome(p, cr.choices)).shows).filter(Boolean);
   const mins = S.budMinutes(G.st, S.changedTraits(cr.choices).length, G.settings);
-  return { ok: "Grow it", price: b ? b : (G.st.firstMibi ? "first founder: " : "") + S.priceText(cost.e, cost.d, cost.s), dim: !!b, back: "Pods", subject: S.spName(p) + (looks.length ? " · " + looks.slice(0, 4).join(", ") : ""), need: b ? null : "grows in " + S.plural(mins, "leaf", "leaves") };
+  return { ok: "Grow it", price: b ? b : (G.st.firstMibi ? "first founder: " : "") + S.priceText(cost.e, cost.d, cost.s), dim: !!b, back: S.cap(S.spName(p)), subject: S.spName(p) + (looks.length ? " · " + looks.slice(0, 4).join(", ") : ""), need: b ? null : "grows in " + S.plural(mins, "leaf", "leaves") };
 }
 function act(k) {
   const cr = CR(), p = pod(); if (!p) return; const list = reviewTraits(p);
@@ -73,6 +73,6 @@ function act(k) {
     cr.clash = S.clashTraits(p, cr.choices); }
   else if (k === "confirm") { const r = S.grow(G.st, p, cr.choices, G.settings, Date.now()); if (!r.ok) { msg(r.msg); return; }
     FX.stamp = { at: clock.now, code: r.bud.code }; lockInput(900); UI.create = null; UI.pods.cur = null; save(); goScreen("incubator"); flush().catch(() => {}); msg("Grown · " + codeText(r.bud.code) + " · the pod is in the incubator"); }
-  else if (k === "back") { UI.create = null; goScreen("pods"); }
+  else if (k === "back") { UI.create = null; UI.pods.cur = p.id; UI.pods.view = "overview"; UI.pods.focus.set("pod"); goScreen("pods"); }   // up to the pod's overview, its parent
 }
 registerScreen("create", { draw, line, act });

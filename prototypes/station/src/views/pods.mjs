@@ -185,7 +185,7 @@ function compareView(view, m, spec, ctx, req) {
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
   view.rail = { colours: C.rail, ground: C.ground, focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
-  view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
+  view.line = { back: S.cap(S.spName(A)), subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.bench = [slot(req, "room-bench-stage-compare", spec.regions.bench.rect, "Compare's room master"), slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the room master without a cone"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // Compare's own bench when it is placed, else the bench without a cone: no lit, empty stage beside the pages
   view.targets = [];
   return view;
@@ -215,7 +215,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
   const back = view.mode === "chapter" ? S.cap(S.spName(p)) : "Pods", glintPod = glintOf(p);
   if (f === "pod") {
     if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "⚡"), dim: st.e < cost, back, subject: state(p), need: st.e < cost ? fill(Sg.needMore, { icons: "⚡" }) : null }; }
-    if (!p.read.length) return { ok: chapters.length ? "Read its chapters" : "", back, subject: state(p), need: glintPod };
+    if (!p.read.length) { const first = chapters.find((c) => !p.read.includes(c.id) && !(c.sealed && !settings.sealedOpen)); return { ok: first ? "Open " + railWord(first, spec) : chapters.length ? "Read its chapters" : "", back, subject: state(p), need: glintPod }; }
     const b = S.growBlock(st, p, {}, settings, []); return { ok: "Shape a founder", price: "", dim: !!b, back, subject: state(p), need: blockNeed(b, Sg) ?? glintPod };
   }
   if (f && f.startsWith("rail.")) {

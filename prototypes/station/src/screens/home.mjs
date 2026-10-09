@@ -7,6 +7,7 @@ import { G, FX, UI, SPECS, ARRIVE_MS, msg, lockInput, save, goScreen, registerSc
 import { stageBg, lampPool, drawResidents, stepResidents, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
 import * as T from "../sitting.mjs";
+import { homeMove } from "../nav.mjs";
 import { frameOf } from "../genome.mjs";
 
 const VIV = { x: 14, y: 50, w: 636, h: 500 }, BENCH = { bay: [664, 50, 346, 118], tray: [664, 178, 346, 92], inc: [664, 280, 168, 170], cradle: [842, 280, 168, 170], lamp: [956, 460, 54, 84] };
@@ -116,15 +117,15 @@ function drawHome() {
 function homeLine() {
   const f = UI.home.f, nd = need();
   if (arriving()) return { subject: "the bay opens · one crate at a time", need: "" };
-  if (f === "room") return { ok: nd.act ? nd.label : "", back: "", subject: "the room", need: nd.text };
-  if (f === "lamp") return { ok: "Rest", back: "room", subject: "the lamp · the vivarium plays alone", need: nd.text };
-  if (f.startsWith("r:")) { const m = mibiById(+f.slice(2)); return m ? { ok: "Look at " + m.name, back: "room", subject: m.name + " · " + S.spName(m) + " · " + stageWord(m), need: nd.text } : { back: "room" }; }
-  if (f === "bay") { const n = bayCrates().length; if (docked() && n) return { ok: "Open the bay", price: S.plural(n, "crate"), back: "room", subject: S.plural(n, "sealed crate") };
-    return { back: "room", subject: docked() ? "the bay is empty" : "the bay door · closed while the Companion is away", need: nd.text }; }
-  if (f === "tray") return { ok: "Look at the pods", back: "room", subject: G.st.tray.length ? S.plural(G.st.tray.length, "pod") + " in the rack" : "the rack is empty", need: nd.text };
-  if (f === "inc") return { ok: S.budReady(G.st, G.settings) ? "Open the incubator" : "Look at the incubator", back: "room", subject: G.st.bud ? S.spName(G.st.bud) + " bud · " + (S.budReady(G.st, G.settings) ? "ready" : "growing") : "the incubator is empty", need: nd.text };
-  if (f === "cradle") { const pr = docked() && G.st.probe; return { ok: "Open the Probe bench", back: "room", subject: pr ? "Probe · " + pr.shield + " of " + pr.smax + " plates" : "the Probe is away", need: nd.text }; }
-  return { back: "room" };
+  if (f === "room") return { ok: nd.act ? nd.label : "", subject: "the room", need: nd.text };
+  if (f === "lamp") return { ok: "Rest", subject: "the lamp · the vivarium plays alone", need: nd.text };
+  if (f.startsWith("r:")) { const m = mibiById(+f.slice(2)); return m ? { ok: "Look at " + m.name, subject: m.name + " · " + S.spName(m) + " · " + stageWord(m), need: nd.text } : {}; }
+  if (f === "bay") { const n = bayCrates().length; if (docked() && n) return { ok: "Open the bay", price: S.plural(n, "crate"), subject: S.plural(n, "sealed crate") };
+    return { subject: docked() ? "the bay is empty" : "the bay door · closed while the Companion is away", need: nd.text }; }
+  if (f === "tray") return { ok: "Look at the pods", subject: G.st.tray.length ? S.plural(G.st.tray.length, "pod") + " in the rack" : "the rack is empty", need: nd.text };
+  if (f === "inc") return { ok: S.budReady(G.st, G.settings) ? "Open the incubator" : "Look at the incubator", subject: G.st.bud ? S.spName(G.st.bud) + " bud · " + (S.budReady(G.st, G.settings) ? "ready" : "growing") : "the incubator is empty", need: nd.text };
+  if (f === "cradle") { const pr = docked() && G.st.probe; return { ok: "Open the Probe bench", subject: pr ? "Probe · " + pr.shield + " of " + pr.smax + " plates" : "the Probe is away", need: nd.text }; }
+  return {};
 }
 export function openBay() {
   const r = S.openBay(G.st, G.sv, G.settings, Date.now()); if (!r.ok) return;
@@ -132,9 +133,10 @@ export function openBay() {
   UI.report = { plays: r.plays, at: clock.now + r.plays.length * ARRIVE_MS, mend: FX.mend };
   save();
 }
-export function dockKey() {
+export function dockKey(fromIdle = false) {
   const r = T.dock(G.st, G.sv, G.settings, Date.now());
   if (!r.ok) { msg(r.msg); return; }
+  if (r.docked && fromIdle && UI.screen !== "home") goScreen("home");   // docked while the screen slept: the arrival plays on Home, where it is seen
   if (r.docked) { FX.mend = { ...r.mend, at: clock.now }; FX.crateIn = clock.now; }
   msg(r.msg); save();
 }
@@ -147,8 +149,8 @@ function doNeed(nd) {
 }
 function homeAct(k) {
   const H = UI.home;
-  if (k in DIRS) { const t = homeTargets(); if (H.f === "room") { const c = tgt("room", 480, 280, 64, 40); H.f = navSpatial(t.concat([c]), "room", k); if (H.f === "room") H.f = t[0] ? t[0].id : "room"; } else H.f = navSpatial(t, H.f, k); return; }
-  if (k === "back") { if (H.f !== "room") H.f = "room"; else msg("Home is the top view · the lamp on the bench rests the screen"); return; }
+  if (k in DIRS) { H.f = homeMove(homeTargets(), H.f, k); return; }   // a fixed order (nav.mjs), not the nearest thing
+  if (k === "back") return;   // Home is the top: no ← cap, nothing happens, no plate (the Home key puts the ring back on the room)
   if (k !== "confirm") return;
   const f = H.f;
   if (f === "room") doNeed(need());

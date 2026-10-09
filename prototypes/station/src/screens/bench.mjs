@@ -46,7 +46,9 @@ function act(k) {
   else if (b.f === 1) { G.st.mendFull = !G.st.mendFull; save(); }
   else if (S.tier2Ready(G.st, G.settings)) { if (!b.arm) { b.arm = 1; msg("Tier 2 · " + S.priceText(P2().e, P2().d, 0) + " · ✓ again to install"); } else { b.arm = 0; const r = S.installTier2(G.st, G.settings); if (r.ok) { msg(r.msg); save(); } } }
 }
-registerScreen("bench", { draw, line, act });
+// The bench opens on what has an action: the plates when the Probe is docked and a plate is worn, else the mend switch.
+function enter() { const b = B(), pr = docked() ? G.st.probe : null; b.arm = 0; b.f = pr && pr.shield < pr.smax ? 0 : 1; }
+registerScreen("bench", { draw, line, act, enter });
 
 // ---------- Idle: the vivarium plays alone ----------
 export function drawIdle() {
