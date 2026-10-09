@@ -23,14 +23,14 @@
    "crops": {
     "128x160": {
      "window": [
-      84,
-      21,
-      310,
-      303
+      74,
+      27,
+      320,
+      297
      ],
      "source_px": [
-      226,
-      282
+      246,
+      270
      ],
      "slice": "trait-S09-head-between-small-and-large-128x160",
      "flag": null
@@ -109,16 +109,16 @@
     "128x160": {
      "window": [
       74,
-      164,
+      174,
       202,
-      324
+      314
      ],
      "source_px": [
       128,
-      160
+      140
      ],
      "slice": "trait-S09-beak-between-128x160",
-     "flag": "the part's box is 89x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part's box is 89x85 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged"
     },
     "144x176": {
      "window": [

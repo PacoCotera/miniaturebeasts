@@ -75,6 +75,7 @@ def tail_only(img):
     a[wing] = DEEP; return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
 man = json.load(open("slices/manifest.json")); R = json.load(open(os.path.join(ROOT, "traitpics/rig-regions/trait-regions-S09.json"))); P = R["parts"]
 looks = json.load(open("source/work/looks-S09-type.json"))
+SILL_RECOMPOSE = ("face/head", "face/beak")                                       # the 128x160 crops whose creature ran into the bottom 20 px: composed in the top 140 rows (the Crown and the Tail already clear them)
 union = lambda *bs: [min(b[0] for b in bs), min(b[1] for b in bs), max(b[0] + b[2] for b in bs) - min(b[0] for b in bs), max(b[1] + b[3] for b in bs) - min(b[1] for b in bs)]
 # which box each part trait is cropped from: the rig's box for the trait where it is tight; the single part's box where two traits share one union (told apart, never alike)
 # kind, region, (pad around the region for the window), limit: the allowed rectangle [x0, y0, x1, y1] on the painting with a feather per side (l, t, r, b) in px (everything outside goes to deep)
@@ -118,10 +119,11 @@ n = 0; flagged = []
 for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     ch, tid = key_.split("/"); name = looks[key_]["name"]; look = looks[key_]["look"]; ent = {"chapter": ch, "trait": name, "look": look, "kind": kind, "box": list(rect), "source": why, "crops": {}}
     for (tw, th) in SIZES:
-        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; box, flag = window(prect, tw, th, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else (crown_short(box, th, tw) if (key_ == "face/crown" and (tw, th) == (104, 64)) else crown_img) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
-        im = crop.resize((tw, th), Image.LANCZOS) if (cw, chh) != (tw, th) else crop
+        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; cellh = 140 if ((tw, th) == (128, 160) and key_ in SILL_RECOMPOSE) else th; box, flag = window(prect, tw, cellh, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else (crown_short(box, th, tw) if (key_ == "face/crown" and (tw, th) == (104, 64)) else crown_img) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
+        im = crop.resize((tw, cellh), Image.LANCZOS) if (cw, chh) != (tw, cellh) else crop
+        if cellh != th: cv_ = Image.new("RGB", (tw, th), tuple(int(v) for v in DEEP)); cv_.paste(im, (0, 0)); im = cv_      # pass 57: nothing of the creature in the bottom 20 px (the frame's sill covers them)
         nm = f"trait-S09-{slug(name)}-{slug(look)}-{tw}x{th}"; im.save(f"slices/{nm}.png", optimize=True)
-        man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + ("; body kept at 35 percent alpha fading over about 22 px, no shadow" if key_ == "face/crown" else "") + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}
+        man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window{' into the top ' + str(cellh) + ' rows, the bottom 20 left empty for the frame\'s sill' if cellh != th else ''} ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + ("; body kept at 35 percent alpha fading over about 22 px, no shadow" if key_ == "face/crown" else "") + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}
         ent["crops"][f"{tw}x{th}"] = {"window": list(box), "source_px": [cw, chh], "slice": nm, "flag": flag}; n += 1
         if flag: flagged.append((name, f"{tw}x{th}", rect[2:]))
     doc["traits"][key_] = ent

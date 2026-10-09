@@ -21,16 +21,17 @@
     "128x160": {
      "window": [
       230,
-      265,
+      284,
       470,
-      565
+      546
      ],
      "source_px": [
       240,
-      300
+      262
      ],
      "slice": "trait-S12-colour-marigold-128x160",
-     "flag": null
+     "flag": null,
+     "pass_57": "composed in the top 140 rows"
     },
     "144x176": {
      "window": [
@@ -104,16 +105,17 @@
     "128x160": {
      "window": [
       300,
-      62,
+      83,
       560,
-      388
+      367
      ],
      "source_px": [
       260,
-      326
+      284
      ],
      "slice": "trait-S12-translucency-between-128x160",
-     "flag": null
+     "flag": null,
+     "pass_57": "composed in the top 140 rows"
     },
     "144x176": {
      "window": [
@@ -187,16 +189,17 @@
     "128x160": {
      "window": [
       356,
-      332,
+      342,
       484,
-      492
+      482
      ],
      "source_px": [
       128,
-      160
+      140
      ],
      "slice": "trait-S12-pattern-plain-128x160",
-     "flag": "the part is 100x95 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part is 100x95 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_57": "composed in the top 140 rows"
     },
     "144x176": {
      "window": [

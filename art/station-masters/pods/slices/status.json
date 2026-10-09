@@ -40,64 +40,64 @@
   "note": "signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408"
  },
  "trait-picture-frame-376x264": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-376x264-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-376x264-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x256": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x256-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x256-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x104": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x104-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x104-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-120x96": {
-  "status": "signed",
-  "signed_in": "pass 3",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-120x96-unread": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-120x96-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "plate-message-640x36": {
   "status": "signed",
@@ -1145,9 +1145,9 @@
   "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "trait-picture-frame-112x112": {
-  "status": "signed",
-  "signed_in": "55944fb verdict",
-  "note": "the find picture frame of a sealed chapter"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "page-new-mark-12x12": {
   "status": "withdrawn",
@@ -1530,19 +1530,19 @@
   "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "trait-picture-frame-128x160": {
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "note": "plain, unread and sealed"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-128x160-unread": {
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "note": "plain, unread and sealed"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-128x160-sealed": {
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "note": "plain, unread and sealed"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "room-bench-stage-overview": {
   "status": "signed",
@@ -2167,7 +2167,7 @@
  "trait-S01-markings-plain-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S01-markings-plain-144x176": {
   "status": "new",
@@ -2192,7 +2192,7 @@
  "trait-S01-crown-leaf-crest-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "status": "new",
@@ -2217,7 +2217,7 @@
  "trait-S01-eyes-between-small-and-large-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
   "status": "new",
@@ -2242,7 +2242,7 @@
  "trait-S12-colour-marigold-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S12-colour-marigold-144x176": {
   "status": "new",
@@ -2267,7 +2267,7 @@
  "trait-S12-translucency-between-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S12-translucency-between-144x176": {
   "status": "new",
@@ -2292,7 +2292,7 @@
  "trait-S12-pattern-plain-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S12-pattern-plain-144x176": {
   "status": "new",
@@ -2420,14 +2420,14 @@
   "note": "Compare's bench from the chapter's own wall"
  },
  "compare-mark-differs-12x12": {
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "note": "Compare's differs mark, the A drawing (exactly proposals/differs-a-12x12.png)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 52; withdrawn in pass 57: Compare's difference mark is the signed lamp frame-lamp-12-amber (the UI designer, after the art director's sixth look), so there is nothing to paint"
  },
  "trait-S09-head-between-small-and-large-128x160": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-144x176": {
   "status": "signed",
@@ -2450,9 +2450,9 @@
   "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-beak-between-128x160": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S09-beak-between-144x176": {
   "status": "signed",

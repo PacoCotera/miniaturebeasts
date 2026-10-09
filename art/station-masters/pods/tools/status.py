@@ -5,7 +5,10 @@ m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
-    if re.match(r"rail-tab-fill-", n): sign(n, "signed", "pass 8 (verdict on 55944fb)", "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn")
+    if re.match(r"trait-picture-frame-(128x160|376x264|184x256|184x104|120x96|112x112)(-unread|-sealed)?$", n): sign(n, "new", None, "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict")
+    elif n in ("trait-S09-head-between-small-and-large-128x160", "trait-S09-beak-between-128x160", "trait-S01-crown-leaf-crest-128x160", "trait-S01-eyes-between-small-and-large-128x160", "trait-S01-markings-plain-128x160", "trait-S12-colour-marigold-128x160", "trait-S12-pattern-plain-128x160", "trait-S12-translucency-between-128x160"): sign(n, "new", None, "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict")
+    elif n == "compare-mark-differs-12x12": sign(n, "withdrawn", None, "signed in pass 52; withdrawn in pass 57: Compare's difference mark is the signed lamp frame-lamp-12-amber (the UI designer, after the art director's sixth look), so there is nothing to paint")
+    elif re.match(r"rail-tab-fill-", n): sign(n, "signed", "pass 8 (verdict on 55944fb)", "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn")
     elif re.match(r"rail-tab-", n): sign(n, "withdrawn", None, "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)")
     elif n in ("room-bench-stage", "room-cradle"): sign(n, "signed", "pass 4", "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)" if n == "room-bench-stage" else "")
     elif n in ("room-cradle-front", "room-shelf"): sign(n, "signed", "pass 7b", "re-cut for the new rectangle (shelf 488,368,288,72)" if n == "room-shelf" else "")
@@ -76,7 +79,6 @@ for n in m:
     elif n in ("mark-asleep-24x16", "mark-breed-28x16"): sign(n, "signed", "pass 38 verdict", "")
     elif n == "mark-only-72x8": sign(n, "signed", "pass 41 verdict", "the quiet engraved line")
     elif re.match(r"mark-seed", n): sign(n, "signed", "pass 43 (signed on delivery)", "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35")
-    elif n == "compare-mark-differs-12x12": sign(n, "signed", "pass 52 verdict", "Compare's differs mark, the A drawing (exactly proposals/differs-a-12x12.png)")
     elif re.match(r"mark-(seed|only)", n): sign(n, "new", None, "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict")
     elif n == "ring-kin-56x56": sign(n, "signed", "pass 29 verdict", "the kin ring")
     elif n == "mark-waiting-24": sign(n, "signed", "pass 32 verdict", "the waiting mark: three pod silhouettes")

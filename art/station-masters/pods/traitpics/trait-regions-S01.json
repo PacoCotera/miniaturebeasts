@@ -21,16 +21,17 @@
     "128x160": {
      "window": [
       100,
-      221,
+      242,
       370,
-      559
+      538
      ],
      "source_px": [
       270,
-      338
+      296
      ],
      "slice": "trait-S01-markings-plain-128x160",
-     "flag": null
+     "flag": null,
+     "pass_57": "composed in the top 140 rows"
     },
     "144x176": {
      "window": [
@@ -104,16 +105,17 @@
     "128x160": {
      "window": [
       275,
-      4,
+      17,
       445,
-      216
+      203
      ],
      "source_px": [
       170,
-      212
+      186
      ],
      "slice": "trait-S01-crown-leaf-crest-128x160",
-     "flag": null
+     "flag": null,
+     "pass_57": "composed in the top 140 rows"
     },
     "144x176": {
      "window": [
@@ -187,16 +189,17 @@
     "128x160": {
      "window": [
       364,
-      140,
+      150,
       492,
-      300
+      290
      ],
      "source_px": [
       128,
-      160
+      140
      ],
      "slice": "trait-S01-eyes-between-small-and-large-128x160",
-     "flag": "the part is 85x80 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part is 85x80 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_57": "composed in the top 140 rows"
     },
     "144x176": {
      "window": [

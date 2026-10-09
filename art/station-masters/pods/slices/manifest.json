@@ -150,11 +150,11 @@
   ],
   "rect": null,
   "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "7cb6e2a9cee6b10fd79da5123ab86fad3379a6e86864b615eeb0d934cdb16ede",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (120, 144, 169), no ornament; a 10 px inner shade above it)",
+  "sha256": "f504dc44c5b2cf576dc126b4d347aeaa5a5089457dec7272122e50fbafbbb398",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-376x264-unread": {
   "size": [
@@ -163,11 +163,11 @@
   ],
   "rect": null,
   "src": "frost+frame-thin",
-  "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "6d83e4461a7e0dc25830de55242de68f26cc5091eaaf05955669cb029254bffb",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "made": "frost texture at 0.9 alpha under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (120, 144, 169), no ornament; a 10 px inner shade above it)",
+  "sha256": "3e5843ff118deb528ff8bc3f386ccc5790420d9c2107056ef1080d46c33023d1",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-376x264-sealed": {
   "size": [
@@ -176,11 +176,11 @@
   ],
   "rect": null,
   "src": "slats+frame-thin",
-  "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "acb6caad79807907205a56ff3dfd7579c8004905fd2d081edddad9b8722527e1",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "made": "slats texture tiled by whole slats, under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (120, 144, 169), no ornament; a 10 px inner shade above it)",
+  "sha256": "0e543287be1df5576a141d62c53ce7e3c73afb7b312e184a100fe0f814495648",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x256": {
   "size": [
@@ -189,11 +189,11 @@
   ],
   "rect": null,
   "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "40f766d6c760b4586fa741af53ec98fbba8e8cc63ab4a052c56ff50250e810d1",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (120, 144, 169), no ornament; a 10 px inner shade above it)",
+  "sha256": "1d1a0afadd2123f355b971a97f45ff6202b04b3b68a76797a2599687c91f0fa0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x256-unread": {
   "size": [
@@ -202,11 +202,11 @@
   ],
   "rect": null,
   "src": "frost+frame-thin",
-  "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "4e6d0f8bb45b2bab8e18c7156330f6676f84951c931c974f3657008383e6e7ed",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "made": "frost texture at 0.9 alpha under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (120, 144, 169), no ornament; a 10 px inner shade above it)",
+  "sha256": "45eca4724881ee02aca62d44e43af89d1c7c267028917d3d4a2f99ac1e51d83f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x256-sealed": {
   "size": [
@@ -215,11 +215,11 @@
   ],
   "rect": null,
   "src": "slats+frame-thin",
-  "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "f7995a4989e7e647af0d4d980d387729577765f31416469ce264e790980e6e6b",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "made": "slats texture tiled by whole slats, under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (120, 144, 169), no ornament; a 10 px inner shade above it)",
+  "sha256": "9dd2ee1e110be94a379ed95cefc16cd41abbe67d8362d2d9fa180c75f6d1fb1e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x104": {
   "size": [
@@ -228,11 +228,11 @@
   ],
   "rect": null,
   "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "42fdea10c086987967541245ddf5e004f69edfa1dd1bf350feebb32362cc4208",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (115, 137, 161), no ornament; a 10 px inner shade above it)",
+  "sha256": "b9f60e3433846c5a5f585fcdb95e81a9cc9703a425435647943fa544d55a472e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x104-unread": {
   "size": [
@@ -241,11 +241,11 @@
   ],
   "rect": null,
   "src": "frost+frame-thin",
-  "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "ecf10d9824011d73586ae33c57be934b134e55bf837354a0b8814375994acff2",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "made": "frost texture at 0.9 alpha under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (115, 137, 161), no ornament; a 10 px inner shade above it)",
+  "sha256": "5a118c5fb412c6a498f6bbaccd3b789b7ecf048ec6470693f55f539544c931e0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-184x104-sealed": {
   "size": [
@@ -254,11 +254,11 @@
   ],
   "rect": null,
   "src": "slats+frame-thin",
-  "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "cfe830b107e6560da5ecccd21c5ae6ccf3394dbe4851ada5a4c0201e4f966fc4",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "made": "slats texture tiled by whole slats, under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (115, 137, 161), no ornament; a 10 px inner shade above it)",
+  "sha256": "4516398b3250ab4ee856449e46009ba2fd6462fc12b8c9a0d6d7f42dd839bdbd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-120x96": {
   "size": [
@@ -267,11 +267,11 @@
   ],
   "rect": null,
   "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "2321d66b7152163eac60f23611af8a5debf047b2a2173d67f277bd720d706bd4",
-  "status": "signed",
-  "signed_in": "pass 3",
-  "status_note": ""
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (116, 136, 160), no ornament; a 10 px inner shade above it)",
+  "sha256": "20d2567e162bc503261740b617a7aa58c528134f79afaeab57312215983c5b57",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-120x96-unread": {
   "size": [
@@ -280,11 +280,11 @@
   ],
   "rect": null,
   "src": "frost+frame-thin",
-  "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "eadfe45e3bbc4b64278fa076907d89bdd8328af39d5999970752f115cb4bdaa7",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "made": "frost texture at 0.9 alpha under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (116, 136, 160), no ornament; a 10 px inner shade above it)",
+  "sha256": "415bcde13eb2afacea16e3f0321ee63b245c9cb3835596f9253ecc76191f1eaa",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-120x96-sealed": {
   "size": [
@@ -293,11 +293,11 @@
   ],
   "rect": null,
   "src": "slats+frame-thin",
-  "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "7d64f88e7d022d9f9a69e438ac33cbed3fe62d641c7460c8cd64f9d02ca3d9ad",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": ""
+  "made": "slats texture tiled by whole slats, under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (116, 136, 160), no ornament; a 10 px inner shade above it)",
+  "sha256": "e0fabd052bc2eed2c1e1a42241dff60dc9daca58121aea04f7312e617a69f694",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "plate-message-640x36": {
   "size": [
@@ -3835,11 +3835,11 @@
   ],
   "rect": null,
   "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "dd28fe01ea86d19fd133c143deaa4a0f3d6d02a7597a522820d4154588b7ee31",
-  "status": "signed",
-  "signed_in": "55944fb verdict",
-  "status_note": "the find picture frame of a sealed chapter"
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (117, 138, 162), no ornament; a 10 px inner shade above it)",
+  "sha256": "cd32307e72c6a091abd882fff1edef6cbbba4054883b3f0754b3030686093a9b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "page-new-mark-12x12": {
   "size": [
@@ -5048,11 +5048,11 @@
   ],
   "rect": null,
   "src": "frame-thin",
-  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
-  "sha256": "98e85563bc687f054d4effcfc8361e9176ce2098137dbebc45be241bd171e734",
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "status_note": "plain, unread and sealed"
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (119, 141, 166), no ornament; a 10 px inner shade above it)",
+  "sha256": "eff74201a16e763c8ad7e70cd32fdd6e755ea35145ed86ceff556cc626dde66a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-128x160-unread": {
   "size": [
@@ -5061,11 +5061,11 @@
   ],
   "rect": null,
   "src": "frost+frame-thin",
-  "made": "frost texture at 0.9 alpha under the frame",
-  "sha256": "e9a110e88cdeaaa2a77af32b0b22078838e74d0c27d7dec846ab0faa8b9b51ed",
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "status_note": "plain, unread and sealed"
+  "made": "frost texture at 0.9 alpha under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (119, 141, 166), no ornament; a 10 px inner shade above it)",
+  "sha256": "0574844a98d5b3d9f7d59215be74f44a8ac6a0fe65543937c3fa35f617ba4e86",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "trait-picture-frame-128x160-sealed": {
   "size": [
@@ -5074,11 +5074,11 @@
   ],
   "rect": null,
   "src": "slats+frame-thin",
-  "made": "slats texture tiled by whole slats, under the frame",
-  "sha256": "32adb1e7d3f966d9478b0307eb6b18dd8c3ff5327e82c902dee34e7fcd353637",
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "status_note": "plain, unread and sealed"
+  "made": "slats texture tiled by whole slats, under the frame (pass 57: bottom rail deepened to a 20 px sill: the rails' body colour (60, 77, 92), opaque, flat, a 1 px lit edge (119, 141, 166), no ornament; a 10 px inner shade above it)",
+  "sha256": "236d82a33d06a735c01358312838e75a69003787015741d506ca40c26236b3af",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: the bottom rail deepened to a 20 px sill (opaque, flat, the frame's own material, a 1 px lit edge, no ornament); the seeds, the Only base and the corner marks sit on it; ids and sizes unchanged; awaiting verdict"
  },
  "room-bench-stage-overview": {
   "size": [
@@ -7314,11 +7314,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 270x338 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "8205b1254961b4ed6e636c2ad363b53891bcc249dbf5a8f09ef5f008fc945a2b",
+  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 270x338 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 270x296 window, the bottom 20 left empty for the frame's sill)",
+  "sha256": "10807cd5246f1efb101dfe4e470aafceb4f391105dedede8e9892d00c11c9e8f",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S01-markings-plain-144x176": {
   "size": [
@@ -7379,11 +7379,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 128x160 from a 170x212 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "84df1657f8055e0e7ba540fba1023fd0bb9042053463e00368b323a8b663935d",
+  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 128x160 from a 170x212 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 170x186 window, the bottom 20 left empty for the frame's sill)",
+  "sha256": "1b1ce0808fbfcc2a9c5b89c24ee49ecd23eba0d4039ca0c24ab2cf25fe3d51ed",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "size": [
@@ -7444,11 +7444,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
-  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "bb9c34cdb6f9a493493b35774e0221d5ffcd513fd867f619a3a3bb0033749b6a",
+  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 57: re-composed into the top 140 rows from a 128x140 window, the bottom 20 left empty for the frame's sill)",
+  "sha256": "e59cf0968b5020d18e6bc466cb88bbac20995fd6a695bd40b9846191e7adb039",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
   "size": [
@@ -7509,11 +7509,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 360, 470, 470] of 600x620",
-  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 128x160 from a 240x300 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "fb59c073e2540674fe6343c08c2522cf0932cd7f1a27697e5b4ed211da83ae58",
+  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 128x160 from a 240x300 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 240x262 window, the bottom 20 left empty for the frame's sill)",
+  "sha256": "42a172a6ca7229cd21ef36327c7f5c415162999f8591ad0166df719c2d78fdbf",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S12-colour-marigold-144x176": {
   "size": [
@@ -7574,11 +7574,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [300, 100, 560, 350] of 600x620",
-  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 128x160 from a 260x326 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "1ddf8784c1e39bf7bac89f4ca110a16912631295c1d6a2c691c442c262fc1506",
+  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 128x160 from a 260x326 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 260x284 window, the bottom 20 left empty for the frame's sill)",
+  "sha256": "02b738d6394037c905ad8088d5b2ce55f6eeb2bfa4cf56cb6191879a5e6a5782",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S12-translucency-between-144x176": {
   "size": [
@@ -7639,11 +7639,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [370, 365, 470, 460] of 600x620",
-  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "5974ea530ff69265bbd6ba5c8c20edcb8f7654ee907c0d6261b903a06f54201e",
+  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 57: re-composed into the top 140 rows from a 128x140 window, the bottom 20 left empty for the frame's sill)",
+  "sha256": "05eaf41d3696455d0bd7ad5b742f83119df2820b805b0e516bd5affe23405aca",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S12-pattern-plain-144x176": {
   "size": [
@@ -7984,9 +7984,9 @@
   "src": "typed by hand",
   "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes of 5 px (inside a 7 px keyline), the lower shifted 5 px right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel (pass 52: exactly the pixels of proposals/differs-a-12x12.png; rows 1 to 10 of 12); placed 1:1 after a trait's name on the name line",
   "sha256": "c4d6370de5b4f5d07f4b1467d383f3a36981891d255291286b5d90ed6e8dfdf8",
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "status_note": "Compare's differs mark, the A drawing (exactly proposals/differs-a-12x12.png)"
+  "status": "withdrawn",
+  "signed_in": null,
+  "status_note": "signed in pass 52; withdrawn in pass 57: Compare's difference mark is the signed lamp frame-lamp-12-amber (the UI designer, after the art director's sixth look), so there is nothing to paint"
  },
  "trait-S09-head-between-small-and-large-128x160": {
   "size": [
@@ -7995,11 +7995,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 226x282 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "01a26775e81a447edbeb8a89979bc6e90b8e58b25dd3aa2c9ec5c1ca5e396c1a",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 246x270 window into the top 140 rows, the bottom 20 left empty for the frame's sill (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "6b914a30e54e0745a6cf2fd529b0cec66624c3cf942a66b7012578eb30b2d662",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-144x176": {
   "size": [
@@ -8060,11 +8060,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
-  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "a6a820ccd7800dcec2c40bf238c1b4cf8344cd9d6d4f30dcdcba7126a246d4e8",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x140 window into the top 140 rows, the bottom 20 left empty for the frame's sill (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "feea3dbce3aa0d4308a7123c0375fc6a749e14a7601873929d17e7ad3561d074",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 57: re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them); awaiting verdict"
  },
  "trait-S09-beak-between-144x176": {
   "size": [
