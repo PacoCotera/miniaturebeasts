@@ -169,7 +169,7 @@ Data revised 2026-10-09 13:08 from `lvgl-switch.md` §3 and §2.10 (public
 wording, player words only):
 
 - Station, Next (was empty): "Home, Rest and Idle on the new face"; "The Cross
-  on the new face"; "Create and the Incubator on the new face"; "Habitat and
+  on the new face"; "Create and the Incubator on the new face"; "the vivarium, up close, and
   the Probe bench on the new face", in milestone order.
 - Station, Building: "A new face for every Station screen" now says it starts
   with Pods and the Library (the two milestones under way), not that Pods is

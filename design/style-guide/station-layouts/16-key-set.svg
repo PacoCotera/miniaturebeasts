@@ -69,7 +69,7 @@
 <text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">an adult Untuva</text>
 <rect x="692.5" y="576.5" width="11" height="11" fill="#e8a33d" stroke="#444" stroke-width="1"/>
 <text x="896" y="587" font-size="13" fill="#b7791f" text-anchor="end">a crate waits in the bay</text>
-<rect x="16.5" y="8.5" width="23" height="23" fill="#e8962f" stroke="#444" stroke-width="1"/><path d="M17 9L39 31M39 9L17 31" stroke="#1f2430" stroke-width="1.5"/></svg>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dba53a" stroke="#444" stroke-width="1"/><path d="M17 9L39 31M39 9L17 31" stroke="#1f2430" stroke-width="1.5"/></svg>
 <rect x="334" y="108" width="240" height="28" fill="none" stroke="#6b705f" stroke-width="1.5" stroke-dasharray="6 4"/><path d="M346 122H562" stroke="#6b705f" stroke-width="6" stroke-dasharray="14 6"/>
 <polyline points="454,108 454,78 600,78" fill="none" stroke="#555" stroke-width="1"/>
 <text x="606" y="82" font-size="11" fill="#333">branding, top bezel: the front's only text</text>
@@ -111,7 +111,7 @@
 <path transform="translate(124,750) rotate(180)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
 <path transform="translate(94,720) rotate(270)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
 <rect x="244" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
-<circle cx="280" cy="752" r="30" fill="#e8962f" stroke="#1f2430" stroke-width="1.5"/>
+<circle cx="280" cy="752" r="30" fill="#dba53a" stroke="#1f2430" stroke-width="1.5"/>
 <rect x="340" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
 <circle cx="376" cy="752" r="30" fill="#63a046" stroke="#1f2430" stroke-width="1.5"/>
 <rect x="436" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
@@ -127,9 +127,9 @@
 <circle cx="804" cy="720" r="34" fill="#f0661a" stroke="#1f2430" stroke-width="1.5"/>
 <path d="M791 721L800 730L818 710" fill="none" stroke="#fff8ef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <text x="912" y="96" font-size="14" fill="#222" font-weight="700">What each key opens, and where the ring lands</text>
-<circle cx="924" cy="130" r="11" fill="#e8962f" stroke="#1f2430" stroke-width="1"/>
+<circle cx="924" cy="130" r="11" fill="#dba53a" stroke="#1f2430" stroke-width="1"/>
 <text x="944" y="135" font-size="13" fill="#222" font-weight="700">Home</text>
-<text x="1416" y="135" font-size="10" fill="#777" text-anchor="end">#e8962f</text>
+<text x="1416" y="135" font-size="10" fill="#777" text-anchor="end">#dba53a</text>
 <text x="944" y="156" font-size="11" fill="#333">Opens Home, the ring on the room (what needs you).</text>
 <text x="944" y="171" font-size="11" fill="#333">On Home: the ring back to the room.</text>
 <text x="944" y="186" font-size="11" fill="#333">Its icon marks the titles Home and Cargo.</text>

@@ -89,12 +89,12 @@ lengths on the real display.
 
 - **Station:**
   - a direction pad on the left;
-  - Home, Research, Library and Habitat keys in the middle, which switch views
+  - Home, Research, Library and Vivarium keys in the middle, which switch views
     without spending or stopping anything;
   - Back and Confirm on the right.
 
   There is no knob. Parts of the v1 code still use an older Station set
-  (Overview, Explore, Research, Incubator, Habitat). The Station's key may be
+  (Overview, Explore, Research, Incubator, Vivarium). The Station's key may be
   engraved ← to match the Companion (**Proposal**).
 - **Caddy:** Previous, OK and Next beside the summary; Print beside the paper slot;
   a recessed Feed below Print. Print opens a preview first.

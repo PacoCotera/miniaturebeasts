@@ -112,7 +112,7 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 **Decided 2026-10-08 (vivariums).** A player keeps **as many mibis as the vivarium holds**; **the number of vivariums is the gate**, not bays bought one shelf at a time. *The shelf upgrades above are superseded as the long-term gate* and stand only as the testing stand-in until a second vivarium is designed. Later direction: vivariums as **living, self-stabilising ecosystems** where mibis breed, grow and die.
 
-**Return to the wild** (a mibi, from Habitat, two presses) gives back:
+**Return to the wild** (a mibi, from the vivarium, up close, two presses) gives back:
 - **+2 Essence**, half the body: a founder returned the day it is grown loses 2 Essence and 2 Energy net.
 - **A field-guide note** on its species page: name, ring, where and when it was released; its lineage stays as a leaf that ends.
 - **A place that remembers it.** It goes to the cell it came from (a founder's pod's place; a child, its mother's) and lives there as a wild individual with its name: met on a later walk it comes to the Probe curious, and it can shed one pod of its own, a world turn later, under the arrival guard. That pod carries its real copies, so a shaped look returned to the wild can be found there again; knowing still grants nothing.

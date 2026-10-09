@@ -2,7 +2,7 @@
 
 **Decided 2026-10-07:** the seven decisions in §8 were taken as recommended, with three changes folded in below: no forced return (the sealed bay, §2), the genome fingerprint (§1), and incubation minutes by species and genome (§1). **Decided 2026-10-07 (research loop):** the [research loop](research-loop.md) was approved in full and is folded in: research is read in chapters and traits, the genome ring is the fingerprint, and a minimal cross and wishes are in the first build; its worked numbers stay there. Everything else is **Proposal**; **Decided** marks owner decisions. Screen detail is for UX to work out next; the sketches below are layouts, not finished art.
 
-**Decided:** the Station is a two-thumb handheld (pad left; Home, Research, Library and Habitat keys in the middle; ← and Confirm right), 1024×600, always on at home, showing the collection and a vivarium. Research is discovery, not a lesson: intensely visual for children, with no locus checklist and no drowning in near-identical samples. One pod makes one founder; identifying the species allows an unedited founder; changes only at researched, permitted traits, with variants that pod carries. Creation commits one individual, and opening shows that same one. Companion and Station mechanics must be separated. The kit plays standalone; the cloud is a later, optional layer. The Companion may be away with no connection to the Caddy or Station: cargo stays in its hold until it is docked, and the design should make taking it out worthwhile.
+The Station is a two-thumb handheld (pad left; Home, Research, Library and Vivarium keys in the middle; ← and Confirm right), 1024×600, always on at home, showing the collection and a vivarium. Research is discovery, not a lesson: intensely visual for children, with no locus checklist and no drowning in near-identical samples. One pod makes one founder; identifying the species allows an unedited founder; changes only at researched, permitted traits, with variants that pod carries. Creation commits one individual, and opening shows that same one. Companion and Station mechanics must be separated. The kit plays standalone; the cloud is a later, optional layer. The Companion may be away with no connection to the Caddy or Station: cargo stays in its hold until it is docked, and the design should make taking it out worthwhile.
 
 **Today** the Station is a stand-in page on the Companion: after Send home it runs a plan by itself (mend, identify, read "studies" that are habit notes, hatch one pod of a species not yet raised), then Done. The player watches and chooses nothing. The v1 research study showed a sample as letters (`Pp`), text and a stock line; the terminal references were dense control panels. Both decorate a process instead of being the thing played with.
 
@@ -31,7 +31,7 @@ The always-on view. Two thirds of the width is the vivarium: a lit glass terrari
  '------------------------------------------------------------------------'
 ```
 
-The pad walks focus across residents and bench objects; ✓ opens the focused one (a resident in Habitat, a pod in Research, the Probe's bench). The middle of the bottom line names the one thing that most needs the player, so a glance answers "what now?".
+The pad walks focus across residents and bench objects; ✓ opens the focused one (a resident in the vivarium, up close, a pod in Research, the Probe's bench). The middle of the bottom line names the one thing that most needs the player, so a glance answers "what now?".
 
 ### Cargo arrived (plays on Home)
 
@@ -73,8 +73,8 @@ The pod's founder preview in the middle redraws with each read chapter and keeps
 - **Pods:** Identify draws the band and hairline sectors; each read fills its chapter's sector.
 - **Create:** spokes flip with each roll; on commit the ring is stamped on the shell and the code appears, the moment the individual becomes fixed.
 - **Incubator:** unread sectors fill as their chapters clear; the mibi steps out with its ring whole.
-- **Library and Habitat:** every mibi card and lineage entry carries its ring and code; two mibis are told apart at a glance, and a child's ring lines up with its parents'.
-- **Caddy card** (later): the printed ring and code; scanning shows and never grants (**Working rule**).
+- **Library and Vivarium:** every mibi card and lineage entry carries its ring and code; two mibis are told apart at a glance, and a child's ring lines up with its parents'.
+- **Caddy card** (later): the printed ring and code; scanning shows and never grants.
 
 ### Create and Incubate
 
@@ -97,10 +97,10 @@ A shelf of species cards: known species bright, met-but-unidentified ones as sil
 ### Cross and Wish
 
 **Decided:** a minimal same-species cross and wishes are in the first Station build: tinkering is the core ([research loop](research-loop.md) §5).
-- **Cross** (from Habitat, on an adult). Pick two adults of one species; an ineligible pair is refused before anything is spent (**Working rule**). Each trait shows a **forecast** as four seed pictures (one in four spotted, two in four hiding spots): quarters, never odds as numbers. Cost as a founder, 2 Energy + 4 Essence. The child is a new individual with real parents (**Decided**); it incubates like a founder, and its ring takes one copy from each parent at every spoke. It is known only where both parents' copies were the same; elsewhere it shows "one of these" until that chapter is read. **Decided 2026-10-08:** the cross's rules are in [the cross](the-cross.md); "one copy at every spoke" and "known where the parents match" hold for switches only, and blended traits are known only when read.
+- **Cross** (from the vivarium, up close, on an adult). Pick two adults of one species; an ineligible pair is refused before anything is spent. Each trait shows a **forecast** as four seed pictures (one in four spotted, two in four hiding spots): quarters, never odds as numbers. Cost as a founder, 2 Energy + 4 Essence. The child is a new individual with real parents; it incubates like a founder, and its ring takes one copy from each parent at every spoke. It is known only where both parents' copies were the same; elsewhere it shows "one of these" until that chapter is read. the cross's rules are in [the cross](the-cross.md); "one copy at every spoke" and "known where the parents match" hold for switches only, and blended traits are known only when read.
 - **Wish** (free, on a species' Library page). Pin a dream mibi made from looks in the field guide. Pods and mibis that carry pieces of it glint, and the cross forecast shows how close a pairing gets. Knowledge, never material: a wish puts nothing into a pod (**Decided**).
 
-### Habitat (Habitat key): residents
+### The vivarium, up close (Vivarium key): residents
 
 One resident large, the others in a strip below (pad left/right). It shows the mibi, its name, stage, species, ability, its ring, and its chapters as the Library knows them. Actions, all free except a cross:
 - ✓ **Spend time:** a short moment with it (as on the Companion).
@@ -118,27 +118,27 @@ The Probe in its cradle with its Shield bars. The Station always mends to at lea
 
 **Head home seals a consignment.** The menu entry keeps its place and rules (start cell or lit outpost, **Decided**), renamed **Head home** since nothing is sent. It ends the expedition: the Probe folds back, and everything in the hold (pods and materials) is sealed as one **consignment** into the Companion's **sealed bay**, separate from the hold. The hold is empty again, as at every expedition start. A break seals nothing (pods fall where it broke, **Decided**).
 
-**The sealed bay.** It holds **three consignments**, one per expedition, never topped up: each keeps its expedition's identity, so the Station accepts each once (**Working rule**). Finds always go into the hold first; only Head home fills the bay. With the bay full, Head home still ends the expedition but the hold stays open ("Bay full · your finds stay in the hold"): those finds ride along unsealed, at risk on a break and filling pod places, until a dock frees the bay. Nothing ever forbids setting out (**Decided:** no forced return).
+**The sealed bay.** It holds **three consignments**, one per expedition, never topped up: each keeps its expedition's identity, so the Station accepts each once. Finds always go into the hold first; only Head home fills the bay. With the bay full, Head home still ends the expedition but the hold stays open ("Bay full · your finds stay in the hold"): those finds ride along unsealed, at risk on a break and filling pod places, until a dock frees the bay. Nothing ever forbids setting out (no forced return).
 
 **What still pulls toward the dock** (pulls, not walls): the Shield is mended only at an outpost or at home, and a broken Probe only at home; the Companion's battery; waiting pods and new mibis at the Station.
 
 **What the Companion shows.**
 - HUD: a crate icon with a count beside the pod outlines. Sealed amounts never show in the counters, which count only what the hold carries and can spend (**Working rule:** sealed cargo can't be spent).
 - The active mibi screen's bottom line middle: "2 consignments sealed · dock to transfer". Cargo draws the bay as three crates, each with its expedition number and its contents as icons, read-only.
-- Docking: "Transferring 2…", then "The Station has them · 3 pods", and the bay clears only after a matching confirmation (**Working rule**). Docked with the Station unreachable: "Docked · the Station isn't answering · the bay stays sealed".
+- Docking: "Transferring 2…", then "The Station has them · 3 pods", and the bay clears only after a matching confirmation. Docked with the Station unreachable: "Docked · the Station isn't answering · the bay stays sealed".
 
 **The world turns once per Head home**, on the Companion, which owns the map; the dock is a transfer that awards nothing. Three trips out are three turns; the Station catches up at the dock (its clock jumps T5 → T8, and growth by turns applies then). Spam guard: an expedition that explored no cell (no Call in any place) seals nothing and turns nothing ("Nothing explored · the world waits"); an empty hold seals no consignment; new things still arrive away from where the player just was (**Decided**).
 
-**The Station while the Companion is away.** It knows only what it owns and the Caddy's lift time ("Companion away · since 16:05 · with Dot"). It cannot see the map, whether an expedition started, or what is gathered (**Working rule**), and draws none of it: no live counters, no guesses. It keeps living: residents follow their routines, Dot's bed shows "with you", the incubator grows and can finish (opening waits for a press), and a pod that needs something says so. After a minute without a press the chrome fades and the vivarium fills the screen with one status line; the first press only wakes it (**Working rule:** waking never rewards). Nothing is awarded for time passing, and nothing decays.
+**The Station while the Companion is away.** It knows only what it owns and the Caddy's lift time ("Companion away · since 16:05 · with Dot"). It cannot see the map, whether an expedition started, or what is gathered, and draws none of it: no live counters, no guesses. It keeps living: residents follow their routines, Dot's bed shows "with you", the incubator grows and can finish (opening waits for a press), and a pod that needs something says so. After a minute without a press the chrome fades and the vivarium fills the screen with one status line; the first press only wakes it (waking never rewards). Nothing is awarded for time passing, and nothing decays.
 
 ## 3. Reasons to take the Companion out
 
 All rewards for going out, never penalties for staying home, and none timed:
 - **Expeditions only undocked.** Lifting the Companion opens the expedition choice (sealed consignments aboard or not); docked, it shows the mibi with you asleep and "Lift to explore".
 - **The walk.** Once per world turn, undocked, Companion mode offers "✓ Walk with Dot": a short scene of five or so presses in the last place you explored, where the mibi does one thing its species does (digs, sniffs, calms a creature) and you get one creature moment: +1 Data (+2 the first time). Capped at one a turn, so there is nothing to grind and nothing missed.
-- **Skill comes from use.** Each expedition where the partner's ability is actually used gives a skill notch (three in all, shown as marks on its card): a Loika calms from one tile further, a Tuikis digs a second burrow, an Untuva sniffs wider. Learning changes behaviour, never genes (**Working rule**). Docked or at home, skill stays as it is.
-- **Bond is earned out.** Bond (§1 Habitat) is offered after the mibi's first expedition or walk with you.
-- **Memories.** The places and moments it shared go home at the dock and fill its page in Habitat and Library: a keepsake, and the first lineage record.
+- **Skill comes from use.** Each expedition where the partner's ability is actually used gives a skill notch (three in all, shown as marks on its card): a Loika calms from one tile further, a Tuikis digs a second burrow, an Untuva sniffs wider. Learning changes behaviour, never genes. Docked or at home, skill stays as it is.
+- **Bond is earned out.** Bond (§1 the vivarium, up close) is offered after the mibi's first expedition or walk with you.
+- **Memories.** The places and moments it shared go home at the dock and fill its page in the vivarium, up close, and Library: a keepsake, and the first lineage record.
 
 ## 4. Economy
 
@@ -156,7 +156,7 @@ All rewards for going out, never penalties for staying home, and none timed:
 | Probe tier 2 | 12 Energy + 4 Data (**Decided**) |
 | Return a pod to the wild | gives +1 Essence |
 
-**Room.** The tray holds 6 pods and the vivarium 4 residents (plus the one with you) at the start, so pods stay precious and the collection stays small (**Decided:** no multitude of mibis). A full tray turns a pod away without breaking its seal (**Working rule**), and the Cargo preview warns first. **Decided 2026-10-08:** *"4 residents" is superseded:* **six bays** at the start ([research-economy](research-economy.md) §6); a player keeps as many mibis as the vivarium holds, and **the number of vivariums is the gate**; later direction, vivariums as living, self-stabilising ecosystems. The prices in this section are the testing economy; the real one will be dearer.
+**Room.** The tray holds 6 pods and the vivarium 4 residents (plus the one with you) at the start, so pods stay precious and the collection stays small (no multitude of mibis). A full tray turns a pod away without breaking its seal, and the Cargo preview warns first. *"4 residents" is superseded:* **six bays** at the start ([research-economy](research-economy.md) §6); a player keeps as many mibis as the vivarium holds, and **the number of vivariums is the gate**; later direction, vivariums as living, self-stabilising ecosystems. The prices in this section are the testing economy; the real one will be dearer.
 
 **Data income.** These prices assume about **3 Data per expedition**: the field needs more creature moments, or the walk must pay more (**Open**, for the exploration tuning).
 
@@ -200,7 +200,7 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 7. ✓ The review card: spotted; three chapters of surprises; the cost.
 8. ✓ Created. The ring is stamped on the shell, the pod settles into the incubator; the embryo glows; the misty chapters clear one by one as it grows. Home shows it on the bench.
 9. When the incubator glows ready, Home key, pad to the incubator: "✓ Open". ✓ A spotted Tuikis steps into the vivarium: "Fig · Tuikis · juvenile".
-10. Habitat key shows Fig large. "✓ Spend time", and Fig answers.
+10. Vivarium key shows Fig large. "✓ Spend time", and Fig answers.
 
 ## 8. Decisions (Decided 2026-10-07)
 
@@ -215,13 +215,13 @@ The Companion comes back with one consignment sealed ("1 consignment sealed · d
 
 ## 9. Build scope: Station stand-in v2
 
-**Recommendation: its own page,** `prototypes/station/`, at 1024×600 1×, with the depicted Station controls (pad; Home, Research, Library, Habitat; ←; ✓) mapped to keys. Separate pages make the separation real: the Companion page can't spend, and the Station page can't see the map. Both read one save in the browser (same sandbox origin).
+**Recommendation: its own page,** `prototypes/station/`, at 1024×600 1×, with the depicted Station controls (pad; Home, Research, Library, Vivarium; ←; ✓) mapped to keys. Separate pages make the separation real: the Companion page can't spend, and the Station page can't see the map. Both read one save in the browser (same sandbox origin).
 
 - **Cargo and docking:** Head home on the Companion page seals the hold as a consignment in the bay in the shared save (with its expedition id, three at most) and turns the world (with the nothing-explored guard); the Companion page shows the crate count and keeps expeditions open. A **Dock** action on the Station page (a depicted Caddy beside the Station, its own key) docks the Companion: the Station accepts each consignment once, in order, plays one arrival each, mends, and marks it accepted; the Companion page clears the bay when it sees the marks. A reload never accepts twice. **Lift** (the same key) undocks; the Companion page offers expeditions and the walk only while lifted. The Companion page's own Station screen goes.
 - **Genomes:** each pod gets a seeded genome at spawn from its **species frame on the authoring catalogue** (the 114-pair genome), starting with Pip's five open traits (pale, crown, eye rings, drive, efficiency) in Coat, Face, Movement and Stamina; looks shapeable, doings by breeding.
 - **Fingerprint:** the genome ring encoded from the real copies against the species' pinned definition, with the short code; unread parts as hairlines. Print and scan tests come with the encoder.
 - **Art:** pods from the one renderer with species parameters, residents and screens from the art director's masters (**Decided:** engineers do not do art). No code-drawn art reaches the owner.
-- **Screens:** Home with the arrival, Pods with identify, read, compare and return, Create with review, the incubator, Cross and Wish, Library (field guide, where-found, lineage, wishes), Habitat (spend time, take with you, bond, cross), Probe bench, the idle fade.
+- **Screens:** Home with the arrival, Pods with identify, read, compare and return, Create with review, the incubator, Cross and Wish, Library (field guide, where-found, lineage, wishes), the vivarium, up close (spend time, take with you, bond, cross), Probe bench, the idle fade.
 - **Rules:** §4 prices and room; the glint per chapter; the cross forecast; mend standing choice; take-with-you applied at the dock; the walk and skill notches on the Companion page.
 - **Debug strip** under the screen (not part of play): add materials, finish incubation (minutes follow the §1 rule), show genomes, reset.
 - **Out:** everything in §6, and a side-by-side two-device harness (later, if testers need it).

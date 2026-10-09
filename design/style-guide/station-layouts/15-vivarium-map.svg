@@ -33,7 +33,7 @@
 <text x="1038" y="109" font-size="13" fill="#1f2430" font-weight="700">The coloured keys</text>
 <text x="1038" y="134" font-size="11" fill="#333">a key opens one section's whole from anywhere</text>
 <text x="1038" y="149" font-size="11" fill="#333">and never spends</text>
-<text x="1038" y="164" font-size="11" fill="#333">four, one per family: Home (amber), Vivarium</text>
+<text x="1038" y="164" font-size="11" fill="#333">four, one per family: Home (ochre), Vivarium</text>
 <text x="1038" y="179" font-size="11" fill="#333">(green), Research (teal, Pods), Library (violet)</text>
 <text x="1038" y="194" font-size="11" fill="#333">an icon on each cap, no word; no Dock key</text>
 <polyline points="244,158 320,158" fill="none" stroke="#1f2430" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah)"/>
