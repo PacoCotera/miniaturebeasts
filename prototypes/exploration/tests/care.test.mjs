@@ -47,7 +47,7 @@ const CARE = ["mibiById", "listWords", "localDay", "stageAt", "mibiStage", "isAd
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
-  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 6, CARRY_MAX: 3, BOND_TENDS: 3, BOND_OUTINGS: 1,
+  const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 6, CARRY_MAX: 3, BOND_TENDS: 3,
     isDocked: () => env.docked, stPart: () => env.st || null, logEv: t => env.log.push(t) });
   const names = CARE.filter(n => !["JUVENILE_TURNS", "CARRY_MAX"].includes(n));
   const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
@@ -120,25 +120,33 @@ test("Walk: all carried together, +1 outing and +1 care each, once per world tur
 });
 
 // ---- The bond ----
-test("the bond: three Tends and an outing, never walks alone; bondCare = care; checked after Tend and Walk", () => {
+test("the bond: three Tends, no outing needed; the third Tend bonds, bondCare = care then; checked after a Tend only", () => {
   const S = save({ carried: [1, 2], turn: 1 }), t = world(S), [dot, moss] = S.mibis;
   for (let turn = 1; turn <= 6; turn++) { S.turn = turn; t.walkAll(); }
   assert.equal(moss.care, 6); assert.equal(moss.bonded, false, "walks grow but never bond");
   S.turn = 1; dot.care = 0; dot.outings = 0; dot.tends = 0; S.walkTurn = -1;
-  ["2026-10-09", "2026-10-10", "2026-10-11"].forEach((d, i) => { t.setDay(d); const r = t.tend(dot); assert.equal(r.bonded, false, "no outing yet, Tend " + (i + 1)); });
-  assert.equal(dot.tends, 3); assert.equal(dot.bonded, false);
-  const evs = t.walkAll(); assert.equal(evs[0].bonded, true, "the Walk that gives the first outing bonds it");
-  assert.equal(dot.bonded, true); assert.equal(dot.bondCare, 4); assert.equal(dot.grownTurn, null, "a juvenile when it bonds: it waits for care");
+  ["2026-10-09", "2026-10-10", "2026-10-11"].forEach((d, i) => { t.setDay(d); const r = t.tend(dot); assert.equal(r.bonded, i === 2, "Tend " + (i + 1)); });
+  assert.equal(dot.tends, 3); assert.equal(dot.outings, 0); assert.equal(dot.bonded, true, "three Tends and no outing: bonded");
+  assert.equal(dot.bondCare, 3, "bondCare = care at the third Tend"); assert.equal(dot.grownTurn, null, "a juvenile when it bonds: it waits for care");
   assert.equal(t.bondCheck(dot), false, "once");
   assert.ok(t.env.log.includes("Dot is bonded with you"));
   assert.match(source("tend"), /bondCheck\(m\)[^]*growCheck\(m\)/, "bond, then growth");
-  assert.match(source("walkAll"), /q\.care = \(q\.care \|\| 0\) \+ 1; out\.push\(\{ m: q, bonded: bondCheck\(q\), grown: growCheck\(q\) \}\)/);
+  assert.match(source("walkAll"), /q\.care = \(q\.care \|\| 0\) \+ 1; out\.push\(\{ m: q, bonded: false, grown: growCheck\(q\) \}\)/);
+  assert.ok(!/bondCheck\(/.test(source("walkAll")), "a Walk never checks the bond");
+});
+test("the bond: a carried mibi with 3 Tends and 0 outings bonds on the 3rd Tend; a Walk alone never bonds, even with tends >= 3", () => {
+  const S = save({ carried: [1, 2], turn: 1 }), t = world(S), [dot, moss] = S.mibis;
+  ["2026-10-09", "2026-10-10"].forEach(d => { t.setDay(d); assert.equal(t.tend(dot).bonded, false); });
+  t.setDay("2026-10-11"); const r = t.tend(dot); assert.equal(r.bonded, true, "the 3rd Tend bonds"); assert.equal(dot.outings, 0);
+  moss.tends = 3; moss.outings = 0; moss.care = 3;
+  for (let turn = 1; turn <= 4; turn++) { S.turn = turn; const evs = t.walkAll(); for (const e of evs) assert.equal(e.bonded, false, "a Walk never returns bonded: true"); }
+  assert.equal(moss.bonded, false, "Walks alone never bond"); assert.equal(moss.outings, 4); assert.equal(moss.care, 7);
 });
 
 // ---- T6: growth through care (rulings 1 and 3) ----
 test("T6: bonded at turn 1, at home until 6, carried: juvenile after the expedition to 7; the first Walk at 7 grows it; elder at 13", () => {
   const S = save({ carried: [1], turn: 1 }), t = world(S, { day: "2026-10-01" }), dot = S.mibis[0];
-  dot.tends = 2; dot.outings = 1;
+  dot.tends = 2;
   const r = t.tend(dot); assert.equal(r.bonded, true); assert.equal(r.grown, false);
   assert.equal(dot.grownTurn, null); assert.equal(t.mibiStage(dot), "juvenile");
   S.carried = [];   // left at home
@@ -154,7 +162,7 @@ test("T6: bonded at turn 1, at home until 6, carried: juvenile after the expedit
 });
 test("T6: the bonding Tend leaves it juvenile (care == bondCare); the next day's Tend grows it", () => {
   const S = save({ carried: [2], turn: 4 }), t = world(S, { day: "2026-10-09" }), moss = S.mibis[1];
-  moss.born = 3; moss.tends = 2; moss.outings = 1; moss.care = 5;
+  moss.born = 3; moss.tends = 2; moss.care = 5;
   let r = t.tend(moss); assert.deepEqual(plain(r), { bonded: true, grown: false });
   assert.equal(moss.bondCare, 6); assert.equal(moss.care, 6); assert.equal(t.mibiStage(moss), "juvenile");
   t.setDay("2026-10-10"); r = t.tend(moss); assert.deepEqual(plain(r), { bonded: false, grown: true });
@@ -174,12 +182,12 @@ test("T6: a bonded juvenile never grows on the clock: no grownTurn, no clock gro
 });
 test("T6: born 0, bonded at turn 5 gets grownTurn 2 (the constant), elder at 8; a juvenile bonded at turn 1 gets none", () => {
   const S = save({ carried: [1, 2], turn: 5 }), t = world(S), [dot, moss] = S.mibis;
-  dot.tends = 3; dot.outings = 1; assert.equal(t.bondCheck(dot), true);
+  dot.tends = 3; assert.equal(t.bondCheck(dot), true);
   assert.equal(dot.grownTurn, 2); S.turn = 7; assert.equal(t.mibiStage(dot), "adult"); S.turn = 8; assert.equal(t.mibiStage(dot), "elder");
   assert.match(source("bondCheck"), /m\.grownTurn = \(m\.born \|\| 0\) \+ JUVENILE_TURNS/, "the constant, never a developer setting");
   if (!station("stageAt", "mibiStage")) for (const adultTurns of [2, 1, 0]) for (let turn = 5; turn <= 14; turn++) {
     S.turn = turn; assert.equal(ST.mibiStage({ turn }, dot, { adultTurns }), t.mibiStage(dot), "adultTurns " + adultTurns + ", turn " + turn); }
-  S.turn = 1; moss.tends = 3; moss.outings = 1; assert.equal(t.bondCheck(moss), true); assert.equal(moss.grownTurn, null);
+  S.turn = 1; moss.tends = 3; assert.equal(t.bondCheck(moss), true); assert.equal(moss.grownTurn, null);
 });
 
 // ---- The carried set: Take, Leave, the roster ----

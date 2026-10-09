@@ -73,7 +73,7 @@ test("the walk with the mibi writes no trip", () => {
   const S = { exp: null, carried: [1], turn: 2, walkTurn: -1, trips: [{ v: 1, n: 1, partner: 1, places: [], storm: false }], mibis: [m], ui: {} };
   const before = JSON.stringify(S.trips);
   const t = load(["walk", "canWalk", "walkAll", "careLines", "carriedMibis", "mibiById", "bondCheck", "growCheck", "listWords", "partnerMibi", "isAdult", "mibiStage", "stageAt"],
-    { S, isDocked: () => false, isCarried: q => S.carried.includes(q.id), FX: {}, NOW: 0, lockInput: () => {}, fxMsg: () => {}, logEv: () => {}, CARE_TEXT: { walked: () => "" }, BOND_TENDS: 3, BOND_OUTINGS: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6 });
+    { S, isDocked: () => false, isCarried: q => S.carried.includes(q.id), FX: {}, NOW: 0, lockInput: () => {}, fxMsg: () => {}, logEv: () => {}, CARE_TEXT: { walked: () => "" }, BOND_TENDS: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 6 });
   t.walk(m);
   assert.equal(m.outings, 1, "the walk happened");
   assert.equal(JSON.stringify(S.trips), before);

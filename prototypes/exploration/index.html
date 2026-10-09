@@ -832,7 +832,7 @@ function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // ---- Care and the carried set (the care save shape, C0) ----
 // The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
 // Tend, once a Companion day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends
-// (and an outing) earn the bond; a bonded juvenile grows up through care, never on the clock. The Companion owns care,
+// earn the bond; a bonded juvenile grows up through care, never on the clock. The Companion owns care,
 // tends, tendDay, bonded, bondCare, grownTurn, notches and outings; the Station only mirrors them at the dock.
 // The words: one table, the final strings of companion-screens.md "Care and the carried set" (the copywriter's). A function
 // takes the mibi's name (or the mibi, or the names).
@@ -860,7 +860,7 @@ const CARE_ASSETS = [
   { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'empty' },
   { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'empty' },
 ];
-const CARRY_MAX = 3, BOND_TENDS = 3, BOND_OUTINGS = 1;   // the carry cap; the bond: three Tends and an outing (rule, game designer)
+const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 // The Companion's local date, Y-M-D on its own clock (never toISOString: that is UTC).
 function localDay(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
@@ -906,10 +906,10 @@ function tend(m) {
   m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = localDay(); logEv('Tended ' + m.name);
   return { bonded: bondCheck(m), grown: growCheck(m) };
 }
-// The bond, after every Tend and Walk: three Tends and an outing. A mibi already adult by the clock keeps its adulthood:
+// The bond, after a Tend only: three Tends. A mibi already adult by the clock keeps its adulthood:
 // grownTurn = born + JUVENILE_TURNS (the constant, never a developer setting).
 function bondCheck(m) {
-  if (!m || m.bonded || (m.tends || 0) < BOND_TENDS || (m.outings || 0) < BOND_OUTINGS) return false;
+  if (!m || m.bonded || (m.tends || 0) < BOND_TENDS) return false;
   m.bonded = true; m.bondCare = m.care || 0;
   if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS;
   logEv(m.name + ' is bonded with you'); return true;
@@ -2302,10 +2302,10 @@ function endExpedition(reason) {
 }
 // The Walk: once per world turn, undocked, between expeditions, with every mibi with you together.
 const canWalk = () => !S.exp && S.carried.length > 0 && !isDocked() && S.walkTurn !== S.turn;
-// The group Walk, state only: every mibi with you, in carried order, +1 outing and +1 care, then the bond, then growth.
+// The group Walk, state only: every mibi with you, in carried order, +1 outing and +1 care, then growth (a Walk never bonds).
 function walkAll() {
   if (!canWalk()) return null; S.walkTurn = S.turn; const out = [];
-  for (const q of carriedMibis()) { q.outings = (q.outings || 0) + 1; q.care = (q.care || 0) + 1; out.push({ m: q, bonded: bondCheck(q), grown: growCheck(q) }); }
+  for (const q of carriedMibis()) { q.outings = (q.outings || 0) + 1; q.care = (q.care || 0) + 1; out.push({ m: q, bonded: false, grown: growCheck(q) }); }
   logEv('Walked with ' + listWords(out.map(o => o.m.name))); return out;
 }
 // The lines after a Tend or a Walk: the action's own, then bond lines, then grow-up lines, in carried order.
