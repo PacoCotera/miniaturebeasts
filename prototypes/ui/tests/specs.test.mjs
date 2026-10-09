@@ -404,7 +404,16 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   const K = R.cards.places, cards = Array.from({ length: K.max }, (_, i) => [K.first[0] + K.pitch[0] * (i % K.grid[0]), K.first[1] + K.pitch[1] * Math.floor(i / K.grid[0]), K.first[2], K.first[3]]);
   assert.equal(K.grid[0] * K.grid[1], K.max); for (const c of cards) assert.ok(inside(c, R.cards.rect), "a card inside its region"); for (const c of cards.slice(0, 3)) is(c, "pose card");
   for (const [i, c] of cards.entries()) for (const d of cards.slice(i + 1)) assert.ok(gapOk(c, d, 16), "cards 16 px apart");
-  assert.ok(inside([16, 16, ...R.cards.card.picture.size], [0, 0, 128, 128]) && R.cards.card.picture.at[0] * 2 + R.cards.card.picture.size[0] === 128, "the picture centred in its card");
+  assert.ok(R.cards.card.picture.at[0] * 2 + R.cards.card.picture.size[0] === K.first[2] && R.cards.card.picture.at[1] * 2 + R.cards.card.picture.size[1] === K.first[3], "the picture centred in its card");
+  for (const set of [P, C]) is(R.deck.rect, "the deck", set); assert.deepEqual(R.deck.rect, [592, 48, 416, 424], "the deck is Habitat's right column"); assert.ok(inside(R.heading.rect, R.deck.rect) && inside(R.cards.rect, R.deck.rect) && inside(R.chosen.rect, R.deck.rect), "the heading and the cards in the deck");
+  assert.equal(cards[2][0] + cards[2][2], R.deck.rect[0] + R.deck.rect[2] - 16, "the cards end 16 inside the deck"); assert.ok(readFileSync(new URL("../../../design/style-guide/station-layouts/14-sitting-pose.svg", import.meta.url), "utf8").includes(`<rect x="${cards[1][0] - 4}" y="${cards[1][1] - 6}" width="${cards[1][2] + 8}" height="${cards[1][3] + 8}"`), "the ring on card 1, 4 outside and lifted 2");
+  assert.equal(R.gilt.part, "gilt"); assert.deepEqual(Object.keys(R.gilt.slices), ["rest", "armed"]); is(R.gilt.opening, "the gilt's opening", C);
+  assert.deepEqual(R.gilt.opening, [R.gilt.rect[0] + R.gilt.moulding, R.gilt.rect[1] + R.gilt.moulding, R.gilt.rect[2] - 2 * R.gilt.moulding, R.gilt.rect[3] - 2 * R.gilt.moulding]); assert.equal(Object.values(R.gilt.bands).at(-1)[1], R.gilt.moulding);
+  assert.ok(inside(R.resident.rect, R.gilt.opening) && inside(R.nameTag.rect, R.gilt.opening), "the mibi and its tag inside the gilt's opening");
+  assert.deepEqual([R.cards.places.grid, R.chosen.places.grid, R.chosen.places.exactly, R.steps.places.exactly], [[3, 2], [2, 1], 2, 3]);
+  const B = si.events.begin.steps; assert.deepEqual([B[0].kind, B[0].target, B[0].from, B[0].to, B[0].ms, B[0].levels], ["dither", "gilt", R.gilt.slices.armed, null, 300, 16]); assert.deepEqual([B[1].at, B[1].ms, B[1].to, B[1].focus], [300, 180, "habitat", "portrait"]);
+  assert.deepEqual([si.strings.thisPose, si.strings.thisPlace], ["Pick this pose", "Pick this place"]); assert.deepEqual(["pose", "place", "confirm"].map((k) => si.bottomLine[k].capX), [934, 950, 946], "the ← cap at 1008 − word − 20");
+  assert.match(hab.focus.targets.portrait.enabled, /^always/); assert.match(hab.focus.entry.backFromSitting, /^portrait/); assert.match(hab.focus.entry.sittingBegun, /^portrait/);
   const H = R.chosen.places; for (let i = 0; i < 2; i++) is([H.first[0] + H.pitch[0] * i, H.first[1], H.first[2], H.first[3]], "chosen card", C);
   assert.ok(R.heading.rect[1] + R.heading.rect[3] + 16 <= R.cards.rect[1], "the heading 16 px above the cards"); assert.equal(R.heading.px, frame.type.title);
   const S = R.steps.places, steps = Array.from({ length: 3 }, (_, i) => [S.first[0] + S.pitch[0] * i, S.first[1], S.first[2], S.first[3]]);

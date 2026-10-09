@@ -119,6 +119,8 @@
    "homeResident": "resident, the mibi looked at (Home's ✓ Look at)",
    "visit": "resident, the mibi visited (the Book's ✓ Visit, a jump)",
    "backFromCross": "cross: the target that led there",
+   "backFromSitting": "portrait: ← from the sitting's pose step (sitting.json keys.back)",
+   "sittingBegun": "portrait: the sitting's begin lands here, the module in its painting state (sitting.json events.begin)",
    "namerClosed": "resident after naming from the meet; name after Rename",
    "empty": "room"
   },
@@ -142,7 +144,7 @@
    "plate": { "group": "plate", "id": "plate.<i>, i from 0 in ring order", "ring": "round", "box": "regions.plates.places, plate i", "lift": 2, "enabled": "an unread chapter of a bred child that is not sealed" },
    "door": { "group": "top", "ring": "round", "box": "regions.door.rect", "lift": 2, "enabled": "the shown mibi is not the one with you and is not already chosen" },
    "bond": { "group": "top", "ring": "round", "box": "regions.bond.rect", "lift": 2, "enabled": "state.bondOffered" },
-   "portrait": { "group": "top", "ring": "round", "box": "regions.portrait.rect", "lift": 2, "enabled": "a sitting is held and sitting.portraitBlock is empty" },
+   "portrait": { "group": "top", "ring": "round", "box": "regions.portrait.rect", "lift": 2, "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting" },
    "cross": { "group": "low", "ring": "round", "box": "regions.cross.rect", "lift": 2, "enabled": "an adult or an elder with at least one partner (state.crossPartners, elders counted as adults)" },
    "wild": { "group": "low", "ring": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty" },
    "tile": { "group": "tile", "id": "tile.<mibi id>, housed mibis only; free bays are not targets", "ring": "round", "box": "the tile's rectangle (regions.tiles, its form)", "lift": 2, "focusShows": "focusing a tile shows its mibi in the window (events.swap); the resident target is then that mibi" }

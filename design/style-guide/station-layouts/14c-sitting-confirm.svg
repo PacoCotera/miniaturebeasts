@@ -3,10 +3,8 @@
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
-<rect x="16.5" y="48.5" width="559" height="423" fill="#f3d67a" stroke="#d89b14" stroke-width="3"/>
+<rect x="16.5" y="48.5" width="559" height="423" fill="#f1f1ee" stroke="#444" stroke-width="1"/>
 <rect x="24.5" y="56.5" width="543" height="407" fill="#eef3e4" stroke="#bf9157" stroke-width="1"/>
-<text x="30" y="70" font-size="9" fill="#7d5435">the rock field's backdrop</text>
-<text x="570" y="45" font-size="9" fill="#a07010" text-anchor="end">gilt frame, lit (armed) 16,48 560×424, over the bezel</text>
 <rect x="144.5" y="80.5" width="303" height="311" fill="#fdebd6" stroke="#c45f12" stroke-width="1.5"/><text x="150" y="94" font-size="10" fill="#7d3a10">the mibi 304×312 · 144,80 · feet 392, as on Habitat</text>
 <text x="152" y="114" font-size="10" fill="#2b6cb0">Look and confirm: the gilt frame</text>
 <text x="152" y="127" font-size="10" fill="#2b6cb0">round the window. The first ✓ arms</text>
@@ -15,14 +13,26 @@
 <text x="152" y="166" font-size="10" fill="#2b6cb0">Habitat with the ring on Portrait.</text>
 <text x="152" y="179" font-size="10" fill="#2b6cb0">← goes back to the place.</text>
 <rect x="184.5" y="416.5" width="223" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/><rect x="256.5" y="416.5" width="79" height="31" fill="#2a2e38" stroke="#3c4b57"/><text x="296" y="437" font-size="16" fill="#f1ebdf" text-anchor="middle" font-weight="500">Fig</text>
-<rect x="592.5" y="56.5" width="415" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/><text x="596" y="79" font-size="18" fill="#222" font-weight="600">Ready to sit</text>
-<rect x="592.5" y="104.5" width="127" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/><rect x="608.5" y="120.5" width="95" height="95" fill="#fdebd6" stroke="#888" stroke-width="1"/><text x="656" y="172" font-size="9" fill="#555" text-anchor="middle">calm</text>
-<rect x="736.5" y="104.5" width="127" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/><rect x="752.5" y="120.5" width="95" height="95" fill="#e8f0e0" stroke="#888" stroke-width="1"/><text x="800" y="172" font-size="9" fill="#555" text-anchor="middle">rock field</text>
-<text x="592" y="256" font-size="9" fill="#777">the chosen pose and place, not targets</text>
-<text x="600" y="424" font-size="10" fill="#2b6cb0">No ring: the gilt frame is the focus.</text>
-<text x="600" y="437" font-size="10" fill="#2b6cb0">Begin holds 480 ms. The held sitting</text>
-<text x="600" y="450" font-size="10" fill="#2b6cb0">is spent and nothing else; the crate</text>
-<text x="600" y="463" font-size="10" fill="#2b6cb0">waits at the bay until it is ready.</text>
+<g shape-rendering="crispEdges">
+<rect x="17.5" y="49.5" width="557" height="421" fill="none" stroke="#4b3023" stroke-width="3"/>
+<polygon points="19,51 573,51 565,59 27,59 27,461 19,469" fill="#ffd441"/>
+<polygon points="573,51 573,469 19,469 27,461 565,461 565,59" fill="#d89b14"/>
+<rect x="28.5" y="60.5" width="535" height="399" fill="none" stroke="#4b3023" stroke-width="3"/>
+<rect x="31" y="63" width="530" height="394" fill="none" stroke="#e6c98c" stroke-width="2"/>
+</g>
+<rect x="32.5" y="64.5" width="527" height="391" fill="none" stroke="#a07010" stroke-width="1" stroke-dasharray="2 3"/>
+<text x="40" y="78" font-size="9" fill="#7d5435">opening 32,64 528×392: the rock field's backdrop</text>
+<text x="16" y="47" font-size="9" fill="#a07010">gilt frame, lit (armed): 16,48 560×424, moulding 16 (bead 3, leaf 8 lit top-left, lip 3, sight 2); stand-in colours</text>
+<rect x="592.5" y="48.5" width="415" height="423" fill="#dfe3e7" stroke="#444" stroke-width="1"/><line x1="593" y1="49.5" x2="1007" y2="49.5" stroke="#9aa3ab" stroke-width="1"/>
+<text x="1000" y="466" font-size="9" fill="#777" text-anchor="end">deck 592,48 416×424 (panel), 16 inside</text>
+<rect x="608.5" y="64.5" width="383" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/><text x="612" y="87" font-size="18" fill="#222" font-weight="600">Ready to sit</text>
+<rect x="608.5" y="112.5" width="111" height="111" fill="#eceef1" stroke="#444" stroke-width="1"/><rect x="616.5" y="120.5" width="95" height="95" fill="#fdebd6" stroke="#888" stroke-width="1"/><text x="664" y="172" font-size="9" fill="#555" text-anchor="middle">calm</text>
+<rect x="744.5" y="112.5" width="111" height="111" fill="#eceef1" stroke="#444" stroke-width="1"/><rect x="752.5" y="120.5" width="95" height="95" fill="#e8f0e0" stroke="#888" stroke-width="1"/><text x="800" y="172" font-size="9" fill="#555" text-anchor="middle">rock field</text>
+<text x="608" y="240" font-size="9" fill="#777">chosen 608,112 and 744,112, 112×112; not targets</text>
+<text x="608" y="400" font-size="10" fill="#2b6cb0">No ring: the gilt frame is the focus.</text>
+<text x="608" y="413" font-size="10" fill="#2b6cb0">Begin holds 480 ms. The held sitting</text>
+<text x="608" y="426" font-size="10" fill="#2b6cb0">is spent and nothing else; the crate</text>
+<text x="608" y="439" font-size="10" fill="#2b6cb0">fills in Home's Bay until it is ready.</text>
 <rect x="16.5" y="488.5" width="991" height="63" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
 <rect x="32.5" y="496.5" width="311" height="47" fill="#f4f5f7" stroke="#444" stroke-width="1"/><text x="48" y="526" font-size="14" fill="#222">Pose</text>
 <rect x="288.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#888" stroke-width="1"/>
@@ -53,5 +63,5 @@
 <circle cx="24" cy="582" r="8" fill="#f2671b"/><text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
 <text x="36" y="587" font-size="14" fill="#c4500f">Again: portray Fig</text>
 <text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">one sitting each, ever</text>
-<circle cx="962.4" cy="582" r="8" fill="#5d5974"/><text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text><text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Place</text>
+<circle cx="954" cy="582" r="8" fill="#5d5974"/><text x="954" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text><text x="1008" y="587" font-size="14" fill="#6b6880" text-anchor="end" textLength="42" lengthAdjust="spacingAndGlyphs">Place</text>
 </svg>
