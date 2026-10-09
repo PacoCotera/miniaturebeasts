@@ -122,9 +122,9 @@ test("the offer and its refusals: no sitting, a mibi that needs a walk, a pose i
 test("begin: the frame leaves the slot, the crate goes to the bay, the mibi is marked, nothing is spent; a juvenile may sit; a second sitting may begin while a crate waits", () => {
   const st = world(2), m = walked(st, st.mibis[0]); m.born = st.turn;   // a juvenile
   assert.equal(S.mibiStage(st, m), "juvenile"); T.devGrantSitting(st, T0);
-  const r = T.beginSitting(st, m, "calm", "wood", settings, T0); assert.ok(r.ok); assert.equal(st.sitting, null); assert.equal(st.sittingCrates.length, 1);
+  const r = T.beginSitting(st, m, "calm", "wood", settings, T0); assert.ok(r.ok); assert.equal(st.sitting, null); assert.equal(m.portrait.stage, S.mibiStage(st, m, settings), "the stage it sat at"); assert.equal(st.sittingCrates.length, 1);
   assert.deepEqual({ ...st.sittingCrates[0] }, { id: "sit1", mibiId: m.id, pose: "calm", place: "wood", start: T0, source: "dev", painted: false, opened: false });
-  assert.deepEqual({ ...m.portrait }, { state: "painting", pose: "calm", place: "wood", crate: "sit1", start: T0 }); assert.deepEqual(money(st), [0, 0, 0]);
+  assert.deepEqual({ ...m.portrait }, { state: "painting", pose: "calm", place: "wood", crate: "sit1", start: T0, stage: "juvenile" }); assert.deepEqual(money(st), [0, 0, 0]);
   const n = walked(st, st.mibis[1], "shake-dry", "pond"); T.devGrantSitting(st, T0 + 1); assert.ok(T.beginSitting(st, n, "shake-dry", "pond", settings, T0 + 1).ok); assert.equal(st.sittingCrates.length, 2, "two crates wait");
 });
 

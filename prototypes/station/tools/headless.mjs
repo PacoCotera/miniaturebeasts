@@ -89,7 +89,8 @@ export class Player {
     const c = this.step("compare " + a.name + " and " + b.name, () => S.benchCompare(this.st, this.sv, a, b, this.settings, this.now)); return { w, c };
   }
   // The sitting: the held sitting (from the welcome), a ceremony, a wait that overlaps the rest, the crate.
-  sit(m, pose, place) { return this.step("begin the sitting", () => T.beginSitting(this.st, m, pose, place, this.settings, this.now)); }
+  // The sitting is begun at the dock (a mibi that is out with the Companion sits only while it is docked; the sitting goes on after the Companion sets out again).
+  sit(m, pose, place) { return this.step("begin the sitting", () => { const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = T.beginSitting(this.st, m, pose, place, this.settings, this.now, this.sv); this.st.dock.docked = was; return r; }); }
   waitCrate(c) { const ms = Math.max(0, c.start + T.sittingWaitMs(this.settings) - this.now); return this.step("the crate fills (" + Math.round(T.sittingWaitMs(this.settings) / MIN) + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms }); }
   openCrate(c) { const r = this.step("the crate opens", () => T.openSittingCrate(this.st, c.id, this.settings, this.now)); if (r.ok) this.mark("crate"); return r; }
 }
