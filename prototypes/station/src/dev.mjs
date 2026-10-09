@@ -39,7 +39,8 @@ export function buildDevPanel(container, hooks) {
     h("p", { class: "dev-note" }, "Decided: Identify 1 ⚡ (first free) · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
   group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
-    h("div", { class: "dev-row" }, "Daily grow cap ", select("growCap", [10, 2, 20])), h("div", { class: "dev-row" }, "Painter ", select("painter", ["mock", "real", "off"])), toggle("sealedOpen", "sealed chapters open (the find is in hand)"));
+    h("div", { class: "dev-row" }, "Daily grow cap ", select("growCap", [10, 2, 20])), h("div", { class: "dev-row" }, "Painter ", select("painter", ["mock", "real", "off"])), h("div", { class: "dev-row" }, "Bench watch ", select("watchMs", [60000, 5000], (v) => v / 1000 + " s")), h("div", { class: "dev-row" }, "Bench Data a day ", select("trickleCap", [2, 10, 0], (v) => (v === 0 ? "none" : String(v)))),
+    h("div", { class: "dev-row" }, h("button", { class: "btn", type: "button", onclick: () => { G.st.bench = null; save(); note("a new bench day: the watched and compared lists and the day's Data are cleared"); } }, "New bench day")), toggle("sealedOpen", "sealed chapters open (the find is in hand)"));
   // Seeds
   const spSel = h("select", {}); for (const id of frameIds()) spSel.append(opt(id, id + " " + frameOf(id).species.name, id === "S01"));
   const cnt = h("input", { type: "number", min: "1", max: "6", value: "1" }), seed = h("input", { type: "number", min: "1", value: String(Math.floor(Math.random() * 9000) + 1) });
