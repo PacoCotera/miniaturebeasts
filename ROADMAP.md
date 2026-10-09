@@ -139,7 +139,7 @@ Work in this phase:
   until it is tended.
 - Design how partners' abilities open the world, connecting back to phase 1.
 - Breeding eligibility, viability and how refusal or failure is shown.
-- Habitats, if they still earn their place.
+- Zones inside a vivarium, if they still earn their place.
 
 ## Hardware track
 

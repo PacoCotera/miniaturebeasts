@@ -82,7 +82,7 @@ Not searched individually (ordinary words): postmark, glyph, tome, consignment, 
 | Bellcap, Tunneler, Splasher (proposed) | **Chimecap**, **Wedgepaw**, **Puddlekin** | Searched together; no exact hit |
 | Momo, Pipo (starter names) | **Nilo**, **Tato** | Or simply drop them; the list has six. Pip stays a reference name; if it becomes the mascot or a brand, pick another (**Tibu**, **Mipi** found nothing, weakly searched) |
 | mibi | none needed now | No exact collision. If a professional search objects: **Tibu**, **Mipi** (weakly searched) |
-| vivarium | call the screen "Habitat" (already a menu word) | Only needed if it ever becomes a marketed feature name |
+| vivarium | call the screen "Vivarium" (already a menu word) | Only needed if it ever becomes a marketed feature name |
 
 ## 7. What this does and does not do
 
