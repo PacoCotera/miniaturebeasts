@@ -19,7 +19,7 @@
  },
  "opens": {
   "meet": "Habitat's meet, the first ✓ with the ring on the new mibi: ✓ Name {name}. Any other key ends the meet with the default kept, and does what it does",
-  "rename": "the mibi's name on Habitat, a focus target (ring round; Habitat's spec names it): ✓ Rename {name}, on any mibi at home, bonded or with you"
+  "rename": "Habitat's name tag, the focus target `name` (ring round): ✓ Rename {name}, on any mibi at home, bonded or with you"
  },
  "rules": {
   "used": [],
