@@ -121,7 +121,7 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 *Dock and arrival wireframe. Layout only.*
 
-The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival) (*L2.2, UI designer, 2026-10-09; Proposal*). The ribbon has no digits there: "First crate home · half the land explored" (*decided by the UI designer, 2026-10-08*: was "Expedition 4 home · 2 pods · explored 9 of 21").
+The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival) (*L2.2, UI designer, 2026-10-09; Proposal*). The ribbon has no digits there and says the crate only: "First crate home" (*the copywriter, 2026-10-09 12:22*: was "Expedition 4 home · 2 pods · explored 9 of 21"); how far the land is explored is on the report card.
 
 ---
 

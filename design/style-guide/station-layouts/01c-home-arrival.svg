@@ -63,42 +63,42 @@
 <text x="704" y="199" font-size="12" fill="#555">Rack</text>
 <text x="976" y="199" font-size="9" fill="#777" text-anchor="end">688,176 320×120</text>
 <rect x="984.5" y="188.5" width="11" height="11" fill="#e2e2e2" stroke="#444" stroke-width="1"/>
-<rect x="712.5" y="216.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="760.5" y="216.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="808.5" y="216.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="856.5" y="216.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="904.5" y="216.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="952.5" y="216.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="712" y="274" font-size="9" fill="#777">wells 712+48i,216 40×40 · pod 32×40 at +4</text>
+<rect x="712.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="760.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="808.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="856.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="904.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="952.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<text x="712" y="278" font-size="9" fill="#777">wells 712+48i,224 40×40 · pod 32×40 at +4</text>
 <rect x="688.5" y="304.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <text x="704" y="327" font-size="12" fill="#555">Incubator</text>
 <text x="976" y="327" font-size="9" fill="#777" text-anchor="end">688,304 320×120</text>
 <rect x="984.5" y="316.5" width="11" height="11" fill="#e2e2e2" stroke="#444" stroke-width="1"/>
-<rect x="704.5" y="328.5" width="79" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="708" y="344" font-size="9" fill="#222">dome 80</text>
-<rect x="800.5" y="344.5" width="191" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="804" y="360" font-size="9" fill="#222">leaves 800,344</text>
+<rect x="704.5" y="336.5" width="79" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
+<text x="708" y="352" font-size="9" fill="#222">dome 704,336</text>
+<rect x="800.5" y="352.5" width="191" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
+<text x="804" y="368" font-size="9" fill="#222">leaves 800,352</text>
 <rect x="688.5" y="432.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <text x="704" y="455" font-size="12" fill="#555">Probe</text>
 <text x="976" y="455" font-size="9" fill="#777" text-anchor="end">688,432 320×120</text>
 <rect x="984.5" y="444.5" width="11" height="11" fill="#e2e2e2" stroke="#444" stroke-width="1"/>
-<rect x="704.5" y="456.5" width="127" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="708" y="472" font-size="9" fill="#222">Probe in cradle</text>
-<rect x="848.5" y="480.5" width="15" height="31" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="872.5" y="480.5" width="15" height="31" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="896.5" y="480.5" width="15" height="31" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="848" y="476" font-size="9" fill="#777">plates 848+24i,480</text>
-<rect x="952.5" y="456.5" width="39" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="956" y="472" font-size="9" fill="#222">slot</text>
+<rect x="704.5" y="464.5" width="127" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
+<text x="708" y="480" font-size="9" fill="#222">Probe in cradle</text>
+<rect x="848.5" y="488.5" width="15" height="31" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="872.5" y="488.5" width="15" height="31" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="896.5" y="488.5" width="15" height="31" fill="#fff" stroke="#666" stroke-width="1"/>
+<text x="848" y="532" font-size="9" fill="#777">plates 848+24i,488</text>
+<rect x="952.5" y="464.5" width="39" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
+<text x="956" y="480" font-size="9" fill="#222">slot</text>
 <rect x="40.5" y="72.5" width="607" height="39" fill="#cfe7e8" stroke="#45d8be" stroke-width="1.5"/>
-<text x="344" y="98" font-size="16" fill="#0f4c50" text-anchor="middle" font-weight="600">First crate home · half the land explored</text>
+<text x="344" y="98" font-size="16" fill="#0f4c50" text-anchor="middle" font-weight="600">First crate home</text>
 <text x="44" y="124" font-size="9" fill="#777">Ribbon 40,72 608×40 · 20 px, centred · shows at 300 ms of each crate</text>
 <rect x="688.5" y="48.5" width="319" height="247" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="1 3"/>
 <text x="1004" y="292" font-size="9" fill="#c45f12" text-anchor="end">travel 688,48 320×248 (over the column)</text>
-<line x1="744" y1="120" x2="732" y2="214" stroke="#c45f12" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>
-<line x1="744" y1="120" x2="780" y2="214" stroke="#c45f12" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>
+<line x1="744" y1="120" x2="732" y2="222" stroke="#c45f12" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>
+<line x1="744" y1="120" x2="780" y2="222" stroke="#c45f12" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#ao)"/>
 <rect x="724.5" y="150.5" width="31" height="39" fill="#ffe2bf" stroke="#c45f12" stroke-width="1.5"/>
-<text x="40" y="244" font-size="11" fill="#c45f12">A pod 32×40 travels from (728,100) to (716 + 48i, 216), straight, eased.</text>
+<text x="40" y="244" font-size="11" fill="#c45f12">A pod 32×40 travels from (728,100) to (716 + 48i, 224), straight, eased.</text>
 <line x1="0" y1="0" x2="0" y2="0" stroke="#888" stroke-width="1"/>
 <text x="40" y="156" font-size="11" fill="#2b6cb0">Input held: crates × 3000 + 200 ms. No ring; no key moves it.</text>
 <text x="40" y="172" font-size="11" fill="#2b6cb0">Each crate, from its start: 0 beam on, seal breaks, lid lifts (300)</text>

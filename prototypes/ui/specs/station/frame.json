@@ -41,8 +41,8 @@
    "vivarium": { "rect": [0, 0, 1024, 568], "component": "livingWindow", "part": "inside", "frame": false, "ground": [0, 320, 1024, 232], "foot": [0, 552, 1024, 16] },
    "resident": { "component": "livingWindow", "part": "residents", "clip": "vivarium", "adult": [144, 152], "juvenile": [104, 112], "walk": { "ground": [16, 320, 992, 232] }, "lamp": [12, 12], "lift": 0, "focus": null },
    "bed": { "rect": [872, 496, 128, 56], "build": "withYouBed", "clip": "vivarium", "mark": [16, 24], "markAt": [56, 16], "sleeper": { "pose": "nap", "foot": [936, 536], "adult": [864, 384, 144, 152], "juvenile": [884, 424, 104, 112], "asleepMark": [24, 16], "markAt": "box top right", "lift": 0 } },
-   "strip": { "rect": [0, 568, 1024, 32], "component": "panel", "build": "idleLine", "rule": "top" },
-   "line": { "rect": [16, 568, 992, 32], "build": "idleLine", "px": 16, "weight": 400, "align": "centre", "centre": 512, "middle": 584, "lines": 1, "words": 6, "noDigits": true }
+   "strip": { "rect": [0, 568, 1024, 32], "component": "panel", "build": "idleLine", "rule": "top", "binding": "idleLine is a composition in the frame's binding table, not a word (architect, 2026-10-09 12:25)" },
+   "line": { "rect": [16, 568, 992, 32], "component": "text", "build": "idleLine", "props": "props.frame.idle.line, one string (architect, 2026-10-09 12:25)", "px": 16, "weight": 400, "align": "centre", "centre": 512, "middle": 584, "lines": 1, "words": 6, "noDigits": true }
   },
   "colours": { "strip": "ground", "rule": "void", "line": "mist", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil", "waitingLamp": "sky" },
   "enter": { "from": ["the rest knob's ✓ on Home (home.json events.rest)", "the idle timer: 60 s without a press, on any screen, never during a hold, an arrival or a report card (owner, 2026-10-09 12:20)"], "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
@@ -51,7 +51,7 @@
    "dock": "the Caddy's Dock is a world event, never a Station key: it wakes, docks and lands on Home with the ring on the room, then the crates slide in (home.json events.crateIn); lifting the Companion from Idle wakes and lifts, and the screen under Idle shows"
   },
   "wake": { "to": "the screen under Idle, its focus as it was", "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
-  "strings": { "line": "one sentence, six words or fewer, no digits: the copywriter's slot", "order": ["crates in the bay", "the bud ready", "a bud growing", "who is out with the Companion"], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags (owner, 2026-10-09 12:20)", "examples": ["two crates wait in the bay", "the bud is ready", "a bud is growing", "Dot is out exploring"] }
+  "strings": { "line": "one sentence, six words or fewer, no digits", "order": ["crates", "budReady", "budGrowing", "out"], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags (owner, 2026-10-09 12:20). `out` only while the Companion is away with a mibi; docked, nothing about that mibi (game designer, 2026-10-09 12:24)", "crates": { "1": "a crate waits in the bay", "2": "two crates wait in the bay", "3": "three crates wait in the bay" }, "budReady": "the bud is ready", "budGrowing": "a bud is growing", "out": "{name} is out with the Companion", "none": "", "by": "copywriter, 2026-10-09 12:22" }
  },
  "navigation": {
   "spec": "design/style-guide/station-screens.md#keys-and-navigation",

@@ -28,7 +28,7 @@
 <rect x="0.5" y="568.5" width="1023" height="31" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <line x1="0" y1="568.5" x2="1024" y2="568.5" stroke="#222" stroke-width="1"/>
 <rect x="16.5" y="568.5" width="991" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="512" y="589" font-size="14" fill="#6b6880" text-anchor="middle">Dot is out exploring</text>
+<text x="512" y="589" font-size="14" fill="#6b6880" text-anchor="middle">a bud is growing</text>
 <text x="20" y="589" font-size="9" fill="#777">strip 0,568 1024×32 · line 16,568 992×32</text>
 <text x="1004" y="589" font-size="9" fill="#777" text-anchor="end">16 px mist, centred on 512; ≤ 6 words</text>
 <text x="300" y="62" font-size="12" fill="#2b6cb0">A living view to keep on all day, never a screen off:</text>
@@ -37,5 +37,5 @@
 <text x="300" y="152" font-size="12" fill="#2b6cb0">The first press sends wake and nothing else (180 ms dither back).</text>
 <text x="300" y="170" font-size="12" fill="#2b6cb0">Dock wakes, docks and lands on Home; the crates slide in.</text>
 <text x="300" y="188" font-size="12" fill="#2b6cb0">Comes after 60 s without a press, or by ✓ Rest on Home.</text>
-<text x="300" y="206" font-size="12" fill="#2b6cb0">The line: crates, bud ready, bud growing, who is out.</text>
+<text x="300" y="206" font-size="12" fill="#2b6cb0">The line: crates, bud ready, bud growing, a mibi out (away only).</text>
 </svg>

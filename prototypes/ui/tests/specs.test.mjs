@@ -126,7 +126,7 @@ test("the Home spec file agrees with the Home wireframe, region by region", () =
   is(at(R.bay, R.bay.door), "bay door and crates");
   assert.deepEqual(at(R.bay, [R.bay.word[0], R.bay.word[1], 0, 0]).slice(0, 2), [704, 60]);
   const w = R.rack.wells, slots = Array.from({ length: w.slots }, (_, i) => [R.rack.rect[0] + w.at[0] + w.pitch[0] * i, R.rack.rect[1] + w.at[1], w.size[0], w.size[1]]);
-  assert.deepEqual(slots[0], [712, 216, 40, 40]); assert.deepEqual([slots[5][0] + 40 - slots[0][0], 40], [280, 40]);   // 712,216 280×40
+  assert.deepEqual(slots[0], [712, 224, 40, 40]); assert.deepEqual([slots[5][0] + 40 - slots[0][0], 40], [280, 40]);   // 712,224 280×40 (art director, 2026-10-09 12:25: 8 px clear of the word)
   is(at(R.incubator, R.incubator.dome), "dome"); is(at(R.incubator, R.incubator.leaves.at), "leaves");
   const L = R.incubator.leaves; assert.equal(L.perRow * L.pitch, 192); assert.equal(L.rows * L.leaf[1] + 16, 40);
   is(at(R.probe, R.probe.cradle), "probe cradle"); is(at(R.probe, R.probe.slot), "sitting slot");
