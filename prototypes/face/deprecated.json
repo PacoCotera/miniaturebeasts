@@ -438,5 +438,12 @@
   ]
  },
  "migrated": [],
- "exemptions": []
+ "exemptions": [
+  {
+   "path": "station/src/screens/pods.mjs",
+   "commit": "3174196d",
+   "reason": "The Station lead's L2.0 brief: Pods' view resolves kin.first to null when there is no kin (the spec's ordered lists carry the way on: pod right [kin.first, hatch], hatch up [kin.first, none]); the file is deleted when Pods moves to the face",
+   "sha256": "9da3399703199280822d668a70285e21ee92e87480830523b9581cedaf90033c"
+  }
+ ]
 }
