@@ -31,7 +31,7 @@
   "stamp": { "rect": [872, 248, 120, 120], "component": "stampLabel" },
   "page": {
    "rect": [152, 112, 256, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
-   "states": ["grid"], "pictureMax": [144, 176], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": { "slice": "page-mark-new-10", "size": [10, 10], "at": "P.x + P.w / 2 - 5, P.y + 8", "layer": "art", "fill": "bone", "edge": "white", "keyline": "ink", "specular": false }, "sealedFind": [72, 184, 112, 112],
+   "states": ["grid"], "pictureMax": [144, 176], "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": { "slice": "page-mark-new-10", "size": [6, 6], "on": "name line", "gapAfterName": 4, "centredWithName": true, "centreY": "line y + 10", "layer": "art", "fill": "bone", "edge": "white", "keyline": null, "specular": false }, "sealedFind": [72, 184, 112, 112],
    "grid": {
     "1": { "cells": [[16, 48, 224, 384]], "picture": [144, 176], "align": "centre top" },
     "2": { "cells": [[16, 48, 224, 184], [16, 248, 224, 184]], "picture": [176, 144], "align": "centre top" },
