@@ -56,17 +56,24 @@
      176
     ],
     "masters": {
-     "selected": "ring-collection-selected-176x176",
      "idle": "ring-collection-idle-176x176",
+     "closed": "ring-collection-closed-176x176",
      "track": "ring-arc-collection-n{N}-track-176x176",
      "segment": "ring-arc-collection-n{N}-s{i}-176x176",
      "chapters": [
       1,
       8
      ],
-     "placed": "1:1 on the slice's origin"
+     "placed": "1:1 on the slice's origin",
+     "closedReplaces": "track and segments"
     },
-    "paint": "colours.collectionRingPaint: the paint reference for the masters; the build draws no arcs"
+    "paint": "colours.collectionRingPaint: the paint reference for the masters; the build draws no arcs",
+    "focus": {
+     "shape": "circle",
+     "radius": 84,
+     "width": 2,
+     "colour": "focus"
+    }
    },
    "pod": {
     "size": [
@@ -120,7 +127,8 @@
      40,
      12,
      12
-    ]
+    ],
+    "slice": "glint-star-12x12"
    },
    "waiting": {
     "rect": [
