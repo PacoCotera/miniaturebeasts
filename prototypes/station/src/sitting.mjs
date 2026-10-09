@@ -109,7 +109,8 @@ export function portraitBlock(st, m, sv) {
   if (m.released) return m.name + " has gone";
   if (!docked(st) && carriedIds(st, sv).includes(m.id)) return m.name + " is out with you · it sits when the Companion is home";   // stand-in words until the copywriter's
   if (m.portrait) return "one sitting each, ever";
-  if (!habitsOf(m).length || !placesOf(m).length) return m.name + " no pose seen yet";
+  if (!habitsOf(m).length) return "no pose seen yet";
+  if (!placesOf(m).length) return m.name + " needs a walk first";
   return "";
 }
 // The welcome sitting (the-portrait.md §2, §8): at the first dock at which a mibi comes home from a walk with the player; one per player; it waits for the slot if one is

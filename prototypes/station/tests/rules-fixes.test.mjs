@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
+import { setFrames, frameOf, podGenome, forecast as crossForecast } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
@@ -86,12 +86,15 @@ test("N3 a released name is never redrawn, and a migrated name blocks its look-a
   assert.notEqual(S.drawName(st), "Fig", "FIG blocks Fig");
   const s2 = S.freshSt("w1", 1, T0); s2.mibis.push({ ...dot, id: 5, name: "DOT" }); S.normalize(s2); assert.equal(S.drawName(s2), "Moss", "a migrated DOT blocks Dot");
 });
-test("nameKey and nameProblem: lowercase, accents and separators gone; the refusals of the naming board", () => {
+test("nameKey: lowercase, accents and the separators (space, hyphen, ’) gone, the apostrophe folded", () => {
   assert.equal(S.nameKey("Mo-Mo"), "momo"); assert.equal(S.nameKey("Mómo"), "momo"); assert.equal(S.nameKey("Mo Mo"), "momo"); assert.equal(S.nameKey("Œuf"), "oeuf"); assert.equal(S.nameKey("ŒUF"), "oeuf");
-  for (const bad of ["A", "Elevenchars", "-Mo", "Mo-", "Mo--Mo", "Mo -Mo", "Loika", "loika", "LOIKA", "Aulaka", "Lóika"]) assert.notEqual(S.nameProblem(bad), "", bad);
-  for (const ok of ["Mo", "Mo-Mo", "Tenletters", "Bean", "Pip"]) assert.equal(S.nameProblem(ok), "", ok);
-  const st = S.freshSt("w1", 1, T0); assert.equal(S.claimName(st, "Mo-Mo").ok, true); assert.equal(S.claimName(st, "Mómo").ok, false); assert.ok(st.namesUsed.includes("momo")); assert.equal(S.claimName(st, "X").ok, false);
-  assert.equal(S.drawName(st, { names: ["Mo Mo", "Nib"] }), "Nib", "a player's name blocks the pool's look-alike");
+  assert.equal(S.nameKey("Mo'Mo"), "momo"); assert.equal(S.nameKey("Mo’Mo"), "momo");
+  const st = S.freshSt("w1", 1, T0); st.namesUsed = ["momo"];
+  assert.equal(S.drawName(st, { names: ["Mo Mo", "Nib"] }), "Nib", "a used key blocks the pool's look-alike");
+});
+test("the safety-net name tier gives capitalised names, never 'aa'", () => {
+  const g = S.namePool({ names: [], heads: [], tails: [] }); const first = [g.next().value, g.next().value, g.next().value];
+  assert.deepEqual(first, ["Aa", "Ba", "Ca"]); assert.ok(first.every((n) => /^[A-Z]/.test(n)));
 });
 test("N5 a save with digit names: renamed in id order, the references follow, and a second normalize changes nothing", () => {
   const st = fresh(); S.seedAdults(st, "S01", 3, 2, settings); const [a, b] = st.mibis;
@@ -243,4 +246,17 @@ test("a mibi out with the Companion sits only while the Companion is docked; at 
   st.dock = { docked: true, at: T0 }; assert.equal(T.portraitBlock(st, a, sv), "", "carried and docked passes");
   const r = T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv); assert.ok(r.ok, r.msg);
   st.dock = { docked: false, at: T0 + 1 }; assert.equal(a.portrait.state, "painting", "a sitting begun while docked continues after undocking");
+});
+
+// ---- review fixes ----
+test("seedSiblings: each sibling's read is the list doCross gives a child at kinship 0", () => {
+  const st = fresh(); st.settings = undefined; const r = S.seedSiblings(st, "S01", 4242, { ...settings, bays: 12 }); assert.ok(r.ok, r.msg);
+  const [a, b] = r.parents, fr = frameOf("S01");
+  for (const m of r.mibis) { assert.deepEqual(m.read, S.childKnownChapters(fr, crossForecast(fr, a.genome, b.genome, { kinship: 0 }))); assert.ok(m.read.length < fr.chapters.length, "not every chapter is firm"); }
+});
+test("a sitting is refused for want of a pose, and separately for want of a walk", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 5, 2, settings); const m = st.mibis[0]; T.devGrantSitting(st, T0);
+  m.habits = []; m.walked = []; m.from = { ...m.from, g: null };
+  assert.match(T.portraitBlock(st, m), /no pose seen yet/); S.recordHabit(st, m, S.frameFor(m).habits[0]);
+  assert.match(T.portraitBlock(st, m), new RegExp(m.name + " needs a walk first"));
 });

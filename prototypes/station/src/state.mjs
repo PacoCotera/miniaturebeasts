@@ -4,7 +4,6 @@
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
 // accepted, dockN, known, probe, withReq, returned, and each mibi's id, name, sp, born, from, bonded.
 // Those keep their shape (station-build.md §2.3).
-import { SPECIES_NAMES, CLAN_NAMES } from "../../workbench/framework/roster.mjs";
 import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems } from "./genome.mjs";
 
 export const ST_SCHEMA = 2;
@@ -23,38 +22,23 @@ export const MIBI_NAMES = ["Dot", "Moss", "Bean", "Fig", "Nib", "Tuft", "Pebble"
 export const NAME_MAX = 10;
 // PLACEHOLDER heads and tails for the compound names (tiers 2 and 3): the naming board's lists replace them; the tests inject their own.
 export const NAME_HEADS = ["Ka", "Lo", "Mi", "Ne", "Pu", "Ro", "Su", "Te"], NAME_TAILS = ["ri", "sa", "mo", "vu", "li", "po"];
-const SEPARATORS = " -'’_.";
-// How names compare: lowercase, accents removed, œ → oe, separators removed ("Mo-Mo" = "momo" = "Mómo").
-export const nameKey = (s) => String(s).toLowerCase().replace(/œ/g, "oe").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").split("").filter((c) => !SEPARATORS.includes(c)).join("");
-// Why a name a player gives is refused ("" when it is fine): fewer than 2 or more than NAME_MAX characters, a separator first or last, two separators side by side, or one of the 16 species or 16 clan names.
-export function nameProblem(name) {
-  const s = String(name), n = [...s].length, sep = (c) => SEPARATORS.includes(c);
-  if (n < 2 || n > NAME_MAX) return `a name is 2 to ${NAME_MAX} characters`;
-  if (sep(s[0]) || sep(s[s.length - 1])) return "a name cannot start or end with a separator";
-  for (let i = 1; i < s.length; i++) if (sep(s[i]) && sep(s[i - 1])) return "a name cannot have two separators side by side";
-  const k = nameKey(s); if ([...Object.values(SPECIES_NAMES), ...Object.values(CLAN_NAMES)].some((x) => nameKey(x) === k)) return "that is a species or a clan";
-  return "";
-}
+const SEPARATORS = " -’";
+// How names compare: lowercase, accents removed, œ → oe, separators removed ("Mo-Mo" = "momo" = "Mómo"); the apostrophe folds to ’.
+export const nameKey = (s) => String(s).replace(/'/g, "’").toLowerCase().replace(/œ/g, "oe").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/œ/g, "oe").split("").filter((c) => !SEPARATORS.includes(c)).join("");
 // The pool in its fixed order: the twelve names, then heads[k mod H] + tails[⌊k / H⌋] for k = 0 … H·T − 1, then head + tail + tail in the same order (tails[(⌊k/H⌋) mod T], tails[⌊k / (H·T)⌋]); then, only if all of
-// those are used, two-letter-and-up letter names so a draw never fails. A candidate that is used (by nameKey), holds a digit or is longer than NAME_MAX is skipped.
+// those are used (never reached in play: a safety net), capitalised letter names of two letters and up so a draw never fails. A candidate that is used (by nameKey), holds a digit or is longer than NAME_MAX is skipped.
 export function* namePool({ names = MIBI_NAMES, heads = NAME_HEADS, tails = NAME_TAILS } = {}) {
   for (const n of names) yield n;
   const H = heads.length, T = tails.length;
   for (let k = 0; k < H * T; k++) yield heads[k % H] + tails[Math.floor(k / H)];
   for (let k = 0; k < H * T * T; k++) yield heads[k % H] + tails[Math.floor(k / H) % T] + tails[Math.floor(k / (H * T))];
-  for (let k = 0; ; k++) { let s = "", x = k; do { s = String.fromCharCode(97 + (x % 26)) + s; x = Math.floor(x / 26) - 1; } while (x >= 0); yield s.length < 2 ? s + "a" : s[0].toUpperCase() + s.slice(1); }
+  for (let k = 0; ; k++) { let s = "", x = k; do { s = String.fromCharCode(97 + (x % 26)) + s; x = Math.floor(x / 26) - 1; } while (x >= 0); if (s.length < 2) s += "a"; yield s[0].toUpperCase() + s.slice(1); }
 }
 const usedKeys = (st) => st.namesUsed || (st.namesUsed = []);
 // The next name: the first in pool order whose key is not used, appended to st.namesUsed (never pruned).
 export function drawName(st, pool = {}) {
   const used = new Set(usedKeys(st));
   for (const c of namePool(pool)) { const k = nameKey(c); if (/\d/.test(c) || [...c].length > NAME_MAX || used.has(k)) continue; st.namesUsed.push(k); return c; }
-}
-// A name a player gives: refused as nameProblem says or when its key is used; else entered in st.namesUsed.
-export function claimName(st, name) {
-  const why = nameProblem(name); if (why) return { ok: false, msg: why };
-  const k = nameKey(name); if (usedKeys(st).includes(k)) return { ok: false, msg: "that name is taken" };
-  st.namesUsed.push(k); return { ok: true, name: String(name) };
 }
 export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock field", wood: "wood", cave: "cave" };
 // The origin line is one sentence: "Found <where>, <what happened>." Each half is at most 24 characters with its comma or full stop, so the sentence breaks after the comma (design/style-guide/station-layouts.md, Pods, Origin).
@@ -707,9 +691,9 @@ export function seedSiblings(st, species, seed, settings = DEFAULT_SETTINGS) {
   for (let i = 0; i < 2 && !bayFull(st, settings); i++) {
     let genome = null; for (let t = 0; t < 8 && !genome; t++) { const g = crossGenomes(fr, a.genome, b.genome, { rng, kinship: 0 }); if (!genomeProblems(fr, g).length) genome = g; }
     if (!genome) break;
-    const sha = genomeSha(genome), id = st.nextMibi++, name = drawName(st);
+    const sha = genomeSha(genome), id = st.nextMibi++, name = drawName(st), read = childKnownChapters(fr, crossForecast(fr, a.genome, b.genome, { kinship: 0 }));   // the rule doCross uses for B.read
     const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
-    const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: fr.chapters.map((c) => c.id), parents: [snap(a), snap(b)], bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
+    const m = { id, name, sp: a.sp, species, gs: null, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read, parents: [snap(a), snap(b)], bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls);
   }
   logEv(st, "Developer: siblings " + made.map((m) => m.name).join(" and ") + " of " + a.name + " and " + b.name);
