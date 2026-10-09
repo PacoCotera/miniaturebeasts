@@ -70,30 +70,33 @@ test("honours the daily limit and the world's daily cap; a capped job waits for 
   assert.equal((await app.tick()).state, "done", "the next day it paints");
   // the daily limit: a real painter with the day's spend at the limit never calls (the seeded ledger.json is a fixture)
   const app2 = createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5, now: () => now });
-  process.env.GEMINI_API_KEY = "test-key-never-used";
+  process.env.GEMINI_API_KEY = "test-key-never-used"; process.env.MB_LEDGER = fresh();
   try {
     app2.state.ledger[new Date(now).toISOString().slice(0, 10)] = { calls: 14, spendUSD: 5.1, worlds: {} };
     await call(app2, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(7) });
     const j = await app2.tick(); assert.equal(j.state, "capped"); assert.match(j.error, /limit/);
     assert.equal(app2.status().painter, "real"); assert.equal(app2.status().limitReached, true);
-  } finally { delete process.env.GEMINI_API_KEY; }
+  } finally { delete process.env.GEMINI_API_KEY; delete process.env.MB_LEDGER; }
   assert.equal(createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5 }).status().painter, "mock", "without a key the real painter falls back to the mock");
+  process.env.GEMINI_API_KEY = "test-key-never-used";
+  try { assert.equal(createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5 }).status().painter, "mock", "without MB_LEDGER the real painter falls back to the mock"); }
+  finally { delete process.env.GEMINI_API_KEY; }
 });
 
 test("real mode with no daily limit set runs as the mock", async () => {
-  process.env.GEMINI_API_KEY = "test-key-never-used";
+  process.env.GEMINI_API_KEY = "test-key-never-used"; process.env.MB_LEDGER = fresh();
   try {
     const app = createApp({ dataDir: fresh(), painter: "real", mockDelay: 0 });
     assert.equal(app.cfg.ceilingUSD, null); assert.equal(app.status().painter, "mock"); assert.equal(app.status().configured, "real"); assert.equal(app.status().limitReached, false);
     await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(10) });
     const j = await app.tick(); assert.equal(j.state, "done"); assert.equal(j.painter, "mock");
-  } finally { delete process.env.GEMINI_API_KEY; }
+  } finally { delete process.env.GEMINI_API_KEY; delete process.env.MB_LEDGER; }
 });
 
 test("a failed painter retries at one, five and thirty minutes, then fails and the placeholder stands", async () => {
   let now = Date.parse("2026-10-08T12:00:00Z");
   const app = createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5, growService: "/nonexistent/service.py", python: "/nonexistent/python", now: () => now });
-  process.env.GEMINI_API_KEY = "test-key-never-used";
+  process.env.GEMINI_API_KEY = "test-key-never-used"; process.env.MB_LEDGER = fresh();
   try {
     await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(8) });
     const j1 = await app.tick(); assert.equal(j1.state, "queued"); assert.equal(j1.tries, 1); assert.equal(j1.nextAt, now + RETRY_S[0] * 1000); assert.ok(j1.error);
@@ -101,7 +104,22 @@ test("a failed painter retries at one, five and thirty minutes, then fails and t
     now += RETRY_S[0] * 1000; const j2 = await app.tick(); assert.equal(j2.tries, 2); assert.equal(j2.nextAt, now + RETRY_S[1] * 1000);
     now += RETRY_S[1] * 1000; const j3 = await app.tick(); assert.equal(j3.state, "failed"); assert.equal(j3.tries, 3);
     assert.equal(app.status().queue.failed, 1);
-  } finally { delete process.env.GEMINI_API_KEY; }
+  } finally { delete process.env.GEMINI_API_KEY; delete process.env.MB_LEDGER; }
+});
+
+test("a failed painting's spend still counts toward the day's ledger", async () => {
+  // a stand-in for grow/service.py, run by node: it writes the --cost-out file as the real one does in its finally, then fails; no call is made
+  const dir = fresh(), stub = path.join(dir, "stub-service.mjs");
+  writeFileSync(stub, 'import { writeFileSync } from "node:fs"; const a = process.argv; writeFileSync(a[a.indexOf("--cost-out") + 1], JSON.stringify({ calls: 2, costUSD: 0.25 })); process.exit(1);\n');
+  const now = Date.parse("2026-10-08T12:00:00Z");
+  const app = createApp({ dataDir: path.join(dir, "data"), painter: "real", ceilingUSD: 5, growService: stub, python: process.execPath, now: () => now });
+  process.env.GEMINI_API_KEY = "test-key-never-used"; process.env.MB_LEDGER = fresh();
+  try {
+    await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(11) });
+    const j = await app.tick(); assert.equal(j.state, "queued"); assert.equal(j.tries, 1); assert.match(j.error, /exited 1/);
+    const d = app.state.ledger["2026-10-08"]; assert.equal(d.calls, 2); assert.equal(d.spendUSD, 0.25); assert.deepEqual(d.worlds, {}, "a failed job does not count against the world's cap");
+    const onDisk = JSON.parse(readFileSync(path.join(app.dataDir, "ledger.json"), "utf8")); assert.equal(onDisk["2026-10-08"].spendUSD, 0.25, "the ledger is written");
+  } finally { delete process.env.GEMINI_API_KEY; delete process.env.MB_LEDGER; }
 });
 
 test("painter off: jobs wait queued and the status says so", async () => {

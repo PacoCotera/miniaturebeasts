@@ -3,8 +3,9 @@
 // or throws. "mock": the plain placeholder set rendered here from the genome, tinted so a tester can tell
 // it landed, after a set delay, no call. "real": grow/service.py paint on the genome under the service's
 // own output root (one directory per job), its key from the service's environment, the served set copied
-// in; the job's spend (for the private daily ledger) from the --cost-out file in that job's directory.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
+// in; the job's spend (for the private daily ledger) from the --cost-out file in that job's directory, read as
+// soon as the child exits and attached to any error as err.costUSD and err.calls, so a failed job's spend counts too.
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, rmSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
@@ -39,17 +40,26 @@ export async function realPaint(job, frame, { growService = path.resolve(here, "
   const genomeFile = path.join(dir, "genome.json"); writeFileSync(genomeFile, JSON.stringify(job.genome, null, 1) + "\n");
   const costFile = path.join(dir, "cost.json");   // inside the service's data directory, never in the release
   const args = [growService, "paint", "--species", job.species, "--genome", genomeFile, "--control", "twostep", "--views", "portrait", "--out", dir, "--workers", "1", "--cost-out", costFile];
-  const log = await new Promise((resolve, reject) => {
-    const p = spawn(python, args, { cwd: path.dirname(growService), env: process.env, signal });
-    let out = "", err = ""; p.stdout.on("data", (b) => { out += b; }); p.stderr.on("data", (b) => { err += b; });
-    p.on("error", reject); p.on("close", (code) => (code === 0 ? resolve(out) : reject(new Error(`grow/service.py exited ${code}: ${(err || out).slice(-800)}`))));
-  });
-  const speciesDir = path.join(dir, job.species); if (!existsSync(speciesDir)) throw new Error("the painter wrote no set: " + log.slice(-400));
-  const sub = readdirSync(speciesDir).find((d) => existsSync(path.join(speciesDir, d, "manifest.json"))); if (!sub) throw new Error("no manifest from the painter");
-  const setDir = path.join(speciesDir, sub), manifest = JSON.parse(readFileSync(path.join(setDir, "manifest.json"), "utf8"));
-  const view = manifest.views?.portrait; if (!view || view.status !== "painted") throw new Error("served plain: the painting failed its checks (" + (view?.status ?? "no view") + ")");
-  const files = {};
-  for (const f of SET_FILES) if (existsSync(path.join(setDir, f))) files[f] = readFileSync(path.join(setDir, f));
-  let costUSD = 0; try { costUSD = JSON.parse(readFileSync(costFile, "utf8")).costUSD || 0; } catch { costUSD = 0; }
-  return { files, costUSD, manifest: { painter: "real", promptVersion: manifest.promptVersion, model: manifest.model, calls: manifest.calls, genomeDigest: manifest.genomeDigest, seconds: manifest.seconds } };
+  rmSync(costFile, { force: true });   // a retry's spend is this run's only, never an earlier try's file
+  let log, runError = null;
+  try {
+    log = await new Promise((resolve, reject) => {
+      const p = spawn(python, args, { cwd: path.dirname(growService), env: process.env, signal });
+      let out = "", err = ""; p.stdout.on("data", (b) => { out += b; }); p.stderr.on("data", (b) => { err += b; });
+      p.on("error", reject); p.on("close", (code) => (code === 0 ? resolve(out) : reject(new Error(`grow/service.py exited ${code}: ${(err || out).slice(-800)}`))));
+    });
+  } catch (e) { runError = e; }
+  const spend = { costUSD: 0, calls: 0 };
+  try { const c = JSON.parse(readFileSync(costFile, "utf8")); spend.costUSD = c.costUSD || 0; spend.calls = c.calls || 0; } catch {}
+  const withSpend = (e) => { const x = e instanceof Error ? e : new Error(String(e)); x.costUSD = spend.costUSD; x.calls = spend.calls; return x; };
+  if (runError) throw withSpend(runError);
+  try {
+    const speciesDir = path.join(dir, job.species); if (!existsSync(speciesDir)) throw new Error("the painter wrote no set: " + log.slice(-400));
+    const sub = readdirSync(speciesDir).find((d) => existsSync(path.join(speciesDir, d, "manifest.json"))); if (!sub) throw new Error("no manifest from the painter");
+    const setDir = path.join(speciesDir, sub), manifest = JSON.parse(readFileSync(path.join(setDir, "manifest.json"), "utf8"));
+    const view = manifest.views?.portrait; if (!view || view.status !== "painted") throw new Error("served plain: the painting failed its checks (" + (view?.status ?? "no view") + ")");
+    const files = {};
+    for (const f of SET_FILES) if (existsSync(path.join(setDir, f))) files[f] = readFileSync(path.join(setDir, f));
+    return { files, costUSD: spend.costUSD, manifest: { painter: "real", promptVersion: manifest.promptVersion, model: manifest.model, calls: manifest.calls, genomeDigest: manifest.genomeDigest, seconds: manifest.seconds } };
+  } catch (e) { throw withSpend(e); }
 }
