@@ -28,6 +28,7 @@ if [[ "$what" == native || "$what" == all ]]; then
   t1=$(now)
   "$bld/native/face_test" "$here/tests/vectors" "$here/../ui/specs/station" | tail -3   # the vectors on the C modules; a failure stops the build
   "$bld/native/face_metrics" "$here/dist/metrics.json"   # the compiled fonts' advances and kerning, for ui/specs/measure.mjs
+  node "$here/tools/bake-images.mjs" --out "$here/dist/images" >/dev/null && node "$here/tools/bake-images.mjs" --out "$here/dist/images" --check >/dev/null   # the placed masters as LVGL binaries (the same bytes on both faces), checked against the masters' index
   out="$("$bld/native/face_native" ${FACE_PPM:+"$FACE_PPM"})"
   echo "$out" | sed -n 's/.*hash=\([0-9a-f]*\).*/\1/p' > "$here/dist/native.hash"
   printf 'native build %.1f s   %s\n' "$(echo "$t1 - $t0" | bc)" "$out"
