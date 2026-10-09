@@ -1,5 +1,5 @@
 {
- "_note": "The public-repository guard's rules (design note: the internal plan public-cleanup.md §4). Each rule: an id, its patterns (JavaScript regular expressions, flags apart) and the file types it applies to. `prose` applies to prose files whole and to comments and strings in code. The allowlist entries are exact paths and values with a reason, printed on every run; a new entry needs the architect's review.",
+ "_note": "The public-repository guard's rules (design note: the internal plan public-cleanup.md \u00a74). Each rule: an id, its patterns (JavaScript regular expressions, flags apart) and the file types it applies to. `prose` applies to prose files whole and to comments and strings in code. The allowlist entries are exact paths and values with a reason, printed on every run; a new entry needs the architect's review.",
  "costKeys": [
   "costUSD",
   "balanceCostUSD",
@@ -310,7 +310,20 @@
      "docs-standard.md"
     ]
    },
-   "tree": [],
+   "tree": [
+    "design/README.md",
+    "design/creatures-and-genomics.md",
+    "design/research-and-breeding.md",
+    "design/game.md",
+    "design/art-direction.md",
+    "design/architecture.md",
+    "design/proposals/technical-architecture.md",
+    "design/proposals/lvgl-switch.md",
+    "design/style-guide/station-layouts.md",
+    "design/style-guide/companion-screens.md",
+    "design/style-guide/README.md",
+    "design/style-guide/station-screens.md"
+   ],
    "patterns": [
     [
      "\\*\\*(?:Decided|Working rule|Proposal|Amended|Parked|Revised|Retitled|Approved)\\b",
