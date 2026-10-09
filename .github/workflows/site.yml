@@ -61,6 +61,7 @@ jobs:
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install --with-deps chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
       - name: Station rules and journey
+        timeout-minutes: 12   # the step takes about 2.5 minutes; a hang fails fast instead of holding the runner for the job's six hours
         # The Station's rules and the Caddy service in Node, and the Station's browser journey with the service
         # in mock mode beside it (a fixture save, a seeded pod, dock, identify, read, compare, return, grow, open,
         # the painting landing, the service down and back); station-build.md §5.
