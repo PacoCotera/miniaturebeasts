@@ -130,7 +130,9 @@ test("the Home spec file agrees with the Home wireframe, region by region", () =
   is(at(R.incubator, R.incubator.dome), "dome"); is(at(R.incubator, R.incubator.leaves.at), "leaves");
   const L = R.incubator.leaves; assert.equal(L.perRow * L.pitch, 192); assert.equal(L.rows * L.leaf[1] + 16, 40);
   is(at(R.probe, R.probe.cradle), "probe cradle"); is(at(R.probe, R.probe.slot), "sitting slot");
-  const S = R.probe.shields; assert.deepEqual([R.probe.rect[0] + S.at[0], R.probe.rect[1] + S.at[1], (S.count - 1) * S.pitch + S.size[0], S.size[1]], [848, 496, 100, 12]);
+  const S = R.probe.shields; for (let i = 0; i < S.count; i++) is([R.probe.rect[0] + S.at[0] + S.pitch * i, R.probe.rect[1] + S.at[1], ...S.size], "Shield plate " + i);
+  assert.deepEqual(S.perTier, { 1: 3, 2: 4 }); assert.equal(S.count, 4); assert.ok(R.probe.rect[0] + S.at[0] + S.pitch * 3 + S.size[0] + 16 <= R.probe.rect[0] + R.probe.slot[0], "four plates clear the sitting slot by 16");
+  const Z = R.bed.sleeper; for (const k of ["adult", "juvenile"]) { is(Z[k], "sleeping " + k); assert.deepEqual(Z[k].slice(2), R.resident[k]); assert.equal(Z[k][0] + Z[k][2] / 2, Z.foot[0]); assert.equal(Z[k][1] + Z[k][3], Z.foot[1]); }
   assert.deepEqual(R.resident.adult, [144, 152]); assert.deepEqual(R.resident.juvenile, [104, 112]);
   assert.deepEqual(R.ribbon.rect, [40, 72, 608, 40]); assert.deepEqual(R.report.rect.slice(0, 3), [64, 120, 560]);
   const names = new Set(palette.colours.map(([n]) => n)), bad = []; (function walk(o) { for (const v of Object.values(o)) { if (typeof v === "string") { if (!names.has(v)) bad.push(v); } else if (v && typeof v === "object") walk(v); } })(home.colours);
