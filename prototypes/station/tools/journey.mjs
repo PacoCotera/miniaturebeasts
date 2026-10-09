@@ -10,6 +10,7 @@ import path from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { pending as pendingGuide } from "./journey-guide.mjs";
 import { decode } from "../../genome-stamp/src/decode.mjs";
 import { sameGenome } from "../../genome-stamp/src/codec.mjs";
 import { frameFor } from "../../genome-stamp/src/frames.mjs";
@@ -484,4 +485,5 @@ writeFileSync(checksFile, JSON.stringify(checks));
 console.log("recorded " + checks.shots.length + " screenshot points for the layer checks in " + checksFile);
 await assertType("the fresh world"); await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
+console.log("pending until the guide is built on the LVGL face (L2.1), " + pendingGuide.length + " steps in tools/journey-guide.mjs:\n" + pendingGuide.map((p) => "  · " + p.id + ": " + p.what).join("\n"));
 console.log("journey ok · screenshots in img/");
