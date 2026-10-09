@@ -23,6 +23,8 @@ test("Pods in three states: the collection's six places, rings, labels and the w
   for (const k of ["place", "grow", "glint"]) assert.ok(inside([pl[0] + A[k].at[0], pl[1] + A[k].at[1], A[k].at[2], A[k].at[3]], pl), k + " inside its place");
   assert.ok(apart(A.waiting.rect, places[3]) && A.waiting.rect[1] + A.waiting.rect[3] <= 552, "the waiting mark under the places");
   assert.deepEqual(pods.classes.pod.collection, [88, 112]);
+  assert.deepEqual(pods.colours.collectionRing, { read: "bone", unread: "bevel", edge: "hairline" }); assert.ok(!("ringRead" in pods.colours), "one home for the ring's colours");
+  assert.equal(pods.strings.openChapter, "Open {chapter}"); assert.equal(pods.strings.wayBack.chapter, "{name}");
 });
 
 test("the pod overview: the pod first and largest, the figure beside it suggesting the type, the stamp a detail, nothing touching", () => {

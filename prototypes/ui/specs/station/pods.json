@@ -48,7 +48,8 @@
     ],
     "outer": 80,
     "band": 8,
-    "arcs": "one per chapter, filled when read, closed when all read"
+    "arcs": "one per chapter, filled when read, closed when all read",
+    "colours": "colours.collectionRing"
    },
    "pod": {
     "size": [
@@ -870,12 +871,6 @@
  },
  "colours": {
   "ground": "deep",
-  "ringRead": "bevel",
-  "ringCurrent": "bone",
-  "ringUnread": "hairline",
-  "ringSealed": "hairline",
-  "ringBase": "hairline",
-  "ringDot": "bone",
   "name": "bone",
   "origin": "bone",
   "ribbonFill": "tealD",
@@ -926,7 +921,12 @@
   "placeEdge": "hairline",
   "figureHalo": "frostD",
   "figureSilhouette": "enamel",
-  "kinRing": "hairline"
+  "kinRing": "hairline",
+  "collectionRing": {
+   "read": "bone",
+   "unread": "bevel",
+   "edge": "hairline"
+  }
  },
  "strings": {
   "unknownPod": "Unknown pod",
@@ -950,7 +950,15 @@
    "rail": "Legs & Tail",
    "heading": "Legs & Tail"
   },
-  "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name"
+  "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name",
+  "openChapter": "Open {chapter}",
+  "wayBack": {
+   "collection": "Home",
+   "overview": "Pods",
+   "chapter": "{name}",
+   "chapterFallback": "Back",
+   "compare": "{name}"
+  }
  },
  "states": [
   "collection",
