@@ -272,14 +272,14 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 **Purpose.** Each species' field guide: its frame, the looks found so far, lineage and wishes. **Reads first:** the species' portrait and name.
 
 - **Living window.** The species portrait: one resident of that species in rich treatment, doing its habit (dig, glow, puff), mounted on the page as a framed plate.
-- **Instrument.** Two spreads. The face spread: the species' places as stamps; the frame once, as a pressed plate; the stamp at 120 px on a plain plate (the type specimen's until a portrait); the family tree panel under the stamp; the pinned wish; a page-turn corner to the guide. The guide spread, the fold-out: every chapter as a column, every look found and still to find (Guide, below) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was one tab per chapter and the look plates on the face spread).
+- **Instrument.** Two spreads. The face spread: the species' places as stamps; the frame once, as a pressed plate; the stamp at 120 px on a plain plate (the type specimen's, with no mibi name, until a portrait); the family tree panel under the stamp; the pinned wish; a page-turn corner to the guide (`book-corner-turn-24x24`, only when the species has a guide). The guide spread, the fold-out: every chapter as a column, every look found and still to find (Guide, below) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was one tab per chapter and the look plates on the face spread).
 - **The clarity line.** Under the habit line: "A typical Belatz, not one of yours."; with a portrait, "Fig, your Belatz, sat for this."
 - **Composition.** Portrait at the left (about 300×310); guide pages centre; stamp, tree and wishes right.
 - **Lively / quiet.** Lively: the portrait. Quiet: the guide, the tree.
 - **Light.** Warm on the portrait; cool, even light on the archive.
 - **Palette.** The tome's cream, the species' hues on plates.
 - **Type.** 3× species name on a paper label, with one 2× habit line under it; no paragraphs.
-- **Chrome.** `✓ Visit Fig` on a mibi, `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Library` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Spread`). `✓ Visit Fig` is a jump: on Habitat, ← reads Home.
+- **Chrome.** `✓ Visit Fig` on a mibi (on the face spread only when the face is a living mibi's portrait: the type face has no ✓ cap), `✓ Add to the wish` on a look, `✓ Find a pair` on a wish, `← Library` (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was `← Spread`). `✓ Visit Fig` is a jump: on Habitat, ← reads Home.
 - **Motion.** Tabs turn in 200 ms; the portrait lives.
 
 **Decided 2026-10-08 (owner; `art/concept-station/library-book/`, BK-D-r2-a1).** The Book is accepted. The portrait is mounted as a framed plate, not painted straight onto the page; the family tree panel stays under the stamp at about its present size (about 180×160 px); the name sits on a paper label with the habit line under it. For the master, the label's copy and the names go through the copywriter's rules and this guide's type first: consistent case (the owner flagged a mix of lower and upper case) and the typeface.
@@ -311,10 +311,11 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 - **Columns are chapters.** One panel per chapter, shared by every species and tinted by it: one pixel in eight of the species' pod pigment on paper, with a 2 px band of it across the top. Up to seven chapters 128 wide on a 136 pitch; eight 112 wide on a 120 pitch; never a scroll.
 - **Progress on every trait.** One pip per look, filled found, dotted unseen, in groups of five. No digits.
 - **Sealed.** A shut panel with its notch and no traits.
-- **One detail band.** The open trait's looks as plates and one dotted "more?", "Carried by" with your mibis' names.
+- **One detail band.** The open trait's looks as plates and one dashed "more?", each plate keylined in `bark`, "Carried by" with your mibis' names on two lines at most.
 - **Wish.** A mark on a pinned trait and its plate; the pinned wish itself stays on the face spread.
 - **Palette.** The tome's paper; colour only in the tints, the plates and the face.
 - **Chrome.** `✓ Add to the wish` or `✓ Take it off the wish` on a plate; `✓ Visit Fig` on a name (a jump: on Habitat, ← reads Home); read-only on a cell; `← Library`.
+- **Focus.** On the tome's paper the ring is `rust`, the same geometry (frame.json `focus.ring.onPaper`), on the Library, the face spread and the guide.
 - **Motion.** The page turns in 300 ms.
 
 **Pass when**
