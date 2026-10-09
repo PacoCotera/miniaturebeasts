@@ -1,0 +1,166 @@
+{
+ "screen": "create",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#create",
+ "frame": "frame.json",
+ "status": "Pass 2 (UI designer, 2026-10-09 13:33, America/Mexico_City), the L2.4 spec. Structure: shape and grow Decided (owner, 2026-10-09 13:21: \"structure right\"); the nothing-read state is added on the game designer's ruling (13:27: identifying the species is enough to grow an unedited founder) and goes to the owner with the sign-off. The disciplines' rulings of 2026-10-09 are folded in: architect 13:24 (the stepper, the founder's dither, the bench ground, the leaves word), art director 13:28 (the roll's re-cut, the changed mark, the code's line, the dome, the chamber, the stage slice, the small leaf), game designer 13:27 (the nothing-read state, the roll's order, the notices' order, the first founder's leaves), copywriter 13:27 (the strings)",
+ "wireframes": ["design/style-guide/station-layouts/03-create.png", "design/style-guide/station-layouts/03b-create-clash.png", "design/style-guide/station-layouts/03c-create-grow.png", "design/style-guide/station-layouts/03d-create-nav.png", "design/style-guide/station-layouts/03e-create-nothing-read.png"],
+ "note": "The one home of the Create numbers, transcribed from station-layouts.md (Create) and its wireframes 03-create.svg to 03e-create-nothing-read.svg. Rectangles are [x, y, w, h] in screen pixels. Create shapes a founder from one identified pod: the founder is the spotlight, the roll of the focused trait sits over it, the pod at the left and the incubation dome, its leaves and the stamp at the right balance it, the total is on the bottom line.",
+ "derived": {
+  "roll pictures": "UI designer, 2026-10-09: 128×72 (was 128×88), so the notches sit outside the ring and the trait line clears the chamber. Art director, 13:28: re-cut from the chapter page's source (the painting's crop by the rig's region, or the per-look plate), never from its 128×160 picture; a surface or quality trait (Colour, Markings, Fluff, Sheen, Scales, Feathers, Tufts) a bleed crop filling all 128×72 with no ground; a part or posture (Beak, Crown, Crest, Tail, Head, Eyes, Carriage) whole inside the centred 75%, 96×54 at (16, 9), its ground keyed; only ever reduced",
+  "one ring": "UI designer, 2026-10-09: the cream ring is on the chosen roll picture, the screen's one focus target; the four keys step what it holds, as on Cross (architect, 13:24: the stepper accepted). The rail's open tab is the focused trait's chapter and the trait's pip lifts 2 px; no second ring round a pip",
+  "no mark on a picture": "UI designer, 2026-10-09, after the owner's 2026-10-08 21:55 rule: the changed tag and the clash ✕ in the trait line; a clash is a 2 px red edge on the picture's own rectangle",
+  "changed": "art director, 2026-10-09 13:28: changed is not a need, so never amber: the tag's word `bone` on plate-name-88x24 (to be cut), the pip a 6×6 `bone` diamond (pip-changed-6x6)",
+  "pod": "UI designer, 2026-10-09: the pod by its species' size class (pods.json classes.pod), bottom-centred on (160, 408), on the signed dish masters room-cradle and room-cradle-front placed as on Pods' overview",
+  "chamber": "art director, 2026-10-09 13:28 (concept measurement 316, 232, 392, 320), on the grid by the UI designer: 312, 232, 400, 320 (was 344, 232, 336, 320)",
+  "dome": "art director, 2026-10-09 13:28: 776, 104, 176, 224, its floor still at y 296 (was 776, 120, 176, 208)",
+  "code": "art director, 2026-10-09 13:28: the line box 525 to 545, baseline 541, the rule at 549 (8 px from baseline to ink); the region 776, 525, 176, 25, off the grid for that clearance. 176 wide: the widest code, \"WWW · WWW · WWW\", is 168 to 171 px",
+  "leaves": "architect, 2026-10-09 13:24: the Station word `leaves`, form grid. Three rows of 16 (48): a bud takes 20 minutes plus one a change, up to 38 today; the first founder 5 whatever is shaped (game designer, 13:27). The small leaf is the Incubator's leaf drawn at 8×12, its empty outline `bevel` (art director, 13:28)",
+  "nothing read": "game designer, 2026-10-09 13:27: the state exists (identifying the species is enough to grow an unedited founder). Pods' way in, UI designer: ✓ on an identified pod is always `✓ Shape a founder` and opens Create; a chapter opens from the rail (▲, then ✓ Open). Was: ✓ on an identified pod with nothing read opened its first chapter",
+  "bench": "architect, 2026-10-09 13:24: the frame word's stage part with the room's master; art director, 13:28: room-bench-stage-create, to be commissioned, until then room-bench-stage-collection",
+  "plate on one look": "UI designer, 2026-10-09: no message plate on ▲ ▼ where a trait carries one look or is a doing; the trait line already says why"
+ },
+ "rules": {
+  "used": ["railCompaction", "slantTabs"],
+  "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
+  "needed": []
+ },
+ "states": ["nothingRead", "shape", "grow"],
+ "initial": "nothingRead when the pod has no chapter read, else shape",
+ "stateRule": "nothingRead: an identified pod with no chapter read; the founder grows as the pod is (game designer, 2026-10-09 13:27). shape: at least one chapter read, at rest and while rolling; its conditions (changed, clash, busy, noBay, short) change marks and the bottom line, never regions. grow: from ✓ Grow it until the screen changes to the Incubator (events.grow), input held, from either state. A region with `inStates` exists only in those states; the others exist in all three",
+ "regions": {
+  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-create", "until": "room-bench-stage-collection", "note": "the research bench's ground; the Create master is to be commissioned (art director, 2026-10-09 13:28)" },
+  "rail": {
+   "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "focusable": false, "glint": false,
+   "open": "shape: the focused trait's chapter (frame.json rail.states.open); nothingRead: none",
+   "tabs": { "read": "a read chapter", "unread": "a chapter not read: it stays a surprise", "sealed": "as on Pods", "open": "the focused trait's chapter" },
+   "pips": { "read": "filled", "unread": "hollow", "changed": "a 6×6 `bone` diamond, pip-changed-6x6 (art director, 2026-10-09 13:28)", "clash": "the 6×6 ✕ pip-clash-6x6 in place of the pip", "focused": "the focused trait's pip lifted 2 px: y 69 to 75 (was 71 to 77); no ring" }
+  },
+  "roll": {
+   "rect": [296, 88, 432, 104], "build": "roll", "inStates": ["shape", "grow"], "composition": ["sprite: a picture per look", "sprite: notch up", "sprite: notch down"],
+   "forms": {
+    "roll": { "pictures": [[304, 104, 128, 72], [448, 104, 128, 72], [592, 104, 128, 72]], "order": ["as the pod is", "only the first copy", "only the second copy"], "orderNote": "the trait state's hiddenChoice gives which copy is the hidden look where it applies; any choice but the first costs 1 ◆ and 1 minute, \"only the shown look\" too (game designer, 2026-10-09 13:27)", "notches": true },
+    "single": { "pictures": [[448, 104, 128, 72]], "notches": false, "when": "a doing (Tuikis Claws: \"breed to change\"), a trait the pod carries one look of, or a trait that cannot be shaped" }
+   },
+   "picture": { "size": [128, 72], "gap": 16, "ground": "colours.roll.ground", "asset": "roll-{species}-{trait}-{look}-128x72", "recut": "derived.roll pictures (art director, 2026-10-09 13:28)", "partInside": [16, 9, 96, 54] },
+   "chosen": "the picture of the trait's choice (0, 1 or 2); single: the one picture",
+   "notch": { "size": [12, 6], "x": "the chosen picture's x + 58", "up": 90, "down": 184, "gap": "4 px outside the ring" },
+   "ring": { "shape": "round", "box": "4 px outside the chosen picture: (x − 4, 100, 136, 80)" },
+   "target": { "id": "roll", "rect": "the chosen picture's rectangle: the roll composition registers target `roll` there (architect, 2026-10-09 13:24)" },
+   "clashEdge": { "width": 2, "inside": true, "on": "the chosen picture of a clashing trait" }
+  },
+  "traitLine": {
+   "rect": [296, 200, 432, 24], "component": "text", "build": "traitLine", "px": 16, "weight": 400, "lines": 1, "words": 6, "noDigits": true, "centre": 512, "lineTop": 202,
+   "tag": { "component": "panel", "slice": "plate-name-88x24", "status": "to be cut (art director, 2026-10-09 13:28)", "h": 24, "w": "the word's width + 16, rounded up to the 8 px grid (\"changed\": 66 + 16 → 88)", "pad": 8, "gap": 8, "when": "the focused trait is changed and does not clash" },
+   "clashMark": { "inline": "✕", "asset": "icon:cross:16", "size": [16, 16], "when": "the focused trait clashes", "note": "the text word's inline 16 px icon, the line's first glyph; no tag then" },
+   "breedMark": { "slice": "mark-breed-28x16", "size": [28, 16], "gap": 8, "when": "the focused trait is a doing", "note": "the two joined rings after the trait's name, as on the chapter page" },
+   "place": "the group (tag or mark, its gap, the line) centred on x 512; the composition sizes its own tag from the word, as Home's name tag",
+   "nothingRead": "the line alone: strings.traitLine.none"
+  },
+  "chamber": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "inside", "note": "the specimen chamber's glass back; no words" },
+  "founder": { "rect": [360, 240, 304, 312], "component": "specimen", "focal": true, "axis": 512, "feet": 536, "asset": "the founder's placeholder at 304×312 (the stylised rig pass)", "frost": "the parts of every unread chapter's traits frosted, never a guess", "frostNothingRead": "the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. (art director, 2026-10-09 13:47)" },
+  "chamberFront": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "frame", "floor": [312, 536, 400, 16], "note": "the glass's edge and highlight and the floor, drawn over the founder" },
+  "pod": { "rect": [88, 232, 144, 176], "component": "specimen", "focal": false, "axis": 160, "feet": 408, "state": "identified", "classes": "pods.json classes.pod: large 144×176, medium 120×152, small 104×128 by the species' size class, bottom-centred on (axis, feet)" },
+  "cradle": { "rect": [48, 344, 224, 96], "component": "specimen", "part": "cradle", "slice": "room-cradle", "under": "pod" },
+  "cradleFront": { "rect": [48, 344, 224, 96], "component": "specimen", "part": "cradleFront", "slice": "room-cradle-front", "over": "pod", "note": "the dish's near lip over the pod's foot, as on Pods" },
+  "origin": { "rect": [40, 456, 240, 40], "component": "text", "px": 16, "weight": 400, "lines": 2, "pitch": 20, "align": "centre", "centre": 160, "noDigits": true, "text": "the origin sentence of Pods' overview (pods.json regions.overview.origin)" },
+  "dome": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "inside", "floor": 296, "note": "the incubation chamber, empty: the dome's back and its base; Create's own small dome (art director, 2026-10-09 13:28: was 776, 120, 176, 208)" },
+  "bud": { "rect": [832, 216, 64, 80], "component": "specimen", "focal": false, "when": "busy: a bud is growing, its glow in the dome", "asset": "bud-small-64x80", "foot": [864, 296] },
+  "domeFront": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "frame", "note": "the dome's glass edge and highlight, drawn over the bud and the travelling pod" },
+  "leaves": {
+   "rect": [768, 336, 192, 48], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 12, "perRow": 16, "rowPitch": 16, "rows": 3, "max": 48,
+   "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" },
+   "place": "leaf i at (x + 12 × (i mod 16), y + 16 × floor(i / 16)) of the region",
+   "count": "one a minute the bud will take: 20 plus one a change, the first founder 5 whatever is shaped (game designer, 2026-10-09 13:27); every leaf empty here",
+   "props": "{ total, full: 0, rows: 0 }"
+  },
+  "stamp": { "rect": [804, 400, 120, 120], "component": "stampLabel", "offGrid": "x 804 centres the 120 label on the right column's axis (864), 4 px off the grid, as Home's juvenile and the medium pod are", "live": "the stamp of the read and changed chapters, redrawn as the rolls change; nothingRead: no chapter filled", "fromFocal": 140 },
+  "code": { "rect": [776, 525, 176, 25], "component": "text", "offGrid": "the line box 525 to 545 keeps 8 px from the baseline (541) to the rule (549) (art director, 2026-10-09 13:28)", "px": 16, "weight": 400, "align": "centre", "centre": 864, "lineTop": 525, "baseline": 541, "rule": { "y": 549, "h": 1, "x": [776, 952] }, "before": "blank: the rule alone", "after": "the code, printed at Grow (events.grow)" },
+  "travel": { "rect": [88, 120, 848, 288], "component": "specimen", "part": "travel", "inStates": ["grow"], "from": [88, 232, 144, 176], "to": [792, 120, 144, 176], "path": "a straight line, whole pixels, eased in and out", "foot": { "from": [160, 408], "to": [864, 296] }, "layer": "drawn after the dome's back and before the chamber, the roll and the dome's front: it passes behind the specimen chamber and ends inside the dome" }
+ },
+ "drawOrder": ["bench", "rail", "cradle", "dome", "bud", "pod", "cradleFront", "origin", "chamber", "founder", "chamberFront", "roll", "traitLine", "domeFront", "leaves", "stamp", "code", "focus ring", "frame (top bar, bottom line)", "message plate"],
+ "events": {
+  "roll": { "kind": "dither", "target": "founder", "hold": false, "ms": 200, "levels": 16, "do": "the founder's old picture cross-dithers to the new one in its own box (Bayer, a composed picture; architect, 2026-10-09 13:24); the roll, the ring, the line, the pip, the stamp and the price change at once (cuts)" },
+  "grow": {
+   "kind": "grow", "target": "pod", "hold": true, "holdMs": 1080,
+   "steps": [
+    { "at": 0, "ms": 300, "do": "the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
+    { "at": 300, "do": "the code appears on the rule (a cut)" },
+    { "at": 300, "ms": 600, "do": "the pod travels from its box to the dome (regions.travel); the dish stays, empty" },
+    { "at": 900, "ms": 180, "do": "the screen transition (16-level Bayer dither) to the Incubator, growing (incubator.json)" }
+   ]
+  }
+ },
+ "focus": {
+  "nothingRead": { "initial": "room", "fallback": "none", "graph": { "room": { "up": "none", "down": "none", "left": "none", "right": "none" } }, "targets": {}, "room": "the ring on nothing: no roll, no target; the arrows do nothing; ✓ does the bottom line's Grow it" },
+  "shape": {
+   "initial": "roll", "fallback": "none",
+   "graph": { "roll": { "stepper": ["left", "right", "up", "down"] } },
+   "targets": { "roll": { "group": "roll", "shape": "round", "box": "the chosen picture's rectangle (regions.roll.target)", "lift": 0, "note": "the ring never leaves the roll, so it does not lift" } },
+   "stepper": "architect, 2026-10-09 13:24: a stepper key sends intent `step:<key>`, the ring stays and no focus message goes; refused at load: an empty list, a duplicate or unknown key, a stepper key with an edge in the group, axis horizontal with left or right, axis vertical with up or down, order with up or down"
+  },
+  "keys": {
+   "left": "shape: step:left, the previous read trait in ring order, skipping unread chapters; the first stops. nothingRead: nothing",
+   "right": "shape: step:right, the next read trait; the last stops. nothingRead: nothing",
+   "up": "shape: step:up, the previous look of the focused trait, wrapping among the three; a single: nothing. nothingRead: nothing",
+   "down": "shape: step:down, the next look, wrapping; a single: nothing. nothingRead: nothing",
+   "confirm": "Grow it, exactly as the bottom line says; no ✓ cap when blocked (busy, no bay, clash): nothing happens; a dimmed cap when short: a message plate names what is short (frame.json navigation.keys.confirm)",
+   "back": "the pod's overview with the ring on the pod, nothing spent, the choices dropped (frame.json navigation.screens.create)",
+   "room": "drops the unpaid choices; coming back starts fresh (frame.json navigation.leaving.create)"
+  },
+  "held": "while events.grow holds, the face moves no focus and sends no intent",
+  "vectors": [
+   { "state": "shape", "from": "roll", "key": "up", "intent": "step:up", "to": "roll" },
+   { "state": "shape", "from": "roll", "key": "down", "intent": "step:down", "to": "roll" },
+   { "state": "shape", "from": "roll", "key": "left", "intent": "step:left", "to": "roll" },
+   { "state": "shape", "from": "roll", "key": "right", "intent": "step:right", "to": "roll" },
+   { "state": "shape", "from": "roll", "key": "confirm", "intent": "confirm", "to": "roll" },
+   { "state": "nothingRead", "from": "room", "key": "left", "to": "room" },
+   { "state": "nothingRead", "from": "room", "key": "confirm", "intent": "confirm", "target": "room" }
+  ]
+ },
+ "bottomLine": {
+  "action": "✓ Grow it, then the price (state.growCost), icon before figure as everywhere: ⚡ 2 ❀ 4, then ◆ 1 a change; the first founder no Essence (⚡ 2 alone with nothing changed)",
+  "context": "what stays a surprise (strings.surprise); every chapter read: the founder, fully known (strings.founder)",
+  "notice": "the first block in the rules' order: busy, no bay, clash, short (game designer, 2026-10-09 13:27), with the amber lamp; otherwise the frame's notice",
+  "back": "{pod} (frame.json navigation.screens.create)",
+  "conditions": {
+   "ok": "the ✓ cap and the verb in orange, the price in bone",
+   "short": "the frame's dimmed ✓: cap and verb mist, the short material's figure amber; ✓ shows a message plate naming what is short, nothing spent",
+   "blocked": "busy, no bay or clash: no ✓ cap; the verb and the price in mist, so the total still reads; the notice says why; ✓ does nothing"
+  }
+ },
+ "colours": {
+  "rail": { "changed": "bone", "clash": "red", "note": "the tabs' fills, words and pips are frame.json rail.states" },
+  "roll": { "ground": "ground", "notch": "bone", "clashEdge": "red" },
+  "traitLine": { "line": "bone", "clash": "red", "tagFill": "panel", "tagEdge": "hairline", "tagWord": "bone" },
+  "chamber": { "back": "ground", "glassEdge": "frostD", "glassLight": "frost", "floor": "enamel", "floorEdge": "bevel" },
+  "founder": { "frost": "frostS", "frostTexture": "frostD" },
+  "origin": "mist",
+  "dome": { "back": "ground", "base": "enamel", "glassEdge": "frostD", "glassLight": "frost" },
+  "bud": { "bean": "peach", "light": "cream", "edge": "rust" },
+  "leaves": { "empty": "bevel", "full": "sage", "vein": "sageD" },
+  "stampLabel": { "fill": "bone", "edge": "slate" },
+  "code": { "text": "bone", "rule": "hairline" }
+ },
+ "strings": {
+  "title": "Create",
+  "action": "Grow it",
+  "back": "{pod}",
+  "changed": "changed",
+  "traitLine": {
+   "asPod": "{Trait}: as the pod is",
+   "only": "{Trait}: {look line}",
+   "asleep": "{Trait}: {shows}, {sleeping} asleep",
+   "doing": "{Trait}: breed to change",
+   "oneLook": "{Trait}: one look in this pod",
+   "clash": "✕ {Trait}: won't grow like this",
+   "none": "it grows as the pod is",
+   "examples": ["Markings: only pale", "Claws: breed to change", "✕ Eyes: won't grow like this"]
+  },
+  "surprise": { "one": "{Chapter} stays a surprise", "more": "{n in words} surprises to come", "all": "all of it stays a surprise", "budget": "208 px at 16 px, the context zone" },
+  "founder": "{a/an} {Species}, fully known",
+  "notices": { "busy": "a bud is already growing", "noBay": "no bay free", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)" },
+  "by": "copywriter, 2026-10-09 13:27"
+ }
+}
