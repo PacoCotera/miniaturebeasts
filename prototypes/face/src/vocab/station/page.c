@@ -36,14 +36,14 @@ void word_page(const char *key) {
   /* the pane: the open page has none; Compare's is the nine-slice master at the height the count gives, else a plain panel */
   if (!snull(base, "pane")) {
     char pane[96]; snprintf(pane, sizeof pane, "%s", v_pstr(v_fmt("%s.pane", P))); int slot = has(pane) ? wire_asset_slot(pane) : -1, ins[4], tile = 0;
-    if (slot >= 0 && wire_asset_nine(slot, ins, &tile)) { v_region(reg, LAYER_CHROME); prim_node(v_id("page.pane"), FN_NINE, rx, ry, size[0], size[1], ((uint32_t)ins[0] << 24) | ((uint32_t)ins[1] << 16) | ((uint32_t)ins[2] << 8) | (uint32_t)ins[3], slot, tile); }
+    if (slot >= 0 && wire_asset_nine(slot, ins, &tile)) { v_region(reg, LAYER_PAINTED);   /* the pane is a painted master */ prim_node(v_id("page.pane"), FN_NINE, rx, ry, size[0], size[1], ((uint32_t)ins[0] << 24) | ((uint32_t)ins[1] << 16) | ((uint32_t)ins[2] << 8) | (uint32_t)ins[3], slot, tile); }
     else if (sexists(base, "pane")) { v_region(reg, LAYER_CHROME); word_panel(key, rx, ry, size[0], size[1], paneC, edgeC); }
   }
   int H0 = sa(base, "heading", 0, 0), H1 = sa(base, "heading", 1, 0), hasH = sexists(base, "heading");
   const char *pod = v_pstr(v_fmt("%s.heading.pod", P));
   if (has(pod) && hasH) {   /* Compare: the pod (the list class) and the marks that say who it is */
-    v_region(reg, LAYER_ART); v_sprite(v_fmt("%s.pod", key), pod, rx + sa(base, "podAt", 0, 0), ry + sa(base, "podAt", 1, 0), sa(base, "pod", 0, 0), sa(base, "pod", 1, 0));
-    for (int k = 0, nw = v_plen(v_fmt("%s.heading.who", P)); k < nw; k++) layer(v_fmt("%s.who.%d", key, k), rx + spec_int(S, v_fmt("%s.who.marks.%d.0", base, k), 0), ry + spec_int(S, v_fmt("%s.who.marks.%d.1", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.2", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.3", base, k), 0), v_pstr(v_fmt("%s.heading.who.%d", P, k)));
+    v_region(reg, LAYER_PAINTED); v_sprite(v_fmt("%s.pod", key), pod, rx + sa(base, "podAt", 0, 0), ry + sa(base, "podAt", 1, 0), sa(base, "pod", 0, 0), sa(base, "pod", 1, 0));
+    for (int k = 0, nw = v_plen(v_fmt("%s.heading.who", P)); k < nw; k++) { char kind[24]; spec_str(S, v_fmt("%s.who.kinds.%d", base, k), kind, sizeof kind); v_layer(strcmp(kind, "clan") == 0 ? LAYER_PAINTED : LAYER_ART); layer(v_fmt("%s.who.%d", key, k), rx + spec_int(S, v_fmt("%s.who.marks.%d.0", base, k), 0), ry + spec_int(S, v_fmt("%s.who.marks.%d.1", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.2", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.3", base, k), 0), v_pstr(v_fmt("%s.heading.who.%d", P, k))); }
   } else if (spec_len("props", v_fmt("%s.heading", P)) >= 0 && hasH) {
     char word[V_STR]; snprintf(word, sizeof word, "%s", v_pstr(v_fmt("%s.heading.word", P)));
     v_region(reg, LAYER_ART); layer(v_fmt("%s.emblem", key), rx + H0, ry + H1, 24, 24, v_pstr(v_fmt("%s.heading.emblem", P)));
@@ -58,7 +58,7 @@ void word_page(const char *key) {
   if (v_pbool(v_fmt("%s.sealedFind", P), 0) && sexists(base, "sealedFind")) {   /* a shut chapter: the one picture of the find that opens it (a flat tone until it is painted) */
     int fx = rx + sa(base, "sealedFind", 0, 0), fy = ry + sa(base, "sealedFind", 1, 0), fw = sa(base, "sealedFind", 2, 0), fh = sa(base, "sealedFind", 3, 0);
     v_region("page.seal", LAYER_CHROME); v_rect(v_fmt("%s.find", key), fx, fy, fw, fh, cellC);
-    v_region("page.seal", LAYER_ART); layer(v_fmt("%s.findpic", key), fx, fy, fw, fh, v_pstr(v_fmt("%s.sealedPicture", P)));
+    v_region("page.seal", LAYER_PAINTED); layer(v_fmt("%s.findpic", key), fx, fy, fw, fh, v_pstr(v_fmt("%s.sealedPicture", P)));
     return;
   }
   int gap = sexists(base, "cell") ? si(base, "cell.gap", 0) : si(base, "nameGap", 0), line = sexists(base, "cell") ? si(base, "cell.name.line", 20) : si(base, "nameLine", 20);
@@ -75,9 +75,9 @@ void word_page(const char *key) {
       if (anim_get(ANIM_WIPE, chap, &wa)) {   /* Read: the page wipes, each cell revealed from the top over the event */
         int cut = (2 * ph * wa.elapsed + wa.ms) / (2 * wa.ms);
         v_region(cellReg, LAYER_CHROME); prim_node(v_id(v_fmt("%s.wipe", cid)), FN_CLIP, cx, cy, pw, cut, 0, has(cropC) && wire_has_asset(cropC) ? 2 : 1, 0);
-        v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC);
+        v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); v_layer(LAYER_PAINTED); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC); v_layer(LAYER_CHROME);
         v_rect(v_fmt("%s.wipeline", cid), cx + 6, cy + cut, pw - 12, 2, wipeC);
-      } else { v_region(cellReg, LAYER_CHROME); v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); v_region(cellReg, LAYER_ART); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC); }
+      } else { v_region(cellReg, LAYER_CHROME); v_rect(v_fmt("%s.pic", cid), cx, cy, pw, ph, cellC); v_region(cellReg, LAYER_PAINTED); layer(v_fmt("%s.crop", cid), cx, cy, pw, ph, cropC); }
     } else { v_region(cellReg, LAYER_ART); layer(v_fmt("%s.outline", cid), cx, cy, pw, ph, v_pstr(v_fmt("%s.outline", C))); }
     int ny = cy + ph + gap; char nm[V_STR]; snprintf(nm, sizeof nm, "%s", v_pstr(v_fmt("%s.name", C))); int nw = v_measure(nm, 16);
     int hasNew = isNew && has(newMark) && sexists(base, "newMark");

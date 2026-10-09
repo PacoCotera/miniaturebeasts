@@ -26,7 +26,37 @@ static void stage_dither(void) {
   snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
   v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
+/* a target's ring form (lvgl-switch.md §2.6): "round", "feet", "tab", { "circle": { "radius": r > 0, "centre": [x, y] } } or { "circle": { "outside": n >= 0 } }, and nothing else */
+static int vet_ring(const char *screen, const char *name, char *err, int cap) {
+  char R[96], C[112], Q[128], why[80] = "";
+  snprintf(R, sizeof R, "targets.%s.ring", name); int rl; const char *raw = spec_raw(screen, R, &rl); if (!raw) return 0;
+  if (raw[0] == '"') { char f[16]; spec_str(screen, R, f, sizeof f); if (strcmp(f, "round") && strcmp(f, "feet") && strcmp(f, "tab")) snprintf(why, sizeof why, "%.30s is not a ring form", f); }
+  else if (raw[0] == '{') {
+    snprintf(C, sizeof C, "%s.circle", R); char k[16], d[2];
+    if (spec_len(screen, R) != 1 || !spec_member(screen, R, 0, k, sizeof k, d, sizeof d) || strcmp(k, "circle")) snprintf(why, sizeof why, "an object ring has the one key circle");
+    else if (spec_raw(screen, C, NULL) && spec_raw(screen, C, NULL)[0] == '{') {
+      int n = spec_len(screen, C); char k0[16], k1[16];
+      if (n == 1 && spec_member(screen, C, 0, k0, sizeof k0, d, sizeof d) && !strcmp(k0, "outside")) { snprintf(Q, sizeof Q, "%s.outside", C); if (!spec_raw(screen, Q, NULL) || spec_int(screen, Q, -1) < 0) snprintf(why, sizeof why, "circle.outside must be 0 or more"); }
+      else if (n == 2 && spec_member(screen, C, 0, k0, sizeof k0, d, sizeof d) && spec_member(screen, C, 1, k1, sizeof k1, d, sizeof d) && ((!strcmp(k0, "radius") && !strcmp(k1, "centre")) || (!strcmp(k0, "centre") && !strcmp(k1, "radius")))) {
+        snprintf(Q, sizeof Q, "%s.radius", C); char c[120]; snprintf(c, sizeof c, "%s.centre", C);
+        if (spec_int(screen, Q, 0) <= 0) snprintf(why, sizeof why, "circle.radius must be above 0"); else if (spec_len(screen, c) != 2) snprintf(why, sizeof why, "circle.centre is [x, y]");
+      } else snprintf(why, sizeof why, "a circle is radius with centre, or outside");
+    } else snprintf(why, sizeof why, "circle must be an object");
+  } else snprintf(why, sizeof why, "a ring is a form name or a circle");
+  if (*why) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, R, why); return -1; }
+  return 0;
+}
 int screens_vet_spec(const char *screen, char *err, int cap) {
+  for (int i = 0, n = spec_len(screen, "targets"); i < n; i++) { char key[48], dummy[2]; if (spec_member(screen, "targets", i, key, sizeof key, dummy, sizeof dummy) && vet_ring(screen, key, err, cap) < 0) return -1; }
+  /* a focus graph that cannot be walked is refused at load, with the parser's reason (§2.6.1): focus.graph when the spec has one, else (a spec with states) every focus.<state> */
+  { char b[160]; int gl; const char *g = spec_raw(screen, "focus.graph", &gl), *fo = spec_raw(screen, "focus", NULL);
+    if (g) { char why[160]; focus_graph_t *fg = focus_graph_parse(g, gl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: focus.graph: %s", screen, why); return -1; } focus_graph_free(fg); }
+    else if (fo && spec_len(screen, "states") > 0 && spec_len(screen, "focus") > 0)   /* a spec with states: each state's graph, Compare's too */
+      for (int i = 0, n = spec_len(screen, "focus"); i < n; i++) {
+        char key[48], dummy[2]; if (!spec_member(screen, "focus", i, key, sizeof key, dummy, sizeof dummy)) continue;
+        snprintf(b, sizeof b, "focus.%s", key); int sl; const char *sg = spec_raw(screen, b, &sl); if (!sg || sg[0] != '{') continue;
+        char why[160]; focus_graph_t *fg = focus_graph_parse(sg, sl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, b, why); return -1; } focus_graph_free(fg);
+      } }
   for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
     char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
     snprintf(base, sizeof base, "regions.%s.name.plate", key); if (spec_len(screen, base) < 0) continue;

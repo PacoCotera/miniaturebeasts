@@ -50,7 +50,7 @@ test("a plate that is not on the face is an error and a refused node; with the s
   ({ f } = await boot()); for (const p of pics) f.handleOf(p.id, (id) => flat(id, p.w, p.h)); f.pin(pinnedPictures(pods, frame), (id) => { const p = pinnedPictures(pods, frame).find((q) => q.id === id); return flat(id, p.w, p.h); });
   const props = JSON.parse(JSON.stringify(c.props)); props.regions.specimen.name = "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa Bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
   assert.equal(f.props(props), 0); frames(f); assert.deepEqual(f.errors(), []); const lg = logOf(f);
-  assert.ok(lg.regions.some((r) => r.id === "name" && r.layer === "art" && r.rect[2] === 224), "the long name takes the widest plate, 224");
+  assert.ok(lg.regions.some((r) => r.id === "name" && r.layer === "painted" && r.rect[2] === 224), "the long name takes the widest plate, 224");
   assert.ok(lg.pictures <= 200, `${lg.pictures} pictures after the preload`);
 });
 test("the pinned pictures are never dropped to make room", { skip }, async () => {

@@ -39,11 +39,12 @@ void word_rail(void) {
     char word[24], pipc[24]; fcol(v_fmt("states.%s.word", key), word, sizeof word); fcol(v_fmt("states.%s.pip", key), pipc, sizeof pipc);
     char tid[24]; snprintf(tid, sizeof tid, "rail.%d", i);
     /* the tab's ground is the signed rail-tab-fill-<state>-<full|compact>-<w+S>x<h> picture, 1:1 at the tab's x on the rail's y: fill, rims and slats are in it (the host sends the seven at boot and keeps them) */
-    v_region("rail.tab", LAYER_ART);
+    v_region("rail.tab", LAYER_PAINTED);   /* the tab ground is a painted master (the art director's layer table); its emblem is art */
     { char gid[96]; snprintf(gid, sizeof gid, "rail-tab-fill-%s-%s-%dx%d", key, full ? "full" : "compact", w + S, h);
       if (!v_sprite(tid, gid, x, y, w + S, h)) { char b[160]; snprintf(b, sizeof b, "word: the tab ground %.60s is not on the face", gid); v_error(b); prim_refuse(); } }
     int pipCx, pipY, tpips = v_pint(v_fmt("regions.rail.tabs.%d.pips", i), 0), filled = v_pint(v_fmt("regions.rail.tabs.%d.filled", i), 0);
     { anim_state_t wa; char tid2[48]; snprintf(tid2, sizeof tid2, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.id", i))); if (anim_get(ANIM_WIPE, tid2, &wa) && filled == tpips) filled = (wa.elapsed * tpips + wa.ms - 1) / wa.ms; }   /* Read: the pips fill ceil(p * n) over the event */
+    v_layer(LAYER_ART);
     const char *emblem = v_pstr(v_fmt("regions.rail.tabs.%d.emblem", i));
     if (full) {
       char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("regions.rail.tabs.%d.word", i)));
@@ -69,6 +70,6 @@ void word_rail(void) {
   if (focused >= 0 && focused < placed) {
     char ring[24]; spec_str(F, "colours.ring", ring, sizeof ring);
     int box[4] = { tabs[focused].x, tabs[focused].y, tabs[focused].w, tabs[focused].h };
-    v_region("focus", LAYER_ART); word_focusRingShape(v_fmt("rail.%d.focus", focused), box, "tab", ring);
+    v_region("focus", LAYER_ART); word_focusRingFor(v_fmt("rail.%d.focus", focused), box, "rail", ring);
   }
 }

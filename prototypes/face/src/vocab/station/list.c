@@ -20,7 +20,7 @@ void word_bench(void) {
   int r[4]; if (!v_spec_rect(S, "regions.bench.rect", r)) return;
   char ground[24]; spec_str(S, "colours.ground", ground, sizeof ground);
   v_region("bench", LAYER_CHROME); v_rect("bench", r[0], r[1], r[2], r[3], ground);
-  v_region("bench", LAYER_ART);
+  v_region("bench", LAYER_PAINTED);   /* the room stage is a painted master */
   for (int i = 0; i < v_plen("regions.bench.room"); i++) if (v_sprite("bench.room", v_pstr(v_fmt("regions.bench.room.%d", i)), r[0], r[1], r[2], r[3])) break;
 }
 
@@ -33,7 +33,7 @@ void word_list(void) {
     int r[4]; layout_place_rect(S, C, i, r);
     const char *pre = v_fmt("regions.list.places.%d", i); char P[96]; snprintf(P, sizeof P, "%s", pre);
     const char *id = v_fmt("list.p%d", i); char pid[40]; snprintf(pid, sizeof pid, "%s", id);
-    v_region("place", LAYER_ART); v_sprite(pid, v_pstr(v_fmt("%s.panel", P)), r[0], r[1], r[2], r[3]);
+    v_region("place", LAYER_PAINTED); v_sprite(pid, v_pstr(v_fmt("%s.panel", P)), r[0], r[1], r[2], r[3]);
     for (int k = 0, nl = v_plen(v_fmt("%s.ringLayers", P)), j = 0; k < nl; k++) {
       char a[96]; snprintf(a, sizeof a, "%s", v_pstr(v_fmt("%s.ringLayers.%d", P, k)));
       char rid[64]; snprintf(rid, sizeof rid, "%s.ring.%d", pid, j);
@@ -41,14 +41,14 @@ void word_list(void) {
     }
     if (v_pbool(v_fmt("%s.empty", P), 0)) continue;
     const char *pod = v_pstr(v_fmt("%s.pod", P));
-    if (*pod) { v_region("place.pod", LAYER_ART); v_sprite(v_fmt("%s.pod", pid), pod, r[0] + sa(C ".pod.centre", 0, 0) - podW / 2, r[1] + sa(C ".pod.centre", 1, 0) - podH / 2, podW, podH); }
+    if (*pod) { v_region("place.pod", LAYER_PAINTED); v_sprite(v_fmt("%s.pod", pid), pod, r[0] + sa(C ".pod.centre", 0, 0) - podW / 2, r[1] + sa(C ".pod.centre", 1, 0) - podH / 2, podW, podH); }
     char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("%s.name", P)));
     int nx = r[0] + sa(C ".name.at", 0, 0), ny = r[1] + sa(C ".name.at", 1, 0), tw = v_measure(text, npx);
     int pw = layout_plate_width(S, C ".name", tw);
-    v_region("place.name", LAYER_ART); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
+    v_region("place.name", LAYER_PAINTED); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
     v_region("place.name", LAYER_TYPE); v_text(v_fmt("%s.name", pid), text, nx + v_half(pw - tw), ny + v_fdiv(nh - v_cap(npx), 2), tw, npx, name);
     const char *find = v_pstr(v_fmt("%s.find", P));
-    if (*find) { v_region("place.find", LAYER_ART); v_sprite(v_fmt("%s.find", pid), find, r[0] + sa(C ".place.at", 0, 0), r[1] + sa(C ".place.at", 1, 0), sa(C ".place.at", 2, 0), sa(C ".place.at", 3, 0)); }
+    if (*find) { v_region("place.find", LAYER_PAINTED); v_sprite(v_fmt("%s.find", pid), find, r[0] + sa(C ".place.at", 0, 0), r[1] + sa(C ".place.at", 1, 0), sa(C ".place.at", 2, 0), sa(C ".place.at", 3, 0)); }
     const char *grow = v_pstr(v_fmt("%s.grow", P));
     if (*grow) { v_region("place", LAYER_ART); v_sprite(v_fmt("%s.grow", pid), grow, r[0] + sa(C ".grow.at", 0, 0), r[1] + sa(C ".grow.at", 1, 0), sa(C ".grow.at", 2, 0), sa(C ".grow.at", 3, 0)); }
     const char *glint = v_pstr(v_fmt("%s.glint", P));

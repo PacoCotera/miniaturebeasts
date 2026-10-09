@@ -9,7 +9,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { podsProps } from "../src/views/pods-props.mjs";
+import { podsProps, compareBackFocus } from "../src/views/pods-props.mjs";
 import { podsView } from "../src/views/pods.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -78,7 +78,7 @@ test("the view agrees with the view the JavaScript drawing uses: the bottom line
   for (const [name, m] of SCENES) {
     const a = bodyOf(m), b = podsView(m, spec, ctx);
     assert.deepEqual(a.line, b.line, name + ": the line"); assert.equal(a.mode, b.mode, name); assert.equal(a.cur, b.cur, name);
-    assert.deepEqual(a.props.focus.targets.map((t) => t.id), b.targets.map((t) => t.id), name + ": the targets");
+    assert.deepEqual(a.props.focus.targets.map((t) => t.id), a.mode === "compare" ? (b.rail?.tabs ?? []).map((_, i) => "rail." + i) : b.targets.map((t) => t.id), name + ": the targets (Compare's are its rail's tabs; the drawing's Compare has none)");
     assert.deepEqual(a.props.regions.rail?.tabs.map((t) => [t.word, t.state, t.pips, t.filled, t.glint]) ?? null, b.rail?.tabs.map((t) => [t.word, t.state, t.pips, t.filled, t.glint]) ?? null, name + ": the rail");
     const ids = new Set(a.requests.map((r) => r.id)); for (const r of b.requests) assert.ok(ids.has(r.id) || /^plate-name-/.test(r.id), `${name}: the picture ${r.id} is asked for`);
   }
@@ -94,4 +94,25 @@ test("the schema checks: an unknown prop, a wrong type, a missing field and an u
   const bad = JSON.parse(JSON.stringify(v)); bad.regions.list.places[0].panel = 5; assert.ok(validate(bad, schema).length);
   const miss = JSON.parse(JSON.stringify(bodyOf(SCENES[3][1]).props)); delete miss.regions.rail.tabs[0].emblem; assert.ok(validate(miss, schema).some((p) => /emblem/.test(p)));
   const rect = JSON.parse(JSON.stringify(bodyOf(SCENES[3][1]).props)); rect.regions.specimen.pod.rect = [0, 0, 1, 1]; assert.ok(validate(rect, schema).length);
+});
+
+test("an identified pod with no chapter read shows 'Shape a founder', dimmed by what stops it (no Open-a-chapter branch)", () => {
+  const st = rich(["S01"]), p = st.tray[0]; assert.equal(p.read.length, 0);
+  const line = podsProps(model(st), spec, frameSpec).line;
+  assert.equal(line.ok, "Shape a founder"); assert.equal(line.price, "");
+  assert.equal(line.dim, !!S.growBlock(st, p, {}, settings, []), "dim is growBlock's");
+  st.e = 0; st.s = 0; const poor = podsProps(model(st), spec, frameSpec).line; assert.equal(poor.dim, true); assert.equal(poor.ok, "Shape a founder");
+});
+
+test("Compare's focus: the targets are the rail's tabs, the ring opens on the open chapter's tab, rail.open resolves to ui.cmp.ci, and closing it lands on the kin that opened it", () => {
+  const whole = readSome(rich(["S01", "S01", "S01"]), 0); readSome(whole, 1); readSome(whole, 2);
+  const [a, b, c] = whole.tray, n = frameOf("S01").chapters.length;
+  const m = (ci, focus = null) => model(whole, { focus, ui: { view: "overview", cmp: { a: a.id, b: b.id, ci } } });
+  const p = podsProps(m(2), spec, frameSpec).props;
+  assert.equal(p.state, "compare"); assert.deepEqual(p.focus.targets, Array.from({ length: n }, (_, i) => ({ id: "rail." + i, group: "rail", index: i })), "the rail's tabs and nothing else");
+  assert.equal(p.focus.cur, "rail.2", "initial: rail.open"); assert.equal(p.focus.resolve["rail.open"], "rail.2");
+  assert.equal(podsProps(m(1, "rail.1"), spec, frameSpec).props.focus.cur, "rail.1", "a focus the host names is kept");
+  assert.equal(compareBackFocus(m(0), spec, frameSpec), "kin.0", "b is the first kin"); const cm = { ...m(0), ui: { ...m(0).ui, cmp: { a: a.id, b: c.id, ci: 0 } } };
+  assert.equal(compareBackFocus(cm, spec, frameSpec), "kin.1", "the kin whose pod is ui.cmp.b"); assert.equal(compareBackFocus({ ...m(0), ui: { ...m(0).ui, cmp: { a: a.id, b: "nobody", ci: 0 } } }, spec, frameSpec), "pod", "else the pod");
+  assert.equal(compareBackFocus(model(whole), spec, frameSpec), null, "not in Compare");
 });

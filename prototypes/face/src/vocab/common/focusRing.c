@@ -34,6 +34,15 @@ void word_focusRing(const char *id, const int box[4], const char *spec, const ch
 void word_focusRingShape(const char *id, const int box[4], const char *shape, const char *colour) { draw(id, box, shape, 0, 0, 0, 0, 0, colour); }
 void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, int cy, int outside, const char *colour) { draw(id, box, "round", 1, radius, cx, cy, outside, colour); }
 
+void word_focusRingFor(const char *id, const int box[4], const char *group, const char *colour) {
+  char screen[32]; spec_str("props", "screen", screen, sizeof screen);
+  for (int i = 0, n = spec_len(screen, "targets"); i < n; i++) {
+    char key[48], dummy[2], g[32], p[96]; if (!spec_member(screen, "targets", i, key, sizeof key, dummy, sizeof dummy)) continue;
+    snprintf(p, sizeof p, "targets.%s.group", key); spec_str(screen, p, g, sizeof g);
+    if (strcmp(g, group) == 0) { snprintf(p, sizeof p, "targets.%s.ring", key); word_focusRing(id, box, screen, p, colour); return; }
+  }
+  word_focusRing(id, box, NULL, NULL, colour);
+}
 static void draw(const char *id, const int box[4], const char *shape, int circle, int fixedR, int cx, int cy, int cout, const char *colour) {
   char ops[320]; int x = box[0], y = box[1], w = box[2], h = box[3];
   int width = fi("focus.ring.width", 2), outside = fi("focus.ring.outside", 4), radius = fi("focus.ring.radius", 6);

@@ -59,6 +59,26 @@ test("every Station spec file loads, and the loader reads a number from each the
   const sp = cstr(M, "frame"), pp = cstr(M, "regions.stage.rect.3"); assert.equal(M._face_spec_int(sp, pp, -1), JSON.parse(readFileSync(path.join(dir, "frame.json"), "utf8")).regions.stage.rect[3]);
 });
 
+test("a focus graph that cannot be walked is refused at load: each of focus.json's refusals as pods.json's focus.overview, and as home's focus.graph; the committed specs are accepted", { skip }, async () => {
+  const dir = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(dir, n + ".json"), "utf8")), { refusals } = JSON.parse(readFileSync(path.join(here, "vectors/focus.json"), "utf8"));
+  assert.equal(refusals.length, 15);
+  for (const r of refusals) {
+    let f = await boot(); const pods = J("pods"); pods.focus.overview = r.graph;
+    assert.equal(f.send({ t: "spec", screen: "pods", json: pods }), -1, "pods, " + r.name); assert.match(f.errors().join(), /focus\.overview/, r.name);
+    f = await boot(); const home = J("home"); home.focus.graph = r.graph;
+    assert.equal(f.send({ t: "spec", screen: "home", json: home }), -1, "home, " + r.name);
+  }
+  const f = await boot(); for (const n of ["pods", "home", "habitat", "bench"]) assert.equal(f.send({ t: "spec", screen: n, json: J(n) }), 0, n + ": " + f.errors().join());
+});
+
+test("a ring form the loader does not know is refused: only round, feet, tab, a circle with radius and centre, or a circle outside, and no extra key", { skip }, async () => {
+  const J = () => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8"));
+  const bad = [["dashed", "dashed"], ["a circle of no radius", { circle: { radius: 0, centre: [1, 2] } }], ["a circle with no centre", { circle: { radius: 5 } }], ["a negative outside", { circle: { outside: -1 } }], ["an extra key on the ring", { circle: { outside: 4 }, glow: 1 }],
+    ["an extra key on the circle", { circle: { outside: 4, radius: 3 } }], ["a number", 7], ["a bare object", { radius: 5 }]];
+  for (const [what, ring] of bad) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, what); assert.match(f.errors().join(), /targets\.kin\.ring/, what); }
+  for (const ring of ["round", "feet", "tab", { circle: { outside: 0 } }, { circle: { radius: 84, centre: [96, 112] } }]) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(ring) + ": " + f.errors().join()); }
+});
+
 test("pictures: an asset message makes a buffer for its id, the same id keeps its slot, a drop frees it, bad sizes and src file are refused, and the table holds 256", { skip }, async () => {
   const f = await boot(), M = f.M;
   assert.equal(f.send({ t: "asset", id: "a", w: 4, h: 4, src: "heap" }), 0); const h = M._face_last_asset(); assert.ok(h >= 0 && M._face_asset_pixels(h) > 0);

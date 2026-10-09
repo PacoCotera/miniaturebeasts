@@ -32,6 +32,9 @@ The Station's screens are drawn by LVGL 9.6 in C, the same face on the sandbox (
 | `CMakeLists.txt` | Builds LVGL from the repository's vendored tree (`v1/native/vendor/lvgl`, unmodified, nothing downloaded) and the face, as WebAssembly under Emscripten or native |
 | `build.sh` | `build.sh wasm`, `native` or `all`; prints build times and sizes; output in `dist/` (not committed) |
 | `emsdk.version` | The pinned Emscripten SDK (4.0.23) |
+| `tests/plates.test.mjs` | Node: the name plates (the series `ui/specs/derive.mjs` computes from the spec, one picture per width) and the rail tab grounds, the pictures the host sends at boot and never drops: a plate that is not on the face is an error and a refused node, a long name takes the widest plate, the pinned pictures stay when the table is full |
+| `tests/layers.test.mjs` | Node: the art director's layer table on Pods' words: every case of `pods-words.json` is drawn with palette-exact pictures for the ids the table calls art and pictures outside the palette for every other id; chrome and chrome + art must read 0 pixels outside the palette |
+| `tools/layer-check.mjs` | The browser: the same pass-1 and pass-2 readings on the Station page's own pictures (`?face=lvgl&test`), one line a Pods state |
 | `tests/face.test.mjs` | Node: the WebAssembly face loads, is 1024×600, redraws, takes keys and draws the same pixels as the native build for the fixed scene |
 | `tools/face-check.mjs` | The browser: the Station page with `?face=lvgl`, and the measurements below |
 | `../station/src/face-lvgl.mjs` | The page's side: loads `face.mjs`, runs the frames, copies the redrawn rectangles to the canvas, passes the keys in |

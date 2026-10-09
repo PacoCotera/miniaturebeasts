@@ -57,3 +57,15 @@ test("✓, ← and the room keys are intents on the focused target; the dock key
 test("a screen without words says nothing to the keys", { skip }, async () => {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true }); assert.deepEqual(key(f, "right"), []);
 });
+
+test("Compare's focus: the targets are the rail's tabs; ◀ ▶ send step on the open tab, ▲ ▼ are none, ✓ nothing; the ring sits on the tab the host names", { skip }, async () => {
+  const c = cases.find((x) => x.state === "compare"), n = c.props.regions.rail.tabs.length; assert.ok(n >= 3);
+  const withFocus = (cur) => { const p = JSON.parse(JSON.stringify(c.props)); p.focus = { cur, armed: false, targets: p.regions.rail.tabs.map((_, i) => ({ id: "rail." + i, group: "rail", index: i })), resolve: { "rail.open": cur, "rail.last": cur, "kin.first": null } }; return p; };
+  const f = await start(c); assert.equal(f.props(withFocus("rail.1")), 0); frames(f); f.poll("log");
+  const h1 = f.hash();
+  const [r] = key(f, "right"); assert.deepEqual([r.t, r.target, r.verb], ["intent", "rail.1", "step:right"], "a step on the open tab; the host moves the chapter and the focus");
+  assert.deepEqual([key(f, "left")[0].verb], ["step:left"]); assert.deepEqual(key(f, "up"), [], "▲ none"); assert.deepEqual(key(f, "down"), [], "▼ none"); assert.equal(f.hash(), h1, "nothing moved on the face");
+  assert.equal(f.props(withFocus("rail.2")), 0); frames(f); assert.notEqual(f.hash(), h1, "the host names the next tab: the ring is drawn on it");
+  assert.deepEqual(f.errors(), []);
+  const confirm = key(f, "confirm"); assert.ok(confirm.every((m) => m.verb === "confirm"), "✓ is the host's to refuse (Compare has no ✓ cap)");
+});

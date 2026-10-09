@@ -17,6 +17,8 @@ void word_page(const char *key);        /* the chapter page ("page") or one of C
 void word_list(void);    /* Pods' collection: the rack's places */
 void word_focusRingShape(const char *id, const int box[4], const char *shape, const char *colour);   /* "round", "feet" or "tab" */
 void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, int cy, int outside, const char *colour);   /* radius > 0: fixed, centre (x + cx, y + cy); else from the box, rho = w/2 + outside */
+/* the ring in the form the screen spec names for the target group (targets.<name>.ring of the target whose `group` this is), colour a palette name; a group the spec does not list gets the default round ring */
+void word_focusRingFor(const char *id, const int box[4], const char *group, const char *colour);
 void word_rail(void);    /* the chapter rail (frame spec) with the ring on its focused tab */
 void word_topBar(void);
 void word_bottomLine(void);

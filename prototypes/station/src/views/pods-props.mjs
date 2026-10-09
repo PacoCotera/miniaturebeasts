@@ -179,7 +179,7 @@ function compareView(view, m, spec, req) {
   view.rail = { focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: S.cap(S.spName(A)), subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.bench = [slot(req, "room-bench-stage-compare", spec.regions.bench.rect, "Compare's room master"), slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the room master without a cone"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // Compare's own bench when it is placed, else the bench without a cone: no lit, empty stage beside the pages
-  view.targets = [];
+  view.targets = targetsOf(view, st, spec, A);   // Compare's targets are its rail's tabs
   return view;
 }
 
@@ -207,7 +207,6 @@ function lineOf(m, spec, p, chapters, ci, view) {
   const back = view.mode === "chapter" ? S.cap(S.spName(p)) : "Pods", glintPod = glintOf(p);
   if (f === "pod") {
     if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "⚡"), dim: st.e < cost, back, subject: state(p), need: st.e < cost ? fill(Sg.needMore, { icons: "⚡" }) : null }; }
-    if (!p.read.length) { const first = chapters.find((c) => !p.read.includes(c.id) && !(c.sealed && !settings.sealedOpen)); return { ok: first ? "Open " + railWord(first, spec) : chapters.length ? "Read its chapters" : "", back, subject: state(p), need: glintPod }; }
     const b = S.growBlock(st, p, {}, settings, []); return { ok: "Shape a founder", price: "", dim: !!b, back, subject: state(p), need: blockNeed(b, Sg) ?? glintPod };
   }
   if (f && f.startsWith("rail.")) {
@@ -229,8 +228,8 @@ function lineOf(m, spec, p, chapters, ci, view) {
 function targetsOf(view, st, spec, cur) {
   const t = [];
   if (view.mode === "collection") { st.tray.slice(0, spec.regions.collection.places.slots).forEach((q, i) => t.push({ id: "place." + i, group: "place", index: i })); return t; }
-  if (view.mode === "compare" || !cur) return t;
-  if (view.rail && view.rail.tabs.length) view.rail.tabs.forEach((_, i) => t.push({ id: "rail." + i, group: "rail", index: i }));
+  if (!cur) return t;
+  if (view.rail && view.rail.tabs.length) view.rail.tabs.forEach((_, i) => t.push({ id: "rail." + i, group: "rail", index: i }));   // Compare's targets are its rail's tabs alone
   if (view.mode === "overview") {
     t.push({ id: "pod", group: "pod" });
     (view.kin || []).forEach((k, i) => t.push({ id: "kin." + i, group: "kin", index: i }));
@@ -253,7 +252,14 @@ export function podsProps(m, spec, frame) {
     regions.rail = v.rail; regions.page = v.page; regions.stamp = v.stamp ? { ...v.stamp, case: v.stampCase } : null; regions.kin = v.kin; regions.hatch = v.hatch;
   }
   // the view's answers to the spec's selectors (the graph's `rail.last`, `rail.open`, `kin.first`); null when there is nothing, and the spec's list carries the way on
-  const nTabs = v.rail?.tabs?.length ?? 0, ciSel = nTabs ? "rail." + Math.max(0, Math.min(m.ui?.ci || 0, nTabs - 1)) : null;
-  const focus = { cur: m.focus ?? null, armed: !!m.ui?.wildArm, targets: v.targets, resolve: { "rail.last": ciSel, "rail.open": ciSel, "kin.first": v.kin?.length ? "kin.0" : null } };
+  const nTabs = v.rail?.tabs?.length ?? 0, ci = v.mode === "compare" ? m.ui?.cmp?.ci : m.ui?.ci, ciSel = nTabs ? "rail." + Math.max(0, Math.min(ci || 0, nTabs - 1)) : null;   // in Compare rail.open is rail.<ui.cmp.ci>
+  const focus = { cur: m.focus ?? (v.mode === "compare" ? ciSel : null), armed: !!m.ui?.wildArm, targets: v.targets, resolve: { "rail.last": ciSel, "rail.open": ciSel, "kin.first": v.kin?.length ? "kin.0" : null } };
   return { mode: v.mode, cur: v.cur, empty: v.empty, broken: !!v.broken, props: { state: v.mode, regions, focus }, line: v.line, requests: v.requests };
+}
+
+// Closing Compare (the Back key, spec keys.compare.back): the overview with the ring on the kin that opened it (the kin whose pod is ui.cmp.b), else on the pod.
+export function compareBackFocus(m, spec, frame) {
+  const c = m.ui?.cmp; if (!c) return null;
+  const v = podsBuild({ ...m, frameSpec: frame, ui: { ...m.ui, cmp: null, view: "overview", cur: c.a } }, spec), i = (v.kin || []).findIndex((k) => k.id === c.b);
+  return i >= 0 ? "kin." + i : "pod";
 }

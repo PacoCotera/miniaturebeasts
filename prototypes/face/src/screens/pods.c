@@ -22,15 +22,16 @@ static int pod_box(const char *base, int box[4]) {
 static int is_target(const char *cur) { for (int i = 0, n = v_plen("focus.targets"); i < n; i++) if (strcmp(v_pstr(v_fmt("focus.targets.%d.id", i)), cur) == 0) return 1; return 0; }
 static void focus_ring(const char *state, const char *base) {
   char cur[40]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0] || strcmp(state, "compare") == 0 || !is_target(cur)) return;
-  char ring[24]; spec_str("frame", "colours.ring", ring, sizeof ring); int box[4];
+  char ring[24]; spec_str("frame", "colours.ring", ring, sizeof ring); int box[4]; char group[24] = "";
+  for (int i = 0, n = v_plen("focus.targets"); i < n; i++) if (strcmp(v_pstr(v_fmt("focus.targets.%d.id", i)), cur) == 0) { snprintf(group, sizeof group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i))); break; }
   v_region("focus", LAYER_CHROME);
-  if (strncmp(cur, "place.", 6) == 0) {
-    layout_place_rect(S, "regions.collection", atoi(cur + 6), box);
-    int radius = spec_int(S, "regions.collection.ring.focus.radius", 84), cx = sa("regions.collection", "ring.centre", 0), cy = sa("regions.collection", "ring.centre", 1);
-    word_focusRingCircle("focus", box, radius, cx, cy, 0, ring);
-  } else if (strncmp(cur, "kin.", 4) == 0) { layout_kin_rect(S, v_fmt("%s.kin", base), atoi(cur + 4), box); word_focusRingCircle("focus", box, 0, 0, 0, spec_int("frame", "focus.ring.outside", 4), ring); }
-  else if (strcmp(cur, "pod") == 0) { if (pod_box(base, box)) word_focusRingShape("focus", box, "round", ring); }
-  else if (strcmp(cur, "hatch") == 0) { for (int k = 0; k < 4; k++) box[k] = sa(base, "hatch.rect", k); word_focusRingShape("focus", box, "round", ring); }
+  /* the box is the target's (the layout rules); the form of its ring is the spec's (targets.<name>.ring by group) */
+  if (strcmp(group, "place") == 0) layout_place_rect(S, "regions.collection", atoi(cur + 6), box);
+  else if (strcmp(group, "kin") == 0) layout_kin_rect(S, v_fmt("%s.kin", base), atoi(cur + 4), box);
+  else if (strcmp(group, "pod") == 0) { if (!pod_box(base, box)) return; }
+  else if (strcmp(group, "hatch") == 0) { for (int k = 0; k < 4; k++) box[k] = sa(base, "hatch.rect", k); }
+  else return;
+  word_focusRingFor("focus", box, group, ring);
 }
 
 /* the targets as the words drew them, in the props' order */

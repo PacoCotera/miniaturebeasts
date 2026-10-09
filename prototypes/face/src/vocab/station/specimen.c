@@ -38,13 +38,15 @@ int word_pod_size(int out[2]) {
   char cls[16]; snprintf(cls, sizeof cls, "%s", v_pstr("regions.specimen.pod.sizeClass")); if (!cls[0]) return 0;
   out[0] = spec_int(S, v_fmt("classes.pod.%s.0", cls), 0); out[1] = spec_int(S, v_fmt("classes.pod.%s.1", cls), 0); return out[0] > 0 && out[1] > 0;
 }
+/* a mark that says who it is: the clan's is a painted master, the species' glyph and the small marks are art (the art director's layer table); the spec names each mark's kind */
+static int who_kind_painted(const char *base, int i) { char k[24]; spec_str(S, v_fmt("%s.who.kinds.%d", base, i), k, sizeof k); return strcmp(k, "clan") == 0; }
 void word_specimen(const char *base) {
   char name[24], origin[24], white[24]; colour("name", name, sizeof name); colour("origin", origin, sizeof origin); snprintf(white, sizeof white, "white");
   int beam[4], shelf[4], cradle[4], front[4], nrect[4];
   for (int k = 0; k < 4; k++) { beam[k] = sa(base, "beam.rect", k, 0); shelf[k] = sa(base, "shelf.rect", k, 0); cradle[k] = sa(base, "cradle.rect", k, 0); front[k] = sa(base, "cradleFront.rect", k, 0); nrect[k] = sa(base, "name.rect", k, 0); }
   v_region("beam", LAYER_ART);
   if (!bench_present()) { const char *b = v_pstr("regions.specimen.beam"); if (has(b)) v_sprite("specimen.beam", b, beam[0], beam[1], beam[2], beam[3]); }
-  v_region("specimen", LAYER_ART);
+  v_region("specimen", LAYER_PAINTED);   /* the room's stages are painted masters (the art director's layer table) */
   layer("specimen.shelf", shelf, v_pstr("regions.specimen.room.shelf")); layer("specimen.cradle", cradle, v_pstr("regions.specimen.room.cradle"));
   const char *sealed = v_pstr("regions.specimen.pod.sealed");
   int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0), psz[2] = { 0, 0 }; word_pod_size(psz); int w = psz[0], h = psz[1];
@@ -53,23 +55,23 @@ void word_specimen(const char *base) {
     int lift = strcmp(focus, "pod") == 0 ? spec_int("frame", "focus.lift.creature", 4) : 0, rect[4] = { axis - v_half(w), feet - h - lift, w, h };
     int sw = w + spec_int(S, "shadow.widen", 0), sh = spec_int(S, "shadow.h", 0);
     int shadow[4] = { axis - v_half(sw), feet - v_half(sh), sw, sh }; layer("specimen.shadow", shadow, v_pstr("regions.specimen.room.shadow"));
-    v_region("pod", LAYER_ART); v_sprite("specimen.pod", sealed, rect[0], rect[1], rect[2], rect[3]);
+    v_region("pod", LAYER_PAINTED); v_sprite("specimen.pod", sealed, rect[0], rect[1], rect[2], rect[3]);
     const char *idpic = v_pstr("regions.specimen.pod.identified");
     anim_state_t sa_; char pid[48]; snprintf(pid, sizeof pid, "%s", v_pstr("regions.specimen.pod.id"));
     if (anim_get(ANIM_SEAL, pid, &sa_) && has(idpic)) {   /* Identify clears the seal from the top down over the event's length: the identified picture above the cut, the sealed one below */
       int cut = (2 * h * sa_.elapsed + sa_.ms) / (2 * sa_.ms);   /* round(h * elapsed / ms) */
-      v_region("specimen", LAYER_ART);
+      v_region("specimen", LAYER_PAINTED);
       prim_node(v_id("specimen.id"), FN_CLIP, rect[0], rect[1], w, cut, 0, 1, 0);
       v_sprite("specimen.idpic", idpic, rect[0], rect[1], w, h);
       if (cut > 0 && cut < h) { v_region("specimen", LAYER_CHROME); v_rect("specimen.cut", rect[0] + 4, rect[1] + cut, w - 8, 1, white); }
-    } else if (has(idpic)) { v_region("specimen", LAYER_ART); v_sprite("specimen.idpic", idpic, rect[0], rect[1], w, h); }
+    } else if (has(idpic)) { v_region("specimen", LAYER_PAINTED); v_sprite("specimen.idpic", idpic, rect[0], rect[1], w, h); }
   }
-  v_region("specimen", LAYER_ART); layer("specimen.cradleFront", front, v_pstr("regions.specimen.room.cradleFront"));
+  v_region("specimen", LAYER_PAINTED); layer("specimen.cradleFront", front, v_pstr("regions.specimen.room.cradleFront"));
   const char *nm = v_pstr("regions.specimen.name");
   if (has(nm)) {
     char text[V_STR]; snprintf(text, sizeof text, "%s", nm); int npx = si(base, "name.px", 20), ncx = si(base, "name.centre", 256), plateH = si(base, "name.plate.h", 24);
     int tw = v_measure(text, npx), pw = layout_plate_width(S, v_fmt("%s.name", base), tw);
-    v_region("name", LAYER_ART); v_plate("specimen.plate", v_fmt("%s.name", base), pw, ncx - v_half(pw), nrect[1]); (void)plateH;
+    v_region("name", LAYER_PAINTED); v_plate("specimen.plate", v_fmt("%s.name", base), pw, ncx - v_half(pw), nrect[1]); (void)plateH;
     v_region("name", LAYER_TYPE); centred("specimen.name", text, ncx, cap_top(npx, nrect[1], nrect[3]), npx, name);
   }
   const char *ribbon = v_pstr("regions.specimen.ribbon"); anim_state_t ra_; char rpid[48]; snprintf(rpid, sizeof rpid, "%s", v_pstr("regions.specimen.pod.id"));
@@ -90,15 +92,15 @@ void word_specimen(const char *base) {
     }
   }
   /* the overview's own parts: the figure beside the pod, the marks that say who it is, the find's picture */
-  if (spec_len(S, v_fmt("%s.figure", base)) >= 0) { int fr[4]; srect(base, "figure.rect", fr); v_region("figure", LAYER_ART); layer("specimen.figure", fr, v_pstr("regions.specimen.figure")); }
-  if (spec_len(S, v_fmt("%s.who", base)) >= 0) for (int i = 0, n = v_plen("regions.specimen.who"); i < n; i++) { int mr[4]; for (int k = 0; k < 4; k++) mr[k] = spec_int(S, v_fmt("%s.who.marks.%d.%d", base, i, k), 0); v_region("who", LAYER_ART); layer(v_fmt("specimen.who.%d", i), mr, v_pstr(v_fmt("regions.specimen.who.%d", i))); }
+  if (spec_len(S, v_fmt("%s.figure", base)) >= 0) { int fr[4]; srect(base, "figure.rect", fr); v_region("figure", LAYER_PAINTED); layer("specimen.figure", fr, v_pstr("regions.specimen.figure")); }
+  if (spec_len(S, v_fmt("%s.who", base)) >= 0) for (int i = 0, n = v_plen("regions.specimen.who"); i < n; i++) { int mr[4]; for (int k = 0; k < 4; k++) mr[k] = spec_int(S, v_fmt("%s.who.marks.%d.%d", base, i, k), 0); v_region("who", who_kind_painted(base, i) ? LAYER_PAINTED : LAYER_ART); layer(v_fmt("specimen.who.%d", i), mr, v_pstr(v_fmt("regions.specimen.who.%d", i))); }
   /* the two captions (lvgl-switch.md L2.0, decided 2026-10-09): "this pod" under the who-it-is marks, always in the overview; "the species" under the figure, only when the pod is identified (the view sends it then). They have no JavaScript twin. */
   const char *cap = v_pstr("regions.specimen.captions.pod");
   if (has(cap) && spec_len(S, v_fmt("%s.thisPod", base)) >= 0) caption("thisPod", base, "thisPod", cap);
   cap = v_pstr("regions.specimen.captions.figure");
   if (has(cap) && spec_len(S, v_fmt("%s.figure.caption", base)) >= 0) caption("figure.caption", base, "figure.caption", cap);
   const char *op = v_pstr("regions.specimen.originPicture");
-  if (has(op) && spec_len(S, v_fmt("%s.originPicture", base)) >= 0) { int orr[4]; srect(base, "originPicture.rect", orr); v_region("find", LAYER_ART); v_sprite("specimen.find", op, orr[0], orr[1], orr[2], orr[3]); }
+  if (has(op) && spec_len(S, v_fmt("%s.originPicture", base)) >= 0) { int orr[4]; srect(base, "originPicture.rect", orr); v_region("find", LAYER_PAINTED); v_sprite("specimen.find", op, orr[0], orr[1], orr[2], orr[3]); }
 }
 
 /* the overview's kin (same-species pods as rings, the small pod in each) and the hatch */
@@ -107,7 +109,7 @@ void word_kin(const char *base) {
   for (int i = 0; i < n; i++) {
     int r[4]; layout_kin_rect(S, v_fmt("%s.kin", base), i, r); char kid[40]; snprintf(kid, sizeof kid, "kin.k%d", i);
     v_region("kin", LAYER_ART); v_sprite(v_fmt("%s.ring", kid), v_pstr(v_fmt("regions.kin.%d.ring", i)), r[0], r[1], r[2], r[3]);
-    const char *pod = v_pstr(v_fmt("regions.kin.%d.pod", i)); if (has(pod)) v_sprite(v_fmt("%s.pod", kid), pod, r[0] + (r[2] - pw) / 2, r[1] + (r[3] - ph) / 2, pw, ph);
+    const char *pod = v_pstr(v_fmt("regions.kin.%d.pod", i)); if (has(pod)) { v_layer(LAYER_PAINTED); v_sprite(v_fmt("%s.pod", kid), pod, r[0] + (r[2] - pw) / 2, r[1] + (r[3] - ph) / 2, pw, ph); }
   }
   const char *hatch = v_pstr("regions.hatch");
   if (has(hatch)) { int hr[4]; srect(base, "hatch.rect", hr); v_region("hatch", LAYER_ART); v_sprite("kin.hatch", hatch, hr[0], hr[1], hr[2], hr[3]); }
@@ -119,8 +121,8 @@ void word_stamp(const char *base) {
   int cr[4], sr[4], fr[4]; srect(base, "stampCase.rect", cr); srect(base, "stamp.rect", sr); srect(base, "stampCaseFront.rect", fr);
   char fill[24], edge[24]; spec_str(S, "colours.stampLabel.fill", fill, sizeof fill); spec_str(S, "colours.stampLabel.edge", edge, sizeof edge);
   int size = v_pint("regions.stamp.size", 0); char stamp[96]; snprintf(stamp, sizeof stamp, "%s", v_pstr("regions.stamp.asset"));
-  v_region("stamp", LAYER_ART); layer("stamp.case", cr, v_pstr("regions.stamp.case.back"));
+  v_region("stamp", LAYER_PAINTED); layer("stamp.case", cr, v_pstr("regions.stamp.case.back"));
   v_region("stamp", LAYER_CHROME); word_panel("stamp", sr[0], sr[1], sr[2], sr[3], fill, edge);
-  if (has(stamp) && size) { v_region("stamp.image", LAYER_ART); v_sprite("stamp.stamp", stamp, sr[0] + v_half(sr[2] - size), sr[1] + v_half(sr[3] - size), size, size); }
-  v_region("stamp", LAYER_ART); layer("stamp.front", fr, v_pstr("regions.stamp.case.front"));
+  if (has(stamp) && size) { v_region("stamp.image", LAYER_PAINTED); v_sprite("stamp.stamp", stamp, sr[0] + v_half(sr[2] - size), sr[1] + v_half(sr[3] - size), size, size); }
+  v_region("stamp", LAYER_PAINTED); layer("stamp.front", fr, v_pstr("regions.stamp.case.front"));
 }

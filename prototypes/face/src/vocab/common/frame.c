@@ -82,7 +82,9 @@ void word_topBar(void) {
   v_region("companion", LAYER_ART);
   fs(docked ? "regions.marks.companion.docked" : "regions.marks.companion.away", a, sizeof a); mark("top.comp", a, glyph);
   fs(docked ? "regions.marks.lamp8.docked" : "regions.marks.lamp8.away", a, sizeof a);
-  if (!mark("top.lamp", a, lampAt)) { v_region("companion", LAYER_CHROME); colour(docked ? "lampOn" : "lampOff", c); v_rect("top.lamp", lampAt[0], lampAt[1], lampAt[2], lampAt[3], c); v_region("companion", LAYER_ART); }
+  v_layer(LAYER_PAINTED);   /* the frame's lamps are painted masters (the art director's layer table) */
+  if (!mark("top.lamp", a, lampAt)) { v_region("companion", LAYER_CHROME); colour(docked ? "lampOn" : "lampOff", c); v_rect("top.lamp", lampAt[0], lampAt[1], lampAt[2], lampAt[3], c); }
+  v_region("companion", LAYER_ART);
   char mibi[48]; spec_str(P, "frame.top.companion.withMibi", mibi, sizeof mibi);
   if (!*mibi) fs("regions.marks.face.empty", a, sizeof a);
   else { char t[96]; fs(docked ? "regions.marks.face.docked" : "regions.marks.face.away", t, sizeof t); char *at = strstr(t, "{mibi}"); if (at) snprintf(a, sizeof a, "%.*s%s%s", (int)(at - t), t, mibi, at + 6); else snprintf(a, sizeof a, "%s", t); }
@@ -137,7 +139,7 @@ void word_bottomLine(void) {
     v_region("need", LAYER_TYPE); colour("need", c); v_run_t run = v_run("line.need", s, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
     int lamp[4] = { right - run.width - fi("regions.need.lampGap") - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
-    v_region("need", LAYER_ART); fs("regions.marks.lamp12", a, sizeof a);
+    v_region("need", LAYER_PAINTED); fs("regions.marks.lamp12", a, sizeof a);
     if (!mark("line.need.lamp", a, lamp)) { v_region("need", LAYER_CHROME); colour("needLamp", c); v_rect("line.need.lamp", lamp[0], lamp[1], lamp[2], lamp[3], c); }
   }
   /* the way back: its cap, then one word, right-aligned to 1008 */
