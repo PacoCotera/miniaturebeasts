@@ -355,7 +355,7 @@ A sitting is spent in a ceremony on the Station: the player chooses the one mibi
 
 On Habitat, the Portrait module offers `✓ Portray Fig` while a sitting is held and the mibi can sit ([Station layouts, Habitat](station-layouts.md#habitat)).
 
-**Not designed yet:** the sitting's screen: whether it is a screen of its own or a state of Habitat, its steps, what ← does inside it, and where the player lands after the sitting begins.
+The sitting is its own screen under Habitat, opened from the Portrait module, with three steps: the pose, the place, then look and confirm. Its layout is to come in [Station layouts](station-layouts.md).
 
 ---
 
