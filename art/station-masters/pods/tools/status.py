@@ -5,7 +5,8 @@ m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
-    if re.match(r"cross-tick-(a|b)-(12x8|6x4)$", n) or re.match(r"cross-wish-(lit|hollow)-(12x12|8x8)$", n) or n in ("cross-kin-surface-10x10", "find-crystal-16x16"): sign(n, "signed", "pass 69 verdict", "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size")
+    if re.match(r"cross-gate-(switch|blend)-(16x16|8x8)", n): sign(n, "signed", "pass 70 verdict", "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape")
+    elif re.match(r"cross-tick-(a|b)-(12x8|6x4)$", n) or re.match(r"cross-wish-(lit|hollow)-(12x12|8x8)$", n) or n in ("cross-kin-surface-10x10", "find-crystal-16x16"): sign(n, "signed", "pass 69 verdict", "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size")
     elif re.match(r"cross-(gate|tick|wish|kin)-", n) or re.match(r"find-(crystal|pearl|shard)-16x16$", n): sign(n, "new", None, "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict")
     elif re.match(r"mibi-halo-S(04|07)-", n): sign(n, "signed", "pass 63 verdict", "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear")
     elif re.match(r"find-(crystal|pearl|shard)-112x112$", n): sign(n, "signed", "pass 64 verdict", "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame")

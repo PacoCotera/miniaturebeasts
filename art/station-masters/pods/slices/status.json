@@ -2625,34 +2625,34 @@
   "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
  },
  "cross-gate-switch-16x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-switch-16x16-settled": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-16x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-16x16-settled": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-switch-8x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-8x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-tick-a-12x8": {
   "status": "signed",

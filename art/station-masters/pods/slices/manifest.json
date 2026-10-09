@@ -8529,9 +8529,9 @@
   "src": "typed by hand",
   "made": "the Cross chapter view's switch gate (pass 70): a mux, a trapezoid filled solid lilac with a lavender lit rim and a plum shade, its one detail the pins: two in at rows 4-5 and 12-13, one out at rows 7-8; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "2ca26eec73d550318e55f183ee2e09d1d1f3cdf4bc3088db4bdc4d49f3bfc70c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-switch-16x16-settled": {
   "size": [
@@ -8542,9 +8542,9 @@
   "src": "typed by hand",
   "made": "the same shape in bevel (enamel lit rim, hairline shade), for a trait that is one look or missing; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "2152bf6a474f2b169b9ef412e799326ee7aeb6098e1be71a224dcfb0a663139a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-16x16": {
   "size": [
@@ -8555,9 +8555,9 @@
   "src": "typed by hand",
   "made": "the Cross chapter view's blend gate (pass 70): a disc filled solid aqua with a mint lit rim and a teal shade, its one detail a plus in tealD, the pins in and the way out as stubs; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "ba04d424fcd53fb300a642358bb9b2da5096c778d5cb833af6c6d1a6dc765fdf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-16x16-settled": {
   "size": [
@@ -8568,9 +8568,9 @@
   "src": "typed by hand",
   "made": "the same shape in bevel; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "9e0444ab9e6f371a6307413bcef1c5e824e7f0f957e9bcf422c4fa506b3fadd5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-switch-8x8": {
   "size": [
@@ -8581,9 +8581,9 @@
   "src": "typed by hand",
   "made": "the overview's switch gate (pass 70): a plain solid lilac triangle pointing right, 7 wide and 8 tall, the wide end toward the parent; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "ae7d00efe7f256dfc2ad5e23512000388af472a1d49af3e8fb4117aa4f2e0973",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-8x8": {
   "size": [
@@ -8594,9 +8594,9 @@
   "src": "typed by hand",
   "made": "the overview's blend gate (pass 70): a plain solid aqua 8x8 disc, no plus; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "8eb3aac297fd3ccb663795c9f4113b5940b5352540a0452c6a7a378ba702fff0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-tick-a-12x8": {
   "size": [
@@ -8735,8 +8735,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the tide pearl, drawn again at 16 px (pass 70): an open shell (two frostS valves with a fog rim, a mist inside) holding a bright 5x5 bone pearl with one white highlight; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "b67cc4f41378c7d142f668fa523b7c8072d8881ddfae5918f0404c59dc9812e0",
+  "made": "the tide pearl, drawn again at 16 px (pass 71): an open shell: a ribbed fan for the upper valve tipped back (frostS with fog ribs), a shallow dish for the lower, and a bright 5x5 bone pearl with one white highlight sitting proud on the dish's rim; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "dd788255c8736d99c874679f7debeb8ee3ce8d687acc4e21fe822c2ccf7205db",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
@@ -8748,8 +8748,8 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the storm-glass shard, drawn again at 16 px (pass 70): a tall frostS shard with a pointed top and one flat white facet on its left, a mist shade on its right, on dark earth; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "ea9c3674deb3ff4fba430a3d18b2b74ff7942b7b960ae2e6d56264eeb927ab1f",
+  "made": "the storm-glass shard, drawn again at 16 px (pass 71): a jagged frostS shard, its point tilted 2 px right of the mound's centre, one flat white facet on its left, a notch in its right side, a mist shade, on a mound of dark earth; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
+  "sha256": "be558a95c844726a5d0a7751abc998851f3002ef1c2918d36ab5e3f86a984b93",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
