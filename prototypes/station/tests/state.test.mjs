@@ -355,3 +355,37 @@ test("compare: two pods whose loci differ but whose lines read the same carry no
   }
   assert.ok(found, "such a pair exists among 150 genomes");
 });
+
+test("nav fix: adults seeded by the developer make their species known, so the Library frame and Book open", () => {
+  const st = S.freshSt("w1", 0, 1); S.normalize(st);
+  assert.equal(st.knownIds.includes("S03"), false);
+  S.seedAdults(st, "S03", 5, 2, settings);
+  assert.deepEqual(st.knownIds, ["S03"]); assert.deepEqual(st.known, [speciesIndex("S03")]);
+  const s2 = S.freshSt("w1", 0, 1); S.normalize(s2); S.seedSiblings(s2, "S01", 9, settings); assert.ok(s2.knownIds.includes("S01"));
+});
+
+test("nav fix: 'open the Companion page' clears once a seeded world has a crate, a pod or a mibi", () => {
+  const sv = { v: 8 };   // no world: the Companion page was never opened
+  const fresh = () => { const st = S.freshSt("w1", 0, 1); S.normalize(st); return st; };
+  assert.equal(S.need(fresh(), sv, settings).text, "open the Companion page");
+  const a = fresh(); S.seedCrate(a, "S01", 1, 3, 1); assert.notEqual(S.need(a, sv, settings).text, "open the Companion page");
+  const b = fresh(); S.seedAdults(b, "S01", 3, 1, settings); assert.notEqual(S.need(b, sv, settings).text, "open the Companion page");
+});
+
+test("nav fix: Home's rest lamp is one id in the targets and the line and the act", async () => {
+  const src = readFileSync(path.join(here, "../src/screens/home.mjs"), "utf8");
+  assert.match(src, /lamp: \[/); assert.doesNotMatch(src, /f === "focus"/);
+  assert.match(src, /f === "lamp"\) return \{ ok: "Rest"/); assert.match(src, /f === "lamp"\) \{ UI\.idle = true/);
+});
+
+test("nav fix: every screen the Station registers has a mark in the title bar", () => {
+  const frame = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8"));
+  const dir = path.join(here, "../src/screens"), ids = [];
+  for (const f of readdirSync(dir)) for (const m of readFileSync(path.join(dir, f), "utf8").matchAll(/registerScreen\("(\w+)"/g)) ids.push(m[1]);
+  assert.ok(ids.includes("bench"));
+  for (const id of ids) assert.ok(frame.regions.title.marks[id], "a title mark for the screen " + id);
+});
+
+test("nav fix: the developer panel blurs a button once it has acted", () => {
+  assert.match(readFileSync(path.join(here, "../src/dev.mjs"), "utf8"), /addEventListener\("click"[^\n]*\.blur\(\)/);
+});

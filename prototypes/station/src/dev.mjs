@@ -70,6 +70,7 @@ export function buildDevPanel(container, hooks) {
       h("button", { class: "btn btn-danger", type: "button", onclick: () => { if (confirm("Erase the shared save (both pages)?")) { resetSave(); location.reload(); } } }, "Reset game")),
     out);
   root.append(...groups);
+  root.addEventListener("click", (e) => { const b = e.target.closest && e.target.closest("button"); if (b) setTimeout(() => b.blur(), 0); });   // a button that has acted gives the keys back to the Station (Enter must not press it again)
   redraw = () => { for (const g2 of groups) for (const s of g2.querySelectorAll("select")) { /* values follow settings */ } hooks?.changed?.(); };
   return root;
 }
