@@ -377,7 +377,15 @@ l = await line(); expect(/Cross Dot/.test(l.ok), "the cross mark on an adult: " 
 await press("confirm", 300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "on the Cross screen");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(600);
-l = await line(); expect(l.ok === "Cross them" && /2 ⚡ 4 ❀/.test(l.price) && /wild founders/.test(l.need), "the cross offered at 2 Energy 4 Essence, kinship 0: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Cross them" && /2 ⚡ 4 ❀/.test(l.price) && !l.need, "the cross offered at 2 Energy 4 Essence; founders read in full and kinship 0 leave the notice empty (the kinship word is the pill under the child): " + JSON.stringify(l));
+// the splice (cross.json): the overview first; ▼ opens the first chapter under the rail, ▲ goes back; ◀ ▶ keep the state
+{ const sp = () => page.evaluate(() => ({ state: window.__st.UI.cross.state, screen: window.__st.UI.screen }));
+  let u = await sp(); expect(u.screen === "cross" && u.state === 0, "the Cross opens on the overview: " + JSON.stringify(u)); l = await line(); expect(/ × .* · /.test(l.subject), "the overview's context reads 'a × b · species': " + JSON.stringify(l));
+  await page.waitForTimeout(300); await frameShot("cross-overview");
+  await press("down", 200); u = await sp(); l = await line(); expect(u.state === 1 && /^[^·]+ · .+ × /.test(l.subject), "▼ opens the first chapter: " + JSON.stringify([u, l]));
+  await page.waitForTimeout(300); await frameShot("cross-chapter");
+  await press("right", 150); u = await sp(); expect(u.state === 1, "◀ ▶ keep the state"); await press("up", 200); u = await sp(); expect(u.state === 0, "▲ on the first chapter returns to the overview");
+  await press("up", 100); u = await sp(); expect(u.state === 0, "▲ on the overview does nothing"); }
 const fc = await page.evaluate(([a, b]) => window.__st.forecastOf(a, b), [dot.id, adult3.id]);
 expect(fc.traits.filter((t) => t.kind === "switch").length === 2 && fc.traits.filter((t) => t.kind === "blend").length === 3, "four seeds for markings and crown, a range for eye rings, drive and efficiency");
 expect(fc.traits.filter((t) => t.kind === "switch").every((t) => t.seeds.length === 4), "four seeds each");

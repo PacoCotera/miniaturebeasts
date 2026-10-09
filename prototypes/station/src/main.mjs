@@ -163,7 +163,7 @@ bootText("loading the species frames…");
 const bootLayer = async () => {
   const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "cross"]) SPECS[k] = await spec(k + ".json");
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);

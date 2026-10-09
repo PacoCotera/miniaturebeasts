@@ -491,6 +491,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 }
 
 // --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
+import { lociOf, copyWords, copyHides } from "./splice.mjs";
 import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
 // The pedigree: a digest names a mibi's genome, in the vivarium or in a child's parent snapshot.
@@ -520,17 +521,29 @@ export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 
 // likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
   const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
-  const k = kinshipOf(st, a, b), full = crossForecast(fr, a.genome, b.genome, { kinship: k, lookup: genomeLookup(st) });
-  const chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
+  const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a.genome, b.genome, opts);
+  const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
+  let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read
   let missing = 0, sealedTraits = 0;
   const traits = full.traits.map((t) => {
     if (t.sealed) { sealedTraits++; return t; }
     const need = [[a, "a"], [b, "b"]].filter(([m]) => !(m.read || []).includes(t.chapter)).map(([m, side]) => ({ parent: side, id: m.id, name: m.name, chapter: t.chapter, chapterName: chapterName(t.chapter) }));
-    if (!need.length) return t;
-    missing++; return { chapter: t.chapter, trait: t.trait, name: t.name, sealed: false, locus: t.locus, kind: "missing", missing: need };
+    if (need.length) {   // what the read parent shows of its own copies is known to the player; nothing of the pairing is
+      missing++; const tr = traitOf(t.trait), known = {};
+      for (const [m, side] of [[a, "a"], [b, "b"]]) if (!need.some((q) => q.parent === side)) known[side] = { words: copyWords(fr, tr, m.genome), hides: copyHides(tr, m.genome), loci: tr.loci.length };
+      return { chapter: t.chapter, trait: t.trait, name: t.name, sealed: false, locus: t.locus, kind: "missing", missing: need, known };
+    }
+    loci ??= lociOf(fr, a.genome, b.genome, opts);
+    const tr = traitOf(t.trait);
+    return { ...t, splice: { loci: tr.loci.map((id) => loci.get(id)).filter(Boolean), words: { a: copyWords(fr, tr, a.genome), b: copyWords(fr, tr, b.genome) }, hides: { a: copyHides(tr, a.genome), b: copyHides(tr, b.genome) } } };
   });
-  const unknown = missing + sealedTraits;
-  return { ...full, traits, kinship: full.kinship, missing, sealedTraits, unknown, identity: unknown ? null : genomeIdentity(fr, a.genome, b.genome) };
+  // The chapters in ring order, as the splice draws them: open (both parents have read it), unread (either has not: which), or sealed (with what opens it).
+  const chapters = fr.chapters.map((c) => {
+    const sealed = !!c.sealed, lacking = sealed ? [] : [[a, "a"], [b, "b"]].filter(([m]) => !(m.read || []).includes(c.id)).map(([m, side]) => ({ parent: side, id: m.id, name: m.name }));
+    return { id: c.id, name: c.name, state: sealed ? "sealed" : lacking.length ? "unread" : "open", lacking, findKind: c.findKind ?? null, opensWith: sealed ? chapterSeal(fr, c) : null, traits: c.traits.map((t) => t.id) };
+  });
+  const first = chapters.find((c) => c.state === "unread"), unknown = missing + sealedTraits;
+  return { ...full, traits, chapters, firstMissing: first ? { chapter: first.id, chapterName: first.name, parents: first.lacking.map((l) => l.parent), names: first.lacking.map((l) => l.name) } : null, missing, sealedTraits, unknown, identity: unknown ? null : genomeIdentity(fr, a.genome, b.genome) };
 }
 // Chapters a child is known in before any read: every trait firm (switch parents match); a blend is never firm.
 export function childKnownChapters(fr, fc) { return fr.chapters.filter((c) => !c.sealed && c.traits.every((t) => fc.traits.find((x) => x.trait === t.id)?.firm)).map((c) => c.id); }

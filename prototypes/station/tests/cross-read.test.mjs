@@ -33,7 +33,7 @@ test("a pair with one unread chapter: its traits are missing, name the parent an
   assert.deepEqual(mine.map((t) => t.trait), inChapter, "every trait of the chapter is still listed");
   for (const t of mine) {
     assert.equal(t.kind, "missing", t.trait); assert.deepEqual(t.missing.map((m) => [m.parent, m.id, m.name, m.chapter]), [["a", a.id, a.name, h.ch]], "which parent and which chapter");
-    assert.ok(!("seeds" in t) && !("bins" in t) && !("range" in t) && !("looks" in t) && !("firm" in t), "nothing of the outcome");
+    assert.ok(!("seeds" in t) && !("bins" in t) && !("range" in t) && !("looks" in t) && !("firm" in t) && !("splice" in t), "nothing of the outcome"); assert.ok(!("a" in t.known) && "b" in t.known, "only the parent that read it shows its own copies");
   }
   assert.equal(fc.missing, mine.length, "the count of traits still unknown"); assert.equal(fc.unknown, fc.missing + fc.sealedTraits); assert.equal(fc.identity, null, "no likeness while anything is unknown");
   const others = fc.traits.filter((t) => t.chapter !== h.ch); assert.ok(others.every((t) => t.kind !== "missing"), "the read chapters are shown");
