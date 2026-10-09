@@ -144,6 +144,7 @@ The rail is the same object on all three bench screens. It hangs from the top ba
   - **More than twelve** comes back to the UI designer.
 - **Where the run sits.** On every bench screen (Pods' overview and chapter page, Create, Incubator) the run is centred on x 512, at x = 512 − run / 2 rounded down to the 8 px grid (96 for six chapters, 264 for seven, 240 for eight). Pods' collection shows no rail. (*corrected by the UI designer, 2026-10-09, with Pods in three states: was "on Pods it starts at x 152, on the page's left edge"; before that x 176, to the right of the list. Moving from Pods to Create the rail no longer slides.*)
 - **What Create and Incubator inherit:** all of the above (the hanging at y 40, the 40 px height, the 16 px slant, the touching tabs, the two forms and their widths, the count rule, the 8 px pip pitch, the slanted focus ring and no lift), centred as stated. Their own pip marks (changed, clash, the focused trait) sit on the 8 px pitch. Their regions below the rail start at y 104 or lower and do not move.
+- **Cross inherits it too** (*set by the UI designer, 2026-10-09, with the splice*). On the chapter view, centred as stated: a tab is read when both parents have read the chapter, and unread when either has not. Its pips are filled where the trait's forecast is drawn and hollow where it is missing. Its glint slot carries `cross-wish-lit-12x12` on a chapter holding a pinned trait a child can reach ([Cross: the splice](#cross-the-splice)).
 - **Never** a second row, a scroll, a "more" arrow or a clipped word.
 - **One word per tab,** with one decided exception: the "Legs & Tail" tab shows "Legs & Tail" (owner, 2026-10-08; every word capitalised, Type; *corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was "Legs & tail"); at 16 px Inter (78 px) it fits the 136 px full tab (was the 112 px tab).
 - **No status words or prices on a tab.** The build's "read", "cleared", "misty" and "1 ◆" go: the tab's fill and pips show the state, and the price is on the bottom line.
@@ -1187,6 +1188,117 @@ The build stub has ← only; the rest arrives with M5.
 - The text field guide becomes tabs and plates.
 - The stamp moves from 112 at (886, 406) to the 120 label at (832, 112).
 - The tree and wish panels are added as empty frames.
+
+---
+
+## Cross: the splice
+
+Wireframes, 1×: [09a-cross-overview.png](station-layouts/09a-cross-overview.png) and [09b-cross-chapter.png](station-layouts/09b-cross-chapter.png), with 2× crops [09a-cross-overview-2x.png](station-layouts/09a-cross-overview-2x.png) and [09b-cross-chapter-2x.png](station-layouts/09b-cross-chapter-2x.png). Numbers: [`prototypes/ui/specs/station/cross.json`](../../prototypes/ui/specs/station/cross.json), the one home of the Cross numbers; this section says what they mean.
+
+**Decided** (the experts, with the owner's leave, 2026-10-09; the owner called the splice and loci view "brilliant"):
+- The splice is the body of the Cross screen and replaces the seed table. ✓ stays "Cross them".
+- The Cross shows "only what you have read, and an indication of everything missing" (owner, 2026-10-09). The forecast marks a trait `missing` with the parent and chapter to read (`forecastOf`, built on main at bf225c82). The splice draws no copy, look, seed or range of a chapter either parent has not read, and nothing of a sealed chapter but its find.
+
+<img src="station-layouts/09a-cross-overview.png" width="1024" alt="Cross, the splice overview">
+
+*A · Overview: every locus at play at once, grouped by chapter. Two S09 Belatz half-siblings, Wisp and Rook (kinship an eighth); Rook's Shape and Legs & Tail are unread, and Movement is sealed. 1× wireframe on the bench's ground. Boxes with ids are masters; the rest is rect, text and 1 px lines. Status: for the art director's signature.*
+
+<img src="station-layouts/09b-cross-chapter.png" width="1024" alt="Cross, the splice chapter view">
+
+*B · Chapter view: Coat's loci routed from both parents to the child, under the shared rail. 1× wireframe. Status: for the art director's signature.*
+
+### 1. Purpose
+
+The player reads a cross the way the circuit from the owner's reference reads a running machine. Each parent's copies leave it as wires, and a gate at every locus splices them. The child's outcomes sit between the parents.
+
+At a glance, the player sees:
+- which loci are at play and which are settled;
+- which copy each parent can pass, including the copies it hides, once read;
+- where kinship narrows a range or lets a hidden look surface;
+- which pinned traits a child can reach;
+- what is still unread, and whose chapter to read.
+
+The reference lends principles only: modules in columns, values carried and printed on wires, a colour per signal kind, one direction of flow, and a bus that gathers bits. Its art and look are never copied.
+
+### 2. Elements
+
+| Element | Meaning |
+| --- | --- |
+| **Heads** | Wisp (the pick, left) and the partner (right, the focus ring; ◀ ▶ picks one) as 48×48 portraits with name and line; between them the ghost of the child to be and the kinship pill (`amber`, the kinship word, always shown) |
+| **Modules** | One per chapter on each side, the chapter's word in it; an unread chapter's module is dashed `frostS`, a sealed one slatted |
+| **Wires** | A locus's two copies, one wire each, from the parent to its gate. Switch `lilac`, blend `aqua`, settled `bevel`, unread `frostS` dashed, sealed `hairline` dotted. A copy the parent hides (known, because it was read) is dashed |
+| **Gates** | The splice: the switch gate passes one copy of two; the blend gate mixes the two into the parent's shown value. Masters, never drawn |
+| **The child** | A switch ends in four seeds (quarters, never odds); a blend ends in a track across the locus's range with both parents' ticks and the stretch where the child can land |
+| **Kinship marks** | `amber`: the range before kinship narrowed it, dashed round the narrowed one; a corner on each seed where a hidden look can surface |
+| **Wish marks** | A glint on a pinned trait, lit when a child can show the pinned look, hollow when not; a `yellow` edge on the seed or end that shows it |
+| **Missing** | A `frostD` band in the child's column, "read Rook's Shape"; the unread side's wires as frost hairlines with no words |
+| **Sealed** | Slats and the find; "sealed · a tide pearl" |
+
+### 3. Placement
+
+- **Overview.** Heads at y 48 to 96. Rows from (16, 112), 440 tall. Wisp's modules are 112 wide at x 16 and Rook's at x 896. The gates are at x 340 and x 676. The child's column runs from x 376 to 648, with the blend track from x 392 to 616, the four 8×8 seeds centred on x 512 and the wish glint at x 628.
+- **Chapter view.** The shared chapter rail hangs from y 40, centred: compact tabs with the open chapter's tab full, as on Pods, Create and the Incubator. Heads sit at y 104 to 152 and rows run from y 160 to 552.
+  - **Wires and plates.** Each copy's look is printed on its wire in a plate: Wisp's start at x 32 and Rook's end at x 992. The wires turn at x 304 and x 718 into the 16×16 gates at x 312 and x 696.
+  - **The child's column.** It runs from x 368 to 656: the trait's name line at the top, then four 64×32 seed pictures on a 72 pitch, or the two 64×32 end pictures with the 136 px track between them.
+- **Trait rows.** A row is 64 tall, plus 8 for each further locus of the trait; the trait's loci run as one bus per copy.
+
+### 4. Art direction
+
+The instrument's cool, even light, on the bench's ground. The wires are crisp 2 px rects, so the chrome stays flat. Only the gates, ticks, wish glints, the kin corner and the finds are painted masters. Seed and end pictures are the trait pictures, rendered at 64×32, never scaled. Never childish: no faces on gates, no sparkles on wires, no cartoon arrows.
+
+### 5. Composition and density
+
+- **Overview rows** (*decided by the UI designer, 2026-10-09: a minimum, not a legend*). A locus at play gets a row of 16 px, which may drop to 10 so the species fits, and never lower. Settled loci, loci of an unread chapter and sealed loci fold to 4 px hairlines. A chapter is at least 24 tall. The gap between chapters is 8, then 4 if needed.
+  - All sixteen frames were checked with every locus at play. The worst case is S03 Tuikis (40 loci, 8 chapters): 436 of 440 at 10 px with 4 px gaps.
+  - Belatz with this pair fits at 16 px.
+- **No legend on the screen.** Labels are one word, and never a text page. The chapter view is where the kinds are learned: there every wire carries its look in words. The overview keeps only what differs: colour where the locus is at play, grey where settled, frost where unread, slats where sealed.
+- **Tall chapters.** All sixteen frames were checked: the tallest chapter is S02 Untuva's Coat, at 376 of 392; S09 Belatz's Coat is 392.
+- **No promise.** The child's actual draw is never shown. There are no odds, percentages or counts, and no letters or ratios for a copy.
+
+### 6. Interactions
+
+| Input | What happens |
+| --- | --- |
+| ▼ | The next state: from the overview, the first chapter; then each chapter in ring order. On the last chapter, nothing |
+| ▲ | The previous state; from the first chapter, the overview |
+| ◀ ▶ | The previous or next partner (`crossPartners`). The wires re-route at once and the state is kept. The ring stays on the partner's head |
+| ✓ | `✓ Cross them · 2 ⚡ 4 ❀`, exactly as the line says; a jump to the Incubator, as today. A refused pair has no ✓ cap, and the reason is the notice |
+| ← | Habitat |
+| A room key | Drops the unpaid choices; coming back opens fresh on the overview |
+
+**The bottom line.** It reads `✓ Cross them · price` | "Wisp × Rook · Belatz" on the overview, or "Coat · Wisp × Rook" on a chapter | the notice | `← Habitat`.
+- The notice is the first missing read in ring order, "read Rook's Shape" (or "read both parents' Shape"). Leading with the missing read draws the player back to research.
+- With nothing missing, the notice is the kinship word if the kinship is above 0, and otherwise nothing.
+- The kinship word itself moves from the notice to the pill under the child, where it is always shown (*corrected by the UI designer, 2026-10-09*: it was the notice).
+
+### Masters on Cross
+
+All masters are new unless marked existing, are placed 1:1 and are never recoloured. The build draws only rects (wires, dashes, plates, bands, 8×8 seeds, chips, frost and slats), text and 1 px lines.
+
+| Master | Size | Where |
+| --- | --- | --- |
+| `cross-gate-switch-16x16`, `cross-gate-switch-16x16-settled` | 16×16 | Chapter view's switch gate, lit and in `bevel` |
+| `cross-gate-blend-16x16`, `cross-gate-blend-16x16-settled` | 16×16 | Chapter view's blend gate |
+| `cross-gate-switch-8x8`, `cross-gate-blend-8x8` | 8×8 | Overview's gates |
+| `cross-tick-a-12x8`, `cross-tick-b-12x8` | 12×8 | The parents' values above and below the chapter view's track |
+| `cross-tick-a-6x4`, `cross-tick-b-6x4` | 6×4 | The same on the overview |
+| `cross-wish-lit-12x12`, `cross-wish-hollow-12x12` | 12×12 | A pinned trait, reachable or not; the lit one also hangs under a rail tab |
+| `cross-wish-lit-8x8`, `cross-wish-hollow-8x8` | 8×8 | The same on the overview |
+| `cross-kin-surface-10x10` | 10×10 | The `amber` corner on a seed where a hidden look can surface |
+| `find-{kind}-16x16` (crystal, pearl, shard) | 16×16 | A sealed chapter on the overview |
+| `find-{kind}-112x112` (existing) | 112×112 | A sealed chapter's view |
+| The rail's tabs, emblems and pips (existing) | as the rail | Chapter view |
+
+Rendered at their size, not masters: the parents' portraits and the ghost (48×48), and the seed and end pictures (64×32).
+
+### Changes from the current build
+
+- The seed table, paged by five (`ROWS`, `ROW_H`, `ROW_Y`, the 464 px panel at 280), goes.
+- So do the 200 px parents, their 96 px stamps and codes, and the 150 px ghost. The heads and the splice replace them.
+- "narrowed", the aqua dotted range and the seed bud become the `amber` dashed range and the `cross-kin-surface-10x10` corner.
+- ▲ ▼ walk the overview and the chapters instead of paging traits.
+- The kinship word leaves the notice for the pill.
+- Missing traits keep `forecastOf`'s mask unchanged: the splice only draws it.
 
 ---
 

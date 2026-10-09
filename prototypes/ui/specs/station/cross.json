@@ -1,0 +1,167 @@
+{
+ "screen": "cross",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#cross-the-splice",
+ "frame": "frame.json",
+ "wireframes": ["design/style-guide/station-layouts/09a-cross-overview.png", "design/style-guide/station-layouts/09b-cross-chapter.png"],
+ "note": "The one home of the Cross numbers, transcribed from station-layouts.md (Cross: the splice). Rectangles are [x, y, w, h] in screen pixels; a pair [x, w] is a column. Decided by the experts with the owner's leave (2026-10-09): the splice is the body of the Cross screen and replaces the seed table; ✓ stays Cross them. The owner's rule (2026-10-09): the Cross shows \"only what you have read, and an indication of everything missing\" (forecastOf's kind `missing`, built on main at bf225c82). The build draws only rectangles, text and 1 px lines; every other mark is a master placed 1:1 (masters).",
+ "states": {
+  "overview": "every chapter at once, one module per chapter on each side, one row per locus; the screen opens here",
+  "chapter": "one chapter's traits routed from both parents to the child, under the shared chapter rail",
+  "order": "overview, then the species' chapters in ring order; ▼ goes one on, ▲ one back; ▲ on the first chapter returns to the overview, ▼ on the last does nothing"
+ },
+ "keys": {
+  "up": "the previous state in `states.order`; never leaves the screen, never spends",
+  "down": "the next state in `states.order`",
+  "left": "the previous partner of crossPartners; the wires re-route at once, the state is kept",
+  "right": "the next partner",
+  "confirm": "Cross them, exactly as the bottom line says; no ✓ cap when the pair is refused or nothing can be paid (frame.json navigation.keys.confirm)",
+  "back": "Habitat (frame.json navigation.screens.cross)",
+  "room": "drops the unpaid choices; coming back starts fresh on the overview (frame.json navigation.leaving.cross)"
+ },
+ "focus": { "one": "the focus ring stays on the partner's head in both states; ◀ ▶ change what it holds. The open chapter is the rail's open tab, not a second ring", "ring": "focus", "width": 2, "outside": 4, "radius": 6 },
+ "bottomLine": {
+  "action": "✓ Cross them · the cross's price (state.crossCost)",
+  "context": { "overview": "{a} × {b} · {species}", "chapter": "{chapter} · {a} × {b}" },
+  "notice": "the first missing read, in ring order: \"read {parent}'s {chapter}\", or \"read both parents' {chapter}\" when both lack it; when nothing is missing, the kinship word (state.kinshipWord) if the kinship is above 0; otherwise none. A refusal (state.crossBlock) takes the notice and the ✓ cap goes",
+  "back": "Habitat"
+ },
+ "regions": {
+  "bench": { "rect": [0, 40, 1024, 522], "ground": "the bench (frame.benchBg), as today" },
+  "heads": {
+   "overview": {
+    "a": { "portrait": [16, 48, 48, 48], "name": [72, 48, 200, 24], "line": [72, 72, 200, 20] },
+    "b": { "portrait": [960, 48, 48, 48], "name": [752, 48, 200, 24], "line": [752, 72, 200, 20], "ring": [748, 44, 264, 56], "lineWords": "◀ ▶ picks one, or \"no adult of its kind\"" },
+    "child": { "ghost": [376, 48, 48, 48], "words": [432, 48, 192, 20], "kin": [432, 72, 0, 24] }
+   },
+   "chapter": {
+    "a": { "portrait": [16, 104, 48, 48], "name": [72, 104, 200, 24], "line": [72, 128, 200, 20] },
+    "b": { "portrait": [960, 104, 48, 48], "name": [752, 104, 200, 24], "line": [752, 128, 200, 20], "ring": [748, 100, 264, 56], "lineWords": "◀ ▶ picks one, or \"no adult of its kind\"" },
+    "child": { "ghost": [368, 104, 48, 48], "words": [424, 104, 192, 20], "kin": [424, 128, 0, 24] }
+   },
+   "type": { "name": { "px": 20, "weight": 500, "colour": "bone", "b": "right-aligned to 952" }, "line": { "px": 16, "colour": "mist" }, "words": { "px": 16, "colour": "bone", "text": "the child to be" } },
+   "portrait": "the parent's painted set at 48×48, rendered at its size (paintedArt), else its placeholder rendered at 48 (mibiArt); never scaled up",
+   "ghost": "the child to be, ghostArt at 48×48: never a promise",
+   "kinPill": "a hugging plate: `amber` fill, 8 px pad, 24 tall (w 0 = hug), the kinship word in 16 px `ink`; shown at every kinship, 0 included (\"wild founders · kinship 0\")",
+   "away": "a parent out with the Companion: its portrait dimmed by the `stone` veil and its line \"away with you\"; it can still be picked (the-cross.md §3)"
+  },
+  "overview": {
+   "rows": [16, 112, 992, 440],
+   "moduleA": [16, 112],
+   "moduleB": [896, 112],
+   "gateA": [340, 8],
+   "gateB": [676, 8],
+   "child": [376, 272],
+   "track": [392, 224],
+   "seeds": { "x": 490, "size": 8, "pitch": 12, "note": "four 8×8 rects centred on x 512 (490 to 534)" },
+   "wish": [628],
+   "pitch": { "playMax": 16, "playMin": 10, "quiet": 4 },
+   "chapterMin": 24,
+   "gap": [8, 4],
+   "rowRule": "A row per open locus, chapters in ring order, locked loci never drawn. A locus at play (both parents read and its outcome not one look: a switch whose four pairings resolve to more than one look, a blend whose range spans more than one bin) gets the play pitch; a settled locus, a locus of a chapter either parent has not read, and a sealed locus get 4 px. A chapter is at least 24 tall, so its 16 px word fits. The play pitch is the largest of 16 down to 10 at which the rows fit the 440, first with 8 px between chapters, then with 4. Checked on all sixteen frames with every locus at play: the worst, S03 Tuikis (40 loci, 8 chapters), is 436 at 10 px and 4 px gaps; S09 Belatz 412 at 10 and 8",
+   "module": { "fill": "panel", "edge": "bevel", "word": { "px": 16, "colour": "bone", "at": [8, 2], "b": "right-aligned 8 px in" }, "unread": { "edge": "frostS", "dash": [3, 2], "word": "mist" }, "sealed": { "slats": "bar", "pitch": 4, "word": "mist" } },
+   "row": {
+    "playCentre": "cy = row y + pitch / 2",
+    "copies": "two 2 px wires per parent from the module's edge to its gate: the first copy at cy − 3, the second at cy + 1, in the kind's colour; a copy the parent hides is dashed 4 on, 2 off",
+    "gate": "the 8×8 gate master at (gate x, cy − 4)",
+    "out": "a 2 px wire at cy − 1 from the gate to the child: a switch's to the seeds' edge (490 from A, 534 from B), a blend's to the track's end (392 from A, 616 from B)",
+    "switchChild": "the four seeds (seeds), each an 8×8 rect filled by its look (colours.pigmentChips for a pigment, split in two halves for a pair; else colours.seedLookFills by the look's place in the trait's looks); a seed showing a pinned look wears a 1 px `yellow` edge 2 px outside it; a seed where a hidden look can surface (kinship above 0 and the seed carries a hidden copy) wears a 2×2 `amber` rect at its top right",
+    "blendChild": "a 1 px `bevel` track at cy across the locus's catalogue range; the range the child can land in as a rect from cy − 2, 5 tall, colours.band; the range before kinship narrowed it as a 1 px `amber` outline dashed 2 on 2 off, 7 tall, drawn only when kinship narrows it by more than 2 px; parent A's value as the master cross-tick-a-6x4 above (x − 3, cy − 6), B's as cross-tick-b-6x4 below (x − 3, cy + 3)",
+    "settled": "a 1 px `bevel` line at row y + 1 straight across from module to module: no gate, no seeds, no track",
+    "missing": "each copy of the unread parent as a 1 px `frostS` line dashed 3 on 2 off; the read parent's as a 1 px `bevel` line; the child's column one `frostD` rect the chapter's height with \"read {parent}'s {chapter}\" in 16 px `ink` at 8 px in, centred on its height. No copy, seed, range or look of the unread side is ever drawn, and none of the read side's either: the pairing needs both",
+    "sealed": "1 px `hairline` lines dotted 1 on 2 off on both sides; the child's column a `panel` rect with `bar` slats on a 4 px pitch, the find-{kind}-16x16 master at 8 px in, centred, and \"sealed · {opensWith}\" in 16 px `mist` 8 px after it",
+    "wish": "a pinned trait's glint, the 8×8 master at (628, cy − 4) on its first row at play: cross-wish-lit-8x8 when a child can show the pinned look, cross-wish-hollow-8x8 when not; a pinned trait with no row at play shows it on its chapter's first row"
+   }
+  },
+  "chapter": {
+   "rail": { "x": "the shared chapter rail (frame.json rail), centred on x 512: 264 for seven chapters, compact tabs with the open chapter's tab full", "states": "a tab is read when both parents have read the chapter, unread when either has not, sealed when it is sealed; the open tab is the chapter shown. Pips: one per trait, filled when its forecast is drawn, hollow when it is missing", "glint": "the rail's glint slot (tab.x + 16 + w / 2 − 6, 82) carries cross-wish-lit-12x12 on a chapter holding a pinned trait a child can reach" },
+   "rows": [16, 160, 992, 392],
+   "trait": {
+    "h": 64,
+    "perLocus": 8,
+    "heightRule": "a trait's row is 64 tall plus 8 for each locus after its first; rows stack from y 160 with a 1 px `hairline` rule between them, from x 16 to 1008. Checked on all sixteen frames: the tallest chapter, S02 Untuva's Coat (five traits, eleven loci), is 376; S09 Belatz's Coat 392",
+    "plateA": 32,
+    "plateB": 992,
+    "jogA": 304,
+    "jogB": 718,
+    "gateA": [312, -8, 16, 16],
+    "gateB": [696, -8, 16, 16],
+    "outA": 360,
+    "outB": 664,
+    "child": [368, 288],
+    "picY": 28,
+    "pic": [64, 32],
+    "track": [440, 136],
+    "copies": "each parent's two copies as two buses, the first centred at row y + h / 4, the second at row y + 3h / 4; a bus has one 2 px wire per locus of the trait on a 4 px pitch. A wire runs from x 16 (A) or 1008 (B) to its jog, a 2 px vertical rect at jogA or jogB that gathers the bus and turns it to the gate's pin (mid − 4 for the first copy, mid + 4 for the second, mid = row y + h / 2), then a 2 px stub into the gate",
+    "plate": "the copy's look printed on its bus, in the player's words (describe.lookOf on that copy alone, as Create's rolls do): a `panel` rect 24 tall centred on the bus, a 1 px edge in the kind's colour, 8 px pad, the word in 16 px `bone`; A's starts at x 32, B's ends at x 992. A pigment's word follows a 12×12 chip (colours.pigmentChips) with a 1 px `ink` edge and 4 px gap. A copy the parent hides: the edge dashed 3 on 2 off, the word in `fog`, its wires dashed 5 on 3 off, and \"hides\" in 16 px `mist` 8 px outside the plate",
+    "gate": "the 16×16 gate master at (gate x, mid − 8): cross-gate-switch-16x16 (one copy of two passes) or cross-gate-blend-16x16 (the copies mix); the -settled variant when the trait is one look",
+    "out": "a 2 px wire at mid − 1 from the gate to outA (360) or from outB (664) to the gate",
+    "head": "at (368, row y + 4): the wish glint 12×12 when the trait is pinned (cross-wish-lit-12x12 or cross-wish-hollow-12x12), then 4 px, the trait's name in 16 px medium `bone`, 8 px, its words in 16 px `mist` (\"one in four each\", \"known for sure\", \"A to B\", \"firm · A\"). Where kinship lets a hidden look surface in the trait, the words are \"hidden looks can surface\" in `ink` on an `amber` plate, 4 px pad, 20 tall",
+    "switchChild": "four seed pictures 64×32 on a 72 pitch from (368, row y + 28): the trait picture of each pairing, rendered at 64×32 (traitPic at its size, never scaled), slotted by the forecast's weights (largest remainder, as fourSlots); a seed showing the pinned look: a 2 px `yellow` edge 2 px outside it; a seed where a hidden look can surface: cross-kin-surface-10x10 at its bottom right corner (x + 54, y + 22)",
+    "blendChild": "the low end's picture 64×32 at (368, row y + 28); the track, a 1 px `bevel` line at y + 16 of the picture from x 440 for 136 across the locus's catalogue range; the range as a rect 9 tall centred on it (colours.band); the range before kinship narrowed it, a 1 px `amber` outline dashed 2 on 2 off, 15 tall; cross-tick-a-12x8 above the track at A's value (x − 6, track − 14) and cross-tick-b-12x8 below at B's (x − 6, track + 7); the high end's picture at (584, row y + 28). One bin: the low picture alone, \"firm · {look}\", the range rect in `bevel` fill. A pinned look at an end: that picture's 2 px `yellow` edge",
+    "missing": "the trait's copies of the unread parent as 1 px `frostS` lines dashed 3 on 2 off with no plate, the read parent's plates as above; the gate master's -settled variant; the child's four 64×32 slots as `frostS` rects, and the words \"read {parent}'s {chapter}\" in 16 px `mist`. No seed picture, range, look or plate of the unread copies, ever",
+    "sealed": "the chapter shut: no rows; the find-{kind}-112x112 master centred at (456, 248), \"opens with {opensWith}\" in 16 px `mist` centred on x 512, 16 px under it; both sides' wires 1 px `hairline` dotted 1 on 2 off at the rows' 4 px pitch into the find"
+   }
+  }
+ },
+ "colours": {
+  "_note": "names of prototypes/ui/palettes/station.json; the build never recolours a master",
+  "wire": { "switch": "lilac", "blend": "aqua", "settled": "bevel", "unread": "frostS", "sealed": "hairline" },
+  "band": { "fill": "teal", "edge": "aqua" },
+  "kinship": "amber",
+  "wishEdge": "yellow",
+  "missing": { "fill": "frostD", "word": "ink" },
+  "seedLookFills": ["fog", "mist", "stone"],
+  "pigmentChips": {
+   "_note": "derived, UI designer to confirm with the art director: the nearest palette colour to each pigment the frames name; a pigment not listed draws its chip in `mist` and comes back to the UI designer",
+   "charcoal": "slate", "russet": "rust", "jade": "leaf", "lagoon": "teal", "cobalt": "sea", "periwinkle": "lilac", "plum": "plum", "raspberry": "magenta", "coral": "coral", "marigold": "amber",
+   "cream": "paper", "slate": "stone", "milk-mint": "mint", "ice": "ice", "butter": "cream", "peach": "peach"
+  }
+ },
+ "masters": {
+  "_note": "placed 1:1 at these sizes, never scaled or recoloured; the art director signs them. New for the Cross unless marked existing",
+  "cross-gate-switch-16x16": "chapter view: the two-way gate, two pins in, one out, `lilac`",
+  "cross-gate-switch-16x16-settled": "the same in `bevel`, for a trait that is one look or missing",
+  "cross-gate-blend-16x16": "chapter view: the mixing gate, `aqua`",
+  "cross-gate-blend-16x16-settled": "the same in `bevel`",
+  "cross-gate-switch-8x8": "overview's switch gate",
+  "cross-gate-blend-8x8": "overview's blend gate",
+  "cross-tick-a-12x8": "parent A's value above the track, pointing down, `bone`",
+  "cross-tick-b-12x8": "parent B's value below the track, pointing up, `bone`",
+  "cross-tick-a-6x4": "the overview's A tick",
+  "cross-tick-b-6x4": "the overview's B tick",
+  "cross-wish-lit-12x12": "a pinned trait a child can reach; also the rail's glint on Cross",
+  "cross-wish-hollow-12x12": "a pinned trait no child of this pair can reach",
+  "cross-wish-lit-8x8": "the overview's lit wish",
+  "cross-wish-hollow-8x8": "the overview's hollow wish",
+  "cross-kin-surface-10x10": "the `amber` corner on a seed where a hidden look can surface",
+  "find-{kind}-16x16": "crystal, pearl, shard: the overview's sealed chapter",
+  "find-{kind}-112x112": "existing (pods.json chapter.page.sealedFindSlot): the chapter view's sealed chapter",
+  "rail": "existing: the shared chapter rail's tabs, emblems and pips (frame.json rail)",
+  "frame": "existing: frame-room-habitat-24, frame-cap-confirm-16, frame-cap-confirm-16-dim, frame-cap-back-16, frame-lamp-12-amber",
+  "rendered": "not masters but rendered at their size by the build: the parents' portraits 48×48, the ghost 48×48, the seed and end pictures 64×32"
+ },
+ "buildDraws": "rect (wires, dashes, plates, bands, seeds 8×8, chips, frost and slats), text, and 1 px lines; nothing else",
+ "never": ["a copy, look, seed or range of a chapter either parent has not read", "anything of a sealed chapter but its find", "the child's actual draw", "odds, percentages or counts on the screen", "letters or ratios for a copy"],
+ "strings": {
+  "child": "the child to be",
+  "pick": "◀ ▶ picks one",
+  "noPartner": "no adult of its kind",
+  "away": "away with you",
+  "missingOne": "read {parent}'s {chapter}",
+  "missingBoth": "read both parents' {chapter}",
+  "sealedOverview": "sealed · {opensWith}",
+  "sealedChapter": "opens with {opensWith}",
+  "switch": "one in four each",
+  "firmSwitch": "known for sure",
+  "blend": "{low} to {high}",
+  "firmBlend": "firm · {look}",
+  "surface": "hidden looks can surface",
+  "hides": "hides"
+ },
+ "derived": {
+  "density": "UI designer, 2026-10-09: the overview's rows have a minimum, not a legend. A row at play is 16 px, down to 10 when the species needs it, never less; settled, missing and sealed loci fold to 4 px hairlines; a chapter is at least 24. No legend on the screen (labels are one word, never a text page): the chapter view is where the kinds are learned, every wire there carrying its look in words, and the overview keeps only what differs (colour lit at play, grey settled, frost unread, slats sealed)",
+  "rail on Cross": "UI designer, 2026-10-09: the chapter view uses the shared rail rather than a rail of its own (the first wireframe's tick-per-locus rail is withdrawn); its pips mean drawn or missing",
+  "kinship place": "UI designer, 2026-10-09: the kinship word moves from the notice to the pill under the child, always shown; the notice goes to the first missing read, which draws the player back to research"
+ }
+}
