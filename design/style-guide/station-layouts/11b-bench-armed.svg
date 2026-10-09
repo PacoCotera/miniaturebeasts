@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Probe bench, the upgrade armed: the part lifted 8 px out of its socket, Again: fit tier 2. 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="96.5" y="104.5" width="479" height="287" fill="#eef2f5" stroke="#3c4b57" stroke-width="1.5"/><text x="102" y="118" font-size="10" fill="#333">the Probe in its cradle, tier 1 · 96,104 480×288</text>
+<rect x="192.5" y="144.5" width="287" height="191" fill="none" stroke="#5a6672" stroke-dasharray="4 3"/><text x="336" y="244" font-size="11" fill="#5a6672" text-anchor="middle">Probe (painted)</text>
+<line x1="336.5" y1="104" x2="336.5" y2="496" stroke="#c9d2da" stroke-dasharray="2 4"/>
+<text x="104" y="351" font-size="10" fill="#2b6cb0">Arm, then confirm: the first ✓ lifts the</text>
+<text x="104" y="364" font-size="10" fill="#2b6cb0">part 8 px; the second fits it (900 ms,</text>
+<text x="104" y="377" font-size="10" fill="#2b6cb0">held). Any other key clears the arm.</text>
+<rect x="232.5" y="416.5" width="207" height="79" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="272.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="320.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="368.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<text x="448" y="460" font-size="9" fill="#777">plates 32×64, 48 pitch</text>
+<rect x="624.5" y="104.5" width="383" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="640" y="132" font-size="13" fill="#717c86">Mend</text><rect x="980.5" y="116.5" width="11" height="11" fill="#98d85c" stroke="#444" stroke-width="1"/>
+<rect x="640.5" y="160.5" width="79" height="39" fill="#cfe0c8" stroke="#444" stroke-width="1" rx="4"/><rect x="684.5" y="164.5" width="31" height="31" fill="#9aa3ab" stroke="#444" stroke-width="1" rx="3"/>
+<text x="736" y="184" font-size="9" fill="#777">toggle 80×40, on</text><text x="1002" y="226" font-size="8" fill="#999" text-anchor="end">624,104 384×128</text>
+<rect x="624.5" y="248.5" width="383" height="247" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="640" y="276" font-size="13" fill="#717c86">Upgrade</text><rect x="980.5" y="260.5" width="11" height="11" fill="#98d85c" stroke="#444" stroke-width="1"/>
+<rect x="640.5" y="296.5" width="159" height="159" fill="#dfe4e8" stroke="#444" stroke-width="1"/><text x="644" y="452" font-size="9" fill="#777">socket 160</text>
+<rect x="656.5" y="304.5" width="127" height="127" fill="#c7d2da" stroke="#444" stroke-width="1"/><text x="720" y="372" font-size="9" fill="#555" text-anchor="middle">part, lifted 8</text>
+<rect x="824.5" y="312.5" width="15" height="15" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
+<rect x="848.5" y="312.5" width="15" height="15" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
+<rect x="872.5" y="312.5" width="15" height="15" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
+<rect x="824.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="848.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="872.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="896.5" y="352.5" width="15" height="31" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
+<rect x="824.5" y="408.5" width="39" height="39" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
+<text x="920" y="328" font-size="9" fill="#777">three pods</text><text x="936" y="376" font-size="9" fill="#777">four plates</text><text x="872" y="432" font-size="9" fill="#777">wider reach</text><text x="824" y="476" font-size="9" fill="#777">what it adds, as pictures</text>
+<text x="1002" y="490" font-size="8" fill="#999" text-anchor="end">624,248 384×248</text>
+<rect x="620" y="242" width="392" height="256" fill="none" stroke="#d9a21b" stroke-width="2" rx="6"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Probe</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/><text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Again: fit tier 2</text>
+<text x="202.8" y="587" font-size="14" fill="#222">⚡ 12 ◆ 4</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">the Probe reaches further</text>
+<circle cx="962.4" cy="582" r="8" fill="#5d5974"/><text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text><text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+</svg>

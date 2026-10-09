@@ -182,7 +182,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Glint.** The same four-point star, 12×12, everywhere: on the list ring's arc, on the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why (*L2.4, UI designer, 2026-10-09, after the owner's 2026-10-08 rule that marks leave the picture*: was a 2 px red ring round the picture and a 12×12 ✕ at its top right).
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
-- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Two exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting), and on Home the focused resident's name tag, under the creature, only while it is focused (the owner's decision of 2026-10-07, in force: the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
+- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting), Habitat's name tag and its meet ribbon in the tag's place ([Habitat](#habitat)), and on Home the focused resident's name tag, under the creature, only while it is focused (the owner's decision of 2026-10-07, in force: the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
 ### Never upscaled
 
@@ -195,10 +195,11 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 
 The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md); *corrected, 2026-10-09: was "the screen layer", the JavaScript layer now deprecated*): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as a grid by pitch on Home's Incubator module and Create, or as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`; architect, 2026-10-09 13:24). A new word comes back to the UI designer and the architect. What a screen builds from them, bound in the face's `screens/` table (decided by the UI designer, 2026-10-08, on Home):
 
-- **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules are the only modules.
+- **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules, Habitat's five and the Probe bench's two are the modules; on Habitat a module has no lamp.
 - **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome.
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none earns a word. If a second screen needs one, it comes back to the UI designer.
 - **Compositions of L2.4** (*UI designer, 2026-10-09*): the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; it registers the focus target `roll` at the chosen picture's rectangle) and the **trait line** (Create: the text word, with a changed tag built as Home's name tag is). Both are used on Create alone. The bud's leaves, first proposed here, are the word `leaves` above (architect, 2026-10-09 13:24).
+- **Compositions of L2.5**: the **name tag** on Habitat (Home's `nameTag` build, its name at 28 px), the **chapter plates** (Habitat's card: a `list` of 40×40 plates with the rail's emblems, rule `listPitch`), the **bay strip** (Habitat: a `list` of tiles, rule `listPitch`, its form by the bay count) and the **Shield plates** (the Probe bench: plates on a table of places by tier). Each is used on one screen; a second user comes back to the UI designer and the architect.
 
 **The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name, and `ui/specs/derive.mjs` holds the same rule as the oracle ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. A rule not in this list is refused when the spec loads; a screen that needs one lists it for the architect, never improvises it (transcribed from lvgl-switch.md §2.2 by the UI designer, 2026-10-09). `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` (architect, 2026-10-09 13:24; [the leaf arcs](#the-leaf-arcs)).
 
@@ -1318,7 +1319,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut) and the stamp redraws; the state is ready |
 | `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the glass lifts 384 px, eased, whole pixels, out of sight under the rail. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to Habitat |
 
-**The hand-off.** The hatch ends on Habitat in its meet, which L2.5's spec sets (not yet written). This spec fixes only what the hand-off needs: the new mibi shown at 304×312, the box the juvenile stood in, with the ring on it, and Open as a jump, so ← on Habitat reads Home (stack navigation, `frame.json` `navigation.jumps`). With `motion: false` the hatch jumps to its end, Habitat's meet.
+**The hand-off.** The hatch ends on Habitat in its meet ([Habitat's states and events](#habitats-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312, the box the juvenile stood in, with the ring on it, and Open as a jump, so ← on Habitat reads Home (stack navigation, `frame.json` `navigation.jumps`). With `motion: false` the hatch jumps to its end, Habitat's meet.
 
 ### Placeholders on the Incubator
 
@@ -1372,114 +1373,363 @@ None open for the disciplines. Answered on 2026-10-09 and written into the secti
 
 ## Habitat
 
-No decided concept plate. Derived from the guide's composition (window the left 60%, card the right 40%, strip 72 px) and the M2 build. Wireframe: [06-habitat.svg](station-layouts/06-habitat.svg).
+One mibi up close, in the vivarium's light. Wireframes, 1×: [06-habitat](station-layouts/06-habitat.svg), [06b-habitat-meet](station-layouts/06b-habitat-meet.svg), [06c-habitat-child](station-layouts/06c-habitat-child.svg), [06d-habitat-armed](station-layouts/06d-habitat-armed.svg), [06e-habitat-empty](station-layouts/06e-habitat-empty.svg), [06f-habitat-away](station-layouts/06f-habitat-away.svg) and the map [06g-habitat-nav](station-layouts/06g-habitat-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/habitat.json`.
 
-<img src="station-layouts/06-habitat.svg" width="720" alt="Habitat wireframe">
+<img src="station-layouts/06-habitat.png" width="1024" alt="Habitat at rest">
 
-*Habitat. Wireframe, layout only, measured.*
+*06. Habitat at rest: an adult founder with every chapter read, the ring on the mibi, `✓ Spend time with Burr`. 1×, measured.*
+
+<img src="station-layouts/06b-habitat-meet.png" width="1024" alt="Habitat, the meet">
+
+*06b. The meet: the new juvenile from the hatch in the same 304×312 box, its placeholder and waiting lamp, the meet ribbon in the name tag's place, the ring on it.*
+
+<img src="station-layouts/06c-habitat-child.png" width="1024" alt="Habitat, a bred child">
+
+*06c. A bred child with two chapters still a surprise: the ring on an unread plate, `✓ Read Coat · ◆ 1`.*
+
+<img src="station-layouts/06d-habitat-armed.png" width="1024" alt="Habitat, the bond armed">
+
+*06d. Arm, then confirm: the first ✓ on an offered bond half fills the heart and the action reads `Again: bond with Burr`; a sitting held lights the Portrait module's frame.*
+
+<img src="station-layouts/06e-habitat-empty.png" width="1024" alt="Habitat, empty">
+
+*06e. Empty: no mibi yet. The glass, the six free bays and the frame; no ring and no ✓ cap.*
+
+<img src="station-layouts/06f-habitat-away.png" width="1024" alt="Habitat, Companion away, ten bays">
+
+*06f. The Companion away and ten bays in compact tiles: the ring on the Companion module, `✓ Take Fig with you`, "goes at the next dock".*
+
+<img src="station-layouts/06g-habitat-nav.png" width="1024" alt="Habitat's navigation map">
+
+*06g. Habitat's map: the ways in, the states, what each key does, where ✓ and ← lead.*
 
 ### 1. Purpose
 
-Habitat shows one resident up close, so the player can spend time with it, take it along, bond with it, or let it go. The player comes away knowing who this mibi is (name, stage, species, what it remembers) and having chosen what it does next.
+Habitat is where the player spends time with one mibi and decides what it does next: comes along on the Companion, bonds, crosses, sits for its portrait, or goes back to the wild. The player comes away knowing who this mibi is (its name, its species and stage, where it came from, what it remembers, which chapters are still a surprise) and having chosen its next step. It is the individual level ([The two levels](#the-two-levels-species-and-mibi)): one living thing with its own stamp, with a door to its species' guide.
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **The resident**, 304×312, in its corner of the vivarium | The subject |
-| **Card**: name, three short lines (species and stage, ability, memory), the code, the stamp label, seven chapter plates | Who it is, without a text page |
-| **Door** (Companion) | Who is out with you, and taking this one |
-| **Bond** (heart) | The deliberate bond |
-| **Cross** | Breeding, on an adult (M4) |
-| **Wild** | Returning it to the wild, with arm-then-confirm |
-| **Strip** of bays | The other residents and the free bays; the way to swap |
+| **The mibi**, 304×312, in the living window | The subject, at the size it stood at when it hatched |
+| **The name tag** under it, inside the window | Which mibi this is, in context under the creature; the screen's one name, 28 px |
+| **The card**: "your Loika, adult" (the species word is the door to the guide), where it came from, what it remembers, its code, the stamp label and one plate a chapter | Who it is, as a readout, without a text page |
+| **Five modules**: Companion, Bond, Portrait, Cross, Wild | The five things a mibi can do next, each one engraved word and one object |
+| **The strip** of bays | The other mibis and the free bays; walking it changes the mibi shown |
+| **The meet ribbon** (the meet only) | A new mibi, met for the first time |
+| **Bottom line** | What ✓ does with the focus, at its price; the context in words |
 
-**Cut:**
-
-- "its painting is on its way · placeholder" inside the window: it moves to the lamp plus the bottom line.
-- "+2 ❀" and "✓ again" on the Wild module: they belong on the bottom line.
-- "after a first outing" on the heart: it belongs in the bottom line's subject.
-- The paper-and-wood card colours: the card is cool chrome.
-- The four chapter thumbnails become seven, one per chapter.
+**Not on the stage:** prices, counts, "again", "+2 ❀", "with you", "placeholder" or any status word. They are the bottom line's. Nothing on Habitat is amber: a bond offered, a partner to cross with or a mibi with you is not a need.
 
 ### 3. Placement
 
 **Reading order:**
 
-1. **The resident**, warm, centred in the window on x 320.
-2. **Its name** at the card's top left.
-3. **The card's lines and plates.**
-4. **The four action modules.**
+1. **The mibi**, warm, centred in the window on x 296.
+2. **Its name** on the tag under its feet.
+3. **The card's first line**, "your Loika, adult", then its other lines and plates.
+4. **The modules**, left to right, top to bottom; Wild, the act that lets a mibi go, last.
 5. **The strip.**
-6. **The stamp label** in the card's top right corner.
+6. **The stamp label**, in the card's top right corner, 424 px from the mibi.
 
-**At the edges:** the strip along the foot, the card at the right edge.
+**At the edges:** the card and the modules in a 416 px column at the right; the strip along the foot.
 
 ### 4. Art direction
 
-- **Room:** the vivarium, cozy and warm, the pet happy at home.
-- **Warm key light** from the top left in the window. The card and modules are cool and calm.
-- **The heart is red and heart-shaped,** and there are no meters or needs anywhere.
+- **Room:** the vivarium: cozy and warm, the pet happy at home. The window is the only warm field; the card, the modules and the strip are the instrument's cool chrome.
+- **One warm light**, the same as Home's glass and Idle: the warm key light from the top left in every light; at night warm and low, the moon only a cool rim.
+- **The mibi** is its standard painting at 304×312, or its placeholder with the waiting lamp until the painting lands. A juvenile reads young by proportion inside the same box. Never a token, never enlarged.
+- **The heart is red and heart-shaped**, and there are no meters or needs anywhere.
+- **The stamp is a detail:** the 120 label, at the card's far corner.
+
+**Colour roles** (the one home is `habitat.json` `colours`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Bezel, glass | As Home: `metal` bezel lit `enamel`, shade `bevel`, edge `hairline`; glass edge `frostD`. Until the Habitat master: back `forest`, ground band (y 304 to 464) `clay` with a `sand` top row | The vivarium's warm field, the same as Home's |
+| Name tag | `panel` fill, `hairline` edge, the name `bone` | The kit's small plate, quiet on the warm field |
+| Meet ribbon | `tealD` fill, `aqua` rim, words `bone` | The one ribbon look: an event, cool on the warm field |
+| Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role, never a word in the window |
+| Card | `panel` fill, `hairline` edge, `bevel` top; species line and code `bone`, origin and memory `mist`; `mark-guide-16` in `bone` | An instrument readout |
+| Plates | `ground` recess; read: a `bevel` edge and the read emblem; unread: a dotted `bevel` outline and the unread emblem; sealed: slats in `bar` and the sealed emblem | The rail's emblems (`rail-emblem-{chapter}-{state}-24x24`), the rail's states |
+| Modules | `panel` fill, `hairline` edge, `bevel` top, the word `metal` | Home's modules, engraved and quiet; no lamp |
+| Heart | Outline `bevel` (not yet), `coral` (offered); half `red` (armed); full `red` lit `coral` (bonded) | Red and heart-shaped |
+| Sitting frame | Empty a `hairline` outline; gilt `gold` lit `yellow` | As Home's sitting slot |
+| Gate | Bars `metal`, grass `sage` | The way out to the wild |
+| Partner faces | `face-{mibi}-24` on a `bevel` ring | As the top bar's face |
+| Strip and tiles | Strip `ground`; tile `panel`; the shown tile `hairline`, one step up; a free bay a dashed `hairline` outline; names `bone` | The focus ring is the only highlight |
 
 ### 5. Composition
 
-The window fills the left (16 to 624) above the strip, with the resident centred in it. At the right, the card sits on top, then the four modules: Door tall at the left, Bond and Cross side by side, Wild across under them. The strip of bays runs the full width at the foot.
+The window fills the left (16 to 576) above the strip, the mibi centred in it with its tag under its feet. At the right the card sits on top, then two rows of modules. The strip runs the full width at the foot.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Window bezel | 16, 48, 608, 424 | |
-| Living window | 24, 56, 592, 408 | No words |
-| **Resident (focal)** | 168, 136, 304, 312 | A juvenile is drawn at its own proportions inside the same box |
-| Meet ribbon | 168, 72, 304, 40 | "Meet Moss", 20 px, for the first meeting only |
-| Waiting lamp | 40, 432, 16, 16 | Until the painting lands |
-| Card | 640, 48, 368, 216 | Cool chrome pane |
-| Name | 656, 64, 200, 32 | 28 px. A heart shows beside it when bonded |
-| Lines | 656, 104, 200, 68 | Three lines of 16 px on a 24 px pitch: "your Loika, adult", the ability, the memory (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was "Loika · adult"). The species word is a focus target with `mark-guide-16` 4 px after it, on the line's centre: the way to the species' guide |
-| Code | 656, 180, 200, 20 | 16 px |
-| **Stamp label** | 872, 64, 120, 120 | In the card's corner, 400 px from the resident |
-| Chapter plates | 656 + 48i, 208, 40, 40 | Seven on a 48 px pitch. Eight (a signature chapter) shrink to 32×32 on a 40 px pitch, 312 px in all |
-| Door | 640, 280, 128, 184 | Word "Companion"; the mibi with you at 48×48, or the Companion mark |
-| Bond | 776, 280, 112, 88 | Heart 32×28; word "Bond" |
-| Cross | 896, 280, 112, 88 | Word "Cross". Drawn in hairline and not focusable until M4, or on a juvenile |
-| Wild | 776, 376, 232, 88 | Gate 64×48; word "Wild" |
-| Strip | 16, 480, 992, 72 | |
-| Bay tile | 24 + 136i, 484, 128, 64 | Thumbnail 48×48 at (x + 8, 492); name 16 px at (x + 64, 504). A free bay is a dashed outline with no word. With 8 bays the tiles are 112 on a 120 pitch; with 10 bays, 88 on a 96 pitch, thumbnail only, and the focused tile's name shows on the bottom line |
+| Bezel | 16, 48, 560, 424 | 8 px bezel |
+| **Living window (glass)** | 24, 56, 544, 408 | Ground band 24, 304, 544, 160; no words but the tag and the meet ribbon |
+| **The mibi (focal)** | 144, 80, 304, 312 | Axis x 296, feet y 392; the juvenile's box on the Incubator, so it reads as the same creature after the hatch |
+| Waiting lamp | 436, 80, 12, 12 | At the box's top right, riding the lift, while the placeholder is drawn |
+| Name tag | in 144, 416, 304, 40 | 40 tall; the name's width + 32, rounded up to the grid, at least 96, centred on x 296; the name 28 px semibold. Its top is 8 px under the ring's ellipse (384 to 408), its bottom 8 px inside the glass |
+| Meet ribbon | 144, 416, 304, 40 | In the tag's place, 20 px, centred; the meet only |
+| Card | 592, 48, 416, 208 | `panel` |
+| Species line | 608, 64, 248, 24 | "your Loika, adult", 16 px, with `mark-guide-16` 4 px after the last word; a focus target |
+| Origin line | 608, 88, 248, 24 | "from the rock field" (a founder) or "of Pip and Sorrel" (bred) |
+| Memory line | 608, 112, 248, 24 | "remembers the pond edge", or empty |
+| Code | 608, 144, 248, 24 | The code, live text |
+| **Stamp label** | 872, 64, 120, 120 | 424 px from the mibi's box |
+| Plates | 608 + 48i, 200, 40, 40 | One a chapter in ring order, up to eight (8 × 48 − 8 = 376): the rail's emblem 24×24 at (8, 8), no word, no pips. 16 px under the stamp and 32 under the code's baseline |
+| Companion | 592, 272, 128, 96 | Word at (16, 12); the Companion's glyph 16×24 at (24, 52), solid docked, outline away; the mibi with you, 48×48, at (56, 40) while docked |
+| Bond | 728, 272, 136, 96 | The heart 32×28 at (52, 52) |
+| Portrait | 872, 272, 136, 96 | The sitting frame 32×48 at (52, 40) |
+| Cross | 592, 376, 272, 96 | Wide: it opens a screen. The faces of the adults it can pair with, 24×24 on a 32 pitch at (16 + 32i, 56), up to seven |
+| Wild | 872, 376, 136, 96 | The gate 48×48 at (44, 40) |
+| Strip | 16, 488, 992, 64 | `panel` |
+| Tiles | from 32, 496, each 48 tall | One a bay. **Up to six bays:** full tiles 152×48 on a 160 pitch (six end at x 984), the thumbnail 48×48 at (8, 0), the name 16 px from (64, 14). **Seven to twelve:** compact tiles 72×48 on an 80 pitch (twelve end at 984), the thumbnail at (12, 0), no name. A free bay is a dashed outline. More than twelve is not designed yet |
+
+Every module's objects start 8 px or more under its word's baseline (the word's line box at y + 12, its baseline at y + 28, the first object at y + 40 or lower; the heart at y + 52).
+
+**Regions and their words.** Every drawn region names its word from the closed vocabulary (`component`) or its composition (`build`). States: **rest**, **meet** and **empty**.
+
+| Region (`habitat.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `stage` | 0, 40, 1024, 522 | frame, part stage (`room-vivarium-stage-habitat`, to be commissioned) | | — |
+| `bezel` | 16, 48, 560, 424 | living window, part frame | | — |
+| `glass` | 24, 56, 544, 408 | living window, part inside | | — |
+| `resident` | 144, 80, 304, 312 | specimen (focal) | rest, meet | painting or placeholder; the waiting lamp; focused (4 px lift, the ellipse); its moment |
+| `nameTag` | 144, 416, 304, 40 | panel and text, build `nameTag` | rest | the name |
+| `meetRibbon` | 144, 416, 304, 40 | ribbon | meet | "Meet Moss" |
+| `card` | 592, 48, 416, 208 | panel | rest, meet | — |
+| `speciesLine`, `originLine`, `memoryLine`, `code` | 608, 64 / 88 / 112 / 144, 248, 24 | text | rest, meet | the species word focused |
+| `stamp` | 872, 64, 120, 120 | stamp label | rest, meet | the read chapters filled; a chapter printing |
+| `plates` | 608, 200, 376, 40 | list, build `chapterPlates` (rule `listPitch`) | rest, meet | each plate read, unread or sealed |
+| `door` | 592, 272, 128, 96 | panel, build `module` | rest, meet | docked, away, none |
+| `bond` | 728, 272, 136, 96 | panel, build `module` | rest, meet | not yet, offered, armed, bonded |
+| `portrait` | 872, 272, 136, 96 | panel, build `module` | rest, meet | none, held, painting, portrayed |
+| `cross` | 592, 376, 272, 96 | panel, build `module` | rest, meet | its partners' faces, or none |
+| `wild` | 872, 376, 136, 96 | panel, build `module` | rest, meet | shut, armed |
+| `strip` | 16, 488, 992, 64 | panel | | — |
+| `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch`, its form by the bay count) | | shown, housed, free; the mibi with you while away |
+
+The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** stage, bezel, glass, resident, its lamp, name tag or meet ribbon, card, its lines, stamp, plates, the five modules, strip, tiles, ring, frame, message plate.
 
 ### 6. Interactions
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | Spatial: resident, Door, Bond, Cross, Wild, strip tiles. On a tile, that resident comes into the window (300 ms) |
-| ✓ on the resident or a tile | `✓ Spend time with Fig`: its species moment plays for about 2 s. Rewards nothing |
-| ✓ on the species word | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library". In Habitat's fixed pad order the species word is a row of its own between the stage and the chapter plates (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
-| ✓ on Door | `✓ Take Fig with you · now` (docked) or `· at the next dock`. On the mibi already with you there is no ✓ cap |
-| ✓ ✓ on Bond | The first ✓ arms ("Again: bond with Fig"); the second bonds. Before a first outing there is no ✓ cap, and the subject says "bond is offered after a first outing" |
-| ✓ on Cross (M4) | Opens Cross |
-| ✓ ✓ on Wild | `✓ Return Fig to the wild · +2 ❀`, then the second ✓. Refused, with no ✓ cap and the reason as the subject, for a bonded mibi, a juvenile or the one with you |
-| ✓ on a portrait offer (M6) | `✓ Portray Fig · 1 sitting` |
-| ← | Home, however Habitat was opened (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "or the Library, if Habitat was opened from a Book"; stack navigation) |
+| Pad | Moves the ring by [Habitat's focus](#habitats-focus-as-data); on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once) |
+| ✓ on the mibi or a tile | `✓ Spend time with Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing and shows nothing like a reward |
+| ✓ on the species line | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads Library |
+| ✓ on a plate | A bred child's unread chapter: `✓ Read Coat · ◆ 1` (or free): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
+| ✓ on Companion | `✓ Take Fig with you`, the context "goes with you now" (docked) or "goes at the next dock" (away). On the mibi with you, or one already chosen: no ✓ cap, the context says so |
+| ✓ ✓ on Bond | Before its first expedition: no ✓ cap, "bonds after its first expedition". Offered: the first ✓ arms (the heart half fills, `Again: bond with Burr`), the second bonds (the heart full, its moment plays). Bonded: no ✓ cap |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr · 1 sitting` opens the sitting (its screen is not designed yet). Otherwise no ✓ cap and the context says why: "no sitting held", "Burr needs a walk first", "one sitting each, ever", "its portrait is on its way" |
+| ✓ on Cross | An adult with a partner: `✓ Cross Burr` opens Cross; ← there reads Habitat and lands on the Cross module. A juvenile: "crosses once adult"; an adult alone: "no other adult Loika" |
+| ✓ ✓ on Wild | `✓ Return Burr to the wild · ❀ +2`, "never taken back": the first ✓ arms (the gate ajar, `Again: return Burr`), the second returns it (the mibi dithers out to the next in bay order, its tile frees, a message plate says where it went). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "Fig is with you" |
+| Any key but ✓ | Clears an arm |
+| ← | Home, however Habitat was opened; Home's ring lands on that mibi when it is at home, else on the room |
+| The Habitat key | On Habitat, the ring back on the mibi; from anywhere, Habitat on the mibi last seen |
+| The first press of the meet | Removes the ribbon (the tag shows) and does what it does |
+
+### Habitat's focus as data
+
+`habitat.json` `focus` replaces `nav.mjs` `habitatRows` and `habitatMove` with the graph primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): edges by name, selector, `nearestIn` with `ahead`, ordered lists, and `axis`. Targets: `resident`; `species`; `plate.<i>` in group `plate`; `door`, `bond` and `portrait` in group `top`; `cross` and `wild` in group `low`; `tile.<mibi id>` in group `tile` (housed mibis only). The selector `tile.shown` is the shown mibi's tile.
+
+| From | ◀ | ▶ | ▲ | ▼ |
+| --- | --- | --- | --- | --- |
+| `resident` | none | `species` | none | `tile.shown` |
+| `species` | `resident` | none | none | `plate.0` |
+| `plate` | the nearest plate to the left, else `resident` | the nearest plate to the right, else none | `species` | `nearestIn: top` |
+| `top` | the nearest of `top` to the left, else `resident` | the nearest of `top` to the right, else none | `nearestIn: plate` | `nearestIn: low` |
+| `low` | the nearest of `low` to the left, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
+| `tile` | the previous tile (axis; the first stops) | the next tile (the last stops) | `resident` | none |
+
+"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings:** the mibi's ellipse under its feet (136, 384, 320, 24) with the 4 px lift; round rings 4 px outside the species line, a plate, a module or a tile, with the 2 px chrome lift (none on the species line). **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent. **Vectors** are in `habitat.json` `focus.vectors` (for example plate.0 ▼ door, door ▲ plate.1, door ▼ cross, wild ▼ the shown tile).
+
+### Habitat's states and events
+
+- **Rest:** one housed mibi shown.
+- **Meet:** the first look at a new mibi. The Incubator's hatch ends in its 180 ms dither on Habitat's meet; Home's ✓ Meet opens it too. The ribbon "Meet Moss" stands in the tag's place, the mibi plays its moment once (no hold), and the ring is on it. The first press removes the ribbon and does what it does. A new mibi usually shows its placeholder with the waiting lamp and the context "its painting is on its way" ("waiting for the cloud" while the Caddy is unreachable).
+- **Empty:** no housed mibi: the glass, the strip's free bays and the frame. No card, modules or ring; no ✓ cap; the context "no mibis yet".
+- **The painting landing:** a painting that lands while its mibi is on screen waits for the next fresh draw (Habitat opened again, the strip bringing the mibi back, a wake); it never swaps in view. Then the mibi shows its painting and the lamp goes.
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `moment` | 300 ms | The species moment from its moving set; until it has one, the placeholder hops twice (the creature lift, 4 px up and back, at 0 and 900 ms). A press after the hold cuts it to its end |
+| `swap`: `{ kind: dither, target: resident, ms: 200, levels: 16 }` | no | The mibi shown changes as the ring walks the strip |
+| `read` | 300 ms | The plate turns read (a cut); the stamp prints the chapter's cells row by row from the top |
+| `bond` | 300 ms | The heart from armed to full (a cut); the moment plays |
+| `release`: `{ kind: dither, target: resident, ms: 200, levels: 16 }` | 200 ms | The mibi dithers out to the next housed mibi in bay order (none: the empty state); its tile frees |
+
+With `motion: false` every event jumps to its end.
 
 ### Placeholders on Habitat
 
 | Thing | Pixel size |
 | --- | --- |
-| Resident | 304×312 |
-| Thumbnails | 48×48 |
-| Door mibi | 48×48 |
-| Chapter plates | 40×40 (rendered close-ups) |
-| Heart | 32×28 |
-| Gate | 64×48 |
-| Window | 592×408 |
+| The mibi | 304×312: its standard painting, or the placeholder (the stylised rig pass) |
+| Thumbnails and the mibi with you | 48×48, the painting or placeholder rendered at that size |
+| Partner faces | 24×24, `face-{mibi}-24` |
+| Plates | 40×40, with `rail-emblem-{chapter}-{read,unread,sealed}-24x24` |
+| Heart | 32×28: `heart-dim-32x28`, `heart-open-32x28`, `heart-armed-32x28`, `heart-full-32x28` |
+| Sitting frame | 32×48: `sitting-frame-empty-32x48`, `sitting-frame-held-32x48`, `sitting-frame-portrait-32x48` |
+| Gate | 48×48: `gate-wild-shut-48x48`, `gate-wild-open-48x48` |
+| Guide mark | 16×16, `mark-guide-16` |
+| Stage | 1024×522, `room-vivarium-stage-habitat`, to be commissioned |
+| Waiting lamp | 12×12 |
 
-### Changes from the current build
+Where the build departs from this layout is listed in `habitat.json` `buildChanges`.
 
-- The resident grows from 290 to the 304×312 box.
-- The card goes from 374×246 in paper and wood to 368×216 in chrome.
-- The stamp grows from 88 to 120.
-- The chapter plates go from four to every chapter.
-- The modules get one word each, and their prices and words go to the bottom line.
-- The strip goes from 104 to 72 px.
-- The painting status leaves the window.
+### Not designed yet
+
+- The sitting's screen: whether it is a screen of its own under Habitat or a state of Habitat, its steps (pose, place, look and confirm), what ← does inside it, and where the player lands after the sitting begins. Its rules exist (`prototypes/station/src/sitting.mjs`); its layout follows once its structure is set.
+- Whether the empty Habitat invites, as the empty Incubator does, with a ✓ that leads to growing a first mibi.
+- Where the bench's watch runs: a resident kept in focus for a minute records the habit it was doing (`state.mjs` `watchResident`); whether Habitat's focused mibi counts, and how a recorded habit shows.
+- The strip past twelve bays.
+
+---
+
+## Probe bench
+
+The one screen whose subject is a machine: the Probe in its service cradle. Reached from Home's Probe module; its title is Probe, under the Research mark. Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
+
+<img src="station-layouts/11-bench.png" width="1024" alt="Probe bench, docked">
+
+*11. Docked, tier 1, one plate gone: the ring on the plates, `✓ Mend a plate · ⚡ 1`.*
+
+<img src="station-layouts/11b-bench-armed.png" width="1024" alt="Probe bench, the upgrade armed">
+
+*11b. The upgrade armed: the part lifted 8 px out of its socket, `✓ Again: fit tier 2 · ⚡ 12 ◆ 4`.*
+
+<img src="station-layouts/11c-bench-away.png" width="1024" alt="Probe bench, away">
+
+*11c. Away: the cradle empty, no plates, the slot dim; the ring on the switch, which is set at any time.*
+
+<img src="station-layouts/11d-bench-tier2.png" width="1024" alt="Probe bench, tier 2 fitted">
+
+*11d. Tier 2 fitted: four plates whole on their places, the part seated, no ✓ cap on the slot.*
+
+<img src="station-layouts/11e-bench-nav.png" width="1024" alt="Probe bench's navigation map">
+
+*11e. The bench's map: where it opens, what each key does, where ← leads.*
+
+### 1. Purpose
+
+The Probe bench is where the player keeps the Probe ready for the next expedition: mends its Shield plates, sets whether every plate is mended at the dock, and fits the tier 2 upgrade. The player comes away knowing, from the plates alone, how whole the Shield is, and what the upgrade would add.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The Probe in its cradle**, large | The subject: the device the Companion carries out, at rest on its bench |
+| **The Shield plates**, standing under it | The Shield's state with no words: whole or gone, the tier's count |
+| **The Mend module**: a switch and a lamp | The standing choice: mend every plate at the dock, at its price, or only the free ones |
+| **The Upgrade module**: the socket, the part, what it adds as pictures, a lamp | The tier 2 upgrade: whether it can be fitted, and what it brings |
+| **Bottom line** | Mend a plate, switch, fit, each with its price; the context in words |
+
+**Not on the stage:** "tier 1 · 2 of 3 plates", "Mend fully on docking", the price, "armed · ✓ again installs", "The Probe is away". The plates, the toggle, the part and the empty cradle show them; the words are the bottom line's.
+
+### 3. Placement
+
+**Reading order:**
+
+1. **The Probe in its cradle**, left of centre, on the axis x 336.
+2. **The plates** under it.
+3. **The Mend module**, top right.
+4. **The Upgrade module** under it.
+
+### 4. Art direction
+
+- **Room:** the research bench, a modern digital lab: cool, even light; the Probe lit like an instrument on a service stand. No warm field on this screen.
+- **The Probe** is the same device the Companion draws, painted at the bench's size, one picture a tier. Away, the cradle is drawn empty, so the Probe reads as out, never missing.
+- **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
+- **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are `sprout` or off.
+
+**Colour roles** (the one home is `bench.json` `colours`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Modules | `panel` fill, `hairline` edge, `bevel` top, the word `metal`; lamps off `hairline`, on `sprout`, rim `void` | Home's modules |
+| Plates | Whole `white`; gone a `bevel` outline | As Home's Probe module |
+| Switch | Track `ground` (off) or `sage` (on); knob `metal` lit `enamel` | One flat toggle |
+| Socket and part | Socket `ground` with a `bevel` rim; the part `enamel` lit `frost`, dim `bevel` | Machined parts |
+| What it adds | Icons `bone`; the one each adds over tier 1 `sprout` | A picture of the difference, no digits |
+
+### 5. Composition
+
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| **Cradle (focal)** | 96, 104, 480, 288 | The Probe standing in its cradle, one painted picture a tier; away, the empty cradle. Axis x 336; first ink at y 108 |
+| Plates | 232, 416, 208, 80 | Plates 32×64 at y 424 on a 48 pitch: tier 1 at x 272, 320, 368; tier 2 at 248, 296, 344, 392; centred on x 336. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Mend module | 624, 104, 384, 128 | Word at (16, 12), lamp at (356, 12); the toggle 80×40 at (16, 56) |
+| Upgrade module | 624, 248, 384, 248 | Word at (16, 12), lamp at (356, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)); what it adds at (200, 64): three pod icons 16×16 on a 24 pitch, four plate icons 16×32 at (200, 104), the reach 40×40 at (200, 160) |
+
+The cradle and the plates end at y 496, as the column does; the group is centred in the stage. Each module's objects start 8 px or more under its word's baseline (y + 28).
+
+**Regions and their words.** States: **docked** and **away**.
+
+| Region (`bench.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`, to be commissioned; until then `room-bench-stage-collection`) | | — |
+| `cradle` | 96, 104, 480, 288 | specimen (focal) | | tier 1, tier 2, empty |
+| `plates` | 232, 416, 208, 80 | panel, build `shieldPlates` | docked | each plate whole or gone; a plate seating |
+| `switch` | 624, 104, 384, 128 | panel, build `module` | | off, on |
+| `slot` | 624, 248, 384, 248 | panel, build `module` | | dim, ready, armed, fitted |
+
+**Draw order:** bench, cradle, plates, switch, slot, ring, frame, message plate.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Pad | Moves the ring by the bench's focus (below) |
+| ✓ on the plates | A plate gone: `✓ Mend a plate · ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap. Every plate whole: no ✓ cap, "every plate whole" |
+| ✓ on the switch | `✓ Switch on` or `✓ Switch off`, free: the knob slides (200 ms) and the lamp changes; the context "mends every plate" or "mends free plates only". Set at any time, docked or away |
+| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit tier 2 · ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit tier 2`), the second fits it (900 ms, held). Short: the dimmed cap. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "tier 2 is fitted" |
+| Any key but ✓ | Clears the arm |
+| ← | Home, the ring on the Probe module |
+
+### The bench's focus as data
+
+`bench.json` `focus` replaces `bench.mjs` `benchTargets` and `navSpatial`. Targets: `plates` (group `plates`, docked only), `switch` and `slot` (group `module`).
+
+| From | ◀ | ▶ | ▲ | ▼ |
+| --- | --- | --- | --- | --- |
+| `plates` | none | `nearestIn: module` (the slot, the row nearest) | none | none |
+| `module` (`order: [switch, slot]`) | `plates`, else none | none | the previous in the order | the next in the order |
+
+**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift. **Held:** while a mend or the install holds, the face moves no focus and sends no intent.
+
+### The bench's states and events
+
+- **Docked:** the Probe in its cradle with the tier's plates. Tier 1 or tier 2 and the slot's arm are props of this state.
+- **Away:** the Probe is out with the Companion: the cradle empty, no plates, the slot dim; the switch still works.
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `mend` | 300 ms | The first gone plate seats, gone → whole (a 16-level dither between its two slices); the counter ticks the price |
+| `switch` | no | The knob slides 40 px over 200 ms in whole pixels; the lamp changes at the end |
+| `install` | 900 ms | 0 to 300: the part drops 8 px into the socket; the counters tick. 300: the cradle's picture cuts to tier 2 and the plates move to the tier-2 places, whole. 300 to 600: the fourth plate seats. 600 to 900: what it adds draws full; the lamp steadies |
+
+With `motion: false` every event jumps to its end.
+
+### Placeholders on the Probe bench
+
+| Thing | Pixel size |
+| --- | --- |
+| The Probe in its cradle | 480×288: `bench-probe-t1-480x288`, `bench-probe-t2-480x288`, and `bench-cradle-empty-480x288`; rows 0 to 3 kept empty |
+| Plates | 32×64: `bench-plate-whole-32x64`, `bench-plate-gone-32x64` |
+| Switch | 80×40: `bench-switch-off-80x40`, `bench-switch-on-80x40` |
+| Socket and part | 160×160 `bench-socket-160`; 128×128 `bench-part-t2-dim-128`, `bench-part-t2-128`, `bench-part-t2-fitted-128` |
+| What it adds | `icon-pod-16`, `icon-shield-16x32`, `bench-reach-t2-40` |
+| Stage | 1024×522, `room-bench-stage-probe`, to be commissioned |
+| Lamps | 12×12 |
+
+Where the build departs from this layout is listed in `bench.json` `buildChanges`.
+
+### Not designed yet
+
+- A picture for the switch's meaning beside the toggle (every plate mended at the dock), so it reads without the bottom line.
+- The journey has no capture of the bench; the gate's region and pixel checks need one for each state.
 
 ---
 

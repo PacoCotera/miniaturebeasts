@@ -88,7 +88,7 @@
  },
  "handoff": {
   "to": "habitat", "state": "meet", "mibi": "the new mibi (the juvenile)", "focus": "the resident", "back": "Home", "transition": { "kind": "dither", "ms": 180, "levels": 16 },
-  "note": "Habitat's meet is set by L2.5's spec, not yet written; this spec fixes only the hand-off: the new mibi shown at 304×312, the juvenile's box, with the ring on it, and Open a jump, so ← on Habitat reads Home (frame.json navigation.jumps); the Incubator is then empty"
+  "note": "Habitat's meet is habitat.json state meet (events.meet); this spec fixes only the hand-off: the new mibi shown at 304×312, the juvenile's box, with the ring on it, and Open a jump, so ← on Habitat reads Home (frame.json navigation.jumps); the Incubator is then empty"
  },
  "focus": {
   "initial": "room",
