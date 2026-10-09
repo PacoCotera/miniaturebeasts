@@ -45,7 +45,7 @@ A genome is not one field to research. It has five kinds of part:
 
 - **Locked stays locked** (**Decided:** species-defining organization is protected). Locked parts are never researched pod by pod, never shaped and never crossed. They are **species knowledge**, so the field guide shows them once.
 - **What species do differently is how much they leave open.** A starter species leaves a handful of traits open, like Pip's five. A late species leaves dozens, behind more chapters, and some of those chapters are sealed. That is how "genomes grow with the player" (**Decided** as direction) on a single 114-pair catalogue.
-- **Looks are shapeable, doings come only from breeding.** This is the **default rule** the decided bounded trial points to (pale configurable; movement and effort inherited-only). Each species may override it. The owner said not to generalize the trial, so this goes to him (decision 2).
+- **Looks are shapeable, doings come only from breeding.** This is the **default rule** the decided bounded trial points to (pale configurable; movement and effort inherited-only). Each species may override it. The owner said not to generalize the trial, so this goes to the owner (decision 2).
 - "Switched off here" is not "absent" or "zero", and the four domains with no loci yet are shown as "not yet", never as nothing (**Working rule**, `v1/design/anatomical-source-prototype/compositional-contract.md`).
 
 ## 4. The unit of research: chapters and traits
@@ -119,7 +119,7 @@ This is a brief for the art director: the art director draws the renderer's mast
 | Revealed as research proceeds | no | no | no | breaks decoding | yes | **yes**, hairline sectors |
 | A device can scan it | no | yes | needs a server | yes | yes | **yes**: notch, timing marks, check |
 
-**Recommendation: the ring.** It keeps the decided round fingerprint, makes it true, and answers the owner's wish for "something different to a QR" and his worry about spoofed codes (owner 09-24).
+**Recommendation: the ring.** It keeps the decided round fingerprint, makes it true, and answers the owner's wish for "something different to a QR" and the owner's worry about spoofed codes (owner 09-24).
 - **Centre:** the species glyph.
 - **Grey band:** the locked frame, 62 marks, the same for every member.
 - **Two coloured tracks:** one spoke per heritable part. The inner track holds one copy (from the mother, or the pod's first copy) and the outer track holds the other. A long or short bar marks which look; a part with 3 or more looks takes 2 to 4 spokes.
