@@ -5943,5 +5943,617 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "mark-species-S01-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S01.json glyph",
+  "made": "the Loika mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "26c19b7d0b3073573eee1e199ce66967e7c9f74eddbaba12b61c3aa410536f5f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S02-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S02.json glyph",
+  "made": "the Untuva mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "cfbb5ac00d1430fa9e4e3bdfdfa6d1b401b5c6e177884b2a6836c82081fd4d84",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S03-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S03.json glyph",
+  "made": "the Tuikis mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "eb25449c2f9fcafb8ea76d262ca0d0bc3538458d493df728b1c06ade139c4615",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S04-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S04.json glyph",
+  "made": "the Hiljan mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "ddff45e0e334b762b37dad7f59fe285d119d47a4fc739199f385393e52aa69dd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S05-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S05.json glyph",
+  "made": "the Tepor mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "cb294db4bcffb60012ff8b513ca53136c56f8acba1174915c20bcfa8e44f60f5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S06-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S06.json glyph",
+  "made": "the Pesko mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "23bcbf4c3c059ea1ef6c69a7fc81cb63ce0d73925fe19e9c8a8315d73c849cda",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S07-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S07.json glyph",
+  "made": "the Azkon mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "2a4be6b63f285dccbac6d0498f3e6d17b79a5bf0d9b55091c19ac9789abc6453",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S08-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S08.json glyph",
+  "made": "the Rupar mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "aabcd1b4fb7de76fc44e7cd8269ae8c21cf220dbd1532bf53f522f6b58246fc3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S09-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S09.json glyph",
+  "made": "the Belatz mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "1fdec141e949b11ce9d424e1e35a5ac24a2e50a1f462f42c8f0bf2b23e862a70",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S10-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S10.json glyph",
+  "made": "the Igara mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "ccfcd8acf6e8a87e51d0768aade8fd1a6b7369628e0e63e4023a4c4f488aa5e6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S11-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S11.json glyph",
+  "made": "the Kilpo mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "3e4f0f01b2574b5c570c2901d17d63ece52f2f4ea5506f059a6e6f7c85380e34",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S12-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S12.json glyph",
+  "made": "the Peplos mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "7373a8c5dcdfa37b8963be8f58b794c928580b8d8b48151b3b97fd26358e5228",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S13-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S13.json glyph",
+  "made": "the Oskol mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "5c20add176b1cbeafce0695218cd1160ba85630c9e787ab3bc65361499629043",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S14-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S14.json glyph",
+  "made": "the Usvel mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "393645557b1bd3acbd1da62129ee2565a1ab281a4f09cae4128f5c63902fc523",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S15-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S15.json glyph",
+  "made": "the Lehten mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "f294b8296a9fefb31c940178c69044b013747486660eca404a74fbec116e18c3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-S16-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S16.json glyph",
+  "made": "the Blikur mark: its signed 5x5 abstract glyph at 4 px per cell, each lit cell a 3x3 bone square with a 1 px gap, the lit edge (top and left) white",
+  "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-species-frost-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   200,
+   488,
+   24,
+   24
+  ],
+  "src": "geometry",
+  "made": "the unidentified pod's mark: a generic frosted disc 22 px across (frostD body, a frost lit rim upper left, a frostS rim lower right), no glyph",
+  "sha256": "fe608d46c8441ef540cbf6f492d2202abef4aecb8c96989b523355588c868632",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C01-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S01.json signature.anchor",
+  "made": "clan C01 (Lophessa): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment charcoal #465459, no symbol",
+  "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C02-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S02.json signature.anchor",
+  "made": "clan C02 (Kausida): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment coral #e98268, no symbol",
+  "sha256": "b71f7681f6013782198f0c3c3e079f94a14c2d425caea9e6e24dcf9b745f8d23",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C03-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S03.json signature.anchor",
+  "made": "clan C03 (Stilbera): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment lagoon #269fa5, no symbol",
+  "sha256": "f83fb3278e078b1a8d0c19f2a9084c251a63871d5ee29f488fe05a34960bc01a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C04-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S04.json signature.anchor",
+  "made": "clan C04 (Lathreta): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment russet #ae674d, no symbol",
+  "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C05-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S05.json signature.anchor",
+  "made": "clan C05 (Dasyla): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment marigold #e8b83f, no symbol",
+  "sha256": "4b40db85fc14d270cb7cecf760e5bc4977ca092c2ebce510aed1f26919092862",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C06-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S06.json signature.anchor",
+  "made": "clan C06 (Prosopa): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment charcoal #465459, no symbol",
+  "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C07-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S07.json signature.anchor",
+  "made": "clan C07 (Skapana): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment russet #ae674d, no symbol",
+  "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C08-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S08.json signature.anchor",
+  "made": "clan C08 (Kremnion): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment russet #ae674d, no symbol",
+  "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C09-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S09.json signature.anchor",
+  "made": "clan C09 (Aithria): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment cobalt #4d7ed4, no symbol",
+  "sha256": "976b009b34769c0b7890cef618e6475fca04078b2923589c82fd7701710c9f54",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C10-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S10.json signature.anchor",
+  "made": "clan C10 (Kolymba): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment russet #ae674d, no symbol",
+  "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C11-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S11.json signature.anchor",
+  "made": "clan C11 (Thyreka): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment jade #38a878, no symbol",
+  "sha256": "4a439664cb12c220b7e06210761f717cbfc87788f280ce13491ce8eba7e94b89",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C12-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S12.json signature.anchor",
+  "made": "clan C12 (Graptoma): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment marigold #e8b83f, no symbol",
+  "sha256": "4b40db85fc14d270cb7cecf760e5bc4977ca092c2ebce510aed1f26919092862",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C13-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S13.json signature.anchor",
+  "made": "clan C13 (Lepidos): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment charcoal #465459, no symbol",
+  "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C14-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S14.json signature.anchor",
+  "made": "clan C14 (Kapnis): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment plum #a967b8, no symbol",
+  "sha256": "33e2783334d110d07ffc02b2cb6273c1fc7a3c4b7ce7197e9697e86df6de89f8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C15-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S15.json signature.anchor",
+  "made": "clan C15 (Phyllaxa): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment jade #38a878, no symbol",
+  "sha256": "4a439664cb12c220b7e06210761f717cbfc87788f280ce13491ce8eba7e94b89",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-clan-C16-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   232,
+   488,
+   24,
+   24
+  ],
+  "src": "species-S16.json signature.anchor",
+  "made": "clan C16 (Brontelas): a 24 px roundel, a 2 px ring and a solid 8 px centre in the clan's anchor pigment periwinkle #8b7dd8, no symbol",
+  "sha256": "0a806bc9e61defab5757f174e9260db491477494d00d1b3e20d87eebe500af90",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+ },
+ "mark-first-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   268,
+   492,
+   16,
+   16
+  ],
+  "src": "typed by hand",
+  "made": "the Library's gilt corner as a 16 px right-angle ornament in quiet gilt (bark with a clay lit edge and a soil shade), typed by hand",
+  "sha256": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
  }
 }
