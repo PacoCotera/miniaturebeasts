@@ -78,7 +78,7 @@ test("every colour a spec file names is in the palette; every region is on the 8
 });
 
 test("the focus graphs, one per state, name only groups and selectors the screen resolves", () => {
-  const groups = { collection: ["place"], overview: ["pod", "rail", "kin", "hatch", "figure", "none"], chapter: ["rail", "none"] }, selectors = new Set(["rail.last", "kin.first", "rail.open"]);
+  const groups = { collection: ["place"], overview: ["pod", "rail", "kin", "hatch", "none"], chapter: ["rail", "none"] }, selectors = new Set(["rail.last", "kin.first", "rail.open"]);
   for (const [st, graph] of Object.entries(pods.focus)) {
     const g = new Set(groups[st]); assert.ok(g.size, "a state " + st);
     for (const [k, e] of Object.entries(graph)) { if (["fallback", "initial", "back"].includes(k)) continue; assert.ok(g.has(k), `${st}: group ${k}`); for (const [d, v] of Object.entries(e)) if (["up", "down", "left", "right"].includes(d) && v) assert.ok(g.has(v) || selectors.has(v), `${st}.${k}.${d} → ${v}`); }

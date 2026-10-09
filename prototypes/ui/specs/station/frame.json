@@ -69,8 +69,8 @@
    {"from": "cross", "action": "Cross them", "to": "incubator"},
    {"from": "incubator", "action": "Open", "to": "habitat"},
    {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
-   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide"},
-   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "book", "spread": "guide"}
+   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "L2.1"},
+   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "L2.5"}
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
   "homePad": {

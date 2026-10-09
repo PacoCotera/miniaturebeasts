@@ -300,7 +300,7 @@
      "clear": "mibi-halo-{SNN}-128x160-clear"
     },
     "crossFade": "clear alpha = chapters read / chapters, over the mist; the build blurs nothing",
-    "target": "a focus target once the pod is identified (the species is found): ✓ Open the guide, a jump to the Book's guide spread (frame.json navigation.jumps); before Identify, not a target",
+    "target": "a focus target once the pod is identified (the species is found): ✓ Open the guide, a jump to the Book's guide spread (frame.json navigation.jumps); before Identify, not a target; from L2.1 (lvgl-switch.md §4). On main until then the figure is not a target and the pod's ▶ goes to kin.first.",
     "caption": {
      "rect": [
       432,
