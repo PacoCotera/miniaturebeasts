@@ -259,7 +259,8 @@
       }
      ],
      "pass_61": [
-      "the same 12 px smoothstep along the hard polygon silhouette segments [[(70, 30), (93, 80)]]"
+      "the same 12 px smoothstep along the hard polygon silhouette segments [[(70, 30), (93, 80)]]",
+      "pass 62: pixels (98, 96) set to the ground and (98, 97), (99, 97) to (104, 115, 115) (matte fringe)"
      ]
     },
     "144x176": {

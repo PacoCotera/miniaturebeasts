@@ -2165,9 +2165,9 @@
   "note": ""
  },
  "trait-S01-markings-plain-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
  },
  "trait-S01-markings-plain-144x176": {
   "status": "new",
@@ -2190,9 +2190,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 60 verdict",
+  "note": "the 128x160 crop at 75 percent with the keyed fade on its cut edges"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "status": "new",
@@ -2215,9 +2215,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 62 verdict",
+  "note": "the eye white restored, the polygon silhouette faded, and three matte fringe pixels fixed (the step at the nose is the painting's own outline)"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
   "status": "new",
@@ -2240,9 +2240,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
  },
  "trait-S12-colour-marigold-144x176": {
   "status": "new",
@@ -2265,9 +2265,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
  },
  "trait-S12-translucency-between-144x176": {
   "status": "new",
@@ -2290,9 +2290,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
  },
  "trait-S12-pattern-plain-144x176": {
   "status": "new",
@@ -2315,9 +2315,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
  },
  "trait-S12-trim-butter-144x176": {
   "status": "new",
@@ -2340,9 +2340,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
  },
  "trait-S12-haunch-between-144x176": {
   "status": "new",
@@ -2450,9 +2450,9 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "status": "signed",
+  "signed_in": "pass 60 verdict",
+  "note": "the 128x160 crop at 75 percent with the keyed fade on its cut edges"
  },
  "trait-S09-beak-between-144x176": {
   "status": "new",
@@ -2525,19 +2525,19 @@
   "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "mark-line-seed-12x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
  },
  "mark-line-seed-pair-20x16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
  },
  "mark-line-only-16x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 60 verdict",
+  "note": "the stepped plinth: a 2 px fog face, a 3 px mist front, a 1 px stone foot"
  },
  "cell-outline-unread-24x24": {
   "status": "withdrawn",
@@ -2545,8 +2545,8 @@
   "note": "pass 60: off spec (mist, 1 on 1 off, a nine-slice); replaced by cell-outline-unread-128x160"
  },
  "cell-outline-unread-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 60: the unread picture's dotted outline typed at its size: bevel dots, 1 on 2 off, all four corners lit, each side's remainder one gap at its middle; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
  }
 }
