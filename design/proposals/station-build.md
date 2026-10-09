@@ -1,6 +1,6 @@
 # The Station build: the first playable loop
 
-**Proposal** from the technical lead and game design, 2026-10-08, for the owner. It plans the first build of the Station loop on the sandbox: the approved [research loop](research-loop.md), paced by the [research economy](research-economy.md) (loose, for testing), with the decided rules of [the cross](the-cross.md), the stub of [the portrait](the-portrait.md), the painting at Grow of the [art pipeline](art-pipeline.md) v2 and the screens of the [Station style guide](../style-guide/station-screens.md). Loop and mechanics come first; where no master exists, the build shows a placeholder and says so. **Decided** marks owner decisions restated here; everything else is **Proposal**.
+**Decided** (owner, 2026-10-08): the plan, with the three decisions of §8 as recommended. Where it touches how screens are drawn, [lvgl-switch.md](lvgl-switch.md) governs: how a screen is built (§2.1 here, lvgl-switch.md §2), the order the screens move in (§3 here, lvgl-switch.md §3), the checks each screen passes (§5 here, lvgl-switch.md §2.8 and §4) and the screen milestones (§6 here, lvgl-switch.md §4). Written by the technical lead and game design for the owner. It plans the first build of the Station loop on the sandbox: the approved [research loop](research-loop.md), paced by the [research economy](research-economy.md) (loose, for testing), with the decided rules of [the cross](the-cross.md), the stub of [the portrait](the-portrait.md), the painting at Grow of the [art pipeline](art-pipeline.md) v2 and the screens of the [Station style guide](../style-guide/station-screens.md). Loop and mechanics come first; where no master exists, the build shows a placeholder and says so. **Decided** marks owner decisions restated here; everything else is **Proposal**.
 
 ## 1. Scope
 
@@ -28,7 +28,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 The Station stays `prototypes/station/index.html`: the depicted device, the 1024×600 screen at 1×, the row of keys below. Its single inline script splits into ES modules under `prototypes/station/src/`, loaded by one `<script type="module" src>` (the CI parse check reads inline scripts only, and an inline `import` would fail it). Three layers, and nothing else holds state:
 
 - **State** (`state.mjs`): the save's Station part and every rule as a pure function (prices, reads, glints, shaping, bud, refusal, forecast, kinship). No drawing; testable in Node.
-- **Screens** (`screens/*.mjs`): one module per screen, drawing from state and turning keys into rule calls.
+- **Screens**: a spec file (`prototypes/ui/specs/station/<screen>.json`), a view that turns state into props (`views/<screen>.mjs`) and an intent table that turns the face's intents into rule calls (`intents/<screen>.mjs`), drawn by the LVGL face (`prototypes/face`; [technical-architecture.md §5.4](technical-architecture.md#54-how-a-builder-adds-a-screen), [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face)). The screens not yet moved still draw through the frozen JavaScript layer (`screens/*.mjs`, `gfx.mjs`) until their milestone; nothing new is built there (lvgl-switch.md §5).
 - **Edges**: `caddy.mjs` (the client of the Caddy service), `art.mjs` (the placeholder register: every drawn stand-in listed, so masters replace them one by one), `dev.mjs` (the developer tools).
 
 ### 2.2 Imported, never copied
@@ -89,7 +89,7 @@ A panel under the device, opened by `?dev` or a page button, never a device key.
 
 ## 3. Screens, in build order
 
-Each screen follows its decided concept for layout, states and words. Art is the placeholder until the art director's masters exist (**Decided:** engineers do not do art), and the placeholder register lists every stand-in.
+The order in which the screens move to the LVGL face, and the spec file each needs first, is [lvgl-switch.md §3](lvgl-switch.md#3-screen-order); the table below says what each screen shows. Each screen follows its decided concept for layout, states and words. Art is the placeholder until the art director's masters exist (**Decided:** engineers do not do art), and the placeholder register lists every stand-in.
 
 | # | Screen | Built from the decided concept | Placeholder until masters |
 | --- | --- | --- | --- |
@@ -144,7 +144,7 @@ CI keeps the parse check and the page smoke, and adds two things. **Unit tests**
 | 13 | Stop the service; Grow; restart it | "Waiting for the cloud", then the painting lands |
 | All | | No page errors; the save round-trips; the placeholder's hash matches Node's for the same genome |
 
-The journey grows with each milestone, so every push to main proves the loop that is live.
+The journey grows with each milestone, so every push to main proves the loop that is live. On the LVGL face it also runs the checks of [lvgl-switch.md §2.8](lvgl-switch.md#28-checks-against-the-lvgl-framebuffer) and each screen milestone's gate (lvgl-switch.md §4): regions, pixels, palette, type, goldens, budgets and the freeze.
 
 ## 6. Milestones
 
@@ -158,6 +158,8 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 | **M4 Cross** | The Cross screen, eligibility, forecast seeds and ranges, the `parents` field, reading a child | Two Loikas crossed and a child whose hidden looks surface; siblings crossed showing the penalty |
 | **M5 Library** | The spread, the Book, looks found and "more?", the stamp at 120 px, a pinned wish | The collection as a tome, a species page filling as pods are read |
 | **M6 Sitting and the whole journey** | Home's sitting slot, the welcome sitting, the ceremony, the crate; the CI journey complete; the README | The whole loop from a walk to a sitting's crate, every step playable |
+
+**Decided** (owner, 2026-10-09 11:27): every screen from here is built on the LVGL face, never on the JavaScript drawing layer. M5's Library is L2.1 of [lvgl-switch.md](lvgl-switch.md) §3, and M6's Sitting screen is built on the face at L2.5 or when its spec lands.
 
 ## 7. Risks
 
@@ -173,7 +175,9 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 | Placeholders read as art | The register in `art.mjs`; placeholders stay plainly placeholders, never polished |
 | The name Caddy for two things on the VM | The unit and the docs say "the Caddy service" |
 
-## 8. Decisions for the owner
+## 8. Decisions
+
+**Decided** (owner, 2026-10-08): all three as recommended. The Caddy service on the VM renders the control passes from the genome; the painter is a mock through M2 and in CI, and the real one from M3 behind the developer toggle with a 5 USD daily ceiling; pods come from the Companion page's save, with dev seeds for testing.
 
 1. **Where the control passes are rendered.** *Recommended:* by the Caddy service on the VM from the genome, with the Station rendering only the placeholder; it reuses the Grow controls as they stand and lets only valid genomes reach the painter. The device build moves it to the Station.
 2. **The real painting service in the first build, or a mock.** *Recommended:* build against the mock through M2, then run the real painter on the sandbox from M3 behind the developer toggle, with a $5 daily ceiling; CI always mocks. The owner sees real paintings land where it matters, at a known run-rate.

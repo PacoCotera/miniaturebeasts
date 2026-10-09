@@ -2,7 +2,7 @@
    a nine-slice ring and the creature's ellipse as a picture. The native Linux face and the WebAssembly face must draw the same
    pixels for it. The pictures are made here the way the page makes its own: whole-pixel masks decided by pixel-centre tests. */
 #include "face.h"
-#include "scene.h"
+#include "prim/prim.h"
 #include <string.h>
 
 static void text(uint32_t id, const char *s, int x, int y, uint32_t rgb, int px, int cap) { strncpy(face_text(), s, (size_t)face_text_size() - 1); face_node(id, FN_TEXT, x, y, 0, 0, rgb, px, cap); }

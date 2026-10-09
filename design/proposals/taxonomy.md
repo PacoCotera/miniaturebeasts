@@ -76,7 +76,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | S04 | Hiljan | C04 Lathreta | a cat | medium | B2·L4 · fur | prowls, pounces | wood, meadow | starter |
 | S05 | Tepor | C05 Dasyla | a fox | medium | B2·L4 · fur | trots | meadow, wood edge | early |
 | S06 | Pesko | C06 Prosopa | a raccoon | medium | B2·L4 · fur | ambles, climbs | pond edge, wood | early |
-| S07 | Azkon | C07 Skapana | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
+| S07 | Azkon | C07 Aulaka | a badger or small bear | large | B1·L4 · fur | lumbers, digs | rock field, cave | mid · Deep ground |
 | S08 | Rupar | C08 Kremnion | a goat or deer | large | B2·L4 · fur | bounds, climbs | rock field, meadow | mid |
 | S09 | Belatz | C09 Aithria | a big bird | large | B2·L2·flaps · fur (feathers to come) | strides, soars | meadow, rock field | late · Weather expeditions |
 | S10 | Igara | C10 Kolymba | an otter | medium | B3·L4 · fur | swims, slides | pond, fast water | mid · opens fast water |
@@ -97,7 +97,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 | S04 | Hiljan | fruit | upright pointed ears, short muzzle, long tail, striped coat | creeps up without startling anything | C04 Lathreta: upright pointed ears, striped fur; quiet hunters of the grass | aloof at first, then devoted |
 | S05 | Tepor | fruit, seeds | tall ears, long muzzle, bushy tail with a pale tip | senses warm stones (Energy) | C05 Dasyla: tall ears, a long muzzle, a bushy tail; clever wanderers | quick and clever |
 | S06 | Pesko | fruit, washed first | black eye mask, ringed tail, rounded ears, nimble paws | lifts slabs to find what is under them | C06 Prosopa: a face mask and a ringed tail; masked tinkerers | nosy, a cheerful mischief-maker |
-| S07 | Azkon | fruit, roots | stout body, striped face, broad claws, small round ears | digs through to Deep ground | C07 Skapana: broad claws, a striped face, stout bodies; the diggers | slow, stubborn, protective |
+| S07 | Azkon | fruit, roots | stout body, striped face, broad claws, small round ears | digs through to Deep ground | C07 Aulaka: broad claws, a striped face, stout bodies; the diggers | slow, stubborn, protective |
 | S08 | Rupar | leaves, fruit | horns, hooves, long legs | climbs cliff steps that block other partners | C08 Kremnion: horns and hooves; climbers of the high rocks | sure-footed and proud |
 | S09 | Belatz | fruit, seeds | broad wings, a beak, a crest | scouts from above: reveals the cells around | C09 Aithria: wings and a beak; big birds of open sky | watchful, lordly |
 | S10 | Igara | fruit | sleek long body, webbed paws, thick tail | swims fast water | C10 Kolymba: long sleek bodies and webbed paws; the water players | playful, never still |

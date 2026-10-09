@@ -13,7 +13,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 - **Banned.** The endings -ín, -ito, -y and -ie are banned, along with their sounds. So is anything that reads as a drug, a brand or a Pokémon.
 - **Both languages.** Every name was read for its Mexican Spanish meaning and slang (the last column of the clearance table).
 
-**Shared open endings: resolved, kept.** Three species end in an open -a (Loika, Untuva, Igara) and two in -o (Pesko, Kilpo). Their first syllables differ (LOY, OON, ih; PES, KIL), their last syllables differ (-ka, -va, -ra; -ko, -po), and Igara alone is stressed on its second syllable. That meets "distinct by eye and ear", so they stay. The clans share the -a on purpose: it is the genus form. Two pairs come close without being confusable: Pesko and Peplos share *Pe-* but not a syllable, Lathreta and Thyreka share a middle *-re-* but open on LATH and THIGH, and Skapana and Kapnis share *-ap-* but open on SKAP and KAP and differ in length.
+**Shared open endings: resolved, kept.** Three species end in an open -a (Loika, Untuva, Igara) and two in -o (Pesko, Kilpo). Their first syllables differ (LOY, OON, ih; PES, KIL), their last syllables differ (-ka, -va, -ra; -ko, -po), and Igara alone is stressed on its second syllable. That meets "distinct by eye and ear", so they stay. The clans share the -a on purpose: it is the genus form. Two pairs come close without being confusable: Pesko and Peplos share *Pe-* but not a syllable, Lathreta and Thyreka share a middle *-re-* but open on LATH and THIGH.
 
 ## The 16 species
 
@@ -48,7 +48,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | C04 | **Lathreta** | LATH-reh-tah | *lathra* | secretly, unseen | Quiet hunters of the grass |
 | C05 | **Dasyla** | DASS-ih-lah | *dasys* | shaggy, bushy | Bushy tails and tall ears: clever wanderers |
 | C06 | **Prosopa** | PROSS-oh-pah | *prosōpon* | face, mask | The face mask of the masked tinkerers |
-| C07 | **Skapana** | SKAP-ah-nah | *skapanē* | spade, mattock | Broad digging claws |
+| C07 | **Aulaka** | OW-lah-kah | *aulax* | furrow cut in the ground | The digging clan's furrow |
 | C08 | **Kremnion** | KREM-nee-on | *krēmnos* | cliff, overhang | Horns, hooves and the high rocks |
 | C09 | **Aithria** | ETH-ree-ah | *aithria* | clear open sky | Wings and a beak: big birds of open sky |
 | C10 | **Kolymba** | koh-LIM-bah | *kolymbos* | diver, swimmer | Long sleek bodies, webbed paws |
@@ -93,7 +93,7 @@ The tome is written by a field naturalist for a child and the parent reading wit
 | Lathreta | 6 | None. Near Lathrecista (a dragonfly genus), Lathraea (a plant genus) and Legretta (Tales of the Abyss) | clear | Heard as *la treta*, the ruse. Apt for stealthy hunters |
 | Dasyla | 6 | None. Near Dasylirion (sotol), Dasylagon (a wasp genus) and Dasila Selobar, a background figure in The Elder Scrolls Online | clear | No meaning. Fine |
 | Prosopa | 6 | No creature. The Prosopa Greek TV awards ended in 2009. Prosopis (mesquite) is near | clear | Echoes *prosa*. Fine |
-| Skapana | 6 | None. Skapanir is a Danheim album; Skapi was a pipe maker | clear | Echoes *escapar*. Fine |
+| Aulaka | 6 | None. Queries "Aulaka" creature, character, game, brand, genus (2026-10-09): no creature, character, game, brand or genus. *Aulax* is a plant genus (a different word); a Latvian dialect word and the Lithuanian name of an ancient kingdom (unrelated) | clear | Mexican Spanish opens with *aula* (classroom), a faint echo. Fine |
 | Kremnion | 6 | None. Kremnica (Slovakia); near Kremling (Donkey Kong) by eye only | clear | Echoes *crema*. Fine |
 | Aithria | 6 | None. Aitheri (homebrew D&D) and several small indie games called Aetheria, said differently | clear | No meaning. Fine |
 | Kolymba | 6 | None. Kolymbia is a resort on Rhodes. Kolumno (a puzzle game) is near | clear | Faintly *Colombia*. Fine |
