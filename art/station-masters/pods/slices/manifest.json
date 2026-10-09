@@ -8376,5 +8376,44 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+ },
+ "find-crystal-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "source/raw/find-vybronic-crystal.jpg (gemini-3-pro-image)",
+  "made": "the find picture of the vybronic crystal: the painting's ground keyed to the cell tone `ground` (22, 42, 55), the object reduced (never enlarged, x0.203) into the centred 84x84 of the 112x112, saturation x0.85, brightness gain 0.712 (mean grey 135.9 before, the large pod's 108.1); no frame",
+  "sha256": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+ },
+ "find-pearl-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "source/raw/find-tide-pearl.jpg (gemini-3-pro-image)",
+  "made": "the find picture of the tide pearl: the painting's ground keyed to the cell tone `ground` (22, 42, 55), the object reduced (never enlarged, x0.153) into the centred 84x84 of the 112x112, saturation x0.85, brightness gain 0.583 (mean grey 156.8 before, the large pod's 108.1); no frame",
+  "sha256": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
+ },
+ "find-shard-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "source/raw/find-storm-glass-shard.jpg (gemini-3-pro-image)",
+  "made": "the find picture of the storm glass shard: the painting's ground keyed to the cell tone `ground` (22, 42, 55), the object reduced (never enlarged, x0.123) into the centred 84x84 of the 112x112, saturation x0.85, brightness gain 1.000 (mean grey 80.8 before, the large pod's 108.1); no frame",
+  "sha256": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict"
  }
 }

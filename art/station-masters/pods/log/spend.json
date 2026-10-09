@@ -1102,5 +1102,56 @@
    "thoughtsTokenCount": 229,
    "totalTokenCount": 2021
   }
+ },
+ {
+  "tag": "find-vybronic-crystal try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.177722,
+  "mxn": 3.5544,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:08:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 181,
+   "candidatesTokenCount": 1291,
+   "thoughtsTokenCount": 187,
+   "totalTokenCount": 1659
+  }
+ },
+ {
+  "tag": "find-tide-pearl try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180116,
+  "mxn": 3.6023,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:08:52Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 178,
+   "candidatesTokenCount": 1277,
+   "thoughtsTokenCount": 221,
+   "totalTokenCount": 1676
+  }
+ },
+ {
+  "tag": "find-storm-glass-shard try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.176156,
+  "mxn": 3.5231,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:09:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 178,
+   "candidatesTokenCount": 1305,
+   "thoughtsTokenCount": 160,
+   "totalTokenCount": 1643
+  }
  }
 ]
