@@ -18,7 +18,9 @@
 <text x="571" y="26" font-family="Inter" font-size="16" fill="#f1ebdf">6</text>
 <rect x="817" y="9" width="14" height="22" rx="3" fill="#c6c4d8"/>
 <rect x="820" y="13" width="8" height="8" fill="#5d5974"/>
-<rect x="836" y="16" width="8" height="8" fill="#adf6e0"/>
+<rect x="780" y="16" width="8" height="8" fill="#adf6e0"/>
+<circle cx="812" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
 <circle cx="868" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
 <circle cx="986" cy="20" r="5" fill="#ffd441"/>
 <path d="M986 12 V14 M986 26 V28 M978 20 H980 M992 20 H994" stroke="#ffd441" stroke-width="1.5"/>

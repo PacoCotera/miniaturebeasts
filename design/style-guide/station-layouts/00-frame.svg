@@ -15,22 +15,24 @@
 <text x="516" y="27" font-size="16" fill="#f1ebdf">4</text>
 <rect x="560" y="12" width="16" height="16" fill="#6cc070"/>
 <text x="580" y="27" font-size="16" fill="#f1ebdf">6</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" rx="3" fill="none" stroke="#c6c4d8"/>
-<rect x="836" y="16" width="8" height="8" fill="#5d5974"/>
-<circle cx="868" cy="20" r="11.5" fill="#8d8aa6" stroke="#2bb3a3" stroke-width="2"/>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" rx="3" fill="none" stroke="#c6c4d8"/>
+<rect x="780" y="16" width="8" height="8" fill="#5d5974"/>
+<circle cx="812" cy="20" r="11.5" fill="#8d8aa6" stroke="#2bb3a3" stroke-width="2"/>
+<circle cx="840" cy="20" r="11.5" fill="#8d8aa6" stroke="#2bb3a3" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#2bb3a3" stroke-width="2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
 <circle cx="975" cy="20" r="7" fill="#f2c94c"/>
 <text x="987" y="27" font-size="16" fill="#f1ebdf">5</text>
 <text x="268" y="26" font-size="9" fill="#8d8aa6">rule x 256</text>
-<text x="720" y="26" font-size="9" fill="#8d8aa6">rule x 888 →</text>
+<text x="680" y="26" font-size="9" fill="#8d8aa6">rule x 888 →</text>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="#f4f6f8" stroke="#ccc" stroke-width="1" stroke-dasharray="6 4"/>
 <text x="380" y="200" font-size="14" fill="#999">stage: the screen's own layout</text>
 <text x="32" y="72" font-size="11" fill="#333">TOP BAR, 40 px: where you are | what you hold | who is out, when</text>
 <text x="32" y="92" font-size="11" fill="#333">Title 16,8 232×24: room mark 24×24 at 16,8; title from x 48, 20 px medium bone; one word</text>
 <text x="32" y="112" font-size="11" fill="#333">Holdings 384,8 256×24: Energy, Data, Essence centred on 512; icon 16, gap 4, figures 16 px</text>
-<text x="32" y="132" font-size="11" fill="#333">Companion 816,8 64×24: glyph 16×24 (outline when away), lamp 8×8 at 836,16 (mint docked, stone away),</text>
-<text x="32" y="148" font-size="11" fill="#333">   face 24×24 on its teal ring at 856,8: the mibi out with it; no words</text>
+<text x="32" y="132" font-size="11" fill="#333">Companion 760,8 120×24: glyph 16×24 at 760,8 (outline when away), lamp 8×8 at 780,16 (mint docked, stone away),</text>
+<text x="32" y="148" font-size="11" fill="#333">   three face places 24×24 at 800, 828, 856 (y 8): the mibis with you in carried order, an empty ring a free place; no words</text>
 <text x="32" y="168" font-size="11" fill="#333">When 904,8 104×24: sun mark 16, 4 px, the turn's figure, right-aligned to 1008</text>
 <text x="32" y="360" font-size="11" fill="#333">BOTTOM LINE, 38 px: the one action | the context | the notice, then the way back at the right edge</text>
 <text x="32" y="380" font-size="11" fill="#333">Action 16,570 376×24: ✓ cap 16 orange at 16,574, verb orange (4 words or fewer), 24 px, price icon + figures</text>

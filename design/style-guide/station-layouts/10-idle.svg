@@ -20,11 +20,13 @@
 <text x="652" y="449" font-size="9" fill="#777">648,424</text>
 <rect x="740.5" y="424.5" width="11" height="11" fill="#5bb9f3" stroke="#222" stroke-width="1"/>
 <text x="760" y="434" font-size="9" fill="#222">waiting lamp</text>
-<rect x="872.5" y="496.5" width="127" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="876" y="508" font-size="9" fill="#222">bed 872,496 128×56</text>
-<rect x="864.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="868" y="410" font-size="9" fill="#c45f12">sleeping mibi 864,384</text>
-<text x="868" y="421" font-size="9" fill="#c45f12">(foot on 936,536)</text>
+<rect x="792.5" y="496.5" width="191" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="796" y="508" font-size="9" fill="#222">bed 792,496 192×56</text>
+<rect x="768.5" y="384.5" width="143" height="151" fill="none" stroke="#e0a070" stroke-width="1" stroke-dasharray="2 4"/>
+<rect x="864.5" y="384.5" width="143" height="151" fill="none" stroke="#e0a070" stroke-width="1" stroke-dasharray="2 4"/>
+<rect x="816.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="820" y="410" font-size="9" fill="#c45f12">first asleep 816,384</text>
+<text x="820" y="421" font-size="9" fill="#c45f12">foot 888,536; the</text><text x="820" y="432" font-size="9" fill="#c45f12">others 48 left, right</text>
 <rect x="0.5" y="568.5" width="1023" height="31" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <line x1="0" y1="568.5" x2="1024" y2="568.5" stroke="#222" stroke-width="1"/>
 <rect x="16.5" y="568.5" width="991" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>

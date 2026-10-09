@@ -11,10 +11,12 @@
 <line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" fill="#666" stroke="#666" stroke-width="1"/>
-<rect x="836.5" y="16.5" width="7" height="7" fill="#6fd3b0" stroke="#444" stroke-width="1"/>
-<circle cx="868" cy="20" r="11" fill="#bbb" stroke="#1f9d8f" stroke-width="2"/>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#666" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#6fd3b0" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#fdebd6" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#fdebd6" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
 <rect x="16.5" y="48.5" width="655" height="503" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
@@ -29,12 +31,13 @@
 <rect x="400.5" y="392.5" width="103" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
 <text x="404" y="405" font-size="10" fill="#222">Juvenile 104×112</text>
 <text x="404" y="417" font-size="9" fill="#777">400,392</text>
-<rect x="520.5" y="472.5" width="127" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="524" y="484" font-size="9" fill="#222">With-you bed 128×56</text>
+<rect x="448.5" y="472.5" width="191" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="452" y="484" font-size="9" fill="#222">With-you bed 192×56</text>
 <text x="524" y="495" font-size="9" fill="#777">520,472</text>
-<rect x="512.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="516" y="372" font-size="9" fill="#c45f12">sleeping mibi</text>
-<text x="516" y="383" font-size="9" fill="#c45f12">512,360 144×152</text>
+<rect x="424.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="472.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="476" y="372" font-size="9" fill="#c45f12">two asleep</text>
+<text x="476" y="383" font-size="9" fill="#c45f12">first 472,360, second 424,360</text>
 <rect x="632.5" y="360.5" width="23" height="15" fill="#f2f2f2" stroke="#c45f12" stroke-width="1"/>
 <rect x="624.5" y="544.5" width="31" height="7" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
 <rect x="624.5" y="546.5" width="31" height="5" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
