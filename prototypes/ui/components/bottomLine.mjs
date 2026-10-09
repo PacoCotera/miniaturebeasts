@@ -5,7 +5,7 @@
 // (624, 570, 280, 24): one sentence right-aligned to x 904 in amber with its 12×12 lamp 4 px to its left. The way back (928, 570, 80, 24): the ← key cap in
 // stone and one word in fog, right-aligned to x 1008. The caps and lamps are slots (components/mark.mjs): empty until their masters land, their room kept.
 // props: { ok (verb phrase), price, dim, short, back, subject, need }
-import { textRun, clip } from "./text.mjs";
+import { textRun, clip, runWidth } from "./text.mjs";
 import { markNode, markOr } from "./mark.mjs";
 
 export function bottomLine(ctx, o) {
@@ -34,7 +34,8 @@ export function bottomLine(ctx, o) {
   // the way back: its cap, then one word, right-aligned to 1008
   const B = R.back;
   if (o?.back) {
-    const run = textRun(ctx, "line.back", o.back, B.right, B.rect[1] + 2, { px: B.px, colour: Cc.back, align: "right" });
+    const room = B.rect[2] - B.cap[0] - B.capGap, word = runWidth(ctx, o.back, B.px) > room ? "Back" : o.back;   // a name wider than the way back's room reads "Back"
+    const run = textRun(ctx, "line.back", word, B.right, B.rect[1] + 2, { px: B.px, colour: Cc.back, align: "right" });
     nodes.push(...run.nodes, ...markNode("line.cap.back", Mk.capBack, [B.right - run.width - B.capGap - B.cap[0], A.cap[1], B.cap[0], B.cap[1]], "the ← key cap, 16×16"));
   }
   return nodes;

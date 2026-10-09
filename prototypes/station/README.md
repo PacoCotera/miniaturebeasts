@@ -150,6 +150,16 @@ The builder built thirteen open rules the narrowest way and flagged them. The ru
 
 **The pacing, judged.** The report now plays the journey as the design would: the welcome comes at the first walk home with a mibi (1 h 00), the sitting's three-hour wait runs while the second founder grows, the cross is made and the child is read, and the first crate opens at 4 h 00 after 7 walks, 2 h 15 of it pure waiting. With the ruled field spend and a walk paying 4 Energy, the Probe tier 2 is bought at the 1 h 00 dock and the journey ends with 6 Energy, 3 Data and 13 Essence over; at the field test's median of 2 Energy a walk it ends with 4 Energy, 7 Data and 13 Essence over and the Probe is out of reach (`--calm-energy 2`). Essence is the surplus in both, and the Energy sink beyond the Probe is the owner's to set with the real economy; the three-hour wait, the starter yields and the prices stay the owner's.
 
+## Navigation
+
+Built from the owner's decisions on the navigation map ([Keys and navigation](../../design/style-guide/station-screens.md#keys-and-navigation); the numbers are `frame.json` `navigation`). The pure part is `src/nav.mjs` (the tree and its back words, the room keys, Home's and Habitat's fixed pad orders), tested in `tests/nav.test.mjs`; the keys on the real page are walked in `tools/journey.mjs` (section 7b and the checks beside Identify, Create and Cross).
+
+- **Room keys** (Home, Research, Library, Habitat) open the top of their room from anywhere, even from inside it, and never spend: Home with the ring on the room, Pods on the collection with the ring on the pod that most needs the player, the Library on its spread, Habitat on the resident last seen. A room key pressed on Create or Cross drops the unpaid choices (`UI.create`, `UI.cross`).
+- **←** goes to the screen's parent in the tree, never back along the history: Grow it and Cross them jump to the Incubator, whose ← is Home; the Book's Visit jumps to Habitat, whose ← is Home. The way back names the parent; below a pod's overview it names the pod ("Loika"), or "Back" when the name will not fit the 60 px. Home has no ← cap and nothing happens.
+- **✓** on an identified, unread pod opens its first unread chapter (free). Identify no longer switches the Library to a Book.
+- **Home's pad** is a fixed order (Bay, Rack, Incubator, Probe, Rest down the column; the nearest resident among the residents; ◀▶ cross between the two on the nearest row); **Habitat's** is the stage, the chapter plates, Cross (an adult), the door row, then the strip, so Cross is one ▲ from the door row.
+- **Idle:** the first press, the Caddy's Dock key included, only wakes the screen.
+
 ## Placeholders
 
 Engineers do not do art (decided). Every drawn thing is a stand-in listed in `src/art.mjs` (`PLACEHOLDERS`; the developer panel prints it): the mibi in the plain renderer's placeholder, the pod from the frame's parameters, trait close-ups and seeds, the stamp raster, the progress ring, the chapter emblems, the chapter page, the room and bench as the stand-in v2 drew them, the icons. Nothing in `art/` is touched.

@@ -40,6 +40,11 @@ export function book(st, id, settings = DEFAULT_SETTINGS) {
   const status = speciesStatus(st, id), portrayed = st.mibis.filter((m) => speciesOf(m) === id && m.portrait && m.portrait.state === "delivered");
   return { species: id, name: fr.species.name, status, guide: status === "found" ? fieldGuide(st, id, settings) : null, face: faceOf(st, id), faceChoices: portrayed.map((m) => m.id), wish: wishOf(st, id), notes: (st.guideNotes && st.guideNotes[id]) || [] };
 }
+// The Book's Visit (a jump to Habitat): the species' face if one is chosen, else the first mibi of it that is housed; none when there is none.
+export function visitTarget(st, id) {
+  const f = faceOf(st, id), m = f != null ? mibiById(st, f) : null;
+  return m && !m.released ? m : st.mibis.find((q) => speciesOf(q) === id && !q.released) || null;
+}
 // The library's spread: sixteen frames, each with its status.
 export const spread = (st, ids) => ids.map((id) => ({ id, status: speciesStatus(st, id) }));
 

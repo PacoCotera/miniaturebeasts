@@ -8,6 +8,7 @@ import { emblemArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, docked, effWithId, mibiById } from "../game.mjs";
 import { stageBg, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
+import { habitatRows, habitatMove } from "../nav.mjs";
 import { frameOf, codeText } from "../genome.mjs";
 
 const H = () => UI.hab;
@@ -21,6 +22,10 @@ function targets() {
   habList().forEach((q, i) => t.push(tgt("s" + q.id, 24 + i * 140, 456, 128, 92)));
   return t;
 }
+// The pad's order is fixed (nav.mjs): the stage, the chapter plates, Cross, the door, the heart and the gate, then the strip.
+function rows(m) { const fr = m && frameOf(S.speciesOf(m)); return habitatRows({ chapters: fr ? fr.chapters.length : 0, adult: !!(m && S.isAdult(G.st, m, G.settings)), bays: habList().map((q) => q.id) }); }
+// The Habitat key: the resident last seen, the ring on it.
+export function openTop() { const h = H(); h.f = "stage"; h.bondArm = 0; h.wildArm = 0; }
 function draw() {
   stageBg();   const m = shown(), h = H(), NOW = clock.now;
   if (!m) { blit(vivArt(600, 380), 20, 56); text("No mibis yet", 320, 200, C.fog, 3, "center"); text("Grow a founder from a read pod · the next build", 320, 246, C.mist, 2, "center"); return; }
@@ -67,7 +72,7 @@ function draw() {
   const t = targets().find((q) => q.id === h.f); if (t) focusRing(t.x - 3, t.y - 3, t.w + 6, t.h + 6); else h.f = "stage";
 }
 function line() {
-  const m = shown(), h = H(), back = h.from === "library" ? "Library" : "Home"; if (!m) return { back, subject: "no mibis yet" };
+  const m = shown(), h = H(), back = "Home"; if (!m) return { back, subject: "no mibis yet" };
   const isW = m.id === effWithId(), subj = m.name + " · " + S.spName(m) + " · " + stageWord(m);
   if (h.f === "stage" || (h.f[0] === "s" && h.f !== "stage")) return { ok: "Spend time with " + m.name, back, subject: subj, need: isW ? m.name + " is with you" : null };
   if (h.f === "door") { if (isW) return { back, subject: m.name + " is with you" + (docked() ? "" : " · away") }; return { ok: "Take " + m.name + " with you", price: docked() ? "now" : "at the next dock", back, subject: subj }; }
@@ -82,8 +87,8 @@ function line() {
 }
 function act(k) {
   const h = H(), m = shown(); if (k !== "confirm") { h.bondArm = 0; h.wildArm = 0; }
-  if (k === "back") { const from = h.from; h.from = null; goScreen(from === "library" ? "library" : "home"); return; }
-  if (k in DIRS) { const f = navSpatial(targets(), h.f, k); h.f = f; if (f[0] === "s" && f !== "stage") h.id = +f.slice(1); return; }
+  if (k === "back") { goScreen("home"); return; }   // up to Home, whichever way you came (a jump from the Book included)
+  if (k in DIRS) { const f = habitatMove(rows(m), h.f, k, m && m.id); h.f = f; if (f[0] === "s" && f !== "stage") h.id = +f.slice(1); return; }
   if (k !== "confirm" || !m) return;
   if (h.f === "stage" || (h.f[0] === "s" && h.f !== "stage")) { FX.moment = { id: m.id, at: clock.now }; lockInput(300); msg(m.name + " leans on the glass · " + (m.mem ? "it remembers the " + m.mem : m.from.g ? "it came from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "it hasn’t been out yet")); }
   else if (h.f === "door") { if (m.id !== effWithId()) { const r = S.takeWith(G.st, G.sv, m); if (r.ok) { msg(r.msg); save(); } } }
