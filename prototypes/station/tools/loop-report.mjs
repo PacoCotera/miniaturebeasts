@@ -2,20 +2,22 @@
 // The loop report: from the headless player (tools/headless.mjs), the time and the Energy, Data and Essence each step of the loop costs at the decided prices, so the pacing can be
 // judged in numbers. The player plays the loop the way the design would: the welcome sitting at the first walk home with a mibi, its wait overlapping the cross and the child's reads, the
 // field's Energy spent (Calls, beacons, patches), Probe tier 2 bought at the first dock that can afford it.
-//   node prototypes/station/tools/loop-report.mjs [--seed N] [--species S01] [--loose] [--calls N] [--beacons N] [--patches N] [--no-probe]
+//   node prototypes/station/tools/loop-report.mjs [--seed N] [--species S01] [--loose] [--calls N] [--beacons N] [--patches N] [--no-probe] [--busy] [--calm-energy N]
 // Prices are the decided ones (research-economy.md §2, world-and-exploration.md); a walk pays the starter place's yield and takes fifteen minutes; waits are the rules' own.
 import { playJourney, MIN, WALK, WALK_MS, FIELD } from "./headless.mjs";
 import { sittingWaitMs } from "../src/sitting.mjs";
 
 const arg = (k, d) => { const i = process.argv.indexOf("--" + k); return i < 0 ? d : process.argv[i + 1]; };
 const seed = +arg("seed", 4242), species = arg("species", "S01"), loose = process.argv.includes("--loose");
-const field = { calls: +arg("calls", 2), beacons: +arg("beacons", 1), patches: +arg("patches", 0) };
-const R = playJourney({ seed, species, settings: loose ? { economy: "loose" } : {}, field, probe: !process.argv.includes("--no-probe") }), P = R.P;
+// The field spend (the game designer's ruling): a Call inside a place is a free survey pulse, only a map pin costs Energy and a new player places none; so by default 0 Energy-costing
+// Calls, a beacon every other walk, no patches. --busy keeps the old assumption (2 Calls, 1 beacon). --calm-energy N sets a walk's Energy yield (4 by default; 2 is the field test's measured median).
+const heavy = process.argv.includes("--busy"), field = { calls: +arg("calls", heavy ? 2 : 0), beacons: +arg("beacons", heavy ? 1 : 0.5), patches: +arg("patches", 0) }, energy = +arg("calm-energy", WALK.e);
+const R = playJourney({ seed, species, settings: loose ? { economy: "loose" } : {}, field, energy, probe: !process.argv.includes("--no-probe") }), P = R.P;
 const fmt = (n) => (n === 0 ? "·" : (n > 0 ? "+" : "−") + Math.abs(n));
 const clock = (ms) => { const m = Math.round(ms / MIN); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min"; };
 const pad = (s, n) => String(s).padEnd(n), lpad = (s, n) => String(s).padStart(n);
 console.log(`The loop, ${species}, from a fresh world · ${loose ? "the loose test economy" : "the decided prices"} · seed ${seed}`);
-console.log(`A walk pays ${WALK.e} Energy, ${WALK.d} Data, ${WALK.s} Essence (a starter place) and takes ${WALK_MS / MIN} minutes. In the field it spends ${field.calls} Call (${FIELD.call} each), ${field.beacons} beacon (${FIELD.beacon}), ${field.patches} patch (${FIELD.patch}) a walk: the report's own assumption, the docs give the prices and not the counts.`);
+console.log(`A walk pays ${energy} Energy, ${WALK.d} Data, ${WALK.s} Essence (a starter place) and takes ${WALK_MS / MIN} minutes. In the field it spends ${field.calls} Call (${FIELD.call} each), ${field.beacons} beacon (${FIELD.beacon}), ${field.patches} patch (${FIELD.patch}) a walk: the report's own assumption, the docs give the prices and not the counts.`);
 console.log(`A bud takes 5 minutes the first time, then 20 plus one per shaped trait; a sitting waits ${sittingWaitMs(P.settings) / 3600000} hours; a world turn is one walk; Probe tier 2 (12 Energy, 4 Data) is bought at the first dock that can afford it.\n`);
 console.log(pad("at", 11) + pad("step", 50) + lpad("Energy", 8) + lpad("Data", 7) + lpad("Essence", 9) + "   stock (E D S)");
 const earned = { e: 0, d: 0, s: 0 }, spent = { e: 0, d: 0, s: 0 }; let waited = 0, ruleWaits = 0;

@@ -22,7 +22,7 @@ test("a walk's crate docks once and pays the decided yield; the field spends its
   const w = by(/^a walk \(S01\)/); assert.ok(w.length >= 3);
   for (const s of w) assert.deepEqual([s.e, s.d, s.s], [WALK.e, WALK.d, WALK.s], "the starter place's yield");
   assert.equal(st.accepted.length, P.walks, "each crate accepted exactly once"); assert.equal(new Set(st.accepted).size, st.accepted.length);
-  const f = by(/^the field:/); assert.equal(f.length, P.walks); for (const s of f) assert.deepEqual([s.e, s.d, s.s], [-3, 0, 0], "two Calls and a beacon, 1 Energy each");
+  const f = by(/^the field:/); assert.equal(f.length, Math.floor(P.walks / 2), "a beacon every other walk (a Call inside a place is free; only a map pin costs Energy)"); for (const s of f) assert.deepEqual([s.e, s.d, s.s], [-1, 0, 0], "a beacon, 1 Energy");
 });
 
 test("identify: the first ever is free, later ones 1 Energy; the species is found", () => {

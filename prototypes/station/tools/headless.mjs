@@ -19,10 +19,10 @@ export const WALK = { e: 4, d: 2, s: 3 };
 export const FIELD = { call: 1, beacon: 1, patch: 3 };
 
 export class Player {
-  constructor({ settings = {}, species = "S01", seed = 1, start = 1_000_000, field = { calls: 2, beacons: 1, patches: 0 }, probe = true } = {}) {
+  constructor({ settings = {}, species = "S01", seed = 1, start = 1_000_000, field = { calls: 0, beacons: 0.5, patches: 0 }, probe = true, energy = WALK.e } = {}) {
     loadFrames();
     this.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", ...settings };   // the decided prices, no top-up
-    this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe;
+    this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe; this.walkE = energy; this.carry = 0;
     this.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
     this.st = S.freshSt("w1", 0, this.now); S.normalize(this.st);
     this.steps = []; this.with = null; this.marks = {};
@@ -40,24 +40,27 @@ export class Player {
   walk(species = this.species) {
     this.walks++; this.now += WALK_MS; this.sv.turn++;
     const fr = frameOf(species), gs = (Math.imul(this.seed + this.podN++ * 7919, 2654435761) ^ this.podN * 40503) >>> 0;
-    const crate = { id: "w" + this.walks, n: this.walks, turn: this.sv.turn, at: this.now, e: WALK.e, d: WALK.d, s: WALK.s, pods: [{ id: "p0", sp: speciesIndex(species), species, g: "meadow", how: "calm", gs, k: null }], met: [species], explored: 5, of: 20, lines: [] };
+    const crate = { id: "w" + this.walks, n: this.walks, turn: this.sv.turn, at: this.now, e: this.walkE, d: WALK.d, s: WALK.s, pods: [{ id: "p0", sp: speciesIndex(species), species, g: "meadow", how: "calm", gs, k: null }], met: [species], explored: 5, of: 20, lines: [] };
     this.sv.bay.push(crate);
     const m = this.with != null ? S.mibiById(this.st, this.with) : null;
     this.sv.mibis = m ? [{ id: m.id, outings: (m.outings || 0) + 1, habitsDone: [S.frameFor(m).habits[this.walks % S.frameFor(m).habits.length]], placesEntered: ["wood"] }] : [];   // the Companion's hand-off
     this.sv.with = m ? m.id : null;
     if (S.docked(this.st)) S.dockKey(this.st, this.sv, this.settings, this.now);   // lift, so the next dock docks
     const d = T.dock(this.st, this.sv, this.settings, this.now), o = S.openBay(this.st, this.sv, this.settings, this.now);
-    let tier2 = null; if (this.probe && S.tier2Ready(this.st, this.settings)) { const a = [this.st.e, this.st.d, this.st.s]; S.installTier2(this.st, this.settings); tier2 = { e: this.st.e - a[0], d: this.st.d - a[1], s: this.st.s - a[2] }; }
+    let tier2 = null; if (this.probe && S.tier2Ready(this.st, this.settings)) { const a = [this.st.e, this.st.d, this.st.s]; S.installTier2(this.st, this.settings); tier2 = { e: this.st.e - a[0], d: this.st.d - a[1], s: this.st.s - a[2] }; }   // bought at the dock
     S.dockKey(this.st, this.sv, this.settings, this.now);   // lift again: the Companion sets out
     return { ok: d.ok && o.ok, pod: this.st.tray.concat(this.st.waiting).find((p) => p.id === crate.id + ":p0"), welcome: d.welcome, tier2 };
   }
   // A walk as a step, with what it spent in the field, the welcome if it came, and the Probe if it was bought.
   takeWalk(label = "a walk (" + this.species + ")") {
-    const r = this.step(this.with != null ? label + " with " + S.mibiById(this.st, this.with).name : label, () => this.walk());
-    const f = this.field, spend = f.calls * FIELD.call + f.beacons * FIELD.beacon + f.patches * FIELD.patch;
-    if (spend) this.step("the field: " + [f.calls && f.calls + " Call" + (f.calls > 1 ? "s" : ""), f.beacons && f.beacons + " beacon", f.patches && f.patches + " patch"].filter(Boolean).join(", "), () => { this.st.e -= spend; return { ok: this.st.e >= 0 }; });
+    const r = this.step(this.with != null ? label + " with " + S.mibiById(this.st, this.with).name : label, () => this.walk()), walkRow = this.steps[this.steps.length - 1];
+    const f = this.field, owed = f.calls * FIELD.call + f.beacons * FIELD.beacon + f.patches * FIELD.patch + this.carry, spend = Math.floor(owed + 1e-9);   // a half beacon is one every other walk: the remainder carries to the next walk
+    this.carry = owed - spend;
+    if (spend) this.step("the field: " + [f.calls && f.calls + " Call" + (f.calls > 1 ? "s" : ""), f.beacons && (f.beacons < 1 ? "a beacon" : f.beacons + " beacon"), f.patches && f.patches + " patch"].filter(Boolean).join(", "), () => { this.st.e -= spend; return { ok: this.st.e >= 0 }; });
     if (r.welcome && r.welcome.ok) { this.mark("welcome"); this.step("the welcome sitting", () => ({ ok: true })); }
-    if (r.tier2) { this.mark("probe"); this.steps.push({ name: "Probe tier 2", e: r.tier2.e, d: r.tier2.d, s: r.tier2.s, ms: 0, ok: true, stock: [this.st.e, this.st.d, this.st.s], t: this.now - this.start }); }
+    if (r.tier2) {   // the walk's row is its own yield; the Probe, bought at that dock, is its own row
+      const w = walkRow; w.e -= r.tier2.e; w.d -= r.tier2.d; w.s -= r.tier2.s; w.stock = [w.stock[0] - r.tier2.e, w.stock[1] - r.tier2.d, w.stock[2] - r.tier2.s];
+      this.mark("probe"); this.steps.push({ name: "Probe tier 2", e: r.tier2.e, d: r.tier2.d, s: r.tier2.s, ms: 0, ok: true, stock: [this.st.e, this.st.d, this.st.s], t: this.now - this.start }); }
     return r;
   }
   // Take walks until the stock covers a price (the player's patience, counted in walks).
