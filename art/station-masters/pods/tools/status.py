@@ -5,7 +5,8 @@ m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
-    if re.match(r"mibi-halo-S(04|07)-", n): sign(n, "signed", "pass 63 verdict", "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear")
+    if re.match(r"cross-(gate|tick|wish|kin)-", n) or re.match(r"find-(crystal|pearl|shard)-16x16$", n): sign(n, "new", None, "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict")
+    elif re.match(r"mibi-halo-S(04|07)-", n): sign(n, "signed", "pass 63 verdict", "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear")
     elif re.match(r"find-(crystal|pearl|shard)-112x112$", n): sign(n, "signed", "pass 64 verdict", "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame")
     elif n == "trait-S09-fluff-between-128x160": sign(n, "signed", "pass 66 verdict", "the Fluff plate with the elliptical fade along the back contour and the stray wisp removed")
     elif n in ("trait-S09-feathers-between-128x160", "trait-S09-crest-between-128x160"): sign(n, "signed", "pass 65 verdict", "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame")
