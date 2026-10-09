@@ -23,14 +23,14 @@
    "crops": {
     "128x160": {
      "window": [
-      74,
-      27,
-      320,
-      297
+      84,
+      21,
+      310,
+      303
      ],
      "source_px": [
-      246,
-      270
+      226,
+      282
      ],
      "slice": "trait-S09-head-between-small-and-large-128x160",
      "flag": null
@@ -108,59 +108,59 @@
    "crops": {
     "128x160": {
      "window": [
-      74,
-      174,
-      202,
-      314
+      90,
+      184,
+      186,
+      304
      ],
      "source_px": [
-      128,
-      140
+      96,
+      120
      ],
      "slice": "trait-S09-beak-between-128x160",
-     "flag": "the part's box is 89x85 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part's box is 89x85 px, smaller than the 96x120 cell: shown with its surroundings at 1:1, not enlarged"
     },
     "144x176": {
      "window": [
-      66,
-      156,
-      210,
-      332
+      84,
+      178,
+      192,
+      310
      ],
      "source_px": [
-      144,
-      176
+      108,
+      132
      ],
      "slice": "trait-S09-beak-between-144x176",
-     "flag": "the part's box is 89x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part's box is 89x85 px, smaller than the 108x132 cell: shown with its surroundings at 1:1, not enlarged"
     },
     "104x160": {
      "window": [
-      86,
-      164,
-      190,
-      324
+      94,
+      176,
+      183,
+      313
      ],
      "source_px": [
-      104,
-      160
+      89,
+      137
      ],
      "slice": "trait-S09-beak-between-104x160",
-     "flag": "the part's box is 89x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null
     },
     "104x96": {
      "window": [
-      86,
-      196,
-      190,
-      292
+      92,
+      202,
+      185,
+      287
      ],
      "source_px": [
-      104,
-      96
+      93,
+      85
      ],
      "slice": "trait-S09-beak-between-104x96",
-     "flag": "the part's box is 89x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null
     },
     "104x64": {
      "window": [

@@ -21,17 +21,17 @@
     "128x160": {
      "window": [
       100,
-      242,
+      221,
       370,
-      538
+      559
      ],
      "source_px": [
       270,
-      296
+      338
      ],
      "slice": "trait-S01-markings-plain-128x160",
      "flag": null,
-     "pass_57": "composed in the top 140 rows"
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
@@ -45,7 +45,8 @@
       330
      ],
      "slice": "trait-S01-markings-plain-144x176",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
@@ -59,7 +60,8 @@
       416
      ],
      "slice": "trait-S01-markings-plain-104x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
@@ -73,7 +75,8 @@
       250
      ],
      "slice": "trait-S01-markings-plain-104x96",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -87,7 +90,8 @@
       180
      ],
      "slice": "trait-S01-markings-plain-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   },
@@ -105,17 +109,17 @@
     "128x160": {
      "window": [
       275,
-      17,
+      4,
       445,
-      203
+      216
      ],
      "source_px": [
       170,
-      186
+      212
      ],
      "slice": "trait-S01-crown-leaf-crest-128x160",
      "flag": null,
-     "pass_57": "composed in the top 140 rows"
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
@@ -129,7 +133,8 @@
       208
      ],
      "slice": "trait-S01-crown-leaf-crest-144x176",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
@@ -143,7 +148,8 @@
       262
      ],
      "slice": "trait-S01-crown-leaf-crest-104x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
@@ -157,7 +163,8 @@
       156
      ],
      "slice": "trait-S01-crown-leaf-crest-104x96",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -171,7 +178,8 @@
       120
      ],
      "slice": "trait-S01-crown-leaf-crest-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   },
@@ -188,60 +196,63 @@
    "crops": {
     "128x160": {
      "window": [
-      364,
-      150,
-      492,
-      290
+      380,
+      160,
+      476,
+      280
      ],
      "source_px": [
-      128,
-      140
+      96,
+      120
      ],
      "slice": "trait-S01-eyes-between-small-and-large-128x160",
-     "flag": "the part is 85x80 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged",
-     "pass_57": "composed in the top 140 rows"
+     "flag": "the part is 85x80 px, smaller than the 96x120 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
-      356,
-      132,
-      500,
-      308
+      374,
+      154,
+      482,
+      286
      ],
      "source_px": [
-      144,
-      176
+      108,
+      132
      ],
      "slice": "trait-S01-eyes-between-small-and-large-144x176",
-     "flag": "the part is 85x80 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part is 85x80 px, smaller than the 108x132 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
-      376,
-      140,
-      480,
-      300
+      385,
+      155,
+      470,
+      285
      ],
      "source_px": [
-      104,
-      160
+      85,
+      130
      ],
      "slice": "trait-S01-eyes-between-small-and-large-104x160",
-     "flag": "the part is 85x80 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
-      376,
-      172,
-      480,
-      268
+      384,
+      180,
+      471,
+      260
      ],
      "source_px": [
-      104,
-      96
+      87,
+      80
      ],
      "slice": "trait-S01-eyes-between-small-and-large-104x96",
-     "flag": "the part is 85x80 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -255,7 +266,8 @@
       80
      ],
      "slice": "trait-S01-eyes-between-small-and-large-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   }

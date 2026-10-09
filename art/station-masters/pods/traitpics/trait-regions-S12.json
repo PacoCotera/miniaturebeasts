@@ -21,17 +21,17 @@
     "128x160": {
      "window": [
       230,
-      284,
+      265,
       470,
-      546
+      565
      ],
      "source_px": [
       240,
-      262
+      300
      ],
      "slice": "trait-S12-colour-marigold-128x160",
      "flag": null,
-     "pass_57": "composed in the top 140 rows"
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
@@ -45,7 +45,8 @@
       294
      ],
      "slice": "trait-S12-colour-marigold-144x176",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
@@ -59,7 +60,8 @@
       370
      ],
      "slice": "trait-S12-colour-marigold-104x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
@@ -73,7 +75,8 @@
       222
      ],
      "slice": "trait-S12-colour-marigold-104x96",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -87,7 +90,8 @@
       148
      ],
      "slice": "trait-S12-colour-marigold-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   },
@@ -105,17 +109,17 @@
     "128x160": {
      "window": [
       300,
-      83,
+      62,
       560,
-      367
+      388
      ],
      "source_px": [
       260,
-      284
+      326
      ],
      "slice": "trait-S12-translucency-between-128x160",
      "flag": null,
-     "pass_57": "composed in the top 140 rows"
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
@@ -129,7 +133,8 @@
       318
      ],
      "slice": "trait-S12-translucency-between-144x176",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
@@ -143,7 +148,8 @@
       400
      ],
      "slice": "trait-S12-translucency-between-104x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
@@ -157,7 +163,8 @@
       250
      ],
      "slice": "trait-S12-translucency-between-104x96",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -171,7 +178,8 @@
       250
      ],
      "slice": "trait-S12-translucency-between-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   },
@@ -188,60 +196,63 @@
    "crops": {
     "128x160": {
      "window": [
-      356,
-      342,
-      484,
-      482
+      370,
+      350,
+      470,
+      475
      ],
      "source_px": [
-      128,
-      140
+      100,
+      125
      ],
      "slice": "trait-S12-pattern-plain-128x160",
-     "flag": "the part is 100x95 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged",
-     "pass_57": "composed in the top 140 rows"
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
-      348,
-      324,
-      492,
-      500
+      366,
+      346,
+      474,
+      478
      ],
      "source_px": [
-      144,
-      176
+      108,
+      132
      ],
      "slice": "trait-S12-pattern-plain-144x176",
-     "flag": "the part is 100x95 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": "the part is 100x95 px, smaller than the 108x132 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
-      368,
-      332,
-      472,
-      492
+      370,
+      336,
+      470,
+      489
      ],
      "source_px": [
-      104,
-      160
+      100,
+      153
      ],
      "slice": "trait-S12-pattern-plain-104x160",
-     "flag": "the part is 100x95 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
-      368,
-      364,
-      472,
+      369,
+      365,
+      471,
       460
      ],
      "source_px": [
-      104,
-      96
+      102,
+      95
      ],
      "slice": "trait-S12-pattern-plain-104x96",
-     "flag": "the part is 100x95 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -255,7 +266,8 @@
       95
      ],
      "slice": "trait-S12-pattern-plain-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   },
@@ -282,7 +294,8 @@
       388
      ],
      "slice": "trait-S12-trim-butter-128x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
@@ -296,7 +309,8 @@
       379
      ],
      "slice": "trait-S12-trim-butter-144x176",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
@@ -310,7 +324,8 @@
       477
      ],
      "slice": "trait-S12-trim-butter-104x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
@@ -324,7 +339,8 @@
       286
      ],
      "slice": "trait-S12-trim-butter-104x96",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -338,7 +354,8 @@
       190
      ],
      "slice": "trait-S12-trim-butter-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   },
@@ -365,7 +382,8 @@
       237
      ],
      "slice": "trait-S12-haunch-between-128x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell"
     },
     "144x176": {
      "window": [
@@ -379,7 +397,8 @@
       233
      ],
      "slice": "trait-S12-haunch-between-144x176",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
     },
     "104x160": {
      "window": [
@@ -393,7 +412,8 @@
       292
      ],
      "slice": "trait-S12-haunch-between-104x160",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
     },
     "104x96": {
      "window": [
@@ -407,7 +427,8 @@
       175
      ],
      "slice": "trait-S12-haunch-between-104x96",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
     },
     "104x64": {
      "window": [
@@ -421,7 +442,8 @@
       117
      ],
      "slice": "trait-S12-haunch-between-104x64",
-     "flag": null
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
     }
    }
   }

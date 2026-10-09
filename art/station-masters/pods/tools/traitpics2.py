@@ -10,7 +10,7 @@ from PIL import Image, ImageFilter
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT); REPO = os.path.abspath(os.path.join(ROOT, "..", "..", ".."))
 GROW = os.path.join(REPO, "prototypes/workbench/grow")
 SIZES = [(128, 160), (144, 176), (104, 160), (104, 96), (104, 64)]
-DEEP = np.array([14.0, 28.0, 36.0]); PAPER = np.array([246.0, 243.0, 236.0])
+DEEP = np.array([22.0, 42.0, 55.0]); PAPER = np.array([246.0, 243.0, 236.0])
 slug = lambda s: re.sub(r"-+", "-", re.sub(r"[^a-z0-9]+", "-", s.lower())).strip("-")
 def key(img, keepedge=None, choke=0):
     """Paper to deep: the ground is the flood of paper-coloured pixels (distance under 10 in any channel, or the cast shadow's grey scaling) from the painting's border: a pale feather inside the bird, even one
@@ -75,7 +75,7 @@ def tail_only(img):
     a[wing] = DEEP; return Image.fromarray(np.clip(a, 0, 255).astype(np.uint8))
 man = json.load(open("slices/manifest.json")); R = json.load(open(os.path.join(ROOT, "traitpics/rig-regions/trait-regions-S09.json"))); P = R["parts"]
 looks = json.load(open("source/work/looks-S09-type.json"))
-SILL_RECOMPOSE = ("face/head", "face/beak")                                       # the 128x160 crops whose creature ran into the bottom 20 px: composed in the top 140 rows (the Crown and the Tail already clear them)
+CONTENT = 0.75                                       # the owner's rule (pass 59): a crop's content sits inside the cell's centred 75 percent, reduced from the painting and never enlarged, on the cell tone
 union = lambda *bs: [min(b[0] for b in bs), min(b[1] for b in bs), max(b[0] + b[2] for b in bs) - min(b[0] for b in bs), max(b[1] + b[3] for b in bs) - min(b[1] for b in bs)]
 # which box each part trait is cropped from: the rig's box for the trait where it is tight; the single part's box where two traits share one union (told apart, never alike)
 # kind, region, (pad around the region for the window), limit: the allowed rectangle [x0, y0, x1, y1] on the painting with a feather per side (l, t, r, b) in px (everything outside goes to deep)
@@ -106,9 +106,9 @@ def with_body(img, core, gate, linear=False, weight=None, orig_img=None):
     body = (np.clip(1 - dist_from(core) / 22.0, 0, 1) if linear else np.clip(near * 3.0, 0, 1)) * solid * (1 - core) * (0.35 if weight is None else weight) * gate; base = np.asarray(masked(img, core)).astype(float); orig = np.asarray(img if orig_img is None else orig_img).astype(float)
     return Image.fromarray(np.clip(base * (1 - body[..., None]) + orig * body[..., None], 0, 255).astype(np.uint8))
 hx, hy, hw, hh = P["head"]; head_gate = poly_mask([(hx, hy), (hx + hw, hy), (hx + hw, hy + hh), (hx, hy + hh)], W, H, 4.0)   # where the painting's head really covers the ear and crest roots
-def crown_short(box, th, tw):
-    """104x64 only (pass 53): the body's fade is shortened so that it reaches the ground by row 61 of the cell (the dome must not run off the bottom edge): a vertical ramp of about 8 cell rows ends at row 61; 35 percent at the part is kept."""
-    sc = (box[3] - box[1]) / th; ycut = box[1] + 61 * sc; ramp = 8 * sc; yy = np.mgrid[0:H, 0:W][0].astype(float)
+def crown_short(box, ch_):
+    """The body's fade is shortened so that it reaches the ground 3 rows above the content box's bottom edge (the dome must not run off it into a flat cut): a vertical ramp of 8 cell rows ends there; 35 percent at the part is kept (104x64 in pass 53, every size from pass 59)."""
+    sc = (box[3] - box[1]) / ch_; ycut = box[3] - 3 * sc; ramp = 8 * sc; yy = np.mgrid[0:H, 0:W][0].astype(float)
     return with_body(keyed_tail, crown_m, head_gate * np.clip((ycut - yy) / ramp, 0, 1))
 crown_img = with_body(keyed_tail, crown_m, head_gate)
 axis = np.array(TAIL_ROOT) - np.array(TAIL_TIP); L_ = np.hypot(*axis); axis = axis / L_
@@ -119,12 +119,11 @@ n = 0; flagged = []
 for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
     ch, tid = key_.split("/"); name = looks[key_]["name"]; look = looks[key_]["look"]; ent = {"chapter": ch, "trait": name, "look": look, "kind": kind, "box": list(rect), "source": why, "crops": {}}
     for (tw, th) in SIZES:
-        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; cellh = 140 if ((tw, th) == (128, 160) and key_ in SILL_RECOMPOSE) else th; box, flag = window(prect, tw, cellh, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else (crown_short(box, th, tw) if (key_ == "face/crown" and (tw, th) == (104, 64)) else crown_img) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
-        im = crop.resize((tw, cellh), Image.LANCZOS) if (cw, chh) != (tw, cellh) else crop
-        if (tw, th) == (128, 160) and cellh == th: arr_ = np.asarray(im).copy(); arr_[140:] = DEEP.astype(np.uint8); im = Image.fromarray(arr_)      # pass 58: the Crown's faint body ran to row 147; the sill covers rows 140 to 159, so they are the ground
-        if cellh != th: cv_ = Image.new("RGB", (tw, th), tuple(int(v) for v in DEEP)); cv_.paste(im, (0, 0)); im = cv_      # pass 57: nothing of the creature in the bottom 20 px (the frame's sill covers them)
+        prect = [rect[0] - pad, rect[1] - pad, rect[2] + 2 * pad, rect[3] + 2 * pad]; cw_, cellh = round(tw * CONTENT), round(th * CONTENT); box, flag = window(prect, cw_, cellh, W, H); base_ = masked(keyed_tail, tail_m) if key_ == "legs-tail/tail" else crown_short(box, cellh) if key_ == "face/crown" else keyed; crop = limited(base_, limit, feather).crop(box); cw, chh = crop.size
+        im = crop.resize((cw_, cellh), Image.LANCZOS) if (cw, chh) != (cw_, cellh) else crop
+        cv_ = Image.new("RGB", (tw, th), tuple(int(v) for v in DEEP)); cv_.paste(im, ((tw - cw_) // 2, (th - cellh) // 2)); im = cv_      # pass 59: the content inside the centred 75 percent of the cell (96x120 in 128x160), the cell tone round it
         nm = f"trait-S09-{slug(name)}-{slug(look)}-{tw}x{th}"; im.save(f"slices/{nm}.png", optimize=True)
-        man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window{' into the top ' + str(cellh) + ' rows, the bottom 20 left empty for the frame\'s sill' if cellh != th else ''} ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + ("; body kept at 35 percent alpha fading over about 22 px, no shadow" if key_ == "face/crown" else "") + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}
+        man[nm] = {"size": [tw, th], "rect": None, "src": f"S09 accepted painting, {why} {list(rect)}", "made": f"the {name} of the Belatz ({look}): a crop of the accepted painting from the rig's region, re-framed to {tw}x{th} from a {cw}x{chh} window{' into the centred 75 percent of the cell (' + str(cw_) + 'x' + str(cellh) + ' at (' + str((tw - cw_) // 2) + ', ' + str((th - cellh) // 2) + '))'} ({'reduced' if (cw, chh) != (tw, th) else '1:1'}, never enlarged), paper keyed to deep, key choked 1 px, defringed" + ("; body kept at 35 percent alpha fading over about 22 px, no shadow" if key_ == "face/crown" else "") + (f"; FLAG: {flag}" if flag else ""), "sha256": hashlib.sha256(open(f"slices/{nm}.png", "rb").read()).hexdigest()}
         ent["crops"][f"{tw}x{th}"] = {"window": list(box), "source_px": [cw, chh], "slice": nm, "flag": flag}; n += 1
         if flag: flagged.append((name, f"{tw}x{th}", rect[2:]))
     doc["traits"][key_] = ent

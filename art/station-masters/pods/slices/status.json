@@ -40,64 +40,64 @@
   "note": "signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408"
  },
  "trait-picture-frame-376x264": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-376x264-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-376x264-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x256": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x256-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x256-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x104": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x104-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x104-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x96-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x96-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "plate-message-640x36": {
   "status": "signed",
@@ -351,48 +351,48 @@
  },
  "trait-picture-frame-184x304": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x304-unread": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x304-sealed": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x112": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x112-unread": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x112-sealed": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x112": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x112-unread": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x112-sealed": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "rail-tab-unread-full-152x40": {
   "status": "withdrawn",
@@ -435,19 +435,19 @@
   "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
  },
  "trait-picture-frame-232x312": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-232x312-unread": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-232x312-sealed": {
-  "status": "signed",
-  "signed_in": "pass 6",
-  "note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "plate-name-80x24": {
   "status": "signed",
@@ -1020,79 +1020,79 @@
   "note": "the nine-slice with the radial top-left falloff (radius 56), both widths"
  },
  "trait-picture-frame-224x352": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x352-unread": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x352-sealed": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x160": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x160-unread": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x160-sealed": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x160": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x160-unread": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x160-sealed": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x96": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x96-unread": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x96-sealed": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x64": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x64-unread": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x64-sealed": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-stamp-case-152x152": {
   "status": "signed",
@@ -1145,9 +1145,9 @@
   "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "trait-picture-frame-112x112": {
-  "status": "signed",
-  "signed_in": "55944fb verdict",
-  "note": "the find picture frame of a sealed chapter"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "page-new-mark-12x12": {
   "status": "withdrawn",
@@ -1170,34 +1170,34 @@
   "note": "the stamp's front glass over the label"
  },
  "trait-picture-frame-144x176": {
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "note": "plain, unread and sealed"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-144x176-unread": {
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "note": "plain, unread and sealed"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-144x176-sealed": {
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "note": "plain, unread and sealed"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-176x144": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-176x144-unread": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-176x144-sealed": {
   "status": "withdrawn",
-  "signed_in": null,
-  "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "frame-cap-confirm-16": {
   "status": "signed",
@@ -1530,19 +1530,19 @@
   "note": "the collection pod class 88x112, every layer and -unknown"
  },
  "trait-picture-frame-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-128x160-unread": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-128x160-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-overview": {
   "status": "signed",
@@ -2165,254 +2165,254 @@
   "note": ""
  },
  "trait-S01-markings-plain-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-144x176": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-104x160": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-104x96": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-104x64": {
   "status": "new",
   "signed_in": null,
-  "note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-picture-standin-128x160": {
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-144x176": {
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-104x160": {
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-104x96": {
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-104x64": {
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-112x112": {
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-376x264": {
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-184x256": {
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-184x104": {
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-120x96": {
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-compare": {
   "status": "signed",
@@ -2425,103 +2425,118 @@
   "note": "signed in pass 52; withdrawn in pass 57: Compare's difference mark is the signed lamp frame-lamp-12-amber (the UI designer, after the art director's sixth look), so there is nothing to paint"
  },
  "trait-S09-head-between-small-and-large-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-144x176": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-104x160": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-104x96": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-104x64": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-128x160": {
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-144x176": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-104x160": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-104x96": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-104x64": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 58: rows 140 to 159 set to the ground (the faint body ran to row 147); awaiting verdict"
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-144x176": {
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-104x160": {
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-104x96": {
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-104x64": {
-  "status": "signed",
-  "signed_in": "pass 53 verdict",
-  "note": "the crown at 104x64: the body's fade shortened to reach the ground by row 61; closes the Crown at all five sizes"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-128x160": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-144x176": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-104x160": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-104x96": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-104x64": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "mark-line-seed-12x16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+ },
+ "mark-line-seed-pair-20x16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+ },
+ "mark-line-only-16x8": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
  }
 }

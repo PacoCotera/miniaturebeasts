@@ -152,9 +152,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 365): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "e336c78d56630a9d7211de2fd5bc61bf97c204cab28f2607a52fad0b87adf3b7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-376x264-unread": {
   "size": [
@@ -165,9 +165,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 365): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "40ba713975dc40116a7ab8a0dbefe953b78d71512c2f649945b52d187487cc37",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-376x264-sealed": {
   "size": [
@@ -178,9 +178,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 365): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "597db2c573490284693a1133cc7687ec62f58eb9d5189c8272b65716dad44751",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x256": {
   "size": [
@@ -191,9 +191,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 10 to 173): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "1ae0d0359e52f47807475cbee432c721e8edc6d7764efbf6495b1423a38f40df",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x256-unread": {
   "size": [
@@ -204,9 +204,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 10 to 173): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "1262c29afcb3c9cfe733d37e00ce96751fe420135cc3736b0200f81806c7bf9e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x256-sealed": {
   "size": [
@@ -217,9 +217,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 10 to 173): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "f9c13cc5a2f70d3c7be612fb56692bd8b01311ab9c897fd70f069ceaf84ea9bb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x104": {
   "size": [
@@ -230,9 +230,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 10 to 173): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "b518c7e13a85aa2b74cc3df2041e6fac339bfad6e3d1984797e93e1d55ff9c33",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x104-unread": {
   "size": [
@@ -243,9 +243,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 10 to 173): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "6e588d996901f771ae2d006de8d9d743cfca4245ff6b8252c847a5d0d3c4fd3e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x104-sealed": {
   "size": [
@@ -256,9 +256,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 10 to 173): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "c7a76712a691af3f6316e637088991f83c4c2b1891a926c88ebcd5c9972a55a3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x96": {
   "size": [
@@ -269,9 +269,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 110): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "ea14a326ab4512ed8e63e1785086dd6cf1823ef0612494134c98209f5a948f9d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x96-unread": {
   "size": [
@@ -282,9 +282,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 110): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "0a7f61f4b6cc82162f4a088803a47b07bcb7ebb587ce8ef59fa0daf418f9237b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x96-sealed": {
   "size": [
@@ -295,9 +295,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 110): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "2474ba9faa88884eb11b437be203deefacfb2585f6f88c75c5e2ed777b30e380",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "plate-message-640x36": {
   "size": [
@@ -1209,8 +1209,8 @@
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "bc87c8f1e67370d0f1f9ee2367abd3c33bc70c61f5009b90fbaaf29ad3a7226e",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x304-unread": {
   "size": [
@@ -1222,8 +1222,8 @@
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "cdbd386f38847b5c8c1d6aefd61249d3e4504f4a6d6940288591157ba9b0f8ef",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x304-sealed": {
   "size": [
@@ -1235,8 +1235,8 @@
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "ebaea936365f2fefea77f027f7e59e6636371f99a4b48f53585ddbc444a10109",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x112": {
   "size": [
@@ -1248,8 +1248,8 @@
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "9f8976fae65bb0f8ec6eba11d8b34ce2176601f44b7499daa81f9c422d38e020",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x112-unread": {
   "size": [
@@ -1261,8 +1261,8 @@
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "e4ca733db686e5c30092ffac344319c38554177fed25abddca8ac14dfaea7619",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-184x112-sealed": {
   "size": [
@@ -1274,8 +1274,8 @@
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "d028b791fb01c0ab1c31527f7cfb24d8714ccca796981c9514ce61d139e5b139",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x112": {
   "size": [
@@ -1287,8 +1287,8 @@
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "235b655e4eceee24a09d846efd87ba1e9ee9c0cf51f415764cab94d59405a520",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x112-unread": {
   "size": [
@@ -1300,8 +1300,8 @@
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "cc0d743509bebe368b9f08dba92dc74d0701d97b28f04f913ec85b1888b5a77d",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-120x112-sealed": {
   "size": [
@@ -1313,8 +1313,8 @@
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "3834322d8d96c3d1f8b528756a17d428ff36cd26055b3e6fd276b754e9c0cbba",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the old Read picture sizes are withdrawn (design-pods-relayout 29b6dc9)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "rail-tab-unread-full-152x40": {
   "size": [
@@ -1474,9 +1474,9 @@
   "src": "frame-deep1",
   "made": "the deep portrait frame: key magenta, resampled whole; the opening is 200x280 at 16 px inset",
   "sha256": "3e15d93df675dd20a18731c181dfe9a7ebbf813fe9179c1e0b011ced1816888e",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-232x312-unread": {
   "size": [
@@ -1492,9 +1492,9 @@
   "src": "frost-dark+frame-deep1",
   "made": "frost in the opening, under the deep frame",
   "sha256": "19e3ff22fecdb30f6215f974a23c52d312921cd4294a910b6e883cf39df6429d",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-232x312-sealed": {
   "size": [
@@ -1510,9 +1510,9 @@
   "src": "slats-frost+frame-deep1",
   "made": "translucent glass slats in the opening, under the deep frame",
   "sha256": "47f53375bded70cd5455710829bc32554d26efac07538eb89df8f3662a2cb284",
-  "status": "signed",
-  "signed_in": "pass 6",
-  "status_note": "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "plate-name-80x24": {
   "size": [
@@ -3462,9 +3462,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "752d518fc2520a7eacd0ada07ef280dd3267c4193dda28ca6ba2b1440fdde973",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x352-unread": {
   "size": [
@@ -3475,9 +3475,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "04738df8c9332bf60467f43a217318870265dfbcc6e79bb7d69667428e8c30d0",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x352-sealed": {
   "size": [
@@ -3488,9 +3488,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "b8e79c3ee55fb176045a5aa158420d921fcfb4d321a4b151e462fdda327aac05",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x160": {
   "size": [
@@ -3501,9 +3501,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "0c159a46d81b231eda186b0077f6dd8ee4eb3a7e1007405bd6383347f823b8ed",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x160-unread": {
   "size": [
@@ -3514,9 +3514,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "8f0a8e2f3acb0b54a3b518f4702991fbfaf189b446113c10afd698e4d5d5c26f",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-224x160-sealed": {
   "size": [
@@ -3527,9 +3527,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "9f22c66c497ba50402b09f4b8a9c197e29067696fa1a70fe9f71eeb0ce321839",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "224x352 and 224x160 are capped by the spec change (no picture larger than the pod's box: 144x176, 176x144)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x160": {
   "size": [
@@ -3540,9 +3540,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "eed8f05222ee4ddf233d9100ae640f1b4b485f768320c3016c54dd31c42ecca3",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x160-unread": {
   "size": [
@@ -3553,9 +3553,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "bae23b74f94b36497674631d2bf5f09d428227cd797f645dc9473857543a7729",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x160-sealed": {
   "size": [
@@ -3566,9 +3566,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "6b88c746cdf3e484da9394fc1cfabc282457900c7c0a1ba67a2464976f5a1772",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x96": {
   "size": [
@@ -3579,9 +3579,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "0747fe67981dcde7872631a8fd048f664a18fe8d03ed671d7a1b08c581439def",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x96-unread": {
   "size": [
@@ -3592,9 +3592,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "771f6fde9092992257d565c107c71c5e35f6e78c01c7db09754be6ee6dc83eca",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x96-sealed": {
   "size": [
@@ -3605,9 +3605,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "6cafe52459b4bf513c9f56948389067c1e26ee6810e6245445ff27f546a481ec",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x64": {
   "size": [
@@ -3618,9 +3618,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "74d71e0fa116e798e44172773f0dcbd146071b340cbc0dcdbd90694820c3f616",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x64-unread": {
   "size": [
@@ -3631,9 +3631,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "3e3a3fe2dd0a5335c3a9b1f4eb17fca61ffb97827a47beaa76be365c47034761",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-104x64-sealed": {
   "size": [
@@ -3644,9 +3644,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "c148ba4c22c503ad2cfddf3567832a2c67ee1e046f332be17e8084120e4b6472",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": ""
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-stamp-case-152x152": {
   "size": [
@@ -3837,9 +3837,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "dd28fe01ea86d19fd133c143deaa4a0f3d6d02a7597a522820d4154588b7ee31",
-  "status": "signed",
-  "signed_in": "55944fb verdict",
-  "status_note": "the find picture frame of a sealed chapter"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "page-new-mark-12x12": {
   "size": [
@@ -3922,9 +3922,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "69e218b8a4f4223d1747ddd75eec6ffc1e23dd97440ad97bdfbfc926887c08b8",
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "status_note": "plain, unread and sealed"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-144x176-unread": {
   "size": [
@@ -3935,9 +3935,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "649d48104e540727a8bef2c8053b2c3f7816560e5ed3ea37cf0b882193a78c55",
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "status_note": "plain, unread and sealed"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-144x176-sealed": {
   "size": [
@@ -3948,9 +3948,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "96b3b5fab5469006c0376ceaf2dc9f28498d967022ee879901131e0ca4179128",
-  "status": "signed",
-  "signed_in": "pass 25 verdict",
-  "status_note": "plain, unread and sealed"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-176x144": {
   "size": [
@@ -3962,8 +3962,8 @@
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "769fcaf61db51c41bdbad763965d733b132aa16f6b2f86a8977f98037d606198",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-176x144-unread": {
   "size": [
@@ -3975,8 +3975,8 @@
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "c8869fd1f546f986d295e960dc9ac8b875d7074caf5758e5f110fb5a65832f81",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-176x144-sealed": {
   "size": [
@@ -3988,8 +3988,8 @@
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "15174bd5c8e667f6be38854bf522a634469cb34d80ca9d5e9282c4dd7005c97d",
   "status": "withdrawn",
-  "signed_in": null,
-  "status_note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "frame-cap-confirm-16": {
   "size": [
@@ -5050,9 +5050,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 118): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "2c37aaa74ea550437a2073043be8bff025d1e3dfea7925c16df0fca7a44baa5e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-128x160-unread": {
   "size": [
@@ -5063,9 +5063,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 118): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "648b73b78c603269e3c0f98a33690a02af70ee9cee8d8776b511989f911da59e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-frame-128x160-sealed": {
   "size": [
@@ -5076,9 +5076,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame (pass 58: bottom rail deepened to a 20 px sill between the side rails (columns 9 to 118): the rails' body colour (60, 77, 92), opaque, flat, no ornament; its top edge is the top rail's inner profile mirrored; the rails keep their full profile to the bottom edge, with the old rail's two dark bottom rows)",
   "sha256": "cc7139e60fc0e5e1b3ff27ea840ea85f8a87e52de21a373046dd00b28147284d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 58 (round 2): the bottom rail deepened to a 20 px sill between the side rails, which keep their full profile; its top is the top rail's inner profile mirrored; ids and sizes unchanged; awaiting verdict"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-overview": {
   "size": [
@@ -7314,11 +7314,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 270x338 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 270x296 window, the bottom 20 left empty for the frame's sill)",
-  "sha256": "10807cd5246f1efb101dfe4e470aafceb4f391105dedede8e9892d00c11c9e8f",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 270x338 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 270x338 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "aa73c78582c63d1f4a6ff0817f490dd3c7878aa1c853b0716b080240ed4cadf3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-144x176": {
   "size": [
@@ -7327,11 +7327,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 144x176 from a 270x330 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c5b41b26165e3bfe0830137c6c81f1cc9749c07c72be28b458f43fb7cfb6ee1c",
+  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 144x176 from a 270x330 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 270x330 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "69d906a5e09b0c41340423798ecac272fe01539d598c6e63c6f9bc348d39b615",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-104x160": {
   "size": [
@@ -7340,11 +7340,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x160 from a 270x416 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "13605cff967eb4ac6fe3fb712de17c7b54fab74930705d7eccbbd9ef84f0625d",
+  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x160 from a 270x416 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 270x416 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "7d404a64c1ee72b6bbc50668b4027e10d49194de1a49d9f87071941d0ec24bad",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-104x96": {
   "size": [
@@ -7353,11 +7353,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x96 from a 270x250 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "ab6faf5cd08a25018719341be5118925e475db20b170446ad0a5c80450068a6f",
+  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x96 from a 270x250 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 270x250 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "826839c602e9bc4c6de189e557d5f671b12abcf6424668c48665d79d6bf63a1c",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-markings-plain-104x64": {
   "size": [
@@ -7366,11 +7366,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x64 from a 292x180 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "24bd5ee0f5f9169c11b91cab614a786bca3628fa99beb91d1b5c1fb607e29b09",
+  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x64 from a 292x180 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 292x180 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "5d2d115179cb4898e4d7b4679cfa9a0e806615bf47841268909c430e24896aae",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-128x160": {
   "size": [
@@ -7379,11 +7379,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 128x160 from a 170x212 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 170x186 window, the bottom 20 left empty for the frame's sill)",
-  "sha256": "1b1ce0808fbfcc2a9c5b89c24ee49ecd23eba0d4039ca0c24ab2cf25fe3d51ed",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 128x160 from a 170x212 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 170x212 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "68b3b47a7205c59a3bda9be932c5a5dc72101cd22f8acc303e4bc229c6f3f819",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "size": [
@@ -7392,11 +7392,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 144x176 from a 170x208 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "4ef67e0efaaf2fc0d6a4496044980ac9cd60b76807d8d65ebd34087aa32acf1b",
+  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 144x176 from a 170x208 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 170x208 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "18a163cb2a8f7d98db14ae54112f0b371176577117fa62ecff2875b7a873cc79",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-104x160": {
   "size": [
@@ -7405,11 +7405,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x160 from a 170x262 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d12a01d03208e616b70259afb6efe2f727695d45ed78ad44363b72512361115e",
+  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x160 from a 170x262 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 170x262 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "a135a009ac3e8a4c6b6882c410f74aacd7be4583e27ba0235b9c644f993daa56",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-104x96": {
   "size": [
@@ -7418,11 +7418,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x96 from a 170x156 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "52069909d552d215b13d038120e1eb90052ee811ba77edc2214123942f82901e",
+  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x96 from a 170x156 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 170x156 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "d163453d2723f249a8209be31780a42a52e59da00eea58e7afabea5676c82ca4",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-crown-leaf-crest-104x64": {
   "size": [
@@ -7431,11 +7431,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x64 from a 196x120 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d7678b6462913b51f6d1c7b1b59ec2847342a32fa2643c35929d63f3ff54aec8",
+  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x64 from a 196x120 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 196x120 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "3a55004a949cde0626bbc53c8c2e1afb78a35dcee18270d093cd566e205ec564",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-128x160": {
   "size": [
@@ -7444,11 +7444,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
-  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 57: re-composed into the top 140 rows from a 128x140 window, the bottom 20 left empty for the frame's sill)",
-  "sha256": "e59cf0968b5020d18e6bc466cb88bbac20995fd6a695bd40b9846191e7adb039",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 96x120 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "56a1813ceaa28ce50e012eac40e06259409cfb63fe0448680e540ff7f23669dd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-144x176": {
   "size": [
@@ -7457,11 +7457,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
-  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "57b36b3b9badf52d7c139caaaab62bdacf49fa978f33f89c46d72424f27657ea",
+  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 108x132 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "9d0276fee7cd1eca2331612d49df2c04dd5147e55dab26003b41cc307d8e9b98",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-104x160": {
   "size": [
@@ -7470,11 +7470,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
-  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "bbd07f938dbb2591eb6219996232f29fc365eb30dec4bdc5312d949d51956f91",
+  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 85x130 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "aac1a5ab70270075b5df898f1a47ba876b552cac24a9cca6eda3fe6fe7e94244",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-104x96": {
   "size": [
@@ -7483,11 +7483,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
-  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "185d1d2c3bc11b3affe7b63fe43166b7a54e8fb33690358ff77b70d554845ce7",
+  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 85x80 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 87x80 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "529885a951dcf212fd105b49ac81e8a7fab47db0bb3330a047b78901b5aaa925",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S01-eyes-between-small-and-large-104x64": {
   "size": [
@@ -7496,11 +7496,11 @@
   ],
   "rect": null,
   "src": "S01 standard painting, region [385, 180, 470, 260] of 600x620",
-  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 104x64 from a 130x80 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "2177e32074f9d6a00761a7be906ca67671accca563636fc01e9e4e3057d34b8a",
+  "made": "the Eyes of the S01 individual (between small and large) as a crop of the standard painting re-framed to 104x64 from a 130x80 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 130x80 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "f57402d091ba61705cd3cd8f5cefc8cf150c19314e17e26a4d08b4cacb16295a",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-128x160": {
   "size": [
@@ -7509,11 +7509,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 360, 470, 470] of 600x620",
-  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 128x160 from a 240x300 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 240x262 window, the bottom 20 left empty for the frame's sill)",
-  "sha256": "42a172a6ca7229cd21ef36327c7f5c415162999f8591ad0166df719c2d78fdbf",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 128x160 from a 240x300 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 240x300 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "f9f33b4b5d64a1265ddbc5f20e648c254eebce37a152deb9744715975ae1d1af",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-144x176": {
   "size": [
@@ -7522,11 +7522,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 360, 470, 470] of 600x620",
-  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 144x176 from a 240x294 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d10f9d3eeb6b819d8948d287cf1673ca736805342bd90717456cd2fa59821bb6",
+  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 144x176 from a 240x294 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 240x294 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "7e0ac0c46e375d5f172081d1226e40eff0a76542a58dd35479a676980c3c4ae4",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-104x160": {
   "size": [
@@ -7535,11 +7535,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 360, 470, 470] of 600x620",
-  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 104x160 from a 240x370 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "4175757f501c6a1f55e8c4ab948bb2f56c4a1c06ffae049fe7d47a0633f87fc2",
+  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 104x160 from a 240x370 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 240x370 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "e918fea72b763bdef9f676b2acf677fa341ae10572306b253a719e0e5d8acf11",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-104x96": {
   "size": [
@@ -7548,11 +7548,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 360, 470, 470] of 600x620",
-  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 104x96 from a 240x222 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "06de4fa39e83bcb0620fb51c9bb04ce1194c25475ed25f98c15286ee83191cea",
+  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 104x96 from a 240x222 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 240x222 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "4cfb1060ff3898f6650ce52b1d6fdbbd00e651b22af06c1c160d3f05b3481cae",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-colour-marigold-104x64": {
   "size": [
@@ -7561,11 +7561,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 360, 470, 470] of 600x620",
-  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 104x64 from a 240x148 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "d722f9b505ad87260e8c42d8bad821f958f094334499d12480245f4c9dc3790a",
+  "made": "the Colour of the S12 individual (marigold) as a crop of the standard painting re-framed to 104x64 from a 240x148 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 240x148 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "bb178796811734b16cf20e3b751c4b6124093d95e2675de2a49e9f18b3cd63e3",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-128x160": {
   "size": [
@@ -7574,11 +7574,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [300, 100, 560, 350] of 600x620",
-  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 128x160 from a 260x326 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 57: re-composed into the top 140 rows from a 260x284 window, the bottom 20 left empty for the frame's sill)",
-  "sha256": "02b738d6394037c905ad8088d5b2ce55f6eeb2bfa4cf56cb6191879a5e6a5782",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 128x160 from a 260x326 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 260x326 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "084e22a144949661790e1c79eccd8cc1c45508b585507c26a2c00fc9ec5f50a4",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-144x176": {
   "size": [
@@ -7587,11 +7587,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [300, 100, 560, 350] of 600x620",
-  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 144x176 from a 260x318 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "bfd36d9300c24b2d5a431b7c5f95f4edfd62cceb51d976079d20223b08621b1c",
+  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 144x176 from a 260x318 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 260x318 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "71814d956b88488715f6a44f0b3f0bc3b0d3b0a93a35a149fa91c35688f0aff3",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-104x160": {
   "size": [
@@ -7600,11 +7600,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [300, 100, 560, 350] of 600x620",
-  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 104x160 from a 260x400 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "115519ad7a4cff1eef55a16c57b6fbd13f2df35d5530e930257bddd6c47e10d5",
+  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 104x160 from a 260x400 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 260x400 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "da9545cb8fdea8d62135b92e5c8d88fd5615369efdab6498c9b6938aff8b91b0",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-104x96": {
   "size": [
@@ -7613,11 +7613,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [300, 100, 560, 350] of 600x620",
-  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 104x96 from a 270x250 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "b92d72b210ba11d9273d351c6a62c1a3cfdbc21654d4a68d60989d14f54ac2a6",
+  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 104x96 from a 270x250 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 270x250 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "f2188e73c8ce543ad16ac405afde12f550b20a6caf4417bb2ca1a2e759d8de13",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-translucency-between-104x64": {
   "size": [
@@ -7626,11 +7626,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [300, 100, 560, 350] of 600x620",
-  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 104x64 from a 406x250 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "c00fcdaed0224188c36bce092bd1b8e54e889c852bf345aaeefdf63a0b53ecb5",
+  "made": "the Translucency of the S12 individual (between) as a crop of the standard painting re-framed to 104x64 from a 406x250 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 406x250 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "2adfa6407afbfef08595a1b93526b4da4ea113baa46459ef1aacd2b06aa9875a",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-128x160": {
   "size": [
@@ -7639,11 +7639,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [370, 365, 470, 460] of 600x620",
-  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 57: re-composed into the top 140 rows from a 128x140 window, the bottom 20 left empty for the frame's sill)",
-  "sha256": "05eaf41d3696455d0bd7ad5b742f83119df2820b805b0e516bd5affe23405aca",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 100x125 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "b13c1b04b29d6679cc9451fd16c9b2020b78d3321d65c1b085b4096e53499bd6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-144x176": {
   "size": [
@@ -7652,11 +7652,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [370, 365, 470, 460] of 600x620",
-  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "7803845d60f9bd89bfa5b6f286b63874680fff943b4e8dc69a4f65a1d9c20da6",
+  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 108x132 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "49851d7dc1be77fee21e4a97f3f9e66c61e25c56181d1883b51688fd5a59deba",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-104x160": {
   "size": [
@@ -7665,11 +7665,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [370, 365, 470, 460] of 600x620",
-  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "8bfca06a0ea9f45e4815eb427b3d9a1bd5023f8461b9f3fa41701466b1033da8",
+  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 100x153 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "8989e2769f82cd272d0d169805e298c8790d00dd965810e4b4532a54ec3e3f65",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-104x96": {
   "size": [
@@ -7678,11 +7678,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [370, 365, 470, 460] of 600x620",
-  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "552940d096edf6c075a124aefd0043d5c7ae363ea2778c3650bbacb600db965a",
+  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper ground keyed to the deep ground; FLAG: the part is 100x95 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 102x95 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "643cd3feaa1e217d91350f8ae846675f4515a63ccb4f5924404af8ede37b45ac",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-pattern-plain-104x64": {
   "size": [
@@ -7691,11 +7691,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [370, 365, 470, 460] of 600x620",
-  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 104x64 from a 154x95 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "98e574e5503f5f18255778398b248f9026fe2ed7c6b62a7b4414dfd817d01e52",
+  "made": "the Pattern of the S12 individual (plain) as a crop of the standard painting re-framed to 104x64 from a 154x95 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 154x95 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "fdede88a1f2a940ad92841509776dd525d5c9d73ca5ecc1cdce6cc0b5e04e8c5",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-128x160": {
   "size": [
@@ -7704,11 +7704,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 440, 540, 560] of 600x620",
-  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 128x160 from a 310x388 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "fb5762a795fc970ed489db4b4a344e02c2af1eaa28c3bfc79591ce0c0e15970f",
+  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 128x160 from a 310x388 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 310x388 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "a17faaded072b8aade9d24d900fe6edf3d3fe319c8379d22cb1cfd7cb1e690a2",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-144x176": {
   "size": [
@@ -7717,11 +7717,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 440, 540, 560] of 600x620",
-  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 144x176 from a 310x379 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "105dd5bef116f600f37ae0d4ea49bdb328b73f33fac9bacfb9c705508e6f486d",
+  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 144x176 from a 310x379 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 310x379 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "5854821ebbf957c3ef2f558baf5e58790a8cb021ede9cd432b85e39ac24725fd",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-104x160": {
   "size": [
@@ -7730,11 +7730,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 440, 540, 560] of 600x620",
-  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 104x160 from a 310x477 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "e003f8060902708486247cf12d8541e9a3bc185e603400f4007d1ccf828c156a",
+  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 104x160 from a 310x477 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 310x477 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "0795c3b2c6788ac30a5be7a6aa7909e95749e5e02ef170e4c762b73d1ab58121",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-104x96": {
   "size": [
@@ -7743,11 +7743,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 440, 540, 560] of 600x620",
-  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 104x96 from a 310x286 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "ec7ceacfcd1c46138417ae3f8281971cce0c477e9a4b3c72e56b9ba4de981523",
+  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 104x96 from a 310x286 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 310x286 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "69a8a71aaa85b1f903330bff6e33400c8a96578242fe93a47275edf9bb8d1657",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-trim-butter-104x64": {
   "size": [
@@ -7756,11 +7756,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [230, 440, 540, 560] of 600x620",
-  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 104x64 from a 310x190 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "63e096e1cc4e94a4be87950872ab1f6ca96be53235fcb9f733df76ed1d44afef",
+  "made": "the Trim of the S12 individual (butter) as a crop of the standard painting re-framed to 104x64 from a 310x190 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 310x190 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "5eabf3180efaf9639d83f7952e2fb267dd72ec55fd826213a3fe417670d66b8d",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-128x160": {
   "size": [
@@ -7769,11 +7769,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [360, 440, 550, 545] of 600x620",
-  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 128x160 from a 190x237 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "0d962a7c3287876b4a2f113eca8298cc149d8c02fb8769987967432e9db9cb30",
+  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 128x160 from a 190x237 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 190x237 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "17a098630598d4e8d02e59bf263ba114532e949a5720be2eaf9c756747c83e55",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-144x176": {
   "size": [
@@ -7782,11 +7782,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [360, 440, 550, 545] of 600x620",
-  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 144x176 from a 190x233 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5814c9dcc32986cf6e65a5ed5f5d4c689c36499cad817e19065eef27f5927cf2",
+  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 144x176 from a 190x233 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 190x233 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "b65e1d9dbdaea7b629c87c5523c73c81a10b66855137e36271016b84b51397c8",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-104x160": {
   "size": [
@@ -7795,11 +7795,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [360, 440, 550, 545] of 600x620",
-  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 104x160 from a 190x292 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "5a2cf28a6d4691aa51b3e6418f948a5e4cfa1924b4e2f7b4c6ba829f7ca99b41",
+  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 104x160 from a 190x292 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 190x292 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "27ffdfc8cd3febf6961a064c419770b43afa9184682ab89ba8afb03c461d8e23",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-104x96": {
   "size": [
@@ -7808,11 +7808,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [360, 440, 550, 545] of 600x620",
-  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 104x96 from a 190x175 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "ad051ba6f1626cca52926c77e368b25e3740f06d6c839698608168ac0f65009e",
+  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 104x96 from a 190x175 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 190x175 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "ab94f92b531dfeb2e5d6d233d08f34b9e445b4ef9d2dee9e14b39671f13488dc",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S12-haunch-between-104x64": {
   "size": [
@@ -7821,11 +7821,11 @@
   ],
   "rect": null,
   "src": "S12 standard painting, region [360, 440, 550, 545] of 600x620",
-  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 104x64 from a 190x117 window (reduced, never enlarged), paper ground keyed to the deep ground",
-  "sha256": "b12cc0104aa06ee0a7928ff5a358fc6fa22b565fbb2617f948ae866481b53dfa",
+  "made": "the Haunch of the S12 individual (between) as a crop of the standard painting re-framed to 104x64 from a 190x117 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 190x117 window, reduced and never enlarged, on the cell tone ground #162a37)",
+  "sha256": "b431d03234b86531dcf8b66b42097a664fdfac9e31b71e55f575a33c4950099f",
   "status": "new",
   "signed_in": null,
-  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-picture-standin-128x160": {
   "size": [
@@ -7836,9 +7836,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "20abd2f8aa5c4e128e49eee5a624a3ced938f1be4318589b824bbb60d5d582e9",
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-144x176": {
   "size": [
@@ -7849,9 +7849,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "51c79fea7cba2909336776b3da0316295b423f4d1c58191c23d05c5a8485f2e8",
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-104x160": {
   "size": [
@@ -7862,9 +7862,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "c36ae6e40e60cf0836ee56bdc2774a2f02893b706ddd16014ff40ceba4cd519b",
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-104x96": {
   "size": [
@@ -7875,9 +7875,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "516a22c981aedf941796e2129c8d06b5d22704dcadd5eb3ce9f588dea8a2c8a4",
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-104x64": {
   "size": [
@@ -7888,9 +7888,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "2e20b1a2fd466f13a4cfd010fbc71fad52fe1186638464ceee149ba6c902d26e",
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-112x112": {
   "size": [
@@ -7901,9 +7901,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "757cd3a9550fc2db69f3fd354b4bc98cda9610bd8f1cb56d1833c5c7cb18ce43",
-  "status": "signed",
-  "signed_in": "pass 42 (signed on delivery)",
-  "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-376x264": {
   "size": [
@@ -7914,9 +7914,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "7a18f9fc029e0273e1be56f28b3ea701923f4880da7f5200db1d85bb0c57f4dc",
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "status_note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-184x256": {
   "size": [
@@ -7927,9 +7927,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "c8d7fc02e3c3f3f6854bd0b0b6ba4de0246b4962ecaae3a197a55c871e5b1350",
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "status_note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-184x104": {
   "size": [
@@ -7940,9 +7940,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "5878d9396be17e454d7d4493afc3826e7b97e35a31f241e3e73f5367f7298e73",
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "status_note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "trait-picture-standin-120x96": {
   "size": [
@@ -7953,9 +7953,9 @@
   "src": "procedural",
   "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, no text",
   "sha256": "bb067c400b49168f11b24d4edc380459526671a576f6625688d8138e0de2cb6d",
-  "status": "signed",
-  "signed_in": "pass 47 verdict",
-  "status_note": "the stand-in card at Compare's four sizes, the signed cut (no text)"
+  "status": "withdrawn",
+  "signed_in": "pass 59",
+  "status_note": "withdrawn with the pane: the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-compare": {
   "size": [
@@ -7995,11 +7995,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 246x270 window into the top 140 rows, the bottom 20 left empty for the frame's sill (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "6b914a30e54e0745a6cf2fd529b0cec66624c3cf942a66b7012578eb30b2d662",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 226x282 window into the centred 75 percent of the cell (96x120 at (16, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "cc3bc0e45f20d7f7873c93f097cd26da9236615074a8fd36bfb45497ae90cd44",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-144x176": {
   "size": [
@@ -8008,11 +8008,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 226x276 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "c474b6f18c3f46bb83e4456cf950bccb4b757494888d895107a375b21ade9904",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 226x276 window into the centred 75 percent of the cell (108x132 at (18, 22)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "b31476b5e8c6ec98ec55c7ab180fa0ab66067056b864d2a6677663162734af24",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-104x160": {
   "size": [
@@ -8021,11 +8021,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 226x348 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "9cdefb918dccf796137f0309c4350d7582da9ea17eaa140eb459502e1eaf2b9e",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 226x348 window into the centred 75 percent of the cell (78x120 at (13, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "bb858be98ceac17a00cc89ff1f3cbfa4a7a5c021082d154518c82f7e67c350fc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-104x96": {
   "size": [
@@ -8034,11 +8034,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 292x270 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "72c3d6e4ee138d319b28118cb0b92ec83d96471b5444ed0b6df67cad12ab9cf1",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 292x270 window into the centred 75 percent of the cell (78x72 at (13, 12)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "0fccd0def8cfe582c7ca478077ff28196189b7e0747e826c7e2ea200e9b93bd9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-head-between-small-and-large-104x64": {
   "size": [
@@ -8047,11 +8047,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the whole head, crown to throat (the head, crown and beak parts' union) with a margin; the painting gives no profile: it is a three-quarter front view [94, 37, 206, 250]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 439x270 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "53acf5edbd309f9e45d2919380141dbb511e7a9f46956cd2b4a82fda634b8ead",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 439x270 window into the centred 75 percent of the cell (78x48 at (13, 8)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "23f26a34ea591d784f2f71ee1ff894719ab7711e86c03f777bb250a08c3caca5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-128x160": {
   "size": [
@@ -8060,11 +8060,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
-  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x140 window into the top 140 rows, the bottom 20 left empty for the frame's sill (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 128x140 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "feea3dbce3aa0d4308a7123c0375fc6a749e14a7601873929d17e7ad3561d074",
-  "status": "signed",
-  "signed_in": "pass 57 verdict",
-  "status_note": "re-composed into the top 140 rows so nothing of the creature falls in the bottom 20 px (the frame's sill covers them)"
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 96x120 window into the centred 75 percent of the cell (96x120 at (16, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 96x120 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "c71e1e754cd974745e42682f20764bad3d8326e124a6a56d8bce4a7bd4731a4d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-144x176": {
   "size": [
@@ -8073,11 +8073,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
-  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "23f9ab10be4df95ba7f81b12ca0b24df2c6684ae1bcfed869e7ad94269d50d3c",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 108x132 window into the centred 75 percent of the cell (108x132 at (18, 22)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 108x132 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "dc74dbbd281771dcb427bd20161022c3716003338a37a80cfc38ce0ae516505a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-104x160": {
   "size": [
@@ -8086,11 +8086,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
-  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "b4842e82146d718b74b811a0b5159c0260fd3838b695cf14cad7357419f56055",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 89x137 window into the centred 75 percent of the cell (78x120 at (13, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "2302f810da46dd0f0b007259c42f38b31bea3bf769719308c2db6fd29009b114",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-104x96": {
   "size": [
@@ -8099,11 +8099,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
-  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "21ad99c9589d22dff2e400913460c6ab5e929248fea47bfee6105a0e3cf57950",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 93x85 window into the centred 75 percent of the cell (78x72 at (13, 12)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "6c967892d4dcaea767572f096fa288a0affe38bf1982bcbf5195b06da066bc05",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-beak-between-104x64": {
   "size": [
@@ -8112,11 +8112,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
-  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 139x85 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "d6d1ce124bd33444ab6cf40f6ed5e86b66d395403c7c45eed1da13f323a399b3",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 139x85 window into the centred 75 percent of the cell (78x48 at (13, 8)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "df7c9303c8bf112ed3a9d57c83d25524ca50d1028aa08aad6f3a7e77e687bd2f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-128x160": {
   "size": [
@@ -8125,11 +8125,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
-  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 174x218 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
-  "sha256": "fb51ccc0a3ab10ef400cbcaf01658caa41026c62459b08b6e7e44dc4d5ddc6df",
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 174x218 window into the centred 75 percent of the cell (96x120 at (16, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
+  "sha256": "d8e5cf5596aba1b567ecb0fa891e59c3081962da1d18754ed147ec5884b52e6c",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 58: rows 140 to 159 set to the ground (the faint body ran to row 147); awaiting verdict"
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-144x176": {
   "size": [
@@ -8138,11 +8138,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
-  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 174x213 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
-  "sha256": "b8215b7d042c0e46c7e4e5baa089f5b527b6519a5013778b91d35f39a6c8e8e0",
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 174x213 window into the centred 75 percent of the cell (108x132 at (18, 22)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
+  "sha256": "28278adfdb4c001201d477b194dec4c1916e15afeae00a1c6a88e737bb0621f5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-104x160": {
   "size": [
@@ -8151,11 +8151,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
-  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 174x268 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
-  "sha256": "fa34063282e81ef578d0bd7bb5226bda84b02bfa63a57597b61b5cf4e153ddb6",
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 174x268 window into the centred 75 percent of the cell (78x120 at (13, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
+  "sha256": "e9a366c43453863e7076efb83de4a8459a550f4a6c7aa8b05c74620905b407dd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-104x96": {
   "size": [
@@ -8164,11 +8164,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
-  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 174x161 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
-  "sha256": "a414fe0f84ed8e867b09264b846aee7b7150935f6e570afc5a6c51959d9b2a67",
-  "status": "signed",
-  "signed_in": "pass 52 verdict",
-  "status_note": "the crown with treatment B: the part at 100 percent, the head under the ear and crest roots at 35 percent fading over about 22 px, no shadow"
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 174x161 window into the centred 75 percent of the cell (78x72 at (13, 12)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
+  "sha256": "962202cbebe72ce880255aa63c38267ecdfbf47658a53b5c1d8d19f6db5c4222",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-crown-tall-104x64": {
   "size": [
@@ -8177,11 +8177,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the crown only: the horn, the crest and the ear; everything below the skull's curve is taken out along that curve [138, 37, 162, 125]",
-  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 222x137 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
-  "sha256": "f19077f6341622355b0727e9c608c2aa3a39413ecde84ce8e4a4e86e90d07ce9",
-  "status": "signed",
-  "signed_in": "pass 53 verdict",
-  "status_note": "the crown at 104x64: the body's fade shortened to reach the ground by row 61; closes the Crown at all five sizes"
+  "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 222x137 window into the centred 75 percent of the cell (78x48 at (13, 8)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed; body kept at 35 percent alpha fading over about 22 px, no shadow",
+  "sha256": "415c9c7f29b4f532bf002899dbafb78c951e60836f628cf9ff08d03333c5d582",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-128x160": {
   "size": [
@@ -8190,11 +8190,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 162x202 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "7828ff8ca88672e4113770fefaa1c4ad94993ff499c43eeb67c49f6c4afd878e",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 162x202 window into the centred 75 percent of the cell (96x120 at (16, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "111af3b48bde099e971654ca36e9aa4a40c887a57e224a0247b06b4ee44410b8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-144x176": {
   "size": [
@@ -8203,11 +8203,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 162x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "07c8473472f29c243e13df4dee03a720121f328a1d3091a4dc61e8beb65281b7",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 162x198 window into the centred 75 percent of the cell (108x132 at (18, 22)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "8d43595f0a092c85515b5d75d20f553e2778fe63a2a81192eca4235c69fd032c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-104x160": {
   "size": [
@@ -8216,11 +8216,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 162x250 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "a23e3c5108f6c53a1a8eca75b091becee442bb0b451e556a0184ea583919c024",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 162x250 window into the centred 75 percent of the cell (78x120 at (13, 20)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "9cf7643e4ba644f6a4364439b92b6251d87d8d4d254ab352ecf41b521e223a6a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-104x96": {
   "size": [
@@ -8229,11 +8229,11 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 162x150 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "bf4647d7e56dfcfb05fdf0c386483d56a3db60dd112c9265cec6984c43dee480",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 162x150 window into the centred 75 percent of the cell (78x72 at (13, 12)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "00e0f7c04aaf85944fd9ec99b68c4fdf82c327e785a24c1444b02bac49e8d473",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
  },
  "trait-S09-tail-between-104x64": {
   "size": [
@@ -8242,10 +8242,49 @@
   ],
   "rect": null,
   "src": "S09 accepted painting, the tail alone, tip to root: the feather bundle inside a polygon (the rump's feathers and the wing left out), the root tapering out along the feather lines [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 198x122 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "b306f9a44f86f6a4910103bf260a127e02f97d87b35818f96cdb4263382daaf7",
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "status_note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 198x122 window into the centred 75 percent of the cell (78x48 at (13, 8)) (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "4e129a3d3258cea80cd0ca1b7cd18ac1f4948e437e440c7128ca585afb690ae8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "mark-line-seed-12x16": {
+  "size": [
+   12,
+   16
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the name-line seed glyph: a misty seed with the hidden look's ghost in its frost half; typed pixel by pixel at this size (never scaled from the large seed); placed 1:1 after the name, top at line y + 2",
+  "sha256": "d73dbc9751ca1ac4402282f5861c524c77ad4c8e10148d2316adfc28555986c9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+ },
+ "mark-line-seed-pair-20x16": {
+  "size": [
+   20,
+   16
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the name-line blend glyph: two seeds overlapping as one glyph (the front seed 8 px right of the back one, an ink keyline between); typed pixel by pixel; placed 1:1 after the name, top at line y + 2",
+  "sha256": "7871cb2420d073d720cfa339269e8b035e8a9b4ebcc0059cf688bd2c84a0aebb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
+ },
+ "mark-line-only-16x8": {
+  "size": [
+   16,
+   8
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the name-line Only glyph: the signed base's ticks, lit top edge and fog bar as a small base, its foot on the baseline; typed pixel by pixel; placed 1:1 after the name, top at line y + 8",
+  "sha256": "45a515d718702d27c1a2feaf1193dc95faccd821c3c0930a0ff46bd9eed258b7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 59: a name-line glyph of the open chapter page, typed pixel by pixel at its size; awaiting verdict"
  }
 }
