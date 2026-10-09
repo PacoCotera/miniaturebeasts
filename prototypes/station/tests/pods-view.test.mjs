@@ -161,7 +161,7 @@ test("no digits where a word does: the origin drops the expedition's number, a p
   const st = stock(["S01"], 11); st.tray[0].n = 7; S.skipIdentify(st, st.tray[0]);
   const v = view(model(st)), c = view(collection(st));
   assert.ok(v.specimen.origin.every((l) => !/\d/.test(l)), v.specimen.origin.join("|")); assert.ok(!/\d/.test(c.line.subject), c.line.subject); assert.ok(c.list.places.every((w) => !/\d/.test(w.name || "")));
-  assert.equal(inWords("3 new pods wait"), "three new pods wait"); assert.equal(inWords("2 crates in the bay"), "two crates in the bay"); assert.equal(inWords("a Belatz pod waits · needs 3 ◆"), "a Belatz pod waits · needs 3 ◆"); assert.equal(inWords("14 pods wait"), "many pods wait");
+  assert.equal(inWords("3 new pods wait"), "three new pods wait"); assert.equal(inWords("2 crates in the bay"), "two crates in the bay"); assert.equal(inWords("a Belatz pod waits for ◆ 3 more"), "a Belatz pod waits for ◆ 3 more"); assert.equal(inWords("14 pods wait"), "many pods wait");
 });
 test("Compare's need line follows the spec's strings: here, in another chapter, or none; the Differs mark is the studio's, by id, on the traits read on both that differ", () => {
   const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);

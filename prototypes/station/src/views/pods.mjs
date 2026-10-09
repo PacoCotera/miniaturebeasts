@@ -19,7 +19,7 @@ const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.h
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // No digits where a picture or a word does: a count in a sentence is said in words (the frame's shared need line on Pods); an amount beside a material icon is a price or a shortfall and stays in figures.
 const WORDS = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
-export const inWords = (text) => (text || "").replace(/\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
+export const inWords = (text) => (text || "").replace(/(?<![⚡◆❀] )\d+(?! [⚡◆❀])/g, (n) => WORDS[+n] ?? "many");
 
 // m: { st, settings, docked, crates, ui: { view, cur, ci, cmp, wildArm }, focus: id | null, present: { idCut: { pod, p } | null, read: { pod, chapter, p } | null, ribbon: pod id | null } }
 // ctx: the components' context (the spec and the type metrics, to wrap the origin)

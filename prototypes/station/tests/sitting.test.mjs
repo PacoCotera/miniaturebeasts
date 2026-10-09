@@ -134,7 +134,7 @@ test("the crate: the lamp fills with the start and the rule; in the first build 
   assert.equal(T.crateLamp(c, settings, T0), 0); assert.equal(T.crateLamp(c, settings, T0 + 1.5 * H), 0.5); assert.equal(at(H), "filling"); assert.equal(T.bayState(st, sv, settings, T0 + H).amber, false);
   assert.equal(T.openSittingCrate(st, c.id, settings, T0 + H).msg, "the crate is still filling");
   assert.equal(at(3 * H), "ready", "no portrait is painted in the first build: the wait alone binds"); assert.equal(T.crateLamp(c, settings, T0 + 3 * H), 1);
-  const bay = T.bayState(st, sv, settings, T0 + 3 * H); assert.deepEqual([bay.sitting, bay.total, bay.amber, bay.label], [1, 1, true, "Open the bay · 1 crate"]);
+  const bay = T.bayState(st, sv, settings, T0 + 3 * H); assert.deepEqual([bay.sitting, bay.total, bay.amber, bay.label], [1, 1, true, "Open the bay"]);
   // the rule is the developer's: a minute, or now, recomputed from the same start
   assert.equal(at(61000, { ...settings, sittingWait: "minute" }), "ready"); assert.equal(at(59000, { ...settings, sittingWait: "minute" }), "filling"); assert.equal(at(0, { ...settings, sittingWait: "now" }), "ready");
   assert.equal(T.sittingWaitMs(settings), 3 * H); assert.equal(T.sittingWaitMs({}), 3 * H, "three hours without a setting");

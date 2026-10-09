@@ -186,3 +186,23 @@ test("a mibi is an elder at j + ELDER_TURNS, where j is the adultTurns setting (
     for (const [age, want] of [[j - 1, "juvenile"], [j, "adult"], [j + S.ELDER_TURNS - 1, "adult"], [j + S.ELDER_TURNS, "elder"]]) { st.turn = age; assert.equal(S.mibiStage(st, m, s), want, "j " + j + " age " + age); }
   }
 });
+
+// ---- 9. the copywriter's need() strings ----
+test("need(): counts spelled out, dropped above the picture, shortfalls as icon + figure", () => {
+  const st = fresh(); st.firstMibi = false;
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
+  const fake = (n) => Array.from({ length: n }, (_, i) => ({ id: "x" + i, idd: 0, read: [], g: "meadow" }));
+  for (const [n, want] of [[1, "a new pod waits"], [2, "two new pods wait"], [6, "six new pods wait"], [7, "new pods wait"]]) { st.tray = fake(n); assert.equal(S.need(st, sv, settings).text, want, "fresh " + n); assert.equal(S.need(st, sv, settings).label, "Look at the pods"); }
+  st.tray = []; for (const [n, want] of [[1, "a pod waits for a well"], [3, "three pods wait for a well"], [7, "pods wait for a well"]]) { st.waiting = fake(n); assert.equal(S.need(st, sv, settings).text, want, "waiting " + n); }
+  st.waiting = [];
+  st.docked = true; st.dock = { docked: true, at: 0 };
+  const crates = (n) => { sv.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 1, at: 0, e: 0, d: 0, s: 0, pods: [] })); };
+  for (const [n, want] of [[1, "a crate waits in the bay"], [2, "two crates wait in the bay"], [3, "three crates wait in the bay"], [4, "crates wait in the bay"]]) { crates(n); const r = S.need(st, sv, settings); assert.equal(r.text, want, "crates " + n); assert.equal(r.label, "Open the bay"); }
+});
+test("need(): a pod that cannot yet grow or be read says what is short, with no dot", () => {
+  const st = fresh(); st.firstMibi = false; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
+  const p = podOf(st, "S01", ["coat"]); st.e = 0; st.s = 0;
+  const c = S.growCost(st, {}, settings);
+  const short = S.need(st, sv, settings).text; assert.ok(/^a pod grows with ⚡ \d+ ❀ \d+ more$/.test(short) || /^a pod grows with (⚡|❀) \d+ more$/.test(short), short); assert.ok(!/·/.test(short));
+  st.e = 99; st.s = 99; assert.match(S.need(st, sv, settings).text, /^(a|an) \w+ pod could grow$/); void c; void p;
+});

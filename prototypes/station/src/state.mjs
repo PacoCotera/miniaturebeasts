@@ -422,21 +422,25 @@ export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) =
 export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
 
 // --- what most needs the player (the bottom line's right part; ✓ on the room does it) -----------------
+// A count in a sentence is spelled out (a, two to six); above what the picture holds the count is dropped, never digits, never "many".
+const COUNT_WORDS = ["", "a", "two", "three", "four", "five", "six"];
+const countWord = (n, max) => (n >= 1 && n <= max ? COUNT_WORDS[n] : "");
+const sentence = (...w) => w.filter(Boolean).join(" ");
 export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   const cs = bayCrates(st, sv);
-  if (docked(st) && cs.length) return { text: plural(cs.length, "crate") + " in the bay", act: "bay", label: "Open the bay · " + plural(cs.length, "crate") };
+  if (docked(st) && cs.length) return { text: sentence(countWord(cs.length, 3), cs.length === 1 ? "crate waits" : "crates wait", "in the bay"), act: "bay", label: "Open the bay" };
   if (budReady(st, settings)) return { text: "the bud is ready", act: "inc", label: "Open the incubator" };
   if (ui.meet != null && mibiById(st, ui.meet)) { const m = mibiById(st, ui.meet); return { text: "meet " + m.name, act: "meet", label: "Meet " + m.name }; }
   const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return { text: fresh.length === 1 ? "a new pod waits" : plural(fresh.length, "new pod") + " wait", act: "pods", label: "Look at the new pod" + (fresh.length > 1 ? "s" : "") };
+  if (fresh.length) return { text: sentence(countWord(fresh.length, 6), fresh.length === 1 ? "new pod waits" : "new pods wait"), act: "pods", label: "Look at the pods" };
   const glinting = st.tray.filter((p) => podGlints(st, p));
-  if (glinting.length) return { text: glinting.length === 1 ? "a pod glints" : plural(glinting.length, "pod") + " glint", act: "pods", label: "Look at the pods" };
-  if (st.waiting.length) return { text: plural(st.waiting.length, "pod") + " wait sealed · free a well", act: "pods", label: "Look at the pods" };
+  if (glinting.length) return { text: sentence(countWord(glinting.length, 6), glinting.length === 1 ? "pod glints" : "pods glint"), act: "pods", label: "Look at the pods" };
+  if (st.waiting.length) return { text: sentence(countWord(st.waiting.length, 6), st.waiting.length === 1 ? "pod waits" : "pods wait", "for a well"), act: "pods", label: "Look at the pods" };
   const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
-  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: aAn(spName(p)) + " pod could grow" + (canPay(st, c.e, 0, c.s) ? "" : " · " + shortText(st, c.e, 0, c.s).replace(" more", "")), act: "pods", label: "Look at the pods" }; }
+  if (grown.length && !bayFull(st, settings)) { const p = grown[0], c = growCost(st, {}, settings); return { text: canPay(st, c.e, 0, c.s) ? aAn(spName(p)) + " pod could grow" : "a pod grows with " + [st.e < c.e ? "⚡ " + (c.e - st.e) : "", st.s < c.s ? "❀ " + (c.s - st.s) : ""].filter(Boolean).join(" ") + " more", act: "pods", label: "Look at the pods" }; }
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
-    return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " · needs " + (cost - st.d) + " ◆" : ""), act: "pods", label: "Look at the pods" }; }
+    return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
   // an offered bond is not a need (the game designer, 2026-10-09): nothing turns amber for it
   if (st.bud) return { text: "a bud is growing", act: "inc", label: "Look at the incubator" };
   if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "open the Companion page", act: null };
