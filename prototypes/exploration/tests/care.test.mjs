@@ -213,12 +213,12 @@ test("partner: the lead if carried and grown; else the first grown carried; else
 });
 
 // ---- The expedition: outings, notches, the trip ----
-function ending(S, ex) {
+function ending(S, ex, reason = "home") {
   const t = vm.createContext({ console, S, G: { land: [] }, LAND_NAME: ["meadow"], TIER_NAME: ["", "starter"], BAY: 3, JUVENILE_TURNS: 2, ELDER_TURNS: 6,
-    exploredAny: () => true, reachCounts: () => ({ surveyed: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, dropPods: () => {},
+    reachCounts: () => ({ surveyed: 1, total: 9 }), walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, dropPods: () => {},
     worldTurn: () => { S.turn++; S.expN++; return ["The world turned."]; }, logEv: () => {}, CARE_TEXT: { notch: n => n + " gains a skill notch" }, transition: () => {}, save: () => {} });
-  const names = ["endExpedition", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
-  vm.runInContext(names.map(source).join("\n") + "\n;endExpedition('home');", Object.assign(t, { __ex: ex }));
+  const names = ["endExpedition", "exploredAny", "holdEmpty", "carriedMibis", "mibiById", "tripRecord", "tripsWith", "TRIP_KINDS"];
+  vm.runInContext(names.map(source).join("\n") + "\n;endExpedition(" + JSON.stringify(reason) + ");", Object.assign(t, { __ex: ex }));
 }
 test("an expedition: an outing to every carried mibi, notches to the bonded partner only, no care; the trip carries `carried`", () => {
   const ex = n => ({ n, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls: 1 }, stormCells: {}, entered: [0], met: [], moments: [], abUsed: true, tripPlaces: ["meadow"] });
@@ -236,6 +236,35 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
   const t = world(save()); const rec = t.tripRecord({ n: 3 }, S.carried); S.carried.push(9);
   assert.deepEqual(plain(rec.carried), [1, 2, 3], "a copy"); assert.deepEqual(plain(t.tripRecord({ n: 3 }).carried), []);
+});
+// ---- The notch rule (ruling 17:33): only on an expedition that explored something; a break keeps it ----
+const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], cargo: { e: 0, d: 0, s: 0, pods: [] }, stats: { calls }, stormCells: {}, entered: [0], met: [], moments: [],
+  abUsed: 1, pt: { id: 1 }, tripPlaces: ["meadow"] }, o);
+const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
+const NOTCH_LINE = "Dot gains a skill notch";
+test("notch: a bonded partner digs, makes no Call, Head home: notches unchanged, no notch line", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
+  S.exp = notchExp(0); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 1); assert.ok(S.report.waited, "nothing explored");
+  assert.ok(!S.report.lines.includes(NOTCH_LINE));
+});
+test("notch: a bonded partner digs, makes a Call, then the Probe breaks: +1 and the line", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
+  S.exp = notchExp(1); ending(S, S.exp, "break");
+  assert.equal(dot.notches, 2);
+  assert.ok(S.report.lines.includes(NOTCH_LINE));
+});
+test("notch: an unbonded partner makes a Call and digs: no notch", () => {
+  const S = notchSave(), dot = S.mibis[0];
+  S.exp = notchExp(1); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 0);
+  assert.ok(!S.report.lines.includes(NOTCH_LINE));
+});
+test("notch: already at 3 stays 3, no line", () => {
+  const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 3;
+  S.exp = notchExp(1); ending(S, S.exp, "home");
+  assert.equal(dot.notches, 3);
+  assert.ok(!S.report.lines.includes(NOTCH_LINE));
 });
 test("T5: a trip record without `carried` reads as [partner] on the Station; with it, every id", { skip: station("tripCarried") }, () => {
   assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: 2, places: [], storm: false }), [2]);

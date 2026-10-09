@@ -2269,7 +2269,7 @@ function endExpedition(reason) {
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
-      if (ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notchLines.push(CARE_TEXT.notch(w.name)); } } } }   // notches: the bonded partner only
+      if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notchLines.push(CARE_TEXT.notch(w.name)); } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: notchLines.slice(), explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
