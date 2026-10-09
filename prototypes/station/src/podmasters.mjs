@@ -23,9 +23,9 @@ export function podFromLayers(cls, pair, shellPattern, patterns, sealed) {
 
 // The figure beside the pod: the species' two slices, the mist one and the clear one, laid one over the other with the clear layer's alpha (chapters read ÷ chapters); no blur.
 // Until both slices are placed it is an empty picture.
-export function figureFromLayers(mistId, clearId, alpha) {
+export function figureFromLayers(mistId, clearId, alpha, [w, h]) {
   let cv = null;
-  const a = isFilled(mistId) ? assetOf(mistId) : null, w = a ? a.w : 1, h = a ? a.h : 1;
+  const a = isFilled(mistId) ? assetOf(mistId) : null;
   const make = () => {
     cv = document.createElement("canvas"); cv.width = w; cv.height = h; if (!a || !isFilled(clearId)) return cv;
     const m = pixels(mistId).data, c = pixels(clearId).data, out = new Uint8ClampedArray(m.length), t = Math.max(0, Math.min(1, alpha));

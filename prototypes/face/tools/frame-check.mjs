@@ -37,7 +37,7 @@ async function open(query) {
   page.on("pageerror", (e) => errors.push("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push("console: " + m.text()); });
   await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
   await page.goto(`http://127.0.0.1:${port}/sandbox/station/?${query}`, { waitUntil: "load" });
-  await page.evaluate(() => window.__st.ready); await page.evaluate(() => { window.__st.unlock(); window.__st.act("research"); }); await page.waitForTimeout(600);
+  await page.evaluate(() => window.__st.ready); await page.evaluate(() => { window.__st.unlock(); window.__st.act("research"); window.__st.podsGo(window.__st.ST.tray[0].id, "pod"); }); await page.waitForTimeout(600);   // Pods opens on the collection; this screen is the first pod's overview
   return page;
 }
 // the screen's pixels, as an RGB array, through the page's own capture
@@ -91,14 +91,15 @@ const ringRgb = rgbOf(C.ring), RG = frame.focus.ring, FT = frame.focus.feet;
 const ringCheck = async (what) => {
   const img = await shot(face, `l1-ring-${what}.png`, 200), nodes = await face.evaluate(() => window.__st.faceNodes()), tg = await face.evaluate(() => ({ cur: window.__st.UI.pods.focus.cur, targets: window.__st.targets() }));
   const target = tg.targets.find((x) => x.id === tg.cur), [tx, ty, tw, th] = target.rect, n = nodes.find((q) => q.id === "focus");
-  const Wf = pods.regions.well, want = what === "feet" ? [tx + Math.round(tw / 2) - Math.round((tw + FT.widen) / 2), ty + th - Math.round(FT.height / 2), tw + FT.widen, FT.height] : what === "circle" ? [tx + Wf.ring.centre[0] - Wf.focus.radius, ty + Wf.ring.centre[1] - Wf.focus.radius, 2 * Wf.focus.radius, 2 * Wf.focus.radius] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
-  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "feet" ? "box + 16 by 24 under its feet" : what === "circle" ? "well: the circle of radius " + Wf.focus.radius + " round its centre" : "±4 px"}: ${n && n.rect} (want ${want})`);
+  const kr = tw / 2 + RG.outside, want = what === "feet" ? [tx + Math.round(tw / 2) - Math.round((tw + FT.widen) / 2), ty + th - Math.round(FT.height / 2), tw + FT.widen, FT.height] : what === "circle" ? [tx + tw / 2 - kr, ty + th / 2 - kr, 2 * kr, 2 * kr] : [tx - RG.outside, ty - RG.outside, tw + 2 * RG.outside, th + 2 * RG.outside];
+  expect(n && JSON.stringify(n.rect) === JSON.stringify(want), `${what}: the ring's rectangle is the target's ${what === "feet" ? "box + 16 by 24 under its feet" : what === "circle" ? "kin: the circle of radius " + kr + " round its centre" : "±4 px"}: ${n && n.rect} (want ${want})`);
   const [x, y, w, h] = want, mask = what === "feet" || what === "circle" ? ringMask(w, h, RG.width, 0, "ellipse") : ringMask(w, h, RG.width, RG.radius); let on = 0, miss = 0, stray = 0;
   for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const c = eq(px(img, x + i, y + j), ringRgb); if (mask[j * w + i]) { on++; if (!c) miss++; } else if (c && (i < RG.width || j < RG.width || i >= w - RG.width || j >= h - RG.width)) stray++; }
   expect(on > 0 && miss === 0 && stray === 0, `${what}: the face drew the ring's ${on} pixels (${RG.width} px wide${what === "round" ? ", radius " + RG.radius : ""}) exactly: ${miss} missing, ${stray} stray`);
 };
 await ringCheck("feet");
-const tg = await face.evaluate(() => window.__st.targets()), well = tg.find((t) => /^list\.\d+$/.test(t.id)), round = tg.find((t) => t.id === "list.hatch");
+await face.evaluate(() => { const g = window.__st.ST, p = g.tray.find((q) => q.idd), q = JSON.parse(JSON.stringify(p)); q.id = "kin-check"; g.tray.push(q); window.__st.podsGo(p.id, "pod"); });   // a second pod of the species: the pod's kin
+const tg = await face.evaluate(() => window.__st.targets()), well = tg.find((t) => /^kin\.\d+$/.test(t.id)), round = tg.find((t) => t.id === "hatch");
 await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, well.id); await ringCheck("circle");
 await face.evaluate((id) => { window.__st.UI.pods.focus.cur = id; }, round.id); await ringCheck("round");
 await face.evaluate(() => { window.__st.UI.pods.focus.cur = "pod"; });
@@ -123,15 +124,16 @@ const A = await shot(face, "l1-tick.png", 60); expect(flash(A) > 10, `a changed 
 await face.waitForTimeout(Rg.materials.flashMs + 200); const A2 = await pixels(face); expect(flash(A2) === 0, `the tick is cleared after ${Rg.materials.flashMs} ms (${flash(A2)} px left)`);
 // The slanted rail (L1b): the Tuiki pod is identified, the ring goes up to the rail's first tab. The nodes follow frame.json's rail numbers;
 // the pixels the face drew are the nodes' (the slants, the hairlines, the ring's four sides), and nothing of the ring is above y 42.
-await face.evaluate(() => { const u = window.__st.UI, p = window.__st.ST.tray.find((q) => q.idd); u.pods.cur = p.id; u.pods.f = "pod"; window.__st.act("up"); });
+await face.evaluate(() => { const p = window.__st.ST.tray.find((q) => q.idd); window.__st.podsGo(p.id, "pod"); window.__st.act("up"); });
 const RL = frame.regions.rail, lean = (r) => Math.floor((RL.slant * (r + 0.5)) / RL.h);
 const T = await shot(face, "l1b-rail.png", 400), nodes = await face.evaluate(() => window.__st.faceNodes());
 const tabs = nodes.filter((n) => /^rail\.\d+$/.test(n.id)).sort((a, b) => a.id.localeCompare(b.id, "en", { numeric: true }));
 expect(tabs.length >= 1, "the rail has tabs"); 
 tabs.forEach((t, i) => { expect(t.rect[1] === 1 + RL.y && t.rect[3] === RL.h - 2, `tab ${i}: the body hangs from y ${RL.y}, ${RL.h} tall with its rim rows`); });
-let at = RL.pods.x; const tabX = []; for (let i = 0; i < tabs.length; i++) { const w = tabs.length <= RL.fullUpTo ? RL.full : tabs[i].rect[2] + RL.slant === RL.full ? RL.full : RL.compact; tabX.push([at, w]); at += w; }
+const widths = tabs.map((t) => (tabs.length <= RL.fullUpTo ? RL.full : t.rect[2] + RL.slant === RL.full ? RL.full : RL.compact)), run = widths.reduce((a, b) => a + b, 0) + RL.slant, x0c = Math.floor((RL.centred.on - run / 2) / RL.centred.snap) * RL.centred.snap;   // the rail is centred on x 512 and snapped to the grid
+let at = x0c; const tabX = []; for (let i = 0; i < tabs.length; i++) { tabX.push([at, widths[i]]); at += widths[i]; }
 tabs.forEach((t, i) => expect(t.rect[0] === tabX[i][0] + RL.slant && t.rect[2] === tabX[i][1] - RL.slant, `tab ${i} starts where the one before ends (x ${tabX[i][0]}, width ${tabX[i][1]})`));
-expect(at + RL.slant - RL.pods.x === (tabs.length <= RL.fullUpTo ? RL.full * tabs.length + RL.slant : RL.compact * (tabs.length - 1) + RL.full + RL.slant), "the run is the sum of the widths plus the slant");
+expect(at + RL.slant - x0c === (tabs.length <= RL.fullUpTo ? RL.full * tabs.length + RL.slant : RL.compact * tabs.length + RL.slant), "the run is the sum of the widths plus the slant (no tab is open on the overview, so seven or more are all compact)");
 // the pixels: each tab's two slants carry the hairline at the column the line gives, row by row; the body's middle is the fill; the top rule above is the bar's
 tabX.forEach(([x0, w], i) => {
   const rimN = nodes.find((q) => q.id === `rail.${i}.et`), rim = rgbOf(rimN.colour);
@@ -149,7 +151,8 @@ expect(bx === focusTab[0] - 4 && by === 42 && bw === focusTab[1] + 24 && bh === 
   for (let j = 0; j < m.h; j++) for (let i = 0; i < m.w; i++) if (m.mask[j * m.w + i]) { on++; if (!eq(px(T, bx + i, by + j), ringRgbT)) miss++; }
   expect(on > 200 && miss === 0, `the face drew the tab ring's ${on} pixels exactly (${miss} missing)`); }
 for (let i = bx; i < bx + bw; i++) for (const j of [40, 41]) if (eq(px(T, i, j), ringRgbT)) expect(false, "no ring pixel above y 42");
-expect(eq(px(T, bx + 40, 42), ringRgbT) && eq(px(T, bx + 40, 43), ringRgbT) && !eq(px(T, bx + 40, 44), ringRgbT), "the top run is 2 px at y 42");
+{ const m = tabRingMask(focusTab[1], { tab: frame.focus.ring.tab, width: frame.focus.ring.width }), cols = Array.from({ length: m.w }, (_, i) => i).filter((i) => m.mask[2 * m.w + i] === 0 && m.mask[m.w + i] && m.mask[i]);   // the top run's columns: rows 42 and 43 in the ring, 44 not (an emblem may stand under it in the same cream)
+  expect(cols.length > 8 && cols.every((i) => eq(px(T, bx + i, 42), ringRgbT) && eq(px(T, bx + i, 43), ringRgbT)) && cols.some((i) => !eq(px(T, bx + i, 44), ringRgbT)), "the top run is 2 px at y 42"); }
 await shot(face, "l1b-rail-ring-on-tab.png", 50);
 expect(errors.length === 0, "no page errors: " + errors.join(" | "));
 await browser.close(); server.close();

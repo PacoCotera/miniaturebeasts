@@ -108,7 +108,7 @@ export function registerPictures(reqs, env) {
       case "seal": put(r.id, r.size, r.size, "the chapter seals' master", () => sealPB(r.size)); break;
       case "grow": put(r.id, 16, 16, "the can-grow mark's master", growPB); break;
       case "waiting": put(r.id, 24, 24, "the waiting mark's master", waitingPB); break;
-      case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha), { policy: "painted" }); break;
+      case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha, r.size), { policy: "painted" }); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
         const m = assetEntry(r.master), e = assetEntry(r.id);
         if (m && m.status === "master" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile }, assetOf(r.master)); }

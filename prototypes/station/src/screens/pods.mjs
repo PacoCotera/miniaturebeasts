@@ -53,7 +53,7 @@ function ensure() {
 const resolve = (sel) => {
   const p = P();
   if (sel === "rail.last" || sel === "rail.open") { const n = chaptersOf(cur()).length; return n ? "rail." + clamp(p.ci || 0, 0, n - 1) : null; }
-  if (sel === "kin.first") return last.kin?.length ? "kin.0" : null;
+  if (sel === "kin.first") return last.kin?.length ? "kin.0" : "hatch";   // a pod with no kin has the hatch as its only way on
   return null;
 };
 // Going to a state puts the focus where the spec's graph says it starts, or on a named target.

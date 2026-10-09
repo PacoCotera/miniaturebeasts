@@ -28,7 +28,7 @@ export function chapterPage(ctx, id, region, props) {
     nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1], Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
     for (const [k, extra] of (props.heading.extra || []).entries()) nodes.push({ id: `${id}.hx${k}`, kind: "sprite", rect: [px + H[0] + 32 + Math.round(ctx.measure(props.heading.word, 20, 500)) + 12 + extra.dx, py + H[1] + (extra.dy || 0), extra.w, extra.h], asset: extra.asset });
   }
-  if (props.sealedFind && region.sealedFind) { const [fx, fy, fw, fh] = region.sealedFind; nodes.push({ id: id + ".find", kind: "sprite", rect: [px + fx, py + fy, fw, fh], asset: props.sealedFind, region: props.cellRegion ?? null }); return { nodes, cells: [], picture: null, overflow: false }; }   // a shut chapter: the one picture of the find that opens it, no cells, no names
+  if (props.sealedFind && region.sealedFind) { const [fx, fy, fw, fh] = region.sealedFind; nodes.push({ id: id + ".find", kind: "sprite", rect: [px + fx, py + fy, fw, fh], asset: props.sealedFind, region: "page.seal" }); return { nodes, cells: [], picture: null, overflow: false }; }   // a shut chapter: the one picture of the find that opens it, no cells, no names
   const grid = pageGrid(region, props.cells.length);
   grid.cells.forEach((cell, i) => {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
