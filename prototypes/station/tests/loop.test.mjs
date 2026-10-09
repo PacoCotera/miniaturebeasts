@@ -50,7 +50,7 @@ test("the second founder: 2 Energy and 4 Essence; a bud of twenty minutes; both 
 
 test("the welcome sitting comes at the first dock where a mibi comes home from a walk: the founder goes out with you, the dock records its habit and place, and the sitting is begun at once", () => {
   assert.ok(J.welcome && J.welcome.ok, "the welcome came at that dock"); assert.equal(J.held.source, "welcome"); assert.ok(st.welcomeGiven);
-  assert.equal(a.outings, 1 + by(/^a walk .* with /).length - 1 + 0 || a.outings); assert.ok(T.habitsOf(a).length >= 1 && S.frameFor(a).habits.includes(T.habitsOf(a)[0]), "a habit from the frame's list was recorded at the dock");
+  assert.ok(by(/^a walk .* with /).length >= 1); assert.equal(a.outings, by(/^a walk .* with /).length, "one outing for every walk with you"); assert.ok(T.habitsOf(a).length >= 1 && S.frameFor(a).habits.includes(T.habitsOf(a)[0]), "a habit from the frame's list was recorded at the dock");
   assert.ok(S.placesOf(a).includes("wood"), "the place it entered with you");
   const walks = by(/^a walk \(S01\)( with)?/), firstWith = walks.findIndex((s) => / with /.test(s.name)); assert.ok(firstWith > 0, "the founder's first walk is after it opened");
   assert.equal(P.marks.welcome, steps.find((s) => /^the welcome sitting/.test(s.name)).t, "the welcome step is that walk's");
@@ -69,7 +69,8 @@ test("the child is known only where its switch parents matched; reading the rest
   const reads = by(/^read /).filter((s) => s.name.endsWith(" on " + child.name));
   assert.equal(reads.length, J.chapters.length - known.length, "a read for every chapter the child was not sure of");
   assert.ok(S.mibiFullyRead(child, P.settings), "after the reads the child is fully read");
-  for (const s of reads) assert.ok(s.d <= 0 && s.d >= -4);
+  assert.ok(reads.length > 0, "the child had chapters left to read");
+  for (const s of reads) { const ch = S.frameFor(child).chapters.find((c) => s.name === "read " + c.id + " on " + child.name); assert.ok(ch, s.name); assert.equal(s.d, -Math.ceil(ch.traits.length / 2) * S.PRICE.readTrait, "a chapter already read on a pod of the species is half price, rounded up"); }
 });
 
 test("the sitting's wait overlaps the rest of the journey: it started at the welcome, and only what was left of it was waited for; the crate opens to the mibi", () => {

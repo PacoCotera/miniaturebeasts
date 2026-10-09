@@ -9,8 +9,8 @@
 //   st.sittingCrates  the crates of sittings begun: { id, mibiId, pose, place, start, source, painted, opened }
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
-import { frameOf } from "./genome.mjs";
-import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, dockKey, DEFAULT_SETTINGS } from "./state.mjs";
+import { frameOf, chapterLooks } from "./genome.mjs";
+import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -46,13 +46,20 @@ export function lineDepth(st, m, seen = new Set()) {
   if (!m || !m.parents || seen.has(m.id)) return 0; seen.add(m.id);
   return 1 + Math.max(0, ...m.parents.map((p) => lineDepth(st, mibiById(st, p.id), new Set(seen))));
 }
+// A line is named by its founders (the mibis at the roots of the recorded tree): siblings, and every later child of the same line, share it, so a line pays once however deep it goes.
+export function lineFounders(st, m, seen = new Set()) {
+  if (!m || seen.has(m.id)) return [];
+  if (!m.parents || !m.parents.length) return [m.id];
+  seen.add(m.id); return [...new Set(m.parents.flatMap((p) => lineFounders(st, mibiById(st, p.id) || { id: p.id }, new Set(seen))))];
+}
+export const lineKey = (st, m) => "line:" + lineFounders(st, m).sort((x, y) => x - y).join("+");
 export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   const out = [];
   for (const id of st.knownIds) {
     for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: "sealed:" + id + ":" + chId, kind: "sealed", species: id, chapter: chId }); }
     const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: "guide:" + id, kind: "guide", species: id });
   }
-  for (const m of st.mibis) if (lineDepth(st, m) >= DEEP_LINE) out.push({ key: "line:" + m.id, kind: "line", mibi: m.id });
+  for (const m of st.mibis) { const k = lineKey(st, m); if (lineDepth(st, m) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
   return out;
 }
 // Pay every moment not yet paid, in order; returns what happened to each.
@@ -67,19 +74,36 @@ export function sittingWarning(st, settings = DEFAULT_SETTINGS) {
   if (!st.sitting) return [];
   return st.knownIds.filter((id) => !st.moments["guide:" + id] && fieldGuide(st, id, settings)?.oneFromFull);
 }
-export function readWarning(st, species, chapterId) {
-  if (!st.sitting) return "";
-  const ch = frameOf(species)?.chapters.find((c) => c.id === chapterId);
-  return ch && ch.sealed && !st.moments["sealed:" + species + ":" + chapterId] && !(st.readOnce[species] || []).includes(chapterId) ? WARNING : "";
+// The moments an act would earn that are not yet paid (the keys). The warning comes when the act would lose one: any, while a sitting is held, or the second of two earned at once
+// (the slot holds one, so the second is spent). `act` changes a copy of the save the way the act would.
+const unpaid = (st, settings) => momentsEarned(st, settings).map((m) => m.key).filter((k) => !st.moments[k]);
+export function momentsOf(st, act, settings = DEFAULT_SETTINGS, species = null) {
+  const base = structuredClone(st); if (species && !base.knownIds.includes(species)) base.knownIds.push(species);   // an act on a pod or mibi is on a known species
+  const after = structuredClone(base); act(after); const before = new Set(unpaid(base, settings));
+  return unpaid(after, settings).filter((k) => !before.has(k));
 }
-export function crossWarning(st, a, b) {
-  if (!st.sitting || !a || !b) return "";
-  return 1 + Math.max(lineDepth(st, a), lineDepth(st, b)) >= DEEP_LINE ? WARNING : "";
+const losesOne = (st, n) => (st.sitting ? n >= 1 : n >= 2);
+// A read of `chapterId` on `x` (a pod or a mibi): counts the moments it would earn: the sealed chapter's first read and the guide it may fill.
+export function readWarning(st, species, chapterId, x = null, settings = DEFAULT_SETTINGS) {
+  const fr = frameOf(species), ch = fr && fr.chapters.find((c) => c.id === chapterId); if (!ch) return "";
+  const n = momentsOf(st, (c) => {
+    const once = c.readOnce[species] || (c.readOnce[species] = []); if (!once.includes(chapterId)) once.push(chapterId);
+    if (x && x.genome) for (const [t, ls] of chapterLooks(fr, ch, x.genome)) guideAdd(c, species, t, ls);
+  }, settings, species).length;
+  return losesOne(st, n) ? WARNING : "";
+}
+// A cross whose child would complete a deep line: one moment, lost if a sitting is held.
+export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
+  if (!a || !b) return "";
+  const child = { id: -1, parents: [{ id: a.id }, { id: b.id }] }, snap = structuredClone(st); snap.mibis.push(child);
+  const n = lineDepth(snap, child) >= DEEP_LINE && !st.moments[lineKey(snap, child)] ? 1 : 0;
+  return losesOne(st, n) ? WARNING : "";
 }
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
 export function portraitBlock(st, m) {
   if (!m) return "pick a mibi";
+  if (m.released) return m.name + " has gone";
   if (m.portrait) return "one sitting each, ever";
   if (!habitsOf(m).length || !placesOf(m).length) return m.name + " needs a walk first";
   return "";
@@ -135,8 +159,8 @@ export const portraitLanded = (c, settings = DEFAULT_SETTINGS) => !!c.painted ||
 export function crateState(c, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (c.opened) return "opened";
   if (crateWaitFraction(c, settings, now) < 1) return "filling";
-  if (!reachable(settings)) return "waiting for the cloud";
-  return portraitLanded(c, settings) ? "ready" : "painting";
+  if (portraitLanded(c, settings)) return "ready";   // a painted portrait is never locked behind the cloud
+  return reachable(settings) ? "painting" : "waiting for the cloud";
 }
 export const crateLamp = (c, settings = DEFAULT_SETTINGS, now = Date.now()) => (crateState(c, settings, now) === "ready" ? 1 : Math.min(crateWaitFraction(c, settings, now), LAMP_SHORT));
 export function landPortrait(st, crateId) { const c = st.sittingCrates.find((x) => x.id === crateId); if (!c || c.opened) return { ok: false }; if (c.painted) return { ok: false, again: true }; c.painted = true; return { ok: true }; }

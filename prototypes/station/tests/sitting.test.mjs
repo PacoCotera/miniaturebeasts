@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf, frameIds } from "../src/genome.mjs";
+import { setFrames, frameOf, frameIds, chapterLooks } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import * as T from "../src/sitting.mjs";
@@ -171,4 +171,40 @@ test("a portrayed mibi may be returned to the wild; its portrait stays in the bo
 test("an older save loads: the sitting's fields default; a mibi has no habits, no walks and no portrait yet", () => {
   const st = { ...S.freshSt("w1", 3, T0) }; delete st.sittingCrates; delete st.face; delete st.moments; st.mibis = [{ id: 1, name: "Old", sp: 0, species: "S01", from: { g: "meadow" } }];
   S.normalize(st); assert.deepEqual([st.sittingCrates, st.face, st.moments], [[], {}, {}]); assert.deepEqual([st.mibis[0].habits, st.mibis[0].walked, st.mibis[0].portrait], [[], [], null]);
+});
+
+test("a deep line pays once: siblings at depth four, and every later child of the line, earn one moment between them", () => {
+  const st = world(1), mk = (id, parents) => ({ id, name: "m" + id, species: "S01", parents, genome: {}, read: [] });
+  st.mibis.push(mk(201, null), mk(202, null));   // the two founders of the line
+  let prev = [{ id: 201 }, { id: 202 }]; const gens = [];
+  for (let g = 1; g <= T.DEEP_LINE - 1; g++) { const m = mk(210 + g, prev); st.mibis.push(m); gens.push(m); prev = [{ id: m.id }, { id: 202 }]; }
+  const sib1 = mk(230, prev), sib2 = mk(231, prev); st.mibis.push(sib1, sib2);
+  assert.equal(T.lineDepth(st, sib1), T.DEEP_LINE); assert.equal(T.lineKey(st, sib1), T.lineKey(st, sib2), "siblings share the line");
+  assert.equal(T.momentsEarned(st, settings).filter((m) => m.kind === "line").length, 1, "one moment between the siblings");
+  assert.equal(T.collectMoments(st, settings, T0).filter((r) => r.kind === "line" && r.ok).length, 1); st.sitting = null;
+  const later = mk(240, [{ id: 230 }, { id: 202 }]); st.mibis.push(later); assert.equal(T.lineDepth(st, later), T.DEEP_LINE + 1);
+  assert.deepEqual(T.collectMoments(st, settings, T0 + 1), [], "a later, deeper child of the same line earns nothing more");
+  const other = mk(250, null), other2 = mk(251, null); st.mibis.push(other, other2); let p2 = [{ id: 250 }, { id: 251 }];
+  for (let g = 0; g < T.DEEP_LINE; g++) { const m = mk(260 + g, p2); st.mibis.push(m); p2 = [{ id: m.id }, { id: 251 }]; }
+  assert.equal(T.collectMoments(st, settings, T0 + 2).filter((r) => r.kind === "line" && r.ok).length, 1, "another line, its own moment");
+});
+
+test("an act that would earn two moments at once warns first, held or not: S02's sealed read that also fills the guide", () => {
+  const id = "S02", fr = frameOf(id), sealed = fr.chapters.find((c) => c.sealed), st = S.freshSt("w1", 3, T0); S.normalize(st);
+  const x = S.seedAdults(st, id, 11, 1, settings).mibis[0]; st.sitting = null; st.moments = {};
+  for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, id, t.id, L.possibleLooks(fr, t));
+  for (const [t, ls] of chapterLooks(fr, sealed, x.genome)) st.guide[id][t] = st.guide[id][t].filter((l) => !ls.includes(l));
+  assert.ok(!L.fieldGuide(st, id, settings).complete, "the guide lacks what the sealed chapter shows");
+  assert.equal(T.readWarning(st, id, sealed.id, x, settings), T.WARNING, "no sitting held: the sealed read and the guide would both pay, and the slot holds one");
+  st.sitting = { source: "dev", key: null, at: T0 }; assert.equal(T.readWarning(st, id, sealed.id, x, settings), T.WARNING, "held: both would be lost");
+  st.readOnce[id] = [sealed.id]; st.sitting = null; assert.equal(T.readWarning(st, id, sealed.id, x, settings), "", "already read: nothing to pay");
+  const lone = S.freshSt("w1", 3, T0); S.normalize(lone); assert.equal(T.readWarning(lone, id, sealed.id, x, settings), "", "a lone sealed read with nothing held: one moment, no loss");
+});
+
+test("a painted portrait is never 'waiting for the cloud', and a released mibi cannot sit", () => {
+  const st = world(1), m = walked(st, st.mibis[0]); T.devGrantSitting(st, T0); const c = T.beginSitting(st, m, "calm", "wood", { ...settings, paintPortraits: true }, T0).crate;
+  const offline = { ...settings, paintPortraits: true, caddyReachable: false };
+  assert.equal(T.crateState(c, offline, T0 + 3 * H), "waiting for the cloud", "not painted, Caddy unreachable");
+  T.landPortrait(st, c.id); assert.equal(T.crateState(c, offline, T0 + 3 * H), "ready", "painted: the Caddy no longer matters"); assert.equal(T.crateLamp(c, offline, T0 + 3 * H), 1);
+  const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.match(T.portraitBlock(g, r), /gone/); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
 });
