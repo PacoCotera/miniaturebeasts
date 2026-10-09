@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>The Vivarium, one mibi up close: the mibi in the window, its card, the four modules, the bays, the frame. 1024×600 at 1×, regions only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="16.5" y="48.5" width="559" height="423" fill="#f1f1ee" stroke="#444" stroke-width="1"/>
+<text x="572" y="55" font-size="7" fill="#777" text-anchor="end">bezel 16,48 560×424 · glass 24,56 544×408</text>
+<rect x="24.5" y="56.5" width="543" height="407" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<line x1="24" y1="304.5" x2="568" y2="304.5" stroke="#e0b880" stroke-dasharray="4 3"/>
+<rect x="144.5" y="80.5" width="303" height="311" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="150" y="94" font-size="9" fill="#7d3a10">the mibi 304×312 · 144,80 · feet 392</text>
+<ellipse cx="296" cy="392" rx="160" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<text x="152" y="112" font-size="10" fill="#2b6cb0">One mibi up close: the Vivarium, level 2.</text>
+<text x="152" y="125" font-size="10" fill="#2b6cb0">Greet: ✓ on the mibi (its species moment).</text>
+<text x="152" y="138" font-size="10" fill="#2b6cb0">Rename: ✓ on the name tag (the namer over</text>
+<text x="152" y="151" font-size="10" fill="#2b6cb0">the right column, 592,48 416×424).</text>
+<text x="152" y="164" font-size="10" fill="#2b6cb0">Reads: the mibi, its name, the card,</text>
+<text x="152" y="177" font-size="10" fill="#2b6cb0">the modules, the bays, the stamp.</text>
+<text x="152" y="190" font-size="10" fill="#2b6cb0">← Vivarium: the whole, ring on this mibi.</text>
+<rect x="184.5" y="416.5" width="223" height="31" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="256.5" y="416.5" width="79" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<text x="296" y="437" font-size="16" fill="#f1ebdf" text-anchor="middle" font-weight="500">Burr</text>
+<text x="30" y="444" font-size="8" fill="#777">name tag slot 184,416 224×32</text>
+<rect x="592.5" y="48.5" width="415" height="207" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<rect x="608.5" y="64.5" width="215" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="612" y="81" font-size="13" fill="#222">your Loika, adult</text>
+<rect x="832.5" y="64.5" width="23" height="23" fill="#f4c7c3" stroke="#a33" stroke-width="1"/>
+<rect x="608.5" y="88.5" width="247" height="71" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="612" y="105" font-size="12" fill="#6b6880">from the rock field</text>
+<text x="612" y="129" font-size="12" fill="#6b6880">remembers the pond edge</text>
+<rect x="608.5" y="160.5" width="151" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="612" y="177" font-size="13" fill="#222">3MB W21 1BB</text>
+<rect x="768.5" y="160.5" width="87" height="23" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="832.5" y="164.5" width="7" height="15" fill="#5d6470" stroke="#444" stroke-width="1"/>
+<rect x="816.5" y="164.5" width="7" height="15" fill="#5d6470" stroke="#444" stroke-width="1"/>
+<text x="772" y="196" font-size="7" fill="#777">skill notches 768,160 88×24</text>
+<rect x="872.5" y="64.5" width="119" height="119" fill="#fbf8f1" stroke="#444" stroke-width="1"/>
+<text x="932" y="124" font-size="9" fill="#444" text-anchor="middle">stamp 120</text>
+<rect x="608.5" y="200.5" width="39" height="39" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="656.5" y="200.5" width="39" height="39" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="704.5" y="200.5" width="39" height="39" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="752.5" y="200.5" width="39" height="39" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<text x="800" y="224" font-size="8" fill="#777">plates 40×40, 48 pitch</text>
+<text x="1004" y="252" font-size="7" fill="#777" text-anchor="end">card 592,48 416×208 · heart 832,64 24×24</text>
+<rect x="592.5" y="272.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="608" y="300" font-size="14" fill="#5d6470">Companion</text>
+<rect x="616.5" y="324.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="648.5" y="312.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="704.5" y="312.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="760.5" y="312.5" width="47" height="47" fill="#e3e3e0" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="872.5" y="272.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="888" y="300" font-size="14" fill="#5d6470">Portrait</text>
+<text x="888" y="358" font-size="9" fill="#777">→ the Sitting</text>
+<rect x="592.5" y="376.5" width="271" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="608" y="404" font-size="14" fill="#5d6470">Cross</text>
+<text x="608" y="462" font-size="9" fill="#777">a face a partner → Cross</text>
+<rect x="872.5" y="376.5" width="135" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="888" y="404" font-size="14" fill="#5d6470">Wild</text>
+<text x="888" y="462" font-size="9" fill="#777">the gate, ✓ ✓</text>
+<rect x="16.5" y="488.5" width="991" height="63" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<rect x="32.5" y="496.5" width="151" height="47" fill="#d9dde3" stroke="#555" stroke-width="1"/>
+<rect x="84.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="192.5" y="496.5" width="151" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="244.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="352.5" y="496.5" width="151" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="404.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="512.5" y="496.5" width="151" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="564.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="672.5" y="496.5" width="151" height="47" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="832.5" y="496.5" width="151" height="47" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="485" font-size="7" fill="#777" text-anchor="end">strip of bays 16,488 992×64 · 152×48 tiles on a 160 pitch · one a bay, at most twelve</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Vivarium</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Greet Burr</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">an adult Loika</text>
+<circle cx="930" cy="582" r="8" fill="#5d5974"/>
+<text x="930" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Vivarium</text>
+</svg>

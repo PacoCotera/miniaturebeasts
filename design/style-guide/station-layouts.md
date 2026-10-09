@@ -16,6 +16,129 @@ Pods comes first because it sets the pattern the other screens follow.
 
 ---
 
+## Home, the sections and the Vivarium: the structure for review
+
+This section is the Station's structure, for review before the detailed specs: which screens exist, their levels from the whole down to one item, and how the keys move between them. Its wireframes are regions only (rectangles, purpose, focus targets) in palette stand-ins, with no art. Where it and a screen's section below disagree on structure, this section holds; the screens' measurements below hold until each detailed spec replaces them.
+
+**What the Station is, on screen.** The Station is the device, and its screen is the device's own face. At rest it shows the Vivarium, the place where the mibis live, in a big panel, with the device's sections down the right. A section opened takes the whole stage, and comes closer level by level, from the whole to one item. ← goes one level out, and from a section's whole it goes Home. Left alone, the Vivarium fills the whole screen.
+
+### The screen map
+
+<img src="station-layouts/15-vivarium-map.png" width="1024" alt="The Station's screen map: Home, the sections and the Vivarium's levels">
+
+*15. The screen map: Home, each section and its levels, Idle, the Incubator between research and the Vivarium, the jumps, and what each key does. 1×, structure only ([SVG](station-layouts/15-vivarium-map.svg)).*
+
+| Screen | Level | What it is for | ✓ goes to | ← goes to (the way back's word) |
+| --- | --- | --- | --- | --- |
+| **Home** | the hub | The Vivarium alive in its panel, and the device's sections and what needs you | a resident: one mibi up close; the panel: the Vivarium's whole; a module: that section's whole; the room: what needs you | nothing (no ← cap) |
+| **Idle** | (a state over any screen) | The Vivarium full screen, all day, with no frame | the first press only wakes | — |
+| **Vivarium** | the whole | Every mibi at home, at its size, in one full-width window; the bays along the foot | a resident or a bay tile: that mibi up close | Home ("Home"), the ring on the panel |
+| Vivarium | one mibi up close | One mibi: greet it, rename it, read its card (the heart, the skill notches, its chapters), take it along or leave it, its portrait, a cross, the wild | the namer (an overlay); the Sitting; Cross; the meet's first ✓ names it | the whole ("Vivarium"), the ring on this mibi |
+| Sitting | under one mibi | Spend a held sitting: pose, place, look and confirm | a step on | a step back; from the pose, the mibi ("{name}") |
+| Cross | under one mibi | Two adults of one species: the splice | Cross them, a jump to the Incubator | the mibi ("{name}") |
+| **Cargo** | the whole | The dock's cargo: the crates in the bay, sealed, at most three | Open the bay: the crates open one by one | Home ("Home"), the ring on the Cargo module |
+| Cargo | one crate | One crate opening: its pods to the rack, what was gathered, how far the land is explored; then the report card | input held while it plays; the report closes on any press | back to the bay, empty |
+| **Pods** | the collection, a pod's overview, one chapter (with Compare and Create) | As built ([Pods](#pods-collection-pod-overview-chapter-page)) | one level closer | "Home", "Pods", "{pod}" |
+| **Incubator** | one level (it holds one bud) | The bridge between the research and the Vivarium: the bud grows from research and hatches into the Vivarium | Open: the hatch, then a jump to the new mibi up close, in the meet | Home ("Home") |
+| **Probe** (the bench) | one level (it holds one Probe) | Mend and switch the Probe | as built | Home ("Home") |
+| **Library** | the spread, a species' Book (face and guide spreads) | As built | one level closer; Visit {name}: a jump to that mibi up close | "Home", "Library" |
+
+- **"{name}" and "{pod}"** are the mibi's and the pod's own names, as the way back already names a pod. A name wider than the way back's word room (68 px) reads "Back".
+- **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium".
+- **The Incubator as the bridge.** Research leads in (Create, Cross, an empty Incubator's pod), and the Vivarium leads out (the hatch ends in the meet, one mibi up close). It is reached from Home's column and by those jumps, and its title keeps the Research mark.
+- **The dock's cargo moment is Cargo.** The Caddy's Dock is never a Station key. Docking brings the crates into the bay: Home's Cargo module lights amber, the notice names the crates, and ✓ on the room or the module opens Cargo. The moment itself keeps its name, the arrival: the ribbon, the beam and the report card of [Dock and arrival](#dock-and-arrival) move from Home's panel into Cargo's whole stage. The crates' pods land in the rack, so Pods' collection shows them after.
+
+### The frame on every screen
+
+- **The top bar and the bottom line stay on every screen but Idle:** Home, each section's whole and every level under it. "Takes the whole screen" means the whole stage (0, 40, 1024, 522): Home's column and panel go, the frame stays. The device is driven by its keys alone, and the bottom line is the only place that says what ✓ and ← do; the top bar is the only place the materials, the Companion and the world turn show. Idle alone drops both, as it does now.
+- **The title names the section, never the item:** Home, Vivarium, Cargo, Pods, Incubator, Probe, Library; Create, Cross and Sitting keep their own. One mibi up close is titled Vivarium; its name is on its tag.
+- **The title's mark is the key that leads there:** Home's for Home and Cargo; Research's for Pods, Create, the Incubator and the Probe; the Library's for the Library and the Book; the Vivarium's for the Vivarium, one mibi up close, Cross and the Sitting.
+- **The top bar's Companion zone** holds the carried set: the glyph and its lamp, then three face places in carried order, at (760, 8, 120, 24).
+- **The way back is 88 px wide**, at (920, 570, 88, 24), right-aligned to x 1008, and the notice ends 24 px before it, at (624, 570, 272, 24), right-aligned to x 896. The ← cap's x is 1008 − the word's width − 20: 922 for Vivarium (66 px), 943 for Home (45 px). The longest notice, "dock the Companion for its crates", is 255 px, 271 with its lamp, inside the 272.
+
+**The column and the keys.** Home's column is the device's sections, one module each: every section that is not the Vivarium is reached from it in one press. The device keys are shortcuts to a section's whole from anywhere, and each key's section has its module: Research opens Pods, the Library key the Library, the Vivarium key the Vivarium's whole, and the Home key Home with the ring on the room. Cargo, the Incubator and the Probe have no key: Home's column is their way in. The Habitat key is the Vivarium key.
+
+### Home
+
+<img src="station-layouts/15a-home.png" width="1024" alt="Home: the vivarium panel and the section column">
+
+*15a. Home: the vivarium panel with the residents and the with-you bed, the five section modules down the right, the ring on a resident. 1×, regions only ([SVG](station-layouts/15a-home.svg)).*
+
+| Region | Rectangle | For | Focus target |
+| --- | --- | --- | --- |
+| Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a round ring 4 px outside the bezel (12, 44, 664, 512); ▲ from the topmost resident; `✓ Open the vivarium` |
+| Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`, to that mibi up close |
+| With-you bed | 448, 472, 192, 56 | The carried set: one to three asleep when docked, the Companion mark when away | each sleeper is a `resident` target, without the lift |
+| Name tag | under the focused resident | Which mibi this is | — |
+| Rest knob | 624, 544, 32, 8 | Put the Station on Idle | `knob`; `✓ Rest` |
+| Cargo module | 688, 48, 320, 88 | The crates in the bay; amber while they wait | `cargo`; `✓ Open the bay` |
+| Pods module | 688, 152, 320, 88 | The rack's six wells, the glints | `pods`; ✓ to Pods' collection |
+| Incubator module | 688, 256, 320, 88 | The dome and its leaves | `incubator`; ✓ to the Incubator |
+| Probe module | 688, 360, 320, 88 | The Probe, its Shield plates, the sitting slot | `probe`; ✓ to the Probe bench |
+| Library module | 688, 464, 320, 88 | The field journal; a glint for a new page | `library`; ✓ to the Library's spread |
+
+Each module is one engraved word at (16, 12), its 12×12 lamp at (296, 12) and its objects in (112, 8, 176, 72); the objects' sizes are set in the detailed spec. The pad: ◀ ▶ cross between the residents and the column; ▲ ▼ walk the column in the order Cargo, Pods, Incubator, Probe, Library, then the rest knob.
+
+### The Vivarium: the whole
+
+<img src="station-layouts/15b-vivarium.png" width="1024" alt="The Vivarium's whole: every mibi at home, the bays along the foot">
+
+*15b. The Vivarium's whole: the window edge to edge, the residents, the with-you bed, twelve bays along the foot, the ring on a resident. 1×, regions only ([SVG](station-layouts/15b-vivarium.svg)).*
+
+| Region | Rectangle | For | Focus target |
+| --- | --- | --- | --- |
+| Living window | 0, 40, 1024, 440, edge to edge, no bezel; ground band 0, 296, 1024, 176 | The whole Vivarium, the same painting Idle shows | — |
+| Residents | at their size, walking inside 16, 296, 992, 176 | Every mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`; ▼ to its bay tile |
+| With-you bed | 792, 416, 192, 56 | The carried set asleep, or the Companion mark | sleepers are `resident` targets |
+| Name tag | under the focused resident | Which mibi this is | — |
+| Strip of bays | 16, 488, 992, 64; tiles from 32, 496 | Every bay, at most twelve: each mibi, the free bays, the mibis out with the Companion (the outline glyph) | `tile.<id>`: ◀ ▶ along, ▲ to its resident; ✓ to that mibi up close |
+
+Nothing else is on the stage: no card, no modules, no words in the window but the focused name. The way back reads "Home".
+
+### The Vivarium: one mibi up close
+
+<img src="station-layouts/15c-vivarium-mibi.png" width="1024" alt="One mibi up close: the mibi, its card, the four modules, the bays">
+
+*15c. One mibi up close: the mibi greeted from the window, the name tag that renames it, the card with the heart and two skill notches, the Companion's three places, Portrait, Cross and Wild, the bays. 1×, regions only ([SVG](station-layouts/15c-vivarium-mibi.svg)).*
+
+| Region | Rectangle | For | Focus target |
+| --- | --- | --- | --- |
+| Bezel, glass | 16, 48, 560, 424; 24, 56, 544, 408 | The mibi at home, in the Vivarium's light | — |
+| The mibi | 144, 80, 304, 312 | The one this level is about | `resident`: the feet ring; `✓ Greet Burr` (its species moment) |
+| Name tag | in 184, 416, 224, 32 | Its name | `name`: `✓ Rename Burr`, the namer over the right column (592, 48, 416, 424) |
+| Card | 592, 48, 416, 208 | Who it is: species line, heart, story, code, skill notches, stamp, chapter plates | `species` (`✓ Open the guide`), `plate.<i>` |
+| Heart | 832, 64, 24, 24 | Bonded: drawn; unbonded: nothing | — |
+| Skill notches | 768, 160, 88, 24 | Filled notches only, one to three, right-aligned to x 856; nothing at none; never a figure | — |
+| Companion module | 592, 272, 272, 96 | The carried set: three places, Take and Leave | `door` |
+| Portrait module | 872, 272, 136, 96 | A held sitting: the way into the Sitting | `portrait` |
+| Cross module | 592, 376, 272, 96 | A face a partner: the way into Cross | `cross` |
+| Wild module | 872, 376, 136, 96 | Return it to the wild, arm then confirm | `wild` |
+| Strip of bays | 16, 488, 992, 64 | The other mibis; walking it changes the mibi shown | `tile.<id>` |
+
+The way back reads "Vivarium" and lands on the whole with the ring on this mibi (its tile when it is out with the Companion).
+
+### What carries over, and what changes
+
+| Part | Carries over unchanged | Changes |
+| --- | --- | --- |
+| **The namer** ([The namer](#the-namer), `namer.json`) | The overlay over the right column (592, 48, 416, 424), its keys, its states and its limit | Opened from one mibi up close; "Habitat" in its words reads the Vivarium |
+| **The Sitting** ([Sitting](#sitting), `sitting.json`) | Its three steps, its regions, its gilt frame and its events | Its parent is one mibi up close; from the pose step ← reads the mibi's name ("← Burr"), else "Back" |
+| **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Leave against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed: the Companion was full", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | Greet replaces Spend time; the Bond module is gone; the skill notches join the card |
+| **The top bar** | Its zones, rules and marks; the Companion zone at (760, 8, 120, 24) with three face places | The title and mark "Vivarium" replace "Habitat" |
+| **The bottom line** | Its four zones and their rules | The way back widens to 88 (920, 570, 88, 24); the notice ends at 896 (624, 570, 272, 24) |
+| **Home** | The vivarium panel, the residents, the bed, the rest knob, the name tag, the room's ✓ | The column holds five section modules of 88 on a 104 pitch (Cargo, Pods, Incubator, Probe, Library); the panel is a focus target; the Bay module is Cargo; the arrival moves to Cargo |
+| **Idle** | Its composition, its line and its keys | It is the Vivarium's whole without the frame: the same painting |
+| **Habitat** | Its layout is one mibi up close | The name, the title and the key are the Vivarium's; its ← goes to the whole, not Home |
+
+### Not designed yet
+
+- Whether the Vivarium's whole is its own framed level between Home and one mibi up close, so ← from one mibi goes to the whole and not Home.
+- Whether the dock's cargo opens in Cargo, its own whole-stage section, or stays a moment on Home's panel.
+- Whether the Library has a module on Home's column, or is reached by its key alone.
+- The detailed spec of each screen above, its measured objects and its focus as data.
+
+---
+
 ## Shared frame and rules
 
 ### Grid, margins and spacing

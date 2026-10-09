@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960" width="1440" height="960" font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+<title>The Station's screen map: Home, the sections and the Vivarium's levels, from the whole down to one item. Structure only, 1×.</title>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1f2430"/></marker><marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1d7f74"/></marker></defs>
+<rect width="1440" height="960" fill="#fafaf8"/>
+<text x="24" y="32" font-size="20" fill="#222" font-weight="700">The Station: Home, the sections and the Vivarium, from the whole down to one item (1×, structure only)</text>
+<text x="24" y="54" font-size="12" fill="#555">A section takes the whole stage; the frame (top bar, bottom line) stays on every screen but Idle. ✓ goes one level closer, ← one level out, and ← from a section's whole is Home. Orange = new or changed.</text>
+<text x="24" y="84" font-size="12" fill="#666" font-weight="700">The hub</text>
+<text x="24" y="262" font-size="12" fill="#666" font-weight="700">The whole</text>
+<text x="24" y="454" font-size="12" fill="#666" font-weight="700">Closer</text>
+<text x="24" y="646" font-size="12" fill="#666" font-weight="700">Closest</text>
+<rect x="24" y="92" width="220" height="132" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5" stroke-dasharray="5 3"/>
+<rect x="24" y="92" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="34" y="109" font-size="13" fill="#1f2430" font-weight="700">Idle</text>
+<text x="236" y="108" font-size="10" fill="#666" text-anchor="end">no frame</text>
+<text x="34" y="134" font-size="11" fill="#333">the whole Vivarium, full screen,</text>
+<text x="34" y="149" font-size="11" fill="#333">with no top bar or bottom line</text>
+<text x="34" y="164" font-size="11" fill="#333">after 60 s, or ✓ Rest on Home</text>
+<text x="34" y="179" font-size="11" fill="#333">the first press only wakes</text>
+<text x="34" y="194" font-size="11" fill="#c4500f">the same picture as the whole</text>
+<rect x="320" y="92" width="572" height="132" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="320" y="92" width="572" height="24" rx="4" fill="#e9e9e4"/>
+<text x="330" y="109" font-size="13" fill="#1f2430" font-weight="700">Home (15a)</text>
+<text x="884" y="108" font-size="10" fill="#666" text-anchor="end">Home key</text>
+<text x="330" y="134" font-size="11" fill="#c4500f">the vivarium panel at the left: the residents, the with-you bed, the rest knob</text>
+<text x="330" y="149" font-size="11" fill="#c4500f">the section column at the right: Cargo, Pods, Incubator, Probe, Library</text>
+<text x="330" y="164" font-size="11" fill="#333">on the room, ✓ does what needs you (the amber lamp, the notice)</text>
+<text x="330" y="179" font-size="11" fill="#c4500f">✓ on the panel: the Vivarium, the whole · ✓ on a resident: that mibi up close</text>
+<text x="330" y="194" font-size="11" fill="#333">✓ on a module: that section's whole · ← nothing (Home is the top)</text>
+<rect x="320" y="202" width="572" height="22" fill="#1f2430"/>
+<text x="328" y="217" font-size="11" fill="#f59a5a" font-weight="600">✓ Open the bay · Look at Bean</text>
+<rect x="1028" y="92" width="396" height="132" rx="4" fill="#fff" stroke="#1d7f74" stroke-width="1.5"/>
+<rect x="1028" y="92" width="396" height="24" rx="4" fill="#e9e9e4"/>
+<text x="1038" y="109" font-size="13" fill="#1f2430" font-weight="700">The device keys</text>
+<text x="1038" y="134" font-size="11" fill="#333">Home: Home, the ring on the room</text>
+<text x="1038" y="149" font-size="11" fill="#333">Research: Pods, the collection</text>
+<text x="1038" y="164" font-size="11" fill="#333">Library: the Library, the spread</text>
+<text x="1038" y="179" font-size="11" fill="#c4500f">Vivarium (the Habitat key renamed): the whole</text>
+<text x="1038" y="194" font-size="11" fill="#333">a key opens its section's whole from anywhere; never spends</text>
+<polyline points="244,158 320,158" fill="none" stroke="#1f2430" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<text x="250" y="152" font-size="10" fill="#555">rest</text>
+<polyline points="606,224 606,240" fill="none" stroke="#1f2430" stroke-width="1.5"/>
+<polyline points="134,240 1314,240" fill="none" stroke="#1f2430" stroke-width="1.5"/>
+<polyline points="134,240 134,270" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="370,240 370,270" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="606,240 606,270" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="842,240 842,270" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="1078,240 1078,270" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="1314,240 1314,270" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<rect x="24" y="272" width="220" height="156" rx="4" fill="#fff" stroke="#c4500f" stroke-width="2"/>
+<rect x="24" y="272" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="34" y="289" font-size="13" fill="#1f2430" font-weight="700">Vivarium (15b)</text>
+<text x="236" y="288" font-size="10" fill="#666" text-anchor="end">Vivarium key</text>
+<text x="34" y="314" font-size="11" fill="#c4500f">every mibi at home, full width</text>
+<text x="34" y="329" font-size="11" fill="#c4500f">the with-you bed: the carried set</text>
+<text x="34" y="344" font-size="11" fill="#c4500f">the bays along the foot (twelve)</text>
+<text x="34" y="359" font-size="11" fill="#c4500f">✓ a resident or a bay: up close</text>
+<text x="34" y="374" font-size="11" fill="#c4500f">← Home, ring on the panel</text>
+<text x="34" y="389" font-size="11" fill="#c4500f">title Vivarium</text>
+<rect x="24" y="406" width="220" height="22" fill="#1f2430"/>
+<text x="32" y="421" font-size="11" fill="#f59a5a" font-weight="600">✓ Look at Bean</text>
+<text x="236" y="421" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="260" y="272" width="220" height="156" rx="4" fill="#fff" stroke="#c4500f" stroke-width="2"/>
+<rect x="260" y="272" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="270" y="289" font-size="13" fill="#1f2430" font-weight="700">Cargo</text>
+<text x="472" y="288" font-size="10" fill="#666" text-anchor="end">from the column</text>
+<text x="270" y="314" font-size="11" fill="#c4500f">the dock's cargo: the crates</text>
+<text x="270" y="329" font-size="11" fill="#c4500f">in the bay, sealed, up to three</text>
+<text x="270" y="344" font-size="11" fill="#c4500f">✓ opens them, one by one:</text>
+<text x="270" y="359" font-size="11" fill="#c4500f">pods to the rack, counters tick</text>
+<text x="270" y="374" font-size="11" fill="#c4500f">then the report card</text>
+<text x="270" y="389" font-size="11" fill="#c4500f">title Cargo, the Home mark</text>
+<rect x="260" y="406" width="220" height="22" fill="#1f2430"/>
+<text x="268" y="421" font-size="11" fill="#f59a5a" font-weight="600">✓ Open the bay</text>
+<text x="472" y="421" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="496" y="272" width="220" height="156" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="496" y="272" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="506" y="289" font-size="13" fill="#1f2430" font-weight="700">Pods, the collection</text>
+<text x="708" y="288" font-size="10" fill="#666" text-anchor="end">Research key</text>
+<text x="506" y="314" font-size="11" fill="#333">the rack's pods, read by shape</text>
+<text x="506" y="329" font-size="11" fill="#333">✓ a pod: its overview</text>
+<text x="506" y="344" font-size="11" fill="#333">(built; Pods' three states)</text>
+<rect x="496" y="406" width="220" height="22" fill="#1f2430"/>
+<text x="504" y="421" font-size="11" fill="#f59a5a" font-weight="600">✓ Open</text>
+<text x="708" y="421" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="732" y="272" width="220" height="156" rx="4" fill="#fff" stroke="#1d7f74" stroke-width="2"/>
+<rect x="732" y="272" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="742" y="289" font-size="13" fill="#1f2430" font-weight="700">Incubator: the bridge</text>
+<text x="944" y="288" font-size="10" fill="#666" text-anchor="end">column</text>
+<text x="742" y="314" font-size="11" fill="#c4500f">one level: the bud in its chamber</text>
+<text x="742" y="329" font-size="11" fill="#333">in: Grow it (Create), Cross them</text>
+<text x="742" y="344" font-size="11" fill="#333">(Cross), Choose a pod (Pods)</text>
+<text x="742" y="359" font-size="11" fill="#333">out: the hatch, then Open:</text>
+<text x="742" y="374" font-size="11" fill="#333">the mibi up close, in the meet</text>
+<text x="742" y="389" font-size="11" fill="#c4500f">research in, the Vivarium out</text>
+<rect x="732" y="406" width="220" height="22" fill="#1f2430"/>
+<text x="740" y="421" font-size="11" fill="#f59a5a" font-weight="600">✓ Open</text>
+<text x="944" y="421" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="968" y="272" width="220" height="156" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="968" y="272" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="978" y="289" font-size="13" fill="#1f2430" font-weight="700">Probe bench</text>
+<text x="1180" y="288" font-size="10" fill="#666" text-anchor="end">from the column</text>
+<text x="978" y="314" font-size="11" fill="#333">one level: the Probe on its tray</text>
+<text x="978" y="329" font-size="11" fill="#333">mend, switch, arm then confirm</text>
+<text x="978" y="344" font-size="11" fill="#333">title Probe, the Research mark</text>
+<rect x="968" y="406" width="220" height="22" fill="#1f2430"/>
+<text x="976" y="421" font-size="11" fill="#f59a5a" font-weight="600">✓ Mend a plate</text>
+<text x="1180" y="421" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="1204" y="272" width="220" height="156" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="1204" y="272" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="1214" y="289" font-size="13" fill="#1f2430" font-weight="700">Library, the spread</text>
+<text x="1416" y="288" font-size="10" fill="#666" text-anchor="end">Library key</text>
+<text x="1214" y="314" font-size="11" fill="#333">every species: one frame each</text>
+<text x="1214" y="329" font-size="11" fill="#333">✓ a frame: its Book</text>
+<rect x="1204" y="406" width="220" height="22" fill="#1f2430"/>
+<text x="1212" y="421" font-size="11" fill="#f59a5a" font-weight="600">✓ Open</text>
+<text x="1416" y="421" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="24" y="464" width="220" height="168" rx="4" fill="#fff" stroke="#c4500f" stroke-width="2"/>
+<rect x="24" y="464" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="34" y="481" font-size="13" fill="#1f2430" font-weight="700">One mibi up close (15c)</text>
+<text x="236" y="480" font-size="10" fill="#666" text-anchor="end">level 2</text>
+<text x="34" y="506" font-size="11" fill="#c4500f">greet (✓ on the mibi)</text>
+<text x="34" y="521" font-size="11" fill="#333">rename: the namer, an overlay</text>
+<text x="34" y="536" font-size="11" fill="#c4500f">the heart and skill notches on the card</text>
+<text x="34" y="551" font-size="11" fill="#333">Companion: the carried set, Take</text>
+<text x="34" y="566" font-size="11" fill="#333">Portrait · Cross · Wild modules</text>
+<text x="34" y="581" font-size="11" fill="#c4500f">← Vivarium, the whole</text>
+<rect x="24" y="610" width="220" height="22" fill="#1f2430"/>
+<text x="32" y="625" font-size="11" fill="#f59a5a" font-weight="600">✓ Greet Burr</text>
+<text x="236" y="625" font-size="11" fill="#ddd" text-anchor="end">← Vivarium</text>
+<rect x="260" y="464" width="220" height="168" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="260" y="464" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="270" y="481" font-size="13" fill="#1f2430" font-weight="700">Cargo, one crate</text>
+<text x="472" y="480" font-size="10" fill="#666" text-anchor="end">level 2</text>
+<text x="270" y="506" font-size="11" fill="#c4500f">one crate open at a time:</text>
+<text x="270" y="521" font-size="11" fill="#c4500f">its pods, what was gathered,</text>
+<text x="270" y="536" font-size="11" fill="#c4500f">how far the land is explored</text>
+<text x="270" y="551" font-size="11" fill="#c4500f">input held while it plays</text>
+<text x="270" y="566" font-size="11" fill="#c4500f">the report closes on any press</text>
+<text x="270" y="581" font-size="11" fill="#c4500f">back to the bay, now empty</text>
+<rect x="260" y="610" width="220" height="22" fill="#1f2430"/>
+<text x="472" y="625" font-size="11" fill="#ddd" text-anchor="end">← Home</text>
+<rect x="496" y="464" width="220" height="168" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="496" y="464" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="506" y="481" font-size="13" fill="#1f2430" font-weight="700">Pods, a pod</text>
+<text x="708" y="480" font-size="10" fill="#666" text-anchor="end">level 2</text>
+<text x="506" y="506" font-size="11" fill="#333">the pod's overview</text>
+<text x="506" y="521" font-size="11" fill="#333">✓ a tab: its chapter page</text>
+<text x="506" y="536" font-size="11" fill="#333">✓ kin: Compare · Shape: Create</text>
+<rect x="496" y="610" width="220" height="22" fill="#1f2430"/>
+<text x="504" y="625" font-size="11" fill="#f59a5a" font-weight="600">✓ Open Coat</text>
+<text x="708" y="625" font-size="11" fill="#ddd" text-anchor="end">← Pods</text>
+<rect x="1204" y="464" width="220" height="168" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="1204" y="464" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="1214" y="481" font-size="13" fill="#1f2430" font-weight="700">Book, one species</text>
+<text x="1416" y="480" font-size="10" fill="#666" text-anchor="end">level 2</text>
+<text x="1214" y="506" font-size="11" fill="#333">the face spread and</text>
+<text x="1214" y="521" font-size="11" fill="#333">the guide spread (◀ ▶)</text>
+<text x="1214" y="536" font-size="11" fill="#333">✓ a mibi in "Carried by":</text>
+<text x="1214" y="551" font-size="11" fill="#333">Visit Fig, a jump up close</text>
+<rect x="1204" y="610" width="220" height="22" fill="#1f2430"/>
+<text x="1212" y="625" font-size="11" fill="#f59a5a" font-weight="600">✓ Visit Fig</text>
+<text x="1416" y="625" font-size="11" fill="#ddd" text-anchor="end">← Library</text>
+<text x="742" y="500" font-size="11" fill="#777">One item already: the</text>
+<text x="742" y="515" font-size="11" fill="#777">Incubator holds one bud.</text>
+<text x="978" y="500" font-size="11" fill="#777">One item already: the</text>
+<text x="978" y="515" font-size="11" fill="#777">bench holds one Probe.</text>
+<polyline points="134,428 134,462" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="370,428 370,462" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="606,428 606,462" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="1314,428 1314,462" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<rect x="24" y="656" width="220" height="128" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="24" y="656" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="34" y="673" font-size="13" fill="#1f2430" font-weight="700">Sitting</text>
+<text x="236" y="672" font-size="10" fill="#666" text-anchor="end">under the mibi</text>
+<text x="34" y="698" font-size="11" fill="#333">pose → place → look and confirm</text>
+<text x="34" y="713" font-size="11" fill="#333">from the Portrait module</text>
+<text x="34" y="728" font-size="11" fill="#c4500f">← {name}, else Back</text>
+<text x="34" y="743" font-size="11" fill="#333">(each step ← a step back)</text>
+<rect x="24" y="762" width="220" height="22" fill="#1f2430"/>
+<text x="32" y="777" font-size="11" fill="#f59a5a" font-weight="600">✓ Pick this pose</text>
+<text x="236" y="777" font-size="11" fill="#ddd" text-anchor="end">← Burr</text>
+<rect x="260" y="656" width="220" height="128" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="260" y="656" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="270" y="673" font-size="13" fill="#1f2430" font-weight="700">Cross</text>
+<text x="472" y="672" font-size="10" fill="#666" text-anchor="end">under the mibi</text>
+<text x="270" y="698" font-size="11" fill="#333">two adults of one species</text>
+<text x="270" y="713" font-size="11" fill="#333">the splice; Cross them: a jump</text>
+<text x="270" y="728" font-size="11" fill="#333">to the Incubator</text>
+<text x="270" y="743" font-size="11" fill="#c4500f">← {name}, else Back</text>
+<rect x="260" y="762" width="220" height="22" fill="#1f2430"/>
+<text x="268" y="777" font-size="11" fill="#f59a5a" font-weight="600">✓ Cross them</text>
+<text x="472" y="777" font-size="11" fill="#ddd" text-anchor="end">← Burr</text>
+<rect x="496" y="656" width="220" height="128" rx="4" fill="#fff" stroke="#1f2430" stroke-width="1.5"/>
+<rect x="496" y="656" width="220" height="24" rx="4" fill="#e9e9e4"/>
+<text x="506" y="673" font-size="13" fill="#1f2430" font-weight="700">Pods, one chapter</text>
+<text x="708" y="672" font-size="10" fill="#666" text-anchor="end">level 3</text>
+<text x="506" y="698" font-size="11" fill="#333">the chapter page; Compare;</text>
+<text x="506" y="713" font-size="11" fill="#333">Create (a jump: Grow it)</text>
+<text x="506" y="728" font-size="11" fill="#333">← {pod}</text>
+<rect x="496" y="762" width="220" height="22" fill="#1f2430"/>
+<text x="504" y="777" font-size="11" fill="#f59a5a" font-weight="600">✓ Read Coat</text>
+<text x="708" y="777" font-size="11" fill="#ddd" text-anchor="end">← Loika</text>
+<polyline points="134,632 134,654" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="224,632 224,644 370,644 370,654" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="606,632 606,654" fill="none" stroke="#1f2430" stroke-width="1.5" marker-end="url(#ah)"/>
+<polyline points="716,720 892,720 892,430" fill="none" stroke="#1d7f74" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#at)"/>
+<text x="832" y="736" font-size="10" fill="#1d7f74">Grow it</text>
+<polyline points="480,760 922,760 922,430" fill="none" stroke="#1d7f74" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#at)"/>
+<text x="928" y="776" font-size="10" fill="#1d7f74">Cross them</text>
+<polyline points="762,428 762,446 234,446 234,462" fill="none" stroke="#1d7f74" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#at)"/>
+<text x="616" y="442" font-size="10" fill="#1d7f74">Open: the hatch, the meet</text>
+<polyline points="1204,600 1184,600 1184,640 274,640 274,590 246,590" fill="none" stroke="#1d7f74" stroke-width="1.4" stroke-dasharray="3 3" marker-end="url(#at)"/>
+<text x="978" y="654" font-size="10" fill="#1d7f74">Visit Fig</text>
+<rect x="732" y="800" width="684" height="140" rx="6" fill="#efefea"/>
+<text x="748" y="824" font-size="12" fill="#222" font-weight="700">Pad</text>
+<text x="808" y="824" font-size="12" fill="#333">moves the ring inside this screen; never leaves it, never spends</text>
+<text x="748" y="841" font-size="12" fill="#222" font-weight="700">✓</text>
+<text x="808" y="841" font-size="12" fill="#333">one level closer, or the bottom line's action exactly as written</text>
+<text x="748" y="858" font-size="12" fill="#222" font-weight="700">←</text>
+<text x="808" y="858" font-size="12" fill="#333">one level out, to the parent; the way back names it (88 px slot)</text>
+<text x="748" y="875" font-size="12" fill="#222" font-weight="700">keys</text>
+<text x="808" y="875" font-size="12" fill="#333">Home, Research, Library, Vivarium: a section's whole, from anywhere</text>
+<text x="748" y="892" font-size="12" fill="#222" font-weight="700">jumps</text>
+<text x="808" y="892" font-size="12" fill="#333">(teal, dotted) a ✓ that lands in another section; ← then follows the tree</text>
+<text x="748" y="909" font-size="12" fill="#222" font-weight="700">Dock</text>
+<text x="808" y="909" font-size="12" fill="#333">the Caddy's key, never the Station's: the crates wait in Cargo; Home's</text>
+<text x="748" y="926" font-size="12" fill="#222" font-weight="700"></text>
+<text x="808" y="926" font-size="12" fill="#333">Cargo module lights amber and the notice names them</text>
+<rect x="24" y="800" width="684" height="140" rx="6" fill="#fff" stroke="#ccc"/>
+<text x="40" y="824" font-size="12" fill="#222" font-weight="700">The frame</text>
+<text x="124" y="824" font-size="12" fill="#333">top bar and bottom line on Home, every section and every level;</text>
+<text x="40" y="841" font-size="12" fill="#222" font-weight="700"></text>
+<text x="124" y="841" font-size="12" fill="#333">Idle alone drops them. The title names the section, never the item.</text>
+<text x="40" y="858" font-size="12" fill="#222" font-weight="700">Titles</text>
+<text x="124" y="858" font-size="12" fill="#333">Home · Vivarium · Cargo · Pods · Incubator · Probe · Library</text>
+<text x="40" y="875" font-size="12" fill="#222" font-weight="700"></text>
+<text x="124" y="875" font-size="12" fill="#333">Create · Cross · Sitting keep their own titles</text>
+<text x="40" y="892" font-size="12" fill="#222" font-weight="700">Marks</text>
+<text x="124" y="892" font-size="12" fill="#333">a title carries the mark of the key that leads there:</text>
+<text x="40" y="909" font-size="12" fill="#222" font-weight="700"></text>
+<text x="124" y="909" font-size="12" fill="#333">Cargo Home; Pods, Create, Incubator, Probe Research;</text>
+<text x="40" y="926" font-size="12" fill="#222" font-weight="700"></text>
+<text x="124" y="926" font-size="12" fill="#333">Library Library; Vivarium, Cross, Sitting Vivarium</text>
+</svg>
