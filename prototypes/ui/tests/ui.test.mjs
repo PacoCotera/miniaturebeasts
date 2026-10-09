@@ -133,8 +133,8 @@ test("the frame components place the spec's regions and set every string in Inte
   assert.ok(icons.every((n) => n.rect[2] === 16));
   assert.ok(byId["top.m.d.flash"]); assert.ok(!byId["top.m.e.flash"]);
   const e = byId["top.m.e.icon"].rect[0], s = byId["top.m.s"].rect[0] + byId["top.m.s"].rect[2]; assert.ok(Math.abs((e + s) / 2 - 512) <= 1, "centred on 512: " + e + ".." + s);
-  // who is out: marks only: the lamp 8×8 at (780, 16), the first face place 24×24 at (800, 8); when: the figure ends at 1008
-  assert.deepEqual(byId["top.lamp"].rect, [780, 16, 8, 8]); assert.deepEqual(byId["top.face.ring"].rect, [800, 8, 24, 24]);
+  // who is out: marks only: the lamp and the face where frame.json places them (the geometry is specs.test.mjs's); when: the figure ends at 1008
+  assert.deepEqual(byId["top.lamp"].rect, spec.regions.companion.lampAt); assert.deepEqual(byId["top.face.ring"].rect, spec.regions.companion.face);
   assert.equal(byId["top.turn"].rect[0] + byId["top.turn"].rect[2], 1008);
   assert.ok(!nodes.some((n) => n.kind === "text" && /Companion|docked/.test(n.text)), "no words in the Companion's zone");
   // the bottom line: the verb in the action's colour after its cap's room, the price, the way back, 24 px apart; the context centred; the notice right-aligned to 1008 with its lamp

@@ -45,11 +45,11 @@
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
 <rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
-<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#666" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#adf6e0" stroke="#444" stroke-width="1"/>
 <circle cx="812" cy="20" r="11" fill="#fdebd6" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="840" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="868" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
 <line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>

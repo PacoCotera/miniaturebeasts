@@ -21,7 +21,7 @@
   "dock plate": "UI designer, 2026-10-09: no message plate for Dock. The top bar's Companion returns (frame), the crates slide into the bay, and the notice names them. A plate on Home would sit over the living window (as for ←). A refused dock still shows its plate",
   "ink tops": "art director, 2026-10-09 12:40: the dome's and the cradle's slices and their placeholders keep rows 0 to 3 empty; first ink at y 340 (dome) and y 468 (cradle). Written as domeInkTop and cradleInkTop beside the rects, which stay [x, y, w, h] arrays for the loader and the tests",
   "name tag": "owner, 2026-10-07 (in force): the resident's name sits under it inside the living window on a tag; regions.nameTag. The bottom line's context then drops the name and names the species and stage (strings.residentSubject); the action keeps it (\"✓ Look at Bean\") (UI designer, 2026-10-09)",
-  "bed master": "The nest is a placeholder. The Home master paints the concept's shallow glass dish, about 160×80 at (566, 405); when it lands, the bed's rect, the sleepers' feet and the Companion mark's place are re-measured from it, for three sleepers. Away, the bed keeps the Companion mark (Station screens, Home), not the absent mibi's silhouette",
+  "bed master": "The nest is a placeholder. The Home master paints the concept's shallow glass dish, about 160×80 at (566, 405), wide enough to hold one to three nap poses (sleeper.places, 48 px apart); when it lands, the bed's rect, the sleepers' feet and the Companion mark's place are re-measured from the master, for one, two and three sleepers (art director, 2026-10-09). Away, the bed keeps the Companion mark (Station screens, Home), not the absent mibi's silhouette",
   "module insets": "art director, 2026-10-09 12:25: the Incubator's and the Probe's objects moved 8 px down, clear of their words: dome (704, 336), cradle (704, 464), sitting slot (952, 464), Shield plates (848 + 24i, 488); UI designer, 2026-10-09: leaves to (800, 352), and the Rack's wells and pods to y 224 with the glint star at y 212, 8 px clear of the word's baseline (204) as on the Bay. Were dome 328, cradle and slot 456, plates 480, leaves 344, wells 216, star 204",
   "away": "UI designer, 2026-10-09: with the Companion away the Bay's door is shut and its lamp off; the Probe module shows its cradle empty and no plates (the Probe and its Shield are out with the Companion, whose HUD shows them); the bed shows the Companion mark. Docked, the door is open, crates or not"
  },
@@ -111,7 +111,7 @@
   "held": "while events.arrival or events.rest holds, the face moves no focus and sends no intent",
   "report": "while the report card shows, a key closes it and also does what it does: the pad moves the ring by this graph, ✓ follows the bottom line, ← only closes",
   "targets": {
-   "resident": { "group": "resident", "id": "resident.<mibi id>", "ring": "feet", "box": "the resident's box where the face has stepped it; the sleeping mibi on the bed is one (bed.sleeper), with no lift", "lift": 4 },
+   "resident": { "group": "resident", "id": "resident.<mibi id>", "ring": "feet", "box": "the resident's box where the face has stepped it; each sleeper (bed.sleeper.places) is one, its adult or juvenile box moved by its place's dx, with no lift", "lift": 4 },
    "bay": { "group": "column", "ring": "round", "box": "regions.bay.rect", "lift": 2 },
    "rack": { "group": "column", "ring": "round", "box": "regions.rack.rect", "lift": 2 },
    "incubator": { "group": "column", "ring": "round", "box": "regions.incubator.rect", "lift": 2 },
@@ -128,7 +128,14 @@
    { "from": "room", "key": "up", "to": "room" },
    { "from": "room", "key": "left", "to": "the resident nearest (512, 300) by row", "residents": "none", "toIfNone": "room" },
    { "from": "the leftmost resident", "key": "left", "to": "the same resident" },
-   { "from": "a resident with others to its left", "key": "left", "to": "the nearest of them more than 6 px to its left, by along + 2.2 × across" }
+   { "from": "a resident with others to its left", "key": "left", "to": "the nearest of them more than 6 px to its left, by along + 2.2 × across" },
+   { "from": "the first sleeper", "key": "left", "to": "the second sleeper", "sleepers": 3, "note": "three adults asleep and no resident awake: the second's box is 48 px to the left (ahead)" },
+   { "from": "the second sleeper", "key": "left", "to": "the second sleeper", "sleepers": 3, "note": "none ahead: the leftmost stays (fallback none)" },
+   { "from": "the third sleeper", "key": "left", "to": "the first sleeper", "sleepers": 3, "note": "the first is 48 px to the left, the second 96" },
+   { "from": "the first sleeper", "key": "right", "to": "probe", "sleepers": 3, "note": "▶ crosses to the column (nearestIn column): Probe's centre (848, 492) is the least across from the first's (544, 436); never another sleeper" },
+   { "from": "the second sleeper", "key": "right", "to": "probe", "sleepers": 3 },
+   { "from": "knob", "key": "left", "to": "the third sleeper", "sleepers": 3, "note": "the third (centre 592, 436) is the nearest resident to the knob" },
+   { "from": "knob", "key": "up", "to": "probe", "sleepers": 3, "note": "the column's order; the sleepers under and beside the knob are never reached by ▲" }
   ]
  },
  "colours": {

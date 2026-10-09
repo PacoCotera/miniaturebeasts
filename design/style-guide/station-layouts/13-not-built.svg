@@ -16,12 +16,12 @@
 <text x="517" y="26" font-family="Inter" font-size="16" fill="#f1ebdf">4</text>
 <path d="M559 12 C563 17 566 20 566 23 A7 7 0 0 1 552 23 C552 20 555 17 559 12 Z" fill="#5cbb4c"/>
 <text x="571" y="26" font-family="Inter" font-size="16" fill="#f1ebdf">6</text>
-<rect x="817" y="9" width="14" height="22" rx="3" fill="#c6c4d8"/>
-<rect x="820" y="13" width="8" height="8" fill="#5d5974"/>
+<rect x="761" y="9" width="14" height="22" rx="3" fill="#c6c4d8"/>
+<rect x="764" y="13" width="8" height="8" fill="#5d5974"/>
 <rect x="780" y="16" width="8" height="8" fill="#adf6e0"/>
-<circle cx="812" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="840" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="868" cy="20" r="11" fill="none" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="812" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="840" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
 <circle cx="986" cy="20" r="5" fill="#ffd441"/>
 <path d="M986 12 V14 M986 26 V28 M978 20 H980 M992 20 H994" stroke="#ffd441" stroke-width="1.5"/>
 <text x="1008" y="26" font-family="Inter" font-size="16" fill="#f1ebdf" text-anchor="end">1</text>

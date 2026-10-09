@@ -169,6 +169,14 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   assert.deepEqual(F.topRules.x, [256, 888]); assert.ok(F.title.rect[0] + F.title.rect[2] < 256 && 256 < F.materials.rect[0] && F.materials.rect[0] + F.materials.rect[2] < F.companion.rect[0] && F.companion.rect[0] + F.companion.rect[2] < 888 && 888 < F.time.rect[0], "the rules between the groups");
   assert.equal(F.time.rect[0] + F.time.rect[2], 1008); assert.equal(F.materials.rect[0] + F.materials.rect[2] / 2, 512);
   assert.deepEqual([F.title.px, F.title.weight, F.title.words, F.companion.words], [20, 500, 1, 0]); assert.deepEqual(F.title.mark, [16, 8, 24, 24]);
+  // the Companion's zone: glyph, lamp and three faces, the last ending on the zone's right (880), all left of the rule at 888, all in the frame wireframe
+  const C = F.companion, FA = C.faces, faceAt = (i) => [FA.first[0] + FA.pitch[0] * i, FA.first[1], FA.first[2], FA.first[3]];
+  assert.equal(FA.count, 3); assert.equal(FA.first[0] + FA.pitch[0] * (FA.count - 1) + 24, C.right, "the third face ends on the zone's right"); assert.equal(C.right, 880);
+  assert.ok(C.rect[0] + C.rect[2] < 888, "the zone ends left of the rule at 888"); assert.deepEqual(C.face, FA.first, "the first face is the face");
+  assert.deepEqual([C.glyph[0], C.lampAt[0], ...[0, 1, 2].map((i) => faceAt(i)[0])], [760, 780, 800, 828, 856]);
+  const fc = new Set([...fsvg.matchAll(/<circle cx="([\d.]+)" cy="([\d.]+)" r="([\d.]+)"/g)].map((m) => [Math.round(m[1] - m[3] - 0.5), Math.round(m[2] - m[3] - 0.5), 24, 24].join(",")));
+  assert.ok(fb.has(C.glyph.join(",")), "the glyph in 00-frame.svg"); assert.ok(fb.has(C.lampAt.join(",")), "the lamp in 00-frame.svg"); for (const i of [0, 1, 2]) assert.ok(fc.has(faceAt(i).join(",")), "face " + i + " in 00-frame.svg");
+  assert.match(FA.free, /^face-24-empty; fallback hairline dash \[2,2\]$/, "the free face: face-24-empty, else a hairline dash");
   assert.equal(frame.colours.verb, "orange"); assert.equal(frame.colours.capConfirm, "orange"); assert.equal(frame.colours.needLamp, "amber");
   assert.deepEqual(frame.strings.withdrawn, ["dot", "backArrow"], "no dot-joined parts in the frame: the ← is a key cap, the parts are zones");
   for (const k of Object.keys(F.title.marks)) assert.ok(frame.strings.titles[k], "a title slot for " + k);
@@ -404,7 +412,15 @@ test("the Habitat spec file agrees with the Habitat wireframes, region by region
   tiles(T.full, 6).forEach((x, i) => (TG["tile." + (i + 1)] = { group: "tile", box: x }));
   const resolve = { "tile.shown": "tile.3" }, concrete = (v) => !!v && (!!TG[v] || v === "tile.shown");
   let played = 0;
-  for (const v of hab.focus.vectors) { if (v.state || v.intent || !concrete(v.from) || !concrete(v.to)) continue; const from = resolve[v.from] ?? v.from, to = resolve[v.to] ?? v.to; assert.equal(focusMove(hab.focus.graph, TG, from, v.key, resolve), to, `${v.from} ${v.key} → ${v.to}`); played++; }
+  const withChapters = (n) => { const t = Object.fromEntries(Object.entries(TG).filter(([k]) => !k.startsWith("plate."))), all = Object.entries(t); plates.slice(0, n).forEach((p, i) => all.splice(3 + i, 0, ["plate." + i, { group: "plate", box: p }])); return Object.fromEntries(all); };
+  for (const v of hab.focus.vectors) { const tg = v.chapters ? withChapters(v.chapters) : TG; if (v.state || v.intent || !(tg[v.from] || v.from === "tile.shown") || !(tg[v.to] || v.to === "tile.shown")) continue; const from = resolve[v.from] ?? v.from, to = resolve[v.to] ?? v.to; assert.equal(focusMove(hab.focus.graph, tg, from, v.key, resolve), to, `${v.from} ${v.key} → ${v.to}` + (v.chapters ? ` (${v.chapters} chapters)` : "")); played++; }
+  assert.ok(hab.focus.vectors.some((v) => v.from === "portrait" && v.key === "up" && v.to === "plate.6" && v.chapters === 8), "Portrait ▲ with eight chapters");
+  // the places: carried first, then pending adds in the free places, then an overflowing add in a pending home's place (the netted display)
+  const placesOf = (carried, project) => { const adds = project.filter((id) => !carried.includes(id)), homes = carried.filter((id) => !project.includes(id)), out = carried.map((id) => ({ id, pending: homes.includes(id) })); while (out.length < 3 && adds.length) out.push({ id: adds.shift(), pending: true }); for (const p of out) if (p.pending && homes.includes(p.id) && adds.length) Object.assign(p, { id: adds.shift() }); while (out.length < 3) out.push(null); return out; };
+  assert.deepEqual(placesOf(["A", "B", "C"], ["B", "C", "D"]), [{ id: "D", pending: true }, { id: "B", pending: false }, { id: "C", pending: false }], "the overflow: D takes A's place, with the lamp");
+  assert.deepEqual(placesOf(["A", "B"], ["B", "D"]), [{ id: "A", pending: true }, { id: "B", pending: false }, { id: "D", pending: true }], "a free place first");
+  assert.deepEqual(placesOf(["A"], ["A"]), [{ id: "A", pending: false }, null, null], "a cancelled add never shows");
+  assert.ok(/pendingAdd = projectCarried minus carriedIds, pendingHome = carriedIds minus projectCarried/.test(hab.notes.carried) && /overflow/.test(R.door.places.fill), "the netted display and the overflow rule are written");
   assert.ok(played >= 24, "the vectors are played: " + played);
   const MEET = Object.fromEntries(Object.entries(TG).filter(([k]) => k !== "name")); assert.equal(focusMove(hab.focus.graph, MEET, "resident", "right", resolve), "species", "in the meet (no tag target) ▶ goes on to the species"); assert.equal(focusMove(hab.focus.graph, MEET, "cross", "left", resolve), "resident");
   assert.equal(focusMove(hab.focus.graph, TG, "tile.1", "left", resolve), "tile.1", "the strip's first tile stops"); assert.equal(focusMove(hab.focus.graph, TG, "tile.5", "up", resolve), "resident");
@@ -506,4 +522,14 @@ test("the not-built composition agrees with its wireframes: one line on the stag
   assert.equal(N.strings.line, N.strings.line.toLowerCase(), "the line in lower case, as the frame's notices; the title names the screen");
   assert.ok(N.strings.idle.startsWith("Idle "), "Idle has no title, so its line names it");
   assert.equal(N.strings.subject, "");
+});
+
+test("Home's three sleepers: ◀ walks them by the residents' edge, ▶ crosses to the column, the knob's ▲ stays in the column", () => {
+  const home = rd("../specs/station/home.json"), R = home.regions, Z = R.bed.sleeper, TG = {}, name = ["the first sleeper", "the second sleeper", "the third sleeper"];
+  Z.places.dx.forEach((dx, i) => (TG[name[i]] = { group: "resident", box: [Z.adult[0] + dx, Z.adult[1], Z.adult[2], Z.adult[3]] }));
+  for (const k of ["bay", "rack", "incubator", "probe"]) TG[k] = { group: "column", box: R[k].rect };
+  TG.knob = { group: "column", box: home.focus.targets.knob.box };
+  const vs = home.focus.vectors.filter((v) => v.sleepers === 3); assert.ok(vs.length >= 6, "the sleeper vectors");
+  for (const v of vs) assert.equal(focusMove(home.focus.graph, TG, v.from, v.key), v.to, `${v.from} ${v.key} → ${v.to}`);
+  assert.match(home.focus.targets.resident.box, /each sleeper \(bed\.sleeper\.places\)/);
 });
