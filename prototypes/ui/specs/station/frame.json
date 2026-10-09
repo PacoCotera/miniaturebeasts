@@ -23,7 +23,7 @@
   "plate": { "centre": 512, "maxWidth": 640, "pad": 16, "line": 20, "lead": 16, "bottom": 550, "topOverFocal": 112, "showMs": 4000, "px": 16 }
  },
  "type": { "body": 16, "title": 20, "name": 28, "pitch": { "16": 20, "20": 28, "28": 36 }, "weight": { "16": 400, "20": 500, "28": 600 } },
- "focus": { "ring": { "width": 2, "outside": 4, "radius": 6, "tab": { "shape": "slant", "slant": 16, "outside": 4, "top": 42, "slantTo": 80, "bottom": 84, "box": "x - 4, 42, w + 24, 42", "radiusBottom": 6, "radiusTop": 0, "lift": 0, "note": "the slants stop at the tab's bottom edge (y 80) and drop straight to the bottom run at y 84" } }, "feet": { "widen": 16, "height": 24 }, "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
+ "focus": { "ring": { "width": 2, "outside": 4, "radius": 6, "onPaper": "rust", "onPaperScreens": ["library", "book.face", "book.guide"], "onPaperNote": "on the tome's paper (the Library, the Book's face spread and its guide spread) the ring is rust (#a6420c) with the same geometry; on the open plate it may cover that plate's open rule (UI designer, 2026-10-09)", "tab": { "shape": "slant", "slant": 16, "outside": 4, "top": 42, "slantTo": 80, "bottom": 84, "box": "x - 4, 42, w + 24, 42", "radiusBottom": 6, "radiusTop": 0, "lift": 0, "note": "the slants stop at the tab's bottom edge (y 80) and drop straight to the bottom run at y 84" } }, "feet": { "widen": 16, "height": 24 }, "lift": { "chrome": 2, "creature": 4, "ms": 200 } },
  "colours": {
   "chrome": "ground", "rule": "void", "title": "bone", "roomMark": "fog", "turn": "bone", "sun": "yellow", "figure": "bone", "flash": "amber", "flashInk": "ink",
   "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone", "faceRing": "teal", "faceRingAway": "stone", "topRule": "hairline",
@@ -80,7 +80,7 @@
    "probe": {"parent": "home", "back": "Home"},
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home"},
-   "book": {"parent": "library", "back": "Library"},
+   "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
    "habitat": {"parent": "home", "back": "Home"},
    "cross": {"parent": "habitat", "back": "Habitat"}
   },
@@ -89,7 +89,9 @@
    {"from": "create", "action": "Grow it", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},
    {"from": "incubator", "action": "Open", "to": "habitat"},
-   {"from": "book", "action": "Visit {mibi}", "to": "habitat"}
+   {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
+   {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "L2.1"},
+   {"from": "habitat", "target": "the card's species word", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "L2.5"}
   ],
   "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
   "homePad": {

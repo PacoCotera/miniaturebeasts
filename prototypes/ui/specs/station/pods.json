@@ -300,7 +300,35 @@
      "mist": "mibi-halo-{SNN}-128x160-mist",
      "clear": "mibi-halo-{SNN}-128x160-clear"
     },
-    "crossFade": "clear alpha = chapters read / chapters, over the mist; the build blurs nothing"
+    "crossFade": "clear alpha = chapters read / chapters, over the mist; the build blurs nothing",
+    "target": "a focus target once the pod is identified (the species is found): ✓ Open the guide, a jump to the Book's guide spread (frame.json navigation.jumps); before Identify, not a target; from L2.1 (lvgl-switch.md §4). On main until then the figure is not a target and the pod's ▶ goes to kin.first.",
+    "caption": {
+     "rect": [
+      432,
+      400,
+      128,
+      24
+     ],
+     "text": "theSpecies",
+     "px": 16,
+     "colour": "mist",
+     "align": "centre",
+     "when": "identified"
+    }
+   },
+   "thisPod": {
+    "rect": [
+     144,
+     520,
+     224,
+     24
+    ],
+    "text": "thisPod",
+    "px": 16,
+    "colour": "mist",
+    "align": "centre",
+    "centre": 256,
+    "note": "the individual's caption under the who-it-is marks (owner, 2026-10-09: \"this pod\" and \"the species\" are allowed as two-word labels)"
    },
    "originPicture": {
     "rect": [
@@ -1297,6 +1325,10 @@
   },
   "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name",
   "subjectIs": "{name} is {state}",
+  "thisPod": "this pod",
+  "theSpecies": "the species",
+  "openGuide": "Open the guide",
+  "everySpecies": "every {species}",
   "states": {
    "unread": "unread",
    "partly": "partly read",
