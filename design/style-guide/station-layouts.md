@@ -387,7 +387,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
 | C | ✓ | On an unread chapter, `✓ Read Coat   3 ◆` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |
 | C | ← | Back to B, the ring on that tab: the way back reads the pod's name, "← Loika", because ← goes up one level to that pod. The longest name today, "Untuva", is 54 px at 16 px, inside the way back's 60 px for its word; a name that does not fit reads "← Back". From Compare, ← closes it, "← Loika" too (*decided by the UI designer, 2026-10-09*) |
-| Home | ✓ on a pod in the rack | Straight to its overview (B); ← from there goes to A |
+| Home | ✓ on the Rack module | Opens the collection (A) with the ring on the pod that most needs the player (a new one, then a glinting one, then the first); ← from there goes Home. Home's rack keeps its one focus target: the collection is one press away, and six 40 px wells in a module would be targets too small to read as the way into a pod (*decided by the UI designer, 2026-10-09, for the builder's question; was "✓ on a pod in the rack: straight to its overview (B); ← from there goes to A", the game designer's brief, which needs no per-pod entry from Home*) |
 | All | Can't | A dimmed ✓ with the shortfall; a message plate on press. A glint says "something new waits" in the notice, never what it is |
 
 ← always goes up one level (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was the one screen's table, the well column's ▲ ▼, → to the pod and ← back to the well).
