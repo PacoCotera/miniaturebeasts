@@ -296,7 +296,7 @@ Between expeditions the Companion shows the mibi with you, large: its name, stag
 
 ### Getting better and bonding
 
-- **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you Head home, three at most. The Library shows them.
+- **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you Head home, three at most. A notch is earned only on an expedition that explored something, and a break keeps it. The notches show on the mibi's card in the vivarium, never as a number.
 - **Bond**: after a mibi's first expedition or walk with you, its Habitat page offers a **bond**: ✓, then ✓ again. A small heart marks it. Bonding is a choice; nothing else depends on it yet.
 
 ### Partners and what they do
