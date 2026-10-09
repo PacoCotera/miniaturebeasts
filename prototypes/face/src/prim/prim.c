@@ -15,6 +15,7 @@ extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_ASSET 256
 #define MAX_SRC 4          /* face-owned sources for nine-slices (the focus ring's 20 x 20), after the host's pictures in the same table */
 #define MAX_REGION 96
+#define OPS_CAP (128 * 1024)
 #define NINE_PARTS 9
 typedef struct {
   uint32_t id, parent;          /* parent: the id of the clip this node sits in, 0 at the root */
@@ -28,6 +29,7 @@ static node_t g_o[MAX_OBJ];
 static int g_n, g_unknown, g_nseq, g_pass = 3;
 static uint32_t g_seq[MAX_OBJ];
 static char g_text[1024];
+static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
 typedef struct { int w, h; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
 static asset_t g_a[MAX_ASSET + MAX_SRC];
 /* the tag of the nodes now arriving, and the clip they are inside */
@@ -43,6 +45,8 @@ static uint32_t g_hash[1024];   /* rgb + 1, open addressing */
 
 void prim_init(void) { g_n = 0; g_unknown = 0; g_nreg = 1; strcpy(g_reg[0], "?"); g_region = 0; g_layer = LAYER_CHROME; g_pass = 3; }
 char *prim_text(void) { return g_text; }
+char *prim_ops(void) { return g_ops; }
+int prim_ops_size(void) { return (int)sizeof g_ops; }
 int prim_text_size(void) { return (int)sizeof g_text; }
 int prim_count(void) { return g_n; }
 int prim_unknown(void) { return g_unknown; }
@@ -82,12 +86,19 @@ static void put(uint8_t *px, int w, int h, int x, int y, uint32_t rgb) {
 static int g_bad;   /* set when an op argument is not a JSON integer: prim_compose refuses the picture */
 static int tokint(const char *s, const jsmntok_t *t) { int v = 0; if (t->type != JSMN_PRIMITIVE || !json_int(s + t->start, t->end - t->start, &v)) { g_bad = 1; return 0; } return v; }
 static int skip(const jsmntok_t *t, int i) { int n = t[i].size; i++; for (; n > 0; n--) i = skip(t, i); return i; }   /* the token after the one at i, with its children */
+static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len, jsmntok_t *tok, int ntok);
 int prim_compose(uint8_t *px, int w, int h, const char *ops) {
-  jsmn_parser p; jsmntok_t tok[2048]; jsmn_init(&p); g_bad = 0;
-  if (!json_clean(ops, (int)strlen(ops))) return -1;
-  int n = jsmn_parse(&p, ops, strlen(ops), tok, 2048);
-  if (n < 1 || tok[0].type != JSMN_ARRAY) return -1;
-  { size_t e = strlen(ops); while (e > 0 && (ops[e - 1] == ' ' || ops[e - 1] == '\n' || ops[e - 1] == '\t' || ops[e - 1] == '\r')) e--; if ((size_t)tok[0].end != e) return -1; }
+  jsmn_parser p; g_bad = 0; jsmn_init(&p);
+  size_t len = strlen(ops); int n = jsmn_parse(&p, ops, len, NULL, 0);
+  if (n < 1 || n > 40000 || !json_clean(ops, (int)len)) return -1;
+  jsmntok_t *tok = (jsmntok_t *)malloc(sizeof *tok * (size_t)n); if (!tok) return -1;
+  jsmn_init(&p); int rc = compose_tokens(px, w, h, ops, len, tok, n); free(tok); return rc;
+}
+static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len, jsmntok_t *tok, int ntok) {
+  jsmn_parser p; jsmn_init(&p);
+  int n = jsmn_parse(&p, ops, len, tok, (unsigned)ntok);
+  if (n != ntok || tok[0].type != JSMN_ARRAY) return -1;
+  { size_t e = len; while (e > 0 && (ops[e - 1] == ' ' || ops[e - 1] == '\n' || ops[e - 1] == '\t' || ops[e - 1] == '\r')) e--; if ((size_t)tok[0].end != e) return -1; }
   int drawn = 0, i = 1;
   for (int op = 0; op < tok[0].size; op++) {
     if (tok[i].type != JSMN_ARRAY || tok[i].size < 1) return -1;
@@ -261,11 +272,11 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     }
   }
   if (kind == FN_COMPOSED) {   /* the ops are drawn into the picture's own pixels again only when they or its size change */
-    uint32_t oh = hash_str(g_text) ^ ((uint32_t)w * 40503u) ^ ((uint32_t)h * 9973u);
+    uint32_t oh = hash_str(g_ops) ^ ((uint32_t)w * 40503u) ^ ((uint32_t)h * 9973u);
     if (n->fresh || n->ops_hash != oh) {
       if (n->w != w || n->h != h || !n->composed) { free(n->composed); n->composed = (uint8_t *)calloc((size_t)w * h, 4); }
       else memset(n->composed, 0, (size_t)w * h * 4);
-      if (!n->composed || prim_compose(n->composed, w, h, g_text) < 0) { g_unknown++; if (n->composed) memset(n->composed, 0, (size_t)w * h * 4); }
+      if (!n->composed || prim_compose(n->composed, w, h, g_ops) < 0) { g_unknown++; if (n->composed) memset(n->composed, 0, (size_t)w * h * 4); }
       dsc_of(&n->cdsc, n->composed, w, h, w * 4); lv_image_set_src(o, &n->cdsc); lv_obj_invalidate(o); n->ops_hash = oh;
     }
   }

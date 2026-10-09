@@ -182,7 +182,7 @@ test("F2: the spec loader reads integers exactly: 1.5, 1e3 and 01 are not number
 
 test("F2 and F9: a composed picture's arguments are integers exactly, and a malformed op is refused whole", { skip }, async () => {
   const f = await boot(), M = f.M; frames(f, 2);
-  const send = (ops) => { const b = new TextEncoder().encode(ops), p = M._face_text(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; M._face_scene_begin(); M._face_node(1, 1, 0, 0, 1024, 600, 0x162a37, 0, 0); M._face_node(2, 6, 200, 200, 24, 12, 0, 0, 0); M._face_scene_end(); frames(f); return f.refused(); };
+  const send = (ops) => { const b = new TextEncoder().encode(ops), p = M._face_ops(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; M._face_scene_begin(); M._face_node(1, 1, 0, 0, 1024, 600, 0x162a37, 0, 0); M._face_node(2, 6, 200, 200, 24, 12, 0, 0, 0); M._face_scene_end(); frames(f); return f.refused(); };
   for (const bad of ['[["h",0,0,4.5,"clay"]]', '[["h",0,0,"4","clay"]]', '[["dot",1e1,0,"clay"]]', '[["lattice",0,0,8,8,4.0,[[0,0]],"mist"]]', '[["lattice",0,0,8,8,4,[[0,1.5]],"mist"]]', '[["h",0,0,4,"clay"]] x', '[["h",0,0,4,"clay"],]', '[["h",0,0,4,clay]]']) assert.equal(send(bad), 1, bad);
   assert.equal(send('[["h",0,0,3,"clay"]]'), 0); assert.equal(send('[["h",0,0,3,"clay"]] \n'), 0, "trailing whitespace is fine");
 });
@@ -225,4 +225,13 @@ test("props() is the transport's: hashed without seq, so an unchanged screen is 
 test("hello with a contract that is not an integer says so", { skip }, async () => {
   const f = await boot(); assert.equal(f.send({ t: "hello", contract: 1.5 }), -1); assert.deepEqual(f.errors(), ["hello: contract must be an integer"]);
   assert.equal(f.send({ t: "hello", contract: "1" }), -1); assert.deepEqual(f.errors(), ["hello: contract must be an integer"]); assert.equal(f.send({ t: "hello" }), -1); assert.deepEqual(f.errors(), ["hello: contract is required"]);
+});
+
+test("composed pictures take thousands of ops: the ops have a buffer of their own (128 KiB), not the text run's 1 KiB", { skip }, async () => {
+  const f = await boot(), ops = []; for (let i = 0; i < 3000; i++) ops.push(["dot", i % 200, (i / 200) | 0, "ice"]);
+  assert.ok(JSON.stringify(ops).length > 30000);
+  f.scene([{ id: "wires", kind: "composed", rect: [0, 0, 200, 16], ops }], env); frames(f); assert.equal(f.refused(), 0); assert.deepEqual(f.errors(), []);
+  assert.deepEqual(f.pixel(5, 3), rgbOf("ice")); assert.deepEqual(f.pixel(199, 14), rgbOf("ice"));
+  const big = []; for (let i = 0; i < 6000; i++) big.push(["dot", i % 100, 0, "ice"]);
+  f.scene([{ id: "wires", kind: "composed", rect: [0, 0, 200, 16], ops: big }], env); frames(f); assert.equal(f.refused(), 0, "6000 ops, 75 KB");
 });

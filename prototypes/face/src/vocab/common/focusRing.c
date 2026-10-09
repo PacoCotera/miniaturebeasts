@@ -12,7 +12,7 @@
 static int fi(const char *path, int dflt) { return spec_int(F, path, dflt); }
 
 static void composed(const char *id, int x, int y, int w, int h, const char *ops) {
-  snprintf(prim_text(), (size_t)prim_text_size(), "%s", ops);
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
   prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);
 }
 static void draw(const char *id, const int box[4], const char *shape, int circle, int fixedR, int cx, int cy, int cout, const char *colour);

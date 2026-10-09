@@ -29,7 +29,7 @@ if(EMSCRIPTEN)
   target_link_options(face_wasm PRIVATE
     -sMODULARIZE=1 -sEXPORT_ES6=1 -sEXPORT_NAME=createFace -sENVIRONMENT=web,node -sALLOW_MEMORY_GROWTH=1 -sINITIAL_MEMORY=33554432
     -sFILESYSTEM=0 -sEXPORTED_RUNTIME_METHODS=HEAPU8,HEAP32,UTF8ToString
-    "-sEXPORTED_FUNCTIONS=_face_init,_face_frame,_face_fb,_face_width,_face_height,_face_dirty_count,_face_dirty_rects,_face_hash,_face_key,_face_key_count,_face_last_key,_face_version,_face_scene_begin,_face_node,_face_scene_end,_face_text,_face_text_size,_face_measure,_face_asset,_face_object_count,_face_node_refused,_face_selftest_scene,_face_background,_face_asset_limit,_malloc,_free,_face_node_tag,_face_region,_face_in_buf,_face_in_cap,_face_send,_face_poll,_face_pending,_face_last_asset,_face_asset_pixels,_face_props_count,_face_props_seq,_face_event_count,_face_spec_int,_face_test_pass,_face_test_offpalette,_face_test_ring,_malloc,_free"
+    "-sEXPORTED_FUNCTIONS=_face_init,_face_frame,_face_fb,_face_width,_face_height,_face_dirty_count,_face_dirty_rects,_face_hash,_face_key,_face_key_count,_face_last_key,_face_version,_face_scene_begin,_face_node,_face_scene_end,_face_text,_face_text_size,_face_ops,_face_ops_size,_face_measure,_face_asset,_face_object_count,_face_node_refused,_face_selftest_scene,_face_background,_face_asset_limit,_malloc,_free,_face_node_tag,_face_region,_face_in_buf,_face_in_cap,_face_send,_face_poll,_face_pending,_face_last_asset,_face_asset_pixels,_face_props_count,_face_props_seq,_face_event_count,_face_spec_int,_face_test_pass,_face_test_offpalette,_face_test_ring,_malloc,_free"
     -sNO_EXIT_RUNTIME=1)
 else()
   add_executable(face_native src/main_native.c)

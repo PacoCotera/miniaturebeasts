@@ -23,7 +23,7 @@ static void stage_dither(void) {
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
-  snprintf(prim_text(), (size_t)prim_text_size(), "%s", ops);
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
   v_region("stage", LAYER_ART); prim_node(v_id("stage.dither"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
 static void draw(void) {

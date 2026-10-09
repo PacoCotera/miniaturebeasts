@@ -21,6 +21,8 @@ void prim_tag(int layer, const char *region);
    The text is read from prim_text() for a text node. */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
 void prim_end(void);
+char *prim_ops(void);           /* a 128 KiB buffer for the ops of a composed node (JSON), filled before the node */
+int prim_ops_size(void);
 char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL ended) before a text node or a measure */
 int prim_text_size(void);
 int prim_measure(int px);       /* the width in px of prim_text() set in Inter at px */

@@ -60,6 +60,8 @@ void face_node_tag(int layer);
 void face_test_pass(int pass);
 int face_test_offpalette(void);
 int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *colour);   /* one focus ring word on a box (the checks of the word alone); the nodes refused */
+char *face_ops(void);   /* the buffer for a composed node's ops (128 KiB) */
+int face_ops_size(void);
 void face_selftest_scene(void);   /* a fixed scene for the parity check (selftest.c) */
 #ifdef __cplusplus
 }

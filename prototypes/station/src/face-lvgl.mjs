@@ -46,6 +46,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   }
   const fnv = (str) => { let h = 2166136261; for (const b of enc.encode(str)) { h ^= b; h = Math.imul(h, 16777619); } return h >>> 0; };
   const setText = (str) => { const b = enc.encode(str), cap = M._face_text_size() - 1, p = M._face_text(); if (b.length > cap) throw new Error(`the face's text buffer holds ${cap} bytes; "${String(str).slice(0, 24)}…" is ${b.length}`); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
+  const setOps = (str) => { const b = enc.encode(str), cap = M._face_ops_size() - 1, p = M._face_ops(); if (b.length > cap) throw new Error(`the face's ops buffer holds ${cap} bytes; a composed picture of ${b.length} is refused`); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
   const setRegion = (name) => { const b = enc.encode(String(name)).subarray(0, 47), p = M._face_region(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
   const measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
 
@@ -90,7 +91,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
         node(n.id, KIND.clip, x, y, w, h, 0, kids.length, 0, n);
         for (const [c, hd] of kids) { const [cx, cy, cw, ch] = c.rect; node(c.id, KIND.sprite, cx, cy, cw, ch, 0, hd, 0, { ...c, region: n.region ?? n.id }); }
       }
-      else if (n.kind === "composed") { setText(JSON.stringify(n.ops)); node(n.id, KIND.composed, x, y, w, h, 0, 0, 0, n); }
+      else if (n.kind === "composed") { setOps(JSON.stringify(n.ops)); node(n.id, KIND.composed, x, y, w, h, 0, 0, 0, n); }
       else if (n.kind === "nineSlice") {   // the insets [l, t, r, b] packed a byte each, the edge tile in b
         const hd = handleOf(n.asset, env.picture), sl = env.slice(n.asset);
         if (hd < 0 || !sl || sl.some((v) => v < 0 || v > 255)) left.push(n); else node(n.id, KIND.nine, x, y, w, h, ((sl[0] << 24) | (sl[1] << 16) | (sl[2] << 8) | sl[3]) >>> 0, hd, env.tile(n.asset), n);

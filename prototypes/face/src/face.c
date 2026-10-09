@@ -88,6 +88,8 @@ void face_scene_begin(void) { prim_begin(); }
 void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) { prim_node(id, kind, x, y, w, h, rgb, a, b); }
 void face_scene_end(void) { prim_end(); wire_changed(); }
 char *face_text(void) { return prim_text(); }
+char *face_ops(void) { return prim_ops(); }
+int face_ops_size(void) { return prim_ops_size(); }
 int face_text_size(void) { return prim_text_size(); }
 int face_measure(int px) { return prim_measure(px); }
 uint8_t *face_asset(int handle, int w, int h) { return prim_asset(handle, w, h); }
