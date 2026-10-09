@@ -1641,5 +1641,175 @@
    "thoughtsTokenCount": 223,
    "totalTokenCount": 2042
   }
+ },
+ {
+  "tag": "concept-06-habitat try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.225652,
+  "mxn": 4.513,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:21:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1286,
+   "candidatesTokenCount": 1563,
+   "thoughtsTokenCount": 296,
+   "totalTokenCount": 3145
+  }
+ },
+ {
+  "tag": "concept-11-bench try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.224986,
+  "mxn": 4.4997,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:22:13Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1253,
+   "candidatesTokenCount": 1508,
+   "thoughtsTokenCount": 346,
+   "totalTokenCount": 3107
+  }
+ },
+ {
+  "tag": "concept-06b-habitat-meet try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.2192,
+  "mxn": 4.384,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:22:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1300,
+   "candidatesTokenCount": 1477,
+   "thoughtsTokenCount": 328,
+   "totalTokenCount": 3105
+  }
+ },
+ {
+  "tag": "concept-06c-habitat-child try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.24221,
+  "mxn": 4.8442,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:23:00Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1285,
+   "candidatesTokenCount": 1601,
+   "thoughtsTokenCount": 396,
+   "totalTokenCount": 3282
+  }
+ },
+ {
+  "tag": "concept-06d-habitat-armed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.2206,
+  "mxn": 4.412,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:23:19Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1280,
+   "candidatesTokenCount": 1507,
+   "thoughtsTokenCount": 310,
+   "totalTokenCount": 3097
+  }
+ },
+ {
+  "tag": "concept-06e-habitat-empty try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22469,
+  "mxn": 4.4938,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:23:38Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1285,
+   "candidatesTokenCount": 1456,
+   "thoughtsTokenCount": 395,
+   "totalTokenCount": 3136
+  }
+ },
+ {
+  "tag": "concept-06f-habitat-away try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.265378,
+  "mxn": 5.3076,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:24:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1289,
+   "candidatesTokenCount": 1639,
+   "thoughtsTokenCount": 551,
+   "totalTokenCount": 3479
+  }
+ },
+ {
+  "tag": "concept-11b-bench-armed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.231696,
+  "mxn": 4.6339,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:24:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1248,
+   "candidatesTokenCount": 1514,
+   "thoughtsTokenCount": 396,
+   "totalTokenCount": 3158
+  }
+ },
+ {
+  "tag": "concept-11c-bench-away try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.248724,
+  "mxn": 4.9745,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:24:47Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1242,
+   "candidatesTokenCount": 1595,
+   "thoughtsTokenCount": 457,
+   "totalTokenCount": 3294
+  }
+ },
+ {
+  "tag": "concept-11d-bench-tier2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.236976,
+  "mxn": 4.7395,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:25:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1248,
+   "candidatesTokenCount": 1599,
+   "thoughtsTokenCount": 355,
+   "totalTokenCount": 3202
+  }
  }
 ]
