@@ -21,7 +21,7 @@ const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registe
 const centred = ([w, h], pic) => { const pb = new PB(w, h); pb.blit(pic, Math.round((w - pic.w) / 2), Math.round((h - pic.h) / 2)); return pb; };
 // The pod at the exact size of its box, never scaled: the stage's three classes from the signed layers recoloured by the species' pair (podmasters.mjs); the list's 40×48
 // box holds the 32×40 placeholder sprite placed 1:1 in its middle until its master is re-cut; a class whose layers are not placed is an empty (transparent) picture.
-const UNKNOWN_PAIR = () => [HEX[C[SPECS.pods.podLayers.unknown.A]], HEX[C[SPECS.pods.podLayers.unknown.B]]];
+const UNKNOWN_PAIR = () => [HEX[C.stone], HEX[C.bone]];   // only until the signed pod-<class>-unknown pictures are placed
 const podClass = ([bw, bh]) => { const classes = SPECS.pods.classes.pod; return Object.keys(classes).find((k) => classes[k][0] === bw && classes[k][1] === bh); };
 const podComposed = (size) => { const cls = podClass(size); return !!cls && cls !== "list" && layersPlaced(cls); };   // a pod from the signed layers is painted art, not the palette's
 function podPicture(species, state, [bw, bh], env) {
@@ -93,15 +93,19 @@ export function stampPicture(frame, genome, readIds) {
   return { N, cell, size, build: () => fromRGBA(rasterize(stampGeometry(sg), N * cell, { ss: 3, size })) };
 }
 
+// A picture that is a placed master of another id at exactly this size takes that master (a mark, a place picture, the unknown pod); otherwise the stand-in builds.
+const masterAt = (masterId, w, h) => { const m = assetEntry(masterId); return m && m.status === "master" && m.w === w && m.h === h ? m : null; };
+const putOrMaster = (id, masterId, w, h, until, build, extra = {}) => { const m = masterId && masterAt(masterId, w, h); if (m) { if (!hasAsset(id)) placeMaster({ id, w, h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile }, assetOf(masterId)); return id; } return put(id, w, h, until, build, extra); };
+
 // Register what a view asked for. `env`: { podById, frameOf }. Returns nothing; the ids are in the requests.
 export function registerPictures(reqs, env) {
   for (const r of reqs) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
-      case "pod": { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
+      case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${podClass(r.size)}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${podClass(r.size)}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
       case "well": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, wellArt(r.current, 30))); break;
       case "ring": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31))); break;
-      case "place": put(r.id, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
+      case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
       case "placepanel": put(r.id, r.size[0], r.size[1], "the collection's place master", () => placePanelPB(r.size[0], r.size[1])); break;
       case "cring": put(r.id, r.size, r.size, "the pod list master", () => collectionRingPB(r.read, r.size)); break;
       case "kinring": put(r.id, r.size, r.size, "the pod list master", () => kinRingPB(r.size)); break;
@@ -115,11 +119,11 @@ export function registerPictures(reqs, env) {
         else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], policy: "painted", until: r.until });
         break;
       }
-      case "hatch": put(r.id, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0])); break;
+      case "hatch": putOrMaster(r.id, `ring-hatch-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0])); break;
       case "cradle": put(r.id, 224, 40, "the pod renderer's masters", cradlePB); break;
       case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1])); break;
       case "emblem": put(r.id, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
-      case "star": put(r.id, 12, 12, "the glint master", starPB); break;
+      case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB); break;
       case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPB(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;
       case "key": put(r.id, 44, 64, "the chapter seals' master", keyPB); break;

@@ -980,15 +980,10 @@
  "podLayers": {
   "patterns": {
    "dots": "dots",
-   "ribs": "stripes",
-   "segments": "bands",
-   "plates": "bands"
+   "stripes": "stripes",
+   "bands": "bands"
   },
-  "unknown": {
-   "A": "stone",
-   "B": "bone"
-  },
-  "note": "derived, art director and UI designer to confirm: the masters carry the pattern layers dots, stripes and bands; the frames' shell patterns (smooth dots, soft ribs, segments, plates) take dots, stripes, bands and bands; a pod of a species not yet known is a grey one (stone) with a bone accent"
+  "note": "art director, 2026-10-09: the pattern layer per species is the frames' data: a shell pattern of dots, stripes or bands uses that layer directly; any other word (soft ribs, segments, plates) has no layer yet and draws none, and comes to the art director for a new layer, never forced onto the nearest. The unknown pod is the signed pod-<class>-unknown picture placed by id; the shadow is the signed slice per class (160×14, 136×14, 120×14), centred on the foot line, none for the list pod."
  },
  "shadow": {
   "widen": 16,

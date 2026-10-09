@@ -36,9 +36,13 @@ export function check(root = dest) {
   }
   return problems;
 }
-export function place({ from, ids = [], group, dryRun = false, root = dest, headings = true, by = null }) {
+export function place({ from, ids = [], group, dryRun = false, root = dest, headings = true, by = null, byStatus = false }) {
   const manifest = JSON.parse(readFileSync(path.join(from, "slices/manifest.json"), "utf8")), readme = readFileSync(path.join(from, "README.md"), "utf8");
   const signed = headings ? signedIds(readme) : new Map(), want = new Map([...signed].filter(([id]) => manifest[id]));
+  // --status: the studio's own record (slices/status.json): `signed` slices are placed as signed; `placeholder` and `held` ones are placed too, flagged in the index as not final (never shown to the owner as final); `new` (cut, not yet signed) and `withdrawn` are not placed
+  const flags = new Map();
+  if (byStatus) { const st = JSON.parse(readFileSync(path.join(from, "slices/status.json"), "utf8"));
+    for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held"].includes(e.status)) { want.set(id, e.signed_in ? `signed, ${e.signed_in}` : e.status); if (e.status !== "signed") flags.set(id, `${e.status}, not final${e.note ? ": " + e.note : ""}`); } }
   for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, "named with --ids"); }
   const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} };
   const placed = [], skipped = [];
@@ -47,7 +51,7 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
     if (w !== m.size[0] || h !== m.size[1]) throw new Error(`${id}: the file is ${w}×${h}, its manifest says ${m.size.join("×")}`);
     if (sha(buf) !== m.sha256) throw new Error(`${id}: the file does not match its manifest hash`);
     const file = `${group}/${id}.png`; placed.push(id);
-    index.masters[id] = { file, w, h, sha256: m.sha256, signed: by ?? who, ...(m.nine ? { slice: [m.nine.insets.left, m.nine.insets.top, m.nine.insets.right, m.nine.insets.bottom], tile: m.nine.edgeTile } : {}) };   // a nine-slice master: its insets [l, t, r, b] and the edge tile
+    index.masters[id] = { file, w, h, sha256: m.sha256, signed: flags.get(id) ?? by ?? who, ...(m.nine ? { slice: [m.nine.insets.left, m.nine.insets.top, m.nine.insets.right, m.nine.insets.bottom], tile: m.nine.edgeTile } : {}) };   // a nine-slice master: its insets [l, t, r, b] and the edge tile
     if (!dryRun) { mkdirSync(path.join(root, group), { recursive: true }); copyFileSync(src, path.join(root, file)); }
   }
   for (const id of Object.keys(manifest)) if (!want.has(id)) skipped.push(id);
@@ -57,7 +61,7 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (flag("check")) { const p = existsSync(indexFile) ? check() : []; for (const x of p) console.error("FAIL " + x); console.log(`masters: ${Object.keys(readIndex().masters).length} placed, ${p.length} problems`); process.exit(p.length ? 1 : 0); }
-  const from = arg("from"); if (!from) { console.error("usage: place-masters.mjs --from <masters folder> [--ids a,b [--only]] [--by <who signed>] [--group pods] [--dry] | --check"); process.exit(2); }
-  const r = place({ from: path.resolve(from), ids: (arg("ids") ?? "").split(",").filter(Boolean), group: arg("group") ?? path.basename(path.resolve(from)), dryRun: flag("dry"), headings: !flag("only"), by: arg("by") });
+  const from = arg("from"); if (!from) { console.error("usage: place-masters.mjs --from <masters folder> [--ids a,b [--only]] [--by <who signed>] [--group pods] [--dry] [--status] | --check"); process.exit(2); }
+  const r = place({ from: path.resolve(from), ids: (arg("ids") ?? "").split(",").filter(Boolean), group: arg("group") ?? path.basename(path.resolve(from)), dryRun: flag("dry"), headings: !flag("only") && !flag("status"), by: arg("by"), byStatus: flag("status") });
   console.log(`placed ${r.placed.length}: ${r.placed.join(", ")}\nnot signed (left as stand-ins): ${r.skipped.length}`);
 }
