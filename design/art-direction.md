@@ -22,6 +22,9 @@ rendering, no nursery colours, no storybook ornament.
   rounded volume, eyes and markings readable at about 280×300 pixels.
 - **Station and larger displays:** a matched richer treatment of the same
   creature, with the same trait boundaries.
+- **The Station itself:** rugged, matte field gear, the Companion's sibling,
+  whose job is keeping small lives going. Its look is in the
+  [style guide](style-guide/README.md#the-station).
 
 The reference is the Pip device proof in
 [`art/miniature-lives/`](../art/miniature-lives/README.md). It shows the plain
