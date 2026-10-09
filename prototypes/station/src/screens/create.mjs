@@ -6,7 +6,7 @@ import { SW, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art,
 import { podSprite } from "../podsprites.mjs";
 import { emblemArt, traitPic, frostPic, famArt, stampArt, domeArt, mistyArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, podById } from "../game.mjs";
-import { benchBg, drawTop, beam } from "./frame.mjs";
+import { benchBg, beam } from "./frame.mjs";
 import { podFrame } from "./home.mjs";
 import * as S from "../state.mjs";
 import { traitState, codeText, genomeDigest } from "../genome.mjs";
@@ -19,8 +19,7 @@ export function openCreate(p) { UI.create = { podId: p.id, choices: {}, f: 0, cl
 const reviewTraits = (p) => { const fr = podFrame(p); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => ({ t, c }))); };
 const surprises = (p) => podFrame(p).chapters.filter((c) => !p.read.includes(c.id)).map((c) => c.name);
 function draw() {
-  benchBg(); drawTop("Create");
-  const cr = CR(), p = pod(); if (!p) { goScreen("pods"); return; }
+  benchBg();   const cr = CR(), p = pod(); if (!p) { goScreen("pods"); return; }
   const fr = podFrame(p), genome = S.founderGenome(p, cr.choices), list = reviewTraits(p), changed = S.changedTraits(cr.choices), clash = cr.clash;
   beam(512, 44, 320, 330);
   // the chapter rail: read chapters lit, unread ones named as surprises

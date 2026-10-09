@@ -139,7 +139,7 @@ test("the frame components place the spec's regions and set every string in Inte
   assert.ok(!nodes.some((n) => n.kind === "text" && /Companion|docked/.test(n.text)), "no words in the Companion's zone");
   // the bottom line: the verb in the action's colour after its cap's room, the price, the way back, 24 px apart; the context centred; the notice right-aligned to 1008 with its lamp
   assert.equal(texts.find((n) => n.id === "line.a.0.0").text, "Read Coat"); assert.equal(texts.find((n) => n.id === "line.a.0.0").rect[0], 16 + 16 + 4, "the verb starts after the 16 px cap and 4 px");
-  const price = nodes.find((n) => n.id === "line.a.1.0" || n.id === "line.a.1.1"), verbEnd = byId["line.a.0.0"].rect[0] + byId["line.a.0.0"].rect[2]; assert.ok(price.rect[0] - verbEnd === 24 || price.kind === "sprite", "the price is 24 px after the verb");
+  const price = byId["line.a.1.0"], verbEnd = byId["line.a.0.0"].rect[0] + byId["line.a.0.0"].rect[2]; assert.equal(price.kind, "text"); assert.equal(price.rect[0] - verbEnd, 24, "the price is 24 px after the verb");
   assert.ok(!texts.some((n) => /·/.test(n.text)), "no dots in the frame");
   assert.deepEqual(byId["line.need.lamp"].rect.slice(2), [12, 12]);
   const need = nodes.filter((n) => n.id.startsWith("line.need") && n.kind !== "rect"); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 904, "the notice ends at x 904");

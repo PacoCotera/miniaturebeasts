@@ -5,7 +5,7 @@
 import { SW, C, R, blit, text, textW, clipText, wrapText, panel, focusRing, art, PB, clamp, clock, motion } from "../gfx.mjs";
 import { mibiArt, ghostArt, traitPic, stampArt, paintedArt, famArt } from "../art.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, mibiById, effWithId } from "../game.mjs";
-import { benchBg, drawTop, beam } from "./frame.mjs";
+import { benchBg, beam } from "./frame.mjs";
 import { landedSet } from "../caddy.mjs";
 import * as S from "../state.mjs";
 import { frameOf, traitState, codeText, genomeDigest } from "../genome.mjs";
@@ -31,8 +31,7 @@ function fourSlots(seeds) {
 }
 function parentArt(m, size) { const set = landedSet(m); if (set) return paintedArt(set, m.sha, size, size, { sprite: true }); const fr = frameOf(S.speciesOf(m)); return fr && m.genome ? mibiArt(fr, m.genome, size, size, "portrait") : null; }
 function draw() {
-  benchBg(); drawTop("Cross");
-  const x = X(), [a, b] = pair(); if (!a) { goScreen("habitat"); return; }
+  benchBg();   const x = X(), [a, b] = pair(); if (!a) { goScreen("habitat"); return; }
   const fr = frameOf(S.speciesOf(a)), partners = S.crossPartners(G.st, G.sv, a, G.settings);
   // the parents, left and right, alive; their names and stamps on plates
   const side = (m, px, label) => {

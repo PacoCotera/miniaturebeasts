@@ -10,5 +10,5 @@ export function markNode(id, assetId, rect, until) {
 // A mark that has a flat stand-in drawn from the frame's own shapes (a lamp is a filled square): the master when one is placed, the square until then.
 export function markOr(id, assetId, rect, until, fallback) {
   const m = markNode(id, assetId, rect, until);
-  return m.length ? m : [fallback];
+  return m.length ? m : [{ ...fallback, standIn: until }];   // a build state, never a showing: the node says what it stands in for, until the signed master fills the slot
 }

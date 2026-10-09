@@ -13,9 +13,9 @@ export function ringAsset(shape, w, h, colour, width, radius) {
 }
 // The ring on a slanted rail tab: its two slants 4 px outside the tab, a top run at y 42, rounded bottom corners, a sprite at the box (x - 4, 42, w + 24, 42).
 export function tabRingAsset(w, colour, spec) {
-  const r = spec.focus.ring, rt = tabRingMask(w, { tab: r.tab, width: r.width }), id = `ring:tab:${w}:${colour}:${r.width}`;
-  registerAsset({ id, w: rt.w, h: rt.h, status: "master", until: null, build: (e, env) => env.mask(e.w, e.h, rt.mask, colour) });
-  return { id, w: rt.w, h: rt.h };
+  const r = spec.focus.ring, t = r.tab, W = w + 2 * t.outside + t.slant, H = t.bottom - t.top, id = `ring:tab:${w}:${colour}:${r.width}`;   // the box's size from the spec; the mask is built once, when the picture is first drawn
+  registerAsset({ id, w: W, h: H, status: "master", until: null, build: (e, env) => env.mask(e.w, e.h, tabRingMask(w, { tab: t, width: r.width, tabTop: spec.regions.rail.y }).mask, colour) });
+  return { id, w: W, h: H };
 }
 // The well's ring: a circle of radius r (outer) round the well's centre, 2 px wide; `at` is the circle's centre on the screen. Pods spec: regions.well.focus.
 export function circleRing(id, at, radius, width, colour = "focus") {
