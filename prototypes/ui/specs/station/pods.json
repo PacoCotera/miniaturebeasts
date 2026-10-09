@@ -1211,6 +1211,31 @@
    "fallback": "none",
    "initial": "rail.open",
    "back": "overview, the ring on this tab"
+  },
+  "compare": {
+   "rail": {
+    "stepper": [
+     "left",
+     "right"
+    ],
+    "up": "none",
+    "down": "none"
+   },
+   "fallback": "none",
+   "initial": "rail.open",
+   "back": "overview, the ring on the kin that opened Compare"
+  }
+ },
+ "keys": {
+  "compare": {
+   "targets": "the rail's tabs, rail.0 to rail.(n - 1) (group rail, index i), as on the chapter page; the ring on the open chapter's tab, in the tab target's ring form (targets.tab) with the chrome lift. In Compare, rail.open resolves to rail.<ui.cmp.ci>",
+   "opens": "✓ on a kin in the overview opens Compare on the species' first chapter: the focus rail.0",
+   "left": "step:left: the previous chapter in ring order, sealed ones included, on both pages; the focus is set to its tab; on the first chapter nothing changes, never a wrap",
+   "right": "step:right: the next chapter on both pages; the focus is set to its tab; on the last chapter nothing changes, never a wrap",
+   "up": "none: the ring stays and nothing is sent",
+   "down": "none: the ring stays and nothing is sent",
+   "confirm": "nothing: Compare has no ✓ cap",
+   "back": "closes Compare: the overview with the ring on the kin that opened it (kin.<i>, the kin whose pod is ui.cmp.b), else on the pod; the way back reads the pod's name (frame.json navigation pods.compare)"
   }
  },
  "targets": {
@@ -1226,7 +1251,12 @@
   },
   "tab": {
    "group": "rail",
-   "ring": "tab"
+   "ring": "tab",
+   "states": [
+    "overview",
+    "chapter",
+    "compare"
+   ]
   },
   "kin": {
    "group": "kin",
