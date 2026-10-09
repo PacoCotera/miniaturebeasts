@@ -1,0 +1,180 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 960" width="1440" height="960" font-family="Inter, ui-sans-serif, system-ui, sans-serif">
+<title>The Station's coloured key set from the screen map: Home, Vivarium, Research, Library on the four workspace positions, beside Home. The device front at 4 px/mm; the screen is wireframe 15a at 0.6×.</title>
+<rect width="1440" height="960" fill="#fafaf8"/>
+<text x="24" y="32" font-size="20" fill="#222" font-weight="700">The coloured key set: four keys, one per section family on the screen map (proposal)</text>
+<text x="24" y="54" font-size="12" fill="#555">The Station front at 4 px/mm (215×190 mm body, paper positions from the device-family concepts); the screen shows Home (15a) at 0.6×. Each key opens its section's whole from anywhere and never spends.</text>
+<rect x="24" y="88" width="860" height="760" rx="48" fill="#d9dccf" stroke="#6b705f" stroke-width="2"/>
+<rect x="124.2" y="160" width="659.6" height="497.1" rx="6" fill="#2a2d33" stroke="#1f2430" stroke-width="1.5"/>
+<svg x="145.6" y="208.0" width="616.9" height="361.4" viewBox="0 0 1024 600">
+
+<defs><pattern id="g8h" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8h)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="16.5" y="48.5" width="655" height="503" fill="#f1f1ee" stroke="#444" stroke-width="1"/>
+<text x="668" y="56" font-size="7" fill="#777" text-anchor="end">vivarium panel: bezel 16,48 656×504 · glass 24,56 640×488</text>
+<rect x="24.5" y="56.5" width="639" height="487" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<line x1="24" y1="300.5" x2="664" y2="300.5" stroke="#e0b880" stroke-dasharray="4 3"/>
+<text x="452" y="314" font-size="9" fill="#a07040">ground 24,300 640×228</text>
+<text x="40" y="80" font-size="10" fill="#2b6cb0">The vivarium panel. Reads first: the residents.</text>
+<text x="40" y="93" font-size="10" fill="#2b6cb0">Targets: each resident (the feet ring, ✓ Look at → one mibi up close);</text>
+<text x="40" y="106" font-size="10" fill="#2b6cb0">the panel itself (▲ past the top resident: a round ring 12,44 664×512,</text>
+<text x="40" y="119" font-size="10" fill="#2b6cb0">✓ Open the vivarium → the whole, full screen); the rest knob (✓ Rest → Idle).</text>
+<rect x="40.5" y="264.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="46" y="278" font-size="9" fill="#7d3a10">adult 144×152 · Bean</text>
+<ellipse cx="112" cy="416" rx="80" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<rect x="88.5" y="440.5" width="47" height="23" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<text x="112" y="457" font-size="13" fill="#f1ebdf" text-anchor="middle">Bean</text>
+<rect x="200.5" y="320.5" width="103" height="111" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="206" y="334" font-size="9" fill="#7d3a10">juvenile 104×112</text>
+<rect x="296.5" y="336.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="302" y="350" font-size="9" fill="#7d3a10">adult</text>
+<rect x="448.5" y="472.5" width="191" height="55" fill="#efe0c8" stroke="#8a6a44" stroke-width="1"/>
+<rect x="472.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="478" y="376" font-size="9" fill="#7d3a10">asleep: the carried set,</text>
+<text x="478" y="388" font-size="9" fill="#7d3a10">one to three, 48 apart</text>
+<text x="452" y="522" font-size="8" fill="#8a6a44">with-you bed 448,472 192×56</text>
+<rect x="624.5" y="544.5" width="31" height="7" fill="#d8d8d8" stroke="#666" stroke-width="1"/>
+<text x="616" y="541" font-size="7" fill="#777" text-anchor="end">rest knob 624,544</text>
+<rect x="688.5" y="48.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="76" font-size="14" fill="#5d6470">Cargo</text>
+<rect x="984.5" y="60.5" width="11" height="11" fill="#e8a33d" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="56.5" width="175" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="704" y="115" font-size="9" fill="#777">crates in the bay, up to three</text>
+<text x="704" y="126" font-size="9" fill="#777">✓ → the Cargo section</text>
+<rect x="688.5" y="152.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="180" font-size="14" fill="#5d6470">Pods</text>
+<rect x="984.5" y="164.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="160.5" width="175" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="704" y="219" font-size="9" fill="#777">the rack: six wells, the glints</text>
+<text x="704" y="230" font-size="9" fill="#777">✓ → Pods, the collection</text>
+<rect x="688.5" y="256.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="284" font-size="14" fill="#5d6470">Incubator</text>
+<rect x="984.5" y="268.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="264.5" width="175" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="704" y="323" font-size="9" fill="#777">the dome and its leaves</text>
+<text x="704" y="334" font-size="9" fill="#777">✓ → the Incubator (the bridge)</text>
+<rect x="688.5" y="360.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="388" font-size="14" fill="#5d6470">Probe</text>
+<rect x="984.5" y="372.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="368.5" width="175" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="704" y="427" font-size="9" fill="#777">the Probe, its Shield plates, the sitting</text>
+<text x="704" y="438" font-size="9" fill="#777">✓ → the Probe bench</text>
+<rect x="688.5" y="464.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="492" font-size="14" fill="#5d6470">Library</text>
+<rect x="984.5" y="476.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="472.5" width="175" height="39" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="704" y="531" font-size="9" fill="#777">the field journal; a glint for a new page</text>
+<text x="704" y="542" font-size="9" fill="#777">✓ → the Library, the spread</text>
+<text x="1006" y="46" font-size="7" fill="#777" text-anchor="end">section column 688,48 320×504 · five modules 320×88 on a 104 pitch</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Home</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Look at Bean</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">an adult Untuva</text>
+<rect x="692.5" y="576.5" width="11" height="11" fill="#e8a33d" stroke="#444" stroke-width="1"/>
+<text x="896" y="587" font-size="13" fill="#b7791f" text-anchor="end">a crate waits in the bay</text>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#e8962f" stroke="#444" stroke-width="1"/></svg>
+<text x="132.2" y="647.0799999999999" font-size="10" fill="#c9ccd2">module outline 164.9×124.3 mm at (25.05, 18) mm · screen 1024×600 drawn at 0.6× (0.1506 mm a pixel)</text>
+<circle cx="124" cy="720" r="60" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="124" cy="720" r="52" fill="#34373c"/>
+<path transform="translate(124,690) rotate(0)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
+<path transform="translate(154,720) rotate(90)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
+<path transform="translate(124,750) rotate(180)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
+<path transform="translate(94,720) rotate(270)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
+<text x="124" y="796" font-size="11" fill="#444" text-anchor="middle">pad</text>
+<rect x="244" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="280" cy="752" r="30" fill="#e8962f" stroke="#1f2430" stroke-width="1.5"/>
+<text x="280" y="804" font-size="12" fill="#222" text-anchor="middle" font-weight="700" letter-spacing="0.08em">HOME</text>
+<rect x="340" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="376" cy="752" r="30" fill="#63a046" stroke="#1f2430" stroke-width="1.5"/>
+<text x="376" y="804" font-size="12" fill="#222" text-anchor="middle" font-weight="700" letter-spacing="0.08em">VIVARIUM</text>
+<rect x="436" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="472" cy="752" r="30" fill="#2a9f90" stroke="#1f2430" stroke-width="1.5"/>
+<text x="472" y="804" font-size="12" fill="#222" text-anchor="middle" font-weight="700" letter-spacing="0.08em">RESEARCH</text>
+<rect x="532" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
+<circle cx="568" cy="752" r="30" fill="#8460cd" stroke="#1f2430" stroke-width="1.5"/>
+<text x="568" y="804" font-size="12" fill="#222" text-anchor="middle" font-weight="700" letter-spacing="0.08em">LIBRARY</text>
+<line x1="280" y1="692" x2="568" y2="692" stroke="#555" stroke-width="1"/>
+<line x1="280" y1="688" x2="280" y2="696" stroke="#555" stroke-width="1"/>
+<text x="280" y="684" font-size="10" fill="#444" text-anchor="middle">x 64</text>
+<line x1="376" y1="688" x2="376" y2="696" stroke="#555" stroke-width="1"/>
+<text x="376" y="684" font-size="10" fill="#444" text-anchor="middle">x 88</text>
+<line x1="472" y1="688" x2="472" y2="696" stroke="#555" stroke-width="1"/>
+<text x="472" y="684" font-size="10" fill="#444" text-anchor="middle">x 112</text>
+<line x1="568" y1="688" x2="568" y2="696" stroke="#555" stroke-width="1"/>
+<text x="568" y="684" font-size="10" fill="#444" text-anchor="middle">x 136</text>
+<text x="424" y="708" font-size="10" fill="#444" text-anchor="middle">24 mm pitch, 18 mm caps reserved, y 166 mm</text>
+<circle cx="704" cy="720" r="30" fill="#4a4d52" stroke="#1f2430" stroke-width="1.5"/>
+<text x="704" y="726" font-size="22" fill="#e9e6df" text-anchor="middle" font-weight="700">←</text>
+<circle cx="804" cy="720" r="34" fill="#f0661a" stroke="#1f2430" stroke-width="1.5"/>
+<text x="804" y="728" font-size="26" fill="#fff8ef" text-anchor="middle" font-weight="700">✓</text>
+<text x="704" y="772" font-size="10" fill="#444" text-anchor="middle">x 170</text>
+<text x="804" y="772" font-size="10" fill="#444" text-anchor="middle">x 195</text>
+<text x="912" y="96" font-size="14" fill="#222" font-weight="700">What each key opens, and where the ring lands</text>
+<circle cx="924" cy="130" r="11" fill="#e8962f" stroke="#1f2430" stroke-width="1"/>
+<text x="944" y="135" font-size="13" fill="#222" font-weight="700">Home</text>
+<text x="1416" y="135" font-size="10" fill="#777" text-anchor="end">#e8962f</text>
+<text x="944" y="156" font-size="11" fill="#333">Opens Home, the ring on the room (what needs you).</text>
+<text x="944" y="171" font-size="11" fill="#333">On Home: the ring back to the room.</text>
+<text x="944" y="186" font-size="11" fill="#333">Its mark titles Home and Cargo.</text>
+<circle cx="924" cy="221" r="11" fill="#63a046" stroke="#1f2430" stroke-width="1"/>
+<text x="944" y="226" font-size="13" fill="#222" font-weight="700">Vivarium</text>
+<text x="1416" y="226" font-size="10" fill="#777" text-anchor="end">#63a046</text>
+<text x="944" y="247" font-size="11" fill="#333">Opens the Vivarium's whole (15b), the ring on the mibi</text>
+<text x="944" y="262" font-size="11" fill="#333">last seen up close: its resident, or its bay tile while it is</text>
+<text x="944" y="277" font-size="11" fill="#333">out with the Companion. None seen yet: the first resident</text>
+<text x="944" y="292" font-size="11" fill="#333">from the left; none at home: the first bay.</text>
+<text x="944" y="307" font-size="11" fill="#333">From one mibi up close: the whole, the ring on that mibi.</text>
+<text x="944" y="322" font-size="11" fill="#333">Its mark titles the Vivarium, one mibi, Cross, Sitting.</text>
+<circle cx="924" cy="357" r="11" fill="#2a9f90" stroke="#1f2430" stroke-width="1"/>
+<text x="944" y="362" font-size="13" fill="#222" font-weight="700">Research</text>
+<text x="1416" y="362" font-size="10" fill="#777" text-anchor="end">#2a9f90</text>
+<text x="944" y="383" font-size="11" fill="#333">Opens Pods, the collection, the ring on the pod that most</text>
+<text x="944" y="398" font-size="11" fill="#333">needs the player: a new one, then a glinting one, then the first.</text>
+<text x="944" y="413" font-size="11" fill="#333">From a pod, a chapter, Compare or Create: the collection.</text>
+<text x="944" y="428" font-size="11" fill="#333">Its mark titles Pods, Create, the Incubator, the Probe.</text>
+<circle cx="924" cy="463" r="11" fill="#8460cd" stroke="#1f2430" stroke-width="1"/>
+<text x="944" y="468" font-size="13" fill="#222" font-weight="700">Library</text>
+<text x="1416" y="468" font-size="10" fill="#777" text-anchor="end">#8460cd</text>
+<text x="944" y="489" font-size="11" fill="#333">Opens the Library's spread, the ring on the frame it was</text>
+<text x="944" y="504" font-size="11" fill="#333">last on. From the Book: the spread, the ring on that species.</text>
+<text x="944" y="519" font-size="11" fill="#333">Its mark titles the Library and the Book.</text>
+<line x1="912" y1="544" x2="1416" y2="544" stroke="#ccc"/>
+<text x="912" y="568" font-size="11" fill="#222" font-weight="700">Every key</text>
+<text x="984" y="568" font-size="11" fill="#333">never spends; it drops Create's and Cross's unpaid choices</text>
+<text x="984" y="583" font-size="11" fill="#333">and closes the namer, writing nothing; while a moment holds</text>
+<text x="984" y="598" font-size="11" fill="#333">input (the arrival, the hatch), it waits.</text>
+<text x="912" y="619" font-size="11" fill="#222" font-weight="700">No key</text>
+<text x="984" y="619" font-size="11" fill="#333">Cargo, the Incubator, the Probe: one press from Home's</text>
+<text x="984" y="634" font-size="11" fill="#333">column. Cargo calls from the room (the amber module and the</text>
+<text x="984" y="649" font-size="11" fill="#333">notice); the Incubator is reached by its jumps too.</text>
+<text x="912" y="670" font-size="11" fill="#222" font-weight="700">The row</text>
+<text x="984" y="670" font-size="11" fill="#333">reads like Home: the Vivarium at the left as the panel is,</text>
+<text x="984" y="685" font-size="11" fill="#333">the column's sections to the right, the Library at its foot.</text>
+<text x="912" y="706" font-size="11" fill="#222" font-weight="700">Fit</text>
+<text x="984" y="706" font-size="11" fill="#333">four keys on the four positions, x 64, 88, 112, 136 mm:</text>
+<text x="984" y="721" font-size="11" fill="#333">no hardware change. Engravings: VIVARIUM replaces HABITAT,</text>
+<text x="984" y="736" font-size="11" fill="#333">and positions 2 to 4 reorder. A fifth key does not fit:</text>
+<text x="984" y="751" font-size="11" fill="#333">15 mm free left of x 64 and 16 mm right of x 136, an 18 mm cap.</text>
+</svg>
