@@ -218,6 +218,8 @@ window.__st.wordsCheck = async ({ attribute = true, capture = false } = {}) => {
   const body = podsProps(m, SPECS.pods, SPECS.frame), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById, frameOf });
   const ids = new Set(reqs.map((r) => r.id)); (function walk(o) { if (typeof o === "string") { if (assetEntry(o)) ids.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v); })([SPECS.frame.regions, body.props]);
+  { const wid0 = hasWorld() ? S.withId(G.sv) : null, wm0 = wid0 == null ? null : mibiById(wid0), key0 = wm0 ? S.spName(wm0).toLowerCase() : null, fm = SPECS.frame.regions?.marks?.face || {};
+    for (const t of [fm.docked, fm.away, fm.empty]) if (typeof t === "string") ids.add(key0 ? t.replace("{mibi}", key0) : t); }   // the companion's face, docked or away, as the frame resolves it
   const pinned = pinnedPictures(SPECS.pods, SPECS.frame); for (const p of pinned) ids.add(p.id);
   const wid = hasWorld() ? S.withId(G.sv) : null, wm = wid == null ? null : mibiById(wid), withMibi = wm ? S.spName(wm).toLowerCase() : null;   // the live companion, as the frame screen reads it
   const frame = { top: { screen: "pods", title: "Pods", turn: G.st.turn + 1, turnFlash: false, materials: { e: G.st.e, d: G.st.d, s: G.st.s }, flash: {}, companion: { docked: docked(), withMibi: withMibi } }, line: body.line, plate: { text: "" } };
