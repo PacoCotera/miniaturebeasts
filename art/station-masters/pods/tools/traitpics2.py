@@ -38,7 +38,7 @@ def window(rect, tw, th, W, H):
     if w < tw or h < th: flag = f"the part's box is {w0}x{h0} px, smaller than the {tw}x{th} cell: shown with its surroundings at 1:1, not enlarged"; w, h = float(tw), float(th)
     if w > W or h > H: s = min(W / w, H / h); w, h = w * s, h * s
     cx, cy = (x + x1) / 2, (y + y1) / 2; bx = min(max(cx - w / 2, 0), W - w); by = min(max(cy - h / 2, 0), H - h); return (int(round(bx)), int(round(by)), int(round(bx + w)), int(round(by + h))), flag
-man = json.load(open("slices/manifest.json")); R = json.load(open(os.path.join(GROW, "regions/trait-regions-S09.json"))); P = R["parts"]
+man = json.load(open("slices/manifest.json")); R = json.load(open(os.path.join(ROOT, "traitpics/rig-regions/trait-regions-S09.json"))); P = R["parts"]
 looks = json.load(open("source/work/looks-S09-type.json"))
 union = lambda *bs: [min(b[0] for b in bs), min(b[1] for b in bs), max(b[0] + b[2] for b in bs) - min(b[0] for b in bs), max(b[1] + b[3] for b in bs) - min(b[1] for b in bs)]
 # which box each part trait is cropped from: the rig's box for the trait where it is tight; the single part's box where two traits share one union (told apart, never alike)
