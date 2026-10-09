@@ -4,7 +4,7 @@
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
 // accepted, dockN, known, probe, withReq, returned, and each mibi's id, name, sp, born, from, bonded.
 // Those keep their shape (station-build.md §2.3).
-import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems } from "./genome.mjs";
+import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 2;
 export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
@@ -65,9 +65,11 @@ export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if
 export const speciesOf = (x) => x.species ?? speciesId(x.sp);
 export const frameFor = (x) => frameOf(speciesOf(x));
 export const spName = (x) => frameFor(x)?.species.name ?? "unknown";
+// A starting mibi's chapters read: every open one; a sealed chapter only once it is opened in play (readMibi), so its stamp carries no shut sealed chapter.
+const openChapterIds = (frame) => frame.chapters.filter((c) => !c.sealed).map((c) => c.id);
 const mibiFromGenome = (frame, genome) => {
   const sha = genomeSha(genome);
-  return { genome, sha, code: nameCode(sha), read: frame.chapters.map((c) => c.id) };
+  return { genome, sha, code: nameCode(sha), read: openChapterIds(frame) };
 };
 // The migration of a v8 `st` written by the stand-in (schema 1) to schema 2: once, forward only, logged.
 // Pods keep their identity (the genome is sampled from the pod's seed); studies start again; an existing
@@ -94,7 +96,7 @@ export function migrate(st, now = Date.now()) {
   });
   out.bud = null;
   if (st.inc && st.inc.m) { const m = st.inc.m, species = speciesOf(m), fr = frameOf(species);
-    if (fr) { const genome = podGenome(fr, m.gs >>> 0); out.bud = { kind: "founder", species, sp: m.sp, genome, sha: genomeSha(genome), start: st.inc.start, minutes: st.inc.mins || 5, firstEver: false, parents: null, from: m.from, read: fr.chapters.map((c) => c.id) }; } }
+    if (fr) { const genome = podGenome(fr, m.gs >>> 0); out.bud = { kind: "founder", species, sp: m.sp, genome, sha: genomeSha(genome), start: st.inc.start, minutes: st.inc.mins || 5, firstEver: false, parents: null, from: m.from, read: openChapterIds(fr) }; } }
   out.bays = BAYS; out.sitting = null; out.moments = {}; out.welcomeGiven = false; out.wish = {}; out.outbox = []; out.devBay = [];
   delete out.seen; delete out.studiedW; delete out.studyPaid; delete out.inc;
   rebuildGuide(out);
@@ -107,7 +109,7 @@ export function normalize(st, now = Date.now()) {
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
-  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null; }
+  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null; }
   syncKnown(st);
   claimExisting(st); renameDigits(st);
   return st;
@@ -586,7 +588,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
   const made = [];
   for (let i = 0; i < n; i++) { if (bayFull(st, settings)) break; const gs = (Math.imul((seed >>> 0) + i * 104729, 2654435761) ^ (i * 7)) >>> 0, genome = podGenome(fr, gs), sha = genomeSha(genome), id = st.nextMibi++;
     const name = drawName(st);
-    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: fr.chapters.map((c) => c.id), parents: null, bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
+    const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: openChapterIds(fr), parents: null, bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
   if (made.length && !st.knownIds.includes(species)) { st.knownIds.push(species); syncKnown(st); }   // a species that arrives as adults is known (its Library frame and Book open)
   st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
@@ -597,11 +599,13 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
 import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
-// The pedigree: a digest names a mibi's genome, in the vivarium or in a child's parent snapshot.
+// The pedigree by id, never by digest (two mibis with equal genomes are two mibis): an id names a mibi's record in the vivarium, else the
+// parent snapshot a child holds (a parent no longer in the vivarium counts as a founder beyond it).
 export function genomeLookup(st) {
-  const byDigest = new Map();
-  for (const m of st.mibis) { if (m.genome) byDigest.set(genomeDigest(m.genome), m.genome); for (const p of m.parents || []) if (p.genome) byDigest.set(genomeDigest(p.genome), p.genome); }
-  return (d) => byDigest.get(d) ?? null;
+  const byId = new Map();
+  for (const m of st.mibis) for (const p of m.parents || []) if (p && p.id != null && !byId.has(p.id)) byId.set(p.id, p);
+  for (const m of st.mibis) if (m.id != null) byId.set(m.id, m);
+  return (id) => byId.get(id) ?? null;
 }
 // An elder crosses as an adult does (a juvenile does not): for the cross and for the partner list.
 export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, settings); return s === "adult" || s === "elder"; };
@@ -617,7 +621,7 @@ export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   return "";
 }
 export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings));
-export function kinshipOf(st, a, b) { const k = pedigreeKinship(a.genome, b.genome, genomeLookup(st)); return k; }
+export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you
 // have read, and an indication of everything missing"): a trait whose chapter either parent has not read is marked `missing`, with no seeds, range or firmness, and names which parent
@@ -625,7 +629,7 @@ export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 
 // likeness is shown only when nothing is unknown. The cross itself (`doCross`) still draws on the whole genomes: the mask is only what the screen may say.
 export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
   const fr = frameFor(a); if (!fr || crossBlock(st, null, a, b, settings) === "another species") return null;
-  const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a.genome, b.genome, opts);
+  const k = kinshipOf(st, a, b), opts = { kinship: k, lookup: genomeLookup(st) }, full = crossForecast(fr, a, b, opts);   // the mibi records: by id
   const traitOf = (id) => fr.chapters.flatMap((c) => c.traits).find((t) => t.id === id), chapterName = (id) => fr.chapters.find((c) => c.id === id)?.name || id;
   let loci = null;   // every locus's own outcome, computed once and only read for a trait whose chapter both parents have read
   let missing = 0, sealedTraits = 0;
@@ -656,11 +660,11 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   const block = crossBlock(st, sv, a, b, settings); if (block) return { ok: false, msg: "Cross them · " + block };
   const cost = crossCost(settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { ok: false, msg: "Cross them · " + shortText(st, cost.e, cost.d, cost.s) };
   const fr = frameFor(a), k = kinshipOf(st, a, b);
-  const genome = crossGenomes(fr, a.genome, b.genome, { rng, kinship: k, lookup: genomeLookup(st) });
+  const genome = crossGenomes(fr, a, b, { rng, kinship: k, lookup: genomeLookup(st) });   // the mibi records: refused by id, the child records its parents' ids
   const problems = genomeProblems(fr, genome);
   if (problems.length) { const clash = fr.chapters.flatMap((c) => c.traits).filter((t) => problems.some((p) => t.loci.some((id) => p.includes(id)))).map((t) => t.id); return { ok: false, clash, msg: "This child would not build · " + (clash.length ? clash.join(", ") : problems[0]) + " · nothing spent" }; }
   st.e -= cost.e; st.s -= cost.s;
-  const sha = genomeSha(genome), fc = crossForecast(fr, a.genome, b.genome, { kinship: k }), read = childKnownChapters(fr, fc);
+  const sha = genomeSha(genome), fc = crossForecast(fr, a, b, { kinship: k }), read = childKnownChapters(fr, fc);
   const snap = (m) => ({ id: m.id, name: m.name, code: m.code, sha: m.sha, genome: structuredClone(m.genome) });
   const minutes = budMinutes(st, 0, settings);
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
