@@ -7180,5 +7180,131 @@
   "status": "signed",
   "signed_in": "pass 33 verdict",
   "status_note": "the plates layer (scutes) and its relief"
+ },
+ "mark-seed-40x52": {
+  "size": [
+   40,
+   52
+  ],
+  "rect": [
+   null,
+   null,
+   40,
+   52
+  ],
+  "src": "geometry",
+  "made": "the misty seed (40x52): an almond with a pointed tip, no cap or ribs; a bone wall with a 1 px ink keyline, a white lit edge upper left, a frosted-glass interior (frostS veil with a frostD stipple); at P.x + P.w - 48, P.y + P.h - 60",
+  "sha256": "e50db750a273118a06f3eaea759da12cff3a98ac09e65ab112502b8569dc1992",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-seed-40x52-mask": {
+  "size": [
+   40,
+   52
+  ],
+  "rect": [
+   null,
+   null,
+   40,
+   52
+  ],
+  "src": "geometry",
+  "made": "the matching mask of the 40x52 seed: its interior silhouette, opaque white, for the build to clip the hidden look's small picture into, under the frost",
+  "sha256": "bd0f069f2e23e70a1369c74ce29fd98d55c7cc19cbe8ae789290aeae65422b31",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-seed-32x40": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "geometry",
+  "made": "the misty seed (32x40): an almond with a pointed tip, no cap or ribs; a bone wall with a 1 px ink keyline, a white lit edge upper left, a frosted-glass interior (frostS veil with a frostD stipple); at P.x + P.w - 40, P.y + P.h - 48",
+  "sha256": "d1dd642a714dce6a1a7f8f815ad66b556b6995793018018322cf86904329e9fc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-seed-32x40-mask": {
+  "size": [
+   32,
+   40
+  ],
+  "rect": [
+   null,
+   null,
+   32,
+   40
+  ],
+  "src": "geometry",
+  "made": "the matching mask of the 32x40 seed: its interior silhouette, opaque white, for the build to clip the hidden look's small picture into, under the frost",
+  "sha256": "73fe74c4469a8cf5409f469529853c9b0513aa1b116aa2353d8ec550ba194aa9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-only-72x8": {
+  "size": [
+   72,
+   8
+  ],
+  "rect": [
+   null,
+   null,
+   72,
+   8
+  ],
+  "src": "typed by hand",
+  "made": "the 'only' plinth: a low engraved base 72 x 8, bone with a 1 px ink keyline, a white lit top edge, an engraved line along its face; centred on the picture's bottom edge",
+  "sha256": "2d790c383a7c3e48fe67c249530361fadcf613d50a0b565b255831230ca28438",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-asleep-24x16": {
+  "size": [
+   24,
+   16
+  ],
+  "rect": [
+   null,
+   null,
+   24,
+   16
+  ],
+  "src": "geometry and typed dots",
+  "made": "the asleep mark: a slim crescent (bone, a white lit edge upper left, a 1 px ink keyline) with a short dotted arc of four dots beneath; no Z's, no face; at P.x + P.w - 32, P.y + 8",
+  "sha256": "ae714dc2e8583f348ce682f5865e4baa35cab0d27f9afa718a7fb77275e7bdff",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-breed-28x16": {
+  "size": [
+   28,
+   16
+  ],
+  "rect": [
+   null,
+   null,
+   28,
+   16
+  ],
+  "src": "geometry",
+  "made": "the breed-to-change mark: two joined rings, slightly offset, as engraved lines in bone (white on the upper-left arc) with a 1 px ink keyline; no gold; at P.x + 8, P.y + 8",
+  "sha256": "a3d0ea28fb1eb1549e6d027e7dbc6c0b0f9ef086ec45f4eb89b071989644176b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
  }
 }

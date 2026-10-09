@@ -2128,5 +2128,40 @@
   "status": "signed",
   "signed_in": "pass 33 verdict",
   "note": "the plates layer (scutes) and its relief"
+ },
+ "mark-seed-40x52": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-seed-40x52-mask": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-seed-32x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-seed-32x40-mask": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-only-72x8": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-asleep-24x16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
+ },
+ "mark-breed-28x16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "a trait kind mark (Marks on a picture), round 1; awaiting verdict"
  }
 }
