@@ -292,7 +292,7 @@ The developer panel stays a DOM panel under the device in the sandbox (station-b
 
 ## 4. Milestones
 
-Every milestone ships to the sandbox and plays from a fresh world. The save does not change in any of them. Sizes are relative to L2 as built (L0 to L2 took about five hours of work); no milestone carries a day estimate.
+Every milestone ships to the sandbox and plays from a fresh world. The save does not change in any of them. A milestone merges only when the documents it touches, in both repositories and on the website, show the current state. Sizes are relative to L2 as built (L0 to L2 took about five hours of work); no milestone carries a day estimate.
 
 ### The gate every screen milestone passes (L2.1 to L2.5)
 

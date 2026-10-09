@@ -242,7 +242,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 
 ## 8. The face in the sandbox
 
-The Station page loads `face.wasm`. The views compute each screen's props in JavaScript and pass them as JSON. The C face sets LVGL objects from the spec file's rectangles, draws, and sends `{ target, verb }` back when a key is pressed. LVGL compiles to WebAssembly with Emscripten, and a small display driver copies the dirty rectangles onto the page's canvas. The rules never leave JavaScript, so the loop's mechanics change at JavaScript speed.
+The Station page loads `face.wasm`. The views compute each screen's props in JavaScript and pass them as JSON. The C face sets LVGL objects from the spec file's rectangles, draws, and sends `{ target, verb }` back when a key is pressed. LVGL compiles to WebAssembly with Emscripten, and a small display driver copies the dirty rectangles onto the page's canvas (a full 1024×600 frame is 2.4 MB; the copy is checked on a phone as well as on a desktop). The rules never leave JavaScript, so the loop's mechanics change at JavaScript speed.
 
 | | The face in the sandbox |
 | --- | --- |
