@@ -16,6 +16,7 @@ const char *spec_error(void) { return g_err; }
 int spec_count(void) { return g_ns; }
 static spec_t *find(const char *screen) { for (int i = 0; i < g_ns; i++) if (strcmp(g_s[i].name, screen) == 0) return &g_s[i]; return NULL; }
 int spec_has(const char *screen) { return find(screen) != NULL; }
+void spec_drop(const char *screen) { spec_t *s = find(screen); if (!s) return; free(s->js); free(s->tok); *s = g_s[--g_ns]; }
 static int tskip(const jsmntok_t *t, int i) { int k = t[i].size; i++; for (; k > 0; k--) i = tskip(t, i); return i; }
 /* is a top-level key repeated? (two answers to one question are refused, not resolved) */
 static int dup_top(const char *js, const jsmntok_t *t) {
@@ -70,6 +71,12 @@ int spec_int(const char *screen, const char *path, int dflt) {
   int i = at(s, path); if (i < 0 || s->tok[i].type != JSMN_PRIMITIVE) return dflt;
   int v; return json_int(s->js + s->tok[i].start, s->tok[i].end - s->tok[i].start, &v) ? v : dflt;
 }
+int spec_bool(const char *screen, const char *path, int dflt) {
+  const spec_t *s = find(screen); if (!s) return dflt;
+  int i = at(s, path); if (i < 0 || s->tok[i].type != JSMN_PRIMITIVE) return dflt;
+  int l = s->tok[i].end - s->tok[i].start; const char *p = s->js + s->tok[i].start;
+  return l == 4 && strncmp(p, "true", 4) == 0 ? 1 : l == 5 && strncmp(p, "false", 5) == 0 ? 0 : dflt;
+}
 /* a JSON string's bytes decoded to UTF-8 (\" \\ \/ \b \f \n \r \t and \uXXXX, surrogate pairs joined); returns the length written, never beyond cap - 1 */
 static int unescape(const char *src, int len, char *buf, int cap) {
   int o = 0;
@@ -91,6 +98,19 @@ int spec_str(const char *screen, const char *path, char *buf, int cap) {
   const spec_t *s = find(screen); if (!s || cap < 1) return 0;
   int i = at(s, path); if (i < 0 || s->tok[i].type != JSMN_STRING) return 0;
   return unescape(s->js + s->tok[i].start, s->tok[i].end - s->tok[i].start, buf, cap);
+}
+const char *spec_raw(const char *screen, const char *path, int *len) {
+  const spec_t *s = find(screen); if (!s) return NULL; int i = at(s, path); if (i < 0) return NULL;
+  int a = s->tok[i].start, b = s->tok[i].end; if (s->tok[i].type == JSMN_STRING) { a--; b++; }
+  if (len) *len = b - a; return s->js + a;
+}
+int spec_member(const char *screen, const char *path, int i, char *key, int kcap, char *val, int vcap) {
+  if (kcap > 0) key[0] = 0; if (vcap > 0) val[0] = 0;
+  const spec_t *s = find(screen); if (!s) return 0; int o = *path ? at(s, path) : 0; if (o < 0 || s->tok[o].type != JSMN_OBJECT || i < 0 || i >= s->tok[o].size) return 0;
+  int k = o + 1; for (int m = 0; m < i; m++) k = skip(s, k + 1);
+  unescape(s->js + s->tok[k].start, s->tok[k].end - s->tok[k].start, key, kcap);
+  if (s->tok[k + 1].type == JSMN_STRING) unescape(s->js + s->tok[k + 1].start, s->tok[k + 1].end - s->tok[k + 1].start, val, vcap);
+  return 1;
 }
 int spec_len(const char *screen, const char *path) {
   const spec_t *s = find(screen); if (!s) return -1;

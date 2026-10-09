@@ -61,13 +61,21 @@ jobs:
         run: |
           set -euo pipefail
           node -e "const fs=require('fs');for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)){new Function(m[1]);}}console.log('scripts parse')" $(find _site -name '*.html')
+      - name: Playwright's Chromium (cached by the Playwright version)
+        # The browser download was the one step whose time varied (30 s to 2 m 35 s). The key's 1.49.1 moves with playwright@1.49.1 below.
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw
+          key: playwright-1.49.1-chromium-ubuntu-24.04-${{ runner.arch }}
       - name: Smoke-test in a browser
         run: |
           set -euo pipefail
           (cd _site && python3 -m http.server 8000 >/dev/null 2>&1 &)
           sleep 1
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.49.1
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install --with-deps chromium >/dev/null
+          # split and timed, so a slow run says which part was slow
+          time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null
+          time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
       - name: Freeze check (the JavaScript drawing layer)
         # prototypes/face/deprecated.json lists every deprecated drawing module with its hash and the files allowed to import it (lvgl-switch.md §5.1):
@@ -118,6 +126,13 @@ jobs:
         # ground from the frame spec, where each text run's ink lies against the canvas renderer's, the ring in the focus role,
         # the plate and the counter's tick; no node refused. The captures it checks are written to prototypes/face/img.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/frame-check.mjs
+      - name: Station layer table in a browser (LVGL)
+        # Pods in each of its states on the page's own pictures, test mode: the pixels outside the palette on pass 1 (chrome)
+        # and pass 2 (chrome and art) read 0, painted masters showing only on pass 3 (the art director's layer table).
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/layer-check.mjs
+      - name: Pods goldens (LVGL)
+        # Each of Pods' states drawn by the C words on the page's own pictures: the framebuffer hash against prototypes/face/golden/pods/pods.json.
+        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check
       - name: Station layer checks
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
         # the art layer at exactly 0 off-palette pixels; the type layer's run log (every string Inter at 16, 20 or 28 px
