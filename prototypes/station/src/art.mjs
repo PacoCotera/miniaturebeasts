@@ -141,6 +141,12 @@ export function stampArt(frame, genome, readIds, side = 200) {
   const key = "stamp" + genomeDigest(genome) + ":" + readIds.slice().sort().join(",") + ":" + side;
   return art(key, () => fromRGBA(rasterize(stampGeometry(sg), side, { ss: 3 })));
 }
+// The stamp rasterised to fit a box, quiet-zone dots included: the largest side whose raster is no wider or taller than the box, centred in it (never scaled: a smaller side is rastered smaller). → { art, x, y } or null.
+export function stampFit(frame, genome, readIds, box) {
+  const [bx, by, bw, bh] = box;
+  for (let side = Math.min(bw, bh); side >= 16; side--) { const a = stampArt(frame, genome, readIds, side); if (!a) return null; if (a.w <= bw && a.h <= bh) return { art: a, x: bx + Math.floor((bw - a.w) / 2), y: by + Math.floor((bh - a.h) / 2) }; }
+  return null;
+}
 export const stampSize = (frame, genome = null) => stampFrameOf(frame, genome) ? stampFrameOf(frame, genome).payloadBits : 0;
 
 // ---------- Pods from one renderer: the frame's four parameters and the glyph ----------

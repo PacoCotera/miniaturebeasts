@@ -7,8 +7,9 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, frameIds, chapterLooks } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+import { stampFit } from "../src/art.mjs";
 import * as L from "../src/library.mjs";
-import { guideModel, guideInit, guideMove, guideView, guideLayout, tintMask, tintOf, slug, carriedLines } from "../src/views/guide.mjs";
+import { guideModel, guideInit, guideMove, guideView, guideLayout, tintMask, tintOf, slug, carriedLines, noneLines, pageTurnStandIn } from "../src/views/guide.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
@@ -140,4 +141,20 @@ test("the focus ring on paper is rust, from frame.json focus.ring.onPaper; ✓ V
   const w = world("S09"); assert.equal(L.visitFace(w.st, "S09"), null, "the type face: no ✓");
   const [a] = w.ms; a.portrait = { state: "delivered" }; w.st.face.S09 = a.id; assert.equal(L.visitFace(w.st, "S09").id, a.id, "a living face");
   a.released = true; assert.equal(L.visitFace(w.st, "S09"), null, "a face in the wild: no ✓");
+});
+
+// --- the designer's re-check of e0d437d2 ---
+test("the stamp, quiet-zone dots included, fits (836, 116, 112, 112) and sits centred in the (832, 112, 120, 120) label, for every species' type specimen", () => {
+  for (const id of frameIds()) { const fr = frameOf(id), r = stampFit(fr, fr.typeSpecimen.genome, fr.chapters.map((c) => c.id), [836, 116, 112, 112]); assert.ok(r, id); assert.ok(r.art.w <= 112 && r.art.h <= 112, `${id} raster ${r.art.w}×${r.art.h}`); assert.ok(r.x >= 836 && r.y >= 116 && r.x + r.art.w <= 948 && r.y + r.art.h <= 228, id + " inside the box"); assert.ok(Math.abs((r.x - 836) - (948 - r.x - r.art.w)) <= 1 && Math.abs((r.y - 116) - (228 - r.y - r.art.h)) <= 1, id + " centred"); }
+});
+
+test("'none of yours yet' wraps at a word boundary inside x 448–568: 'none of yours' at cap top 124 and 'yet' at 144, never one line", () => {
+  const wide = { ...ctx, measure: (t, px) => t.length * px * 0.5 * 1.1 }, lines = noneLines(wide, "none of yours yet", 120); assert.deepEqual(lines, ["none of yours", "yet"]); assert.deepEqual(noneLines(ctx, "none of yours yet", 120), ["none of yours", "yet"], "even where it would fit whole");
+  const w = world("S09", 2), model = guideModel(w.st, "S09", settings); const g = { ...guideInit(model), look: 0 }; w.ms.forEach((m) => { m.released = true; });   // no carrier left
+  const { v } = view(w, g), none = v.nodes.filter((n) => n.id.startsWith("carried.none.")); assert.deepEqual(none.map((n) => [n.text, n.rect[0], n.rect[1], n.colour]), [["none of yours", 448, 124, "stone"], ["yet", 448, 144, "stone"]]);
+  assert.ok(none.every((n) => n.rect[0] + n.rect[2] <= 568));
+});
+
+test("the page-turn ▶ stand-in is 16 px bark with its ink (the cap height) centred in (968, 512, 24, 24): the ink spans y 518–529 at a 12 px cap", () => {
+  const n = pageTurnStandIn({ ...ctx, cap: () => 12 }); assert.equal(n.px, 16); assert.equal(n.colour, "bark"); assert.equal(n.rect[1], 518, "ink top 518, bottom 529"); assert.equal(n.rect[0] + Math.round(n.rect[2] / 2), 980, "centred on x");
 });

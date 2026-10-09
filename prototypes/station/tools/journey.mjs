@@ -463,6 +463,18 @@ const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen
   // the Book: ▶ turns to the guide, ◀ from the first column turns back, ← reads Library on both; the species word on Habitat's card is a door to the guide
   await page.evaluate(() => { const u = window.__st.UI; u.lib.sp = "S01"; u.lib.f = "book"; u.screen = "library"; }); await press("right", 300); u = await ui(); expect(u.screen === "library" && (await page.evaluate(() => window.__st.UI.lib.f)) === "guide", "▶ turns to the guide: " + JSON.stringify(u));
   l = await line(); expect(l.back === "Library", "the guide's way back is Library: " + JSON.stringify(l)); await page.waitForTimeout(200); await frameShot("guide-loika-species");
+  // the captures of the guide and the Book's face that the reports name, all from here: Belatz (seven chapters), Tuikis (eight), the face with its type and with a portrait, and a guide with no carrier
+  const showLib = async (sp, f) => { await page.evaluate(([sp, f]) => { const u = window.__st.UI; u.screen = "library"; u.lib.sp = sp; u.lib.f = f; u.lib.g = null; }, [sp, f]); await page.waitForTimeout(250); };
+  await page.evaluate(() => { window.__st.seedAdults("S09", 11, 2); window.__st.seedAdults("S03", 5, 2); });
+  await showLib("S09", "book"); await frameShot("book-belatz-face");
+  await showLib("S09", "guide"); await frameShot("guide-belatz-seven");
+  await showLib("S03", "guide"); await frameShot("guide-tuikis-eight");
+  await press("up", 150); await frameShot("guide-tuikis-plate");
+  await page.evaluate(() => { const st = window.__st.ST, m = st.mibis.find((q) => q.species === "S09" && !q.released); m.portrait = { state: "delivered" }; st.face = st.face || {}; st.face.S09 = m.id; });
+  await showLib("S09", "book"); await frameShot("book-belatz-portrait");
+  await page.evaluate(() => { for (const m of window.__st.ST.mibis) if (m.species === "S09") m.released = true; });
+  await showLib("S09", "guide"); await frameShot("guide-no-carriers");
+  await showLib("S01", "guide"); await press("left", 300);
   await press("left", 300); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "book", "◀ from the first column turns back to the face spread");
   await press("right", 300); await press("back", 200); expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread", "← from the guide is the Library spread");
   await press("habitat", 300); await press("right", 100); await press("confirm", 300); l = await line();

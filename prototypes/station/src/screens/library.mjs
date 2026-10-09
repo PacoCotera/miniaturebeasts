@@ -2,7 +2,7 @@
 // registry's sixteen species (found plate, met study, empty unmet frame) and a Book stub: the species'
 // face, its habit line, the frame's chapters and the looks found so far. M5 builds the Book whole.
 import { C, R, blit, text, clipText, panel, art, PB, clamp, clock } from "../gfx.mjs";
-import { speciesArt, emblemArt, stampArt } from "../art.mjs";
+import { speciesArt, emblemArt, stampFit } from "../art.mjs";
 import { G, UI, SPECS, LAYER, msg, save, goScreen, registerScreen, mibiById } from "../game.mjs";
 import { stageBg, frameFor } from "./frame.mjs";
 import * as Guide from "../views/guide.mjs";
@@ -36,13 +36,13 @@ function drawSpread() {
 function drawBook() {
   paperBg();   const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
   panel(30, 60, 300, 330, C.bone, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
-  panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center");
+  panel(40, 400, 280, 40, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center");
   // the clarity line (stone, cap top y 480, centred on the face plate): the species' type, not one of yours; the chapters and their looks are the guide spread, a page turn away
   text(clipText(Lib.faceLine(G.st, id), 300, 2), 180, 480, C.stone, 2, "center");
   // the stamp (832, 112, 120, 120): the type specimen's until a portrait, then the portrayed mibi's, with its name
   const f = Lib.faceOf(G.st, id), m = f != null ? mibiById(f) : null, tg = fr.typeSpecimen?.genome;
-  const st = m ? stampArt(fr, m.genome, m.read, 112) : tg ? stampArt(fr, tg, fr.chapters.map((c) => c.id), 112) : null;
-  if (st) { panel(832, 112, 120, 120, C.bone, C.clay); blit(st, 836, 116); if (m) text(m.name, 892, 236, C.bark, 2, "center"); }
+  const st = m ? stampFit(fr, m.genome, m.read, [836, 116, 112, 112]) : tg ? stampFit(fr, tg, fr.chapters.map((c) => c.id), [836, 116, 112, 112]) : null;
+  if (st) { panel(832, 112, 120, 120, C.bone, C.clay); blit(st.art, st.x, st.y); }   // the portrayed mibi's name is a layered node (bookNodes)
 }
 function draw() { if (L().f === "book") drawBook(); else drawSpread(); }
 
@@ -77,6 +77,7 @@ function nodes(ctx) {
   if (L().f === "guide") return guideNodes(ctx);
   const out = [{ id: "legacy", kind: "legacy", rect: [0, 0, 1024, 600], always: true, draw }];
   if (L().f === "spread" && pageOf()[L().i]) { const { x, y } = frameXY(L().i); out.push(...focusRingNodes([x - 2, y - 2, FRAME.w + 4, FRAME.h + 4])); }   // one ring per screen, rust on paper
+  if (L().f === "book") { const f = Lib.faceOf(G.st, L().sp), m = f != null ? mibiById(f) : null; if (m) out.push({ id: "face.name", kind: "text", rect: [892 - Math.round(ctx.measure(m.name, 16) / 2), 234, Math.round(ctx.measure(m.name, 16)), ctx.line(16)], text: m.name, px: 16, weight: SIZES[16], colour: "bark", align: "left" }); }   // the portrayed mibi's name: 16 px bark, centred on x 892, cap top 234
   if (L().f === "book" && Lib.book(G.st, L().sp)?.guide) out.push(...pageTurn(ctx));
   out.push(...frameFor(ctx, "library", line()));
   return out;
@@ -86,8 +87,7 @@ const PAGETURN = "book-corner-turn-24x24:24x24";
 function pageTurn(ctx) {
   registerPictures([{ kind: "slot", id: PAGETURN, master: "book-corner-turn-24x24", size: [24, 24], until: "the page-turn corner master (library.json faceSpread.pageTurn)" }], { podById: () => null, frameOf });
   if (isFilled(PAGETURN)) return layer("m." + PAGETURN, [968, 512, 24, 24], PAGETURN);
-  const w = Math.round(ctx.measure("▶", 16));
-  return [{ id: "pageturn.standin", kind: "text", rect: [968 + Math.round((24 - w) / 2), 512 + Math.round((24 - ctx.line(16)) / 2), w, ctx.line(16)], text: "▶", px: 16, weight: SIZES[16], colour: "bark", align: "left" }];
+  return [Guide.pageTurnStandIn(ctx)];
 }
 const faceMibi = (id) => Lib.visitFace(G.st, id);
 function line() {

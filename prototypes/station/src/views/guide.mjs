@@ -100,6 +100,19 @@ export function carriedLines(ctx, names, maxW, pitch, more = "and more") {
   return { names: [], more: { x: 0, line: 0 } };
 }
 
+// "none of yours yet" inside x 448 to 568: wrapped at a word boundary, never one line (when it would fit whole, the last word drops to line 2).
+export function noneLines(ctx, text, maxW) {
+  const words = text.split(" "), lines = [""];
+  for (const w of words) { const t = lines.at(-1) ? lines.at(-1) + " " + w : w; if (lines.at(-1) && ctx.measure(t, 16) > maxW) lines.push(w); else lines[lines.length - 1] = t; }
+  if (lines.length === 1 && words.length > 1) return [words.slice(0, -1).join(" "), words.at(-1)];
+  return lines.slice(0, 2);
+}
+// The page-turn corner's stand-in (968, 512, 24, 24): a 16 px bark ▶ whose ink (the cap height) is centred in the slot, not its line box.
+export function pageTurnStandIn(ctx) {
+  const w = Math.round(ctx.measure("▶", 16));
+  return { id: "pageturn.standin", kind: "text", rect: [968 + Math.round((24 - w) / 2), 512 + Math.round((24 - ctx.cap(16)) / 2), w, ctx.line(16)], text: "▶", px: 16, weight: SIZES[16], colour: "bark", align: "left" };
+}
+
 export function guideView(m, spec, ctx) {
   const { st, settings, id, frame: fr, g } = m, model = m.model, R = spec.regions, nodes = [], masters = [], tints = [], targets = [];
   const master = (mid, rc) => { masters.push({ id: `${mid}:${rc[2]}x${rc[3]}`, master: mid, rect: rc, until: MASTER_UNTIL }); };
@@ -155,7 +168,7 @@ export function guideView(m, spec, ctx) {
     // "Carried by", then the names, two lines at most, each a target
     nodes.push(txt(ctx, "carried", spec.strings.carriedBy, D.carried.rect[0], D.carried.label.capTop, 16, D.carried.label.colour));
     carriers = openLookName != null ? Lib.lookCarriers(st, id, ot.id, openLookName) : [];
-    if (!carriers.length) nodes.push(txt(ctx, "carried.none", spec.strings.carriedNone, D.carried.names.x[0], D.carried.names.capTops[0], 16, "stone"));
+    if (!carriers.length) noneLines(ctx, spec.strings.carriedNone, D.carried.names.x[1] - D.carried.names.x[0]).forEach((l, i) => nodes.push(txt(ctx, "carried.none." + i, l, D.carried.names.x[0], D.carried.names.capTops[i], 16, "stone")));
     else {
       const N = D.carried.names, tops = N.capTops, x0 = N.x[0], placed = carriedLines(ctx, carriers.map((c) => c.name), N.x[1] - N.x[0], 0), put = placed.names.map((p) => ({ ...p, px: x0 + p.x, py: tops[p.line] }));
       if (placed.more) nodes.push(txt(ctx, "carried.more", spec.strings.carriedMore, x0 + placed.more.x, tops[placed.more.line], 16, N.overflow.colour));
