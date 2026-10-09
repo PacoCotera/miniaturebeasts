@@ -60,13 +60,21 @@ jobs:
         run: |
           set -euo pipefail
           node -e "const fs=require('fs');for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)){new Function(m[1]);}}console.log('scripts parse')" $(find _site -name '*.html')
+      - name: Playwright's Chromium (cached by the Playwright version)
+        # The browser download was the one step whose time varied (30 s to 2 m 35 s). The key's 1.49.1 moves with playwright@1.49.1 below.
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/pw
+          key: playwright-1.49.1-chromium-ubuntu-24.04-${{ runner.arch }}
       - name: Smoke-test in a browser
         run: |
           set -euo pipefail
           (cd _site && python3 -m http.server 8000 >/dev/null 2>&1 &)
           sleep 1
           npm --prefix "$RUNNER_TEMP" install --silent playwright@1.49.1
-          PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install --with-deps chromium >/dev/null
+          # split and timed, so a slow run says which part was slow
+          time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null
+          time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
       - name: Freeze check (the JavaScript drawing layer)
         # prototypes/face/deprecated.json lists every deprecated drawing module with its hash and the files allowed to import it (lvgl-switch.md §5.1):

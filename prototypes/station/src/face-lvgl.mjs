@@ -101,10 +101,16 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     lastKey = key;
     M._face_scene_end(); return left;
   }
+  // The props of a screen (lvgl-switch.md §2.1): hashed without their seq, so an unchanged screen is not sent again; seq is the transport's, one more than the last sent, never the caller's.
+  let seq = 0, lastProps = null;
+  function props(p) {
+    const { seq: _ignored, ...body } = p, key = JSON.stringify(body); if (key === lastProps) return 0;
+    const rc = send({ t: "props", seq: seq + 1, ...body }); if (rc === 0) { seq++; lastProps = key; } return rc;
+  }
   const setBackground = (rgb) => M._face_background(rgb);
   return {
     M, version, ready, measure, scene, setBackground, objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
-    size: [W, H], loadMs, send, poll, drain, errors, handleOf,
+    size: [W, H], loadMs, send, props, poll, drain, errors, handleOf,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },
     present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },

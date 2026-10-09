@@ -1,4 +1,3 @@
-#define _POSIX_C_SOURCE 200809L
 /* The Station's face: a 1024x600 LVGL display that draws into a retained framebuffer, reports the rectangles it redrew,
    takes key input and builds the page's scene (prim/prim.c) and speaks the bridge (bridge/wire.c). This file is the platform-neutral core: nothing in it knows
    JavaScript, SDL or a device. */
@@ -6,7 +5,7 @@
 #include "prim/prim.h"
 #include "bridge/wire.h"
 #include "spec/spec.h"
-#include <time.h>
+#include "platform/platform.h"
 #include "lvgl.h"
 #include <string.h>
 
@@ -54,10 +53,9 @@ void face_frame(uint32_t ms) {
   if (!started) { started = 1; last = ms; }
   lv_tick_inc(ms - last); last = ms;
   g_ndirty = 0;
-  struct timespec t0, t1; clock_gettime(CLOCK_MONOTONIC, &t0);
+  double t0 = platform_now_ms();
   lv_timer_handler();
-  clock_gettime(CLOCK_MONOTONIC, &t1);
-  wire_after_frame((double)(t1.tv_sec - t0.tv_sec) * 1000.0 + (double)(t1.tv_nsec - t0.tv_nsec) / 1e6);
+  wire_after_frame(platform_now_ms() - t0);
 }
 uint8_t *face_fb(void) { return g_fb; }
 int face_width(void) { return FACE_W; }

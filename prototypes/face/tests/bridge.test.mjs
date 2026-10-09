@@ -162,7 +162,7 @@ test("F2: strict JSON: bytes after the object, repeated keys, and numbers that a
   refused('{"t":"key","k":"up"} x', /not valid JSON/); refused('{"t":"key","k":"up"}{"t":"key","k":"up"}', /bytes after the object/); refused('{"t":"key","k":"up"} {}', /bytes after the object|not valid JSON/);
   assert.equal(put('{"t":"key","k":"up"}  \n'), 0, "trailing whitespace is fine");
   refused('{"t":"hello","contract":1,"contract":2}', /key contract appears twice/); refused('{"t":"hello","t":"key"}', /key t appears twice/);
-  for (const bad of ["1.5", "1e3", "01", "+1", "1.0", "-", '"1"', "true", "null", "0x1"]) refused(`{"t":"hello","contract":${bad}}`, /contract is required|not valid JSON/);
+  for (const bad of ["1.5", "1e3", "01", "+1", "1.0", "-", '"1"', "true", "null", "0x1"]) refused(`{"t":"hello","contract":${bad}}`, /contract must be an integer|not valid JSON/);
   refused('{"t":"hello","contract":tru}', /not valid JSON/); refused('{"t":"hello","contract":1,}', /not valid JSON/); refused('{"t":"hello",,"contract":1}', /not valid JSON/); refused('{"t":"hello","contract":1.2.3}', /not valid JSON/); refused('{"t":"hello","contract":[1,]}', /not valid JSON/); refused("{t:\"hello\",\"contract\":1}", /not valid JSON/);
   // jsmn's strict mode refuses an unquoted key; the face's own pass (json_clean) refuses what jsmn lets through as tokens: a malformed literal, a trailing or doubled comma
   refused('{"t":"hello","contract":1,"test":"yes"}'.replace('"contract":1', '"contract":2'), /contract 1 expected, got 2/);
@@ -212,4 +212,17 @@ test("F5: a full queue drops messages and counts them; when room returns an erro
   for (let i = 0; i < 70; i++) f.M._face_send((f.M.HEAPU8.set(new TextEncoder().encode('{"t":"nope"}'), f.M._face_in_buf()), 12));
   f.M._face_poll; f.drain(); f.M._face_key(17, 1); f.M._face_key(17, 0); f.send({ t: "event", kind: "seal" }); frames(f);
   assert.ok(f.poll("log").dropped >= 1, "the log's running total");
+});
+
+test("props() is the transport's: hashed without seq, so an unchanged screen is not sent again, and seq is assigned by the transport, never the caller", { skip }, async () => {
+  const f = await boot(); f.send({ t: "spec", screen: "pods", json: { regions: {} } });
+  assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 1 }, seq: 99 }), 0); assert.equal(f.M._face_props_count(), 1); assert.equal(f.M._face_props_seq(), 1, "the caller's seq is ignored");
+  assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 1 }, seq: 5 }), 0); assert.equal(f.M._face_props_count(), 1, "the same props: not sent");
+  assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 2 } }), 0); assert.equal(f.M._face_props_count(), 2); assert.equal(f.M._face_props_seq(), 2);
+  assert.equal(f.props({ screen: "nope", regions: {} }), -1); assert.match(f.errors()[0], /spec is not loaded/); assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 2 } }), 0, "a refused send does not mark the props as sent"); 
+});
+
+test("hello with a contract that is not an integer says so", { skip }, async () => {
+  const f = await boot(); assert.equal(f.send({ t: "hello", contract: 1.5 }), -1); assert.deepEqual(f.errors(), ["hello: contract must be an integer"]);
+  assert.equal(f.send({ t: "hello", contract: "1" }), -1); assert.deepEqual(f.errors(), ["hello: contract must be an integer"]); assert.equal(f.send({ t: "hello" }), -1); assert.deepEqual(f.errors(), ["hello: contract is required"]);
 });

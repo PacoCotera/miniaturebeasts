@@ -84,7 +84,8 @@ static int hex(const char *s, uint32_t *rgb) { if (s[0] != '#' || strlen(s) != 7
 
 /* ---- the messages in ---- */
 static int on_hello(const msg_t *m) {
-  int c = -1; if (!num(m, key(m, "contract"), &c)) return fail("hello: contract is required");
+  int c = -1, ck = key(m, "contract"); if (ck < 0) return fail("hello: contract is required");
+  if (!num(m, ck, &c)) return fail("hello: contract must be an integer");
   if (c != WIRE_CONTRACT) { char b[80]; snprintf(b, sizeof b, "contract %d expected, got %d", WIRE_CONTRACT, c); return fail(b); }
   g_hello = 1; g_test = flag(m, key(m, "test"));
   char *r = (char *)malloc(320); if (!r) return -1;
