@@ -340,8 +340,8 @@ const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatch
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
-// 7 to 9 in the Probe's reach (was 3 to 5; tuned 2026-10-09 so a calm walk brings home about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
-const WARM_MIN = 7, WARM_MAX = 9, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
+// 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk brings home about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
+const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
 const CALL_R = 11, CALL_R_FOG = 6,   // the Call's range: a round 11 tiles (6 in a fog bank); its ring IS the unveil
       QW = PW / 2, QH = PH / 2, SURVEY_AT = 0.75;

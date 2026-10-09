@@ -202,7 +202,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 
 - **Warm stones.** At each world turn an unstruck stone can hold a warm charge of
   +1 Energy, never more (**Decided**). They are not abundant: Energy, and pods,
-  stay somewhat scarce (**Decided**). The sun warms 7 to 9 stones in reach, leaning
+  stay somewhat scarce (**Decided**). The sun warms 6 to 8 stones in reach, leaning
   toward the start, so a calm 15-minute walk brings home about 3 Energy
   (**Decided 2026-10-09**, [research economy](proposals/research-economy.md) §9;
   built at 3 to 5, which measured a median of 2); only Call finds one, and the map

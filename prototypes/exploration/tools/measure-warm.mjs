@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url); const { chromium } = require(pro
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.."); const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png" };
 const OLD = process.argv.includes("--old"), N = 30, CELLS = +(process.argv.find((a) => a.startsWith("--cells="))?.slice(8) || 7);
 const server = createServer((req, res) => { let p = path.join(root, decodeURIComponent(req.url.split("?")[0]).replace(/^\/sandbox\//, "/")); if (existsSync(p) && statSync(p).isDirectory()) p = path.join(p, "index.html"); if (!existsSync(p)) { res.writeHead(404); res.end(); return; }
-  let body = readFileSync(p); if (OLD && p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("const WARM_MIN = 7, WARM_MAX = 9", "const WARM_MIN = 3, WARM_MAX = 5"));
+  let body = readFileSync(p); if (OLD && p.endsWith("exploration/index.html")) body = Buffer.from(body.toString().replace("const WARM_MIN = 6, WARM_MAX = 8", "const WARM_MIN = 3, WARM_MAX = 5"));
   res.writeHead(200, { "content-type": types[path.extname(p)] ?? "application/octet-stream" }); res.end(body); });
 await new Promise((r) => server.listen(0, "127.0.0.1", r)); const port = server.address().port;
 const b = await chromium.launch(), rows = [];
