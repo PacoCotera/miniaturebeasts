@@ -49,14 +49,6 @@ const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++)
 // The unread picture's frost: frosted glass over the pane, `frostS` with `frostD` at most (never `frost` or white).
 const frostPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const streak = (x + y * 2) % 23 < 2 && bay(x, y) < 10, low = y > h * 0.7 && bay(x, y) < (y - h * 0.7) / 3; pb.set(x, y, streak || low || bay(x, y) < 3 ? C.frostD : C.frostS); } return pb; };
 const keyPB = () => { const pb = new PB(44, 64); pb.poly([[22, 6], [40, 32], [22, 58], [4, 32]], C.lilac); pb.poly([[22, 6], [40, 32], [22, 32]], C.lavender); pb.outline(() => C.plumD); return pb; };
-// The difference mark: an aqua bracket (corner ticks, 4 px arms) on a 1 px ink keyline, 12×12.
-const bracketPB = () => {
-  const pb = new PB(12, 12), ticks = [];
-  for (const [x, y, sx, sy] of [[1, 1, 1, 1], [10, 1, -1, 1], [1, 10, 1, -1], [10, 10, -1, -1]]) for (let i = 0; i < 4; i++) ticks.push([x + sx * i, y], [x, y + sy * i]);
-  for (const [x, y] of ticks) for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) if (x + dx >= 0 && x + dx < 12 && y + dy >= 0 && y + dy < 12) pb.set(x + dx, y + dy, C.ink);
-  for (const [x, y] of ticks) pb.set(x, y, C.aqua);
-  return pb;
-};
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
 export function stampPicture(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds); if (!sg) return null;
@@ -94,7 +86,6 @@ export function registerPictures(reqs, env) {
       case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPB(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;
       case "key": put(r.id, 44, 64, "the chapter seals' master", keyPB); break;
-      case "bracket": put(r.id, 12, 12, "the marks' master", bracketPB); break;
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), sp = stampPicture(fr, p.genome, r.read); return sp.build(); }); break;
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       default: throw new Error("unknown picture kind " + r.kind);

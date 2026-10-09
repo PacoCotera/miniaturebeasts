@@ -121,6 +121,7 @@ function nodes(ctx) {
   out.push({ id: "bench", kind: "rect", rect: R.bench.rect.slice(), colour: C.ground });   // the bench: a flat ground under the room master
   const focusRail = F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null;
   if (v.mode === "compare") {
+    out.push(...layer("bench.room", R.bench.rect, v.bench.find(isFilled) ?? null));
     out.push(...slantRail(ctx, "rail", { ...v.rail, focused: v.rail.current, where: "pods", tabRegion: "rail.tab" }).nodes);
     v.pages.forEach((pg, i) => out.push(...chapterPage(ctx, i ? "pageB" : "pageA", { ...R.compareA, rect: R[i ? "compareB" : "compareA"].rect }, { ...pg, region: i ? "compareB" : "compareA", cellRegion: "page.cell" }).nodes));
   } else if (v.mode === "collection") {

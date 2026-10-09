@@ -47,11 +47,6 @@ export function chapterPage(ctx, id, region, props) {
       }
       if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy + cut, pw, ph - cut], children: [{ id: cid + ".wipefrost", kind: "sprite", rect: P, asset: `${props.frost}${pw}x${ph}` }] }, { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
     }
-    if (c.diff) {   // Compare: a trait that differs wears a 2 px aqua edge on its own rectangle (never the focus-role ring, warm cream #ffe6ad) and the 12×12 bracket, inside the picture, top centre, 8 px in
-      const D = Cc.diff, e = props.diff.edge;
-      nodes.push({ id: cid + ".diff.t", kind: "rect", rect: [cx, cy, pw, e], colour: D.edge, region: "page.diff" }, { id: cid + ".diff.b", kind: "rect", rect: [cx, cy + ph - e, pw, e], colour: D.edge }, { id: cid + ".diff.l", kind: "rect", rect: [cx, cy, e, ph], colour: D.edge }, { id: cid + ".diff.r", kind: "rect", rect: [cx + pw - e, cy, e, ph], colour: D.edge },
-        { id: cid + ".bracket", kind: "sprite", rect: [cx + Math.round(pw / 2) - 6, cy + props.diff.inset, 12, 12], asset: props.bracket, region: "page.bracket" });
-    }
     const gap = region.cell ? region.cell.gap : region.nameGap, line = region.cell ? region.cell.name.line : region.nameLine, ny = cy + ph + gap, nw = Math.round(ctx.measure(c.name, 16, 400)), N = region.newMark, dot = c.isNew && N && props.newMark ? N.size[0] + N.gapAfterName : 0, nx = region.cell ? cx + Math.round((pw - nw - dot) / 2) : cx;
     nodes.push({ id: cid + ".name", kind: "text", rect: [nx, ny, nw, line], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
     if (dot) nodes.push(...markNode(cid + ".new", props.newMark, [nx + nw + N.gapAfterName, ny + line / 2 - N.size[1] / 2, N.size[0], N.size[1]], "the field-guide mark master"));   // the name and the dot centred together, the dot's centre on the line's middle

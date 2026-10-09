@@ -166,7 +166,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   for (const c of cells) if (c.wipe != null) frost(pw, ph);
   const unreadFrame = pw ? slot(req, `trait-picture-frame-${pw}x${ph}-unread`, [0, 0, pw, ph], "the unread frame master") : null;
   const sealedFind = sealed && region.sealedFind ? req({ kind: "seal", id: `seal:${region.sealedFind[2]}`, size: region.sealedFind[2] }) : null;
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, standIn: spec.strings.standIn, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, standIn: spec.strings.standIn, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks };
 }
 
 function compareView(view, m, spec, ctx, req) {
@@ -183,6 +183,7 @@ function compareView(view, m, spec, ctx, req) {
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
   view.rail = { colours: C.rail, ground: C.ground, focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, maxTraits(spec.regions.chapter.page)), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
+  view.bench = [slot(req, "room-bench-stage-chapter", spec.regions.bench.rect, "the chapter's room master"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];   // the strip outside the two pages is the bench, not a flat ground
   view.targets = [];
   return view;
 }

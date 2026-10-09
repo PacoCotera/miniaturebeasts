@@ -196,9 +196,9 @@ test("the chapter page lays the cells on the grid with the marks inside each pic
   assert.deepEqual(by["page.c1.m1"].rect, [776 + 8, 160 + 8, 28, 16]);   // breed to change at the top left
   assert.equal(by["page.c2.frost"].kind, "rect"); assert.equal(by["page.c2.frost"].colour, "frost"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
   assert.deepEqual(by["page.c0.wipe"].rect, [544, 216, 216, 56]); assert.equal(by["page.c0.name"].rect[1], 160 + 112 + 8);
-  // Compare: the difference is a 2 px aqua edge on the picture's own rectangle and the bracket 8 px in at the top centre; never the cream ring
-  assert.deepEqual(by["page.c3.diff.t"].rect, [776, 360, 216, 2]); assert.deepEqual(by["page.c3.diff.r"].rect, [776 + 214, 360, 2, 112]); assert.equal(by["page.c3.diff.t"].colour, "aqua");
-  assert.deepEqual(by["page.c3.bracket"].rect, [776 + 108 - 6, 360 + 8, 12, 12]); assert.ok(!r.nodes.some((n) => n.kind === "nineSlice"));
+  // Compare draws no edge and no bracket of its own for a trait that differs: the signed frames carry the cells, the need line says it (art director, 2026-10-09)
+  assert.ok(!r.nodes.some((n) => /\.diff\.|\.bracket/.test(n.id)), "no build-drawn difference marks");
+  assert.ok(!r.nodes.some((n) => n.kind === "nineSlice"));
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => [16, 20].includes(n.px)));
   assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, marks, diff: { edge: 2, inset: 8 }, frost: "f:", slats: "s:" }).overflow, true);
 });
