@@ -226,6 +226,21 @@ drawn clouds), Pin, Battery, Radio; states: hollow bolt, Shield gone, free pod s
 | Veil edge | static 16 px Bayer fade; lifting swaps baked tile variants, no per-pixel work |
 | Counter tick | +1 per 90 ms, 260 ms flash |
 
+**The pod's layers** (the art director's layer rule, 2026-10-09). One painted pod serves every species: each size class (`large`, `medium`, `small`, `collection`, `list`) is a set of signed layers on one origin, recoloured in the page by the species' colour pair, A (first) and B (second). Composited bottom to top:
+
+| Layer | Id | Convention | Role |
+| --- | --- | --- | --- |
+| Shade | `pod-<class>-shade` | Grey, 0.5 neutral; colour × 2 × grey; its alpha is the pod's | The pod's form and light; every colour below it is multiplied by it |
+| Relief (optional) | `pod-<class>-pattern-<name>-relief` | As the shade: grey, 0.5 neutral; colour × 2 × grey, composited just above the shade | A pattern's dark lip and lit crest. It exists for segments and plates; dots and ribs have none |
+| Body mask | `pod-<class>-mask-body` | Alpha | Where colour A goes |
+| Accent mask | `pod-<class>-mask-accent` | Alpha | Where colour B goes |
+| Pattern | `pod-<class>-pattern-<name>` | Light only: white with alpha, tinted by B and multiplied by the shade (and the relief) | The shell's pattern; never dark |
+| Band | `pod-<class>-band` | Straight alpha, over the pod | The sealing band, only while sealed |
+
+Colour = (A · body · (1 − pattern) + B · min(1, accent + pattern)) × 2 · shade × 2 · relief, where a missing relief counts as 0.5 (neutral).
+
+**The frames' shell words map to a pattern layer:** "smooth dots" → `dots`, "soft ribs" → `ribs`, "segments" → `segments`, "plates" → `plates`. `stripes` and `bands` exist but no frame uses them today. A word with no mapped layer draws no pattern, and is never forced onto the nearest layer. The map and the relief rule live in `pods.json` `podLayers`.
+
 ## 3. Pixel samples
 
 `samples-1x.png` (with a 3× preview), all inside the 48 colours (checked: 0 off-palette pixels):

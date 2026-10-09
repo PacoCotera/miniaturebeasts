@@ -1036,5 +1036,47 @@
   "overview",
   "chapter"
  ],
- "initial": "collection"
+ "initial": "collection",
+ "podLayers": {
+  "order": [
+   "shade",
+   "relief",
+   "mask-body",
+   "mask-accent",
+   "pattern",
+   "band"
+  ],
+  "patterns": {
+   "smooth dots": "dots",
+   "soft ribs": "ribs",
+   "segments": "segments",
+   "plates": "plates"
+  },
+  "unused": [
+   "stripes",
+   "bands"
+  ],
+  "pattern": {
+   "id": "pod-{class}-pattern-{name}",
+   "light": "white with alpha, tinted by the species' second colour, multiplied by the shade (and the relief)",
+   "dark": false
+  },
+  "relief": {
+   "id": "pod-{class}-pattern-{name}-relief",
+   "optional": true,
+   "convention": "as the shade: grey, 0.5 neutral, colour × 2 × grey",
+   "above": "shade",
+   "for": [
+    "segments",
+    "plates"
+   ],
+   "none": [
+    "dots",
+    "ribs"
+   ],
+   "carries": "the pattern's dark lip and lit crest"
+  },
+  "compose": "colour = (A · body · (1 − pattern) + B · min(1, accent + pattern)) × 2 · shade × 2 · relief (missing relief = 0.5)",
+  "note": "art director, 2026-10-09: the pattern layer stays light only; the relief layer carries the dark; a word with no mapped layer draws none, never forced onto the nearest (design/proposals/ui-kit.md, The pod's layers)"
+ }
 }
