@@ -39,10 +39,10 @@ export function check(root = dest) {
 export function place({ from, ids = [], group, dryRun = false, root = dest, headings = true, by = null, byStatus = false }) {
   const manifest = JSON.parse(readFileSync(path.join(from, "slices/manifest.json"), "utf8")), readme = readFileSync(path.join(from, "README.md"), "utf8");
   const signed = headings ? signedIds(readme) : new Map(), want = new Map([...signed].filter(([id]) => manifest[id]));
-  // --status: the studio's own record (slices/status.json): `signed` slices are placed as signed; `placeholder` and `held` ones are placed too, flagged in the index as not final (never shown to the owner as final); `new` (cut, not yet signed) and `withdrawn` are not placed
+  // --status: the studio's own record (slices/status.json): `signed` slices are placed as signed; `placeholder`, `held` and `new` (cut, not yet signed) ones are placed too, flagged in the index as not final (never shown to the owner as final); `withdrawn` is not placed
   const flags = new Map();
   if (byStatus) { const st = JSON.parse(readFileSync(path.join(from, "slices/status.json"), "utf8"));
-    for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held"].includes(e.status)) { want.set(id, e.signed_in ? `signed, ${e.signed_in}` : e.status); if (e.status !== "signed") flags.set(id, `${e.status}, not final${e.note ? ": " + e.note : ""}`); } }
+    for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held", "new"].includes(e.status)) { want.set(id, e.signed_in ? `signed, ${e.signed_in}` : e.status); if (e.status !== "signed") flags.set(id, `${e.status === "new" ? "cut, awaiting the art director" : e.status}, not final${e.note ? ": " + e.note : ""}`); } }
   for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, "named with --ids"); }
   const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} };
   const placed = [], skipped = [];

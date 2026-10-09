@@ -6,6 +6,7 @@
 //          colours: { name } }
 // Plate and name: the plate's left edge on the label's x, the name centred on the plate, the plate as wide as the name needs (at least 80, at most 224, in 16s).
 import { layer } from "./specimen.mjs";
+import { isFilled } from "../assets.mjs";
 
 export const placeRect = (L, i) => [L.places.first[0] + L.places.pitch[0] * (i % L.places.grid[0]), L.places.first[1] + L.places.pitch[1] * Math.floor(i / L.places.grid[0]), L.places.first[2], L.places.first[3]];
 
@@ -14,7 +15,9 @@ export function list(ctx, id, spec, props) {
   props.places.forEach((w, i) => {
     const r = placeRect(L, i), [x, y] = r, pid = `${id}.p${i}`;
     nodes.push({ id: pid, kind: "sprite", rect: r, asset: w.panel, region: "place" });
-    nodes.push({ id: pid + ".ring", kind: "sprite", rect: [x + L.ring.centre[0] - L.ring.outer, y + L.ring.centre[1] - L.ring.outer, 2 * L.ring.outer, 2 * L.ring.outer], asset: w.ring });
+    const layers = (w.ringLayers || []).filter(isFilled), whole = layers.length === (w.ringLayers || []).length && layers.length > 0;   // the studio's ring masters 1:1 on the slice's origin when every layer is placed; the build's own ring until they are
+    if (whole) layers.forEach((a, k) => nodes.push({ id: `${pid}.ring.${k}`, kind: "sprite", rect: [x + L.ring.slice[0], y + L.ring.slice[1], L.ring.slice[2], L.ring.slice[3]], asset: a }));
+    else nodes.push({ id: pid + ".ring", kind: "sprite", rect: [x + L.ring.centre[0] - L.ring.outer, y + L.ring.centre[1] - L.ring.outer, 2 * L.ring.outer, 2 * L.ring.outer], asset: w.ring });
     if (w.empty) return;
     if (w.pod) nodes.push({ id: pid + ".pod", kind: "sprite", rect: [x + L.pod.centre[0] - L.pod.size[0] / 2, y + L.pod.centre[1] - L.pod.size[1] / 2, L.pod.size[0], L.pod.size[1]], asset: w.pod, region: "place.pod" });
     const [nx, ny] = [x + L.name.at[0], y + L.name.at[1]], pw = w.plate ? Number(w.plate.match(/:(\d+)x/)[1]) : 0, tw = Math.round(ctx.measure(w.name, L.name.px, L.name.weight));

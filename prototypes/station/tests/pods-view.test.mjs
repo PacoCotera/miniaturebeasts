@@ -47,7 +47,7 @@ test("an empty rack: the collection of six empty places and nothing else on the 
 test("an unidentified pod: the sealed pod, 'Unknown', its origin, no rail, no page, no stamp; ✓ Identify", () => {
   const st = stock(["S01"]), v = view(model(st));
   assert.equal(v.specimen.name, "Unknown"); assert.ok(v.specimen.pod.sealed && !v.specimen.pod.identified);
-  assert.equal(v.mode, "overview"); assert.equal(v.rail, null); assert.equal(v.page, null); assert.equal(v.stamp, null); assert.deepEqual(v.kin, []); assert.deepEqual(v.specimen.who, []);
+  assert.equal(v.mode, "overview"); assert.equal(v.rail, null); assert.equal(v.page, null); assert.equal(v.stamp, null); assert.deepEqual(v.kin, []); assert.equal(v.specimen.who.length, 2, "the two frosted marks");
   assert.ok(/^mibi-halo-empty-128x160:/.test(v.specimen.figure), "the figure is the empty halo before Identify");
   assert.equal(v.line.ok, "Identify"); assert.equal(v.line.price, ""); assert.equal(v.line.back, "Pods");   // free is not shown
   assert.ok(v.specimen.origin.length >= 1 && v.specimen.origin.length <= 2);

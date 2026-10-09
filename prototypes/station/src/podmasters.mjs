@@ -29,7 +29,11 @@ export function figureFromLayers(mistId, clearId, alpha, [w, h]) {
   const make = () => {
     cv = document.createElement("canvas"); cv.width = w; cv.height = h; if (!a || !isFilled(clearId)) return cv;
     const m = pixels(mistId).data, c = pixels(clearId).data, out = new Uint8ClampedArray(m.length), t = Math.max(0, Math.min(1, alpha));
-    for (let i = 0; i < m.length; i++) out[i] = Math.round(m[i] * (1 - t) + c[i] * t);
+    for (let i = 0; i < m.length; i += 4) {   // laid over each other with the clear layer's alpha scaled by t: in premultiplied terms, so a transparent pixel adds no colour
+      const am = m[i + 3] / 255, ac = (c[i + 3] / 255) * t, a = ac + am * (1 - ac);
+      for (let k = 0; k < 3; k++) out[i + k] = a ? Math.round((c[i + k] * ac + m[i + k] * am * (1 - ac)) / a) : 0;
+      out[i + 3] = Math.round(a * 255);
+    }
     const g = cv.getContext("2d"), id = g.createImageData(w, h); id.data.set(out); g.putImageData(id, 0, 0); return cv;
   };
   return { w, h, canvas: () => cv || make() };

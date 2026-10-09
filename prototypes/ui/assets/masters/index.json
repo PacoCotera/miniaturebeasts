@@ -148,6 +148,244 @@
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed, well rings verdict"
   },
+  "mark-clan-C01-24x24": {
+   "file": "pods/mark-clan-C01-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C02-24x24": {
+   "file": "pods/mark-clan-C02-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "b71f7681f6013782198f0c3c3e079f94a14c2d425caea9e6e24dcf9b745f8d23",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C03-24x24": {
+   "file": "pods/mark-clan-C03-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f83fb3278e078b1a8d0c19f2a9084c251a63871d5ee29f488fe05a34960bc01a",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C04-24x24": {
+   "file": "pods/mark-clan-C04-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C05-24x24": {
+   "file": "pods/mark-clan-C05-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "4b40db85fc14d270cb7cecf760e5bc4977ca092c2ebce510aed1f26919092862",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C06-24x24": {
+   "file": "pods/mark-clan-C06-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C07-24x24": {
+   "file": "pods/mark-clan-C07-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C08-24x24": {
+   "file": "pods/mark-clan-C08-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C09-24x24": {
+   "file": "pods/mark-clan-C09-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "976b009b34769c0b7890cef618e6475fca04078b2923589c82fd7701710c9f54",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C10-24x24": {
+   "file": "pods/mark-clan-C10-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "6a2abbdd8afaa7650edaecdaa8ad60aa56dde9402e4a8f80ce8207ad9e11c620",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C11-24x24": {
+   "file": "pods/mark-clan-C11-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "4a439664cb12c220b7e06210761f717cbfc87788f280ce13491ce8eba7e94b89",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C12-24x24": {
+   "file": "pods/mark-clan-C12-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "4b40db85fc14d270cb7cecf760e5bc4977ca092c2ebce510aed1f26919092862",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C13-24x24": {
+   "file": "pods/mark-clan-C13-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fd424012268071fefca51cca118116d003fe3e65331f614d2fcf901609ef15c3",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C14-24x24": {
+   "file": "pods/mark-clan-C14-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "33e2783334d110d07ffc02b2cb6273c1fc7a3c4b7ce7197e9697e86df6de89f8",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C15-24x24": {
+   "file": "pods/mark-clan-C15-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "4a439664cb12c220b7e06210761f717cbfc87788f280ce13491ce8eba7e94b89",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-clan-C16-24x24": {
+   "file": "pods/mark-clan-C16-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "0a806bc9e61defab5757f174e9260db491477494d00d1b3e20d87eebe500af90",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-first-16x16": {
+   "file": "pods/mark-first-16x16.png",
+   "w": 16,
+   "h": 16,
+   "sha256": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-frost-24x24": {
+   "file": "pods/mark-species-frost-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "fe608d46c8441ef540cbf6f492d2202abef4aecb8c96989b523355588c868632",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S01-24x24": {
+   "file": "pods/mark-species-S01-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "26c19b7d0b3073573eee1e199ce66967e7c9f74eddbaba12b61c3aa410536f5f",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S02-24x24": {
+   "file": "pods/mark-species-S02-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "cfbb5ac00d1430fa9e4e3bdfdfa6d1b401b5c6e177884b2a6836c82081fd4d84",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S03-24x24": {
+   "file": "pods/mark-species-S03-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "eb25449c2f9fcafb8ea76d262ca0d0bc3538458d493df728b1c06ade139c4615",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S04-24x24": {
+   "file": "pods/mark-species-S04-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "ddff45e0e334b762b37dad7f59fe285d119d47a4fc739199f385393e52aa69dd",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S05-24x24": {
+   "file": "pods/mark-species-S05-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "cb294db4bcffb60012ff8b513ca53136c56f8acba1174915c20bcfa8e44f60f5",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S06-24x24": {
+   "file": "pods/mark-species-S06-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "23bcbf4c3c059ea1ef6c69a7fc81cb63ce0d73925fe19e9c8a8315d73c849cda",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S07-24x24": {
+   "file": "pods/mark-species-S07-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "2a4be6b63f285dccbac6d0498f3e6d17b79a5bf0d9b55091c19ac9789abc6453",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S08-24x24": {
+   "file": "pods/mark-species-S08-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "aabcd1b4fb7de76fc44e7cd8269ae8c21cf220dbd1532bf53f522f6b58246fc3",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S09-24x24": {
+   "file": "pods/mark-species-S09-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "1fdec141e949b11ce9d424e1e35a5ac24a2e50a1f462f42c8f0bf2b23e862a70",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S10-24x24": {
+   "file": "pods/mark-species-S10-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "ccfcd8acf6e8a87e51d0768aade8fd1a6b7369628e0e63e4023a4c4f488aa5e6",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S11-24x24": {
+   "file": "pods/mark-species-S11-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "3e4f0f01b2574b5c570c2901d17d63ece52f2f4ea5506f059a6e6f7c85380e34",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S12-24x24": {
+   "file": "pods/mark-species-S12-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "7373a8c5dcdfa37b8963be8f58b794c928580b8d8b48151b3b97fd26358e5228",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S13-24x24": {
+   "file": "pods/mark-species-S13-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "5c20add176b1cbeafce0695218cd1160ba85630c9e787ab3bc65361499629043",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S14-24x24": {
+   "file": "pods/mark-species-S14-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "393645557b1bd3acbd1da62129ee2565a1ab281a4f09cae4128f5c63902fc523",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S15-24x24": {
+   "file": "pods/mark-species-S15-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "f294b8296a9fefb31c940178c69044b013747486660eca404a74fbec116e18c3",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
+  "mark-species-S16-24x24": {
+   "file": "pods/mark-species-S16-24x24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a",
+   "signed": "cut, awaiting the art director, not final: a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict"
+  },
   "mibi-halo-S01-128x160-clear": {
    "file": "pods/mibi-halo-S01-128x160-clear.png",
    "w": 128,
@@ -356,7 +594,7 @@
    "w": 256,
    "h": 440,
    "sha256": "7748ade654903c1897432627590d6ace6821e4bc850246bd3d192496ce7c0aa5",
-   "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)",
+   "signed": "cut, awaiting the art director, not final: re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one",
    "slice": [
     64,
     64,
@@ -490,6 +728,90 @@
    "h": 24,
    "sha256": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580",
    "signed": "signed, pass 7b"
+  },
+  "pod-collection-band": {
+   "file": "pods/pod-collection-band.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "40c7875589d5628dd6843c2c1377a1d6ba6d666d5a79c0792dd0e80de7ce2a6e",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-crack": {
+   "file": "pods/pod-collection-crack.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "17a81668f422106b98c1fe8099cfa30de96bb0c3f4dc2997cdde2ccd80d86166",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-identified": {
+   "file": "pods/pod-collection-identified.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "f302ffdbb9265161502bdff66a51437dcee14d762ff58058075468e6aad03b83",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-mask-accent": {
+   "file": "pods/pod-collection-mask-accent.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "75382937b4f51a9468a8e9d42562265a203b14392b6915d32e58955f4cccde09",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-mask-body": {
+   "file": "pods/pod-collection-mask-body.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "cb6d1fbd43a0e64cdd908a6957381616da934ae80f87bbc8e569d4085ea99f54",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-pattern-bands": {
+   "file": "pods/pod-collection-pattern-bands.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "18c15519b022d588f1cbd3ae9d979a07f31540b7c3d2c9d547dfc1a3a0bf8e29",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-pattern-dots": {
+   "file": "pods/pod-collection-pattern-dots.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "78d2c5c603a1db34a9b960d8c9db8d5b9ebd0e850df8c4e1a371017890e523bf",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-pattern-stripes": {
+   "file": "pods/pod-collection-pattern-stripes.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "baaf0fe4a2eab57b3848dfc0031b1d0ab7170969045c384cadbbdd808b0e0e99",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-sealed": {
+   "file": "pods/pod-collection-sealed.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "b0aa805cb460488fea08274a3cfe5595955092fd2b164e7b06b2f91b001039a0",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-shade": {
+   "file": "pods/pod-collection-shade.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "be65bbf24cf1b84818d24123a24f9e334be5a1dcee8875087fdec5608b0a0bb5",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-shadow": {
+   "file": "pods/pod-collection-shadow.png",
+   "w": 104,
+   "h": 14,
+   "sha256": "f4a6dd5d9934b1eb845dd55b74057a3391d3af29aab4b536f408f8ca3450e0b9",
+   "signed": "cut, awaiting the art director, not final: the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+  },
+  "pod-collection-unknown": {
+   "file": "pods/pod-collection-unknown.png",
+   "w": 88,
+   "h": 112,
+   "sha256": "f6a1ad4e46d4d276ca860ed7b01520201d7091549855155929a8cdc296674cf0",
+   "signed": "cut, awaiting the art director, not final: the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none); the collection class, awaiting verdict"
   },
   "pod-large-band": {
    "file": "pods/pod-large-band.png",
@@ -1128,6 +1450,314 @@
    "sha256": "1fd2f86b4fb4da9bfffe2c7c4a42681c4a057ebafe96f8322597d78452270f8f",
    "signed": "art director's consolidated list, 2026-10-08 (from masters-pods)"
   },
+  "ring-arc-collection-n1-s0": {
+   "file": "pods/ring-arc-collection-n1-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "642a7984006a2d0437aaeedaabe72992dc8934b57e1ca1d08f8517dbb5457a06",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n1-track": {
+   "file": "pods/ring-arc-collection-n1-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "3b6ff44cd73e70549adc6ca89efd1fc8d6c2d7708c9e5b516d199f3202e2128c",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n2-s0": {
+   "file": "pods/ring-arc-collection-n2-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "37ee769cdfbdc701fc522eaf7ee86f2192da1accbaa3fa5f979c85acb0aca0f9",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n2-s1": {
+   "file": "pods/ring-arc-collection-n2-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "79b653cb1a39daa00270565a4338570766cdeb37504a24e511cc638c2f6cc38c",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n2-track": {
+   "file": "pods/ring-arc-collection-n2-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "440f924aed498462492ebe2bc176f39175a363875eaf9f18eb4094c4a3894910",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n3-s0": {
+   "file": "pods/ring-arc-collection-n3-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "9f578a253f7ea2d6a91458a6019f27b341140a0789bedd52268d25eedc858627",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n3-s1": {
+   "file": "pods/ring-arc-collection-n3-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "b7fd8cd76f8acd48706375b86cbb299cde987e247e3a52b9213d493772592b04",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n3-s2": {
+   "file": "pods/ring-arc-collection-n3-s2.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "f9ff2c9605182c495a9e5c151f1ae0d241c3b8318f9dadf7f9992957bb34678b",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n3-track": {
+   "file": "pods/ring-arc-collection-n3-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "1172792e18466a549cb05638b80f4b89ea0564d896fe4eb1d40e93c18348554d",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n4-s0": {
+   "file": "pods/ring-arc-collection-n4-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "02ec0981ee40097fc6bb318a6c8a6cd55b094e3e19963abf5351cdc05e223291",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n4-s1": {
+   "file": "pods/ring-arc-collection-n4-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "9faa5036ed282c7bde6c90e1f63e4f9fe5bf0159410607cb74e692ed006ea15f",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n4-s2": {
+   "file": "pods/ring-arc-collection-n4-s2.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "89f6691e2612e8562da6a55d8b91222a1d0735ad42cd9aef9d84f6fdc0b408ec",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n4-s3": {
+   "file": "pods/ring-arc-collection-n4-s3.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "482de3fd0cf9faefb7850e49cdeb0cc6788e5524bf09c5d216ad125c3aeef111",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n4-track": {
+   "file": "pods/ring-arc-collection-n4-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "7bc0ec1d057fd176c89b5a091ac8e90859aca91eed38b1f105d10f1223165118",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n5-s0": {
+   "file": "pods/ring-arc-collection-n5-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "72eab24dcf3f7c30ff8e0ff380fa08bcde3060eb9748b9c653408fdb46725f54",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n5-s1": {
+   "file": "pods/ring-arc-collection-n5-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "fa3b507f26aad0d24918708fd871b9f2c800ff6c8a2ecd01e66714eda33b835b",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n5-s2": {
+   "file": "pods/ring-arc-collection-n5-s2.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "3dc23d2f55d77f623ee5c37e6e40ec68057ad16f9aa85854b75e8e51e021dba7",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n5-s3": {
+   "file": "pods/ring-arc-collection-n5-s3.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "6763f1d9207fa294d1d7c3ea4a9f388edfe5f4731889bda6ef6b5e25229fcf04",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n5-s4": {
+   "file": "pods/ring-arc-collection-n5-s4.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "c2e7d1fd3e3c9ac2b6a2aeb66884c58e2a1381dc3f6b1916502b7f5afb4b60bf",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n5-track": {
+   "file": "pods/ring-arc-collection-n5-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "8affe3297f9fbf35767dd5faa777f511229e96e9be9663c69fae51cc11c6aab6",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-s0": {
+   "file": "pods/ring-arc-collection-n6-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "9838d2d241bfb4c5cee9ef5435d828e68cdbbff40f597ed3672a5dd7cfdd8ccd",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-s1": {
+   "file": "pods/ring-arc-collection-n6-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "728f159cdb3c170313619d8673f8ade9082e3fbb3a6fcc5f0f62d7974e0f6ec6",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-s2": {
+   "file": "pods/ring-arc-collection-n6-s2.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "312cb0536506e2a4c224b53ebb6d37e568c47343558c9122c73bfd02cccfea8d",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-s3": {
+   "file": "pods/ring-arc-collection-n6-s3.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "e20e2009febfa27e30313c4da6daf3b909d59897dc14354a81a8965db8662899",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-s4": {
+   "file": "pods/ring-arc-collection-n6-s4.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "5b54063e7119fb28f32fddb8c483db203993a11bef71c99ad7b14bf28be56e52",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-s5": {
+   "file": "pods/ring-arc-collection-n6-s5.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "4b84259b4f982650783c4d4ea8c5b81a9245610557d9cb5b493ef2dacabc5b28",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n6-track": {
+   "file": "pods/ring-arc-collection-n6-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "90e188cf167107d5fa336f090ce8a3b3573b832a0659bafeb0653e8956a80714",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s0": {
+   "file": "pods/ring-arc-collection-n7-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "03cd67997a96fe300167eeba6066bfd5ec77cb900b1456ae2d0b07963496e800",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s1": {
+   "file": "pods/ring-arc-collection-n7-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "f4ca17d5bda85e227eb06031cc8b5fe7daa990d61824b8cc2865343f78982f9e",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s2": {
+   "file": "pods/ring-arc-collection-n7-s2.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "108bb6e8c9d4dfde790aa97276e3e80ca798c07ecbac7f0894f692d48f96a262",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s3": {
+   "file": "pods/ring-arc-collection-n7-s3.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "925e909ffc151ed240e6a86dcb92cc557b894dc5c7f6e10e9a7d4237b6788f19",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s4": {
+   "file": "pods/ring-arc-collection-n7-s4.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "d4bd41d843285d8e2e823ae175b945cfd935e7e755bbe7039b8f186c1491386a",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s5": {
+   "file": "pods/ring-arc-collection-n7-s5.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "359ad6a640028f517ad028955ce3d809ea622cd79041e77041a5d40f6fac870d",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-s6": {
+   "file": "pods/ring-arc-collection-n7-s6.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "6700fcb869ad9dfdd31832e673b4bfdea471a51101a9f2ae2a928c0142f1fce2",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n7-track": {
+   "file": "pods/ring-arc-collection-n7-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "36a701e3120618d145e6133b6748f5281dfc903d68e253b2fa8c33aa2dba33a8",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s0": {
+   "file": "pods/ring-arc-collection-n8-s0.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "05095aa67ae06b423eb0a419f63abde5f938d032337424bc1f2276b6bcf17ab7",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s1": {
+   "file": "pods/ring-arc-collection-n8-s1.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "7e516892cfa662716761585097a865204ee62fa688c450e73eaed49914d32b84",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s2": {
+   "file": "pods/ring-arc-collection-n8-s2.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "11c84597cb0073cfb76ad99b469031640da51e966abdb4fdadbcc01a59127fb3",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s3": {
+   "file": "pods/ring-arc-collection-n8-s3.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "cecefcc4c6e838e0fb1bdef1996bc0174b499f5965f1dcceebb8c0a395d52cdf",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s4": {
+   "file": "pods/ring-arc-collection-n8-s4.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "9dea32b67f166cde7afe3a82e4a38f8c3fec73468342015afc9966754cf2b2a3",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s5": {
+   "file": "pods/ring-arc-collection-n8-s5.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "60a1b59e7974a66a7a8cf1a2b9179c3b0856c4cd5e9671a9993288a3576c978e",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s6": {
+   "file": "pods/ring-arc-collection-n8-s6.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "0c59fe3b9890ac15f1415d604eaaca5369c03e8d445ec9fac9d37d00332fab91",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-s7": {
+   "file": "pods/ring-arc-collection-n8-s7.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "1e605c7b7d9e4d3e0472b7da50323e33758662804f06b72230529b6f44b71edd",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-arc-collection-n8-track": {
+   "file": "pods/ring-arc-collection-n8-track.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "a29040b53d2c434f461849d351022175cea080f10c1f2c4b1233c10184979f4b",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
   "ring-arc-idle-n4-s0": {
    "file": "pods/ring-arc-idle-n4-s0.png",
    "w": 80,
@@ -1618,6 +2248,20 @@
    "sha256": "eed42ea9a69ff11f6fb6a53c5e40bb3dde3add689cfa024cb716a5ed97d69ab9",
    "signed": "signed, pass 17 (the painted gauge, verdict)"
   },
+  "ring-collection-closed-176x176": {
+   "file": "pods/ring-collection-closed-176x176.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
+  "ring-collection-idle-176x176": {
+   "file": "pods/ring-collection-idle-176x176.png",
+   "w": 176,
+   "h": 176,
+   "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
+   "signed": "cut, awaiting the art director, not final: the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+  },
   "ring-column": {
    "file": "pods/ring-column.png",
    "w": 160,
@@ -1673,6 +2317,20 @@
    "h": 522,
    "sha256": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f",
    "signed": "signed, pass 4"
+  },
+  "room-bench-stage-chapter": {
+   "file": "pods/room-bench-stage-chapter.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
+   "signed": "cut, awaiting the art director, not final: the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+  },
+  "room-bench-stage-overview": {
+   "file": "pods/room-bench-stage-overview.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
+   "signed": "cut, awaiting the art director, not final: the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
   },
   "room-cradle": {
    "file": "pods/room-cradle.png",
@@ -1827,6 +2485,48 @@
    "h": 96,
    "sha256": "eadfe45e3bbc4b64278fa076907d89bdd8328af39d5999970752f115cb4bdaa7",
    "signed": "signed, pass 4"
+  },
+  "trait-picture-frame-128x160": {
+   "file": "pods/trait-picture-frame-128x160.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "98e85563bc687f054d4effcfc8361e9176ce2098137dbebc45be241bd171e734",
+   "signed": "cut, awaiting the art director, not final: the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  },
+  "trait-picture-frame-128x160-sealed": {
+   "file": "pods/trait-picture-frame-128x160-sealed.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "32adb1e7d3f966d9478b0307eb6b18dd8c3ff5327e82c902dee34e7fcd353637",
+   "signed": "cut, awaiting the art director, not final: the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  },
+  "trait-picture-frame-128x160-unread": {
+   "file": "pods/trait-picture-frame-128x160-unread.png",
+   "w": 128,
+   "h": 160,
+   "sha256": "e9a110e88cdeaaa2a77af32b0b22078838e74d0c27d7dec846ab0faa8b9b51ed",
+   "signed": "cut, awaiting the art director, not final: the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+  },
+  "trait-picture-frame-144x176": {
+   "file": "pods/trait-picture-frame-144x176.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "69e218b8a4f4223d1747ddd75eec6ffc1e23dd97440ad97bdfbfc926887c08b8",
+   "signed": "cut, awaiting the art director, not final: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  },
+  "trait-picture-frame-144x176-sealed": {
+   "file": "pods/trait-picture-frame-144x176-sealed.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "96b3b5fab5469006c0376ceaf2dc9f28498d967022ee879901131e0ca4179128",
+   "signed": "cut, awaiting the art director, not final: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  },
+  "trait-picture-frame-144x176-unread": {
+   "file": "pods/trait-picture-frame-144x176-unread.png",
+   "w": 144,
+   "h": 176,
+   "sha256": "649d48104e540727a8bef2c8053b2c3f7816560e5ed3ea37cf0b882193a78c55",
+   "signed": "cut, awaiting the art director, not final: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
   },
   "trait-picture-frame-184x104": {
    "file": "pods/trait-picture-frame-184x104.png",

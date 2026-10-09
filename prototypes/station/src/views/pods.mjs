@@ -46,7 +46,7 @@ export function podsView(m, spec, ctx) {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
       view.stamp = { colours: spec.colours.stampLabel, size: sz.size, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(cur.genome)}:${[...read].sort().join(",")}:${sz.size}`, pod: cur.id, species: S.speciesOf(cur), read, size: sz.size }) };
-      view.stampCase = { back: slot(req, "room-stamp-case", R.stampCase.rect, "the stamp case master"), front: slot(req, "room-stamp-case-152x152-front", R.stampCaseFront.rect, "the case's front glass") };
+      view.stampCase = { back: slot(req, "room-stamp-case-152x152", R.stampCase.rect, "the stamp case master"), front: slot(req, "room-stamp-case-152x152-front", R.stampCaseFront.rect, "the case's front glass") };
     }
     // the kin: same-species pods that can be compared, small, at most six; none for a pod not yet identified (its species is not known)
     const kin = cur.idd ? st.tray.filter((q) => q !== cur && q.idd && S.canCompare(st, cur, q)).slice(0, R.kin.max) : [];
@@ -65,7 +65,7 @@ function railOf(m, spec, cur, chapters, req, open, focused) {
   const { st, settings, present = {} } = m;
   return { colours: spec.colours.rail, ground: spec.colours.ground, focused, open, slats: "slats:", star: req({ kind: "star", id: "star:12" }), tabs: chapters.map((c) => {
     const read = cur.read.includes(c.id), sealed = !!c.sealed && !settings.sealedOpen, n = Math.min(c.traits.length, 6), wipe = present.read && present.read.pod === cur.id && present.read.chapter === c.id ? present.read.p : null;
-    return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:24`, chapter: c.id }) };
+    return { id: c.id, word: railWord(c, spec), state: read ? "read" : sealed ? "sealed" : "unread", pips: n, filled: read ? (wipe == null ? n : Math.ceil(wipe * n)) : 0, glint: S.glint(st, cur, c.id), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: c.id, state: read ? "read" : sealed ? "sealed" : "unread" }) };
   }) };
 }
 
@@ -80,7 +80,7 @@ function specimenOf(m, spec, ctx, cur, R, req, mode) {
   const out = {
     colours: { name: C.name, origin: C.origin, cut: "white" }, R, beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
     room: {
-      bench: slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master"), shelf: slot(req, "room-shelf", R.shelf.rect, "the shelf master, cut to the spec's size"),
+      bench: slot(req, `room-bench-stage-${mode}`, spec.regions.bench.rect, "the state's room master"), benchAny: slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master"), shelf: slot(req, "room-shelf", R.shelf.rect, "the shelf master, cut to the spec's size"),
       cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), cradleFront: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer"),
       shadow: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + spec.shadow.widen, spec.shadow.h], "the contact shadow"),
       plate: slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master"),
@@ -101,7 +101,8 @@ function specimenOf(m, spec, ctx, cur, R, req, mode) {
       const mist = slot(req, `mibi-halo-${sp}-${fw}x${fh}-mist`, R.figure.rect, "the species' figure master (mist)"), clear = slot(req, `mibi-halo-${sp}-${fw}x${fh}-clear`, R.figure.rect, "the species' figure master (clear)");
       out.figure = req({ kind: "figure", id: `figure:${sp}:${read}/${total}`, size: [fw, fh], mist, clear, alpha: total ? read / total : 0 });
     } else out.figure = slot(req, `mibi-halo-empty-${fw}x${fh}`, R.figure.rect, "the empty halo master");
-    out.who = cur.idd && sp ? [slot(req, `who-glyph-${sp}-24`, R.who.marks[0], "the species' mark master"), slot(req, `who-clan-${fr?.taxonomy?.clan ?? "-"}-24`, R.who.marks[1], "the clan's mark master"), cur.newSp ? slot(req, "who-first-16", R.who.marks[2], "the first-of-its-kind mark master") : null] : [];
+    out.who = cur.idd && sp ? [slot(req, `mark-species-${sp}-24x24`, R.who.marks[0], "the species' mark master"), slot(req, `mark-clan-${fr?.taxonomy?.clan ?? "-"}-24x24`, R.who.marks[1], "the clan's mark master"), cur.newSp ? slot(req, "mark-first-16x16", R.who.marks[2], "the first-of-its-kind mark master") : null]
+      : [slot(req, "mark-species-frost-24x24", R.who.marks[0], "the frosted mark master"), slot(req, "mark-species-frost-24x24", R.who.marks[1], "the frosted mark master")];   // before Identify the marks are frosted
   }
   return out;
 }
@@ -113,13 +114,14 @@ function collectionView(view, m, spec, ctx, req) {
   const rack = Math.min(settings.rack || S.RACK, L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2) }), d = 2 * R.ring.outer;
   const places = [];
   for (let i = 0; i < rack; i++) {
-    const q = st.tray[i], empty = req({ kind: "cring", id: `cring:${d}:-`, size: d, read: null });
-    if (!q) { places.push({ empty: true, panel, ring: empty }); continue; }
+    const q = st.tray[i], empty = req({ kind: "cring", id: `cring:${d}:-`, size: d, read: null }), RS = R.ring.slice, rs = (id) => slot(req, id, [0, 0, RS[2], RS[3]], "the collection ring master");
+    if (!q) { places.push({ empty: true, panel, ring: empty, ringLayers: [rs("ring-collection-idle-176x176")] }); continue; }
     const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, closed = !!flags && flags.length > 0 && flags.every(Boolean);
     const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod, platew = Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((ctx.measure(name, N.px, N.weight) + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
     const sp = shellFrame(st, q) ? S.speciesOf(q) : null, size = R.pod.size;
     places.push({
       panel, ring: flags ? req({ kind: "cring", id: `cring:${d}:${flags.map(Number).join("")}`, size: d, read: flags }) : empty,
+      ringLayers: !flags || flags.length < 1 || flags.length > 8 ? [rs("ring-collection-idle-176x176")] : closed ? [rs("ring-collection-closed-176x176")] : [rs(`ring-arc-collection-n${flags.length}-track`), ...flags.flatMap((r, i) => (r ? [rs(`ring-arc-collection-n${flags.length}-s${i}`)] : []))],
       pod: req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }),
       name, plate: slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master"),
       find: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}:${R.place.at[2]}`, place: q.g, size: R.place.at[2] }) : null,
@@ -127,6 +129,7 @@ function collectionView(view, m, spec, ctx, req) {
       glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : null,
     });
   }
+  view.bench = [slot(req, "room-bench-stage-collection", spec.regions.bench.rect, "the collection's room master"), slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master")];
   view.list = { colours: { name: C.name }, places, waiting: st.waiting.length ? req({ kind: "waiting", id: "waiting:24" }) : null };
   view.rail = null; view.page = null; view.stamp = null; view.box = null; view.specimen = null;
   view.line = lineOf(m, spec, S.podById(st, ui.cur), [], 0, view);
@@ -156,8 +159,9 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   });
   const frost = (w, h) => req({ kind: "frost", id: `frost:${w}x${h}`, w, h });
   for (const c of cells) if (c.wipe != null) frost(pw, ph);
+  const unreadFrame = pw ? slot(req, `trait-picture-frame-${pw}x${ph}-unread`, [0, 0, pw, ph], "the unread frame master") : null;
   const sealedFind = sealed && region.sealedFind ? req({ kind: "seal", id: `seal:${region.sealedFind[2]}`, size: region.sealedFind[2] }) : null;
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:24`, chapter: ch.id }), word } : null, cells: sealed ? [] : cells, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > 8, frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, unreadFrame, count: traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > 8, frost: "frost:", colours: { ...C.page, diff: C.diff }, marks: spec.page.marks, diff: { edge: spec.page.diff.edge, inset: spec.page.diff.inset }, bracket: diffIds ? req({ kind: "bracket", id: "bracket:12x12" }) : null };
 }
 
 function compareView(view, m, spec, ctx, req) {
@@ -172,7 +176,7 @@ function compareView(view, m, spec, ctx, req) {
   };
   const compareRegion = (key) => ({ ...R[key === "compareB" ? "compareA" : key], rect: R[key].rect });
   view.pages = [side(A, compareRegion("compareA"), "compareA"), side(B, compareRegion("compareB"), "compareB")];
-  view.rail = { colours: C.rail, ground: C.ground, focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, 6), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:24`, chapter: x.id }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
+  view.rail = { colours: C.rail, ground: C.ground, focused: null, open: ci, tabs: chs.map((x, i) => ({ id: x.id, word: railWord(x, spec), state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread", pips: Math.min(x.traits.length, 6), filled: A.read.includes(x.id) && B.read.includes(x.id) ? Math.min(x.traits.length, 6) : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${x.id}:${A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread"}:24`, chapter: x.id, state: A.read.includes(x.id) && B.read.includes(x.id) ? "read" : "unread" }) })), star: req({ kind: "star", id: "star:12" }), current: ci };
   view.line = { back: "Pods", subject: "two " + S.spName(A) + " pods", need: !diff.length ? spec.strings.compareSame : ch.traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere };
   view.targets = [];
   return view;

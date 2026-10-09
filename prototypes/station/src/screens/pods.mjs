@@ -13,6 +13,7 @@ import { list, kinHatch, specimen, stampLabel, slantRail, chapterPage, focusRing
 import { podsView } from "../views/pods.mjs";
 import { registerPictures, iconRequests } from "../pictures.mjs";
 import { frameOf } from "../genome.mjs";
+import { isFilled } from "../../../ui/assets.mjs";
 import { frameFor } from "./frame.mjs";
 import { openCreate } from "./create.mjs";
 import * as S from "../state.mjs";
@@ -122,11 +123,13 @@ function nodes(ctx) {
     out.push(...slantRail(ctx, "rail", { ...v.rail, focused: v.rail.current, where: "pods", tabRegion: "rail.tab" }).nodes);
     v.pages.forEach((pg, i) => out.push(...chapterPage(ctx, i ? "pageB" : "pageA", { ...R.compareA, rect: R[i ? "compareB" : "compareA"].rect }, { ...pg, region: i ? "compareB" : "compareA", cellRegion: "page.cell" }).nodes));
   } else if (v.mode === "collection") {
+    out.push(...layer("bench.room", R.bench.rect, v.bench.find(isFilled) ?? null));   // the room master under the places
     out.push(...list(ctx, "list", spec, v.list));
   } else {
     const S_ = R[v.mode], focusOn = (id) => F.cur === id;
-    out.push(...layer("bench.room", R.bench.rect, v.specimen.room.bench));
-    out.push(...specimen(ctx, "specimen", spec, { ...v.specimen, pod: v.specimen.pod && focusOn("pod") ? { ...v.specimen.pod, lift: SPECS.frame.focus.lift.creature } : v.specimen.pod }));
+    const room = { ...v.specimen.room, bench: [v.specimen.room.bench, v.specimen.room.benchAny].find(isFilled) ?? null };   // the state's own room master, the signed bench until it is cut
+    out.push(...layer("bench.room", R.bench.rect, room.bench));
+    out.push(...specimen(ctx, "specimen", spec, { ...v.specimen, room, pod: v.specimen.pod && focusOn("pod") ? { ...v.specimen.pod, lift: SPECS.frame.focus.lift.creature } : v.specimen.pod }));
     if (v.mode === "overview") {
       out.push(...kinHatch(ctx, "kin", spec, { kin: v.kin, hatch: v.hatch }, S_));
       if (v.stamp) out.push(...layer("stamp.case", S_.stampCase.rect, v.stampCase.back), ...stampLabel(ctx, "stamp", S_.stamp.rect, { stamp: v.stamp.asset, size: v.stamp.size, region: "stamp" }, v.stamp.colours), ...layer("stamp.front", S_.stampCaseFront.rect, v.stampCase.front));
@@ -138,13 +141,13 @@ function nodes(ctx) {
   out.push(...sharedFrame(ctx));
   return out;
 }
-// The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own. A place and the hatch wear the rounded rectangle, the pod an ellipse on the ground, a kin its circle.
+// The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own. A place, the pod and the hatch wear the rounded rectangle (the art director: the ring follows its target and is never drawn on the dish), a kin its circle.
 function ringNodes() {
   const v = last, F = P().focus, t = v.mode === "compare" ? null : v.targets.find((x) => x.id === F.cur);
   if (!t || t.group === "rail") return [];
   const ring = SPECS.frame.focus.ring;
   if (t.group === "kin") return circleRing("focus", [t.rect[0] + t.rect[2] / 2, t.rect[1] + t.rect[3] / 2], t.rect[2] / 2 + ring.outside, ring.width, "focus");
-  return focusRing("focus", t.rect, SPECS.frame, { shape: t.group === "pod" ? "ellipse" : "round" });
+  return focusRing("focus", t.rect, SPECS.frame, { shape: "round" });
 }
 // The frame: top bar, bottom line, message plate.
 const sharedFrame = (ctx) => frameFor(ctx, "pods", last.line, { need: "", focal: last.box });
