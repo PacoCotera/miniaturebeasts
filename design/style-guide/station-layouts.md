@@ -1989,24 +1989,6 @@ Habitat's own spec carries these; the namer depends on them.
 - **The `named` flash.** The regions that show the name (its name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
 - **The name boxes.** Habitat's name boxes follow the name label's rule above.
 
-### Changes from the current build
-
-- The build has no namer; a mibi keeps the name it was drawn at birth.
-- The hatch ends on Habitat with the ring on the Companion door (`main.mjs`, `UI.hab.f = "door"`); the hand-off puts it on the new mibi, where the meet's first ✓ names it.
-- The build's meet label, "Meet Fig · new" in a cream panel, is Habitat's to replace.
-
-### Not designed yet
-
-- **For Habitat's spec**, the name boxes that do not hold the widest name:
-  - **The card's name:** 200 px wide at 28 px beside the stamp label; the widest name needs 296 (and "Momo-Mumbo" 206). Either a 296 px name box, or the card's name at 20 px (200).
-  - **The strip's names:** about 56 px of a 128 px tile at 16 px; the widest needs 160. Either 160 px, or thumbnails only with the focused name on the bottom line, as with ten bays.
-  - **The bottom line's `✓ Take {name} with you`** with its price "at the next dock": 411 px with the widest name (366 with "Momo-Mumbo"), over the action zone's 356. Shorter words for the verb or the price.
-- **The guide's "Carried by" line** gives each name 120 px at 16 px; the widest needs 160, and dropping names cannot fit one name that is too wide alone.
-- **The Companion's HUD** draws the partner's name only when it fits beside the counters, and drops it otherwise.
-- **The wireframes' backdrop**: 12 to 12e draw Habitat beneath as this file's Habitat section places it, its window reaching x 624 under the panel's edge. They are redrawn on Habitat's L2.5 layout, its window ending at x 576, when that spec is in this file.
-- **The naming rules' home**: the characters, the lengths and the refusals this section follows are not written in [game.md](../game.md) yet.
-- **The words**: every string in `namer.json` `strings` is the copywriter's.
-
 ---
 
 ## What the builder decides alone, and what comes back
@@ -2042,3 +2024,13 @@ Habitat's own spec carries these; the namer depends on them.
 - A rail of more than twelve chapters, a chapter page of nine or more traits, and a guide spread of more than eight chapters.
 - Any new vocabulary word or derived rule a screen needs; until it is designed, the screen lists it here and never improvises it.
 - The rest knob, the with-you bed, the report card, the roll or the trait line on a second screen.
+- [The namer](#the-namer):
+  - **For Habitat's spec**, the name boxes that do not hold the widest name:
+    - **The card's name:** 200 px wide at 28 px beside the stamp label; the widest name needs 296 (and "Momo-Mumbo" 206). Either a 296 px name box, or the card's name at 20 px (200).
+    - **The strip's names:** about 56 px of a 128 px tile at 16 px; the widest needs 160. Either 160 px, or thumbnails only with the focused name on the bottom line, as with ten bays.
+    - **The bottom line's `✓ Take {name} with you`** with its price "at the next dock": 411 px with the widest name (366 with "Momo-Mumbo"), over the action zone's 356. Shorter words for the verb or the price.
+  - **The guide's "Carried by" line** gives each name 120 px at 16 px; the widest needs 160, and dropping names cannot fit one name that is too wide alone.
+  - **The Companion's HUD** draws the partner's name only when it fits beside the counters, and drops it otherwise.
+  - **The wireframes' backdrop**: 12 to 12e draw Habitat beneath as this file's Habitat section places it, its window reaching x 624 under the panel's edge. They are redrawn on Habitat's L2.5 layout, its window ending at x 576, when that spec is in this file.
+  - **The naming rules' home**: the characters, the lengths and the refusals the namer follows are not written in [game.md](../game.md) yet.
+  - **The words**: every string in `namer.json` `strings` is the copywriter's.
