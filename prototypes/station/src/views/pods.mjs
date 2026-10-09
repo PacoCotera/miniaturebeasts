@@ -151,7 +151,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   const [pw, ph] = grid.picture ?? [0, 0], wipeOf = present.read && present.read.pod === p.id && present.read.chapter === ch.id ? present.read.p : null;
   const cells = traits.map((t) => {
     const cell = { name: t.name, lines: [], glyphs: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
-    if (!read) { cell.frost = true; return cell; }
+    if (!read) { cell.frost = true; const O = region.unread?.outline; if (O && O.slice) cell.outline = slot(req, O.slice, [0, 0, ...O.size], "the unread cell's outline master"); return cell; }   // the dotted outline is the studio's nine-slice, placed over the cell's rectangle once signed
     const state = traitState(fr, t, p.genome);
     const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
     if (state.shows) cell.crop = slot(req, `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's

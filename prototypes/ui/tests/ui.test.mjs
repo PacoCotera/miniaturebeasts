@@ -186,7 +186,8 @@ test("the open chapter page lays the cells on the grid: a flat tone and the crop
   const region = { rect: [424, 112, 440, 232], heading: [24, 6], cell: { gap: 4, name: { line: 20 } }, rule: { at: [24, 36], h: 1 }, newMark: { size: [6, 6], gapAfterName: 4 }, lineMarks: { gap: 4, glyphs: { hides: { size: [12, 16], top: 2 }, blend: { size: [20, 16], top: 2 }, only: { size: [16, 8], top: 8 }, asleep: { size: [24, 16], top: 2 }, doing: { size: [28, 16], top: 2 }, new: { size: [6, 6], top: 7 } } }, grid: { "3": { cells: [[24, 48, 128, 184], [168, 48, 128, 184], [312, 48, 128, 184]], picture: [128, 160] } }, pane: null };
   const colours = { cell: "ground", rule: "hairline", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white" };
   for (const [id, w, h] of [["t:crop", 128, 160], ["t:g", 12, 16], ["t:pair", 20, 16], ["t:br", 28, 16], ["t:dot", 6, 6]]) registerAsset({ id, w, h, status: "master", build: () => ({ w, h, canvas: () => null }) });
-  const cells = [{ name: "Crown", lines: [], crop: "t:crop", glyphs: [{ key: "hides", asset: "t:g" }, { key: "doing", asset: "t:br" }], isNew: true }, { name: "Eyes", lines: [], crop: null, glyphs: [{ key: "blend", asset: "t:pair" }], wipe: 0.5 }, { name: "Ears", lines: [], frost: true, glyphs: [] }];
+  const cells = [{ name: "Crown", lines: [], crop: "t:crop", glyphs: [{ key: "hides", asset: "t:g" }, { key: "doing", asset: "t:br" }], isNew: true }, { name: "Eyes", lines: [], crop: null, glyphs: [{ key: "blend", asset: "t:pair" }], wipe: 0.5 }, { name: "Ears", lines: [], frost: true, glyphs: [], outline: "t:ol" }];
+  registerAsset({ id: "t:ol", w: 24, h: 24, status: "master", slice: [8, 8, 8, 8], tile: 8, build: () => ({ w: 24, h: 24, canvas: () => null }) });
   const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, newMark: "t:dot", region: "page", cellRegion: "page.cell", count: 3 });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
   assert.ok(!by.page, "no pane"); assert.deepEqual(by["page.emblem"].rect, [448, 118, 24, 24]); assert.equal(by["page.word"].px, 20); assert.deepEqual(by["page.rule"].rect, [448, 148, 416, 1]);
@@ -195,11 +196,11 @@ test("the open chapter page lays the cells on the grid: a flat tone and the crop
   const nw = ctx.measure("Crown", 16, 400), total = nw + 4 + 12 + 4 + 28 + 4 + 6, x0 = 448 + Math.round((128 - total) / 2);   // the name and its glyphs, 4 px apart, centred together
   assert.deepEqual(by["page.c0.name"].rect, [x0, 160 + 160 + 4, nw, 20]);
   assert.deepEqual(by["page.c0.g0"].rect, [x0 + nw + 4, 324 + 2, 12, 16]); assert.deepEqual(by["page.c0.g1"].rect, [x0 + nw + 4 + 12 + 4, 324 + 2, 28, 16]); assert.deepEqual(by["page.c0.new"].rect, [x0 + nw + 4 + 12 + 4 + 28 + 4, 324 + 7, 6, 6]);
-  assert.ok(!by["page.c2.pic"] && !by["page.c2.crop"] && !by["page.c2.g0"], "an unread cell draws nothing inside; its name shows");
+  assert.ok(!by["page.c2.pic"] && !by["page.c2.crop"] && !by["page.c2.g0"], "an unread cell draws nothing inside; its name shows"); assert.equal(by["page.c2.outline"].kind, "nineSlice"); assert.deepEqual(by["page.c2.outline"].rect, [736, 160, 128, 160], "the signed dotted outline over the cell's rectangle");
   assert.equal(by["page.c1.wipe"].kind, "clip"); assert.deepEqual(by["page.c1.wipe"].rect, [592, 160, 128, 80]); assert.ok(by["page.c1.wipeline"]);
   assert.ok(!r.nodes.some((n) => /frame|card|standin/.test(n.id)), "no frame, card or word");
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => [16, 20].includes(n.px)));
-  for (const id of ["t:crop", "t:g", "t:pair", "t:br", "t:dot"]) dropAsset(id);
+  for (const id of ["t:crop", "t:g", "t:pair", "t:br", "t:dot", "t:ol"]) dropAsset(id);
 });
 
 test("text runs draw the material symbols as icons, wrap and clip", () => {

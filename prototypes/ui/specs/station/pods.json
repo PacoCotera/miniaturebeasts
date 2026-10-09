@@ -529,6 +529,9 @@
      "frame": false,
      "fill": null,
      "outline": {
+      "slice": "cell-outline-unread-24x24",
+      "size": [24, 24],
+      "insets": 8,
       "style": "dotted",
       "px": 1,
       "on": 1,

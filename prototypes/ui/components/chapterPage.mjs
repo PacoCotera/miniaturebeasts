@@ -38,6 +38,7 @@ export function chapterPage(ctx, id, region, props) {
       if (c.wipe != null && c.wipe < 1) { const cut = Math.round(c.wipe * ph); nodes.push({ id: cid + ".wipe", kind: "clip", rect: [cx, cy, pw, cut], children: body }, { id: cid + ".wipeline", kind: "rect", rect: [cx + 6, cy + cut, pw - 12, 2], colour: Cc.wipe }); }
       else nodes.push(...body);
     }
+    if (c.frost && c.outline && isFilled(c.outline)) nodes.push({ id: cid + ".outline", kind: "nineSlice", rect: P, asset: c.outline });   // an unread cell: the studio's dotted outline over the cell's rectangle, nothing inside
     const gap = region.cell ? region.cell.gap : region.nameGap, line = region.cell ? region.cell.name.line : region.nameLine, ny = cy + ph + gap, nw = Math.round(ctx.measure(c.name, 16, 400)), N = region.newMark, LM = region.lineMarks;
     if (LM && !c.frost) {   // the name line: the name, then its glyphs, then the field-guide dot, 4 px apart, centred together on the cell
       const items = [...(c.glyphs || []).map((g) => ({ g, ...LM.glyphs[g.key] })), ...(c.isNew && N && props.newMark ? [{ dot: true, size: N.size, top: LM.glyphs.new.top }] : [])];
