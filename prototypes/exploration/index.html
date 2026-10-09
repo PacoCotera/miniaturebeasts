@@ -2235,16 +2235,16 @@ function tripPlace(ex, kind) { if (!TRIP_KINDS.includes(kind)) return; if (!Arra
 function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ? [...new Set(ex.tripPlaces.filter(k => TRIP_KINDS.includes(k)))] : [];
   return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
 function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
-function bayLine() { const n = S.bay.length; return n ? n + ' consignment' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
+function bayLine() { const n = S.bay.length; return n ? n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
 // The Cargo screen's preview of what Head home will do.
 function sealPreview() {
   const ex = S.exp, out = [];
   if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
   if (holdEmpty(ex.cargo)) out.push('An empty hold · nothing to seal');
-  else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock at the Station to free it'); }
+  else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
   else { const n = ex.cargo.pods.length; out.push('Seals ' + (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + supplies' : 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
     out.push('The Station opens it when you dock'); }
-  if (ex.shield < ex.smax) out.push('The Station mends the Shield at the dock');
+  if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
 }
 function dropPods(ex, rep) {
@@ -3745,8 +3745,8 @@ function drawSetup(t) {
   const fr = motion() ? Math.floor(t * 2) % 2 : 0, shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield, hurt = shN < tierOf().shield;
   const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier + ' · Shield ' + Math.max(0, shN) + '/' + tierOf().shield + (S.bay.length ? ' · ' + S.bay.length + ' sealed' : '');
   text(clipText(strip, 420, 2), SCR_W / 2, 34, hurt ? C.amber : C.mist, 2, 'center');
-  if (isDocked()) { panel(70, 506, 310, 26, C.ink, C.mint); text('Docked · lift at the Station', SCR_W / 2, 511, C.mint, 2, 'center'); }
-  else if (S.bay.length) { const n = S.bay.length; panel(70, 488, 310, 48, C.ink, C.amber); text(n + ' consignment' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 494, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 514, C.amber, 2, 'center'); }
+  if (isDocked()) { panel(70, 506, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 511, C.mint, 2, 'center'); }
+  else if (S.bay.length) { const n = S.bay.length; panel(70, 488, 310, 48, C.ink, C.amber); text(n + ' crate' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 494, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 514, C.amber, 2, 'center'); }
   const sel = S.ui.sel, dig = digPartner(), deepOk = !!dig;
   // Weather: a storm cloud with a flickering bolt
   card(20, 58, 410, 84, sel === 0, true);
@@ -3766,7 +3766,7 @@ function drawSetup(t) {
     text(clipText(w.name, 200, 3), 112, 254, C.ink, 3);
     let cx = 112; cx += chip(cx, 286, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 286, 'with you', 'orange', 'bone');
     text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 314, pm ? C.stone : C.rust); }
-  else if (S.mibis.length) { emptyPodSmall(52, 292); text('No one with you', 112, 258, C.ink, 3); text(clipText('take one at the Station', 306, 2), 112, 300, C.stone); }
+  else if (S.mibis.length) { emptyPodSmall(52, 292); text('No one with you', 112, 258, C.ink, 3); text(clipText('dock to take one along', 306, 2), 112, 300, C.stone); }
   else { emptyPodSmall(52, 292); text('No partner yet', 112, 258, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 296 + i * 20, C.stone)); }
   // the world preview: the whole map small, the last start flagged, and the count
   const iy = 354, u = 6; drawWorldInset(24, iy, t, u);
@@ -3917,7 +3917,7 @@ function drawCargo(t) {
     text('The sealed bay', 24, 160, C.mist); drawBay(24, 184);
     text(S.bay.length ? bayLine() : 'Nothing sealed · Head home seals the hold', 24, 266, S.bay.length ? C.amber : C.stone);
     text('Probe tier ' + S.tier + ' · Shield ' + (S.shield == null ? tierOf().shield : Math.max(0, S.shield)) + '/' + tierOf().shield, 24, 310, C.fog);
-    text(isDocked() ? 'Docked at the Station' : 'Away from the Station', 24, 336, isDocked() ? C.mint : C.fog);
+    text(isDocked() ? 'Docked' : 'Away', 24, 336, isDocked() ? C.mint : C.fog);
     wrapText('The Station accepts each crate once, when you dock. It cannot see what the Companion carries until then.', 400, 2).forEach((l, i) => text(l, 24, 380 + i * 22, C.stone));
     text(clipText(turnLine(), 400, 2), 24, 470, C.mist);
   }
@@ -4052,7 +4052,7 @@ function drawSealed(t) {
   if (r.reason === 'break') { text('The Probe broke', 22, y, C.coral, 3); y += 34;
     text(clipText(r.dropped ? 'Your ' + numWord(r.dropped) + ' pod' + (r.dropped === 1 ? '' : 's') + ' fell where it broke (skull on the map).' : 'Nothing was in the hold.', 410, 2), 22, y, C.bone); y += 24;
     text(clipText('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), 410, 2), 22, y, C.peach); y += 24;
-    text('Dock at the Station: it mends the Probe free.', 22, y, C.amber); y += 34; }
+    text('Docking mends the Probe free.', 22, y, C.amber); y += 34; }
   else if (r.waited) { text('Nothing explored', 22, y, C.bone, 3); y += 34; text('The world waits · nothing is sealed.', 22, y, C.fog); y += 24; text('Your finds stay in the hold.', 22, y, C.fog); y += 34; }
   else if (r.sealed) { text('Sealed', 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
   else if (r.kept) { text('Bay full', 22, y, C.amber, 3); y += 34; text('Your finds stay in the hold, unsealed.', 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text('A break would lose them · dock to free the bay.', 22, y, C.fog); y += 34; }
@@ -4062,7 +4062,7 @@ function drawSealed(t) {
   for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
   y += 84;
   text(clipText(S.bay.length ? bayLine() : 'The bay is empty', 410, 2), 22, y, S.bay.length ? C.amber : C.stone); y += 24;
-  text(clipText(isDocked() ? 'Docked · open the bay at the Station' : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
+  text(clipText(isDocked() ? 'Docked · open Cargo on the Station' : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
   if (!r.waited) drawTurnLines(r, y);
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
@@ -4133,7 +4133,7 @@ function lineFor() {
   switch (S.phase) {
     case 'setup': if (S.ui.sel === 2) return S.mibis.length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
       if (S.ui.sel === 1 && !digPartner()) return L1('Needs a digger', 'Deep ground', 'menu', true);   // a mibi at home is never named
-      { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked at the Station' : 'dock: mended free', 'menu', true); }
+      { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const wx = S.ui.type !== 'deep' ? ' · dotted band: where the storm starts' : '';   // the dotted band is a preview, not the live storm
@@ -4212,8 +4212,8 @@ function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.u
   if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send')); }   // focus on Head home once the reach is done
 // Expeditions start only undocked (lift the Companion at the Station page), and not with a broken Probe.
 function startBlock() {
-  if (isDocked()) return 'Docked · lift the Companion at the Station to explore';
-  if (S.shield != null && S.shield <= 0) return 'The Probe is broken · dock at the Station: it mends it free';
+  if (isDocked()) return 'Docked · lift the Companion to explore';
+  if (S.shield != null && S.shield <= 0) return 'The Probe is broken · docking mends it free';
   return '';
 }
 function chooseType() {

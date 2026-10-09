@@ -505,7 +505,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
-  assert.ok(said.includes("take one at the Station") && said.includes("Caves · needs a digging partner"));
+  assert.ok(said.includes("dock to take one along") && said.includes("Caves · needs a digging partner"));
   assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
   for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
   assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
