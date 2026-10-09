@@ -1,0 +1,150 @@
+{
+ "screen": "book",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#book-the-guide-spread",
+ "frame": "frame.json",
+ "wireframes": ["design/style-guide/station-layouts/10a-library-guide-seven.png", "design/style-guide/station-layouts/10b-library-guide-eight.png"],
+ "note": "The one home of the field guide's numbers, transcribed from station-layouts.md (Book: the guide spread, and the Book's face spread). Rectangles are [x, y, w, h] in screen pixels. Decided with the owner (2026-10-09): the guide is the Book's fold-out second spread, turned with ◀ ▶, and ← reads Library; eight chapters fit by narrower columns, never a scroll; one shared header panel per chapter, tinted by the species; the face is a guide-face master; the progress pips come in groups of five. Every field is bound to the M5 rules in prototypes/station/src/library.mjs (`derived`): nothing here is new state. The build draws only rectangles, text and 1 px lines; every other mark is a master placed 1:1 (masters).",
+ "level": "species: the Book, the guide and the Library are about the species, filled in by every pod and mibi the player has read (fieldGuide). Pods and Habitat show one individual. station-layouts.md, The two levels",
+ "spreads": {
+  "order": ["face", "guide"],
+  "face": "the Book's first spread: the species' face (or a portrait), its name, habit and clarity line, places, frame plate, stamp, tree and pinned wish",
+  "guide": "the fold-out second spread: every chapter as a column, every trait as a cell with its pips, one detail band. Only when book(st, id).guide is not null (the species is found); a met species has no guide and no page-turn corner",
+  "turn": "▶ from the face spread's right-most target turns to the guide (300 ms page turn); ◀ from the guide's left-most column turns back. ◀ ▶ otherwise move the ring inside the spread",
+  "back": "Library on both spreads (frame.json navigation.screens.book)"
+ },
+ "derived": {
+  "book": "book(st, id): status, guide, face, wish",
+  "guide": "fieldGuide(st, id, settings): chapters[] in frame order, each { id, name, sealed, traits[] { id, name, possible, found, unseen, more } }; complete; found; unseen",
+  "pips": "one pip per entry of trait.possible (possibleLooks: the frame's own player words); filled for each of trait.found, unseen for the rest. A shut sealed chapter (chapter.sealed) shows no traits, and its looks count as unseen",
+  "plates": "the detail band's plates: trait.found in the order of trait.possible, then one dashed \"more?\" slot when trait.more",
+  "seal": "guide-seal-32 shows only when fieldGuide().complete",
+  "carriers": "the mibis that carry a look: st.mibis of the species, not released, whose read chapters (m.read) hold the trait's chapter and whose chapterLooks(frame, chapter, m.genome) give the look for the trait. The same test wishCarriers applies to pinned looks, generalised to any look; the builder exports it from library.mjs as a pure function beside wishCarriers (lookCarriers(st, id, traitId, look)), reading the save only. Pods are not listed: they are pods, not yours to visit",
+  "wishMark": "wishOf(st, id)[trait.id]: the trait cell carries wish-mark-12, and the plate of that look carries it too",
+  "wishAction": "wishPinBlock(st, id, traitId, look) empty: ✓ Add to the wish (wishPin); the look already pinned: ✓ Take it off the wish (wishUnpin)",
+  "notice": "wishCarriers(st, id).pods not empty: \"a pod carries your wish\"; otherwise none",
+  "visit": "a carrier name: ✓ Visit {mibi}, the frame's jump book → habitat; on Habitat ← reads Home",
+  "face": "faceOf(st, id): null shows the guide face and the type line; a mibi id shows its portrait line (released when the mibi is released)",
+  "faceVisit": "the face spread's ✓ Visit {mibi}: only when faceOf(st, id) is a living mibi (mibiById(st, faceOf(st, id)) not released). The type face (faceOf null) and a released portrait have no ✓ cap. Ruled by the UI designer, 2026-10-09: replaces visitTarget(st, id), which also fell back to any living mibi of the species",
+  "tint": "the species' first pod pigment, frame.pod.colourPair[0].pigment, through cross.json colours.pigmentChips to a palette name; a pigment not listed tints `mist`",
+  "plural": "frame.species.plural"
+ },
+ "regions": {
+  "boards": { "rect": [8, 48, 1008, 504] },
+  "foldout": { "rect": [24, 56, 976, 488], "slice": "library-foldout-1008x504", "standIn": "the edge box (24, 56, 976, 488) is only the registered stand-in for library-foldout-1008x504 while that master is unsigned; once it is signed the master is placed 1:1 and the box goes", "note": "one sheet across the gutter: the fold-out has no gutter and no cloth marker" },
+  "face": { "rect": [40, 64, 128, 112], "slice": "guide-face-{SNN}-128x112", "note": "the species' type, head and shoulders, painted from the type specimen at 128×112; never the halo, never scaled from the Book's 304×312 face" },
+  "name": { "rect": [176, 64, 200, 36], "px": 28, "weight": 600, "colour": "ink", "align": "left", "text": "frame.species.name" },
+  "speciesLine": { "rect": [176, 104, 248, 40], "px": 16, "weight": 400, "colour": "stone", "lines": 2, "pitch": 20, "align": "left", "strings": "speciesLine" },
+  "seal": { "rect": [384, 64, 32, 32], "slice": "guide-seal-32", "when": "derived.seal" },
+  "detail": {
+   "rect": [432, 64, 552, 112], "edge": "clay", "fill": null,
+   "trait": { "rect": [448, 68, 120, 28], "px": 20, "weight": 500, "colour": "ink", "text": "the open trait's name" },
+   "carried": { "rect": [448, 104, 120, 60], "label": { "px": 16, "colour": "stone", "capTop": 104, "text": "strings.carriedBy" }, "names": { "px": 16, "colour": "ink", "lines": 2, "capTops": [124, 144], "x": [448, 568], "join": ", ", "overflow": { "text": "strings.carriedMore", "px": 16, "colour": "stone", "ends": "line 2", "comma": false }, "fit": "at most two name lines, each inside x 448 to 568. When the names overflow, drop names from the end until the kept names and \"and more\" fit, \"and more\" ending line 2 with no comma before it; never a third line", "none": "strings.carriedNone" }, "note": "each name is a focus target; \"and more\" is not" },
+   "plates": {
+    "rect": [576, 72, 392, 96],
+    "upToSix": { "size": [56, 56], "pitch": 64, "rows": [80] },
+    "sevenOrMore": { "size": [40, 40], "pitch": 48, "rows": [72, 120], "perRow": 8, "moreSize": [56, 40], "moreNote": "the dashed \"more?\" slot keeps the word whole: 56 wide, 40 tall, after the last plate" },
+    "slots": "derived.plates; at most 11 today (ten looks and \"more?\")",
+    "slice": "trait-{SNN}-{trait}-{look}-56x56 or -40x40, rendered at its size",
+    "more": { "border": "clay", "borderWidth": 1, "dash": [2, 2], "dashNote": "dashed: a 1 px clay edge, 2 px on and 2 px off", "text": "strings.more", "px": 16, "colour": "clay" },
+    "keyline": { "colour": "bark", "width": 1, "rect": "[x - 1, y - 1, w + 2, h + 2]", "on": "every look plate, at 56 and at 40", "not": ["the more? slot", "the face", "the panels"], "always": "drawn by the build whether or not the plate's master is signed", "gaps": "1 px of paper between the keyline and the open rule (the keyline's last row y + h, paper y + h + 1, the rule from y + h + 2) and between the keyline and the ring (paper at outset 2)", "why": "bark, because clay means open state" },
+    "open": "the look the carried line names: the plate under the ring, or the last one it was on; on arrival the pinned look, else the first found. A 2 px `clay` rule 2 px under that plate (rows y + h + 2 and y + h + 3); the ring on that plate may cover it",
+    "wish": { "slice": "wish-mark-12", "at": "plate top right, inset 2" }
+   }
+  },
+  "columns": {
+   "top": 184,
+   "bottom": 504,
+   "upToSeven": { "w": 128, "pitch": 136, "panel": "guide-panel-{chapter}-128x80", "sealed": "guide-panel-sealed-128x80" },
+   "eight": { "w": 112, "pitch": 120, "panel": "guide-panel-{chapter}-112x80", "sealed": "guide-panel-sealed-112x80" },
+   "moreThanEight": "comes back to the UI designer; never a scroll",
+   "x0": "floor((512 - (pitch × n - 8) / 2) / 8) × 8: 40 for seven, 32 for eight, 240 for four",
+   "rules": { "colour": "sand", "x": "x0 + pitch × i - 4 for i from 1", "y": [184, 504] }
+  },
+  "panel": {
+   "rect": "[x, 184, w, 80]",
+   "ground": "paper",
+   "tint": { "colour": "derived.tint", "lattice": "inside the panel, from its own origin: every pixel with (px mod 4, py mod 4) = (0, 0) or (2, 2), for py from 3 to 78 and px from 1 to w - 2: one pixel in eight", "rule": [1, 1, -2, 2], "ruleNote": "a 2 px band across the top inside the edge, in the full tint, the Library's inked clan-rule idiom" },
+   "master": "placed 1:1 over the tint: the edge, the paper grain at low alpha and the chapter's ink emblem 40×40 at (w / 2 - 20, 8); its ground is open so the tint shows through; never recoloured",
+   "word": { "y": 240, "px": 16, "colour": "ink", "align": "centre", "text": "pods.json strings.legsTail.heading for legs-tail; otherwise the frame's chapters[].name as written; the build never recases" },
+   "sealed": { "when": "chapter.sealed", "ground": "paper", "tint": null, "master": "guide-panel-sealed-{w}x80: slats and an 8×4 notch cut at the bottom centre", "emblem": "rail-emblem-{chapter}-sealed-24x24 at (w / 2 - 12, 8), existing", "word": "mist", "traits": "none drawn; not focusable" }
+  },
+  "cell": {
+   "rect": "[x, 272 + 40r, w, 32]",
+   "name": { "px": 16, "colour": "ink", "line": [0, 20] },
+   "wish": { "slice": "wish-mark-12", "rect": "[x + w - 12, y + 4, 12, 12]", "when": "derived.wishMark" },
+   "pips": { "y": 24, "size": 6, "pitch": 8, "groupOf": 5, "groupGap": 4, "x": "x + 8k + 4 × floor(k / 5)", "found": { "draw": "rect", "colour": "bark" }, "unseen": { "slice": "guide-pip-unseen-6x6" }, "widest": "ten looks: 84 px, inside the 112 column" },
+   "open": { "edge": "clay", "rect": "[x - 2, y - 4, w + 4, 40]", "note": "the trait shown in the detail band; the ring is the only highlight on top of it" },
+   "rows": "at most six today (S09 Coat): the sixth row ends at y 504"
+  },
+  "faceSpread": {
+   "_note": "the Book's first spread keeps its accepted layout (station-layouts.md, Book) with these changes",
+   "clarityLine": { "rect": [48, 480, 304, 20], "capTop": 480, "px": 16, "colour": "stone", "align": "centre", "centre": { "stub": 180, "m5": 200 }, "centreNote": "centred on the face plate: x 180 on the build stub's plate (30, 60, 300, 330), x 200 once the M5 face spread lands", "text": "derived.face: strings.faceType, strings.facePortrait or strings.facePortraitReleased" },
+   "cut": ["the stub's \"clan ... · n chapters\" line under the name (180, 440): dropped, not moved"],
+   "rightPage": "the tabs and the trait rows go to the guide spread; the stamp label (832, 112), the family tree (800, 248) and the pinned wish (800, 424) stay",
+   "stamp": { "rect": [832, 112, 120, 120], "source": "frame.typeSpecimen's stamp, with no mibi name under it, until a portrait; then the portrayed mibi's", "note": "at its spec rect, never the stub's 112 at (886, 406)" },
+   "visit": "derived.faceVisit",
+   "wishMark": { "slice": "wish-mark-24", "rect": [808, 432, 24, 24] },
+   "pageTurn": { "rect": [968, 512, 24, 24], "slice": "book-corner-turn-24x24", "when": "book(st, id).guide is not null", "standIn": { "text": "▶", "px": 16, "colour": "bark", "align": "centre in the slot", "when": "book(st, id).guide is not null, while book-corner-turn-24x24 is unsigned" }, "keepClear": "nothing else draws inside (968, 512, 24, 24)" }
+  }
+ },
+ "focus": {
+  "targets": ["cell", "plate", "more", "carrier"],
+  "initial": "the first trait cell of the first chapter that is not sealed; the same after a jump into the guide",
+  "grid": { "up": "the cell above; from the first row, the detail's first plate", "down": "the cell below, stopping at the column's last", "left": "the same row in the previous column that is not sealed, clamped to its last row; from the first column, the page turns back to the face spread", "right": "the same row in the next column that is not sealed, clamped; from the last column, nothing" },
+  "detail": { "left": "the previous plate, then the carrier names from the last", "right": "the next plate; from the last, nothing", "down": "the open trait's cell", "up": "nothing" },
+  "ring": "frame.focus.ring in its onPaper colour (rust), the same geometry"
+ },
+ "bottomLine": {
+  "cell": { "action": null, "context": "strings.cellMore or strings.cellComplete" },
+  "plate": { "action": "derived.wishAction", "context": "strings.plate" },
+  "more": { "action": null, "context": "strings.cellMore" },
+  "carrier": { "action": "Visit {mibi}", "context": "strings.carrier" },
+  "notice": "derived.notice",
+  "back": "Library"
+ },
+ "masters": {
+  "_note": "placed 1:1 at these sizes, never scaled or recoloured; the art director signs them. All new unless marked existing",
+  "library-foldout-1008x504": "the fold-out sheet: the boards and one page across the gutter, aged paper, no gutter, no marker",
+  "guide-panel-{chapter}-128x80": "one per chapter, shared by every species: coat, face, shape, legs-tail, movement, stamina, character, glow, charge (9). Edge, faint grain, the ink emblem 40×40 at (44, 8); open ground for the tint",
+  "guide-panel-{chapter}-112x80": "the same nine at the eight-chapter width, the emblem at (36, 8); painted at 112, never cut from the 128",
+  "guide-panel-sealed-128x80": "a shut panel: slats and an 8×4 notch at the bottom centre; no tint",
+  "guide-panel-sealed-112x80": "the same at 112",
+  "rail-emblem-{chapter}-sealed-24x24": "existing; on the sealed panel",
+  "guide-face-{SNN}-128x112": "one per species (S01 to S16): the type specimen, head and shoulders, painted at 128×112 on the plate's own ground with its mount",
+  "guide-seal-32": "32×32: the guide complete",
+  "book-corner-turn-24x24": "24×24: the face spread's page-turn corner at (968, 512), only when the species has a guide; the art director signs it. Until signed, the build's stand-in is a 16 px bark ▶ centred in the slot",
+  "guide-pip-unseen-6x6": "6×6: a dotted hollow pip in `clay`",
+  "wish-mark-12": "12×12: a pinned look, on a trait cell and its plate",
+  "wish-mark-24": "24×24: the pinned wish panel's corner on the face spread",
+  "mark-guide-16": "16×16 in `bone`, for chrome: after the species word on Habitat's card, the way to the guide",
+  "trait-{SNN}-{trait}-{look}-56x56": "look plates, rendered at 56 (the renderer's close-up, never cropped and enlarged)",
+  "trait-{SNN}-{trait}-{look}-40x40": "the same at 40, for seven slots or more"
+ },
+ "buildDraws": "rect (the panel ground, the tint lattice pixel by pixel, the top band, found pips, the open edges, the open plate's rule, the look plates' 1 px bark keyline), text (the page-turn stand-in ▶ while its master is unsigned) and 1 px lines (the dashed more? edge; the fold-out's edge box while its master is unsigned); nothing else",
+ "never": ["a digit or a count on the spread", "a look the guide does not hold", "a pod in the carried line", "a scroll or a second row of columns", "the halo as the guide's face", "the tint on a sealed panel", "a recoloured master"],
+ "strings": {
+  "_note": "the copywriter's slots, today's words",
+  "speciesLine": ["Every look a {species} can carry,", "found across your {plural}."],
+  "faceType": "A typical {species}, not one of yours.",
+  "facePortrait": "{mibi}, your {species}, sat for this.",
+  "facePortraitReleased": "{mibi} sat for this, now in the wild.",
+  "carriedBy": "Carried by",
+  "carriedNone": "none of yours yet",
+  "carriedMore": "and more",
+  "more": "more?",
+  "cellMore": "{trait}, more to find",
+  "cellComplete": "{trait}, every look found",
+  "plate": "{trait}, {look}",
+  "carrier": "{mibi} carries this look",
+  "addWish": "Add to the wish",
+  "unpinWish": "Take it off the wish",
+  "visit": "Visit {mibi}",
+  "wishPod": "a pod carries your wish"
+ },
+ "elsewhere": {
+  "_note": "the guide's doors on the individual's screens (station-layouts.md, The two levels); the numbers live in pods.json and station-layouts.md, Habitat",
+  "pods.overview": "the figure is a focus target once the pod is identified: ✓ Open the guide, a jump to the Book's guide spread; ← there reads Library",
+  "habitat": "the card's species word, with mark-guide-16, is a focus target: ✓ Open the guide, the same jump"
+ }
+}

@@ -182,7 +182,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Glint.** The same four-point star, 12×12, everywhere: on the list ring's arc, on the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px red ring around the clashing roll picture and a 12×12 ✕ at its top right; the trait's pip becomes a ✕; the trait line turns red and says "Clash". The ✓ cap is withheld.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
-- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. The only exception is an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting).
+- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Two exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting), and on Home the focused resident's name tag, under the creature, only while it is focused (the owner's decision of 2026-10-07, in force: the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
 ### Never upscaled
 
@@ -193,11 +193,24 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 
 ### The vocabulary (closed)
 
-The screen layer draws every screen from one closed set of words ([technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport. A new word comes back to the UI designer and the architect. What a screen builds from them (decided by the UI designer, 2026-10-08, on Home):
+The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md); *corrected, 2026-10-09: was "the screen layer", the JavaScript layer now deprecated*): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport. A new word comes back to the UI designer and the architect. What a screen builds from them, bound in the face's `screens/` table (decided by the UI designer, 2026-10-08, on Home):
 
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules are the only modules.
 - **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome.
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none earns a word. If a second screen needs one, it comes back to the UI designer.
+
+### The two levels: species and mibi
+
+The owner, on the field guide: "we just need to communicate it clearly in the screens, or people will get lost just as i did." Two levels, told apart on every screen that shows either (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*):
+
+| Level | Screens | Word on screen | Marked by |
+| --- | --- | --- | --- |
+| **The species**: the kind, filled in by every pod and mibi the player has read | The Library: the spread, the Book's face spread and its guide spread | **species**, and the species' name ("Belatz"; the plural is the frame's `species.plural`) | "every", "a typical", or the name alone: "Every look a Belatz can carry", "A typical Belatz, not one of yours", "the species" |
+| **The individual**: one living thing with its own stamp | Pods (a pod), Habitat and Cross (a mibi), Create and the Incubator (the founder and the bud become a mibi) | **mibi**; **pod** before it hatches | "this" or "your": "this pod", "your Loika, adult", "found across your Belatz" |
+
+- Never on screen: specimen, type (the type specimen is the pipeline's word), individual, critter, creature. "Specimen" stays the screen layer's word for the spotlit thing, never a label.
+- The house terms are unchanged: Companion, partner, pod, crate, bay, Shield, beacon, outpost, mibi.
+- Each level has a door to the other. From one pod or mibi to its species: the figure on Pods' overview and the species word on Habitat's card open the Book's guide spread (`✓ Open the guide`, a jump). From the species to one mibi: a name in the guide's "Carried by" line (`✓ Visit Fig`, a jump to Habitat). After either jump, ← goes to the parent of the screen you are on (frame.json `navigation.jumps`).
 
 ---
 
@@ -246,6 +259,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | B | **The pod** large on its dish and slab under the cone | The subject and the protagonist, the one warm thing |
 | B | **The rail**, hanging, with no tab open | Where the reading stands; the way into a chapter |
 | B | **The figure**: the species' silhouette in a soft halo | A suggestion of the type this pod would become, never the individual |
+| B | **Two captions**: "this pod" under the pod's marks, "the species" under the figure | Which is the individual and which the kind, at a glance (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: the owner allows the two-word labels) |
 | B | **Who it is**: the name label, then the glyph, the clan mark and the first-of-its-kind mark | Its identity |
 | B | **Where it came from**: the place picture and the origin sentence | Its find |
 | B | **Its kin**: same-species pods, small | The Compare targets |
@@ -307,7 +321,9 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Shelf slab | 112, 368, 288, 72 | Was 488, 368 |
 | Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. Was centred on x 632 |
 | Who it is: marks | glyph (200, 488, 24, 24), clan (232, 488, 24, 24), first of its kind (268, 492, 16, 16) | Marks, no words |
-| **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392, in two painted slices per species on the same 128×160 origin: `mibi-halo-<SNN>-128x160-mist` (everything unread, diffused) and `mibi-halo-<SNN>-128x160-clear` (the crisp glow figure). The build cross-fades them by the share of chapters read: the clear layer's alpha is chapters read ÷ chapters, over the mist; nothing is blurred by the build. It suggests the type; it never shows the individual's colours or marks. Before Identify, the empty halo (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was one slice, `figure-<species>-128x160`). Was the page (152, 112, 256, 440) beside the pod |
+| **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392, in two painted slices per species on the same 128×160 origin: `mibi-halo-<SNN>-128x160-mist` (everything unread, diffused) and `mibi-halo-<SNN>-128x160-clear` (the crisp glow figure). The build cross-fades them by the share of chapters read: the clear layer's alpha is chapters read ÷ chapters, over the mist; nothing is blurred by the build. It suggests the type; it never shows the individual's colours or marks. Before Identify, the empty halo (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was one slice, `figure-<species>-128x160`). Was the page (152, 112, 256, 440) beside the pod. Once identified it is a focus target, the way to the species' guide, from L2.1, when the guide spread is built on the face; until then it is drawn but is not a target (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*; *from L2.1: the UI designer, 2026-10-09, on the architect's review of the salvage*) |
+| "the species" | 432, 400, 128, 24 | 16 px `mist`, centred on x 496 under the figure; only once identified (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
+| "this pod" | 144, 520, 224, 24 | 16 px `mist`, centred on x 256 under the who-it-is marks; always (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
 | Where it came from | place picture 600, 120, 64, 64 (`place-<place>-64x64`, a new master painted from the same painting at 64, never scaled); sentence 680, 128, 328, 40 | The copywriter's sentence, "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits. Was the caption under the name (520, 488, 224, 40) |
 | Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | The ring is the master `ring-kin-56x56`, placed 1:1; the pod is the 40×48 list class (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added).  Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred. Was in the well column (16, 488, 80, 56) |
@@ -400,7 +416,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | A | Pad | The ring moves between places. On opening, it lands on the pod that most needs the player: a new one, then a glinting one, then the first |
 | A | ✓ | `✓ Open`: the pod's overview (B). The context and the notice describe the focused pod |
 | A | ← | Home: the way back reads "← Home" |
-| B | Pad | Between the pod, the tabs, the kin and the hatch: ▲ from the pod to the rail; ▶ from the pod to the first kin; ▼ from the kin to the hatch; ◀ from the hatch to the pod |
+| B | Pad | Between the pod, the tabs, the figure, the kin and the hatch: ▲ from the pod to the rail; ▶ from the pod to the figure, and on to the first kin; ▼ from the figure or the kin to the hatch; ◀ from the hatch to the pod. The ring starts on the pod, with `✓ Shape a founder`; the figure is a side trip one ▶ away. Before Identify the figure is not a target and ▶ goes from the pod to the kin (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was ▶ from the pod to the first kin). The figure's moves come from L2.1; until then ▶ goes from the pod to the first kin, or to the hatch when there is none (*UI designer, 2026-10-09, on the architect's review of the salvage*) |
+| B | ✓ on the figure | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library" (the tree), never back to Pods (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
 | B | ✓ on the pod | Sealed: `✓ Identify · 1 ⚡`. A chapter read: `✓ Shape a founder` opens Create; dimmed, with the reason in the notice, when the incubator is busy or no bay is free |
 | B | ✓ on a tab | `✓ Open Coat`, with no price: opening a chapter is free. The read and its price are on the page (C), where ✓ reads, and the price is on the bottom line while the open tab has the focus there. So no price shows on a tab, and none shows for an action that costs nothing (*decided by the UI designer, 2026-10-09*, with the game designer's brief: "price only on the bottom line when a tab has focus" is met on C) |
 | B | ✓ on a kin pod | `✓ Compare · free` |
@@ -491,6 +508,7 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 - After the art director's second verdict (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*): the rail hangs from y 40, 40 tall, its tabs slanted and touching (was y 48, 56 tall, with gaps), and the focus ring follows a tab's slant with no lift; the dish grows to (600, 328, 224, 96); the origin turns bone; the page opens on one large picture with the grid as its second state, and the focus graph gains the page (→ from a well, ← from the pod). (*Withdrawn after the game designer's answer, 2026-10-08:* the page is one state, every trait at once, and holds no focus target.)
 - Trait pictures are rendered at their size, never enlarged from a crop.
 - *corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: Pods becomes three states (collection, pod overview, chapter page); the well column goes; the pod on the axis x 256 (B) and x 216 (C), was 632; the page (424, 112, 584, 440), was (152, 112, 256, 440); the rail centred at x 96, was 152.
+- The figure becomes the door to the species at L2.1 (*UI designer, 2026-10-09*). Until the guide spread is built on the face, the figure is drawn but is not a focus target, and `pods.json` `focus.overview` has no figure edges: ▶ from the pod goes to the first kin. At L2.1 the edges return: pod ▶ figure, kin ◀ figure, figure ◀ pod, ▶ kin.first, ▲ rail.last, ▼ hatch; and the target `figure` (round, overview, when identified, `✓ Open the guide`, context "every {species}"). With L2.0's focus port the edges become ordered lists (lvgl-switch.md §2.6.1): pod ▶ [kin.first, hatch], hatch ▲ [kin.first, none], and at L2.1 pod ▶ [figure, kin.first, hatch]. The two captions, "this pod" (144, 520, 224, 24) and "the species" (432, 400, 128, 24, only once identified), are drawn with L2.0's overview, because they need no guide.
 
 ### Confirmed against the build (UI designer, 2026-10-08)
 
@@ -512,7 +530,14 @@ Concept plate: `art/concept-station/round3/A-r3-a1-1024x600.png`. Wireframe: [01
 
 <img src="station-layouts/01-home.svg" width="720" alt="Home wireframe">
 
-*Home. Wireframe, layout only, measured.*
+*Home with the ring on a resident. Wireframe, layout only, measured, 1×. Status: Decided layout (2026-10-08), with the sleeping mibi and the Shield plates per tier.*
+
+**L2.2 spec** (UI designer, 2026-10-09 12:12, America/Mexico_City). **Decided** (owner, 2026-10-09 12:20): the structure, the states and the navigation; the details (keys, sizes, timings, words) are the UI designer's, with the disciplines' rulings of 2026-10-09 (the [answered questions](#open-questions-for-l22)). For the LVGL face ([lvgl-switch.md](../proposals/lvgl-switch.md) §3 to §4, L2.2): every drawn region names its word or composition, Home's three states (home, arrival, report), the rest knob, Home's focus as `order` and `nearestIn` data, [Dock and arrival](#dock-and-arrival) and [Idle](#idle). The numbers live in `prototypes/ui/specs/station/home.json` and, for Idle, `frame.json` `idle`. Each wireframe below has a 1× PNG beside its SVG.
+
+<table><tr>
+<td valign="top"><img src="station-layouts/01e-home-rest.svg" width="480" alt="Home, Companion away, ring on the rest knob"><br><em>01e. Home with the Companion away and the ring on the rest knob: the Bay shut, the cradle empty, the Companion mark on the bed, `✓ Rest`. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+<td valign="top"><img src="station-layouts/01f-home-nav.svg" width="480" alt="Home's navigation map"><br><em>01f. Home, Rest, Dock and Idle: what opens first, what each key does, how ← returns, and how the states follow each other. 1×. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+</tr></table>
 
 ### 1. Purpose
 
@@ -525,7 +550,8 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 | **The vivarium** (the living window) with the residents | The collection alive; the reason the device is on |
 | **The with-you bed** | Shows where the mibi with you is: here or out with the Companion |
 | **Four modules**, each one word, a lamp and its object: Bay (crates), Rack (six wells), Incubator (dome and leaves), Probe (Probe, Shield plates, the sitting slot) | The instrument's state, read by shape; an amber lamp marks the one that needs you |
-| **Rest knob** | The deliberate way to rest the screen (idle) |
+| **Name tag** (only while a resident is focused) | Which mibi this is, in context, under the creature; the chrome stays system information only (owner, 2026-10-07) |
+| **Rest knob** | The deliberate way to put the Station on its living view, Idle, to stay on all day |
 | **Bottom line** | What needs you, in words, at the right; what ✓ does with the current focus |
 
 **Cut from the build:**
@@ -534,7 +560,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 - The wooden bay door, the felt strip and the lamp on its stand (never a cottage).
 - The words written inside the vivarium ("Dot is out with you"). The bed's Companion mark and the bottom line say this.
 - The plate's module names become one word each: Bay, Rack, Incubator, Probe.
-- The name label inside the window goes. The window carries no words, and the focused resident's name is the bottom line's subject.
+- The build's free-floating name label goes. In its place, the **name tag**: the focused resident's name on a small `panel` tag under it, inside the window, only while it is focused (the owner's decision of 2026-10-07, in force; *corrected by the UI designer, 2026-10-09, on the art director's return of 12:40*: was "the window carries no words, and the focused resident's name is the bottom line's subject").
 
 ### 3. Placement
 
@@ -550,7 +576,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 ### 4. Art direction
 
 - **Rooms:** the overview (the frame and modules are industrial, plasticky hardware) holding the vivarium (cozy, alive).
-- **The vivarium is the only warm light,** daylight from the top left. The modules are cool enamel and slate, evenly lit.
+- **The vivarium is the only warm light,** the same light as Idle: day, dusk and night all keep the warm key light from the top left. At night the light is warm and low (the glow-moss and the residents' own glows), and the moon is only a cool rim. The glass's mean L* is 30 or more at night, and its mean red is at least its mean blue in every light. Home's glass and Idle always show the same light (art director, 2026-10-09 12:40); was "at night a soft cool moonlight". The modules are cool enamel and slate, evenly lit.
 - **Nothing overlaps the vivarium.** No wood, felt, shelves or lamp-lit bench.
 - **Residents** are the matched rich treatment, or the placeholder with its waiting lamp until their painting lands, and never enlarged tokens.
 
@@ -569,6 +595,7 @@ Home is the always-on view: the collection alive, and the instrument's state. Th
 | Probe | Cradle `metal`; Shield plates whole `white`, gone `bevel` outline; sitting slot empty a 1 px `hairline` outline, held a gilt frame in `gold` lit `yellow` | Whole plates read as white, the kit's role |
 | With-you bed (placeholder until the Home master) | A low nest: rim `bark`, hollow `soil`, lit rim top left `sand`; the Companion mark 16×24 in `mist` | Inside the warm field; the mark is in context grey because it says "away" |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role (cool, never a word) |
+| Name tag | `panel` fill, 1 px `hairline` edge, the name 16 px `bone` | The kit's small plate, quiet on the warm field; the only word the window holds outside an event (art director, 2026-10-09 12:40) |
 | Rest knob | `enamel`, lit top row `frost`, shade bottom row `bevel` | One step lighter than the bezel it sits on, so it reads as a part |
 | Ribbon | Fill `tealD`, 1 px rim `aqua`, words `bone` | The one ribbon look, as on Pods (the read tab's cool look); cool on the warm field so it reads as an event, not part of the scene |
 | Report card | `panel` fill, `hairline` edge, `bevel` top, drop shadow `void` at (+2, +3); heading and lines `bone`, row leads and context `mist`, figures `bone`, bullets `bevel` | An instrument readout, the overview's hardware (*the build's paper card was the Library's material*) |
@@ -584,20 +611,37 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 | **Resident, adult or elder** | 144×152 each | Rendered at size; feet within the ground band |
 | Resident, juvenile | 104×112 | Reads young by proportion |
 | Resident focus | ellipse, box width + 16 by 24, under the feet | The resident lifts 4 px |
-| With-you bed | 520, 472, 128, 56 | The mibi with you sleeps here when docked; a 16×24 Companion mark when away |
+| With-you bed | 520, 472, 128, 56 | The mibi with you sleeps here when docked; a 16×24 Companion mark at (576, 488) when away |
+| **The sleeping mibi** (docked) | adult or elder 512, 360, 144, 152; juvenile 532, 400, 104, 112 | The resident's own painting in its nap pose, in the same box as a resident of its stage, bottom-centred on the bed's hollow at (584, 512), 16 px above the bed's foot. It is never the 48 px Companion token (a pixel token beside painted residents would read as another creature, and Residents are never tokens). The adult overhangs the 128 px bed by 8 px each side, inside the glass. It is a focus target like a resident (the ellipse under its feet, `✓ Look at ‹name›`) but does not lift: it is asleep. The 24×16 asleep mark sits at its box's top right; the waiting lamp, when shown, 8 px to the mark's left. The juvenile's x sits 4 px off the grid, as the medium pod's does (*decided by the UI designer, 2026-10-08, for the builder's open question*: the document gave no size; the build drew the nest with only the asleep mark) |
 | Waiting lamp | 12×12 at the resident's top right | Until its painting lands |
-| Rest knob | 624, 544, 32, 8 | On the bezel's bottom rail. Focus target 48×24 around it |
+| **Name tag** (focused resident only) | 24 tall; the name's width + 16, rounded up to the 8 px grid, at least 48; centred under the resident; its top at feet + 24, 8 px below the ring's ellipse (feet − 8 to feet + 16) | The name only, 16 px `bone`, centred; on the `panel` tag with a `hairline` edge. If its bottom would pass y 536, it sits above the resident instead, its bottom 8 px above the box as drawn (lifted): top = box.y − 4 − 32. It slides sideways to stay 8 px inside the glass (x 32 to 656). It does not lift. On the sleeping mibi (foot 512) it is always above: (…, 328, …, 24) for the adult. The bottom line's context then names the species and stage without the name, "an adult Untuva" (*UI designer, 2026-10-09*); the action keeps it, `✓ Look at Bean` |
+| Rest knob | 624, 544, 32, 8 | On the bezel's bottom rail (y 544 to 552). Drawn 32×6: at rest at (624, 546), lifted to (624, 544), so it never covers the glass, whose last row is 543 (art director, 2026-10-09 12:40). Focus target 48×24 around it |
 | Module: Bay | 688, 48, 320, 120 | Word at (704, 60), 16 px; lamp 12×12 at (984, 60); door and crates 704, 84, 288, 72, with up to three crates of 80×56 on a 96 px pitch |
-| Module: Rack | 688, 176, 320, 120 | Lamp at (984, 188); six wells of 40×40 at (712 + 48i, 216); in each, the signed 32×40 well pod, 1:1, at (712 + 48i + 4, 216): it fills the well's height, so centred and bottom-aligned are the same place, the stem on the well's top row and the shell's foot on its floor (y 255), 4 px clear either side (*decided by the UI designer, 2026-10-08: was "pods 24×32 in them"; the signed well pod is 32×40 and is never scaled*); a glint star 12×12 above its well at y 204, centred on it at x 712 + 48i + 14 |
-| Module: Incubator | 688, 304, 320, 120 | Lamp at (984, 316); dome 704, 328, 80, 80 with the bud's glow; leaves 800, 344, 192, 40 (8×12 each on a 12 px pitch, two rows of 16) |
-| Module: Probe | 688, 432, 320, 120 | Lamp at (984, 444); Probe in its cradle 704, 456, 128, 80; Shield plates 3 × 28×12 at (848 + 36i, 496); sitting slot 952, 456, 40, 80 (an empty gilt frame when a sitting is held) |
+| Module: Rack | 688, 176, 320, 120 | Lamp at (984, 188); six wells of 40×40 at (712 + 48i, 224); in each, the signed 32×40 well pod, 1:1, at (712 + 48i + 4, 224): it fills the well's height, so centred and bottom-aligned are the same place, the stem on the well's top row and the shell's foot on its floor (y 263), 4 px clear either side (*decided by the UI designer, 2026-10-08: was "pods 24×32 in them"; the signed well pod is 32×40 and is never scaled*); a glint star 12×12 above its well at y 212, centred on it at x 712 + 48i + 14, 8 px clear of the word's baseline (y 204) as on the Bay (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was wells and pods at y 216, the star at y 204 on the word's baseline*) |
+| Module: Incubator | 688, 304, 320, 120 | Lamp at (984, 316); dome 704, 336, 80, 80 with the bud's glow; leaves 800, 352, 192, 40 (8×12 each on a 12 px pitch, two rows of 16) (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was dome 704, 328 and leaves 800, 344; the word's 20 px line box ran to y 336, over the dome*) |
+| Module: Probe | 688, 432, 320, 120 | Lamp at (984, 444); Probe in its cradle 704, 464, 128, 80; Shield plates 16×32 on a 24 px pitch at (848 + 24i, 488): three on a tier-1 Probe (848 to 912), four on tier 2 (848 to 936), each whole or gone, never a ghost for a plate the tier does not have; standing like the Companion's plates, centred on the cradle's middle (y 504), 16 px clear of the sitting slot at four (*decided by the UI designer, 2026-10-08, for the builder's open question*: was 3 × 28×12 at (848 + 36i, 496); four of those ran 36 px into the sitting slot); sitting slot 952, 464, 40, 80 (an empty gilt frame when a sitting is held) (*corrected by the UI designer, 2026-10-09, on the art director's ruling of 12:25: the objects 8 px clear of the module's word*: was cradle and slot at y 456, plates at y 480; the word's line box ran to y 464, over the cradle*). While the Companion is away: the cradle empty, no plates, the lamp off; the sitting slot still shows when a sitting is held |
 
-**Arrival** (the Dock and arrival state of Home):
+**Regions and their words** (*L2.2, UI designer, 2026-10-09; structure Decided by the owner, 2026-10-09 12:20*). Every drawn region names its word from the closed vocabulary (`component`) or the composition it is built as (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **home** (at rest, docked or away), **arrival** (from `✓ Open the bay` to the last crate) and **report** (from the arrival's end to the next press). A region with "only in" exists in those states alone.
 
-- The ribbon sits at 40, 72, 608, 40 inside the glass top, in 20 px.
-- The report card sits at 64, 120, 560 wide and at most 320 tall, over the vivarium until the next press. Its rows are below.
-- The Bay module lifts 2 px, the chrome lift, over 200 ms as its door opens, and stays lifted while its crates open; it settles when the card shows (*decided by the UI designer, 2026-10-08: was 4 px. One lift for chrome everywhere; at 4 the Bay's top would sit at y 44, 4 px under the top bar's rule, inside the 8 px gap rule, and a ring on it would meet the rule. The arrival is carried by the door, the cool beam and the crates, not by a bigger lift. Station screens' "grows a little" is read as this lift: nothing is scaled*).
-- The rest of the layout stays where it is.
+| Region (`home.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `bezel` | 16, 48, 656, 504 | living window, part frame | | — |
+| `glass` | 24, 56, 640, 488 | living window, part inside | | — |
+| `resident` | 144×152 or 104×112, where the face steps it inside the ground band (24, 300, 640, 228) | living window, part residents (clipped to the glass) | | walking; facing the column during the arrival; focused (4 px lift, ellipse). Drawn in order of the feet's y, lower in front, left first on a tie; the bed and its sleeper sort as one at the bed's foot, y 528 (art director, 2026-10-09 12:40) |
+| `nameTag` | under (or over) the focused resident, as above | panel and text, build `nameTag` (clipped to the glass) | | only while a resident is focused |
+| `bed` | 520, 472, 128, 56 (sleeper 512, 360, 144, 152 or 532, 400, 104, 112) | build `withYouBed` | | docked: the sleeping mibi; away: the Companion mark 16×24 at (576, 488); none: the nest alone |
+| `knob` | 624, 544, 32, 8 (drawn 32×6) | build `restKnob` | | rest: drawn at (624, 546); focused: lifted to (624, 544), ring (616, 534, 48, 24); pressed: the rest event |
+| `bay` | 688, 48, 320, 120 | panel, build `module` | | away: door shut, lamp off; docked: door open, crates at (712 + 96i, 92, 80, 56), lamp amber while crates wait; arrival: lifted 2 px, beam (712 + 96i, 84, 80, 72) behind the opening crate; report: settled, empty |
+| `rack` | 688, 176, 320, 120 | panel, build `module` | | a well shows empty until its travelling pod lands |
+| `incubator` | 688, 304, 320, 120 | panel, build `module` | | — |
+| `probe` | 688, 432, 320, 120 | panel, build `module` | | docked: the Probe and its plates; away: the cradle empty, no plates, lamp off |
+| `travel` | 688, 48, 320, 248 | panel, build `module`, part travel (over the column) | arrival | pods 32×40 from (crate.x + 24, 100) to (716 + 48i, 224) |
+| `ribbon` | 40, 72, 608, 40 | ribbon | arrival | one crate's words at a time |
+| `report` | 64, 120, 560, 312 at most 320 | panel, build `reportCard` | report | its rows by count (below) |
+
+The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. No region carries a status strip: Home §2 cut it, and the architect struck it from L2.2 (2026-10-09 12:25).
+
+**Arrival** (the Dock and arrival state of Home) is specified in its own section, [Dock and arrival](#dock-and-arrival): the ribbon at 40, 72, 608, 40 inside the glass top, in 20 px; the report card at 64, 120, 560 wide and at most 320 tall, over the vivarium until the next press; the Bay module lifted 2 px, the chrome lift, over 200 ms as its door opens, staying lifted while its crates open and settling when the card shows (*decided by the UI designer, 2026-10-08: was 4 px. One lift for chrome everywhere; at 4 the Bay's top would sit at y 44, 4 px under the top bar's rule, inside the 8 px gap rule, and a ring on it would meet the rule. The arrival is carried by the door, the cool beam and the crates, not by a bigger lift. Station screens' "grows a little" is read as this lift: nothing is scaled*). The rest of the layout stays where it is.
 
 **The report card** (decided by the UI designer, 2026-10-08; the layout gave only its box). What came home, in one look, for the player who looked away during the crates, and the one thing the arrival does not show: what the world did meanwhile. It lists, in this order, the crates (what each brought and how far the land is explored), what was gathered, the Probe's mend, and the world's lines. Digits appear only beside a material icon (an amount gathered or a price: the frame's exception). Pods are pictured; everything else is words. No expedition numbers and no turn number on the card; the turn is the top bar's.
 
@@ -609,7 +653,7 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 | Heading | 136, 32 tall | — | "Home from the field", 20 px medium, `bone` |
 | A crate, one row each, in the order they opened | 176, 200, 224 | "First crate", "Second crate", "Third crate"; a developer crate "Developer crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight: the words "many pods"; none: "no pods"); then from x 392 how far the land is explored, in words: under a third "a first look around", under two thirds "half the land explored", under all "most of the land explored", all "all the land explored"; a crate with no map (a developer crate) says nothing here |
 | Gathered | 256 | "Gathered" | Energy, Data and Essence as the frame's counters: 16 px icon, 4 px gap, "+3" in tabular figures, 24 px between; the developer top-up, when set, adds "· with the top-up" in `mist` |
-| Probe, only when it was mended | 280 | "Probe" | Its Shield plates as 16 px Shield icons on a 20 px pitch (whole, or the "Shield gone" icon), then "mended free", or "mended · ⚡ 2" when Energy paid for it |
+| Probe, only when it was mended | 280 | "Probe" | Its Shield plates as 16 px Shield icons on a 20 px pitch (whole, or the "Shield gone" icon): three for a tier-1 Probe, at content x + 0, 20, 40; four for tier 2, to content x + 60 (*decided by the UI designer, 2026-10-08, for the builder's open question*), then "mended free", or "mended · ⚡ 2" when Energy paid for it |
 | The world, only when it turned | 320 (16 px gap above), lines at 344, 368, 392 | "Meanwhile, the world turned" across the row, `mist` | Up to three of the last crate's world lines, `bone`, from x 96 behind a 4×4 `bevel` bullet at (80, row.y + 10). Each line is the rules' own words: six words or fewer, no digits; a longer one is a copy fault in the rules, never clipped here |
 
 The card closes on the next press, and that press also does what it does: ✓ follows the bottom line (`✓ Look at the new pods`), the pad moves the ring, ← only closes it. No press is swallowed.
@@ -618,15 +662,48 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was the nearest drawn thing that way) |
+| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column, and ◀ among the residents to the nearest one on the left (**Decided**, owner, 2026-10-09 12:20); ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was the nearest drawn thing that way). As data, [Home's focus graph](#homes-focus-as-data) below |
 | ✓ on the room (no focus) | Does what needs you: `✓ Open the bay · 2 crates`, `✓ Look at the new pod`, `✓ Open the incubator`, `✓ Meet Moss`. With nothing needed there is no ✓ cap |
-| ✓ on a resident | `✓ Look at Bean` opens Habitat on Bean |
+| ✓ on a resident | `✓ Look at Bean` opens Habitat on Bean. The sleeping mibi on the bed is one too |
 | ✓ on Bay | `✓ Open the bay · 2 crates` when docked with crates; otherwise no ✓ cap, and the subject says why ("closed while the Companion is away") |
 | ✓ on Rack, Incubator or Probe | Opens Pods, the Incubator or the Probe bench |
-| ✓ on the rest knob | `✓ Rest` starts idle; any press wakes |
+| ✓ on the rest knob | `✓ Rest` starts Idle ([the rest knob](#the-rest-knob) below); the first press on Idle only wakes |
 | ← | Nothing, wherever the ring is: Home is the top, so there is no ← cap; the Home key puts the ring back on the room (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "focus back to the room"). On the room, likewise nothing: no message plate, and the bottom line shows no `← where` (*decided by the UI designer, 2026-10-08: was "a message plate says Home is the top view". Both places a plate can take on Home, its bottom edge at y 550 or its top at y 112, are over the living window, which carries no words; and the top bar already names Home. A ← with nowhere to go is not a mistake to explain*) |
 | Any press while the report card shows | Closes the card and does what it does (above): ✓ follows the bottom line, the pad moves the ring, ← only closes it |
-| During arrival | Presses are consumed; focus stays on the room |
+| During arrival | Presses are consumed; focus stays on the room ([Dock and arrival](#dock-and-arrival)) |
+| Dock (the Caddy's key) | Never a Station key and never reaches the face. On Home the crates slide into the bay; elsewhere the screen stays and the crates wait in the bay; from Idle it wakes, docks and lands on Home ([Dock and arrival](#dock-and-arrival)) |
+| ← on a child of Home (*L2.2, UI designer, 2026-10-09*) | Home opens with the ring on what leads back to that child: Pods → Rack, the Incubator → Incubator, the Probe bench → Probe, Habitat → that resident if it is at home (else the room), the Library → the room. A room key or a jump into Home lands on the room |
+
+### Home's focus as data
+
+*L2.2, UI designer, 2026-10-09; ◀ on a resident **Decided** (owner, 2026-10-09 12:20).* `home.json` `focus` replaces `nav.mjs` `homeMove` with the two graph primitives of [lvgl-switch.md §2.6](../proposals/lvgl-switch.md#26-the-focus-graph). Targets: `resident.<mibi id>` in group `resident` (the sleeping mibi on the bed is one, without the lift), and `bay`, `rack`, `incubator`, `probe`, `knob` in group `column` (`knob` is frame.json `navigation.homePad`'s "rest"). The room is the ring on nothing: no ring drawn, its point roomAt's centre (512, 300).
+
+| From | ◀ | ▶ | ▲ | ▼ |
+| --- | --- | --- | --- | --- |
+| The room | `nearestIn: resident` | `bay` | none | none |
+| `column` (`order: [bay, rack, incubator, probe, knob]`) | `nearestIn: resident` | none | the previous in the order; the end stops | the next in the order; the end stops |
+| `resident` | `nearestIn: resident, ahead` (the nearest resident to its left; the leftmost stays) | `nearestIn: column` | `nearestIn: resident, ahead` | `nearestIn: resident, ahead` |
+
+- **`order`** steps through the list as written, skipping ids that are not targets now; never a wrap.
+- **`nearestIn: g`** lands on the target of group g whose box centre is nearest the ring's row: |dy| × 4 + |dx| × 0.01, centre to centre. An empty group leaves the ring where it is.
+- **◀ on a resident** goes to the nearest resident to its left; ▶ still crosses to the column (**Decided**, owner, 2026-10-09 12:20: was nothing, which could strand two residents at one height, neither 6 px ahead of the other by ▲ ▼). From the column, ◀ lands on the row-nearest resident, nearest the column, so every resident is reachable.
+- **`ahead`** (the residents' ▲ ▼ ◀) takes only the group's targets more than 6 px ahead in the key's direction, nearest by along + 2.2 × across, as `homeMove` does.
+- **The exact semantics** are [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md) (architect, 2026-10-09 12:25): `ahead` is a parameter of `nearestIn`; the scores are integers on doubled centres (`nearestIn` 400 × across + abs(along); `ahead` along > 12, then 5 × along + 11 × across); an edge may be an ordered list, the first present entry winning.
+- **The Home key** on Home sets the focus to the room (`roomKey`). **Holds:** while the arrival or the rest plays, the face moves no focus and sends no intent. **The report card:** any key closes it and still does what it does.
+- **Rings:** a resident's ellipse under its feet (box width + 16 by 24, starting 8 px above the feet); a module's round ring 4 px outside its rectangle, with the 2 px chrome lift; the knob's ring is its 48×24 target, below.
+- **Vectors for the focus tests** (`nav.test.mjs`'s Home walk becomes these): room ▶ bay; bay ▲ bay; bay ▼ rack; probe ▼ knob; knob ▼ knob; knob ▶ knob; room ▲ room; room ◀ the resident nearest (512, 300) by row, or the room when no resident is home; the leftmost resident ◀ itself; a resident ◀ the nearest of those more than 6 px to its left.
+
+### The rest knob
+
+*L2.2, UI designer, 2026-10-09.* **What it is for:** the deliberate way to put the Station on its living view, [Idle](#idle) (Home §2). **What it shows:** a chrome knob on the bezel's bottom rail and nothing else; no word on the stage. Its states, in `home.json` `regions.knob.states`:
+
+| State | Knob | Ring | Bottom line |
+| --- | --- | --- | --- |
+| Rest | drawn 32×6 at 624, 546 | none | as the focus elsewhere says |
+| Focused (▼ from Probe, or ▶ from a resident whose row is nearest it) | lifted 2 px over 200 ms: 624, 544, 32, 6 | round, on its 48×24 target, riding the lift: 616, 534, 48, 24 | `✓ Rest` \| "the vivarium plays alone" \| the notice as on the room; no ← |
+| Pressed (✓) | settles back to 624, 546 over 200 ms; the ring goes | none | — |
+
+Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen to [Idle](#idle). Input is held for the 380 ms. The ring sits on the 48×24 target itself, 8 px outside the knob, rather than 4 px outside the target: at 4 px outside its bottom would reach y 564, over the bottom line's rule at 562; lifted, it ends at 558. The knob cannot be reached during the arrival.
 
 ### Placeholders on Home
 
@@ -636,15 +713,17 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 | Residents | 144×152 adult, 104×112 juvenile |
 | Crates | 80×56 |
 | Pods in the rack | 32×40, the signed well pod (*was 24×32*) |
-| Dome | 80×80 |
+| Dome | 80×80; the slice and its placeholder keep rows 0 to 3 empty, first ink at y 340 (`domeInkTop` 4) (art director, 2026-10-09 12:40) |
 | Leaves | 8×12 |
-| Probe | 128×80 |
-| Shield plates | 28×12 |
+| Probe in its cradle | 128×80; the slice and its placeholder keep rows 0 to 3 empty, first ink at y 468 (`cradleInkTop` 4) (art director, 2026-10-09 12:40) |
+| Shield plates | 16×32 (*decided by the UI designer, 2026-10-08, for the builder's open question*: was 28×12) |
 | Sitting frame | 40×80 |
 | Lamps | 12×12 |
-| With-you bed | 128×56 |
+| With-you bed | 128×56, a placeholder nest: the Home master paints the concept's shallow glass dish (about 160×80 at 566, 405), and the bed, the sleeper's foot and the mark are re-measured from it when it lands |
 | Companion mark (on the bed, while away) | 16×24 |
-| Rest knob | 32×8 |
+| Sleeping mibi (on the bed, docked) | the resident's box of its stage, 144×152 or 104×112, in its nap pose |
+| Rest knob | 32×6 drawn, in its 32×8 region |
+| Name tag | 24 tall, by the name |
 
 All stand-ins until the Home and bench masters.
 
@@ -653,6 +732,209 @@ All stand-ins until the Home and bench masters.
 - The vivarium goes from (14, 50, 636×500) to the bezel and glass above.
 - The bench goes from free-placed objects at (664…1010) to four modules of 320×120.
 - The status strip and the lamp on its stand go. Residents go from 64 and 96 px to 104 and 144 px boxes.
+- The rest knob replaces the lamp on its stand as Home's way to Idle; the build's "rest" word under the lamp goes (the knob carries no word; `✓ Rest` is the bottom line's).
+- With the Companion away the Probe's cradle is drawn empty, with no plates; the build draws a hairline ghost Probe there (`home.mjs` `drawCradle`) (game designer, 2026-10-09 12:24).
+- Home's pad moves from `nav.mjs` `homeMove` to `home.json` `focus` (L2.2); the build's ids `tray`, `inc`, `cradle`, `lamp` become `rack`, `incubator`, `probe`, `knob`.
+
+---
+
+## Dock and arrival
+
+A state of Home, not a screen of its own: the same layout, with the bay leading. Wireframes: [01b-home-docked.svg](station-layouts/01b-home-docked.svg), [01c-home-arrival.svg](station-layouts/01c-home-arrival.svg), [01d-home-report.svg](station-layouts/01d-home-report.svg), each with its 1× PNG.
+
+**L2.2 spec** (UI designer, 2026-10-09 12:13, America/Mexico_City). **Decided** (owner, 2026-10-09 12:20): the structure, the states and the navigation; the details (keys, sizes, timings, words) are the UI designer's, with the disciplines' rulings of 2026-10-09 (the [answered questions](#open-questions-for-l22)). The numbers live in `home.json` (`regions.bay`, `travel`, `ribbon`, `report`, `events.crateIn`, `events.arrival`).
+
+<table><tr>
+<td valign="top"><img src="station-layouts/01b-home-docked.svg" width="480" alt="Home, docked with two crates"><br><em>01b. Docked: two sealed crates slid into the open bay, the Bay's lamp amber, the ring on the room, `✓ Open the bay`. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+<td valign="top"><img src="station-layouts/01c-home-arrival.svg" width="480" alt="Home, the arrival"><br><em>01c. The arrival, the first crate opening: the Bay lifted 2 px, the beam behind the crate, a pod travelling to its well, the ribbon in the glass, the residents facing the bay, input held. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+</tr><tr>
+<td valign="top"><img src="station-layouts/01d-home-report.svg" width="480" alt="Home, the report card"><br><em>01d. The report card at its fullest (three crates, the Probe row, three world lines), 64, 120, 560×312, until the next press. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).</em></td>
+<td></td>
+</tr></table>
+
+### 1. Purpose
+
+Cargo arrives when the Companion docks and the player opens the bay (Station screens, Dock and arrival). **Reads first:** how many crates are in the bay, then the ribbon. Docking alone shows crates and accepts nothing; opening the bay is a press.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **Crates in the Bay**, one per consignment, at most three | How much came home, before anything opens |
+| The Bay's amber lamp and the notice | The bay is what needs you; the room's ✓ opens it |
+| **The beam and the seal** on the opening crate | One crate's arrival reads as one event |
+| **Pods travelling** from the crate to the rack's wells | Where the new pods went |
+| **The ribbon** in the glass | Which crate this is, in words |
+| The top bar's counters and turn, ticking | What was gathered, and that the world turned |
+| The Probe's plates seating | The free mend, shown on the Probe module |
+| The residents turning toward the bay | The vivarium notices; nothing of the field is drawn |
+| **The report card** | What came home, in one look, and what the world did meanwhile |
+
+### 3. Placement
+
+1. **The crates in the Bay** (top right, the first module of the column).
+2. **The ribbon**, inside the glass top, the only words on the stage during the arrival.
+3. **The travelling pods**, from the bay down into the rack.
+4. The counters and turn in the top bar; the plates on the Probe.
+5. **The report card** last, over the vivarium's upper half, clear of the column.
+
+### 4. Art direction
+
+The overview's hardware: Home §4's colour roles, unchanged. The beam is the arrival's only light change (`tealD`, the Pods beam); crates `deepTeal` lit `teal` with an `orange` seal tag; the ribbon the one ribbon look (`tealD`, `aqua` rim, `bone` words), cool on the warm field; the card an instrument `panel`. Nothing of the field is drawn.
+
+### 5. Composition
+
+| State | What is drawn, measured |
+| --- | --- |
+| **Away** (01e) | The Bay's door shut (`metal` shutter, slats on an 8 px pitch) 704, 84, 288, 72; its lamp off; the Probe's cradle empty with no plates; the bed's Companion mark |
+| **Docked** (01b) | The door open (`ground` inside). One sealed crate per consignment at (712 + 96i, 92, 80, 56), i = 0 to 2, left to right in the order they will open. The Bay's lamp amber while crates wait. The Probe in its cradle; the sleeping mibi on the bed |
+| **Crates sliding in** | Each crate slides down from 64 px above its place, (712 + 96i, 28), to (712 + 96i, 92), clipped by the door, in whole pixels, eased out, 500 ms each, 250 ms apart. Input is not held. It plays when the Companion docks while Home shows, or when Dock lands on Home from Idle. Docked on another screen, the crates are simply there when Home next shows |
+| **Arrival** (01c) | The Bay lifted 2 px to (688, 46) for the whole arrival. Behind the opening crate, the beam (712 + 96i, 84, 80, 72). The crate goes sealed → opening (the tag gone, the lid lifting) → open (empty). Pods 32×40 travel over the column from (crate.x + 24, 100) to their well's pod place (716 + 48i, 224), inside `travel` (688, 48, 320, 248); a well shows empty until its pod lands. The ribbon (40, 72, 608, 40), 20 px, centred, one line. The residents stop and face the column. The bottom line has no ✓ cap and no notice; its context reads "the bay is opening" |
+| **Report** (01d) | The ribbon and crates gone, the Bay settled, the card at (64, 120, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0), at most 312; its rows as in Home §5. The residents walk again |
+
+**One crate's timeline** (3000 ms, from the crate's start; `home.json` `events.arrival`):
+
+| ms | What plays |
+| --- | --- |
+| 0 | The beam shows behind the crate; the seal breaks and the lid lifts over 300 ms (the first crate also lifts the Bay, 2 px over 200 ms) |
+| 300 | The ribbon shows this crate's words: it appears with the first crate and changes words with the next, a cut, no fade |
+| 600 | The counters tick this crate's materials (the top bar's own tick and flash). On the first crate only, each mended Shield plate seats, gone → whole, 300 ms apart, left to right |
+| 1200 | The crate's pods travel to their wells, in well order, 150 ms apart, 600 ms each, eased in and out |
+| 1650 | The world turn jumps to the crate's turn (the top bar's tick) |
+| 2850 | The beam goes; the crate stays open and empty |
+| 3000 | The next crate starts. After the last: the ribbon and crates go, the Bay settles (2 px, 200 ms), the card shows |
+
+**The hold:** input is held for crates × 3000 + 200 ms. With reduced motion every step jumps to its end and the hold is the same 200 ms after the last crate's end state.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Dock (the Caddy's key) | A world event, never a Station key, never sent to the face. On Home: the crates slide in, the top bar's Companion returns (glyph filled, lamp `mint`, 2 px lift for 200 ms), the Bay's lamp turns amber, the notice names the crates. No message plate (a plate on Home would sit over the living window; the top bar and the bay already say it). Elsewhere: the screen stays; the top bar changes. From Idle: wake, dock, land on Home with the ring on the room, then the crates slide in |
+| Dock again while docked | Lifts the Companion: the door shuts (a cut), the bed shows the Companion mark, the top bar's Companion leaves. From Idle it wakes and lifts, and the screen under Idle shows |
+| ✓ on the room, or on the Bay, with crates | `✓ Open the bay · 2 crates`: the arrival plays (state arrival) |
+| Any key during the arrival | Consumed. The ring stays on the room and is not drawn |
+| The next press after the arrival | Closes the report card and does what it does: ✓ follows the bottom line (`✓ Look at the new pods`), the pad moves the ring, ← only closes it |
+
+### Placeholders in the arrival
+
+| Thing | Pixel size |
+| --- | --- |
+| Crate, sealed / opening / open | 80×56, one slice each |
+| Seal tag | inside the crate's slice |
+| Beam | 80×72, flat `tealD` |
+| Travelling pod | 32×40, the signed well pod |
+| Ribbon | 608×40, the ribbon word |
+
+### Changes from the current build
+
+- The ribbon loses its digits and says the crate only: "First crate home", "Second crate home", "Third crate home", "Developer crate home" (copywriter, 2026-10-09 12:22: was "Expedition 4 home · 2 pods · explored 9 of 21"); how far the land is explored stays on the report card.
+- A pod that finds no free well does not travel: it waits sealed and lands, oldest first, as a well frees, and it is a notice after crates, the bud ready, a meeting, new pods and glints (game designer, 2026-10-09 12:24). The report card pictures it in its crate's row.
+- The pods travel in a straight eased line inside `travel` (the build arcs them 30 px and starts at 40% of the crate); the opened crate stays drawn open (the build writes "opened" in its place).
+- The build's message plate on Dock goes.
+
+---
+
+## Idle
+
+The Station's living view, kept on all day. A state of the frame (`props.idle`), not a screen: the screen under it keeps its state and focus. Wireframe: [10-idle.svg](station-layouts/10-idle.svg) and its 1× PNG.
+
+**L2.2 spec** (UI designer, 2026-10-09 12:13, America/Mexico_City). **Decided** (owner, 2026-10-09 12:20): the structure, the states and the navigation; the details (keys, sizes, timings, words) are the UI designer's, with the disciplines' rulings of 2026-10-09 (the [answered questions](#open-questions-for-l22)). The numbers live in `prototypes/ui/specs/station/frame.json` `idle`.
+
+<img src="station-layouts/10-idle.svg" width="720" alt="Idle wireframe">
+
+*10. Idle: the vivarium full screen, the residents and the with-you bed, and one line on a 32 px strip at the foot; no frame, no ring. 1×, measured. Status: Decided (owner, 2026-10-09 12:20).*
+
+### 1. Purpose
+
+A view the Station can show permanently: the vivarium, something alive and worth looking at all day, when nobody is using the instrument (Station screens, Idle; the owner, 2026-10-09 12:20: "idle doesn't mean screen off, means a view that can be shown permanently, vivarium or something interesting to look at"). It is never a screen off, a sleep or a screensaver: the residents are awake and keep their routines, the light is the vivarium's own full light for the time of day, nothing is dimmed, blanked or darkened, and nothing counts down. **Reads first:** the residents. The player at a distance sees the pets at ease and nothing asking for them.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The vivarium**, edge to edge | The pets, the reason the device is on |
+| **The residents**, at their full size | Alive, keeping their routines; never enlarged |
+| The with-you bed | Where the mibi with you is, as on Home |
+| **One line** on a thin cool strip | The one state worth knowing at a glance |
+
+**Not drawn:** the top bar, the bottom line, the modules, the message plate, the focus ring, any word inside the window.
+
+### 3. Placement
+
+1. **The residents**, on the ground band of the lower half.
+2. The bed at the right, where Home's bed is in the glass.
+3. **The line**, last, centred at the foot.
+
+### 4. Art direction
+
+The vivarium only: the warm field fills the screen, its light following the time of day (day, dusk, night, a master per light), never dimmed or darkened for being idle: day, dusk and night all keep the warm key light from the top left. At night the light is warm and low (the glow-moss and the residents' own glows), and the moon is only a cool rim. The glass's mean L* is 30 or more at night, and its mean red is at least its mean blue in every light. Home's glass and Idle always show the same light (art director, 2026-10-09 12:40); was "at night a soft cool moonlight". The strip is chrome, cool and quiet: `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Nothing blinks; the waiting lamp may still show on a resident, steady. Until the master, the placeholder is Home's plate at Idle's size: back `forest`, ground band `clay` with a `sand` top row, the foot `soil`.
+
+### 5. Composition
+
+| Region (`frame.json` `idle`) | Rectangle | Word or build | Notes |
+| --- | --- | --- | --- |
+| `vivarium` | 0, 0, 1024, 568 | living window, part inside, no frame | Ground band 0, 320, 1024, 232; the foot 0, 552, 1024, 16 |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, part residents | Walking inside 16, 320, 992, 232 (feet in the band, 16 px from each screen edge); no lift, no ring, no name tag; the waiting lamp 12×12 at the box's top right. Drawn in order of the feet's y, lower in front, left first on a tie; the bed and its sleeper sort as one at the bed's foot, y 552 (art director, 2026-10-09 12:40) |
+| `bed` | 872, 496, 128, 56 | build `withYouBed` | The sleeping mibi bottom-centred on (936, 536): adult 864, 384, 144, 152; juvenile 884, 424, 104, 112. Away: the Companion mark 16×24 at (928, 512) |
+| `strip` | 0, 568, 1024, 32 | panel, build `idleLine` | 1 px `void` rule on its top edge |
+| `line` | 16, 568, 992, 32 | text, in build `idleLine` | 16 px regular, `mist`, centred on x 512 and on y 584; one line, six words or fewer, no digits |
+
+**The line** is one sentence, never dot-joined parts (the frame's rule). When several hold, the first of these shows; when none holds the line is empty; never a demand, nothing nags (**Decided**, owner, 2026-10-09 12:20). The words are the copywriter's (2026-10-09 12:22), and the "out" line shows only while the Companion is away with a mibi; docked, the line says nothing of that mibi (game designer, 2026-10-09 12:24):
+
+| Holds | Line |
+| --- | --- |
+| Crates in the bay | "a crate waits in the bay", "two crates wait in the bay", "three crates wait in the bay" |
+| The bud ready | "the bud is ready" |
+| A bud growing | "a bud is growing" |
+| Away, a mibi with the Companion | "{name} is out with the Companion" |
+| None | empty |
+
+The line's region is the text word inside the `idleLine` composition, which sits in the frame's binding table; its props are one string, `props.frame.idle.line` (architect, 2026-10-09 12:25).
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| ✓ on the rest knob (Home) | The knob settles (200 ms), then the screen transition, 180 ms, the 16-level Bayer dither, to Idle; held 380 ms |
+| The idle timer (any screen) | After 60 s without a press, the same transition to Idle; never during a hold, an arrival or a report card (**Decided**, owner, 2026-10-09 12:20; the build's `IDLE_MS`) |
+| Any key on Idle (the first press) | Sends `wake` and nothing else: the transition back (180 ms, held), to the screen under Idle with its focus as it was. Nothing opens, nothing moves, nothing is spent, and waking never rewards |
+| Dock (the Caddy's key) | Wakes, docks and lands on Home with the ring on the room; the crates then slide in ([Dock and arrival](#dock-and-arrival)) |
+| Dock while docked | Wakes and lifts the Companion; the screen under Idle shows |
+
+### Placeholders on Idle
+
+| Thing | Pixel size |
+| --- | --- |
+| Vivarium | 1024×568, a master per light (day, dusk, night) |
+| Residents | 144×152 adult, 104×112 juvenile |
+| With-you bed | 128×56 |
+| Sleeping mibi | the resident's box of its stage |
+| Companion mark | 16×24 |
+
+### Changes from the current build
+
+- The build draws the vivarium at 1024×562 under a 38 px `void` strip with dot-joined words ("Companion docked · with Dot · a bud is growing"); here 1024×568, a 32 px `ground` strip and one sentence.
+- The build writes "Dot is out with you" in 28 px inside the window; no words in a living window.
+- The build's bed at (804, 486) moves to (872, 496).
+- On the face, Idle is `props.idle`: today `render()` takes the face path before it checks `UI.idle`, so the face keeps drawing the last screen (lvgl-switch.md §1.3).
+
+---
+
+## Open questions for L2.2
+
+None open. Answered on 2026-10-09 and written into the sections above:
+
+- **Q1, `nearestIn` with a direction** (architect, 12:25): `ahead` is a parameter of `nearestIn`, with the integer semantics of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md); it serves the residents' ▲ ▼ and ◀.
+- **Q2, ◀ on a resident** (owner, 12:20): to the nearest resident on its left.
+- **Q3, the ribbon's length** (copywriter, 12:22): the crate only, "First crate home"; the reach stays on the report card.
+- **Q4, words touching objects** (art director, 12:25): the dome, cradle, sitting slot and plates 8 px lower; with them the leaves, and the Rack's wells and star (UI designer).
+- **Q5, the idle timer** (owner, 12:20): 60 s without a press.
+- **Q6, Idle's line** (owner, 12:20; words by the copywriter, 12:22; the "out" line away only, game designer, 12:24).
+- **Q7, pods with no free well** (game designer, 12:24): they do not travel; they wait sealed and land oldest first.
+- **Q8, the Probe while away** (game designer, 12:24): the cradle empty, no plates, the lamp off; the sitting slot still shows.
+- **Q9, the status strip** (architect, 12:25): struck from L2.2.
+- **Q10, `idleLine`** (architect, 12:25): a composition in the frame's binding table; its line is the text word.
 
 ---
 
@@ -949,7 +1231,7 @@ The window fills the left (16 to 624) above the strip, with the resident centred
 | Waiting lamp | 40, 432, 16, 16 | Until the painting lands |
 | Card | 640, 48, 368, 216 | Cool chrome pane |
 | Name | 656, 64, 200, 32 | 28 px. A heart shows beside it when bonded |
-| Lines | 656, 104, 200, 68 | Three lines of 16 px on a 24 px pitch: "Loika · adult", the ability, the memory |
+| Lines | 656, 104, 200, 68 | Three lines of 16 px on a 24 px pitch: "your Loika, adult", the ability, the memory (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was "Loika · adult"). The species word is a focus target with `mark-guide-16` 4 px after it, on the line's centre: the way to the species' guide |
 | Code | 656, 180, 200, 20 | 16 px |
 | **Stamp label** | 872, 64, 120, 120 | In the card's corner, 400 px from the resident |
 | Chapter plates | 656 + 48i, 208, 40, 40 | Seven on a 48 px pitch. Eight (a signature chapter) shrink to 32×32 on a 40 px pitch, 312 px in all |
@@ -966,6 +1248,7 @@ The window fills the left (16 to 624) above the strip, with the resident centred
 | --- | --- |
 | Pad | Spatial: resident, Door, Bond, Cross, Wild, strip tiles. On a tile, that resident comes into the window (300 ms) |
 | ✓ on the resident or a tile | `✓ Spend time with Fig`: its species moment plays for about 2 s. Rewards nothing |
+| ✓ on the species word | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads "Library". In Habitat's fixed pad order the species word is a row of its own between the stage and the chapter plates (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
 | ✓ on Door | `✓ Take Fig with you · now` (docked) or `· at the next dock`. On the mibi already with you there is no ✓ cap |
 | ✓ ✓ on Bond | The first ✓ arms ("Again: bond with Fig"); the second bonds. Before a first outing there is no ✓ cap, and the subject says "bond is offered after a first outing" |
 | ✓ on Cross (M4) | Opens Cross |
@@ -1109,16 +1392,18 @@ The Book is each species' field guide: its face, the looks found so far, its lin
 | **The face** (or, once a mibi has sat, the portrait): a resident at 304×312 doing its habit, mounted as a framed plate | The subject; the species alive |
 | **Name label** (28 px) and **habit line** (16 px) | What it is and what it does, in two lines |
 | **Place stamps** (40×40) and **the frame plate** (104×144) | Where it lives and its body plan, as pictures |
-| **Chapter tabs** (all chapters) and **look plates** per trait, with a dotted "more?" slot | The looks found, as small specimen plates; never a text page |
-| **Stamp label** (120) | The face mibi's stamp |
+| **The clarity line** (16 px), under the habit line | That the face is the species' type, not one of the player's mibis (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
+| **Page-turn corner** | That the guide waits on the fold-out second spread (Book: the guide spread) |
+| **Stamp label** (120) | The face's stamp: the type specimen's (`frame.typeSpecimen`), with no mibi name under it, until a portrait; then the portrayed mibi's (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: was the face mibi's; no name until a portrait *ruled by the UI designer in review, 2026-10-09*) |
 | **Family tree** panel (184×160) | Lineage, read without text |
 | **Pinned wish** (184×112) | The wish, as a plate of its looks |
 
 **Cut:**
 
 - The stub's text lines ("Coat: plain, … · more?") become plates.
-- "clan … · 4 chapters" goes: the clan shows on the spread's rule, and the chapters show as tabs.
+- "clan … · 4 chapters" goes: the clan shows on the spread's rule, and the chapters show on the guide spread. The build stub's line under the name (180, 440) is dropped, not moved (*ruled by the UI designer in review, 2026-10-09*).
 - The plate's lanterns at the page corners go (storybook).
+- The chapter tabs and the look plates move to the guide spread (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*).
 
 ### 3. Placement
 
@@ -1126,8 +1411,8 @@ The Book is each species' field guide: its face, the looks found so far, its lin
 
 1. **The face** on the left page, the one warm, living thing.
 2. **Its name label.**
-3. **The focused chapter's look plates** on the right page.
-4. **The tabs.**
+3. **The clarity line**: the species, not one of yours.
+4. **The page-turn corner**, the way to the guide.
 5. **The stamp, the tree and the wish** at the right edge.
 6. **The places and the frame plate** between the face and the gutter.
 
@@ -1140,7 +1425,7 @@ The Book is each species' field guide: its face, the looks found so far, its lin
 
 ### 5. Composition
 
-The book is open across the stage. On the left page: the face's mat, with the name label and habit line under it, and the places and frame plate in a narrow column beside it. On the right page: compact tabs along the top, the trait column under them, and the stamp, tree and wish stacked at the right edge.
+The book is open across the stage. On the left page: the face's mat, with the name label and habit line under it, and the places and frame plate in a narrow column beside it. On the right page: the stamp, tree and wish stacked at the right edge, and the page-turn corner at the foot; the tabs and the trait column moved to the guide spread (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*).
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
@@ -1149,14 +1434,14 @@ The book is open across the stage. On the left page: the face's mat, with the na
 | **Face or portrait (focal)** | 48, 80, 304, 312 | Mounted as a framed plate. A "released" mark at the plate's foot for a portrayed mibi that went back to the wild |
 | Name label | 88, 408, 224, 40 | 28 px, centred on x 200 (a name is the 28 px role; the Book section's "3×" predates the Inter sizes) |
 | Habit line | 48, 456, 304, 20 | 16 px, centred |
+| Clarity line | 48, 480, 304, 20 | 16 px `stone`, cap top at y 480, centred on the face plate: x 180 on the build stub's plate (30, 60, 300, 330), x 200 once the M5 face spread lands (*ruled by the UI designer in review, 2026-10-09*). With no portrait: "A typical Belatz, not one of yours." With a portrait: "Fig, your Belatz, sat for this."; released: "Fig sat for this, now in the wild." (`faceOf`; library.json `faceSpread`) (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*) |
 | Place stamps | 376 + 48c, 80 + 48r, 40×40 | Up to four, in two rows |
 | Frame plate | 376, 192, 104, 144 | |
-| Tabs | 536, 64: 40×32 each on a 48 px pitch, the focused tab 112×32 with its word | Seven take 6 × 40 + 112 + 6 × 8 = 400 px; eight take 448; more than eight comes back to the UI designer |
-| Trait rows (one to four traits) | 536, 112 + 104r, 248 wide | Trait word 16 px, then look plates 56×56 on a 64 px pitch at y + 24, the last slot a dotted "more?" |
-| Trait rows (five or six traits) | 536, 112 + 72r | Look plates 40×40 on a 48 px pitch |
-| **Stamp label** | 832, 112, 120, 120 | |
+| Tabs and trait rows | | Moved to the guide spread (*decided by the UI designer with the owner, 2026-10-09, the field guide and the clarity pass*: were the tabs at 536, 64 and the trait rows at 536, 112 + 104r or 112 + 72r) |
+| **Stamp label** | 832, 112, 120, 120 | At this rect, never the stub's 112 at (886, 406); the type specimen's stamp with no mibi name until a portrait (*ruled by the UI designer in review, 2026-10-09*) |
 | Family tree | 800, 248, 184, 160 | Empty ruled panel until M4 |
-| Pinned wish | 800, 424, 184, 112 | Empty ruled panel until the wish exists |
+| Pinned wish | 800, 424, 184, 112 | Empty ruled panel until the wish exists; `wish-mark-24` at (808, 432). The stamp label shows the type specimen's stamp until a portrait, then the portrayed mibi's |
+| Page-turn corner | 968, 512, 24, 24 | `book-corner-turn-24x24`, a new master the art director signs; only when `book(st, id).guide` is not null (the species found). Until it is signed, the stand-in is "▶" 16 px `bark` centred in the slot, under the same condition. Nothing else overlaps this rect (*ruled by the UI designer in review, 2026-10-09*: was "the spread's page-turn corner, existing") |
 
 ### 6. Interactions
 
@@ -1164,10 +1449,8 @@ The build stub has ← only; the rest arrives with M5.
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| ◀ ▶ on the tabs | Turn the chapter in 200 ms; the focused tab widens to show its word |
-| Pad | Spatial: face, tabs, look plates, wish |
-| ✓ on the face | `✓ Visit Fig` opens Habitat on a living mibi. On a released one there is no ✓ cap |
-| ✓ on a look plate | `✓ Add to the wish` (with the wish) |
+| Pad | Spatial: face, places, frame plate, stamp, tree, wish. ▶ from the right-most target turns to the guide spread (300 ms) |
+| ✓ on the face | `✓ Visit Fig` opens Habitat only when `faceOf(st, id)` is a living mibi (a portrait whose mibi is not released). The type face and a released portrait have no ✓ cap (*ruled by the UI designer in review, 2026-10-09*: replaces `visitTarget`, which fell back to any living mibi of the species) |
 | ✓ on the wish | `✓ Find a pair` (M4) |
 | ✓ on "more?", the stamp or the tree | Read-only: no ✓ cap |
 | ← | The spread: the way back reads "← Library" (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "Spread") |
@@ -1185,9 +1468,141 @@ The build stub has ← only; the rest arrives with M5.
 ### Changes from the current build
 
 - The face goes from 300×330 at (30, 60) to the mat and plate above.
-- The text field guide becomes tabs and plates.
+- The text field guide moves to the guide spread ([Book: the guide spread](#book-the-guide-spread)): one column per chapter with its look cells. The face spread keeps no tabs and no trait rows (*corrected by the UI designer, 2026-10-09: was "becomes tabs and plates"*).
 - The stamp moves from 112 at (886, 406) to the 120 label at (832, 112).
 - The tree and wish panels are added as empty frames.
+- The "clan … · n chapters" line under the name goes; the clarity line takes its place at y 480.
+- ✓ Visit on the face follows `faceOf`, no longer `visitTarget`.
+- The focus ring on the tome's paper is `rust` (frame.json `focus.ring.onPaper`).
+
+---
+
+## Book: the guide spread
+
+Spec: [`library.json`](../../prototypes/ui/specs/station/library.json), the one home of these numbers. Wireframes: [10a-library-guide-seven.png](station-layouts/10a-library-guide-seven.png) (S09 Belatz, seven chapters, one sealed) and [10b-library-guide-eight.png](station-layouts/10b-library-guide-eight.png) (S03 Tuikis, eight chapters).
+
+<img src="station-layouts/10a-library-guide-seven.png" width="1024" alt="The guide spread, seven chapters">
+
+*The guide spread, seven chapters (S09 Belatz), 1× wireframe. Status: Decided.*
+
+<img src="station-layouts/10b-library-guide-eight.png" width="1024" alt="The guide spread, eight chapters">
+
+*The guide spread, eight chapters (S03 Tuikis), 1× wireframe. Status: Decided.*
+
+**Decided** (owner, 2026-10-09): the field guide is the Book's fold-out second spread, turned with ◀ ▶ from the face spread, and ← reads "Library" on both; eight chapters fit by narrower columns, never by a scroll; one header panel per chapter, shared by every species and tinted by the species, calmer than the first round's; the face is a painted `guide-face` master, never the halo; the progress pips come in groups of five.
+
+### 1. Purpose
+
+The guide shows the species whole: every chapter at once, every trait with how many of its looks the player has found, and, for the trait in focus, the looks themselves and which of the player's mibis carry them. The player comes away knowing what is left to find, and where to go to see a look alive.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The face** (`guide-face-<SNN>-128x112`), the **name** (28 px) and the **species line** (16 px, two lines) | Whose guide this is: the species, filled in by every one read |
+| **One column per chapter**, headed by its **panel** (`guide-panel-<chapter>-<w>x80`, tinted by the species) with the chapter's word | The chapters all at once, a picture naming each before its word |
+| **A trait cell** per trait: its word and **one pip per look**, filled found, dotted unseen, in groups of five | Progress on every cell, without a digit |
+| **A sealed chapter**: a shut panel with its notch, no traits | Locked against found, at a glance |
+| **The detail band**: the open trait's word, its found looks as plates and one dashed "more?" slot, and "Carried by" with your mibis' names | The one place that carries the words; the door to one mibi |
+| **Wish marks** (`wish-mark-12`) on a pinned trait and its plate | The wish, where it was pinned |
+| **The seal** (`guide-seal-32`) beside the name | The guide complete; absent until then |
+
+**Cut:** the Book's chapter tabs and trait rows (they were one chapter at a time); the first round's pinned-wish panel on the guide (the wish stays on the face spread); the halo as the face.
+
+### 3. Placement
+
+**Reading order:** the face and the name; the species line; the chapter panels; the cells and their pips; the detail band; the seal.
+
+**At the edges:** the page-turn corner on the face spread leads here; ◀ from the first column turns back.
+
+### 4. Art direction
+
+- **Room:** the Library tome, a fold-out plate across the gutter: one sheet, no gutter, no cloth marker (`library-foldout-1008x504`).
+- **Calm.** One paper field; colour only in the panels' tint, the plates and the face. No connectors: traits and chapters have no order, and lines would invent one.
+- **The panels are shared.** One ink master per chapter, the emblem engraved at 40×40 at the top centre, its ground open; the species' colour comes from the build's tint, never a panel per species per chapter.
+- **The face** is the species' type, painted for the guide at 128×112 from the type specimen, head and shoulders on the plate's own ground; never the Pods halo, which disappears on paper.
+- **Nothing childish.** Inter on everything; no ornament, no game-reward chrome.
+
+### 5. Composition
+
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Boards | 8, 48, 1008, 504 | |
+| Fold-out | 24, 56, 976, 488 | `library-foldout-1008x504`. This edge box is only the registered stand-in for that master while it is unsigned (*ruled by the UI designer in review, 2026-10-09*) |
+| **Face** | 40, 64, 128, 112 | `guide-face-<SNN>-128x112`, placed 1:1 |
+| Name | 176, 64, 200, 36 | 28 px semibold `ink` |
+| Species line | 176, 104, 248, 40 | 16 px `stone`, two lines on 20: "Every look a Belatz can carry," / "found across your Belatz." (the plural is the frame's `species.plural`) |
+| Seal | 384, 64, 32, 32 | `guide-seal-32`, only when `fieldGuide().complete` |
+| Detail band | 432, 64, 552, 112 | 1 px `clay` edge, no fill |
+| Open trait | 448, 68, 120, 28 | 20 px medium `ink` |
+| Carried by | 448, 104, 120, 60 | "Carried by" 16 px `stone`, cap top y 104; then the names 16 px `ink`, joined by ", ", on at most two lines with cap tops at y 124 and 144, inside x 448 to 568. When they overflow, "and more" (16 px `stone`) ends line 2 with no comma before it, and names are dropped from the end until it fits; never a third line. "none of yours yet" when none. Each name is a focus target (*ruled by the UI designer in review, 2026-10-09*) |
+| Plates, up to six slots | from 576, 80: 56×56 on a 64 pitch | `trait-<SNN>-<trait>-<look>-56x56`; the found looks in the frame's order, then the dashed "more?" slot (a 1 px `clay` edge, 2 on and 2 off) when looks are unseen |
+| Plates, seven slots or more | from 576, rows at y 72 and 120: 40×40 on a 48 pitch, eight a row | `…-40x40`; the "more?" slot 56×40 so its word stays whole. Ten looks and "more?" (S09 Colour) take one row of eight and one of three |
+| Plate keyline | x − 1, y − 1, w + 2, h + 2 | 1 px `bark` round every look plate, at 56 and at 40, drawn by the build whether or not the plate's master is signed. None on "more?", the face or the panels. `bark`, because `clay` means open state. 1 px of paper stays between it and the open rule and between it and the ring (*ruled by the UI designer in review, 2026-10-09*) |
+| Open look | a 2 px `clay` rule 2 px under its plate (y + h + 2) | The look "Carried by" names: the plate under the ring, or the last one it was on; on arrival the pinned look, else the first found. The ring on that plate may cover its rule |
+| Columns, one to seven chapters | 128 wide on a 136 pitch, from x0 | x0 = ⌊(512 − (136n − 8) / 2) / 8⌋ × 8: 40 for seven |
+| Columns, eight chapters | 112 wide on a 120 pitch, from x 32 | 952 px; never a scroll. More than eight comes back to the UI designer |
+| Column rules | x0 + pitch × i − 4, y 184 to 504 | 1 px `sand` |
+| Panel | x, 184, w, 80 | See the tint rule below; the chapter's word 16 px `ink`, centred, at y 240: pods.json `strings.legsTail.heading` for legs-tail, otherwise the frame's `chapters[].name` as written; the build never recases (*ruled by the UI designer in review, 2026-10-09*) |
+| Trait cell | x, 272 + 40r, w, 32 | The word 16 px `ink`; `wish-mark-12` at (x + w − 12, y + 4) when a look of it is pinned; the pips at y + 24. At most six rows (S09 Coat), the sixth ending at y 504 |
+| Pips | 6×6 on an 8 pitch, 4 px more between groups of five | Pip k at x + 8k + 4⌊k / 5⌋. Found: a `bark` rect. Unseen: `guide-pip-unseen-6x6`. Ten looks take 84 px, inside the 112 column |
+| Open cell | x − 2, y − 4, w + 4, 40 | 1 px `clay` edge: the trait in the detail band; the ring sits on top of it when it has the focus |
+
+**The tint rule.** The build fills the panel with `paper`, then sets one pixel in eight in the species' colour: inside the panel, counted from its own origin, every pixel whose (x mod 4, y mod 4) is (0, 0) or (2, 2), from y 3 to 78 and x 1 to w − 2. A 2 px band of the full colour runs across the top, inside the edge, the Library's inked-rule idiom. Then the chapter's master is placed 1:1 over it. The colour is the species' first pod pigment (`frame.pod.colourPair[0].pigment`) through the palette map in `cross.json` (`colours.pigmentChips`): S09 cobalt is `sea`, S03 lagoon is `teal`; a pigment not listed tints `mist`. The first round's 1-in-4 lattice of a lighter step read loud; one in eight of the pigment's own colour stays calm on paper.
+
+**A sealed chapter** (`chapter.sealed`, the chapter still shut): `paper` with no tint, the master `guide-panel-sealed-<w>x80` (slats and an 8×4 notch at the bottom centre), the existing `rail-emblem-<chapter>-sealed-24x24` at (w / 2 − 12, 8), the word in `mist`, and no cells. Its looks count as unseen (`fieldGuide`).
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Arrive | The ring on the first trait cell of the first chapter that is not sealed; the same after a jump from Pods or Habitat |
+| ◀ ▶ in the grid | The same row in the next column that is not sealed, clamped to its last row. ◀ from the first column turns back to the face spread (300 ms) |
+| ▲ ▼ in the grid | Along the column; ▲ from the first row to the detail band's first plate |
+| ◀ ▶ in the band | Along the plates; ◀ from the first plate to the last carrier name; ▼ back to the open cell |
+| ✓ on a cell or "more?" | Read-only: no ✓ cap. The context: "Colour, more to find" or "Colour, every look found" |
+| ✓ on a plate | `✓ Add to the wish` (`wishPin`, when `wishPinBlock` is empty), or `✓ Take it off the wish` (`wishUnpin`) when that look is pinned. The context: "Colour, jade" |
+| ✓ on a carrier name | `✓ Visit Fig`, the context "Fig carries this look": a jump to Habitat on that mibi, where ← reads Home |
+| The notice | "a pod carries your wish" when `wishCarriers(st, id).pods` is not empty; otherwise none |
+| ← | "← Library", from either spread |
+| The ring | `rust` on the paper (frame.json `focus.ring.onPaper`), the same geometry, on the Library, the face spread and the guide spread (*ruled by the UI designer in review, 2026-10-09*) |
+
+### Bound to the rules
+
+Every field comes from `prototypes/station/src/library.mjs` and the frame; nothing is new state (library.json `derived`):
+
+- The columns, cells and pips: `fieldGuide(st, id)`, its chapters in frame order, each trait's `possible` (the frame's own player words), `found` and `more`; a shut sealed chapter's `sealed`.
+- The seal: `fieldGuide().complete`. The guide exists only when `book(st, id).guide` is not null (the species found).
+- The wish marks and actions: `wishOf`, `wishPinBlock`, `wishPin`, `wishUnpin`; the notice: `wishCarriers`.
+- "Carried by": the mibis of the species, not released, whose read chapters hold the trait's chapter and whose `chapterLooks` give the look: the test `wishCarriers` already applies to pinned looks, generalised to any look and exported beside it as a pure function. Pods are not listed.
+- The face spread's clarity line: `faceOf`; its ✓ Visit only when `faceOf(st, id)` is a living mibi, with no ✓ cap for the type face (*ruled by the UI designer in review, 2026-10-09*: replaces `visitTarget`, unchanged).
+
+### Masters for the guide
+
+Placed 1:1 at these sizes, never scaled or recoloured; the art director signs them.
+
+| Id | Size | What |
+| --- | --- | --- |
+| `library-foldout-1008x504` | 1008×504 | The fold-out sheet: boards and one page across the gutter |
+| `guide-panel-<chapter>-128x80` | 128×80 | One per chapter, shared by every species: coat, face, shape, legs-tail, movement, stamina, character, glow, charge (nine). Edge, faint grain, the ink emblem 40×40 at (44, 8), open ground for the tint |
+| `guide-panel-<chapter>-112x80` | 112×80 | The same nine at the eight-chapter width, the emblem at (36, 8), painted at 112 |
+| `guide-panel-sealed-128x80`, `guide-panel-sealed-112x80` | 128×80, 112×80 | A shut panel: slats and the 8×4 notch; no tint |
+| `guide-face-<SNN>-128x112` | 128×112 | One per species, S01 to S16: the type, head and shoulders, painted from the type specimen |
+| `guide-seal-32` | 32×32 | The guide complete |
+| `book-corner-turn-24x24` | 24×24 | The face spread's page-turn corner at (968, 512), only when the species has a guide. Stand-in until signed: "▶" 16 px `bark` centred |
+| `guide-pip-unseen-6x6` | 6×6 | A dotted hollow pip in `clay` |
+| `wish-mark-12` | 12×12 | A pinned look, on its cell and its plate |
+| `wish-mark-24` | 24×24 | The pinned wish panel's corner, on the face spread |
+| `mark-guide-16` | 16×16 | In `bone`, for chrome: after the species word on Habitat's card |
+| `trait-<SNN>-<trait>-<look>-56x56`, `…-40x40` | 56×56, 40×40 | The look plates, rendered at their size |
+| `rail-emblem-<chapter>-sealed-24x24` | 24×24 | Existing; on the sealed panel |
+
+The tint has no master: the build draws it from the palette. Nor do the plates' `bark` keylines, the dashed "more?" edge, or, while their masters are unsigned, the fold-out's edge box and the ▶ stand-in.
+
+### Changes from the current build
+
+- New: the guide spread, after the Book's face spread; the face spread loses its tabs and trait rows, keeps the wish, gains the clarity line and the page-turn corner.
+- The text field guide of the build stub goes.
 
 ---
 
