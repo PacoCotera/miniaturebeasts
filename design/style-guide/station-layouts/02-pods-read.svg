@@ -67,6 +67,8 @@
 <rect x="168.5" y="516.5" width="103" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="288.5" y="416.5" width="103" height="95" fill="#ffffff" stroke="#666" stroke-width="1"/>
 <rect x="288.5" y="516.5" width="103" height="19" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="152.5" y="112.5" width="255" height="263" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="8 3"/>
+<rect x="152.5" y="112.5" width="255" height="247" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 3"/>
 <line x1="408" y1="548.5" x2="856" y2="548.5" stroke="#999" stroke-dasharray="2 2"/>
 <rect x="488.5" y="112.5" width="287" height="439" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
 <rect x="512.5" y="104.5" width="239" height="319" fill="none" stroke="#9fb8c8" stroke-width="1" stroke-dasharray="1 3"/>
@@ -124,6 +126,8 @@
 <text x="292" y="428" font-size="9" fill="#222">trait 6 · 104×96</text>
 <text x="292" y="439" font-size="8" fill="#777">288,416</text>
 <text x="292" y="530" font-size="8" fill="#777">name 16px</text>
+<text x="156" y="372" font-size="8" fill="#c45f12">pane, one trait: 152,112 256×264</text>
+<text x="156" y="357" font-size="8" fill="#c45f12">pane, two traits: 256×248</text>
 <text x="560" y="546" font-size="9" fill="#777">pod room 408 to 856 (448)</text>
 <text x="580" y="125" font-size="9" fill="#6f8ea3">cone of light 512,104 240×320</text>
 <text x="492" y="436" font-size="8" fill="#777">slab 488,368 288×72</text>
