@@ -430,6 +430,7 @@ await page.evaluate(() => { window.__st.settings.bays = 12; });   // room for th
 const sib = await page.evaluate(() => window.__st.seedSiblings("S01", 4242));
 expect(sib.ok, "two siblings seeded: " + sib.msg);
 expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [sib.mibis[0].id, sib.mibis[1].id])) === 0.25, "siblings: kinship a quarter");
+await page.evaluate((ids) => { for (const m of window.__st.ST.mibis.filter((x) => ids.includes(x.id))) m.read = window.__st.frameOf(m.species).chapters.map((c) => c.id); }, sib.mibis.map((m) => m.id));   // the siblings are born knowing only what their parents agree on; read them whole for the close-kin notice
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; }, sib.mibis[0].id);
 await press("confirm", 300); await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, sib.mibis[1].id); await page.waitForTimeout(600);
 l = await line(); expect(/close kin/.test(l.need), "the siblings' cross says close kin: " + JSON.stringify(l));
