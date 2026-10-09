@@ -322,7 +322,7 @@ Sheets: six indexed PNGs (the ground sheet holds the tiles and the whole shore s
 
 ## Sign-off checklist, §2 Painted master, art director's column (round 9)
 
-From [`design/style-guide/sign-off.md`](../../../design/style-guide/sign-off.md) §2. Yes/no per line; failures listed, not hidden. The capabilities column is the builder's and is not signed here.
+From the review checklist, §2 Painted master; the lines it checks are in the style guide ([Masters](../../../design/style-guide/README.md#masters), [The Companion](../../../design/style-guide/README.md#the-companion)). Yes/no per line; failures listed, not hidden. The capabilities column is the builder's and is not signed here.
 
 | Art direction | |
 | --- | --- |

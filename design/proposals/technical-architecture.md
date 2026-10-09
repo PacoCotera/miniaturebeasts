@@ -32,7 +32,7 @@ The architecture has three jobs:
 | **The pure state model** (`station/src/state.mjs`, no DOM) | Every rule is a pure function that returns its presentation events instead of drawing. This is exactly the shape a port needs |
 | **The imported genome, rig and stamp** (`genome.mjs` bridging `workbench/framework/*` and `genome-stamp/src/*`) | The Station has no genome model of its own. CI decodes the drawn stamp back to the genome |
 | **The Caddy service** (`prototypes/caddy/`: 175 lines over three files, four routes, no dependencies, plus 100 lines of tests) | In proportion to its job. Its contract (genome-only input, dedupe by hash, journalled queue, ceiling) is what the device Caddy keeps |
-| **The tests and the journey** (the rule tests, the Caddy tests, the Playwright journey through the device keys) | They prove the loop on every push. The sign-off's measurements are added to them |
+| **The tests and the journey** (the rule tests, the Caddy tests, the Playwright journey through the device keys) | They prove the loop on every push. The style guide's measurements are added to them |
 | **Device-pixel frames** | Each page draws into an offscreen frame at the device's size and blits it whole |
 | **The edges kept apart** (`caddy.mjs`, `dev.mjs`, the placeholder register in `art.mjs`) | Each edge is one module, apart from the rules and from the screens |
 
@@ -57,7 +57,7 @@ The browser sandbox is the place where the loop and its interactions are defined
 - **Device-pixel surfaces.** Each target draws into a buffer of exactly its size: 1024×600, 450×600, 792×272, and 384 dots a line for the printer. The page may enlarge the finished frame by whole numbers for viewing, but never the drawing.
 - **Palette enforced by construction.** The Companion and Caddy renderers write palette indexes, not colours, so an off-palette pixel cannot exist. On the Station, every primitive carries its layer (chrome, art, painted, type), and in test mode the face renders chrome only and chrome with art as separate passes, so those are checked at exactly 0 off palette (lvgl-switch.md §2.8).
 - **A closed primitive set** on all three devices: rectangles, text runs from fonts baked by `lv_font_conv`, sprites (indexed, or 32-bit with straight alpha on the Station's painted layer), nine-slices, clip, and composed pictures for fine line work (lvgl-switch.md §2.2). It is the face's `prim/`, the only code that creates LVGL objects, so the sandbox and the device draw the same pixels, Inter included.
-- **Measured in CI,** with the sign-off's checks (grain, type, palette, size), from the face's logs and framebuffer (§5.6).
+- **Measured in CI,** with the style guide's checks (grain, type, palette, size), from the face's logs and framebuffer (§5.6).
 
 ## 4. The devices' runtimes
 
@@ -166,17 +166,17 @@ A screen is built on the LVGL face, never on the JavaScript drawing layer (§5.1
 4. **The C words.** The face binds the spec's regions to words of the closed vocabulary in the screen's binding table (`prototypes/face/src/screens/`); a derived rect comes from a rule in `layout/`. A new word, composition or layout rule goes to the UI designer and the architect first.
 5. **Focus is spec data.** The graph per state lives in the spec file, with the edge forms of lvgl-switch.md §2.6.1 (names, selectors, `nearestIn`, ordered lists, `order`, `axis`). The view supplies only `focus.targets`, `focus.resolve` and `focus.set`. No target rectangles and no focus order in JavaScript.
 6. **Assets.** Every asset is registered in the manifest at its size, with placeholders flagged; masters are baked to LVGL images; nothing is scaled.
-7. **The gate.** The journey gains the screen's steps on the face; regions, pixels, palette, type, goldens, budgets and reduced motion pass (lvgl-switch.md §4); the sign-off is filled in; the docs the screen touches show the current state.
+7. **The gate.** The journey gains the screen's steps on the face; regions, pixels, palette, type, goldens, budgets and reduced motion pass (lvgl-switch.md §4); the review checklist is filled in; the docs the screen touches show the current state.
 
 ### 5.5 Art placed 1:1 and registered
 
 A sprite node names an asset id. Its slot's size must equal the asset's size, and the renderer refuses anything else: in development it shows a visible error, and in CI it counts it. Nothing can be drawn small and enlarged. A master takes its placeholder's place by taking the same id and size, and the register counts the placeholders left per screen. Close-ups are rendered at their size by the rig's camera (the layout spec's rule), not cropped.
 
-### 5.6 Tests that measure the sign-off
+### 5.6 Tests that measure the style guide
 
-The sign-off's measured checks run in CI. The face's test mode makes them exact, with no monkey-patching (lvgl-switch.md §2.8 holds the full list, with the goldens and the freeze):
+The style guide's measured checks run in CI. The face's test mode makes them exact, with no monkey-patching (lvgl-switch.md §2.8 holds the full list, with the goldens and the freeze):
 
-| Sign-off check | Measured from |
+| Style guide check | Measured from |
 | --- | --- |
 | Screen size | The face's frame size, asserted |
 | Palette | The chrome and chrome-with-art passes have 0 pixels off palette on every screen; the Companion and Caddy have 0 by construction |
@@ -199,7 +199,7 @@ The sign-off's measured checks run in CI. The face's test mode makes them exact,
 - [ ] Genome, rig and stamp imported from their homes; gaps fixed there.
 - [ ] Save changes carry a schema number, a forward-only migration and a fixture.
 - [ ] Developer settings outside the shared save.
-- [ ] The journey extended; the sign-off's checks green; departures listed.
+- [ ] The journey extended; the style guide's checks green; departures listed.
 
 ## 6. Migration path
 

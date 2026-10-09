@@ -33,7 +33,7 @@ These steps are the deprecated layer's and are not to be followed for a new scre
 4. **The focus.** The graph is the spec's. The screen resolves the selectors it names (`list.current`, `rail.last`) and fills in nothing else.
 5. **The pictures.** Every picture is registered in the manifest at its size (`src/pictures.mjs`), a placeholder flagged with what it waits for. Close-ups are rendered by the rig's camera at their size, never cropped and enlarged.
 6. **The intents.** A key on a focused target is one rule call in `state.mjs` (new rules land there with tests); its result becomes events on the timeline (`TL.play({ kind, target, ms, hold })`), which hold input while they play. No global timestamps.
-7. **The journey and the sign-off.** Extend `tools/journey.mjs` with the screen's steps and `frameShot` points (1024×600 captures in `img/`), run `tools/checks.mjs`, fill in the sign-off's section 3.
+7. **The journey and the review checklist.** Extend `tools/journey.mjs` with the screen's steps and `frameShot` points (1024×600 captures in `img/`), run `tools/checks.mjs`, fill in the review checklist's section 3.
 
 **Frozen:** this registration (`registerScreen(name, { nodes, … })` or `{ draw, … }`) is the deprecated layer's; the freeze check refuses a screen that gains `draw`, `nodes` or `faceNodes`, and refuses a `registerScreen` call that is not a string name and an object literal.
 
