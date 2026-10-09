@@ -5079,5 +5079,869 @@
   "status": "new",
   "signed_in": null,
   "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+ },
+ "room-bench-stage-overview": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "bench-e2",
+  "made": "the generated glass wall re-windowed so the cone's pool is on x 256 (the overview); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage",
+  "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+ },
+ "room-bench-stage-chapter": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "bench-e2",
+  "made": "the generated glass wall re-windowed so the cone's pool is on x 216 (the chapter); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage",
+  "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+ },
+ "ring-collection-idle-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the empty ring of an empty place: a continuous 8 px band (r 72 to 80), bevel fill, hairline edges, painted at 8x with soft edges; centred on the ring (placed at the place + (8, 24))",
+  "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-collection-closed-176x176": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the closed ring when every chapter is read: a continuous bone band, hairline edges (the band closes)",
+  "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n1-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 1 chapters: bevel band in 1 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "3b6ff44cd73e70549adc6ca89efd1fc8d6c2d7708c9e5b516d199f3202e2128c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n1-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 1 read: the bone arc over the track",
+  "sha256": "642a7984006a2d0437aaeedaabe72992dc8934b57e1ca1d08f8517dbb5457a06",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n2-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 2 chapters: bevel band in 2 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "440f924aed498462492ebe2bc176f39175a363875eaf9f18eb4094c4a3894910",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n2-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 2 read: the bone arc over the track",
+  "sha256": "37ee769cdfbdc701fc522eaf7ee86f2192da1accbaa3fa5f979c85acb0aca0f9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n2-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 2 read: the bone arc over the track",
+  "sha256": "79b653cb1a39daa00270565a4338570766cdeb37504a24e511cc638c2f6cc38c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 3 chapters: bevel band in 3 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "1172792e18466a549cb05638b80f4b89ea0564d896fe4eb1d40e93c18348554d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 3 read: the bone arc over the track",
+  "sha256": "9f578a253f7ea2d6a91458a6019f27b341140a0789bedd52268d25eedc858627",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 3 read: the bone arc over the track",
+  "sha256": "b7fd8cd76f8acd48706375b86cbb299cde987e247e3a52b9213d493772592b04",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-s2": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 3 read: the bone arc over the track",
+  "sha256": "f9ff2c9605182c495a9e5c151f1ae0d241c3b8318f9dadf7f9992957bb34678b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 4 chapters: bevel band in 4 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "7bc0ec1d057fd176c89b5a091ac8e90859aca91eed38b1f105d10f1223165118",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 4 read: the bone arc over the track",
+  "sha256": "02ec0981ee40097fc6bb318a6c8a6cd55b094e3e19963abf5351cdc05e223291",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 4 read: the bone arc over the track",
+  "sha256": "9faa5036ed282c7bde6c90e1f63e4f9fe5bf0159410607cb74e692ed006ea15f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s2": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 4 read: the bone arc over the track",
+  "sha256": "89f6691e2612e8562da6a55d8b91222a1d0735ad42cd9aef9d84f6fdc0b408ec",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s3": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 4 read: the bone arc over the track",
+  "sha256": "482de3fd0cf9faefb7850e49cdeb0cc6788e5524bf09c5d216ad125c3aeef111",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 5 chapters: bevel band in 5 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "8affe3297f9fbf35767dd5faa777f511229e96e9be9663c69fae51cc11c6aab6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 5 read: the bone arc over the track",
+  "sha256": "72eab24dcf3f7c30ff8e0ff380fa08bcde3060eb9748b9c653408fdb46725f54",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 5 read: the bone arc over the track",
+  "sha256": "fa3b507f26aad0d24918708fd871b9f2c800ff6c8a2ecd01e66714eda33b835b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s2": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 5 read: the bone arc over the track",
+  "sha256": "3dc23d2f55d77f623ee5c37e6e40ec68057ad16f9aa85854b75e8e51e021dba7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s3": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 5 read: the bone arc over the track",
+  "sha256": "6763f1d9207fa294d1d7c3ea4a9f388edfe5f4731889bda6ef6b5e25229fcf04",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s4": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 5 read: the bone arc over the track",
+  "sha256": "c2e7d1fd3e3c9ac2b6a2aeb66884c58e2a1381dc3f6b1916502b7f5afb4b60bf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 6 chapters: bevel band in 6 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "90e188cf167107d5fa336f090ce8a3b3573b832a0659bafeb0653e8956a80714",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 6 read: the bone arc over the track",
+  "sha256": "9838d2d241bfb4c5cee9ef5435d828e68cdbbff40f597ed3672a5dd7cfdd8ccd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 6 read: the bone arc over the track",
+  "sha256": "728f159cdb3c170313619d8673f8ade9082e3fbb3a6fcc5f0f62d7974e0f6ec6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s2": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 6 read: the bone arc over the track",
+  "sha256": "312cb0536506e2a4c224b53ebb6d37e568c47343558c9122c73bfd02cccfea8d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s3": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 6 read: the bone arc over the track",
+  "sha256": "e20e2009febfa27e30313c4da6daf3b909d59897dc14354a81a8965db8662899",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s4": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 6 read: the bone arc over the track",
+  "sha256": "5b54063e7119fb28f32fddb8c483db203993a11bef71c99ad7b14bf28be56e52",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s5": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 6 read: the bone arc over the track",
+  "sha256": "4b84259b4f982650783c4d4ea8c5b81a9245610557d9cb5b493ef2dacabc5b28",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 7 chapters: bevel band in 7 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "36a701e3120618d145e6133b6748f5281dfc903d68e253b2fa8c33aa2dba33a8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 7 read: the bone arc over the track",
+  "sha256": "03cd67997a96fe300167eeba6066bfd5ec77cb900b1456ae2d0b07963496e800",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 7 read: the bone arc over the track",
+  "sha256": "f4ca17d5bda85e227eb06031cc8b5fe7daa990d61824b8cc2865343f78982f9e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s2": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 7 read: the bone arc over the track",
+  "sha256": "108bb6e8c9d4dfde790aa97276e3e80ca798c07ecbac7f0894f692d48f96a262",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s3": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 7 read: the bone arc over the track",
+  "sha256": "925e909ffc151ed240e6a86dcb92cc557b894dc5c7f6e10e9a7d4237b6788f19",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s4": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 7 read: the bone arc over the track",
+  "sha256": "d4bd41d843285d8e2e823ae175b945cfd935e7e755bbe7039b8f186c1491386a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s5": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 7 read: the bone arc over the track",
+  "sha256": "359ad6a640028f517ad028955ce3d809ea622cd79041e77041a5d40f6fac870d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s6": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 7 read: the bone arc over the track",
+  "sha256": "6700fcb869ad9dfdd31832e673b4bfdea471a51101a9f2ae2a928c0142f1fce2",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-track": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the unread arcs for 8 chapters: bevel band in 8 arcs 2 px apart from 12 o'clock, hairline edges",
+  "sha256": "a29040b53d2c434f461849d351022175cea080f10c1f2c4b1233c10184979f4b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s0": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 1 of 8 read: the bone arc over the track",
+  "sha256": "05095aa67ae06b423eb0a419f63abde5f938d032337424bc1f2276b6bcf17ab7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s1": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 2 of 8 read: the bone arc over the track",
+  "sha256": "7e516892cfa662716761585097a865204ee62fa688c450e73eaed49914d32b84",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s2": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 3 of 8 read: the bone arc over the track",
+  "sha256": "11c84597cb0073cfb76ad99b469031640da51e966abdb4fdadbcc01a59127fb3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s3": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 4 of 8 read: the bone arc over the track",
+  "sha256": "cecefcc4c6e838e0fb1bdef1996bc0174b499f5965f1dcceebb8c0a395d52cdf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s4": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 5 of 8 read: the bone arc over the track",
+  "sha256": "9dea32b67f166cde7afe3a82e4a38f8c3fec73468342015afc9966754cf2b2a3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s5": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 6 of 8 read: the bone arc over the track",
+  "sha256": "60a1b59e7974a66a7a8cf1a2b9179c3b0856c4cd5e9671a9993288a3576c978e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s6": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 7 of 8 read: the bone arc over the track",
+  "sha256": "0c59fe3b9890ac15f1415d604eaaca5369c03e8d445ec9fac9d37d00332fab91",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s7": {
+  "size": [
+   176,
+   176
+  ],
+  "rect": [
+   null,
+   null,
+   176,
+   176
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "chapter 8 of 8 read: the bone arc over the track",
+  "sha256": "1e605c7b7d9e4d3e0472b7da50323e33758662804f06b72230529b6f44b71edd",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
  }
 }

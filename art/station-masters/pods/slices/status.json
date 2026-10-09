@@ -1543,5 +1543,245 @@
   "status": "new",
   "signed_in": null,
   "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+ },
+ "room-bench-stage-overview": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+ },
+ "room-bench-stage-chapter": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict"
+ },
+ "ring-collection-idle-176x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-collection-closed-176x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n1-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n1-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n2-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n2-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n2-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n3-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n4-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n5-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n6-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n7-s6": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-track": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s0": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s1": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s2": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s3": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s4": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s5": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s6": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
+ },
+ "ring-arc-collection-n8-s7": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict"
  }
 }

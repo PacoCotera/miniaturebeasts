@@ -47,6 +47,8 @@ for n in m:
     elif n == "ring-well-empty": sign(n, "withdrawn", None, "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))")
     elif re.match(r"mibi-halo-S(01|09|12)-", n): sign(n, "signed", "pass 23 verdict", "master: cut from the species' standard painting")
     elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 23 verdict", "placeholder, re-cut from the standard painting when it lands")
+    elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
+    elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
     elif n.startswith("mibi-halo-S02-"): sign(n, "held", None, "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states")
     elif n.startswith("mibi-halo-"): sign(n, "new", None, "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict")
     elif n.startswith("place-") and n.endswith("-48x48"): sign(n, "signed", "places round 1 (meadow, pond) and round 2 (rock, wood, cave)", "the five hold as a set")

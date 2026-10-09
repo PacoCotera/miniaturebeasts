@@ -29,14 +29,51 @@ def comp_bboxes(alpha, thr=128, minarea=20000):
     return out
 
 # ---- bench stage 1024x522 at (0,40)
-def bench_grade(im):
+def bench_grade(im, cx=632):
     """Darken to the candidate's values: a tone curve that tames the cone, and a vignette that darkens the corners (centred on the pod's axis)."""
     a = np.asarray(im).astype(float) / 255; a = 0.82 * a ** 1.55
-    yy, xx = np.mgrid[0:522, 0:1024]; r = np.sqrt(((xx - 632) / 620.0) ** 2 + ((yy - 250) / 420.0) ** 2)
+    yy, xx = np.mgrid[0:522, 0:1024]; r = np.sqrt(((xx - cx) / 620.0) ** 2 + ((yy - 250) / 420.0) ** 2)
     v = np.clip(1 - 0.62 * np.clip(r - 0.25, 0, 1.2) ** 1.4, 0.18, 1)
     return Image.fromarray(np.clip(a * v[..., None] * 255, 0, 255).astype(np.uint8))
 def bench():
     save("room-bench-stage", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31, target=(632, 384))), [0, 40, 1024, 522], "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (632, 424)", "bench-e2")
+def benchvariants():
+    """room-bench-stage-overview and -chapter: the bench's glass wall re-windowed so the cone's pool lies on the pod's axis of the three-state Pods (design-station-frame ed904fb8):
+    the overview (B) on x 256 (cone 136,104,240,320), the chapter page (C) on x 216 (cone 96,104,240,320). The same stage rectangle as room-bench-stage (0,40,1024,522), the same wall, the
+    vignette centred on the axis; the cone's pool is part of the wall, as before."""
+    for nm, ax in (("overview", 256), ("chapter", 216)):
+        save(f"room-bench-stage-{nm}", bench_grade(bench_window("bench-e2.jpg", 1374, 1244, 0.31, target=(ax, 384)), cx=ax), [0, 40, 1024, 522], f"the generated glass wall re-windowed so the cone's pool is on x {ax} (the {nm}); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage", "bench-e2")
+def collectionring():
+    """The collection overview's ring (design-station-frame ed904fb8): centred on a place's (96, 112), radius 80, an 8 px band (r 72 to 80), one arc per chapter in ring order clockwise from
+    12 o'clock, 2 px apart, bone when read and bevel when not, the band's edges hairline; the band closes when every chapter is read. Painted like the signed gauge: supersampled 8x so every edge is soft,
+    a gentle light from the upper left on the band (a lit upper-left edge, the lower right a little deeper), nothing cut by a hard mask. 176x176 slices centred on the ring (placed at the place + (8, 24)):
+    ring-collection-idle (the empty ring: an empty place), ring-collection-closed (every chapter read), ring-arc-collection-n{1..8}-track (the unread arcs for n chapters) and -s{i} (chapter i read)."""
+    S = 8; N = 176
+    yy, xx = np.mgrid[0:N * S, 0:N * S].astype(float); x = (xx + 0.5) / S - N / 2; y = (yy + 0.5) / S - N / 2; r = np.hypot(x, y); th = (np.degrees(np.arctan2(x, -y)) + 360) % 360
+    cover = lambda m: m.reshape(N, S, N, S).mean((1, 3))
+    bone, bevel, hair = np.array([241.0, 235.0, 223.0]), np.array([90.0, 102.0, 114.0]), np.array([60.0, 75.0, 87.0])
+    lit = np.clip(0.5 - (x + y) / (2 * 80.0), 0, 1)                                                      # 1 at the upper left, 0 at the lower right
+    def band(base, dark, light):
+        f = base[None, None, :] * (1 - 0.16 * (1 - lit[..., None])) + light[None, None, :] * 0.16 * lit[..., None]
+        edge = ((r < 73.0) | (r > 79.0))[..., None]                                                      # the band's edges: a 1 px hairline, inside and out
+        return np.where(edge, hair[None, None, :] * 0.85 + f * 0.15, f)
+    def render(base, sel, light):
+        m = (r >= 72.0) & (r <= 80.0) & sel; col = band(base, None, light); a = cover(m)
+        c = (col * m[..., None]).reshape(N, S, N, S, 3).sum((1, 3)) / np.maximum(m.reshape(N, S, N, S).sum((1, 3)), 1)[..., None]
+        return Image.fromarray(np.clip(np.dstack([c, a * 255]), 0, 255).astype(np.uint8), "RGBA")
+    white = np.array([255.0, 255.0, 255.0]); sand = np.array([200.0, 214.0, 228.0])
+    allm = np.ones_like(r, bool); rect = [None, None, N, N]
+    save("ring-collection-idle-176x176", render(bevel, allm, sand), rect, "the empty ring of an empty place: a continuous 8 px band (r 72 to 80), bevel fill, hairline edges, painted at 8x with soft edges; centred on the ring (placed at the place + (8, 24))", "procedural, supersampled 8x")
+    save("ring-collection-closed-176x176", render(bone, allm, white), rect, "the closed ring when every chapter is read: a continuous bone band, hairline edges (the band closes)", "procedural, supersampled 8x")
+    for n in range(1, 9):
+        gap = np.degrees(2.0 / 76.0) if n > 1 else np.degrees(2.0 / 76.0)
+        segs = []
+        for i in range(n):
+            a0 = i * 360.0 / n + gap / 2; a1 = (i + 1) * 360.0 / n - gap / 2; segs.append((th >= a0) & (th <= a1))
+        un = np.zeros_like(r, bool)
+        for sg in segs: un |= sg
+        save(f"ring-arc-collection-n{n}-track", render(bevel, un, sand), rect, f"the unread arcs for {n} chapters: bevel band in {n} arcs 2 px apart from 12 o'clock, hairline edges", "procedural, supersampled 8x")
+        for i, sg in enumerate(segs): save(f"ring-arc-collection-n{n}-s{i}", render(bone, sg, white), rect, f"chapter {i + 1} of {n} read: the bone arc over the track", "procedural, supersampled 8x")
 def opaque_cut(path, thr=9, soft=14, closing=10):
     """Cut an object off its flat ground as an opaque silhouette (holes closed), keeping its own colours."""
     im = load(path); bg = border_median(im); a = np.asarray(im).astype(float); diff = np.abs(a - bg).max(2)
