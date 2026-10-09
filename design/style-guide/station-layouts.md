@@ -286,28 +286,28 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Place c, r (c 0–2, r 0–1) | 16 + 336c, 48 + 240r, 320, 224 | A recessed place, `panel` with a `hairline` edge, 6 px corners; the focus target, the focus ring 4 px outside it. Every place drawn; an empty place is the empty ring. Was the well slot (16, 48 + 72i, 80, 72) |
-| Ring | centred on place + (96, 112), radius 80, an 8 px band | One arc per chapter in ring order, 2 px apart: filled `bone` when read, `bevel` when not, the band's edges `hairline`: the one home of these colours is `pods.json` `colours.collectionRing` (`read`, `unread`, `edge`) ({D}: the well-era keys `ringRead`, `ringCurrent`, `ringUnread`, `ringSealed`, `ringBase` and `ringDot` are gone, and `ringRead` had said `bevel`); the band closes when every chapter is read. Was the 66 px well ring on its 80×80 slice |
+| Ring | slice place + (8, 24, 176, 176), centred on place + (96, 112); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: the ring, `ring-collection-selected-176x176` (the focused place) or `ring-collection-idle-176x176`; then, for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment slice per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin. The band closes when every segment is placed. The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline` (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: was the rule "filled `bone` when read, `bevel` when not", drawn by the build, with `colours.collectionRing` as its home) |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph. Was the 40×48 list pod |
 | Name label | place + (184, 64), hugging, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify |
-| Place picture | place + (184, 104, 48, 48) | The origin as a picture |
-| Can-grow mark | place + (184, 168, 16, 16) | Only where the ring and the seal do not say it |
+| Place picture | place + (184, 104, 48, 48) | The origin as a picture: `place-<place>-48` (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added) |
+| Can-grow mark | place + (184, 168, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added) |
 | Glint star | place + (148, 40, 12, 12) | On the ring's band at its top right |
-| Waiting beyond the rack | 16, 528, 24, 24 | One quiet mark, never a number |
+| Waiting beyond the rack | 16, 528, 24, 24 | `mark-waiting-24`. One quiet mark, never a number (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added) |
 
 **B · Pod overview** (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*).
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Rail | 96, 40, 832, 40 | Hanging, centred on x 512 as on Create and Incubator; no tab open. A price shows only on the bottom line, when a tab has focus. Was at x 152, aligned with the page |
-| Cone of light | 136, 104, 240, 320 | Centred on the axis x 256. Was 512, 104 |
+| Bench and cone of light | bench 0, 40, 1024, 522; the cone 136, 104, 240, 320 | The bench is painted with its cone and pool for this state's axis: `room-bench-stage-overview` at (0, 40, 1024, 522), the cone centred on x 256, the pool on the dish at (256, 424). The collection uses `room-bench-stage-collection` (0, 40, 1024, 522), with no cone (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: was one `room-bench-stage` with the pool at (712, 424)). Was 512, 104 |
 | **Pod (focal)** | 184, 216, 144, 176 | Bottom-centred on (256, 392); medium 120×152 at (196, 240), small 104×128 at (204, 264). The foot in the bowl's dip. Was 560, 216 on the axis x 632 |
 | Dish and near lip | 144, 328, 224, 96 | Was 520, 328 |
 | Shelf slab | 112, 368, 288, 72 | Was 488, 368 |
 | Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. Was centred on x 632 |
 | Who it is: marks | glyph (200, 488, 24, 24), clan (232, 488, 24, 24), first of its kind (268, 492, 16, 16) | Marks, no words |
 | **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392, in two painted slices per species on the same 128×160 origin: `mibi-halo-<SNN>-128x160-mist` (everything unread, diffused) and `mibi-halo-<SNN>-128x160-clear` (the crisp glow figure). The build cross-fades them by the share of chapters read: the clear layer's alpha is chapters read ÷ chapters, over the mist; nothing is blurred by the build. It suggests the type; it never shows the individual's colours or marks. Before Identify, the empty halo (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was one slice, `figure-<species>-128x160`). Was the page (152, 112, 256, 440) beside the pod |
-| Where it came from | place picture 600, 120, 64, 64; sentence 680, 128, 328, 40 | The copywriter's sentence, "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits. Was the caption under the name (520, 488, 224, 40) |
-| Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
+| Where it came from | place picture 600, 120, 64, 64 (`place-<place>-64`); sentence 680, 128, 328, 40 | The copywriter's sentence, "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits. Was the caption under the name (520, 488, 224, 40) |
+| Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | The ring is the master `ring-kin-56x56`, placed 1:1; the pod is the 40×48 list class (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: id added).  Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
 | Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred. Was in the well column (16, 488, 80, 56) |
 | Stamp case and front glass | 856, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`). Was 856, 232 |
 | **Stamp label** | 872, 400, 120, 120 | Small, at the edge; 544 px from the pod's box. Appears at Identify. Was 872, 248 |
@@ -318,7 +318,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Rail | 96, 40, 832, 40 | The open tab lighter; the focus on the rail |
-| Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
+| Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The bench `room-bench-stage-chapter` at (0, 40, 1024, 522), its cone centred on x 216 and its pool at (216, 424) (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*). The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
 | Open page | 424, 112, 584, 440 (248 tall for one to four traits) | Deep pane, 1 px slate edge, a nine-slice; its top at y 112. Was 152, 112, 256, 440 |
 | Page heading | 440, 120, 552, 24 | Emblem 24×24, then the chapter's word in 20 px. Was 168, 120, 224, 24 |
 | Trait cells | the grid below | In the chapter's order, row by row: the picture, 4 px, the one-word name (16 px `bone`, centred); the field-guide mark 4 px after the name |
@@ -451,7 +451,9 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 | Stamp | whole-pixel cells, at most 104 px, on the 120 label | The stamp's label art |
 | Collection pod | 88×112 (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod renderer's masters |
 | The figure | 128×160, two slices per species on one origin: `mibi-halo-<SNN>-128x160-mist` and `mibi-halo-<SNN>-128x160-clear`, cross-faded by chapters read (*corrected by the UI designer, 2026-10-09, to the art director's brief*: was `figure-<species>-128x160`) | The figure masters, from the standard painting's silhouette |
-| Collection ring and arcs | 160 across (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod list master |
+| Collection ring and arcs | the ring (selected, idle) and the arc slices (track and segments for 1 to 8 chapters), all 176×176 on one origin (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*: was 160 across, drawn) | The pod list master, like the signed gauge |
+| Bench stage per state | `room-bench-stage-collection`, `room-bench-stage-overview`, `room-bench-stage-chapter`, each 1024×522 (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*) | The bench master |
+| Kin ring, can-grow mark, waiting mark, place pictures | `ring-kin-56x56`; `mark-can-grow-16`; `mark-waiting-24`; `place-<place>-48` and `-64` (*corrected by the UI designer, 2026-10-09, after the art director's judgement of the built Pods*) | The pod list master; the place stamp set |
 
 ### Changes from the current build
 
