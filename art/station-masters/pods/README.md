@@ -336,6 +336,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 15b - both composites are the Tuikis, with its real chapters
+
+The name plate reads the species name alone ("Tuikis"); the origin caption keeps the "Found..." sentence. The Read composite is now the same Tuikis pod with its real Coat chapter from the S03 frame (Colour, Trim, Markings, Scales: four cells), Coat open and read, on the same eight-chapter rail (Coat 4, Face 3, Shape 3, Legs & Tail 4, Movement 4, Stamina 3, Character 2, Glow 2); the Grid composite is the Shape page (Build, Haunch, Topline). No invented traits remain. Both bottom lines follow the read-again rule (no cap, no verb, "Coat is read" / "Shape is read", "Home" at the right, the notice kept). The pictures are still Coat crops of the mibi painting, stand-ins (no Tuikis or Shape paintings exist); the stand-ins also include the holdings icons, the pips, the focus ring, the arc progress, the stamp raster, the Companion marks and the other wells' pods.
+
+
 ## Pass 15 - Legs & tail through the pixel pipeline (candidates only)
 
 Eight hand rounds did not give a tail, so the method changed. `emblems/pipeline/`:
