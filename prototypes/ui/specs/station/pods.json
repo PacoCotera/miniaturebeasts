@@ -10,7 +10,7 @@
   "colours": "derived, UI designer to confirm: the colour roles of the Pods regions are the builder's choice from the palette's names (the layout document names none beyond the cream focus ring, the bone stamp label with a slate edge, the frost unread page, the deep pane and the slate edge) — UI designer, 2026-10-08: confirmed but five: the ribbon (a lamp-yellow plate with rust words under the pod was a second warm, bright object beside the specimen) is the read tab's cool look, tealD with an aqua rim and creamT words; the page pane is `deep`, as the document names it (night read as dusk, not the bench's deep pane); the unread tab fill is `frostS` (rail); a sealed tab's word is `mist` (ink on the slats did not read); the difference mark is `aqua` on an `ink` keyline (diff). The frame's own roles (moss bars, the wood message plate) wait for the palette commit's migration table",
   "strings.openBay": "derived, UI designer to confirm: the empty rack's need line when the Companion is docked (open the bay at Home to bring pods in); the document gives only the undocked one — UI designer, 2026-10-08: corrected: docked with crates in the bay, \"open the bay at Home\" (strings.openBay); docked with the bay empty, \"take the Companion exploring\" (strings.explore); away, \"dock the Companion for its crates\" (strings.dockToBring, six words; the document's eight-word line was over the six-word rule)",
   "tab fills": "derived, UI designer to confirm: the unread and read tab colours (colours.rail), as the previous builder chose: unread frost with a slate hairline and ink word, read deep teal with an aqua rim and mint word, the cream ring — UI designer, 2026-10-08: read confirmed; unread corrected to a frostS fill (frostD out-shone the pod; the pod is the brightest thing on the bench), slate hairline and ink word; sealed: slats, the word in mist, the notch in the ground colour; the focused tab lifts 2 px (the chrome lift; at 4 px its ring met the top bar's rule at y 40)",
-  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen) — UI designer, 2026-10-09, after the art director's fourth look: superseded, no build-drawn mark; the signed master compare-mark-differs-12x12 on the name line (regions.compareA.differs)",
+  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen) — UI designer, 2026-10-09, after the art director's fourth look: superseded, no build-drawn mark; the signed master compare-mark-differs-12x12 on the name line (regions.compareA.differs) — UI designer, 2026-10-09, after the art director's sixth look: superseded, the Differs mark is the notice's lamp, frame-lamp-12-amber, before the trait's name (regions.compareA.differs)",
   "collection ring colours": "derived, UI designer to confirm: the arcs follow the layout document (filled `bone` when read, `bevel` when not, 2 px apart, the band closing when every chapter is read); the `colours.ringRead`/`ringUnread` entries of the file name the old well ring's roles (bevel, hairline) and are not used; an empty place is the base band alone in `ringBase`",
   "can-grow mark": "derived, UI designer to confirm: the mark shows on an identified pod that can be shaped into a founder while its ring is not closed (the ring closed says it already); one 16×16 mark, a placeholder until its master",
   "figure cross-fade": "derived (design lead, 2026-10-09): the figure is two slices per species, mibi-halo-<SNN>-128x160-mist and -clear, laid one over the other with the clear layer's alpha = chapters read / total chapters; the build composes the two, no blur; before Identify the empty halo",
@@ -26,7 +26,8 @@
   "compare heading marks": "derived, UI designer to confirm: Compare's heading shows the pod's species and clan marks (24×24, compareA.who) after its 40×48 pod, as the overview does, in place of the build's 16×16 place picture",
   "stand-in card fill": "derived, UI designer to confirm: until the stand-in cards exist at Compare's four sizes the build fills the cell with `ground` (colours.page.cardFill, the nearest palette name to the card's mean) and sets the word as on the chapter page",
   "Compare bench": "design lead, 2026-10-09: Compare stands on the bench without a cone (room-bench-stage-collection) until the studio delivers a Compare bench; the need line is held (empty) until the Differs row is answered",
-  "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane"
+  "shut chapter find": "derived, UI designer to confirm: a shut chapter's page is as short as a one-trait page (248) and its 112×112 find (regions.chapter.page.sealedFind's size) is centred across it and down the room under the heading (layout.sealedFindRect); the spec's rectangle (236, 164) lay below a 248 pane",
+  "trait picture sill": "UI designer, 2026-10-09, after the art director's sixth look: every trait frame carries a 20 px sill and the seeds and the Only base sit on it, never on the painting (page.marks.sill)"
  },
  "regions": {
   "bench": {
@@ -920,22 +921,26 @@
     ]
    },
    "differs": {
-    "slice": "compare-mark-differs-12x12",
+    "slice": "frame-lamp-12-amber",
     "size": [
      12,
      12
     ],
     "on": "name line",
-    "gapAfterName": 4,
-    "nameAlign": "left",
-    "x": "cell.x + name width + 4",
-    "centreY": "line y + 10",
+    "before": "the name",
+    "x": "cell.x",
     "y": "line y + 4",
+    "centreY": "line y + 10",
+    "nameX": "cell.x + 16 on a trait that differs (lamp 12, gap 4); cell.x on one that does not; the value lines stay at cell.x",
+    "nameAlign": "left",
     "layer": "art",
     "onBothPages": true,
     "onlyWhen": "the trait is read on both pods and their looks differ",
-    "fit": "the longest trait name, 'Translucency' 101 px at 16 px, + 4 + 12 = 117 ≤ the narrowest Compare cell, 120",
-    "decided": "UI designer, 2026-10-09, after the art director's fourth look: build-drawn marks are out, so the difference is a signed master placed 1:1 on the name line, 4 px after the trait's name, on both pages; the notice \"they differ here\" points at it. Was a 2 px aqua edge on the picture and a 12×12 bracket at its top centre, drawn by the build"
+    "notice": "the same master, frame-lamp-12-amber, is the notice's lamp, 4 px before \"they differ here\": lamp then words on the trait, lamp then words on the bottom line, so the notice teaches the mark. Amber, as on Home: the lamp marks where, the bottom line says it in words",
+    "static": "no pulse, on the page or in the notice",
+    "fit": "12 + 4 + the longest trait name, 'Leaf covering' 104 px at 16 px, = 120 <= the narrowest Compare cell, 120 ('Translucency' 101: 117)",
+    "withdrawn": "compare-mark-differs-12x12 (two offset strokes) is withdrawn; nothing new to paint",
+    "decided": "UI designer, 2026-10-09, after the art director's sixth look: the two offset strokes 4 px after the name read at 1x as a typo (\"Colour -_\"), and the notice's round amber lamp matched nothing on the page. Now one master for both, before the name, where a lamp reads as a lamp and never as a letter. Was compare-mark-differs-12x12 4 px after the trait's name (UI designer, 2026-10-09, after the fourth look); before that a 2 px aqua edge on the picture and a 12x12 bracket, drawn by the build"
    }
   },
   "compareB": {
@@ -975,8 +980,8 @@
  "page": {
   "marks": {
    "seed": [
-    40,
-    52
+    32,
+    40
    ],
    "seedSmall": [
     32,
@@ -998,12 +1003,36 @@
    "key": [
     44,
     64
-   ]
+   ],
+   "sill": {
+    "h": 20,
+    "rule": "no mark sits inside the picture's window: every trait frame, at every size, read, unread and sealed, has a 20 px sill (its bottom rail deepened, the frame's own material, opaque) from P.y + P.h - 20 to P.y + P.h; the window is P minus the sill; the seeds and the Only base sit on the sill, never on the crop or the stand-in",
+    "window": "P.w x (P.h - 20), from P's top-left",
+    "masters": "the trait-picture-frame-WxH masters keep their ids and sizes and are repainted with the sill at the live sizes 128x160, 376x264, 184x256, 184x104 and 120x96 (and their -unread and -sealed variants); crops and stand-in cards keep their ids and sizes (P), composed so nothing of the creature falls in the bottom 20 px, which the sill covers; the 12 live 128x160 crops (S01, S09) are re-composed, the Compare crops are cut that way from the start, and the stand-in word is centred on the window",
+    "seedPlace": {
+     "size": [
+      32,
+      40
+     ],
+     "painted": "the master's painted seed is 20x28 at (6, 4) in its 32x40",
+     "right": "[P.x + P.w - 32, P.y + P.h - 24]",
+     "left": "[P.x, P.y + P.h - 24]",
+     "reads": "the seed's painted top is the sill's top (P.y + P.h - 20) and its foot is the name line's top (P.y + P.h + 8): it hangs from the sill like a tag, 6 px in from the picture's side, clear of the window and of the name",
+     "hides": "right",
+     "blend": "left and right"
+    },
+    "onlyPlace": "[P.x + P.w / 2 - 36, P.y + P.h - 14], 72x8, centred on the sill",
+    "topMarks": "asleep and breed-to-change keep their top corners for now; open with the art director whether they move to the sill too",
+    "oneSize": "one seed size on every picture, 32x40; mark-seed-40x52 is not placed on the page. seedSmall and smallUnder are kept equal to seed only so the build's lookup holds",
+    "why": "the cheapest rule that never puts a seed on a creature: seeds beside the name do not fit (names run to 104 px, 'Leaf covering', in 120 and 128 px cells, and the seed must stay large enough to hold the hidden look), and no row has 28 px to spare below the name; the sill needs new frame masters and re-composes only the 12 crops that exist at a live size",
+    "decided": "UI designer, 2026-10-09, after the art director's sixth look: the seeds sat 8 px in at the picture's bottom corners and, on the S09 Head crop, landed on the beak and cheek like stickers. Was seed 40x52 at [P.x + P.w - 48, P.y + P.h - 60] (32x40 under 120 tall), the blend's second at P.x + 8, the Only base centred on the picture's bottom edge"
+   }
   },
   "diff": {
-   "slice": "compare-mark-differs-12x12",
+   "slice": "frame-lamp-12-amber",
    "see": "regions.compareA.differs",
    "was": {
+    "slice": "compare-mark-differs-12x12",
     "bracket": [
      12,
      12
@@ -1132,7 +1161,7 @@
    "edge": "slate"
   },
   "diff": {
-   "note": "painted into compare-mark-differs-12x12 (aqua on a 1 px ink keyline, the master's own); the build fills nothing",
+   "note": "the frame's amber lamp, frame-lamp-12-amber, painted; the build fills nothing (was compare-mark-differs-12x12, aqua on a 1 px ink keyline)",
    "was": {
     "edge": "aqua",
     "bracket": "aqua",
