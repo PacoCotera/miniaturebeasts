@@ -75,10 +75,10 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | --- | --- | --- |
 | Room marks (the device keys) | `frame-room-home-24`, `frame-room-research-24`, `frame-room-library-24`, `frame-room-habitat-24` | 24×24 |
 | The Companion's glyph | `frame-companion-solid-16x24` (docked), `frame-companion-outline-16x24` (away) | 16×24 |
-| Lamps | `frame-lamp-8` (the Companion's: `mint` docked, `stone` away), `frame-lamp-12` (the notice's, `amber`) | 8×8, 12×12 |
+| Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `frame-lamp-12-amber` (the notice's): one painted shape per colour (*corrected by the UI designer, 2026-10-09: was `frame-lamp-8` and `frame-lamp-12` with colour roles*) | 8×8, 12×12 |
 | The sun (the world turn) | `frame-sun-16` | 16×16 |
 | Key caps | `frame-cap-confirm-16` (✓, `orange`), `frame-cap-confirm-16-dim` (✓ when the action cannot be paid, `mist`), `frame-cap-back-16` (←, `stone`) | 16×16. The dimmed ✓ is a state of the cap drawn as its own slice, not a tint of the orange one: the build never recolours art (*decided by the UI designer, 2026-10-08, for the builder's derived values*) |
-| The mibi's face | `face-<mibi>-24`, one per mibi: a Station master painted at 24, never the Companion's face scaled | 24×24, on its `teal` ring |
+| The mibi's face | `face-<mibi>-24` (docked), `face-<mibi>-24-away` (on its `stone` ring), `face-24-empty` (no mibi with you): Station masters painted at 24, never the Companion's face scaled (*corrected by the UI designer, 2026-10-09: was `face-<mibi>-24` alone*) | 24×24, on its `teal` ring |
 
 The material icons are the kit's 16 px icons, as on the Companion.
 

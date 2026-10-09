@@ -134,7 +134,7 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   const bot = ["action", "subject", "need", "back"].map((k) => F[k].rect); assert.deepEqual(F.separators.x, [404, 620]);
   assert.ok(bot[0][0] + bot[0][2] < 404 && 404 < bot[1][0] && bot[1][0] + bot[1][2] < 620 && 620 < bot[2][0], "rules between action, context and notice");
   assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 24 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
-  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-habitat-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8", "frame-lamp-12", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
+  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-habitat-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "frame-lamp-12-amber", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
   assert.equal(F.marks.scale, "never");
   const top = ["title", "materials", "companion", "time"].map((k) => F[k].rect);
   for (let i = 1; i < top.length; i++) assert.ok(top[i - 1][0] + top[i - 1][2] + 16 <= top[i][0], "top bar zones apart, left to right");
