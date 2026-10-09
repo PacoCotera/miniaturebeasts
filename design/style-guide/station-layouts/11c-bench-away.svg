@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Probe bench, away: the cradle empty and no plates; the ring on the switch, which is set at any time. 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="56.5" y="104.5" width="479" height="287" fill="#f6f6f6" stroke="#3c4b57" stroke-width="1.5"/><text x="62" y="118" font-size="10" fill="#333">cradle empty (the Probe is out) · 56,104 480×288</text>
+<line x1="296.5" y1="104" x2="296.5" y2="496" stroke="#c9d2da" stroke-dasharray="2 4"/>
+<text x="64" y="338" font-size="10" fill="#2b6cb0">Away: the Probe is out with the</text>
+<text x="64" y="351" font-size="10" fill="#2b6cb0">Companion. The cradle empty, no</text>
+<text x="64" y="364" font-size="10" fill="#2b6cb0">plates; the slot dim. ◀ from the</text>
+<text x="64" y="377" font-size="10" fill="#2b6cb0">column does nothing.</text>
+<rect x="584.5" y="104.5" width="383" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="600" y="132" font-size="13" fill="#717c86">Mend</text><rect x="940.5" y="116.5" width="11" height="11" fill="#3c4b57" stroke="#444" stroke-width="1"/>
+<rect x="600.5" y="160.5" width="79" height="39" fill="#d5dbe0" stroke="#444" stroke-width="1" rx="4"/><rect x="600.5" y="160.5" width="39" height="39" fill="#9aa3ab" stroke="#444" stroke-width="1" rx="3"/>
+<rect x="696.5" y="168.5" width="23" height="23" fill="#f1ebdf" stroke="#444" stroke-width="1"/><text x="708" y="204" font-size="8" fill="#777" text-anchor="middle">dock</text>
+<rect x="736.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="760.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="164.5" width="15" height="31" fill="#f0f0f0" stroke="#5a6672" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="816" y="184" font-size="9" fill="#777">the dock mends two</text><text x="600" y="226" font-size="8" fill="#777">switch: track 80×40, knob x 16 → 56</text><text x="962" y="226" font-size="8" fill="#999" text-anchor="end">584,104 384×128</text>
+<rect x="580" y="98" width="392" height="136" fill="none" stroke="#d9a21b" stroke-width="2" rx="6"/>
+<rect x="584.5" y="248.5" width="383" height="247" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="600" y="276" font-size="13" fill="#717c86">Upgrade</text><rect x="940.5" y="260.5" width="11" height="11" fill="#3c4b57" stroke="#444" stroke-width="1"/>
+<rect x="600.5" y="296.5" width="159" height="159" fill="#dfe4e8" stroke="#444" stroke-width="1"/><text x="604" y="452" font-size="9" fill="#777">socket 160</text>
+<rect x="616.5" y="312.5" width="127" height="127" fill="#f2f2f2" stroke="#aaa" stroke-width="1" stroke-dasharray="3 2"/><text x="680" y="380" font-size="9" fill="#555" text-anchor="middle">part 128</text>
+<rect x="784.5" y="312.5" width="15" height="15" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="312.5" width="15" height="15" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
+<rect x="832.5" y="312.5" width="15" height="15" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="832.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="856.5" y="352.5" width="15" height="31" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="408.5" width="39" height="39" fill="#e3f4d0" stroke="#444" stroke-width="1"/><rect x="840.5" y="408.5" width="39" height="39" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
+<text x="880" y="328" font-size="9" fill="#777">three pods</text><text x="896" y="376" font-size="9" fill="#777">four plates</text><text x="888" y="432" font-size="9" fill="#777">reach, deep</text><text x="784" y="476" font-size="9" fill="#777">what it adds, as pictures</text>
+<text x="962" y="490" font-size="8" fill="#999" text-anchor="end">584,248 384×248</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Probe</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/><text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Switch on</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">the dock mends two, free</text>
+<circle cx="962.4" cy="582" r="8" fill="#5d5974"/><text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text><text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+</svg>

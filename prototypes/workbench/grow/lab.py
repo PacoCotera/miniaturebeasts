@@ -3,7 +3,7 @@
 species, one change at a time, and only run the full set once a variant looks right. The reference
 individual is the species' type specimen under the cute envelope; every variant runs the two-step
 recipe (step 1 the HiBit drawing from the crisp key and index passes, step 2 the treatment transfer
-with the species reference) against the same controls and reference, two calls, about $0.20 a try.
+with the species reference) against the same controls and reference, two calls a try.
 Both steps always run (the owner judges by eye); the checks are logged beside each, not gated.
 
   python3 grow/lab.py --species S09                      # every variant (paid)
@@ -34,7 +34,7 @@ SHEETS = os.path.join(HERE, "species-sheets")
 PROMPT_SET = os.path.join(HERE, "prompt-lab", "v8")  # the current prompt set (v8, the service's); --set v5|v6|v7 for the earlier ones; a file missing there falls back to the v5 set beside it
 PROMPT_SET_FALLBACK = os.path.join(HERE, "prompt-lab")
 SET_NAME = os.path.basename(PROMPT_SET)
-MODELS = {"flash": "gemini-3.1-flash-image", "pro": "gemini-3-pro-image"}  # every variant runs on both (the owner: if Flash is not up to it, go Pro; the cute-pet bar comes before cost)  # the art prompter's prompt set, when it lands on main (see README: "The prompt lab")
+MODELS = {"flash": "gemini-3.1-flash-image", "pro": "gemini-3-pro-image"}  # every variant runs on both (the owner: if Flash is not up to it, go Pro; the cute-pet bar comes first)  # the art prompter's prompt set, when it lands on main (see README: "The prompt lab")
 
 CRAFT = ("Craft rules. Limbs, feet and joints are developed, rounded, finished forms: never boxes, never bare cylinders, never undeveloped 3D artefacts, never facets or flat planes. "
          "Put special care in the surface and make it read as its named material. The eyes are large, wet and lit: a dark iris with a bright catch light top left, the ring clean. "
@@ -218,38 +218,42 @@ def run_set(sp, variant_ids, opt_models, samples, pset):
                 out = cell_dir(sp, v["id"], mkey, k); os.makedirs(out, exist_ok=True)
                 if os.path.exists(os.path.join(out, "prompt.json")) and "--force" not in sys.argv: print(sp, v["id"], mkey, f"s{k}", "done already"); continue
                 common = {"lab": {"species": sp, "variant": v["id"], "name": v["name"], "model": mkey, "sample": k, "set": SET_NAME}, "controlVariant": "twostep", "species": sp, "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"]}
-                result = {"species": sp, "variant": {k2: v2 for k2, v2 in v.items() if k2 not in ("step1", "step2")}, "model": model, "sample": k, "changed": v.get("change", ""), "costUSD": 0.0, "subject": {"member": idx["members"][{"member-1": 1}.get(v.get("subject"), 0)]["dir"], "genomeDigest": legend["genomeDigest"], "controls": os.path.relpath(d0, HERE)}}
+                result = {"species": sp, "variant": {k2: v2 for k2, v2 in v.items() if k2 not in ("step1", "step2")}, "model": model, "sample": k, "changed": v.get("change", ""), "subject": {"member": idx["members"][{"member-1": 1}.get(v.get("subject"), 0)]["dir"], "genomeDigest": legend["genomeDigest"], "controls": os.path.relpath(d0, HERE)}}
                 if v.get("referenceFrom"): result["reference"] = {k2: v2 for k2, v2 in ref.items() if k2 != "png"}
                 drawing = None
                 if "step1" in v:
                     text1 = fill(v["step1"]); order1 = v.get("imageOrder1") or ["index", "reference", "key"]
                     rec1, im1 = S.call_logged(text1, images_for(d0, legend, sheet, order1, reference=ref), {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": {"text": text1, "imageOrder": order1, "planLines": S.plan_lines(legend)}, **({"referenceImage": {"what": ref["what"], "name": ref["name"], "sha256": S.sha_bytes(ref["png"])}} if "reference" in order1 else {})}, os.path.join(out, "raw"), "step1.png", model)
-                    result["step1"] = {"callId": rec1["id"], "status": rec1["status"], "costUSD": rec1.get("costUSD"), "seconds": rec1.get("seconds"), "imageOrder": order1}
+                    result["step1"] = {"callId": rec1["id"], "status": rec1["status"], "seconds": rec1.get("seconds"), "imageOrder": order1}
                     if im1 is not None:
                         rec1["checks"] = {**S.check(im1, ctrl, legend, S.DRAWING_TOL), "gated": False}; result["step1"]["checks"] = rec1["checks"]
                         im1.save(os.path.join(out, "step1.png")); S.fit_to_control(im1, os.path.join(d0, "controls", "silhouette.portrait.station.png"), (300, 310)).save(os.path.join(out, "step1-300x310.png")); drawing = im1
-                    S.log_call(rec1); result["costUSD"] += rec1.get("costUSD") or 0
-                    print(sp, v["id"], mkey, f"s{k}", "step 1", rec1["status"], f"${rec1.get('costUSD', 0) or 0:.3f}", (f"checks {'pass' if rec1['checks']['passed'] else 'fail'}" if im1 is not None else ""), flush=True)
+                    S.log_call(rec1)
+                    print(sp, v["id"], mkey, f"s{k}", "step 1", rec1["status"], (f"checks {'pass' if rec1['checks']['passed'] else 'fail'}" if im1 is not None else ""), flush=True)
                 else:
                     drawing = shared_drawing(mkey); result["step1"] = {"shared": "v5's drawing" if drawing is not None else "none"}
                     if drawing is not None: drawing.save(os.path.join(out, "step1.png")); S.fit_to_control(drawing, os.path.join(d0, "controls", "silhouette.portrait.station.png"), (300, 310)).save(os.path.join(out, "step1-300x310.png"))
                 if drawing is not None:
                     text2 = fill(v.get("step2") or v5["step2"]); order2 = v.get("imageOrder2") or v5.get("imageOrder2") or ["drawing", "reference", "key"]
                     rec2, im2 = S.call_logged(text2, images_for(d0, legend, sheet, order2, drawing, reference=ref), {**common, "purpose": "lab-step2", "step": 2, "attempt": 1, "fields": {"text": text2, "imageOrder": order2}, **({"referenceImage": {"what": ref["what"], "name": ref["name"], "sha256": S.sha_bytes(ref["png"])}} if "reference" in order2 else {})}, os.path.join(out, "raw"), "step2.png", model)
-                    result["step2"] = {"callId": rec2["id"], "status": rec2["status"], "costUSD": rec2.get("costUSD"), "seconds": rec2.get("seconds"), "imageOrder": order2}
+                    result["step2"] = {"callId": rec2["id"], "status": rec2["status"], "seconds": rec2.get("seconds"), "imageOrder": order2}
                     if im2 is not None:
                         rec2["checks"] = {**S.check(im2, ctrl, legend), "gated": False}; result["step2"]["checks"] = rec2["checks"]
                         im2.save(os.path.join(out, "step2.png")); S.fit_to_control(im2, os.path.join(d0, "controls", "silhouette.portrait.station.png"), (300, 310)).save(os.path.join(out, "step2-300x310.png"))
-                    S.log_call(rec2); result["costUSD"] += rec2.get("costUSD") or 0
-                    print(sp, v["id"], mkey, f"s{k}", "step 2", rec2["status"], f"${rec2.get('costUSD', 0) or 0:.3f}", flush=True)
-                result["costUSD"] = round(result["costUSD"], 4)
+                    S.log_call(rec2)
+                    print(sp, v["id"], mkey, f"s{k}", "step 2", rec2["status"], flush=True)
                 json.dump(result, open(os.path.join(out, "prompt.json"), "w"), indent=1)
     sheet_set(sp, subject(0)[0], pset); sheet_consistency(pset)
 
 
+def n_calls(c):
+    """The paid calls of one lab cell (a shared drawing is no call)."""
+    return sum(1 for step in ("step1", "step2") if (c.get(step) or {}).get("callId"))
+
+
 def sheet_set(sp, d0, pset):
     """One sheet per species: a row per variant, Flash and Pro side by side, two samples each
-    (drawing then painting), the cost per try and the checks, the variant's change line."""
+    (drawing then painting), the calls per try and the checks, the variant's change line."""
     variants = pset["variants"]; rows = []
     if SET_NAME != "prompt-lab":  # the comparison row: the owner's v5 pick, 1B on Pro
         cells = {}
@@ -270,11 +274,11 @@ def sheet_set(sp, d0, pset):
     W = gap + (T[0] + gap) * (len(cols) + 1) + textw; H = 50 + len(rows) * rowh
     sheet = Image.new("RGB", (W, H), (255, 255, 255)); d = ImageDraw.Draw(sheet)
     name = species_sheet(sp)["name"]
-    spent = {m: sum(c[0]["costUSD"] for _, cells in rows for (mk, _k), c in cells.items() if mk == m) for m in MODELS}
-    d.text((gap, 6), f"{sp} {name}: the {SET_NAME if SET_NAME != 'prompt-lab' else 'v5'} prompt lab (grow/prompt-lab) on the type specimen under the cute envelope, {MODELS['flash']} and {MODELS['pro']}, two samples a cell. Flash ${spent['flash']:.2f}, Pro ${spent['pro']:.2f}. Checks logged, not gated: the eye decides.", fill=ink)
+    spent = {m: sum(n_calls(c[0]) for _, cells in rows for (mk, _k), c in cells.items() if mk == m) for m in MODELS}
+    d.text((gap, 6), f"{sp} {name}: the {SET_NAME if SET_NAME != 'prompt-lab' else 'v5'} prompt lab (grow/prompt-lab) on the type specimen under the cute envelope, {MODELS['flash']} and {MODELS['pro']}, two samples a cell. Flash {spent['flash']} calls, Pro {spent['pro']} calls. Checks logged, not gated: the eye decides.", fill=ink)
     d.text((gap, 22), "control (shaded, portrait)", fill=ink)
     for i, (t, *_rest) in enumerate(cols): d.text((gap + (i + 1) * (T[0] + gap), 22), t, fill=ink)
-    d.text((gap + (len(cols) + 1) * (T[0] + gap), 22), "the variant: its change, the cost per try (Flash / Pro) and the checks", fill=ink)
+    d.text((gap + (len(cols) + 1) * (T[0] + gap), 22), "the variant: its change, the calls per try (Flash / Pro) and the checks", fill=ink)
     ctl = os.path.join(d0, "controls", "shaded.portrait.station.png")
     for r, (v, cells) in enumerate(rows):
         y = 38 + r * rowh; x = gap
@@ -297,7 +301,7 @@ def sheet_set(sp, d0, pset):
                 c1 = c.get("step1", {}).get("checks") or {}; c2 = c.get("step2", {}).get("checks") or {}
                 a = f"s1 {'pass' if c1.get('passed') else 'fail' if c1 else 'shared'}" ; b = f"s2 slots {c2.get('slotAgreement', '-')} {'pass' if c2.get('passed') else 'fail'}" if c2 else "s2 -"
                 return f"{a}, {b}"
-            d.text((x, y + 13 * line), f"{mkey}: " + " | ".join(f"${c['costUSD']:.3f} ({summ(c)})" for c in cs), fill=(90, 90, 100)); line += 1
+            d.text((x, y + 13 * line), f"{mkey}: " + " | ".join(f"{n_calls(c)} calls ({summ(c)})" for c in cs), fill=(90, 90, 100)); line += 1
         for j, ln in enumerate(textwrap.wrap(v.get("change", ""), 88)[:12]): d.text((x, y + 13 * (line + j)), ln, fill=ink)
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
     fname = f"lab-{sp}.png" if SET_NAME == "prompt-lab" else f"lab-{sp}-{SET_NAME}.png"
@@ -336,12 +340,12 @@ def sheet_consistency(pset, species=CONSISTENCY_SPECIES, mkey="pro"):
     W = gap + len(species) * (groupw + gap) + textw; H = 56 + len(rows) * rowh
     sheet = Image.new("RGB", (W, H), (255, 255, 255)); d = ImageDraw.Draw(sheet)
     names = {sp: species_sheet(sp)["name"] for sp in species}
-    spent = sum(c[0]["costUSD"] for _, cells in rows for per in cells.values() for c in per.values())
-    d.text((gap, 6), f"The consistency test: the {SET_NAME} prompt set (grow/prompt-lab/{SET_NAME}) on the three type specimens (condition 2 on each species' second individual), {MODELS[mkey]} only, two samples a cell; the paintings large, their drawings small, as returned, not fitted to the control. One row, one style? ${spent:.2f} on this sheet. Checks logged, not gated.", fill=ink)
+    spent = sum(n_calls(c[0]) for _, cells in rows for per in cells.values() for c in per.values())
+    d.text((gap, 6), f"The consistency test: the {SET_NAME} prompt set (grow/prompt-lab/{SET_NAME}) on the three type specimens (condition 2 on each species' second individual), {MODELS[mkey]} only, two samples a cell; the paintings large, their drawings small, as returned, not fitted to the control. One row, one style? {spent} calls on this sheet. Checks logged, not gated.", fill=ink)
     for i, sp in enumerate(species):
         x = gap + i * (groupw + gap)
         d.text((x, 24), f"{sp} {names[sp]}: s1 painting, s2 painting, the two drawings", fill=ink)
-    d.text((gap + len(species) * (groupw + gap), 24), "the variant: its change, the cost per try and the checks", fill=ink)
+    d.text((gap + len(species) * (groupw + gap), 24), "the variant: its change, the calls per try and the checks", fill=ink)
     for r, (v, cells) in enumerate(rows):
         y = 44 + r * rowh
         for i, sp in enumerate(species):
@@ -361,7 +365,7 @@ def sheet_consistency(pset, species=CONSISTENCY_SPECIES, mkey="pro"):
             def summ(c):
                 c1 = c.get("step1", {}).get("checks") or {}; c2 = c.get("step2", {}).get("checks") or {}
                 return f"s1 {'pass' if c1.get('passed') else 'fail' if c1 else 'shared'}, s2 {'pass' if c2.get('passed') else 'fail' if c2 else '-'}"
-            d.text((x - 2 * (P[0] + gap), y + P[1] + 2), " | ".join(f"s{k} ${per[k][0]['costUSD']:.3f} ({summ(per[k][0])})" for k in (1, 2) if k in per), fill=(90, 90, 100))
+            d.text((x - 2 * (P[0] + gap), y + P[1] + 2), " | ".join(f"s{k} {n_calls(per[k][0])} calls ({summ(per[k][0])})" for k in (1, 2) if k in per), fill=(90, 90, 100))
         x = gap + len(species) * (groupw + gap)
         d.text((x, y), f"{v['id']}  {v['name']}", fill=ink)
         for j, ln in enumerate(textwrap.wrap(v.get("change", ""), 80)[:17]): d.text((x, y + 16 + 13 * j), ln, fill=ink)
@@ -395,22 +399,21 @@ def run(sp, variant_ids, opt_models=None):
         # painter sees the belly field as the only pale area last)
         imgs = ([("index.portrait.large.png", index_png), ("key.portrait.large.png", key_png)] if v.get("images") == "index-key" else [("key.portrait.large.png", key_png), ("index.portrait.large.png", index_png)]) + [("board:02-miniature-lives.png", S.png_bytes(Image.open(S.BOARD).convert("RGB")))]
         rec1, im1 = S.call_logged(pr["step1"], imgs, {**common, "purpose": "lab-step1", "step": 1, "attempt": 1, "fields": pr["fields"]}, os.path.join(out, "raw"), "step1.png", model)
-        result = {"species": sp, "variant": v, "model": model, "fields": pr["fields"], "changed": pr["changed"], "step1": {"callId": rec1["id"], "status": rec1["status"], "costUSD": rec1.get("costUSD"), "seconds": rec1.get("seconds")}}
+        result = {"species": sp, "variant": v, "model": model, "fields": pr["fields"], "changed": pr["changed"], "step1": {"callId": rec1["id"], "status": rec1["status"], "seconds": rec1.get("seconds")}}
         if im1 is not None:
             rec1["checks"] = {**S.check(im1, ctrl, legend, S.DRAWING_TOL), "gated": False}; result["step1"]["checks"] = rec1["checks"]
             im1.save(os.path.join(out, "step1.png")); S.fit_to_control(im1, os.path.join(d0, "controls", "silhouette.portrait.station.png"), (300, 310)).save(os.path.join(out, "step1-300x310.png"))
         S.log_call(rec1)
-        print(sp, v["id"], mkey, "step 1", rec1["status"], f"${rec1.get('costUSD', 0) or 0:.3f}", flush=True)
+        print(sp, v["id"], mkey, "step 1", rec1["status"], flush=True)
         if im1 is not None:
             imgs2 = [("step1.png", S.png_bytes(S.pad_square(im1))), (f"reference:{reference['name']}", reference["png"])]
             rec2, im2 = S.call_logged(pr["step2"], imgs2, {**common, "purpose": "lab-step2", "step": 2, "attempt": 1, "fields": pr["fields"], "referenceImage": {"what": reference["what"], "name": reference["name"], "sha256": S.sha_bytes(reference["png"])}}, os.path.join(out, "raw"), "step2.png", model)
-            result["step2"] = {"callId": rec2["id"], "status": rec2["status"], "costUSD": rec2.get("costUSD"), "seconds": rec2.get("seconds")}
+            result["step2"] = {"callId": rec2["id"], "status": rec2["status"], "seconds": rec2.get("seconds")}
             if im2 is not None:
                 rec2["checks"] = {**S.check(im2, ctrl, legend), "gated": False}; result["step2"]["checks"] = rec2["checks"]
                 im2.save(os.path.join(out, "step2.png")); S.fit_to_control(im2, os.path.join(d0, "controls", "silhouette.portrait.station.png"), (300, 310)).save(os.path.join(out, "step2-300x310.png"))
             S.log_call(rec2)
-            print(sp, v["id"], mkey, "step 2", rec2["status"], f"${rec2.get('costUSD', 0) or 0:.3f}", flush=True)
-        result["costUSD"] = round((result["step1"].get("costUSD") or 0) + (result.get("step2", {}).get("costUSD") or 0), 4)
+            print(sp, v["id"], mkey, "step 2", rec2["status"], flush=True)
         json.dump(result, open(os.path.join(out, "prompt.json"), "w"), indent=1)
     sheet_for(sp, d0)
 
@@ -431,9 +434,9 @@ def sheet_for(sp, d0=None):
     W = gap + len(cols) * (300 + gap) + textw + gap; H = 60 + len(rows) * rowh
     sheet = Image.new("RGB", (W, H), (255, 255, 255)); d = ImageDraw.Draw(sheet)
     name = species_sheet(sp)["name"]
-    total = {mkey: sum(per[mkey][0]["costUSD"] for _, per in rows if mkey in per) for mkey in MODELS}
-    d.text((gap, 8), f"{sp} {name}: the prompt lab on the type specimen under the cute envelope. One change per variant against the same controls and reference; two calls each (step 1 the HiBit drawing, step 2 the treatment) on {MODELS['flash']} and {MODELS['pro']}; {len(rows)} variants; Flash ${total['flash']:.2f}, Pro ${total['pro']:.2f}. Checks logged, not gated.", fill=ink)
-    for i, t in enumerate(cols + ["the variant and the text it changes; cost per try"]): d.text((gap + i * 312, 28), t, fill=ink)
+    total = {mkey: sum(n_calls(per[mkey][0]) for _, per in rows if mkey in per) for mkey in MODELS}
+    d.text((gap, 8), f"{sp} {name}: the prompt lab on the type specimen under the cute envelope. One change per variant against the same controls and reference; two calls each (step 1 the HiBit drawing, step 2 the treatment) on {MODELS['flash']} and {MODELS['pro']}; {len(rows)} variants; Flash {total['flash']} calls, Pro {total['pro']} calls. Checks logged, not gated.", fill=ink)
+    for i, t in enumerate(cols + ["the variant and the text it changes; calls per try"]): d.text((gap + i * 312, 28), t, fill=ink)
     for r, (v, per) in enumerate(rows):
         y = 44 + r * rowh; x = gap
         ctl = os.path.join(d0, "controls", "shaded.portrait.station.png")
@@ -451,7 +454,7 @@ def sheet_for(sp, d0=None):
         for j, mkey in enumerate(MODELS):
             if mkey not in per: continue
             res = per[mkey][0]; c1 = res["step1"].get("checks") or {}; c2 = res.get("step2", {}).get("checks") or {}
-            d.text((x, y + 14 + 13 * j), f"{mkey}: ${res['costUSD']:.3f} a try | step 1 outside {c1.get('outside', '-')}, parts min {min(p['span'] for p in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')} ({'would pass' if c1.get('passed') else 'would fail'}); step 2 slots {c2.get('slotAgreement', '-')} ({'would pass' if c2.get('passed') else 'would fail'})", fill=(90, 90, 100))
+            d.text((x, y + 14 + 13 * j), f"{mkey}: {n_calls(res)} calls a try | step 1 outside {c1.get('outside', '-')}, parts min {min(p['span'] for p in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')} ({'would pass' if c1.get('passed') else 'would fail'}); step 2 slots {c2.get('slotAgreement', '-')} ({'would pass' if c2.get('passed') else 'would fail'})", fill=(90, 90, 100))
         lines = textwrap.wrap(any_res["changed"], 95)[:19]
         for j, line in enumerate(lines): d.text((x, y + 44 + 13 * j), line, fill=ink)
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)

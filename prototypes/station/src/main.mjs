@@ -176,7 +176,7 @@ const bootLayer = async () => {
 for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, policy: "type", status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
 // The handshake's follow-up (lvgl-switch.md §2.1): the palette, then every spec file the page loaded, as the face's loader reads them; a refusal is an error message, counted by the checks.
 const sendBoot = (f) => { f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) }); for (const [screen, json] of Object.entries(SPECS)) if (json && typeof json === "object") f.send({ t: "spec", screen, json }); };
-const faceBoot = FACE_FLAG ? bootFace(undefined, { test: new URLSearchParams(location.search).has("test") }).then((f) => { sendBoot(f); FACE = f; }).catch((e) => { console.error("the LVGL face did not load: " + e.message); }) : Promise.resolve();
+const faceBoot = FACE_FLAG ? bootFace(undefined, { test: new URLSearchParams(location.search).has("test") }).then((f) => { sendBoot(f); FACE = f; }).catch((e) => { const m = "the LVGL face did not load (?face=lvgl): import of " + new URL("../../face/dist/face.mjs", import.meta.url).pathname + " failed: " + e.message; console.error(m); const p = document.createElement("p"); p.id = "faceError"; p.textContent = m; document.body.prepend(p); }) : Promise.resolve();
 const ready = Promise.all([loadFrames(), bootLayer(), faceBoot]).then(([info]) => {
   if (FACE) { CTX = LAYER.ctx = { ...CTX, measure: (t, px) => FACE.measure(t, px) }; const [r, g, b] = faceEnv.rgb(SPECS.frame.colours.chrome); FACE.setBackground((r << 16) | (g << 8) | b); }   // the views lay text out with the widths LVGL's font engine gives
   loadSettings(); load();

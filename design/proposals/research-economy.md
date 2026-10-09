@@ -108,7 +108,7 @@ Seven pods, 56 Data earned and 56 spent on 24 reads; every chapter read by day 4
 
 ## 6. Vivarium capacity and the return
 
-**Six bays at the start** (**Decided 2026-10-08**), six beds in the terrarium; the one with you keeps its bed. The pod tray stays at six. **Upgrades add bays:** a **second shelf** (+2, after the first cross; 8 Energy, 8 Data, 6 Essence) and a **third shelf** (+2; 12, 12, 10): ten in V1, bought at the bench beside the Probe. The shelves are the sinks the starter week needs. **A full vivarium** turns a bud away before it is paid for ("No bay free · return one, or grow a shelf").
+**Six bays at the start**, six beds in the terrarium; the one with you keeps its bed. The pod tray stays at six. **Upgrades add bays:** a **second shelf** (+2, after the first cross; 8 Energy, 8 Data, 6 Essence) and a **third shelf** (+2; 12, 12, 10), bought at the bench beside the Probe. Upgrades add two bays at a time; one vivarium holds at most twelve mibis. The shelves are the sinks the starter week needs. **A full vivarium** turns a bud away before it is paid for ("No bay free · return one, or grow a shelf").
 
 **Decided 2026-10-08 (vivariums).** A player keeps **as many mibis as the vivarium holds**; **the number of vivariums is the gate**, not bays bought one shelf at a time. *The shelf upgrades above are superseded as the long-term gate* and stand only as the testing stand-in until a second vivarium is designed. Later direction: vivariums as **living, self-stabilising ecosystems** where mibis breed, grow and die.
 
