@@ -9065,5 +9065,70 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "guide-pip-unseen-6x6": {
+  "size": [
+   6,
+   6
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "a dotted hollow pip in `clay` (corners and the pairs at the middle of each side lit, nothing inside); the unseen look's pip (pass 75)",
+  "sha256": "afa8dd10a35f8b43a0a847e6d91a33262c9c31892548b2d19c8f1388a4b7b8cb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+ },
+ "wish-mark-12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the pinned look's glint at 12: yellow with a cream core and an amber shade (the signed Cross wish glint typed again), on a trait cell and its plate (pass 75)",
+  "sha256": "a1eaf9cc0929aa603ed7e2bf88441124220263361ed605aceb7dffd17c67f628",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+ },
+ "wish-mark-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the pinned wish panel's corner on the face spread: the same glint drawn again at 24 (a typed width profile; cream core, amber shade bottom right), never scaled (pass 75)",
+  "sha256": "13e19cf377c8214f382f5b502d4b5696ccce735d180aab3e2726c4e8ccb62b78",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+ },
+ "mark-guide-16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "an open book in `bone` (two pages with two lines each, a spine, a foot), for chrome after the species word on Habitat's card (pass 75)",
+  "sha256": "7133b398eca7f8be7102e1b1f0c8cc3de7b17f100aba925159fb55f286682a97",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+ },
+ "guide-seal-32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "the guide complete: a scalloped gold seal (twelve scallops), a lit sand rim top left, a bark shade bottom right, a clay groove, the cream glint at its centre (pass 75)",
+  "sha256": "db155c0d72fb9abfa40506faed58df6a78cc124c429a62e044956c691a83f6d0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
  }
 }
