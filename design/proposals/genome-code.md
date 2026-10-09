@@ -92,7 +92,7 @@ Every sheet draws the same individuals from the same payload bits: Loika, Tuikis
 
   The QR also has a decade of phone-camera evidence behind it. **On the owner's test**, a 40 mm version-1 QR on office paper is the easiest case any phone camera meets. It would have decoded, its error correction would have repaired the bit, and a standard library never returns an unchecked read.
 - **Forgery.** As (a). Plus: anyone's QR app can read the payload, and anyone can generate one.
-- **Art and cost.** It is the look the owner would rather not have (09-24). The sidecar carries the charm. The cost is lowest: an encoder of about 150 lines (written for this memo and checked against zxing-cpp), and on the reading side the browser's BarcodeDetector or a bundled library, with zbar or quirc on the Station.
+- **Art and cost.** It is the look the owner said they would rather not have (09-24). The sidecar carries the charm. The cost is lowest: an encoder of about 150 lines (written for this memo and checked against zxing-cpp), and on the reading side the browser's BarcodeDetector or a bundled library, with zbar or quirc on the Station.
 
 ### (d) Randomart or a hash picture: identity only
 
@@ -128,7 +128,7 @@ Every sheet draws the same individuals from the same payload bits: Loika, Tuikis
 - The **postmark** is a standard QR carrying the payload. This is what phones, the Station and the website read.
 - On the Caddy it prints as about **44 × 22 mm** (face 20 mm, postmark 20 mm), within the 48 mm width. At 300 px they sit side by side.
 
-**The trade-off, plainly.** We give up a single code in which every mark is both what you see and what the machine reads. We accept a visible QR the owner would rather avoid. In return we get scanning that is proven, not hoped for: this is the one form that would have passed the owner's test. Phones can open the mibi's page with their own camera. Growth to hundreds of loci comes with standard versions, and the face keeps relatedness on paper even at 150 loci.
+**The trade-off, plainly.** We give up a single code in which every mark is both what you see and what the machine reads. We accept a visible QR the owner said they would rather avoid. In return we get scanning that is proven, not hoped for: this is the one form that would have passed the owner's test. Phones can open the mibi's page with their own camera. Growth to hundreds of loci comes with standard versions, and the face keeps relatedness on paper even at 150 loci.
 
 **If the owner rules out any QR**, (b) alone is the fallback, on four conditions: plain cells, standard Reed–Solomon, QR-style finder geometry, and a real phone campaign before it is adopted. (a) is not recommended: it fixes capacity but not the fragility the first real scan exposed.
 

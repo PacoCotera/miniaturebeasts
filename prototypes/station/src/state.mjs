@@ -331,7 +331,7 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " · needs " + (cost - st.d) + " ◆" : ""), act: "pods", label: "Look at the pods" }; }
   const b = st.mibis.find(bondOffered); if (b) return { text: b.name + " could bond", act: "hab", id: b.id, label: "Visit " + b.name };
   if (st.bud) return { text: "a bud is growing", act: "inc", label: "Look at the incubator" };
-  if (!hasWorld(sv)) return { text: "open the Companion page", act: null };
+  if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "open the Companion page", act: null };
   return { text: "", act: null };
 }
 
@@ -479,6 +479,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
     const name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
     const m = { id, name, sp: speciesIndex(species), species, gs, born: st.turn - JUVENILE_TURNS, from: { n: 0, g: "meadow", how: "ground", podId: null }, mem: null, outings: 0, notches: 0, bonded: false, genome, sha, code: nameCode(sha), read: fr.chapters.map((c) => c.id), parents: null, bay: freeBay(st, settings), paint: null, released: false, shaped: [] };
     st.mibis.push(m); made.push(m); for (const ch of fr.chapters) for (const [t, ls] of chapterLooks(fr, ch, genome)) guideAdd(st, fr.species.id, t, ls); }
+  if (made.length && !st.knownIds.includes(species)) { st.knownIds.push(species); syncKnown(st); }   // a species that arrives as adults is known (its Library frame and Book open)
   st.firstMibi = false; logEv(st, "Developer: " + plural(made.length, "adult " + fr.species.name) + " · seed " + (seed >>> 0));
   return { ok: !!made.length, mibis: made, msg: made.length ? made.map((m) => m.name).join(" and ") + " live in the vivarium" : "no bay free" };
 }

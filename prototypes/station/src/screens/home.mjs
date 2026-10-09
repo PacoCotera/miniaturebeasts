@@ -117,7 +117,7 @@ function homeLine() {
   const f = UI.home.f, nd = need();
   if (arriving()) return { subject: "the bay opens · one crate at a time", need: "" };
   if (f === "room") return { ok: nd.act ? nd.label : "", back: "", subject: "the room", need: nd.text };
-  if (f === "focus") return { ok: "Rest", back: "room", subject: "the lamp · the vivarium plays alone", need: nd.text };
+  if (f === "lamp") return { ok: "Rest", back: "room", subject: "the lamp · the vivarium plays alone", need: nd.text };
   if (f.startsWith("r:")) { const m = mibiById(+f.slice(2)); return m ? { ok: "Look at " + m.name, back: "room", subject: m.name + " · " + S.spName(m) + " · " + stageWord(m), need: nd.text } : { back: "room" }; }
   if (f === "bay") { const n = bayCrates().length; if (docked() && n) return { ok: "Open the bay", price: S.plural(n, "crate"), back: "room", subject: S.plural(n, "sealed crate") };
     return { back: "room", subject: docked() ? "the bay is empty" : "the bay door · closed while the Companion is away", need: nd.text }; }
@@ -157,7 +157,7 @@ function homeAct(k) {
   else if (f === "tray") { const p = S.neediestPod(G.st); if (p) UI.pods.cur = p.id; UI.pods.view = SPECS.pods.initial; UI.pods.focus.set(null); goScreen("pods"); }   // the same pod as the notice: the one that most needs the player
   else if (f === "inc") goScreen("incubator");
   else if (f === "cradle") { UI.bench.f = 0; goScreen("bench"); }
-  else if (f === "focus") { UI.idle = true; FX.restAt = clock.now; H.f = "room"; }
+  else if (f === "lamp") { UI.idle = true; FX.restAt = clock.now; H.f = "room"; }
 }
 registerScreen("home", { draw: drawHome, line: homeLine, act: homeAct });
 export { VIV, drawTray };

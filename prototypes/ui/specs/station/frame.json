@@ -6,7 +6,7 @@
  "grid": 8,
  "regions": {
   "top": { "rect": [0, 0, 1024, 40], "component": "topBar", "rule": "bottom" },
-  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Habitat" }, "fadeMs": 200 },
+  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "bench": "Research", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Habitat" }, "fadeMs": 200 },
   "materials": { "rect": [384, 8, 256, 24], "centre": 512, "icon": 16, "gap": 4, "between": 24, "px": 16, "flashMs": 240 },
   "companion": { "rect": [816, 8, 64, 24], "right": 880, "lamp": 8, "px": 16, "glyph": [816, 8, 16, 24], "lampAt": [836, 16, 8, 8], "face": [856, 8, 24, 24], "words": 0, "liftMs": 200, "lift": 2 },
   "time": { "rect": [904, 8, 104, 24], "right": 1008, "mark": [16, 16], "gap": 4, "px": 16 },

@@ -55,7 +55,7 @@ export function lineFounders(st, m, seen = new Set()) {
 export const lineKey = (st, m) => "line:" + lineFounders(st, m).sort((x, y) => x - y).join("+");
 export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   const out = [];
-  for (const id of st.knownIds) {
+  for (const id of new Set(st.knownIds)) {
     for (const chId of st.readOnce[id] || []) { const ch = frameOf(id)?.chapters.find((c) => c.id === chId); if (ch && ch.sealed) out.push({ key: "sealed:" + id + ":" + chId, kind: "sealed", species: id, chapter: chId }); }
     const fg = fieldGuide(st, id, settings); if (fg && fg.complete) out.push({ key: "guide:" + id, kind: "guide", species: id });
   }
@@ -72,7 +72,7 @@ export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()
 // a guide one look from full; the first read of a sealed chapter; a cross whose child would complete a deep line.
 export function sittingWarning(st, settings = DEFAULT_SETTINGS) {
   if (!st.sitting) return [];
-  return st.knownIds.filter((id) => !st.moments["guide:" + id] && fieldGuide(st, id, settings)?.oneFromFull);
+  return [...new Set(st.knownIds)].filter((id) => !st.moments["guide:" + id] && fieldGuide(st, id, settings)?.oneFromFull);
 }
 // The moments an act would earn that are not yet paid (the keys). The warning comes when the act would lose one: any, while a sitting is held, or the second of two earned at once
 // (the slot holds one, so the second is spent). `act` changes a copy of the save the way the act would.
