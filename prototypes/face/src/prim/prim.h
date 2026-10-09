@@ -21,6 +21,8 @@ void prim_tag(int layer, const char *region);
    The text is read from prim_text() for a text node. */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
 void prim_end(void);
+char *prim_ops(void);           /* a 128 KiB buffer for the ops of a composed node (JSON), filled before the node */
+int prim_ops_size(void);
 char *prim_text(void);          /* a 1 KiB buffer the page fills (UTF-8, NUL ended) before a text node or a measure */
 int prim_text_size(void);
 int prim_measure(int px);       /* the width in px of prim_text() set in Inter at px */
@@ -28,8 +30,10 @@ uint8_t *prim_asset(int handle, int w, int h);   /* a picture's pixels (B, G, R,
 uint8_t *prim_asset_ptr(int handle);   /* the pixels of a picture already allocated, or NULL */
 void prim_asset_free(int handle);       /* release a picture (its pixels); a node still showing it is refused until it is sent again */
 int prim_asset_limit(void);
+int prim_source(const char *ops, int w, int h);   /* a face-owned source picture composed from ops, cached by their hash and counted once in prim_pictures(); a handle for a nine-slice or sprite, or -1 */
 int prim_count(void);           /* objects alive */
 int prim_pictures(void);        /* pictures resident (assets with pixels, composed pictures) */
+void prim_refuse(void);         /* count a node a word could not draw (a picture the host has not sent) as refused */
 int prim_unknown(void);         /* nodes refused this frame (an unknown kind, a missing asset, a size that is not the asset's, a full table) */
 int prim_object_limit(void);
 int prim_lvgl_objects(void);    /* the LVGL objects alive: the table plus nine parts for each nine-slice */
@@ -39,6 +43,7 @@ void prim_palette_clear(void);
 int prim_palette_add(const char *name, uint32_t rgb);
 int prim_palette_count(void);
 int prim_palette_has(uint32_t rgb);
+int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by name: 0, or -1 when the palette has no such name */
 /* The composed picture's ops, JSON: [["h", x, y, len, "colour"], ["v", x, y, len, "colour"], ["dash", x, y, len, "h"|"v", on, off, "colour"], ["dot", x, y, "colour"],
    ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"]] with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */

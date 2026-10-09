@@ -1,15 +1,23 @@
-// The focus ring's pixels, decided by pixel-centre tests so they stay on whole pixels (no anti-aliased stroke):
-// a rounded rectangle or an ellipse, `width` thick. Returns an alpha mask (0 or 255), w*h. Pure; the assets that
-// carry the ring (a nine-slice for the rounded one, a sprite for the ellipse) build their picture from it.
+// The focus ring's pixels (lvgl-switch.md §2.2), the oracle of the face's `ring` op (prototypes/face/src/prim/ring.c) and the generator of tests/vectors/rings.json. Integers only: a pixel (i, j)
+// has the doubled centre X = 2i + 1, Y = 2j + 1, and every comparison is on integers (products stay far inside 2^53), so JavaScript, WebAssembly, x86-64 and aarch64 cannot round differently.
+// A rounded rectangle or an ellipse `width` thick, returned as an alpha mask (0 or 255), w*h. Pure. Refuses (throws) what the op refuses.
+const inR = (X, Y, x0, y0, x1, y1, r) => {
+  const R = 2 * r; if (X < 2 * x0 || Y < 2 * y0 || X > 2 * x1 || Y > 2 * y1) return false;
+  const cx = X < 2 * x0 + R ? 2 * x0 + R : X > 2 * x1 - R ? 2 * x1 - R : X, cy = Y < 2 * y0 + R ? 2 * y0 + R : Y > 2 * y1 - R ? 2 * y1 - R : Y;
+  return (X - cx) ** 2 + (Y - cy) ** 2 <= R * R;
+};
+const inE = (X, Y, x0, y0, x1, y1) => {
+  const A = x1 - x0, B = y1 - y0; if (A <= 0 || B <= 0) return false;
+  const dx = X - (x0 + x1), dy = Y - (y0 + y1); return dx * dx * B * B + dy * dy * A * A <= A * A * B * B;
+};
 export function ringMask(w, h, width, radius, shape = "round") {
-  const m = new Uint8Array(w * h);
-  const inRound = (px, py, x0, y0, x1, y1, r) => { if (px < x0 || py < y0 || px > x1 || py > y1) return false; const cx = px < x0 + r ? x0 + r : px > x1 - r ? x1 - r : px, cy = py < y0 + r ? y0 + r : py > y1 - r ? y1 - r : py; return (px - cx) ** 2 + (py - cy) ** 2 <= r * r; };
-  const inEll = (px, py, x0, y0, x1, y1) => { const rx = (x1 - x0) / 2, ry = (y1 - y0) / 2; if (rx <= 0 || ry <= 0) return false; return ((px - (x0 + rx)) / rx) ** 2 + ((py - (y0 + ry)) / ry) ** 2 <= 1; };
+  const ints = [w, h, width, radius].every(Number.isInteger);
+  if (!ints || (shape !== "round" && shape !== "ellipse") || w < 1 || h < 1 || width < 1 || radius < 0 || (shape === "ellipse" && radius !== 0)) throw new Error(`ring refused: ${shape} ${w}x${h} width ${width} radius ${radius}`);
+  const m = new Uint8Array(w * h), ri = Math.max(0, radius - width);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const px = x + 0.5, py = y + 0.5;
-    const outer = shape === "ellipse" ? inEll(px, py, 0, 0, w, h) : inRound(px, py, 0, 0, w, h, radius);
-    const inner = shape === "ellipse" ? inEll(px, py, width, width, w - width, h - width) : inRound(px, py, width, width, w - width, h - width, Math.max(0, radius - width));
-    if (outer && !inner) m[y * w + x] = 255;
+    const X = 2 * x + 1, Y = 2 * y + 1;
+    const on = shape === "ellipse" ? inE(X, Y, 0, 0, w, h) && !inE(X, Y, width, width, w - width, h - width) : inR(X, Y, 0, 0, w, h, radius) && !inR(X, Y, width, width, w - width, h - width, ri);
+    if (on) m[y * w + x] = 255;
   }
   return m;
 }
@@ -31,21 +39,25 @@ export function tabEndMask(side, part, slant, h, shift) {
 }
 // The tab's focus ring (box w + 2 * outside + slant wide, `H` tall, from y `top`): the two slanted lines 4 px outside the tab, the sides leaning
 // with the tab down to its bottom edge (y `slantTo`, 80) and dropping straight to the bottom run (y `bottom`, 84); a top run, square against the top bar; the bottom
-// corners rounded; `width` thick all round. `spec.tabTop` is the rail's top edge.
+// corners rounded; `width` thick all round. `spec.tabTop` is the rail's top edge. Integers only (the `tabRing` op's definition, §2.2).
 export function tabRingMask(w, spec) {
-  const { slant, outside, top, bottom, radiusBottom, slantTo } = spec.tab, width = spec.width, tabTop = spec.tabTop, tabH = slantTo - tabTop;   // tabTop is the rail's y (frame.json regions.rail.y), given by the caller
-  const W = w + 2 * outside + slant, H = bottom - top, m = new Uint8Array(W * H), lean = (y) => (slant * Math.min(Math.max(y - tabTop, 0), tabH)) / tabH;
-  const left = (y) => lean(y), right = (y) => W - slant + lean(y), r = radiusBottom;
-  const inside = (px, y, inset, rr) => {
-    if (y < top + inset || y > bottom - inset) return false;
-    let l = left(y) + inset, rt = right(y) - inset;
-    const yc = bottom - inset - rr;
-    if (rr > 0 && y > yc) { const cl = left(yc) + inset + rr, cr = right(yc) - inset - rr; if (px < cl) return (px - cl) ** 2 + (y - yc) ** 2 <= rr * rr; if (px > cr) return (px - cr) ** 2 + (y - yc) ** 2 <= rr * rr; }
-    return px >= l && px <= rt;
+  const { slant, outside, top, bottom, radiusBottom, slantTo } = spec.tab, width = spec.width, tabTop = spec.tabTop, T = slantTo - tabTop;
+  const vals = [w, slant, outside, top, bottom, radiusBottom, slantTo, width, tabTop];
+  if (!vals.every(Number.isInteger) || w < 1 || slant < 0 || outside < 0 || T <= 0 || bottom < slantTo || top >= bottom || width < 1 || radiusBottom < 0) throw new Error("tabRing refused");
+  const W = w + 2 * outside + slant, H = bottom - top, m = new Uint8Array(W * H), clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi), r = radiusBottom;
+  const inside = (X, Y, inset, rr) => {
+    if (Y < 2 * (top + inset) || Y > 2 * (bottom - inset)) return false;
+    const XS = X * T, C = clamp(Y - 2 * tabTop, 0, 2 * T), L = slant * C + 2 * T * inset, Rt = 2 * T * (W - slant) + slant * C - 2 * T * inset, yc = bottom - inset - rr;
+    if (rr > 0 && Y > 2 * yc) {
+      const c2 = 2 * slant * clamp(yc - tabTop, 0, T), CL = c2 + 2 * T * (inset + rr), CR = 2 * T * (W - slant) + c2 - 2 * T * (inset + rr), D = T * (Y - 2 * yc), lim = (2 * T * rr) ** 2;
+      if (XS < CL) return (XS - CL) ** 2 + D * D <= lim;
+      if (XS > CR) return (XS - CR) ** 2 + D * D <= lim;
+    }
+    return L <= XS && XS <= Rt;
   };
   for (let r0 = 0; r0 < H; r0++) for (let c = 0; c < W; c++) {
-    const px = c + 0.5, y = top + r0 + 0.5;
-    if (inside(px, y, 0, r) && !inside(px, y, width, Math.max(0, r - width))) m[r0 * W + c] = 255;
+    const X = 2 * c + 1, Y = 2 * (top + r0) + 1;
+    if (inside(X, Y, 0, r) && !inside(X, Y, width, Math.max(0, r - width))) m[r0 * W + c] = 255;
   }
   return { mask: m, w: W, h: H };
 }
