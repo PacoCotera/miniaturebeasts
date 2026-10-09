@@ -20,7 +20,9 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 - **No alpha,** no anti-aliasing, no gradients. Blends are palette tables (dark, light, veil, fade) or the 4×4 Bayer dither. Nothing else.
 - **Type:** Mibi 7×9, 2× minimum (14 px caps), 3× for titles. Never 1×.
 - **Frame:** HUD 32 · view 532 · bottom line 36. 4 px unit, 6–8 px margins, groups 8 px apart.
-- **Tokens:** HiBit, never flat blobs. Rounded volume, catch-lit eyes, markings readable at a glance. Storm and veil never darken the pawn or a mibi.
+- **Shown at 1:1** or a whole-number multiple of 450×600, never a fractional scale.
+- **Figures only as prices and counts,** each beside its icon. Everything else is said in play language or shown as a mark.
+- **Tokens:** HiBit, never flat blobs. Rounded volume, catch-lit eyes, markings readable at a glance. The pawn and every mibi read in sun, storm, fog and veil; storm and veil never darken them.
 - **Weather:** unexplored land is a lavender-grey cloud bank with volume and a lit rim; a fog bank is pale and washed out, never lavender; rain is one clean diagonal sheet.
 - Take mood, light and the scale of signs and pawn from the concepts. Their strings and HUD details are not specs.
 
@@ -30,11 +32,13 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 <td valign="top"><img src="../../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth the living window carries, drawn at Station resolution. Approved concept, generated.</em></td></tr></table>
 
 - **1024×600, used to the full.** Native resolution everywhere. Never a scaled-up Companion screen or upscaled tokens.
-- **Light like the concept:** one key light from the top left, soft cast shadows, correct form shading, painted gradients. No dither bands, no flat fills.
+- **Painted light on the painted layer:** one key light from the top left, soft cast shadows, correct form shading, painted gradients. No dither bands and no flat fills in a painting.
+- **Flat chrome on the art layer:** bars, panels, panes, tabs and rings are flat fills with one bevel of light and 1 px hairlines, never dithered and never painted. The layers are in [Station screens, Palette and layers](station-screens.md#palette-and-layers).
 - **A research instrument:** cool chrome, hairline rules, corner ticks, status lamps, few-word readouts, and equipment: sample bay, pod rack, incubation chamber, Probe dock.
 - **One living window per screen,** warm and lively: the only warm light on the screen. Everything outside it is cool and calm.
 - **Never a cottage:** no wooden benches, felt, shelves, lamp-lit rooms or evening greens. Glass, enamel, brushed metal, frosted panes.
 - **HiBit is allowed:** a fine pixel grain on creatures and world; chrome and type crisp.
+- **1× grain, measured.** Cut each 1024×600 capture into the top bar (y 0–40), the stage (y 40–562) and the bottom line (y 562–600). In each region take 2×2 blocks at each of the four grid phases, counting only blocks whose 4×4 surround holds more than one colour. **G2** is the share of those blocks that are one colour, at the best phase. G2 of 0.60 or more is 2× rendering and fails; 0.40 or less is 1× grain; between the two, the region is judged by eye at 1×. Anti-aliased type is never block-uniform, so the bottom line's G2 is at most 0.40.
 - **Type:** a smooth face, Inter (OFL), anti-aliased, with tabular figures. The Companion keeps the bitmap face; the two devices share colour roles, not a typeface.
 - **Carry more** than the concept: keep its quality, fill the screen with the instrument and its life.
 
@@ -48,6 +52,8 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 - Same anatomy, pose language and light on both devices; only inherited traits differ between individuals.
 - Draw only what is known. Unknown parts stay frosted, never guessed. Art never changes genes.
 - Age reads from proportion and bearing. Elders are calm and dignified: eyes open, leaves held up.
+
+Every mibi wears its **standard look**: the cloud painting made at Grow over the Station's control passes and derived down to the Companion and the token, with the rig placeholder shown until its painting arrives. What is fixed is the **treatment** (the painting prompt's house rendering to this guide), the species pieces, the control contract and the test sets, not each individual. A **portrait**, earned by research and spent at a sitting, adds the scene, the full moving set, the postmark and the card; no person sees a player's painting or portrait before the player, so the pipeline's validation checks stand in for review there. The Companion's version of a creature is derived from the Station's painting, never hand-pixelled.
 
 ## Type and colour roles
 
@@ -69,28 +75,48 @@ Materials keep one shape on both devices: Energy a yellow bolt, Data a blue diam
 - **Station, smooth and eased:** the living window moves all the time (breathing, routines, plants, water). The instrument moves only when something happens: doors, rails and lamps in 200–400 ms. Reveals (a frost wipe, a shell clearing) take about two seconds.
 - **Both:** the first frame is the still state; nothing means something only by blinking; presses during a motion are consumed.
 
-## Sign-off
+## What every screen and piece meets
 
-The art director signs off every piece. Engineers do not draw: no code-drawn screen, sprite, scene or effect is art. Engineers place signed-off assets and set live text. Pieces go brief → generated candidates against the approved references → critique → rounds → masters (hand-pixelled on the Companion, painted on the Station) → sign-off. Generated images are labelled; prompts and originals are kept.
+The rules every screen, master and painting meets before it is shown. The looks they hold to are the sections above, [Station screens](station-screens.md), [Station layouts](station-layouts.md) and [Companion screens](companion-screens.md); this section adds what those do not say.
 
-Mibis are the exception to "masters per piece": every mibi wears its **standard look**, the cloud painting made at Grow over the Station's control passes and derived down to the Companion and the token, with the rig placeholder shown until its painting arrives; the art director signs the **treatment** (the painting prompt's house rendering to this guide), the species pieces, the control contract and the test sets, not each individual. A **portrait**, earned by research and spent at a sitting, adds the scene, the full moving set, the postmark and the card; no person sees a player's painting or portrait before the player, so the pipeline's validation checks stand in for sign-off there. "Masters hand-pixelled on the Companion" does not apply to creatures: the Companion's version is derived from the Station's painting.
+### Judged against its concept
 
-## Per-screen checklist template
+- A screen is judged beside its accepted concept candidate, at device size and 1× (1024×600 or 450×600), on a true-size screen. It reads as that concept with the live text on it.
+- It meets its own entry in [Station screens](station-screens.md) or [Companion screens](companion-screens.md): what it reads first, within a second, and every line of its "Pass when" list.
 
-```
-Screen: ________  Device: Companion 450×600 | Station 1024×600  Piece: ________
-[ ] Reads first: ________, at 1×, within a second
-[ ] Judged at device size, 1×, on a true-size screen
-[ ] One light from the top left (Station: one warm living window, the rest cool)
-[ ] Companion: 48 ramps, no alpha, Bayer only | Station: clean painted light, no dither bands
-[ ] Creature keeps volume, eyes and markings; only what is known is drawn
-[ ] Type at its role size; live text; six words or fewer a line on the stage
-[ ] Frame, one focus, bottom line (✓ · ← | where | conditions or what needs you), one close
-[ ] Motion from the vocabulary, with a still state; shape as well as colour
-[ ] Provenance recorded; signed off by the art director
-```
+### Masters
 
-## Decided
+- Every master starts from the screen's accepted concept candidate.
+- Accepted assets are placed, never regenerated or redrawn: Pip, and the genome stamp from the stamp module.
+- A master comes as its layered source and its 1× exports, each with its hash.
+- A master holds no text and no figures. Each text slot fits the screen's strings at the guide's sizes (Station: Inter 16, 20 and 28 px; Companion: Mibi 7×9 at 2× and 3×) without clipping.
+- A master gives one slice per state the screen draws. A state is its own slice; the build never recolours or tints art.
+
+### Placed, never drawn
+
+- Art is made by artists and placed by the build, 1:1, at whole pixels. Engineers do not draw: no code-drawn screen, sprite, scene or effect is art.
+- The face composes only palette geometry: rectangles, 1 px hairlines and bevels, the focus ring, and the composed line pictures of [lvgl-switch.md §2.2](../proposals/lvgl-switch.md) (exact palette colours, no anti-aliasing, no opacity).
+- A placeholder stands only where no master exists yet. It is registered in the asset manifest at its exact size, with `status: placeholder` and the master it waits for.
+- A slot with neither a master nor a placeholder is registered with `status: empty` at its exact size and draws nothing. The layout does not move when the slot fills.
+
+### Mibi paintings
+
+How a mibi's painting is made is in the [art pipeline](../proposals/art-pipeline.md) and [the Grow service](../../prototypes/workbench/grow/README.md). Every painting meets these:
+
+- One house rendering for every species: the painting prompt's recipe (light, shading, value-only contour, the house eye, framing, ground). Species notes say only what differs. No species reference image is sent.
+- A naturalist's study of a small living animal, never a vinyl collectible.
+- Inside the cute envelope, rules E1 to E9 ([workbench](../../prototypes/workbench/README.md)). No part is added, moved or recoloured from the controls.
+- The controls come from the genome, in three-quarter and side views. The painting is the same individual as its controls and shows only what is known.
+- Validation checks the silhouette, every part, the slot colours and the markings inside their fields. A painting that fails gets one named retry; after that the rig placeholder stands.
+- The small sizes are derived from the Station painting, never painted small: the 280×300 Companion resident, the 48 px token, and the idle and walk frames.
+- A painting is never regenerated silently. The painter's id is part of its cache key, and nothing hidden is carried in the manifest or the controls.
+- Each species' pieces (faces, materials, token) are painted once per species, never per mibi.
+
+### Figures in documents
+
+- Every figure has a caption that says what it is: concept, generated, master, placeholder, wireframe or diagram.
+
+## The Loika, type, grain and tile size
 
 1. **The Loika** is Pip as in the approved art: charcoal, cream belly, orange eyes, three-leaf crest. The lilac long-eared token is retired.
 2. **Station type** is a smooth face, Inter, anti-aliased.
