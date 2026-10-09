@@ -34,3 +34,18 @@ for (const c of cases) {
     assert.equal(f.hash(), c.hash);
   });
 }
+
+// the two captions have no JavaScript twin (lvgl-switch.md L2.0): the scenes above are made without them. Check 1 of the gate: each is in the region log at its spec rect where it shows, and absent where it does not.
+test("the captions: 'this pod' always in the overview, 'the species' only once identified, each inside its region", { skip }, async () => {
+  const withCaptions = (c, figure) => ({ ...c.props, regions: { ...c.props.regions, specimen: { ...c.props.regions.specimen, captions: { pod: "this pod", figure } } } });
+  const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
+  const OV = podsSpec.regions.overview, inside = (r, box) => r[0] >= box[0] && r[1] >= box[1] && r[0] + r[2] <= box[0] + box[2] && r[1] + r[3] <= box[1] + box[3];
+  const unid = cases.find((c) => c.state === "overview" && /unidentified pod, the pod focused/.test(c.name)), idd = cases.find((c) => c.state === "overview" && /identified pod with kin/.test(c.name));
+  let f = await setup(unid); assert.equal(f.props(withCaptions(unid, null)), 0); frames(f); let lg = logOf(f);
+  assert.ok(lg.type.some((t) => t.text === "this pod" && t.region === "thisPod" && t.px === 16)); assert.ok(!lg.type.some((t) => t.text === "the species"), "no species caption before Identify");
+  const tp = lg.regions.find((r) => r.id === "thisPod" && r.layer === "type"); assert.ok(inside(tp.rect, OV.thisPod.rect), `thisPod ${tp.rect} in ${OV.thisPod.rect}`);
+  assert.equal(Math.round(tp.rect[0] + tp.rect[2] / 2), OV.thisPod.centre, "centred on its centre");
+  f = await setup(idd); assert.equal(f.props(withCaptions(idd, "the species")), 0); frames(f); lg = logOf(f);
+  const fc = lg.regions.find((r) => r.id === "figure.caption" && r.layer === "type"); assert.ok(fc && inside(fc.rect, OV.figure.caption.rect), `figure.caption ${fc?.rect}`);
+  assert.ok(lg.type.some((t) => t.text === "the species" && t.px === 16 && t.region === "figure.caption")); assert.equal(f.errors().length, 0);
+});

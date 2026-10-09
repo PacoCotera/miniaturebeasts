@@ -26,6 +26,12 @@ static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(p
 
 static int bench_present(void) { for (int i = 0; i < v_plen("regions.bench.room"); i++) if (wire_has_asset(v_pstr(v_fmt("regions.bench.room.%d", i)))) return 1; return 0; }
 
+/* a caption: one line of the region's px centred in its rect, in its colour (the cap top as the name's) */
+static void caption(const char *region, const char *base, const char *key, const char *text) {
+  char path[120]; snprintf(path, sizeof path, "%s.%s", base, key); int r[4], px = si(path, "px", 16); char col[24]; srect(path, "rect", r);
+  spec_str(S, v_fmt("%s.colour", path), col, sizeof col);   /* a palette name */
+  v_region(region, LAYER_TYPE); centred(v_fmt("specimen.%s", region), text, r[0] + v_half(r[2]), cap_top(px, r[1], r[3]), px, col);
+}
 void word_specimen(const char *base) {
   char name[24], origin[24], white[24]; colour("name", name, sizeof name); colour("origin", origin, sizeof origin); snprintf(white, sizeof white, "white");
   int beam[4], shelf[4], cradle[4], front[4], nrect[4];
@@ -81,6 +87,11 @@ void word_specimen(const char *base) {
   /* the overview's own parts: the figure beside the pod, the marks that say who it is, the find's picture */
   if (spec_len(S, v_fmt("%s.figure", base)) >= 0) { int fr[4]; srect(base, "figure.rect", fr); v_region("figure", LAYER_ART); layer("specimen.figure", fr, v_pstr("regions.specimen.figure")); }
   if (spec_len(S, v_fmt("%s.who", base)) >= 0) for (int i = 0, n = v_plen("regions.specimen.who"); i < n; i++) { int mr[4]; for (int k = 0; k < 4; k++) mr[k] = spec_int(S, v_fmt("%s.who.marks.%d.%d", base, i, k), 0); v_region("who", LAYER_ART); layer(v_fmt("specimen.who.%d", i), mr, v_pstr(v_fmt("regions.specimen.who.%d", i))); }
+  /* the two captions (lvgl-switch.md L2.0, decided 2026-10-09): "this pod" under the who-it-is marks, always in the overview; "the species" under the figure, only when the pod is identified (the view sends it then). They have no JavaScript twin. */
+  const char *cap = v_pstr("regions.specimen.captions.pod");
+  if (has(cap) && spec_len(S, v_fmt("%s.thisPod", base)) >= 0) caption("thisPod", base, "thisPod", cap);
+  cap = v_pstr("regions.specimen.captions.figure");
+  if (has(cap) && spec_len(S, v_fmt("%s.figure.caption", base)) >= 0) caption("figure.caption", base, "figure.caption", cap);
   const char *op = v_pstr("regions.specimen.originPicture");
   if (has(op) && spec_len(S, v_fmt("%s.originPicture", base)) >= 0) { int orr[4]; srect(base, "originPicture.rect", orr); v_region("find", LAYER_ART); v_sprite("specimen.find", op, orr[0], orr[1], orr[2], orr[3]); }
 }

@@ -104,6 +104,7 @@ function specimenOf(m, spec, cur, R, req, mode) {
   if (mode === "overview") {
     out.origin = S.podOriginLines(cur);   // the whole lines: the face wraps them to the origin region and keeps the first R.origin.lines
     out.ribbon = present.ribbon === cur.id ? spec.strings.newSpecies : null;
+    out.captions = { pod: spec.strings.thisPod, figure: cur.idd ? spec.strings.theSpecies : null };   // the two labels the overview adds (no JavaScript twin): the pod's under the marks, the species' under the figure once identified
     out.originPicture = PLACE_KEYS.includes(cur.g) ? req({ kind: "place", id: `place:${cur.g}:${R.originPicture.rect[2]}`, place: cur.g, size: R.originPicture.rect[2] }) : null;
     const [fw, fh] = R.figure.rect.slice(2), total = fr ? fr.chapters.length : 0, read = fr ? fr.chapters.filter((c) => cur.read.includes(c.id)).length : 0;
     if (cur.idd && sp) {
