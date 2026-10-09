@@ -1837,10 +1837,10 @@
   "rect": null,
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-  "sha256": "2f3c4fa7efd85f5ee6d11594be463b7c21c58a779f7b6e3cb037cd64ee55f7b6",
+  "sha256": "145ebbd085434f5f9672446136cc2332acca5534ee1e6106b6e495f5356fa6d0",
   "status": "new",
   "signed_in": null,
-  "status_note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
+  "status_note": "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict"
  },
  "rail-emblem-legs-tail-read-24x24": {
   "size": [
@@ -1850,10 +1850,10 @@
   "rect": null,
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-  "sha256": "c0343588653122391fd4d67c952c301a7728de91c2588ed8259d75b5fca036d6",
+  "sha256": "307e8fa48c7c1ed7a174014d2dce4e2f3fd5697768f2a431026a9b99bc3b324d",
   "status": "new",
   "signed_in": null,
-  "status_note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
+  "status_note": "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
   "size": [
@@ -1863,10 +1863,10 @@
   "rect": null,
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-  "sha256": "bc61a3ed482f92a76a9abd177f911de1fd87dbd5cd6489adee1f0199452f3cd8",
+  "sha256": "5c892609205a7ab003857276813535fc70cdb213249a67cc37e0ea2dd4fe057d",
   "status": "new",
   "signed_in": null,
-  "status_note": "Legs & tail redrawn (the hind leg alone) in emblems round 5; awaiting verdict"
+  "status_note": "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict"
  },
  "rail-emblem-movement-unread-24x24": {
   "size": [
@@ -3835,7 +3835,7 @@
   "sha256": "f4c09fed6fab7e108827e7a855625ec7c98ca9c84853f4317453b1d99d41280c",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "superseded by page-mark-new-10 (the layout specifies a flat engraved 10x10 dot)"
+  "status_note": "superseded by page-mark-new-6"
  },
  "frame-companion-solid-16x24": {
   "size": [
@@ -3969,24 +3969,6 @@
   "signed_in": null,
   "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
  },
- "page-mark-new-10": {
-  "size": [
-   10,
-   10
-  ],
-  "rect": [
-   null,
-   null,
-   10,
-   10
-  ],
-  "src": "typed by hand",
-  "made": "the 'new to the field guide' mark: a flat engraved bone dot 10x10, a 1 px lit edge, an ink keyline, art layer; at the picture's top centre",
-  "sha256": "21a2a1bef736a18c8d6cca952d2dc599a9f521b2314289605456df4ac3248d77",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the new-to-the-field-guide mark as the layout specifies it (replaces page-new-mark-12x12); awaiting verdict"
- },
  "frame-cap-confirm-16": {
   "size": [
    16,
@@ -4052,9 +4034,9 @@
    24,
    24
   ],
-  "src": "marks-rooms",
-  "made": "the home room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
-  "sha256": "a0cd5e3f27c5f0015642b6ca510974b42c037dd8ad3cb0fbfed6b7fe68648191",
+  "src": "procedural, supersampled 16x",
+  "made": "the home room's mark: the living window, an arched window frame with a horizon line and one small sprout, in the other marks' line manner; at (16,8) in the title zone",
+  "sha256": "42ab84f1e304d24d1e57581431569f428ccbb45acf5511e47b03af1f02261987",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -4274,5 +4256,23 @@
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+ },
+ "page-mark-new-6": {
+  "size": [
+   6,
+   6
+  ],
+  "rect": [
+   null,
+   null,
+   6,
+   6
+  ],
+  "src": "typed by hand",
+  "made": "PROPOSED, not in the composite until the UI designer places it: the 'new to the field guide' mark as a flat bone dot 6x6, a 1 px lit edge, an ink keyline, no specular",
+  "sha256": "f32b7a8a7a0c0e0350087d5d0f57dee3be254344d639721f21556f841074bb2c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "PROPOSED: a flat bone dot 6x6 (replaces page-mark-new-10, which read as a pin); out of the composite until the UI designer places it"
  }
 }

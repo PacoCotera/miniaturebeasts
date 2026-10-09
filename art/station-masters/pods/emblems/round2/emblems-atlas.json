@@ -109,7 +109,7 @@
     24,
     24
    ],
-   "sha256": "2f3c4fa7efd85f5ee6d11594be463b7c21c58a779f7b6e3cb037cd64ee55f7b6"
+   "sha256": "145ebbd085434f5f9672446136cc2332acca5534ee1e6106b6e495f5356fa6d0"
   },
   "rail-emblem-legs-tail-read-24x24": {
    "rect": [
@@ -118,7 +118,7 @@
     24,
     24
    ],
-   "sha256": "c0343588653122391fd4d67c952c301a7728de91c2588ed8259d75b5fca036d6"
+   "sha256": "307e8fa48c7c1ed7a174014d2dce4e2f3fd5697768f2a431026a9b99bc3b324d"
   },
   "rail-emblem-legs-tail-sealed-24x24": {
    "rect": [
@@ -127,7 +127,7 @@
     24,
     24
    ],
-   "sha256": "bc61a3ed482f92a76a9abd177f911de1fd87dbd5cd6489adee1f0199452f3cd8"
+   "sha256": "5c892609205a7ab003857276813535fc70cdb213249a67cc37e0ea2dd4fe057d"
   },
   "rail-emblem-movement-unread-24x24": {
    "rect": [
@@ -382,7 +382,7 @@
    "rect": null,
    "src": "emblems/source/legs-tail.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "2f3c4fa7efd85f5ee6d11594be463b7c21c58a779f7b6e3cb037cd64ee55f7b6",
+   "sha256": "145ebbd085434f5f9672446136cc2332acca5534ee1e6106b6e495f5356fa6d0",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -394,7 +394,7 @@
    "rect": null,
    "src": "emblems/source/legs-tail.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "c0343588653122391fd4d67c952c301a7728de91c2588ed8259d75b5fca036d6",
+   "sha256": "307e8fa48c7c1ed7a174014d2dce4e2f3fd5697768f2a431026a9b99bc3b324d",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },
@@ -406,7 +406,7 @@
    "rect": null,
    "src": "emblems/source/legs-tail.txt",
    "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
-   "sha256": "bc61a3ed482f92a76a9abd177f911de1fd87dbd5cd6489adee1f0199452f3cd8",
+   "sha256": "5c892609205a7ab003857276813535fc70cdb213249a67cc37e0ea2dd4fe057d",
    "policy": "stationChrome",
    "status": "round 2, for the art director's sign-off"
   },

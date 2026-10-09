@@ -291,7 +291,7 @@ def framemarks():
     """The Station frame's marks (design-station-frame): the four room marks at 24, the Companion's glyph solid and outline, the lamps, the sun mark and the
     mibi's face on its teal ring, as a painted layer drawn from larger paintings and reduced (never a pixel face scaled up)."""
     im = load("marks-rooms.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.05); W, H = k.size
-    for nm, box in (("home", (0, 0, W // 2, H // 2)), ("research", (W // 2, 0, W, H // 2)), ("library", (0, H // 2, W // 2, H)), ("habitat", (W // 2, H // 2, W, H))):
+    for nm, box in (("research", (W // 2, 0, W, H // 2)), ("library", (0, H // 2, W // 2, H)), ("habitat", (W // 2, H // 2, W, H))):
         save(f"frame-room-{nm}-24", fit(k.crop(box), 24, 24, 2, 40, 1.9), [16, 8, 24, 24], f"the {nm} room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone", "marks-rooms")
     im = load("marks-device2.jpg"); W, H = im.size
     def third(i):
@@ -352,14 +352,31 @@ def framecaps():
     save("frame-cap-confirm-16", cap(tick, (0xf2, 0x67, 0x1b), (0xf1, 0xeb, 0xdf)), [16, 574, 16, 16], "the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel", "typed by hand")
     save("frame-cap-confirm-16-dim", cap(tick, (0x8d, 0x8a, 0xa6), (0x3d, 0x39, 0x54)), [16, 574, 16, 16], "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)", "typed by hand")
     save("frame-cap-back-16", cap(back, (0x5d, 0x59, 0x74), (0xc6, 0xc4, 0xd8)), [None, 574, 16, 16], "the bottom line's back key cap: a 16 px disc, stone face, fog arrow", "typed by hand")
+def homemark():
+    """frame-room-home-24: the living window: an arched window frame, a horizon line and one small sprout, in the line manner of the other room marks
+    (a fine engraved line in their colour), drawn procedurally with supersampling at 16x."""
+    S = 16; W = 24 * S
+    ref = np.asarray(Image.open("slices/frame-room-research-24.png").convert("RGBA")).astype(float); m = ref[..., 3] > 0.8 * ref[..., 3].max()
+    col = tuple(int(v) for v in np.median(ref[m][:, :3], axis=0))
+    im = Image.new("L", (W, W), 0); d = ImageDraw.Draw(im); w = int(1.5 * S)
+    P = lambda x, y: (x * S, y * S)
+    d.arc([P(5, 3.2)[0], P(5, 3.2)[1], P(19, 17.2)[0], P(19, 17.2)[1]], 180, 360, fill=255, width=w)
+    d.line([P(5, 10.2), P(5, 21)], fill=255, width=w); d.line([P(19, 10.2), P(19, 21)], fill=255, width=w)
+    d.line([P(3.2, 21.4), P(20.8, 21.4)], fill=255, width=w)
+    d.line([P(5, 16), P(19, 16)], fill=255, width=int(1.1 * S))                                                    # the horizon
+    d.line([P(12, 16), P(12, 12.2)], fill=255, width=int(1.1 * S))                                                 # the sprout: stem and two leaves
+    d.ellipse([P(8.6, 9.4)[0], P(8.6, 9.4)[1], P(12.0, 12.2)[0], P(12.0, 12.2)[1]], fill=255); d.ellipse([P(12.0, 9.4)[0], P(12.0, 9.4)[1], P(15.4, 12.2)[0], P(15.4, 12.2)[1]], fill=255)
+    a = np.asarray(im.resize((24, 24), Image.BOX)).astype(float) * ref[..., 3].max() / 255.0                  # at the other marks' own strength
+    out = np.dstack([np.full((24, 24), c, float) for c in col] + [a]).astype(np.uint8)
+    save("frame-room-home-24", Image.fromarray(out, "RGBA"), [16, 8, 24, 24], "the home room's mark: the living window, an arched window frame with a horizon line and one small sprout, in the other marks' line manner; at (16,8) in the title zone", "procedural, supersampled 16x")
 def pagemark():
-    """page-mark-new-10: the 'new to the field guide' mark as the layout specifies it: a flat engraved bone dot, 10x10, a 1 px lit edge (white, upper left) and an ink
-    keyline, art layer (station.json colours only), no specular. Pixel data typed by hand: i = ink, b = bone, w = white, . = empty."""
-    rows = ["...iiii...", ".iiwwbbii.", ".iwbbbbbi.", "iwbbbbbbbi", "iwbbbbbbbi", "ibbbbbbbbi", "ibbbbbbbbi", ".ibbbbbbi.", ".iibbbbii.", "...iiii..."]
+    """page-mark-new-6: the 'new to the field guide' mark, proposed: a flat bone dot, 6x6, a 1 px lit edge (white, upper left) inside an ink keyline, art layer
+    (station.json colours only), no specular. Replaces the 10 px dot, which read as a pin on the picture's edge. Pixel data typed by hand: i = ink, b = bone, w = white."""
+    rows = [".iiii.", "iwwbbi", "iwbbbi", "ibbbbi", "ibbbbi", ".iiii."]
     pal = {"i": (0x1a, 0x17, 0x25, 255), "b": (0xf1, 0xeb, 0xdf, 255), "w": (0xff, 0xff, 0xff, 255), ".": (0, 0, 0, 0)}
-    assert all(len(r) == 10 for r in rows) and len(rows) == 10
-    im = Image.new("RGBA", (10, 10)); [im.putpixel((x, y), pal[ch]) for y, r in enumerate(rows) for x, ch in enumerate(r)]
-    save("page-mark-new-10", im, [None, None, 10, 10], "the 'new to the field guide' mark: a flat engraved bone dot 10x10, a 1 px lit edge, an ink keyline, art layer; at the picture's top centre", "typed by hand")
+    assert all(len(r) == 6 for r in rows) and len(rows) == 6
+    im = Image.new("RGBA", (6, 6)); [im.putpixel((x, y), pal[ch]) for y, r in enumerate(rows) for x, ch in enumerate(r)]
+    save("page-mark-new-6", im, [None, None, 6, 6], "PROPOSED, not in the composite until the UI designer places it: the 'new to the field guide' mark as a flat bone dot 6x6, a 1 px lit edge, an ink keyline, no specular", "typed by hand")
 def newmark():
     """The 12x12 mark of a trait new to the field guide, at the picture's top centre: a small bone bead, lit upper left, sand lower right (a proposal; the glint star stays the spark)."""
     S = 8; yy, xx = np.mgrid[0:12 * S, 0:12 * S].astype(float); x = (xx + 0.5) / S - 6; y = (yy + 0.5) / S - 6; r = np.hypot(x, y)
@@ -552,7 +569,7 @@ def well_pinholes():
     save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
     save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "framecaps", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "homemark", "framecaps", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)
