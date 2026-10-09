@@ -42,7 +42,7 @@ for n in m:
     elif n == "ring-well-empty-80x80": sign(n, "new", None, "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict")
     elif n == "page-new-mark-12x12": sign(n, "withdrawn", None, "superseded by page-mark-new-10 (now a 6x6 flat bone dot)")
     elif re.match(r"ring-well-(selected|idle)", n) or n == "glint-star-12x12" or re.match(r"ring-arc-idle-", n): sign(n, "signed", "well rings verdict")
-    elif re.match(r"ring-arc-selected-", n): sign(n, "new", None, "repainted: the band solid and with a channel, cut by angle; awaiting verdict")
+    elif re.match(r"ring-arc-selected-", n): sign(n, "new", None, "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict")
     elif re.match(r"ring-well-(selected|idle)|ring-arc-|glint-star", n): sign(n, "new", None, "the well rings from the concept; awaiting verdict")
     else: sign(n, "stand-in" if False else "unclassified", None, "")
 json.dump(S, open("slices/status.json", "w"), indent=1)

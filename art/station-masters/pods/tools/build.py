@@ -283,28 +283,35 @@ def wellrings():
     yy0, xx0 = np.mgrid[0:80, 0:80].astype(float); rx = xx0 + 0.5 - 40; ry = yy0 + 0.5 - 40; r0 = np.hypot(rx, ry); th0 = (np.degrees(np.arctan2(rx, -ry)) + 360) % 360
     def smooth(x, lo, hi): return np.clip((x - lo) / (hi - lo), 0, 1)
     band = smooth(r0, 25.5, 26.5) * (1 - smooth(r0, 32.5, 33.5))                      # the band, 7 px, soft at both edges
-    outer = (r0 > 29.5)
-    lip = np.maximum(smooth(r0, 31.7, 32.3) * (1 - smooth(r0, 32.9, 33.5)), smooth(r0, 29.1, 29.7) * (1 - smooth(r0, 30.2, 30.8)))     # two thin ivory lips
-    floor = outer * (1 - lip) * smooth(r0, 29.3, 29.9) * (1 - smooth(r0, 32.5, 33.1))
+    # the channel is painted, never carved: a soft engraved groove in the band's outer half (a smooth radial profile, the band's own painted shading kept under it, a thin lit lip on the
+    # lower-right edge and a soft shadow on the upper-left), the ticks soft 1 px strokes, the segments cut by angle with a 1 px feathered edge
+    groove = np.exp(-((r0 - 30.9) / 1.35) ** 2)                                                  # 0..1, widest at the middle of the outer half
+    shade_in = np.exp(-((r0 - 29.7) / 0.9) ** 2) * ((rx + ry) < 0)                              # a soft shadow on the upper-left wall
+    lip_lr = np.exp(-((r0 - 32.1) / 0.7) ** 2) * ((rx + ry) > 0)                                  # a faint lit lip on the lower-right wall
+    wall = np.array([84.0, 56.0, 36.0])                                                          # the groove's floor: a warm dark brown, so it sits in the ivory rather than cutting it
     chan = sel.copy()
-    for ch in range(3): chan[..., ch] = np.where(floor > 0.5, 16 + 6 * (r0 > 31) , sel[..., ch] * (1 + 0.10 * lip))
+    for ch in range(3):
+        v = sel[..., ch] * (1 - 0.82 * groove) + wall[ch] * 0.82 * groove
+        v = v * (1 - 0.25 * shade_in) + 255 * 0.0
+        chan[..., ch] = np.clip(v * (1 + 0.10 * lip_lr), 0, 255)
     chan[..., 3] = sel[..., 3]
-    def tick_mask(n):          # a 1 px dark radial tick at every chapter boundary
+    def tick_soft(n):          # a soft 1 px dark stroke across the band at every chapter boundary (gaussian across, about 0.6 px sigma)
         t = np.zeros_like(r0)
         for i in range(n):
-            d = np.abs((th0 - i * 360.0 / n + 180) % 360 - 180) * np.pi / 180 * r0     # distance across the tick, in px
-            t = np.maximum(t, 1 - smooth(d, 0.35, 0.9))
+            d = np.abs((th0 - i * 360.0 / n + 180) % 360 - 180) * np.pi / 180 * r0
+            t = np.maximum(t, np.exp(-(d / 0.62) ** 2))
         return t
+    def feather(n, i):         # the chapter's sector with a 1 px feathered edge at both boundaries (smooth across the boundary, measured in px at the radius)
+        a0 = i * 360.0 / n; d0 = ((th0 - a0 + 180) % 360 - 180) * np.pi / 180 * r0; d1 = ((a0 + 360.0 / n - th0 + 180) % 360 - 180) * np.pi / 180 * r0
+        return np.clip(d0 + 0.5, 0, 1) * np.clip(d1 + 0.5, 0, 1)
     for n in range(4, 9):
-        tk = tick_mask(n)
+        tk = tick_soft(n)
         track = chan.copy(); track[..., 3] = sel[..., 3] * band
-        for ch in range(3): track[..., ch] = track[..., ch] * (1 - tk) + np.array([12.0, 18.0, 24.0])[ch] * tk
-        out(track, f"ring-arc-selected-n{n}-track", f"the open channel for {n} chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring")
+        for ch in range(3): track[..., ch] = track[..., ch] * (1 - 0.55 * tk) + np.array([70.0, 46.0, 30.0])[ch] * 0.55 * tk
+        out(track, f"ring-arc-selected-n{n}-track", f"the painted gauge for {n} chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask")
         for i in range(n):
-            a0 = i * 360.0 / n; a1 = (i + 1) * 360.0 / n
-            sector = ((th0 >= a0) & (th0 < a1)).astype(float)
-            seg = sel.copy(); seg[..., 3] = sel[..., 3] * band * sector * (1 - tk)
-            out(seg, f"ring-arc-selected-n{n}-s{i}", f"chapter {i + 1} of {n}: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel")
+            seg = sel.copy(); seg[..., 3] = sel[..., 3] * band * feather(n, i)
+            out(seg, f"ring-arc-selected-n{n}-s{i}", f"chapter {i + 1} of {n}: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track")
     im = load("spark.jpg"); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); bb = bbox_alpha(k, 40); c = k.crop(bb); side = max(c.size); sq = Image.new("RGBA", (side, side), (0, 0, 0, 0)); sq.paste(c, ((side - c.width) // 2, (side - c.height) // 2))
     save("glint-star-12x12", sq.resize((12, 12), Image.LANCZOS), [None, None, 12, 12], "the concept's soft four-point spark: colour-to-alpha, cut square, resampled to 12x12 (place at the ring's upper right, about cx + 30, cy - 30)", "spark")
 

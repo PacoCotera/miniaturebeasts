@@ -2111,11 +2111,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the open channel for 4 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
-  "sha256": "cd1bda7f6017135cabedcaf462510b801b1993240dbda822f3a6bb3a497318b6",
+  "made": "the painted gauge for 4 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
+  "sha256": "a7ad1a5f51622d076a937f7eaa4d68e31fd1fc5e38c9a1bcca9ff61a8c3408b2",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n4-s0": {
   "size": [
@@ -2129,11 +2129,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "99db792b45992cd3e3e5f1a606e93ef4620fc7eaa853d86f280a82e833eb6269",
+  "made": "chapter 1 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "068bbb8bf1fb828cba419fc219824aae58ef470728f0eac1c652251bee9cc19d",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n4-s1": {
   "size": [
@@ -2147,11 +2147,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "55a6ac534628f87e103a408ec3d128941b44077b5e986f02a25ace186f62e12f",
+  "made": "chapter 2 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "6b61ab4beb4dcecd0158447f7197e7a7afb66827b5f3fff4c5179be2bb6fa035",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n4-s2": {
   "size": [
@@ -2165,11 +2165,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "bc124ec92b270dc154a3eddd158b2ee97e1cd48e80789107e5a363db75929df0",
+  "made": "chapter 3 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "c5e155e9df75e208b63b4a5f5d9be56153fcea4f314869c297d4e02047bc584b",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n4-s3": {
   "size": [
@@ -2183,11 +2183,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 4: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "2638655c9250be70a7b1dba0616d21bd7a777c6dac20e403705d1c05ca566842",
+  "made": "chapter 4 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "ccce4cc66663230e3064b7a8fb59356e1fb261952ef3a47458aed1c0b26f9005",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n5-track": {
   "size": [
@@ -2201,11 +2201,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the open channel for 5 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
-  "sha256": "1257b23bd20a63e767d3a0a179eb8e1823ceabeacfb48f05ba392703af67c34a",
+  "made": "the painted gauge for 5 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
+  "sha256": "800b21b19de75dd213da1ec05382b251b45dc28a867a67196ab401c3eb5ca9ac",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n5-s0": {
   "size": [
@@ -2219,11 +2219,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "c003e30f80ae6bc964d829990c40be4f0caea700f5dfad21dc409a96bfe1d87b",
+  "made": "chapter 1 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "f65c0b2930c4b23058b9dbdb0ed45a256ef1aafdbe136b814d05bfd5ab1cc3ab",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n5-s1": {
   "size": [
@@ -2237,11 +2237,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "5b3b1a144429ad64ee3cdd8b479d8b972db944354682a46a8a26fce067586827",
+  "made": "chapter 2 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "60e69b8e98c1118d677c27c911434300e93183722ea7a77d82b98dfe190912a8",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n5-s2": {
   "size": [
@@ -2255,11 +2255,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "f0593abcefbfad5f45695b3fef6a69ab74a8ba86439cab5aab96c004775cdc29",
+  "made": "chapter 3 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "8d3ed6f2d42d0ef47b1faa24d4b3532b74a4f57bc9be1bd9ad15969ef520dfdd",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n5-s3": {
   "size": [
@@ -2273,11 +2273,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "d9297f1154850dc793dd6121c5ac5dbf1c3fc0bc8915c5e4c2ee19141536a224",
+  "made": "chapter 4 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "bfff8099145c03ac04955cbff9a8f350121a7b70ae756799b395be5b5b108733",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n5-s4": {
   "size": [
@@ -2291,11 +2291,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 5: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "e25c99f43d7b0385ab82815e7d6a3d35bfe65fe8b8eeffa54c820c701112f7ab",
+  "made": "chapter 5 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "74c378b89180851da449f8d1fec5fe334c04efb242f9538e3366813bfbce0f43",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-track": {
   "size": [
@@ -2309,11 +2309,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the open channel for 6 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
-  "sha256": "4e3881d25879502a1787863d3f7750c019d92f68d5a780ceb452a9ce9d49df06",
+  "made": "the painted gauge for 6 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
+  "sha256": "4a8f184b41d2ebcbd64188c7a84809bf6d4b11df64f2b97524cba228a12bfaae",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-s0": {
   "size": [
@@ -2327,11 +2327,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "5e8067914e4e3011beb6cabc514cea825259e42a2ec4ad2e3be5fa64a25d7eba",
+  "made": "chapter 1 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "7e6f21b9b349782b7584b63b1917c5ab8dad42395c20d2dfcb61fc6b61b5d137",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-s1": {
   "size": [
@@ -2345,11 +2345,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "470bde97fb959820cc4e2b47aef367816b059bbb00ddb426b9a9342a9a68c4d5",
+  "made": "chapter 2 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "23b7a6045da1244cfa887d0a6bf32f329095d5b17ccb0364f2cff9351442a144",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-s2": {
   "size": [
@@ -2363,11 +2363,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "6866bb0003c359e3b5400a57e7e00d621b5a58ef172226d6441afc85e4a6b8f0",
+  "made": "chapter 3 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "e5e42aac48540a80282b5a0127f5dbdb99de787c1f10756462dbb80470771de6",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-s3": {
   "size": [
@@ -2381,11 +2381,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "e227b8226d2629c5068015d0d8b8d3c12775d703b5fc484e1b7f126e63e59484",
+  "made": "chapter 4 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "69dd493d9733873ff22439262c51cbd2841a2d48ba8f6049a1c8af80ecbb376b",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-s4": {
   "size": [
@@ -2399,11 +2399,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "d6cf67df8a653931446b9bce2519865abc46a662d03e2b93bba402a360a7c353",
+  "made": "chapter 5 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "b867f7fbdb9ee0b47a74ad60532f92e0154cb1b8bc3537b575c05f1c7c396f55",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n6-s5": {
   "size": [
@@ -2417,11 +2417,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 6: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "662859044c70883040a776192ce2795829719f3d23a48279b6999e23e9205342",
+  "made": "chapter 6 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "791c64a7f90d37cf2110b3d0dcce27105024f44dd75e4f2c34ff52791ef8d536",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-track": {
   "size": [
@@ -2435,11 +2435,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the open channel for 7 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
-  "sha256": "88296562d6bd0bab5fcd0f71eeb94f2a4400cedae3809b4041c99a3fcff9d26c",
+  "made": "the painted gauge for 7 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
+  "sha256": "78d3529dba705c2946933645e1f17a6d48436a9786ef9496f6382fa600382b20",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s0": {
   "size": [
@@ -2453,11 +2453,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "714206f295df435b1ef3db47668451afaf73a634adf6987e2bfc68eb29a687f0",
+  "made": "chapter 1 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "88218cf229ccb36eeb4b42aac5059dae47f399de50bd23f7010da33e31fb4cc3",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s1": {
   "size": [
@@ -2471,11 +2471,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "3a6574bb991d6155080571b20b41b270bb2a1ba4e7071e150fd7e9d876b6160d",
+  "made": "chapter 2 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "d0d0c15bafd16ecd7d1f24f0b114c5ea67b043c163b44d3f7876cca477a4db80",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s2": {
   "size": [
@@ -2489,11 +2489,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "e817c7b4e3cf5335fe041ab95d3180221ede20d239b2706f44e64b92ab45f5af",
+  "made": "chapter 3 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "b6c7910935f88fbc2a364a5de527595eaf8559029ef8da8c368d0103c7e9f4c4",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s3": {
   "size": [
@@ -2507,11 +2507,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "200ef9353fde8360a8c60e995f8d523daca22eb0bad044cb514a87fb0f205588",
+  "made": "chapter 4 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "3bcc0d2b49642824e4e0773515b25de5d2857a98c6ea0a7080bc35a84c3081f3",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s4": {
   "size": [
@@ -2525,11 +2525,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "a674546df0fc28c8fef70d2489a395296db024820f4d984fe0b7f0cd6cbc13e7",
+  "made": "chapter 5 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "98f4efb9b8aedb903758dd2ffb0d6da38b7f91d860b6b92e42bb4fb65289e873",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s5": {
   "size": [
@@ -2543,11 +2543,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "8fb86110b054ba6415439c9fda657633ebebaa1395019779c49e938b602e51c9",
+  "made": "chapter 6 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "77ddd025aa9dd8d7bf7de276a045069afcd1ed7f9f23f36512edec533fac5966",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n7-s6": {
   "size": [
@@ -2561,11 +2561,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 7 of 7: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "6a7b71dcee7f1a25a076312a7ee737de97a607766c9ee274f8144d9c07350c9a",
+  "made": "chapter 7 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "de37e8578c124185ba70c2b657122bab3435bfc0da109f75fb04b6a38c4056ec",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-track": {
   "size": [
@@ -2579,11 +2579,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "the open channel for 8 chapters: the concept's band with an engraved channel in its outer half (thin ivory lips, dark inside), a 1 px tick at each chapter boundary; draw it over the solid ring",
-  "sha256": "7575665c4a6a45341e444db142e6efe34c757b8aafc4c3d3df9474a3a37cd93c",
+  "made": "the painted gauge for 8 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
+  "sha256": "eed42ea9a69ff11f6fb6a53c5e40bb3dde3add689cfa024cb716a5ed97d69ab9",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s0": {
   "size": [
@@ -2597,11 +2597,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 1 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "3eb686cc8a1cfa016eb7af3e8f75ba95f5aa0db0a4e8864f54a7082e4ee9cf49",
+  "made": "chapter 1 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "092e81713eddbb24311367ca83945d0067b89b8d3f25961cad125121e7c014ee",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s1": {
   "size": [
@@ -2615,11 +2615,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 2 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "697230991859048b6c3bdb61573fba0362610bc34ca2ab55fb2b27124a4225e7",
+  "made": "chapter 2 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "2be7f10c2caa7b916ccd6c0b5a70e5bb6d1c9861e292809af2f16fa8be7c881b",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s2": {
   "size": [
@@ -2633,11 +2633,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 3 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "53ebdf3cd63138fc3380fc54bfcdcad301ea50ebf79d6d457d883df909a7b7f6",
+  "made": "chapter 3 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "ccd56f0c6d8e103dde3b7ce85a185b15db1ea5411ba00473844b6bd6e501da4f",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s3": {
   "size": [
@@ -2651,11 +2651,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 4 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "8595230e1cf82c8921bc91d5503944f04431c2298c3325d65a648ba23cda1320",
+  "made": "chapter 4 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "3f0777a85cb3b44cc5473a460dd82e922a5e8d0ea361b58e31705d782fed14af",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s4": {
   "size": [
@@ -2669,11 +2669,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 5 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "8a7e60191ecd7e12584fa3a2c0cef973c0b3b7b17ab87133ff86c7d792b53a61",
+  "made": "chapter 5 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "d32811299947b640af3d8b498a90deb7b59c8f7353dee9887350836e1a96895f",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s5": {
   "size": [
@@ -2687,11 +2687,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 6 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "614dae5970f8de3a43f0e5ca72bf58bf76c463c01992a3347035a4e44eb2adff",
+  "made": "chapter 6 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "e1cd66ad372760040847015e94311a9c699971254cc7146afe6a5698336de5f4",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s6": {
   "size": [
@@ -2705,11 +2705,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 7 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "305abe7af612cb2fdd5b961130986381d283c577a27fe8bfdc163f0324c14127",
+  "made": "chapter 7 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "f76b8760b730cd12165834b527c0158518b830cdad0754ae7cc6eb9742eb095c",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-selected-n8-s7": {
   "size": [
@@ -2723,11 +2723,11 @@
    80
   ],
   "src": "procedural, supersampled 8x",
-  "made": "chapter 8 of 8: the solid band cut by angle (clockwise from 12 o'clock), the 1 px boundary ticks left open; a read chapter shows this over the channel",
-  "sha256": "04aea1489b4f2b90fb96120026af16374a25850129a9f33ef2bae730c811a6c2",
+  "made": "chapter 8 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
+  "sha256": "b591c0e411682b50269dc29ef510df94066a9f6f32f0f836b592b8ba353f283d",
   "status": "new",
   "signed_in": null,
-  "status_note": "repainted: the band solid and with a channel, cut by angle; awaiting verdict"
+  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
  },
  "ring-arc-idle-n4-track": {
   "size": [
