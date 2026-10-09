@@ -5,8 +5,11 @@ mibi carries, how its two copies show, how two mibis make a child, and how a
 genome is written as a stamp. It is for anyone building the game, and for
 readers who want the genetics. What the player does with these rules
 (research, shaping, the wish, forecasts, prices and finds) is in
-[research and breeding](research-and-breeding.md). How a genome becomes a
-painted creature and a pod is in
+[research and breeding](research-and-breeding.md).
+
+A genome is the seed for everything about a mibi: its look, its behaviour and
+its field-guide entry, all produced by rules, never made by hand for one
+individual. How the look is made from the genome, and how pods are drawn, is in
 [art direction](art-direction.md#from-genome-to-creature).
 
 The engine runs on loci. What the screens show of them is in
