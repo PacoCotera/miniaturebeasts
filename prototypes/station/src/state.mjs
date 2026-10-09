@@ -4,7 +4,7 @@
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
 // accepted, dockN, known, probe, withReq, returned, and each mibi's id, name, sp, born, from, bonded.
 // Those keep their shape (station-build.md §2.3).
-import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems } from "./genome.mjs";
+import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 2;
 export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
@@ -107,7 +107,7 @@ export function normalize(st, now = Date.now()) {
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
-  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null; }
+  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null; }
   syncKnown(st);
   claimExisting(st); renameDigits(st);
   return st;

@@ -3,15 +3,15 @@
 // (species.mjs), looks in words from describe.mjs, the stamp from the genome stamp's codec. The
 // Station page fetches the frames beside it (the sandbox publishes prototypes/* side by side); the
 // tests read them from disk and call setFrames.
-import { LOCI, resolveCopies } from "../../workbench/framework/catalogue.mjs";
+import { LOCI, resolveCopies, isContinuous, quantize, valueRange } from "../../workbench/framework/catalogue.mjs";
 import { rng, sampleIndividual, shapeTrait, checkGenome, buildIndividual, genomeDigest, FRAME_VERSION } from "../../workbench/framework/species.mjs";
 import { lookOf } from "../../workbench/framework/describe.mjs";
-import { cross, forecast, kinship, relatedness, identity, SPREAD } from "../../workbench/framework/cross.mjs";
+import { cross, forecast, kinship, relatedness, identity, SPREAD, blendRange } from "../../workbench/framework/cross.mjs";
 import { frameFor as stampFrameFor } from "../../genome-stamp/src/frames.mjs";
 import { sizeFor as stampSizeFor } from "../../genome-stamp/src/codec.mjs";
-import { stampCode as stampCodeOf } from "../../genome-stamp/src/codec.mjs";
+import { stampCode as stampCodeOf, decodeStampCode } from "../../genome-stamp/src/codec.mjs";
 
-export { genomeDigest, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, relatedness, identity, SPREAD };
+export { genomeDigest, checkGenome, buildIndividual, shapeTrait, cross, forecast, kinship, relatedness, identity, SPREAD, decodeStampCode };
 
 // The Companion page's species indexes: 0 is S01 Loika, 1 is S03 Tuikis, 2 is S02 Untuva (station-build.md §2.2).
 export const SP_INDEX = ["S01", "S03", "S02"];
@@ -84,20 +84,50 @@ export const stampModules = (frame, genome = null) => { const sf = stampFrameOf(
 export const stampSizing = (frame, genome = null) => { const N = stampModules(frame, genome), cell = Math.max(2, Math.floor(104 / (N + 2))); return { N, cell, size: (N + 2) * cell }; };
 // A mibi or pod keeps the frame version it was born with (the same individual everywhere, on paper too): the genome's own, then the frame's, then the current one.
 export const stampFrameOf = (frame, genome = null) => stampFrameFor(frame.species.order, genome?.frameVersion ?? frame.frameVersion ?? FRAME_VERSION);
+// The stamp's genome: every heritable copy as the genome holds it (blends on the step: quantizeGenome),
+// and the chapters read, never a sealed one (unread and sealed chapters are never in a stamp). A genome
+// missing a heritable locus is refused, naming the missing loci: a copy is never invented.
 export function stampGenome(frame, genome, readIds) {
   const sf = stampFrameOf(frame, genome);
   if (!sf) return null;
-  const copies = {};
-  for (const l of sf.heritable) copies[l.id] = genome.loci[l.id] ? [...genome.loci[l.id]] : [l.alleles[0], l.alleles[0]];
-  const read = frame.chapters.filter((c) => readIds.includes(c.id)).map((c) => c.name);
+  const missing = sf.heritable.filter((l) => !Array.isArray(genome.loci?.[l.id]) || genome.loci[l.id].length !== 2).map((l) => l.id);
+  if (missing.length) return { refused: true, missing, reason: `no stamp: the genome lacks ${missing.join(", ")}` };
+  const g = quantizeGenome(frame, genome), copies = {};
+  for (const l of sf.heritable) copies[l.id] = [...g.loci[l.id]];
+  const read = frame.chapters.filter((c) => readIds.includes(c.id) && !c.sealed).map((c) => c.name);
   return { species: sf.species, version: sf.version, read, copies };
 }
+// The stamp code: the stamp's own bytes as text (genome-stamp/src/codec.mjs), decodable back to the
+// stamp's genome with decodeStampCode; null when there is no stamp (no frame, or a refused genome).
 export function stampCode(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds);
-  return sg ? stampCodeOf(stampFrameOf(frame, genome), sg) : null;
+  return sg && !sg.refused ? stampCodeOf(stampFrameOf(frame, genome), sg) : null;
 }
+// Blends on the step (decided 2026-10-09): a genome whose blended copies are numbers off the blend step
+// (a child crossed before the step) moved to the nearest step inside its species' pool. Pure and
+// idempotent: a genome already on the step (every genome crossed since, and every named copy) comes
+// back as the same object. A moved genome records what it was born as in origin.was: its digest (its
+// children's origin.parents name it by that, so the pedigree stays whole: cross.mjs pedigreeName) and
+// its painting key (the SHA-256 its painting is stored under: paintKey), so nothing is repainted.
+export function quantizeGenome(frame, genome) {
+  if (!genome?.loci) return genome;
+  let loci = null;
+  for (const l of frame.loci) {
+    const c = genome.loci[l.id], locus = LOCI.get(l.id);
+    if (l.kind === "locked" || !Array.isArray(c) || !locus || !isContinuous(locus) || !c.some((x) => typeof x === "number")) continue;
+    const pool = blendRange(frame, l), [clo, chi] = valueRange(locus);
+    const q = c.map((x) => (typeof x !== "number" ? x : quantize(locus, x, x >= pool[0] - 1e-9 && x <= pool[1] + 1e-9 ? pool : [clo, chi])));
+    if (q[0] !== c[0] || q[1] !== c[1]) (loci ??= { ...genome.loci })[l.id] = q;
+  }
+  if (!loci) return genome;
+  const was = genome.origin?.was ?? { digest: genomeDigest(genome), sha: genomeSha(genome) };
+  return { ...genome, loci, origin: { ...(genome.origin ?? {}), was } };
+}
+// The key a genome's painting is stored under: the SHA-256 it was painted as (before any move onto the step).
+export const paintKey = (genome) => genome.origin?.was?.sha ?? genomeSha(genome);
 // The mibi's name-code: eight base-32 characters of the genome's SHA-256, shown in threes (the short
-// code stays as a lookup, never the genome: research-loop.md §7).
+// code stays as a lookup, never the genome: research-loop.md §7). It is a name, not the genome: the
+// shareable code that carries the genome is the stamp code (stampCode).
 const B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 export function nameCode(sha) {
   let out = "", sum = 0;
