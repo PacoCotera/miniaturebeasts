@@ -584,6 +584,10 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 55 - record only: the manifest hash of the Compare bench
+
+`room-bench-stage-compare` failed its manifest hash check. The cause: the file was last changed in pass 48 (commit 6a1221b, the bench rebuilt from the chapter's own wall; sha256 448dad6e...), which is the file signed under the pass 48 verdict, but the manifest still held the hash of the pass 46 file (ecb2326b...). The manifest entry is corrected to the file's own hash; no pixel changed (the PNG is byte-identical to the commit before). A check of all 505 manifest entries against the files now finds no mismatch and no slice missing from the manifest.
+
 ## Pass 54 - record only
 
 `trait-S09-crown-tall-104x64` is recorded signed under the pass 53 verdict; the Crown is signed at all five sizes. The Tail is closed: the signed Tail stays as it is and no five-size re-cut is made, because at 1x the rump reads as a ground shadow and the painting's wing hides the real rump, so a stronger one would invent anatomy. `proposals/tail-rump-1x.png`, `proposals/tail-rump-3x.png`, `proposals/anchor-tail-crown-1x.png`, `-3x.png` and `tools/proposals_tail.py` are kept as a record only; none of them is a slice. No pixel changed.
