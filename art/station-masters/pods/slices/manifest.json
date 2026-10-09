@@ -7307,56 +7307,6 @@
   "signed_in": "pass 38 verdict",
   "status_note": ""
  },
- "trait-S09-crest-between-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
-  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 195x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "485e52a62da9a6475a56f3933a06f2611448b97bc2e025b927c20b6cbd0ec333"
- },
- "trait-S09-crest-between-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
-  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 199x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "49fdf5985aff4b30e481a4612c40d5b7750e3ca8855dd11f2fc894eedcfd6455"
- },
- "trait-S09-crest-between-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
-  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 181x279 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "3c68abaa9bb53574b551d61e622f4acedc9683f6bf30556ef5d346438a6fc30a"
- },
- "trait-S09-crest-between-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
-  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 263x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "11a1de101c860e02ce4068651a6e8e83e73c97127afd0c8cff33ab94b408c1ee"
- },
- "trait-S09-crest-between-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the crown part with the head (the trait's union) [119, 37, 181, 243]",
-  "made": "the Crest of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 395x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "f6c6c19c6d1e90db86b2a06c62374434b2c90ed7204cb23a37fe04657d627959"
- },
  "trait-S09-crown-tall-128x160": {
   "size": [
    128,
@@ -7365,7 +7315,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 162x202 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "62fbc25c193852de433a5c38754c35b6a990e444c8afc24486a27fd71e58ae3b"
+  "sha256": "1e42d4fdaf314eabbbe1320ce5a348da11b0bc90429f8cae62efe7802ea874fa",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-crown-tall-144x176": {
   "size": [
@@ -7375,7 +7328,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 162x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "38442f196142e94cbec892f7788e54be9d3d008b9bd2defef4201dbff4a1b792"
+  "sha256": "56f79a917e81aad1407bc64438d0ed41e6c41293462731bdc9d7cc66319e4d0f",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-crown-tall-104x160": {
   "size": [
@@ -7385,7 +7341,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 162x249 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "f44b70989362c556dbe37a1f2398bfdbe25759282d6e5a989ee9ea2305af2c75"
+  "sha256": "76b346d41375df669d7ab79ca20a574c97fc6db2409a05576b12bd0ab164dd5d",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-crown-tall-104x96": {
   "size": [
@@ -7395,7 +7354,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 162x149 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "73f157159a6d366d9710c5f25b4ac932cdf459e6827670dc2b1e3e25bf961344"
+  "sha256": "aec5067a961dfcc0893c68dc244d700797d791753ab7c1ba12924a6069ef7c65",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-crown-tall-104x64": {
   "size": [
@@ -7405,157 +7367,10 @@
   "rect": null,
   "src": "S09 accepted painting, the crown part [138, 37, 162, 125]",
   "made": "the Crown of the Belatz (tall): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 204x125 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "9f91b813f54dafca533e92f303d6439d6dfcb641dd78d86c1df160a5880967ff"
- },
- "trait-S09-eyes-small-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
-  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "1ebe1deaf6a52bd9b70cb76267006f86813545b2bdceacce9636d06bce1a1d52"
- },
- "trait-S09-eyes-small-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
-  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "cb7d032b9cb25fd80ae0716196f7dbb0b99becb52e01d552faa8c3ff2e060a51"
- },
- "trait-S09-eyes-small-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
-  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "46d79d7891b126feaa52236266f92b716d5eb4e57d02ac4ac36aa6314ac1a546"
- },
- "trait-S09-eyes-small-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
-  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "c3f6a9e165d485d271a2c7db4d4a2bf21d7aeb03b4f4b03ca363b7e21b84c772"
- },
- "trait-S09-eyes-small-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the eye part [116, 167, 89, 60]",
-  "made": "the Eyes of the Belatz (small): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 104x64 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "e0e8868b08cecb79109fffa1f30dea65c1176f6572f21157155f0f80865c706e"
- },
- "trait-S09-carriage-straight-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
-  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 214x268 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "1be61067e1a25e36ee8ed74ed40b035c388fdf5dde21e124f8f76a80fb4acae8"
- },
- "trait-S09-carriage-straight-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
-  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 214x262 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "c5ef36e00db779f245e2b523e8a26e1a00f8d692663841cba68ae4559ee96e1c"
- },
- "trait-S09-carriage-straight-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
-  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 214x330 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "3967ddcd593b6abc9e458d206e192825736b4c6f94cae53dc980ec2e116de66f"
- },
- "trait-S09-carriage-straight-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
-  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 214x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "e929d65dc94dd1e05f7588e1fa1aa3da3ddaafdac26dabd44e8b4986bcaec626"
- },
- "trait-S09-carriage-straight-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part with the hind body it leaves (the tail and region-1) [292, 251, 214, 160]",
-  "made": "the Carriage of the Belatz (straight): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 260x160 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "a22b1e6a7817d68440ea51d61ed34e597e19a1047f0a9c7881423431a54fcc95"
- },
- "trait-S09-tail-between-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 138x172 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "05ccfb5b4aaec3d2cd1ab1f4e39c725f86c2441b7dbd3df74032b6ae17dd659b"
- },
- "trait-S09-tail-between-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 138x98 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "3fe11ba860db05a916c5b966cc5e12ee61982944daa37cdb5d01c5bc451b311d"
- },
- "trait-S09-tail-between-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 138x212 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "7e7f44b3137f4169c96f0772c8cc9c1aa9ace98651041756dc8fc23380aa7ace"
- },
- "trait-S09-tail-between-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 138x128 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "1e18e420dd8de62c78a4fd5c4305c582f97a5a59fecc59bc28f8aead1659be6e"
- },
- "trait-S09-tail-between-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the tail part [368, 251, 138, 98]",
-  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 160x98 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "292541dc762fbe160a7001f08bc54aa09ad315e29b249161244eff691dae366d"
+  "sha256": "a6bf60b2663771370c87dfe31f2f3f06be11e2e4e3e41779f2d3ce4bd6c8912e",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S01-markings-plain-128x160": {
   "size": [
@@ -8155,56 +7970,6 @@
   "signed_in": "pass 42 (signed on delivery)",
   "status_note": "the stand-in card without text: deep ground, a 1 px edge, a faint hatch; the build sets \"stand-in\" in 16 px mist centred on it. (The pass 19 verdict signed the card in the composites, not baked words.)"
  },
- "trait-S09-head-between-small-and-large-128x160": {
-  "size": [
-   128,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 158x198 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "48d40c97c427f3ad37f9c5c2c492f17097387fa16da4ae992d2be14d54a66720"
- },
- "trait-S09-head-between-small-and-large-144x176": {
-  "size": [
-   144,
-   176
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 158x194 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "4918cc1c092ad59bca6171242ecfa03dbe1b80a011b5d8b27b1e790fe3506f76"
- },
- "trait-S09-head-between-small-and-large-104x160": {
-  "size": [
-   104,
-   160
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 158x244 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "1cd5424a3dde5320168a7c50fb27c04c872cea67c1613409ef40654dc988e659"
- },
- "trait-S09-head-between-small-and-large-104x96": {
-  "size": [
-   104,
-   96
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 182x168 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "f4bd4fd1096fd09e380e15e05b47c17bb4285beccca2921d5edc73600ff6229b"
- },
- "trait-S09-head-between-small-and-large-104x64": {
-  "size": [
-   104,
-   64
-  ],
-  "rect": null,
-  "src": "S09 accepted painting, the head part [119, 112, 158, 168]",
-  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 272x168 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "f00851dfe4c1df86269a51f754fcc4e335ad17876d2a4426072a254b5ba0e967"
- },
  "trait-S09-beak-between-128x160": {
   "size": [
    128,
@@ -8213,7 +7978,10 @@
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 128x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "8cd3e4f3bad9c357eb1dc19ce350dde637dd045ec6077d7c4d079e06a85ff663"
+  "sha256": "e4e7c1e8ae9da97bfeceea32a5769540de42d43b67b942f538c59416ae2a4ce6",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-beak-between-144x176": {
   "size": [
@@ -8223,7 +7991,10 @@
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "b4c2d301e2492af8ab7eadc64834145ed607d2465e54eae4675d2b6a0d60cf9c"
+  "sha256": "0b3d33e86e595b5bf9f0d677f64795d2991d9628933b0fbab8176068ec922327",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-beak-between-104x160": {
   "size": [
@@ -8233,7 +8004,10 @@
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 104x160 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "d1707a5173856f95e263095bbb13f7f710f0cef874103b6c159217ca544308e0"
+  "sha256": "9c32640e5f127e22181ca4bb00971760ab2c68d97be4002950487015f6d72ba7",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-beak-between-104x96": {
   "size": [
@@ -8243,7 +8017,10 @@
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 104x96 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 89x85 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged",
-  "sha256": "4eba91fb2676e8689754d3e2faed8fb06e82e87351013f9425986e86e80be41a"
+  "sha256": "0378c628dc7950527aba417bef35ab432116eadd1fbb081ab8c0e0facf3359ee",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
  },
  "trait-S09-beak-between-104x64": {
   "size": [
@@ -8253,6 +8030,139 @@
   "rect": null,
   "src": "S09 accepted painting, the beak part [94, 202, 89, 85]",
   "made": "the Beak of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 139x85 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
-  "sha256": "7b2af6b3d6aaab9265b4ba6043ca6b81972b9ce243232786ca03bc35ab44ce1b"
+  "sha256": "06be0b678eb05e68f871e0d3badb263095b7e2db571d2a7151b47d40a1600404",
+  "status": "signed",
+  "signed_in": "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)",
+  "status_note": "a crop of the accepted painting from the rig's part region"
+ },
+ "trait-S09-head-between-small-and-large-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head's silhouette in profile, crown to throat (the head and crown parts' union) [119, 37, 181, 243]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 195x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "ca727c39d0d20dc078d745af5f5170cc44e51cb5a3e870b4963b681953ece3fc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head's silhouette in profile, crown to throat (the head and crown parts' union) [119, 37, 181, 243]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 199x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "395af5a97c4b05273e48985551ed38871a264ac4054dce92a15fe422f7a735c9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head's silhouette in profile, crown to throat (the head and crown parts' union) [119, 37, 181, 243]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 181x279 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "231c7a6b997f750713727edd8bfe7b8f04a414aacfc382c7fa4ebd771f111a95",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head's silhouette in profile, crown to throat (the head and crown parts' union) [119, 37, 181, 243]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 263x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "29fcf77b2c3788f5bf8c5d02bbc55313a7b5f1853b4cc6faf69f38685d8fff4b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-head-between-small-and-large-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the head's silhouette in profile, crown to throat (the head and crown parts' union) [119, 37, 181, 243]",
+  "made": "the Head of the Belatz (between small and large): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 395x243 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "8d782eed46c55c6f97bdcbe2419f4ae68eaee6d65b64ecd5f35b26f44e255eb9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-tail-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the tail alone, tip to root (the wing and the body left out) [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 128x160 from a 138x172 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "f24a4c4d8ce651c73d396dbcbe641b7058cabac2ff4ad526e17f537744dee302",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-tail-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the tail alone, tip to root (the wing and the body left out) [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 144x176 from a 144x176 window (1:1, never enlarged), paper keyed to deep, key choked 1 px, defringed; FLAG: the part's box is 138x98 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged",
+  "sha256": "8dde7b03a1a39ec94555646a89bfe1029b168314e1950f23f3319776bf56b3ac",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-tail-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the tail alone, tip to root (the wing and the body left out) [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x160 from a 138x212 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "66ff9a59753984c527a2819c9786da47bdef41a4fee00012e021397fc7879f2f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-tail-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the tail alone, tip to root (the wing and the body left out) [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x96 from a 138x128 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "ac88049452c56b65d5838123e1c87b8b35e4c2c93c983c9f15043ddf99e9509e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-S09-tail-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "S09 accepted painting, the tail alone, tip to root (the wing and the body left out) [368, 251, 138, 98]",
+  "made": "the Tail of the Belatz (between): a crop of the accepted painting from the rig's region, re-framed to 104x64 from a 160x98 window (reduced, never enlarged), paper keyed to deep, key choked 1 px, defringed",
+  "sha256": "9aa0b9e6818344ead8e07caa3c92e838519337783d4dece40b48c0f7a484f44d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
  }
 }

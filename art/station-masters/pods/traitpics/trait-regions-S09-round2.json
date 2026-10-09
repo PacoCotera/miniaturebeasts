@@ -12,38 +12,39 @@
    "chapter": "face",
    "trait": "Head",
    "look": "between small and large",
+   "kind": "crop",
    "box": [
     119,
-    112,
-    158,
-    168
+    37,
+    181,
+    243
    ],
-   "source": "the head part",
+   "source": "the head's silhouette in profile, crown to throat (the head and crown parts' union)",
    "crops": {
     "128x160": {
      "window": [
-      119,
-      97,
-      277,
-      295
+      112,
+      37,
+      307,
+      280
      ],
      "source_px": [
-      158,
-      198
+      195,
+      243
      ],
      "slice": "trait-S09-head-between-small-and-large-128x160",
      "flag": null
     },
     "144x176": {
      "window": [
-      119,
-      99,
-      277,
-      293
+      110,
+      37,
+      309,
+      280
      ],
      "source_px": [
-      158,
-      194
+      199,
+      243
      ],
      "slice": "trait-S09-head-between-small-and-large-144x176",
      "flag": null
@@ -51,41 +52,41 @@
     "104x160": {
      "window": [
       119,
-      74,
-      277,
-      318
+      19,
+      300,
+      298
      ],
      "source_px": [
-      158,
-      244
+      181,
+      279
      ],
      "slice": "trait-S09-head-between-small-and-large-104x160",
      "flag": null
     },
     "104x96": {
      "window": [
-      107,
-      112,
-      289,
+      78,
+      37,
+      341,
       280
      ],
      "source_px": [
-      182,
-      168
+      263,
+      243
      ],
      "slice": "trait-S09-head-between-small-and-large-104x96",
      "flag": null
     },
     "104x64": {
      "window": [
-      62,
-      112,
-      334,
+      12,
+      37,
+      407,
       280
      ],
      "source_px": [
-      272,
-      168
+      395,
+      243
      ],
      "slice": "trait-S09-head-between-small-and-large-104x64",
      "flag": null
@@ -96,6 +97,7 @@
    "chapter": "face",
    "trait": "Beak",
    "look": "between",
+   "kind": "crop",
    "box": [
     94,
     202,
@@ -176,94 +178,11 @@
     }
    }
   },
-  "face/eyes": {
-   "chapter": "face",
-   "trait": "Eyes",
-   "look": "small",
-   "box": [
-    116,
-    167,
-    89,
-    60
-   ],
-   "source": "the eye part",
-   "crops": {
-    "128x160": {
-     "window": [
-      96,
-      117,
-      224,
-      277
-     ],
-     "source_px": [
-      128,
-      160
-     ],
-     "slice": "trait-S09-eyes-small-128x160",
-     "flag": "the part's box is 89x60 px, smaller than the 128x160 cell: shown with its surroundings at 1:1, not enlarged"
-    },
-    "144x176": {
-     "window": [
-      88,
-      109,
-      232,
-      285
-     ],
-     "source_px": [
-      144,
-      176
-     ],
-     "slice": "trait-S09-eyes-small-144x176",
-     "flag": "the part's box is 89x60 px, smaller than the 144x176 cell: shown with its surroundings at 1:1, not enlarged"
-    },
-    "104x160": {
-     "window": [
-      108,
-      117,
-      212,
-      277
-     ],
-     "source_px": [
-      104,
-      160
-     ],
-     "slice": "trait-S09-eyes-small-104x160",
-     "flag": "the part's box is 89x60 px, smaller than the 104x160 cell: shown with its surroundings at 1:1, not enlarged"
-    },
-    "104x96": {
-     "window": [
-      108,
-      149,
-      212,
-      245
-     ],
-     "source_px": [
-      104,
-      96
-     ],
-     "slice": "trait-S09-eyes-small-104x96",
-     "flag": "the part's box is 89x60 px, smaller than the 104x96 cell: shown with its surroundings at 1:1, not enlarged"
-    },
-    "104x64": {
-     "window": [
-      108,
-      165,
-      212,
-      229
-     ],
-     "source_px": [
-      104,
-      64
-     ],
-     "slice": "trait-S09-eyes-small-104x64",
-     "flag": "the part's box is 89x60 px, smaller than the 104x64 cell: shown with its surroundings at 1:1, not enlarged"
-    }
-   }
-  },
   "face/crown": {
    "chapter": "face",
    "trait": "Crown",
    "look": "tall",
+   "kind": "crop",
    "box": [
     138,
     37,
@@ -344,101 +263,18 @@
     }
    }
   },
-  "face/feather-crest": {
-   "chapter": "face",
-   "trait": "Crest",
-   "look": "between",
-   "box": [
-    119,
-    37,
-    181,
-    243
-   ],
-   "source": "the crown part with the head (the trait's union)",
-   "crops": {
-    "128x160": {
-     "window": [
-      112,
-      37,
-      307,
-      280
-     ],
-     "source_px": [
-      195,
-      243
-     ],
-     "slice": "trait-S09-crest-between-128x160",
-     "flag": null
-    },
-    "144x176": {
-     "window": [
-      110,
-      37,
-      309,
-      280
-     ],
-     "source_px": [
-      199,
-      243
-     ],
-     "slice": "trait-S09-crest-between-144x176",
-     "flag": null
-    },
-    "104x160": {
-     "window": [
-      119,
-      19,
-      300,
-      298
-     ],
-     "source_px": [
-      181,
-      279
-     ],
-     "slice": "trait-S09-crest-between-104x160",
-     "flag": null
-    },
-    "104x96": {
-     "window": [
-      78,
-      37,
-      341,
-      280
-     ],
-     "source_px": [
-      263,
-      243
-     ],
-     "slice": "trait-S09-crest-between-104x96",
-     "flag": null
-    },
-    "104x64": {
-     "window": [
-      12,
-      37,
-      407,
-      280
-     ],
-     "source_px": [
-      395,
-      243
-     ],
-     "slice": "trait-S09-crest-between-104x64",
-     "flag": null
-    }
-   }
-  },
   "legs-tail/tail": {
    "chapter": "legs-tail",
    "trait": "Tail",
    "look": "between",
+   "kind": "crop",
    "box": [
     368,
     251,
     138,
     98
    ],
-   "source": "the tail part",
+   "source": "the tail alone, tip to root (the wing and the body left out)",
    "crops": {
     "128x160": {
      "window": [
@@ -511,90 +347,6 @@
      "flag": null
     }
    }
-  },
-  "legs-tail/tail-curl": {
-   "chapter": "legs-tail",
-   "trait": "Carriage",
-   "look": "straight",
-   "box": [
-    292,
-    251,
-    214,
-    160
-   ],
-   "source": "the tail part with the hind body it leaves (the tail and region-1)",
-   "crops": {
-    "128x160": {
-     "window": [
-      292,
-      197,
-      506,
-      465
-     ],
-     "source_px": [
-      214,
-      268
-     ],
-     "slice": "trait-S09-carriage-straight-128x160",
-     "flag": null
-    },
-    "144x176": {
-     "window": [
-      292,
-      200,
-      506,
-      462
-     ],
-     "source_px": [
-      214,
-      262
-     ],
-     "slice": "trait-S09-carriage-straight-144x176",
-     "flag": null
-    },
-    "104x160": {
-     "window": [
-      292,
-      166,
-      506,
-      496
-     ],
-     "source_px": [
-      214,
-      330
-     ],
-     "slice": "trait-S09-carriage-straight-104x160",
-     "flag": null
-    },
-    "104x96": {
-     "window": [
-      292,
-      232,
-      506,
-      430
-     ],
-     "source_px": [
-      214,
-      198
-     ],
-     "slice": "trait-S09-carriage-straight-104x96",
-     "flag": null
-    },
-    "104x64": {
-     "window": [
-      269,
-      251,
-      529,
-      411
-     ],
-     "source_px": [
-      260,
-      160
-     ],
-     "slice": "trait-S09-carriage-straight-104x64",
-     "flag": null
-    }
-   }
   }
  },
  "quality_traits_waiting": [
@@ -614,5 +366,11 @@
   "reserve",
   "curiosity",
   "nerve"
- ]
+ ],
+ "plates_waiting": {
+  "face/feather-crest": "the crest alone, close up against deep",
+  "face/eyes": "one eye close up filling the cell: iris, ring, lid; no beak",
+  "legs-tail/tail-curl": "the whole hind body and tail in silhouette, small in the cell, showing how the tail is held"
+ },
+ "rule": "a distinct visible part is a crop (Beak, Crown, Tail, Feathers, Tufts, Head); a quality, a small part or a posture is a per-look plate (Colour, Fluff, Sheen, Markings, Scales, Crest, Eyes, Carriage); each trait's kind is recorded here"
 }

@@ -66,6 +66,7 @@ for n in m:
     elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 42 (S13 mist at a 10 percent cap, signed on delivery)" if re.match(r"mibi-halo-S13-.*mist", n) else "pass 41 (the low mists signed)" if re.match(r"mibi-halo-S(03|10|11|14)-.*mist", n) else "pass 37 (re-fit verdict)", "placeholder, re-cut from the standard painting when it lands")
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
+    elif re.match(r"trait-S09-(beak|crown)-", n): sign(n, "signed", "pass 45 (round 2 verdict; re-cut with the head's lit edge left out of the choke)", "a crop of the accepted painting from the rig's part region")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")
     elif n in ("mark-asleep-24x16", "mark-breed-28x16"): sign(n, "signed", "pass 38 verdict", "")
     elif n == "mark-only-72x8": sign(n, "signed", "pass 41 verdict", "the quiet engraved line")
