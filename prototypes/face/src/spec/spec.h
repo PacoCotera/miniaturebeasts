@@ -15,4 +15,8 @@ int spec_int(const char *screen, const char *path, int dflt);
 int spec_str(const char *screen, const char *path, char *buf, int cap);
 /* The size of the array or object at a path, or -1 when it is absent or a scalar. */
 int spec_len(const char *screen, const char *path);
+/* The raw JSON text of the value at a path (a pointer into the spec's own copy, and its length), or NULL when absent. The words hand a subtree to a parser of its own (the focus graph). */
+const char *spec_raw(const char *screen, const char *path, int *len);
+/* The i-th member of the object at a path: its key (decoded) into key, and its value into val when it is a string (else val is empty). 1 when there is such a member. For keys that hold a "." and so cannot be named by a path. */
+int spec_member(const char *screen, const char *path, int i, char *key, int kcap, char *val, int vcap);
 #endif

@@ -92,6 +92,19 @@ int spec_str(const char *screen, const char *path, char *buf, int cap) {
   int i = at(s, path); if (i < 0 || s->tok[i].type != JSMN_STRING) return 0;
   return unescape(s->js + s->tok[i].start, s->tok[i].end - s->tok[i].start, buf, cap);
 }
+const char *spec_raw(const char *screen, const char *path, int *len) {
+  const spec_t *s = find(screen); if (!s) return NULL; int i = at(s, path); if (i < 0) return NULL;
+  int a = s->tok[i].start, b = s->tok[i].end; if (s->tok[i].type == JSMN_STRING) { a--; b++; }
+  if (len) *len = b - a; return s->js + a;
+}
+int spec_member(const char *screen, const char *path, int i, char *key, int kcap, char *val, int vcap) {
+  if (kcap > 0) key[0] = 0; if (vcap > 0) val[0] = 0;
+  const spec_t *s = find(screen); if (!s) return 0; int o = *path ? at(s, path) : 0; if (o < 0 || s->tok[o].type != JSMN_OBJECT || i < 0 || i >= s->tok[o].size) return 0;
+  int k = o + 1; for (int m = 0; m < i; m++) k = skip(s, k + 1);
+  unescape(s->js + s->tok[k].start, s->tok[k].end - s->tok[k].start, key, kcap);
+  if (s->tok[k + 1].type == JSMN_STRING) unescape(s->js + s->tok[k + 1].start, s->tok[k + 1].end - s->tok[k + 1].start, val, vcap);
+  return 1;
+}
 int spec_len(const char *screen, const char *path) {
   const spec_t *s = find(screen); if (!s) return -1;
   int i = at(s, path); if (i < 0) return -1;
