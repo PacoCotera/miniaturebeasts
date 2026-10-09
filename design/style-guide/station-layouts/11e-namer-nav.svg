@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>The namer's navigation: how it opens (the meet's first ✓, ✓ Rename on Habitat), how the pad walks the keys, what ← does, and how it closes. 1024×600 at 1×.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<text x="16" y="22" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">The namer: how it opens, how the pad moves, how it closes</text>
+<rect x="16.5" y="40.5" width="207" height="71" fill="#f4f8fc" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="24" y="57" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Incubator, ready</text>
+<text x="24" y="72" font-size="9" fill="#444">✓ Open: the hatch, input held</text>
+<text x="24" y="84" font-size="9" fill="#444">2780 ms, then Habitat's meet</text>
+<rect x="16.5" y="136.5" width="207" height="103" fill="#f4f8fc" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="24" y="153" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Habitat, the meet</text>
+<text x="24" y="168" font-size="9" fill="#444">the ring on the new mibi;</text>
+<text x="24" y="180" font-size="9" fill="#444">the first ✓: ✓ Name Fig opens</text>
+<text x="24" y="192" font-size="9" fill="#444">the namer; any other key ends</text>
+<text x="24" y="204" font-size="9" fill="#444">the meet, the default kept,</text>
+<text x="24" y="216" font-size="9" fill="#444">and does what it does</text>
+<rect x="16.5" y="264.5" width="207" height="87" fill="#f4f8fc" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="24" y="281" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Habitat, any time</text>
+<text x="24" y="296" font-size="9" fill="#444">the card's name is a target:</text>
+<text x="24" y="308" font-size="9" fill="#444">✓ Rename Fig opens the namer</text>
+<text x="24" y="320" font-size="9" fill="#444">(any mibi at home, bonded</text>
+<text x="24" y="332" font-size="9" fill="#444">or with you)</text>
+<rect x="272.5" y="40.5" width="391" height="311" fill="#fff8f2" stroke="#c45f12" stroke-width="1.5"/>
+<text x="280" y="57" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">The namer (an overlay)</text>
+<line x1="224" y1="76" x2="264" y2="168" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="224" y1="188" x2="264" y2="188" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<line x1="224" y1="308" x2="264" y2="220" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<rect x="288.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="305" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">a</text>
+<rect x="328.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="345" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">b</text>
+<rect x="368.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="385" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">c</text>
+<rect x="408.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="425" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">d</text>
+<rect x="448.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="465" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">e</text>
+<rect x="488.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="505" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">f</text>
+<rect x="528.5" y="76.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="545" y="98" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">g</text>
+<rect x="288.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="305" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">h</text>
+<rect x="328.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="345" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">i</text>
+<rect x="368.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="385" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">j</text>
+<rect x="408.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="425" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">k</text>
+<rect x="448.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="465" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">l</text>
+<rect x="488.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="505" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">m</text>
+<rect x="528.5" y="116.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="545" y="138" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">n</text>
+<rect x="288.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="305" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">o</text>
+<rect x="328.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="345" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">p</text>
+<rect x="368.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="385" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">q</text>
+<rect x="408.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="425" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">r</text>
+<rect x="448.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="465" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">s</text>
+<rect x="488.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="505" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">t</text>
+<rect x="528.5" y="156.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="545" y="178" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">u</text>
+<rect x="288.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="305" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">v</text>
+<rect x="328.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="345" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">w</text>
+<rect x="368.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="385" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">x</text>
+<rect x="408.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="425" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">y</text>
+<rect x="448.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="465" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">z</text>
+<rect x="488.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="505" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">-</text>
+<rect x="528.5" y="196.5" width="33" height="33" fill="#f2f2f2" stroke="#666" stroke-width="1"/>
+<text x="545" y="218" font-size="14" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">’</text>
+<rect x="288.5" y="236.5" width="73" height="33" fill="#e8e8e8" stroke="#666" stroke-width="1"/>
+<text x="325" y="258" font-size="12" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Aa</text>
+<rect x="368.5" y="236.5" width="113" height="33" fill="#e8e8e8" stroke="#666" stroke-width="1"/>
+<text x="425" y="258" font-size="12" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">space</text>
+<rect x="488.5" y="236.5" width="73" height="33" fill="#e8e8e8" stroke="#666" stroke-width="1"/>
+<text x="525" y="258" font-size="12" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">àéñ</text>
+<rect x="288.5" y="284.5" width="133" height="33" fill="#e8e8e8" stroke="#666" stroke-width="1"/>
+<text x="355" y="306" font-size="12" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Suggest</text>
+<rect x="428.5" y="284.5" width="133" height="33" fill="#e8e8e8" stroke="#666" stroke-width="1"/>
+<text x="495" y="306" font-size="12" fill="#222" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Done</text>
+<text x="572" y="90" font-size="9" fill="#c45f12">◀ ▶ ▲ ▼ walk</text>
+<text x="572" y="102" font-size="9" fill="#c45f12">the grid; the</text>
+<text x="572" y="114" font-size="9" fill="#c45f12">ends stop,</text>
+<text x="572" y="126" font-size="9" fill="#c45f12">never a wrap</text>
+<text x="572" y="246" font-size="9" fill="#c45f12">▼ from a key:</text>
+<text x="572" y="258" font-size="9" fill="#c45f12">the key under it</text>
+<text x="572" y="296" font-size="9" fill="#c45f12">opens on Done</text>
+<text x="572" y="308" font-size="9" fill="#c45f12">◀ ▶ between the two</text>
+<line x1="425" y1="232" x2="425" y2="238" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
+<rect x="688.5" y="40.5" width="319" height="159" fill="#f4f8fc" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="696" y="57" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">✓ on the focused key</text>
+<text x="696" y="72" font-size="9" fill="#444">a letter or mark: types it (on the selection,</text>
+<text x="696" y="84" font-size="9" fill="#444">  it replaces it); refused in words when full,</text>
+<text x="696" y="96" font-size="9" fill="#444">  first, or beside another mark</text>
+<text x="696" y="108" font-size="9" fill="#444">Aa: the next letter in the other case</text>
+<text x="696" y="120" font-size="9" fill="#444">  (a first letter is always a capital)</text>
+<text x="696" y="132" font-size="9" fill="#444">àéñ / abc: turns the page</text>
+<text x="696" y="144" font-size="9" fill="#444">Suggest: the next pool name, selected</text>
+<text x="696" y="156" font-size="9" fill="#444">Done: Name it Bean, or Keep Fig unchanged;</text>
+<text x="696" y="168" font-size="9" fill="#444">  refused in words while it can't be saved</text>
+<rect x="688.5" y="216.5" width="319" height="135" fill="#f4f8fc" stroke="#2b6cb0" stroke-width="1.5"/>
+<text x="696" y="233" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">← (the way back slot names it)</text>
+<text x="696" y="248" font-size="9" fill="#444">a selection (as opened, or a suggestion):</text>
+<text x="696" y="260" font-size="9" fill="#444">  ← Clear: the field empties</text>
+<text x="696" y="272" font-size="9" fill="#444">typed letters: ← Delete, the last one</text>
+<text x="696" y="284" font-size="9" fill="#444">an empty field: ← Habitat: the namer</text>
+<text x="696" y="296" font-size="9" fill="#444">  closes and writes nothing</text>
+<text x="696" y="308" font-size="9" fill="#444"></text>
+<text x="696" y="320" font-size="9" fill="#444">Room keys and Idle close it too,</text>
+<text x="696" y="332" font-size="9" fill="#444">  writing nothing; Dock leaves it open</text>
+<rect x="272.5" y="376.5" width="391" height="103" fill="#f2fbf5" stroke="#2f855a" stroke-width="1.5"/>
+<text x="280" y="393" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Closes, back to Habitat</text>
+<text x="280" y="408" font-size="9" fill="#444">Done ✓: the name saved at once, the namer closes, the name</text>
+<text x="280" y="420" font-size="9" fill="#444">  regions on Habitat flash 240 ms; the ring returns to what</text>
+<text x="280" y="432" font-size="9" fill="#444">  opened it (the meet: the new mibi, and the meet ends;</text>
+<text x="280" y="444" font-size="9" fill="#444">  Rename: the name). Keep, ← on empty: nothing written;</text>
+<text x="280" y="456" font-size="9" fill="#444">  the ring returns the same way</text>
+<line x1="468" y1="352" x2="468" y2="372" stroke="#2f855a" stroke-width="1.5" marker-end="url(#ah)"/>
+<rect x="688.5" y="376.5" width="319" height="103" fill="#f6f6f8" stroke="#6b6880" stroke-width="1.5"/>
+<text x="696" y="393" font-size="13" fill="#222" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">A room key, Idle</text>
+<text x="696" y="408" font-size="9" fill="#444">the namer closes, writing nothing, and the</text>
+<text x="696" y="420" font-size="9" fill="#444">room's top opens (Idle: Home's living view);</text>
+<text x="696" y="432" font-size="9" fill="#444">coming back to Habitat starts at the resident,</text>
+<text x="696" y="444" font-size="9" fill="#444">with no namer</text>
+<line x1="664" y1="340" x2="700" y2="372" stroke="#6b6880" stroke-width="1.5" marker-end="url(#ag)"/>
+<text x="16" y="512" font-size="10" fill="#444">The pad never leaves the namer and never spends; ✓ does exactly what the bottom line says; the overlay's own focus graph replaces Habitat's while it is open.</text>
+<text x="16" y="528" font-size="10" fill="#444">Every character is reached with ◀ ▶ ▲ ▼ and typed with ✓: 26 letters and the two marks on the letters page, 24 accented letters on the accents page,</text>
+<text x="16" y="544" font-size="10" fill="#444">space on the bottom row, capitals with Aa. At most 7 presses from Done to any key, 8 between any two.</text>
+</svg>

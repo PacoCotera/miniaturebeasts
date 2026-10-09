@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>The namer, typing: Bea and the caret, small letters after the first, the ring on n, ✓ Type n, ← Delete. 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Habitat</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
+<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
+<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
+<rect x="836.5" y="16.5" width="7" height="7" fill="#9be7c9" stroke="#444" stroke-width="1"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
+<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Type n</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">a name for your Loika</text>
+<circle cx="948" cy="582" r="8" fill="#5d5974"/>
+<text x="948" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Delete</text>
+<rect x="16.5" y="48.5" width="607" height="423" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="24.5" y="56.5" width="591" height="407" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
+<rect x="168.5" y="136.5" width="303" height="311" fill="#ffe2bf" stroke="#c45f12" stroke-width="2"/>
+<text x="172" y="149" font-size="9" fill="#7d5435">the resident 304×312, in view while it is named</text>
+<text x="172" y="161" font-size="9" fill="#777">168,136 (Habitat's spec)</text>
+<text x="28" y="69" font-size="9" fill="#777">Habitat's living window, uncovered: 24,56 592×408</text>
+<rect x="16.5" y="480.5" width="991" height="71" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
+<rect x="24.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
+<rect x="160.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
+<rect x="296.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
+<rect x="432.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
+<rect x="568.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
+<rect x="704.5" y="484.5" width="127" height="63" fill="#f2f2f2" stroke="#bbb" stroke-width="1"/>
+<rect x="840.5" y="484.5" width="127" height="63" fill="none" stroke="#ccc" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="32" y="520" font-size="9" fill="#999">Habitat's strip, beneath: no target while the namer is open</text>
+<rect x="634" y="51" width="376" height="416" fill="#0c0a12" opacity="0.55"/>
+<rect x="632.5" y="48.5" width="375" height="415" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="633" y1="49.5" x2="1007" y2="49.5" stroke="#5a6672" stroke-width="1"/>
+<text x="656" y="460" font-size="9" fill="#c6c4d8">namer 632,48 376×416 · panel, shadow void +2,+3</text>
+<rect x="656.5" y="64.5" width="327" height="47" fill="#162a37" stroke="#3c4b57" stroke-width="1"/>
+<text x="672" y="98" font-size="28" fill="#f1ebdf" font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="600">Bea</text>
+<rect x="725" y="74" width="2" height="28" fill="#f1ebdf"/>
+<rect x="656.5" y="120.5" width="327" height="23" fill="none" stroke="#5d5974" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="656.5" y="160.5" width="327" height="183" fill="none" stroke="none" stroke-width="1"/>
+<rect x="656.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="657" y1="161.5" x2="695" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="676" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">a</text>
+<rect x="704.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="705" y1="161.5" x2="743" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="724" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">b</text>
+<rect x="752.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="753" y1="161.5" x2="791" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="772" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">c</text>
+<rect x="800.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="801" y1="161.5" x2="839" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="820" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">d</text>
+<rect x="848.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="849" y1="161.5" x2="887" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="868" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">e</text>
+<rect x="896.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="897" y1="161.5" x2="935" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="916" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">f</text>
+<rect x="944.5" y="160.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="945" y1="161.5" x2="983" y2="161.5" stroke="#5a6672" stroke-width="1"/>
+<text x="964" y="186" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">g</text>
+<rect x="656.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="657" y1="209.5" x2="695" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="676" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">h</text>
+<rect x="704.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="705" y1="209.5" x2="743" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="724" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">i</text>
+<rect x="752.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="753" y1="209.5" x2="791" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="772" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">j</text>
+<rect x="800.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="801" y1="209.5" x2="839" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="820" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">k</text>
+<rect x="848.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="849" y1="209.5" x2="887" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="868" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">l</text>
+<rect x="896.5" y="208.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="897" y1="209.5" x2="935" y2="209.5" stroke="#5a6672" stroke-width="1"/>
+<text x="916" y="234" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">m</text>
+<rect x="944.5" y="206.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="945" y1="207.5" x2="983" y2="207.5" stroke="#5a6672" stroke-width="1"/>
+<text x="964" y="232" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">n</text>
+<rect x="656.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="657" y1="257.5" x2="695" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="676" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">o</text>
+<rect x="704.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="705" y1="257.5" x2="743" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="724" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">p</text>
+<rect x="752.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="753" y1="257.5" x2="791" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="772" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">q</text>
+<rect x="800.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="801" y1="257.5" x2="839" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="820" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">r</text>
+<rect x="848.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="849" y1="257.5" x2="887" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="868" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">s</text>
+<rect x="896.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="897" y1="257.5" x2="935" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="916" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">t</text>
+<rect x="944.5" y="256.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="945" y1="257.5" x2="983" y2="257.5" stroke="#5a6672" stroke-width="1"/>
+<text x="964" y="282" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">u</text>
+<rect x="656.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="657" y1="305.5" x2="695" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="676" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">v</text>
+<rect x="704.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="705" y1="305.5" x2="743" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="724" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">w</text>
+<rect x="752.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="753" y1="305.5" x2="791" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="772" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">x</text>
+<rect x="800.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="801" y1="305.5" x2="839" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="820" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">y</text>
+<rect x="848.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="849" y1="305.5" x2="887" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="868" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">z</text>
+<rect x="896.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="897" y1="305.5" x2="935" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="916" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">-</text>
+<rect x="944.5" y="304.5" width="39" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="945" y1="305.5" x2="983" y2="305.5" stroke="#5a6672" stroke-width="1"/>
+<text x="964" y="330" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">’</text>
+<rect x="656.5" y="352.5" width="87" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="657" y1="353.5" x2="743" y2="353.5" stroke="#5a6672" stroke-width="1"/>
+<text x="700" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Aa</text>
+<rect x="752.5" y="352.5" width="135" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="753" y1="353.5" x2="887" y2="353.5" stroke="#5a6672" stroke-width="1"/>
+<text x="820" y="378" font-size="16" fill="#c6c4d8" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">space</text>
+<rect x="896.5" y="352.5" width="87" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="897" y1="353.5" x2="983" y2="353.5" stroke="#5a6672" stroke-width="1"/>
+<text x="940" y="378" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">àéñ</text>
+<rect x="656.5" y="408.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="657" y1="409.5" x2="815" y2="409.5" stroke="#5a6672" stroke-width="1"/>
+<text x="736" y="434" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Suggest</text>
+<rect x="824.5" y="408.5" width="159" height="39" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<line x1="825" y1="409.5" x2="983" y2="409.5" stroke="#5a6672" stroke-width="1"/>
+<text x="904" y="434" font-size="16" fill="#f1ebdf" text-anchor="middle" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">Done</text>
+<rect x="941" y="203" width="46" height="46" rx="6" fill="none" stroke="#e0a800" stroke-width="2"/>
+<text x="32" y="196" font-size="10" fill="#2b6cb0">Renaming from</text>
+<text x="32" y="209" font-size="10" fill="#2b6cb0">Habitat: no ribbon.</text>
+<text x="32" y="222" font-size="10" fill="#2b6cb0"></text>
+<text x="32" y="235" font-size="10" fill="#2b6cb0">The caret after the</text>
+<text x="32" y="248" font-size="10" fill="#2b6cb0">last letter, 2×28</text>
+<text x="32" y="261" font-size="10" fill="#2b6cb0">bone, steady.</text>
+<text x="32" y="274" font-size="10" fill="#2b6cb0"></text>
+<text x="32" y="287" font-size="10" fill="#2b6cb0">← deletes the last</text>
+<text x="32" y="300" font-size="10" fill="#2b6cb0">letter; on an empty</text>
+<text x="32" y="313" font-size="10" fill="#2b6cb0">field ← leaves,</text>
+<text x="32" y="326" font-size="10" fill="#2b6cb0">writing nothing.</text>
+</svg>
