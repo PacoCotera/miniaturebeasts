@@ -206,3 +206,18 @@ test("need(): a pod that cannot yet grow or be read says what is short, with no 
   const short = S.need(st, sv, settings).text; assert.ok(/^a pod grows with ⚡ \d+ ❀ \d+ more$/.test(short) || /^a pod grows with (⚡|❀) \d+ more$/.test(short), short); assert.ok(!/·/.test(short));
   st.e = 99; st.s = 99; assert.match(S.need(st, sv, settings).text, /^(a|an) \w+ pod could grow$/); void c; void p;
 });
+
+// ---- 10. sitting order ----
+import * as T from "../src/sitting.mjs";
+test("poses are offered in the frame's habit order, however they were seen", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 5, 2, settings); const m = st.mibis[0], hs = frameOf("S01").habits;
+  assert.ok(hs.length >= 2); m.habits = [];
+  for (const h of hs.slice().reverse()) S.recordHabit(st, m, h);
+  assert.deepEqual(S.habitsOf(m), hs.slice().reverse(), "seen in reverse"); assert.deepEqual(T.offer(st, m).poses, hs, "offered in frame order");
+});
+test("a bred mibi's places are only the ones it walked to; a founder keeps its pod's place first", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis;
+  const child = { ...a, id: 99, from: { n: 0, g: a.from.g, how: "cross", podId: null, of: [a.name, b.name] }, walked: [] };
+  assert.deepEqual(S.placesOf(child), [], "no walks, no places"); child.walked = ["pond"]; assert.deepEqual(S.placesOf(child), ["pond"]);
+  const f = { from: { g: "meadow", how: "ground" }, walked: ["pond", "meadow", "wood"] }; assert.deepEqual(S.placesOf(f), ["meadow", "pond", "wood"]);
+});

@@ -258,7 +258,8 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 export const WATCH_MS = 60000;   // the default of settings.watchMs
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
-export const placesOf = (m) => [...new Set([m.from?.g, ...(m.walked || [])].filter(Boolean))];
+// A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
+export const placesOf = (m) => [...new Set([m.from?.how === "cross" ? null : m.from?.g, ...(m.walked || [])].filter(Boolean))];
 export function recordHabit(st, m, habit) {
   if (!m || !habit) return { ok: false };
   const fr = frameFor(m); if (!fr || !(fr.habits || []).includes(habit)) return { ok: false, msg: "not a habit of " + (fr ? fr.species.name : "that species") };

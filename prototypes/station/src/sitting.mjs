@@ -10,7 +10,7 @@
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf, chapterLooks } from "./genome.mjs";
-import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -125,9 +125,11 @@ export function dock(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 
 // --- the ceremony: pose, place, confirm ---------------------------------------------------------------------------------------
 // The offer on Habitat: the mibi, the poses it can take (habits seen), the places (where it has been).
+// Poses are offered in the species frame's habit order, not the order they were seen.
+const inFrameOrder = (m, hs) => { const order = frameFor(m)?.habits || []; const at = (h) => { const i = order.indexOf(h); return i < 0 ? order.length : i; }; return hs.slice().sort((a, b) => at(a) - at(b)); };
 export function offer(st, m) {
   const block = st.sitting ? portraitBlock(st, m) : "no sitting held";
-  return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? habitsOf(m).slice() : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
+  return { held: !!st.sitting, mibi: m ? m.id : null, poses: m ? inFrameOrder(m, habitsOf(m)) : [], places: m ? placesOf(m) : [], block, portrayed: !!(m && m.portrait) };
 }
 export function beginBlock(st, m, pose, place) {
   if (!st.sitting) return "no sitting held";
