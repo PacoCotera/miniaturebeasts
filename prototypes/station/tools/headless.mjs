@@ -12,17 +12,17 @@ import * as T from "../src/sitting.mjs";
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
 export const loadFrames = () => setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 export const MIN = 60000, WALK_MS = 15 * MIN;   // a walk of 10 to 20 minutes (research-economy.md §1): fifteen
-// A walk's yield at a starter place (research-economy.md §2): Energy 3 to 5, Data 2, Essence 3.
-export const WALK = { e: 4, d: 2, s: 3 };
+// A walk's yield at a starter place (research-economy.md §2, §9): Energy 3 calm (tuned 2026-10-09 from 4), Data 2, Essence 3.
+export const WALK = { e: 3, d: 2, s: 3 };
 // What a walk spends in the field (world-and-exploration.md, the prices): a Call pins a cell, 1 Energy; a beacon is lit, 1 Energy; a Shield bar patched, 3 Energy. How many a walk
 // makes is not in the docs: the report's own assumption, set per run.
 export const FIELD = { call: 1, beacon: 1, patch: 3 };
 
 export class Player {
-  constructor({ settings = {}, species = "S01", seed = 1, start = 1_000_000, field = { calls: 0, beacons: 0.5, patches: 0 }, probe = true, energy = WALK.e } = {}) {
+  constructor({ settings = {}, species = "S01", seed = 1, start = 1_000_000, field = { calls: 0, beacons: 0.5, patches: 0 }, probe = true, energy = WALK.e, growNow = false } = {}) {
     loadFrames();
     this.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", ...settings };   // the decided prices, no top-up
-    this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe; this.walkE = energy; this.carry = 0;
+    this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe; this.walkE = energy; this.growNow = growNow; this.carry = 0;
     this.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
     this.st = S.freshSt("w1", 0, this.now); S.normalize(this.st);
     this.steps = []; this.with = null; this.marks = {};
@@ -70,8 +70,13 @@ export class Player {
   // Shape one read trait of the pod to a look it can carry that it does not show, if there is one.
   shape(p) { for (const t of S.shapeableTraits(p)) { const o = S.rollOptions(p, t.id); const alt = o.find((x) => x.choice && x.look !== o[0].look); if (alt) return { [t.id]: alt.choice }; } return {}; }
   grow(p, choices = {}, label = "grow") { const c = S.growCost(this.st, choices, this.settings); this.afford(c.e, c.d, c.s); return this.step(label, () => S.grow(this.st, p, choices, this.settings, this.now)); }
-  // The bud: wait out what is left of its minutes (the rule's own, from its start), then open it (a press).
-  waitBud() { const B = this.st.bud, ms = Math.max(0, B.start + B.minutes * MIN - this.now); return this.step("the bud grows (" + B.minutes + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms }); }
+  // The bud: wait out what is left of its minutes (the rule's own, from its start), then open it (a press). With `growNow` the player pays Grow now (1 Essence per 2 minutes left) instead
+  // of waiting whenever it can pay.
+  waitBud() {
+    const B = this.st.bud, left = () => Math.max(0, B.start + B.minutes * MIN - this.now);
+    if (this.growNow && left() > 0) { const c = S.instantGrowCost(this.st, this.settings, this.now); if (S.canPay(this.st, c.e, c.d, c.s)) { const was = left(); this.step("grow now (" + Math.round(was / MIN) + " min left)", () => S.instantGrow(this.st, this.settings, this.now)); return this.step("the bud is grown now", () => ({ ok: true })); } }
+    const ms = left(); return this.step("the bud grows (" + B.minutes + " min" + (ms ? ", " + Math.round(ms / MIN) + " left" : ", done") + ")", () => ({ ok: true }), { wait: ms });
+  }
   open() { return this.step("open the bud", () => S.openBud(this.st, this.sv, this.settings, this.now)); }
   // Walks until a mibi is adult (the Companion's world turns: one expedition each).
   growUp(m) { let n = 0; while (!S.isAdult(this.st, m, this.settings) && n < 10) { this.takeWalk(); n++; } return n; }

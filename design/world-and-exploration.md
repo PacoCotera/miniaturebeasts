@@ -202,9 +202,12 @@ at 20 carried; Essence never turns into Energy (**Built**).
 
 - **Warm stones.** At each world turn an unstruck stone can hold a warm charge of
   +1 Energy, never more (**Decided**). They are not abundant: Energy, and pods,
-  stay somewhat scarce (**Decided**). The sun warms 3 to 5 stones in reach; only
-  Call finds one, and the map then marks it with a hollow bolt (**Built**). Every
-  expedition starts with at least one Energy source in reach (**Built**).
+  stay somewhat scarce (**Decided**). The sun warms 6 to 8 stones in reach, leaning
+  toward the start, so a calm 15-minute walk brings home about 3 Energy
+  (**Decided 2026-10-09**, [research economy](proposals/research-economy.md) §9;
+  built at 3 to 5, which measured a median of 2); only Call finds one, and the map
+  then marks it with a hollow bolt (**Built**). Every expedition starts with at
+  least one Energy source in reach (**Built**).
 - **Prices.** An unaffordable pod waits at the Station and says what it needs;
   a button never makes an action free (**Decided**).
 
@@ -215,6 +218,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 | Field | Patch one Shield bar / mend at a lit outpost | 3 / 1 Energy a bar |
 | Station | Identify a pod | 1 Energy (the first pod ever free) |
 | Station | Hatch a founder | 2 Energy + 4 Essence |
+| Station | Grow now (the instant grow) | 1 Essence per 2 minutes left on the bud, rounded up (**Decided 2026-10-09**) |
 | Station | A study | 2 Data |
 | Station | Mend the Shield | 1 Energy a bar (**Decided**); a break free |
 | Station | Tier 2 Probe | 12 Energy + 4 Data |
