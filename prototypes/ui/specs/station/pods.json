@@ -63,6 +63,7 @@
      "closed": "ring-collection-closed-176x176",
      "track": "ring-arc-collection-n{N}-track-176x176",
      "segment": "ring-arc-collection-n{N}-s{i}-176x176",
+     "segmentFrom": 1,
      "chapters": [
       1,
       8
