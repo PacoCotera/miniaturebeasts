@@ -1076,7 +1076,7 @@
     "y": "line y + 4",
     "centreY": "line y + 10",
     "nameAlign": "left",
-    "layer": "art",
+    "layer": "painted",
     "onBothPages": true,
     "onlyWhen": "the trait is read on both pods and their looks differ",
     "kindGlyphs": false,
