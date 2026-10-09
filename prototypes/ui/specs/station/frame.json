@@ -29,7 +29,7 @@
   "companion": "fog", "companionDocked": "mint", "lampOn": "mint", "lampOff": "stone", "faceRing": "teal", "faceRingAway": "stone", "topRule": "hairline",
   "tick": "orange", "capConfirm": "orange", "capBack": "stone", "verb": "orange", "dim": "mist", "price": "focus", "dot": "hairline", "back": "fog", "subject": "mist", "need": "amber", "needLamp": "amber",
   "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
-  "ring": "focus", "stageGround": "deep"
+  "ring": "focus", "stageGround": "ground"
  },
  "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Cross" , "bench": "Probe" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
  "idle": {
@@ -52,6 +52,35 @@
   },
   "wake": { "to": "the screen under Idle, its focus as it was", "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
   "strings": { "line": "one sentence, six words or fewer, no digits", "order": ["crates", "budReady", "budGrowing", "out"], "orderRule": "the first that holds shows; none: the line is empty; never a demand, nothing nags (owner, 2026-10-09 12:20). `out` only while the Companion is away with a mibi; docked, nothing about that mibi (game designer, 2026-10-09 12:24)", "crates": { "1": "a crate waits in the bay", "2": "two crates wait in the bay", "3": "three crates wait in the bay" }, "budReady": "the bud is ready", "budGrowing": "a bud is growing", "out": "{name} is out with the Companion", "none": "", "by": "copywriter, 2026-10-09 12:22" }
+ },
+ "notBuilt": {
+  "spec": "design/style-guide/station-layouts.md#not-built-yet",
+  "status": "the composition a screen shows while the face has no binding table for it; wireframes station-layouts/13-not-built.svg (on Home) and 13b-not-built-idle.svg (Idle)",
+  "purpose": "say plainly that this screen is not built yet, keep the frame and navigation working, and promise nothing the screen cannot do",
+  "when": "a screen with no binding table in the face's screens/ (props.state = \"notBuilt\"); Idle (props.idle) with no Idle binding",
+  "boot": "home",
+  "frame": { "screen": true, "idle": false },
+  "draws": "the frame as on every screen (the title from strings.titles, the counters, the Companion mark, the turn, the bottom line, the message plate), the frame's stage part with no slice in colours.stageGround, and the line; no picture, no targets, no focus ring",
+  "regions": {
+   "line": { "rect": [16, 280, 992, 32], "component": "text", "build": "notBuilt", "px": 20, "weight": 500, "align": "centre", "centre": 512, "middle": 296, "capTop": 288, "baseline": 303, "lines": 1, "words": 6, "noDigits": true, "binding": "notBuilt is a composition in the frame's binding table, as idleLine is; it adds no word and no layout rule" },
+   "ground": { "rect": [0, 0, 1024, 600], "component": "panel", "build": "notBuilt", "on": "idle", "rule": null, "edge": null, "note": "Idle only: the whole screen in the ground, under the line; on a framed screen the frame's stage part is the ground" }
+  },
+  "colours": { "line": "fog", "ground": "ground" },
+  "bottomLine": {
+   "action": "empty: no ✓ cap, no verb, no price",
+   "subject": "empty",
+   "need": "the frame's notice as on every screen (the line's need left null, so the default notice shows), amber, with its 12×12 lamp",
+   "back": "the ← cap and the parent's word from navigation.screens; none on Home"
+  },
+  "keys": {
+   "confirm": "nothing: no intent acted on, no plate",
+   "pad": "nothing: there are no targets and no ring",
+   "back": "to the parent in navigation.screens (the stack rule); on Home nothing",
+   "room": "as navigation.roomKeys, from every not-built screen",
+   "dock": "as on every screen: docks or lifts the Companion and lands on Home; with Home not built no arrival plays and nothing is held: the counters and the turn take their new values at once, and the notice names the crates",
+   "idle": "the idle timer runs on every not-built screen; Idle not built draws ground and line only, and the first press sends wake and nothing else, back to the screen under it (180 ms dither, held)"
+  },
+  "strings": { "line": "this screen is not built yet", "idle": "Idle is not built yet", "subject": "", "rule": "one sentence in lower case, as the frame's notices and Idle's line, a name keeping its capital; no digits, no full stop; on a framed screen the name is the top bar's title, never repeated in the line; Idle has no title, so its line names it" }
  },
  "navigation": {
   "spec": "design/style-guide/station-screens.md#keys-and-navigation",
