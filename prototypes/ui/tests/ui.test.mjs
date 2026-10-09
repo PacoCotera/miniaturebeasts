@@ -119,7 +119,7 @@ test("the asset manifest registers each picture at its size and refuses a build 
 });
 
 test("the frame components place the spec's regions and set every string in Inter at 16, 20 or 28 px", () => {
-  const nodes = frame(ctx, { screen: "pods", title: "Pods", turn: 5, materials: { e: 10, d: 8, s: 15 }, flash: { d: true }, companion: { docked: true, withMibi: "m1" }, line: { ok: "Read Coat", price: "3 ◆", back: "Home", subject: "Loika is unread", need: "something new here" }, message: "New for the Loika: between, thin rings", focal: [264, 120, 160, 192] });
+  const nodes = frame(ctx, { screen: "pods", title: "Pods", turn: 5, materials: { e: 10, d: 8, s: 15 }, flash: { d: true }, companion: { docked: true, withMibi: "loika" }, line: { ok: "Read Coat", price: "3 ◆", back: "Home", subject: "Loika is unread", need: "something new here" }, message: "New for the Loika: between, thin rings", focal: [264, 120, 160, 192] });
   const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
   assert.deepEqual(byId.top.rect, [0, 0, 1024, 40]); assert.deepEqual(byId.line.rect, [0, 562, 1024, 38]);
   assert.deepEqual(byId["line.sep.0"].rect, [404, 571, 1, 20]); assert.deepEqual(byId["line.sep.1"].rect, [620, 571, 1, 20]);
