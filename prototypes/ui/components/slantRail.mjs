@@ -10,7 +10,6 @@
 import { slantTabs, slantAt } from "../layout.mjs";
 import { registerAsset } from "../assets.mjs";
 import { tabEndMask } from "../rings.mjs";
-
 import { focusRing } from "./focusRing.mjs";
 import { cutOutline } from "./panel.mjs";
 

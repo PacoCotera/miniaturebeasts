@@ -35,3 +35,7 @@ export function figureFromLayers(mistId, clearId, alpha, [w, h]) {
 }
 // The least final status among placed layers: placeholder, then held, then new, else master.
 export const leastFinal = (ids) => { const order = ["placeholder", "held", "new"], got = ids.map((i) => assetEntry(i)?.status).filter((x) => order.includes(x)); return order.find((x) => got.includes(x)) ?? "master"; };
+// The status a composed pod carries: the least final of its three required layers (a pod class's shade and its two masks).
+export const podStatus = (cls) => leastFinal(["shade", "mask-body", "mask-accent"].map((l) => `pod-${cls}-${l}`));
+// The status a figure carries: the least final of its two slices; a placeholder while either is not placed.
+export const figureStatus = (mistId, clearId) => (isFilled(mistId) && isFilled(clearId) ? leastFinal([mistId, clearId]) : "placeholder");

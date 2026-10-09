@@ -6,7 +6,6 @@
 // world turn's figure right-aligned to x 1008. Marks are slots (components/mark.mjs): empty until their masters land.
 // props: { screen, title, turn, turnFlash, materials: { e, d, s }, flash: { e, d, s }, companion: { docked, withMibi: the mibi's id | null } }
 import { textRun, iconAsset } from "./text.mjs";
-
 import { ringAsset } from "./focusRing.mjs";
 import { markNode, markOr } from "./mark.mjs";
 

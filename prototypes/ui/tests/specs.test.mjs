@@ -1,5 +1,6 @@
 // The spec files against the layout document's wireframes and the palette: the one home of the numbers must agree
 // with the measured wireframe (station-layouts/*.svg) and name only palette colours.
+import { pageHeight } from "../layout.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -53,7 +54,7 @@ test("the chapter page: the pod's room shrunk to the pod and the dish, the page 
 
 test("the grid tables follow the layout document: cells inside the page, none touching, a picture inside its cell", () => {
   for (const reg of [pods.regions.chapter.page, pods.regions.compareA]) for (const [count, t] of Object.entries(reg.grid)) {
-    const hb = reg.heightByCount, page = hb ? [...reg.rect.slice(0, 3), hb[count]] : reg.rect, cells = t.cells;
+    const n = Number(count.split("-").at(-1)), page = reg.heightByCount ? [...reg.rect.slice(0, 3), pageHeight(reg, n)] : reg.rect, cells = t.cells;   // the height for the table's largest count
     for (const [i, c] of cells.entries()) {
       assert.ok(c[0] >= 16 && c[0] + c[2] <= page[2] - 16 && c[1] >= 48 && c[1] + c[3] <= page[3] - 8, `${count} cell ${i} inside the page`);
       assert.ok(t.picture[0] <= c[2] && t.picture[1] <= c[3], `${count} picture fits`);

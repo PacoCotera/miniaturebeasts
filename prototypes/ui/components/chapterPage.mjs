@@ -10,18 +10,17 @@
 import { pageGrid, pageHeight } from "../layout.mjs";
 import { panel } from "./panel.mjs";
 import { isFilled } from "../assets.mjs";
-
 import { wrap } from "./text.mjs";
 import { markNode } from "./mark.mjs";
 import { layer } from "./specimen.mjs";
 
 export function chapterPage(ctx, id, region, props) {
-  // the pane shortens to its content: its height by the number of traits (page.heightByCount: one, two, else the full height), its top fixed
+  // the pane shortens to its content: its height by the number of traits (page.heightByCount, ranges such as "1-4" and "5-8"), its top fixed
   const hb = region.heightByCount, n = props.count ?? (props.cells || []).length, rect = region.rect.slice();
   if (hb) rect[3] = pageHeight(region, n);
   const Cc = props.colours, nodes = props.pane && isFilled(props.pane) ? [{ id, kind: "nineSlice", rect, asset: props.pane, region: props.region ?? null }] : panel(id, rect, { fill: Cc.pane, edge: Cc.edge, region: props.region ?? null });   // the pane master is a nine-slice with its own insets, drawn at the height the count gives
   const [px, py] = rect, H = region.heading;
-  if (props.heading?.pod && H) {   // Compare: the pod at 32×40 and its place picture
+  if (props.heading?.pod && H) {   // Compare: the pod (the list class, at podAt) and its place picture
     nodes.push({ id: id + ".pod", kind: "sprite", rect: [px + region.podAt[0], py + region.podAt[1], ...region.pod], asset: props.heading.pod });
     if (props.heading.place) nodes.push({ id: id + ".place", kind: "sprite", rect: [px + H[0] + region.place.at[0], py + H[1] + region.place.at[1], ...region.place.size], asset: props.heading.place });
   } else if (props.heading && H) {

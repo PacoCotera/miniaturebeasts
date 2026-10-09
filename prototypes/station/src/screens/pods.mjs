@@ -24,7 +24,6 @@ const env = { podById: (id) => podById(id), frameOf };
 const cur = () => podById(P().cur);
 const chaptersOf = (p) => (p && p.idd ? frameOf(S.speciesOf(p)).chapters : []);
 const placeOf = (id) => "place." + Math.max(0, G.st.tray.findIndex((q) => q.id === id));
-const needsYou = () => G.st.tray.find((x) => !x.idd) || G.st.tray.find((x) => S.podGlints(G.st, x)) || G.st.tray[0];   // the pod that most needs the player: new, then glinting, then the first
 
 // --- what the timeline is playing, as the view reads it ---
 function present() {
@@ -42,7 +41,7 @@ const initialFocus = (view) => (view === "collection" ? placeOf(P().cur) : view 
 function ensure() {
   const p = P(), F = p.focus; if (!SPECS.pods) return;
   p.view ??= SPECS.pods.initial;   // Pods opens on the spec's first state
-  if (!podById(p.cur)) { const q = needsYou(); p.cur = q ? q.id : null; }
+  if (!podById(p.cur)) { const q = S.neediestPod(G.st); p.cur = q ? q.id : null; }
   if (!p.cur || !G.st.tray.length) p.view = "collection";
   const key = p.cmp ? "overview" : p.view; F.graph = SPECS.pods.focus[key];
   if (p.focusView !== key) { p.focusView = key; if (!F.cur || !F.cur.startsWith(key === "collection" ? "place." : key === "chapter" ? "rail." : "")) F.cur = null; }

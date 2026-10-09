@@ -234,6 +234,8 @@ export function glint(st, p, chapterId) {
   if (!(st.readOnce[fr.species.id] || []).includes(chapterId)) return false;
   return chapterLooks(fr, ch, p.genome).some(([t, ls]) => { const seen = guideLooks(st, fr.species.id, t); return ls.some((l) => !seen.includes(l)); });
 }
+// The pod that most needs the player: a new one (unidentified), then one that glints, then the first.
+export const neediestPod = (st) => st.tray.find((p) => !p.idd) || st.tray.find((p) => podGlints(st, p)) || st.tray[0] || null;
 export const podGlints = (st, p) => { const fr = frameFor(p); return !!fr && fr.chapters.some((c) => glint(st, p, c.id)); };
 // Progress: traits read ÷ traits in chapters that are not sealed (shown only as the ring, no digits).
 export function progress(p, settings = DEFAULT_SETTINGS) {

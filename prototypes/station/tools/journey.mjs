@@ -174,7 +174,8 @@ const focusNow = () => page.evaluate(() => window.__st.UI.pods.focus.cur), curPo
 // Home's rack: ✓ on the tray opens the collection with the ring on the pod that most needs the player (an open question for the UI designer: the spec says a pod in the rack goes straight to its overview, and Home's tray is one target); ← goes up to Home
 await press("home", 300); await page.evaluate(() => { window.__st.UI.home.f = "tray"; }); await press("confirm", 300);
 { const here = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, f: window.__st.UI.pods.focus.cur }));
-  expect(here.screen === "pods" && here.view === "collection" && /^place\.\d$/.test(here.f), "Home's rack opens the collection with the ring on a place: " + JSON.stringify(here));
+  const want = await page.evaluate(() => { const t = window.__st.ST.tray, p = t.find((q) => !q.idd) || t.find((q) => window.__st.podGlints(q)) || t[0]; return "place." + t.indexOf(p); });
+  expect(here.screen === "pods" && here.view === "collection" && here.f === want, "Home's rack opens the collection with the ring on the pod that most needs the player (" + want + "): " + JSON.stringify(here));
   await press("back", 300); expect((await page.evaluate(() => window.__st.UI.screen)) === "home", "← from the collection is Home"); await press("research", 300); }
 await press("research", 200);
 await page.evaluate(() => { window.__st.seedCrate("S02", 1, 515); window.__st.seedCrate("S09", 1, 909); window.__st.openBay(); }); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
