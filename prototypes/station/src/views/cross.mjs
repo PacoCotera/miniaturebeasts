@@ -147,8 +147,8 @@ function chapterNodes(m, spec, ctx, fc, open, nodes, masters, pictures, master, 
   const info = open, traitsOf = fc.traits.filter((t) => t.chapter === info.id);
   for (const p of m.wish?.pinned || []) if (p.lit) { const ch = fc.chapters.find((c) => c.traits.includes(p.trait)); if (ch) glints.add(ch.id); }
   if (info.state === "sealed") {
-    const loci = chapterLocusCount(m.frame, info.id);
-    for (let i = 0; i < loci; i++) { const y = ry + i * 4; nodes.push(...line(`ch.sa.${i}`, 16, y, 440, 1, C.wire.sealed, { on: 1, off: 2 }), ...line(`ch.sb.${i}`, 568, y, 440, 1, C.wire.sealed, { on: 1, off: 2 })); }
+    const loci = chapterLocusCount(m.frame, info.id), mid = 248 + 56, y0 = mid - Math.round((loci * 4) / 2);   // the rows' 4 px pitch, centred on the find
+    for (let i = 0; i < loci; i++) { const y = y0 + i * 4; nodes.push(...line(`ch.sa.${i}`, 16, y, 440, 1, C.wire.sealed, { on: 1, off: 2 }), ...line(`ch.sb.${i}`, 568, y, 440, 1, C.wire.sealed, { on: 1, off: 2 })); }
     if (info.findKind) master(`find-${info.findKind}-112x112`, [456, 248, 112, 112]);
     nodes.push(txt(ctx, "ch.sealed", `opens with ${info.opensWith}`, 512, 248 + 112 + 16, 16, "mist", "center"));
     return;
@@ -187,7 +187,7 @@ function chapterNodes(m, spec, ctx, fc, open, nodes, masters, pictures, master, 
       return;
     }
     const lead = t.splice.loci[0], surface = K > 0 && t.kind === "switch" && t.seeds.some((s) => s.hides != null);
-    const words = t.kind === "switch" ? (t.firm ? "known for sure" : "one in four each") : t.bins.length === 1 ? `firm · ${t.bins[0]}` : `${t.bins[0]} to ${t.bins.at(-1)}`;
+    const ends = t.splice.ends ?? (t.bins ? [t.bins[0], t.bins.at(-1)] : []), words = t.kind === "switch" ? (t.firm ? "known for sure" : "one in four each") : t.bins.length === 1 || ends[0] === ends[1] ? `firm · ${ends[0]}` : `${ends[0]} to ${ends[1]}`;
     if (surface) { const w = Math.round(ctx.measure("hidden looks can surface", 16)) + 8; nodes.push(rect(id + ".surf", nameX + nameW + 8, y + 2, w, 20, C.kinship), txt(ctx, id + ".surf.word", "hidden looks can surface", nameX + nameW + 12, y + 4, 16, "ink")); }
     else nodes.push(txt(ctx, id + ".words", words, nameX + nameW + 8, y + 4, 16, "mist"));
     if (t.kind === "switch") {

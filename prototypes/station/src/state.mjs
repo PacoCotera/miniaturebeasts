@@ -491,7 +491,7 @@ export function seedAdults(st, species, seed, n = 2, settings = DEFAULT_SETTINGS
 }
 
 // --- The cross (the-cross.md, decided; station-build.md M4): two adults of one species make one child --------
-import { lociOf, copyWords, copyHides } from "./splice.mjs";
+import { lociOf, copyWords, copyHides, rangeWords } from "./splice.mjs";
 import { cross as crossGenomes, forecast as crossForecast, kinship as pedigreeKinship, identity as genomeIdentity } from "./genome.mjs";
 export const crossCost = (settings = DEFAULT_SETTINGS) => ({ e: price(PRICE.growE, settings), s: price(PRICE.growS, settings), d: 0 });
 // The pedigree: a digest names a mibi's genome, in the vivarium or in a child's parent snapshot.
@@ -535,7 +535,7 @@ export function forecastOf(st, a, b, settings = DEFAULT_SETTINGS) {
     }
     loci ??= lociOf(fr, a.genome, b.genome, opts);
     const tr = traitOf(t.trait);
-    return { ...t, splice: { loci: tr.loci.map((id) => loci.get(id)).filter(Boolean), words: { a: copyWords(fr, tr, a.genome), b: copyWords(fr, tr, b.genome) }, hides: { a: copyHides(tr, a.genome), b: copyHides(tr, b.genome) } } };
+    return { ...t, splice: { loci: tr.loci.map((id) => loci.get(id)).filter(Boolean), words: { a: copyWords(fr, tr, a.genome), b: copyWords(fr, tr, b.genome) }, hides: { a: copyHides(tr, a.genome), b: copyHides(tr, b.genome) }, ends: t.kind === "blend" ? rangeWords(fr, tr, a.genome, t.range) : null } };
   });
   // The chapters in ring order, as the splice draws them: open (both parents have read it), unread (either has not: which), or sealed (with what opens it).
   const chapters = fr.chapters.map((c) => {

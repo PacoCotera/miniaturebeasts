@@ -49,3 +49,9 @@ export function fourSlots(seeds) {
 // How many loci a trait (or a whole chapter) has in this frame: a row each on the splice.
 export const traitLocusCount = (fr, traitId) => (fr.chapters.flatMap((c) => c.traits).find((t) => t.id === traitId)?.loci ?? []).filter((id) => LOCI.has(id)).length;
 export const chapterLocusCount = (fr, chapterId) => (fr.chapters.find((c) => c.id === chapterId)?.traits ?? []).reduce((n, t) => n + t.loci.filter((id) => LOCI.has(id)).length, 0);
+
+// A blend's two ends in the trait's own words (describe.lookOf on the trait with its lead locus at each end of the range), as a read words them: "short, straight" to "long, swept".
+export function rangeWords(fr, trait, genome, range) {
+  const lead = trait.loci[0];
+  return range.map((v) => { const g = structuredClone(genome); g.loci[lead] = [v, v]; return lookOf(fr, trait, g); });
+}

@@ -100,3 +100,19 @@ test("the wish shows on the splice: a glint master lit or hollow on the pinned t
   assert.ok(wish.pinned.length === 1); assert.ok(o.masters.some((m) => /^cross-wish-(lit|hollow)-8x8:/.test(m.id)), "the overview's wish glint is requested");
   const c = view(w, 1 + fr.chapters.findIndex((q) => q.traits.some((x) => x.id === t.id)), { wish }).v; assert.ok(c.masters.some((m) => /^cross-wish-(lit|hollow)-12x12:/.test(m.id)), "the chapter view's glint");
 });
+
+test("a blend's ends are the trait's own looks (describe.lookOf), never the locus's bins: S09's Fluff reads 'short, straight to long, swept'", () => {
+  const w = world("S09", 11), fr = w.fr, { fc, v } = view(w, 1 + fr.chapters.findIndex((c) => c.traits.some((t) => t.id === "fluff")));
+  const t = fc.traits.find((q) => q.trait === "fluff"); assert.ok(t && t.kind === "blend" && t.splice.ends, "Fluff is a blend with its ends worded");
+  const trait = fr.chapters.flatMap((c) => c.traits).find((q) => q.id === "fluff"); assert.ok(trait.looks.includes(t.splice.ends[0]) || trait.looks.includes(t.splice.ends[1]), "the ends are among the trait's looks");
+  const words = v.nodes.filter((n) => n.kind === "text" && n.id === "ch.fluff.words")[0]; assert.ok(words && /^(.+) to (.+)$/.test(words.text) && !/^short to long$/.test(words.text), "the words under the name: " + words?.text);
+  assert.equal(words.text, `${t.splice.ends[0]} to ${t.splice.ends[1]}`);
+});
+
+test("a sealed chapter's view draws the dotted hairline wires from both sides into the find, one a locus on the 4 px pitch, centred on it", () => {
+  const w = world("S02", 5), fc = S.forecastOf(w.st, w.a, w.b, settings), idx = fc.chapters.findIndex((c) => c.state === "sealed") + 1, n = chapterLocusCount(w.fr, fc.chapters[idx - 1].id);
+  const { v } = view(w, idx), a = v.nodes.filter((x) => /^ch\.sa\.\d+\.0$/.test(x.id)), b = v.nodes.filter((x) => /^ch\.sb\.\d+\.0$/.test(x.id));
+  assert.equal(a.length, n); assert.equal(b.length, n); assert.ok(a.every((x) => x.colour === spec.colours.wire.sealed && x.rect[3] === 1));
+  const ys = a.map((x) => x.rect[1]); assert.ok(ys.every((y, i) => i === 0 || y - ys[i - 1] === 4), "the 4 px pitch"); assert.ok(Math.abs((ys[0] + ys.at(-1)) / 2 - 304) <= 4, "centred on the find (y 248 to 360)");
+  assert.ok(v.nodes.some((x) => x.id.startsWith("ch.sa.") && x.rect[0] + x.rect[2] <= 456) && v.nodes.some((x) => x.id.startsWith("ch.sb.") && x.rect[0] >= 568), "into the find from both sides");
+});
