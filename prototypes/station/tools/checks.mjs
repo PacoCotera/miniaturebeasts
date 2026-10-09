@@ -18,6 +18,7 @@ import { loadTypeNode } from "../../ui/type-node.mjs";
 import { SIZES } from "../../ui/type.mjs";
 import { slantTabs, pageGrid, pageSize } from "../../ui/layout.mjs";
 import { placeRect, kinRect } from "../../ui/components/list.mjs";
+import { nameLineBreaches } from "../../ui/components/chapterPage.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -84,6 +85,7 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     else if (id === "stamp") must(eq(rect, R.overview.stamp.rect) && rect[2] === 120 && rect[3] === 120, `stamp label ${rect} is not 120×120 at ${R.overview.stamp.rect}`);
     else if (id === "stamp.image") { const L = R.overview.stamp.rect; must(rect[2] === rect[3] && rect[2] <= 104 && rect[2] >= 34 && Math.abs(rect[0] + rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(rect[1] + rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${rect} is not at most 104 px square and centred on its label ${L}`); }
     else if (id === "page") { const Pg = R.chapter.page, n = c.traits ?? 0; must(eq(rect, [Pg.rect[0], Pg.rect[1], ...pageSize(Pg, n)]), `page ${rect} is not at ${Pg.rect.slice(0, 2)} the ${pageSize(Pg, n)} the spec gives for ${n} traits`); }
+    else if (id === "page.rule") { const Pg = R.chapter.page, n = c.traits ?? 0, want = [Pg.rect[0] + Pg.rule.at[0], Pg.rect[1] + Pg.rule.at[1], pageSize(Pg, n)[0] - Pg.rule.at[0], Pg.rule.h]; must(eq(rect, want), `the page's rule ${rect} is not ${want} for ${n} traits (the page is ${pageSize(Pg, n)})`); }
     else if (id === "page.seal") { const Pg = R.chapter.page, want = [Pg.rect[0] + Pg.sealedFind[0], Pg.rect[1] + Pg.sealedFind[1], Pg.sealedFind[2], Pg.sealedFind[3]]; must(eq(rect, want), `the find that opens a shut chapter ${rect} is not ${want}`); }
     else if (id === "compareA" || id === "compareB") must(eq(rect, R[id].rect), `${id} ${rect} is not ${R[id].rect}`);
     else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, S = frame.regions.rail.slant, want = (o) => { const t = slantTabs(frame.regions.rail, n, o).tabs[i]?.rect; return t && [t[0] + S, t[1] + 1, t[2] - S, t[3] - 2]; }, hit = Array.from({ length: n + 1 }, (_, o) => want(o - 1)).find((w) => w && rect[0] === w[0] && rect[2] === w[2] && rect[3] === w[3] && (rect[1] === w[1] || rect[1] === w[1] - frame.focus.lift.chrome)); must(!!hit, `rail tab ${i} ${rect} is not the slanted tab's body in ${n} tabs`); got.push(i); }
@@ -94,6 +96,9 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     }
     else must(false, `region "${id}" (${r.id}) is not in the spec`);
   }
+  // the name line: a cell's name, glyphs and dot stay within the spec's reach into the gap and clear the next cell's, and nothing rises above the line's top
+  { const nodes = (c.cellNodes || []).filter((q) => q.id.startsWith("page.c")), pics = nodes.filter((q) => /\.pic$/.test(q.id)).sort((a, b) => +a.id.match(/\.c(\d+)\./)[1] - +b.id.match(/\.c(\d+)\./)[1]), LM = R.chapter.page.lineMarks;
+    if (pics.length) for (const b of nameLineBreaches(nodes, pics.map((q) => q.rect), pics[0].rect[3], { reach: LM.reach, apart: LM.apart, top: R.chapter.page.cell.gap })) must(false, b); }
   // the rail's tab count against the frame; the stamp's size on its label; no digits where a picture does the job
   if (c.screen === "pods" && c.pod && c.pod.idd && !c.cmp && c.view !== "collection") must(got.length === c.pod.chapters, `the rail has ${got.length} tabs for ${c.pod.chapters} chapters`);
   for (const t of c.texts) if (t.id === "line.subject") must(!t.text.endsWith("…"), `the bottom line's subject "${t.text}" is clipped with "…"`);
@@ -101,7 +106,7 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
   console.log(`${s.name.padEnd(24)} ${c.regions.length} drawn regions, rail ${got.length}/${c.pod ? c.pod.chapters : "-"} tabs, placeholders registered ${c.placeholders}`);
 }
 // every Pods state is recorded, with the regions it must draw
-{ const need = { collection: ["place", "place.pod", "place.name"], overview: ["pod", "name", "hatch"], chapter: ["pod", "name", "page", "rail.tab"], compare: ["compareA", "compareB", "rail.tab"] };
+{ const need = { collection: ["place", "place.pod", "place.name"], overview: ["pod", "name", "hatch"], chapter: ["pod", "name", "page.rule", "rail.tab"], compare: ["compareA", "compareB", "rail.tab"] };
   for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.layered && x.check.mode === mode); if (!shots.length) { fail(`no screenshot point records Pods in its ${mode} state`); continue; }
     for (const id of ids) if (!shots.some((x) => x.check.regions.some((r) => r.region === id))) fail(`Pods in its ${mode} state: no drawn region "${id}" in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }

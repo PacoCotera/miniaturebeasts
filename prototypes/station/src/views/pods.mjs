@@ -42,7 +42,7 @@ export function podsView(m, spec, ctx) {
   view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
   if (view.mode === "chapter") {
     const ch = chapters[ci];
-    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, m.present || {}, null), pane: R.page.pane };
+    view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, m.present || {}, null), pane: null };
   } else {
     if (cur.idd && fr) {
       const sz = stampSizing(fr, cur.genome), read = fr.chapters.filter((c) => cur.read.includes(c.id)).map((c) => c.id);
@@ -150,27 +150,25 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
   const { st, settings } = m, C = spec.colours, read = p.read.includes(ch.id), sealed = !!ch.sealed && !settings.sealedOpen, traits = ch.traits.slice(0, maxTraits(region)), grid = pageGrid(region, traits.length);
   const [pw, ph] = grid.picture ?? [0, 0], wipeOf = present.read && present.read.pod === p.id && present.read.chapter === ch.id ? present.read.p : null;
   const cells = traits.map((t) => {
-    const cell = { name: t.name, lines: [], marks: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
+    const cell = { name: t.name, lines: [], glyphs: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
     if (!read) { cell.frost = true; return cell; }
     const state = traitState(fr, t, p.genome);
-    cell.picture = slot(req, `trait-picture-standin-${pw}x${ph}`, [0, 0, pw, ph], "the stand-in picture card master"); cell.frame = slot(req, `trait-picture-frame-${pw}x${ph}`, [0, 0, pw, ph], "the trait frame master");   // no trait picture is drawn by the build: the signed frame and the stand-in card until the painted pictures exist
     const slug = (x) => String(x ?? "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), sid = p.species;
-    if (state.shows) cell.crop = slot(req, `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, placed by id at the page size
+    if (state.shows) cell.crop = slot(req, `trait-${sid}-${slug(t.name)}-${slug(state.shows)}-${pw}x${ph}`, [0, 0, pw, ph], "the trait's crop master");   // the studio's crop of the painting, cut at the cell's size, placed 1:1 on the cell's flat tone; no card, no frame, no word is the build's
     cell.lines = [state.line];
-    const small = ph < spec.page.marks.smallUnder, [sw, sh] = small ? spec.page.marks.seedSmall : spec.page.marks.seed, M = spec.page.marks;
-    const seed = () => { slot(req, `mark-seed-${sw}x${sh}-mask`, [0, 0, sw, sh], "the seed's mask master"); return slot(req, `mark-seed-${sw}x${sh}`, [0, 0, sw, sh], "the seed mark master"); };   // the marks are the studio's: slots by id, nothing drawn by the build
-    if (state.kind === "hides") cell.marks.push({ kind: "seed", asset: seed() });
-    if (state.kind === "blend") cell.marks.push({ kind: "seed2", asset: seed() }, { kind: "seed", asset: seed() });
-    if (state.kind === "only") cell.marks.push({ kind: "only", asset: slot(req, `mark-only-${M.only[0]}x${M.only[1]}`, [0, 0, ...M.only], "the only mark master") });
-    if (state.kind === "asleep") cell.marks.push({ kind: "asleep", asset: slot(req, `mark-asleep-${M.asleep[0]}x${M.asleep[1]}`, [0, 0, ...M.asleep], "the asleep mark master") });
-    if (state.doing) cell.marks.push({ kind: "doing", asset: slot(req, `mark-breed-${M.doing[0]}x${M.doing[1]}`, [0, 0, ...M.doing], "the breed-to-change mark master") });
+    const LM = region.lineMarks, glyph = (key) => slot(req, LM.glyphs[key].slice, [0, 0, ...LM.glyphs[key].size], "the line glyph master");   // the glyphs after the name are the studio's: slots by id (an empty slot draws nothing)
+    if (LM) {
+      if (state.kind === "hides") cell.glyphs.push({ key: "hides", asset: glyph("hides") });
+      if (state.kind === "blend") cell.glyphs.push({ key: "blend", asset: glyph("blend") });
+      if (state.kind === "only") cell.glyphs.push({ key: "only", asset: glyph("only") });
+      if (state.kind === "asleep") cell.glyphs.push({ key: "asleep", asset: glyph("asleep") });
+      if (state.doing) cell.glyphs.push({ key: "doing", asset: glyph("doing") });
+    }
     if (wipeOf != null && wipeOf < 1) cell.wipe = wipeOf;
     return cell;
   });
-  const unreadFrame = pw ? slot(req, `trait-picture-frame-${pw}x${ph}-unread`, [0, 0, pw, ph], "the unread frame master") : null;
-  const sealedFind = sealed && region.sealedFind ? slot(req, `trait-picture-frame-${region.sealedFind[2]}x${region.sealedFind[3]}`, [0, 0, region.sealedFind[2], region.sealedFind[3]], "the shut chapter's frame master") : null;   // the signed frame; the find's own picture follows when the studio makes them
-  const sealedCard = sealedFind ? slot(req, `trait-picture-standin-${region.sealedFind[2]}x${region.sealedFind[3]}`, [0, 0, region.sealedFind[2], region.sealedFind[3]], "the stand-in picture card master") : null;
-  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, unreadFrame, standIn: spec.strings.standIn, count: sealed ? 1 : traits.length, sealedFind, sealedCard, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), colours: { ...C.page, diff: C.diff }, marks: spec.page.marks };
+  const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone until its picture is painted
+  return { region: key, heading: word ? { emblem: req({ kind: "emblem", id: `emblem:${ch.id}:${read ? "read" : sealed ? "sealed" : "unread"}:24`, chapter: ch.id, state: read ? "read" : sealed ? "sealed" : "unread" }), word } : null, cells: sealed ? [] : cells, differs: diffIds && region.differs ? slot(req, region.differs.slice, [0, 0, ...region.differs.size], "the Differs mark master") : null, count: sealed ? 1 : traits.length, sealedFind, newMark: region.newMark ? region.newMark.slice : null, overflow: grid.overflow || ch.traits.length > maxTraits(region), colours: { ...C.page, diff: C.diff } };
 }
 
 function compareView(view, m, spec, ctx, req) {
@@ -179,7 +177,7 @@ function compareView(view, m, spec, ctx, req) {
   const chs = fr.chapters, ci = clamp(c.ci, 0, chs.length - 1), ch = chs[ci], diff = S.compareDiff(st, A, B) || [];
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
-    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, present, ids, key), pane: spec.regions.chapter.page.pane };
+    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, present, ids, key), pane: region.pane };
     page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), who: whoOf(p, fr, R.compareA.who, req) };
     return page;
   };

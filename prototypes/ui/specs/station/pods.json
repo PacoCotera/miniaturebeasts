@@ -778,6 +778,8 @@
     "lineMarks": {
      "on": "the name line, after the name, in this order: the kind glyph, the breed glyph, the field-guide dot",
      "gap": 4,
+     "reach": 6,
+     "apart": 4,
      "centredWithName": true,
      "y": "top = line y + top; line y = cell.y + 160 + 4; the name's capitals run line y + 4 to + 15, its baseline at line y + 16",
      "glyphs": {
@@ -996,6 +998,7 @@
      ]
     }
    },
+   "pane": "page-pane-256x440",
    "nameGap": 8,
    "nameLine": 20,
    "podAt": [
@@ -1031,6 +1034,7 @@
     ],
     "on": "name line",
     "before": true,
+    "gapAfterLamp": 4,
     "x": "cell.x",
     "nameX": "cell.x + 16",
     "y": "line y + 4",

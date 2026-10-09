@@ -185,10 +185,10 @@ for (const [name, setup] of Object.entries(SETUPS)) {
   let diff = 0, total = 0; for (let j = 0; j < 600; j++) for (let i = 0; i < 1024; i++) { if (boxes.some((b) => i >= b[0] && i < b[0] + b[2] && j >= b[1] && j < b[1] + b[3])) continue; total++; const a = px(Ds, i, j), b = px(Rs, i, j); if (Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) > 3) diff++; }
   console.log(`${name.padEnd(10)} face against the canvas renderer outside the type: ${diff} of ${total} pixels differ`);
   expect(diff <= total * 0.002, `${name}: the face draws the state as the canvas renderer does outside the type (${diff} of ${total} differ)`);
-  if (name === "chapter") {   // the pane takes its size from the trait count (pods.json page.sizeByCount): drawn by the face at that width, left edge 424, top 112
-    const R = pods.regions.chapter.page, pane = nodesS.find((n) => n.kind === "nineSlice" && n.rect[0] === R.rect[0] && n.rect[1] === R.rect[1]), count = nodesS.filter((n) => /\.c\d+\.name$/.test(n.id)).length;
-    expect(!!pane, "chapter: the page's pane is drawn at the spec's left edge and top");
-    if (pane) expect(pane.rect[2] === pageSize(R, count)[0] && pane.rect[3] === pageSize(R, count)[1], `chapter: the pane is ${pageSize(R, count)} for ${count} traits: ${pane.rect}`);
+  if (name === "chapter") {   // the page has no pane: its one rule is as wide as the grid the trait count gives (pods.json page.sizeByCount): left edge 448, top 148, the page's width less the 24 px inset
+    const R = pods.regions.chapter.page, rule = nodesS.find((n) => n.id === "page.rule"), count = nodesS.filter((n) => /\.c\d+\.name$/.test(n.id)).length;
+    expect(!!rule, "chapter: the page's rule is drawn");
+    if (rule) expect(rule.rect[0] === R.rect[0] + R.rule.at[0] && rule.rect[1] === R.rect[1] + R.rule.at[1] && rule.rect[2] === pageSize(R, count)[0] - R.rule.at[0] && rule.rect[3] === R.rule.h, `chapter: the rule is ${pageSize(R, count)[0] - R.rule.at[0]} wide for ${count} traits: ${rule.rect}`);
   }
   await fc.close();
 }

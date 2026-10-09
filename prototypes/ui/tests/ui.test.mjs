@@ -182,26 +182,24 @@ test("the chapter rail draws emblem, word and pips per tab, no words of status, 
   assert.ok(!r.nodes.some((n) => n.kind === "text" && /\d/.test(n.text)));
 });
 
-test("the chapter page lays the cells on the grid with the marks inside each picture", () => {
-  const region = { rect: [528, 112, 480, 440], heading: [16, 8], nameGap: 8, nameLine: 20, grid: { "3-4": { cells: [[16, 48, 216, 184], [248, 48, 216, 184], [16, 248, 216, 184], [248, 248, 216, 184]], picture: [216, 112] } } };
-  const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white", diff: { edge: "aqua", bracket: "aqua", keyline: "ink" } };
-  const marks = { seed: [40, 52], seedSmall: [32, 40], smallUnder: 120, only: [72, 8], asleep: [24, 16], doing: [28, 16], key: [44, 64] };
-  const cells = [{ picture: "pic:a", name: "Crown", lines: ["only bare head"], marks: [{ kind: "only", asset: "base" }], wipe: 0.5 }, { picture: "pic:b", name: "Eyes", lines: ["thin rings · hides wide pale rings"], marks: [{ kind: "seed", asset: "seed:x" }, { kind: "doing", asset: "fam" }] }, { picture: "pic:c", name: "Ears", lines: [], frost: true }, { picture: "pic:d", name: "Tail", lines: ["shows long"], marks: [], diff: true }];
-  registerAsset({ id: "t:unread-frame", w: 216, h: 112, status: "master", build: () => ({ w: 216, h: 112, canvas: () => null }) });
-  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, marks, unreadFrame: "t:unread-frame", region: "page", cellRegion: "page.cell" });
+test("the open chapter page lays the cells on the grid: a flat tone and the crop, the name line with its glyphs centred together, no pane, no frame", () => {
+  const region = { rect: [424, 112, 440, 232], heading: [24, 6], cell: { gap: 4, name: { line: 20 } }, rule: { at: [24, 36], h: 1 }, newMark: { size: [6, 6], gapAfterName: 4 }, lineMarks: { gap: 4, glyphs: { hides: { size: [12, 16], top: 2 }, blend: { size: [20, 16], top: 2 }, only: { size: [16, 8], top: 8 }, asleep: { size: [24, 16], top: 2 }, doing: { size: [28, 16], top: 2 }, new: { size: [6, 6], top: 7 } } }, grid: { "3": { cells: [[24, 48, 128, 184], [168, 48, 128, 184], [312, 48, 128, 184]], picture: [128, 160] } }, pane: null };
+  const colours = { cell: "ground", rule: "hairline", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white" };
+  for (const [id, w, h] of [["t:crop", 128, 160], ["t:g", 12, 16], ["t:pair", 20, 16], ["t:br", 28, 16], ["t:dot", 6, 6]]) registerAsset({ id, w, h, status: "master", build: () => ({ w, h, canvas: () => null }) });
+  const cells = [{ name: "Crown", lines: [], crop: "t:crop", glyphs: [{ key: "hides", asset: "t:g" }, { key: "doing", asset: "t:br" }], isNew: true }, { name: "Eyes", lines: [], crop: null, glyphs: [{ key: "blend", asset: "t:pair" }], wipe: 0.5 }, { name: "Ears", lines: [], frost: true, glyphs: [] }];
+  const r = chapterPage(ctx, "page", region, { heading: { emblem: "emblem:face:24", word: "Face" }, cells, colours, newMark: "t:dot", region: "page", cellRegion: "page.cell", count: 3 });
   const by = Object.fromEntries(r.nodes.map((n) => [n.id, n]));
-  assert.deepEqual(by.page.rect, [528, 112, 480, 440]); assert.deepEqual(by["page.emblem"].rect, [544, 120, 24, 24]); assert.equal(by["page.word"].px, 20);
-  assert.deepEqual(by["page.c0.pic"].rect, [544, 160, 216, 112]); assert.deepEqual(by["page.c2.pic"].rect, [544, 360, 216, 112]);
-  assert.deepEqual(by["page.c0.m0"].rect, [544 + 108 - 36, 160 + 112 - 8, 72, 8]);   // the base centred on the bottom edge
-  assert.deepEqual(by["page.c1.m0"].rect, [776 + 216 - 40, 160 + 112 - 48, 32, 40]);   // the small seed (32×40 under a 120 px picture) at the bottom right
-  assert.deepEqual(by["page.c1.m1"].rect, [776 + 8, 160 + 8, 28, 16]);   // breed to change at the top left
-  assert.equal(by["page.c2.frost"].kind, "sprite"); assert.equal(by["page.c2.frost"].asset, "t:unread-frame", "an unread cell is the signed frosted frame, nothing drawn by the build"); assert.ok(!by["page.c2.l0"] || by["page.c2.l0"].text === "");
-  assert.deepEqual(by["page.c0.wipe"].rect, [544, 216, 216, 56]); assert.equal(by["page.c0.name"].rect[1], 160 + 112 + 8);
-  // Compare draws no edge and no bracket of its own for a trait that differs: the signed frames carry the cells, the need line says it (art director, 2026-10-09)
-  assert.ok(!r.nodes.some((n) => /\.diff\.|\.bracket/.test(n.id)), "no build-drawn difference marks");
-  assert.ok(!r.nodes.some((n) => n.kind === "nineSlice"));
+  assert.ok(!by.page, "no pane"); assert.deepEqual(by["page.emblem"].rect, [448, 118, 24, 24]); assert.equal(by["page.word"].px, 20); assert.deepEqual(by["page.rule"].rect, [448, 148, 416, 1]);
+  assert.deepEqual(by["page.c0.pic"].rect, [448, 160, 128, 160]); assert.equal(by["page.c0.pic"].colour, "ground", "a read cell is one flat tone");
+  assert.equal(by["page.c0.crop"].asset, "t:crop"); assert.deepEqual(by["page.c0.crop"].rect, [448, 160, 128, 160], "the crop placed 1:1 on the cell");
+  const nw = ctx.measure("Crown", 16, 400), total = nw + 4 + 12 + 4 + 28 + 4 + 6, x0 = 448 + Math.round((128 - total) / 2);   // the name and its glyphs, 4 px apart, centred together
+  assert.deepEqual(by["page.c0.name"].rect, [x0, 160 + 160 + 4, nw, 20]);
+  assert.deepEqual(by["page.c0.g0"].rect, [x0 + nw + 4, 324 + 2, 12, 16]); assert.deepEqual(by["page.c0.g1"].rect, [x0 + nw + 4 + 12 + 4, 324 + 2, 28, 16]); assert.deepEqual(by["page.c0.new"].rect, [x0 + nw + 4 + 12 + 4 + 28 + 4, 324 + 7, 6, 6]);
+  assert.ok(!by["page.c2.pic"] && !by["page.c2.crop"] && !by["page.c2.g0"], "an unread cell draws nothing inside; its name shows");
+  assert.equal(by["page.c1.wipe"].kind, "clip"); assert.deepEqual(by["page.c1.wipe"].rect, [592, 160, 128, 80]); assert.ok(by["page.c1.wipeline"]);
+  assert.ok(!r.nodes.some((n) => /frame|card|standin/.test(n.id)), "no frame, card or word");
   assert.ok(r.nodes.filter((n) => n.kind === "text").every((n) => [16, 20].includes(n.px)));
-  assert.equal(chapterPage(ctx, "p2", region, { heading: null, cells: new Array(7).fill(cells[2]), colours, marks, diff: { edge: 2, inset: 8 }, frost: "f:", slats: "s:" }).overflow, true);
+  for (const id of ["t:crop", "t:g", "t:pair", "t:br", "t:dot"]) dropAsset(id);
 });
 
 test("text runs draw the material symbols as icons, wrap and clip", () => {

@@ -11,14 +11,16 @@ const ctx = makeCtx(frame, { measure: (t) => t.length * 9, face: () => ({ cap: 1
 const cells = (n) => Array.from({ length: n }, (_, i) => ({ name: "T" + i, lines: [], frost: true, marks: [] }));
 const colours = { pane: "deep", edge: "slate", heading: "bone", name: "bone", line: "fog", lineEmpty: "stone", wipe: "white" };
 
-test("the pane master is a nine-slice by trait count (176 to 584 wide, 248 or 440 high); without it the flat pane draws", () => {
-  const R = pods.regions.chapter.page;
-  const flat = chapterPage(ctx, "page", R, { colours, cells: cells(4), region: "page" }).nodes;
-  assert.ok(!flat.some((n) => n.kind === "nineSlice"), "no master, no nine-slice");
-  registerAsset({ id: "t:pane", w: 256, h: 440, status: "master", slice: [64, 64, 16, 16], tile: 32, build: () => ({ w: 256, h: 440, canvas: () => null }) });
-  for (const [n, [w, h]] of [[1, [176, 248]], [2, [312, 248]], [4, [584, 248]], [5, [448, 440]], [8, [584, 440]]]) {
-    const nine = chapterPage(ctx, "page", R, { colours, cells: cells(n), pane: "t:pane", region: "page" }).nodes.find((q) => q.kind === "nineSlice");
-    assert.deepEqual(nine.rect, [R.rect[0], R.rect[1], w, h], `${n} traits: the pane is ${w}×${h}, its left and top fixed`);
+test("the open page has no pane: one hairline rule as wide as the grid the count gives (152 to 584); Compare's page keeps its nine-slice pane", () => {
+  const R = pods.regions.chapter.page, rule = (n) => chapterPage(ctx, "page", R, { colours, cells: cells(n), heading: { emblem: "e", word: "Face" }, count: n, region: "page" }).nodes;
+  for (const [n, w] of [[1, 152], [2, 296], [3, 440], [4, 584], [5, 440], [6, 440], [7, 584], [8, 584]]) {
+    const nodes = rule(n), line = nodes.find((q) => q.id === "page.rule");
+    assert.ok(!nodes.some((q) => q.kind === "nineSlice" || (q.kind === "rect" && q.id === "page")), "no pane");
+    assert.deepEqual(line.rect, [R.rect[0] + 24, R.rect[1] + 36, w - 24, 1], `${n} traits: the rule runs from the first column to the last, the page ${w} wide`);
   }
-  dropAsset("t:pane");
+  const sealed = chapterPage(ctx, "page", R, { colours, cells: [], heading: { emblem: "e", word: "Character" }, count: 1, sealedFind: true, region: "page" }).nodes;
+  assert.deepEqual(sealed.find((q) => q.id === "page.rule").rect, [R.rect[0] + 24, R.rect[1] + 36, 128, 1], "a shut chapter takes the one-trait size");
+  registerAsset({ id: "t:pane", w: 256, h: 440, status: "master", slice: [64, 64, 16, 16], tile: 32, build: () => ({ w: 256, h: 440, canvas: () => null }) });
+  const C = pods.regions.compareA, nine = chapterPage(ctx, "pageA", C, { colours, cells: cells(2), pane: "t:pane", region: "pageA" }).nodes.find((q) => q.kind === "nineSlice");
+  assert.ok(nine, "Compare's page is the nine-slice master"); dropAsset("t:pane");
 });

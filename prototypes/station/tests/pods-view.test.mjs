@@ -95,8 +95,8 @@ test("a read pod: the page by trait count, every picture at its grid size, no di
       assert.equal(page.cells.length, sealed ? 0 : page.count);
       for (const c of page.cells) {
         assert.ok(!/\d/.test(c.name + c.lines.join(" ")), `${id} ${ch.id}: digits on the page: ${c.name} ${c.lines}`);
-        assert.ok(c.picture && !c.frost); assert.equal(c.lines.length, 1);
-        const pic = v.requests.find((r) => r.id === c.picture); assert.ok(pic && pic.kind === "slot" && pic.size[0] > 0, "the stand-in card slot at the picture's size: the build draws no trait picture"); assert.ok(c.frame, "the signed frame");
+        assert.ok(!c.frost && !c.picture && !c.frame, "an open cell: no card and no frame"); assert.equal(c.lines.length, 1);
+        assert.ok(!v.requests.some((r) => /standin|picture-frame/.test(r.id) && r.kind === "slot" && r.size?.join("x") === "128x160"), "no stand-in card and no frame is asked for"); for (const g of c.glyphs) assert.equal(v.requests.find((r) => r.id === g.asset)?.kind, "slot", "a line glyph is the studio's, by id");
       }
       const sizes = new Set(page.cells.filter((c) => c.picture).map((c) => c.picture.split(":").at(-1)));
       assert.ok(sizes.size <= 1, "one picture size on a page: " + [...sizes]);
@@ -113,7 +113,7 @@ test("the props are plain JSON; every picture asked for is registered once at on
   const st = stock(["S01", "S03"], 5); S.skipRead(st, st.tray[0], settings); S.skipIdentify(st, st.tray[1]);
   const v = view(model(st)), back = JSON.parse(JSON.stringify(v)); assert.deepEqual(back, v);
   const sizes = new Map(); for (const r of v.requests) { const sz = Array.isArray(r.size) ? r.size.join("x") : r.w && r.h ? r.w + "x" + r.h : null; if (sizes.has(r.id) && sz) assert.equal(sizes.get(r.id), sz, "one id, one size: " + r.id); if (sz) sizes.set(r.id, sz); }
-  const v2 = view(chapter(st, 0)); assert.ok(v2.requests.some((r) => r.kind === "slot" && /standin/.test(r.id)) && v2.requests.some((r) => r.kind === "emblem" && r.id.endsWith(":24")));
+  const v2 = view(chapter(st, 0)); assert.ok(v2.requests.every((r) => !/standin|picture-frame/.test(r.id)) && v2.requests.some((r) => r.kind === "emblem" && r.id.endsWith(":24")));
 });
 
 test("the bottom line: the one action and its price as a number and an icon (no 'free', no 'half'), strings as decided", () => {
@@ -170,7 +170,7 @@ test("Compare's need line follows the spec's strings: here, in another chapter, 
   for (let ci = 0; ci < chs.length; ci++) {
     const v = at(ci); assert.equal(v.line.need, !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere);
     const marked = v.pages[0].cells.filter((c) => c.diff).length; assert.equal(marked, chs[ci].traits.filter((t) => diff.includes(t.id)).length, "a mark on each trait that differs");
-    assert.match(v.pages[0].differs, /^compare-mark-differs-12x12:12x12$/, "the slot by the studio's id"); assert.equal(v.pages[1].differs, v.pages[0].differs, "the same mark on both pages");
+    assert.match(v.pages[0].differs, /^frame-lamp-12-amber:12x12$/, "the slot by the studio's id"); assert.equal(v.pages[1].differs, v.pages[0].differs, "the same mark on both pages");
   }
 });
 
