@@ -426,10 +426,15 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · −" + priceText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
-// The bud's chapters: a read chapter is known from the start; the rest clear one by one across the wait.
+// A chapter that is sealed and still shut stays unknown to a founder: it opens known in every chapter but that one.
+const shutSealed = (c, settings) => !!c.sealed && !settings.sealedOpen;
+// The bud's chapters. A read chapter is known from the start. A bred bud (kind "cross") keeps every other chapter unread, always: while it grows, after Grow now and skipBud, at ready and after (what
+// the Station could be sure of is B.read, set from the parents). A founder (a missing kind counts as one) clears its unread chapters one by one across the wait: with U the unread chapters in frame order
+// (a shut sealed chapter is never among them) and n = |U|, U[k] is known when the bud is (k + 1) / (n + 1) grown.
 export function budChapterKnown(st, chapterId, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const B = st.bud; if (!B) return false; if (B.read.includes(chapterId)) return true;
-  const fr = frameOf(B.species), unread = fr.chapters.filter((c) => !B.read.includes(c.id)).map((c) => c.id), k = unread.indexOf(chapterId);
+  if (B.kind === "cross") return false;
+  const fr = frameOf(B.species), unread = fr.chapters.filter((c) => !B.read.includes(c.id) && !shutSealed(c, settings)).map((c) => c.id), k = unread.indexOf(chapterId);
   return k >= 0 && budProgress(st, settings, now) >= (k + 1) / (unread.length + 1);
 }
 // Grow now (research-economy.md §5, §9, decided 2026-10-09): 1 Essence for every 2 minutes left on the bud, rounded up; no Energy, no Data. The price falls as the bud grows; the
@@ -450,8 +455,8 @@ export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const bay = freeBay(st, settings); if (bay < 0) return { ok: false, msg: "No bay free · return a mibi to the wild first" };
   const B = st.bud, fr = frameOf(B.species), id = st.nextMibi++;
   const name = MIBI_NAMES[st.nameN % MIBI_NAMES.length] + (st.nameN >= MIBI_NAMES.length ? " " + (Math.floor(st.nameN / MIBI_NAMES.length) + 1) : ""); st.nameN++;
-  // a founder opens fully known; a bred child only where the Station could be sure (switch parents matched), the rest read later
-  const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.map((c) => c.id);
+  // a founder opens known in every chapter but a shut sealed one; a bred child only where the Station could be sure (switch parents matched), the rest read later
+  const read = B.kind === "cross" ? [...(B.read || [])] : fr.chapters.filter((c) => (B.read || []).includes(c.id) || !shutSealed(c, settings)).map((c) => c.id);
   const m = { id, name, sp: B.sp, species: B.species, gs: B.gs, born: st.turn, from: B.from, mem: null, outings: 0, notches: 0, bonded: false, genome: B.genome, sha: B.sha, code: B.code, read, parents: B.parents, bay, paint: B.paint ?? null, released: false, shaped: B.shaped || [] };
   for (const ch of fr.chapters) if (read.includes(ch.id)) for (const [t, ls] of chapterLooks(fr, ch, m.genome)) guideAdd(st, fr.species.id, t, ls);
   st.mibis.push(m); st.bud = null;
