@@ -97,20 +97,55 @@ bands.
 | Old | Change | New name | Note |
 | --- | --- | --- | --- |
 | moss0 | removed | `void` | drop shadows |
-| moss1 | removed | `ground` | `#1d232b` | The deepest slate: behind the panels | `void` · `panel` | Station concept board, frames 1 and 3 |
-| `panel` | `#2b3038` | Matte slate panels: sections, cards, the column | `ground` · `bar` | Station concept board, frames 1 and 3 |
-| `bar` | `#23292f` | The top bar and bottom line, slate | `panel` · `hairline` | Station concept board, frames 1 and 3 |
-| `hairline` | `#3d434b` | 1 px rules on slate | `bar` · `bevel` | Station concept board, frames 1 and 3 |
-| `bevel` | `#565c63` | The lit top-left edge of panels and wells | `hairline` · `metal` | Station concept board, frames 1 and 3 |
-| `metal` | `#8a947b` | Housing, sage: the frame around the vivarium and the device's parts | `bevel` · `enamel` | Station concept board, frames 1 and 3 |
-| `enamel` | `#a99f8a` | Housing, sand: bases, plates, the light parts of the device | `metal` · `frostS` | Station concept board, frames 1 and 3 |
-| `frostS` | `#a9b5c8` | The veil over what is unread, only; never glass. Frost's shade: an unread tab's fill, the shade side of frost on an unread part | `enamel` · `frostD` | Station concept board, frames 1 and 3 |
-| `frostD` | `#cbd5e2` | The veil over what is unread, only; never glass. Frost: the veil on an unread page or part | `frostS` · `frost` | Station concept board, frames 1 and 3 |
-| `frost` | `#eaeff6` | The veil over what is unread, only; never glass. Frost's light | `frostD` · `white` | Station concept board, frames 1 and 3 |
-| `deepTeal` | `#2a2a2d` | Dark rubber: bumpers, hoses, gaskets, crate bodies | `ground` · `teal` | Station concept board, frames 1 and 3 |
-| `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Station concept board, frames 1 and 3 |
-| `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Station concept board, frames 1 and 3 |
-| `focus` | `#ffe6ad` | The focus ring, warm cream; with the amber lamp and Confirm's orange, one of the panels' only warm marks | `sand` · `white` | Station concept board, frames 1 and 3 |
+| moss1 | removed | `ground` | |
+| moss2 | removed | `panel` | |
+| moss3 | removed | `bar` | |
+| moss4 | removed | `hairline` | separators, rules |
+| moss5 | renamed | `sageD` (same hex) | where it was dimmed text, use `mist` |
+| wood0 | removed | `panel` | wooden frames become graphite chrome |
+| wood1 | removed | `bar` | |
+| wood2 | removed | `hairline` | |
+| wood3 | removed | `bevel` | |
+| wood4 | removed | `metal` | |
+| felt | removed | `panel` | cups become wells; the bed is painted |
+| feltD | removed | `ground` | |
+| lamp | renamed | `focus` (same hex) | the focus ring's cream |
+| lampD | removed | `sand` | as text, use `mist` or `bone` by role |
+| glass | removed | `frostD` | |
+| glassD | removed | `enamel` | |
+| creamT | removed | `bone` | readout and title text |
+| frost, frostD, frostS | kept | same names | `frostS`'s darker neighbour is now `enamel` |
+| (new) | added | `ground` #162a37, `panel` #2a2e38, `bar` #34383f, `hairline` #3c4b57, `bevel` #5a6672, `metal` #717c86, `enamel` #8ca0ab, `deepTeal` #275663, `sage` #84ae78 | roles and concept screens in the table above |
+
+
+- **The shared core: the Companion's 48,** first in the file and unchanged in name, value and
+  neighbours, as signed in [`art/companion-48/palette/palette.json`](../../art/companion-48/palette/palette.json).
+  On the Station they carry the placeholders' flat slots and outlines in each species' ramps,
+  the material icons (Energy `yellow`, Data `river`, Essence `leaf` ramps), the lamps (`sprout`
+  ready, `amber` needs you, `sky` waiting for a painting), Confirm's verb (`orange`), Call and a
+  read tab's lit rim (`teal`), a ticking counter and the glint (`yellow`), a clash (`red`),
+  whole Shield plates (`white`), drop shadows (`void`), readouts and the stamp label's plate
+  (`bone`), and context and a dimmed ✓ (`mist`).
+- **The Station's 14:** the device's colours: dark matte slate panels, the sage
+  and sand housing, dark rubber, the frost veil, the leaf timer's sage and the
+  focus cream.
+
+| Name | Hex | Role | Darker · lighter | Seen in |
+| --- | --- | --- | --- | --- |
+| `ground` | `#1d232b` | The deepest slate: behind the panels | `void` · `panel` | Station concept board, frame 1: the slate around the vivarium and between the modules |
+| `panel` | `#2b3038` | Matte slate panels: sections, cards, the column | `ground` · `bar` | Frame 1: the section column's modules; frame 3: the readout boxes |
+| `bar` | `#23292f` | The top bar and bottom line, slate | `panel` · `hairline` | Frame 1: the slate under the bottom plates |
+| `hairline` | `#3d434b` | 1 px rules on slate | `bar` · `bevel` | Frame 1: the modules' edges |
+| `bevel` | `#565c63` | The lit top-left edge of panels and wells | `hairline` · `metal` | Frame 1: the modules' lit top edges |
+| `metal` | `#8a947b` | Housing, sage: the frame around the vivarium and the device's parts | `bevel` · `enamel` | Frame 1: the sage housing around the screen; frame 3: the chamber's housing |
+| `enamel` | `#a99f8a` | Housing, sand: bases, plates, the light parts of the device | `metal` · `frostS` | Frame 2: the case's sand rim; frame 3: the outer frame |
+| `frostS` | `#a9b5c8` | The veil over what is unread, only; never glass. Frost's shade: an unread tab's fill, the shade side of frost on an unread part | `enamel` · `frostD` | Not on the board: the veil over what is unread (a meaning, drawn only on unread parts) |
+| `frostD` | `#cbd5e2` | The veil over what is unread, only; never glass. Frost: the veil on an unread page or part | `frostS` · `frost` | Not on the board: the veil over what is unread (a meaning, drawn only on unread parts) |
+| `frost` | `#eaeff6` | The veil over what is unread, only; never glass. Frost's light | `frostD` · `white` | Not on the board: the veil over what is unread (a meaning, drawn only on unread parts) |
+| `deepTeal` | `#2a2a2d` | Dark rubber: bumpers, hoses, gaskets, crate bodies | `void` · `bar` | Frame 1: the corner bumpers; frame 3: the hoses |
+| `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
+| `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
+| `focus` | `#ffe6ad` | The focus ring, warm cream; with the amber lamp and Confirm's orange, one of the panels' only warm marks | `sand` · `white` | Not on the board: the focus ring |
 
 <img src="ui-kit/station-palette-1x.png" width="950" alt="The Station palette as a swatch strip, 1×">
 
