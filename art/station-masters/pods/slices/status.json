@@ -2420,9 +2420,9 @@
   "note": "Compare's bench from the chapter's own wall"
  },
  "compare-mark-differs-12x12": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "Compare's differs mark"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 52: replaced by the A drawing (exactly proposals/differs-a-12x12.png); awaiting verdict"
  },
  "trait-S09-head-between-small-and-large-128x160": {
   "status": "signed",
@@ -2475,29 +2475,29 @@
   "note": "a crop of the accepted painting from the rig's part region (the Beak's edge touch accepted as a part crop)"
  },
  "trait-S09-crown-tall-128x160": {
-  "status": "signed",
-  "signed_in": "pass 49 verdict",
-  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
  },
  "trait-S09-crown-tall-144x176": {
-  "status": "signed",
-  "signed_in": "pass 49 verdict",
-  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
  },
  "trait-S09-crown-tall-104x160": {
-  "status": "signed",
-  "signed_in": "pass 49 verdict",
-  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
  },
  "trait-S09-crown-tall-104x96": {
-  "status": "signed",
-  "signed_in": "pass 49 verdict",
-  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
  },
  "trait-S09-crown-tall-104x64": {
-  "status": "signed",
-  "signed_in": "pass 49 verdict",
-  "note": "the crown crop: the grey stroke erased, the hairline choked 1 px; the near-white pixels are the painting's rim light"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 52: the crown with treatment B (the part at 100 percent, the painted head under the ear and crest roots at 35 percent alpha fading over about 22 px, no shadow); awaiting verdict"
  },
  "trait-S09-tail-between-128x160": {
   "status": "signed",
