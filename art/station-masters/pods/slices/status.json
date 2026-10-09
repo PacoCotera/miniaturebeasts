@@ -1810,9 +1810,9 @@
   "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
  },
  "ring-kin-56x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 29 verdict",
+  "note": "the kin ring"
  },
  "ring-arc-collection-n1-track-176x176": {
   "status": "signed",
@@ -2040,14 +2040,14 @@
   "note": "the collection's bench, no cone (ef254a37); awaiting verdict"
  },
  "mark-can-grow-16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 34 (signed on delivery)",
+  "note": "the seedling: a 1 px stem, two almond leaves in a V"
  },
  "mark-waiting-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 32 verdict",
+  "note": "the waiting mark: three pod silhouettes"
  },
  "place-meadow-64x64": {
   "status": "new",

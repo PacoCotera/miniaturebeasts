@@ -6048,9 +6048,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the kin ring: a 3 px band (r 25 to 28) in bevel with hairline edges, painted at 8x with soft edges and a gentle light from the upper left; centred on the 40x48 pod in the 56x56 cell (rings from (600, 224) on a 64 px pitch)",
   "sha256": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 29 verdict",
+  "status_note": "the kin ring"
  },
  "ring-arc-collection-n1-track-176x176": {
   "size": [
@@ -6874,11 +6874,11 @@
    16
   ],
   "src": "typed by hand",
-  "made": "the can-grow mark: a bud on top and two leaves opening upward in a V from the stem, in the emblem manner (grass with leaf for the shade and the stem, the lit edge upper left in sprout); at the place + (184, 168)",
-  "sha256": "351bc9793f69e2c12dd940a49fdff7e07cdfa18bc4db5d804f66d6f881db72ea",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+  "made": "the can-grow mark: a seedling: a 1 px stem and two filled almond leaves about 4x3 opening up and out in a V from the top of the stem, in the emblem manner (leaf on the shade side and the stem, a grass lit edge upper left); at the place + (184, 168)",
+  "sha256": "8178d7b260b50f20d23ddd61b7b56bd34922b184646fcb5fdc676e870c9faa83",
+  "status": "signed",
+  "signed_in": "pass 34 (signed on delivery)",
+  "status_note": "the seedling: a 1 px stem, two almond leaves in a V"
  },
  "mark-waiting-24": {
   "size": [
@@ -6894,9 +6894,9 @@
   "src": "typed by hand",
   "made": "the waiting-beyond-the-rack mark: three pods in the pod's silhouette (wider at the base, a 1 px darker cap seam, about 10x12, 8x10 and 6x8) on one common baseline, bottom-aligned and slightly overlapping, mist with a fog lit edge upper left; one quiet mark, never a number; at (16, 528)",
   "sha256": "12920d916e647e00fc37823a11d2d7777118730628d3b107043c08740ea2534d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 32 verdict",
+  "status_note": "the waiting mark: three pod silhouettes"
  },
  "place-meadow-64x64": {
   "size": [
