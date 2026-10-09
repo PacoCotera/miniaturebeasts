@@ -5,7 +5,6 @@
 // (today: drawn placeholders and the rig's renders; a master is a PNG file named in `file`, nothing else).
 const ENTRIES = new Map();
 const BUILT = new Map();
-const hits = { built: 0, cached: 0 };
 
 // Register an asset (idempotent for an id already registered with the same size).
 //   slice: [left, top, right, bottom] marks a nine-slice picture (its edges and middle are tiled, never scaled)
@@ -46,17 +45,15 @@ export const hasAsset = (id) => ENTRIES.has(id);
 export const assetEntry = (id) => ENTRIES.get(id) ?? null;
 // The built picture (anything with w, h and canvas()) or null when the id is unknown. `env` reaches the builder (palette lookup).
 export function asset(id, env = null) {
-  let b = BUILT.get(id); if (b) { hits.cached++; return b; }
+  let b = BUILT.get(id); if (b) return b;
   const e = ENTRIES.get(id); if (!e) return null;
   if (!e.build) return null; b = e.build(e, env); if (!b) return null;
   if (b.w !== e.w || b.h !== e.h) throw new Error(`asset ${id} built at ${b.w}×${b.h}, registered at ${e.w}×${e.h}`);
-  hits.built++; BUILT.set(id, b); return b;
+  BUILT.set(id, b); return b;
 }
 export const dropAsset = (id) => { BUILT.delete(id); ENTRIES.delete(id); };
 // The manifest as data: every entry without its builder.
 export const manifest = () => [...ENTRIES.values()].map(({ build, ...rest }) => rest);
-export const placeholders = () => manifest().filter((e) => e.status === "placeholder");
-export const builtCount = () => BUILT.size;
-export const cacheStats = () => ({ ...hits, size: BUILT.size });
-// Forget built pictures matching a prefix (a rig render when its genome changes); the entries stay registered.
-export const evict = (prefix) => { for (const k of [...BUILT.keys()]) if (k.startsWith(prefix)) BUILT.delete(k); };
+// Every entry that is not final: a built stand-in (placeholder), or a placed master the studio's record does not call signed (held, new, placeholder). Only `master` and `empty` are not in this register.
+export const NOT_FINAL = ["placeholder", "held", "new"];
+export const placeholders = () => manifest().filter((e) => NOT_FINAL.includes(e.status));

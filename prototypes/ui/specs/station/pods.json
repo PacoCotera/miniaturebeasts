@@ -18,7 +18,9 @@
   "overview tab focus": "derived, UI designer to confirm: with a tab focused on the overview the bottom line says `✓ Open <Chapter>` with no price (the page opens free); the read and its price sit on the chapter page",
   "kin of an unidentified pod": "derived, UI designer to confirm: an unidentified pod's species is unknown, so no kin ring is drawn for it (a frosted ring would still tell how many share the species)",
   "page pane master": "derived, UI designer to confirm: the page's pane is the one nine-slice master page-pane-256x440 (insets 64, 64, 16, 16, edges tiled), drawn at any width and at the height the trait count gives, never scaled",
-  "compare name line": "derived, UI designer to confirm: Compare's trait names sit 8 px under the picture on a 20 px line (nameGap, nameLine), as the chapter page's cell does at 4 px (cell.gap, cell.name.line)"
+  "compare name line": "derived, UI designer to confirm: Compare's trait names sit 8 px under the picture on a 20 px line (nameGap, nameLine), as the chapter page's cell does at 4 px (cell.gap, cell.name.line)",
+  "compare heading place": "derived, UI designer to confirm: Compare's heading shows the pod's find as a 16×16 place picture 40 px right of the heading's pod and 12 px lower (compareA.place), as the build had it",
+  "kin ring band": "derived, UI designer to confirm: the kin ring's stand-in is a 2 px `hairline` band (kin.band) until ring-kin-56x56 is the studio's"
  },
  "regions": {
   "bench": {
@@ -341,7 +343,8 @@
      48
     ],
     "role": "the Compare targets",
-    "ring": "ring-kin-56x56"
+    "ring": "ring-kin-56x56",
+    "band": 2
    },
    "hatch": {
     "rect": [
@@ -804,7 +807,17 @@
     }
    },
    "nameGap": 8,
-   "nameLine": 20
+   "nameLine": 20,
+   "place": {
+    "at": [
+     40,
+     12
+    ],
+    "size": [
+     16,
+     16
+    ]
+   }
   },
   "compareB": {
    "rect": [

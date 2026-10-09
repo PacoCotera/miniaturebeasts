@@ -1,7 +1,7 @@
 // The pod from its signed layers (the Pods masters, prototypes/ui/assets/masters): one painted pod per size class (shade, mask-body, mask-accent, a pattern, the band),
 // recoloured by the species' colour pair in the page (ui/podlayers.mjs) and handed on as a picture at the class's size. Only when the layers are placed.
 import { asset as assetOf, assetEntry, isFilled } from "../../ui/assets.mjs";
-import { composePod, patternLayer } from "../../ui/podlayers.mjs";
+import { composePod, patternLayer, figureComposite, figureAlpha } from "../../ui/podlayers.mjs";
 
 const need = (cls) => ["shade", "mask-body", "mask-accent"].map((l) => `pod-${cls}-${l}`);
 export const layersPlaced = (cls) => need(cls).every(isFilled);
@@ -21,21 +21,17 @@ export function podFromLayers(cls, pair, shellPattern, patterns, sealed) {
   return { w: a.w, h: a.h, canvas: () => cv || make() };
 }
 
-// The figure beside the pod: the species' two slices, the mist one and the clear one, laid one over the other with the clear layer's alpha (chapters read ÷ chapters); no blur.
-// Until both slices are placed it is an empty picture.
+// The figure beside the pod: the species' two slices laid one over the other (ui/podlayers.mjs figureComposite). Until both are placed it is an empty picture; a held figure shows its mist in both states.
+// Its status is the least final of its slices'.
 export function figureFromLayers(mistId, clearId, alpha, [w, h]) {
   let cv = null;
   const a = isFilled(mistId) ? assetOf(mistId) : null;
   const make = () => {
     cv = document.createElement("canvas"); cv.width = w; cv.height = h; if (!a || !isFilled(clearId)) return cv;
-    const held = assetEntry(clearId)?.status === "held" || assetEntry(mistId)?.status === "held";   // a held figure shows its mist in both states, with no fade
-    const m = pixels(mistId).data, c = pixels(clearId).data, out = new Uint8ClampedArray(m.length), t = held ? 0 : Math.max(0, Math.min(1, alpha));
-    for (let i = 0; i < m.length; i += 4) {   // laid over each other with the clear layer's alpha scaled by t: in premultiplied terms, so a transparent pixel adds no colour
-      const am = m[i + 3] / 255, ac = (c[i + 3] / 255) * t, a = ac + am * (1 - ac);
-      for (let k = 0; k < 3; k++) out[i + k] = a ? Math.round((c[i + k] * ac + m[i + k] * am * (1 - ac)) / a) : 0;
-      out[i + 3] = Math.round(a * 255);
-    }
+    const out = figureComposite(pixels(mistId).data, pixels(clearId).data, figureAlpha([assetEntry(mistId)?.status, assetEntry(clearId)?.status], alpha));
     const g = cv.getContext("2d"), id = g.createImageData(w, h); id.data.set(out); g.putImageData(id, 0, 0); return cv;
   };
   return { w, h, canvas: () => cv || make() };
 }
+// The least final status among placed layers: placeholder, then held, then new, else master.
+export const leastFinal = (ids) => { const order = ["placeholder", "held", "new"], got = ids.map((i) => assetEntry(i)?.status).filter((x) => order.includes(x)); return order.find((x) => got.includes(x)) ?? "master"; };

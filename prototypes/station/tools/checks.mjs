@@ -16,7 +16,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadTypeNode } from "../../ui/type-node.mjs";
 import { SIZES } from "../../ui/type.mjs";
-import { slantTabs, pageGrid } from "../../ui/layout.mjs";
+import { slantTabs, pageGrid, pageHeight } from "../../ui/layout.mjs";
 import { placeRect, kinRect } from "../../ui/components/list.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
@@ -83,7 +83,7 @@ for (const s of rec.shots.filter((x) => x.check.layered)) {
     else if (id === "ribbon") must(eq(rect, R.overview.ribbon.rect), `ribbon ${rect} is not ${R.overview.ribbon.rect}`);
     else if (id === "stamp") must(eq(rect, R.overview.stamp.rect) && rect[2] === 120 && rect[3] === 120, `stamp label ${rect} is not 120×120 at ${R.overview.stamp.rect}`);
     else if (id === "stamp.image") { const L = R.overview.stamp.rect; must(rect[2] === rect[3] && rect[2] <= 104 && rect[2] >= 34 && Math.abs(rect[0] + rect[2] / 2 - (L[0] + L[2] / 2)) <= 1 && Math.abs(rect[1] + rect[3] / 2 - (L[1] + L[3] / 2)) <= 1, `the stamp ${rect} is not at most 104 px square and centred on its label ${L}`); }
-    else if (id === "page") { const Pg = R.chapter.page, n = Math.min(c.traits ?? 0, 8), key = Object.keys(Pg.heightByCount).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); }); must(eq(rect, [Pg.rect[0], Pg.rect[1], Pg.rect[2], Pg.heightByCount[key]]), `page ${rect} is not ${Pg.rect.slice(0, 3)} by the ${Pg.heightByCount[key]} the spec gives for ${n} traits`); }
+    else if (id === "page") { const Pg = R.chapter.page, n = c.traits ?? 0; must(eq(rect, [Pg.rect[0], Pg.rect[1], Pg.rect[2], pageHeight(Pg, n)]), `page ${rect} is not ${Pg.rect.slice(0, 3)} by the ${pageHeight(Pg, n)} the spec gives for ${n} traits`); }
     else if (id === "page.seal") { const Pg = R.chapter.page, F_ = Pg.sealedFind; must(eq(rect, [Pg.rect[0] + F_[0], Pg.rect[1] + F_[1], F_[2], F_[3]]), `the find that opens a shut chapter ${rect} is not at the page + ${F_}`); }
     else if (id === "compareA" || id === "compareB") must(eq(rect, R[id].rect), `${id} ${rect} is not ${R[id].rect}`);
     else if (id === "rail.tab") { const i = +r.id.match(/^rail\.(\d+)$/)[1], n = c.pod.chapters, S = frame.regions.rail.slant, want = (o) => { const t = slantTabs(frame.regions.rail, n, o).tabs[i]?.rect; return t && [t[0] + S, t[1] + 1, t[2] - S, t[3] - 2]; }, hit = Array.from({ length: n + 1 }, (_, o) => want(o - 1)).find((w) => w && rect[0] === w[0] && rect[2] === w[2] && rect[3] === w[3] && (rect[1] === w[1] || rect[1] === w[1] - frame.focus.lift.chrome)); must(!!hit, `rail tab ${i} ${rect} is not the slanted tab's body in ${n} tabs`); got.push(i); }

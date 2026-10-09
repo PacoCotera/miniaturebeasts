@@ -41,6 +41,7 @@ let last = null;   // the latest view (the targets the keys move through)
 const initialFocus = (view) => (view === "collection" ? placeOf(P().cur) : view === "chapter" ? "rail." + (P().ci || 0) : "pod");
 function ensure() {
   const p = P(), F = p.focus; if (!SPECS.pods) return;
+  p.view ??= SPECS.pods.initial;   // Pods opens on the spec's first state
   if (!podById(p.cur)) { const q = needsYou(); p.cur = q ? q.id : null; }
   if (!p.cur || !G.st.tray.length) p.view = "collection";
   const key = p.cmp ? "overview" : p.view; F.graph = SPECS.pods.focus[key];

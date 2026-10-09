@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { encodePNG } from "../png.mjs";
 import { place, check, signedIds } from "../tools/place-masters.mjs";
-import { registerAsset, placeMaster, assetEntry, asset, dropAsset } from "../assets.mjs";
+import { registerAsset, placeMaster, assetEntry, asset, dropAsset, placeholders, NOT_FINAL } from "../assets.mjs";
 
 function folder() {
   const dir = mkdtempSync(path.join(tmpdir(), "masters-")), slices = path.join(dir, "slices"), manifest = {};
@@ -50,4 +50,27 @@ test("a master placed before its stand-in is registered holds the id; a stand-in
   assert.equal(registerAsset({ id: "t:early", w: 4, h: 4, build: () => null }).status, "master");
   assert.throws(() => registerAsset({ id: "t:early", w: 5, h: 4, build: () => null }), /different sizes/);
   dropAsset("t:early");
+});
+
+test("the studio's record is carried through: held, placeholder and new masters are placed, flagged, counted as not final; signed ones are masters", () => {
+  const pic = (w, h) => ({ w, h, canvas: () => null });
+  for (const [id, status] of [["t:signed", "master"], ["t:held", "held"], ["t:ph", "placeholder"], ["t:new", "new"]]) placeMaster({ id, w: 2, h: 2, file: "pods/" + id.slice(2) + ".png", hash: "ab", status }, pic(2, 2));
+  assert.equal(assetEntry("t:signed").status, "master"); assert.equal(assetEntry("t:held").status, "held");
+  const counted = placeholders().map((e) => e.id).filter((i) => i.startsWith("t:")).sort();
+  assert.deepEqual(counted, ["t:held", "t:new", "t:ph"], "the register counts every entry that is not final, and no master"); assert.deepEqual(NOT_FINAL, ["placeholder", "held", "new"]);
+  for (const id of ["t:signed", "t:held", "t:ph", "t:new"]) dropAsset(id);
+});
+
+test("--status places signed, placeholder, held and new slices flagged in the index, and prunes what the record no longer places", () => {
+  const from = folder(), root = mkdtempSync(path.join(tmpdir(), "placed-"));
+  writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "pod-small-sealed": { status: "held" }, "room-shelf": { status: "new" } }));
+  const r = place({ from, group: "pods", root, byStatus: true, by: "masters-pods abc1234" }); assert.deepEqual(r.placed.sort(), ["page-pane-8x4", "pod-small-sealed", "room-shelf"]);
+  const ix = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters;
+  assert.equal(ix["page-pane-8x4"].status, undefined, "signed carries no flag"); assert.equal(ix["pod-small-sealed"].status, "held"); assert.equal(ix["room-shelf"].status, "new");
+  assert.match(ix["page-pane-8x4"].signed, /^signed \(masters-pods abc1234\)$/); assert.doesNotMatch(JSON.stringify(ix), /pass \d|verdict/i, "plain provenance, no verdict language");
+  writeFileSync(path.join(from, "slices/status.json"), JSON.stringify({ "page-pane-8x4": { status: "signed" }, "room-shelf": { status: "withdrawn" } }));
+  const again = place({ from, group: "pods", root, byStatus: true, by: "masters-pods def5678" }); assert.deepEqual(again.placed, ["page-pane-8x4"]);
+  const after = JSON.parse(readFileSync(path.join(root, "index.json"), "utf8")).masters;
+  assert.deepEqual(Object.keys(after), ["page-pane-8x4"], "the held and the withdrawn leave the index"); assert.ok(!existsSync(path.join(root, "pods/room-shelf.png")), "and their files");
+  assert.deepEqual(check(root), []);
 });

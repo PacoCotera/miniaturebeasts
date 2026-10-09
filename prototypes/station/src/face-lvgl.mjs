@@ -51,9 +51,10 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   let lastKey = null;
   const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour ?? ""); mix(n.text ?? ""); mix(n.px ?? ""); mix(n.asset ?? ""); for (const c of n.children || []) { mix(c.id); mix(c.rect); mix(c.asset ?? ""); } } return h >>> 0; };
   function scene(nodes, env) {
-    const key = keyOf(nodes); if (key === lastKey) return []; lastKey = key; sceneNo++;
+    const key = keyOf(nodes); if (key === lastKey) return []; sceneNo++;   // lastKey is set only once the scene is whole: a throw leaves it unset, so the next identical scene is sent again
     const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };
     M._face_scene_begin();
+    try {
     for (const n of nodes) {
       const [x, y, w, h] = n.rect, id = fnv(n.id);
       if (n.kind === "rect") M._face_node(id, KIND.rect, x, y, w, h, hex(n.colour), 0, 0);
@@ -75,6 +76,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       }
       else left.push(n);
     }
+    } catch (e) { M._face_scene_end(); throw e; }
+    lastKey = key;
     M._face_scene_end(); return left;
   }
   const setBackground = (rgb) => M._face_background(rgb);

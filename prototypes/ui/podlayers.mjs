@@ -19,3 +19,17 @@ export function composePod(layers, A, B, w, h, { sealed = false } = {}) {
 }
 // The layer a species' shell pattern words name, by the spec's map; a word with no layer draws none (never forced onto the nearest).
 export const patternLayer = (words, map) => { for (const [k, v] of Object.entries(map)) if (words.includes(k)) return v; return null; };
+
+// The figure beside the pod: the species' clear slice laid over its mist slice with the clear layer's alpha scaled by t (chapters read ÷ chapters), no blur.
+// Pure on RGBA arrays of one size (straight alpha): the standard "over" with the clear layer's alpha times t; a transparent pixel adds no colour; t is clamped to 0..1.
+export function figureComposite(mist, clear, t) {
+  const out = new Uint8ClampedArray(mist.length), k = Math.max(0, Math.min(1, t));
+  for (let i = 0; i < mist.length; i += 4) {
+    const am = mist[i + 3] / 255, ac = (clear[i + 3] / 255) * k, a = ac + am * (1 - ac);
+    for (let c = 0; c < 3; c++) out[i + c] = a ? Math.round((clear[i + c] * ac + mist[i + c] * am * (1 - ac)) / a) : 0;
+    out[i + 3] = Math.round(a * 255);
+  }
+  return out;
+}
+// The clear layer's alpha for the figure: chapters read ÷ chapters; none for a held figure (its mist shows in both states, with no fade).
+export const figureAlpha = (statuses, share) => (statuses.includes("held") ? 0 : share);

@@ -5,8 +5,9 @@
 // props: { places: [{ panel, ringLayers, pod, name, plate, plateW, find, grow, glint } | null] (asset ids; a null place is not in the rack), waiting: asset id | null,
 //          colours: { name } }
 // Plate and name: the plate's left edge on the label's x, the name centred on the plate, the plate as wide as the name needs (at least 80, at most 224, in 16s).
-import { layer } from "./specimen.mjs";
+
 import { isFilled } from "../assets.mjs";
+import { layer } from "./specimen.mjs";
 
 export const placeRect = (L, i) => [L.places.first[0] + L.places.pitch[0] * (i % L.places.grid[0]), L.places.first[1] + L.places.pitch[1] * Math.floor(i / L.places.grid[0]), L.places.first[2], L.places.first[3]];
 

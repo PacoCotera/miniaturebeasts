@@ -21,7 +21,7 @@ import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters } from "./masters.mjs";
 import { bootFace } from "./face-lvgl.mjs";
-import { manifest as manifestOf, registerAsset, asset as assetOf, assetEntry } from "../../ui/assets.mjs";
+import { manifest as manifestOf, registerAsset, asset as assetOf, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
 
 setIcons((name, px) => ICON[name]?.(px));
 const $ = (id) => document.getElementById(id);
@@ -151,7 +151,6 @@ const bootLayer = async () => {
   const { canvas, type } = await bootStationCanvas({ base: new URL("../../ui/", import.meta.url) });
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
   for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
-  UI.pods.view = SPECS.pods.initial;   // Pods opens on the spec's first state
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   SC = canvas; bindCanvas(SC); CTX = LAYER.ctx = makeCtx(SPECS.frame, type);
@@ -177,7 +176,7 @@ function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null;
   return { screen: UI.screen, idle: UI.idle, size: [SC.w, SC.h], page: [vis.width, vis.height], art: SC.offPalette("art"), type: SC.offPalette("type"), typeLog: SC.typeLog.map((r) => ({ text: r.text, face: r.face, family: r.family, px: r.px, weight: r.weight, atlas: r.atlas })),
     typeMissing: [...SC.type.missing], renderer: { sizes: SC.sizeErrors.length, missing: SC.missing.length }, regions: scene.regions(), texts: scene.texts(), layered: !!screenOf(UI.screen).nodes && !UI.idle,
-    pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null, traits: UI.screen === "pods" && UI.pods.view === "chapter" && fr && pod.idd ? (fr.chapters[Math.min(UI.pods.ci | 0, fr.chapters.length - 1)]?.traits.length ?? 0) : null, placeholders: manifestOf().filter((e) => e.status === "placeholder").length };
+    pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null, traits: UI.screen === "pods" && UI.pods.view === "chapter" && fr && pod.idd ? (fr.chapters[Math.min(UI.pods.ci | 0, fr.chapters.length - 1)]?.traits.length ?? 0) : null, placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }
 
 // Test hooks (not part of play).

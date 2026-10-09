@@ -7,10 +7,10 @@
 // opens it centred, no line. A read in progress wipes the frost away from the top (props.wipe, 0 to 1).
 // props: { marks (the spec's page.marks), diff ({ edge, inset } px), heading: { emblem, word } | null, cells: [{ picture, name, lines: [], frost, sealed, seals: asset, marks: [{ kind, asset }], wipe }],
 //          colours: { pane, edge, heading, name, line, lineEmpty, wipe }, frost and slats (the id prefixes of those pictures: `<prefix><w>x<h>`), compact }
-import { pageGrid } from "../layout.mjs";
+import { pageGrid, pageHeight } from "../layout.mjs";
 import { panel } from "./panel.mjs";
 import { isFilled } from "../assets.mjs";
-import { focusRing } from "./focusRing.mjs";
+
 import { wrap } from "./text.mjs";
 import { markNode } from "./mark.mjs";
 import { layer } from "./specimen.mjs";
@@ -18,12 +18,12 @@ import { layer } from "./specimen.mjs";
 export function chapterPage(ctx, id, region, props) {
   // the pane shortens to its content: its height by the number of traits (page.heightByCount: one, two, else the full height), its top fixed
   const hb = region.heightByCount, n = props.count ?? (props.cells || []).length, rect = region.rect.slice();
-  if (hb) { const key = Object.keys(hb).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); }); rect[3] = hb[key] ?? hb.else ?? rect[3]; }
+  if (hb) rect[3] = pageHeight(region, n);
   const Cc = props.colours, nodes = props.pane && isFilled(props.pane) ? [{ id, kind: "nineSlice", rect, asset: props.pane, region: props.region ?? null }] : panel(id, rect, { fill: Cc.pane, edge: Cc.edge, region: props.region ?? null });   // the pane master is a nine-slice with its own insets, drawn at the height the count gives
   const [px, py] = rect, H = region.heading;
   if (props.heading?.pod && H) {   // Compare: the pod at 32×40 and its place picture
-    nodes.push({ id: id + ".pod", kind: "sprite", rect: [px + H[0], py + H[1], 32, 40], asset: props.heading.pod });
-    if (props.heading.place) nodes.push({ id: id + ".place", kind: "sprite", rect: [px + H[0] + 40, py + H[1] + 12, 16, 16], asset: props.heading.place });
+    nodes.push({ id: id + ".pod", kind: "sprite", rect: [px + H[0], py + H[1], ...region.pod], asset: props.heading.pod });
+    if (props.heading.place) nodes.push({ id: id + ".place", kind: "sprite", rect: [px + H[0] + region.place.at[0], py + H[1] + region.place.at[1], ...region.place.size], asset: props.heading.place });
   } else if (props.heading && H) {
     nodes.push({ id: id + ".emblem", kind: "sprite", rect: [px + H[0], py + H[1], 24, 24], asset: props.heading.emblem });
     nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1], Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
@@ -34,9 +34,8 @@ export function chapterPage(ctx, id, region, props) {
   grid.cells.forEach((cell, i) => {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
     nodes.push({ id: cid + ".pic", kind: "rect", rect: P, colour: Cc.pane, region: props.cellRegion ?? null });   // the cell's ground; what lies over it is the signed picture, or its stand-in card, then the signed frame
-    if (c.picture && !c.sealed && !c.frost) { nodes.push(...layer(cid + ".card", P, c.picture)); nodes.push(...layer(cid + ".frame", P, c.frame)); }   // nothing of an unread trait is drawn: the ground, then frost or slats
-    if (c.sealed) { nodes.push({ id: cid + ".slats", kind: "sprite", rect: P, asset: `${props.slats}${pw}x${ph}` }); if (c.seals) nodes.push({ id: cid + ".key", kind: "sprite", rect: [cx + Math.round(pw / 2) - 22, cy + Math.round(ph / 2) - 32, 44, 64], asset: c.seals }); }
-    else if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested
+    if (c.picture && !c.frost) { nodes.push(...layer(cid + ".card", P, c.picture)); nodes.push(...layer(cid + ".frame", P, c.frame)); }
+    if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested
     else {
       for (const [k, m] of (c.marks || []).entries()) {
         const M = props.marks, small = ph < M.smallUnder, [sw, sh] = small ? M.seedSmall : M.seed;

@@ -1,23 +1,22 @@
 // The Pods pictures, registered in the asset manifest at the size the layout spec lists, and built through the asset
 // cache by id (technical-architecture.md §5.5). A view asks for a picture with a plain-JSON request; this module turns
 // the request into a registered entry (a placeholder, flagged, with what it waits for) whose builder draws it once at
-// its size: the pod from the frame's parameters, the close-ups through the rig's camera at the picture's own size, the
-// stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
-import { registerAsset, hasAsset } from "../../ui/assets.mjs";
+// its size: the pod from its signed layers, the stamp on whole-pixel cells; the marks, the places, the frames and the figures are the studio's masters,
+// taken by id when placed. Nothing is ever cropped and enlarged.
+import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset, hasAsset, isFilled } from "../../ui/assets.mjs";
 import { PB, C, HEX, art, fromRGBA, bay } from "./gfx.mjs";
-import { podFromLayers, layersPlaced, figureFromLayers } from "./podmasters.mjs";
+import { podFromLayers, layersPlaced, figureFromLayers, leastFinal } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { assetEntry, placeMaster, registerSlot, asset as assetOf } from "../../ui/assets.mjs";
-import { emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
+import { emblemArt, ICON } from "./art.mjs";
 import { beamArt } from "./screens/frame.mjs";
-import { shapeTrait, stampGenome, stampSizing } from "./genome.mjs";
+import { stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
-// The pod at the exact size of its box, never scaled: the stage's three classes from the signed layers recoloured by the species' pair (podmasters.mjs); the list's 40×48
-// box holds the 32×40 placeholder sprite placed 1:1 in its middle until its master is re-cut; a class whose layers are not placed is an empty (transparent) picture.
+// The pod at the exact size of its box, never scaled: every class (large, medium, small, collection, and the list's "well") from the signed layers recoloured by the species' pair (podmasters.mjs);
+// a class whose layers are not placed is an empty (transparent) picture.
 const UNKNOWN_PAIR = () => [HEX[C.stone], HEX[C.bone]];   // only until the signed pod-<class>-unknown pictures are placed
 const podClass = ([bw, bh]) => { const classes = SPECS.pods.classes.pod; return Object.keys(classes).find((k) => classes[k][0] === bw && classes[k][1] === bh); };
 const layerClass = (cls) => (cls === "list" ? "well" : cls);   // the list pod (40×48) is the masters' "well" class
@@ -40,7 +39,7 @@ const placePanelPB = (w, h, r) => {
   return pb;
 };
 // A kin's ring: the small pod's circle, a 2 px band in `hairline`.
-const kinRingPB = (size = 56, band = 2) => { const pb = new PB(size, size), R = size / 2; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { const d = Math.hypot(x + 0.5 - R, y + 0.5 - R); if (d <= R && d > R - band) pb.set(x, y, C.hairline); } return pb; };
+const kinRingPB = (size, band) => { const pb = new PB(size, size), R = size / 2; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { const d = Math.hypot(x + 0.5 - R, y + 0.5 - R); if (d <= R && d > R - band) pb.set(x, y, C.hairline); } return pb; };
 // The picture of the find that opens a shut chapter: a key-shaped crystal at the size it is asked for.
 const sealPB = (n) => { const pb = new PB(n, n), c = n / 2; pb.poly([[c, 0.1 * n], [0.9 * n, c], [c, 0.9 * n], [0.1 * n, c]], C.lilac); pb.poly([[c, 0.1 * n], [0.9 * n, c], [c, c]], C.lavender); pb.outline(() => C.plumD); return pb; };
 const growPB = () => { const pb = new PB(16, 16); pb.rect(7, 6, 2, 9, C.leaf); pb.poly([[7, 8], [1, 3], [7, 5]], C.sprout); pb.poly([[9, 6], [15, 1], [9, 3]], C.sprout); pb.outline(() => C.ink); return pb; };
@@ -50,9 +49,6 @@ const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++)
 // The unread picture's frost: frosted glass over the pane, `frostS` with `frostD` at most (never `frost` or white).
 const frostPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const streak = (x + y * 2) % 23 < 2 && bay(x, y) < 10, low = y > h * 0.7 && bay(x, y) < (y - h * 0.7) / 3; pb.set(x, y, streak || low || bay(x, y) < 3 ? C.frostD : C.frostS); } return pb; };
 const keyPB = () => { const pb = new PB(44, 64); pb.poly([[22, 6], [40, 32], [22, 58], [4, 32]], C.lilac); pb.poly([[22, 6], [40, 32], [22, 32]], C.lavender); pb.outline(() => C.plumD); return pb; };
-const basePB = () => { const pb = new PB(72, 8); pb.rect(2, 0, 68, 5, C.bevel); pb.rect(2, 0, 68, 2, C.metal); pb.rect(0, 5, 72, 3, C.bar); return pb; };
-const asleepPB = () => { const pb = new PB(24, 16); for (const [x, y] of [[3, 3], [13, 7], [19, 11]]) pb.rect(x, y, 4, 4, C.fog); pb.rect(4, 4, 2, 2, C.white); return pb; };
-const doingPB = () => { const pb = new PB(28, 16); pb.ring(9, 8, 8, 7, C.focus, 2); pb.ring(19, 8, 8, 7, C.focus, 2); pb.outline(() => C.panel); return pb; };
 // The difference mark: an aqua bracket (corner ticks, 4 px arms) on a 1 px ink keyline, 12×12.
 const bracketPB = () => {
   const pb = new PB(12, 12), ticks = [];
@@ -61,14 +57,6 @@ const bracketPB = () => {
   for (const [x, y] of ticks) pb.set(x, y, C.aqua);
   return pb;
 };
-// The misty seed: the hidden look as a frosted close-up in a pearl, the close-up rendered at the pearl's own inner size.
-function seedPB(frame, genome, traitId, w, h) {
-  const pb = new PB(w, h), iw = Math.round(w * 0.75), ih = Math.round(h * 0.65), ox = Math.round(w * 0.125), oy = Math.round(h * 0.19), src = closeUpPB(frame, genome, traitId, iw, ih), cx = (w - 1) / 2, cy = (h - 1) / 2 + 0.5;
-  pb.ell(cx + 0.5, cy, w / 2 - 0.5, h / 2 - 0.5, C.frostS); pb.ell(cx + 0.5, cy, w / 2 - 2, h / 2 - 2, C.frost);
-  for (let y = 0; y < ih; y++) for (let x = 0; x < iw; x++) { const c = src.get(x, y), px = x + ox, py = y + oy;
-    if (((px - cx) / (w / 2 - 2)) ** 2 + ((py - cy) / (h / 2 - 2)) ** 2 <= 0.92 && c >= 0 && c !== PIC_GROUND) pb.set(px, py, bay(px, py) < 5 ? C.frost : c); }
-  pb.ring(cx + 0.5, cy, w / 2 - 0.5, h / 2 - 0.5, C.stone, 1); pb.set(Math.round(w * 0.35), Math.round(h * 0.2), C.white); pb.set(Math.round(w * 0.33), Math.round(h * 0.22), C.white); return pb;
-}
 // The stamp on its label: cells of whole pixels, cell = floor(104 / (N + 2)) and at least 2, drawn with its quiet margin, centred on the 120 label.
 export function stampPicture(frame, genome, readIds) {
   const sg = stampGenome(frame, genome, readIds); if (!sg) return null;
@@ -85,14 +73,14 @@ export function registerPictures(reqs, env) {
   for (const r of reqs) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
-      case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
+      case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: leastFinal(["shade", "mask-body", "mask-accent"].map((l) => `pod-${layerClass(podClass(r.size))}-${l}`)) } : {}); break; }
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
       case "placepanel": putOrMaster(r.id, `panel-place-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the collection's place master", () => placePanelPB(r.size[0], r.size[1], r.radius)); break;
-      case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size)); break;
+      case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size, r.band)); break;
       case "seal": put(r.id, r.size, r.size, "the chapter seals' master", () => sealPB(r.size)); break;
       case "grow": putOrMaster(r.id, "mark-can-grow-16", 16, 16, "the can-grow mark's master", growPB); break;
       case "waiting": putOrMaster(r.id, "mark-waiting-24", 24, 24, "the waiting mark's master", waitingPB); break;
-      case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha, r.size), { policy: "painted" }); break;
+      case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha, r.size), { policy: "painted", status: isFilled(r.mist) && isFilled(r.clear) ? leastFinal([r.mist, r.clear]) : "placeholder" }); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
         const m = assetEntry(r.master), e = assetEntry(r.id);
         if (m && m.file && m.status !== "empty" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile, status: m.status }, assetOf(r.master)); }
@@ -106,11 +94,7 @@ export function registerPictures(reqs, env) {
       case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPB(r.w, r.h)); break;
       case "slats": put(r.id, r.w, r.h, "the research bench master", () => slatsPB(r.w, r.h)); break;
       case "key": put(r.id, 44, 64, "the chapter seals' master", keyPB); break;
-      case "base": put(r.id, 72, 8, "the marks' master", basePB); break;
-      case "asleep": put(r.id, 24, 16, "the marks' master", asleepPB); break;
-      case "doing": put(r.id, 28, 16, "the marks' master", doingPB); break;
       case "bracket": put(r.id, 12, 12, "the marks' master", bracketPB); break;
-      case "seed": put(r.id, r.w, r.h, "the seed master", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species); return seedPB(fr, shapeTrait(fr, p.genome, r.trait, r.choice), r.trait, r.w, r.h); }); break;
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), sp = stampPicture(fr, p.genome, r.read); return sp.build(); }); break;
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       default: throw new Error("unknown picture kind " + r.kind);

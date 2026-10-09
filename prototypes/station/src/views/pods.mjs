@@ -41,7 +41,7 @@ export function podsView(m, spec, ctx) {
   view.box = view.specimen.pod ? [R.pod.axis - Math.round(view.specimen.pod.size[0] / 2), R.pod.feet - view.specimen.pod.size[1], ...view.specimen.pod.size] : null;
   view.page = null; view.stamp = null; view.kin = []; view.hatch = null; view.stampCase = null;
   if (view.mode === "chapter") {
-    const ch = chapters[ci], rect = pageRect(R.page, Math.min(ch.traits.length, maxTraits(R.page)));
+    const ch = chapters[ci];
     view.page = { ...pageView(m, spec, cur, fr, ch, headingWord(ch, spec), R.page, req, m.present || {}, null), pane: R.page.pane };
   } else {
     if (cur.idd && fr) {
@@ -51,7 +51,7 @@ export function podsView(m, spec, ctx) {
     }
     // the kin: same-species pods that can be compared, small, at most six; none for a pod not yet identified (its species is not known)
     const kin = cur.idd ? st.tray.filter((q) => q !== cur && q.idd && S.canCompare(st, cur, q)).slice(0, R.kin.max) : [];
-    view.kin = kin.map((q) => ({ id: q.id, ring: req({ kind: "kinring", id: `kinring:${R.kin.first[2]}`, size: R.kin.first[2] }), pod: req({ kind: "pod", id: `pod:${S.speciesOf(q)}:i:${R.kin.pod.join("x")}`, species: S.speciesOf(q), state: "identified", size: R.kin.pod }) }));
+    view.kin = kin.map((q) => ({ id: q.id, ring: req({ kind: "kinring", id: `kinring:${R.kin.first[2]}`, size: R.kin.first[2], band: R.kin.band }), pod: req({ kind: "pod", id: `pod:${S.speciesOf(q)}:i:${R.kin.pod.join("x")}`, species: S.speciesOf(q), state: "identified", size: R.kin.pod }) }));
     view.hatch = req({ kind: "hatch", id: `hatch:${R.hatch.rect.slice(2).join("x")}`, size: R.hatch.rect.slice(2) });
   }
   view.line = lineOf(m, spec, cur, chapters, ci, view);
@@ -62,7 +62,6 @@ export function podsView(m, spec, ctx) {
 const plateWidth = (ctx, N, text) => Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((ctx.measure(text, N.px, N.weight) + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
 // The most traits a page holds: the upper end of its grid table.
 const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
-const pageRect = (page, n) => { const key = Object.keys(page.heightByCount).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); }); return [page.rect[0], page.rect[1], page.rect[2], page.heightByCount[key] ?? page.rect[3]]; };
 
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
 function railOf(m, spec, cur, chapters, req, open, focused) {
@@ -153,13 +152,13 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
     const state = traitState(fr, t, p.genome);
     cell.picture = slot(req, `trait-picture-standin-${pw}x${ph}`, [0, 0, pw, ph], "the stand-in picture card master"); cell.frame = slot(req, `trait-picture-frame-${pw}x${ph}`, [0, 0, pw, ph], "the trait frame master");   // no trait picture is drawn by the build: the signed frame and the stand-in card until the painted pictures exist
     cell.lines = [state.line];
-    const small = ph < spec.page.marks.smallUnder, [sw, sh] = small ? spec.page.marks.seedSmall : spec.page.marks.seed;
-    const seed = (choice) => req({ kind: "seed", id: `seed:${genomeDigest(p.genome)}:${t.id}:${choice}:${sw}x${sh}`, pod: p.id, species: S.speciesOf(p), trait: t.id, choice, w: sw, h: sh });
-    if (state.kind === "hides") cell.marks.push({ kind: "seed", asset: seed(state.hiddenChoice) });
-    if (state.kind === "blend") cell.marks.push({ kind: "seed2", asset: seed(1) }, { kind: "seed", asset: seed(2) });
-    if (state.kind === "only") cell.marks.push({ kind: "only", asset: req({ kind: "base", id: "base:72x8" }) });
-    if (state.kind === "asleep") cell.marks.push({ kind: "asleep", asset: req({ kind: "asleep", id: "asleep:24x16" }) });
-    if (state.doing) cell.marks.push({ kind: "doing", asset: req({ kind: "doing", id: "doing:28x16" }) });
+    const small = ph < spec.page.marks.smallUnder, [sw, sh] = small ? spec.page.marks.seedSmall : spec.page.marks.seed, M = spec.page.marks;
+    const seed = () => { slot(req, `mark-seed-${sw}x${sh}-mask`, [0, 0, sw, sh], "the seed's mask master"); return slot(req, `mark-seed-${sw}x${sh}`, [0, 0, sw, sh], "the seed mark master"); };   // the marks are the studio's: slots by id, nothing drawn by the build
+    if (state.kind === "hides") cell.marks.push({ kind: "seed", asset: seed() });
+    if (state.kind === "blend") cell.marks.push({ kind: "seed2", asset: seed() }, { kind: "seed", asset: seed() });
+    if (state.kind === "only") cell.marks.push({ kind: "only", asset: slot(req, `mark-only-${M.only[0]}x${M.only[1]}`, [0, 0, ...M.only], "the only mark master") });
+    if (state.kind === "asleep") cell.marks.push({ kind: "asleep", asset: slot(req, `mark-asleep-${M.asleep[0]}x${M.asleep[1]}`, [0, 0, ...M.asleep], "the asleep mark master") });
+    if (state.doing) cell.marks.push({ kind: "doing", asset: slot(req, `mark-breed-${M.doing[0]}x${M.doing[1]}`, [0, 0, ...M.doing], "the breed-to-change mark master") });
     if (wipeOf != null && wipeOf < 1) cell.wipe = wipeOf;
     return cell;
   });

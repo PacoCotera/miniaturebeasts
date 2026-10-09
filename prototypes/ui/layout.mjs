@@ -49,6 +49,11 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
 // taken at the row's centre and floored, so every row of a tab is the same width.
 export const slantAt = (rail, r) => Math.floor((rail.slant * (r + 0.5)) / rail.h);
 
+// The page's height by its trait count: the spec's table of ranges ("1-4", "5-8"), else the region's own height.
+export function pageHeight(page, n) {
+  const key = Object.keys(page.heightByCount || {}).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); });
+  return key ? page.heightByCount[key] : page.rect[3];
+}
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture
 // size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {
