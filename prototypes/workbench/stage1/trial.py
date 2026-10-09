@@ -5,16 +5,17 @@ Controls come from the workbench CLI (`node sketch/cli.mjs --species S01 --set 3
 this script paints the unique Station set per individual with Gemini from the shaded and slot passes,
 derives the smaller sizes two ways (down-rendered from the unique set; generic per species from the type
 specimen with the pigment slots remapped), paints the 48 px token at size with Retro Diffusion for a few,
-measures each against its controls, and lays one sheet per species at device size with the cost of each
-cut-off beside it. Every paid call is recorded in prompts.json with its prompt, request id, usage, cost
-and time. Keys are read from the environment and never written.
+measures each against its controls, and lays one sheet per species at device size with the calls of each
+cut-off beside it. Every call is recorded in prompts.json with its prompt, request id and usage; its cost
+goes to the ledger outside this repository (ops/ledger, MB_LEDGER). Keys are read from the environment
+and never written.
 
   python3 trial.py controls            # copy the main-view controls into stage1/controls/
   python3 trial.py paint [S01 ...]     # the Gemini calls (paid)
   python3 trial.py token [S01 ...]     # the Retro Diffusion token at size (paid)
   python3 trial.py fetch               # collect accepted Retro Diffusion tasks that were not yet collected
   python3 trial.py derive              # down-render, generic remap, measurements
-  python3 trial.py sheets              # the per-species sheets and the cost table
+  python3 trial.py sheets              # the per-species sheets and the call table
 """
 import base64, hashlib, io, json, os, sys, time, uuid, urllib.request, urllib.error
 from PIL import Image, ImageDraw
@@ -22,6 +23,8 @@ from PIL import Image, ImageDraw
 HERE = os.path.dirname(os.path.abspath(__file__))
 WB = os.path.dirname(HERE)
 REPO = os.path.dirname(os.path.dirname(WB))
+sys.path.insert(0, os.path.join(REPO, "ops", "ledger"))
+import ledger  # noqa: E402  the paid-call ledger (MB_LEDGER), outside this repository
 REF = os.path.join(WB, "out", "reference")
 SPECIES = ["S01", "S09", "S12"]
 BG = (246, 243, 236)  # the sketch's shaded background, #f6f3ec
@@ -30,23 +33,18 @@ STYLE_REF_HIBIT = os.path.join(REPO, "art/miniature-lives/assets/hibit-plain-280
 PALETTE_48 = os.path.join(REPO, "art/retro-diffusion-trial/companion-palette-48.json")
 PROMPTS = os.path.join(HERE, "prompts.json")
 GEMINI_MODEL = os.environ.get("STAGE1_GEMINI_MODEL", "gemini-3.1-flash-image")
-# USD per million tokens, from ai.google.dev/gemini-api/docs/pricing on 2026-10-08 (standard tier).
-GEMINI_PRICES = {
-    "gemini-3.1-flash-image": {"input": 0.50, "output": 60.0},
-    "gemini-3.1-flash-lite-image": {"input": 0.25, "output": 30.0},
-    "gemini-3-pro-image": {"input": 2.00, "output": 120.0},
-    "gemini-2.5-flash-image": {"input": 0.30, "output": 30.0},
-}
+PUBLIC_LOG = "prototypes/workbench/stage1/prompts.json"  # the public record the ledger lines join to
 RD_API = "https://api.retrodiffusion.ai/v2/inferences"
 
 
 def load_prompts():
     if os.path.exists(PROMPTS):
         return json.load(open(PROMPTS))
-    return {"schemaVersion": 1, "purpose": "Stage 1 cut-off trial: every paid call with its prompt, request id, usage, cost and time. Image inputs are replaced by file name and SHA-256. No key material.", "calls": []}
+    return {"schemaVersion": 1, "purpose": "Stage 1 cut-off trial: every paid call with its prompt, request id, usage and time. Image inputs are replaced by file name and SHA-256. No key material.", "calls": []}
 
 
 def save_prompts(p):
+    p = {**p, "calls": [ledger.strip(c) for c in p["calls"]]}
     json.dump(p, open(PROMPTS, "w"), indent=1)
     open(PROMPTS, "a").write("\n")
 
@@ -113,6 +111,7 @@ def template(man, frame_name):
 
 def gemini_call(model, parts, record):
     key = os.environ["GEMINI_API_KEY"]
+    ledger.require_ledger(); ledger.price("google", model)  # every paid call is logged at a known price: without the ledger the tool stops before the call
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")
@@ -162,8 +161,7 @@ def cmd_paint(only):
             rec["responseId"] = res.get("responseId"); rec["modelVersion"] = res.get("modelVersion")
             usage = res.get("usageMetadata", {})
             rec["usage"] = usage
-            prices = GEMINI_PRICES[GEMINI_MODEL]
-            rec["costUSD"] = round(usage.get("promptTokenCount", 0) / 1e6 * prices["input"] + usage.get("candidatesTokenCount", 0) / 1e6 * prices["output"], 5)
+            ledger.record("stage1/trial.py paint", PUBLIC_LOG, rec["id"], "google", GEMINI_MODEL, usage=usage)
             image_part = next((p for p in res.get("candidates", [{}])[0].get("content", {}).get("parts", []) if "inlineData" in p), None)
             if not image_part:
                 rec["status"] = "no-image"; rec["response"] = json.dumps(res)[:1500]
@@ -175,7 +173,7 @@ def cmd_paint(only):
             rec["output"] = {"file": f"unique/{sp}/{m['id']}/station-raw.png", "mimeType": image_part["inlineData"].get("mimeType"), "size": list(im.size), "sha256": hashlib.sha256(raw).hexdigest()}
             rec["status"] = "ok"
             prompts["calls"].append(rec); save_prompts(prompts)
-            print(sp, m["id"], "ok", im.size, f"{rec['costUSD']:.4f} USD", f"{rec['seconds']} s", rec.get("responseId"))
+            print(sp, m["id"], "ok", im.size, f"{rec['seconds']} s", rec.get("responseId"))
 
 
 # --- the Retro Diffusion token at size ---------------------------------------------------------------------
@@ -203,10 +201,13 @@ def poll_rd(task_id, t0):
 
 def finish_rd(rec, task, prompts):
     imgs = task.get("base64_images") or []
-    rec["costUSD"] = task.get("balance_cost") if isinstance(task.get("balance_cost"), (int, float)) else task.get("cost")
-    rec["balanceAfter"] = task.get("remaining_balance", task.get("balance")); rec["taskStatus"] = task.get("status"); rec["rdModel"] = task.get("model")
+    rec["taskStatus"] = task.get("status"); rec["rdModel"] = task.get("model")
+    cost = task.get("balance_cost") if isinstance(task.get("balance_cost"), (int, float)) else task.get("cost")
+    if cost is not None or task.get("remaining_balance", task.get("balance")) is not None:
+        ledger.record("stage1/trial.py token", PUBLIC_LOG, rec["id"], "retrodiffusion", task.get("model") or rec.get("model"), cost_usd=cost,
+                      balance_after=task.get("remaining_balance", task.get("balance")), status=task.get("status") or "ok")
     if not imgs:
-        rec["status"] = "no-image"; rec["response"] = json.dumps(task)[:1500]; save_prompts(prompts); return False
+        rec["status"] = "no-image"; rec["response"] = json.dumps(ledger.strip({k: v for k, v in task.items() if k not in ("cost", "balance")}))[:1500]; save_prompts(prompts); return False
     raw = base64.b64decode(imgs[0])
     outdir = os.path.join(HERE, "unique", rec["species"], rec["individual"]); os.makedirs(outdir, exist_ok=True)
     im = Image.open(io.BytesIO(raw)).convert("RGBA")
@@ -217,16 +218,18 @@ def finish_rd(rec, task, prompts):
 
 def cmd_fetch():
     """Finish Retro Diffusion calls that were accepted but not collected (a task id without an image)."""
+    ledger.require_ledger()
     prompts = load_prompts()
     for rec in prompts["calls"]:
         if rec.get("service") == "retro-diffusion" and rec.get("status") != "ok" and rec.get("requestId"):
             t0 = time.time(); task = poll_rd(rec["requestId"], t0)
             rec["seconds"] = (rec.get("seconds") or 0) + round(time.time() - t0, 1)
             ok = finish_rd(rec, task, prompts)
-            print(rec["species"], rec["individual"], "fetched" if ok else "still no image", rec.get("costUSD"), rec.get("taskStatus"))
+            print(rec["species"], rec["individual"], "fetched" if ok else "still no image", rec.get("taskStatus"))
 
 
 def cmd_token(only, check=False):
+    if not check: ledger.require_ledger()  # the check_cost dry run is free and writes no ledger line
     prompts = load_prompts()
     done = {(c["species"], c["individual"], c["purpose"]) for c in prompts["calls"] if c.get("status") == "ok"}
     pal = Image.open(os.path.join(REPO, "art/retro-diffusion-trial/companion-palette-48.png")).convert("RGB")
@@ -255,7 +258,7 @@ def cmd_token(only, check=False):
                    "images": [{"name": "companion-palette-48.png", "sha256": hashlib.sha256(pbuf.getvalue()).hexdigest()}, {"name": f"unique/{sp}/{m['id']}/station-300x310.png", "sha256": hashlib.sha256(ubuf.getvalue()).hexdigest()}, {"name": "shaded.three-quarter.tile.png ×4", "sha256": hashlib.sha256(tbuf.getvalue()).hexdigest()}],
                    "startedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
             if check:
-                status, res = rd_request("POST", RD_API, {**payload, "check_cost": True}); print(sp, m["id"], "check_cost", status, res); continue
+                status, res = rd_request("POST", RD_API, {**payload, "check_cost": True}); print(sp, m["id"], "check_cost", status, ledger.strip(res)); continue
             t0 = time.time()
             status, acc = rd_request("POST", RD_API, payload, {"Idempotency-Key": rec["id"]})
             if status not in (200, 202):
@@ -266,7 +269,7 @@ def cmd_token(only, check=False):
             rec["seconds"] = round(time.time() - t0, 1)
             prompts["calls"].append(rec)
             ok = finish_rd(rec, task, prompts)
-            print(sp, m["id"], "token ok" if ok else "RD NO IMAGE", rec.get("costUSD"), f"{rec['seconds']} s")
+            print(sp, m["id"], "token ok" if ok else "RD NO IMAGE", f"{rec['seconds']} s")
 
 
 # --- deriving the smaller sizes ---------------------------------------------------------------------------
@@ -405,22 +408,22 @@ def cmd_derive():
 
 
 # --- sheets ------------------------------------------------------------------------------------------------
-def cost_table(prompts):
+def call_table(prompts):
+    """Calls per cut-off (a stage, a mibi of three stages with retries at 20 percent, a kit's year at 40 mibis) and the
+    seconds a Station call takes. The cost of each call is in the ledger."""
     ok = [c for c in prompts["calls"] if c.get("status") == "ok"]
     g = [c for c in ok if c["service"] == "gemini"]; r = [c for c in ok if c["service"] == "retro-diffusion"]
-    station = sum(c["costUSD"] for c in g) / len(g) if g else 0.0
-    token = sum(c["costUSD"] or 0 for c in r) / len(r) if r else None
     gsec = sum(c["seconds"] for c in g) / len(g) if g else 0.0
     retries = 1.2; stages = 3
     cut = {
-        "A. everything at size": {"calls": 3, "perStage": station * 2 + (token or 0.18), "note": "Station main and side painted, token painted at size (Companion derived here: painting at size needs a 280 px model)"},
-        "B. down to the Companion": {"calls": 2, "perStage": station * 2, "note": "Station main and side painted; Companion derived; token generic"},
-        "C. Station main only": {"calls": 1, "perStage": station, "note": "Station main painted; Companion derived; side plain; token generic"},
-        "D. adult only": {"calls": 1 / 3, "perStage": station / 3, "note": "one call a mibi"},
+        "A. everything at size": {"calls": 3, "note": "Station main and side painted, token painted at size (Companion derived here: painting at size needs a 280 px model)"},
+        "B. down to the Companion": {"calls": 2, "note": "Station main and side painted; Companion derived; token generic"},
+        "C. Station main only": {"calls": 1, "note": "Station main painted; Companion derived; side plain; token generic"},
+        "D. adult only": {"calls": 1 / 3, "note": "one call a mibi"},
     }
     for k, v in cut.items():
-        v["perMibi"] = round(v["perStage"] * stages, 3); v["perMibiWithRetries"] = round(v["perStage"] * stages * retries, 3); v["perKitYear40"] = round(v["perStage"] * stages * retries * 40, 2)
-    return {"stationCallUSD": round(station, 4), "stationCallSeconds": round(gsec, 1), "tokenAtSizeUSD": token, "geminiCalls": len(g), "rdCalls": len(r), "spentUSD": round(sum(c["costUSD"] or 0 for c in ok), 3), "cutoffs": cut}
+        v["calls"] = round(v["calls"], 3); v["callsPerMibi"] = round(v["calls"] * stages, 2); v["callsPerMibiWithRetries"] = round(v["calls"] * stages * retries, 2); v["callsPerKitYear40"] = round(v["calls"] * stages * retries * 40, 1)
+    return {"stationCallSeconds": round(gsec, 1), "geminiCalls": len(g), "rdCalls": len(r), "tokenPainted": bool(r), "cutoffs": cut}
 
 
 def label(draw, xy, text):
@@ -428,18 +431,18 @@ def label(draw, xy, text):
 
 
 def cmd_sheets():
-    prompts = load_prompts(); costs = cost_table(prompts)
-    json.dump(costs, open(os.path.join(HERE, "costs.json"), "w"), indent=1)
+    prompts = load_prompts(); calls = call_table(prompts)
+    json.dump(calls, open(os.path.join(HERE, "calls.json"), "w"), indent=1)
     measures = json.load(open(os.path.join(HERE, "measurements.json"))) if os.path.exists(os.path.join(HERE, "measurements.json")) else {}
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
     cols = [("unique Station 300x310", 300), ("plain (rig) 300x310", 300), ("Companion derived 280x300", 280), ("Companion generic 280x300", 280), ("token derived 1x 3x", 160), ("token generic 1x 3x", 160), ("token painted at size 1x 3x", 160)]
-    colcost = {0: f"C: ${costs['cutoffs']['C. Station main only']['perMibiWithRetries']:.2f}/mibi", 1: "$0 (offline)", 2: "derived: no call", 3: "generic: no call", 4: "derived: no call", 5: "generic: no call", 6: f"A: +${(costs['tokenAtSizeUSD'] or 0) * 3 * 1.2:.2f}/mibi" if costs["tokenAtSizeUSD"] else "A: not painted"}
+    colcost = {0: f"C: {calls['cutoffs']['C. Station main only']['callsPerMibiWithRetries']:.1f} calls/mibi", 1: "no call (offline)", 2: "derived: no call", 3: "generic: no call", 4: "derived: no call", 5: "generic: no call", 6: f"A: +{3 * 1.2:.1f} calls/mibi" if calls["tokenPainted"] else "A: not painted"}
     gap = 12; rowh = 310 + 34
     for sp in SPECIES:
         mem = members(sp)
         W = gap + sum(w + gap for _, w in cols); H = 48 + len(mem) * rowh
         sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
-        label(draw, (gap, 8), f"{sp} stage 1 cut-off trial, device size at 1x. Station call {costs['stationCallUSD']:.3f} USD, {costs['stationCallSeconds']} s ({GEMINI_MODEL}). Rows: type specimen then three individuals.")
+        label(draw, (gap, 8), f"{sp} stage 1 cut-off trial, device size at 1x. Station call {calls['stationCallSeconds']} s ({GEMINI_MODEL}). Rows: type specimen then three individuals.")
         x = gap
         for i, (name, w) in enumerate(cols):
             label(draw, (x, 26), name); label(draw, (x, 36), colcost[i]); x += w + gap
@@ -464,7 +467,7 @@ def cmd_sheets():
             label(draw, (gap, y + 312), f"{m['id']}  seed {m.get('seed')}  sha256 {(m.get('genomeSha256') or '')[:12]}   station silhouette IoU {me.get('stationSilhouetteIoU', '—')}   token IoU derived {me.get('tokenDerivedIoU', '—')} generic {me.get('tokenGenericIoU', '—')}")
         sheet.save(os.path.join(HERE, "sheets", f"{sp}.png"))
         print("sheet", sp, sheet.size)
-    print(json.dumps(costs, indent=1))
+    print(json.dumps(calls, indent=1))
 
 
 if __name__ == "__main__":

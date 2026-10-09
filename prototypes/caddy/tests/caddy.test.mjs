@@ -1,5 +1,5 @@
 // The Caddy service in Node: refuses a wrong genome, deduplicates by hash, survives a restart, honours the
-// ceiling and the world's cap, retries a failed painter, serves a stored set.
+// daily limit and the world's cap, retries a failed painter, serves a stored set; no cost in what it serves.
 //   node --test prototypes/caddy/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -39,12 +39,13 @@ test("the mock paints the set, stores it by hash, serves it, and a stored hash i
   await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: g });
   const j = await app.tick(); assert.equal(j.state, "done"); assert.equal(j.painter, "mock");
   assert.ok(existsSync(path.join(app.setDir("S01", sha), "station-portrait-300x310.png")));
-  const man = JSON.parse(readFileSync(path.join(app.setDir("S01", sha), "manifest.json"), "utf8")); assert.equal(man.painter, "mock"); assert.equal(man.costUSD, 0);
+  const man = JSON.parse(readFileSync(path.join(app.setDir("S01", sha), "manifest.json"), "utf8")); assert.equal(man.painter, "mock"); assert.ok(!("costUSD" in man), "the public set manifest holds no cost");
   const png = await call(app, "GET", `/caddy-api/v1/sets/S01/${sha.slice(0, 16)}/token-48.png`); assert.equal(png.status, 200); assert.equal(png.body.slice(1, 4).toString(), "PNG");
   const again = await call(app, "POST", "/caddy-api/v1/grow", { world: "w3", genome: g }); assert.equal(again.status, 200); assert.equal(again.body.state, "done"); assert.match(again.body.set, /sets\/S01/);
   assert.equal(app.state.jobs.length, 1, "no second job for a stored set");
   assert.equal((await app.tick()), null);
-  const st = app.status(); assert.equal(st.today.spendUSD, 0); assert.equal(st.queue.done, 1);
+  const st = app.status(); assert.ok(!("spendUSD" in st.today) && !("ceilingUSD" in st), "the public status holds no spend and no limit figure"); assert.equal(st.today.calls, 0); assert.equal(st.limitReached, false); assert.equal(st.queue.done, 1);
+  const jobs = await call(app, "GET", "/caddy-api/v1/jobs?world=w1"); assert.ok(!("costUSD" in jobs.body.jobs[0]), "a public job holds no cost");
 });
 
 test("survives a restart: the journal brings the queue back and a job caught painting goes again", async () => {
@@ -57,7 +58,7 @@ test("survives a restart: the journal brings the queue back and a job caught pai
   assert.equal((await app2.tick()).state, "done"); assert.equal((await app2.tick()).state, "done");
 });
 
-test("honours the ceiling and the world's daily cap; a capped job waits for the next day", async () => {
+test("honours the daily limit and the world's daily cap; a capped job waits for the next day", async () => {
   let now = Date.parse("2026-10-08T12:00:00Z");
   const app = createApp({ dataDir: fresh(), painter: "mock", mockDelay: 0, growCap: 1, now: () => now });
   await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(5) });
@@ -67,21 +68,31 @@ test("honours the ceiling and the world's daily cap; a capped job waits for the 
   assert.equal(await app.tick(), null, "nothing runs before the next day");
   now = Date.parse("2026-10-09T00:00:01Z");
   assert.equal((await app.tick()).state, "done", "the next day it paints");
-  // the ceiling: a real painter with the day's spend at the ceiling never calls
+  // the daily limit: a real painter with the day's spend at the limit never calls (the seeded ledger.json is a fixture)
   const app2 = createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5, now: () => now });
   process.env.GEMINI_API_KEY = "test-key-never-used";
   try {
     app2.state.ledger[new Date(now).toISOString().slice(0, 10)] = { calls: 14, spendUSD: 5.1, worlds: {} };
     await call(app2, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(7) });
-    const j = await app2.tick(); assert.equal(j.state, "capped"); assert.match(j.error, /ceiling/);
-    assert.equal(app2.status().painter, "real");
+    const j = await app2.tick(); assert.equal(j.state, "capped"); assert.match(j.error, /limit/);
+    assert.equal(app2.status().painter, "real"); assert.equal(app2.status().limitReached, true);
   } finally { delete process.env.GEMINI_API_KEY; }
-  assert.equal(createApp({ dataDir: fresh(), painter: "real" }).status().painter, "mock", "without a key the real painter falls back to the mock");
+  assert.equal(createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5 }).status().painter, "mock", "without a key the real painter falls back to the mock");
+});
+
+test("real mode with no daily limit set runs as the mock", async () => {
+  process.env.GEMINI_API_KEY = "test-key-never-used";
+  try {
+    const app = createApp({ dataDir: fresh(), painter: "real", mockDelay: 0 });
+    assert.equal(app.cfg.ceilingUSD, null); assert.equal(app.status().painter, "mock"); assert.equal(app.status().configured, "real"); assert.equal(app.status().limitReached, false);
+    await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(10) });
+    const j = await app.tick(); assert.equal(j.state, "done"); assert.equal(j.painter, "mock");
+  } finally { delete process.env.GEMINI_API_KEY; }
 });
 
 test("a failed painter retries at one, five and thirty minutes, then fails and the placeholder stands", async () => {
   let now = Date.parse("2026-10-08T12:00:00Z");
-  const app = createApp({ dataDir: fresh(), painter: "real", growService: "/nonexistent/service.py", python: "/nonexistent/python", now: () => now });
+  const app = createApp({ dataDir: fresh(), painter: "real", ceilingUSD: 5, growService: "/nonexistent/service.py", python: "/nonexistent/python", now: () => now });
   process.env.GEMINI_API_KEY = "test-key-never-used";
   try {
     await call(app, "POST", "/caddy-api/v1/grow", { world: "w1", genome: loika(8) });

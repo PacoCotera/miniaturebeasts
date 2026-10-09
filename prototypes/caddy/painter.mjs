@@ -2,7 +2,8 @@
 // sha, genome }) and the service's config and resolves with { files: { name: Buffer }, manifest, costUSD }
 // or throws. "mock": the plain placeholder set rendered here from the genome, tinted so a tester can tell
 // it landed, after a set delay, no call. "real": grow/service.py paint on the genome under the service's
-// own output root (one directory per job), the served set copied in, the cost read from its manifest.
+// own output root (one directory per job), its key from the service's environment, the served set copied
+// in; the job's spend (for the private daily ledger) from the --cost-out file in that job's directory.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -32,11 +33,12 @@ export async function mockPaint(job, frame, { mockDelay = 20, signal } = {}) {
   return { files, costUSD: 0, manifest: { painter: "mock", promptVersion: "mock", note: "the plain placeholder, warmed: no call was made" } };
 }
 
-// The real painter: grow/service.py on the VM, its key from the environment the unit gives it.
+// The real painter: grow/service.py, its key from the service's environment.
 export async function realPaint(job, frame, { growService = path.resolve(here, "../workbench/grow/service.py"), python = "python3", outRoot, signal } = {}) {
   const dir = path.join(outRoot, job.id); mkdirSync(dir, { recursive: true });
   const genomeFile = path.join(dir, "genome.json"); writeFileSync(genomeFile, JSON.stringify(job.genome, null, 1) + "\n");
-  const args = [growService, "paint", "--species", job.species, "--genome", genomeFile, "--control", "twostep", "--views", "portrait", "--out", dir, "--workers", "1"];
+  const costFile = path.join(dir, "cost.json");   // inside the service's data directory, never in the release
+  const args = [growService, "paint", "--species", job.species, "--genome", genomeFile, "--control", "twostep", "--views", "portrait", "--out", dir, "--workers", "1", "--cost-out", costFile];
   const log = await new Promise((resolve, reject) => {
     const p = spawn(python, args, { cwd: path.dirname(growService), env: process.env, signal });
     let out = "", err = ""; p.stdout.on("data", (b) => { out += b; }); p.stderr.on("data", (b) => { err += b; });
@@ -48,5 +50,6 @@ export async function realPaint(job, frame, { growService = path.resolve(here, "
   const view = manifest.views?.portrait; if (!view || view.status !== "painted") throw new Error("served plain: the painting failed its checks (" + (view?.status ?? "no view") + ")");
   const files = {};
   for (const f of SET_FILES) if (existsSync(path.join(setDir, f))) files[f] = readFileSync(path.join(setDir, f));
-  return { files, costUSD: manifest.costUSD || 0, manifest: { painter: "real", promptVersion: manifest.promptVersion, model: manifest.model, calls: manifest.calls, genomeDigest: manifest.genomeDigest, seconds: manifest.seconds } };
+  let costUSD = 0; try { costUSD = JSON.parse(readFileSync(costFile, "utf8")).costUSD || 0; } catch { costUSD = 0; }
+  return { files, costUSD, manifest: { painter: "real", promptVersion: manifest.promptVersion, model: manifest.model, calls: manifest.calls, genomeDigest: manifest.genomeDigest, seconds: manifest.seconds } };
 }

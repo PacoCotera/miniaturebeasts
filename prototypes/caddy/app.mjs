@@ -1,9 +1,9 @@
 // The Caddy service (station-build.md §2.4): brokers paintings for the Station page on the sandbox. A
 // genome in, validated whole against its frame and built; its set stored by the genome's SHA-256; a
 // queue journaled so a job survives a restart; a mock painter or the real one behind the service's own
-// mode; a hard daily ceiling in dollars that no page can raise; a per-world daily grow cap; status.
+// mode; a hard daily limit that no page can raise; a per-world daily grow cap; status.
 // Plain Node, no dependencies; createApp() returns the request handler and the worker so the tests and
-// the journey run it in-process, server.mjs runs it on the VM.
+// the journey run it in-process, server.mjs runs it as a service.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync, renameSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +12,7 @@ import { mockPaint, realPaint, SET_FILES, PROMPT_VERSION } from "./painter.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 export const RETRY_S = [60, 300, 1800];   // a failed call retries at one, five and thirty minutes
-export const DEFAULTS = { painter: "mock", mockDelay: 20, ceilingUSD: 5, growCap: 10, tickMs: 1000, prefix: "/caddy-api/v1" };
+export const DEFAULTS = { painter: "mock", mockDelay: 20, ceilingUSD: null, growCap: 10, tickMs: 1000, prefix: "/caddy-api/v1" };
 export const today = (now = Date.now()) => new Date(now).toISOString().slice(0, 10);
 const tomorrow = (now = Date.now()) => { const d = new Date(now); d.setUTCHours(24, 0, 0, 0); return d.getTime(); };
 const json = (res, code, body) => { res.writeHead(code, { "content-type": "application/json", "cache-control": "no-store", "access-control-allow-origin": "*" }); res.end(JSON.stringify(body)); };
@@ -36,7 +36,9 @@ export function createApp(opts = {}) {
   const day = () => (state.ledger[today(state.now())] ||= { calls: 0, spendUSD: 0, worlds: {} });
   const spentToday = () => day().spendUSD;
   const worldToday = (world) => day().worlds[world] || 0;
-  const painterMode = () => (cfg.painter === "real" && !process.env.GEMINI_API_KEY ? "mock" : cfg.painter);
+  // real painting needs the key and the daily limit; without either the real painter falls back to the mock
+  const painterMode = () => (cfg.painter === "real" && (!process.env.GEMINI_API_KEY || cfg.ceilingUSD == null) ? "mock" : cfg.painter);
+  const limitReached = () => cfg.ceilingUSD != null && spentToday() >= cfg.ceilingUSD;
 
   // --- the API ---
   async function handle(req, res) {
@@ -58,7 +60,7 @@ export function createApp(opts = {}) {
       return json(res, 404, { ok: false, error: "no such call" });
     } catch (e) { return json(res, 500, { ok: false, error: e.message }); }
   }
-  const publicJob = (j) => ({ id: j.id, world: j.world, species: j.species, sha: j.sha, state: j.state, tries: j.tries, nextAt: j.nextAt, createdAt: j.createdAt, doneAt: j.doneAt, error: j.error, painter: j.painter, costUSD: j.costUSD, set: j.state === "done" ? `${cfg.prefix}/sets/${j.species}/${j.sha.slice(0, 16)}/` : null });
+  const publicJob = (j) => ({ id: j.id, world: j.world, species: j.species, sha: j.sha, state: j.state, tries: j.tries, nextAt: j.nextAt, createdAt: j.createdAt, doneAt: j.doneAt, error: j.error, painter: j.painter, set: j.state === "done" ? `${cfg.prefix}/sets/${j.species}/${j.sha.slice(0, 16)}/` : null });
   // POST /grow: nothing but a genome (and the world, and the page's cap beneath the server's) is accepted.
   function grow(body) {
     const { world, genome } = body; if (typeof world !== "string" || !world || !genome || typeof genome !== "object") return [400, { ok: false, error: "world and genome are required" }];
@@ -72,9 +74,9 @@ export function createApp(opts = {}) {
   }
   function status() {
     const counts = {}; for (const j of state.jobs) counts[j.state] = (counts[j.state] || 0) + 1;
-    return { ok: true, service: "mb-caddy", painter: painterMode(), configured: cfg.painter, queue: counts, today: { date: today(state.now()), calls: day().calls, spendUSD: Math.round(day().spendUSD * 1000) / 1000 }, ceilingUSD: cfg.ceilingUSD, growCap: cfg.growCap, promptVersion: PROMPT_VERSION, mockDelay: cfg.mockDelay, uptimeS: Math.round((Date.now() - state.started) / 1000) };
+    return { ok: true, service: "mb-caddy", painter: painterMode(), configured: cfg.painter, queue: counts, today: { date: today(state.now()), calls: day().calls }, limitReached: limitReached(), growCap: cfg.growCap, promptVersion: PROMPT_VERSION, mockDelay: cfg.mockDelay, uptimeS: Math.round((Date.now() - state.started) / 1000) };
   }
-  // --- the worker: one job at a time, the ceiling and the caps honoured, failures retried ---
+  // --- the worker: one job at a time, the daily limit and the caps honoured, failures retried ---
   async function tick() {
     if (state.painting) return null;
     const now = state.now();
@@ -82,7 +84,7 @@ export function createApp(opts = {}) {
     if (!job) return null;
     const mode = painterMode();
     if (mode === "off") { job.state = "queued"; job.nextAt = now + 60000; journal(); return job; }
-    if (mode === "real" && spentToday() >= cfg.ceilingUSD) { job.state = "capped"; job.error = "the day's ceiling is reached"; job.nextAt = tomorrow(now); journal(); return job; }
+    if (mode === "real" && limitReached()) { job.state = "capped"; job.error = "the day's limit is reached"; job.nextAt = tomorrow(now); journal(); return job; }
     if (worldToday(job.world) >= (job.cap ?? cfg.growCap)) { job.state = "capped"; job.error = "the world's daily grow cap is reached"; job.nextAt = tomorrow(now); journal(); return job; }
     job.state = "painting"; job.painter = mode; job.startedAt = now; state.painting = job; journal();
     try {
@@ -90,7 +92,7 @@ export function createApp(opts = {}) {
       const r = mode === "mock" ? await mockPaint(job, frame, { mockDelay: cfg.mockDelay }) : await realPaint(job, frame, { growService: cfg.growService, python: cfg.python, outRoot: path.join(dataDir, "grow") });
       const dir = setDir(job.species, job.sha); mkdirSync(dir, { recursive: true });
       for (const [name, buf] of Object.entries(r.files)) writeFileSync(path.join(dir, name), buf);
-      writeJSON(path.join(dir, "manifest.json"), { schema: "mb-caddy-set/1", species: job.species, sha: job.sha, world: job.world, ...r.manifest, files: Object.keys(r.files), costUSD: r.costUSD, paintedAt: state.now() });
+      writeJSON(path.join(dir, "manifest.json"), { schema: "mb-caddy-set/1", species: job.species, sha: job.sha, world: job.world, ...r.manifest, files: Object.keys(r.files), paintedAt: state.now() });
       job.state = "done"; job.doneAt = state.now(); job.costUSD = r.costUSD; delete job.error;
       const d = day(); d.calls += r.manifest.calls || (mode === "real" ? 1 : 0); d.spendUSD += r.costUSD; d.worlds[job.world] = (d.worlds[job.world] || 0) + 1; ledgerWrite();
     } catch (e) {
