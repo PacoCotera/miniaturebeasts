@@ -33,7 +33,7 @@
    "rect": [152, 112, 256, 440], "component": "chapterPage", "noDigits": true, "heading": [16, 8],
    "states": ["grid"], "pictureMax": [144, 176], "heightByCount": { "1": 264, "2": 248, "else": 440 }, "anchor": "top", "bottomInset": 16, "slice": "nine-slice: corners 1:1, edges and fill tiled, never scaled", "cell": { "gap": 4, "name": { "px": 16, "colour": "bone", "line": 20 }, "lines": 0 }, "newMark": { "slice": "page-mark-new-10", "size": [6, 6], "on": "name line", "gapAfterName": 4, "centredWithName": true, "centreY": "line y + 10", "layer": "art", "fill": "bone", "edge": "white", "keyline": null, "specular": false }, "sealedFind": [72, 184, 112, 112],
    "grid": {
-    "1": { "cells": [[16, 48, 224, 384]], "picture": [144, 176], "align": "centre top" },
+    "1": { "cells": [[16, 48, 224, 200]], "picture": [144, 176], "align": "centre top" },
     "2": { "cells": [[16, 48, 104, 184], [136, 48, 104, 184]], "picture": [104, 160] },
     "3-4": { "cells": [[16, 48, 104, 184], [136, 48, 104, 184], [16, 248, 104, 184], [136, 248, 104, 184]], "picture": [104, 160] },
     "5-6": { "cells": [[16, 48, 104, 120], [136, 48, 104, 120], [16, 176, 104, 120], [136, 176, 104, 120], [16, 304, 104, 120], [136, 304, 104, 120]], "picture": [104, 96] },
