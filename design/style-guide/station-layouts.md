@@ -319,6 +319,86 @@ The well column at the far left (0 to 112). The open page left of centre (152 to
 | Can't | A glint | Says "something new here" on the right of the bottom line, never what it is |
 | Can't | A sealed chapter | Cannot be read; there is no ✓ cap |
 
+### Proposal for the owner: Pods in three states (UI designer, 2026-10-09)
+
+**Status: Proposal.** These are 1× wireframes for the owner, laid out from the game designer's brief. Nothing here is for the studio's cut or the build until the owner has seen them: `pods.json` and the sections above stay as they are. The owner asked for two overviews that were missing: Pods opens on the collection, a pod opens on its own overview, and the chapter tabs then open the trait pages. The pod's room (448 px of space that added little) now carries the pod's overview beside the pod. The frame is drawn in its new language (branch `design-station-frame`).
+
+The game designer recommends two things, drawn so here: the ghost mibi (the mibi this pod would become) beside the pod, and no well column in B and C, because the collection is the one list, as in the Library. B is drawn once more with the column (B′) so the owner can compare.
+
+**1. Purpose.** A: see the whole rack at a glance and pick the pod that needs you. B: know one pod (what it would become, who it is, where it came from, its kin) and choose what to do with it. C: read one chapter's traits.
+
+**2. Elements and 3. placement**, in weight order:
+- **A:**
+  - Every rack place drawn, in rack order; an empty place is an empty well. Each pod shows its identity (the sealed cap or the lit glyph, and the name label: the species, or "Unknown").
+  - Its origin as a place picture, and its progress as the concept's ring with one arc per chapter: filled when read, closed when every chapter is read.
+  - The glint star, and one can-grow mark only where the ring and the seal do not already say what it can do.
+  - Pods waiting beyond the rack are one quiet mark, never a number.
+- **B:**
+  - The pod large on its dish under the cone, and the rail hanging with no tab open (fills, pips, glints, seals; a price only on the bottom line, when a tab has focus).
+  - Beside the pod: the mibi it would become (drawn only where read, misty where unread, cooler and smaller than the pod); who it is (the name label, then the glyph, the clan mark and the first-of-its-kind mark under it); where it came from (the place picture and the origin sentence); its kin (same-species pods, small: the Compare targets).
+  - The hatch moves here. The stamp is small at the edge.
+  - An unidentified pod keeps this shape with no rail and no stamp, and its sections frosted; Identify fills them in place.
+- **C:** the trait grid as decided. The pod's room shrinks to what the pod and the dish need, and the page takes what is freed.
+
+**4. Art direction:** as decided for Pods: the pod the one warm thing and the protagonist, the ghost mibi cooler and smaller, the stamp a detail.
+
+<img src="station-layouts/02a-pods-collection.png" width="1024" alt="Pods A, collection overview, 1× wireframe">
+
+*A · Collection overview, 1× wireframe (Proposal). Six places of 320×224 in two rows, the ring's arcs one per chapter, the glint on the first, the can-grow mark on the second, an unidentified pod sealed, two empty places, the waiting mark at the foot.*
+
+| A: region | Rectangle | Notes |
+| --- | --- | --- |
+| Place c, r (c 0–2, r 0–1) | 16 + 336c, 48 + 240r, 320, 224 | A recessed place; the focus target, with the focus ring 4 px outside it |
+| Ring | centred on place + (96, 112), 160 across, an 8 px band | One arc per chapter: filled `bone` when read, `bevel` when not, closed when all are read |
+| Pod | 88×112, centred in the ring | Sealed cap or lit glyph |
+| Name label | place + (184, 64), hugging, 24 tall | 20 px, the Pods exception; "Unknown" before Identify |
+| Place picture | place + (184, 104), 48×48 | The origin as a picture |
+| Can-grow mark | place + (184, 168), 16×16 | Only where the ring and the seal do not say it |
+| Glint star | 12×12 at the ring's top right | As everywhere |
+| Waiting beyond the rack | 16, 528, 24, 24 | One quiet mark, never a number |
+
+<img src="station-layouts/02b-pods-overview.png" width="1024" alt="Pods B, pod overview, 1× wireframe">
+
+*B · Pod overview, 1× wireframe (Proposal). The pod on its dish and slab at the left; the mibi it would become beside it; where it came from and its kin at the right; the hatch and the stamp small at the bottom right; the rail centred with no tab open; the focus on the pod.*
+
+| B: region | Rectangle | Notes |
+| --- | --- | --- |
+| Rail | 96, 40, 832, 40 | Centred, as on Create and Incubator; no tab open |
+| Pod (focal) | 184, 216, 144, 176 | Axis x 256, foot line y 392; the dish (144, 328, 224, 96), the slab (112, 368, 288, 72), the cone (136, 104, 240, 320) |
+| Name label | centred on x 256 at y 456, hugging, 24 tall | Who it is |
+| Who it is: marks | glyph 24, clan 24, first of its kind 16, centred on x 256 at y 488 | Marks, no words |
+| The mibi it would become | 432, 232, 128, 160 | Feet on y 392; cooler and smaller than the pod; read parts drawn, unread misty |
+| Where it came from | place picture 600, 120, 64, 64; sentence 680, 124, 328, 40 | 16 px `bone`, the copywriter's sentence |
+| Kin | 56 px rings on a 64 px pitch from (600, 224) | Same-species pods, small; the Compare targets |
+| Hatch | 600, 480, 80, 56 | Return to the wild, two presses |
+| Stamp | case 856, 384, 152, 152; label 872, 400, 120, 120 | Small, at the edge |
+
+<img src="station-layouts/02b-pods-overview-with-column.png" width="1024" alt="Pods B with the well column, 1× wireframe">
+
+*B′ · Pod overview with the well column, 1× wireframe (Proposal, the variant for comparison). Everything right of the column moves 96 px right: the rail from x 152, the pod's axis at x 352, the mibi at 528, the information column from x 696.*
+
+<img src="station-layouts/02c-pods-chapter.png" width="1024" alt="Pods C, chapter page, 1× wireframe">
+
+*C · Chapter page, 1× wireframe (Proposal). The pod's room shrunk to the pod and dish (axis x 216), the page taking the rest; an unread chapter's first row shown as empty frosted frames; the Coat tab open and focused.*
+
+| C: region | Rectangle | Notes |
+| --- | --- | --- |
+| Rail | 96, 40, 832, 40 | The open tab lighter, the focus ring on it |
+| Pod | 144, 216, 144, 176 | Axis x 216, foot line y 392; the slab (72, 368, 288, 72); the name label under it; no ghost mibi, no stamp, no hatch |
+| Page | 424, 112, 584, 440 (248 tall for one row) | Heading (440, 120, 552, 24); four columns of 128 at x 448 + 136c, rows at y 160 and 360; pictures 128×160 (under the pod's 144×176), name 16 px under each |
+
+**6. Interactions.**
+
+| State | Pad | ✓ | ← |
+| --- | --- | --- | --- |
+| A | Moves the ring between places. It lands first on the pod that most needs the player: a new one, then a glinting one, then the first | Opens the pod (B). The bottom line's context and notice describe the focused pod | Home |
+| B | Between the pod, the tabs, the kin and the hatch | Pod: identify if sealed; shape a founder if a chapter is read; dimmed, with the reason, if the incubator is busy or no bay is free. Tab: opens that chapter's page, free. Kin: Compare. Hatch: return to the wild, ✓ twice | Back to A, the ring on this pod |
+| C | ◀ ▶ step the chapters | Reads an unread chapter, with its price on the bottom line; the frost wipes. A read chapter has no ✓ | Back to B, the ring on that tab. From Compare, ← closes it |
+
+From Home's rack, ✓ on a pod goes straight to B, and ← from there goes to A. ← always goes up one level.
+
+**Never:** digits for progress, counts or positions; prices anywhere but the bottom line; status words on tabs or wells; genetics words; "pod" in the label; dot fragments; a second focus ring; text in a living window.
+
 ### Placeholders on Pods (rendered at these sizes)
 
 | Thing | Pixel size | Stand-in until |
