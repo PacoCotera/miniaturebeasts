@@ -19,7 +19,7 @@
 <rect x="16.5" y="48.5" width="655" height="503" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
 <rect x="24.5" y="56.5" width="639" height="487" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
 <rect x="248.5" y="264.5" width="143" height="151" fill="#ffe2bf" stroke="#c45f12" stroke-width="3"/>
-<rect x="448.5" y="328.5" width="103" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
+<rect x="400.5" y="392.5" width="103" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
 <rect x="72.5" y="320.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
 <ellipse cx="320.0" cy="420.0" rx="80.0" ry="12.0" fill="none" stroke="#d29a00" stroke-width="2.5"/>
 <rect x="520.5" y="472.5" width="127" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
@@ -58,8 +58,8 @@
 <text x="30" y="534" font-size="9" fill="#777">24,56 640×488</text>
 <text x="252" y="277" font-size="11" fill="#222">Resident, adult 144×152</text>
 <text x="252" y="289" font-size="9" fill="#777">248,264 144×152</text>
-<text x="452" y="341" font-size="11" fill="#222">Juvenile 104×112</text>
-<text x="452" y="353" font-size="9" fill="#777">448,328 104×112</text>
+<text x="404" y="405" font-size="11" fill="#222">Juvenile 104×112</text>
+<text x="404" y="417" font-size="9" fill="#777">400,392 104×112</text>
 <text x="76" y="333" font-size="11" fill="#222">Adult 144×152</text>
 <text x="76" y="345" font-size="9" fill="#777">72,320 144×152</text>
 <text x="240" y="444" font-size="11" fill="#222">Focus ring: ellipse at the feet</text>
@@ -82,11 +82,11 @@
 <text x="804" y="369" font-size="9" fill="#777">800,344 192×40</text>
 <text x="692" y="445" font-size="11" fill="#222">Module · Probe</text>
 <text x="692" y="457" font-size="9" fill="#777">688,432 320×120</text>
-<text x="708" y="469" font-size="11" fill="#222">Probe in cradle 128×80</text>
+<text x="708" y="469" font-size="11" fill="#222">Probe in cradle</text>
 <text x="708" y="481" font-size="9" fill="#777">704,456 128×80</text>
-<text x="840" y="466" font-size="11" fill="#222">Shield 16×32 ×3 | ×4</text>
-<text x="840" y="477" font-size="9" fill="#777">848+24i,480 (4th: tier 2)</text>
-<text x="516" y="372" font-size="9" fill="#c45f12">sleeping mibi, adult 512,360 144×152</text>
-<text x="536" y="412" font-size="9" fill="#c45f12">juvenile 532,400 104×112</text>
+<text x="848" y="526" font-size="9" fill="#222">Shield 16×32 ×3|×4</text>
+<text x="848" y="537" font-size="9" fill="#777">848+24i,480</text>
+<text x="516" y="372" font-size="9" fill="#c45f12">sleeping mibi, adult</text><text x="516" y="383" font-size="9" fill="#c45f12">512,360 144×152</text>
+<text x="536" y="424" font-size="9" fill="#c45f12">sleeping, juvenile</text><text x="536" y="435" font-size="9" fill="#c45f12">532,400 104×112</text>
 <text x="956" y="469" font-size="9" fill="#222">slot</text>
 </svg>

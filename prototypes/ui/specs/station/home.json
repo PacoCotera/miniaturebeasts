@@ -3,7 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#home",
  "frame": "frame.json",
- "status": "Proposal (UI designer, 2026-10-09 12:06, America/Mexico_City), the L2.2 spec: every drawn region names its word (`component`) or composition (`build`); the states home, arrival and report; the rest knob's states; Dock and arrival as events with the input hold; Home's focus as `order` and `nearestIn` data (lvgl-switch.md §2.6), replacing nav.mjs homeMove. The owner checks the states and navigation on the wireframes (station-layouts/01*.png) before the build. The regions, colours and strings from before stay decided",
+ "status": "Decided: the structure (owner, 2026-10-09 12:20) and ◀ on a resident (focus.decided); the details are the UI designer's (2026-10-09 12:06, America/Mexico_City), but the open questions in station-layouts.md, Open questions for L2.2. The L2.2 spec: every drawn region names its word (`component`) or composition (`build`); the states home, arrival and report; the rest knob's states; Dock and arrival as events with the input hold; Home's focus as `order` and `nearestIn` data (lvgl-switch.md §2.6), replacing nav.mjs homeMove. The regions, colours and strings from before stay decided",
  "note": "The one home of the Home numbers, transcribed from station-layouts.md (Home, Dock and arrival) and its wireframes 01-home.svg to 01e-home-rest.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What the layout document did not give was listed under `derived`; each entry is now the UI designer's decision, written into the document too. Idle is a state of the frame, in frame.json `idle`.",
  "derived": {
   "colours": "UI designer, 2026-10-08: decided, see `colours` and Home §4's colour roles. Bezel `metal`, lit `enamel`, shade `bevel` (the derived `bevel`/`hairline` were darker than the metal on both sides); glass edge `frostD`; the placeholder inside is a `forest` back and a `clay` ground band with a `sand` top row and a `soil` foot, the only warm field on screen (the derived `night`/`slate` plate was cold and failed 'the vivarium is the only warm light'); modules the kit's instrument panel with the word in `metal`, engraved and quiet (the derived `bone` out-shone the objects); lamps off `hairline`, well `sprout`, waiting `sky`, needs you `amber`; the ribbon as on Pods; the report card an instrument `panel`, not paper",
@@ -91,10 +91,11 @@
   "roomAt": [496, 288, 32, 24],
   "room": "the ring on nothing: no ring is drawn, ✓ does what needs the player (the notice), the room's point is roomAt's centre (512, 300)",
   "fallback": "none",
+  "decided": "owner, 2026-10-09 12:20: ◀ on a resident goes to the nearest resident to its left (nearestIn resident, ahead); ▶ still crosses to the column. Was: ◀ on a resident did nothing, which could strand two residents at one height",
   "graph": {
    "room": { "right": "bay", "left": { "nearestIn": "resident" }, "up": "none", "down": "none" },
    "column": { "order": ["bay", "rack", "incubator", "probe", "knob"], "left": { "nearestIn": "resident" }, "right": "none" },
-   "resident": { "right": { "nearestIn": "column" }, "up": { "nearestIn": "resident", "ahead": true }, "down": { "nearestIn": "resident", "ahead": true }, "left": "none" }
+   "resident": { "right": { "nearestIn": "column" }, "up": { "nearestIn": "resident", "ahead": true }, "down": { "nearestIn": "resident", "ahead": true }, "left": { "nearestIn": "resident", "ahead": true } }
   },
   "primitives": {
    "order": "▲ and ▼ step through the list as written, skipping ids not in props.focus.targets; the ends stop, never a wrap; ◀ and ▶ take the group's own edges",
@@ -119,7 +120,9 @@
    { "from": "knob", "key": "down", "to": "knob" },
    { "from": "knob", "key": "right", "to": "knob" },
    { "from": "room", "key": "up", "to": "room" },
-   { "from": "room", "key": "left", "to": "the resident nearest (512, 300) by row", "residents": "none", "toIfNone": "room" }
+   { "from": "room", "key": "left", "to": "the resident nearest (512, 300) by row", "residents": "none", "toIfNone": "room" },
+   { "from": "the leftmost resident", "key": "left", "to": "the same resident" },
+   { "from": "a resident with others to its left", "key": "left", "to": "the nearest of them more than 6 px to its left, by along + 2.2 × across" }
   ]
  },
  "colours": {

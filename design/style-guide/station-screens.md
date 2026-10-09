@@ -417,7 +417,7 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 
 **Vibe.** Vivarium: the pets at ease, nothing asking for you.
 
-**Purpose.** The Station at rest, always on. **Reads first:** the residents.
+**Purpose.** A living view the Station can show permanently, always on: the vivarium, something worth looking at all day; never a screen off or a sleep (*clarified by the owner, 2026-10-09 12:20*: "idle doesn't mean screen off, means a view that can be shown permanently, vivarium or something interesting to look at"; was "The Station at rest, always on"). **Reads first:** the residents.
 
 - **Living window.** The whole screen: the vivarium at 1024×600, its light following the time of day, residents keeping their routines.
 - **Instrument.** Reduced to one status line on a thin cool strip at the foot ("Companion away · with Dot · an embryo is growing") and nothing else.
