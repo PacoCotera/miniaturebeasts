@@ -584,6 +584,10 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 56 - record only: Feathers and Tufts are per-look plates
+
+The art director's ruling: Feathers and Tufts are surface-material traits, so they are per-look plates painted as qualities after the quota, alongside Fluff and Sheen. No crop is cut from the flap box or the fur-reach box, because it would read as a Wings picture (this closes the earlier wait for the builder's part boxes). `traitpics/trait-regions-S09-round2.json` (written by `tools/traitpics2.py`) now has: the `rule` string saying the surface materials count as qualities; `kind` = `plate` for Feathers (`coat/feathers`) and Tufts (`coat/fur-reach`), with no crops; and both added to `plates_waiting` (now Crest, Eyes, Carriage, Feathers, Tufts). The scheduled run's plate list now reads Colour, Fluff, Sheen, Markings, Scales, Feathers, Tufts, Crest, Eyes, Carriage. No slice changed (the 20 S09 crops are byte-identical).
+
 ## Pass 55 - record only: the manifest hash of the Compare bench
 
 `room-bench-stage-compare` failed its manifest hash check. The cause: the file was last changed in pass 48 (commit 6a1221b, the bench rebuilt from the chapter's own wall; sha256 448dad6e...), which is the file signed under the pass 48 verdict, but the manifest still held the hash of the pass 46 file (ecb2326b...). The manifest entry is corrected to the file's own hash; no pixel changed (the PNG is byte-identical to the commit before). A check of all 505 manifest entries against the files now finds no mismatch and no slice missing from the manifest.

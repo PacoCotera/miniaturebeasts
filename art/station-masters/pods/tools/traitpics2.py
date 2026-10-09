@@ -86,7 +86,7 @@ BOX = {"face/head": ("the whole head, crown to throat (the head, crown and beak 
 CROWN_CURVE = [(148, 158), (165, 146), (200, 134), (232, 142), (252, 160), (268, 172), (310, 178)]      # the skull's top, left to right, on the painting
 TAIL_POLY = [(372, 301), (392, 298), (440, 275), (480, 254), (488, 262), (480, 292), (466, 306), (440, 318), (418, 323), (398, 321), (384, 316), (374, 311)]
 TAIL_TIP, TAIL_ROOT = (484.0, 258.0), (380.0, 306.0)
-PLATES = {"face/feather-crest": "the crest alone, close up against deep", "face/eyes": "one eye close up filling the cell: iris, ring, lid; no beak", "legs-tail/tail-curl": "the whole hind body and tail in silhouette, small in the cell, showing how the tail is held"}      # small parts and a posture: per-look plates after the quota
+PLATES = {"face/feather-crest": "the crest alone, close up against deep", "face/eyes": "one eye close up filling the cell: iris, ring, lid; no beak", "legs-tail/tail-curl": "the whole hind body and tail in silhouette, small in the cell, showing how the tail is held", "coat/feathers": "the feather surface of the coat as a quality: a close patch of the plumage in this look, filling the cell, no wing or outline", "coat/fur-reach": "the tufts as a quality: how far the fur reaches, a close patch of the coat edge in this look, filling the cell, no wing"}      # small parts and a posture: per-look plates after the quota
 paint = Image.open(os.path.join(GROW, "species/S09/portrait-600x620.png")).convert("RGB"); W, H = paint.size; keyed = key(paint); keyed_tail = key(paint, choke=1)
 yy_, xx_ = np.mgrid[0:H, 0:W].astype(float)
 crown_m = poly_mask([(148, 0)] + CROWN_CURVE + [(318, 0)], W, H, 3.0)                       # above the skull's curve, a 3 px feather along it
@@ -125,9 +125,10 @@ for key_, (why, rect, kind, pad, limit, feather) in BOX.items():
         ent["crops"][f"{tw}x{th}"] = {"window": list(box), "source_px": [cw, chh], "slice": nm, "flag": flag}; n += 1
         if flag: flagged.append((name, f"{tw}x{th}", rect[2:]))
     doc["traits"][key_] = ent
+for k_, nm_ in (("coat/feathers", "Feathers"), ("coat/fur-reach", "Tufts")): doc["traits"][k_] = {"chapter": "coat", "trait": nm_, "look": looks[k_]["look"], "kind": "plate", "box": None, "source": "a surface material: a per-look plate painted as a quality after the quota, no crop", "crops": {}}
 doc["quality_traits_waiting"] = [k for k, v in R["traits"].items() if v["whole"]]
 doc["plates_waiting"] = PLATES
-doc["rule"] = "a distinct visible part is a crop (Beak, Crown, Tail, Feathers, Tufts, Head); a quality, a small part or a posture is a per-look plate (Colour, Fluff, Sheen, Markings, Scales, Crest, Eyes, Carriage); each trait's kind is recorded here"
+doc["rule"] = "a distinct visible part is a crop (Beak, Crown, Tail, Feathers, Tufts, Head); a quality, a surface material, a small part or a posture is a per-look plate (Colour, Fluff, Sheen, Markings, Scales, Feathers, Tufts, Crest, Eyes, Carriage); the surface materials (Fluff, Sheen, Feathers, Tufts) count as qualities: no crop is cut from the flap box or the fur-reach box, because it would read as a Wings picture; each trait's kind is recorded here"
 json.dump(doc, open("traitpics/trait-regions-S09-round2.json", "w"), indent=1); json.dump(man, open("slices/manifest.json", "w"), indent=1)
 # drop the round 1 slices for the traits redone here (their ids carried the old looks)
 print(n, "slices;", len(flagged), "flagged"); print(sorted({(f[0], tuple(f[2])) for f in flagged}))
