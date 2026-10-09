@@ -104,43 +104,48 @@ can have a striped child wearing stripes neither of them showed.
 Art never changes a gene. A genome is never edited to make a body or a
 painting work; a body that cannot be built is reported, never repaired.
 
-## The three kinds of locus
+## The four kinds of locus
 
-Every locus is one of three kinds:
+Every locus is one of four kinds, named by who changes it:
 
 1. **Locked by the species.** The pair is the same in every member of the
    species. It is the species' frame: never read pod by pod, never set by the
    player, never crossed. A mibi whose locked pair differs belongs to another
    species.
-2. **Configurable.** A look the player may set when creating a founder, once
-   it has been read: as the pod has it, its first copy twice, or its second
-   copy twice. Only the pod's own copies are offered.
-3. **Self-changing.** A locus that changes only by itself, in the manner of
-   epigenetics: neither the player nor a cross changes it.
+2. **Configurable.** The player changes it, when creating a founder. A
+   configurable look, once read, may be set as the pod has it, its first copy
+   twice, or its second copy twice. Only the pod's own copies are offered.
+3. **Inherited-only.** Only breeding changes it: a child takes its copies from
+   its parents, and nothing else moves them.
+4. **Self-changing.** The mibi changes it, within its own life, in the manner
+   of epigenetics: neither the player nor a cross does.
 
-By default every look is configurable, and doings change only by breeding.
-A species may set a trait apart, with the reason kept in its frame: the
-Tuikis's Claws, for example, are how it digs, so they change only by breeding.
+By default every look is configurable and every doing is inherited-only. A
+species may set a trait apart, with the reason kept in its frame: the Tuikis's
+Claws, for example, are how it digs, so they are inherited-only.
+
+The self-changing kind starts with three traits: **Glow** (the Tuikis),
+**Basking** (the Lehten) and **Phase** (the Blikur). How they change is under
+[Not designed yet](#not-designed-yet).
 
 Each locus in a frame also has one kind of part:
 
 | Kind of part | What it is | Kind of locus |
 | --- | --- | --- |
 | **Locked** | What makes a species itself: the frame's fixed copies | Locked |
-| **Heritable look** | A visible trait that differs between individuals | Configurable, unless the species makes it breeding-only |
-| **Heritable doing** | Movement, stamina, character, glow, charge | Breeding-only |
+| **Heritable look** | A visible trait that differs between individuals | Configurable, unless the species makes it inherited-only |
+| **Heritable doing** | Movement, stamina, character, glow, charge | Inherited-only, or self-changing for Glow, Basking and Phase |
 | **Sleeping** | A look behind a part switch that is off in this mibi | Set with its switch's trait |
-| **Sealed** | A doings chapter that cannot be read until a find opens it. Its loci are inherited and act from birth | Breeding-only |
-
-No species carries a self-changing locus yet; how one changes is under
-[Not designed yet](#not-designed-yet).
+| **Sealed** | A doings chapter that cannot be read until a find opens it. Its loci are inherited and act from birth | Inherited-only, or self-changing for Basking and Phase |
 
 ## Species frames
 
 Every mibi belongs to one species. There are four levels: body plan, clan,
-species and individual. The species list, with their clans and plans, is in
-the [taxonomy](proposals/taxonomy.md) and the
-[species frames](proposals/species-frames.md).
+species and individual. There are sixteen species, each in a clan of its own:
+S01 Loika, S02 Untuva, S03 Tuikis, S04 Hiljan, S05 Tepor, S06 Pesko, S07 Azkon,
+S08 Rupar, S09 Belatz, S10 Igara, S11 Kilpo, S12 Peplos, S13 Oskol, S14 Usvel,
+S15 Lehten and S16 Blikur. Every one has a frame in the
+[frame registry](../prototypes/workbench/frames/).
 
 A frame fixes everything about the species except its open traits. For each
 open locus it gives a **pool**: the alleles this species allows there. Colour
@@ -217,7 +222,7 @@ Each heritable locus is crossed on its own, with no linkage between traits:
 | --- | --- |
 | **Switch** | Takes one copy from each parent, at random. The look shows by the locus's rule; the other copy hides and can pass on |
 | **Sleeping** | Crossed copy by copy like a switch, whether or not the parent wears it. It travels with its switch |
-| **Continuous** | Sits between its parents' shown values, nudged by up to 10 percent of the locus range either way, and kept inside the species' pool. Both copies equal the drawn value, so a blend hides nothing |
+| **Continuous** | Sits between its parents' shown values, nudged by up to 10 percent of the locus range either way, and kept inside the species' pool. The value is stored on a fixed fine step of the locus range. Both copies equal the drawn value, so a blend hides nothing |
 | **Locked** | Takes the frame's pair. It is never crossed |
 
 A child's copies come only from its parents. There is no mutation.
@@ -226,8 +231,27 @@ The child is checked whole. A child that cannot be built never exists; the
 cross is not drawn again.
 
 The more removed the two parents' genomes, the better the cross; inbreeding
-brings a penalty. How it is measured and what it does are under
-[Not designed yet](#not-designed-yet).
+brings a penalty.
+
+**Relatedness** is kinship counted from recorded parents, three generations
+back. Two wild founders are unrelated (kinship 0). A parent and its child, or
+two full siblings, share a quarter; half siblings an eighth; first cousins a
+sixteenth. A parent that is not on record counts as a wild founder; where that
+happens, how alike the two genomes are is shown as a caution, never as a
+penalty.
+
+**The penalty** has two halves, both growing with kinship:
+
+- **What hides, surfaces.** At each switch locus where the child would carry
+  one hidden copy, with a chance of twice the kinship it takes that hidden copy
+  twice instead, so the hidden look shows. Sleeping looks wake with their
+  switch.
+- **The line stops moving.** A blend's draw and its nudge both shrink by four
+  times the kinship. Full siblings (a quarter) have a child at exactly their
+  midpoint: a line bred brother to sister only averages itself.
+
+For example, two full-sibling Loikas that are both plain and carry pale have
+about two pale-patched children in four, where unrelated parents have one.
 
 A child is known before any reading only where its outcome is certain: both
 parents hold the same pair, with both copies equal. A blended trait is never
@@ -254,7 +278,7 @@ From the outside in:
   is up.
 - **Glyph:** the species' 5×5 mark in the top-left corner.
 - **Chapter blocks:** both copies of every open locus, chapter by chapter, as
-  pairs of cells (copy one above copy two). Locked loci are not stored per
+  pairs of cells (copy one above copy two), exact to the genome's own step. Locked loci are not stored per
   mibi; every reader carries the species frames.
 - **Strip, at the foot:** error correction, the header and the read mask.
 
@@ -286,14 +310,21 @@ every switch locus, so a family lines up on paper.
 ![A Tuikis mother, child and father](../prototypes/genome-stamp/img/family.png)
 *A Tuikis mother, child and father: at each switch locus, the child's upper cells repeat one of the mother's copies and its lower cells one of the father's.*
 
+A scanned stamp only shows a mibi. It never creates one and never moves one
+from one owner to another.
+
 The stamp's tests, print sheet and scan page are in
 [prototypes/genome-stamp](../prototypes/genome-stamp/README.md).
 
 ## Codes
 
 Every mibi has a **name code**: nine characters from the genome's digest, the
-last a check character, shown in threes (for example `G7F · CD0 · 3H2`). It is a name and a lookup, not the
-genome. A stamp's code string can be shared.
+last a check character, shown in threes (for example `G7F · CD0 · 3H2`). It is
+a name and a lookup, not the genome.
+
+The **stamp code** is the stamp's own bytes written as text. It can be shared
+and pasted, and it decodes to everything the stamp holds, exactly as a scan
+does.
 
 ## The individual record
 
@@ -308,14 +339,10 @@ never rewrites a living mibi. A child is built on its species' current frame.
 
 ## Not designed yet
 
-- What "changes only by itself" covers, next to the loci that change only by
-  breeding.
-- How a self-changing locus changes: what triggers it, when, whether a child
-  inherits it, and how it shows.
-- The inbreeding penalty's form, and how relatedness is measured.
-- Whether the stamp holds a blended value exactly.
-- A shareable code string that decodes back to the genome.
-- Whether a scanned stamp can ever grant a mibi.
+- How Glow, Basking and Phase change: what triggers a change, when it
+  happens, where it is kept, and how it shows.
+- What a scan shows when parts of the genome are hidden: copies that hide,
+  sleeping looks, unread and sealed chapters.
 - Combined traits: traits that combine into emergent ones; for example,
   movement, energy and environment together shape a kind of locomotion, vision
   or metabolism.
