@@ -5,7 +5,9 @@ m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
-    if re.match(r"guide-panel-", n): sign(n, "new", None, "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict")
+    if re.match(r"guide-face-S(01|09|12)-", n): sign(n, "new", None, "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict")
+    elif n.startswith("guide-face-"): sign(n, "placeholder", None, "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists")
+    elif re.match(r"guide-panel-", n): sign(n, "new", None, "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict")
     elif n in ("guide-seal-32", "guide-pip-unseen-6x6", "wish-mark-12", "wish-mark-24", "mark-guide-16"): sign(n, "new", None, "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict")
     elif re.match(r"trait-S\d\d-.*-(56x56|40x40)$", n): sign(n, "new", None, "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict")
     elif n in ("find-pearl-16x16", "find-shard-16x16"): sign(n, "signed", "pass 72 verdict", "a hand-drawn small find at 16 px (the shard with its right spike trimmed so row 6 ends in line with row 7)")

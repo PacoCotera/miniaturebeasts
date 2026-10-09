@@ -9390,5 +9390,213 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-face-S01-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+  "made": "the type specimen's head and shoulders (source box (46, 35, 464, 400)), the paper keyed to `ground`, reduced x0.230 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "b23f96d3ac672c56e2ec5d6356c5803857c001ce5dbe7f2e924fc4086b4be9ab",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict"
+ },
+ "guide-face-S09-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "grow/species/S09/portrait-600x620.png",
+  "made": "the type specimen's head and shoulders (source box (39, 35, 381, 335)), the paper keyed to `ground`, reduced x0.280 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "37a4c6a844d198454f7f75f2be1dac91ddff61fd89a14760679646474ea0a68f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict"
+ },
+ "guide-face-S12-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "grow/out/S12/2af58fb73ac5cbbd/station-portrait-600x620.png",
+  "made": "the type specimen's head and shoulders (source box (80, 276, 420, 574)), the paper keyed to `ground`, reduced x0.282 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['top', 'left', 'right'] (pass 77)",
+  "sha256": "056348db0d8000c45fa88abfdeaf3130348cb0591b31bb66be90391d475fbfce",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict"
+ },
+ "guide-face-S02-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S02/S02/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (20, 59, 250, 261)), the paper keyed to `ground`, reduced x0.416 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "97764c37f7b738035e5115a1a73eb2ae8f093ed945a1503db226dee4b2839d86",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S03-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S03/S03/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (25, 97, 215, 263)), the paper keyed to `ground`, reduced x0.505 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "c6f5b41abe217022d1f91b47a07923f11a6d7ebc36c011910ef0708ffc18b000",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S04-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S04/S04/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (30, 49, 210, 206)), the paper keyed to `ground`, reduced x0.533 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "cbd0225af2fba5b80b8047478535619b4b4fb3206936a5e262716a2edb95add4",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S05-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S05/S05/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (20, 60, 180, 200)), the paper keyed to `ground`, reduced x0.600 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "c9af7efdf76d09a40b2108c4cc40d447b9c69c01a4370016c8c8880a15bbf4b4",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S06-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S06/S06/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (18, 70, 207, 235)), the paper keyed to `ground`, reduced x0.508 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "ab3568bf62082f0e4d981bfb477ab4e5ce1b8d516407e37d53f916f1070b2999",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S07-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S07/S07/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (6, 25, 229, 220)), the paper keyed to `ground`, reduced x0.430 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "de57d63c6dfd4b6c8b42ce3183d4a8ef7317d8d566b696c7b1dcb0f5a51a6091",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S08-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S08/S08/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (35, 25, 235, 200)), the paper keyed to `ground`, reduced x0.480 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom'] (pass 77)",
+  "sha256": "145bdf255e343911ebcda692ae30dfcc33e9fdf5413e1b59a458e8bcde4874f4",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S10-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S10/S10/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (15, 98, 215, 272)), the paper keyed to `ground`, reduced x0.480 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "8778dc387f48914a58d0975af5d2f05aeb751f21b4fa64a37ec0906ac3d7c760",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S11-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S11/S11/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (25, 74, 205, 231)), the paper keyed to `ground`, reduced x0.533 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "d406192b6c94649421cbdd5f387c83f395ad5f690524aa9730c255dbf96455d7",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S13-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S13/S13/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (20, 109, 200, 266)), the paper keyed to `ground`, reduced x0.533 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "18b6ed1635d08c42c1778db4f0c3cc3b8bbd3742184cea0edd277f4a19ecc6a1",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S14-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S14/S14/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (30, 98, 230, 272)), the paper keyed to `ground`, reduced x0.480 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom', 'right'] (pass 77)",
+  "sha256": "8c4d54701b355e288a55f5ef437ee5c361268e873fe0032de7ffc8f9de49fc11",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S15-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S15/S15/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (34, 30, 286, 250)), the paper keyed to `ground`, reduced x0.381 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom'] (pass 77)",
+  "sha256": "cf8120dbbf9295f3aaa0249860d75fa2c889b309119e9218f671cfa55b4421f6",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S16-128x112": {
+  "size": [
+   128,
+   112
+  ],
+  "rect": null,
+  "src": "plain/renders/S16/S16/portrait-300x310.png",
+  "made": "its PLACEHOLDER render's (no painting yet) head and shoulders (source box (69, 25, 211, 150)), the paper keyed to `ground`, reduced x0.672 (never enlarged) into the centred 96x84 of 128x112, the keyed fade along the cut edges ['bottom'] (pass 77)",
+  "sha256": "603b30e875b0650f2537b0e62525f62307052ef4324288d1264b4392927560a1",
+  "status": "placeholder",
+  "signed_in": null,
+  "status_note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
  }
 }
