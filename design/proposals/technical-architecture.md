@@ -17,7 +17,7 @@ This is the software structure every Station, Companion and Caddy build follows,
 
 The kit has three screens and one game. Without this architecture each screen is built by drawing pixels at numbers typed into code. That is fast for the first screen and slow for every one after it, and it gets worse as more people work on the code at once.
 
-**For example,** the layout spec says the stamp is "a 120×120 label, one rule, every screen that shows it". Drawn by hand, that rule is copied into every screen file that shows the stamp (six, in the hand-drawn Station, at five sizes: 196 px on Pods, 120 on Create and the Incubator, 96 on Cross, 88 on Habitat, 112 on the Library), and each copy is checked by eye. On the face the stamp label is one C word and each screen's spec gives it a rectangle. The rule lives in one place, and CI measures it.
+**For example,** the layout spec says the stamp is "a 120×120 label, one rule, every screen that shows it". Drawn by hand, that rule is copied into every screen file that shows the stamp (six, in the hand-drawn Station, at five sizes: 196 px on Pods, 120 on Create and the Incubator, 96 on Cross, 88 on the vivarium, up close, 112 on the Library), and each copy is checked by eye. On the face the stamp label is one C word and each screen's spec gives it a rectangle. The rule lives in one place, and CI measures it.
 
 The architecture has three jobs:
 
@@ -209,7 +209,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | --- | --- | --- |
 | **T1 Screen layer and Pods** | `prototypes/ui/` with Pods from its spec, Inter bundled. Its drawing modules are deprecated and frozen (§5.1) | Its spec files, timeline, manifest and checks carry to the face |
 | **L0 to L2** | The toolchain, the frame and Pods drawn by the LVGL face (§8) | The face's first screen |
-| **L2.0 to L2.5, then L3** | Every Station screen on the LVGL face, in lvgl-switch.md §3's order: L2.0 the platform and Pods on C words; L2.1 the Library, Book and field guide; L2.2 Home, Rest, Dock and arrival, Idle; L2.3 Cross; L2.4 Create and the Incubator; L2.5 Habitat and the Probe bench. L3 deletes the JavaScript drawing layer | Each milestone passes the gate of lvgl-switch.md §4 |
+| **L2.0 to L2.5, then L3** | Every Station screen on the LVGL face, in lvgl-switch.md §3's order: L2.0 the platform and Pods on C words; L2.1 the Library, Book and field guide; L2.2 Home, Rest, Dock and arrival, Idle; L2.3 Cross; L2.4 Create and the Incubator; L2.5 Vivarium and the Probe bench. L3 deletes the JavaScript drawing layer | Each milestone passes the gate of lvgl-switch.md §4 |
 | **M6 Sitting and the whole journey** | On the face; the Sitting's first screen at L2.5, or built straight on the face when its spec lands | |
 | **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change | Independent of the Station |
 | **C2 Companion on the face** | HUD 32, view 532, line 36; Mibi 7×9; the map viewport for 48 px tiles, with the art redraw; the `common/` words under the Companion's profile, with its indexed world view inside (lvgl-switch.md §2.2) | Lands with the 48 px redraw |

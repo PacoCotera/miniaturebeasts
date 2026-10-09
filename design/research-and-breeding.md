@@ -123,7 +123,7 @@ where looks are still unseen. Its looks use the same words a read gives. The
 guide is complete when every look the species can carry has been seen, the
 sealed chapter's looks included. Seeing every look of a species is a long goal.
 
-The Library and the field guide are about a species. The Pods and Habitat
+The Library and the field guide are about a species. The Pods and the vivarium, up close,
 screens are about one individual, its stamp included.
 
 ## Creating a founder
@@ -229,7 +229,7 @@ Basking and Phase. How they move is in
   their look.
 - The player steers a change only by choosing where the partner walks. No item,
   button or price moves it.
-- Habitat shows the change in words, never as a number: the look now, and that
+- The vivarium, up close, shows the change in words, never as a number: the look now, and that
   it changed lately.
 - The detail view shows the look the mibi was born with, the look now and the
   cause in plain words, for example "brighter after walks in caves and woods".
@@ -299,7 +299,7 @@ means:
   supplies.
 - A species not yet met gives no cue of what it may be.
 - **The detail view** serves players who want the genetics. Any read trait opens
-  it with one press, on Pods, Habitat and Cross. It shows the trait's parts, each
+  it with one press, on Pods, the vivarium, up close, and Cross. It shows the trait's parts, each
   as its two copies in pictures, and the rule between them in plain words: one
   shows over the other, or they blend. On Cross it also gives each forecast as
   counts out of four, and each blend's range as values. It never uses the words

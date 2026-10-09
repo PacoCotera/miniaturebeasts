@@ -12,11 +12,11 @@
 
 **Earning the sitting.** Four research moments each give one, and each gives it once: a species' field guide filled (every look seen), its sealed chapter opened, the first pod of a new drop identified, and a deep line (a mibi whose recorded tree runs four generations of the player's own crosses; the number is tuned with the cross). The moment plays where it happens, then a small gilt frame drops into a slot on Home's instrument, beside the Probe dock: the held sitting. One slot, one frame. The paid tier's monthly sitting arrives the same way. A sitting is never on sale for Energy, Data or Essence, and no screen offers one for them.
 
-**The ceremony, step by step.** It starts on **Habitat**, the one-resident screen, because the portrait is about one mibi.
+**The ceremony, step by step.** It starts on **the vivarium, up close**, the one-resident screen, because the portrait is about one mibi.
 
 | Step | Screen and what is chosen | Bottom line |
 | --- | --- | --- |
-| 1. Choose the mibi | Habitat, the resident in its corner. A mibi already portrayed shows its portrait instead of the offer | `✓ Portray Fig · 1 sitting · ← Home` |
+| 1. Choose the mibi | The vivarium, up close, the resident in its corner. A mibi already portrayed shows its portrait instead of the offer | `✓ Portray Fig · 1 sitting · ← Home` |
 | 2. Choose the pose | The sitting screen opens: the vivarium's light, Fig on a plain stage. Beside it, one small picture per habit the player has watched it do (dig, glow, puff, sleep curled), in the standard look. The pad walks them; Fig acts out the focused one | `✓ This pose · ← Fig` |
 | 3. Choose the place | The places Fig has been, as the book's place stamps (the place its pod came from, and every place it walked to with the Companion). The focused stamp washes the stage behind Fig in that place's colours | `✓ This place · ← pose` |
 | 4. Look and confirm | Fig in the pose, in the place, drawn plain, with the gilt frame around it. One line: "One sitting each, ever". First ✓ arms (the frame lights), second ✓ begins | `✓ Begin the sitting · 1 sitting · ← place` |
@@ -25,7 +25,7 @@ A juvenile may sit; later stages are painted ahead of each change (v2 §5). A mi
 
 **The wait.** Fig does not leave; it lives as before. The frame leaves the slot and travels to the sample bay module, where a flat crate silhouette sits behind the bay door with its lamp slowly filling, never a clock or digits. The sitting takes **a few hours** (three for testing, under the developer toggle with every timer): longer than a bud, short enough to arrive the same day. The wait covers the painting and the pipeline's retries; a failure only makes the crate later. Offline, the crate waits behind the door until the kit is connected, and says so ("waiting for the cloud").
 
-**The delivery.** The crate arrives in the bay like cargo. Home's bay lamp turns amber: `✓ Open the bay · 1 crate`. The seal breaks, a flat crate slides out, its lid lifts and the portrait stands on the stage in its frame: Fig, in its pose, in its place. A ribbon: "Fig's portrait". One press later, `✓ Look at Fig` opens Habitat, where Fig is drawn fresh in its painted set (the swap happens at a fresh draw, never while on screen, as v2 §3). *This replaces the incubator's "fourth state" in the [Station screens](../style-guide/station-screens.md) guide:* the prize comes to the dock, not to the chamber.
+**The delivery.** The crate arrives in the bay like cargo. Home's bay lamp turns amber: `✓ Open the bay · 1 crate`. The seal breaks, a flat crate slides out, its lid lifts and the portrait stands on the stage in its frame: Fig, in its pose, in its place. A ribbon: "Fig's portrait". One press later, `✓ Look at Fig` opens the vivarium, up close, where Fig is drawn fresh in its painted set (the swap happens at a fresh draw, never while on screen, as v2 §3). *This replaces the incubator's "fourth state" in the [Station screens](../style-guide/station-screens.md) guide:* the prize comes to the dock, not to the chamber.
 
 **What changes afterwards.**
 
@@ -33,7 +33,7 @@ A juvenile may sit; later stages are painted ahead of each change (v2 §5). A mi
 | --- | --- | --- |
 | Spread plate (the cabinet box until 2026-10-08; the Library's collection screen is now the tome's spread) | the species' generic face | Fig's portrait, small, with the gilt frame corner. With several portrayed, the book offers `✓ Make Fig the face` |
 | Library book | a resident in rich treatment | Fig in its pose and place, alive in the living window; the habit line under it |
-| Vivarium and Habitat | the standard look, motion by rule | the full painted moving set (main and side views, every stage) |
+| Vivarium and the vivarium, up close | the standard look, motion by rule | the full painted moving set (main and side views, every stage) |
 | Companion | the standard look derived for HiBit | the painted set derived for HiBit, at the next dock |
 | Stamp | the face and an unsigned postmark ("unverified") | the postmark signed by the cloud; a small frame corner on the face |
 | Card | none | Fig's card: portrait, name, species, place, the stamp and its postmark |
@@ -95,7 +95,7 @@ The Companion calls nothing; it learns at the dock.
 | **Archive** | Every portrait under the kit's account (v2 §7): the controls, the pose and place, the returns, the signed postmark. Restore re-renders only a lost copy and marks the card "restored" |
 | **Pipeline** | Pose and place enter the fixed template as frame facts (a habit id, a place's colours), never free text; the checks of v2 §5 stand |
 | **Card renderer** | One layout, three outputs: the website page at the postmark's link, the phone and Companion version, the Caddy print at 203 dpi; drawn from the archive, never from the Station |
-| **Screens** | Home's sitting slot; Habitat's offer; the sitting screen's three steps; the bay's flat crate and its lamp; the Companion's notice and card; the cabinet's face choice |
+| **Screens** | Home's sitting slot; the vivarium's offer; the sitting screen's three steps; the bay's flat crate and its lamp; the Companion's notice and card; the cabinet's face choice |
 
 ## 7. Decisions for the owner
 
