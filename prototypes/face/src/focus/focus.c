@@ -12,7 +12,7 @@
 #define MAXO 16
 typedef struct { int kind; char text[FOCUS_ID]; int ahead; } entry_t;   /* kind: 1 name, 2 selector, 3 none, 4 nearestIn */
 typedef struct { int n; entry_t e[MAXE]; } edge_t;
-typedef struct { char name[32]; edge_t edge[4]; char axis; int norder; char order[MAXO][FOCUS_ID]; } group_t;
+typedef struct { char name[32]; edge_t edge[4]; char axis; int norder; char order[MAXO][FOCUS_ID]; int stepper; /* bit d: the key d steps */ } group_t;
 struct focus_graph { int ng; group_t g[MAXG]; int spatial; char roomKey[32]; };
 
 static int tskip(const jsmntok_t *t, int i) { int k = t[i].size; i++; for (; k > 0; k--) i = tskip(t, i); return i; }
@@ -70,10 +70,26 @@ focus_graph_t *focus_graph_parse(const char *json, int len, char *err, int errca
           }
         } else { if (entry_at(json, t, w, &e->e[0], err, errcap, key, k) < 0) goto refuse; e->n = 1; }
       } else if (strcmp(k, "axis") == 0) { gr->axis = is(json, &t[w], "vertical") ? 'v' : is(json, &t[w], "horizontal") ? 'h' : 0; has_axis = 1; }
+      else if (strcmp(k, "stepper") == 0) {
+        if (t[w].type != JSMN_ARRAY || t[w].size == 0) { bad(err, errcap, "stepper is a non-empty list of keys", key, k); goto refuse; }
+        int x = w + 1;
+        for (int r = 0; r < t[w].size; r++, x = tskip(t, x)) {
+          int sd = is(json, &t[x], "up") ? FOCUS_UP : is(json, &t[x], "down") ? FOCUS_DOWN : is(json, &t[x], "left") ? FOCUS_LEFT : is(json, &t[x], "right") ? FOCUS_RIGHT : -1;
+          if (t[x].type != JSMN_STRING || sd < 0) { bad(err, errcap, "stepper names an unknown key", key, k); goto refuse; }
+          if (gr->stepper & (1 << sd)) { bad(err, errcap, "stepper lists a key twice", key, k); goto refuse; }
+          gr->stepper |= 1 << sd;
+        }
+      }
       else if (strcmp(k, "order") == 0 && t[w].type == JSMN_ARRAY) { has_order = 1; int x = w + 1; for (int r = 0; r < t[w].size; r++) { if (gr->norder < MAXO) cp(gr->order[gr->norder++], FOCUS_ID, json, &t[x]); x = tskip(t, x); } }
       j = tskip(t, w);
     }
     if (has_axis && has_order) { bad(err, errcap, "both order and axis", key, ""); goto refuse; }
+    for (int d = 0; d < 4; d++) if (gr->stepper & (1 << d)) {
+      if (gr->edge[d].n) { bad(err, errcap, "a stepper key has an edge", key, ""); goto refuse; }
+      if (gr->axis == 'h' && (d == FOCUS_LEFT || d == FOCUS_RIGHT)) { bad(err, errcap, "a stepper key on the axis", key, ""); goto refuse; }
+      if (gr->axis == 'v' && (d == FOCUS_UP || d == FOCUS_DOWN)) { bad(err, errcap, "a stepper key on the axis", key, ""); goto refuse; }
+      if (has_order && (d == FOCUS_UP || d == FOCUS_DOWN)) { bad(err, errcap, "a stepper key on the order", key, ""); goto refuse; }
+    }
     i = tskip(t, v);
   }
   free(t); return g;
@@ -105,31 +121,33 @@ static const focus_target_t *best(const focus_target_t *t, int n, origin_t o, co
 static const char *res_of(const focus_resolve_t *r, int nr, const char *sel) { for (int i = 0; i < nr; i++) if (strcmp(r[i].sel, sel) == 0) return r[i].id; return ""; }
 static const group_t *group_named(const focus_graph_t *g, const char *name) { for (int i = 0; i < g->ng; i++) if (strcmp(g->g[i].name, name) == 0) return &g->g[i]; return NULL; }
 static void put(char *out, int cap, const char *id) { snprintf(out, (size_t)cap, "%s", id); }
-void focus_next(const focus_graph_t *g, const focus_target_t *t, int n, const char *cur, int dir, const focus_resolve_t *res, int nres, const int *roomAt, char *out, int cap) {
+int focus_move(const focus_graph_t *g, const focus_target_t *t, int n, const char *cur, int dir, const focus_resolve_t *res, int nres, const int *roomAt, char *out, int cap) {
   const int is_room = g->roomKey[0] && strcmp(cur, g->roomKey) == 0;
   const focus_target_t *c = by_id(t, n, cur);
-  if (!c && !is_room) { put(out, cap, n ? t[0].id : cur); return; }
+  if (!c && !is_room) { put(out, cap, n ? t[0].id : cur); return 0; }
   origin_t o = { 0, 0, dir }; char gname[32] = "";
-  if (is_room) { if (!roomAt) { put(out, cap, cur); return; } o.ox = 2L * roomAt[0] + roomAt[2]; o.oy = 2L * roomAt[1] + roomAt[3]; snprintf(gname, sizeof gname, "%s", g->roomKey); }
+  if (is_room) { if (!roomAt) { put(out, cap, cur); return 0; } o.ox = 2L * roomAt[0] + roomAt[2]; o.oy = 2L * roomAt[1] + roomAt[3]; snprintf(gname, sizeof gname, "%s", g->roomKey); }
   else { o.ox = cx2(c); o.oy = cy2(c); groupof(c, gname); }
   const group_t *gr = group_named(g, gname);
+  /* (0) a stepper key steps: the ring stays */
+  if (gr && (gr->stepper & (1 << dir))) { put(out, cap, cur); return 1; }
   /* (1) the group's edge */
   if (gr && gr->edge[dir].n) {
     const edge_t *e = &gr->edge[dir];
     for (int k = 0; k < e->n; k++) {
       const entry_t *en = &e->e[k]; const focus_target_t *to = NULL;
-      if (en->kind == 3) { put(out, cap, cur); return; }   /* none: the ring stays (only ever last in a list) */
+      if (en->kind == 3) { put(out, cap, cur); return 0; }   /* none: the ring stays (only ever last in a list) */
       if (en->kind == 4) to = best(t, n, o, en->text, cur, en->ahead ? 1 : 0);
       else if (en->kind == 2) { const char *id = res_of(res, nres, en->text); to = id[0] ? by_id(t, n, id) : NULL; if (!to) { char grp[32]; const char *d = strchr(en->text, '.'); size_t l = (size_t)(d - en->text); if (l > 31) l = 31; memcpy(grp, en->text, l); grp[l] = 0; to = first_in(t, n, grp); } }
       else { to = by_id(t, n, en->text); if (!to) to = first_in(t, n, en->text); }
-      if (to) { put(out, cap, to->id); return; }
+      if (to) { put(out, cap, to->id); return 0; }
     }
   }
   /* (2) the group's order for up and down, or its axis */
   if (c && gr && gr->norder && (dir == FOCUS_UP || dir == FOCUS_DOWN)) {
     int pos = -1, present[MAXO], np = 0;
     for (int i = 0; i < gr->norder; i++) if (by_id(t, n, gr->order[i])) { if (strcmp(gr->order[i], cur) == 0) pos = np; present[np++] = i; }
-    if (pos >= 0) { int to = pos + (dir == FOCUS_DOWN ? 1 : -1); if (to < 0 || to >= np) put(out, cap, cur); else put(out, cap, gr->order[present[to]]); return; }
+    if (pos >= 0) { int to = pos + (dir == FOCUS_DOWN ? 1 : -1); if (to < 0 || to >= np) put(out, cap, cur); else put(out, cap, gr->order[present[to]]); return 0; }
   } else if (c && gr && gr->axis) {
     int step = gr->axis == 'v' ? (dir == FOCUS_DOWN ? 1 : dir == FOCUS_UP ? -1 : 0) : (dir == FOCUS_RIGHT ? 1 : dir == FOCUS_LEFT ? -1 : 0);
     if (step) {
@@ -138,10 +156,13 @@ void focus_next(const focus_graph_t *g, const focus_target_t *t, int n, const ch
       for (int i = 0; i < n && ni < 64; i++) if (ingroup(&t[i], gname)) { int j = ni++; while (j > 0 && items[j - 1]->index > t[i].index) { items[j] = items[j - 1]; j--; } items[j] = &t[i]; }
       int at = -1; for (int i = 0; i < ni; i++) if (items[i] == c) at = i;
       if (at >= 0 && at + step >= 0 && at + step < ni) put(out, cap, items[at + step]->id); else put(out, cap, cur);
-      return;
+      return 0;
     }
   }
   /* (3) the state's fallback */
-  if (g->spatial) { const focus_target_t *to = best(t, n, o, NULL, cur, 2); if (to) { put(out, cap, to->id); return; } }
+  if (g->spatial) { const focus_target_t *to = best(t, n, o, NULL, cur, 2); if (to) { put(out, cap, to->id); return 0; } }
   put(out, cap, cur);
+  return 0;
 }
+
+void focus_next(const focus_graph_t *g, const focus_target_t *t, int n, const char *cur, int dir, const focus_resolve_t *res, int nres, const int *roomAt, char *out, int cap) { focus_move(g, t, n, cur, dir, res, nres, roomAt, out, cap); }

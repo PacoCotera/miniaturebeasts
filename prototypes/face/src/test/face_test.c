@@ -48,8 +48,9 @@ static void focus_vectors(const char *dir) {
     for (int i = 0; i < nr; i++) spec_member("focus", p, i, r[i].sel, sizeof r[i].sel, r[i].id, sizeof r[i].id);
     int room[4], has_room = 0; snprintf(p, sizeof p, "cases.%d.roomAt", c);
     if (spec_len("focus", p) == 4) { has_room = 1; for (int i = 0; i < 4; i++) { char q[96]; snprintf(q, sizeof q, "cases.%d.roomAt.%d", c, i); room[i] = spec_int("focus", q, 0); } }
-    focus_next(g, t, nt, from, dir_of(key), r, nr, has_room ? room : NULL, got, sizeof got);
-    char detail[200]; snprintf(detail, sizeof detail, "expected %s, got %s", to, got); check(strcmp(got, to) == 0, name, detail);
+    snprintf(p, sizeof p, "cases.%d.verb", c); char verb[24]; spec_str("focus", p, verb, sizeof verb);
+    int stepped = focus_move(g, t, nt, from, dir_of(key), r, nr, has_room ? room : NULL, got, sizeof got);
+    char detail[200]; snprintf(detail, sizeof detail, "expected %s%s%s, got %s%s", to, verb[0] ? " " : "", verb, got, stepped ? " (a step)" : ""); check(strcmp(got, to) == 0 && stepped == (verb[0] != 0) && (!stepped || (strncmp(verb, "step:", 5) == 0 && strcmp(verb + 5, key) == 0)), name, detail);
     free(t); free(r); focus_graph_free(g);
   }
   int nref = spec_len("focus", "refusals");

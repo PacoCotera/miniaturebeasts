@@ -7,6 +7,7 @@
 // Targets: [{ id, rect: [x, y, w, h], group?, index?, enabled? }] in the order the view lists them; a target is *present* when it is in the list (enabled or not: an enabled flag changes what ✓ does,
 // never where the ring may go). A target's group is its `group`, else its id up to the first ".". The graph of one state, from the spec:
 //   { <group>: { axis?: "vertical" | "horizontal", order?: [ids], up?, down?, left?, right? }, fallback: "spatial" | "none", roomKey?: <id> }
+// A group may carry `stepper: [keys]`: the keys that step a value on the focused target instead of moving the ring (lvgl-switch.md §2.6.1); the move answers { to: cur, verb: "step:<key>" } and the ring stays.
 // An edge is a name ("pod"), a selector (a name with a ".": "kin.first", "rail.last"), "none", { nearestIn: <group>, ahead?: true }, or an ordered list of the first three and nearestIn objects with
 // "none" only last. The first entry that yields a present target wins.
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
@@ -19,6 +20,18 @@ export function graphProblem(graph) {
   for (const [g, def] of Object.entries(graph)) {
     if (g === "fallback" || g === "roomKey" || typeof def !== "object" || def === null || Array.isArray(def)) continue;
     if (def.order && def.axis) return `group ${g}: both order and axis`;
+    if (def.stepper !== undefined) {
+      const st = def.stepper;
+      if (!Array.isArray(st) || !st.length) return `group ${g}: stepper is a non-empty list of keys`;
+      for (const [i, k] of st.entries()) {
+        if (!(k in DIRS)) return `group ${g}: stepper names an unknown key ${JSON.stringify(k)}`;
+        if (st.indexOf(k) !== i) return `group ${g}: stepper lists ${k} twice`;
+        if (def[k] !== undefined) return `group ${g}: ${k} is a stepper key and has an edge`;
+        if (def.axis === "horizontal" && (k === "left" || k === "right")) return `group ${g}: ${k} steps and the axis is horizontal`;
+        if (def.axis === "vertical" && (k === "up" || k === "down")) return `group ${g}: ${k} steps and the axis is vertical`;
+        if (def.order && (k === "up" || k === "down")) return `group ${g}: ${k} steps and the group has an order`;
+      }
+    }
     for (const k of ["up", "down", "left", "right"]) {
       const e = def[k]; if (e === undefined) continue;
       const entries = Array.isArray(e) ? e : [e];
@@ -61,38 +74,42 @@ function yields(entry, targets, dir, origin, cur, resolve) {
   if (entry.includes(".")) { const to = resolve(entry); const hit = to && targets.find((t) => t.id === to); return hit || targets.find((t) => tgroup(t) === groupOf(entry)) || null; }
   return targets.find((t) => t.id === entry) || targets.find((t) => tgroup(t) === entry) || null;
 }
-// The next focused id. `resolve(selector)` turns "list.current" or "rail.last" into an id (null when there is none). `opts.roomAt`: the rectangle [x, y, w, h] the ring starts from when the focus is the graph's roomKey (a ring on nothing); its doubled centre is the origin.
-export function nextFocus(graph, targets, curId, dir, resolve = () => null, opts = {}) {
+// The move for a key: { to } (the next focused id) or, for a stepper key, { to: cur, verb: "step:<key>" }. `resolve(selector)` turns "list.current" or "rail.last" into an id (null when there is none). `opts.roomAt`: the rectangle [x, y, w, h] the ring starts from when the focus is the graph's roomKey (a ring on nothing); its doubled centre is the origin.
+export function moveFocus(graph, targets, curId, dir, resolve = () => null, opts = {}) {
   const isRoom = graph.roomKey !== undefined && curId === graph.roomKey;
   const cur = targets.find((t) => t.id === curId);
-  if (!cur && !isRoom) return targets.length ? targets[0].id : curId;
+  if (!cur && !isRoom) return { to: targets.length ? targets[0].id : curId };
   const origin = isRoom ? [2 * opts.roomAt[0] + opts.roomAt[2], 2 * opts.roomAt[1] + opts.roomAt[3]] : centre(cur), g = (isRoom ? graph[graph.roomKey] : graph[tgroup(cur)]) || {}, edge = g[dir];
+  // (0) a stepper key steps: the ring stays
+  if (g.stepper && g.stepper.includes(dir)) return { to: curId, verb: `step:${dir}` };
   // (1) the group's edge: "none" stops; a yielded target is the answer
-  if (edge === "none") return curId;
+  if (edge === "none") return { to: curId };
   if (edge !== undefined) {
     const list = Array.isArray(edge) ? edge : [edge];
     for (const [i, entry] of list.entries()) {
-      if (entry === "none") return curId;   // only ever last (graphProblem): the ring stays
-      const to = yields(entry, targets, dir, origin, curId, resolve); if (to) return to.id;
+      if (entry === "none") return { to: curId };   // only ever last (graphProblem): the ring stays
+      const to = yields(entry, targets, dir, origin, curId, resolve); if (to) return { to: to.id };
       void i;
     }
   }
   // (2) the group's order for ▲ ▼, or its axis
   if (cur && g.order && (dir === "up" || dir === "down")) {
     const present = g.order.filter((id) => targets.some((t) => t.id === id)), i = present.indexOf(curId);
-    if (i >= 0) { const to = present[i + (dir === "down" ? 1 : -1)]; return to ?? curId; }   // the ends stop: never a wrap
+    if (i >= 0) { const to = present[i + (dir === "down" ? 1 : -1)]; return { to: to ?? curId }; }   // the ends stop: never a wrap
   } else if (cur && g.axis) {
     const step = g.axis === "vertical" ? (dir === "down" ? 1 : dir === "up" ? -1 : 0) : dir === "right" ? 1 : dir === "left" ? -1 : 0;
     if (step) {
       const items = targets.filter((t) => tgroup(t) === tgroup(cur)).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
       const i = items.findIndex((t) => t.id === curId), to = items[i + step];
-      return to ? to.id : curId;   // the ends stop: never a wrap
+      return { to: to ? to.id : curId };   // the ends stop: never a wrap
     }
   }
   // (3) the state's fallback
-  if ((graph.fallback ?? "spatial") === "spatial") { const n = best(targets, origin, dir, (t) => t.id !== curId, (along, across) => (along > 8 ? 5 * along + 11 * across : null)); if (n) return n.id; }
-  return curId;
+  if ((graph.fallback ?? "spatial") === "spatial") { const n = best(targets, origin, dir, (t) => t.id !== curId, (along, across) => (along > 8 ? 5 * along + 11 * across : null)); if (n) return { to: n.id }; }
+  return { to: curId };
 }
+// The next focused id (a step leaves the ring where it is).
+export const nextFocus = (graph, targets, curId, dir, resolve, opts) => moveFocus(graph, targets, curId, dir, resolve, opts).to;
 // The focus state of one screen: the ring's target and the armed press.
 export function createFocus(graph, initial = null) {
   const F = { graph, cur: initial, armed: null };

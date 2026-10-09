@@ -5,12 +5,12 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { nextFocus, graphProblem, nearest } from "../../ui/focus.mjs";
+import { nextFocus, moveFocus, graphProblem, nearest } from "../../ui/focus.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), V = JSON.parse(readFileSync(path.join(here, "vectors/focus.json"), "utf8"));
 
 test(`the vectors: ${V.cases.length} cases give the same id on the JavaScript module`, () => {
-  for (const c of V.cases) assert.equal(nextFocus(c.graph, c.targets, c.from, c.key, (s) => (c.resolve ?? {})[s] ?? null, { roomAt: c.roomAt }), c.to, c.name);
+  for (const c of V.cases) { const m = moveFocus(c.graph, c.targets, c.from, c.key, (s) => (c.resolve ?? {})[s] ?? null, { roomAt: c.roomAt }); assert.equal(m.to, c.to, c.name); assert.equal(m.verb, c.verb, c.name + ": the verb"); assert.equal(nextFocus(c.graph, c.targets, c.from, c.key, (s) => (c.resolve ?? {})[s] ?? null, { roomAt: c.roomAt }), c.to, c.name); }
 });
 test("the refusals: a graph the loader must refuse is refused, and a sound one is not", () => {
   for (const r of V.refusals) assert.ok(graphProblem(r.graph), "refused: " + r.name);

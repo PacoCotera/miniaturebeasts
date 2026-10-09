@@ -17,5 +17,7 @@ typedef struct { char sel[32]; char id[FOCUS_ID]; } focus_resolve_t;   /* id "":
 focus_graph_t *focus_graph_parse(const char *json, int len, char *err, int errcap);
 void focus_graph_free(focus_graph_t *g);
 /* The id the ring lands on for `dir` from `cur` (copied into out), the current id when it stays. roomAt: {x, y, w, h} or NULL (the origin when the focus is the graph's roomKey). */
+/* The same move; 1 when the key is a stepper key of the focused group (the ring stays, out is cur, and the face sends intent step:<key>), else 0. */
+int focus_move(const focus_graph_t *g, const focus_target_t *targets, int n, const char *cur, int dir, const focus_resolve_t *resolve, int nresolve, const int *roomAt, char *out, int cap);
 void focus_next(const focus_graph_t *g, const focus_target_t *targets, int n, const char *cur, int dir, const focus_resolve_t *resolve, int nresolve, const int *roomAt, char *out, int cap);
 #endif
