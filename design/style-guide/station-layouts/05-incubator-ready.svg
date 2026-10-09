@@ -68,6 +68,11 @@
 <rect x="464.5" y="296.5" width="95" height="95" fill="#d9b89a" stroke="none" stroke-width="1"/>
 <text x="468" y="312" font-size="9" fill="#222">shape: ink ≤ 96</text>
 <text x="468" y="323" font-size="9" fill="#555">456,288 112×112</text>
+<path d="M 408.5 432 C 450 444, 574 444, 615.5 432 L 615.5 447.5 L 408.5 447.5 Z" fill="#e9d2a6" stroke="#bf9157" stroke-width="1"/>
+<rect x="408.5" y="400.5" width="207" height="47" fill="none" stroke="#7d5435" stroke-width="1" stroke-dasharray="1 2"/>
+<line x1="616" y1="440" x2="668" y2="420" stroke="#7d5435" stroke-width="1"/>
+<text x="672" y="418" font-size="9" fill="#7d5435">nestFront 408,400 208×48:</text>
+<text x="672" y="429" font-size="9" fill="#7d5435">rim fibres, over the bud</text>
 <text x="512" y="517" font-size="13" fill="#f1ebdf" text-anchor="middle">ready</text>
 <rect x="652.5" y="506.5" width="11" height="11" fill="#5bb9f3" stroke="#0c0a12" stroke-width="1"/>
 <text x="668" y="532" font-size="9" fill="#1e5196" text-anchor="end">waiting lamp 652,506</text>

@@ -58,7 +58,7 @@
    "nothingRead": "the line alone: strings.traitLine.none"
   },
   "chamber": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "inside", "note": "the specimen chamber's glass back; no words" },
-  "founder": { "rect": [360, 240, 304, 312], "component": "specimen", "focal": true, "axis": 512, "feet": 536, "asset": "the founder's placeholder at 304×312 (the stylised rig pass)", "frost": "the parts of every unread chapter's traits frosted, never a guess; nothingRead: all of it" },
+  "founder": { "rect": [360, 240, 304, 312], "component": "specimen", "focal": true, "axis": 512, "feet": 536, "asset": "the founder's placeholder at 304×312 (the stylised rig pass)", "frost": "the parts of every unread chapter's traits frosted, never a guess", "frostNothingRead": "the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. (art director, 2026-10-09 13:47)" },
   "chamberFront": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "frame", "floor": [312, 536, 400, 16], "note": "the glass's edge and highlight and the floor, drawn over the founder" },
   "pod": { "rect": [88, 232, 144, 176], "component": "specimen", "focal": false, "axis": 160, "feet": 408, "state": "identified", "classes": "pods.json classes.pod: large 144×176, medium 120×152, small 104×128 by the species' size class, bottom-centred on (axis, feet)" },
   "cradle": { "rect": [48, 344, 224, 96], "component": "specimen", "part": "cradle", "slice": "room-cradle", "under": "pod" },

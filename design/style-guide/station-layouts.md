@@ -961,7 +961,7 @@ Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`. W
 
 <img src="station-layouts/03e-create-nothing-read.png" width="1024" alt="Create, nothing read">
 
-*03e. Create, nothing read: the founder frosted all over, every pip hollow, no roll and no ring, `✓ Grow it · ⚡ 2 ❀ 4`. 1×, measured. Status: Proposal, for the owner with the sign-off (game designer, 2026-10-09 13:27).*
+*03e. Create, nothing read: the founder frosted to its own outline, every pip hollow, no roll and no ring, `✓ Grow it · ⚡ 2 ❀ 4`. 1×, measured. Status: Proposal, for the owner with the sign-off (game designer, 2026-10-09 13:27).*
 
 <img src="station-layouts/03d-create-nav.png" width="1024" alt="Create's navigation map">
 
@@ -1059,7 +1059,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | `roll` | 296, 88, 432, 104 | build `roll` | shape, grow | roll (three pictures, notches) or single (one picture, no notches); chosen 0, 1 or 2; clash edge |
 | `traitLine` | 296, 200, 432, 24 | text, build `traitLine` (its tag a panel) | | as the pod is; changed (the tag); clash (red, the inline ✕); doing; one look; nothing read ("it grows as the pod is") |
 | `chamber` | 312, 232, 400, 320 | living window, part inside | | — |
-| `founder` | 360, 240, 304, 312 | specimen (focal) | | frosted where unread (all of it when nothing is read); the roll's dither |
+| `founder` | 360, 240, 304, 312 | specimen (focal) | | frosted where unread; nothing read, the frost follows its own outline, every look frosted; the roll's dither |
 | `chamberFront` | 312, 232, 400, 320 | living window, part frame | | — |
 | `pod` | 88, 232, 144, 176 | specimen | | at rest; grow: travelling, then gone |
 | `cradle`, `cradleFront` | 48, 344, 224, 96 | specimen, parts cradle and cradleFront | | — |
@@ -1077,7 +1077,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 
 **States and conditions** (`create.json` `states`, `bottomLine.conditions`):
 
-- **Nothing read** (game designer, 2026-10-09 13:27): the founder frosted all over, every pip hollow and no tab open; no roll, no ring and no target, so the arrows do nothing; the trait line "it grows as the pod is"; the stamp with no chapter filled; 20 leaves (5 for the first bud); `✓ Grow it · ⚡ 2 ❀ 4` (`⚡ 2` alone for the first founder), no ◆; the context "all of it stays a surprise".
+- **Nothing read** (game designer, 2026-10-09 13:27): the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. (Art director, 2026-10-09 13:47.) Every pip hollow and no tab open; no roll, no ring and no target, so the arrows do nothing; the trait line "it grows as the pod is"; the stamp with no chapter filled; 20 leaves (5 for the first bud); `✓ Grow it · ⚡ 2 ❀ 4` (`⚡ 2` alone for the first founder), no ◆; the context "all of it stays a surprise".
 - **Shape, as the pod is:** no tag, every read pip filled, the total `✓ Grow it · ⚡ 2 ❀ 4`.
 - **Changed:** the tag in the line, the pip a `bone` diamond, the founder's part and the stamp's cells redrawn, ◆ 1 and one minute a change (choosing the shown look too); the first founder's leaves stay 5.
 - **Blocked:** the notice names the first block in the rules' order: busy ("a bud is already growing"), no bay ("no bay free"), clash ("these looks clash"), short (game designer, 13:27). Busy, no bay and clash: no ✓ cap; the verb and the total in `mist` so the total still reads; while busy the bud glows in the dome. A clash also wears its marks: the chosen picture's red edge, the line red with the ✕, the pip a ✕.
@@ -1265,6 +1265,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | `leaves` | 256, 88, 512, 216 | leaves, form arc (rule `leafArc`) | growing, ready | each leaf empty, filling (rows of 20) or full |
 | `dome` | 360, 200, 304, 272 | living window, part inside | | standby (empty); the glow; lifting in the hatch |
 | `nest` | 408, 400, 208, 48 | living window, part inside | | lit and plump when empty |
+| `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`, a placeholder to be painted) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod (art director, 2026-10-09 13:47) |
 | `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking |
 | `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean highlight; glowing (ready); lifting |
 | `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
@@ -1274,7 +1275,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
 | `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting or its placeholder; the step lift |
 
-**Draw order:** bench, rail, leaves, dome, nest, bud, the bud's shape, the bud's front, the dome's front, base, its foot light, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top; the lifting glass is clipped to (0, 88, 1024, 474), under the rail.
+**Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, its foot light, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top; the lifting glass is clipped to (0, 88, 1024, 474), under the rail.
 
 **Clearance:** every leaf lies 10 px or more under the rail (the outer arc's top leaf at y 90; at the art director's 16×20 leaf an outer radius of 248 would have put it at 86, 6 px under, so the UI designer takes 244) and 56 px or more outside the glass, measured on the slot tables; no two leaves of any run overlap, their boxes 2 px apart at the closest, where the leaf's empty corners keep its ink clear. The code's line box starts 10 px under the stamp label; the ribbon ends 16 px above the juvenile's box.
 
@@ -1328,7 +1329,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps |
 | Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 |
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) |
-| Nest | 208×48 |
+| Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted |
 | Waiting lamp | 12×12 |
 | Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) |
 | Juvenile | 304×312: the new mibi's painting, or its placeholder |

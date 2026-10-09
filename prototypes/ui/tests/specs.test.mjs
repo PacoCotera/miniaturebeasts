@@ -256,6 +256,7 @@ test("the Incubator spec file agrees with the Incubator wireframes, region by re
   assert.equal(inc.handoff.to, "habitat"); assert.equal(frame.navigation.jumps.find((j) => j.from === "incubator" && j.action === "Open").to, "habitat");
   const choose = frame.navigation.jumps.find((j) => j.from === "incubator" && j.state === "empty"); assert.deepEqual([choose.action, choose.to, choose.view], [inc.strings.choose, "pods", "collection"]);
   assert.equal(inc.colours.plaque.empty, "fog", "the empty plaque invites, never mist"); assert.notEqual(inc.colours.bud.shape, "amber"); assert.equal(inc.colours.leaves.empty, "metal");
+  assert.deepEqual(R.nestFront.rect, R.nest.rect); const DO = inc.drawOrder; assert.ok(DO.indexOf("bud front") < DO.indexOf("nestFront") && DO.indexOf("nestFront") < DO.indexOf("domeFront"), "the nest's front rim over the bud, under the glass's front (art director, 2026-10-09 13:47)");
   assert.equal(R.bench.slice, "room-bench-stage-incubator"); assert.equal(R.bench.until, "room-bench-stage-collection");
   assert.deepEqual(paletteBad(inc.colours), []);
 });
