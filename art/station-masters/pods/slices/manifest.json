@@ -8423,8 +8423,8 @@
   ],
   "rect": null,
   "src": "source/raw/plate-S09-colour.jpg (gemini-3-pro-image)",
-  "made": "the Colour plate of the Belatz (cobalt), pass 66: the pass 65 painting's texture masked to a rounded body patch 80x96 centred at (64, 80) with a soft 3.5 px fluff edge, hue held to cobalt (0.58-0.63), lit from the top left, the lower part about 15 levels darker, on the cell tone ground, no frame",
-  "sha256": "9ee254d7f0352e11c20c2e4c2e49c1dab45b830be0e4c310f2969f0e5bc299d4",
+  "made": "the Colour plate of the Belatz (cobalt), pass 66 second try, from the pass 65 painting's texture without a painting: a patch of the breast: an asymmetric contour (no straight side, leaning right) within 80x96 centred at (64, 80), a soft 3.5 px fluff edge, the feathers scaled down radially (x1/1.45 at the edge), hue held to cobalt (0.58-0.63), lit from the top left, the lower part about 15 levels darker, on the cell tone ground, no frame",
+  "sha256": "d6d01e978a5be71cc267a116a84ac22343096aed69aeeefc51827453369dd6e3",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
@@ -8437,10 +8437,10 @@
   "rect": null,
   "src": "source/raw/plate-S09-fluff.jpg (gemini-3-pro-image)",
   "made": "the Fluff plate of the Belatz (between), pass 66: the pass 65 painting reduced (x0.110, never enlarged) into the centred 96x120; where the body ran off the painting's top edge, an elliptical fade along the back contour (a 40 px radius dome, softened over 12 px) replaces the straight fade",
-  "sha256": "740ac48e28a6e21a7b4a3963f37627121a2a13131bef3a368004aaa93ee05e4f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "sha256": "45a9d45607ed9f3f136354173ba9d0f902e0d463555fa6fec5d32a5278a8035f",
+  "status": "signed",
+  "signed_in": "pass 66 verdict",
+  "status_note": "the Fluff plate with the elliptical fade along the back contour and the stray wisp removed"
  },
  "trait-S09-sheen-between-128x160": {
   "size": [

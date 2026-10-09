@@ -23,27 +23,37 @@ def save(name, cell, made):
     man[name]["made"] = made; man[name]["sha256"] = hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()
 def offbox(name):
     f = np.asarray(Image.open(f"slices/{name}.png").convert("RGB")).astype(int); mk = np.abs(f - GROUND.astype(int)).max(2) > 6; yy, xx = np.where(mk); return [int(xx.min()), int(yy.min()), int(xx.max() + 1), int(yy.max() + 1)]
-# ---- 1 Colour
-a, alpha = load("colour"); ys, xs = np.where(alpha > 0.5); cx_, cy_ = (xs.min() + xs.max()) // 2, (ys.min() + ys.max()) // 2; s = 0.151; cw, ch = round(80 / s), round(96 / s)
-tex = Image.fromarray(np.clip(a[cy_ - ch // 2:cy_ - ch // 2 + ch, cx_ - cw // 2:cx_ - cw // 2 + cw], 0, 255).astype(np.uint8)).resize((80, 96), Image.LANCZOS); t = np.asarray(tex).astype(float)
+# ---- 1 Colour (pass 66, second try, no painting): an asymmetric breast contour with no straight side, the feathers smaller towards the edges (the texture scaled down radially from the centre)
+a, alpha = load("colour"); ys, xs = np.where(alpha > 0.5); sw = Image.fromarray(np.clip(a[ys.min():ys.max() + 1, xs.min():xs.max() + 1], 0, 255).astype(np.uint8)); S0 = 0.2
+sw = sw.resize((round(sw.width * S0), round(sw.height * S0)), Image.LANCZOS); SRC = np.pad(np.asarray(sw).astype(float), ((24, 24), (24, 24), (0, 0)), mode="reflect"); sh_, sw_ = SRC.shape[:2]; scy, scx = sh_ / 2, sw_ / 2
+yy, xx = np.mgrid[0:96, 0:80].astype(float); xn, yn = (xx - 39.5) / 40.0, (yy - 47.5) / 48.0
+K = 0.45; rho = np.hypot(xn, yn); f = 1 + K * np.minimum(rho, 1.1) ** 2                                                                         # the sampling grows with the radius: the feathers shrink to 1/1.45 at the edge
+sx, sy = scx + (xx - 39.5) * f, scy + (yy - 47.5) * f; x0 = np.clip(np.floor(sx).astype(int), 0, sw_ - 2); y0 = np.clip(np.floor(sy).astype(int), 0, sh_ - 2); fx, fy = (sx - x0)[..., None], (sy - y0)[..., None]
+t = SRC[y0, x0] * (1 - fx) * (1 - fy) + SRC[y0, x0 + 1] * fx * (1 - fy) + SRC[y0 + 1, x0] * (1 - fx) * fy + SRC[y0 + 1, x0 + 1] * fx * fy
 hsv = np.array([colorsys.rgb_to_hsv(*(p / 255)) for p in t.reshape(-1, 3)]).reshape(96, 80, 3); hsv[..., 0] = np.clip(hsv[..., 0], 0.58, 0.63)           # cobalt only: no cream, no green
 t = np.array([colorsys.hsv_to_rgb(*p) for p in hsv.reshape(-1, 3)]).reshape(96, 80, 3) * 255
-yy, xx = np.mgrid[0:96, 0:80].astype(float); xn, yn = (xx - 39.5) / 40.0, (yy - 47.5) / 48.0; n_ = 2.6; q = (np.abs(xn) ** n_ + np.abs(yn) ** n_) ** (1 / n_)       # a rounded body contour (a superellipse), 80 x 96
-rng = np.random.RandomState(66); noise = np.asarray(Image.fromarray((rng.rand(96, 80) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6))).astype(float) / 255; noise = (noise - noise.mean()) / (noise.std() + 1e-6)
-dist = (1 - q) * 40.0 + noise * 1.1                                                                                                             # px inside the contour, a fluff of about 1 px on it
-edge = smooth((dist + 1.75) / 3.5)                                                                                                             # a soft 3.5 px edge against the ground
-prof = t.mean(axis=(1, 2)); t = t * (prof.mean() / prof)[:, None, None]                                                                         # the painting's own light-to-dark trend down the swatch is flattened first, so the form comes from the two lights below only
-lit = 1.06 - 0.12 * ((xx / 80.0) + (yy / 96.0)) / 2 * 2 * 0.5 * 2                                                                               # lit from the top left
-t = t * (lit[..., None] / lit.mean()); t = t - 15.0 * smooth(((yy / 96.0) - 0.65) / 0.2)[..., None]                                             # the lower 30 percent darker by about 15 levels
+xs_ = xn - 0.16 * yn                                                                                                                              # a lean: the breast's upper part tips to the right
+th = np.arctan2(yn, xs_); bnd = 1 + 0.10 * np.cos(th - 0.5) + 0.07 * np.cos(2 * th + 0.8) + 0.04 * np.cos(3 * th + 2.0) - 0.05 * np.cos(th + 2.3); bnd = bnd / (bnd.max() * 1.0)   # an asymmetric contour: no two sides alike
+q = np.hypot(xs_, yn) / bnd; rng = np.random.RandomState(66); noise = np.asarray(Image.fromarray((rng.rand(96, 80) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.6))).astype(float) / 255; noise = (noise - noise.mean()) / (noise.std() + 1e-6)
+dist = (1 - q) * 40.0 + noise * 1.1; edge = smooth((dist + 1.75) / 3.5)                                                                           # a soft 3.5 px edge with about 1 px of fluff
+prof = t.mean(axis=(1, 2)); t = t * (prof.mean() / prof)[:, None, None]                                                                            # the painting's own light-to-dark trend flattened first
+lit = 1.06 - 0.12 * ((xx / 80.0) + (yy / 96.0)) / 2 * 2 * 0.5 * 2; t = t * (lit[..., None] / lit.mean()); t = t - 15.0 * smooth(((yy / 96.0) - 0.65) / 0.2)[..., None]
 cell = np.tile(GROUND, (160, 128, 1)); cell[32:128, 24:104] = np.clip(t, 0, 255) * edge[..., None] + GROUND * (1 - edge[..., None])
-save("trait-S09-colour-cobalt-128x160", cell, "the Colour plate of the Belatz (cobalt), pass 66: the pass 65 painting's texture masked to a rounded body patch 80x96 centred at (64, 80) with a soft 3.5 px fluff edge, hue held to cobalt (0.58-0.63), lit from the top left, the lower part about 15 levels darker, on the cell tone ground, no frame")
-f = np.asarray(Image.open("slices/trait-S09-colour-cobalt-128x160.png").convert("RGB")).astype(float); body = f[32 + 10:128 - 10, 24 + 10:104 - 10].reshape(-1, 3); H_ = np.array([colorsys.rgb_to_hsv(*(p / 255))[0] for p in body[::7]])
-top = f[32 + 8:32 + 66, 44:84].reshape(-1, 3).mean(); low = f[32 + 72:32 + 88, 44:84].reshape(-1, 3).mean()
-report["colour"] = {"box": offbox("trait-S09-colour-cobalt-128x160"), "hue_range": [round(float(H_.min()), 3), round(float(H_.max()), 3)], "mean_level_upper_70pct": round(float(top), 1), "mean_level_lower_30pct": round(float(low), 1)}
+save("trait-S09-colour-cobalt-128x160", cell, "the Colour plate of the Belatz (cobalt), pass 66 second try, from the pass 65 painting's texture without a painting: a patch of the breast: an asymmetric contour (no straight side, leaning right) within 80x96 centred at (64, 80), a soft 3.5 px fluff edge, the feathers scaled down radially (x1/1.45 at the edge), hue held to cobalt (0.58-0.63), lit from the top left, the lower part about 15 levels darker, on the cell tone ground, no frame")
+f_ = np.asarray(Image.open("slices/trait-S09-colour-cobalt-128x160.png").convert("RGB")).astype(float); fm = np.abs(f_ - GROUND).max(2) > 12
+left = np.array([int(np.where(fm[y, 24:104])[0].min()) if fm[y, 24:104].any() else -1 for y in range(32, 128)]); right = np.array([int(np.where(fm[y, 24:104])[0].max()) if fm[y, 24:104].any() else -1 for y in range(32, 128)])
+def longest_run(v):
+    best = cur = 1
+    for i_ in range(1, len(v)):
+        cur = cur + 1 if (v[i_] == v[i_ - 1] and v[i_] >= 0) else 1; best = max(best, cur)
+    return best
+body = f_[32 + 10:128 - 10, 24 + 10:104 - 10].reshape(-1, 3); H_ = np.array([colorsys.rgb_to_hsv(*(p / 255))[0] for p in body[::7]]); top = f_[32 + 8:32 + 66, 44:84].reshape(-1, 3).mean(); low = f_[32 + 72:32 + 88, 44:84].reshape(-1, 3).mean()
+report["colour"] = {"box": offbox("trait-S09-colour-cobalt-128x160"), "longest_vertical_run_of_equal_left_edge_rows": longest_run(left), "longest_vertical_run_of_equal_right_edge_rows": longest_run(right), "left_edge_x_range": [int(left[left >= 0].min() + 24), int(left[left >= 0].max() + 24)], "right_edge_x_range": [int(right[right >= 0].min() + 24), int(right[right >= 0].max() + 24)], "hue_range": [round(float(H_.min()), 3), round(float(H_.max()), 3)], "mean_level_upper_70pct": round(float(top), 1), "mean_level_lower_30pct": round(float(low), 1), "feather_scale_edge_over_centre": round(1 / (1 + K), 3)}
 # ---- 2 Fluff
 a, alpha = load("fluff"); col, A, s, bb = fit(a, alpha, 96, 120); nh, nw = A.shape[:2]; hard = A[..., 0] > 0.5; run = np.where(hard[0])[0]; cx = float(run.mean()); r = 40.0; rx = max(r, (run.max() - run.min()) / 2 + 14)
 yy, xx = np.mgrid[0:nh, 0:nw].astype(float); d = np.hypot((xx - cx) / rx, (yy - r) / r) * r; lat_ = np.clip(1 - np.maximum(np.maximum(run.min() - xx, xx - run.max()), 0) / 12.0, 0, 1); keep = np.where(yy < r, 1 - lat_ * smooth((d - (r - 12)) / 12.0), 1.0)       # an elliptical dome fade over the back's top end: 0 at the cut, 1 from 12 px inside
 out = col * (A * keep[..., None]) + GROUND * (1 - A * keep[..., None]); cell = np.tile(GROUND, (160, 128, 1)); ox, oy = (96 - nw) // 2 + 16, (120 - nh) // 2 + 20; cell[oy:oy + nh, ox:ox + nw] = out
+cell[18:28, 50:62] = np.where(np.abs(cell[18:28, 50:62] - GROUND).max(2, keepdims=True) <= 45, GROUND, cell[18:28, 50:62])      # the stray wisp above the back, about (49-58, 20-27), taken out
 save("trait-S09-fluff-between-128x160", cell, f"the Fluff plate of the Belatz (between), pass 66: the pass 65 painting reduced (x{s:.3f}, never enlarged) into the centred 96x120; where the body ran off the painting's top edge, an elliptical fade along the back contour (a {int(r)} px radius dome, softened over 12 px) replaces the straight fade")
 fl = np.asarray(Image.open("slices/trait-S09-fluff-between-128x160.png").convert("RGB")).astype(int); mk = np.abs(fl - GROUND.astype(int)).max(2) > 6; top_rows = [int(mk[y].sum()) for y in (oy, oy + 3, oy + 8, oy + 16, oy + 30, oy + 45)]
 report["fluff"] = {"box": offbox("trait-S09-fluff-between-128x160"), "off_ground_px_in_rows_from_the_top_of_the_content": dict(zip((0, 3, 8, 16, 30, 45), top_rows))}

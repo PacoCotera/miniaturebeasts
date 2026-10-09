@@ -2590,9 +2590,9 @@
   "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
  },
  "trait-S09-fluff-between-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 65: a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 66 verdict",
+  "note": "the Fluff plate with the elliptical fade along the back contour and the stray wisp removed"
  },
  "trait-S09-sheen-between-128x160": {
   "status": "new",

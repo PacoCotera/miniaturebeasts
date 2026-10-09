@@ -7,6 +7,7 @@ def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "
 for n in m:
     if re.match(r"mibi-halo-S(04|07)-", n): sign(n, "signed", "pass 63 verdict", "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear")
     elif re.match(r"find-(crystal|pearl|shard)-112x112$", n): sign(n, "signed", "pass 64 verdict", "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame")
+    elif n == "trait-S09-fluff-between-128x160": sign(n, "signed", "pass 66 verdict", "the Fluff plate with the elliptical fade along the back contour and the stray wisp removed")
     elif n in ("trait-S09-feathers-between-128x160", "trait-S09-crest-between-128x160"): sign(n, "signed", "pass 65 verdict", "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame")
     elif re.match(r"find-(crystal|pearl|shard)-112x112$", n): sign(n, "new", None, "pass 63: the sealed page's find picture, a Pro painting reduced into the centred 84x84 on the cell tone ground, muted, no frame; awaiting verdict")
     elif n == "mark-line-only-16x8": sign(n, "signed", "pass 60 verdict", "the stepped plinth: a 2 px fog face, a 3 px mist front, a 1 px stone foot")

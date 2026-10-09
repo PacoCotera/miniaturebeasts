@@ -40,5 +40,19 @@
    ]
   ],
   "tries": 2
+ },
+ {
+  "name": "plate66-S09-eyes",
+  "model": "gemini-3-pro-image",
+  "aspect": "4:5",
+  "size": "1K",
+  "tries": 2,
+  "refs": [
+   [
+    "prototypes/workbench/grow/species/S09/portrait-600x620.png",
+    "The reference painting: the Belatz, a blue bird; this is the individual the plate is of."
+   ]
+  ],
+  "prompt": "Output a NEW image: a plate of the Eyes trait, a SMALL eye. The reference bird's head seen from the front, three-quarter view, the whole head from the crown to the base of the beak, with its small eye set in the face: the eye (the iris) must be small next to the head, its iris about one seventh of the head's width (about 14 percent), with plenty of blue face and feathers around it; the beak and the crest are visible but quiet. Keep the reference painting's palette and soft fluffy feathers. The same soft painted look as the reference painting: soft painterly shapes, lit from the upper left, muted natural colours, one subject only, no hands, no other creatures, no text. The subject sits in the middle of the canvas and fills about the middle three quarters of its width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges. The background is a plain flat deep blue-teal ground (hex 162a37) that fills the whole canvas edge to edge, with no frame, no border, no card, no vignette and no text."
  }
 ]
