@@ -124,10 +124,10 @@ export const podOrigin = (p) => podOriginLines(p).join(" ");
 export const price = (base, settings = DEFAULT_SETTINGS) => (settings.economy === "free" ? 0 : base);
 export const canPay = (st, e, d, s) => st.e >= (e || 0) && st.d >= (d || 0) && st.s >= (s || 0);
 export function shortText(st, e, d, s) {
-  const p = []; if (e > st.e) p.push(e - st.e + " ⚡"); if (d > st.d) p.push(d - st.d + " ◆"); if (s > st.s) p.push(s - st.s + " ❀");
+  const p = []; if (e > st.e) p.push("⚡ " + (e - st.e)); if (d > st.d) p.push("◆ " + (d - st.d)); if (s > st.s) p.push("❀ " + (s - st.s));   // the icon before its figure
   return "needs " + p.join(" ") + " more";
 }
-export const priceText = (e, d, s) => [e ? e + " ⚡" : "", s ? s + " ❀" : "", d ? d + " ◆" : ""].filter(Boolean).join(" ") || "free";
+export const priceText = (e, d, s) => [e ? "⚡ " + e : "", s ? "❀ " + s : "", d ? "◆ " + d : ""].filter(Boolean).join(" ") || "free";
 
 // --- dock and the bay ------------------------------------------------------------------------------
 export function probeNow(st, sv) {

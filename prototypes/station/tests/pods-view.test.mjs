@@ -121,8 +121,8 @@ test("the bottom line: the one action and its price as a number and an icon (no 
   S.skipIdentify(st, p); st.d = 10;
   assert.equal(view(m("pod")).line.ok, "Open Coat", "✓ on an unread pod opens its first unread chapter, and the line says so"); assert.equal(view(m("rail.0")).line.ok, "Open Coat", "on the overview a tab opens its page"); assert.ok(!view(m("rail.0")).line.price);
   assert.equal(view(c("rail.0", 0)).line.ok, "Read Coat");
-  st.readEver = true; assert.equal(view(c("rail.0", 0)).line.price, "1 ◆");
-  st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(c("rail.1", 1)).line.price, "1 ◆");   // a half price is the lower number, with no word
+  st.readEver = true; assert.equal(view(c("rail.0", 0)).line.price, "◆ 1");
+  st.readOnce.S01 = ["face"]; st.d = 10; assert.equal(view(c("rail.1", 1)).line.price, "◆ 1");   // a half price is the lower number, with no word
   S.read(st, p, "coat", settings); assert.equal(view(c("rail.0", 0)).line.ok, undefined); assert.equal(view(c("rail.0", 0)).line.subject, "Coat is read");
   assert.equal(view(c("rail.0", 0)).line.back, "Loika", "on the page ← names the pod it returns to");
   assert.equal(view(m("pod")).line.ok, "Shape a founder");

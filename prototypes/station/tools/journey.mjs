@@ -121,7 +121,7 @@ await press("research", 200);
 const loika = s.tray.find((p) => p.id.startsWith("xw2n9c-5")), loika2 = s.tray.find((p) => p.id.startsWith("dev-"));
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id);
 const e0 = s.e;
-let l = await line(); expect(/Identify/.test(l.ok) && l.price === "1 ⚡", "identify costs 1 Energy (the first was spent in the fixture): " + JSON.stringify(l));
+let l = await line(); expect(/Identify/.test(l.ok) && l.price === "⚡ 1", "identify costs 1 Energy (the first was spent in the fixture): " + JSON.stringify(l));
 await press("confirm", 2200);
 s = await st(); const pl = s.tray.find((p) => p.id === loika.id);
 expect(pl.idd === 1 && s.e === e0 - 1, "identified for 1 Energy");
@@ -139,13 +139,13 @@ expect((await page.evaluate(() => window.__st.UI.lib.f)) === "spread" && (await 
 await press("up", 150);
 l = await line(); expect(/Open Coat/.test(l.ok) && !l.price, "on the overview a tab opens its page, free: " + JSON.stringify(l));
 await press("confirm", 150); expect((await page.evaluate(() => window.__st.UI.pods.view)) === "chapter", "✓ on a tab opens the chapter page");
-l = await line(); expect(/Read Coat/.test(l.ok) && l.price === "1 ◆", "Coat costs 1 Data: " + JSON.stringify(l));
+l = await line(); expect(/Read Coat/.test(l.ok) && l.price === "◆ 1", "Coat costs 1 Data: " + JSON.stringify(l));
 const d0 = s.d;
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.tray.find((p) => p.id === loika.id).read.includes("coat") && s.d === d0 - 1, "Coat read for 1 Data");
 expect(s.tray.find((p) => p.id === loika.id).first !== undefined, "the first-shown looks are saved on the pod at read time");
 await press("right", 150);
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "2 ◆", "Face costs 2 Data: " + JSON.stringify(l));
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 2", "Face costs 2 Data: " + JSON.stringify(l));
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 s = await st(); expect(s.d === d0 - 3, "Face read for 2 Data");
 await shot("page-read");
@@ -166,7 +166,7 @@ expect(onScreen.stamps.length === 1 && sameGenome(frameFor(sg.species, sg.versio
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id);
 await press("confirm", 1000); await page.evaluate(() => window.__st.unlock());
 await page.evaluate((id) => window.__st.podsGo(id, "rail.1"), loika2.id);   // to its Face on the page
-l = await line(); expect(/Read Face/.test(l.ok) && l.price === "1 ◆", "a second Loika's Face costs 1: the lower number, no word, on the bottom line: " + JSON.stringify(l));
+l = await line(); expect(/Read Face/.test(l.ok) && l.price === "◆ 1", "a second Loika's Face costs 1: the lower number, no word, on the bottom line: " + JSON.stringify(l));
 await press("confirm", 2300); await page.evaluate(() => window.__st.unlock());
 // a glint on the first Loika? (only when the second carried something new: not asserted); the need line never shows digits of progress
 // 5. Compare: from the second Loika's pod, ← to its well, walk to the first Loika's well, ✓
@@ -193,7 +193,7 @@ s = await st(); expect(s.tray.length === 6, "six pods in the wells: " + s.tray.l
 const untuva = s.tray.find((p) => p.species === "S02"), coatSix = s.tray.find((p) => p.species === "S09"), tuikisPod = s.tray.find((p) => p.species === "S03");
 await page.evaluate((id) => { window.__st.podsGo(id, "pod", undefined, 0); }, untuva.id);
 await page.waitForTimeout(400);
-l = await line(); expect(l.ok === "Identify" && l.price === "1 ⚡", "an unidentified pod offers Identify: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Identify" && l.price === "⚡ 1", "an unidentified pod offers Identify: " + JSON.stringify(l));
 await frameShot("pods-unidentified");
 // Identify holds input for its seal: a key pressed meanwhile is consumed; the ring stays on the pod
 await press("confirm", 500); expect(await page.evaluate(() => window.__st.holding()), "Identify holds input"); await frameShot("pods-identifying");
@@ -282,7 +282,7 @@ expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Crea
 const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
 for (let i = 0; i < eyeIndex; i++) await press("right", 80);
 await press("down", 200);
-l = await line(); expect(/1 ◆/.test(l.price) && /2 ⚡ 4 ❀/.test(l.price), "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(l));
+l = await line(); expect(/◆ 1/.test(l.price) && /⚡ 2 ❀ 4/.test(l.price), "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(l));
 expect(/21 leaves/.test(l.need), "a bud of twenty-one minutes: " + JSON.stringify(l));
 await shot("page-create");
 l = await line(); expect(l.back === "Loika", "Create's way back names the pod: " + JSON.stringify(l));
@@ -378,7 +378,7 @@ l = await line(); expect(/Cross Dot/.test(l.ok), "the cross mark on an adult: " 
 await press("confirm", 300);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "cross", "on the Cross screen");
 await page.evaluate((id) => { window.__st.UI.cross.bId = id; }, adult3.id); await page.waitForTimeout(600);
-l = await line(); expect(l.ok === "Cross them" && /2 ⚡ 4 ❀/.test(l.price) && !l.need, "the cross offered at 2 Energy 4 Essence; founders read in full and kinship 0 leave the notice empty (the kinship word is the pill under the child): " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Cross them" && /⚡ 2 ❀ 4/.test(l.price) && !l.need, "the cross offered at 2 Energy 4 Essence; founders read in full and kinship 0 leave the notice empty (the kinship word is the pill under the child): " + JSON.stringify(l));
 // the splice (cross.json): the overview first; ▼ opens the first chapter under the rail, ▲ goes back; ◀ ▶ keep the state
 { const sp = () => page.evaluate(() => ({ state: window.__st.UI.cross.state, screen: window.__st.UI.screen }));
   let u = await sp(); expect(u.screen === "cross" && u.state === 0, "the Cross opens on the overview: " + JSON.stringify(u)); l = await line(); expect(/ × .* · /.test(l.subject), "the overview's context reads 'a × b · species': " + JSON.stringify(l));
