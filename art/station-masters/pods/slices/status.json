@@ -550,19 +550,19 @@
   "note": ""
  },
  "rail-emblem-legs-tail-unread-24x24": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked"
+  "note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
  },
  "rail-emblem-legs-tail-read-24x24": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked"
+  "note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
-  "status": "withdrawn",
+  "status": "new",
   "signed_in": null,
-  "note": "Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked"
+  "note": "Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict"
  },
  "rail-emblem-movement-unread-24x24": {
   "status": "signed",

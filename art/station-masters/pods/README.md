@@ -49,9 +49,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-emblem-glow-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | withdrawn: Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | withdrawn: Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | withdrawn: Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | new: Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | new: Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | new: Legs & tail as the tail alone, candidate B tapered (4 px to 2 px) with a five-point brush, pass 14; awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -335,6 +335,12 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 14b - the tapered tail, the Grid composite's mibi pictures and read-again bottom line
+
+- `rail-emblem-legs-tail`: the tail alone, candidate B tapered (typed rows in `emblems/source/legs-tail.txt`): about 4 px at the root, tapering to 2 px before the tip, sweeping up from the lower left and over to the right, ending in a brush of five points over about 6 px (three tips at the top, two between); lit edge upper left, three states, never a ring. At 1x it reads as a tail on a slope; the brush looks a little like a crown or a comb. It is back on the rail in both composites (full and compact tabs). If it still fails at 1x the method changes to the pixel pipeline, not started.
+- Grid composite: the Shape page now has the three Tuikis traits (Build, Haunch, Topline, from the species frame S03) with pictures that are crops of the mibi painting, as in the Read composite (labelled stand-ins: they are Coat crops, the Shape pictures are not painted). The chapter is read and open, so the bottom line follows the read-again rule: no cap and no verb, the context "Shape is read", "Home" with its cap at the right end, the notice kept.
+
 
 ## Pass 14 - the page pane as a clean nine-slice
 
