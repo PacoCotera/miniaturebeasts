@@ -2,7 +2,7 @@
 import { createRequire } from 'node:module';
 const require = createRequire(process.env.PW_DIR ? process.env.PW_DIR + '/' : import.meta.url);
 const { chromium } = require('playwright');
-const pages = ['/', '/sandbox/exploration/', '/sandbox/station/'];
+const pages = ['/', '/roadmap/', '/sandbox/exploration/', '/sandbox/station/'];
 const browser = await chromium.launch();
 let failed = false;
 for (const path of pages) {
@@ -21,6 +21,7 @@ for (const path of pages) {
   }
   const text = (await page.textContent('body')) || '';
   if (path === '/' && !/build/.test(text)) errors.push('home: build stamp missing');
+  if (path === '/roadmap/' && (await page.locator('#modules details').count()) === 0) errors.push('roadmap: no items rendered from /roadmap.json');
   console.log(path, errors.length ? 'ERRORS: ' + errors.join(' | ') : 'ok');
   if (errors.length) failed = true;
   await page.close();
