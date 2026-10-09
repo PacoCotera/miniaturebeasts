@@ -152,7 +152,14 @@
     {
      "id": "placepanel:320x224",
      "w": 320,
-     "h": 224
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "ring-collection-idle-176x176:176x176",
@@ -261,521 +268,6 @@
     }
    ],
    "hash": "b8dbde94"
-  },
-  {
-   "state": "collection",
-   "name": "an empty rack",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "collection",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "list": {
-      "places": [
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       }
-      ],
-      "waiting": null
-     }
-    },
-    "focus": {
-     "cur": "place.0",
-     "armed": false,
-     "targets": []
-    },
-    "frame": {}
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-collection:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224
-    },
-    {
-     "id": "ring-collection-idle-176x176:176x176",
-     "w": 176,
-     "h": 176
-    }
-   ],
-   "hash": "cac92cc9"
-  },
-  {
-   "state": "collection",
-   "name": "two unidentified pods",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "collection",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "list": {
-      "places": [
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ],
-        "pod": "pod:-:s:88x112",
-        "name": "Unknown",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ],
-        "pod": "pod:-:s:88x112",
-        "name": "Unknown",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       }
-      ],
-      "waiting": null
-     }
-    },
-    "focus": {
-     "cur": "place.0",
-     "armed": false,
-     "targets": [
-      {
-       "id": "place.0",
-       "group": "place",
-       "index": 0
-      },
-      {
-       "id": "place.1",
-       "group": "place",
-       "index": 1
-      }
-     ]
-    },
-    "frame": {}
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-collection:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224
-    },
-    {
-     "id": "ring-collection-idle-176x176:176x176",
-     "w": 176,
-     "h": 176
-    },
-    {
-     "id": "pod:-:s:88x112",
-     "w": 88,
-     "h": 112
-    },
-    {
-     "id": "plate-name-128x24:128x24",
-     "w": 128,
-     "h": 24
-    },
-    {
-     "id": "place:meadow:48",
-     "w": 48,
-     "h": 48
-    }
-   ],
-   "hash": "02f39995"
-  },
-  {
-   "state": "collection",
-   "name": "four identified pods",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "collection",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "list": {
-      "places": [
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176",
-         "ring-arc-collection-n4-track-176x176:176x176"
-        ],
-        "pod": "pod:S01:i:88x112",
-        "name": "Loika",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176",
-         "ring-arc-collection-n4-track-176x176:176x176"
-        ],
-        "pod": "pod:S02:i:88x112",
-        "name": "Untuva",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176",
-         "ring-arc-collection-n8-track-176x176:176x176"
-        ],
-        "pod": "pod:S03:i:88x112",
-        "name": "Tuikis",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176",
-         "ring-arc-collection-n5-track-176x176:176x176"
-        ],
-        "pod": "pod:S04:i:88x112",
-        "name": "Hiljan",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       }
-      ],
-      "waiting": null
-     }
-    },
-    "focus": {
-     "cur": "place.2",
-     "armed": false,
-     "targets": [
-      {
-       "id": "place.0",
-       "group": "place",
-       "index": 0
-      },
-      {
-       "id": "place.1",
-       "group": "place",
-       "index": 1
-      },
-      {
-       "id": "place.2",
-       "group": "place",
-       "index": 2
-      },
-      {
-       "id": "place.3",
-       "group": "place",
-       "index": 3
-      }
-     ]
-    },
-    "frame": {}
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-collection:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224
-    },
-    {
-     "id": "ring-collection-idle-176x176:176x176",
-     "w": 176,
-     "h": 176
-    },
-    {
-     "id": "ring-arc-collection-n4-track-176x176:176x176",
-     "w": 176,
-     "h": 176
-    },
-    {
-     "id": "pod:S01:i:88x112",
-     "w": 88,
-     "h": 112
-    },
-    {
-     "id": "plate-name-80x24:80x24",
-     "w": 80,
-     "h": 24
-    },
-    {
-     "id": "place:meadow:48",
-     "w": 48,
-     "h": 48
-    },
-    {
-     "id": "pod:S02:i:88x112",
-     "w": 88,
-     "h": 112
-    },
-    {
-     "id": "plate-name-96x24:96x24",
-     "w": 96,
-     "h": 24
-    },
-    {
-     "id": "pod:S03:i:88x112",
-     "w": 88,
-     "h": 112
-    },
-    {
-     "id": "ring-arc-collection-n5-track-176x176:176x176",
-     "w": 176,
-     "h": 176
-    },
-    {
-     "id": "pod:S04:i:88x112",
-     "w": 88,
-     "h": 112
-    }
-   ],
-   "hash": "8c7ba9bb"
-  },
-  {
-   "state": "collection",
-   "name": "a pod waiting",
-   "props": {
-    "t": "props",
-    "screen": "pods",
-    "state": "collection",
-    "regions": {
-     "bench": {
-      "room": [
-       "room-bench-stage-collection:1024x522",
-       "room-bench-stage:1024x522"
-      ]
-     },
-     "list": {
-      "places": [
-       {
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176",
-         "ring-arc-collection-n4-track-176x176:176x176"
-        ],
-        "pod": "pod:S01:i:88x112",
-        "name": "Loika",
-        "plate": "plate-name",
-        "find": "place:meadow:48",
-        "grow": null,
-        "glint": null
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       },
-       {
-        "empty": true,
-        "panel": "placepanel:320x224",
-        "ringLayers": [
-         "ring-collection-idle-176x176:176x176"
-        ]
-       }
-      ],
-      "waiting": "waiting:24"
-     }
-    },
-    "focus": {
-     "cur": "place.0",
-     "armed": false,
-     "targets": [
-      {
-       "id": "place.0",
-       "group": "place",
-       "index": 0
-      }
-     ]
-    },
-    "frame": {}
-   },
-   "pictures": [
-    {
-     "id": "room-bench-stage-collection:1024x522",
-     "w": 1024,
-     "h": 522
-    },
-    {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224
-    },
-    {
-     "id": "ring-collection-idle-176x176:176x176",
-     "w": 176,
-     "h": 176
-    },
-    {
-     "id": "ring-arc-collection-n4-track-176x176:176x176",
-     "w": 176,
-     "h": 176
-    },
-    {
-     "id": "pod:S01:i:88x112",
-     "w": 88,
-     "h": 112
-    },
-    {
-     "id": "plate-name-80x24:80x24",
-     "w": 80,
-     "h": 24
-    },
-    {
-     "id": "place:meadow:48",
-     "w": 48,
-     "h": 48
-    },
-    {
-     "id": "waiting:24",
-     "w": 24,
-     "h": 24
-    }
-   ],
-   "hash": "a9b4bddc"
   },
   {
    "state": "overview",
@@ -1335,12 +827,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -1582,12 +1088,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -1860,12 +1380,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -2107,12 +1641,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -2368,12 +1916,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -2643,12 +2205,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -2921,12 +2497,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -3203,12 +2793,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -3455,12 +3059,26 @@
     {
      "id": "tab:left:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:right:fill:panel",
      "w": 16,
-     "h": 40
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
     },
     {
      "id": "tab:left:rim:bevel",
@@ -3494,6 +3112,3169 @@
     }
    ],
    "hash": "4b808e50"
+  },
+  {
+   "state": "chapter",
+   "name": "S01: chapter 0, 0 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 0,
+      "open": 0,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:coat:unread:24",
+       "word": "Coat"
+      },
+      "cells": [
+       {
+        "name": "Markings",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "e4b25919"
+  },
+  {
+   "state": "chapter",
+   "name": "S01: chapter 1, 2 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 1,
+      "open": 1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:face:read:24",
+       "word": "Face"
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [
+         {
+          "key": "hides",
+          "asset": "mark-line-seed-12x16:12x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-eyes-between-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-12x16:12x16",
+     "w": 12,
+     "h": 16
+    },
+    {
+     "id": "trait-S01-eyes-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-pair-20x16:20x16",
+     "w": 20,
+     "h": 16
+    }
+   ],
+   "hash": "20fdbc2d"
+  },
+  {
+   "state": "chapter",
+   "name": "S04: chapter 2, 4 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S04:s:120x152",
+       "identified": "pod:S04:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Hiljan",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 2,
+      "open": 2,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:shape:read:24",
+       "word": "Shape"
+      },
+      "cells": [
+       {
+        "name": "Topline",
+        "lines": [
+         "only arched"
+        ],
+        "glyphs": [
+         {
+          "key": "only",
+          "asset": "mark-line-only-16x8:16x8"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S04-topline-arched-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.2",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S04:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S04:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S04-topline-arched-128x160:128x160",
+     "w": 128,
+     "h": 160
+    }
+   ],
+   "hash": "ff726db4"
+  },
+  {
+   "state": "chapter",
+   "name": "S08: chapter 3, 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "large",
+       "size": [
+        144,
+        176
+       ],
+       "sealed": "pod:S08:s:144x176",
+       "identified": "pod:S08:i:144x176"
+      },
+      "cutMilli": null,
+      "name": "Rupar",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 3,
+      "open": 3,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 4,
+        "filled": 4,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:stamina:read:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:character:read:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:movement:read:24",
+       "word": "Movement"
+      },
+      "cells": [
+       {
+        "name": "Turning",
+        "lines": [
+         "tight turns to wide turns"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         },
+         {
+          "key": "doing",
+          "asset": "mark-breed-28x16:28x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S08-turning-between-128x160:128x160"
+       },
+       {
+        "name": "Stride",
+        "lines": [
+         "long steps to short steps"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         },
+         {
+          "key": "doing",
+          "asset": "mark-breed-28x16:28x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S08-stride-between-128x160:128x160"
+       },
+       {
+        "name": "Pace",
+        "lines": [
+         "only steady"
+        ],
+        "glyphs": [
+         {
+          "key": "only",
+          "asset": "mark-line-only-16x8:16x8"
+         },
+         {
+          "key": "doing",
+          "asset": "mark-breed-28x16:28x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S08-pace-steady-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 3,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.3",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "rail.5",
+       "group": "rail",
+       "index": 5
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S08:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S08:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S08-turning-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-pair-20x16:20x16",
+     "w": 20,
+     "h": 16
+    },
+    {
+     "id": "trait-S08-stride-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "trait-S08-pace-steady-128x160:128x160",
+     "w": 128,
+     "h": 160
+    }
+   ],
+   "hash": "c387dffc"
+  },
+  {
+   "state": "chapter",
+   "name": "S02: chapter 0, 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "large",
+       "size": [
+        144,
+        176
+       ],
+       "sealed": "pod:S02:s:144x176",
+       "identified": "pod:S02:i:144x176"
+      },
+      "cutMilli": null,
+      "name": "Untuva",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 0,
+      "open": 0,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 5,
+        "filled": 5,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "sealed",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:sealed:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:coat:read:24",
+       "word": "Coat"
+      },
+      "cells": [
+       {
+        "name": "Colour",
+        "lines": [
+         "coral to plum"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-colour-two-side-by-side-128x160:128x160"
+       },
+       {
+        "name": "Spots",
+        "lines": [
+         "bare · asleep: patches or bands"
+        ],
+        "glyphs": [
+         {
+          "key": "asleep",
+          "asset": "mark-asleep-24x16:24x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-spots-bare-128x160:128x160"
+       },
+       {
+        "name": "Fluff",
+        "lines": [
+         "long, swept to short, straight"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-fluff-between-128x160:128x160"
+       },
+       {
+        "name": "Tint",
+        "lines": [
+         "plum to raspberry"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-tint-raspberry-and-plum-128x160:128x160"
+       },
+       {
+        "name": "Flecks",
+        "lines": [
+         "spots · hides bare"
+        ],
+        "glyphs": [
+         {
+          "key": "hides",
+          "asset": "mark-line-seed-12x16:12x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-flecks-spots-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 5,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S02:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:sealed:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "mark-line-seed-pair-20x16:20x16",
+     "w": 20,
+     "h": 16
+    },
+    {
+     "id": "mark-asleep-24x16:24x16",
+     "w": 24,
+     "h": 16
+    },
+    {
+     "id": "trait-S02-fluff-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "trait-S02-tint-raspberry-and-plum-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-12x16:12x16",
+     "w": 12,
+     "h": 16
+    }
+   ],
+   "hash": "551eec3f"
+  },
+  {
+   "state": "chapter",
+   "name": "S06: chapter 1, 1 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S06:s:120x152",
+       "identified": "pod:S06:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Pesko",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 1,
+      "open": 1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "legs-tail",
+        "word": "Legs & Tail",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:legs-tail:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:face:unread:24",
+       "word": "Face"
+      },
+      "cells": [
+       {
+        "name": "Head",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S06:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S06:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:legs-tail:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "1f504b06"
+  },
+  {
+   "state": "chapter",
+   "name": "a read wipe in progress",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14",
+       "plate": "plate-name"
+      },
+      "pod": {
+       "sizeClass": "medium",
+       "size": [
+        120,
+        152
+       ],
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "cutMilli": null,
+      "name": "Loika",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 1,
+      "open": 1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "heading": {
+       "emblem": "emblem:face:unread:24",
+       "word": "Face"
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       },
+       {
+        "name": "Eyes",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "3183180f"
+  },
+  {
+   "state": "compare",
+   "name": "S01: compare, 99 and 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-compare:1024x522",
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": 1,
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:stamina:read:24"
+       }
+      ],
+      "star": "star:12",
+      "current": 1
+     },
+     "pageA": {
+      "region": "compareA",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-eyes-between-184x256:184x256"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     },
+     "pageB": {
+      "region": "compareB",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "crop": "trait-S01-eyes-between-184x256:184x256"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     }
+    },
+    "focus": {
+     "cur": null,
+     "armed": false,
+     "targets": []
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-compare:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
+     "w": 184,
+     "h": 256
+    }
+   ],
+   "hash": "2e0be7e7"
+  },
+  {
+   "state": "compare",
+   "name": "S01: compare, 99 and 1 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-compare:1024x522",
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": 1,
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ],
+      "star": "star:12",
+      "current": 1
+     },
+     "pageA": {
+      "region": "compareA",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-eyes-between-184x256:184x256"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     },
+     "pageB": {
+      "region": "compareB",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true
+       },
+       {
+        "name": "Eyes",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     }
+    },
+    "focus": {
+     "cur": null,
+     "armed": false,
+     "targets": []
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-compare:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
+     "w": 184,
+     "h": 256
+    }
+   ],
+   "hash": "b75e7a5c"
+  },
+  {
+   "state": "compare",
+   "name": "S04: compare, 3 and 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-compare:1024x522",
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": 1,
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ],
+      "star": "star:12",
+      "current": 1
+     },
+     "pageA": {
+      "region": "compareA",
+      "heading": {
+       "pod": "pod:S04:i:40x48",
+       "who": [
+        "mark-species-S04-24x24:24x24",
+        "mark-clan-C04-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Eyes",
+        "lines": [
+         "only small, close"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     },
+     "pageB": {
+      "region": "compareB",
+      "heading": {
+       "pod": "pod:S04:i:40x48",
+       "who": [
+        "mark-species-S04-24x24:24x24",
+        "mark-clan-C04-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Eyes",
+        "lines": [
+         "only small, close"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     }
+    },
+    "focus": {
+     "cur": null,
+     "armed": false,
+     "targets": []
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-compare:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "tab:left:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:right:fill:panel",
+     "w": 16,
+     "h": 40,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "tab:left:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:rim:bevel",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "tab:left:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "tab:right:fill:hairline",
+     "w": 16,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "pod:S04:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mark-clan-C04-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S04-eyes-small-close-376x264:376x264",
+     "w": 376,
+     "h": 264
+    }
+   ],
+   "hash": "6f242423"
+  },
+  {
+   "state": "collection",
+   "name": "an empty rack",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": []
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    }
+   ],
+   "hash": "cac92cc9"
+  },
+  {
+   "state": "collection",
+   "name": "two unidentified pods",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:-:s:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-128x24:128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    }
+   ],
+   "hash": "02f39995"
+  },
+  {
+   "state": "collection",
+   "name": "four identified pods",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S02:i:88x112",
+        "name": "Untuva",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n8-track-176x176:176x176"
+        ],
+        "pod": "pod:S03:i:88x112",
+        "name": "Tuikis",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S04:i:88x112",
+        "name": "Hiljan",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.2",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      },
+      {
+       "id": "place.2",
+       "group": "place",
+       "index": 2
+      },
+      {
+       "id": "place.3",
+       "group": "place",
+       "index": 3
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "pod:S02:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-96x24:96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "pod:S03:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "ring-arc-collection-n5-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S04:i:88x112",
+     "w": 88,
+     "h": 112
+    }
+   ],
+   "hash": "8c7ba9bb"
+  },
+  {
+   "state": "collection",
+   "name": "a pod waiting",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "plate": "plate-name",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": "waiting:24"
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      }
+     ]
+    },
+    "frame": {}
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24:80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "waiting:24",
+     "w": 24,
+     "h": 24
+    }
+   ],
+   "hash": "a9b4bddc"
   }
  ]
 }

@@ -61,7 +61,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       if (!victim) throw new Error(`the face's picture table is full (${limit} pictures all in this scene); ${id} cannot be added`);
       send({ t: "asset", id: victim[0], drop: true }); handles.delete(victim[0]);
     }
-    if (send({ t: "asset", id, w: pic.w, h: pic.h, src: "heap" }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
+    if (send({ t: "asset", id, w: pic.w, h: pic.h, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(pic.tile ? { tile: pic.tile } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
     const h = M._face_last_asset(), p = M._face_asset_pixels(h), d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
     handles.set(id, { h, used: sceneNo }); return h;

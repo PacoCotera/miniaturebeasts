@@ -52,7 +52,8 @@ void layout_page_size(const char *spec, const char *page, int n, int out[2]) {
   char q[460]; snprintf(q, sizeof q, "%s.0", key); out[0] = spec_int(spec, q, 0); snprintf(q, sizeof q, "%s.1", key); out[1] = spec_int(spec, q, 0);
 }
 
-int layout_page_grid(const char *spec, const char *page, int n, int cells[LAYOUT_CELLS][4], int pic[2]) {
+int layout_page_grid(const char *spec, const char *page, int n, int cells[LAYOUT_CELLS][4], int pic[2]) { return layout_page_grid_at(spec, page, ia(spec, page, "rect", 0, 0), ia(spec, page, "rect", 1, 0), n, cells, pic); }
+int layout_page_grid_at(const char *spec, const char *page, int px, int py, int n, int cells[LAYOUT_CELLS][4], int pic[2]) {
   char g[400]; snprintf(g, sizeof g, "%s.grid", page); int rows = spec_len(spec, g);
   pic[0] = pic[1] = 0;
   int found = -1; char key[48], val[8];
@@ -64,7 +65,7 @@ int layout_page_grid(const char *spec, const char *page, int n, int cells[LAYOUT
   if (found < 0 || n <= 0) return n > 0 ? -1 : 0;
   spec_member(spec, g, found, key, sizeof key, val, sizeof val);
   char row[460]; snprintf(row, sizeof row, "%s.%s", g, key);
-  int px = ia(spec, page, "rect", 0, 0), py = ia(spec, page, "rect", 1, 0), have = 0; { char c[480]; snprintf(c, sizeof c, "%s.cells", row); have = spec_len(spec, c); }
+  int have = 0; { char c[480]; snprintf(c, sizeof c, "%s.cells", row); have = spec_len(spec, c); }
   int count = n < have ? n : have; if (count > LAYOUT_CELLS) count = LAYOUT_CELLS;
   for (int i = 0; i < count; i++) {
     char c[480]; snprintf(c, sizeof c, "%s.cells.%d", row, i);

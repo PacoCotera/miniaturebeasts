@@ -111,6 +111,8 @@ static int on_spec(const msg_t *m) {
   return 0;
 }
 int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
+static int g_slice[256][4], g_tile[256], g_has_slice[256];
+int wire_asset_nine(int slot, int insets[4], int *tile) { if (slot < 0 || slot >= 256 || !g_has_slice[slot]) return 0; memcpy(insets, g_slice[slot], sizeof g_slice[slot]); if (tile) *tile = g_tile[slot]; return 1; }
 static int slot_of(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int on_asset(const msg_t *m) {
   char id[96]; int w = 0, h = 0, drop = flag(m, key(m, "drop"));
@@ -124,6 +126,14 @@ static int on_asset(const msg_t *m) {
   if (slot < 0) { if (g_nids >= prim_asset_limit()) { char b[160]; snprintf(b, sizeof b, "asset %s: the picture table holds %d", id, prim_asset_limit()); return fail(b); } slot = g_nids++; }
   strcpy(g_ids[slot], id);
   if (!prim_asset(slot, w, h)) { g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: %dx%d is refused", id, w, h); return fail(b); }
+  g_has_slice[slot] = 0; g_tile[slot] = 0;
+  int sl = key(m, "slice");
+  if (sl >= 0) {   /* a nine-slice's insets l, t, r, b (a byte each) and the tile of its edges and middle */
+    if (m->tok[sl].type != JSMN_ARRAY || m->tok[sl].size != 4) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: slice is [left, top, right, bottom]"); }
+    for (int k = 0; k < 4; k++) { int v; if (!num(m, sl + 1 + k, &v) || v < 0 || v > 255) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: a slice inset is an integer from 0 to 255"); } g_slice[slot][k] = v; }
+    g_has_slice[slot] = 1;
+  }
+  int tl = key(m, "tile"); if (tl >= 0) { int v; if (!num(m, tl, &v) || v < 0 || v > 1024) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: tile is an integer from 0 to 1024"); } g_tile[slot] = v; }
   g_last_asset = slot; return 0;
 }
 static const char *KINDS[] = { "seal", "wipe", "ribbon", "plate", "tick", "flash", "dither", "arrival", "hatch", "wake", "rest" };

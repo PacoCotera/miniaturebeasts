@@ -25,6 +25,8 @@ int wire_props_count(void);
 const char *wire_props_screen(void);
 const char *wire_props_json(void);
 int wire_asset_slot(const char *id);
+/* the nine-slice insets (l, t, r, b) and tile the host gave a picture, 1 when it gave a slice */
+int wire_asset_nine(int slot, int insets[4], int *tile);
 #define wire_has_asset(id) (wire_asset_slot(id) >= 0)   /* the handle a picture of this id holds, or -1 when the host has not sent it */
 int wire_event_count(void);
 void wire_error(const char *what);   /* queue an `error` message */

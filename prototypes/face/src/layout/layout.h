@@ -19,6 +19,8 @@ void layout_page_size(const char *spec, const char *page, int n, int out[2]);
 #define LAYOUT_CELLS 8
 /* The page's grid by trait count (page.grid, keys "1", "2", "3-4"): the cells at the page's origin and the picture size. Returns the cells (0 for n <= 0), or -1 when no row holds n. */
 int layout_page_grid(const char *spec, const char *page, int n, int cells[LAYOUT_CELLS][4], int pic[2]);
+/* The same with the page's origin given (Compare's second page uses the first page's grid at its own rectangle). */
+int layout_page_grid_at(const char *spec, const char *page, int px, int py, int n, int cells[LAYOUT_CELLS][4], int pic[2]);
 /* A rack place (collection.places) and a kin ring (a kin region): the template offset by the pitch. */
 void layout_place_rect(const char *spec, const char *collection, int i, int out[4]);
 void layout_kin_rect(const char *spec, const char *kin, int i, int out[4]);

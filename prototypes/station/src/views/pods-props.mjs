@@ -169,7 +169,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
       if (state.kind === "asleep") cell.glyphs.push({ key: "asleep", asset: glyph("asleep") });
       if (state.doing) cell.glyphs.push({ key: "doing", asset: glyph("doing") });
     }
-    if (wipeOf != null && wipeOf < 1) cell.wipe = wipeOf;
+    if (wipeOf != null && wipeOf < 1) cell.wipeMilli = Math.round(wipeOf * 1000);   // thousandths of the cell revealed from the top, until the wipe is an event (B3d)
     return cell;
   });
   const sealedFind = sealed && region.sealedFind ? true : null;   // the find that opens a shut chapter: a flat tone, and the studio's picture of the find by the chapter's findKind over it once signed
