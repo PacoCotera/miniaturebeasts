@@ -141,7 +141,7 @@ The rail is the same object on all three bench screens. It hangs from the top ba
   - **One to six chapters:** full tabs on a 136 px pitch; the run is 136n + 16, and six chapters fill the 832 exactly. Tab i is at x0 + 136i.
   - **Seven to twelve chapters:** compact tabs on a 56 px pitch, with the open chapter's tab full (136), so the tabs after it sit 80 px further on. The run is 56 (n − 1) + 152: 488 for seven, 544 for eight, 768 for twelve. The open chapter's word shows on its tab and on the page heading; the other tabs show their emblem and pips. Seven and eight chapters (S03, S07, S09, S15 and S16 today) are compact because a full tab with its emblem and the longest word needs about 130 px, and seven of them do not fit 832. The open chapter is the focused tab while the ring is on the rail, and otherwise the chapter on the page.
   - **More than twelve** comes back to the UI designer.
-- **Where the run sits.** On Pods it starts at x 152, on the page's left edge, so six full tabs end at x 984 (*corrected by the UI designer, 2026-10-08, after the art director's signature with returns*: was x 176, which left the rail 24 px off the page). On Create and Incubator it is centred on x 512, at x = 512 − run / 2 rounded down to the 8 px grid (96 for six chapters, 264 for seven, 240 for eight). Moving from Pods to Create, the rail slides from x 176 to its centred x in 300 ms, eased.
+- **Where the run sits.** On every bench screen (Pods' overview and chapter page, Create, Incubator) the run is centred on x 512, at x = 512 − run / 2 rounded down to the 8 px grid (96 for six chapters, 264 for seven, 240 for eight). Pods' collection shows no rail. (*corrected by the UI designer, 2026-10-09, with Pods in three states: was "on Pods it starts at x 152, on the page's left edge"; before that x 176, to the right of the list. Moving from Pods to Create the rail no longer slides.*)
 - **What Create and Incubator inherit:** all of the above (the hanging at y 40, the 40 px height, the 16 px slant, the touching tabs, the two forms and their widths, the count rule, the 8 px pip pitch, the slanted focus ring and no lift), centred as stated. Their own pip marks (changed, clash, the focused trait) sit on the 8 px pitch. Their regions below the rail start at y 104 or lower and do not move.
 - **Never** a second row, a scroll, a "more" arrow or a clipped word.
 - **One word per tab,** with one decided exception: the "Legs & Tail" tab shows "Legs & Tail" (owner, 2026-10-08; every word capitalised, Type; *corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was "Legs & tail"); at 16 px Inter (78 px) it fits the 136 px full tab (was the 112 px tab).
@@ -199,137 +199,143 @@ The screen layer draws every screen from one closed set of words ([technical arc
 
 ---
 
-## Pods: list and Read
+## Pods: collection, pod overview, chapter page
 
-Concept plate: `art/concept-station/pods-v2/placed/PV-D-r3-a4-stamped-1024x600.png`. Wireframe: [02-pods-read.svg](station-layouts/02-pods-read.svg).
+Concept plate: `art/concept-station/pods-v2/placed/PV-D-r3-a4-stamped-1024x600.png`. Wireframes, 1×: [02a-pods-collection.png](station-layouts/02a-pods-collection.png), [02b-pods-overview.png](station-layouts/02b-pods-overview.png), [02c-pods-chapter.png](station-layouts/02c-pods-chapter.png).
 
-<img src="station-layouts/02-pods-read.svg" width="720" alt="Pods Read wireframe">
+**Decided** (owner, 2026-10-09, on the wireframes): Pods is three states. It opens on the **collection** (A). A pod opens on its **overview** (B). A chapter tab opens the **chapter page** (C).
+- There is no well column on B or C: the collection is the one list, as in the Library ("the new layout makes better use of the screen").
+- Beside the pod, a figure suggests the type the pod would become, never a detailed render ("maybe a halo-like figure").
+- The chapter page is one state.
+- The first-shown looks are saved, so the field-guide mark stands.
 
-*Pods, Read: a six-trait chapter on the page (two columns of three cells), the wells at the far left, the pod on its dish and slab in its room, its name and caption under it, the stamp label in its small case at the right, a six-chapter rail of full tabs hanging from the top bar. Wireframe, layout only, measured.*
+This replaces the single Pods screen with its well column; its numbers are kept below as corrected-in-place notes (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*). Pods comes first because it sets the pattern the other screens follow.
 
-<img src="station-layouts/02-pods-read-grid.svg" width="720" alt="Pods Read wireframe, eight traits">
+<img src="station-layouts/02a-pods-collection.png" width="1024" alt="Pods A, collection overview">
 
-*Pods, Read: an eight-trait chapter (two columns of four cells), with a seven-chapter rail in its compact form (the open chapter's tab full). Wireframe: [02-pods-read-grid.svg](station-layouts/02-pods-read-grid.svg). Layout only, measured.*
+*A · Collection overview, 1× wireframe. Status: Decided.*
 
-**Laid out the concept's way round** (UI designer, 2026-10-08). The plate's composition holds: the wells column at the far left, the specimen window (the open page) left of centre, the pod on its frosted dish in the middle of the bench under the cone of light, the stamp at the right, the rail along the top, the name and origin under the pod. The earlier swap, with the page at the right and the stamp under the pod, was this spec's own and is withdrawn. Every rectangle it moved is marked below with its old value. The art director's second verdict on the Pods masters then set the dish's height, the hanging slanted rail and its ring, the origin's colour and the page's two states, each marked in place. The method's six answers follow in order (§1 to §6); §1, §2 and §6 stand with small marks, and §3, §4 and §5 are answered again for this composition.
+<img src="station-layouts/02b-pods-overview.png" width="1024" alt="Pods B, pod overview">
+
+*B · Pod overview, 1× wireframe. Status: Decided. The figure beside the pod is drawn as a box here; it is the species' silhouette in a soft halo (§4).*
+
+<img src="station-layouts/02c-pods-chapter.png" width="1024" alt="Pods C, chapter page">
+
+*C · Chapter page, 1× wireframe. Status: Decided.*
 
 ### 1. Purpose
 
-Pods lets the player identify a pod and read its chapters, one paid read at a time. The player leaves knowing three things: what species the pod is, what this pod's mibi would look like in each chapter read so far, and where something new is waiting (a glint). Or, by returning the pod to the wild, they have decided it is not worth keeping.
+- **A, the collection:** see the whole rack at a glance and go to the pod that needs you.
+- **B, the pod overview:** know one pod and choose what to do with it. What it would become, who it is, where it came from, its kin; identify it, shape a founder from it, open a chapter, compare it, or return it to the wild.
+- **C, the chapter page:** read one chapter's traits, one paid read at a time.
+
+The player leaves knowing what each pod is, how far it is read, and where something new waits; or, having returned a pod, that it was not worth keeping.
 
 ### 2. Elements
 
-| Element | Why it is here |
-| --- | --- |
-| **The pod** under the cone of light, on its frosted dish (the cradle) | The subject. Identify and every read happen to it; it is the one warm thing |
-| **Its name** (20 px, the Pods exception; *corrected by the UI designer, 2026-10-08, after the owner's decision that the name can be smaller, at 20 px*: was 28 px) and **origin** (16 px, at most two lines) | Answers "what is it, and where did it come from" in two lines |
-| **The chapter rail**, all of the species' chapters | Shows where the reading stands (pips, fill, glints, seals) and is the way to choose what to read next |
-| **The open page**: every trait of the open chapter at once, each a close-up of that part on this pod's mibi with its kind mark, its one-word name and, where this pod brought a look first, the new mark | The knowledge itself, as pictures (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was the shown trait large or, in a second state, the grid) |
-| **The list**: six wells, each with its pod, its progress ring and its place stamp, and the hatch | The other pods and their progress at a glance, without digits; the way back to the wild |
-| **The stamp label** (120), at the right | The genome's fingerprint, filling as chapters are read. A record, not the subject |
-| **Bottom line** | The single action and its price; the subject; what needs you |
+| State | Element | Why it is here |
+| --- | --- | --- |
+| A | **Every rack place**, in rack order; an empty place is an empty well | The whole collection at a glance |
+| A | **Each pod's identity**: the sealed cap or the lit glyph, and the name label (the species, or "Unknown") | What it is |
+| A | **Its origin as a place picture** | Where it came from, without words |
+| A | **Its progress as the concept's ring**: one arc per chapter, filled when read, closed when every chapter is read | How far it is read, without digits |
+| A | **The glint star**; **one can-grow mark**, only where the ring and the seal do not already say what it can do | Where something new waits; what it can do |
+| A | **Pods waiting beyond the rack**: one quiet mark | That more are in the bay, never a number |
+| B | **The pod** large on its dish and slab under the cone | The subject and the protagonist, the one warm thing |
+| B | **The rail**, hanging, with no tab open | Where the reading stands; the way into a chapter |
+| B | **The figure**: the species' silhouette in a soft halo | A suggestion of the type this pod would become, never the individual |
+| B | **Who it is**: the name label, then the glyph, the clan mark and the first-of-its-kind mark | Its identity |
+| B | **Where it came from**: the place picture and the origin sentence | Its find |
+| B | **Its kin**: same-species pods, small | The Compare targets |
+| B | **The hatch** | The way back to the wild |
+| B | **The stamp label**, small at the edge, in its dim case | The genome's fingerprint; a detail |
+| C | **The pod**, its room shrunk to the pod and the dish | The subject stays in view |
+| C | **The page**: every trait of the chapter at once | The knowledge itself, as pictures |
+| All | **The bottom line** | The one action and its price; the context; the notice; the way back |
 
-**Cut or demoted from the build and the plate:**
-
-- The "read", "1 ◆" and "sealed" words under the tabs go. The price moves to the bottom line and the state is drawn.
-- The "2 traits read" heading readout goes.
-- "and n more" goes: there is never more than six traits a chapter.
-- "n sealed" under the list goes. Sealed pods wait in the bay, and Home's bay module and the bottom line say so.
-- The aqua side bar on the current well goes, because it is a list cursor. The current pod's well rim is lit instead.
-- The amber square on an unidentified well goes, because the sealed cap on the pod already says it.
-- The plate's "identified" label plate goes: the broken seal and lit glyph say it.
-- The plate's 220 px stamp panel shrinks to the 120 label. A small dim glass case stays round it, the label plus 16 px a side (152×152), dimmer than the dish: the plate's 274 px case would give the stamp a presence the owner rules out (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*; before that: the plate's glass case, dim and unlit; *corrected by the UI designer, 2026-10-08, after the owner's decision on the stamp's case*: was "the glass stage plate behind it (about 274 px wide) goes: the label stands on the bench at the right").
+**Cut** (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*): the well column on B and C (was the list (0, 40, 112, 522) with six wells, their rings, the 40×48 list pods and the hatch); the place stamps beside the wells; the page beside the pod on the pod's screen.
 
 ### 3. Placement
 
-**Reading order:**
+**Reading order.**
+- **A:** the focused place (the pod that most needs the player), the glint, the rings, the labels.
+- **B:** the pod; its name; the figure; where it came from; its kin; the rail; the stamp and the hatch, quiet at the right; the bottom line.
+- **C:** the page's pictures; the pod; the rail; the bottom line.
 
-1. **The pod.** It is the only warm, bright object, on its frosted dish under the cone of light, in the middle of the open bench between the page and the stamp. Its axis is at x 632, the middle of the bench between the page and the stamp case, which is the widest clear space on the screen (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was x 712, near the right third line, with the page's centre at x 380). (*corrected by the UI designer, 2026-10-08, to the concept's composition*: was x 344, on the left third line.)
-2. **Its name**, directly under the dish, then its origin.
-3. **The open page**, the large cool pane to the left of the pod (the plate's specimen window): from the name the eye travels left to the pictures. (*corrected by the UI designer, 2026-10-08, to the concept's composition*: was the pane to its right.)
-4. **The rail** across the top: which chapter is open, and which glint.
-5. **The list** at the far left edge.
-6. **The stamp**, a small label at the right edge, level with the pod; **the hatch**, quiet at the foot of the list. (*corrected by the UI designer, 2026-10-08, to the concept's composition*: was both quiet at the bottom left.)
-7. **The bottom line** answers "what does ✓ do".
+**At the edges.**
+- A: the waiting mark at the bottom left.
+- B: the rail (top edge) and the stamp (right edge); the hatch at the foot of the information column.
+- C: the rail (top edge).
 
-**At the edges:** the list (left edge), the rail (top edge), the stamp (right edge, at mid height), the hatch (bottom left, inside the list). Nothing important sits in a corner by itself.
-
-**Following the plate, and the owner's hierarchy** (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*). The order across the screen is the plate's: wells, page, pod, stamp. The owner's ruling sets the weights: "the pod must be the protagonist, the stamp must be just a detail", and the page ("the coat panel") was oversized. Measured on the plate at 1024 and as set:
-
-| Band | The plate | Set | Where the ruling wins |
-| --- | --- | --- | --- |
-| Well column | 0 to 108 (108) | 0 to 112 (112) | as the plate, on the grid |
-| Gap to the page | 108 to 148 (40) | 112 to 152 (40) | as the plate |
-| Page band | 148 to 398 (250) | 152 to 408 (256) | as the plate, on the grid |
-| Pod room (page to case) | 398 to 750 (352) | 408 to 856 (448) | wider: the pod's room is the largest band on the screen |
-| Stamp case band | 750 to 1024 (274, off the edge) | 856 to 1008 (152) | narrower: the label plus 16 px a side |
-
-The pod stands at the middle of its room (x 632), the slab 80 px clear of the page and of the case on either side. *Was* (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*): the page 408 wide (176 to 584), the pod room 264 (584 to 848), the case 176 (848 to the edge), the well column 160, with the bullets below.
-
-
-- *(was)* **The page is 408 px wide** where the plate's window is about 248, because the plate's window holds one picture and a page holds up to six: three 120 px columns, two 8 px gaps and two 16 px insets make 408, the narrowest page there is (Compare's). So the pod's axis sits at x 712 where the plate's is at about 572.
-- *(was)* **The axis is fixed by the dish.** The dish starts 16 px after the page (x 600) and the pod stands at its centre, x 712. The large pod's box (640 to 784) ends 104 px before the stamp label (888), clear of the stamp's 96 px rule. (*corrected by the UI designer, 2026-10-08, after the art director's fourth check of the Pods masters*: was "fixed from both sides", the 160 px box ending exactly 96 px before the stamp.)
-
-*Withdrawn by the UI designer, 2026-10-08, for the concept's composition: the departure this section made before.* "The plate put the page to the left of the pod and the stamp in a 274 px panel at the right. With the stamp reduced to a 120 label, the right of the screen is free. The page moves there because it is the only place wide enough for up to six trait pictures with their lines (480 px). It also keeps the list beside the pod, which is what the → key from a well expects." Six pictures with their lines fit at 408 on Compare's columns, and → from a well passes over the page to the pod, because the page holds no focus target.
+**Hierarchy.** The pod is first and largest in presence, with the room and the light. The figure is second, cooler and smaller. The page is second on C. The stamp is a detail.
 
 ### 4. Art direction
 
 - **Room:** the research bench, a modern digital lab.
-- **The pod is the only warm thing.** It has a soft inner glow and is lit by a cool cone of light from above onto its frosted glass dish. The dish is drawn at its own proportion, 224×96 (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was 224×72), never squashed; the shell's foot sits in its bowl and its front lip shows below. (*corrected by the UI designer, 2026-10-08, to the concept's composition*: was a beam from above left onto a glass cradle ring, 224×40.)
-- **Everything else is cool:** the deep blue-teal ground, slate and graphite chrome, the frost-blue unread page, hairline rules and status marks.
-- **The page lights warm from inside only once it is read,** so knowledge is what warms the bench.
-- **The stamp is a plain bone label**, small and matter-of-fact, like a specimen tag, inside a small, dim, unlit glass case at the right, the label plus 16 px a side, dimmer than the dish (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was "as the plate stands it"): the case is darker than the bench's lit glass and carries no light, glow or beam, so the label stays quiet (*corrected by the UI designer, 2026-10-08, after the owner's decision on the stamp's case*: was "standing on the bench at the right with no glass plate, pane or light of its own").
-- **Restraint:** no title bars, no boxed buttons, no readout digits, and no ornament on the chrome.
-- **Never childish:** pods and pictures at the Miniature Lives finish, frost as real frosted glass, and the four-point star small and precise rather than a cartoon sparkle.
+- **The pod is the only warm thing,** lit by a cool cone of light onto its frosted dish (224×96, never squashed) on the thick glass slab.
+- **The figure suggests the type.** It is the species' silhouette in a soft halo: one painted master per species, drawn from the standard painting's silhouette, the art director directing its look. It is cooler and dimmer than the pod and never shows the individual's colours or marks, so the player never takes it for the mibi they will get. Before Identify it is an empty halo (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was a ghost mibi drawn where read and misty where unread).
+- **Everything else is cool:** the deep blue-teal ground, slate and graphite chrome, frost on what is unread.
+- **The page lights warm from inside only once it is read.**
+- **The stamp is a plain bone label** inside a small, dim, unlit glass case, its front glass bringing it below the pod's brightness.
+- **Restraint, and never childish.**
 
 ### 5. Composition
 
-The well column at the far left (0 to 112). The open page left of centre (152 to 408). The pod's room in the middle of the bench (408 to 856), the widest band: the pod on its dish and slab under the cone of light, its name and the caption under it. The stamp label in its small case at the right edge (856 to 1008), level with the pod. The rail spans the top from x 176 to 1008 (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was the list 0 to 160, the page 176 to 584, the pod stage 592 to 832, the stamp 888 to 1008). (*corrected by the UI designer, 2026-10-08, to the concept's composition*: was the pod stage centre left, 168 to 520, with the pod on the left third line and the stamp label in the stage's bottom left corner, and the page filling the right, 528 to 1008.)
+**A · Collection** (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: new; was the well column 0 to 112).
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| List column | 0, 40, 112, 522 | Graphite panel, as narrow as the plate's. 1 px hairline at x 112, from y 48 to 552 (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 0, 40, 160, 522, the hairline at x 160) |
-| Well slot i (0–5) | 16, 48 + 72i, 80, 72 | The focus target. While the focus is in the list, the ring on a well is a circle: 2 px in the `focus` role, radius 37 round the well's centre (56, 84 + 72i), 4 px outside the band; never the rounded rectangle (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 8, 48 + 72i, 144, 72) (*corrected by the UI designer, 2026-10-09, after the owner: the wells centred in their column*: was 24, 48 + 72i) |
-| Well and its progress ring | slice 16, 44 + 72i, 80, 80 | Centred on (56, 84 + 72i), the middle of the 112 px column, 23 px clear of its left edge and of the hairline at x 112, on a 72 px pitch (*corrected by the UI designer, 2026-10-09, after the owner: the wells centred in their column*: was centred on (64, 84 + 72i), 31 px from the left and 15 from the hairline). The ring, its arcs and the spark are masters placed 1:1 on the 80×80 slice (neighbouring slices overlap 8 px in their clear corners). The ring is about 66 across: a band 8 px wide between radius 25 and 33. The pod in the well is the 40×48 list class at (36, 60 + 72i) (was at 44), centred on the ring's centre, the shell filling about 85 % of the ring's 50 px opening, stem to foot (*corrected by the UI designer, 2026-10-08, after the art director's hold on the studio's bead and reversal of the well pod's size*: was 32×48 at (48, 60 + 72i)); never a smaller pod inside a larger box. The ring carries chapters only and draws no centre fill. Colours are below (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 40, 52 + 72i, 64, 64, ring outer radius 31, the pod 32×40, a lit rim) |
-| Place stamp | none in the list | The place no longer sits beside the wells: at 112 px there is no room, and the plate shows none. The place is in the caption under the pod and on the bottom line's subject when a well is ringed (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 112, 60 + 72i, 16, 16, 16×16 beside each well) |
-| Hatch (return to the wild) | 16, 488, 80, 56 | Leaf mark 24×24, centred on x 56, the column's middle (*corrected by the UI designer, 2026-10-09, after the owner: the wells centred in their column*: was 24, 488, 80, 56, centred on x 64) |
-| Rail | 152, 40, 832, 40 | Hanging from the top bar by the rail's rule, aligned with the page's left edge: up to six full tabs of 136 from x 152 + 136i, the run ending at x 984; from seven, compact 56 with the open chapter's tab full (*corrected by the UI designer, 2026-10-08, after the art director's signature with returns*: was 176, 40, 832, 40, from x 176 + 136i) |
-| Pod stage | 488, 112, 288, 440 | Region only, no pane, inside the pod's room (408 to 856). Holds the cone of light, the pod, the dish, the shelf slab, the name and the caption (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 592, 112, 240, 440) |
-| Cone of light (beam) | 512, 104, 240, 320 | A cool cone from above, centred on the axis x 632, ending in a pool on the dish at y 424 (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 592, 104, 240, 320) |
-| **Pod (focal)** | 560, 216, 144, 176 | Bottom-centred on (632, 392): the axis x 632, the foot line y 392 in the bowl's dip, as before. Sized by size class: large 144×176 at (560, 216), medium 120×152 at (572, 240), small 104×128 at (580, 264); the medium and small boxes' x sit 4 px off the grid. The large pod is 0.72 of the painted bowl's width (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 640, 216, 144, 176 on the axis x 712) |
-| Cradle (the frosted dish) | 520, 328, 224, 96 | Frosted glass dish at its own proportion, in two layers on the same rectangle (the dish under the pod, its near lip over the pod's foot); its front lip ends 32 px below the foot line (y 424) and the bowl rises 64 px round the shell's foot. Geometry unchanged; centred on x 632 (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 600, 328, 224, 96) |
-| Shelf slab | 488, 368, 288, 72 | The thick glass slab the dish stands on, a trapezoid in perspective, its front edge lit at y 440, drawn under the dish. 288 wide, as the art director first suggested and as the plate's slab is (about 285); 80 px clear of the page and of the case (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 592, 368, 240, 72, 240 wide to keep clear of the wider page) |
-| Name | 520, 456, 224, 24 | The name alone ("Loika", not "Loika pod"; owner, 2026-10-08). 20 px medium, the Pods exception to the type roles, centred on x 632, on its hugging plate: the word plus 12 px a side, rounded up to 16, at least 80 and at most 224, 24 tall: "Loika" on (592, 456, 80, 24). Before Identify it reads "Unknown" (the copywriter's word; never the word "pod"), 91 px, on (568, 456, 128, 24). 16 px under the slab's front edge. No digits (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 600, 456, 224, 24, centred on x 712) |
-| Origin (the caption) | 520, 488, 224, 40 | A caption under the name, not a label and not a second title: 16 px regular, `bone`, sentence case, centred on x 632, at most two lines on the 20 px pitch, no plate, with the 1 px dark shadow; 8 px under the name's plate, so it reads with the name. The sentence is the copywriter's: "Found <where>, <what happened>.", broken after the comma ("Found on the rock field," / "as a Tuikis felt safe."); no digits, no "·", never an expedition number; the pattern and examples are under *Words on Pods* below (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 600, 496, 224, 40, 16 px under the name, the string a place-and-how fragment) |
-| Stamp case | 856, 232, 152, 152 | Small, dim, unlit glass round the label: the label plus 16 px a side, inside the 16 px margin, dimmer than the dish, with no light, glow or beam. Centred on the label (y 308) (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 848, 144, 176, 328, running off the right edge as the plate's 274 px case does) |
-| Stamp case, front glass | 856, 232, 152, 152 | The case's front glass, a layer over the label (slice `room-stamp-case-152x152-front`): `ground` at 48 % opacity, even, with no highlight over the stamp. It brings the label's mean from about 175 to about 111, at or below the pod's (about 115), so the label is never the brightest area on screen; the stamp's dark cells against the glassed bone stay at 4.9:1 (bone #f1ebdf and ink #1a1725 under 48 % `ground`: #888e8e against #18202e), above the 4:1 floor (*corrected by the UI designer, 2026-10-08, after the art director's signature with returns*: new; the bare bone label measured mean 175 against the pod's 115) |
-| **Stamp label** | 872, 248, 120, 120 | In its case, 16 px in from the case's edges and 16 px from the screen's right edge; level with the large pod's box (the label's centre at y 308). 168 px from the focal box (704 to 872). Appears at Identify with every chapter as hairlines (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 888, 248, 120, 120) |
-| Open page | 152, 112, 256, 440 (264 tall for one trait, 248 for two) | Deep pane, 1 px slate edge. Its top stays at y 112 and it shortens downward to its content, 16 px under the last cell, for one or two traits: one trait (152, 112, 256, 264), its bottom at y 376; two traits (152, 112, 256, 248), its bottom at y 360; three or more, the full 440. The pane is a nine-slice: corners 1:1, edges and fill tiled, never scaled; the studio's one master serves every height and no shorter slice is needed (*corrected by the UI designer, 2026-10-09, after the art director: the pane shortens to its content for one and two traits*). 40 px after the well column, as on the plate; second in weight to the pod (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 176, 112, 408, 440, the same rectangle as Compare's left page) |
-| Page heading | 168, 120, 224, 24 | Emblem 24×24, then the chapter's word in 20 px. Nothing at the right (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 192, 120, 376, 24, the trait marks at its right) |
-| Trait cells | the grid below | In the chapter's own order, row by row, left to right. Each cell: the close-up, rendered at its size; then 4 px; then the trait's one-word name, 16 px `bone`, centred, on a 20 px line. The kind mark and the new mark sit inside the picture (Marks on a picture). No line of words (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was the name and one line of words, 16 px `fog`) |
-| Trait marks | none | The page's trait marks go; the rail tab's pips (one per trait: hollow unread, filled read, none sealed) say how many and which are read (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*) |
+| Place c, r (c 0–2, r 0–1) | 16 + 336c, 48 + 240r, 320, 224 | A recessed place, `panel` with a `hairline` edge, 6 px corners; the focus target, the focus ring 4 px outside it. Every place drawn; an empty place is the empty ring. Was the well slot (16, 48 + 72i, 80, 72) |
+| Ring | centred on place + (96, 112), radius 80, an 8 px band | One arc per chapter in ring order, 2 px apart: filled `bone` when read, `bevel` when not; the band closes when every chapter is read. Was the 66 px well ring on its 80×80 slice |
+| Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph. Was the 40×48 list pod |
+| Name label | place + (184, 64), hugging, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify |
+| Place picture | place + (184, 104, 48, 48) | The origin as a picture |
+| Can-grow mark | place + (184, 168, 16, 16) | Only where the ring and the seal do not say it |
+| Glint star | place + (148, 40, 12, 12) | On the ring's band at its top right |
+| Waiting beyond the rack | 16, 528, 24, 24 | One quiet mark, never a number |
 
-**The page, one state** (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*; was two states, Picture with one large portrait and Grid). The page is the chapter's contact sheet: every trait at once, small cells, density from the cells and not from size, smaller than the pod's room and lighter than the pod.
+**B · Pod overview** (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*).
 
-- **Read chapter:** every trait's cell, by the grid below.
-- **Unread chapter:** the same cells, each its trait's name over an empty frosted frame: the picture's frame with plain frost inside and no picture under it, clearly empty, never a blurred or faded painting. The build asks for no close-up of an unread trait, and every stand-in and composite draws the frame and the frost only (*corrected by the UI designer, 2026-10-09, after the owner on the empty state*: was "each its trait's name over a frosted picture").
-- **Sealed chapter:** the page drawn shut (slats over the cell area) with one picture of the find that opens it, 112×112 at (224, 296), centred on the page.
-- **Never on the page:** digits, allele codes or genetics words, kinship, prices, status words, the stamp's code, clash marks, Compare's difference mark.
-- **Reading** wipes the frost from the top over 2 s; the tab's pips fill with it.
-- **Compare** keeps its own two 408 px pages and grid (below); seven or more traits on Compare come back to the UI designer.
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Rail | 96, 40, 832, 40 | Hanging, centred on x 512 as on Create and Incubator; no tab open. A price shows only on the bottom line, when a tab has focus. Was at x 152, aligned with the page |
+| Cone of light | 136, 104, 240, 320 | Centred on the axis x 256. Was 512, 104 |
+| **Pod (focal)** | 184, 216, 144, 176 | Bottom-centred on (256, 392); medium 120×152 at (196, 240), small 104×128 at (204, 264). The foot in the bowl's dip. Was 560, 216 on the axis x 632 |
+| Dish and near lip | 144, 328, 224, 96 | Was 520, 328 |
+| Shelf slab | 112, 368, 288, 72 | Was 488, 368 |
+| Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. Was centred on x 632 |
+| Who it is: marks | glyph (200, 488, 24, 24), clan (232, 488, 24, 24), first of its kind (268, 492, 16, 16) | Marks, no words |
+| **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392; slice `figure-<species>-128x160`, one painted master per species. It suggests the type; it never shows the individual's colours or marks. Before Identify, an empty halo. Was the page (152, 112, 256, 440) beside the pod |
+| Where it came from | place picture 600, 120, 64, 64; sentence 680, 128, 328, 40 | The copywriter's sentence, "Found <where>, <what happened>.", 16 px `bone`, at most two lines; no digits. Was the caption under the name (520, 488, 224, 40) |
+| Kin | rings 56×56 from (600, 224) on a 64 px pitch, at most six; the 40×48 pod in each | Same-species pods: the Compare targets; focus targets. None drawn when the pod has no kin |
+| Hatch | 600, 480, 80, 56 | Leaf mark 24×24 centred. Was in the well column (16, 488, 80, 56) |
+| Stamp case and front glass | 856, 384, 152, 152 | Small, dim, unlit; the front glass `ground` at 48 % (slice `room-stamp-case-152x152-front`). Was 856, 232 |
+| **Stamp label** | 872, 400, 120, 120 | Small, at the edge; 544 px from the pod's box. Appears at Identify. Was 872, 248 |
+| Ribbon ("New species") | 680, 128, 328, 40 | In the origin sentence's rectangle, 6 s, the read tab's cool look |
 
-**Withdrawn** (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows*): the Picture state (the frame (168, 160, 224, 304) with the portrait (184, 176, 192, 272), the name (168, 472, 224, 20) and the lines (168, 492, 224, 40)); the Grid as a second state; moving between them with ✓ and the back key.
+**C · Chapter page** (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*).
 
-**Page grid,** by the open chapter's trait count, one to eight. The pane's height follows the count: 264 for one trait, 248 for two, 440 for three or more, its top at y 112 (*corrected by the UI designer, 2026-10-09, after the art director: the pane shortens to its content for one and two traits*). No page picture is larger than the pod's box (144×176, 25 344 px²): a picture smaller than its cell sits centred in it, at the cell's top (*corrected by the UI designer, 2026-10-08, after the art director's signature with returns*). A cell is a picture, then 4 px, then the name on a 20 px line. Two columns of 104 with a 16 px gap at x 168 and 288 (one column of 224 for one or two traits), rows from y 160; every picture rendered at its size (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was a picture, 8 px, the name and up to two lines of words, for one to six traits).
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Rail | 96, 40, 832, 40 | The open tab lighter; the focus on the rail |
+| Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
+| Open page | 424, 112, 584, 440 (248 tall for one to four traits) | Deep pane, 1 px slate edge, a nine-slice; its top at y 112. Was 152, 112, 256, 440 |
+| Page heading | 440, 120, 552, 24 | Emblem 24×24, then the chapter's word in 20 px. Was 168, 120, 224, 24 |
+| Trait cells | the grid below | In the chapter's order, row by row: the picture, 4 px, the one-word name (16 px `bone`, centred); the field-guide mark 4 px after the name |
 
-| Traits | Cells (x, y, w, h) | Picture | Was (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*; earlier values after them) |
+**Page grid,** by the open chapter's trait count. Four columns of 128 with 8 px gaps and 24 px insets; every picture 128×160 (under the pod's 144×176), rendered at its size. A sealed chapter is shut, with one 112×112 picture of the find that opens it, centred at (660, 276) (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was two columns of 104 on the 256 px page, pictures from 144×176 to 104×64).
+
+| Traits | Cells (x, y, w, h) | Picture | Was |
 | --- | --- | --- | --- |
-| 1 | 168, 160, 224, 200 (*corrected by the UI designer, 2026-10-09: the cell shortens to its picture and name; was 384 tall*) | 144×176, centred in the cell (at 208, 160) (*corrected by the UI designer, 2026-10-08, after the art director's signature with returns*: was 224×352, which outweighed the pod) | was cells 192 160 376 384, picture 376×312; cell at x 544, 448 wide; picture 448×312 |
-| 2 | 168, 160, 104, 184 and 288, 160, 104, 184 | 104×160, side by side as the first row of three or four (*corrected by the UI designer, 2026-10-09, after the art director: the pane shortens to its content for one and two traits*: was the cells (168, 160, 224, 184) and (168, 360, 224, 184), stacked, with pictures 176×144; before that 224×160) |
-| 3–4 | 168 or 288, at y 160 and 360; each 104×184 | 104×160 | was cells 192 or 384 at y 160 and 360; each 184×184, picture 184×112; cells at x 544 or 776, 216 wide; pictures 216×112 (*corrected by the UI designer against the build, 2026-10-08: was 216×120, which left the name and two lines 4 px past the cell*) |
-| 5–6 | 168 or 288, at y 160, 288 and 416; each 104×120 | 104×96 | was cells x 192 320 448 at y 160 and 360; each 120×184, picture 120×112; cells at x 544, 696, 848, 144 wide; pictures 144×112 |
-| 7–8 | 168 or 288, at y 160, 256, 352 and 448; each 104×88 | 104×64 | new (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*; was "7 or more: none today, comes back") |
+| 1–4 | 448, 584, 720 or 856, at y 160; each 128×184 | 128×160 | on the 256 px page: one 144×176; two 104×160 side by side; three or four 104×160 in two rows |
+| 5–8 | 448, 584, 720 or 856, at y 160 and 360; each 128×184 | 128×160 | on the 256 px page: 104×96 (five or six), 104×64 (seven or eight) |
 | 9 or more | none today | comes back to the UI designer | |
+
+**The page, one state.**
+- **Read chapter:** every trait's cell.
+- **Unread chapter:** the same cells, each its trait's name over an empty frosted frame: the frame with plain frost and no picture under it, clearly empty; the build asks for no close-up of an unread trait.
+- **Sealed:** shut, with the find's picture.
+- **Never on the page:** digits, allele codes or genetics words, kinship, prices, status words, the stamp's code, clash marks, Compare's difference mark.
 
 **Marks on a picture,** all inside the picture's rectangle P:
 
@@ -345,22 +351,16 @@ The well column at the far left (0 to 112). The open page left of centre (152 to
 | Sealed | the whole page shut, with one picture of the find that opens it, 112×112 at (224, 296) | No names, no cells (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was slats over each picture with what opens it, 44×64, centred) |
 | Differs (Compare) | a 2 px aqua edge on P itself, and a 12×12 bracket at P.x + P.w / 2 − 6, P.y + 8 | Aqua on a 1 px ink keyline, on both pages. Never the focus ring: the `focus` role is the ring's alone (was "the cream ring"; corrected by the UI designer against the build, 2026-10-08) |
 
-**Hierarchy check at 1×:**
-
-- the pod is the largest warm area (144×176; *corrected by the UI designer, 2026-10-08, after the art director's fourth check of the Pods masters*: was 160×192);
-- the page is second: 256 px wide against the pod's 448 px room, small cells and cool until read (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was "its one portrait 192×272");
-- the stamp (120) is a detail: smaller than the pod, no glow, in a small dim case at the right edge, 168 px from the pod's box (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 96 px from the box; *corrected by the UI designer, 2026-10-08, to the concept's composition*: was in the stage's corner).
-
 **States.**
 
-- **Unidentified.** No rail, no page and no stamp: only the list, the sealed pod, "Unknown" and its origin. `✓ Identify · 1 ⚡`.
-- **Identifying.** The seal clears from the top down over 2 s and the glyph lights. "New species" shows for 6 s as a 20 px ribbon in the caption's rectangle (520, 488, 224, 40; *corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was (600, 496, 224, 40); *corrected by the UI designer, 2026-10-08, after the art director's pass-6 verdict on the Pods masters*: was (600, 480, 224, 40); *corrected by the UI designer, 2026-10-08, to the concept's composition*: was 184, 384, 320, 40); at 20 px it is 123 px wide. Then the origin returns. The ribbon is the read tab's cool look (deep teal, aqua rim, bone words), never a warm plate beside the pod; no message plate repeats it (corrected by the UI designer against the build, 2026-10-08).
-- **Reading.** The page's frost wipes away from the top over 2 s, the tab fills, its pips fill, and the stamp's sector and the list ring's arc fill. No message plate: the pictures and the star say what is new (corrected by the UI designer against the build, 2026-10-08). On Pods a message plate shows only a refusal and the hatch's arming.
-- **Read again.** A read chapter is free to look at again. The bottom line has no ✓ cap and the subject says "‹Chapter› is read".
-- **Empty rack.** The empty dish under the cone of light and nothing else on the stage; the stamp label does not show. The subject is "the rack is empty"; what needs you is "dock the Companion to bring its crates home". *corrected by the UI designer against the build, 2026-10-08:* away, "dock the Companion for its crates" (six words); docked with crates in the bay, "open the bay at Home"; docked with the bay empty, "take the Companion exploring".
+- **Unidentified (B):** no rail, no stamp; the figure an empty halo, the who-it-is marks and the kin frosted; the name label "Unknown"; where it came from shows. `✓ Identify · 1 ⚡`. Identify fills the sections in place.
+- **Identifying:** the seal clears from the top down over 2 s and the glyph lights. "New species" shows for 6 s as a 20 px ribbon in the origin sentence's rectangle, then the sentence returns. No message plate repeats it.
+- **Reading (C):** the page's frost wipes away from the top over 2 s, the tab fills, its pips fill. No message plate.
+- **Read again (C):** free to look at; no ✓ cap; the context says "‹Chapter› is read".
+- **Empty rack (A):** six empty places. The context is "the rack is empty"; the notice says what to do: away, "dock the Companion for its crates"; docked with crates, "open the bay at Home"; docked, bay empty, "take the Companion exploring".
+- **A new crate (A):** its pods sealed in their places.
 - **Compare.**
-  - The list hides. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440).
-  - *(*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: Read's page is now 256 wide and Compare keeps its two 408 px pages: the left page no longer sits on Read's page. The rule below still places them, with Compare's page width, 408.)*
+  - Entered from B, ✓ on a kin pod. The pod's room, the figure and the stamp hide. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440), as before.
   - **Where the two pages go** (*set by the UI designer, 2026-10-08, with the concept's composition*). A Compare page is never narrower than 408 (three 120 px columns, two 8 px gaps, two 16 px insets). The two pages sit left of the pod when two pages and their 16 px gap (832 px) fit between x 16 (the list hidden) and 16 px before the dish (x 584). That space is 568 px, so they do not. Compare therefore lays its pages across the page area, from x 176 to 1008 (Compare's own pages; the rail moved to x 152 on Read): the left page exactly on Read's page, the right page over the pod stage and the stamp label, which hide with the list. Each heading carries its own pod at 32×40, so the two pods are still shown. The rule for any layout: left of the pod when (dish.x − 16) − 16 ≥ 2 × 408 + 16; otherwise across the page area, from x 176 to 1008.
   - Each heading shows its pod at 32×40 at (16, 8) on the page and its place picture 16×16 at (56, 20).
   - The page grid is the same as Read, scaled to 408 px wide: two columns of 184 with an 8 px gap, pictures 184×104 for three or four traits; three columns of 120, pictures 120×96, for five or six.
@@ -369,32 +369,27 @@ The well column at the far left (0 to 112). The open page left of centre (152 to
   - The bottom line: `← Pods` | "two Loika pods" | "they differ here" when the open chapter holds a difference, "they differ in another chapter" when only another does, "no read trait differs". Never a count.
   - The rail stays.
 
+
 ### 6. Interactions
 
-| Input | Where | What happens, and how it shows |
+| State | Input | What happens, and how it shows |
 | --- | --- | --- |
-| ▲ ▼ | List | Steps through the wells, then the hatch; the ring walks. Looking is free: the well's pod comes under the beam at once, its name and page replace the last |
-| → | Well | Ring to the pod, passing over the page, which holds no focus target (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was to the page, which held targets in its two states) |
-| ← | Pod | Ring back to the pod's well (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was to the page) |
-| *(withdrawn)* | Page | The page's own keys (◀ ▶ ▲ on the page, `✓ All traits`, the Grid's cells, `✓ Look closer`, the back key to Picture) go with the Picture state (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*) |
-| ▲ | Pod | Ring to the rail, on the last chapter looked at |
-| ◀ ▶ | Rail | Step through chapters; the ring follows the focused tab's slant (no lift; *corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was a 2 px lift, before that 4) and the page shows that chapter at once, every trait (page turn 200 ms; *corrected by the UI designer, 2026-10-08, after the game designer's answer*: was "in its Picture state on the chapter's first trait") |
-| ▼ | Rail | Back to the pod |
-| ✓ | Unidentified pod | `✓ Identify · 1 ⚡` (the first ever: "free"). Plays the seal clearing; input is held for the 2 s |
-| ✓ | Identified pod, nothing read | `✓ Read its chapters` moves the ring to the first unread tab. No spend |
-| ✓ | Pod with a read chapter | `✓ Shape a founder` opens Create |
-| ✓ | Unread tab | `✓ Read Coat   3 ◆` (a half price shows as the lower number, with no word). Plays the wipe; input is held for 2 s |
-| ✓ | Read tab | No ✓ cap; subject "Coat is read" |
-| ✓ | Sealed tab | No ✓ cap; subject "Coat is sealed". The page shows the picture of what opens it (*corrected by the UI designer against the build, 2026-10-08*: "· opens with ‹what opens it›" ran past the subject's 224 px and was cut with "…") |
-| ✓ | Another well, same species | `✓ Compare · free` when a pod of the same species was under the beam. Opens Compare |
-| ✓ | Another well, other species | `✓ Look at this pod`. No compare is offered |
-| ✓ ✓ | Hatch | First ✓ arms: `✓ Again: return it   +1 ❀`, with a message plate saying what will happen: "Back to the ‹place›? ✓ again" (*set by the UI designer against the build, 2026-10-08*: six words or fewer for every place). The second ✓ returns the pod. Any other key disarms it. The subject is "Back to the ‹place›" ("Back to the rock field"; *set by the UI designer against the build, 2026-10-08*: the plate says where it goes, and the longer subject was cut with "…") |
-| ◀ ▶ | Compare | Step through chapters on both pages |
-| ← | Compare | Closes Compare |
-| ← | Anywhere else | Home |
-| Can't | Short of Data or Energy | Dimmed ✓, the price shows the shortfall, and a message plate on press |
-| Can't | A glint | Says "something new here" (on the pod: "something new waits") on the right of the bottom line, never what it is |
-| Can't | A sealed chapter | Cannot be read; there is no ✓ cap |
+| A | Pad | The ring moves between places. On opening, it lands on the pod that most needs the player: a new one, then a glinting one, then the first |
+| A | ✓ | `✓ Open`: the pod's overview (B). The context and the notice describe the focused pod |
+| A | ← | Home |
+| B | Pad | Between the pod, the tabs, the kin and the hatch: ▲ from the pod to the rail; ▶ from the pod to the first kin; ▼ from the kin to the hatch; ◀ from the hatch to the pod |
+| B | ✓ on the pod | Sealed: `✓ Identify · 1 ⚡`. A chapter read: `✓ Shape a founder` opens Create; dimmed, with the reason in the notice, when the incubator is busy or no bay is free |
+| B | ✓ on a tab | Opens that chapter's page (C), free |
+| B | ✓ on a kin pod | `✓ Compare · free` |
+| B | ✓ ✓ on the hatch | Return to the wild: the first ✓ arms, `✓ Again: return it   +1 ❀`, with the message plate "Back to the ‹place›? ✓ again"; the second returns the pod; any other key disarms |
+| B | ← | Back to A, the ring on this pod |
+| C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
+| C | ✓ | On an unread chapter, `✓ Read Coat   3 ◆` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |
+| C | ← | Back to B, the ring on that tab. From Compare, ← closes it |
+| Home | ✓ on a pod in the rack | Straight to its overview (B); ← from there goes to A |
+| All | Can't | A dimmed ✓ with the shortfall; a message plate on press. A glint says "something new waits" in the notice, never what it is |
+
+← always goes up one level (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: was the one screen's table, the well column's ▲ ▼, → to the pod and ← back to the well).
 
 ### Words on Pods (Working rule, copywriter, 2026-10-08)
 
@@ -446,14 +441,17 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 | Picture state's portrait | withdrawn (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*: was 192×272 in a 224×304 frame) | |
 | Frosted dish (the cradle) and its near lip | 224×96 each, on one rectangle (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*: was 224×72; before that 224×40) | The bench's dish master |
 | Cone of light | 240×320 (*corrected by the UI designer, 2026-10-08, to the concept's composition*: was 240×232) | The bench's light master |
-| Pod in a well | 40×48, the list class (*corrected by the UI designer, 2026-10-08, after the art director's hold on the studio's bead and reversal of the well pod's size*: was 32×48; *corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 32×40; Home's rack keeps the 32×40 well pod) | The same |
-| Well ring, arcs and spark | 80×80 slices, placed 1:1 (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*) | The pod list master |
-| Progress ring | on the 80×80 slice above (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 64×64) | The pod list master |
+| Pod in a well (now the kin's pod in B) | 40×48, the list class (*corrected by the UI designer, 2026-10-08, after the art director's hold on the studio's bead and reversal of the well pod's size*: was 32×48; *corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 32×40; Home's rack keeps the 32×40 well pod) | The same |
+| Well ring, arcs and spark | 80×80 slices, placed 1:1 (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*) (*dropped with the well column, 2026-10-09*) | The pod list master |
+| Progress ring | on the 80×80 slice above (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 64×64) (*dropped with the well column, 2026-10-09*) | The pod list master |
 | Chapter emblem | 24×24 (the build draws 16; redraw at 24, never enlarge) | The chapter rail master |
 | Trait pictures | 224×352, 224×160, 104×160, 104×96, 104×64 by trait count (*corrected by the UI designer, 2026-10-08, after the game designer's answer on what the read page shows (the owner: "wasted real estate, minimal information"); the owner is asked about dropping the Picture state, and this proceeds on it*); Compare 376×264, 184×256, 184×104, 120×96 | The painting's close-ups |
 | Seed | 40×52 or 32×40 | The seed master |
-| Place stamp | not drawn in the list (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 16×16) | The place stamp set |
+| Place stamp | not drawn in the list (*corrected by the UI designer, 2026-10-08, after the owner's rulings on the Pods composite (the pod the protagonist, the stamp a detail, the page smaller, the wells and the rail as the concept has them)*: was 16×16) (*dropped with the well column, 2026-10-09*) | The place stamp set |
 | Stamp | whole-pixel cells, at most 104 px, on the 120 label | The stamp's label art |
+| Collection pod | 88×112 (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod renderer's masters |
+| The figure | 128×160, one per species, slice `figure-<species>-128x160` (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The figure master, from the standard painting's silhouette |
+| Collection ring and arcs | 160 across (*corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*) | The pod list master |
 
 ### Changes from the current build
 
@@ -465,6 +463,7 @@ Unidentified pod, same pattern with the creature unnamed: "Found on the rock fie
 - The list's aqua bar and amber square go, and so do "n sealed" and "and n more".
 - After the art director's second verdict (*corrected by the UI designer, 2026-10-08, after the art director's second verdict on the Pods masters*): the rail hangs from y 40, 40 tall, its tabs slanted and touching (was y 48, 56 tall, with gaps), and the focus ring follows a tab's slant with no lift; the dish grows to (600, 328, 224, 96); the origin turns bone; the page opens on one large picture with the grid as its second state, and the focus graph gains the page (→ from a well, ← from the pod). (*Withdrawn after the game designer's answer, 2026-10-08:* the page is one state, every trait at once, and holds no focus target.)
 - Trait pictures are rendered at their size, never enlarged from a crop.
+- *corrected by the UI designer, 2026-10-09, the owner's decision on the three-state wireframes*: Pods becomes three states (collection, pod overview, chapter page); the well column goes; the pod on the axis x 256 (B) and x 216 (C), was 632; the page (424, 112, 584, 440), was (152, 112, 256, 440); the rail centred at x 96, was 152.
 
 ### Confirmed against the build (UI designer, 2026-10-08)
 
