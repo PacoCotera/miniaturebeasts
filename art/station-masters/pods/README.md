@@ -49,9 +49,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-emblem-glow-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | new: Legs & tail round 6: candidate B as the art director corrected it (back line out of the left edge, hock bump, stub tail); awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | new: Legs & tail round 6: candidate B as the art director corrected it (back line out of the left edge, hock bump, stub tail); awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | new: Legs & tail round 6: candidate B as the art director corrected it (back line out of the left edge, hock bump, stub tail); awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | withdrawn: Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | withdrawn: Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | withdrawn: Legs & tail: the cropped leg rejected (pass 12); the chapter becomes the tail alone, two variants on emblems/candidates/tail-candidates-1x.png; the tab shows its word until one is picked | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -335,6 +335,12 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 13 - the tail alone, a typical Grid composite
+
+- The cropped leg is rejected and off the rail (`rail-emblem-legs-tail-*` withdrawn; the full tab shows its word, the compact tab its pips). Legs & tail becomes the tail alone: two filled bushy tail curls, typed as rows (`emblems/candidates/tail-a.txt`, `tail-b.txt`), each rising from the lower left, lit edge upper left, open (never a ring), ending in a three-point tuft: A hooks over to the right and down, B sweeps up and to the right. They sit on the compact tabs between Coat and Glow, unread and read, at 1x on `emblems/candidates/tail-candidates-1x.png` (4x proof beside it; `tail_sheet.py` makes both). Honest reading: A reads as a hook or a cane before a tail; B as a bent arm; the tuft is the part that says tail and at 1x it is three small points. Neither is built into three-state slices yet; that waits for the art director's pick.
+- The Grid composite is now a typical chapter: four traits on the Shape page with the Shape tab open on the seven-chapter rail, a context line that agrees ("Shape is read"). The pictures are stand-ins made from the pod-large layer (the whole pod, and its upper part larger), not the Coat pictures; the four trait names (Body, Height, Taper, Base) are stand-ins too, as the Shape traits are not named in the specs I have. The Legs & Tail compact tab shows pips only.
+
 
 ## Pass 12 - the window without a horizon, the hindquarter as B corrected
 

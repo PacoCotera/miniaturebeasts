@@ -39,15 +39,19 @@ def compose(traits, rail):
     def namenew(xy, word):      # the name and the new dot centred together: the dot 4 px after the name, its centre on the line's middle (a 20 px line)
         tw = d.textlength(word, font=f16); x0 = int(xy[0] - (tw + 4 + 6) / 2)
         text((x0, xy[1]), word, f16, CREAM); put("page-mark-new-10", int(x0 + tw + 4), xy[1] + 10 - 3)
+    def shapepic(k):      # a stand-in Shape picture: the whole pod, then its upper part larger, on the stage's dark ground (never a Coat picture on the Shape page)
+        pod = S("pod-large-identified"); box = (0, 0, 144, 176) if k == 0 else (0, 0, 144, 104)
+        g = Image.new("RGBA", (104, 160), (20, 34, 44, 255)); p = pod.crop(box); sc = min(96 / p.width, 150 / p.height); p = p.resize((round(p.width * sc), round(p.height * sc)), Image.LANCZOS)
+        g.alpha_composite(p, ((104 - p.width) // 2, (160 - p.height) // 2)); return g
     pic = lambda w, h, box=(180, 166, 372, 430): cand.crop(box).resize((w, h), Image.LANCZOS)
     if traits == 1:      # one trait: a picture no larger than the pod's box, 144x176, centred in the cell
         px, py = 168 + (224 - 144) // 2, 160 + 40
         cv.alpha_composite(pic(144, 176), (px, py)); put("trait-picture-frame-144x176", px, py); namenew((280, py + 184), "Spots")
     else:
         for k, (cx, cy, st) in enumerate(((168, 160, "read"), (288, 160, "read"), (168, 360, "unread"), (288, 360, "sealed"))[:traits]):
-            if st == "read": cv.alpha_composite(pic(104, 160, (180, 166, 372, 430) if k == 0 else (200, 250, 372, 400)), (cx, cy)); put("trait-picture-frame-104x160", cx, cy)
+            if st == "read": cv.alpha_composite(shapepic(k) if rail == "compact" else pic(104, 160, (180, 166, 372, 430) if k == 0 else (200, 250, 372, 400)), (cx, cy)); put("trait-picture-frame-104x160", cx, cy)
             else: put(f"trait-picture-frame-104x160-{st}", cx, cy)
-            (namenew((cx + 52, cy + 164), "Spots") if k == 0 else text((cx, cy + 164), ("Spots", "Belly", "Flank", "Crest")[k], f16, CREAM))
+            (namenew((cx + 52, cy + 164), "Body" if rail == "compact" else "Spots") if k == 0 else text((cx, cy + 164), (("Body", "Height", "Taper", "Base") if rail == "compact" else ("Spots", "Belly", "Flank", "Crest"))[k], f16, CREAM))
     # the rail: tabs hang from the bar at y 40 and touch along their slants
     if rail == "six": tabs = [("Coat", "focused", 3), ("Face", "read", 3), ("Shape", "unread", 4), ("Legs & Tail", "unread", 3), ("Movement", "sealed", 0), ("Stamina", "unread", 3)]; open_i = None
     else: tabs = [("Coat", "read", 3), ("Face", "read", 3), ("Shape", "focused", 4), ("Legs", "unread", 3), ("Movement", "unread", 3), ("Stamina", "sealed", 0), ("Character", "unread", 3)]; open_i = 2
@@ -64,7 +68,7 @@ def compose(traits, rail):
             else: cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (int(bx), 48)); text((bx + 32, 54), word, f16, pc if st != "sealed" else MIST, "lm")
             for p in range(pips): px = int(x + 80 - pips * 4 + 8 * p); d.rectangle([px, 68, px + 5, 73], fill=pc if st in ("read", "focused") and p < 2 else None, outline=pc)
         else:
-            cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (x + 34 - 12, 44))
+            if word != "Legs": cv.alpha_composite(S(f"rail-emblem-{CID[word]}-{es}-24x24"), (x + 34 - 12, 44))        # Legs & Tail has no emblem; its compact tab shows pips only
             for p in range(min(pips, 4)): px = int(x + 42 - min(pips, 4) * 4 + 8 * p); d.rectangle([px, 72, px + 5, 77], fill=pc if st == "read" else None, outline=pc)
         x += w
     if ring:
@@ -83,10 +87,10 @@ def compose(traits, rail):
     vw = d.textlength("Read Face", font=f16); gx = int(36 + vw + 24)
     d.polygon([(gx + 4, 575), (gx + 11, 582), (gx + 4, 589), (gx - 3, 582)], fill=(91, 185, 243, 255)); text((gx + 18, 581), "2", f16, CREAM, "lm")
     hw = d.textlength("Home", font=f16); hx = int(1008 - hw - 4 - 16); put('frame-cap-back-16', hx, 574); text((1008, 581), "Home", f16, FOG, "rm")
-    text((512, 581), "Coat is read" if rail == "six" else "Shape is unread", f16, MIST, "mm")
+    text((512, 581), "Coat is read" if rail == "six" else "Shape is read", f16, MIST, "mm")
     nw = d.textlength("something new in Face", font=f16); put("frame-lamp-12-amber", int(904 - nw - 4 - 12), 575); text((904, 581), "something new in Face", f16, AMBER, "rm")
     for xx in (404, 620): d.line([(xx, 571), (xx, 591)], fill=HAIR)
     return cv.convert("RGB")
 a = compose(4, "six"); a.save("composite-pods-read-1024x600.png")
-compose(1, "compact").save("composite-pods-grid-1024x600.png")
+compose(4, "compact").save("composite-pods-grid-1024x600.png")
 side = Image.new("RGB", (2058, 600), (30, 30, 30)); side.paste(a, (0, 0)); side.paste(cand.convert("RGB"), (1034, 0)); side.save("composite-vs-candidate.png")
