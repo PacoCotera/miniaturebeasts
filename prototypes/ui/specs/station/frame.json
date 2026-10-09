@@ -31,5 +31,57 @@
   "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
   "ring": "focus", "stageGround": "deep"
  },
- "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Cross" , "bench": "Probe" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" }
+ "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Cross" , "bench": "Probe" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
+ "navigation": {
+  "spec": "design/style-guide/station-screens.md#keys-and-navigation",
+  "map": "design/style-guide/station-layouts/nav-map.png",
+  "decided": "owner, 2026-10-09, on the navigation map: Home is the hub; Incubator and Probe under Home with the Research mark; a room key always opens its room's top; stack navigation (← to the parent of the screen you are on, never to the history); the first press on Idle only wakes; a room key pressed on Create or Cross drops the unpaid choices, and coming back starts fresh",
+  "keys": {
+   "pad": "moves the ring inside this screen (on Create and Cross, the focused choice); never leaves the screen, never spends",
+   "confirm": "does the bottom line's action exactly; no ✓ cap, nothing happens",
+   "back": "goes to this screen's parent, and the way back names it with this screen's back word; no parent, no ← cap and nothing happens",
+   "room": "opens the room's top screen from anywhere, even from inside the room; never spends"
+  },
+  "roomKeys": {
+   "home": {"screen": "home", "focus": "room"},
+   "research": {"screen": "pods", "state": "collection", "focus": "the pod that most needs the player"},
+   "library": {"screen": "library", "state": "spread", "focus": "the current frame"},
+   "habitat": {"screen": "habitat", "mibi": "the one last seen", "focus": "the resident"}
+  },
+  "screens": {
+   "home": {"parent": null, "back": null},
+   "pods.collection": {"parent": "home", "back": "Home"},
+   "pods.overview": {"parent": "pods.collection", "back": "Pods"},
+   "pods.chapter": {"parent": "pods.overview", "back": "{pod}"},
+   "pods.compare": {"parent": "pods.overview", "back": "{pod}"},
+   "create": {"parent": "pods.overview", "back": "{pod}"},
+   "incubator": {"parent": "home", "back": "Home"},
+   "probe": {"parent": "home", "back": "Home"},
+   "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
+   "library": {"parent": "home", "back": "Home"},
+   "book": {"parent": "library", "back": "Library"},
+   "habitat": {"parent": "home", "back": "Home"},
+   "cross": {"parent": "habitat", "back": "Habitat"}
+  },
+  "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 60 px for its word reads \"Back\"",
+  "jumps": [
+   {"from": "create", "action": "Grow it", "to": "incubator"},
+   {"from": "cross", "action": "Cross them", "to": "incubator"},
+   {"from": "incubator", "action": "Open", "to": "habitat"},
+   {"from": "book", "action": "Visit {mibi}", "to": "habitat"}
+  ],
+  "jumpRule": "stack navigation: after a jump, ← goes to the parent of the screen you are on in this tree, never back along the way you came",
+  "homePad": {
+   "order": "fixed, not spatial",
+   "column": ["bay", "rack", "incubator", "probe", "rest"],
+   "upDown": "walk the instrument column; among the residents, the nearest one that way",
+   "leftRight": "cross between the vivarium's residents and the instrument column, landing on the row nearest the ring",
+   "fromRoom": {"right": "bay", "left": "the nearest resident"},
+   "homeKeyOnHome": "the ring back on the room, where ✓ does what needs the player"
+  },
+  "leaving": {
+   "create": "a room key drops the unpaid choices; coming back starts fresh",
+   "cross": "a room key drops the unpaid choices; coming back starts fresh"
+  }
+ }
 }
