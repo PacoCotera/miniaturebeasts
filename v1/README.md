@@ -50,3 +50,16 @@ Internal names such as `critter`, `Lab` and `Beecho` are legacy identifiers.
 
 [`../import-manifest.json`](../import-manifest.json) lists every imported file
 with its original path and SHA-256.
+
+## What it proves
+
+The v1 simulator plays one narrow version of the loop on
+simulated devices: move on a small grid map, take finite supplies and one sample,
+send them home, accept once, research, choose a supported form, incubate, open and
+visit the resident. It proves the bookkeeping underneath: nothing duplicates,
+nothing is lost on interruption, findings survive shortages, an opened mibi is the
+one that was created.
+
+It does not prove that exploring is interesting, that research creates curiosity,
+that the creatures are appealing, or that the devices work physically. Those are
+the questions the [roadmap](../ROADMAP.md) is built around.

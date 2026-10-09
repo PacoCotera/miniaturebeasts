@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator: the navigation map, the states and the hand-off to Habitat's meet, 1024×600 at 1×. Status: Proposal, pass 2 (UI designer, 2026-10-09 13:33).</title>
+<title>Incubator: the navigation map, the states and the hand-off to Habitat's meet, 1024×600 at 1×.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <text x="16" y="24" font-size="14" fill="#222" font-weight="600">Incubator: how it opens, how its states follow, where Open leads (no ring: ✓ acts on the room)</text>
@@ -75,7 +75,7 @@
 <text x="112" y="524" font-size="11" fill="#222">as everywhere</text>
 <text x="16" y="539" font-size="11" fill="#222" font-weight="600">held</text>
 <text x="112" y="539" font-size="11" fill="#222">Grow now (400 ms), the hatch (2780 ms)</text>
-<text x="560" y="384" font-size="13" fill="#222" font-weight="700">States (Decided, owner 13:21)</text>
+<text x="560" y="384" font-size="13" fill="#222" font-weight="700">States</text>
 <text x="560" y="404" font-size="11" fill="#222" font-weight="600">empty</text>
 <text x="640" y="404" font-size="11" fill="#222">no bud: it invites a new one</text>
 <text x="560" y="419" font-size="11" fill="#222" font-weight="600">growing</text>

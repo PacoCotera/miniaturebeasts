@@ -3,7 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#incubator-growing-and-ready",
  "frame": "frame.json",
- "status": "Pass 2 (UI designer, 2026-10-09 13:33, America/Mexico_City), the L2.4 spec. Decided (owner, 2026-10-09 13:21): the structure is right; the empty Incubator stays (\"empty incubator is available, this motivates the user to incubate and see it in action\"), so the empty state invites incubating; the hatch stays a held state. The disciplines' rulings of 2026-10-09 are folded in: architect 13:24 (leafArc the ninth layout rule, the leaves word, the bench ground), art director 13:28 (the ready bud's shape, the leaf, the glass and base, the empty dome's invitation, the stage slice), game designer 13:27 (Grow now's price, cross buds' chapters, ready with no bay a guard, the empty state's ✓), copywriter 13:27 (the strings)",
+ "status": "The L2.4 spec: the states empty (an invitation to grow a bud), growing, ready and hatch (held); leafArc, the ninth layout rule, and the leaves word, arc form; the ready bud's shape; the glass and base; the strings",
  "wireframes": ["design/style-guide/station-layouts/04-incubator-growing.png", "design/style-guide/station-layouts/05-incubator-ready.png", "design/style-guide/station-layouts/05b-incubator-hatch.png", "design/style-guide/station-layouts/05c-incubator-empty.png", "design/style-guide/station-layouts/05d-incubator-nav.png"],
  "note": "The one home of the Incubator numbers, transcribed from station-layouts.md (Incubator: growing and ready) and its wireframes 04-incubator-growing.svg to 05d-incubator-nav.svg. Rectangles are [x, y, w, h] in screen pixels. The bud in its dome is the one warm, living thing; the leaves arc over it and say how much of the wait is left; the rail above clears its surprises; the stamp and its code stand at the right.",
  "derived": {
@@ -15,7 +15,7 @@
   "glass lift": "UI designer, 2026-10-09: the glass lifts 384 px, out of sight under the rail (clipped to 0, 88, 1024, 474), so it never hangs over the juvenile",
   "juvenile": "UI designer, 2026-10-09: 304×312 at (360, 160), its feet at y 472 on the base's top; the box the meet on Habitat should keep, so it reads as the same creature (L2.5)",
   "ready bud": "art director, 2026-10-09 13:28: the species' juvenile-proportion silhouette, from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat soft-edged dark warm shape, no eye, no detail; its ink at most 96×96, centred in the 112×112 box at (456, 288). Masters bud-shape-S01-112x112 to bud-shape-S16-112x112, bud-ready-128x160 behind it and bud-ready-front-128x160 over it; one generic bud-late-128x160. Not amber",
-  "empty": "Decided (owner, 2026-10-09 13:21): the empty Incubator stays and invites incubating. Art director, 13:28: a standby light inside (a soft warm pool on the nest, about half the growing glow), the glass with the clean growing highlight, the base's foot light on, the nest lit and plump with its hollow visible, the plaque word `fog`. Game designer, 13:27, and the UI designer's key behaviour: ✓ Choose a pod opens Pods when the rack holds a pod and a bay is free",
+  "empty": "The empty Incubator invites incubating: a standby light inside (a soft warm pool on the nest, about half the growing glow), the glass with the clean growing highlight, the base's foot light on, the nest lit and plump with its hollow visible, the plaque word `fog`. ✓ Choose a pod opens Pods when the rack holds a pod and a bay is free",
   "cross buds": "game designer, 2026-10-09 13:27: a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready; only a founder's bud clears every chapter",
   "code": "UI designer, 2026-10-09: 184 wide at (808, 424), centred on the stamp's x 900; the widest code is 168 to 171 px",
   "bench": "architect, 2026-10-09 13:24: the frame word's stage part with the room's master; art director, 13:28: room-bench-stage-incubator, to be commissioned, until then room-bench-stage-collection"
@@ -27,7 +27,7 @@
  },
  "states": ["empty", "growing", "ready", "hatch"],
  "initial": "by the save: no bud, empty; a bud short of its minutes, growing; else ready",
- "stateRule": "Decided (owner, 2026-10-09 13:21). growing and ready are the bud's two states (the chamber has growing and ready, nothing else, 2026-10-08). empty: no bud, and an invitation to grow one. hatch: from ✓ Open until the screen changes to Habitat (events.hatch), input held. A region with `inStates` exists only in those states",
+ "stateRule": "growing and ready are the bud's two states (the chamber has growing and ready, nothing else). empty: no bud, and an invitation to grow one. hatch: from ✓ Open until the screen changes to Habitat (events.hatch), input held. A region with `inStates` exists only in those states",
  "regions": {
   "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-incubator", "until": "room-bench-stage-collection" },
   "rail": {
