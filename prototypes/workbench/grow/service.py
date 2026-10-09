@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """The Grow painting service (art-pipeline.md v2 §3–§5, the lead's brief of 2026-10-08): a genome in,
 the Station-size painted set out, checked, derived down, laid out by genome hash, every call logged
-with its cost. It runs on the sandbox VM: Node 22 for the controls and the plain placeholder
+with its provenance. It runs on the sandbox server: Node 22 for the controls and the plain placeholder
 (grow/controls.mjs), Python 3 with Pillow for the calls, the checks, the derived sizes and the sheets.
 
   python3 grow/service.py paint --species S01 --members 6        # the first six of the reference set (paid)
   python3 grow/service.py paint --species S01 --genome g.json    # one genome (paid)
   python3 grow/service.py paint --species S01 --digest S01-26c1ef67
   python3 grow/service.py calibrate                              # the checks on the stage 1 paintings, no calls
-  python3 grow/service.py report                                 # costs.json and the sheets, no calls
+  python3 grow/service.py report                                 # report.json and the sheets, no calls
 
 Per genome, under grow/out/<species>/<sha256[:16]>/ (deterministic: same genome, same directory):
   genome.json, controls/ (the control images and legend, from controls.mjs), plain/ (the placeholder),
@@ -16,9 +16,10 @@ Per genome, under grow/out/<species>/<sha256[:16]>/ (deterministic: same genome,
   station-portrait-600x620.png and station-portrait-300x310.png, station-side-600x620.png and
   station-side-300x310.png (the painted set, or the plain placeholder where painting failed twice),
   companion-280x300.png and token-48.png (derived from the portrait), manifest.json.
-Every paid call is appended to grow/log.jsonl: prompt, images by name and SHA-256, response id,
-usage, cost, seconds, the checks it passed or failed. Keys come from the environment and are never
-written.
+Every paid call is appended to grow/prompts.json: prompt, images by name and SHA-256, response id,
+usage, seconds, the checks it passed or failed. Its cost goes to the ledger outside this repository
+(ops/ledger, MB_LEDGER); without the ledger no call is made. Keys come from the environment and are
+never written.
 
 The checks (one named retry, then the placeholder): the painted silhouette against the control's
 (IoU after fitting by bounds, the stage 1 threshold 0.85); every part of the index pass covered by
@@ -32,6 +33,8 @@ from PIL import Image, ImageDraw, ImageFilter
 HERE = os.path.dirname(os.path.abspath(__file__))
 WB = os.path.dirname(HERE)
 REPO = os.path.dirname(os.path.dirname(WB))
+sys.path.insert(0, os.path.join(REPO, "ops", "ledger"))
+import ledger  # noqa: E402  the paid-call ledger (MB_LEDGER), outside this repository
 OUT = os.path.join(HERE, "out")
 PROMPTS = os.path.join(HERE, "prompts.json")
 ART_DIRECTION = open(os.path.join(HERE, "art-direction.txt")).read().strip()
@@ -45,9 +48,7 @@ REF = os.path.join(WB, "out", "reference")
 BG = (246, 243, 236)
 STYLE_REF = os.path.join(REPO, "art/miniature-lives/assets/rich-plain-300x310.png")
 PALETTE_48 = os.path.join(REPO, "art/retro-diffusion-trial/companion-palette-48.json")
-GEMINI_MODEL = os.environ.get("GROW_GEMINI_MODEL", "gemini-3-pro-image")  # the owner's pick after the prompt lab: the cute-pet bar before cost
-# USD per million tokens, ai.google.dev/gemini-api/docs/pricing on 2026-10-08 (standard tier).
-GEMINI_PRICES = {"gemini-3.1-flash-image": {"input": 0.50, "output": 60.0}, "gemini-3.1-flash-lite-image": {"input": 0.25, "output": 30.0}, "gemini-3-pro-image": {"input": 2.00, "output": 120.0}, "gemini-2.5-flash-image": {"input": 0.30, "output": 30.0}}
+GEMINI_MODEL = os.environ.get("GROW_GEMINI_MODEL", "gemini-3-pro-image")  # the owner's pick after the prompt lab: the cute-pet bar first
 VIEWS = ["portrait", "side"]
 CHECKS_VERSION = "mb-grow-checks/3"                    # band, span, proportions, slots
 PART_MIN = 0.60                                       # a gated part must hold paint along this share of its drawn length (its span)
@@ -58,6 +59,7 @@ DRAWING_BAND_MAX, DRAWING_PART_MIN = 0.18, 0.50       # and a drawing's band and
 SLOT_MARGIN = (1.5, 8)                                # a slot fails when its paint is clearly nearer another slot's pigment: own distance > 1.5 × nearest + 8 (Lab)
 PART_AREA_MIN, SLOT_AREA_MIN, CELL_AREA_MIN = 0.02, 0.01, 0.05             # parts, slots and part-by-slot cells smaller than this share of the body are not gated (eyes, feelers, feet)
 LOG_LOCK = threading.Lock()
+SPEND = {"calls": 0, "costUSD": 0.0}  # this process's paid calls, for --cost-out (never written into the repository)
 
 
 # --- files -------------------------------------------------------------------------------------------------
@@ -85,9 +87,10 @@ def read_log():
 
 
 def log_call(rec):
+    rec = ledger.strip(rec)
     with LOG_LOCK:
         calls = read_log(); calls.append(rec)
-        doc = {"schemaVersion": 1, "purpose": "The Grow painting service: every paid call with its three prompt fields (artDirection, description, reference) beside the controls text and the assembled prompt, its image inputs by name and SHA-256, response id, usage, cost, seconds and checks. No key material.", "calls": calls}
+        doc = {"schemaVersion": 1, "purpose": "The Grow painting service: every paid call with its three prompt fields (artDirection, description, reference) beside the controls text and the assembled prompt, its image inputs by name and SHA-256, response id, usage, seconds and checks. No key material.", "calls": calls}
         tmp = PROMPTS + ".tmp"; json.dump(doc, open(tmp, "w"), indent=1); open(tmp, "a").write("\n"); os.replace(tmp, PROMPTS)
 
 
@@ -349,6 +352,7 @@ def template(fields, reasons=None):
 def gemini_call(parts, record, model=None):
     key = os.environ.get("GEMINI_API_KEY")
     if not key: raise RuntimeError("GEMINI_API_KEY is not in the environment")
+    ledger.require_ledger(); ledger.price("google", model or GEMINI_MODEL)  # every paid call is logged at a known price: without the ledger the tool stops here, before the call
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model or GEMINI_MODEL}:generateContent"
     body = {"contents": [{"parts": parts}], "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": "1:1", "imageSize": "1K"}}}
     req = urllib.request.Request(url, data=json.dumps(body).encode(), headers={"x-goog-api-key": key, "Content-Type": "application/json"}, method="POST")
@@ -363,6 +367,12 @@ def gemini_call(parts, record, model=None):
             if attempt == 1: time.sleep(15)
     record["seconds"] = round(time.time() - t0, 1); record["httpStatus"] = status
     return status, res
+
+
+def ledger_record(rec, model, usage):
+    """The call's cost (usage at the ledger's list price) into the ledger, joined to the public record by its id."""
+    line = ledger.record("grow/service.py paint", os.path.relpath(PROMPTS, REPO) if os.path.abspath(PROMPTS).startswith(REPO + os.sep) else "grow-data:prompts.json", rec["id"], "google", model, usage=usage)
+    with LOG_LOCK: SPEND["calls"] += 1; SPEND["costUSD"] = round(SPEND["costUSD"] + (line["costUSD"] or 0), 5)
 
 
 def control_image(path, pass_name, variant):
@@ -393,8 +403,7 @@ def paint_view(d, legend, view, attempt, reasons, reference, portrait_png, varia
     if status != 200:
         rec["status"] = "failed"; rec["error"] = res.get("error", res); return rec, None
     rec["responseId"] = res.get("responseId"); rec["modelVersion"] = res.get("modelVersion"); usage = res.get("usageMetadata", {}); rec["usage"] = usage
-    prices = GEMINI_PRICES[GEMINI_MODEL]
-    rec["costUSD"] = round(usage.get("promptTokenCount", 0) / 1e6 * prices["input"] + usage.get("candidatesTokenCount", 0) / 1e6 * prices["output"], 5)
+    ledger_record(rec, GEMINI_MODEL, usage)
     part = next((p for p in res.get("candidates", [{}])[0].get("content", {}).get("parts", []) if "inlineData" in p), None)
     if not part:
         rec["status"] = "no-image"; rec["response"] = json.dumps(res)[:1500]; return rec, None
@@ -467,8 +476,7 @@ def call_logged(text, imgs, rec_fields, d_raw, raw_name, model=None):
     if status != 200:
         rec["status"] = "failed"; rec["error"] = res.get("error", res); return rec, None
     rec["responseId"] = res.get("responseId"); rec["modelVersion"] = res.get("modelVersion"); usage = res.get("usageMetadata", {}); rec["usage"] = usage
-    prices = GEMINI_PRICES[model]
-    rec["costUSD"] = round(usage.get("promptTokenCount", 0) / 1e6 * prices["input"] + usage.get("candidatesTokenCount", 0) / 1e6 * prices["output"], 5)
+    ledger_record(rec, model, usage)
     part = next((p for p in res.get("candidates", [{}])[0].get("content", {}).get("parts", []) if "inlineData" in p), None)
     if not part:
         rec["status"] = "no-image"; rec["response"] = json.dumps(res)[:1500]; return rec, None
@@ -571,9 +579,9 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
         rec, im = call_logged(text, imgs, {**common, "purpose": f"station-{view}-step1", "step": 1, "attempt": attempt, "fields": fields, "reasonsGiven": reasons}, os.path.join(d, "raw"), f"{view}-step1-{attempt}.png")
         if im is not None: rec["checks"] = {**check(im, ctrl, legend, DRAWING_TOL, DRAWING_BAND_MAX, DRAWING_PART_MIN), "proportionTolerance": DRAWING_TOL}
         log_call(rec)
-        man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
-        vrec["attempts"].append({"callId": rec["id"], "step": 1, "attempt": attempt, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-        print(legend["species"], legend["genomeDigest"], "twostep", view, f"step 1 attempt {attempt}", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+        man["calls"] += 1; man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
+        vrec["attempts"].append({"callId": rec["id"], "step": 1, "attempt": attempt, "status": rec["status"], "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
+        print(legend["species"], legend["genomeDigest"], "twostep", view, f"step 1 attempt {attempt}", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), flush=True)
         if im is not None and rec["checks"]["passed"]: drawing = im; break
         reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
     if drawing is None: return vrec, None
@@ -581,9 +589,9 @@ def two_step_view(d, d0, legend, view, reference, portrait_png, man, ctrl):
     fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
     rec, im = step2_call(d, d0, legend, view, drawing, common, ctrl, portrait_png)
     log_call(rec)
-    man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
-    vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-    print(legend["species"], legend["genomeDigest"], "twostep", view, "step 2", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} ({'would pass' if rec['checks']['passed'] else 'would fail'}, not gated)" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+    man["calls"] += 1; man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
+    vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
+    print(legend["species"], legend["genomeDigest"], "twostep", view, "step 2", rec["status"], (f"out {rec['checks']['outside']} miss {rec['checks']['missing']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} ({'would pass' if rec['checks']['passed'] else 'would fail'}, not gated)" if im is not None else rec.get("error", "")), flush=True)
     return vrec, im
 
 
@@ -624,7 +632,7 @@ def grow(species, genome=None, digest=None, force=False, variant="crisp", views=
     reference = species_reference(species, legend)
     man = {"schema": "mb-grow/1", "service": "grow/service.py", "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "controlVariant": variant, "views": {}, "species": species, "name": legend["name"], "level": legend["level"], "genomeDigest": legend["genomeDigest"], "genomeSha256": legend["genomeSha256"],
            "frameVersion": legend["frameVersion"], "catalogue": legend["catalogue"], "controls": legend["schema"], "plainVersion": legend["plainVersion"], "description": legend["description"]["text"], "reference": {"what": reference["what"], "name": reference["name"]},
-           "startedAt": now(), "outputs": {}, "calls": 0, "costUSD": 0.0, "seconds": 0.0}
+           "startedAt": now(), "outputs": {}, "calls": 0, "seconds": 0.0}
     portrait_png = None
     for view in views:
         ctrl = {p: os.path.join(d0, "controls", f"{p}.{view}.large.png") for p in ("silhouette", "index", "slots")}
@@ -640,9 +648,9 @@ def grow(species, genome=None, digest=None, force=False, variant="crisp", views=
             if im is not None:
                 rec["checks"] = check(im, ctrl, legend)
             log_call(rec)
-            man["calls"] += 1; man["costUSD"] = round(man["costUSD"] + (rec.get("costUSD") or 0), 5); man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
-            vrec["attempts"].append({"callId": rec["id"], "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
-            print(species, legend["genomeDigest"], sub or variant, view, f"attempt {attempt}", rec["status"], (f"IoU {rec['checks']['silhouetteIoU']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+            man["calls"] += 1; man["seconds"] = round(man["seconds"] + rec.get("seconds", 0), 1)
+            vrec["attempts"].append({"callId": rec["id"], "status": rec["status"], "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId")})
+            print(species, legend["genomeDigest"], sub or variant, view, f"attempt {attempt}", rec["status"], (f"IoU {rec['checks']['silhouetteIoU']} parts {min(v['span'] for v in rec['checks']['parts'].values()) if rec['checks']['parts'] else '-'} slots {rec['checks']['slotAgreement']} {'PASS' if rec['checks']['passed'] else 'FAIL'}" if im is not None else rec.get("error", "")), flush=True)
             if im is not None and rec["checks"]["passed"]: painted = im; break
             reasons = rec["checks"]["reasons"] if im is not None else ["the service returned no image"]
             if attempt == 2 and im is not None: vrec["lastRejected"] = f"raw/{view}-2.png"
@@ -709,11 +717,11 @@ def cmd_paint(a):
     for sp in sorted({j[0] for j in jobs}):
         if variant == "twostep" or sub is not None or sp == "S01" or (os.path.exists(os.path.join(SPECIES_DIR, sp, "portrait-600x620.png")) and not force): continue
         spec = os.path.join(REF, sp, "type-specimen", "genome.json")
-        man = grow(sp, spec, None, force, variant, views); print(sp, "type specimen", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
+        man = grow(sp, spec, None, force, variant, views); print(sp, "type specimen", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls", flush=True)
         jobs = [j for j in jobs if not (j[0] == sp and j[1] == spec)]
     with ThreadPoolExecutor(max_workers=int(a.get("workers", 3))) as ex:
         for man in ex.map(lambda j: grow(j[0], j[1], j[2], force, variant, views, sub), jobs):
-            print(man["species"], man["genomeDigest"], sub or variant, {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}", flush=True)
+            print(man["species"], man["genomeDigest"], sub or variant, {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls", flush=True)
 
 
 # --- calibration on the stage 1 paintings (no calls) --------------------------------------------------------
@@ -806,7 +814,7 @@ def cmd_pip_control(a):
     for f in os.listdir(os.path.join(spec_dir, "plain")): open(os.path.join(d0, "plain", f), "wb").write(open(os.path.join(spec_dir, "plain", f), "rb").read())
     open(os.path.join(d0, "genome.json"), "w").write(open(os.path.join(spec_dir, "genome.json")).read())
     man = grow("S01", None, None, "force" in a, "twostep", ["portrait"], "twostep", controls_dir=d0)
-    print("pip-control", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls ${man['costUSD']:.3f}")
+    print("pip-control", {v: man["views"][v]["status"] for v in man["views"]}, f"{man['calls']} calls")
 
 
 # --- recheck: the verdicts recomputed from the logged raw outputs --------------------------------------------
@@ -868,9 +876,9 @@ def cmd_recheck(a):
                     drawing = step1_ok[1]; drawing.save(os.path.join(d, f"step1-{view}-600x620.png")); fit_to_control(drawing, os.path.join(d0, "controls", f"silhouette.{view}.station.png"), (300, 310)).save(os.path.join(d, f"step1-{view}-300x310.png"))
                     common = {"controlVariant": "twostep", "species": m["species"], "genomeDigest": m["genomeDigest"], "genomeSha256": m["genomeSha256"], "promptSet": os.path.basename(PROMPT_SET)}
                     rec, im2 = step2_call(d, d0, legend, view, drawing, common, ctrl, extra={"afterRecheck": True})
-                    log_call(rec); m["calls"] += 1; m["costUSD"] = round(m["costUSD"] + (rec.get("costUSD") or 0), 5); m["seconds"] = round(m["seconds"] + rec.get("seconds", 0), 1)
-                    vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "costUSD": rec.get("costUSD"), "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId"), "afterRecheck": True})
-                    print(m["species"], m["genomeDigest"], "twostep", view, "step 2 after recheck", rec["status"], f"${rec.get('costUSD', 0) or 0:.3f}", flush=True)
+                    log_call(rec); m["calls"] += 1; m["seconds"] = round(m["seconds"] + rec.get("seconds", 0), 1)
+                    vrec["attempts"].append({"callId": rec["id"], "step": 2, "status": rec["status"], "seconds": rec.get("seconds"), "checks": rec.get("checks"), "responseId": rec.get("responseId"), "afterRecheck": True})
+                    print(m["species"], m["genomeDigest"], "twostep", view, "step 2 after recheck", rec["status"], flush=True)
                     if im2 is not None: painted = im2; served_by = "step 2 after recheck"
             else:
                 for at in vrec["attempts"]:
@@ -914,56 +922,100 @@ def variant_manifests():
 
 
 def variant_stats(mans, views):
-    calls = sum(m["calls"] for _, m in mans); cost = sum(m["costUSD"] for _, m in mans)
+    calls = sum(m["calls"] for _, m in mans)
     first = sum(1 for _, m in mans for v in views if m["views"].get(v, {}).get("attempts") and (m["views"][v]["attempts"][0].get("checks") or {}).get("passed"))
-    return {"individuals": len(mans), "calls": calls, "usdPerIndividual": round(cost / len(mans), 4) if mans else None, "firstAttemptPassRate": round(first / (len(mans) * len(views)), 3) if mans else None,
+    return {"individuals": len(mans), "calls": calls, "callsPerIndividual": round(calls / len(mans), 2) if mans else None, "firstAttemptPassRate": round(first / (len(mans) * len(views)), 3) if mans else None,
             "plainServed": sum(1 for _, m in mans for v in views if m["views"].get(v, {}).get("status") == "plain"), "retries": sum(len(m["views"][v]["attempts"]) - 1 for _, m in mans for v in views if v in m["views"])}
 
 
+def call_costs():
+    """The cost of each logged call by its id, from the ledger (MB_LEDGER): the live lines and the lines the
+    one-time move of 2026-10-09 took out of the public records. Empty without the ledger."""
+    d = os.environ.get("MB_LEDGER"); costs = {}
+    if not d or not os.path.isdir(d): return costs
+    public = os.path.relpath(PROMPTS, REPO)
+    for path in sorted(glob.glob(os.path.join(d, "migrated", "*-fields.jsonl"))):
+        for raw in open(path):
+            if not raw.strip(): continue
+            ln = json.loads(raw)
+            if ln.get("file") == public and "costUSD" in ln.get("fields", {}): costs[ln["recordId"]] = ln["fields"]["costUSD"]
+    for path in sorted(glob.glob(os.path.join(d, "calls", "*.jsonl"))):
+        for raw in open(path):
+            if not raw.strip(): continue
+            ln = json.loads(raw)
+            if ln.get("tool", "").startswith("grow/service.py") and ln.get("costUSD") is not None: costs[ln["public"]["record"]] = ln["costUSD"]
+    return costs
+
+
+def ledger_report(calls, mans, report):
+    """The dollar side of the report, written to $MB_LEDGER/reports/grow-<date>.json, never into the repository."""
+    d = os.environ.get("MB_LEDGER")
+    if not d or not os.path.isdir(d): return None
+    costs = call_costs(); ok = [c for c in calls if c.get("status") == "ok"]
+    man_cost = lambda m: sum(costs.get(at.get("callId"), 0) or 0 for vr in m["views"].values() for at in vr["attempts"])
+    out = {"tool": "grow/service.py report", "at": now(), "model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "callsPriced": sum(1 for c in calls if c["id"] in costs),
+           "spentAllVersionsUSD": round(sum(costs.get(c["id"], 0) or 0 for c in read_log()), 3), "spentUSD": round(sum(costs.get(c["id"], 0) or 0 for c in calls), 3),
+           "callUSDMean": round(sum(costs.get(c["id"], 0) or 0 for c in ok) / len(ok), 4) if ok else None, "bySpecies": {}}
+    if mans:
+        out["usdPerIndividualMean"] = round(sum(man_cost(m) for _, m in mans) / len(mans), 4)
+        out["usdPerMibiThreeStages"] = round(out["usdPerIndividualMean"] * 3, 3)
+        out["usdPerKitYear40"] = round(out["usdPerMibiThreeStages"] * 40, 2)
+        for sp in report["bySpecies"]:
+            ms = [m for _, m in mans if m["species"] == sp]
+            out["bySpecies"][sp] = {"usdPerIndividual": round(sum(man_cost(m) for m in ms) / len(ms), 4)}
+    os.makedirs(os.path.join(d, "reports"), exist_ok=True)
+    path = os.path.join(d, "reports", f"grow-{time.strftime('%Y-%m-%d')}.json")
+    json.dump(out, open(path, "w"), indent=1); open(path, "a").write("\n")
+    return path
+
+
 def cmd_report(a):
+    """report.json: calls, pass rates, seconds, retries, views served plain; then the sheets. No calls, no cost:
+    with MB_LEDGER set, the dollar summary goes to the ledger's reports/."""
     calls = [c for c in read_log() if c.get("service") == "gemini" and c.get("promptVersion", 1) == PROMPT_VERSION]
     ok = [c for c in calls if c.get("status") == "ok"]
     mans = [(d, m) for d, m in manifests() if m.get("promptVersion", 1) == PROMPT_VERSION]
     variants = {v: variant_stats(ms, ["portrait"]) for v, ms in variant_manifests().items()}
     main_variant = mans[0][1].get("controlVariant") if mans else None
-    cost = {"model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "controlVariant": main_variant, "variantTrials": variants, "spentAllVersionsUSD": round(sum(c.get("costUSD") or 0 for c in read_log()), 3), "calls": len(calls), "callsOk": len(ok), "callUSDMean": round(sum(c["costUSD"] for c in ok) / len(ok), 4) if ok else None, "callSecondsMean": round(sum(c["seconds"] for c in ok) / len(ok), 1) if ok else None,
-            "spentUSD": round(sum(c.get("costUSD") or 0 for c in calls), 3), "individuals": len(mans), "bySpecies": {}}
+    report = {"model": GEMINI_MODEL, "promptVersion": PROMPT_VERSION, "controlVariant": main_variant, "variantTrials": variants, "callsAllVersions": len(read_log()), "calls": len(calls), "callsOk": len(ok), "callSecondsMean": round(sum(c["seconds"] for c in ok) / len(ok), 1) if ok else None,
+              "individuals": len(mans), "bySpecies": {}}
     if mans:
-        cost["callsPerIndividualMean"] = round(sum(m["calls"] for _, m in mans) / len(mans), 2)
-        cost["usdPerIndividualMean"] = round(sum(m["costUSD"] for _, m in mans) / len(mans), 4)
-        cost["secondsPerIndividualMean"] = round(sum(m["seconds"] for _, m in mans) / len(mans), 1)
-        cost["usdPerMibiThreeStages"] = round(cost["usdPerIndividualMean"] * 3, 3)
-        cost["usdPerKitYear40"] = round(cost["usdPerMibiThreeStages"] * 40, 2)
+        report["callsPerIndividualMean"] = round(sum(m["calls"] for _, m in mans) / len(mans), 2)
+        report["secondsPerIndividualMean"] = round(sum(m["seconds"] for _, m in mans) / len(mans), 1)
+        report["callsPerMibiThreeStages"] = round(report["callsPerIndividualMean"] * 3, 2)
+        report["callsPerKitYear40"] = round(report["callsPerMibiThreeStages"] * 40, 1)
         # the views a run painted (portrait only since v5); a step 1 retry is one attempt with step 1, served plain is a view without a painting
         vw = lambda m: list(m["views"])
         s1 = lambda vr: [at for at in vr["attempts"] if at.get("step", 1) == 1]
         n_views = sum(len(vw(m)) for _, m in mans)
-        cost["views"] = sorted({v for _, m in mans for v in vw(m)})
-        cost["retries"] = sum(max(0, len(s1(m["views"][v])) - 1) for _, m in mans for v in vw(m))
-        cost["plainServed"] = sum(1 for _, m in mans for v in vw(m) if m["views"][v]["status"] == "plain")
-        cost["firstAttemptPassRate"] = round(sum(1 for _, m in mans for v in vw(m) if s1(m["views"][v]) and (s1(m["views"][v])[0].get("checks") or {}).get("passed")) / n_views, 3) if n_views else None
-        cost["paintedRate"] = round(sum(1 for _, m in mans for v in vw(m) if m["views"][v]["status"] == "painted") / n_views, 3) if n_views else None
+        report["views"] = sorted({v for _, m in mans for v in vw(m)})
+        report["retries"] = sum(max(0, len(s1(m["views"][v])) - 1) for _, m in mans for v in vw(m))
+        report["plainServed"] = sum(1 for _, m in mans for v in vw(m) if m["views"][v]["status"] == "plain")
+        report["firstAttemptPassRate"] = round(sum(1 for _, m in mans for v in vw(m) if s1(m["views"][v]) and (s1(m["views"][v])[0].get("checks") or {}).get("passed")) / n_views, 3) if n_views else None
+        report["paintedRate"] = round(sum(1 for _, m in mans for v in vw(m) if m["views"][v]["status"] == "painted") / n_views, 3) if n_views else None
         for sp in sorted({m["species"] for _, m in mans}):
             ms = [m for _, m in mans if m["species"] == sp]
-            cost["bySpecies"][sp] = {"individuals": len(ms), "calls": sum(m["calls"] for m in ms), "usdPerIndividual": round(sum(m["costUSD"] for m in ms) / len(ms), 4),
-                                     "plainServed": sum(1 for m in ms for v in vw(m) if m["views"][v]["status"] == "plain"), "retries": sum(max(0, len(s1(m["views"][v])) - 1) for m in ms for v in vw(m)),
-                                     "firstAttemptPassRate": round(sum(1 for m in ms for v in vw(m) if s1(m["views"][v]) and (s1(m["views"][v])[0].get("checks") or {}).get("passed")) / sum(len(vw(m)) for m in ms), 3)}
-    json.dump(cost, open(os.path.join(HERE, "costs.json"), "w"), indent=1); open(os.path.join(HERE, "costs.json"), "a").write("\n")
-    print(json.dumps(cost, indent=1))
+            report["bySpecies"][sp] = {"individuals": len(ms), "calls": sum(m["calls"] for m in ms), "callsPerIndividual": round(sum(m["calls"] for m in ms) / len(ms), 2), "secondsPerIndividual": round(sum(m["seconds"] for m in ms) / len(ms), 1),
+                                       "plainServed": sum(1 for m in ms for v in vw(m) if m["views"][v]["status"] == "plain"), "retries": sum(max(0, len(s1(m["views"][v])) - 1) for m in ms for v in vw(m)),
+                                       "firstAttemptPassRate": round(sum(1 for m in ms for v in vw(m) if s1(m["views"][v]) and (s1(m["views"][v])[0].get("checks") or {}).get("passed")) / sum(len(vw(m)) for m in ms), 3)}
+    json.dump(report, open(os.path.join(HERE, "report.json"), "w"), indent=1); open(os.path.join(HERE, "report.json"), "a").write("\n")
+    print(json.dumps(report, indent=1))
+    lp = ledger_report(calls, mans, report)
+    if lp: print("the dollar summary is in the ledger:", os.path.basename(lp))
     if PROMPT_VERSION >= 5:
-        if mans: sheet_validation(mans, cost)
+        if mans: sheet_validation(mans, report)
         return
-    if mans: sheets(mans, cost)
+    if mans: sheets(mans, report)
     if PROMPT_VERSION >= 4:
-        sheet_loika(cost)
+        sheet_loika(report)
         for sp in ("S01", "S09", "S12"): sheet_extremes(sp)
 
 
-def sheet_validation(mans, cost):
+def sheet_validation(mans, report):
     """The validation run on the service's prompt set: one sheet per species, the accepted Pip in the first row
     (the bar), then the type specimen and the individuals: the control (the shaded pass, portrait, framed by the
     prompt's rule), step 1's drawing, step 2's painting, the derived Companion and token, with each one's
-    status, calls, cost and checks. sheets/validation-<species>.png."""
+    status, calls, seconds and checks. sheets/validation-<species>.png."""
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
     cols = [("control: shaded pass, portrait (framed by the prompt's rule)", 300), ("step 1: the HiBit drawing (gated, one named retry)", 300), ("step 2: the painting (checks logged)", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200)]
     gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
@@ -972,8 +1024,8 @@ def sheet_validation(mans, cost):
         rows.sort(key=lambda dm: (dm[1]["level"] != "species", dm[1]["genomeDigest"]))
         W = gap + sum(w + gap for _, w in cols) + 40; H = 70 + (len(rows) + 1) * rowh
         sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
-        bs = cost["bySpecies"].get(sp, {})
-        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the validation run on prompt set {os.path.basename(PROMPT_SET)} (prompt v{cost['promptVersion']}), {cost['model']}, variant B, portrait, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and the individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0) or 0:.3f} a mibi, step 1 first-attempt pass {bs.get('firstAttemptPassRate')}, {bs.get('retries')} retries, {bs.get('plainServed')} served plain.", fill=ink)
+        bs = report["bySpecies"].get(sp, {})
+        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the validation run on prompt set {os.path.basename(PROMPT_SET)} (prompt v{report['promptVersion']}), {report['model']}, variant B, portrait, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and the individuals. {bs.get('calls')} calls, {bs.get('callsPerIndividual')} a mibi, step 1 first-attempt pass {bs.get('firstAttemptPassRate')}, {bs.get('retries')} retries, {bs.get('plainServed')} served plain.", fill=ink)
         x = gap
         for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
         y = 44
@@ -995,13 +1047,13 @@ def sheet_validation(mans, cost):
             vr = m["views"]["portrait"]; a1 = [a for a in vr["attempts"] if a.get("step") == 1]; a2 = [a for a in vr["attempts"] if a.get("step") == 2]
             c1 = (a1[-1].get("checks") or {}) if a1 else {}; c2 = (a2[-1].get("checks") or {}) if a2 else {}
             pm = lambda c: min(v["span"] if isinstance(v, dict) else v for v in c["parts"].values()) if c.get("parts") else "-"
-            draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   {vr['status']}, {len(vr['attempts'])} calls, ${m['costUSD']:.3f}, {m['seconds']} s   |   step 1 ({len(a1)} tr{'y' if len(a1) == 1 else 'ies'}): outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {pm(c1)}, slots {c1.get('slotAgreement', '-')}" + (f"   |   step 2 (not gated): outside {c2.get('outside', '-')}, missing {c2.get('missing', '-')}, parts min {pm(c2)}, slots {c2.get('slotAgreement', '-')}" if c2 else ""), fill=ink)
+            draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   {vr['status']}, {len(vr['attempts'])} calls, {m['seconds']} s   |   step 1 ({len(a1)} tr{'y' if len(a1) == 1 else 'ies'}): outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {pm(c1)}, slots {c1.get('slotAgreement', '-')}" + (f"   |   step 2 (not gated): outside {c2.get('outside', '-')}, missing {c2.get('missing', '-')}, parts min {pm(c2)}, slots {c2.get('slotAgreement', '-')}" if c2 else ""), fill=ink)
             if vr["status"] == "plain": draw.text((gap, y + 340), "served plain: step 1 rejected twice", fill=(170, 40, 40))
             if a1 and a1[-1].get("checks") and a1[-1]["checks"].get("reasons"): draw.text((gap, y + 326), "last step 1 reasons: " + "; ".join(a1[-1]["checks"]["reasons"])[:260], fill=(120, 60, 60))
         sheet.save(os.path.join(HERE, "sheets", f"validation-{sp}.png")); print("sheet validation", sp, sheet.size)
 
 
-def sheet_loika(cost):
+def sheet_loika(report):
     """The Loika calibrated to Pip: the accepted Pip, then per individual the new control (the shaded
     pass, portrait), variant B's step 1 drawing and step 2 painting on the calibrated rig, and the
     previous B (prompt v3, the old rig) matched by reference-set member; last the Pip-silhouette
@@ -1025,8 +1077,8 @@ def sheet_loika(cost):
     gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
     W = gap + sum(w + gap for _, w in cols); H = 70 + (len(rows) + 2) * rowh
     sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
-    bs = cost.get("variantTrials", {}).get("twostep", {})
-    draw.text((gap, 8), f"S01 Loika calibrated to the accepted Pip: variant B (two steps, crisp controls, only the named markings, a drawing's tolerance of 25 %), {cost['model']}, prompt v{PROMPT_VERSION}, device size at 1x. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0) or 0:.3f} a portrait, step 1 first-attempt pass {bs.get('firstAttemptPassRate')}, {bs.get('plainServed')} served plain. Last row: the Pip-silhouette control experiment.", fill=ink)
+    bs = report.get("variantTrials", {}).get("twostep", {})
+    draw.text((gap, 8), f"S01 Loika calibrated to the accepted Pip: variant B (two steps, crisp controls, only the named markings, a drawing's tolerance of 25 %), {report['model']}, prompt v{PROMPT_VERSION}, device size at 1x. {bs.get('calls')} calls, {bs.get('callsPerIndividual')} a portrait, step 1 first-attempt pass {bs.get('firstAttemptPassRate')}, {bs.get('plainServed')} served plain. Last row: the Pip-silhouette control experiment.", fill=ink)
     x = gap
     for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
     y = 44
@@ -1041,7 +1093,7 @@ def sheet_loika(cost):
     def label(tm):
         vr = tm["views"]["portrait"]; s1 = [a for a in vr["attempts"] if a.get("step") == 1]; s2 = [a for a in vr["attempts"] if a.get("step") == 2]
         c1 = (s1[-1].get("checks") or {}) if s1 else {}; c2 = (s2[-1].get("checks") or {}) if s2 else {}
-        return (f"{vr['status']}, {len(vr['attempts'])} calls, ${tm['costUSD']:.3f} | step 1: outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')}"
+        return (f"{vr['status']}, {len(vr['attempts'])} calls, {tm['seconds']} s | step 1: outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')}"
                 + (f" | step 2 (not gated): outside {c2.get('outside', '-')}, slots {c2.get('slotAgreement', '-')}" if c2 else ""))
     for r, (d, m, td, tm) in enumerate(rows + ([(os.path.join(OUT, "S01", "pip-control"), None, exp, json.load(open(os.path.join(exp, "manifest.json"))))] if os.path.exists(os.path.join(exp, "manifest.json")) else [])):
         y = 44 + (r + 1) * rowh; x = gap
@@ -1096,15 +1148,15 @@ def sheet_extremes(sp):
         vals = [f"{k.split('.')[-1].replace('-ratio', '')} = {v}" for k, v in c["set"].items()] or ["(the type specimen)"]
         for j, v in enumerate(vals[:22]): draw.text((x, y + 4 + 13 * j), v, fill=ink)
         vr = tm["views"]["portrait"]; s1 = [a for a in vr["attempts"] if a.get("step") == 1]; c1 = (s1[-1].get("checks") or {}) if s1 else {}
-        draw.text((gap, y + 312), f"case #{i} {c['name']}   |   {vr['status']}, {len(vr['attempts'])} calls, ${tm['costUSD']:.3f}   |   step 1: outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')}", fill=ink)
+        draw.text((gap, y + 312), f"case #{i} {c['name']}   |   {vr['status']}, {len(vr['attempts'])} calls, {tm['seconds']} s   |   step 1: outside {c1.get('outside', '-')}, missing {c1.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in c1['parts'].values()) if c1.get('parts') else '-'}, slots {c1.get('slotAgreement', '-')}", fill=ink)
         if vr["status"] == "plain": draw.text((gap + 2 * 312, y + 326), "served plain: step 1 rejected twice", fill=(170, 40, 40))
     sheet.save(os.path.join(HERE, "sheets", f"extremes-{sp}-B.png")); print("sheet extremes", sp, sheet.size)
 
 
-def sheets(mans, cost):
+def sheets(mans, report):
     os.makedirs(os.path.join(HERE, "sheets"), exist_ok=True)
     vm = variant_manifests(); trial_names = sorted(vm)
-    cols = [("previous run (prompt v2), portrait", 300), (f"A: painted Station, portrait ({cost.get('controlVariant')} control)", 300), ("A: painted Station, side", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200), ("control: shaded pass as sent, portrait", 300)]
+    cols = [("previous run (prompt v2), portrait", 300), (f"A: painted Station, portrait ({report.get('controlVariant')} control)", 300), ("A: painted Station, side", 300), ("Companion 280x300, derived", 280), ("token 48 at 1x and 3x, derived", 200), ("control: shaded pass as sent, portrait", 300)]
     for t in trial_names: cols += [("B: two steps, step 2 (rich), portrait", 300), ("B: step 1, the HiBit drawing", 300)] if t == "twostep" else [(f"trial: {t} control, portrait", 300)]
     gap = 12; rowh = 310 + 44; ink = (40, 40, 50)
     for sp in sorted({m["species"] for _, m in mans}):
@@ -1112,8 +1164,8 @@ def sheets(mans, cost):
         rows.sort(key=lambda dm: (dm[1]["level"] != "species", dm[1]["genomeDigest"]))
         W = gap + sum(w + gap for _, w in cols); H = 70 + (len(rows) + 1) * rowh
         sheet = Image.new("RGB", (W, H), (255, 255, 255)); draw = ImageDraw.Draw(sheet)
-        bs = cost["bySpecies"].get(sp, {})
-        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the Grow painting service, {cost['model']}, prompt v{cost['promptVersion']}, {cost.get('controlVariant')} control, structural checks, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and five individuals. {bs.get('calls')} calls, ${bs.get('usdPerIndividual', 0):.3f} an individual (two views, retries included), {bs.get('retries')} retries, {bs.get('plainServed')} views served plain.", fill=ink)
+        bs = report["bySpecies"].get(sp, {})
+        draw.text((gap, 8), f"{sp} {rows[0][1]['name']}: the Grow painting service, {report['model']}, prompt v{report['promptVersion']}, {report.get('controlVariant')} control, structural checks, device size at 1x. Row 1: the accepted Pip, the bar. Then the type specimen and five individuals. {bs.get('calls')} calls, {bs.get('callsPerIndividual')} an individual (two views, retries included), {bs.get('retries')} retries, {bs.get('plainServed')} views served plain.", fill=ink)
         x = gap
         for name, w in cols: draw.text((x, 26), name, fill=ink); x += w + gap
         y = 44
@@ -1145,7 +1197,7 @@ def sheets(mans, cost):
             def vtxt(v):
                 vr = m["views"][v]; last = vr["attempts"][-1].get("checks") or {}
                 return f"{v}: {vr['status']}, {len(vr['attempts'])} call{'s' if len(vr['attempts']) > 1 else ''}, outside {last.get('outside', '-')}, missing {last.get('missing', '-')}, parts min {min(v['span'] if isinstance(v, dict) else v for v in last['parts'].values()) if last.get('parts') else '-'}, slots {last.get('slotAgreement', '-')} (IoU {last.get('silhouetteIoU', '-')}, not gated)"
-            draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   ${m['costUSD']:.3f}, {m['seconds']} s   |   {vtxt('portrait')}   |   {vtxt('side')}", fill=ink)
+            draw.text((gap, y + 312), f"{m['genomeDigest']}  {'type specimen' if m['level'] == 'species' else 'individual'}  sha256 {m['genomeSha256'][:12]}   {m['calls']} calls, {m['seconds']} s   |   {vtxt('portrait')}   |   {vtxt('side')}", fill=ink)
             for v in VIEWS:
                 if m["views"][v]["status"] == "plain": draw.text((gap + (312 if v == "portrait" else 624), y + 326), "served plain: rejected twice", fill=(170, 40, 40))
         sheet.save(os.path.join(HERE, "sheets", f"{sp}.png")); print("sheet", sp, sheet.size)
@@ -1156,12 +1208,18 @@ if __name__ == "__main__":
     a = {}; argv = sys.argv[2:]
     for i, t in enumerate(argv):
         if t.startswith("--"): a[t[2:]] = argv[i + 1] if i + 1 < len(argv) and not argv[i + 1].startswith("--") else ""
-    # --out <dir> (or GROW_OUT): the output root, with the call log beside it, so a service on the VM writes its
+    # --out <dir> (or GROW_OUT): the output root, with the call log beside it, so a service writes its
     # sets and its log into a data directory outside the release (station-build.md G1); the default stays grow/out
     out_root = a.get("out") or os.environ.get("GROW_OUT")
     if out_root:
         OUT = os.path.abspath(out_root); PROMPTS = os.path.join(OUT, "prompts.json"); os.makedirs(OUT, exist_ok=True)
-    if cmd == "paint": cmd_paint(a)
+    if cmd == "paint":
+        # --cost-out FILE: {"calls", "costUSD"} of this run for the Caddy painter; FILE is never inside the repository
+        cost_out = a.get("cost-out")
+        if cost_out and (os.path.abspath(cost_out) + os.sep).startswith(REPO + os.sep): sys.exit("--cost-out must name a file outside the repository")
+        try: cmd_paint(a)
+        finally:
+            if cost_out: json.dump(SPEND, open(cost_out, "w"))
     elif cmd == "calibrate": cmd_calibrate(a)
     elif cmd == "recheck": cmd_recheck(a)
     elif cmd == "pip-control": cmd_pip_control(a)
