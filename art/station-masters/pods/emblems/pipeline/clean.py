@@ -26,7 +26,7 @@ def rows_of(name):
             if not m[y][x] and sum(m[y + dy][x + dx] for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))) >= 3: m[y][x] = True
     return ["".join(("+" if (y == 0 or not m[y - 1][x] or x == 0 or not m[y][x - 1]) else "#") if m[y][x] else "." for x in range(N)) for y in range(N)]
 if __name__ == "__main__":
-    for n in [f"{k}-{c}" for k in ("tail", "leg") for c in "abcd"]:
+    for n in ([a for a in sys.argv[1:] if not a.startswith("--")] or [f"{k}-{c}" for k in ("tail", "leg") for c in "abcd"]):
         p = os.path.join(HERE, "clean", n + ".txt")
         if os.path.exists(p) and "--force" not in sys.argv: continue
         open(p, "w").write(f"; legs-tail pictogram {n}: Gemini 96 px pictogram (in96/{n}-96.png) pixelated to 24 by Retro Diffusion (rd/{n}-rd.png), reduced to its silhouette on the 24 grid; # base, + lit edge (above or left empty), . empty. Hand edits follow.\n" + "\n".join(rows_of(n)) + "\n")

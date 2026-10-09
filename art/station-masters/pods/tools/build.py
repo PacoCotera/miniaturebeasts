@@ -91,11 +91,11 @@ def listcol():
         sk = k.crop(box); bb = bbox_alpha(sk, 90); cx, cy = (bb[0] + bb[2]) // 2, (bb[1] + bb[3]) // 2; side = int(max(bb[2] - bb[0], bb[3] - bb[1]) * (1.0 if "empty" in nm else 1.12))
         c = sk.crop((cx - side // 2, cy - side // 2, cx + side // 2, cy + side // 2)).resize((64, 64), Image.LANCZOS)
         save(nm, c, [40, 52, 64, 64], "colour-to-alpha on the flat ground, the ring cut square, 64x64 (hollow)", "well-rings2")
-        c80 = Image.new("RGBA", (80, 80), (0, 0, 0, 0)); c80.alpha_composite(c, (8, 8)); save("ring-well-empty-80x80", c80, [24, 44, 80, 80], "the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin", "well-rings2")
+        c80 = Image.new("RGBA", (80, 80), (0, 0, 0, 0)); c80.alpha_composite(c, (8, 8)); save("ring-well-empty-80x80", c80, [16, 44, 80, 80], "the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin", "well-rings2")
     im = load("hatch-leaf.jpg"); bg = border_median(im); h = color_to_alpha(im, bg, 0.05); bb = bbox_alpha(h, 60)
     pad = 10; lf = h.crop((bb[0] - pad, bb[1] - pad, bb[2] + pad, bb[3] + pad)); sc = 28 / lf.height; lf = lf.resize((max(1, round(lf.width * sc)), 28), Image.LANCZOS)
-    cv = Image.new("RGBA", (112, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((112 - lf.width) // 2, 14)); save("ring-hatch", cv, [24, 488, 112, 56], "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box", "hatch-leaf")
-    cv = Image.new("RGBA", (80, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((80 - lf.width) // 2, 14)); save("ring-hatch-80x56", cv, [24, 488, 80, 56], "the hatch at the 112 px column's width: the same etched leaf centred in 80x56", "hatch-leaf")
+    cv = Image.new("RGBA", (112, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((112 - lf.width) // 2, 14)); save("ring-hatch", cv, [0, 488, 112, 56], "a leaf etched into the column glass (colour-to-alpha), 24 px leaf centred, no box", "hatch-leaf")
+    cv = Image.new("RGBA", (80, 56), (0, 0, 0, 0)); cv.alpha_composite(lf, ((80 - lf.width) // 2, 14)); save("ring-hatch-80x56", cv, [16, 488, 80, 56], "the hatch at the 112 px column's width: the same etched leaf centred in 80x56", "hatch-leaf")
 # ---- rail tab plates
 def tabs():
     """Tabs hang from the top bar: parallelograms leaning 16 px right over 40 px, a full tab 136 wide (slice 152x40) and a
@@ -255,7 +255,7 @@ def wellrings():
         im = load(path); bg = border_median(im); k = color_to_alpha(im, bg, 0.04); a = np.asarray(k)[..., 3]
         ys, xs = np.where(a > thr); cx, cy = (xs.min() + xs.max()) / 2, (ys.min() + ys.max()) / 2; dia = max(xs.max() - xs.min(), ys.max() - ys.min()) + 1
         f = d_out / dia; side = 80 / f; box = (round(cx - side / 2), round(cy - side / 2), round(cx + side / 2), round(cy + side / 2))
-        out = k.crop(box).resize((80, 80), Image.LANCZOS); save(name, out, [24, 44, 80, 80], made, path.replace(".jpg", ""))
+        out = k.crop(box).resize((80, 80), Image.LANCZOS); save(name, out, [16, 44, 80, 80], made, path.replace(".jpg", ""))
     ring("ring-selected.jpg", 66, 170, "ring-well-selected-80x80", "the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80")
     ring("ring-idle.jpg", 66, 120, "ring-well-idle-80x80", "the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80")
     S = 8; R_ARC = 24.0
@@ -266,7 +266,7 @@ def wellrings():
     def over(top, bot):
         a1 = bot[..., 3:4] / 255; a2 = top[..., 3:4] / 255; ao = a2 + a1 * (1 - a2)
         col = np.where(ao > 0, (top[..., :3] * a2 + bot[..., :3] * a1 * (1 - a2)) / np.maximum(ao, 1e-6), 0); return np.concatenate([col, ao * 255], 2)
-    def out(arr, name, made): save(name, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [24, 44, 80, 80], made, "procedural, supersampled 8x")
+    def out(arr, name, made): save(name, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [16, 44, 80, 80], made, "procedural, supersampled 8x")
     for st, line_col, line_alpha, groove_alpha in (("idle", np.array([190.0, 150.0, 108.0]), 0.55, 0.42),):
         groove = rgba(cover((rr >= R_ARC - 1.6) & (rr <= R_ARC + 1.6)), np.array([6.0, 12.0, 18.0]), groove_alpha)
         lip = rgba(cover((rr > R_ARC + 1.6) & (rr <= R_ARC + 2.3) & (xx + yy > 0)), np.array([110.0, 140.0, 156.0]), 0.28)
@@ -605,7 +605,7 @@ def pods():
         def put(arr, extra=None):
             im = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA").resize((pw, ph), Image.LANCZOS)
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
-        r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [44, 60, 40, 48]}.get(cls, [None, None, w, h])
+        r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [36, 60, 40, 48]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
         if cls == "well":
             # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it

@@ -46,5 +46,17 @@
   "tool": "retro-diffusion rd_pro__pixelate",
   "usd": 0.18,
   "evidence": "task d8bd5484-0c4c-424f-b54e-39890b7e7797"
+ },
+ {
+  "tag": "legs-tail pictogram tail-a2 (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 28997306-7e12-4e10-9ff9-afe1d74dcef9"
+ },
+ {
+  "tag": "legs-tail pictogram tail-a2 (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 21f337ab-f904-4610-a0d1-eb6254a2e946"
  }
 ]

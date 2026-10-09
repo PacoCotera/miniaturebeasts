@@ -31,7 +31,7 @@ def one(name, run):
     json.dump(side, open(os.path.join(HERE, "rd", name + ".json"), "w"), indent=1)
     return name, 200, side["result"], side
 if __name__ == "__main__":
-    run = "--run" in sys.argv; names = [f"{k}-{c}" for k in ("tail", "leg") for c in "abcd"]; spend = json.load(open(SPEND)) if os.path.exists(SPEND) else []
+    run = "--run" in sys.argv; names = [a for a in sys.argv[1:] if not a.startswith("--")] or [f"{k}-{c}" for k in ("tail", "leg") for c in "abcd"]; spend = json.load(open(SPEND)) if os.path.exists(SPEND) else []
     with cf.ThreadPoolExecutor(4) as ex:
         for n, st, info, side in ex.map(lambda n: one(n, run), names):
             print(n, st, info)
