@@ -8737,9 +8737,9 @@
   "src": "typed by hand",
   "made": "the tide pearl, drawn again at 16 px (pass 72): one shallow open bowl, 14x5, frostS grey with a light fog rim, holding a bright bone pearl of 6x6 with one white highlight at its top left, clear ground above it; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "56c395c1433bd66f4d7843c7e6a449bc9f60b725d0a2f3948c1fe861c4218ab0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 72 verdict",
+  "status_note": "a hand-drawn small find at 16 px (the shard with its right spike trimmed so row 6 ends in line with row 7)"
  },
  "find-shard-16x16": {
   "size": [
@@ -8749,9 +8749,9 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the storm-glass shard, drawn again at 16 px (pass 72): an irregular slab of frostS with two facet tones (a light facet down its left, the grey body) and a mist edge, a second small peak and a bulging right side, on a low uneven rubble of bark and soil; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "d2113beee9890a1300427d1e6b002eeabc94446ebf9b93365cbc688d18f14304",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 69: a hand-drawn master of the Cross splice view (origin/design-cross-splice 782d619), typed pixel by pixel at its size; awaiting verdict"
+  "sha256": "0efb62f44b4cb30eee324d83c75908aa6f849cb0df1d42edf40ff03ba847a47c",
+  "status": "signed",
+  "signed_in": "pass 72 verdict",
+  "status_note": "a hand-drawn small find at 16 px (the shard with its right spike trimmed so row 6 ends in line with row 7)"
  }
 }
