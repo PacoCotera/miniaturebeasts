@@ -316,7 +316,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | **L0 Toolchain** | Emscripten in CI; the face as an empty 1024×600 LVGL display in the Station page behind `?face=lvgl`, the JavaScript layer still the default; the native Linux build; size and phone checks | 2–3 |
 | **L1 The frame in LVGL** | Top bar, bottom line, message plate, focus ring, panel from `frame.json`, driven by today's views over the bridge; fonts from the converter | 4–5 |
 | **L2 Pods to parity** | List, rail, page, specimen, stamp label; the focus graph and animations; the painted slices as LVGL images; checks on the framebuffer; the journey run against both faces | 5–7 |
-| **L3 Switch** | LVGL becomes the default; the JavaScript layer's drawing modules are deleted; T2, M5 and M6 continue on the LVGL face | 1–2 |
+| **L3 Switch** | LVGL becomes the default; the JavaScript layer's drawing modules are deleted; T2, M5 and M6 continue on the LVGL face. **Superseded** by the development spec [lvgl-switch.md](lvgl-switch.md) (2026-10-09): L2.0 to L2.5 for every screen, then L3 | 1–2 |
 
 **The price, honestly: 12 to 17 working days**, about three weeks, before the next new Station screen ships. Of those, roughly 9 to 12 are C work P1 needs anyway (the shared face, Station components, fonts and assets through LVGL). The rest, 3 to 5 days, is new: the WebAssembly glue, the bridge and the three-pass checks. Keeping the layer costs nothing now. At P1 it costs rebuilding in C every Station screen made in JavaScript in the meantime (Home, Create, Incubator, Habitat, the Library, Cross, Sitting), plus a period when sandbox and device faces can disagree.
 
