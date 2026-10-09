@@ -1,7 +1,7 @@
 // The Station page: boot (the frames fetched from the workbench registry beside the page), the frame
 // loop, the device keys, the Caddy's one key, the shared save's storage event, the developer panel and
 // the test hooks. Rules are in state.mjs, drawing in the screens.
-import { SW, SH, STAGE_Y, STAGE_H, clock, motion, artSize } from "./pixels.mjs";
+import { SW, SH, STAGE_Y, STAGE_H, PALETTE, clock, motion, artSize } from "./pixels.mjs";
 import { ditherFill, setIcons, offPalette, bindCanvas } from "./gfx.mjs";
 import { bootStationCanvas } from "../../ui/render/browser.mjs";
 import { Scene } from "../../ui/scene.mjs";
@@ -171,7 +171,9 @@ const bootLayer = async () => {
 };
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
 for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, policy: "type", status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
-const faceBoot = FACE_FLAG ? bootFace().then((f) => { FACE = f; }).catch((e) => { console.error("the LVGL face did not load: " + e.message); }) : Promise.resolve();
+// The handshake's follow-up (lvgl-switch.md §2.1): the palette, then every spec file the page loaded, as the face's loader reads them; a refusal is an error message, counted by the checks.
+const sendBoot = (f) => { f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) }); for (const [screen, json] of Object.entries(SPECS)) if (json && typeof json === "object") f.send({ t: "spec", screen, json }); };
+const faceBoot = FACE_FLAG ? bootFace(undefined, { test: new URLSearchParams(location.search).has("test") }).then((f) => { sendBoot(f); FACE = f; }).catch((e) => { const m = "the LVGL face did not load (?face=lvgl): import of " + new URL("../../face/dist/face.mjs", import.meta.url).pathname + " failed: " + e.message; console.error(m); const p = document.createElement("p"); p.id = "faceError"; p.textContent = m; document.body.prepend(p); }) : Promise.resolve();
 const ready = Promise.all([loadFrames(), bootLayer(), faceBoot]).then(([info]) => {
   if (FACE) { CTX = LAYER.ctx = { ...CTX, measure: (t, px) => FACE.measure(t, px) }; const [r, g, b] = faceEnv.rgb(SPECS.frame.colours.chrome); FACE.setBackground((r << 16) | (g << 8) | b); }   // the views lay text out with the widths LVGL's font engine gives
   loadSettings(); load();

@@ -11,7 +11,7 @@
 // The approved names (design/proposals/species-names.md): one per species, one per clan. The clan
 // name doubles as the genus on the tome's clan plate, so S01 is Lophessa loika.
 export const SPECIES_NAMES = { S01: "Loika", S02: "Untuva", S03: "Tuikis", S04: "Hiljan", S05: "Tepor", S06: "Pesko", S07: "Azkon", S08: "Rupar", S09: "Belatz", S10: "Igara", S11: "Kilpo", S12: "Peplos", S13: "Oskol", S14: "Usvel", S15: "Lehten", S16: "Blikur" };
-export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Skapana", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
+export const CLAN_NAMES = { C01: "Lophessa", C02: "Kausida", C03: "Stilbera", C04: "Lathreta", C05: "Dasyla", C06: "Prosopa", C07: "Aulaka", C08: "Kremnion", C09: "Aithria", C10: "Kolymba", C11: "Thyreka", C12: "Graptoma", C13: "Lepidos", C14: "Kapnis", C15: "Phyllaxa", C16: "Brontelas" };
 
 import { proportionPairs } from "./proportions.mjs";
 
