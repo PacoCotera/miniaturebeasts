@@ -5452,8 +5452,8 @@
    24
   ],
   "src": "geometry, seeded stipple",
-  "made": "the unidentified pod's mark, veiled: a 22 px disc in frostS at alpha 0.22 with a frostD stipple (about 0.5 alpha above the veil) and a faint lit rim; its mean grey over black 53.6, the name plate's 137.1",
-  "sha256": "769e742f41ced3d94829cb53c2384d0d328c9ceb8d9968882588828bade9299d",
+  "made": "the unidentified pod's mark, veiled: a 22 px disc in frostS at alpha 0.22 with a frostD stipple (about 0.5 alpha above the veil) and a faint lit rim; its mean grey over black 53.6, the name plate's 137.1 (pass 88: remapped for the overview stage: frostS at alpha 56 to `bar`, frostD at 81 (the stipple) to `hairline`, frostD at 89 (the upper-left rim) to `bevel`, every visible pixel at alpha 255; the geometry and stipple unchanged)",
+  "sha256": "99b007d5689af021ab895b4fa73e406a262961caec9a946fb191d80e0cef37de",
   "status": "signed",
   "signed_in": "pass 31 verdict",
   "status_note": "the veiled frost mark"
