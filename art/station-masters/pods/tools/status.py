@@ -50,6 +50,7 @@ for n in m:
     elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 23 verdict", "placeholder, re-cut from the standard painting when it lands")
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
+    elif re.match(r"ring-kin-|mark-(cangrow|waiting)", n): sign(n, "new", None, "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict")
     elif re.match(r"mark-(species|clan|first)", n): sign(n, "new", None, "a who-it-is mark of the pod overview (Brief 1), round 1; awaiting verdict")
     elif n.startswith("mibi-halo-S02-"): sign(n, "held", None, "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states")
     elif n.startswith("mibi-halo-"): sign(n, "new", None, "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict")

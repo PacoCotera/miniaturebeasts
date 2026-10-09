@@ -6825,5 +6825,59 @@
   "status": "new",
   "signed_in": null,
   "status_note": "Brief 2: the pattern layer for the shell words ribs, segments, plates (round 1: the large class judged; the other classes cut from the same masks); awaiting verdict"
+ },
+ "ring-kin-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": [
+   null,
+   null,
+   56,
+   56
+  ],
+  "src": "procedural, supersampled 8x",
+  "made": "the kin ring: a 3 px band (r 25 to 28) in bevel with hairline edges, painted at 8x with soft edges and a gentle light from the upper left; centred on the 40x48 pod in the 56x56 cell (rings from (600, 224) on a 64 px pitch)",
+  "sha256": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+ },
+ "mark-cangrow-16x16": {
+  "size": [
+   16,
+   16
+  ],
+  "rect": [
+   null,
+   null,
+   16,
+   16
+  ],
+  "src": "typed by hand",
+  "made": "the can-grow mark: a bud with two leaves on a stem, in the emblem manner (a quiet sprout green with a lime lit edge upper left); at the place + (184, 168)",
+  "sha256": "d27a731e4fcbe2229484f58b2c57129743dc876f34a0fa3e191e6adc88a2caf6",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
+ },
+ "mark-waiting-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   528,
+   24,
+   24
+  ],
+  "src": "typed by hand",
+  "made": "the waiting-beyond-the-rack mark: three pods receding to the right, large to small, mist with a fog lit edge upper left; one quiet mark, never a number; at (16, 528)",
+  "sha256": "796a36e67e7ae4cfb410033ee8abf6917a2bb916efb4d909d4ca3f9fa2849acc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the kin ring, the can-grow mark and the waiting mark of the three-state Pods; awaiting verdict"
  }
 }
