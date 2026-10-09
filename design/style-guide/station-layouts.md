@@ -52,7 +52,7 @@ This section is the Station's structure: which screens exist, their levels from 
 
 - **The top bar and the bottom line stay on every screen but Idle:** Home, each section's whole and every level under it. "Takes the whole screen" means the whole stage (0, 40, 1024, 522): Home's column and panel go, the frame stays. The device is driven by its keys alone, and the bottom line is the only place that says what ✓ and ← do; the top bar is the only place the materials, the Companion and the world turn show. Idle alone drops both.
 - **The title names the section, never the item:** Home, Vivarium, Cargo, Pods, Incubator, Probe, Library; Create, Cross and Sitting keep their own. One mibi up close is titled Vivarium; its name is on its tag.
-- **The title's mark is the mark of the coloured key that leads there,** so it follows the key set (see [The column and the keys](#the-column-and-the-keys)).
+- **The title's mark is the icon of the coloured key that leads there** (see [The column and the keys](#the-column-and-the-keys)).
 - **The top bar's Companion zone** holds the carried set: the glyph and its lamp, then three face places in carried order, at (760, 8, 120, 24).
 - **The way back is 88 px wide**, at (920, 570, 88, 24), right-aligned to x 1008, and the notice ends 24 px before it, at (624, 570, 272, 24), right-aligned to x 896. The ← cap's x is 1008 − the word's width − 20: 922 for Vivarium (66 px), 943 for Home (45 px). The longest notice, "dock the Companion for its crates", is 255 px, 271 with its lamp, inside the 272.
 
@@ -60,7 +60,25 @@ This section is the Station's structure: which screens exist, their levels from 
 
 Home's column is the device's sections, one module each: Cargo, Pods, Incubator, Probe and Library. Every section but the Vivarium is reached from it in one press, and the Vivarium from the panel beside it. Cargo is a whole-stage section like the others, reached from its module or from the room when the crates wait. The Vivarium's whole sits between Home and one mibi up close: ← from one mibi goes to the whole, and ← from the whole goes Home.
 
-The device's coloured keys are shortcuts, each to one section's whole from anywhere, and never spend. Which sections get a key follows from this map, and the set (how many keys, their sections, colours and labels, and where each lands the ring) is decided separately, in [the coloured key set](../proposals/station-keys.md). The Station's screens, the kit's hardware labels and `nav.mjs` follow that set once it is decided. The Caddy's Dock is never a Station key.
+The device's coloured keys are shortcuts, one for each family of sections on the map: Home with Cargo; the living (the Vivarium, one mibi, Cross, the Sitting); the research (Pods, Create, the Incubator, the Probe); the reference (the Library, the Book). A key opens its section's whole from anywhere, even from inside that section, and never spends. Every key drops Create's and Cross's unpaid choices and closes the namer, writing nothing; while a moment holds input (the arrival, the hatch), the key waits. The Caddy's Dock is never a Station key.
+
+<img src="station-layouts/16-key-set.png" width="1440" alt="The Station's front with the four coloured keys, each an icon slot, beside Home's screen, and what each key opens">
+
+*16. The coloured keys on the Station's front at 4 px/mm, each cap a marked icon slot, the branding slot on the top bezel, Home (15a) on the screen at 0.6×, and what each key opens. Positions from the [device-family concepts](../../hardware/concepts/device-family/concepts.md) ([SVG](station-layouts/16-key-set.svg)).*
+
+| Position | Key | Colour | Opens | The ring lands | Its icon marks the titles |
+| --- | --- | --- | --- | --- | --- |
+| x 64 mm | Home | amber `#e8962f` | Home | on the room, where ✓ does what needs you; on Home, back to the room | Home, Cargo |
+| x 88 mm | Vivarium | green `#63a046` | the Vivarium's whole (15b) | on the mibi last seen up close: its resident, or its bay tile while it is out with the Companion; none seen yet, the first resident from the left; none at home, the first bay. From one mibi up close: the whole, the ring on that mibi | Vivarium (the whole and one mibi up close), Cross, Sitting |
+| x 112 mm | Research | teal `#2a9f90` | Pods, the collection | on the pod that most needs the player: a new one, then a glinting one, then the first. From a pod, a chapter, Compare or Create: the collection | Pods, Create, Incubator, Probe |
+| x 136 mm | Library | violet `#8460cd` | the Library, the spread | on the frame it was last on. From the Book: the spread, the ring on that species | Library (the spread and the Book) |
+
+- **The row reads like Home.** The Vivarium key sits at the left as the panel does, the column's sections to its right, the Library at the column's foot.
+- **Cargo, the Incubator and the Probe have no key.** Each is one press from Home's column. Cargo calls the player from the room (its amber module and the notice), and the Incubator is also reached by its jumps (Grow it, Cross them, Choose a pod).
+- **On the device.** The four keys sit on the four workspace positions at x 64, 88, 112 and 136 mm, y 166 mm, on a 24 mm pitch, with 18 mm reserved for each cap. A fifth key does not fit the row: 15 mm is free left of x 64 (to the pad's 30 mm reservation) and 16 mm right of x 136 (to ←'s), against an 18 mm cap.
+- **Icons, never words.** Each cap carries one icon and no word: the Home icon, the Vivarium icon, the Research icon and the Library icon. The icon sits in a 10×10 mm slot centred on the cap, which fits inside a round cap of 15 mm (the slot's diagonal is 14.1 mm). The ✓ and ← caps carry their marks. The only text on the Station's front is the branding on the top bezel.
+- **The title mark is the key's icon.** The mark before each title, 24×24 at (16, 8), is the icon of the key that leads there, drawn for the screen at 24: `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`. The icons on the caps and in the title are art: studio masters, placed 1:1, never drawn by the build.
+- **Colour.** Each colour stays with its family. Home's amber matches Cargo's amber lamp, whose screen carries Home's mark. Amber is the nearest key colour to ✓'s orange (`#f0661a`); the two are checked apart on the shell.
 
 ### Home
 
@@ -128,7 +146,7 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 | **The namer** ([The namer](#the-namer), `namer.json`) | The overlay over the right column (592, 48, 416, 424), its keys, its states and its limit | Opened from one mibi up close; "Habitat" in its words reads the Vivarium |
 | **The Sitting** ([Sitting](#sitting), `sitting.json`) | Its three steps, its regions, its gilt frame and its events | Its parent is one mibi up close; from the pose step ← reads the mibi's name ("← Burr"), else "Back" |
 | **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Leave against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed: the Companion was full", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | Greet replaces Spend time; the Bond module is gone; the skill notches join the card |
-| **The top bar** | Its zones, rules and marks; the Companion zone at (760, 8, 120, 24) with three face places | The title "Vivarium" replaces "Habitat"; the mark follows the key set |
+| **The top bar** | Its zones, rules and marks; the Companion zone at (760, 8, 120, 24) with three face places | The title "Vivarium" replaces "Habitat"; its mark is the Vivarium icon |
 | **The bottom line** | Its four zones and their rules | The way back widens to 88 (920, 570, 88, 24); the notice ends at 896 (624, 570, 272, 24) |
 | **Home** | The vivarium panel, the residents, the bed, the rest knob, the name tag, the room's ✓ | The column holds five section modules of 88 on a 104 pitch (Cargo, Pods, Incubator, Probe, Library); the panel is a focus target; the Bay module is Cargo; the arrival moves to Cargo |
 | **Idle** | Its composition, its line and its keys | It is the Vivarium's whole without the frame: the same painting |
@@ -136,7 +154,6 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 
 ### Not designed yet
 
-- The coloured key set: how many keys, which sections, their colours and labels, and where each lands the ring ([the coloured key set](../proposals/station-keys.md)); the title marks follow it.
 - The detailed spec of each screen above, its measured objects and its focus as data.
 
 ---
@@ -165,7 +182,7 @@ The frame is the same on every Station screen and speaks one language, the Compa
 
 | Zone | Rectangle | What it says | Sentence or mark |
 | --- | --- | --- | --- |
-| **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the same glyph as the device key that leads there (Home, Research, Library, Habitat), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
+| **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the icon of the device key that leads there (Home, Vivarium, Research, Library), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
 | **What you hold** | 384, 8, 256, 24 | Energy, Data and Essence, centred on x 512: each a 16 px icon, a 4 px gap, then 16 px tabular figures in `bone`, 24 px between counters | Marks with figures; the figures are the frame's exception to "no digits" |
 | **Who is out, and with whom** | 816, 8, 64, 24 | The Companion's glyph, 16×24 at (816, 8), with its 8×8 lamp at (836, 16); the mibi with you as a 24 px face on its `teal` ring at (856, 8), the same face as on the Companion's HUD (an empty ring when no mibi is with you) | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face's ring in `stone` ("dimmed" is `stone`, the same role as the lamp off): the mibi is out with it |
 | **When** | 904, 8, 104, 24 | The world turn: a 16 px sun mark, 4 px, then its figure, right-aligned to x 1008 | A mark with a figure, as on the Companion ("☀ 5"), not "T5" |
@@ -183,8 +200,10 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | Probe bench | Research | Probe |
 | Library spread | Library | Library |
 | Book | Library | Library (the species' name is the page's own 28 px name) |
-| Habitat | Habitat | Habitat |
-| Cross | Habitat (the key it opens from; it takes Habitat's mark, `frame-room-habitat-24`) | Cross |
+| Cargo | Home | Cargo |
+| Vivarium (the whole, one mibi up close) | Vivarium | Vivarium |
+| Cross | Vivarium | Cross |
+| Sitting | Vivarium | Sitting |
 
 **The bottom line (38 px): the one action, the context, the notice, and the way back at the right edge.** As on the Companion, the way back has one place: the ← cap and its word right-aligned to x 1008. Rules at x 404 and x 620 (y 571 to 591) separate the action, the context and the notice; the notice and the way back are grouped by their 24 px gap, with no rule.
 
@@ -199,7 +218,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 | Mark | Slice id | Size |
 | --- | --- | --- |
-| Room marks (the device keys) | `frame-room-home-24`, `frame-room-research-24`, `frame-room-library-24`, `frame-room-habitat-24` | 24×24 |
+| Room marks (the device keys' icons) | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24` | 24×24 |
 | The Companion's glyph | `frame-companion-solid-16x24` (docked), `frame-companion-outline-16x24` (away) | 16×24 |
 | Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `frame-lamp-12-amber` (the notice's): one painted shape per colour | 8×8, 12×12 |
 | The sun (the world turn) | `frame-sun-16` | 16×16 |

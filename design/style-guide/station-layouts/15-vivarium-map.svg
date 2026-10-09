@@ -33,9 +33,9 @@
 <text x="1038" y="109" font-size="13" fill="#1f2430" font-weight="700">The coloured keys</text>
 <text x="1038" y="134" font-size="11" fill="#333">a key opens one section's whole from anywhere</text>
 <text x="1038" y="149" font-size="11" fill="#333">and never spends</text>
-<text x="1038" y="164" font-size="11" fill="#333">the set (which sections, colours, labels)</text>
-<text x="1038" y="179" font-size="11" fill="#333">follows this map and is decided separately</text>
-<text x="1038" y="194" font-size="11" fill="#333">the Caddy's Dock is never a Station key</text>
+<text x="1038" y="164" font-size="11" fill="#333">four, one per family: Home (amber), Vivarium</text>
+<text x="1038" y="179" font-size="11" fill="#333">(green), Research (teal, Pods), Library (violet)</text>
+<text x="1038" y="194" font-size="11" fill="#333">an icon on each cap, no word; no Dock key</text>
 <polyline points="244,158 320,158" fill="none" stroke="#1f2430" stroke-width="1.5" stroke-dasharray="4 3" marker-end="url(#ah)"/>
 <text x="250" y="152" font-size="10" fill="#555">rest</text>
 <polyline points="606,224 606,240" fill="none" stroke="#1f2430" stroke-width="1.5"/>
@@ -219,7 +219,7 @@
 <text x="748" y="858" font-size="12" fill="#222" font-weight="700">←</text>
 <text x="808" y="858" font-size="12" fill="#333">one level out, to the parent; the way back names it (88 px slot)</text>
 <text x="748" y="875" font-size="12" fill="#222" font-weight="700">keys</text>
-<text x="808" y="875" font-size="12" fill="#333">coloured: a section's whole, from anywhere; the set is decided separately</text>
+<text x="808" y="875" font-size="12" fill="#333">coloured: a section's whole, from anywhere: Home, Vivarium, Research, Library</text>
 <text x="748" y="892" font-size="12" fill="#222" font-weight="700">jumps</text>
 <text x="808" y="892" font-size="12" fill="#333">(teal, dotted) a ✓ that lands in another section; ← then follows the tree</text>
 <text x="748" y="909" font-size="12" fill="#222" font-weight="700">Dock</text>
@@ -236,9 +236,9 @@
 <text x="40" y="875" font-size="12" fill="#222" font-weight="700"></text>
 <text x="124" y="875" font-size="12" fill="#333">Create · Cross · Sitting keep their own titles</text>
 <text x="40" y="892" font-size="12" fill="#222" font-weight="700">Marks</text>
-<text x="124" y="892" font-size="12" fill="#333">a title carries the mark of the coloured key that leads there,</text>
+<text x="124" y="892" font-size="12" fill="#333">a title carries the icon of the coloured key that leads there:</text>
 <text x="40" y="909" font-size="12" fill="#222" font-weight="700"></text>
-<text x="124" y="909" font-size="12" fill="#333">so the marks follow the key set</text>
+<text x="124" y="909" font-size="12" fill="#333">Home (Home, Cargo), Vivarium, Research, Library</text>
 <text x="40" y="926" font-size="12" fill="#222" font-weight="700"></text>
 <text x="124" y="926" font-size="12" fill="#333"></text>
 </svg>
