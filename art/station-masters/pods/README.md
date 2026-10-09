@@ -336,6 +336,13 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 19 - the tuft splayed, placeholder cards, the Tuikis pod deepened
+
+- `rail-emblem-legs-tail`: the three prongs no longer hang. The curl is moved two pixels left to give the tip room, and the tuft is splayed up and out from the curl's end as three 2 px prongs (up-right, right, down-right) with the lit edge on the up prong; nothing else in the drawing changed. At 1x it reads as a bushy curl ending in a fan; the prongs are thin and a little like claws, not a soft brush.
+- Trait pictures: the stand-ins are now plain placeholder cards on the pane's deep ground (a faint hatch, a 1 px edge, the words "stand-in picture"); no other species is shown under a Tuikis pod and the white paper ground is gone. They stay until a Tuikis painting exists.
+- The Tuikis pod (stage and wells): the body is one value step down and about 18 percent less saturated (lagoon 38,159,165 to 38,98,102), the cap and ribs toward ochre (176,128,44), and the shade layer is run through its full range: a gamma on the shade so the shadow side deepens, the shadow tinted toward a deep teal instead of black, the highlight kept (`recol` in `tools/compose.py`). The Loika's pod is the target for contrast; the Tuikis still reads a little brighter and flatter than it. All three composites and composite-vs-candidate are rebuilt.
+
+
 ## Pass 18 - a read is a whole chapter
 
 Corrected after the game designer's rule (a read is always a whole chapter; inside a read chapter no trait is unread). The pass 16 Read composite, with two read and two frosted cells in one chapter, showed a state the game never has, and is withdrawn. Three proofs now: `composite-pods-read-1024x600.png` (Coat open and read: four different pictures, the read-again bottom line, "Coat is read", all pips and dots filled, the ring showing Coat and Face read), `composite-pods-grid-1024x600.png` (the Shape page, read) and `composite-pods-unread-1024x600.png` (Coat open and unread: every cell the frosted frame with no picture, the names only, no new dot, the pips and dots empty, the verb "Read Coat" with its cap and price, "Coat is unread", the ring showing only Face read). The pictures are still stand-ins from the Belatz side painting, each a different part, named for the part.

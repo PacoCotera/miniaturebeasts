@@ -8,19 +8,20 @@ from PIL import Image, ImageDraw, ImageFont
 FD = "/usr/share/fonts/opentype/inter/"
 f16 = ImageFont.truetype(FD + "Inter-Regular.otf", 16); f20 = ImageFont.truetype(FD + "Inter-Medium.otf", 20)
 CREAM = (241, 235, 223); FOG = (198, 196, 216); MIST = (141, 138, 166); AMBER = (255, 168, 63); BONE = (241, 235, 223)
-side = Image.open("../../../prototypes/workbench/grow/out/S09/3982a7117cfa0fc3/station-side-600x620.png").convert("RGBA")
 cand = Image.open("source/raw/ref-PV-D-r3-a4-1024x600.png").convert("RGBA")
 def S(n): return Image.open(f"slices/{n}.png").convert("RGBA")
 CID = {'Coat': 'coat', 'Face': 'face', 'Shape': 'shape', 'Legs & Tail': 'legs-tail', 'Legs': 'legs-tail', 'Movement': 'movement', 'Stamina': 'stamina', 'Character': 'character', 'Glow': 'glow', 'Charge': 'charge'}
-def recol(cls, A, B, pattern):
-    """One painted pod in a species' colour pair: the shade layer lit through the body and accent masks (and a pattern), then the band and crack layers on top (tools/recolour.py's method)."""
+def recol(cls, A, B, pattern, tint=(0.05, 0.20, 0.24)):
+    """One painted pod in a species' colour pair: the shade layer lit through the body and accent masks (and a pattern), then the band and crack layers on top (tools/recolour.py's method);
+    the shadow side is tinted toward `tint` (a deep teal for the Tuikis) instead of going to black, the highlight kept."""
     L = lambda n: np.asarray(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
     sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]; pat = L("pattern-" + pattern)[..., 3:4] if pattern else 0 * body
-    A = np.array(A) / 255; B = np.array(B) / 255; col = np.clip((A * body * (1 - pat) + B * np.clip(acc + pat, 0, 1)) * sh * 2, 0, 1)
-    out = Image.fromarray((np.concatenate([col, L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA")
+    A = np.array(A) / 255; B = np.array(B) / 255; base = A * body * (1 - pat) + B * np.clip(acc + pat, 0, 1); f = np.clip(sh * 2, 0, 1.15) ** 1.6      # the shade's full range: the shadow side deepened (gamma), the highlight kept
+    col = base * f + np.array(tint) * np.clip(1 - f, 0, 1) ** 1.1 * 1.0 * (body + np.clip(acc + pat, 0, 1)).clip(0, 1)
+    out = Image.fromarray((np.clip(col, 0, 1) * np.concatenate([np.ones_like(sh)] * 3, 2) * 255).astype(np.uint8), "RGBA") if False else Image.fromarray((np.concatenate([np.clip(col, 0, 1), L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA")
     for n in ("band", "crack"): out.alpha_composite(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA"))
     return out
-TUIKIS = ((0x26, 0x9f, 0xa5), (0xe8, 0xb8, 0x3f), "bands")      # S03: lagoon and marigold (its plates pattern is not painted; bands stand in)
+TUIKIS = ((38, 98, 102), (176, 128, 44), "bands")      # S03: lagoon and marigold (its plates pattern is not painted; bands stand in)
 def compose(traits, rail):
     cv = Image.new("RGBA", (1024, 600), (16, 26, 36, 255)); d = ImageDraw.Draw(cv)
     def put(n, x, y): cv.alpha_composite(S(n), (x, y))
@@ -55,11 +56,11 @@ def compose(traits, rail):
         pod = S("pod-large-identified"); box = (0, 0, 144, 176) if k == 0 else (0, 0, 144, 104)
         g = Image.new("RGBA", (104, 160), (20, 34, 44, 255)); p = pod.crop(box); sc = min(96 / p.width, 150 / p.height); p = p.resize((round(p.width * sc), round(p.height * sc)), Image.LANCZOS)
         g.alpha_composite(p, ((104 - p.width) // 2, (160 - p.height) // 2)); return g
-    def belatz(rail_, k):      # stand-in pictures: a different part of the Belatz side painting for each trait, named for the part (the Tuikis has no painting yet)
-        boxes = {"six": ((295, 280, 425, 480), (385, 205, 515, 405), (165, 95, 295, 295), (200, 420, 330, 620)),       # Colour: the body's fur; Trim: the neck where green meets blue; Markings: the wing; Scales: the leg and foot
-                 "compact": ((190, 150, 490, 611), (150, 250, 280, 450), (370, 180, 500, 380))}[rail_]                  # Build: the whole body; Haunch: the rump and upper leg; Topline: the neck and back line
-        im = side.crop(boxes[k]); sc = min(104 / im.width, 160 / im.height); im = im.resize((round(im.width * sc), round(im.height * sc)), Image.LANCZOS)
-        g = Image.new("RGBA", (104, 160), (246, 241, 232, 255)); g.alpha_composite(im, ((104 - im.width) // 2, (160 - im.height) // 2)); return g
+    def belatz(rail_, k):      # a plain placeholder card on the pane's deep ground, labelled as a stand-in (no Tuikis painting exists, and no other species is shown under a Tuikis pod)
+        g = Image.new("RGBA", (104, 160), (14, 28, 36, 255)); gd = ImageDraw.Draw(g); gd.rectangle([0, 0, 103, 159], outline=(26, 46, 56, 255))
+        for yy in range(-160, 160, 16): gd.line([(0, yy + 160), (160, yy)], fill=(17, 33, 42, 255))                     # a faint diagonal hatch: a card, not a picture
+        for i_, line in enumerate(("stand-in", "picture")): gd.text((52, 74 + 18 * i_), line, font=f16, fill=(110, 124, 142, 255), anchor="mm")
+        return g
     pic = lambda w, h, box=(180, 166, 372, 430): cand.crop(box).resize((w, h), Image.LANCZOS)
     if traits == 1:      # one trait: a picture no larger than the pod's box, 144x176, centred in the cell
         px, py = 168 + (224 - 144) // 2, 160 + 40
