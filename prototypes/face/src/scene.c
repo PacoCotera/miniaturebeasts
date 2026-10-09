@@ -8,7 +8,7 @@ extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_OBJ 512
 #define MAX_ASSET 256
 #define NINE_PARTS 9
-typedef struct { uint32_t id; lv_obj_t *obj; lv_obj_t *part[NINE_PARTS]; int kind, seen, fresh; int x, y, w, h; uint32_t rgb; int a, b; } node_t;
+typedef struct { uint32_t id; lv_obj_t *obj; lv_obj_t *part[NINE_PARTS]; int kind, seen, fresh; int x, y, w, h; uint32_t rgb; int a, b; lv_image_dsc_t crop; } node_t;
 static node_t g_o[MAX_OBJ];
 static int g_n, g_unknown, g_nseq;
 static lv_obj_t *g_seq[MAX_OBJ];
@@ -73,7 +73,9 @@ static void drop(int i) { lv_obj_delete(g_o[i].obj); g_o[i] = g_o[--g_n]; }
 void scene_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) {
   if (kind < FN_RECT || kind > FN_NINE) { g_unknown++; return; }
   if (kind == FN_TEXT && !font_of(a)) { g_unknown++; return; }
-  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w != w || g_a[a].h != h)) { g_unknown++; return; }
+  /* a picture placed 1:1; with a crop (rgb = source x << 16 | source y) the node shows that window of a larger picture, as a view into its pixels */
+  int sx = (int)(rgb >> 16), sy = (int)(rgb & 0xffff);
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) { g_unknown++; return; }
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
   if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) { g_unknown++; return; }
   int i = find(id);
@@ -103,10 +105,10 @@ void scene_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb,
       lv_obj_set_pos(p, xs[k], ys[j]); lv_obj_set_size(p, ws[k] > 0 ? ws[k] : 1, hs[j] > 0 ? hs[j] : 1);
     }
   }
-  if (n->fresh || n->rgb != rgb || n->a != a || n->b != b) {
+  if (n->fresh || n->rgb != rgb || n->a != a || n->b != b || (kind == FN_SPRITE && rgb != 0 && (n->w != w || n->h != h))) {
     if (kind == FN_RECT) { lv_obj_set_style_bg_color(o, lv_color_hex(rgb), 0); lv_obj_set_style_bg_opa(o, LV_OPA_COVER, 0); }
     else if (kind == FN_TEXT) lv_obj_set_style_text_color(o, lv_color_hex(rgb), 0);
-    else if (kind == FN_SPRITE) lv_image_set_src(o, &g_a[a].dsc);
+    else if (kind == FN_SPRITE) { if (rgb == 0) lv_image_set_src(o, &g_a[a].dsc); else { dsc_of(&n->crop, g_a[a].px + sy * g_a[a].w * 4 + sx * 4, w, h, g_a[a].w * 4); lv_image_set_src(o, &n->crop); } }
   }
   n->fresh = 0; n->x = x; n->y = py; n->w = w; n->h = h; n->rgb = rgb; n->a = a; n->b = b;
 }

@@ -10,7 +10,7 @@ enum { FN_RECT = 1, FN_TEXT = 2, FN_SPRITE = 3, FN_NINE = 4 };
 void scene_init(void);
 void scene_begin(void);
 /* id: the page's hash of the node id. rect: x, y, w, h. rgb: 0xRRGGBB. a, b by kind:
-   text: a = px (16, 20, 28), b = the cap height in px (the rect's y is the cap top); sprite: a = the asset handle;
+   text: a = px (16, 20, 28), b = the cap height in px (the rect's y is the cap top); sprite: a = the asset handle (rgb: 0, or source x << 16 | source y to show that window of a larger picture);
    nine-slice: a = the asset handle, rgb = its insets left, top, right, bottom packed one a byte (the corners are placed 1:1), b = the tile of its edges and middle in px (0: the whole strip). The text is read from scene_text(). */
 void scene_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
 void scene_end(void);

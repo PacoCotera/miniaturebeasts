@@ -61,7 +61,12 @@ expect(eq(px(D, 500, 39), rgbOf(C.rule)) && eq(px(D, 500, 38), rgbOf(C.chrome)),
 expect(eq(px(D, 500, 562), rgbOf(C.rule)) && eq(px(D, 500, 563), rgbOf(C.chrome)), "the bottom line's rule is 1 px on its top edge");
 expect(eq(px(D, 300, 570), rgbOf(C.chrome)), "the bottom line is the chrome ground");
 for (const x of Rg.separators.x) expect(eq(px(D, x, 580), rgbOf(C.dot)) && eq(px(D, x - 1, 580), rgbOf(C.chrome)) && eq(px(D, x + 1, 580), rgbOf(C.chrome)), `a 1 px separator at x ${x}`);
-expect(eq(px(D, 500, 100), rgbOf(C.stageGround)), "the stage ground is " + C.stageGround);
+// the whole screen against the canvas renderer's, pixel for pixel outside the type (the two engines set glyphs by their own rounding, and blend a translucent layer within 3 levels of each other): the room, the dish, the pod, the wells, the rail, the rings, the panes
+{ const nodes = await face.evaluate(() => window.__st.faceNodes()), boxes = nodes.filter((n) => n.kind === "text").map((n) => [n.rect[0] - 4, n.rect[1] - 8, n.rect[2] + 8, n.rect[3] + 12]);
+  const inText = (i, j) => boxes.some((b) => i >= b[0] && i < b[0] + b[2] && j >= b[1] && j < b[1] + b[3]); let diff = 0, total = 0; const firsts = [];
+  for (let j = 0; j < 600; j++) for (let i = 0; i < 1024; i++) { if (inText(i, j)) continue; total++; const a = px(D, i, j), b = px(R, i, j); if (Math.max(Math.abs(a[0] - b[0]), Math.abs(a[1] - b[1]), Math.abs(a[2] - b[2])) > 3) { diff++; if (firsts.length < 5) firsts.push([i, j, a, b]); } }
+  console.log(`face against the canvas renderer outside the type: ${diff} of ${total} pixels differ ${JSON.stringify(firsts)}`);
+  expect(diff <= total * 0.001, `the face draws the screen as the canvas renderer does outside the type (${diff} of ${total} differ)`); }
 // where the ink of each region lies, against the JavaScript renderer's (the engines place glyphs by their own rounding: within 3 px)
 const regions = { title: Rg.title.rect, materials: Rg.materials.rect, companion: Rg.companion.rect, subject: Rg.subject.rect, need: Rg.need.rect, action: Rg.action.rect, back: Rg.back.rect };
 for (const x of Rg.topRules.x) expect(eq(px(D, x, 20), rgbOf(C.topRule)) && eq(px(D, x - 1, 20), rgbOf(C.chrome)), `a 1 px hairline rule at x ${x} in the top bar`);

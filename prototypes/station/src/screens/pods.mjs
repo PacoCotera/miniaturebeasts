@@ -133,7 +133,7 @@ function ringNodes() {
 // The frame: top bar, bottom line, message plate.
 const sharedFrame = (ctx) => frameFor(ctx, "pods", last.line, { need: "", focal: last.box });
 // What the LVGL face draws of this screen until its stage comes over: the pictures the frame and the ring name, the ring, the frame.
-function faceNodes(ctx) { ensure(); registerPictures([...last.requests, ...iconRequests()], env); return [...ringNodes(), ...railNodes(ctx), ...sharedFrame(ctx)]; }
+function faceNodes(ctx) { return nodes(ctx); }   // the whole stage on the face, from the same nodes the canvas renderer takes
 // The slanted rail (the face draws this one; the canvas renderer keeps the older rail until it is retired).
 function railNodes(ctx) {
   const v = last, F = P().focus; if (v.mode === "compare" || !v.rail) return [];

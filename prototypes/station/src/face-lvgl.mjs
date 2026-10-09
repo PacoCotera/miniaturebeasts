@@ -41,7 +41,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) }, slice(assetId) -> [l, t, r, b] | null, tile(assetId) -> px (0: the whole strip) }.
   // A frame identical to the last one is not sent again. Returns the nodes the face cannot draw (a kind outside the closed set, a picture it lacks).
   let lastKey = null;
-  const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour ?? ""); mix(n.text ?? ""); mix(n.px ?? ""); mix(n.asset ?? ""); } return h >>> 0; };
+  const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour ?? ""); mix(n.text ?? ""); mix(n.px ?? ""); mix(n.asset ?? ""); for (const c of n.children || []) { mix(c.id); mix(c.rect); mix(c.asset ?? ""); } } return h >>> 0; };
   function scene(nodes, env) {
     const key = keyOf(nodes); if (key === lastKey) return []; lastKey = key;
     const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };
@@ -51,6 +51,16 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       if (n.kind === "rect") M._face_node(id, KIND.rect, x, y, w, h, hex(n.colour), 0, 0);
       else if (n.kind === "text") { setText(n.text); M._face_node(id, KIND.text, x, y, w, h, hex(n.colour), n.px, env.cap(n.px)); }
       else if (n.kind === "sprite") { const hd = handleOf(n.asset, env.picture); if (hd < 0) left.push(n); else M._face_node(id, KIND.sprite, x, y, w, h, 0, hd, 0); }
+      else if (n.kind === "clip") {   // children shown only inside the clip: a sprite is the window of its picture that lies inside (a view, never a scaled copy)
+        for (const c of n.children || []) {
+          if (c.kind !== "sprite") { left.push(c); continue; }
+          const ix = Math.max(x, c.rect[0]), iy = Math.max(y, c.rect[1]), ex = Math.min(x + w, c.rect[0] + c.rect[2]), ey = Math.min(y + h, c.rect[1] + c.rect[3]);
+          if (ex <= ix || ey <= iy) continue;
+          const hd = handleOf(c.asset, env.picture); if (hd < 0) { left.push(c); continue; }
+          const sx = ix - c.rect[0], sy = iy - c.rect[1], full = sx === 0 && sy === 0 && ex - ix === c.rect[2] && ey - iy === c.rect[3];
+          M._face_node(fnv(c.id), KIND.sprite, ix, iy, ex - ix, ey - iy, full ? 0 : ((sx << 16) | sy) >>> 0, hd, 0);
+        }
+      }
       else if (n.kind === "nineSlice") {   // the insets [l, t, r, b] packed a byte each, the edge tile in b
         const hd = handleOf(n.asset, env.picture), sl = env.slice(n.asset);
         if (hd < 0 || !sl || sl.some((v) => v < 0 || v > 255)) left.push(n); else M._face_node(id, KIND.nine, x, y, w, h, ((sl[0] << 24) | (sl[1] << 16) | (sl[2] << 8) | sl[3]) >>> 0, hd, env.tile(n.asset));
