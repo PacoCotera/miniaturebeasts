@@ -1,0 +1,218 @@
+{
+ "screen": "namer",
+ "device": "station",
+ "kind": "overlay",
+ "over": ["habitat"],
+ "spec": "design/style-guide/station-layouts.md#the-namer",
+ "frame": "frame.json",
+ "wireframes": ["design/style-guide/station-layouts/12-namer-open.png", "design/style-guide/station-layouts/12b-namer-typing.png", "design/style-guide/station-layouts/12c-namer-accents.png", "design/style-guide/station-layouts/12d-namer-refused.png", "design/style-guide/station-layouts/12e-namer-nav.png"],
+ "note": "The one home of the namer's numbers, transcribed from station-layouts.md (The namer) and its wireframes 12 to 12e. Rectangles are [x, y, w, h] in screen pixels. The namer gives one mibi a name with the six keys alone. It stands over Habitat's right column (the card and the modules) and leaves Habitat's living window and the mibi in it uncovered, so the player names what they see.",
+ "overlay": {
+  "layer": "the face's top layer, over the screen it opens from. The focusRing object and the message plate are on the top layer too, in the order overlay, ring, plate: the ring over the namer's keys, a plate over both",
+  "beneath": "the screen beneath keeps drawing (its living window plays) and takes no key; its regions do not move",
+  "focus": "while the namer is open its own graph (focus below) is the only one; on close the host hands focus back with the closing props' `focus.set`: the resident after the meet, the rename target after a rename",
+  "refused": "props naming an overlay whose `over` does not list the current screen are refused",
+  "uncovered": "Habitat's living window and its resident: the namer starts at x 592, 16 px right of the window's bezel",
+  "uncoveredRect": [16, 48, 560, 424],
+  "open": "a cut, no transition; the frame's title stays the screen's (Habitat)",
+  "close": "a cut"
+ },
+ "opens": {
+  "meet": "Habitat's meet, the first ✓ with the ring on the new mibi: ✓ Name {name}. Any other key ends the meet with the default kept, and does what it does",
+  "rename": "Habitat's name tag, the focus target `name` (ring round): ✓ Rename {name}, on any mibi at home, bonded or with you"
+ },
+ "rules": {
+  "used": [],
+  "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
+  "needed": []
+ },
+ "compositions": {
+  "words": "both are compositions of the words panel and text, not words",
+  "keyGrid": "the namer's keys: each key a `panel` (the kit's instrument panel) with one `text` label, registering its own focus target at its rect; the characters per key come from props (keys.page, keys.caps), never from the spec. Used by the namer alone; a second user (the Companion, the Caddy) makes it a word, back to the UI designer and the architect",
+  "nameField": "the name well: a `panel` (`ground` fill, `hairline` edge), the name as `text` at 28 px semibold, a selection rect behind it and a caret rect after it"
+ },
+ "states": ["open"],
+ "fieldStates": {
+  "selected": "the name as opened, or a suggestion: the whole name on the selection fill, no caret. A key replaces it; ← clears it",
+  "typed": "the caret after the last character; a key appends; ← deletes the last character",
+  "empty": "the caret at the start; ← closes the namer, writing nothing"
+ },
+ "column": { "x": 636, "w": 328, "pad": 44, "offGrid": "the inner column is centred in the panel, 44 px a side, so every inner region's x sits 4 px off the 8 px grid; y, w and h stay on it" },
+ "regions": {
+  "panel": { "rect": [592, 48, 416, 424], "component": "panel", "build": "namer", "shadow": [2, 3], "note": "the report card's look: panel fill, hairline edge, bevel top row, a void drop shadow; it covers Habitat's right column (the card and the modules, x 592 to 1008, y 48 to 472), 16 px from the window's bezel (x 576)" },
+  "field": {
+   "rect": [636, 64, 328, 48], "offGrid": true, "component": "panel", "build": "nameField", "text": "text",
+   "nameAt": [652, 70], "lineTop": 70, "line": 36, "px": 28, "weight": 600, "align": "left",
+   "holds": 296, "widest": "ten of the widest allowed letter (W at 28 semibold, 29 px with LVGL's rounding) measure 290 px: x 652 to 942; the caret ends at 946, 18 px inside the field's edge",
+   "selection": { "rect": "x 648, y 70, the name's width + 8, 36 tall", "fill": "tealD" },
+   "caret": { "size": [2, 28], "at": "2 px after the name's last ink advance, y 74 to 102", "fill": "bone", "blink": false, "when": "typed or empty; none while selected" }
+  },
+  "say": {
+   "rect": [636, 120, 328, 24], "offGrid": true, "component": "text", "px": 16, "weight": 400, "at": [652, 122], "lineTop": 122, "width": 312, "lines": 1,
+   "shows": "the reason Done cannot save the name now, in `mist`; a refused press shows its reason in `amber` for 4000 ms (the message plate's time), then the line returns to `mist` or empty. Empty while the name can be saved",
+   "words": "strings.refuse"
+  },
+  "keys": {
+   "rect": [636, 160, 328, 184], "offGrid": true, "component": "panel", "build": "keyGrid", "at": [636, 160], "key": [40, 40], "pitch": 48, "columns": 7, "rows": 4, "label": { "px": 16, "weight": 400, "align": "centre", "lineTop": 10 },
+   "ids": "key.0 to key.27, index = 7 × row + column; a key whose page has no character in that place is not drawn and is not a target",
+   "rect of key i": "[636 + 48 × (i mod 7), 160 + 48 × floor(i / 7), 40, 40]"
+  },
+  "shift": { "rect": [636, 352, 88, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.shift", "states": { "off": "panel fill, label bone; also at the start of a name, where it does nothing", "on": "hairline fill (one step up, as the open tab), label bone: the next letter in the other case" } },
+  "space": { "rect": [732, 352, 136, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.space", "labelColour": "fog", "dim": "label `mist` while the field is full" },
+  "page": { "rect": [876, 352, 88, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.accents on the letters page, strings.keys.letters on the accents page, in the grid's case" },
+  "suggest": { "rect": [636, 408, 160, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.suggest" },
+  "done": { "rect": [804, 408, 160, 40], "offGrid": true, "component": "panel", "build": "keyGrid", "label": "strings.keys.done", "dim": "label `mist` while the name cannot be saved" }
+ },
+ "keys": {
+  "pages": {
+   "letters": ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "-", "’"],
+   "accents": ["á", "é", "í", "ó", "ú", "ç", null, "à", "è", "ì", "ò", "ù", "ñ", null, "â", "ê", "î", "ô", "û", "œ", null, "ä", "ë", "ï", "ö", "ü", "ÿ", null]
+  },
+  "pagesRule": "letters: a to z in reading order, then the hyphen and the apostrophe ’; accents: one column per vowel (a, e, i, o, u), one row per accent (acute, grave, circumflex, diaeresis), and ç ñ œ ÿ in the sixth column; the seventh column is empty",
+  "case": "the grid shows capitals while the field is empty or selected (a name starts with a capital) and small letters after; Aa gives the next letter in the other case, then the grid returns. At the start Aa shows off (`panel`) and does nothing (no ✓ cap; context strings.startCapital). Capitals: A to Z, Á to Ü, Ç Ñ Œ Ÿ; the hyphen and ’ have no case",
+  "space": "a space, typed like a mark",
+  "marks": "space, hyphen and ’ are the separators: refused first (strings.refuse.first), refused beside another (strings.refuse.twice); refused last only at Done (strings.refuse.last)",
+  "limit": "a character past NAME_MAX is refused (strings.refuse.full); while the field is full the letter and mark keys and their ✓ cap show dimmed",
+  "suggest": "the next name of the pool, selected: state.peekNames(st, 12), twelve names in drawName's order (the curated pool, then the compounds), skipping names used, held at home, refused or over the limit; nothing is consumed. Each press the next, after the last the first. With no name to give (a defensive state): no ✓ cap, context strings.noSuggest",
+  "done": "saves when state.nameProblem is null. The cleaned name exactly the mibi's own (the same characters in the same case) is Keep: it writes and logs nothing. Otherwise state.renameMibi, then events.named and the namer closes; a change of case only is a rename (its log line, \"Renamed Dot to DOT\"; namesUsed unchanged). Refused: the say line's reason in amber, nothing closes",
+  "back": "selected: clears the field (empty); typed: deletes the last character; empty: closes the namer, writing nothing",
+  "room": "closes the namer, writing nothing, and opens the room's top (frame.json navigation.roomKeys)",
+  "idle": "the namer closes, writing nothing, before Idle starts",
+  "dock": "the namer stays open; the crates wait in the bay, as on any screen but Home"
+ },
+ "focus": {
+  "initial": "act.done",
+  "fallback": "none",
+  "rule": "three groups and the edge forms of lvgl-switch.md §2.6.1: `key` (key.0 to key.27), `mod` (mod.shift, mod.space, mod.page) and `act` (act.done, act.suggest). Inside a group the pad goes to the nearest target more than 6 px ahead ({ nearestIn, ahead }); where there is none the ring stays (\"none\" last), so the ends stop and nothing wraps. ▼ from the last row of keys, and ▲ ▼ between the rows of the bottom, take the target of the next group nearest the ring's column ({ nearestIn }). The bottom row's three keys are each as wide as the columns they stand under, so ▼ from any key lands on the key under it",
+  "graph": {
+   "key": {
+    "up": [{ "nearestIn": "key", "ahead": true }, "none"],
+    "down": [{ "nearestIn": "key", "ahead": true }, { "nearestIn": "mod" }],
+    "left": [{ "nearestIn": "key", "ahead": true }, "none"],
+    "right": [{ "nearestIn": "key", "ahead": true }, "none"]
+   },
+   "mod": {
+    "up": { "nearestIn": "key" },
+    "down": { "nearestIn": "act" },
+    "left": [{ "nearestIn": "mod", "ahead": true }, "none"],
+    "right": [{ "nearestIn": "mod", "ahead": true }, "none"]
+   },
+   "act": {
+    "up": { "nearestIn": "mod" },
+    "down": "none",
+    "left": [{ "nearestIn": "act", "ahead": true }, "none"],
+    "right": [{ "nearestIn": "act", "ahead": true }, "none"]
+   }
+  },
+  "targets": {
+   "key": { "group": "key", "id": "key.<index>", "ring": "round", "box": "the key's rect (regions.keys)", "lift": 2, "present": "the keys the page draws" },
+   "mod.shift": { "group": "mod", "ring": "round", "box": "regions.shift.rect", "lift": 2 },
+   "mod.space": { "group": "mod", "ring": "round", "box": "regions.space.rect", "lift": 2 },
+   "mod.page": { "group": "mod", "ring": "round", "box": "regions.page.rect", "lift": 2 },
+   "act.done": { "group": "act", "ring": "round", "box": "regions.done.rect", "lift": 2 },
+   "act.suggest": { "group": "act", "ring": "round", "box": "regions.suggest.rect", "lift": 2 }
+  },
+  "order": "props.focus.targets lists the present keys key.0 to key.27, then mod.shift, mod.space, mod.page, act.done, act.suggest: on an equal score the earlier wins, so ▼ from the space bar, as near Suggest as Done, lands on Done",
+  "reach": "every key is reached from Done in at most 7 presses (Done ▲ page, then the grid); at most 8 between any two targets",
+  "ringClear": "a ring is 4 px outside its lifted key: 48×48 on a 48 pitch, so neighbouring rings meet no key and the ring above clears the row by 2 px",
+  "held": "while events.named plays the face moves no focus and sends no intent",
+  "vectors": [
+   { "page": "letters", "from": "act.done", "key": "up", "to": "mod.page" },
+   { "page": "letters", "from": "act.done", "key": "left", "to": "act.suggest" },
+   { "page": "letters", "from": "act.done", "key": "right", "to": "act.done" },
+   { "page": "letters", "from": "act.done", "key": "down", "to": "act.done" },
+   { "page": "letters", "from": "act.suggest", "key": "up", "to": "mod.shift" },
+   { "page": "letters", "from": "act.suggest", "key": "right", "to": "act.done" },
+   { "page": "letters", "from": "mod.shift", "key": "down", "to": "act.suggest" },
+   { "page": "letters", "from": "mod.space", "key": "down", "to": "act.done" },
+   { "page": "letters", "from": "mod.page", "key": "down", "to": "act.done" },
+   { "page": "letters", "from": "mod.shift", "key": "right", "to": "mod.space" },
+   { "page": "letters", "from": "mod.page", "key": "right", "to": "mod.page" },
+   { "page": "letters", "from": "mod.page", "key": "up", "to": "key.26" },
+   { "page": "letters", "from": "mod.space", "key": "up", "to": "key.24" },
+   { "page": "letters", "from": "mod.shift", "key": "up", "to": "key.21" },
+   { "page": "letters", "from": "key.21", "key": "down", "to": "mod.shift" },
+   { "page": "letters", "from": "key.22", "key": "down", "to": "mod.shift" },
+   { "page": "letters", "from": "key.23", "key": "down", "to": "mod.space" },
+   { "page": "letters", "from": "key.25", "key": "down", "to": "mod.space" },
+   { "page": "letters", "from": "key.26", "key": "down", "to": "mod.page" },
+   { "page": "letters", "from": "key.27", "key": "down", "to": "mod.page" },
+   { "page": "letters", "from": "key.0", "key": "up", "to": "key.0" },
+   { "page": "letters", "from": "key.0", "key": "left", "to": "key.0" },
+   { "page": "letters", "from": "key.6", "key": "right", "to": "key.6" },
+   { "page": "letters", "from": "key.8", "key": "right", "to": "key.9" },
+   { "page": "letters", "from": "key.8", "key": "down", "to": "key.15" },
+   { "page": "letters", "from": "key.15", "key": "up", "to": "key.8" },
+   { "page": "accents", "from": "key.5", "key": "right", "to": "key.5" },
+   { "page": "accents", "from": "key.26", "key": "right", "to": "key.26" },
+   { "page": "accents", "from": "key.26", "key": "down", "to": "mod.page" },
+   { "page": "accents", "from": "mod.page", "key": "up", "to": "key.26" },
+   { "page": "letters", "from": "key.0", "key": "confirm", "intent": "confirm", "target": "key.0" },
+   { "page": "letters", "from": "act.done", "key": "back", "intent": "back", "target": "act.done" }
+  ]
+ },
+ "events": {
+  "named": { "kind": "flash", "target": "the regions of the screen beneath that show the name (on Habitat its name, and the meet ribbon while it shows)", "hold": true, "holdMs": 240, "ms": 240, "do": "the namer closes (a cut); the new name stands where the old one stood, with the frame's 240 ms flash behind it (as a counter's)" }
+ },
+ "bottomLine": {
+  "key": { "action": "✓ strings.type (the character as the key shows it: strings.typeSpace, strings.typeDash, strings.typeApostrophe for the marks), dimmed while the field is full", "context": "strings.context", "back": "by the field: strings.backClear, strings.backDelete or strings.backLeave" },
+  "shift": { "action": "✓ strings.capitals or strings.smallLetters; at the start of a name no ✓ cap", "context": "strings.context; at the start strings.startCapital" },
+  "page": { "action": "✓ strings.accents or strings.letters" },
+  "suggest": { "action": "✓ strings.suggest, then strings.suggestAgain while a suggestion shows; no ✓ cap with no name to give", "context": "strings.context, or strings.noSuggest" },
+  "done": { "action": "✓ strings.keep when the name is exactly the mibi's own; else ✓ strings.name (a change of case included); dimmed (the frame's mist cap) while the name cannot be saved", "context": "strings.context" },
+  "notice": "the frame's notice, unchanged",
+  "widths": "measured at Inter 16 with the widest ten-letter name: ✓ Name it W×10 221 px, ✓ Keep W×10 203 px, inside the action zone's 356; the context strings.context 175 px with the longest species name, inside 208"
+ },
+ "colours": {
+  "panel": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void" },
+  "field": { "fill": "ground", "edge": "hairline", "name": "bone", "selection": "tealD", "caret": "bone" },
+  "say": { "reason": "mist", "refused": "amber" },
+  "key": { "fill": "panel", "edge": "hairline", "top": "bevel", "label": "bone", "labelDim": "mist", "on": "hairline" },
+  "space": { "label": "fog", "labelDim": "mist" },
+  "done": { "label": "bone", "labelDim": "mist" },
+  "ring": "focus"
+ },
+ "strings": {
+  "meet": "Name {name}",
+  "rename": "Rename {name}",
+  "type": "Type {c}",
+  "typeSpace": "Type a space",
+  "typeDash": "Type a dash",
+  "typeApostrophe": "Type an apostrophe",
+  "capitals": "Capitals",
+  "smallLetters": "Small letters",
+  "accents": "Accents",
+  "letters": "Letters",
+  "suggest": "Suggest a name",
+  "suggestAgain": "Another name",
+  "name": "Name it {name}",
+  "keep": "Keep {name}",
+  "context": "a name for your {Species}",
+  "startCapital": "a name starts with a capital",
+  "noSuggest": "no names left to suggest",
+  "backClear": "Clear",
+  "backDelete": "Delete",
+  "backLeave": "Habitat",
+  "keys": { "shift": "Aa", "space": "space", "accents": "àéñ", "letters": "abc", "suggest": "Suggest", "done": "Done" },
+  "refuse": {
+   "short": "A name needs two letters",
+   "full": "No room for more letters",
+   "first": "Start with a letter",
+   "last": "End with a letter",
+   "twice": "One space or dash at a time",
+   "species": "A species has that name",
+   "clan": "A clan has that name",
+   "taken": "{holder} has that name"
+  },
+  "widths": "the say line holds 312 px at 16: the longest, \"{holder} has that name\" with a ten-letter holder at its widest, is 267",
+  "by": "the slots and today's words, the UI designer's; the words are the copywriter's to confirm"
+ },
+ "nameLabel": {
+  "nameMax": 10,
+  "widest": "the widest allowed character at each size, measured on the face's baked fonts with LVGL's sum (per glyph (adv_w + kern + 8) >> 4): Inter 16 regular œ, W, Œ 16 px; Inter 20 medium œ, W, Œ 20 px; Inter 28 semibold W 29 px; Mibi 7×9 advance 6 (m, w, œ and most capitals)",
+  "limit": { "inter16": 160, "inter20": 200, "inter28": 290, "mibi2x": 120, "mibi3x": 180 },
+  "box": { "inter16": 160, "inter20": 200, "inter28": 296 },
+  "rule": "every box that sets a mibi's name holds NAME_MAX of the widest character at its size, on the 8 px grid: 160 at 16, 200 at 20, 296 at 28; never clipped, never an ellipsis",
+  "fonts": "Inter 16, 20 and 28 (prototypes/face/src/fonts) contain the whole allowed set, both cases, the space, the hyphen and ’; specs.test.mjs checks the baked ranges"
+ }
+}
