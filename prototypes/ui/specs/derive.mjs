@@ -64,3 +64,12 @@ export function evaluate(rule, node, args) {
   }
   return out;
 }
+
+// The Incubator's leaves on their arcs (incubator.json regions.leaves; lvgl-switch.md §2.3): n leaves fill the inner arc first, left to right, then the outer, each run centred on its arc's table:
+// the k leaves of a run take the slots perArc − k + 2j, j = 0 … k − 1, of the arc's table of 2·perArc − 1 positions. Returns the boxes [x, y, w, h]; more than 2 × perArc is refused.
+export function leafArc(R, n) {
+  const L = R.leafArc, [lw, lh] = R.leaf;
+  if (!Number.isInteger(n) || n < 0 || n > 2 * L.perArc) throw new Error(`leafArc: ${n} leaves; the arcs hold ${2 * L.perArc}`);
+  const a = Math.min(n, L.perArc), b = n - a, run = (key, k) => Array.from({ length: k }, (_, j) => [...L[key][L.perArc - k + 2 * j], lw, lh]);
+  return [...run("inner", a), ...run("outer", b)];
+}
