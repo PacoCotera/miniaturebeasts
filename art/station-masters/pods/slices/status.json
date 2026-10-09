@@ -1650,84 +1650,84 @@
   "note": "the veiled frost mark"
  },
  "mark-clan-C01-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C02-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C03-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C04-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C05-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C06-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C07-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C08-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C09-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C10-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C11-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C12-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C13-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 35 (signed on delivery)",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides; C13: the dot is sand, the mark's ink and not a change to the clan's pigment"
  },
  "mark-clan-C14-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C15-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C16-24x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-first-16x16": {
   "status": "signed",
@@ -1745,9 +1745,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-large-pattern-plates": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-medium-pattern-ribs": {
   "status": "signed",
@@ -1760,9 +1760,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-medium-pattern-plates": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-small-pattern-ribs": {
   "status": "signed",
@@ -1775,9 +1775,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-small-pattern-plates": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-collection-pattern-ribs": {
   "status": "signed",
@@ -1790,9 +1790,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-collection-pattern-plates": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-well-pattern-ribs": {
   "status": "signed",
@@ -1805,9 +1805,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-well-pattern-plates": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "ring-kin-56x56": {
   "status": "signed",
@@ -2085,9 +2085,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-large-pattern-plates-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-medium-pattern-segments-relief": {
   "status": "signed",
@@ -2095,9 +2095,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-medium-pattern-plates-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-small-pattern-segments-relief": {
   "status": "signed",
@@ -2105,9 +2105,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-small-pattern-plates-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-collection-pattern-segments-relief": {
   "status": "signed",
@@ -2115,9 +2115,9 @@
   "note": "the segments layer and its relief"
  },
  "pod-collection-pattern-plates-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  },
  "pod-well-pattern-segments-relief": {
   "status": "signed",
@@ -2125,8 +2125,8 @@
   "note": "the segments layer and its relief"
  },
  "pod-well-pattern-plates-relief": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
  }
 }

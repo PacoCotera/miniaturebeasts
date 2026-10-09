@@ -67,7 +67,7 @@ for sp, d in frames.items():
 # the collision check (round 3): circle, octagon and both hexagons are one shape family (too alike at 24 px); every other shape is its own family
 FAMILY = {"circle": "round", "octagon": "round", "hexagon (flat)": "round", "hexagon (pointy)": "round"}
 fam = lambda c: FAMILY.get(PLAN_SHAPE[c["plan"]], PLAN_SHAPE[c["plan"]])
-DOT = {"C04": "cream", "C08": "charcoal", "C13": None, "C10": None}                   # the lead's assignments: C04 keeps its second (cream), C08 takes charcoal; C13 and C10 take their own second pigment (sand / bone if the taxonomy named none)
+DOT = {"C04": "cream", "C08": "charcoal", "C13": "sand", "C10": None}                   # the lead's assignments: C04 keeps its second (cream), C08 takes charcoal; C13 and C10 take their own second pigment (sand / bone if the taxonomy named none)
 for c in clans:
     c["collide"] = sum(1 for o in clans if o is not c and fam(o) == fam(c) and o["anchor"] == c["anchor"]) > 0
     if c["clan"] in DOT:

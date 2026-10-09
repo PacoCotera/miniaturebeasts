@@ -5472,9 +5472,9 @@
   "src": "geometry, species frames",
   "made": "clan C01 (Lophessa), plan B1\u00b7L4: a circle roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
   "sha256": "46576dd881a42220f99c0570b05c4a1555a29aad0188f7b5de5761ebdcce9588",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C02-24x24": {
   "size": [
@@ -5490,9 +5490,9 @@
   "src": "geometry, species frames",
   "made": "clan C02 (Kausida), plan R1\u00b7flaps: a hexagon (pointy) roundel, a 2 px ring in coral #e98268 and a solid 8 px centre in coral #e98268",
   "sha256": "ef1f2925cc4b4f0e7ade7928525554d629288d1adbdce1aad071ba955735ba7f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C03-24x24": {
   "size": [
@@ -5508,9 +5508,9 @@
   "src": "geometry, species frames",
   "made": "clan C03 (Stilbera), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in lagoon #269fa5 and a solid 8 px centre in lagoon #269fa5",
   "sha256": "1dfa9dc17e01b0ad16259ad3f3473adb7071572e13d5bc2ed3128bb52ebb8398",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C04-24x24": {
   "size": [
@@ -5526,9 +5526,9 @@
   "src": "geometry, species frames",
   "made": "clan C04 (Lathreta), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "392542bef06b18eb3faa1578230c65d79e7ea81b60adaa7bff4c76fe599e4864",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C05-24x24": {
   "size": [
@@ -5544,9 +5544,9 @@
   "src": "geometry, species frames",
   "made": "clan C05 (Dasyla), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
   "sha256": "3eb9eea26987eb5ea74f3a183fbee524506bf41acee653bf2b96e7954c7326d1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C06-24x24": {
   "size": [
@@ -5562,9 +5562,9 @@
   "src": "geometry, species frames",
   "made": "clan C06 (Prosopa), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
   "sha256": "9fdd0e2848e0c9328e47be07cbbc7fed162bbb9fb0722f79bfda7e3cab12326e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C07-24x24": {
   "size": [
@@ -5580,9 +5580,9 @@
   "src": "geometry, species frames",
   "made": "clan C07 (Skapana), plan B1\u00b7L4: a circle roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in russet #ae674d",
   "sha256": "62fba1c53d5c87da4046c72d7e641dcd73b140873f4cea9014e67199c4146c4b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C08-24x24": {
   "size": [
@@ -5598,9 +5598,9 @@
   "src": "geometry, species frames",
   "made": "clan C08 (Kremnion), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in charcoal #465459 (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "9097e55abab1b417b12144b07af491cd8b7e9398aade0aeeb00adfe9b69b1708",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C09-24x24": {
   "size": [
@@ -5616,9 +5616,9 @@
   "src": "geometry, species frames",
   "made": "clan C09 (Aithria), plan B2\u00b7L2\u00b7flaps: a diamond roundel, a 2 px ring in cobalt #4d7ed4 and a solid 8 px centre in cobalt #4d7ed4",
   "sha256": "47826d455126adc3c54248c2ec5e83261de0934cfe3a9398b1dc042e20e0903e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C10-24x24": {
   "size": [
@@ -5634,9 +5634,9 @@
   "src": "geometry, species frames",
   "made": "clan C10 (Kolymba), plan B3\u00b7L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in peach #ffd7c5 (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "9679996bafd3aaed4e2f8e93f8f291cd8bbc534436cc979f495248f24bb966a3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C11-24x24": {
   "size": [
@@ -5652,9 +5652,9 @@
   "src": "geometry, species frames",
   "made": "clan C11 (Thyreka), plan B1\u00b7L4: a circle roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
   "sha256": "228b8828fbea5dccc71610d818351107f861283d7b1dae17d06b93975cb21fb9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C12-24x24": {
   "size": [
@@ -5670,9 +5670,9 @@
   "src": "geometry, species frames",
   "made": "clan C12 (Graptoma), plan B3\u00b7L6\u00b7flaps: a pentagon (up) roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
   "sha256": "23faf90ea2b2fb501f67162b93c04138291e3e9c6b1ddd38acdd4f69a4088e43",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C13-24x24": {
   "size": [
@@ -5686,11 +5686,11 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C13 (Lepidos), plan B3\u00b7L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in slate #718489 (dot assigned: it collides in its shape family with another clan of the same anchor)",
-  "sha256": "2a67a5c41ab76a1a6975a3168fee97d36fcc714ab086fe4837a4747a476165b5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "made": "clan C13 (Lepidos), plan B3\u00b7L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in sand #e6c98c (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "sha256": "fe92cfcdce4ab7d8aa4804c726c737f9728ae27ad36d1e66df3a4e6ccf71d3c8",
+  "status": "signed",
+  "signed_in": "pass 35 (signed on delivery)",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides; C13: the dot is sand, the mark's ink and not a change to the clan's pigment"
  },
  "mark-clan-C14-24x24": {
   "size": [
@@ -5706,9 +5706,9 @@
   "src": "geometry, species frames",
   "made": "clan C14 (Kapnis), plan B3: a vertical stadium roundel, a 2 px ring in plum #a967b8 and a solid 8 px centre in plum #a967b8",
   "sha256": "5fe7a00c64a4b1ef5d6bb947c2522ce8e96297f5b04f6c35cd567bdf5dd0e925",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C15-24x24": {
   "size": [
@@ -5724,9 +5724,9 @@
   "src": "geometry, species frames",
   "made": "clan C15 (Phyllaxa), plan Rfan2\u00b7rays: a horizontal stadium roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
   "sha256": "1bac22024812da90a0ebf74064e16915cfddffe926092609248a53432bd266de",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-clan-C16-24x24": {
   "size": [
@@ -5742,9 +5742,9 @@
   "src": "geometry, species frames",
   "made": "clan C16 (Brontelas), plan Bfan3: a pentagon (down) roundel, a 2 px ring in periwinkle #8b7dd8 and a solid 8 px centre in periwinkle #8b7dd8",
   "sha256": "e63c0262e1bba6b08f2f5ecefb5bab00f16d23a3e873385af95fa97e09afdf5f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned in the round 1 verdict: a shared ink cannot name a clan; the shape follows the clan's plan, round 2"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the roundel by plan; the centre dot assigned where its shape family collides"
  },
  "mark-first-16x16": {
   "size": [
@@ -5814,9 +5814,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "f336309ce217bccf29058f5de627a95044b7de7789c9fe3e3b9d7dee74992dff",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-medium-pattern-ribs": {
   "size": [
@@ -5868,9 +5868,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "b276930aa37c0de4f84567d0dac8ef4e4abb594b4fb4901dd2e898ccd300cf91",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-small-pattern-ribs": {
   "size": [
@@ -5922,9 +5922,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "cab089c1ec60448397f97b815dafe135dae3738f372aa4d07cf0dd91a922094a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-collection-pattern-ribs": {
   "size": [
@@ -5976,9 +5976,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "737fb9351928aa6ffd609b4ed3d5511eb720cbb4b65c407a89ca4324abaa6e6e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-well-pattern-ribs": {
   "size": [
@@ -6030,9 +6030,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row",
   "sha256": "f6a16282f9c548688af899f0abc68fee04d47632687c03ebbe54a8c1f5246e63",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2 of the returned patterns: the light-only layer redrawn (segments: three or four seams, three at the well size; plates: a staggered mosaic with vertical and horizontal seams), with its relief layer; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "ring-kin-56x56": {
   "size": [
@@ -7033,9 +7033,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "cd234f7baee6e47a1f34bdbb91c4632880f721956b50034affb042432f597a9b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-medium-pattern-segments-relief": {
   "size": [
@@ -7069,9 +7069,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "45a06968545a317b7bc7d41dbcba9f715a170e3ed440c0e316cc1021bceb7df7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-small-pattern-segments-relief": {
   "size": [
@@ -7105,9 +7105,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "c7821cea46f90198676d78423d6220147679a9fe56b09fcedf26a10d591d6b5e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-collection-pattern-segments-relief": {
   "size": [
@@ -7141,9 +7141,9 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "d2cdbdcc612d0f0fc91c46c0d46250b3ef02eef36b187176ae64bf374116be64",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  },
  "pod-well-pattern-segments-relief": {
   "size": [
@@ -7177,8 +7177,8 @@
   "src": "procedural, on the sphere of the pod",
   "made": "systematic pod layer: pattern-plates-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip",
   "sha256": "1b9836f619a3efeb7f63e27850a1e1bd8537bfaf557167e245a2c82f2708fae2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "round 2: the optional relief layer (shade convention: grey, 0.5 neutral, colour x 2 x grey), just above the shade; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "status_note": "the plates layer (scutes) and its relief"
  }
 }
