@@ -153,12 +153,12 @@ export function guideView(m, spec, ctx) {
       targets.push({ id: isMore ? "more" : `plate.${k}`, kind: isMore ? "more" : "plate", index: k, rect: rc, look: isMore ? null : look });
     });
     // "Carried by", then the names, two lines at most, each a target
-    nodes.push(txt(ctx, "carried", spec.strings.carriedBy, D.carried.rect[0], D.carried.rect[1], 16, D.carried.label.colour));
+    nodes.push(txt(ctx, "carried", spec.strings.carriedBy, D.carried.rect[0], D.carried.label.capTop, 16, D.carried.label.colour));
     carriers = openLookName != null ? Lib.lookCarriers(st, id, ot.id, openLookName) : [];
-    if (!carriers.length) nodes.push(txt(ctx, "carried.none", spec.strings.carriedNone, D.carried.rect[0], D.carried.rect[1] + 20, 16, "stone"));
+    if (!carriers.length) nodes.push(txt(ctx, "carried.none", spec.strings.carriedNone, D.carried.names.x[0], D.carried.names.capTops[0], 16, "stone"));
     else {
-      const placed = carriedLines(ctx, carriers.map((c) => c.name), D.carried.rect[2], D.carried.names.pitch), put = placed.names.map((p) => ({ ...p, px: D.carried.rect[0] + p.x, py: D.carried.rect[1] + 20 + p.line * D.carried.names.pitch }));
-      if (placed.more) nodes.push(txt(ctx, "carried.more", spec.strings.carriedMore, D.carried.rect[0] + placed.more.x, D.carried.rect[1] + 20 + placed.more.line * D.carried.names.pitch, 16, "stone"));
+      const N = D.carried.names, tops = N.capTops, x0 = N.x[0], placed = carriedLines(ctx, carriers.map((c) => c.name), N.x[1] - N.x[0], 0), put = placed.names.map((p) => ({ ...p, px: x0 + p.x, py: tops[p.line] }));
+      if (placed.more) nodes.push(txt(ctx, "carried.more", spec.strings.carriedMore, x0 + placed.more.x, tops[placed.more.line], 16, N.overflow.colour));
       put.forEach((p) => { nodes.push(txt(ctx, `carried.${p.q}`, p.word, p.px, p.py, 16, "ink")); targets.push({ id: `carrier.${p.q}`, kind: "carrier", index: p.q, rect: [p.px, p.py, p.nameW, 20], mibi: carriers[p.q] }); });
     }
   }
