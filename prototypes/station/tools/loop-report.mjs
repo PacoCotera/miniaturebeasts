@@ -12,7 +12,7 @@ const seed = +arg("seed", 4242), species = arg("species", "S01"), loose = proces
 // The field spend (the game designer's ruling): a Call inside a place is a free survey pulse, only a map pin costs Energy and a new player places none; so by default 0 Energy-costing
 // Calls, a beacon every other walk, no patches. --busy keeps the old assumption (2 Calls, 1 beacon). --calm-energy N sets a walk's Energy yield (4 by default; 2 is the field test's measured median).
 const heavy = process.argv.includes("--busy"), field = { calls: +arg("calls", heavy ? 2 : 0), beacons: +arg("beacons", heavy ? 1 : 0.5), patches: +arg("patches", 0) }, energy = +arg("calm-energy", WALK.e);
-const R = playJourney({ seed, species, settings: loose ? { economy: "loose" } : {}, field, energy, growNow: process.argv.includes("--grow-now"), probe: !process.argv.includes("--no-probe") }), P = R.P;
+const R = playJourney({ seed, species, settings: loose ? { economy: "loose" } : {}, field, energy, bench: true, growNow: process.argv.includes("--grow-now"), probe: !process.argv.includes("--no-probe") }), P = R.P;
 const fmt = (n) => (n === 0 ? "·" : (n > 0 ? "+" : "−") + Math.abs(n));
 const clock = (ms) => { const m = Math.round(ms / MIN); return m < 60 ? m + " min" : Math.floor(m / 60) + " h " + String(m % 60).padStart(2, "0") + " min"; };
 const pad = (s, n) => String(s).padEnd(n), lpad = (s, n) => String(s).padStart(n);

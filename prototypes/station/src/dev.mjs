@@ -38,8 +38,9 @@ export function buildDevPanel(container, hooks) {
     h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["rule", "free"], (v) => ({ rule: "1 ❀ per 2 minutes left, rounded up (decided)", free: "free" })[v])),
     h("p", { class: "dev-note" }, "Decided: Identify 1 ⚡ (first free) · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
-  group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
-    h("div", { class: "dev-row" }, "Daily grow cap ", select("growCap", [10, 2, 20])), h("div", { class: "dev-row" }, "Painter ", select("painter", ["mock", "real", "off"])), toggle("sealedOpen", "sealed chapters open (the find is in hand)"));
+  group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10, 12, 1, 2, 3, 4, 5, 7, 9, 11])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
+    h("div", { class: "dev-row" }, "Daily grow cap ", select("growCap", [10, 2, 20])), h("div", { class: "dev-row" }, "Painter ", select("painter", ["mock", "real", "off"])), h("div", { class: "dev-row" }, "Bench watch ", select("watchMs", [60000, 5000], (v) => v / 1000 + " s")), h("div", { class: "dev-row" }, "Bench Data a day ", select("trickleCap", [2, 10, 0], (v) => (v === 0 ? "none" : String(v)))),
+    h("div", { class: "dev-row" }, h("button", { class: "btn", type: "button", onclick: () => { G.st.bench = null; S.logEv(G.st, "Developer: new bench day"); save(); note("a new bench day: the watched and compared lists and the day's Data are cleared"); } }, "New bench day")), toggle("sealedOpen", "sealed chapters open (the find is in hand)"));
   // Seeds
   const spSel = h("select", {}); for (const id of frameIds()) spSel.append(opt(id, id + " " + frameOf(id).species.name, id === "S01"));
   const cnt = h("input", { type: "number", min: "1", max: "6", value: "1" }), seed = h("input", { type: "number", min: "1", value: String(Math.floor(Math.random() * 9000) + 1) });
@@ -62,7 +63,7 @@ export function buildDevPanel(container, hooks) {
   group("Sitting and Library (text rows, placeholder)",
     h("div", { class: "dev-row" }, btn("Hold a sitting", () => T.devGrantSitting(G.st)), btn("Pay the research moments", () => T.collectMoments(G.st, G.settings).map((r) => r.key + (r.ok ? " → held" : r.lost ? " → lost" : "")).join(", ") || "none earned"), btn("Welcome sitting", () => T.checkWelcome(G.st)),
       btn("First mibi: watch dig, walk to the wood", () => { const m = first(); if (!m) return "no mibi"; T.recordHabit(G.st, m, "dig"); T.recordWalk(G.st, m, "wood"); return m.name + " has dug and walked"; })),
-    h("div", { class: "dev-row" }, btn("Begin the first mibi's sitting", () => { const m = first(); if (!m) return "no mibi"; return T.beginSitting(G.st, m, T.habitsOf(m)[0], T.placesOf(m).slice(-1)[0], G.settings); }), btn("Land the painting", () => { const c = G.st.sittingCrates[0]; return c ? T.landPortrait(G.st, c.id) : "no crate"; }), btn("Open the sitting's crate", () => { const c = G.st.sittingCrates[0]; return c ? T.openSittingCrate(G.st, c.id, G.settings) : "no crate"; }),
+    h("div", { class: "dev-row" }, btn("Begin the first mibi's sitting", () => { const m = first(); if (!m) return "no mibi"; return T.beginSitting(G.st, m, T.habitsOf(m)[0], T.placesOf(m).slice(-1)[0], G.settings, Date.now(), G.sv); }), btn("Land the painting", () => { const c = G.st.sittingCrates[0]; return c ? T.landPortrait(G.st, c.id) : "no crate"; }), btn("Open the sitting's crate", () => { const c = G.st.sittingCrates[0]; return c ? T.openSittingCrate(G.st, c.id, G.settings) : "no crate"; }),
       btn("Show", () => { show(sittingText()); return ""; })),
     h("p", { class: "dev-note" }, "Rules only (M5 and M6); the Home slot, the ceremony, the bay's crate and the Library's spread have no screens yet."));
   // Inspect
