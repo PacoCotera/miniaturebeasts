@@ -10,7 +10,7 @@ its retained display/context. Lab, Companions and Dock retain existing renderers
 ## Player journey and evidence
 
 Exact clean/pushed source `ae93a07c73d643cc296cb802f425b881e139566f` built on the
-existing native VM. Domain, Cargo UI, Lab and Kit checks passed; all native target
+existing build machine. Domain, Cargo UI, Lab and Kit checks passed; all native target
 CI 36810823393 passed. Prior source d3e536c also passed the existing seven presenter
 bridge checks and real HTTP/native handoff/link/endpoint checks; final correction
 changes only retained frame composition and representative exports.

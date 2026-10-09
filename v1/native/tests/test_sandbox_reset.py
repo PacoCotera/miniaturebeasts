@@ -127,7 +127,7 @@ class ResetHTTP(unittest.TestCase):
         self.server.native.reset.assert_called_once_with("a" * 32)
 
 
-@unittest.skipUnless(BINARY, "Supply pushed, VM-built selected_lab for real native proof")
+@unittest.skipUnless(BINARY, "Supply pushed, CI-built selected_lab for real native proof")
 class ActualNativeReset(unittest.TestCase):
     def test_fresh_three_device_world_and_restart(self):
         with tempfile.TemporaryDirectory() as directory, patch.dict(os.environ, {"BEECHO_V1_SAVE": str(Path(directory) / "world")}):

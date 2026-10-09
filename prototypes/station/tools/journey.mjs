@@ -24,7 +24,7 @@ const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".css": "text/css", ".md": "text/markdown" };
-// The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the VM's web server does.
+// The Caddy service in mock mode beside the static server (station-build.md §5), its calls proxied under /caddy-api/ as the sandbox server's web server does.
 loadCaddyFrames();
 const caddyData = mkdtempSync(path.join(tmpdir(), "mb-caddy-journey-"));
 let caddy = createApp({ dataDir: caddyData, painter: "mock", mockDelay: 1, tickMs: 200 });

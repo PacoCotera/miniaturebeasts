@@ -1,5 +1,5 @@
 Final source: 5a529f92c8ce88c29e83d1b3a8d355d45bb4d971
-Exact clean pushed Git revision on existing VM/toolchain.
+Exact clean pushed Git revision on the build machine and its toolchain.
 Final research_ui_checks passed, including max10000-unit stock and95-character feedback.
 Production source 4ec6fedf79c67ff31e3e806fa99ad82453578055 passed3/3 research/input/Kit; final source adds maxboundary testfixture and the reviewed feedback inset.
 Three contexts Home/reception/research+Companion resident+Dock: used195096 peak197072 effective233120 first_free38024 final_free38024.

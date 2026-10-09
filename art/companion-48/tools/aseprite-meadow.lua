@@ -1,4 +1,4 @@
--- The seamless meadow pass, run headless in Aseprite on the VM:
+-- The seamless meadow pass, run headless in Aseprite:
 --   aseprite -b --script-param master=in/grass1.png --script-param tiles=grass2,grass3,... --script-param band=6
 --            --script-param indir=in --script-param outdir=out --script aseprite-meadow.lua
 -- Every meadow tile takes the same outer band: the master's interior, offset by half a tile so that what meets

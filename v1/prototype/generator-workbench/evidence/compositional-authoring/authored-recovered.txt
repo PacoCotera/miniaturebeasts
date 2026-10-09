@@ -16,7 +16,7 @@
   - separator
   - paragraph: 110 proposed records · 104 defined copy contracts · 6 draft candidates
   - link "Character art studies":
-    - /url: https://github.com/PacoCotera/critter-lab/blob/codex/genome-art-reset/prototype/generator-workbench/evidence/art-reset/README.md
+    - /url: https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md
     - generic: Character art studies
 - main:
   - status:
