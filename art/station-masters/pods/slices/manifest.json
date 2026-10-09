@@ -9073,7 +9073,7 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "a dotted hollow pip in `clay` (corners and the pairs at the middle of each side lit, nothing inside); the unseen look's pip (pass 75)",
+  "made": "a dotted hollow pip in `clay` (corners and the pairs at the middle of each side lit, nothing inside); the unseen look's pip (pass 81, after the art director's verdict on pass 75)",
   "sha256": "afa8dd10a35f8b43a0a847e6d91a33262c9c31892548b2d19c8f1388a4b7b8cb",
   "status": "signed",
   "signed_in": "art director, field guide",
@@ -9086,11 +9086,11 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the pinned look's glint at 12: yellow with a cream core and an amber shade (the signed Cross wish glint typed again), on a trait cell and its plate (pass 75)",
-  "sha256": "a1eaf9cc0929aa603ed7e2bf88441124220263361ed605aceb7dffd17c67f628",
+  "made": "the pinned look's glint: a 10x10 silhouette (yellow, cream core, `gold` shade lower right) inside a 1 px `bark` keyline, so 12x12; on a trait cell and its plate (pass 81, after the art director's verdict on pass 75)",
+  "sha256": "8d3eac855b81d58bb78691d02c2e4c119b3b681b89558d620b7f755377f5c6f8",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+  "status_note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
  },
  "wish-mark-24": {
   "size": [
@@ -9099,11 +9099,11 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the pinned wish panel's corner on the face spread: the same glint drawn again at 24 (a typed width profile; cream core, amber shade bottom right), never scaled (pass 75)",
-  "sha256": "13e19cf377c8214f382f5b502d4b5696ccce735d180aab3e2726c4e8ccb62b78",
+  "made": "the pinned wish panel's corner on the face spread: the same glint drawn again at 22x22 inside a 1 px `bark` keyline, so 24x24, the horizontal arm 2 px thick to its tips; never scaled (pass 81, after the art director's verdict on pass 75)",
+  "sha256": "407169a1fcb384aa3e4aeaebb6819132aebcb95f25906bd3503b2f631d3e9546",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+  "status_note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
  },
  "mark-guide-16": {
   "size": [
@@ -9112,11 +9112,11 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "an open book in `bone` (two pages with two lines each, a spine, a foot), for chrome after the species word on Habitat's card (pass 75)",
-  "sha256": "7133b398eca7f8be7102e1b1f0c8cc3de7b17f100aba925159fb55f286682a97",
+  "made": "an open book in `bone` for chrome: no feet, each page's top falling 1 px per 3 px towards a 1 px spine, the bottom edge curved to match, two text lines per page, `fog` shade on the right page, centred (rows 2 to 13) (pass 81, after the art director's verdict on pass 75)",
+  "sha256": "16e3a0de4584df69e681dec4fce65b5b98ce1c700a2b64c0e21df6e4d6b1127f",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+  "status_note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
  },
  "guide-seal-32": {
   "size": [
@@ -9125,11 +9125,11 @@
   ],
   "rect": null,
   "src": "typed by hand",
-  "made": "the guide complete: a scalloped gold seal (twelve scallops), a lit sand rim top left, a bark shade bottom right, a clay groove, the cream glint at its centre (pass 75)",
-  "sha256": "db155c0d72fb9abfa40506faed58df6a78cc124c429a62e044956c691a83f6d0",
+  "made": "the guide complete: a pressed paper seal, 12 even scallops typed as one quadrant and mirrored, a `sand` face, a 1 px `clay` groove ring, a `bark` keyline and a `bark` shade at the bottom right; no glint, no gold, no yellow (pass 81, after the art director's verdict on pass 75)",
+  "sha256": "9313340a0d459fe35f4cf79ee8a4c19093aba28edb61d299fa4729b5e420ab6e",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 75: a hand-typed Library field guide mark in the family of the signed line glyphs and the Cross glint; awaiting verdict"
+  "status_note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
  },
  "guide-panel-coat-128x80": {
   "size": [
