@@ -856,8 +856,8 @@ const CARE_TEXT = {
 };
 // Assets the care screens name that have no master yet: registered here, never drawn (no heart is drawn until it lands).
 const CARE_ASSETS = [
-  { id: 'c-heart-24', w: 24, h: 24, status: 'empty', until: 'the art director’s master (the active mibi’s name row; at 2× in the bond event)' },
-  { id: 'c-heart-16', w: 16, h: 16, status: 'empty', until: 'the art director’s master (roster rows, the Lead card, the partner card)' },
+  { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'empty' },
+  { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'empty' },
 ];
 const CARRY_MAX = 3, BOND_TENDS = 3, BOND_OUTINGS = 1;   // the carry cap; the bond: three Tends and an outing (rule, game designer)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
@@ -884,8 +884,12 @@ function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDE
 function rosterList() { const c = carriedMibis(); return S.exp || !isDocked() ? c : c.concat(homeMibis()); }
 // Take and Leave, docked and between expeditions only. Take is refused when three are with you.
 function canSwap() { return !S.exp && isDocked(); }
+// A mibi the Station has released (its copy in the Station's part) is never taken.
+function releasedIds() { const st = stPart(); return new Set(((st && st.mibis) || []).filter(q => q.released).map(q => q.id)); }
 function takeMibi(m) {
-  if (!m || !canSwap() || isCarried(m)) return { ok: false, why: 'carried' };
+  if (!m || !canSwap()) return { ok: false, why: 'swap' };
+  if (isCarried(m)) return { ok: false, why: 'carried' };
+  if (releasedIds().has(m.id)) return { ok: false, why: 'released' };
   if (S.carried.length >= CARRY_MAX) return { ok: false, why: 'full' };
   S.carried.push(m.id); logEv(m.name + ' is with you'); return { ok: true };
 }
@@ -914,16 +918,18 @@ function growCheck(m) {
   if (!m || !isCarried(m) || !m.bonded || m.grownTurn != null || m.bondCare == null || !((m.care || 0) > m.bondCare)) return false;
   m.grownTurn = S.turn; logEv(m.name + ' is grown (through care)'); return true;
 }
-// The save: S.with (one slot) becomes S.carried, once.
+// The save: S.with (one slot) becomes S.carried, once. withSeen stays, frozen: the Station's care step reads it.
 function migrateCarried(S) {
   if (Array.isArray(S.carried)) return S;
   S.carried = S.with != null && S.mibis.some(m => m.id === S.with) ? [S.with] : []; S.lead = S.with ?? null;
-  S.carrySeen = 0; delete S.with; delete S.withSeen; return S;
+  S.carrySeen = 0; delete S.with; return S;
 }
 // Every load and after every dock read: defaults for the additive fields, idempotent; old Habitat bonds back-filled once.
-function normalizeCare(S) {
+// A carried id the Companion does not know, or one the Station has released (`released`, the ids released in st), is dropped.
+function normalizeCare(S, released) {
   if (!Array.isArray(S.carried)) S.carried = [];
-  const ids = new Set(S.mibis.map(m => m.id)); S.carried = [...new Set(S.carried)].filter(id => ids.has(id)).slice(0, CARRY_MAX);
+  const ids = new Set(S.mibis.map(m => m.id)), gone = released || new Set();
+  S.carried = [...new Set(S.carried)].filter(id => ids.has(id) && !gone.has(id)).slice(0, CARRY_MAX);
   if (S.lead === undefined) S.lead = null; if (typeof S.carrySeen !== 'number') S.carrySeen = 0; if (!Array.isArray(S.carryRefused)) S.carryRefused = [];
   for (const m of S.mibis) {
     for (const k of ['care', 'tends', 'outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
@@ -973,7 +979,7 @@ function save() {
   if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
-  if (S.st) { syncStation(); normalizeCare(S); }
+  if (S.st) { syncStation(); normalizeCare(S, releasedIds()); }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
@@ -4024,7 +4030,7 @@ function tendPress(m) {
 }
 // Take and Leave as pressed (docked, between expeditions). Take at three: the shake and why.
 function takePress(m) {
-  const r = takeMibi(m); if (r.ok) fxMsg(CARE_TEXT.took(m.name)); else if (r.why === 'full') { fxMsg(CARE_TEXT.fullRefused(m.name), 3); FX.bumpAt = NOW; } else FX.bumpAt = NOW;
+  const r = takeMibi(m); if (r.ok) fxMsg(CARE_TEXT.took(m.name)); else if (r.why === 'full') { fxMsg(CARE_TEXT.fullRefused(m.name), 3); FX.bumpAt = NOW; } else FX.bumpAt = NOW;   // released: the shake only (no words in the copy yet)
   return r.ok;
 }
 function leavePress(m) { const r = leaveMibi(m); if (r.ok) fxMsg(CARE_TEXT.left(m.name)); else FX.bumpAt = NOW; return r.ok; }

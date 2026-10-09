@@ -42,13 +42,13 @@ function clockAt(day) { const [y, m, d] = day.split("-").map(Number), at = new D
   return class extends Date { constructor(...a) { super(...(a.length ? a : [at])); } }; }
 
 const CARE = ["mibiById", "listWords", "localDay", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
-  "grownNow", "agedNow", "rosterList", "canSwap", "takeMibi", "leaveMibi", "canTend", "tend", "bondCheck", "growCheck", "migrateCarried", "normalizeCare",
+  "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "canTend", "tend", "bondCheck", "growCheck", "migrateCarried", "normalizeCare",
   "carryApply", "canWalk", "walkAll", "tripRecord", "TRIP_KINDS", "tripsWith"];
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
   const ctx = vm.createContext({ console, S, Date: clockAt(o.day || "2026-10-09"), JUVENILE_TURNS: 2, ELDER_TURNS: 6, CARRY_MAX: 3, BOND_TENDS: 3, BOND_OUTINGS: 1,
-    isDocked: () => env.docked, logEv: t => env.log.push(t) });
+    isDocked: () => env.docked, stPart: () => env.st || null, logEv: t => env.log.push(t) });
   const names = CARE.filter(n => !["JUVENILE_TURNS", "CARRY_MAX"].includes(n));
   const out = vm.runInContext(names.map(source).join("\n") + "\n;({ " + names.join(", ") + " })", ctx);
   return Object.assign(out, { ctx, env, setDay: d => { ctx.Date = clockAt(d); }, setS: s => { ctx.S = s; } });
@@ -185,9 +185,9 @@ test("T6: born 0, bonded at turn 5 gets grownTurn 2 (the constant), elder at 8; 
 // ---- The carried set: Take, Leave, the roster ----
 test("Take and Leave: docked between expeditions only; Take refused at three; leaving the lead clears it", () => {
   const S = save({ carried: [1] }), t = world(S, { docked: false }), [dot, moss, fig, pip] = S.mibis;
-  assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "carried" }, "undocked: no swap"); assert.deepEqual(plain(S.carried), [1]);
+  assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "swap" }, "undocked: no swap"); assert.deepEqual(plain(S.carried), [1]);
   assert.equal(t.leaveMibi(dot).ok, false, "undocked: no leave");
-  t.env.docked = true; S.exp = { n: 4 }; assert.equal(t.takeMibi(moss).ok, false, "mid-expedition, even docked"); assert.equal(t.leaveMibi(dot).ok, false);
+  t.env.docked = true; S.exp = { n: 4 }; assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "swap" }, "mid-expedition, even docked"); assert.equal(t.leaveMibi(dot).ok, false);
   S.exp = null;
   assert.equal(t.takeMibi(fig).ok, true); assert.equal(t.takeMibi(moss).ok, true); assert.deepEqual(plain(S.carried), [1, 3, 2], "the end of the carried order");
   assert.deepEqual(plain(t.takeMibi(pip)), { ok: false, why: "full" }); assert.equal(S.carried.length, 3);
@@ -246,7 +246,7 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   const sv = FIXTURE(), t = world(sv);
   t.migrateCarried(sv); t.normalizeCare(sv);
   assert.deepEqual(plain(sv.carried), [1]); assert.equal(sv.lead, 1); assert.equal(sv.carrySeen, 0);
-  assert.ok(!("with" in sv) && !("withSeen" in sv)); assert.deepEqual(plain(sv.carryRefused), []);
+  assert.ok(!("with" in sv)); assert.equal(sv.withSeen, 1, "withSeen kept, frozen, for the Station's step"); assert.deepEqual(plain(sv.carryRefused), []);
   const [dot, moss, fig] = sv.mibis;
   assert.deepEqual([dot.bondCare, dot.grownTurn], [0, 2], "Dot: adult, elder at 8");
   assert.deepEqual([moss.bondCare, moss.grownTurn], [0, null], "Moss: a juvenile that waits");
@@ -259,7 +259,7 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   const lost = { mibis: [mibi(1, "Dot")], with: 9, withSeen: 2, turn: 0 }; t.migrateCarried(lost); assert.deepEqual(plain(lost.carried), []);
   const none = { mibis: [], with: null, turn: 0 }; t.migrateCarried(none); assert.deepEqual(plain(none.carried), []); assert.equal(none.lead, null);
   assert.match(source("load"), /migrateCarried\(S\); normalizeCare\(S\);/);
-  assert.match(source("save"), /syncStation\(\); normalizeCare\(S\);/, "after every dock read");
+  assert.match(source("save"), /syncStation\(\); normalizeCare\(S, releasedIds\(\)\);/, "after every dock read, with the Station's released ids");
 });
 test("ruling 2 on the fixture: Moss at home stays juvenile through 14; carried, one Walk at turn 5 grows it; Dot elder at 8", () => {
   const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
@@ -385,7 +385,9 @@ test("T4 merge: Companion care writes reach the Station by max and OR, and a sec
 test("one strings table for care; the heart is registered as a missing asset and never drawn", () => {
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
-  for (const id of ["c-heart-24", "c-heart-16"]) assert.match(reg[0], new RegExp("id: '" + id + "', w: " + id.slice(-2) + ", h: " + id.slice(-2) + ", status: 'empty'"));
+  const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "empty"], ["c-heart-16", 16, 16, "empty"]]);
+  for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   assert.equal(PAGE.split("c-heart").length - 1, 2, "named only in the register");
 });
 
@@ -417,4 +419,23 @@ test("the approved strings: Tend's line from the species moment and the place; t
   assert.equal(T.tendMidExp("Dot"), "Tend Dot when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
   for (const k of Object.keys(T)) { const v = typeof T[k] === "function" ? T[k](k.startsWith("walk") ? ["Abcdefghij"] : k === "tended" ? { name: "Abcdefghij", sp: 0, mem: "meadow" } : "Abcdefghij") : T[k];
     assert.ok(!/[{}]/.test(v), k + ": no placeholder braces"); }
+});
+
+// ---- Released mibis (C0 amendment) ----
+test("Take refuses a mibi the Station has released; a carried mibi already a duplicate refuses as carried", () => {
+  const S = save({ carried: [1] }), t = world(S, { docked: true }), [dot, moss, fig] = S.mibis;
+  t.env.st = { mibis: [{ id: 1, released: false }, { id: 2, released: true }, { id: 3, released: false }] };
+  assert.deepEqual(plain(t.takeMibi(moss)), { ok: false, why: "released" }); assert.deepEqual(plain(S.carried), [1]);
+  assert.deepEqual(plain(t.takeMibi(dot)), { ok: false, why: "carried" });
+  assert.equal(t.takeMibi(fig).ok, true, "a mibi the Station still houses");
+  t.env.st = null; assert.equal(t.takeMibi(moss).ok, true, "no Station part: nothing known as released");
+});
+test("after a dock, normalizeCare drops released ids from the carried set; without the Station's ids it keeps them", () => {
+  const S = save({ carried: [1, 2, 3], lead: 2 }), t = world(S);
+  t.normalizeCare(S); assert.deepEqual(plain(S.carried), [1, 2, 3]);
+  t.normalizeCare(S, new Set([2])); assert.deepEqual(plain(S.carried), [1, 3]);
+  const once = JSON.stringify(S); t.normalizeCare(S, new Set([2])); assert.equal(JSON.stringify(S), once, "idempotent");
+  // the page passes the released ids of the Station's part after every dock read
+  t.env.st = { mibis: [{ id: 3, released: true }, { id: 1, released: false }] };
+  t.normalizeCare(S, t.releasedIds()); assert.deepEqual(plain(S.carried), [1]);
 });
