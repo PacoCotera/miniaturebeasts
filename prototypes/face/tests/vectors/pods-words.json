@@ -340,10 +340,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:-:s:120x152",
        "identified": null
       },
@@ -505,10 +501,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:-:s:120x152",
        "identified": null
       },
@@ -669,10 +661,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:-:s:120x152",
        "identified": null
       },
@@ -834,10 +822,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -1142,10 +1126,6 @@
       },
       "pod": {
        "sizeClass": "large",
-       "size": [
-        144,
-        176
-       ],
        "sealed": "pod:S02:s:144x176",
        "identified": "pod:S02:i:144x176"
       },
@@ -1449,10 +1429,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -1787,10 +1763,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -2094,10 +2066,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S04:s:120x152",
        "identified": "pod:S04:i:120x152"
       },
@@ -2420,10 +2388,6 @@
       },
       "pod": {
        "sizeClass": "large",
-       "size": [
-        144,
-        176
-       ],
        "sealed": "pod:S08:s:144x176",
        "identified": "pod:S08:i:144x176"
       },
@@ -2760,10 +2724,6 @@
       },
       "pod": {
        "sizeClass": "large",
-       "size": [
-        144,
-        176
-       ],
        "sealed": "pod:S02:s:144x176",
        "identified": "pod:S02:i:144x176"
       },
@@ -3088,10 +3048,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S06:s:120x152",
        "identified": "pod:S06:i:120x152"
       },
@@ -3435,10 +3391,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -3742,10 +3694,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -4025,10 +3973,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -4346,10 +4290,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S04:s:120x152",
        "identified": "pod:S04:i:120x152"
       },
@@ -4656,10 +4596,6 @@
       },
       "pod": {
        "sizeClass": "large",
-       "size": [
-        144,
-        176
-       ],
        "sealed": "pod:S08:s:144x176",
        "identified": "pod:S08:i:144x176"
       },
@@ -5037,10 +4973,6 @@
       },
       "pod": {
        "sizeClass": "large",
-       "size": [
-        144,
-        176
-       ],
        "sealed": "pod:S02:s:144x176",
        "identified": "pod:S02:i:144x176"
       },
@@ -5403,10 +5335,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S06:s:120x152",
        "identified": "pod:S06:i:120x152"
       },
@@ -5705,10 +5633,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },
@@ -6821,10 +6745,6 @@
       },
       "pod": {
        "sizeClass": "medium",
-       "size": [
-        120,
-        152
-       ],
        "sealed": "pod:S01:s:120x152",
        "identified": "pod:S01:i:120x152"
       },

@@ -32,6 +32,11 @@ static void caption(const char *region, const char *base, const char *key, const
   spec_str(S, v_fmt("%s.colour", path), col, sizeof col);   /* a palette name */
   v_region(region, LAYER_TYPE); centred(v_fmt("specimen.%s", region), text, r[0] + v_half(r[2]), cap_top(px, r[1], r[3]), px, col);
 }
+/* the pod's size: its class's box in the spec (classes.pod.<class>), the class named by the props */
+int word_pod_size(int out[2]) {
+  char cls[16]; snprintf(cls, sizeof cls, "%s", v_pstr("regions.specimen.pod.sizeClass")); if (!cls[0]) return 0;
+  out[0] = spec_int(S, v_fmt("classes.pod.%s.0", cls), 0); out[1] = spec_int(S, v_fmt("classes.pod.%s.1", cls), 0); return out[0] > 0 && out[1] > 0;
+}
 void word_specimen(const char *base) {
   char name[24], origin[24], white[24]; colour("name", name, sizeof name); colour("origin", origin, sizeof origin); snprintf(white, sizeof white, "white");
   int beam[4], shelf[4], cradle[4], front[4], nrect[4];
@@ -41,7 +46,7 @@ void word_specimen(const char *base) {
   v_region("specimen", LAYER_ART);
   layer("specimen.shelf", shelf, v_pstr("regions.specimen.room.shelf")); layer("specimen.cradle", cradle, v_pstr("regions.specimen.room.cradle"));
   const char *sealed = v_pstr("regions.specimen.pod.sealed");
-  int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0), w = v_pint("regions.specimen.pod.size.0", 0), h = v_pint("regions.specimen.pod.size.1", 0);
+  int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0), psz[2] = { 0, 0 }; word_pod_size(psz); int w = psz[0], h = psz[1];
   if (has(sealed)) {
     char focus[40]; snprintf(focus, sizeof focus, "%s", v_focus_cur());
     int lift = strcmp(focus, "pod") == 0 ? spec_int("frame", "focus.lift.creature", 4) : 0, rect[4] = { axis - v_half(w), feet - h - lift, w, h };

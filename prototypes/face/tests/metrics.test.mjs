@@ -16,7 +16,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), frames = path.resolv
 // every string a spec file holds, and the names of every species, chapter and trait
 const strings = new Set();
 const walk = (v) => { if (typeof v === "string") { strings.add(v); for (const part of v.split(/[{}]/)) strings.add(part); } else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === "object") for (const [k, x] of Object.entries(v)) { strings.add(k); walk(x); } };
-for (const f of readdirSync(specs).filter((f) => f.endsWith(".json"))) walk(JSON.parse(readFileSync(path.join(specs, f), "utf8")));
+for (const f of readdirSync(specs).filter((f) => f.endsWith(".json") && !f.endsWith(".props.json"))) walk(JSON.parse(readFileSync(path.join(specs, f), "utf8")));
 for (const f of readdirSync(frames).filter((f) => f.startsWith("species-"))) walk(JSON.parse(readFileSync(path.join(frames, f), "utf8")));
 for (const n of [0, 1, 7, 9, 10, 12, 99, 100, 120, 999, 1000, 99999]) strings.add(String(n));
 for (const s of ["A", "AV", "To", "Tj", "WA", "Ty", "ff", "fi", "r.", "Yo", "LT", "P,", "1.5", "Ünï", "naïve", "Legs & Tail", "Home ← Pods", "T12", " ", "a b  c"]) strings.add(s);

@@ -95,7 +95,7 @@ function specimenOf(m, spec, cur, R, req, mode) {
       plate: plateSeries(req, N),
     },
     pod: {
-      sizeClass, size: box,
+      sizeClass,
       sealed: req({ kind: "pod", id: `pod:${sp ?? "-"}:s:${box.join("x")}`, species: sp, state: "sealed", size: box }),
       identified: cur.idd ? req({ kind: "pod", id: `pod:${S.speciesOf(cur)}:i:${box.join("x")}`, species: S.speciesOf(cur), state: "identified", size: box }) : null,
     },

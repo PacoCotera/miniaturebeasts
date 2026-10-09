@@ -14,8 +14,7 @@
 static int sa(const char *base, const char *key, int k) { return spec_int(S, v_fmt("%s.%s.%d", base, key, k), 0); }
 /* the pod's box: bottom-centred on its axis and feet line at its size class */
 static int pod_box(const char *base, int box[4]) {
-  int w = v_pint("regions.specimen.pod.size.0", 0), h = v_pint("regions.specimen.pod.size.1", 0);
-  if (!w || !h || !*v_pstr("regions.specimen.pod.sealed")) return 0;
+  int sz[2], w, h; if (!word_pod_size(sz) || !*v_pstr("regions.specimen.pod.sealed")) return 0; w = sz[0]; h = sz[1];
   box[0] = spec_int(S, v_fmt("%s.pod.axis", base), 0) - v_half(w); box[1] = spec_int(S, v_fmt("%s.pod.feet", base), 0) - h; box[2] = w; box[3] = h; return 1;
 }
 /* the ring on the focused target, in the form of its group: a place and a kin wear the circle, the pod and the hatch the rounded rectangle; the rail's tabs carry their own */

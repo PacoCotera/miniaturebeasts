@@ -10,6 +10,7 @@ void word_focusRing(const char *id, const int box[4], const char *spec, const ch
 /* station/ */
 void word_bench(void);   /* Pods' stage: the ground and the room master over it */
 void word_specimen(const char *base);   /* the pod under the beam on its cradle; base: the state's regions in the pods spec ("regions.overview" or "regions.chapter") */
+int word_pod_size(int out[2]);          /* the pod's box size from its class in the spec; 0 when the props name no class */
 void word_kin(const char *base);        /* the overview's kin rings and the hatch */
 void word_stamp(const char *base);      /* the overview's stamp label in its case */
 void word_page(const char *key);        /* the chapter page ("page") or one of Compare's two ("pageA", "pageB") */
