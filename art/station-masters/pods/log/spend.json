@@ -1,0 +1,50 @@
+[
+ {
+  "tag": "legs-tail pictogram tail-a (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 8c151f36-169b-4d2b-a65c-2f9ea08c93ba"
+ },
+ {
+  "tag": "legs-tail pictogram tail-b (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 7a3779d1-c82c-4023-8dd0-9712889e250d"
+ },
+ {
+  "tag": "legs-tail pictogram tail-c (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task c0ad34ec-ab8f-4e60-9d3b-2a036bffdd78"
+ },
+ {
+  "tag": "legs-tail pictogram tail-d (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 531112f0-44fa-456b-89ca-500b6a22c305"
+ },
+ {
+  "tag": "legs-tail pictogram leg-a (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 73dfec5a-3096-43bc-9d96-330d3bc02c40"
+ },
+ {
+  "tag": "legs-tail pictogram leg-b (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 84c61716-5d6e-46e9-955a-ea1b01b9866f"
+ },
+ {
+  "tag": "legs-tail pictogram leg-c (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task b28124ee-b0e1-49ce-a6bc-083300fbf4db"
+ },
+ {
+  "tag": "legs-tail pictogram leg-d (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task d8bd5484-0c4c-424f-b54e-39890b7e7797"
+ }
+]

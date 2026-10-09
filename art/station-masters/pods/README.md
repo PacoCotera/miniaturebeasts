@@ -336,6 +336,15 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 15 - Legs & tail through the pixel pipeline (candidates only)
+
+Eight hand rounds did not give a tail, so the method changed. `emblems/pipeline/`:
+1. **Gemini, eight pictograms.** Four tails and four hind legs with their paws, each one flat filled bone-white silhouette lit from the upper left on a flat dark ground, 1K squares (`source/raw/legstail-pict-{tail,leg}-{a..d}.jpg`, calls in `log/calls.jsonl`, jobs in `source/work/legstail-jobs.json`). The art prompter's house prompt for these was not in the repository (`grow/prompt-lab/` holds the painting prompts), so the prompt is my own, written from the emblem manner (filled, no outline, lit upper left). Each was keyed off its ground and fitted to a 96 px square (`in96/`).
+2. **Retro Diffusion to 24.** `rd.py`: style `rd_pro__pixelate`, the 96 px picture as `input_image` (strength 0.6), the 62 colours of `station.json` as `input_palette` (`station-palette-62.png`), `remove_bg`, 24x24, seed 1; eight calls at 0.18 USD, sidecars in `rd/*.json` (no key material), recorded in `log/spend.json` (1.44 USD).
+3. **Clean-up on the 62 colours.** `clean.py` reduces each result to its silhouette (RD's own teal and yellow fringes are not in the emblem manner, which is two colours per state), drops specks, fills pinholes, writes typed rows with the lit edge (`clean/*.txt`, `#` base, `+` lit, `.` empty), and I recentred each on the grid; those rows are the files edited from here.
+4. **The sheet.** `legs-tail-pipeline-1x.png` (3x proof beside it): each of the eight on the compact tab beside Coat, Movement and Glow, unread and read, at 1x. Honest reading: tail-a (a bushy upswept tail) and tail-b (an S with a brush tip) read as tails; tail-c is a feather-like blade; tail-d is a cluster that does not read; the four legs read as commas or drops and none shows a hock and paw clearly, so I would not take a leg. Three-state slices are built only after the art director's pick; nothing here is a slice.
+
+
 ## Pass 14d - the Grid composite for a Tuikis, the tail off the tab
 
 - The tapered tail was not signed after eight hand rounds: `rail-emblem-legs-tail-*` withdrawn; it is off the rail in both composites (the word on the full tab, pips only on the compact tab). Legs & Tail goes through the pixel pipeline next (pass 15).
