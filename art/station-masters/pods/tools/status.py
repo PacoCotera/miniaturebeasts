@@ -30,6 +30,7 @@ for n in m:
     elif re.match(r"pod-(large|medium|small)-", n): sign(n, "signed", "pass 6", "layers signed across passes 4 to 7b; the 33 are standing")
     elif n.startswith("pod-collection-") and not n.endswith("-unknown"): sign(n, "new", None, "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict")
     elif n.startswith("pod-well-"): sign(n, "signed", "passes 8 and 9 (verdict)", "the 40x48 well pod class, centred; signed with the layer set")
+    elif n.startswith("trait-picture-standin-"): sign(n, "signed", "pass 19 verdict", "the stand-in card, cut as slices (the build places it by id)")
     elif n.startswith("trait-picture-frame-"):
         size = re.search(r"(\d+x\d+)", n).group(1); kind = "sealed" if n.endswith("-sealed") else "unread" if n.endswith("-unread") else "plain"
         if size == "232x312": sign(n, "signed", "pass 6", "confirmed signed by the art director, not placed (the portrait frame is withdrawn from the layout)")
@@ -62,7 +63,7 @@ for n in m:
     elif n in ("ring-column-112x522", "ring-hatch-80x56"): sign(n, "signed", "pass 8 (d767daa verdict)", "re-cut for design-pods-relayout 29b6dc9")
     elif n == "ring-well-empty": sign(n, "withdrawn", None, "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))")
     elif re.match(r"mibi-halo-S(01|09|12)-", n): sign(n, "signed", "pass 23 verdict", "master: cut from the species' standard painting")
-    elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 23 verdict", "placeholder, re-cut from the standard painting when it lands")
+    elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 40 (re-fit verdict; the five low mists signed on delivery)" if re.match(r"mibi-halo-S(03|10|11|13|14)-.*mist", n) else "pass 37 (re-fit verdict)", "placeholder, re-cut from the standard painting when it lands")
     elif re.match(r"room-bench-stage-(overview|chapter)", n): sign(n, "new", None, "the bench re-windowed for the three-state Pods: the cone on x 256 (overview) or x 216 (chapter); awaiting verdict")
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")

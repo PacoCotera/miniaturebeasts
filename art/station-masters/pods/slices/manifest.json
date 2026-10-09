@@ -4503,7 +4503,7 @@
   "made": "the S03 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "2c7c7d161e02b0e5549e595e558f747b617d80f621e787975f37428075ba8898",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S03-128x160-mist": {
@@ -4514,9 +4514,9 @@
   "rect": null,
   "src": "halo-S03-clear.jpg over the S03 silhouette from the species frame's placeholder render (side view)",
   "made": "the S03 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "d3545710dcb8467df3ac9474dca2101e4e8ca73ccc778ad85953d9d51ed0a48c",
+  "sha256": "fe24941aea9e171818ad8deeee18fa5abb8d19bd6501bd52ca1f89d46acf05a6",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-clear": {
@@ -4529,7 +4529,7 @@
   "made": "the S05 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "1183cd5f09c3808c9b91b3fff3fef116a0b066a3e26eff037f2d12d5b6819ddb",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-mist": {
@@ -4542,7 +4542,7 @@
   "made": "the S05 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "369706b46151d1c14928c17772d6195220ebbc7d5e36729a1bd010182f2e6fff",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S06-128x160-clear": {
@@ -4555,7 +4555,7 @@
   "made": "the S06 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "deafeb1b05e98cec4be4dff3458363663cd4ffcaa631480310b1e5e9ca92e546",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S06-128x160-mist": {
@@ -4568,7 +4568,7 @@
   "made": "the S06 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "c6a56dc33e1f4aa46089f3bbfb4784b7a9059dfe4dd29236329161a580c6605d",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S08-128x160-clear": {
@@ -4581,7 +4581,7 @@
   "made": "the S08 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "7513b13735882338fba06593cf9a19f732ecbe0b53be50bf173be6d67903e531",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S08-128x160-mist": {
@@ -4594,7 +4594,7 @@
   "made": "the S08 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "d6fe20e434e8e28b00d71c7d6bb360a0746a592392076a729f765b23f4ecb466",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S10-128x160-clear": {
@@ -4607,7 +4607,7 @@
   "made": "the S10 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "80ff01077d8b752093fceac2e5f97dedf00a9df905f99f085e66977666d54734",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S10-128x160-mist": {
@@ -4618,9 +4618,9 @@
   "rect": null,
   "src": "halo-S10-clear.jpg over the S10 silhouette from the species frame's placeholder render (side view)",
   "made": "the S10 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "5b521c1899e934849ae7d16b59bf4560c5dfeeb70eb8264b85f1d7f9144fe845",
+  "sha256": "0b2d9b6cf39d1f93bcf54cfea3a392b26178324d30921c25849a3aff019e6019",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-clear": {
@@ -4633,7 +4633,7 @@
   "made": "the S11 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "786b2c2ed77ef5b2e38e9a75d6bb4527f298212b5abe5459f5cf136de67b7c4f",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-mist": {
@@ -4644,9 +4644,9 @@
   "rect": null,
   "src": "halo-S11-clear.jpg over the S11 silhouette from the species frame's placeholder render (side view)",
   "made": "the S11 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "09257cc78f1eae46ce834856a18719e12909f0b9b95dd7a59451dd13d98d21f2",
+  "sha256": "8f3aad67db3335b74f35a5000429733a9bd5e02755142a92b93eb4162554f54b",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-clear": {
@@ -4659,7 +4659,7 @@
   "made": "the S13 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "2457a36267085a64a742c2039681885e32360c08389eab5f43628966b0fcb2b8",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-mist": {
@@ -4670,9 +4670,9 @@
   "rect": null,
   "src": "halo-S13-clear.jpg over the S13 silhouette from the species frame's placeholder render (side view)",
   "made": "the S13 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "2a852911f0c5898157d85a7bc9c258a607b722446ba324126a2018a0c07527b5",
+  "sha256": "03a39349a1db57b789ad61b509c4586fd91553649883ed26bcf0c4d595884274",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-clear": {
@@ -4685,7 +4685,7 @@
   "made": "the S14 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "b7f8026d712ce37f52398910d1e78ca5fa1e01f537a822864a0623aa8f3479ae",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-mist": {
@@ -4696,9 +4696,9 @@
   "rect": null,
   "src": "halo-S14-clear.jpg over the S14 silhouette from the species frame's placeholder render (side view)",
   "made": "the S14 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
-  "sha256": "9684438c2a397d881481c03d94d84314d6482a9340fbc0c19db545ebf1c45eea",
+  "sha256": "a5b652ab09b9aba4ea94bd41ef3e1e333385633d2431fe2b8fd507b1ba040596",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 40 (re-fit verdict; the five low mists signed on delivery)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-clear": {
@@ -4711,7 +4711,7 @@
   "made": "the S15 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "1efcb8c1197de140eaa6b58bd75de3d1aa331ee0352ab6ceda829c6698e4de61",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-mist": {
@@ -4724,7 +4724,7 @@
   "made": "the S15 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "61bff9237bafd7eba65feb9ce2728044593ddef6bdbbe6882da8934745ee9864",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S16-128x160-clear": {
@@ -4737,7 +4737,7 @@
   "made": "the S16 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "a8f7cd38110febcd7e755b6371c20e918b4e16959b389dd419ed61763938e57a",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S16-128x160-mist": {
@@ -4750,7 +4750,7 @@
   "made": "the S16 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
   "status": "placeholder",
-  "signed_in": "pass 23 verdict",
+  "signed_in": "pass 37 (re-fit verdict)",
   "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "pod-large-unknown": {
@@ -8996,5 +8996,83 @@
   "status": "new",
   "signed_in": null,
   "status_note": "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict"
+ },
+ "trait-picture-standin-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "procedural",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
+  "sha256": "db60d178e0a1ba8b2694e2728dd01007bfdb8deead21c708e59eb1e6939bb978",
+  "status": "signed",
+  "signed_in": "pass 19 verdict",
+  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+ },
+ "trait-picture-standin-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "procedural",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
+  "sha256": "2c976c89b41e8e4a23b9b33b7b55f8e05a37115356e8225f6af980e23166b50b",
+  "status": "signed",
+  "signed_in": "pass 19 verdict",
+  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+ },
+ "trait-picture-standin-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "procedural",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
+  "sha256": "2ec67ad88bcfddec037fc1b9af0e1f25ebf9e106af1842aef72c369864c8ac69",
+  "status": "signed",
+  "signed_in": "pass 19 verdict",
+  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+ },
+ "trait-picture-standin-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "procedural",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
+  "sha256": "487aceb74eab700b59ac2dd9d773918c694e9c4fa955ef871d67ab40238be8d3",
+  "status": "signed",
+  "signed_in": "pass 19 verdict",
+  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+ },
+ "trait-picture-standin-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "procedural",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
+  "sha256": "626eebcc0db4fa8107c16de49b9441cec234f211d7306c5905ff1a470c72f0d8",
+  "status": "signed",
+  "signed_in": "pass 19 verdict",
+  "status_note": "the stand-in card, cut as slices (the build places it by id)"
+ },
+ "trait-picture-standin-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "procedural",
+  "made": "the plain stand-in card for a trait picture not yet painted: deep ground, a faint hatch, the words 'stand-in picture'",
+  "sha256": "bf85872a818dcdbcc71e148bb51964ad364b4e6fb1186756c6704432e8c5a911",
+  "status": "signed",
+  "signed_in": "pass 19 verdict",
+  "status_note": "the stand-in card, cut as slices (the build places it by id)"
  }
 }
