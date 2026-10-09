@@ -114,19 +114,6 @@ These hold across every mechanic.
 | **Sharing and paper** | One household kit serves several players, each with their own progress. Sampling someone else's mibi needs its owner's consent. There is no global ranking of who found something first. A mibi's stamp code can be shared; a scanned stamp only shows a mibi, and never creates or moves one. Only portrayed mibis can be traded |
 | **Online play** | The kit plays standalone, with no account or internet. The cloud is an optional, paid layer on top, never needed to play |
 
-## What the first prototype proves
-
-The [v1 simulator](../v1/README.md) plays one narrow version of the loop on
-simulated devices: move on a small grid map, take finite supplies and one sample,
-send them home, accept once, research, choose a supported form, incubate, open and
-visit the resident. It proves the bookkeeping underneath: nothing duplicates,
-nothing is lost on interruption, findings survive shortages, an opened mibi is the
-one that was created.
-
-It does not prove that exploring is interesting, that research creates curiosity,
-that the creatures are appealing, or that the devices work physically. Those are
-the questions the [roadmap](../ROADMAP.md) is built around.
-
 ## Not designed yet
 
 - What bonding involves, what care looks like, what missing it means, and how
