@@ -8,13 +8,13 @@
 <line x1="24" y1="304.5" x2="568" y2="304.5" stroke="#e0b880" stroke-dasharray="4 3"/><text x="30" y="316" font-size="9" fill="#a07040">ground 24,304 544×160 (warm field)</text>
 <rect x="144.5" y="80.5" width="303" height="311" fill="#fdebd6" stroke="#c45f12" stroke-width="1.5"/>
 <text x="150" y="94" font-size="10" fill="#7d3a10">Adult 304×312 · 144,80 · feet 392</text>
-<text x="152" y="114" font-size="10" fill="#2b6cb0">Rest. The ring: the ellipse under the feet</text>
-<text x="152" y="127" font-size="10" fill="#2b6cb0">(136, 384, 320×24); the mibi lifts 4 px.</text>
+<text x="152" y="114" font-size="10" fill="#2b6cb0">Rest. The ring: the feet ring, centred on</text>
+<text x="152" y="127" font-size="10" fill="#2b6cb0">the feet line (136, 380, 320×24); lift 4 px.</text>
 <text x="152" y="140" font-size="10" fill="#2b6cb0">The name on its tag under it, 28 px:</text>
 <text x="152" y="153" font-size="10" fill="#2b6cb0">the card does not repeat it.</text>
 <text x="152" y="166" font-size="10" fill="#2b6cb0">Reads: the mibi, its name, the card,</text>
 <text x="152" y="179" font-size="10" fill="#2b6cb0">the modules, the strip, the stamp.</text>
-<ellipse cx="296" cy="396" rx="160" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<ellipse cx="296" cy="392" rx="160" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
 <rect x="144.5" y="416.5" width="303" height="39" fill="none" stroke="#bbb" stroke-dasharray="1 3"/>
 <rect x="248.5" y="416.5" width="95" height="39" fill="#2a2e38" stroke="#3c4b57"/><text x="296" y="444" font-size="22" fill="#f1ebdf" text-anchor="middle" font-weight="600">Burr</text>
 <text x="452" y="452" font-size="9" fill="#777">name tag, 28 px</text>

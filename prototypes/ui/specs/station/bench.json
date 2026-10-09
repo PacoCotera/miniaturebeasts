@@ -79,9 +79,9 @@
   },
   "primitives": "lvgl-switch.md §2.6.1 governs: `order` steps ▲ ▼ through the list as written, skipping ids that are not present, stopping at the ends; nearestIn takes the row nearest the ring",
   "targets": {
-   "plates": { "group": "plates", "shape": "round", "box": "regions.plates.rect", "lift": 2, "present": "docked only", "enabled": "a plate is gone" },
-   "switch": { "group": "module", "shape": "round", "box": "regions.switch.rect", "lift": 2, "enabled": "always" },
-   "slot": { "group": "module", "shape": "round", "box": "regions.slot.rect", "lift": 2, "enabled": "docked, tier 1 and affordable (state.tier2Ready)" }
+   "plates": { "group": "plates", "ring": "round", "box": "regions.plates.rect", "lift": 2, "present": "docked only", "enabled": "a plate is gone" },
+   "switch": { "group": "module", "ring": "round", "box": "regions.switch.rect", "lift": 2, "enabled": "always" },
+   "slot": { "group": "module", "ring": "round", "box": "regions.slot.rect", "lift": 2, "enabled": "docked, tier 1 and affordable (state.tier2Ready)" }
   },
   "armed": { "slot": "after the first ✓ on a ready slot", "clear": "any key but ✓ clears the arm; the arm never survives a screen change" },
   "held": "while events.mend or events.install holds, the face moves no focus and sends no intent",

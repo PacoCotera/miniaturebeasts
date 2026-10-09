@@ -37,7 +37,7 @@
   "nameTag": {
    "rect": [144, 416, 304, 40], "build": "nameTag", "component": "panel", "text": "text", "clip": "glass", "inStates": ["rest"],
    "h": 40, "w": "the name's width + 32, rounded up to the 8 px grid, at least 96; centred on the axis 296", "px": 28, "weight": 600, "lineTop": 418, "words": "the name only",
-   "clearance": "its top 8 px under the ring's ellipse (feet − 8 to feet + 16: 384 to 408), its bottom 8 px inside the glass (456 + 8 = 464)", "lift": 0
+   "clearance": "its top at feet + 24, 12 px under the ring's ellipse (feet − 12 to feet + 12: 380 to 404), as on Home; its bottom 8 px inside the glass (456 + 8 = 464)", "lift": 0
   },
   "meetRibbon": { "rect": [144, 416, 304, 40], "component": "ribbon", "inStates": ["meet"], "px": 20, "align": "centre", "centre": 296, "lines": 1, "words": "strings.meet", "note": "in the name tag's place, the one ribbon look; it goes on the first press and the tag shows" },
   "card": { "rect": [592, 48, 416, 208], "component": "panel", "inStates": ["rest", "meet"] },
@@ -125,17 +125,18 @@
    "room": { "up": "none", "down": "none", "left": "none", "right": "none" }
   },
   "selectors": { "tile.shown": "the view resolves it to the shown mibi's tile id; never null while a mibi is shown" },
+  "rings": "each target carries its ring form (frame.json focus.ring.forms): the mibi `feet`, every other target `round`",
   "primitives": "lvgl-switch.md §2.6.1 governs: the edge forms (a name, a selector, nearestIn with ahead, an ordered list), the order of a move and the integer scores on doubled centres; `axis` walks the group's present targets by index and stops at the ends",
   "targets": {
-   "resident": { "group": "resident", "shape": "ellipse", "box": "regions.resident.rect", "ellipse": [136, 384, 320, 24], "lift": 4 },
-   "species": { "group": "species", "shape": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "always" },
-   "plate": { "group": "plate", "id": "plate.<i>, i from 0 in ring order", "shape": "round", "box": "regions.plates.places, plate i", "lift": 2, "enabled": "an unread chapter of a bred child that is not sealed" },
-   "door": { "group": "top", "shape": "round", "box": "regions.door.rect", "lift": 2, "enabled": "the shown mibi is not the one with you and is not already chosen" },
-   "bond": { "group": "top", "shape": "round", "box": "regions.bond.rect", "lift": 2, "enabled": "state.bondOffered" },
-   "portrait": { "group": "top", "shape": "round", "box": "regions.portrait.rect", "lift": 2, "enabled": "a sitting is held and sitting.portraitBlock is empty" },
-   "cross": { "group": "low", "shape": "round", "box": "regions.cross.rect", "lift": 2, "enabled": "an adult with at least one partner (state.crossPartners)" },
-   "wild": { "group": "low", "shape": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty" },
-   "tile": { "group": "tile", "id": "tile.<mibi id>, housed mibis only; free bays are not targets", "shape": "round", "box": "the tile's rectangle (regions.tiles, its form)", "lift": 2, "focusShows": "focusing a tile shows its mibi in the window (events.swap); the resident target is then that mibi" }
+   "resident": { "group": "resident", "ring": "feet", "box": "regions.resident.rect", "ellipse": [136, 380, 320, 24], "lift": 4 },
+   "species": { "group": "species", "ring": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "always" },
+   "plate": { "group": "plate", "id": "plate.<i>, i from 0 in ring order", "ring": "round", "box": "regions.plates.places, plate i", "lift": 2, "enabled": "an unread chapter of a bred child that is not sealed" },
+   "door": { "group": "top", "ring": "round", "box": "regions.door.rect", "lift": 2, "enabled": "the shown mibi is not the one with you and is not already chosen" },
+   "bond": { "group": "top", "ring": "round", "box": "regions.bond.rect", "lift": 2, "enabled": "state.bondOffered" },
+   "portrait": { "group": "top", "ring": "round", "box": "regions.portrait.rect", "lift": 2, "enabled": "a sitting is held and sitting.portraitBlock is empty" },
+   "cross": { "group": "low", "ring": "round", "box": "regions.cross.rect", "lift": 2, "enabled": "an adult with at least one partner (state.crossPartners)" },
+   "wild": { "group": "low", "ring": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty" },
+   "tile": { "group": "tile", "id": "tile.<mibi id>, housed mibis only; free bays are not targets", "ring": "round", "box": "the tile's rectangle (regions.tiles, its form)", "lift": 2, "focusShows": "focusing a tile shows its mibi in the window (events.swap); the resident target is then that mibi" }
   },
   "armed": { "bond": "after the first ✓ on an offered bond", "wild": "after the first ✓ on a mibi that may go", "clear": "any key but ✓ clears the arm; the arm never survives a screen change" },
   "held": "while events.moment, read, bond or release holds, the face moves no focus and sends no intent",

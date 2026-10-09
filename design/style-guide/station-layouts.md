@@ -1469,7 +1469,7 @@ The window fills the left (16 to 576) above the strip, the mibi centred in it wi
 | **Living window (glass)** | 24, 56, 544, 408 | Ground band 24, 304, 544, 160; no words but the tag and the meet ribbon |
 | **The mibi (focal)** | 144, 80, 304, 312 | Axis x 296, feet y 392; the juvenile's box on the Incubator, so it reads as the same creature after the hatch |
 | Waiting lamp | 436, 80, 12, 12 | At the box's top right, riding the lift, while the placeholder is drawn |
-| Name tag | in 144, 416, 304, 40 | 40 tall; the name's width + 32, rounded up to the grid, at least 96, centred on x 296; the name 28 px semibold. Its top is 8 px under the ring's ellipse (384 to 408), its bottom 8 px inside the glass |
+| Name tag | in 144, 416, 304, 40 | 40 tall; the name's width + 32, rounded up to the grid, at least 96, centred on x 296; the name 28 px semibold. Its top is at the feet + 24, 12 px under the feet ring (380 to 404), as on Home; its bottom 8 px inside the glass |
 | Meet ribbon | 144, 416, 304, 40 | In the tag's place, 20 px, centred; the meet only |
 | Card | 592, 48, 416, 208 | `panel` |
 | Species line | 608, 64, 248, 24 | "your Loika, adult", 16 px, with `mark-guide-16` 4 px after the last word; a focus target |
@@ -1543,7 +1543,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | `low` | the nearest of `low` to the left, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
 | `tile` | the previous tile (axis; the first stops) | the next tile (the last stops) | `resident` | none |
 
-"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings:** the mibi's ellipse under its feet (136, 384, 320, 24) with the 4 px lift; round rings 4 px outside the species line, a plate, a module or a tile, with the 2 px chrome lift (none on the species line). **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent. **Vectors** are in `habitat.json` `focus.vectors` (for example plate.0 ▼ door, door ▲ plate.1, door ▼ cross, wild ▼ the shown tile).
+"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the species line, a plate, a module or a tile, with the 2 px chrome lift (none on the species line). **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent. **Vectors** are in `habitat.json` `focus.vectors` (for example plate.0 ▼ door, door ▲ plate.1, door ▼ cross, wild ▼ the shown tile).
 
 ### Habitat's states and events
 
