@@ -22,7 +22,7 @@ const slantTabs = (x0, n, open, r = frame.regions.rail) => { const out = []; let
 test("the Pods spec file agrees with the Pods wireframe, region by region", () => {
   const R = pods.regions, w = R.well;
   for (let i = 0; i < R.list.slots; i++) { has(repeat(w.rect, i, w.pitch), "well slot " + i); const ring = repeat([w.rect[0] + w.ring.slice[0], w.rect[1] + w.ring.slice[1], ...w.ring.slice.slice(2)], i, w.pitch); assert.equal(ring[0] + 40, 64); assert.equal(ring[1] + 40, 84 + 72 * i); has([44, 60 + 72 * i, ...w.pod.size], "the list pod in well " + i); assert.equal(44 + w.pod.size[0] / 2, 64); }
-  assert.equal(w.place, null, "no place stamps in the list"); assert.deepEqual(R.list.rect, [0, 40, 112, 522]); assert.deepEqual(w.pod.size, [40, 48]); assert.deepEqual([R.page.newMark.slice, R.page.newMark.size, R.page.newMark.specular], ["page-mark-new-10", [10, 10], false]); assert.equal(w.ring.outer, 33); assert.equal(w.focus.radius, w.ring.outer + 4);
+  assert.equal(w.place, null, "no place stamps in the list"); assert.deepEqual(R.list.rect, [0, 40, 112, 522]); assert.deepEqual(w.pod.size, [40, 48]); assert.deepEqual([R.page.newMark.slice, R.page.newMark.size, R.page.newMark.on, R.page.newMark.gapAfterName, R.page.newMark.specular], ["page-mark-new-10", [6, 6], "name line", 4, false]); assert.equal(w.ring.outer, 33); assert.equal(w.focus.radius, w.ring.outer + 4);
   has(R.hatch.rect, "hatch"); has(R.stage.rect, "stage"); has(R.beam.rect, "beam"); has(R.pod.rect, "pod"); has(R.cradle.rect, "cradle"); has(R.name.rect, "name"); has(R.origin.rect, "origin"); has(R.stamp.rect, "stamp"); has(R.page.rect, "page"); has(R.list.rect, "list");
   // the rail: six full tabs in the Picture wireframe, seven compact (the second open) in the Grid wireframe
   const six = slantTabs(R.rail.rect[0], 6, 1), seven = slantTabs(R.rail.rect[0], 7, 1), P6 = polys(svg), P7 = polys(svgGrid);
@@ -134,7 +134,7 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   const bot = ["action", "subject", "need", "back"].map((k) => F[k].rect); assert.deepEqual(F.separators.x, [404, 620]);
   assert.ok(bot[0][0] + bot[0][2] < 404 && 404 < bot[1][0] && bot[1][0] + bot[1][2] < 620 && 620 < bot[2][0], "rules between action, context and notice");
   assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 24 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
-  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-habitat-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8", "frame-lamp-12", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
+  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-habitat-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "frame-lamp-12-amber", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
   assert.equal(F.marks.scale, "never");
   const top = ["title", "materials", "companion", "time"].map((k) => F[k].rect);
   for (let i = 1; i < top.length; i++) assert.ok(top[i - 1][0] + top[i - 1][2] + 16 <= top[i][0], "top bar zones apart, left to right");
