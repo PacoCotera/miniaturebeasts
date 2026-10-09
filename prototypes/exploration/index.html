@@ -834,21 +834,24 @@ function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 // Tend, once a Companion day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends
 // (and an outing) earn the bond; a bonded juvenile grows up through care, never on the clock. The Companion owns care,
 // tends, tendDay, bonded, bondCare, grownTurn, notches and outings; the Station only mirrors them at the dock.
-// The words: one table, the screens spec's slots (companion-screens.md "Care and the carried set") until the copywriter's
-// words replace them. A function takes the mibi's name.
+// The words: one table, the final strings of companion-screens.md "Care and the carried set" (the copywriter's). A function
+// takes the mibi's name (or the mibi, or the names).
+const TEND_MOMENT = ['leans on the glass', 'glows softly', 'puffs'];   // the species moment's words, as built (Loika, Tuikis, Untuva)
 const CARE_TEXT = {
   tendLabel: n => 'Tend ' + n, tendOnce: 'once a day', tendedToday: 'tended today', tendAfter: 'after the expedition',
-  tended: n => n + '’s moment · what it remembers', tendedRefused: n => n + ' was tended today', tendMidExp: 'tend when you’re home',
+  tended: m => m.name + ' ' + TEND_MOMENT[m.sp] + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
+  tendedRefused: n => n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
   walkLabel: names => names.length === 1 ? 'Walk with ' + names[0] : 'Walk together', walkOnce: 'once a turn',
   walked: names => listWords(names) + ' walk together',
   bonded: n => n + ' is bonded with you',
-  grown: n => n + ' is grown', grownLeads: 'it leads the Probe now', grownCanLead: 'it can lead the Probe',
-  clockGrownPartner: n => n + ' is grown · your partner now', clockGrownWith: n => n + ' is grown · it can lead', clockGrownHome: n => n + ' is grown · take it at the Station',
-  takeLabel: n => 'Take ' + n, takeCtx: 'goes with you', took: n => n + ' is with you',
-  full: 'the Companion is full', fullRefused: n => n + ' stays home · the Companion holds three · leave one first',
+  grownLeads: n => n + ' is grown · it leads the Probe now', grownCanLead: n => n + ' is grown · it can lead the Probe',
+  clockGrownHome: n => n + ' is grown · at home',
+  notch: n => n + ' gains a skill notch',
+  takeLabel: n => 'Take ' + n, takeCtx: 'goes with you now', took: n => n + ' is with you',
+  full: 'the Companion is full', fullRefused: n => n + ' stays home: the Companion is full · leave one at home first',
   leaveLabel: n => 'Leave ' + n + ' at home', leaveCtx: 'comes home now', left: n => n + ' stays home',
-  visitLabel: n => 'Visit ' + n, visitCtx: 'with you', withYouTillHome: 'with you until you’re home',
-  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows with care',
+  visitLabel: n => 'Visit ' + n, visitCtx: 'with you', withYouThisExp: 'with you for this expedition',
+  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows with care',
   stHome: 'at home', stHomeBonded: 'at home · grows on the Companion',
 };
 // Assets the care screens name that have no master yet: registered here, never drawn (no heart is drawn until it lands).
@@ -873,7 +876,6 @@ function carriedMibis() { return S.carried.map(mibiById).filter(Boolean); }
 function homeMibis() { return S.mibis.filter(m => !S.carried.includes(m.id)); }
 // The partner: the lead if carried and grown; else the first grown mibi with you; else none.
 function partnerMibi() { const c = carriedMibis(), l = c.find(m => m.id === S.lead); return isAdult(l) ? l : c.find(isAdult) || null; }
-function turnsToGrow(m) { return Math.max(0, JUVENILE_TURNS - (S.turn - (m.born || 0))); }
 // A juvenile grown on the clock this turn: never one with grownTurn and never a bonded juvenile (they grow through care).
 function grownNow(m) { return m.grownTurn == null && !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS; }
 function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDER_TURNS : !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS; }
@@ -2258,7 +2260,7 @@ function endExpedition(reason) {
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
-      if (ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) logEv(w.name + ' gains a skill notch (' + w.notches + ' of 3)'); } } }   // notches: the bonded partner only
+      if (ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) logEv(CARE_TEXT.notch(w.name)); } } }   // notches: the bonded partner only
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
@@ -2301,7 +2303,7 @@ function walkAll() {
 function careLines(first, evs) {
   fxMsg(first, 3);
   for (const e of evs) if (e.bonded) fxMsg(CARE_TEXT.bonded(e.m.name), 3);
-  for (const e of evs) if (e.grown) fxMsg(CARE_TEXT.grown(e.m.name) + ' · ' + (partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead), 3);
+  for (const e of evs) if (e.grown) fxMsg((partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(e.m.name), 3);
   const ev = evs.find(e => e.bonded || e.grown); if (ev) { S.ui.aId = ev.m.id; FX.moment = { id: ev.m.id, at: NOW }; }   // the view goes to the mibi that bonded or grew
 }
 // The Walk as pressed on the shown mibi m: its walk moment; the line names them all. Its Data folds into the expedition's
@@ -2384,7 +2386,7 @@ function worldTurn(pending) {
   for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about.
   const lines = [];
-  for (const m of grown) lines.push(!isCarried(m) ? CARE_TEXT.clockGrownHome(m.name) : partnerMibi() === m ? CARE_TEXT.clockGrownPartner(m.name) : CARE_TEXT.clockGrownWith(m.name));
+  for (const m of grown) lines.push((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name));
   for (const m of aged) lines.push(m.name + ' is an elder now · slower, with keener senses.');
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.'); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.'); }
@@ -3952,7 +3954,7 @@ function drawMibis(t) {
     if (isW && (m === pm || !isAdult(m))) text(m === pm ? 'partner' : 'too young', 420, y + 12, C.bark, 2, 'right');
   });
   g.restore();
-  if (S.exp && list.length && list.length * PITCH + top + 30 < SCR_H - LINE_H) text(CARE_TEXT.withYouTillHome, SCR_W / 2, top + list.length * PITCH + 8, C.mist, 2, 'center');
+  if (S.exp && list.length && list.length * PITCH + top + 30 < SCR_H - LINE_H) text(CARE_TEXT.withYouThisExp, SCR_W / 2, top + list.length * PITCH + 8, C.mist, 2, 'center');
 }
 // Upscale a sprite by an integer factor, pixel for pixel (the token art, as the device would blit it).
 function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb = new PB(src.w * k, src.h * k);
@@ -3969,7 +3971,7 @@ function activeStatus(m) {
   if (m === partnerMibi()) return CARE_TEXT.stLeads;
   if (isAdult(m)) return CARE_TEXT.stCanLead;
   if (m.bonded) return CARE_TEXT.stGrowsWithCare;
-  return CARE_TEXT.stTooYoung + ' (' + turnsToGrow(m) + ' world turn' + (turnsToGrow(m) === 1 ? '' : 's') + ')';   // the built world-turn count stays
+  return CARE_TEXT.stTooYoung;   // exactly one listed line, nothing appended: no count of any kind
 }
 function drawActive(t) {
   viewBg(); drawHomeTop();
@@ -4015,10 +4017,10 @@ function callWith() {
 // Tend as pressed: the species moment (the built one stands in for the Tend moment) and the Tend line; then any bond or
 // grow-up line. Refused the same day, or mid-expedition: the shake and a plain line, nothing changes.
 function tendPress(m) {
-  if (S.exp) { fxMsg(CARE_TEXT.tendMidExp); FX.bumpAt = NOW; return; }
+  if (S.exp) { fxMsg(CARE_TEXT.tendMidExp(m.name)); FX.bumpAt = NOW; return; }
   const r = tend(m); if (!r) { fxMsg(CARE_TEXT.tendedRefused(m.name)); FX.bumpAt = NOW; return; }
   FX.moment = { id: m.id, at: NOW }; lockInput(300);
-  careLines(CARE_TEXT.tended(m.name), [Object.assign({ m }, r)]);
+  careLines(CARE_TEXT.tended(m), [Object.assign({ m }, r)]);
 }
 // Take and Leave as pressed (docked, between expeditions). Take at three: the shake and why.
 function takePress(m) {
