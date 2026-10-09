@@ -388,7 +388,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 | Mark | Glyph (id, size) | Top | Notes |
 | --- | --- | --- | --- |
-| Differs (Compare) | `frame-lamp-12-amber`, 12×12, at cell.x, **before** the name; the name at cell.x + 16 | line y + 4 (centre on line y + 10) | The signed amber lamp, 1:1, art layer, on both pages, only on a trait read on both pods whose looks differ. Fit: 12 + 4 + "Translucency" 101 = 117 ≤ 120 |
+| Differs (Compare) | `frame-lamp-12-amber`, 12×12, at cell.x, **before** the name; the name at cell.x + 16 | line y + 4 (centre on line y + 10) | The signed amber lamp, 1:1, painted layer, on both pages, only on a trait read on both pods whose looks differ. Fit: 12 + 4 + "Translucency" 101 = 117 ≤ 120 |
 
 **States.**
 
@@ -399,7 +399,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 - **Empty rack (A):** six empty places. The context is "the rack is empty"; the notice says what to do: away, "dock the Companion for its crates"; docked with crates, "open the bay at Home"; docked, bay empty, "take the Companion exploring".
 - **A new crate (A):** its pods sealed in their places.
 - **Compare.**
-  - Entered from B, ✓ on a kin pod. The pod's room, the figure and the stamp hide. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440).
+  - Entered from B, ✓ on a kin pod, on the species' first chapter. The pod's room, the figure and the stamp hide. Two pages sit at (176, 112, 408, 440) and (600, 112, 408, 440).
+  - **Focus.** The rail's tabs are Compare's targets, and the ring sits on the open chapter's tab, the tab ring with the chrome lift. ◀ ▶ step the chapter on both pages at once; the ring stays on the open tab and moves with it. `pods.json` `focus.compare` is the graph: the rail group's `stepper` is ◀ ▶ ([lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md#261-the-graphs-primitives-exactly)), ▲ ▼ are `none`, the fallback is `none`; `keys.compare` says what each key does.
   - **Where the two pages go.** A Compare page is never narrower than 408 (three 120 px columns, two 8 px gaps, two 16 px insets). Two pages and their 16 px gap (832 px) do not fit left of the overview's dish (x 144), so Compare lays its pages across the page area, from x 176 to 1008 (`pods.json` `regions.compareA` and `compareB`), over the pod's room, the figure and the stamp, which hide. Each heading carries its own pod at 40×48, so the two pods are still shown. The rule for any layout: left of the pod when (dish.x − 16) − 16 ≥ 2 × 408 + 16; otherwise across the page area, from x 176 to 1008.
   - Each heading shows its pod at the 40×48 list class at (12, 4) on the page, centred where the 32×40 pod was, and its place picture 16×16 at (56, 20); the pod masters exist at 40×48 only.
   - The page grid is the same as Read, scaled to 408 px wide: two columns of 184 with an 8 px gap, pictures 184×104 for three or four traits; three columns of 120, pictures 120×96, for five or six.
@@ -425,7 +426,11 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | B | ← | Back to A, the ring on this pod: the way back reads "← Pods" |
 | C | ◀ ▶ | Step the chapters; the page turns in 200 ms. A sealed chapter: no ✓ cap, the context "Coat is sealed" |
 | C | ✓ | On an unread chapter, `✓ Read Coat   ◆ 3` (the price a group of its own, no dot), the frost wipes; input held 2 s. On a read chapter there is no ✓ cap |
-| C | ← | Back to B, the ring on that tab: the way back reads the pod's name, "← Loika", because ← goes up one level to that pod. The longest name today, "Untuva", is 54 px at 16 px, inside the way back's 60 px for its word; a name that does not fit reads "← Back". From Compare, ← closes it, "← Loika" too |
+| C | ← | Back to B, the ring on that tab: the way back reads the pod's name, "← Loika", because ← goes up one level to that pod. The longest name today, "Untuva", is 54 px at 16 px, inside the way back's 60 px for its word; a name that does not fit reads "← Back" |
+| Compare | ◀ ▶ | Step the chapter on both pages together, in ring order, sealed chapters included. The ring stays on the open chapter's tab and moves with it. The first and the last chapter stop; never a wrap |
+| Compare | ▲ ▼ | Nothing: the ring stays |
+| Compare | ✓ | Nothing: Compare has no ✓ cap |
+| Compare | ← | Closes Compare: back to B, the ring on the kin that opened it. The way back reads the pod's name, "← Loika", as on C |
 | Home | ✓ on the Rack module | Opens the collection (A) with the ring on the pod that most needs the player (a new one, then a glinting one, then the first); ← from there goes Home. Home's rack keeps its one focus target: the collection is one press away, and six 40 px wells in a module would be targets too small to read as the way into a pod |
 | All | Can't | A dimmed ✓ with the shortfall; a message plate on press. A glint says "something new waits" in the notice, never what it is |
 
