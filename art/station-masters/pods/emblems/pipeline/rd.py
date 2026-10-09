@@ -5,6 +5,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); API = "https://api.retrodiffu
 PAL = os.path.join(HERE, "station-palette-62.png"); SPEND = os.path.join(HERE, "..", "..", "log", "spend.json")
 PROMPTS = {"tail": "a filled pixel art pictogram of an animal's tail, one solid bone-white silhouette, lit from the upper left, no outline",
            "leg": "a filled pixel art pictogram of an animal's hind leg with its paw, one solid bone-white silhouette, lit from the upper left, no outline"}
+exec(open(os.path.join(HERE, "..", "..", "tools", "spendcap.py")).read(), globals())      # the owner's 250 MXN per Pacific day cap
 def b64f(p): return base64.b64encode(open(p, "rb").read()).decode()
 def req(method, url, body=None, headers=None):
     hd = {"X-RD-Token": os.environ["RETRO_DIFFUSION_API_KEY"], "Content-Type": "application/json", **(headers or {})}
@@ -19,6 +20,8 @@ def one(name, run):
             "input_palette": {"file": "station-palette-62.png", "sha256": hashlib.sha256(open(PAL, "rb").read()).hexdigest()}, "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
     st, res = req("POST", API, {**payload, "check_cost": True}); side["checkCost"] = res
     if not run: return name, st, res.get("balance_cost"), side
+    ok, total = charge(SPEND, "retro-diffusion " + STYLE, name, float(res.get("balance_cost") or 0))      # charged before the call, at the price check_cost returned
+    if not ok: return name, 0, f"refused: the call would take the Pacific day past {CAP_MXN:.0f} MXN (running total {total:.2f})", side
     st, acc = req("POST", API, payload, {"Idempotency-Key": name + "-" + side["time"]})
     if st not in (200, 202): return name, st, acc, side
     tid = acc.get("task_id") or acc.get("id"); task = acc; t0 = time.time()
@@ -31,9 +34,7 @@ def one(name, run):
     json.dump(side, open(os.path.join(HERE, "rd", name + ".json"), "w"), indent=1)
     return name, 200, side["result"], side
 if __name__ == "__main__":
-    run = "--run" in sys.argv; names = [a for a in sys.argv[1:] if not a.startswith("--")] or [f"{k}-{c}" for k in ("tail", "leg") for c in "abcd"]; spend = json.load(open(SPEND)) if os.path.exists(SPEND) else []
+    run = "--run" in sys.argv; names = [a for a in sys.argv[1:] if not a.startswith("--")] or [f"{k}-{c}" for k in ("tail", "leg") for c in "abcd"]
     with cf.ThreadPoolExecutor(4) as ex:
         for n, st, info, side in ex.map(lambda n: one(n, run), names):
             print(n, st, info)
-            if run and side.get("result"): spend.append({"tag": "legs-tail pictogram " + n + " (pass 15)", "tool": "retro-diffusion " + STYLE, "usd": side["result"].get("balanceCostUSD"), "evidence": "task " + str(side["result"].get("task_id"))})
-    if run: json.dump(spend, open(SPEND, "w"), indent=1)

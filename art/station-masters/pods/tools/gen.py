@@ -7,6 +7,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 REPO = os.path.abspath(os.path.join(ROOT, "..", "..", ".."))
 MODEL = os.environ["IMAGE_MODEL"]  # named in the environment, not recorded
 KEY = os.environ["GEMINI_API_KEY"]
+exec(open(os.path.join(HERE, "spendcap.py")).read(), globals())      # the owner's 250 MXN per Pacific day cap
+SPEND = os.path.join(ROOT, "log/spend.json")
 def sha(b): return hashlib.sha256(b).hexdigest()
 def call(job):
     model = job.get("model", MODEL)
@@ -22,7 +24,9 @@ def call(job):
             "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": job.get("aspect", "16:9"), "imageSize": job.get("size", "2K")}}}
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
     t0 = time.time(); status = "error"; out = None; err = None
-    for attempt in range(3):
+    for attempt in range(2):                                              # at most two tries per picture; every try is charged before it is made
+        ok, total = charge(SPEND, "gemini " + model, job["name"] + f" try {attempt + 1}", GEMINI_IMAGE_USD)
+        if not ok: err = f"refused: the call would take the Pacific day past {CAP_MXN:.0f} MXN (running total {total:.2f} MXN)"; status = "refused"; break
         try:
             r = requests.post(url, headers={"x-goog-api-key": KEY}, json=body, timeout=300)
             j = r.json()
