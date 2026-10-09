@@ -1847,57 +1847,57 @@
    "file": "pods/rail-tab-fill-open-compact-72x40.png",
    "w": 72,
    "h": 40,
-   "sha256": "c9716f7c35e7f00d7af4617908e44999536eb90aa67e7447ed63535b91425947",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "0da80eb7e586d4e2df15164592bc75fadbb16d0fed3a9197431eb1f760869083",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-open-full-152x40": {
    "file": "pods/rail-tab-fill-open-full-152x40.png",
    "w": 152,
    "h": 40,
-   "sha256": "66d692a7d95fa61dc4c78799a685571daa63b7ecedec1fd471a7719518ab97da",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-read-compact-72x40": {
    "file": "pods/rail-tab-fill-read-compact-72x40.png",
    "w": 72,
    "h": 40,
-   "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-read-full-152x40": {
    "file": "pods/rail-tab-fill-read-full-152x40.png",
    "w": 152,
    "h": 40,
-   "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-sealed-compact-72x40": {
    "file": "pods/rail-tab-fill-sealed-compact-72x40.png",
    "w": 72,
    "h": 40,
-   "sha256": "af0c823e9bd9f97b4d31719243ee92c4e6cfb923ebd23b9336227dd79deae76d",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "169ed3286a2ab4825e2441086ae53b6ab19fb90a1ea5f2e60f2ced52940b7123",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-sealed-full-152x40": {
    "file": "pods/rail-tab-fill-sealed-full-152x40.png",
    "w": 152,
    "h": 40,
-   "sha256": "fa6d3290988ca481e815a8fb6030a955221c85c659dc42e2f12fc8738db56cad",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "a911730768514b615f00b044a69ae93e99c0129ef237e41679891d73951548bf",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-unread-compact-72x40": {
    "file": "pods/rail-tab-fill-unread-compact-72x40.png",
    "w": 72,
    "h": 40,
-   "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "rail-tab-fill-unread-full-152x40": {
    "file": "pods/rail-tab-fill-unread-full-152x40.png",
    "w": 152,
    "h": 40,
-   "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f",
+   "signed": "art director (pass 83 re-sign, 6f751b7d)"
   },
   "ring-arc-collection-n1-s1-176x176": {
    "file": "pods/ring-arc-collection-n1-s1-176x176.png",
