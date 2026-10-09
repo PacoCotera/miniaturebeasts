@@ -119,21 +119,29 @@ The Library's data and the sitting are built as state transitions, tested headle
 - **`tools/headless.mjs`, `tests/loop.test.mjs`.** A headless player plays the whole journey from a fresh world by calling only the rules: a walk's crate docks, a pod is identified and read, a founder is shaped and grown, it opens, a second founder follows, two adults are crossed, the child is read, a sitting is held and its crate comes home. The test asserts every price against the decided economy and runs in CI with the other Station tests.
 - **`tools/loop-report.mjs`.** `node prototypes/station/tools/loop-report.mjs [--seed N] [--loose]` prints, from the same player, the Energy, Data and Essence and the minutes each step costs, with the walks it had to take.
 
-### Rules the docs leave open (built the narrowest way, flagged; for the game designer)
+### Rules the docs leave open: the game designer's rulings (2026-10-09)
 
-1. **Habits and places.** The Companion records neither a mibi's watched habits nor the places it walked to. Built: `m.habits` and `m.walked`, written by `recordHabit` and `recordWalk`, whose callers are not decided (what counts as watched; which habit ids a species has).
-2. **The welcome sitting.** "The first moment any mibi has both a habit and a place": a mibi's own pod place counts from its birth, so built, a watched habit alone triggers it. And a welcome that comes while a sitting is held waits for the slot (it is not spent like a moment).
-3. **A moment earned while a sitting is held** is built as spent (its key stays in the ledger), as the warning implies ("use your sitting first"). The alternative is that it waits for the slot.
-4. **Field guide filled** counts the looks of every chapter that is not shut; a shut sealed chapter counts nothing, so a species with one can fill without it. Does it have to include the sealed chapter's looks?
-5. **Sealed chapter opened** is built as the first read of a sealed chapter of the species, since the find that opens it is out of the first build.
-6. **The first pod of a new drop identified** is not built: a drop has no meaning in the build yet.
-7. **A deep line** counts the crosses in a mibi's recorded tree (a founder 0, a child of founders 1) and needs four; the number is tuned with the cross; released ancestors count.
-8. **When the crate is ready:** built as the wait over and the painting landed. Which binds, the mock painter's delay or the three hours? And does "waiting for the cloud" show when the wait is over and the painting has not landed, as built?
-9. **A second sitting** may begin while a crate waits, if the slot is refilled.
-10. **The wish** is built as data (a pinned look per trait; carriers). How the pod list glints a wish's pieces, and how the cross forecast shows how close a pairing gets, are not built.
-11. **Blended traits in the field guide.** The looks to find of a blend include its in-between words ("between short and long"), counted as looks as a read words them; confirm they belong to "more?".
-12. **A world turn's length.** A juvenile is adult after two world turns; the loop report takes one walk per turn. How many minutes a turn is, is not in the docs.
-13. **The paid monthly sitting** waits on the account and is not built.
+The builder built thirteen open rules the narrowest way and flagged them. The rulings are recorded in [the portrait](../../design/proposals/the-portrait.md) §8 and the [research loop](../../design/proposals/research-loop.md) §4–5; here is what each changes in the build.
+
+1. **Habits and places.** A habit is one of the species' routine acts. `recordHabit` is called by the bench's watch (a resident in focus for a minute records the habit it was doing) and at the dock for the habit the mibi with you did on the walk (its act: dig, glow, calm, sniff). `recordWalk` is called at the dock for every place entered while it was with you. Habit ids go in each frame as `habits`: Loika `shake-dry`, `calm`, `sleep-curled`; Untuva `sniff`, `puff`, `sleep-curled`; Tuikis `dig`, `glow`, `sleep-curled`. **Change:** add the lists; wire both callers (the dock side is the Companion's hand-off).
+2. **The welcome sitting** comes at the first dock where a mibi comes home from a walk with you, not at the first watched habit. Waiting for the slot when one is held: as built. **Change:** trigger `checkWelcome` from the dock, on a mibi that has walked.
+3. **A moment while a sitting is held:** spent, key in the ledger, as built (decided: "not given"). **Change:** warn before every moment, not only the guide: the first read of a sealed chapter and a cross whose child completes a deep line show "use your sitting first" on the price line before payment.
+4. **Field guide filled** includes the sealed chapter's looks: a shut chapter shows its notch and counts its looks as unseen. **Change:** `complete` and `oneFromFull` count a shut chapter's looks.
+5. **Sealed chapter opened:** the first read, as built for the first build; when finds come, the moment moves to the find, same key.
+6. **A drop's first pod:** not built, as built. Later: every drop after the launch roster pays once per player, at the first Identify of any of its species, key `drop:<id>`.
+7. **Deep line:** as built (longest path, founder 0, four; this Station's crosses only; released ancestors count). `DEEP_LINE` is a testing number.
+8. **Crate ready** at the later of the wait and the landing, as built; the wait is a minimum. In the first build no portrait is painted, so the sitting's wait binds, not the mock painter's delay. **Change:** with the wait over and no landing, the lamp holds just short of full; "waiting for the cloud" only when the Caddy is unreachable (or the developer's painter is off), never for a late painting.
+9. **A second sitting while a crate waits:** yes, as built. Sitting crates do not count against the bay's three.
+10. **The wish:** a carrier holds the pinned look in either copy (as built). The glint is its own mark on the chapter arc; the forecast lights the pinned seeds among four, or marks the pinned bin on a range picture; closeness is lit pinned traits, never a number. **Change:** a rule for the forecast's pinned marks. Glinting unread chapters is the owner's (below); until then, read chapters only, as built.
+11. **Blended looks:** a blend's looks are the frame's bins, "between" is one look and belongs to "more?". The pair labels are not looks. **Change, in the workbench:** the read falls back to pair labels for the Tuikis's eyes, snout, build, legs and feet, both markings and the two-colour coats (Untuva 52 and Tuikis 104 looks counted, against the frames' words); fix the frames or `describe.lookOf`, and add a check that each trait enumerates to its frame's looks.
+12. **A world turn is one expedition** (decided), not minutes: one walk per turn, as built.
+13. **The paid monthly sitting:** waits on the account, as built.
+
+**For the owner.**
+- **The wish glint on unread chapters.** Should a pinned wish glint a pod's chapter before it is read, telling the player where to spend Data? *Recommended:* yes, as the new-look star does (where, never what).
+- **The economy's tightening**, when he calls it: the walk's Energy yield against its sinks, and the sitting's wait in the shipped game (three hours is the testing number).
+
+**The pacing, judged.** Five hours to the first crate is the right order for testing (a sitting the same day), but it is the serial sum of a journey the design would overlap: the welcome comes on the first walk home with a mibi, about 50 minutes in, so its three-hour wait runs while the cross and the child's reads happen, and the first crate lands near four hours with the cross inside it. The leftover is the signal: Data ends at 3 of 10 earned, the ration working as meant, but Energy ends at 13 of 20 with no sink in the loop, partly because the report counts no field spending (Call, beacons, patches) and no Probe tier 2. To tune: have the report play the welcome at the first walk home, overlap waits, count the field's Energy spend and buy the Probe when affordable, then bring the Energy surplus to the owner with the real economy; the three-hour wait, the starter yields and the prices stay his.
 
 ## Placeholders
 
