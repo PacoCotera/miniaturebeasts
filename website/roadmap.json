@@ -11,9 +11,13 @@
         { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read, grow the mibi in its bud and open it to meet the juvenile.", "link": "design/proposals/station-loop.md" },
         { "title": "Habitat and the bays", "status": "live", "text": "Six bays hold your mibis, you choose which one comes along with you, and any pod or mibi can be returned to the wild.", "link": "design/proposals/station-screens.md" },
         { "title": "Cross two mibis", "status": "live", "text": "Pick two adults of one species and see what their child could inherit, drawn only from the chapters you have read.", "link": "design/proposals/the-cross.md" },
-        { "title": "A new face for every Station screen", "status": "building", "text": "The Station's screens are moving one at a time to the graphics engine the real device will run; the Pods screen is already drawn on it.", "link": "design/proposals/lvgl-switch.md" },
+        { "title": "A new face for every Station screen", "status": "building", "text": "The Station's screens are moving one at a time to the graphics engine the real device will run, starting with Pods and the Library.", "link": "design/proposals/lvgl-switch.md" },
         { "title": "The Library and the field guide", "status": "building", "text": "A tome with a plate for every species you have found and a book per species that fills in as you read more pods.", "link": "design/proposals/collection-display.md" },
         { "title": "Portrait sittings", "status": "building", "text": "Research milestones earn a mibi a sitting for its own portrait, which comes home as a crate at the dock.", "link": "design/proposals/the-portrait.md" },
+        { "title": "Home, Rest and Idle on the new face", "status": "next", "text": "Home with your residents and its bench, the Rest key, docking and arrivals, and the Idle view that keeps the habitat on show all day.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "The Cross on the new face", "status": "next", "text": "Pick two mibis and see what their child could inherit, chapter by chapter, redrawn on the new face.", "link": "design/proposals/the-cross.md" },
+        { "title": "Create and the Incubator on the new face", "status": "next", "text": "Shape a mibi's traits, then watch it grow under the dome leaf by leaf until it is ready to open.", "link": "design/proposals/station-screens.md" },
+        { "title": "Habitat and the Probe bench on the new face", "status": "next", "text": "Your resident up close with its card and bays, and the bench where the Probe's Shield is mended and upgraded.", "link": "design/proposals/station-screens.md" },
         { "title": "The family tree", "status": "later", "text": "Each mibi's book will show its lineage once there are enough bred families to design it around.", "link": "design/proposals/family-tree.md" }
       ]
     },
@@ -77,7 +81,7 @@
       "name": "Hardware",
       "oneLine": "Open-hardware devices to print and build yourself; nothing physical exists yet, because the game is proven in software first.",
       "items": [
-        { "title": "The Station on a Raspberry Pi 4", "status": "next", "text": "The Station's new face already builds for desktop Linux, and the build and speed checks for the Pi come next.", "link": "design/proposals/lvgl-switch.md" },
+        { "title": "The Station on a Raspberry Pi 4", "status": "later", "text": "The new face is built for the Pi as it is made; running it on a real Pi, with its speed checks, waits until the game plays end to end.", "link": "design/proposals/lvgl-switch.md" },
         { "title": "A bench console", "status": "later", "text": "A Companion reference board with real buttons, running an expedition.", "link": "ROADMAP.md" },
         { "title": "Screens and controls at real size", "status": "later", "text": "Displays and controls compared side by side against the game's art.", "link": "ROADMAP.md" },
         { "title": "Power, charging, radio and printing", "status": "later", "text": "Each part tried and measured on the bench before anything is fixed.", "link": "hardware/README.md" },
