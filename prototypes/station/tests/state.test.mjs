@@ -259,7 +259,7 @@ test("Grow: validated and paid once; the first bud ever five minutes, then twent
   // the second founder: 2 Energy 4 Essence, twenty-one minutes with one shaped trait, and instant grow for a price
   const r2 = S.grow(st, b, { markings: 2 }, settings, 2000); assert.equal(r2.ok, true); assert.equal(st.e, 16); assert.equal(st.s, 16); assert.equal(st.bud.minutes, 21);
   assert.equal(S.budReady(st, settings, 2000 + 60000), false);
-  const ig = S.instantGrow(st, settings, 2000 + 60000); assert.equal(ig.ok, true); assert.equal(st.s, 14); assert.equal(S.budReady(st, settings, 2000 + 60001), true);
+  const ig = S.instantGrow(st, settings, 2000 + 60000); assert.equal(ig.ok, true); assert.equal(st.s, 16 - 10, "20 minutes left: 10 Essence, no Energy, no Data"); assert.equal(st.e, 16); assert.equal(S.budReady(st, settings, 2000 + 60001), true);
   assert.equal(S.openBud(st, null, settings, 2000 + 60001).mibi.bay, 1);
 });
 
@@ -388,4 +388,16 @@ test("nav fix: every screen the Station registers has a mark in the title bar", 
 
 test("nav fix: the developer panel blurs a button once it has acted", () => {
   assert.match(readFileSync(path.join(here, "../src/dev.mjs"), "utf8"), /addEventListener\("click"[^\n]*\.blur\(\)/);
+});
+
+test("Grow now costs 1 Essence per 2 minutes left on the bud, rounded up, and nothing else; the price falls as the bud grows; ready buds and the free preset cost nothing", () => {
+  const st = S.freshSt("w1", 0, 1000); S.normalize(st); const at = (min, minutes, extra = {}) => { st.bud = { start: 0, minutes, early: false }; return S.instantGrowCost(st, { ...settings, ...extra }, min * 60000); };
+  assert.deepEqual(at(0, 5), { e: 0, d: 0, s: 3 }, "the first bud ever, 5 minutes: 3"); assert.deepEqual(at(0, 20), { e: 0, d: 0, s: 10 }, "a full 20-minute bud: 10"); assert.deepEqual(at(0, 21), { e: 0, d: 0, s: 11 }, "a shaped bud: 11");
+  assert.equal(at(19.5, 20).s, 1, "a bud nearly done: 1"); assert.equal(at(1, 20).s, 10); assert.equal(at(2, 20).s, 9); assert.equal(at(3, 20).s, 9, "17 minutes left rounds up to 9");
+  assert.deepEqual(at(20, 20), { e: 0, d: 0, s: 0 }, "a ready bud: nothing to pay"); assert.equal(at(0, 20, { instantGrowPreset: "free" }).s, 0, "the developer's free preset");
+  assert.equal(at(0, 20, { economy: "free" }).s, 0, "the free economy");
+  st.bud = null; assert.deepEqual(S.instantGrowCost(st, settings, 0), { e: 0, d: 0, s: 0 });
+  // the rule pays it: refused when the Essence is short, taken when it is not
+  st.bud = { start: 0, minutes: 20, early: false, species: "S01" }; st.e = 5; st.d = 5; st.s = 9; const no = S.instantGrow(st, settings, 0); assert.equal(no.ok, false); assert.match(no.msg, /Grow now/); assert.equal(st.s, 9);
+  st.s = 10; assert.equal(S.instantGrow(st, settings, 0).ok, true); assert.deepEqual([st.e, st.d, st.s], [5, 5, 0]); assert.equal(st.bud.early, true);
 });

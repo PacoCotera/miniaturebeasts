@@ -47,7 +47,7 @@ function line() {
   const B = G.st.bud; if (hatching()) return { back: "Home", subject: "a new mibi" };
   if (!B) return { back: "Home", subject: "the incubator is empty" };
   if (S.budReady(G.st, G.settings)) return { ok: "Open", back: "Home", subject: (B.kind === "cross" ? "the child of " + B.parents.map((p) => p.name).join(" and ") : S.spName(B) + " bud") + " · ready" + (S.bayFull(G.st, G.settings) ? " · no bay free" : ""), dim: S.bayFull(G.st, G.settings) };
-  const c = S.instantGrowCost(G.settings), can = S.canPay(G.st, c.e, c.d, c.s);
+  const c = S.instantGrowCost(G.st, G.settings, Date.now()), can = S.canPay(G.st, c.e, c.d, c.s);
   return { ok: "Grow now", price: can ? S.priceText(c.e, c.d, c.s) : S.shortText(G.st, c.e, c.d, c.s), dim: !can, back: "Home", subject: S.spName(B) + " bud · growing", need: "surprises clear as it grows" };
 }
 function act(k) {

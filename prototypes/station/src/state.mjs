@@ -21,7 +21,7 @@ export const PLACE_WORD = { meadow: "meadow", pond: "pond edge", rock: "rock fie
 export const FOUND_WORD = { meadow: "in the meadow", pond: "at the pond edge", rock: "on the rock field", wood: "in the wood", cave: "in the cave" };
 export const FIND_WORD = { shake: "as {who} shook dry", calm: "as {who} felt safe", curl: "as {who} curled up", meal: "as {who} ate well", slab: "it lay under a slab", ground: "it lay buried", deep: "it lay deep below", cave: "it lay buried" };
 // Developer settings (their own key, never in the shared save). The economy is loose by default (decided 2026-10-08, for testing).
-export const DEFAULT_SETTINGS = { economy: "loose", topUp: { e: 2, d: 3, s: 2 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "1e2s", instantGrow: { e: 1, d: 0, s: 2 } };
+export const DEFAULT_SETTINGS = { economy: "loose", topUp: { e: 2, d: 3, s: 2 }, sealedOpen: false, bays: BAYS, rack: RACK, budScale: 1, firstBud: true, sittingWait: "hours", adultTurns: JUVENILE_TURNS, mockDelay: 20, growCap: 10, painter: "mock", instantGrowPreset: "rule" };
 
 export const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 export const plural = (n, w, p) => n + " " + (n === 1 ? w : p || w + "s");
@@ -432,10 +432,16 @@ export function budChapterKnown(st, chapterId, settings = DEFAULT_SETTINGS, now 
   const fr = frameOf(B.species), unread = fr.chapters.filter((c) => !B.read.includes(c.id)).map((c) => c.id), k = unread.indexOf(chapterId);
   return k >= 0 && budProgress(st, settings, now) >= (k + 1) / (unread.length + 1);
 }
-export const instantGrowCost = (settings = DEFAULT_SETTINGS) => ({ e: price(settings.instantGrow?.e ?? 1, settings), d: price(settings.instantGrow?.d ?? 0, settings), s: price(settings.instantGrow?.s ?? 2, settings) });
+// Grow now (research-economy.md §5, §9, decided 2026-10-09): 1 Essence for every 2 minutes left on the bud, rounded up; no Energy, no Data. The price falls as the bud grows; the
+// developer's "free" preset waives it. With no bud, or a ready one, there is nothing to pay.
+export function instantGrowCost(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  const B = st && st.bud; if (!B || settings.instantGrowPreset === "free") return { e: 0, d: 0, s: 0 };
+  const left = B.minutes * (1 - budProgress(st, settings, now));
+  return { e: 0, d: 0, s: left > 1e-9 ? price(Math.ceil(left / 2 - 1e-9), settings) : 0 };
+}
 export function instantGrow(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.bud || budReady(st, settings, now)) return { ok: false };
-  const c = instantGrowCost(settings); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
+  const c = instantGrowCost(st, settings, now); if (!canPay(st, c.e, c.d, c.s)) return { ok: false, msg: "Grow now · " + shortText(st, c.e, c.d, c.s) };
   st.e -= c.e; st.d -= c.d; st.s -= c.s; st.bud.early = true; logEv(st, "Grew the bud now · −" + priceText(c.e, c.d, c.s)); return { ok: true };
 }
 // Open: a press; the juvenile steps out fully known, into a free bay, wearing the placeholder until its painting lands (M3).

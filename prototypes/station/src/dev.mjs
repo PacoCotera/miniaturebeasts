@@ -16,7 +16,7 @@ let root = null, out = null;
 export function devOpen() { return !!root && !root.hidden; }
 function note(t) { if (out) out.textContent = t; }
 function select(key, options, fmt = (v) => String(v)) {
-  const s = h("select", { onchange: () => { const v = options.find((o) => String(o) === s.value); const patch = { [key]: v }; if (key === "instantGrowPreset") patch.instantGrow = { "1e2s": { e: 1, d: 0, s: 2 }, free: { e: 0, d: 0, s: 0 }, "2e4s": { e: 2, d: 0, s: 4 } }[v]; saveSettings(patch); redraw(); } });
+  const s = h("select", { onchange: () => { const v = options.find((o) => String(o) === s.value); const patch = { [key]: v }; saveSettings(patch); redraw(); } });
   for (const o of options) s.append(opt(String(o), fmt(o), String(G.settings[key]) === String(o)));
   return s;
 }
@@ -35,7 +35,7 @@ export function buildDevPanel(container, hooks) {
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 0, 10, 0); save(); note("+10 Data"); } }, "+10 Data"),
     h("button", { class: "btn", type: "button", onclick: () => { S.addMaterials(G.st, 10, 0, 10); save(); note("+10 Energy +10 Essence"); } }, "+10 ⚡ +10 ❀"));
   group("Economy", h("div", { class: "dev-row" }, "Prices ", select("economy", ["loose", "decided", "free"], (v) => ({ loose: "loose (decided + a top-up per crate, the default)", decided: "decided prices", free: "free" })[v])),
-    h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["1e2s", "free", "2e4s"], (v) => ({ "1e2s": "1 ⚡ 2 ❀ (placeholder price)", free: "free", "2e4s": "2 ⚡ 4 ❀" })[v])),
+    h("div", { class: "dev-row" }, "Instant grow ", select("instantGrowPreset", ["rule", "free"], (v) => ({ rule: "1 ❀ per 2 minutes left, rounded up (decided)", free: "free" })[v])),
     h("p", { class: "dev-note" }, "Decided: Identify 1 ⚡ (first free) · a chapter 1 ◆ a trait, half rounded up once read on an earlier pod of the species, the first read ever free · return a pod +1 ❀. Loose adds +2 ⚡ +3 ◆ +2 ❀ to every crate opened."), mats);
   // Limits
   group("Limits", h("div", { class: "dev-row" }, "Bays ", select("bays", [6, 8, 10])), h("div", { class: "dev-row" }, "Rack ", select("rack", [6, 4, 8])),
