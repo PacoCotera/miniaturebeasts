@@ -939,7 +939,7 @@
     "notice": "the same master, frame-lamp-12-amber, is the notice's lamp, 4 px before \"they differ here\": lamp then words on the trait, lamp then words on the bottom line, so the notice teaches the mark. Amber, as on Home: the lamp marks where, the bottom line says it in words",
     "static": "no pulse, on the page or in the notice",
     "fit": "12 + 4 + the longest trait name, 'Leaf covering' 104 px at 16 px, = 120 <= the narrowest Compare cell, 120 ('Translucency' 101: 117)",
-    "withdrawn": "compare-mark-differs-12x12 (two offset strokes) is withdrawn; nothing new to paint",
+    "withdrawn": "compare-mark-differs-12x12 (two offset strokes) is withdrawn, although it was signed in pass 52: it is no longer placed and nothing replaces it to paint",
     "decided": "UI designer, 2026-10-09, after the art director's sixth look: the two offset strokes 4 px after the name read at 1x as a typo (\"Colour -_\"), and the notice's round amber lamp matched nothing on the page. Now one master for both, before the name, where a lamp reads as a lamp and never as a letter. Was compare-mark-differs-12x12 4 px after the trait's name (UI designer, 2026-10-09, after the fourth look); before that a 2 px aqua edge on the picture and a 12x12 bracket, drawn by the build"
    }
   },
@@ -1006,7 +1006,7 @@
    ],
    "sill": {
     "h": 20,
-    "rule": "no mark sits inside the picture's window: every trait frame, at every size, read, unread and sealed, has a 20 px sill (its bottom rail deepened, the frame's own material, opaque) from P.y + P.h - 20 to P.y + P.h; the window is P minus the sill; the seeds and the Only base sit on the sill, never on the crop or the stand-in",
+    "rule": "no mark sits inside the picture's window: every trait frame, at every size, read, unread and sealed, has a 20 px sill (its bottom rail deepened, the frame's own material, opaque) from P.y + P.h - 20 to P.y + P.h; the window is P minus the sill; every mark on a picture (the seeds, the Only base, asleep and breed-to-change) sits on the sill, never on the crop or the stand-in",
     "window": "P.w x (P.h - 20), from P's top-left",
     "masters": "the trait-picture-frame-WxH masters keep their ids and sizes and are repainted with the sill at the live sizes 128x160, 376x264, 184x256, 184x104 and 120x96 (and their -unread and -sealed variants); crops and stand-in cards keep their ids and sizes (P), composed so nothing of the creature falls in the bottom 20 px, which the sill covers; the 12 live 128x160 crops (S01, S09) are re-composed, the Compare crops are cut that way from the start, and the stand-in word is centred on the window",
     "seedPlace": {
@@ -1022,10 +1022,26 @@
      "blend": "left and right"
     },
     "onlyPlace": "[P.x + P.w / 2 - 36, P.y + P.h - 14], 72x8, centred on the sill",
-    "topMarks": "asleep and breed-to-change keep their top corners for now; open with the art director whether they move to the sill too",
     "oneSize": "one seed size on every picture, 32x40; mark-seed-40x52 is not placed on the page. seedSmall and smallUnder are kept equal to seed only so the build's lookup holds",
     "why": "the cheapest rule that never puts a seed on a creature: seeds beside the name do not fit (names run to 104 px, 'Leaf covering', in 120 and 128 px cells, and the seed must stay large enough to hold the hidden look), and no row has 28 px to spare below the name; the sill needs new frame masters and re-composes only the 12 crops that exist at a live size",
-    "decided": "UI designer, 2026-10-09, after the art director's sixth look: the seeds sat 8 px in at the picture's bottom corners and, on the S09 Head crop, landed on the beak and cheek like stickers. Was seed 40x52 at [P.x + P.w - 48, P.y + P.h - 60] (32x40 under 120 tall), the blend's second at P.x + 8, the Only base centred on the picture's bottom edge"
+    "decided": "UI designer, 2026-10-09, after the art director's sixth look: the seeds sat 8 px in at the picture's bottom corners and, on the S09 Head crop, landed on the beak and cheek like stickers. Was seed 40x52 at [P.x + P.w - 48, P.y + P.h - 60] (32x40 under 120 tall), the blend's second at P.x + 8, the Only base centred on the picture's bottom edge",
+    "cornerMarks": {
+     "asleep": "[P.x + P.w / 2 - 12, P.y + P.h - 18], 24x16",
+     "doing": "[P.x + P.w / 2 - 14, P.y + P.h - 18], 28x16",
+     "rule": "centred on the sill between the seeds (a 120 px cell leaves 56 px between the two 32 px seed masters); no mark sits on the painting",
+     "decided": "art director, 2026-10-09, confirming the UI designer's sill: was asleep at [P.x + P.w - 32, P.y + 8] (top right) and breed-to-change at [P.x + 8, P.y + 8] (top left), on the painting"
+    },
+    "seedColumn": {
+     "columns": "x P.x + 6 to P.x + 26 and P.x + P.w - 26 to P.x + P.w - 6 (the painted seed), from the sill's top, P.y + P.h - 20, to the name line's top, P.y + P.h + 8",
+     "rule": "the painted seed's foot lands exactly on the name line's top, so nothing on the name line (a glyph's ink, the Differs lamp, the New dot) may rise above P.y + P.h + 8 inside a seed's column, and no seed may reach below it",
+     "check": "the build checks it: the ink box of every name line and its marks starts at or below P.y + P.h + 8, and every seed's painted box ends at or above it; the test case is 'Leaf covering' (104 px) after the Differs lamp in a 120 px Compare cell, which spans the cell and crosses both seed columns",
+     "decided": "art director, 2026-10-09, confirming the UI designer's sill"
+    },
+    "shared": {
+     "case": "the Only base and a corner mark on one sill: the base at [P.x + P.w - 78, P.y + P.h - 14] (its right end 6 px in), the mark at [P.x + 6, P.y + P.h - 18]; in a 120 px cell the breed mark ends at 34 and the base starts at 42",
+     "occurs": "yes, Only with breed-to-change. A 'doing' trait (frame trait nature 'doing': the movement, energy and cognition traits such as Drive, Pace, Curiosity, in every frame S01 to S16) has its kind from its copies like any other, so both copies alike give Only while it still carries breed-to-change (genome.mjs traitStateOf: doing is independent of kind). Asleep never shares: asleep replaces the kind (no Only, no seeds), and needs a switch locus, which no doing trait has, so asleep and breed-to-change never meet either. Breed-to-change with seeds is the centred case (cornerMarks)",
+     "decided": "art director, 2026-10-09, confirming the UI designer's sill; answered by the UI designer from the game rules and the frames"
+    }
    }
   },
   "diff": {
@@ -1039,7 +1055,8 @@
     ],
     "bracketAt": "[P.x + P.w / 2 - 6, P.y + 8]",
     "edge": 2
-   }
+   },
+   "withdrawn": "compare-mark-differs-12x12, signed in pass 52, withdrawn (UI designer, 2026-10-09, after the art director's sixth look)"
   }
  },
  "focus": {
