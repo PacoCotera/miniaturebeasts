@@ -10,8 +10,8 @@ def pod(sp, pat, cls):
     d = json.load(open(f"../../../prototypes/workbench/frames/species-{sp}.json")); cp = d["pod"]["colourPair"]
     return recol(cls, hexrgb(cp[0]["hex"]), hexrgb(cp[1]["hex"]), pat, tint=(0, 0, 0))
 G = (27, 44, 58, 255)
-for cls, scale, name in (("large", 3, "patterns/patterns-large-3x.png"), ("large", 1, "patterns/patterns-large-1x.png"), ("well", 3, "patterns/patterns-well-3x.png")):
-    w, h = {"large": (144, 176), "well": (40, 48)}[cls]; sheet = Image.new("RGBA", ((w + 16) * 4 + 16, h + 32), G)
+for cls, scale, name in (("large", 3, "patterns/patterns-large-3x.png"), ("large", 1, "patterns/patterns-large-1x.png"), ("well", 1, "patterns/patterns-well-1x.png"), ("well", 3, "patterns/patterns-well-3x.png"), ("collection", 1, "patterns/patterns-collection-1x.png")):
+    w, h = {"large": (144, 176), "well": (40, 48), "collection": (88, 112)}[cls]; sheet = Image.new("RGBA", ((w + 16) * 4 + 16, h + 32), G)
     for i, (sp, pat, word) in enumerate(rows):
         sheet.alpha_composite(pod(sp, pat, cls), (16 + i * (w + 16), 16))
     sheet.resize((sheet.width * scale, sheet.height * scale), Image.NEAREST if scale == 1 or cls == "well" else Image.LANCZOS).convert("RGB").save(name)

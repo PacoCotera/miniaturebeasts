@@ -496,6 +496,18 @@ def panelplace():
     col = np.where((edge < 1.0)[..., None], hairc, np.where((edge < 2.2)[..., None], fill * 0.93, fill))
     cov = inside.reshape(H_, S, W_, S).mean((1, 3)); c = (col * inside[..., None]).reshape(H_, S, W_, S, 3).sum((1, 3)) / np.maximum(inside.reshape(H_, S, W_, S).sum((1, 3)), 1)[..., None]
     save("panel-place-320x224", Image.fromarray(np.clip(np.dstack([c, cov * 255]), 0, 255).astype(np.uint8), "RGBA"), None, "the collection place's glass card: panel-role dark glass, a hairline edge lit upper left, the top-left light, 6 px corners; one fixed master placed 1:1 at every place (16 + 336c, 48 + 240r)", "procedural, supersampled 8x")
+def unknownpod():
+    """pod-{large,medium,small,well}-unknown: the pod before its species is known (the art director): the body mask in a neutral grey (#6e6e72), the accent (cap and ribs) a warm light grey (#bcb6aa),
+    no pattern layer, the sealing band on (the band layer over it), the pod's own shade layer shading it as painted (no remap), and no species colour pair anywhere. The crack layer is left off. The
+    pod set carries no separate glow layer (the sprout's glow is baked into the identified composite only), so no bone core is drawn here."""
+    for cls in ("large", "medium", "small", "collection", "well"):
+        L = lambda n: np.asarray(Image.open(OUT + f"pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
+        sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]
+        A = np.array([0x6e, 0x6e, 0x72]) / 255; B = np.array([0xbc, 0xb6, 0xaa]) / 255
+        col = np.clip((A * body * (1 - np.clip(acc, 0, 1)) + B * np.clip(acc, 0, 1)) * np.clip(sh * 2, 0, 1), 0, 1)
+        im = Image.fromarray((np.concatenate([col, L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA"); im.alpha_composite(Image.open(OUT + f"pod-{cls}-band.png").convert("RGBA"))
+        r = MAN.get(f"pod-{cls}-identified", {}).get("rect") or json.load(open(OUT + "manifest.json")).get(f"pod-{cls}-identified", {}).get("rect")
+        save(f"pod-{cls}-unknown", im, r, f"the {cls} pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair", "pod layers, recoloured")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)
@@ -620,30 +632,43 @@ def ribs_mask(w, h, f, n=7):
     wd = max(0.22, _px(w, h, f, 1.8) * n / np.pi * 1.2)
     crest = np.clip(1 - d / wd, 0, 1) ** 1.6
     return crest * np.clip(z * 1.5, 0, 1) * 0.5
-def segments_mask(w, h, f, n=4):
-    """Three or four horizontal ring seams (latitude hoops) each with a soft shadowed lip: a bright thin seam edge with a soft falloff beneath it."""
-    lon, lat, z = _sphere(w, h); m = 0; px = _px(w, h, f); latc = lat + 0.16 * np.sin(lon) ** 2                  # the hoops bend down toward the shell's edges, as rings seen from above do
-    for c0 in (-0.50, -0.22, 0.06, 0.34)[:n]:
-        up = np.clip(1 - np.abs(latc - c0) / max(0.018, px * 1.2), 0, 1) ** 1.2                        # the seam's crisp edge
-        lip = np.clip(1 - (latc - c0) / max(0.10, px * 5.0), 0, 1) ** 2.0 * (latc > c0) * 0.5          # the soft shadowed lip below it
-        m = np.maximum(m, np.maximum(up, lip))
-    return m * np.clip(z * 1.5, 0, 1) * 0.65
-def plates_mask(w, h, f):
-    """Large slightly overlapping polygonal plates with fine seams: rows of plates by latitude, larger toward the belly and smaller toward the cap, alternate rows offset by half a plate, the vertical
-    seams slanted a little so the plates are polygons, each plate's lower edge lit where it overlaps the next row, each plate a slightly different tone."""
-    lon, lat, z = _sphere(w, h); px = _px(w, h, f)
-    edges = [-0.78, -0.62, -0.44, -0.22, 0.05, 0.38, 0.80]; counts = [16, 14, 12, 10, 8, 6]; out = np.zeros_like(lat)
+def _smooth(t): t = np.clip(t, 0, 1); return t * t * (3 - 2 * t)
+def segments_layers(w, h, f, n=4):
+    """Segments: three or four horizontal ring seams (latitude hoops, bent down toward the shell's edges like rings seen from above). Returns (colour, relief): the colour layer is the light seam
+    line (white with alpha, tinted by the second colour); the relief layer is the shade-convention grey (0.5 neutral, colour x 2 x grey): a lit edge just above each seam and a dark shadowed lip below it,
+    following the curvature."""
+    lon, lat, z = _sphere(w, h); px = _px(w, h, f); latc = lat + 0.16 * np.sin(lon) ** 2
+    cs = (-0.50, -0.22, 0.06, 0.34) if n == 4 else (-0.42, -0.08, 0.26)
+    col = np.zeros_like(lat); rel = np.zeros_like(lat); zf = np.clip(z * 1.5, 0, 1)
+    for c0 in cs:
+        col = np.maximum(col, np.clip(1 - np.abs(latc - c0) / max(0.016, px * 1.1), 0, 1) ** 1.2)
+        above = np.exp(-(((latc - (c0 - max(0.020, px * 1.4))) / max(0.020, px * 1.2)) ** 2)) * 0.9            # a lit edge just above the seam
+        lip = (latc >= c0 - 0.004) * np.exp(-np.clip(latc - c0, 0, None) / max(0.050, px * 3.2)) * (1 - _smooth((latc - c0) / max(0.16, px * 8)))     # the dark lip below it, falling away
+        rel = rel + above * 0.20 - lip * 0.32
+    return col * zf * 0.55, 0.5 + rel * zf
+def plates_layers(w, h, f, tier):
+    """Plates: overlapping, slightly curved plates in a staggered mosaic with vertical as well as horizontal seams, larger toward the belly and smaller toward the cap, following the curvature (rows are
+    latitude bands bent like the segments' hoops, the vertical seams meridians a little slanted, every second row offset by half a plate). tier: 'big' (large, medium, small), 'mid' (collection) or
+    'well' (the 40x48 class: fewer, wider plates so the seams stay visible). Returns (colour, relief): the colour layer a light mosaic of seams (white with alpha) with only a faint tone per plate; the relief
+    layer the shade-convention grey: a lit upper edge on each plate and a soft shadow under its lower edge (cast on the row below), a thin dark trough along each vertical seam."""
+    lon, lat, z = _sphere(w, h); px = _px(w, h, f); latc = lat + 0.14 * np.sin(lon) ** 2
+    edges, counts = {"big": ([-0.78, -0.62, -0.44, -0.22, 0.05, 0.38, 0.80], [16, 14, 12, 10, 8, 6]), "mid": ([-0.78, -0.55, -0.28, 0.05, 0.40, 0.80], [11, 9, 8, 7, 6]), "well": ([-0.78, -0.40, -0.02, 0.38, 0.80], [8, 7, 6, 5])}[tier]
+    col = np.zeros_like(lat); rel = np.zeros_like(lat); zf = np.clip(z * 1.5, 0, 1)
     for k in range(len(counts)):
-        e0, e1 = edges[k], edges[k + 1]; row = (lat >= e0) & (lat < e1); nk = counts[k]
-        slant = (lat - e0) * 0.7
-        ph = ((lon + slant) / np.pi * nk + (0.5 if k % 2 else 0.0)) % 1.0; idx = np.floor((lon + slant) / np.pi * nk + (0.5 if k % 2 else 0.0))
+        e0, e1 = edges[k], edges[k + 1]; row = (latc >= e0) & (latc < e1); nk = counts[k]; t = (latc - e0) / (e1 - e0)
+        slant = (latc - e0) * 0.16; u = (lon + slant) / np.pi * nk + (0.5 if k % 2 else 0.0); ph = u % 1.0; idx = np.floor(u)
         rnd = (np.sin(idx * 12.9898 + k * 78.233) * 43758.5453) % 1.0
-        seam_v = np.clip(1 - np.minimum(ph, 1 - ph) * nk / np.pi / max(0.010, px * 0.9), 0, 1) ** 1.3
-        seam_h = np.clip(1 - np.abs(lat - e0) / max(0.010, px * 0.9), 0, 1) ** 1.3
-        lipk = np.clip(1 - (e1 - lat) / max(0.022, px * 2.2), 0, 1) ** 1.8 * 0.4                      # the lit lower edge, overlapping the next row
-        tone = 0.08 + 0.24 * rnd
-        out = np.where(row, np.maximum.reduce([np.full_like(lat, 0.0) + tone, seam_v * 0.7, seam_h * 0.4, lipk * 0.7]), out)
-    return out * np.clip(z * 1.5, 0, 1)
+        wv = max(0.022, px * 1.25) * nk / np.pi                                                                  # the vertical seam, in plate widths
+        wh = max(0.012, px * 1.25)
+        seam_v = np.clip(1 - np.minimum(ph, 1 - ph) / wv, 0, 1) ** 1.2
+        seam_h = np.clip(1 - np.abs(latc - e0) / wh, 0, 1) ** 1.2
+        tone = 0.05 + 0.08 * rnd
+        c_row = np.maximum.reduce([np.zeros_like(lat) + tone, seam_v * 0.72, seam_h * 0.8])
+        lit_top = np.exp(-(np.clip(latc - e0, 0, None) / max(0.018, px * 1.5))) * (latc >= e0)                  # a lit upper edge on the plate
+        shadow = np.exp(-(np.clip(latc - e0, 0, None) / max(0.040, px * 3.0))) * (latc >= e0) * (1 if k > 0 else 0)  # the shadow the plate above casts under its lower edge, on the top of this row
+        trough = np.clip(1 - np.minimum(ph, 1 - ph) / (wv * 1.6), 0, 1) ** 1.5
+        col = np.where(row, c_row, col); rel = np.where(row, 0.15 * lit_top - 0.26 * shadow - 0.10 * trough, rel)
+    return col * zf, 0.5 + rel * zf
 def pods():
     BB = (376, 288, 1704, 1760); bw, bh = BB[2] - BB[0], BB[3] - BB[1]
     L, I, B = pod_src("pod-loika"), pod_src("pod-identified"), pod_src("pod-band")
@@ -708,13 +733,15 @@ def pods():
             c = Image.new("RGBA", (w, h), (0, 0, 0, 0)); c.alpha_composite(im, (ox, oy)); return c
         r = {"large": [560, 216, 144, 176], "medium": [572, 240, 120, 152], "small": [580, 264, 104, 128], "well": [36, 60, 40, 48]}.get(cls, [None, None, w, h])
         for nm, arr in masks.items(): save(f"pod-{cls}-{nm}", put(arr), r, "systematic pod layer: " + nm + ", uniform scale, foot on the last row, centred", "pod-identified")
-        for pn, fn in (("ribs", ribs_mask), ("segments", segments_mask), ("plates", plates_mask)):          # Brief 2: the layers for the shell patterns ribs, segments and plates
-            arr = wh(fn(w_, h_, f) * (sil - structure_old).clip(0, 1) * (1 - structure_old)); save(f"pod-{cls}-pattern-{pn}", put(arr), r, f"systematic pod layer: pattern-{pn} (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row", "procedural, on the sphere of the pod")
-        if cls == "well":
-            # legible at 32x40: darken and thicken the band before the downscale, and rebuild the sealed sprite from it
-            bd = flat["band"].copy(); al = label_dilate(bd[..., 3] > 40, 14) * 255; bd[..., :3] = np.minimum(bd[..., :3], 40); bd[..., 3] = np.maximum(bd[..., 3] * 1.6, al * 0.9); flat = dict(flat, band=bd)
-            sealed = flat["sealed"].copy(); m = bd[..., 3:4] / 255.0; sealed[..., :3] = sealed[..., :3] * (1 - m) + bd[..., :3] * m; flat["sealed"] = sealed
-        for nm, arr in flat.items(): save(f"pod-{cls}-{nm}", put(arr), r, "the Loika reference sprite" if nm != "band" else "the sealing band as a layer", "pod-loika" if nm == "identified" else "pod-band")
+        reg = (sil - structure_old).clip(0, 1) * (1 - structure_old)                                                  # under the structural ribs and cap
+        tier = "well" if cls == "well" else "mid" if cls == "collection" else "big"
+        layers = {"ribs": (ribs_mask(w_, h_, f), None), "segments": segments_layers(w_, h_, f, 3 if cls == "well" else 4), "plates": plates_layers(w_, h_, f, tier)}
+        for pn, (cm, rl) in layers.items():                                                                           # Brief 2: the layers for the shell patterns ribs, segments and plates
+            save(f"pod-{cls}-pattern-{pn}", put(wh(cm * reg)), r, f"systematic pod layer: pattern-{pn} (white with alpha, tinted by the second colour, multiplied by the shade, under the structural ribs and cap), uniform scale, foot on the last row", "procedural, on the sphere of the pod")
+            if rl is not None:
+                g = (0.5 + (rl - 0.5) * reg); rel = np.dstack([np.repeat((g * 255)[..., None], 3, 2), sil * 255])                # shade convention: grey, 0.5 neutral, alpha the silhouette
+                save(f"pod-{cls}-pattern-{pn}-relief", put(rel), r, f"systematic pod layer: pattern-{pn}-relief, the optional relief in the shade convention (grey, 0.5 neutral, colour x 2 x grey), drawn just above the shade: a lit edge and a dark lip", "procedural, on the sphere of the pod")
+
         sw, sh_ = w + 16, 14; yy, xx = np.mgrid[0:sh_, 0:sw].astype(float)
         a = np.clip(1 - (((xx - sw / 2) / (sw / 2)) ** 2 + ((yy - sh_ / 2) / (sh_ / 2)) ** 2), 0, 1) ** 1.2 * 0.6
         sdw = np.dstack([np.full((sh_, sw), 6.0), np.full((sh_, sw), 12.0), np.full((sh_, sw), 18.0), a * 255]).astype(np.uint8)

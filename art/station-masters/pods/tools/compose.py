@@ -3,6 +3,7 @@ On the layout of design-pods-relayout 29b6dc9: the well column at 112 with 80x80
 one to eight traits), the pod the protagonist on axis x 632, the stamp a detail in a 152 px case.
 Writes composite-pods-read-1024x600.png (a chapter of four traits, six full tabs), composite-pods-grid-1024x600.png (a chapter of one trait, a seven-chapter
 compact rail) and composite-vs-candidate.png."""
+import os
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 FD = "/usr/share/fonts/opentype/inter/"
@@ -18,6 +19,7 @@ def recol(cls, A, B, pattern, tint=(0.05, 0.20, 0.24)):
     sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]; pat = L("pattern-" + pattern)[..., 3:4] if pattern else 0 * body
     A = np.array(A) / 255; B = np.array(B) / 255; base = A * body * (1 - pat) + B * np.clip(acc + pat, 0, 1); f = np.clip(sh * 2, 0, 1.0) * 1.0      # the pod's own shade layer, as it is (no remap)
     col = base * f + np.array(tint) * np.clip(1 - f, 0, 1) ** 1.3 * 0.0 * (body + np.clip(acc + pat, 0, 1)).clip(0, 1)
+    if pattern and os.path.exists(f"slices/pod-{cls}-pattern-{pattern}-relief.png"): col = col * 2 * L(f"pattern-{pattern}-relief")[..., 0:1]      # the optional relief layer, just above the shade: colour x 2 x grey
     out = Image.fromarray((np.clip(col, 0, 1) * np.concatenate([np.ones_like(sh)] * 3, 2) * 255).astype(np.uint8), "RGBA") if False else Image.fromarray((np.concatenate([np.clip(col, 0, 1), L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA")
     for n in ("band", "crack"): out.alpha_composite(Image.open(f"slices/pod-{cls}-{n}.png").convert("RGBA"))
     return out
