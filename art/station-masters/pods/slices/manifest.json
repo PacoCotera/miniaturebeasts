@@ -583,9 +583,9 @@
   "src": "pod-loika",
   "made": "the Loika reference sprite",
   "sha256": "1def9aa52197d5dff7755d2b6f8ae71dfbffc498ffc6c2d4e6b08e086974426c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-sealed": {
   "size": [
@@ -601,9 +601,9 @@
   "src": "pod-band",
   "made": "the Loika reference sprite",
   "sha256": "c57634f8f3735888659c0de006931b5b65d8599f303c665d967200308668b1d5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-band": {
   "size": [
@@ -619,9 +619,9 @@
   "src": "pod-band",
   "made": "the sealing band as a layer",
   "sha256": "6968e2fa959f8a3c69ef59e1af276288247e9fadb97e0855628f5df570b0a02d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-large-shade": {
   "size": [
@@ -1015,9 +1015,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
   "sha256": "c40fd8f578ee4403b4fad2973c0ce3f2b7ff09bc079287e953d72218726c6e1b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-mask-body": {
   "size": [
@@ -1033,9 +1033,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: mask-body, held with the accent mask",
   "sha256": "ed6c5626f1ff3e74f50ec3674a1af844ae585fba844d47bde7ffad4a3eab1a56",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-mask-accent": {
   "size": [
@@ -1051,9 +1051,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: mask-accent, enclosed pixels filled",
   "sha256": "2236fa0afe54c90eccbe22a55f0861209641132041b8f5e923135de4d1fe86ae",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-pattern-dots": {
   "size": [
@@ -1069,9 +1069,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
   "sha256": "dca28c8ee4a97cc5cba1652d6f0cef0bc5985475fc8ae504074d8b4c36d9fdce",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-pattern-stripes": {
   "size": [
@@ -1087,9 +1087,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
   "sha256": "e631f0f010b5d2ce0bd486e5f6a9b7c1e4eeb64ca9198a8763387ece878ee147",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-pattern-bands": {
   "size": [
@@ -1105,9 +1105,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
   "sha256": "bc43435d4fca6bc4c628c8830e81ff002ed4e5114aab575a6dddd23a49553ad7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-shadow": {
   "size": [
@@ -1123,9 +1123,9 @@
   "src": "procedural ramp",
   "made": "contact shadow: centred on x 632 with its middle on the foot line y 392",
   "sha256": "e250f80ed856145e2b6252291f31cee3ff3543eda23a6f51d157ac8c73f67094",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-large-crack": {
   "size": [
@@ -1195,9 +1195,9 @@
   "src": "pod-identified",
   "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
   "sha256": "d32a99fc6c672a57965797d177fc4821be099b56ecbc3fce028d23bd8331ff2c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "trait-picture-frame-184x304": {
   "size": [
@@ -2113,9 +2113,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the painted gauge for 4 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
   "sha256": "a7ad1a5f51622d076a937f7eaa4d68e31fd1fc5e38c9a1bcca9ff61a8c3408b2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s0": {
   "size": [
@@ -2131,9 +2131,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "068bbb8bf1fb828cba419fc219824aae58ef470728f0eac1c652251bee9cc19d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s1": {
   "size": [
@@ -2149,9 +2149,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "6b61ab4beb4dcecd0158447f7197e7a7afb66827b5f3fff4c5179be2bb6fa035",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s2": {
   "size": [
@@ -2167,9 +2167,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "c5e155e9df75e208b63b4a5f5d9be56153fcea4f314869c297d4e02047bc584b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s3": {
   "size": [
@@ -2185,9 +2185,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 4: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "ccce4cc66663230e3064b7a8fb59356e1fb261952ef3a47458aed1c0b26f9005",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-track": {
   "size": [
@@ -2203,9 +2203,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the painted gauge for 5 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
   "sha256": "800b21b19de75dd213da1ec05382b251b45dc28a867a67196ab401c3eb5ca9ac",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s0": {
   "size": [
@@ -2221,9 +2221,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "f65c0b2930c4b23058b9dbdb0ed45a256ef1aafdbe136b814d05bfd5ab1cc3ab",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s1": {
   "size": [
@@ -2239,9 +2239,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "60e69b8e98c1118d677c27c911434300e93183722ea7a77d82b98dfe190912a8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s2": {
   "size": [
@@ -2257,9 +2257,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "8d3ed6f2d42d0ef47b1faa24d4b3532b74a4f57bc9be1bd9ad15969ef520dfdd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s3": {
   "size": [
@@ -2275,9 +2275,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "bfff8099145c03ac04955cbff9a8f350121a7b70ae756799b395be5b5b108733",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s4": {
   "size": [
@@ -2293,9 +2293,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 5: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "74c378b89180851da449f8d1fec5fe334c04efb242f9538e3366813bfbce0f43",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-track": {
   "size": [
@@ -2311,9 +2311,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the painted gauge for 6 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
   "sha256": "4a8f184b41d2ebcbd64188c7a84809bf6d4b11df64f2b97524cba228a12bfaae",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s0": {
   "size": [
@@ -2329,9 +2329,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "7e6f21b9b349782b7584b63b1917c5ab8dad42395c20d2dfcb61fc6b61b5d137",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s1": {
   "size": [
@@ -2347,9 +2347,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "23b7a6045da1244cfa887d0a6bf32f329095d5b17ccb0364f2cff9351442a144",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s2": {
   "size": [
@@ -2365,9 +2365,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "e5e42aac48540a80282b5a0127f5dbdb99de787c1f10756462dbb80470771de6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s3": {
   "size": [
@@ -2383,9 +2383,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "69dd493d9733873ff22439262c51cbd2841a2d48ba8f6049a1c8af80ecbb376b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s4": {
   "size": [
@@ -2401,9 +2401,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "b867f7fbdb9ee0b47a74ad60532f92e0154cb1b8bc3537b575c05f1c7c396f55",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s5": {
   "size": [
@@ -2419,9 +2419,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 6 of 6: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "791c64a7f90d37cf2110b3d0dcce27105024f44dd75e4f2c34ff52791ef8d536",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-track": {
   "size": [
@@ -2437,9 +2437,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the painted gauge for 7 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
   "sha256": "78d3529dba705c2946933645e1f17a6d48436a9786ef9496f6382fa600382b20",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s0": {
   "size": [
@@ -2455,9 +2455,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "88218cf229ccb36eeb4b42aac5059dae47f399de50bd23f7010da33e31fb4cc3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s1": {
   "size": [
@@ -2473,9 +2473,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "d0d0c15bafd16ecd7d1f24f0b114c5ea67b043c163b44d3f7876cca477a4db80",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s2": {
   "size": [
@@ -2491,9 +2491,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "b6c7910935f88fbc2a364a5de527595eaf8559029ef8da8c368d0103c7e9f4c4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s3": {
   "size": [
@@ -2509,9 +2509,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "3bcc0d2b49642824e4e0773515b25de5d2857a98c6ea0a7080bc35a84c3081f3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s4": {
   "size": [
@@ -2527,9 +2527,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "98f4efb9b8aedb903758dd2ffb0d6da38b7f91d860b6b92e42bb4fb65289e873",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s5": {
   "size": [
@@ -2545,9 +2545,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 6 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "77ddd025aa9dd8d7bf7de276a045069afcd1ed7f9f23f36512edec533fac5966",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s6": {
   "size": [
@@ -2563,9 +2563,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 7 of 7: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "de37e8578c124185ba70c2b657122bab3435bfc0da109f75fb04b6a38c4056ec",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-track": {
   "size": [
@@ -2581,9 +2581,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the painted gauge for 8 chapters: the concept's band with a soft engraved groove in its outer half (warm dark floor, soft upper-left shadow, faint lit lip lower right) and soft 1 px ticks at each chapter boundary; nothing carved by a hard mask",
   "sha256": "eed42ea9a69ff11f6fb6a53c5e40bb3dde3add689cfa024cb716a5ed97d69ab9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s0": {
   "size": [
@@ -2599,9 +2599,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 1 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "092e81713eddbb24311367ca83945d0067b89b8d3f25961cad125121e7c014ee",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s1": {
   "size": [
@@ -2617,9 +2617,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 2 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "2be7f10c2caa7b916ccd6c0b5a70e5bb6d1c9861e292809af2f16fa8be7c881b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s2": {
   "size": [
@@ -2635,9 +2635,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 3 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "ccd56f0c6d8e103dde3b7ce85a185b15db1ea5411ba00473844b6bd6e501da4f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s3": {
   "size": [
@@ -2653,9 +2653,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 4 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "3f0777a85cb3b44cc5473a460dd82e922a5e8d0ea361b58e31705d782fed14af",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s4": {
   "size": [
@@ -2671,9 +2671,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 5 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "d32811299947b640af3d8b498a90deb7b59c8f7353dee9887350836e1a96895f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s5": {
   "size": [
@@ -2689,9 +2689,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 6 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "e1cd66ad372760040847015e94311a9c699971254cc7146afe6a5698336de5f4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s6": {
   "size": [
@@ -2707,9 +2707,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 7 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "f76b8760b730cd12165834b527c0158518b830cdad0754ae7cc6eb9742eb095c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s7": {
   "size": [
@@ -2725,9 +2725,9 @@
   "src": "procedural, supersampled 8x",
   "made": "chapter 8 of 8: the solid painted band cut by angle (clockwise from 12 o'clock) with a 1 px feathered edge; a read chapter shows this over the track",
   "sha256": "b591c0e411682b50269dc29ef510df94066a9f6f32f0f836b592b8ba353f283d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "status_note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-idle-n4-track": {
   "size": [
@@ -3680,9 +3680,9 @@
   "src": "well-rings2",
   "made": "the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin",
   "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict"
+  "status": "signed",
+  "signed_in": "55944fb verdict",
+  "status_note": "signed: ring-well-empty-80x80"
  },
  "rail-tab-fill-unread-full-152x40": {
   "size": [
@@ -3698,9 +3698,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-read-full-152x40": {
   "size": [
@@ -3716,9 +3716,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "865c12a37d1a3a7202b0e4db1af05a41600303180c5a6b58a68102624f4b9f13",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-open-full-152x40": {
   "size": [
@@ -3734,9 +3734,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "66d692a7d95fa61dc4c78799a685571daa63b7ecedec1fd471a7719518ab97da",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-sealed-full-152x40": {
   "size": [
@@ -3752,9 +3752,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "fa6d3290988ca481e815a8fb6030a955221c85c659dc42e2f12fc8738db56cad",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-unread-compact-72x40": {
   "size": [
@@ -3770,9 +3770,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-read-compact-72x40": {
   "size": [
@@ -3788,9 +3788,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "7620edb62877ff44cfbaf0d9b05e20a9505d0b24014daa33d49023b9284e74a0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-open-compact-72x40": {
   "size": [
@@ -3806,9 +3806,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (hairline), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "c9716f7c35e7f00d7af4617908e44999536eb90aa67e7447ed63535b91425947",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-sealed-compact-72x40": {
   "size": [
@@ -3824,9 +3824,9 @@
   "src": "chrome geometry, supersampled 4x",
   "made": "one fill per state (panel, slats in bar), a 1 px bevel on its edges, no lit rim; slant 16 baked",
   "sha256": "af0c823e9bd9f97b4d31719243ee92c4e6cfb923ebd23b9336227dd79deae76d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "status_note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "trait-picture-frame-112x112": {
   "size": [
@@ -3837,9 +3837,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "dd28fe01ea86d19fd133c143deaa4a0f3d6d02a7597a522820d4154588b7ee31",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the find picture frame of a sealed chapter at (224,296); awaiting verdict"
+  "status": "signed",
+  "signed_in": "55944fb verdict",
+  "status_note": "the find picture frame of a sealed chapter"
  },
  "page-new-mark-12x12": {
   "size": [
@@ -3873,9 +3873,9 @@
   "src": "marks-device2",
   "made": "the Companion's glyph, solid (docked); painted large and reduced",
   "sha256": "6fc434b6d4c8a66cc99f5a33f6dd6c5e62d8cbca6505932b4447a9e9071bb233",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-companion-outline-16x24": {
   "size": [
@@ -3891,9 +3891,9 @@
   "src": "marks-device2",
   "made": "the Companion's glyph, outline (away); painted large and reduced",
   "sha256": "390ee6f7c05da87c416b0ef686c1cedfcdb7b1dc3dd137bfde2ce8312162fd66",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "room-stamp-case-152x152-front": {
   "size": [
@@ -3909,9 +3909,9 @@
   "src": "procedural, supersampled",
   "made": "the case's front glass over the label: a dark tint (0.41) and a faint diagonal sheen; the label's mean brightness falls to about 114 with the stamp's cells at 4.8:1 (WCAG relative luminance)",
   "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the front glass over the label; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "the stamp's front glass over the label"
  },
  "trait-picture-frame-144x176": {
   "size": [
@@ -4005,9 +4005,9 @@
   "src": "typed by hand",
   "made": "the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel",
   "sha256": "c0f9568865dc612d3450bf0ba3169916b810f5cba725bef231b2e8486efa5558",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the three key caps, 16 px discs"
  },
  "frame-cap-confirm-16-dim": {
   "size": [
@@ -4023,9 +4023,9 @@
   "src": "typed by hand",
   "made": "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)",
   "sha256": "06e96d5e1a12bf938007aeae54ca2f7728a70c4948d1b34452b722875c723cce",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the three key caps, 16 px discs"
  },
  "frame-cap-back-16": {
   "size": [
@@ -4041,9 +4041,9 @@
   "src": "typed by hand",
   "made": "the bottom line's back key cap: a 16 px disc, stone face, fog arrow",
   "sha256": "1f21328e7dad2eb3edaa360d477f2ec2425701f7c44a39bf77ef90602875b9d5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the three key caps, 16 px discs"
  },
  "frame-room-home-24": {
   "size": [
@@ -4059,9 +4059,9 @@
   "src": "typed by hand",
   "made": "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, and a two-leaf sprout 5 px tall rising from the sill into the lower-left pane; at (16,8) in the title zone",
   "sha256": "de9371c0b273375c856335554ca9741221698a349a6f135ce09f808d828c2dc0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 12 (verdict)",
+  "status_note": "the living window"
  },
  "frame-room-research-24": {
   "size": [
@@ -4077,9 +4077,9 @@
   "src": "marks-rooms",
   "made": "the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
   "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-room-library-24": {
   "size": [
@@ -4095,9 +4095,9 @@
   "src": "marks-rooms",
   "made": "the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
   "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-room-habitat-24": {
   "size": [
@@ -4113,9 +4113,9 @@
   "src": "marks-rooms",
   "made": "the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone",
   "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-sun-16": {
   "size": [
@@ -4131,9 +4131,9 @@
   "src": "marks-device2",
   "made": "the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008)",
   "sha256": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-lamp-8-mint": {
   "size": [
@@ -4149,9 +4149,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the Companion's lamp, docked: a mint bead",
   "sha256": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-lamp-8-stone": {
   "size": [
@@ -4167,9 +4167,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the Companion's lamp, away: a stone bead",
   "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-lamp-12-amber": {
   "size": [
@@ -4185,9 +4185,9 @@
   "src": "procedural, supersampled 8x",
   "made": "the notice's 12x12 amber lamp (the same lamp as Home's modules)",
   "sha256": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-loika-24": {
   "size": [
@@ -4203,9 +4203,9 @@
   "src": "mibi-face",
   "made": "the mibi with the Companion: the face painted at 2K from the standard painting, reduced to a 20 px disc inside its 2 px teal ring",
   "sha256": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-loika-24-away": {
   "size": [
@@ -4221,9 +4221,9 @@
   "src": "mibi-face",
   "made": "the Companion away: the mibi out with it, the face full on a dimmed ring",
   "sha256": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-24-empty": {
   "size": [
@@ -4239,9 +4239,9 @@
   "src": "procedural, supersampled 8x",
   "made": "no mibi with you: an empty teal ring",
   "sha256": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "status_note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-belatz-24": {
   "size": [
@@ -4257,9 +4257,9 @@
   "src": "belatz-portrait",
   "made": "Belatz with the Companion: the head of the Grow service's standard painting (S09/3982a7117cfa0fc3) reduced to a 20 px disc inside its 2 px teal ring",
   "sha256": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 11 (verdict)",
+  "status_note": "Belatz's face, re-cropped tighter"
  },
  "face-belatz-24-away": {
   "size": [
@@ -4275,9 +4275,9 @@
   "src": "belatz-portrait",
   "made": "Belatz, the Companion away: the face full on a dimmed ring",
   "sha256": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 11 (verdict)",
+  "status_note": "Belatz's face, re-cropped tighter"
  },
  "page-mark-new-10": {
   "size": [
@@ -4293,9 +4293,9 @@
   "src": "typed by hand",
   "made": "the 'new to the field guide' mark: a flat bone dot 6x6, a 1 px white lit edge top left, no keyline, no specular; on the trait's name line, 4 px after the name",
   "sha256": "0e12dd402268ed52bfbfb61538f7fe3164d5a23d1b321fce6d004f771c41146d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the new-to-the-field-guide mark as pods.json now specifies it: a flat bone dot 6x6, 1 px white lit edge, no keyline; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the new-to-the-field-guide dot: a flat bone dot 6x6, 1 px white lit edge, no keyline"
  },
  "place-meadow-48x48": {
   "size": [
@@ -4312,8 +4312,8 @@
   "made": "the meadow place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
   "sha256": "a1a6dcbf600a44bf8e952c5c68594947c9d4fe6f89a8e0f89327e26542e56733",
   "status": "signed",
-  "signed_in": "places round 1",
-  "status_note": ""
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "status_note": "the five hold as a set"
  },
  "place-pond-48x48": {
   "size": [
@@ -4330,8 +4330,8 @@
   "made": "the pond place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
   "sha256": "7e44aa1254c0eb9e49811be69d161ee872d775f514f13f1cdd74e0932eb50c14",
   "status": "signed",
-  "signed_in": "places round 1",
-  "status_note": ""
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "status_note": "the five hold as a set"
  },
  "place-rock-48x48": {
   "size": [
@@ -4347,9 +4347,9 @@
   "src": "place-rock",
   "made": "the rock place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
   "sha256": "a3e585738f8180863894eeb5db2de0a1d9498d1a2a42cb91bb5232c97068e329",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview place picture, redone in round 2; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "status_note": "the five hold as a set"
  },
  "place-wood-48x48": {
   "size": [
@@ -4365,9 +4365,9 @@
   "src": "place-wood",
   "made": "the wood place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
   "sha256": "673d78a5141073ff3e7a1d433f2a018ffe281eab3155bab58e1b8e194879fd79",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview place picture, redone in round 2; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "status_note": "the five hold as a set"
  },
  "place-cave-48x48": {
   "size": [
@@ -4383,9 +4383,9 @@
   "src": "place-cave",
   "made": "the cave place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88",
   "sha256": "5260edf77a2d46b9f3ff088c202de35758f99d6c0c3cb42597aa8d335d73e19e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the collection overview place picture, redone in round 2; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "status_note": "the five hold as a set"
  },
  "mibi-halo-S01-128x160-clear": {
   "size": [
@@ -4824,5 +4824,260 @@
   "status": "signed",
   "signed_in": "pass 24 (signed on delivery)",
   "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
+ },
+ "pod-collection-crack": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: crack, uniform scale, foot on the last row, centred",
+  "sha256": "17a81668f422106b98c1fe8099cfa30de96bb0c3f4dc2997cdde2ccd80d86166",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-shade": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: shade, uniform scale, foot on the last row, centred",
+  "sha256": "be65bbf24cf1b84818d24123a24f9e334be5a1dcee8875087fdec5608b0a0bb5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-mask-body": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: mask-body, uniform scale, foot on the last row, centred",
+  "sha256": "cb6d1fbd43a0e64cdd908a6957381616da934ae80f87bbc8e569d4085ea99f54",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-mask-accent": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: mask-accent, uniform scale, foot on the last row, centred",
+  "sha256": "75382937b4f51a9468a8e9d42562265a203b14392b6915d32e58955f4cccde09",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-pattern-dots": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: pattern-dots, uniform scale, foot on the last row, centred",
+  "sha256": "78d2c5c603a1db34a9b960d8c9db8d5b9ebd0e850df8c4e1a371017890e523bf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-pattern-stripes": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: pattern-stripes, uniform scale, foot on the last row, centred",
+  "sha256": "baaf0fe4a2eab57b3848dfc0031b1d0ab7170969045c384cadbbdd808b0e0e99",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-pattern-bands": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-identified",
+  "made": "systematic pod layer: pattern-bands, uniform scale, foot on the last row, centred",
+  "sha256": "18c15519b022d588f1cbd3ae9d979a07f31540b7c3d2c9d547dfc1a3a0bf8e29",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-identified": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-loika",
+  "made": "the Loika reference sprite",
+  "sha256": "f302ffdbb9265161502bdff66a51437dcee14d762ff58058075468e6aad03b83",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-sealed": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-band",
+  "made": "the Loika reference sprite",
+  "sha256": "b0aa805cb460488fea08274a3cfe5595955092fd2b164e7b06b2f91b001039a0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-band": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod-band",
+  "made": "the sealing band as a layer",
+  "sha256": "40c7875589d5628dd6843c2c1377a1d6ba6d666d5a79c0792dd0e80de7ce2a6e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-shadow": {
+  "size": [
+   104,
+   14
+  ],
+  "rect": [
+   580,
+   385,
+   104,
+   14
+  ],
+  "src": "procedural ramp",
+  "made": "contact shadow: centred on x 632 with its middle on the foot line y 392",
+  "sha256": "f4a6dd5d9934b1eb845dd55b74057a3391d3af29aab4b536f408f8ca3450e0b9",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-unknown": {
+  "size": [
+   88,
+   112
+  ],
+  "rect": [
+   null,
+   null,
+   88,
+   112
+  ],
+  "src": "pod layers, recoloured",
+  "made": "the collection pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
+  "sha256": "f6a1ad4e46d4d276ca860ed7b01520201d7091549855155929a8cdc296674cf0",
+  "status": "new",
+  "signed_in": "pass 24 (signed on delivery)",
+  "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none); the collection class, awaiting verdict"
+ },
+ "trait-picture-frame-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "frame-thin",
+  "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
+  "sha256": "98e85563bc687f054d4effcfc8361e9176ce2098137dbebc45be241bd171e734",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+ },
+ "trait-picture-frame-128x160-unread": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "frost+frame-thin",
+  "made": "frost texture at 0.9 alpha under the frame",
+  "sha256": "e9a110e88cdeaaa2a77af32b0b22078838e74d0c27d7dec846ab0faa8b9b51ed",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+ },
+ "trait-picture-frame-128x160-sealed": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "slats+frame-thin",
+  "made": "slats texture tiled by whole slats, under the frame",
+  "sha256": "32adb1e7d3f966d9478b0307eb6b18dd8c3ff5327e82c902dee34e7fcd353637",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
  }
 }

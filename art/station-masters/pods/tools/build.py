@@ -187,7 +187,7 @@ def panenine():
     MAN["page-pane-256x440"]["nine"] = {"insets": {"left": 64, "top": 64, "right": 16, "bottom": 16}, "edgeTile": 32, "fillTile": [32, 32], "heights": [440, 264, 248], "topLeftPiece": [64, 64]}
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
-    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112), (144, 176), (176, 144)]
+    sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112), (144, 176), (176, 144), (128, 160)]
     s = 1536 / k.width * 0 + 0.19
     fr = dim(load("frost-dark.jpg").convert("RGBA"), 0.7).convert("RGB"); sl = dim(load("slats-frost.jpg").convert("RGBA"), 0.5, 8).convert("RGB")
     frost = fr.resize((int(fr.width * 0.25), int(fr.height * 0.25)), Image.LANCZOS)
@@ -447,7 +447,7 @@ def unknownpod():
     """pod-{large,medium,small,well}-unknown: the pod before its species is known (the art director): the body mask in a neutral grey (#6e6e72), the accent (cap and ribs) a warm light grey (#bcb6aa),
     no pattern layer, the sealing band on (the band layer over it), the pod's own shade layer shading it as painted (no remap), and no species colour pair anywhere. The crack layer is left off. The
     pod set carries no separate glow layer (the sprout's glow is baked into the identified composite only), so no bone core is drawn here."""
-    for cls in ("large", "medium", "small", "well"):
+    for cls in ("large", "medium", "small", "collection", "well"):
         L = lambda n: np.asarray(Image.open(OUT + f"pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
         sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]
         A = np.array([0x6e, 0x6e, 0x72]) / 255; B = np.array([0xbc, 0xb6, 0xaa]) / 255
@@ -530,7 +530,7 @@ def bars():
     save("frame-bottom-line-1024x38", b.transpose(Image.FLIP_TOP_BOTTOM).resize((1024, 38), Image.LANCZOS), [0, 562, 1024, 38], "the bar flipped (rule on its top edge), 1024x38", "bar-top")
 
 # ---- pods
-POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "well": (40, 48)}
+POD_BOX = {"large": (144, 176), "medium": (120, 152), "small": (104, 128), "collection": (88, 112), "well": (40, 48)}      # collection: the collection overview's pod class (before well, which alters the band)
 def pod_src(n):
     k = key_magenta(load(n + ".jpg"), lo=26, hi=70); a = np.asarray(k).astype(float).copy(); a[1775:, 3] = 0
     edge = a[..., 3] < 250; g = a[..., 1]

@@ -175,19 +175,19 @@
   "note": "layers signed across passes 4 to 7b; the 33 are standing"
  },
  "pod-well-identified": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-sealed": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-band": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-large-shade": {
   "status": "signed",
@@ -295,39 +295,39 @@
   "note": "layers signed across passes 4 to 7b; the 33 are standing"
  },
  "pod-well-shade": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-mask-body": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-mask-accent": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-pattern-dots": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-pattern-stripes": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-pattern-bands": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-well-shadow": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "pod-large-crack": {
   "status": "signed",
@@ -345,9 +345,9 @@
   "note": "layers signed across passes 4 to 7b; the 33 are standing"
  },
  "pod-well-crack": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
  },
  "trait-picture-frame-184x304": {
   "status": "withdrawn",
@@ -650,179 +650,179 @@
   "note": ""
  },
  "ring-arc-selected-n4-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n4-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n5-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n6-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n7-s6": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-track": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s0": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s1": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s2": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s3": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s4": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s5": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s6": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-selected-n8-s7": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 16: repainted as a painted gauge (soft groove, soft ticks, 1 px feathered cuts) after the owner saw a jagged ring; signed in pass 8 as the carved version; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
  },
  "ring-arc-idle-n4-track": {
   "status": "signed",
@@ -1100,54 +1100,54 @@
   "note": "with a condition: the front glass over the label (room-stamp-case-152x152-front)"
  },
  "ring-well-empty-80x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "re-export of the signed ring-well-empty only, padded to 80x80; awaiting verdict"
+  "status": "signed",
+  "signed_in": "55944fb verdict",
+  "note": "signed: ring-well-empty-80x80"
  },
  "rail-tab-fill-unread-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-read-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-open-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-sealed-full-152x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-unread-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-read-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-open-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "rail-tab-fill-sealed-compact-72x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the rail rule of design-pods-relayout 29b6dc9: one fill per state, no lit rim, no teal; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 8 (verdict on 55944fb)",
+  "note": "the 8 rail-tab-fill slices: the geometry is right for chrome; the pass 4 plates withdrawn"
  },
  "trait-picture-frame-112x112": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the find picture frame of a sealed chapter at (224,296); awaiting verdict"
+  "status": "signed",
+  "signed_in": "55944fb verdict",
+  "note": "the find picture frame of a sealed chapter"
  },
  "page-new-mark-12x12": {
   "status": "withdrawn",
@@ -1155,19 +1155,19 @@
   "note": "superseded by page-mark-new-10 (now a 6x6 flat bone dot)"
  },
  "frame-companion-solid-16x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-companion-outline-16x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "room-stamp-case-152x152-front": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the front glass over the label; awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the stamp's front glass over the label"
  },
  "trait-picture-frame-144x176": {
   "status": "new",
@@ -1200,114 +1200,114 @@
   "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "frame-cap-confirm-16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
  },
  "frame-cap-confirm-16-dim": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
  },
  "frame-cap-back-16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
  },
  "frame-room-home-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 12 (verdict)",
+  "note": "the living window"
  },
  "frame-room-research-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-room-library-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-room-habitat-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-sun-16": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-lamp-8-mint": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-lamp-8-stone": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "frame-lamp-12-amber": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-loika-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-loika-24-away": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-24-empty": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "face-belatz-24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 11 (verdict)",
+  "note": "Belatz's face, re-cropped tighter"
  },
  "face-belatz-24-away": {
-  "status": "new",
-  "signed_in": null,
-  "note": "a mark of the Station frame (design-station-frame); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 11 (verdict)",
+  "note": "Belatz's face, re-cropped tighter"
  },
  "page-mark-new-10": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the new-to-the-field-guide mark as pods.json now specifies it: a flat bone dot 6x6, 1 px white lit edge, no keyline; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the new-to-the-field-guide dot: a flat bone dot 6x6, 1 px white lit edge, no keyline"
  },
  "place-meadow-48x48": {
   "status": "signed",
-  "signed_in": "places round 1",
-  "note": ""
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
  },
  "place-pond-48x48": {
   "status": "signed",
-  "signed_in": "places round 1",
-  "note": ""
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
  },
  "place-rock-48x48": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview place picture, redone in round 2; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
  },
  "place-wood-48x48": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview place picture, redone in round 2; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
  },
  "place-cave-48x48": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the collection overview place picture, redone in round 2; awaiting verdict"
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
  },
  "mibi-halo-S01-128x160-clear": {
   "status": "signed",
@@ -1468,5 +1468,80 @@
   "status": "signed",
   "signed_in": "pass 24 (signed on delivery)",
   "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
+ },
+ "pod-collection-crack": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-shade": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-mask-body": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-mask-accent": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-pattern-dots": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-pattern-stripes": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-pattern-bands": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-identified": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-band": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-shadow": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the collection overview pod class 88x112, cut from the signed pod family (never scaled), foot on the last row; awaiting verdict"
+ },
+ "pod-collection-unknown": {
+  "status": "new",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none); the collection class, awaiting verdict"
+ },
+ "trait-picture-frame-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+ },
+ "trait-picture-frame-128x160-unread": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
+ },
+ "trait-picture-frame-128x160-sealed": {
+  "status": "new",
+  "signed_in": null,
+  "note": "the three-state spec's picture frame 128x160 (plain, unread, sealed), cut from the signed frame family; awaiting verdict"
  }
 }
