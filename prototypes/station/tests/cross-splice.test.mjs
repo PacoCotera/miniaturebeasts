@@ -9,7 +9,7 @@ import { setFrames, frameOf, frameIds } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import * as L from "../src/library.mjs";
 import { crossView, firstMissingWords } from "../src/views/cross.mjs";
-import { overviewPlan, chapterPlan } from "../src/cross-layout.mjs";
+import { overviewPlan, chapterPlan } from "../../ui/specs/derive.mjs";
 import { traitLocusCount, chapterLocusCount } from "../src/splice.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames");

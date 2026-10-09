@@ -36,6 +36,8 @@ export const motion = () => !RM.matches;
 export class PB {
   constructor(w, h) { this.w = w; this.h = h; this.p = new Int16Array(w * h).fill(-1);  }
   set(x, y, c) { x = Math.floor(x); y = Math.floor(y); if (c >= 0 && x >= 0 && y >= 0 && x < this.w && y < this.h) this.p[y * this.w + x] = c; }
+  // The buffer as RGBA bytes (w*h*4, straight alpha: a transparent cell is 0,0,0,0), from the palette: the picture the face takes, with no canvas.
+  rgba() { const out = new Uint8ClampedArray(this.w * this.h * 4); for (let i = 0; i < this.p.length; i++) { const c = this.p[i]; if (c < 0) continue; const r = RGB[c]; out[i * 4] = r[0]; out[i * 4 + 1] = r[1]; out[i * 4 + 2] = r[2]; out[i * 4 + 3] = 255; } return out; }
   get(x, y) { return x < 0 || y < 0 || x >= this.w || y >= this.h ? -1 : this.p[y * this.w + x]; }
   rect(x, y, w, h, c) { x = Math.round(x); y = Math.round(y); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) this.set(x + i, y + j, c); return this; }
   // Filled ellipse tested at pixel centres. o: { sh: [light, dark], rot, clip(x,y), chk, dith: [col, level] }
@@ -110,8 +112,6 @@ export class PB {
   map(fn) { for (let i = 0; i < this.p.length; i++) if (this.p[i] >= 0) this.p[i] = fn(this.p[i], i % this.w, (i / this.w) | 0); return this; }
   // The frost: a cool pale dither over the pixels fn(x, y) selects (what isn't known yet).
   frost(fn) { return this.map((c, x, y) => (!fn || fn(x, y) ? (bay(x, y) < 7 ? C.frost : bay(x, y) < 14 ? C.frostD : C.frostS) : c)); }
-  // RGBA out (the test hooks and the journey read the stamp this way).
-  rgba() { const d = new Uint8ClampedArray(this.w * this.h * 4); for (let i = 0; i < this.p.length; i++) { const c = this.p[i], rgb = c < 0 ? [0, 0, 0] : RGB[c]; d[i * 4] = rgb[0]; d[i * 4 + 1] = rgb[1]; d[i * 4 + 2] = rgb[2]; d[i * 4 + 3] = c < 0 ? 0 : 255; } return { width: this.w, height: this.h, data: d }; }
 }
 // An RGBA image (a placeholder render, a stamp raster) into a buffer: each pixel its nearest palette colour;
 // pixels of the `transparent` colour (within `tol`) are left clear.
