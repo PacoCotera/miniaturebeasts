@@ -8753,5 +8753,317 @@
   "status": "signed",
   "signed_in": "pass 72 verdict",
   "status_note": "a hand-drawn small find at 16 px (the shard with its right spike trimmed so row 6 ends in line with row 7)"
+ },
+ "trait-S01-crown-leaf-crest-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S01-crown-leaf-crest-128x160.png",
+  "made": "the signed trait-S01-crown-leaf-crest-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "ff9295d1861840505600ce58be729b15216a289071456b731ccf821e886bf8df",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S01-crown-leaf-crest-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S01-crown-leaf-crest-128x160.png",
+  "made": "the signed trait-S01-crown-leaf-crest-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "eddf69a59042211fd8df0a43d73563a972e890dc53fa4f600dcad284e06691c3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S01-eyes-between-small-and-large-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S01-eyes-between-small-and-large-128x160.png",
+  "made": "the signed trait-S01-eyes-between-small-and-large-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "459d6da24d7561cbc46732c32a438df35dffa71a6fdb5abe4744637e5f3954c8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S01-eyes-between-small-and-large-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S01-eyes-between-small-and-large-128x160.png",
+  "made": "the signed trait-S01-eyes-between-small-and-large-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "9fa7311541c699745f4eca30d0d10c07f7478ae48b4d6b05af4f03cf39cba10d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S01-markings-plain-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S01-markings-plain-128x160.png",
+  "made": "the signed trait-S01-markings-plain-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "7c1aab51e15a0f8aa7ac4c16dc05f6da4c26bb31e04f61d718b82cd25aaea15f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S01-markings-plain-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S01-markings-plain-128x160.png",
+  "made": "the signed trait-S01-markings-plain-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "86edfc6e4f80fdc9be103b64d9de5c096f050a86ebdc06a14954c17657c700ad",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-beak-between-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-beak-between-128x160.png",
+  "made": "the signed trait-S09-beak-between-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "b3bf2b51a4f8d11294c40433a12e178defa6fed0b01048de276631217ca085b5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-beak-between-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-beak-between-128x160.png",
+  "made": "the signed trait-S09-beak-between-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "046cf9ec15f1d747fab82a2ad691d4082ab77807d8110c707afd262752427743",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-crest-between-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-crest-between-128x160.png",
+  "made": "the signed trait-S09-crest-between-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "95b2f7eb96a2b7470f5f53cabe1385fcc0d5de299b434097dda6526c4cc7a8e8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-crest-between-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-crest-between-128x160.png",
+  "made": "the signed trait-S09-crest-between-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "8d2306ac8d2425740f4abe901f51f85917a42b26c9710201a501e9ec4b00e837",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-feathers-between-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-feathers-between-128x160.png",
+  "made": "the signed trait-S09-feathers-between-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "d66d5f3f1e20b0afc564a22f40260a10f49bbf058d0f8d2af27fab6ce0e4beeb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-feathers-between-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-feathers-between-128x160.png",
+  "made": "the signed trait-S09-feathers-between-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "837789a7c675ee2992dffb285aac970d99c6429906c892badd2d85e2f85ab8ac",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-fluff-between-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-fluff-between-128x160.png",
+  "made": "the signed trait-S09-fluff-between-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "ffc45f5b3cc0b35a739cf404383969b6d0a3f89d273b0a84774fd0ad5685b8d7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S09-fluff-between-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S09-fluff-between-128x160.png",
+  "made": "the signed trait-S09-fluff-between-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "3d3868892d15dcec2678b95ea0e55835844a82415bef941ec5e9671f32842736",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-colour-marigold-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-colour-marigold-128x160.png",
+  "made": "the signed trait-S12-colour-marigold-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "114ed3704323f6ade25eb6991029bc49d84ecf7c01eaf479e74e58588f382f11",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-colour-marigold-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-colour-marigold-128x160.png",
+  "made": "the signed trait-S12-colour-marigold-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "07dcf247cd6efaa2889bf26f94e5f3c22766372c5624ee813f69792e2390737f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-haunch-between-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-haunch-between-128x160.png",
+  "made": "the signed trait-S12-haunch-between-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "4855a7bd190281c23b12d2e098fd337a97476c5de79ee63efa462fe94b276ed4",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-haunch-between-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-haunch-between-128x160.png",
+  "made": "the signed trait-S12-haunch-between-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "26d4504f7bd2c39c7999169f002e74727560609061d3d6784008b4af46aca7f8",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-pattern-plain-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-pattern-plain-128x160.png",
+  "made": "the signed trait-S12-pattern-plain-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "2deac6fab76dda2b29c4ab03ef38470e223df79247080e9cc72910ac57cd952e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-pattern-plain-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-pattern-plain-128x160.png",
+  "made": "the signed trait-S12-pattern-plain-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "aa47b805a4cb1bc7d467f3e81505a7f4d0d0e812fc2e15b72c5d4c7e8f11031b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-translucency-between-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-translucency-between-128x160.png",
+  "made": "the signed trait-S12-translucency-between-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "343125651e6dafd9d911522d691b24274039eafb625e3d1c105b1e0b2a0c83ba",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-translucency-between-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-translucency-between-128x160.png",
+  "made": "the signed trait-S12-translucency-between-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "00da11d25342bcbf66ee24e39acea7e04e1cb1405c82b038e880844e433dd5f0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-trim-butter-56x56": {
+  "size": [
+   56,
+   56
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-trim-butter-128x160.png",
+  "made": "the signed trait-S12-trim-butter-128x160's content box (the centred 96x120) reduced to 34x42 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 56x56 cell: the content sits inside the centred 75 percent (42 px) (pass 74)",
+  "sha256": "774101ab9974b52cd32b4b4192ec2f7b0fbcd329100f2370407613713963443b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
+ },
+ "trait-S12-trim-butter-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "rect": null,
+  "src": "slices/trait-S12-trim-butter-128x160.png",
+  "made": "the signed trait-S12-trim-butter-128x160's content box (the centred 96x120) reduced to 24x30 (LANCZOS, never enlarged) and centred on the cell tone `ground` in a 40x40 cell: the content sits inside the centred 75 percent (30 px) (pass 74)",
+  "sha256": "d6fba3e3e97d0153ba22856510fc80e54df4c7f414e293de063f50f6260ae947",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 74: a Library look plate reduced from the signed 128x160 trait picture (content box 96x120 to 34x42 or 24x30, never enlarged, centred on the cell tone ground); awaiting verdict"
  }
 }
