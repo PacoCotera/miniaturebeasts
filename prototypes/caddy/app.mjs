@@ -36,8 +36,8 @@ export function createApp(opts = {}) {
   const day = () => (state.ledger[today(state.now())] ||= { calls: 0, spendUSD: 0, worlds: {} });
   const spentToday = () => day().spendUSD;
   const worldToday = (world) => day().worlds[world] || 0;
-  // real painting needs the key and the daily limit; without either the real painter falls back to the mock
-  const painterMode = () => (cfg.painter === "real" && (!process.env.GEMINI_API_KEY || cfg.ceilingUSD == null) ? "mock" : cfg.painter);
+  // real painting needs the key, the daily limit and the ledger (MB_LEDGER); without any of them the real painter falls back to the mock
+  const painterMode = () => (cfg.painter === "real" && (!process.env.GEMINI_API_KEY || cfg.ceilingUSD == null || !process.env.MB_LEDGER) ? "mock" : cfg.painter);
   const limitReached = () => cfg.ceilingUSD != null && spentToday() >= cfg.ceilingUSD;
 
   // --- the API ---
@@ -97,6 +97,8 @@ export function createApp(opts = {}) {
       const d = day(); d.calls += r.manifest.calls || (mode === "real" ? 1 : 0); d.spendUSD += r.costUSD; d.worlds[job.world] = (d.worlds[job.world] || 0) + 1; ledgerWrite();
     } catch (e) {
       job.tries++; job.error = e.message;
+      // a failed run's spend still counts toward the day (the painter attaches it to the error)
+      if (e.costUSD || e.calls) { const d = day(); d.calls += e.calls || 0; d.spendUSD += e.costUSD || 0; ledgerWrite(); }
       if (job.tries >= RETRY_S.length) job.state = "failed"; else { job.state = "queued"; job.nextAt = state.now() + RETRY_S[job.tries - 1] * 1000; }
     }
     state.painting = null; journal();
