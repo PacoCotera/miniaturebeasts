@@ -127,9 +127,9 @@ By default every look is configurable and every doing is inherited-only. A
 species may set a trait apart, with the reason kept in its frame: the Tuikis's
 Claws, for example, are how it digs, so they are inherited-only.
 
-The self-changing kind starts with three traits: **Glow** (the Tuikis),
-**Basking** (the Lehten) and **Phase** (the Blikur). How they change is under
-[Not designed yet](#not-designed-yet).
+The self-changing kind has three traits: **Glow** (the Tuikis), **Basking**
+(the Lehten) and **Phase** (the Blikur). How they change is under
+[Self-changing traits](#self-changing-traits).
 
 Each locus in a frame also has one kind of part:
 
@@ -140,6 +140,44 @@ Each locus in a frame also has one kind of part:
 | **Heritable doing** | Movement, stamina, character, glow, charge | Inherited-only, or self-changing for Glow, Basking and Phase |
 | **Sleeping** | A look behind a part switch that is off in this mibi | Set with its switch's trait |
 | **Sealed** | A doings chapter that cannot be read until a find opens it. Its loci are inherited and act from birth | Inherited-only, or self-changing for Basking and Phase |
+
+## Self-changing traits
+
+A self-changing trait moves with where its mibi goes. Only the partner, the
+mibi out on an expedition with the player, changes; a mibi at home never does.
+
+| Trait | Moves toward | When the partner |
+| --- | --- | --- |
+| **Glow** (the Tuikis) | brighter | enters a cave or a wood |
+| **Basking** (the Lehten) | sun-hungrier | enters a meadow, a pond edge or a rock field |
+| **Phase** (the Blikur) | more solid | is in a place a storm passes over |
+
+The rules:
+
+- **Kept beside the copies.** The change is a **mark** held in the mibi's
+  record, next to its genome. The copies never change, so the genome, its
+  digest, its name code, its stamp and its family record stay the same.
+- **One step per dock.** A mark moves only when the partner docks after an
+  expedition. It moves at most one step toward its end, if the trigger was met
+  on that expedition. A step is one sixteenth of the species' range for that
+  trait; a mark goes up to four steps.
+- **Fading.** After three expeditions as partner without its trigger, a mark
+  falls back one step. A mibi that stays home keeps its mark as it is.
+- **Within the species.** The trait shows the mean of its two copies plus the
+  mark, kept inside the species' pool, so a changed mibi still looks like a
+  member of its species.
+- **Never inherited.** A cross reads the copies only. A child starts with no
+  mark.
+
+For example, Ember is a Tuikis whose Glow copies are dim and bright, so its
+glow sits between them. After three expeditions into caves its mark is three
+steps brighter. Its children take one of Ember's copies, dim or bright, and no
+mark; Ember's stamp still shows dim and bright.
+
+How a change reads on screen is in
+[research and breeding](research-and-breeding.md). The painting follows the
+mark at the mibi's next life stage
+([art direction](art-direction.md#from-genome-to-creature)).
 
 ## Species frames
 
@@ -285,7 +323,8 @@ From the outside in:
   mibi; every reader carries the species frames.
 - **Strip, at the foot:** error correction, the header and the read mask.
 
-A chapter the player has not read is an empty block, never a guess.
+A chapter the player has not read is an empty block, never a guess. Unread
+and sealed chapters are never in a stamp.
 
 ![The same Tuikis with every chapter read, and with two chapters unread](../prototypes/genome-stamp/img/station-glowtail-unread.png)
 *A Tuikis with Legs & Tail and Character unread: those blocks are empty outlines.*
@@ -313,8 +352,9 @@ every switch locus, so a family lines up on paper.
 ![A Tuikis mother, child and father](../prototypes/genome-stamp/img/family.png)
 *A Tuikis mother, child and father: at each switch locus, the child's upper cells repeat one of the mother's copies and its lower cells one of the father's.*
 
-A scanned stamp only shows a mibi. It never creates one and never moves one
-from one owner to another.
+A scanned stamp shows everything its keeper has read, the copies that hide and
+the sleeping copies included. It only shows a mibi: it never creates one and
+never moves one from one keeper to another.
 
 The stamp's tests, print sheet and scan page are in
 [prototypes/genome-stamp](../prototypes/genome-stamp/README.md).
@@ -342,10 +382,6 @@ never rewrites a living mibi. A child is built on its species' current frame.
 
 ## Not designed yet
 
-- How Glow, Basking and Phase change: what triggers a change, when it
-  happens, where it is kept, and how it shows.
-- What a scan shows when parts of the genome are hidden: copies that hide,
-  sleeping looks, unread and sealed chapters.
 - Combined traits: traits that combine into emergent ones; for example,
   movement, energy and environment together shape a kind of locomotion, vision
   or metabolism.
