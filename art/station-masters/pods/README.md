@@ -336,6 +336,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 <!-- end of the generated Slices section -->
 
+## Pass 18 - a read is a whole chapter
+
+Corrected after the game designer's rule (a read is always a whole chapter; inside a read chapter no trait is unread). The pass 16 Read composite, with two read and two frosted cells in one chapter, showed a state the game never has, and is withdrawn. Three proofs now: `composite-pods-read-1024x600.png` (Coat open and read: four different pictures, the read-again bottom line, "Coat is read", all pips and dots filled, the ring showing Coat and Face read), `composite-pods-grid-1024x600.png` (the Shape page, read) and `composite-pods-unread-1024x600.png` (Coat open and unread: every cell the frosted frame with no picture, the names only, no new dot, the pips and dots empty, the verb "Read Coat" with its cap and price, "Coat is unread", the ring showing only Face read). The pictures are still stand-ins from the Belatz side painting, each a different part, named for the part.
+
+
 ## Pass 17 - the tail (tail-a, tighter), the wells centred in the column
 
 - `rail-emblem-legs-tail-{unread,read,sealed}-24x24`: the art director's pick, tail-a, redone: the Gemini pictogram cropped to the tail's bounding box and fitted to 80 px in the 96 px source (`pipeline/in96/tail-a2-96.png`), one Retro Diffusion pixelate call to 24 (`pipeline/rd/tail-a2-rd.png`; a first attempt with an extended prompt came back as an unrelated creature and is kept as `tail-a2-attempt1-garbage.png`; 0.36 USD in `log/spend.json`), the silhouette cleaned on the 62 colours (`pipeline/clean/tail-a2.txt`), then edited by hand in `emblems/source/legs-tail.txt`: the lit edge only upper left (the teal rim gone: unread fog on mist, read white on bone, sealed flat), a solid root at the lower left, the bushy mass, an open tuft of three points at the right, never a loop. It is 20 wide and 20 tall. Honest reading at 1x: a bushy S-curved tail with three short prongs; the prongs hang down and read a little as drips rather than a brush. It is on both composites' tabs.
