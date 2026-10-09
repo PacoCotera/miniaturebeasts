@@ -1,0 +1,45 @@
+name: Public guard
+
+# No cost record, host or tunnel detail, session trace, absolute path or secret value reaches this public repository
+# (rules and allowlist in .github/public-guard/rules.json). Its own workflow, with no path filter, so art/** is checked too.
+# Diff mode: only the lines a change adds, each image it adds or changes, and its commit messages; no existing line fails it.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event_name == 'pull_request' && format('guard-pr-{0}', github.event.pull_request.number) || format('guard-{0}', github.sha) }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  guard:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Self-test (one positive and one negative fixture per rule)
+        run: node .github/public-guard/guard.mjs --self-test
+      - name: Check the lines this change adds
+        env:
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          if [ "$GITHUB_EVENT_NAME" = pull_request ]; then
+            BASE="$PR_BASE"
+          elif [ -n "$BEFORE" ] && [ "$BEFORE" != 0000000000000000000000000000000000000000 ]; then
+            BASE="$BEFORE"
+          else
+            BASE="HEAD~1"
+          fi
+          node .github/public-guard/guard.mjs --base "$BASE"

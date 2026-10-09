@@ -9,7 +9,7 @@
   "compare cell rows": "derived, UI designer to confirm: the rows of Compare's cells follow Read's (y 48 and 248 on the page) — UI designer, 2026-10-08: corrected to y 56 and 248: the heading's 32×40 pod runs from y 8 to 48 and touched the first row; cells 184 tall (376 for one or two traits), the second row ending 8 px above the page's edge",
   "colours": "derived, UI designer to confirm: the colour roles of the Pods regions are the builder's choice from the palette's names (the layout document names none beyond the cream focus ring, the bone stamp label with a slate edge, the frost unread page, the deep pane and the slate edge) — UI designer, 2026-10-08: confirmed but five: the ribbon (a lamp-yellow plate with rust words under the pod was a second warm, bright object beside the specimen) is the read tab's cool look, tealD with an aqua rim and creamT words; the page pane is `deep`, as the document names it (night read as dusk, not the bench's deep pane); the unread tab fill is `frostS` (rail); a sealed tab's word is `mist` (ink on the slats did not read); the difference mark is `aqua` on an `ink` keyline (diff). The frame's own roles (moss bars, the wood message plate) wait for the palette commit's migration table",
   "strings.openBay": "derived, UI designer to confirm: the empty rack's need line when the Companion is docked (open the bay at Home to bring pods in); the document gives only the undocked one — UI designer, 2026-10-08: corrected: docked with crates in the bay, \"open the bay at Home\" (strings.openBay); docked with the bay empty, \"take the Companion exploring\" (strings.explore); away, \"dock the Companion for its crates\" (strings.dockToBring, six words; the document's eight-word line was over the six-word rule)",
-  "tab fills": "derived, UI designer to confirm: the unread and read tab colours (colours.rail), as the previous builder chose: unread frost with a slate hairline and ink word, read deep teal with an aqua rim and mint word, the cream ring — UI designer, 2026-10-08: read confirmed; unread corrected to a frostS fill (frostD out-shone the pod; the pod is the brightest thing on the bench), slate hairline and ink word; sealed: slats, the word in mist, the notch in the ground colour; the focused tab lifts 2 px (the chrome lift; at 4 px its ring met the top bar's rule at y 40)",
+  "tab fills": "Signed pieces placed 1:1 at the tab's rect (x, 40): rail-tab-fill-{unread,read,sealed}-{full-152x40,compact-72x40} and rail-tab-fill-open-full-152x40. One fill per state from colours.rail (unread and read `panel`, open `hairline`, sealed `panel` with 2 px `bar` slats on a 4 px pitch, rows 4–5 to 32–33). The slants and bottom edge are 1 px `bevel`, anti-aliased. No top rim: the tab hangs from the top bar's rule. No notch, no lift.",
   "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen) — UI designer, 2026-10-09, after the art director's fourth look: superseded, no build-drawn mark; the signed master compare-mark-differs-12x12 on the name line (regions.compareA.differs)",
   "collection ring colours": "derived, UI designer to confirm: the arcs follow the layout document (filled `bone` when read, `bevel` when not, 2 px apart, the band closing when every chapter is read); the `colours.ringRead`/`ringUnread` entries of the file name the old well ring's roles (bevel, hairline) and are not used; an empty place is the base band alone in `ringBase`",
   "can-grow mark": "derived, UI designer to confirm: the mark shows on an identified pod that can be shaped into a founder while its ring is not closed (the ring closed says it already); one 16×16 mark, a placeholder until its master",
@@ -1076,7 +1076,7 @@
     "y": "line y + 4",
     "centreY": "line y + 10",
     "nameAlign": "left",
-    "layer": "art",
+    "layer": "painted",
     "onBothPages": true,
     "onlyWhen": "the trait is read on both pods and their looks differ",
     "kindGlyphs": false,
@@ -1211,6 +1211,31 @@
    "fallback": "none",
    "initial": "rail.open",
    "back": "overview, the ring on this tab"
+  },
+  "compare": {
+   "rail": {
+    "stepper": [
+     "left",
+     "right"
+    ],
+    "up": "none",
+    "down": "none"
+   },
+   "fallback": "none",
+   "initial": "rail.open",
+   "back": "overview, the ring on the kin that opened Compare"
+  }
+ },
+ "keys": {
+  "compare": {
+   "targets": "the rail's tabs, rail.0 to rail.(n - 1) (group rail, index i), as on the chapter page; the ring on the open chapter's tab, in the tab target's ring form (targets.tab) with the chrome lift. In Compare, rail.open resolves to rail.<ui.cmp.ci>",
+   "opens": "✓ on a kin in the overview opens Compare on the species' first chapter: the focus rail.0",
+   "left": "step:left: the previous chapter in ring order, sealed ones included, on both pages; the focus is set to its tab; on the first chapter nothing changes, never a wrap",
+   "right": "step:right: the next chapter on both pages; the focus is set to its tab; on the last chapter nothing changes, never a wrap",
+   "up": "none: the ring stays and nothing is sent",
+   "down": "none: the ring stays and nothing is sent",
+   "confirm": "nothing: Compare has no ✓ cap",
+   "back": "closes Compare: the overview with the ring on the kin that opened it (kin.<i>, the kin whose pod is ui.cmp.b), else on the pod; the way back reads the pod's name (frame.json navigation pods.compare)"
   }
  },
  "targets": {
@@ -1226,7 +1251,12 @@
   },
   "tab": {
    "group": "rail",
-   "ring": "tab"
+   "ring": "tab",
+   "states": [
+    "overview",
+    "chapter",
+    "compare"
+   ]
   },
   "kin": {
    "group": "kin",
@@ -1249,11 +1279,9 @@
   "rail": {
    "edge": "bevel",
    "unreadFill": "panel",
-   "unreadEdge": "bevel",
    "unreadWord": "mist",
    "unreadPip": "mist",
    "readFill": "panel",
-   "readRim": "bevel",
    "readWord": "bone",
    "readPip": "bone",
    "openFill": "hairline",
@@ -1262,7 +1290,6 @@
    "sealedFill": "panel",
    "sealedSlats": "bar",
    "sealedWord": "mist",
-   "sealedNotch": null,
    "pip": "bone",
    "pipHollow": "mist",
    "ring": "focus",
@@ -1353,7 +1380,8 @@
    "chapterFallback": "Back",
    "compare": "{name}"
   },
-  "hatchAgain": "✓ again"
+  "hatchAgain": "✓ again",
+  "price": "icon before figure, as on every Station screen (station-layouts.md, The frame): Identify ⚡ 1, Read ◆ 3, Return to the wild ❀ +1; nothing for free, and a half price is the lower number"
  },
  "states": [
   "collection",
