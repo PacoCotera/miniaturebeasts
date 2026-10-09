@@ -172,7 +172,7 @@ export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
 export function effWithId(st, sv) { const r = st.withReq; if (r && docked(st) && r.seq > ((sv && sv.withSeen) || 0)) return r.id; return withId(sv); }
 export function pendingWith(st, sv) { const r = st.withReq; return r && r.seq > ((sv && sv.withSeen) || 0) && r.id !== withId(sv) ? mibiById(st, r.id) : null; }
 export const atHome = (st, sv) => st.mibis.filter((m) => m.id !== effWithId(st, sv) && !m.released);
-export function mibiStage(st, m, settings = DEFAULT_SETTINGS) { const age = st.turn - (m.born || 0), j = settings.adultTurns ?? JUVENILE_TURNS; return age < j ? "juvenile" : age >= JUVENILE_TURNS + ELDER_TURNS ? "elder" : "adult"; }
+export function mibiStage(st, m, settings = DEFAULT_SETTINGS) { const age = st.turn - (m.born || 0), j = settings.adultTurns ?? JUVENILE_TURNS; return age < j ? "juvenile" : age >= j + ELDER_TURNS ? "elder" : "adult"; }
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
 export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
 // The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.

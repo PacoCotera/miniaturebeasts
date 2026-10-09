@@ -177,3 +177,12 @@ test("the bays clamp to 12 (1 at least), whatever the setting or the save holds"
 test("the forms: gains read '❀ +1', spends '⚡ −1 ❀ −2' with a true minus on the figure", () => {
   assert.equal(S.gainText(2), "❀ +2"); assert.equal(S.spendText(1, 0, 2), "⚡ −1 ❀ −2"); assert.equal(S.spendText(0, 3, 0), "◆ −3"); assert.equal(S.spendText(0, 0, 0), "free");
 });
+
+// ---- 8. elder age follows the juvenile span ----
+test("a mibi is an elder at j + ELDER_TURNS, where j is the adultTurns setting (2 and 4)", () => {
+  const st = fresh(); const m = { born: 0 };
+  for (const j of [2, 4]) {
+    const s = { ...settings, adultTurns: j };
+    for (const [age, want] of [[j - 1, "juvenile"], [j, "adult"], [j + S.ELDER_TURNS - 1, "adult"], [j + S.ELDER_TURNS, "elder"]]) { st.turn = age; assert.equal(S.mibiStage(st, m, s), want, "j " + j + " age " + age); }
+  }
+});
