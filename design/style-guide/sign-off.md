@@ -119,7 +119,7 @@ Departures and open items, for the UI designer or the lead (the frame's language
 - **The tab ring's right side** (settled by the UI designer): the slants lean to the tab's bottom edge (`slantTo`, y 80) and drop straight to the bottom run at y 84, so the box is exactly (x − 4, 42, w + 24, 42); the frame check compares the drawn ring with its mask pixel for pixel.
 - **Glyph advances** are whole pixels in LVGL (the atlases kept fractions), so a string's last letters can sit 1 to 4 px from the canvas renderer's; the views measure through the face, so centring and clipping are right in the face itself.
 - **Not built on the face yet**: the stage's content (L2), Compare's rail, motion (the rail's 300 ms slide, the 200 ms lift, the glint's twinkle), the sealed tab's slats are rows of 1 px lines (the master art is owed).
-- **Sizes and timings** (CI and the development VM): `face.wasm` 348,437 B (134,501 B gzipped), page load 6 to 8 ms (26 ms at 4× CPU throttle), a full-frame copy 3 ms (13 ms throttled), an unchanged frame 0.003 ms.
+- **Sizes and timings** (CI and a development machine): `face.wasm` 348,437 B (134,501 B gzipped), page load 6 to 8 ms (26 ms at 4× CPU throttle), a full-frame copy 3 ms (13 ms throttled), an unchanged frame 0.003 ms.
 
 ## 4. Companion screen build
 
@@ -141,7 +141,7 @@ Departures and open items, for the UI designer or the lead (the frame's language
 | Nothing childish: a naturalist's study, never a vinyl collectible (AD; GR v8) | Validated: silhouette, every part, slot colours, markings in fields; one named retry, then the placeholder (AP §5) |
 | Inside the cute envelope E1–E9; no part added, moved or recoloured (workbench; AP §4) | Small sizes derived, never painted small: 280×300, 48 px token, idle and walk frames (AP §1.1) |
 | Same individual as its controls; only what is known shown (AP §5; AD) | No hidden copy in manifest or controls (AP §3); painter id in the cache key; never silently regenerated (AP §5) |
-| Judged at device size beside Pip (AP §9) | Every call logged with cost, time and hashes; total against $0.35 a mibi and the daily ceiling (AP §8; SB §4) |
+| Judged at device size beside Pip (AP §9) | Every call logged with time and hashes; within the daily limit (AP §8; SB §4) |
 | Species pieces: the art director's pick (AP §1.1) | Labelled generated; originals kept (AD) |
 
 ## 6. Proposal with figures

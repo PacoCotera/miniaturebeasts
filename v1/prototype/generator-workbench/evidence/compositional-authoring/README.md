@@ -42,3 +42,5 @@ The actual clipboard text matched the visible text. The after replay export is25
 The [eight older saved records](saved-records-preserved.txt) remain present; no new creature Save was used. Compositional drafts have a separate storage slot from legacy catalogue drafts. Unsupported branch/consumer states remain visible. Runtime operators, pigment values/maps and construction budgets are fixed in this editor. The earlier coherent-fur craft HOLD remains; ears, tails, rich limb roles, partial coats/markings, five unauthored genomic branches, broader consumers, linked pet-art acceptance, integrated whole-genome sharing and animation remain unfinished.
 
 The [authoring contract](../../../../design/anatomical-source-prototype/compositional-contract.md#compatible-authored-foundations) owns the allowed edit domains and pipeline boundary.
+
+The art-reset link in this folder's snapshots was re-pointed on 2026-10-09 to [art-reset/README.md](https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md) in this repository; the snapshots are otherwise as captured.

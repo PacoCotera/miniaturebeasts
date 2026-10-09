@@ -5,7 +5,7 @@ quantity selector, Discard/Keep review and empty Finish review. These routes use
 owned copied views and retained LVGL widgets; their manual compositor branches
 are removed. Physical commands, saved ownership and game rules remain outside UI.
 
-Final source: `4f6ceef5def86a6e9dc84809c57f7edaf92f18b3`. The existing native VM
+Final source: `4f6ceef5def86a6e9dc84809c57f7edaf92f18b3`. The existing build machine
 retrieved this exact clean pushed Git revision before building. At the preceding
 mode-indicator revision `7a850c1`, the four affected Cargo/Probe/Dock/Kit suites
 passed. The final no-active-expedition copy correction passed the affected Cargo

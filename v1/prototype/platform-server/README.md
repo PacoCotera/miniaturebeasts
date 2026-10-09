@@ -64,7 +64,7 @@ Native saved worlds remain owned by the separately deployed presenter.
 For a hostname cutover, configure the gateway with
 `CRITTER_PLATFORM_HOST=miniaturebeasts.com`. When users still need access to
 browser saves on the previous origin, explicitly set
-`CRITTER_PLATFORM_LEGACY_HOST=critterlab.basicberry.com` and retain that origin's
+`CRITTER_PLATFORM_LEGACY_HOST` to a legacy hostname and retain that origin's
 TLS route to the same gateway temporarily. Restart only the gateway for this
 configuration change; the workbench and native presenter remain independent.
 The optional hostname serves the existing mounts without a hostname redirect,

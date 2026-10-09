@@ -2,7 +2,7 @@
 import json, os, sys
 from PIL import Image
 
-REPO = "/home/user/miniaturebeasts"
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = sys.argv[1]
 os.makedirs(OUT, exist_ok=True)
 

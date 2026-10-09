@@ -37,9 +37,9 @@ npm install --prefix /tmp/lvfc lv_font_conv@1.5.3 && sh prototypes/face/tools/ba
 
 Open the Station with `?face=lvgl` (the build's `dist/` must sit beside the page: `prototypes/face/dist`, published at `/sandbox/face/dist`).
 
-## What L0 measured (Chromium headless; a development VM and CI's ubuntu-24.04 runner)
+## What L0 measured (Chromium headless; a development machine and CI's ubuntu-24.04 runner)
 
-| | Development VM | CI runner (first run, cache cold) |
+| | Development machine | CI runner (first run, cache cold) |
 | --- | --- | --- |
 | Emscripten 4.0.23 install and both builds | n/a | 1 min 51 s for the whole step; later runs restore the SDK from the cache |
 | Clean build, WebAssembly (LVGL 9.6.0 + the face, `-O2`) | 26.7 s | 35.0 s |
@@ -56,7 +56,7 @@ The full-frame copy is the worst case (LVGL redraws only what changed, and the p
 
 ## What L1 added
 
-| | Development VM |
+| | Development machine |
 | --- | --- |
 | `face.wasm` with the three Inter fonts and the scene interpreter | 348,437 B (134,501 B gzipped); the fonts are 137 KB of it |
 | Page: fetch, compile and initialise | 6.2 ms; 25.7 ms throttled 4× |

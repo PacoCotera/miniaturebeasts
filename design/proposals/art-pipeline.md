@@ -34,9 +34,9 @@
 | Rig | Station | at Grow, within a second | continuous proportions, species pools, markings | none |
 | Control passes | Station | at Grow | silhouette, slots, index, markings, shaded; three-quarter and side (§4) | none |
 | Placeholder | Station | at Grow, shown until the painting lands | the stylised rig pass: ramps, outline, no faces, no materials ([brief](plain-renderer.md)) | none |
-| Standard painting | the cloud painter, brokered by the Caddy | at Grow, inside the bud's twenty minutes; later stages ahead of the change | three-quarter and side views over the controls and the species pieces; checked against silhouette and slot map; one retry | about $0.35 a mibi |
+| Standard painting | the cloud painter, brokered by the Caddy | at Grow, inside the bud's twenty minutes; later stages ahead of the change | three-quarter and side views over the controls and the species pieces; checked against silhouette and slot map; one retry | one painting job a mibi (two views, one retry) |
 | Derivation | Station | when the painting lands | the Companion resident 280×300, the 48 px token, idle 2 and walk 3 frames, the Caddy four-grey; never painted small | none |
-| Species pieces | the cloud painter, the art director's pick | once per species, at authoring | type specimen, face set, generic token for unmet silhouettes, Library face | about 20 calls, $2–3 a species |
+| Species pieces | the cloud painter, the art director's pick | once per species, at authoring | type specimen, face set, generic token for unmet silhouettes, Library face | about 20 calls a species |
 | Portrait | the cloud painter, brokered by the Caddy | at a sitting, a few hours | the chosen pose and place, the richer finish, the full view set, the signed postmark | a few calls; measured in stage 1 |
 | Card | Station layout; the website page from the archive | when the portrait lands | portrait, name, species, place, stamp and postmark; Companion, Caddy print and web | none |
 | Retro Diffusion | dropped | | may return only if a token clean-up test earns it | |
@@ -137,18 +137,18 @@ Two Loikas with the same pool values share a token in the field and differ in th
 
 ## 8. The cost model
 
-**Assumptions.** The private spend notes are not in the public repository, so the figures use the earlier version's assumption for the painted model (about $0.10 a Pro-class call, $0.04 flash-class) and the Retro Diffusion prices the trial measured ($0.03, $0.06, $0.18 an image). Stage 1 replaces them with measured cost per manifest. Retries at 20 percent. A derived Companion version costs no call.
+**Assumptions.** The figures below are in calls. Retries at 20 percent. A derived Companion version costs no call.
 
 **Per mibi, three life stages**, by where the unique set stops:
 
-| Cut-off (smallest unique size) | Unique | Generic or derived | Calls a stage | Calls a mibi | At $0.10 | With retries |
-| --- | --- | --- | ---: | ---: | ---: | ---: |
-| A. Everything at size | Station main and side; Companion painted at size; token painted at size (pixel-art service, $0.18) | nothing | 4 | 12 | $1.44 | $1.73 |
-| B. Down to the Companion | Station main and side; Companion derived | token | 2 | 6 | $0.60 | $0.72 |
-| C. Station main only | Station main; Companion derived; side from the rig | token, side | 1 | 3 | $0.30 | $0.36 |
-| D. Adult only | adult main; juvenile and elder plain | the rest | — | 1 | $0.10 | $0.12 |
+| Cut-off (smallest unique size) | Unique | Generic or derived | Calls a stage | Calls a mibi |
+| --- | --- | --- | ---: | ---: |
+| A. Everything at size | Station main and side; Companion painted at size; token painted at size (pixel-art service) | nothing | 4 | 12 |
+| B. Down to the Companion | Station main and side; Companion derived | token | 2 | 6 |
+| C. Station main only | Station main; Companion derived; side from the rig | token, side | 1 | 3 |
+| D. Adult only | adult main; juvenile and elder plain | the rest | — | 1 |
 
-**Per kit a year**, at 40 mibis grown: A about $69, B $29, C $14, D $5. Ten kits at B: about $290 a year, before the archive's storage.
+**Per kit a year**, at 40 mibis grown: A about 480 calls, B 240, C 120, D 40.
 
 **Decided 2026-10-08.** *The framing "per mibi grown" is superseded.* The unit of spend is the **jewel**: one earned per research item (a species' field guide completed, or its sealed chapter opened), so at most about one per species per kit on the free path, plus the paid tier's monthly allowance, which the tier's price covers. A hard per-Caddy daily limit (behind a developer toggle) bounds the worst day; a jewel is never bought with in-game currency. The per-jewel figures in the table (one row is one jewel at that cut-off) stand; stage 1 measures them. **Per species, once:** the plate set (type specimen, three stages, two views, two or three candidates each for the art director's pick) about 20 calls, $2–3, plus the token rig (about 6 art hours) and the look plates. Sixteen species: about $45 in calls and 100–130 art hours, against the superseded 1,400.
 
@@ -156,10 +156,9 @@ Two Loikas with the same pool values share a token in the field and differ in th
 
 | | Per unit | Per kit-year | Note |
 | --- | ---: | ---: | --- |
-| Standard painting | about $0.35 a mibi (three-quarter and side, one retry) | about $14 at 40 mibis grown; $21 at 60 | the owner's figure; stage 1 measured $0.096 a call for one view and one stage, so the figure assumes both views in a call or two per juvenile, the later stages measured next |
-| Sittings | about $0.70 a portrait (the full view set, the trial's B) | about $11 if every species yields one | the paid tier's monthly sitting is covered by its price |
-| Species pieces | $2–3 a species | none; once at authoring | about $45 for sixteen |
-| Kit-year | | **about $25–30**, before the archive's storage | ten kits about $250–300 a year |
+| Standard painting | two views a mibi, one retry | about 80 to 120 calls at 40 to 60 mibis | the owner's figure; stage 1 measured one call for one view and one stage, so the figure assumes both views in a call or two per juvenile, the later stages measured next |
+| Sittings | the full view set a portrait (the trial's B) | one a species, if every species yields one | the paid tier's monthly sitting is covered by its price |
+| Species pieces | about 20 calls a species, once at authoring | none; once at authoring | sixteen species |
 
 The daily grow cap behind the developer toggle bounds the worst day; the bud (one at a time, twenty minutes) bounds the ordinary one. The cut-off rows above stand as the record of what was measured; the cut-off itself is no longer a question.
 

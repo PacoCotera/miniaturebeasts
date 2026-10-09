@@ -84,3 +84,5 @@ native file downloads, cross-browser import and accepted phenotype are not confi
 limited experiment. Five genomic branches lack contracts; other consumers are
 missing. Full eleven-layer authoring, accepted bear/cat/cow/firefly range,
 complete-genome sharing, accepted pet masters and animation remain unfinished.
+
+The art-reset link in this folder's snapshots was re-pointed on 2026-10-09 to [art-reset/README.md](https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md) in this repository; the snapshots are otherwise as captured.

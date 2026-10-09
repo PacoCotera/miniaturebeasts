@@ -1,5 +1,5 @@
 {
-  "website": "https://critterlab.basicberry.com/",
+  "website": "a legacy hostname",
   "sourceRevision": "37dc2eeeeed60f9b82003a31dca13986481c858b",
   "activatedAt": "2026-10-03T21:46:03.645733+00:00",
   "nativeRevision": "720c1e6c3f0a3f935e5b7b00591b2f83a0f3b65d",
@@ -7,5 +7,5 @@
   "resetInvoked": false,
   "benchCatalogueAvailable": true,
   "pullRequest": "https://github.com/PacoCotera/critter-lab/pull/101",
-  "build": "Exact clean pushed Git source; existing installed VM runtime; frozen-lockfile install and normal bundle build passed. No tests or native build."
+  "build": "Exact clean pushed Git source; existing build runtime; frozen-lockfile install and normal bundle build passed. No tests or native build."
 }

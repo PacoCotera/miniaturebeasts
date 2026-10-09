@@ -1,7 +1,7 @@
 # Geometry-guided image benchmark
 
 One matched case, `axial-original`, compares Gemini web Images/Pro with a
-GPT-6.1 Sol High-directed built-in image tool. Both received the exact same
+ChatGPT built-in image tool (gpt-image, per the PNG's Content Credentials). Both received the exact same
 [prompt](prompt.txt), [geometry image](geometry-reference.png) and original
 [C18 reference](../../../../design/game-art-proposals/35-vault-composition/18-c-refined.png).
 One call per tool; no corrective retries, other attachments or API migration.
@@ -14,7 +14,7 @@ pigment and equal local cream/slate fin masks. Eleven footprints and ten graph
 edges are exposed. Elliptic footprints, mask orientation and overlay order are
 explicit diagnostic conventions; neutral edges are not modeled tissue.
 
-| Observed gate | Gemini | Sol-directed image tool |
+| Observed gate | Gemini | ChatGPT image tool |
 | --- | --- | --- |
 | Five volumes, six fins, pair groups and open gaps | Broad visual fidelity passes | Independent genetics review passes broad visual fidelity |
 | Pigment roles, no extra anatomy/markings/text | Broad visual fidelity passes | Broad visual fidelity passes |
@@ -32,11 +32,9 @@ ranking from this single case. Provider cost was not exposed and is not measured
 
 Gemini's visible mode is Images/Pro; its raster backend ID is unverified. Full-size
 download did not return an artifact; the visible Copy image control supplied the
-unedited PNG. The built-in tool exposes no model selector or backend ID. Sol is
-the directing model, not a verified raster backend: its official model page lists
-image input and an image-generation tool, rather than native image output
-([model documentation](https://developers.openai.com/api/docs/models/gpt-6.1-sol),
-[image-generation documentation](https://developers.openai.com/api/docs/guides/image-generation)).
+unedited PNG. The built-in tool exposes no model selector or backend ID; the PNG's
+Content Credentials name ChatGPT and gpt-image
+([image-generation documentation](https://developers.openai.com/api/docs/guides/image-generation)).
 See [built-in metadata](builtin-geometry-01.json) and [benchmark manifest](benchmark-manifest.json)
 for exact input/output hashes, provider observations and measured limits.
 
