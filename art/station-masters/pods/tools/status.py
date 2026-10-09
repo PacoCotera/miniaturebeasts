@@ -68,6 +68,8 @@ for n in m:
     elif re.match(r"ring-(collection-|arc-collection-)", n): sign(n, "new", None, "the collection overview ring (radius 80, an 8 px band), painted; awaiting verdict")
     elif re.match(r"trait-S\d\d-", n): sign(n, "new", None, "a trait picture cropped from the standard painting (round 1: S01, S09, S12), hand-placed regions; awaiting verdict")
     elif n in ("mark-asleep-24x16", "mark-breed-28x16"): sign(n, "signed", "pass 38 verdict", "")
+    elif n == "mark-only-72x8": sign(n, "signed", "pass 41 verdict", "the quiet engraved line")
+    elif re.match(r"mark-seed", n): sign(n, "signed", "pass 43 (signed on delivery)", "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35")
     elif re.match(r"mark-(seed|only)", n): sign(n, "new", None, "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict")
     elif n == "ring-kin-56x56": sign(n, "signed", "pass 29 verdict", "the kin ring")
     elif n == "mark-waiting-24": sign(n, "signed", "pass 32 verdict", "the waiting mark: three pod silhouettes")

@@ -2130,29 +2130,29 @@
   "note": "the plates layer (scutes) and its relief"
  },
  "mark-seed-40x52": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
  },
  "mark-seed-40x52-mask": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
  },
  "mark-seed-32x40": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
  },
  "mark-seed-32x40-mask": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
  },
  "mark-only-72x8": {
-  "status": "new",
-  "signed_in": null,
-  "note": "round 2 of the trait kind marks (seed: almond pointed at both ends, tilted, a stem nub, smooth frost; only: a fog engraved line with end ticks); awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 41 verdict",
+  "note": "the quiet engraved line"
  },
  "mark-asleep-24x16": {
   "status": "signed",

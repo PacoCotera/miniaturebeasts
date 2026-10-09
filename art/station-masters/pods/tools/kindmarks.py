@@ -27,12 +27,14 @@ def seed_mask(w, h, S=8):
     L = min(L, (w / 2 - 1.5 - Wd * cs * 0.6) / sn); inside_ax = np.abs(v) <= L
     prof = Wd * np.clip(1 - (np.abs(v) / max(L, 1e-6)) ** 2.0, 0, 1) ** 0.58                                  # pointed at both ends, fullest at the middle
     body = inside_ax & (np.abs(u) <= prof)
-    nub = (np.abs(u) <= 0.9) & (v < -L) & (v >= -L - 3.2)                                                    # the stem nub at the upper end, 1.8 px wide, 3 px long
+    bend = 0.12 * np.clip(-L - v, 0, None) ** 2                                                              # a curved stub: the stem bends away as it leaves the tip
+    nub = (np.abs(u - bend) <= 1.15) & (v < -L + 0.4) & (v >= -L - 3.4)                                       # the stem nub at the upper end, about 2.3 px wide, 3 px long
     red = lambda m: m.reshape(h, S, w, S).mean((1, 3)) >= 0.5
     return red(body), red(nub)
 def seed(w, h):
     m, nub = seed_mask(w, h); inner = erode(erode(m))
-    full = m | nub; key = full & ~erode(full)
+    p_ = np.pad(nub, 1, constant_values=False); ring = (p_[:-2, 1:-1] | p_[2:, 1:-1] | p_[1:-1, :-2] | p_[1:-1, 2:]) & ~nub & ~m     # the nub's own 1 px keyline
+    key = (m & ~erode(m)) | ring; nub = nub & ~(m & ~erode(m))
     im = Image.new("RGBA", (w, h), (0, 0, 0, 0)); em = erode(m)
     yy, xx = np.mgrid[0:h, 0:w].astype(float)
     sheen = np.exp(-(((xx - w * 0.38) ** 2 + (yy - h * 0.34) ** 2) / (2 * (w * 0.22) ** 2)))             # a soft top-left sheen
@@ -42,7 +44,12 @@ def seed(w, h):
             elif nub[y, x]: im.putpixel((x, y), BONE + (255,))
             elif m[y, x] and not inner[y, x]: im.putpixel((x, y), (WHITE if (not em[y - 1, x] or not em[y, x - 1]) and (x + y) < (w + h) / 2 else BONE) + (255,))
             elif inner[y, x]:
-                a = int(round(255 * (0.45 + 0.20 * sheen[y, x]))); im.putpixel((x, y), (PAL["frostS"] if sheen[y, x] < 0.5 else PAL["frost"]) + (a,))      # frostS at 0.45, no noise, a soft sheen toward the top left
+                a = int(round(255 * (0.35 + 0.14 * sheen[y, x]))); im.putpixel((x, y), (PAL["frostS"] if sheen[y, x] < 0.5 else PAL["frost"]) + (a,))      # frostS at 0.45, no noise, a soft sheen toward the top left
+    # one 1 px seam line in fog along the almond's long axis (the husk's seam)
+    th = np.radians(30.0); X = xx + 0.5 - w / 2; Y = yy + 0.5 - h / 2; uu = X * np.cos(th) - Y * np.sin(th)
+    for y in range(h):
+        for x in range(w):
+            if inner[y, x] and abs(uu[y, x]) < 0.5: im.putpixel((x, y), PAL["fog"] + (255,))
     mk = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     for y in range(h):
         for x in range(w):
