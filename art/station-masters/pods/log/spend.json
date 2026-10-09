@@ -1845,5 +1845,141 @@
    "thoughtsTokenCount": 236,
    "totalTokenCount": 2232
   }
+ },
+ {
+  "tag": "board-home-draft try 1",
+  "tool": "gemini gemini-3.1-flash-image",
+  "usd": 0.216604,
+  "mxn": 4.3321,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:15:31Z",
+  "model": "gemini-3.1-flash-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2102,
+   "candidatesTokenCount": 1770,
+   "thoughtsTokenCount": null,
+   "totalTokenCount": 3872
+  }
+ },
+ {
+  "tag": "board-pods-draft try 1",
+  "tool": "gemini gemini-3.1-flash-image",
+  "usd": 0.194026,
+  "mxn": 3.8805,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:15:40Z",
+  "model": "gemini-3.1-flash-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1133,
+   "candidatesTokenCount": 1598,
+   "thoughtsTokenCount": null,
+   "totalTokenCount": 2731
+  }
+ },
+ {
+  "tag": "board-incubator-draft try 1",
+  "tool": "gemini gemini-3.1-flash-image",
+  "usd": 0.203898,
+  "mxn": 4.078,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:15:49Z",
+  "model": "gemini-3.1-flash-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1149,
+   "candidatesTokenCount": 1680,
+   "thoughtsTokenCount": null,
+   "totalTokenCount": 2829
+  }
+ },
+ {
+  "tag": "board-home-pro try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.224676,
+  "mxn": 4.4935,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:16:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2178,
+   "candidatesTokenCount": 1518,
+   "thoughtsTokenCount": 318,
+   "totalTokenCount": 4014
+  }
+ },
+ {
+  "tag": "board-pods-pro try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.220218,
+  "mxn": 4.4044,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:16:41Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1209,
+   "candidatesTokenCount": 1503,
+   "thoughtsTokenCount": 312,
+   "totalTokenCount": 3024
+  }
+ },
+ {
+  "tag": "board-incubator-pro try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22157,
+  "mxn": 4.4314,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:17:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1225,
+   "candidatesTokenCount": 1510,
+   "thoughtsTokenCount": 316,
+   "totalTokenCount": 3051
+  }
+ },
+ {
+  "tag": "board-pods-pro-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.212824,
+  "mxn": 4.2565,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:17:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1292,
+   "candidatesTokenCount": 1471,
+   "thoughtsTokenCount": 281,
+   "totalTokenCount": 3044
+  }
+ },
+ {
+  "tag": "board-home-pro-notext try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.197018,
+  "mxn": 3.9404,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:18:09Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 409,
+   "candidatesTokenCount": 1443,
+   "thoughtsTokenCount": 192,
+   "totalTokenCount": 2044
+  }
  }
 ]
