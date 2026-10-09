@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Home, Rest, Dock and Idle: the navigation map, 1024×600 at 1×. What opens first, what each key does, how ← returns. Status: Proposal (L2.2).</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<text x="16" y="24" font-size="14" fill="#222" font-weight="600">Home: what each key does (the ring starts on the room: no ring drawn)</text>
+<rect x="16.5" y="40.5" width="511" height="299" fill="#fff" stroke="#bbb" stroke-width="1"/>
+<rect x="28.5" y="68.5" width="319" height="243" fill="#fff4e3" stroke="#b9772f" stroke-width="1"/>
+<rect x="52.5" y="200.5" width="71" height="75" fill="#ffeedb" stroke="#c45f12" stroke-width="1"/>
+<rect x="140.5" y="172.5" width="71" height="75" fill="#ffeedb" stroke="#c45f12" stroke-width="1"/>
+<rect x="216.5" y="236.5" width="51" height="55" fill="#ffeedb" stroke="#c45f12" stroke-width="1"/>
+<rect x="272.5" y="220.5" width="71" height="75" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="360.5" y="64.5" width="159" height="59" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="364" y="79" font-size="10" fill="#222">Bay</text>
+<rect x="360.5" y="128.5" width="159" height="59" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="364" y="143" font-size="10" fill="#222">Rack</text>
+<rect x="360.5" y="192.5" width="159" height="59" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="364" y="207" font-size="10" fill="#222">Incubator</text>
+<rect x="360.5" y="256.5" width="159" height="59" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="364" y="271" font-size="10" fill="#222">Probe</text>
+<rect x="324.5" y="308.5" width="23" height="11" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
+<text x="316" y="332" font-size="10" fill="#222" text-anchor="end">Rest</text>
+<circle cx="272" cy="190" r="5" fill="#2b6cb0"/>
+<text x="272" y="182" font-size="10" fill="#2b6cb0" text-anchor="middle">room</text>
+<line x1="275" y1="188" x2="358" y2="95" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="311" y="135" font-size="12" fill="#2b6cb0">▶</text>
+<line x1="269" y1="192" x2="216" y2="210" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="236" y="190" font-size="12" fill="#2b6cb0">◀</text>
+<line x1="506" y1="114" x2="506" y2="132" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
+<line x1="506" y1="178" x2="506" y2="196" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
+<line x1="506" y1="242" x2="506" y2="260" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
+<line x1="366" y1="310" x2="350" y2="314" stroke="#c45f12" stroke-width="1.5" marker-end="url(#ao)"/>
+<text x="516" y="275" font-size="11" fill="#c45f12" text-anchor="end">▲▼</text>
+<line x1="360" y1="160" x2="216" y2="210" stroke="#6b6880" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<text x="296" y="175" font-size="9" fill="#6b6880">◀ row</text>
+<line x1="176" y1="172" x2="359" y2="158" stroke="#6b6880" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<text x="256" y="156" font-size="9" fill="#6b6880">▶ row</text>
+<text x="16" y="360" font-size="10" fill="#555">Mini Home at half scale. Blue: from the room. Orange: ▲▼ walk the column</text>
+<text x="16" y="373" font-size="10" fill="#555">Bay, Rack, Incubator, Probe, Rest; the ends stop. Grey: ◀ ▶ cross to the</text>
+<text x="16" y="386" font-size="10" fill="#555">row nearest the ring. Among residents ▲▼ go to the nearest one that way;</text>
+<text x="16" y="399" font-size="10" fill="#555">the sleeping mibi on the bed (dashed) is one. ◀ on a resident: nothing.</text>
+<text x="560" y="48" font-size="13" fill="#222" font-weight="700">Keys on Home</text>
+<text x="560" y="68" font-size="11" fill="#222" font-weight="600">opens on</text>
+<text x="656" y="68" font-size="11" fill="#222">the room (Home key, boot, wake from a Home Rest)</text>
+<text x="560" y="83" font-size="11" fill="#222" font-weight="600">◀ ▶ ▲ ▼</text>
+<text x="656" y="83" font-size="11" fill="#222">move the ring (graph left); never leave Home</text>
+<text x="560" y="98" font-size="11" fill="#222" font-weight="600">✓ room</text>
+<text x="656" y="98" font-size="11" fill="#222">what needs you: the notice's act, or no ✓ cap</text>
+<text x="560" y="113" font-size="11" fill="#222" font-weight="600">✓ resident</text>
+<text x="656" y="113" font-size="11" fill="#222">Habitat on that mibi (← Home)</text>
+<text x="560" y="128" font-size="11" fill="#222" font-weight="600">✓ Bay</text>
+<text x="656" y="128" font-size="11" fill="#222">Open the bay (docked with crates), else no cap</text>
+<text x="560" y="143" font-size="11" fill="#222" font-weight="600">✓ Rack</text>
+<text x="656" y="143" font-size="11" fill="#222">Pods, the collection (← Home)</text>
+<text x="560" y="158" font-size="11" fill="#222" font-weight="600">✓ Incub.</text>
+<text x="656" y="158" font-size="11" fill="#222">the Incubator (← Home)</text>
+<text x="560" y="173" font-size="11" fill="#222" font-weight="600">✓ Probe</text>
+<text x="656" y="173" font-size="11" fill="#222">the Probe bench (← Home)</text>
+<text x="560" y="188" font-size="11" fill="#222" font-weight="600">✓ Rest</text>
+<text x="656" y="188" font-size="11" fill="#222">Idle</text>
+<text x="560" y="203" font-size="11" fill="#222" font-weight="600">←</text>
+<text x="656" y="203" font-size="11" fill="#222">nothing: Home is the top, no ← cap, no plate</text>
+<text x="560" y="218" font-size="11" fill="#222" font-weight="600">Home key</text>
+<text x="656" y="218" font-size="11" fill="#222">the ring back on the room</text>
+<text x="560" y="233" font-size="11" fill="#222" font-weight="600">← into Home</text>
+<text x="656" y="233" font-size="11" fill="#222">ring on what leads back: Rack, Incubator, Probe,</text>
+<text x="560" y="248" font-size="11" fill="#222" font-weight="600"></text>
+<text x="656" y="248" font-size="11" fill="#222">the resident; from the Library, the room</text>
+<text x="560" y="263" font-size="11" fill="#222" font-weight="600">rooms</text>
+<text x="656" y="263" font-size="11" fill="#222">Research, Library, Habitat open their tops</text>
+<text x="560" y="288" font-size="13" fill="#222" font-weight="700">Arrival, report card, Rest, Idle, Dock</text>
+<text x="560" y="306" font-size="11" fill="#222" font-weight="600">arrival</text>
+<text x="656" y="306" font-size="11" fill="#222">every press consumed; ring on the room</text>
+<text x="560" y="321" font-size="11" fill="#222" font-weight="600">report</text>
+<text x="656" y="321" font-size="11" fill="#222">any press closes it and acts; ← only closes</text>
+<text x="560" y="336" font-size="11" fill="#222" font-weight="600">rest</text>
+<text x="656" y="336" font-size="11" fill="#222">knob settles, dither to Idle; held 380 ms</text>
+<text x="560" y="351" font-size="11" fill="#222" font-weight="600">Idle</text>
+<text x="656" y="351" font-size="11" fill="#222">first press: wake only, back to the screen</text>
+<text x="560" y="366" font-size="11" fill="#222" font-weight="600"></text>
+<text x="656" y="366" font-size="11" fill="#222">under Idle, its focus as it was</text>
+<text x="560" y="381" font-size="11" fill="#222" font-weight="600">Dock</text>
+<text x="656" y="381" font-size="11" fill="#222">Caddy key, never a Station key. Idle: wake,</text>
+<text x="560" y="396" font-size="11" fill="#222" font-weight="600"></text>
+<text x="656" y="396" font-size="11" fill="#222">dock, land on Home, crates slide in. Elsewhere:</text>
+<text x="560" y="411" font-size="11" fill="#222" font-weight="600"></text>
+<text x="656" y="411" font-size="11" fill="#222">the screen stays; the crates wait in the bay</text>
+<text x="16" y="452" font-size="13" fill="#222" font-weight="700">How the states follow each other</text>
+<rect x="16.5" y="464.5" width="135" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="84" y="484" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Home, away</text>
+<text x="84" y="500" font-size="9" fill="#555" text-anchor="middle">01e · bay shut</text>
+<rect x="200.5" y="464.5" width="135" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="268" y="484" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Home, docked</text>
+<text x="268" y="500" font-size="9" fill="#555" text-anchor="middle">01b · crates slide in</text>
+<rect x="384.5" y="464.5" width="135" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="452" y="484" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Arrival</text>
+<text x="452" y="500" font-size="9" fill="#555" text-anchor="middle">01c · input held</text>
+<rect x="568.5" y="464.5" width="135" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="636" y="484" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Report card</text>
+<text x="636" y="500" font-size="9" fill="#555" text-anchor="middle">01d · next press</text>
+<rect x="752.5" y="464.5" width="119" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="812" y="484" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Home</text>
+<text x="812" y="500" font-size="9" fill="#555" text-anchor="middle">01 · ring as moved</text>
+<rect x="904.5" y="464.5" width="103" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="956" y="484" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Idle</text>
+<text x="956" y="500" font-size="9" fill="#555" text-anchor="middle">10 · wake only</text>
+<line x1="152" y1="488" x2="198" y2="488" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="175" y="528" font-size="9" fill="#2b6cb0" text-anchor="middle">Dock</text>
+<line x1="336" y1="488" x2="382" y2="488" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="359" y="528" font-size="9" fill="#2b6cb0" text-anchor="middle">✓ Open the bay</text>
+<line x1="520" y1="488" x2="566" y2="488" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="543" y="528" font-size="9" fill="#2b6cb0" text-anchor="middle">last crate</text>
+<line x1="704" y1="488" x2="750" y2="488" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="727" y="528" font-size="9" fill="#2b6cb0" text-anchor="middle">any press</text>
+<line x1="872" y1="488" x2="902" y2="488" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="887" y="528" font-size="9" fill="#2b6cb0" text-anchor="middle">✓ Rest</text>
+<text x="16" y="556" font-size="10" fill="#555">Idle comes from any screen by the idle timer; wake returns to that screen, its focus as it was.</text>
+<text x="16" y="570" font-size="10" fill="#555">Dock from Idle: wake, dock, Home, the crates slide in (docked). Dock again while docked lifts the Companion (away).</text>
+<text x="16" y="584" font-size="10" fill="#555">← from a child of Home: Home, the ring on what leads there (Rack, Incubator, Probe, the resident; Library: the room).</text>
+</svg>

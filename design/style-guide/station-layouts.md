@@ -512,7 +512,14 @@ Concept plate: `art/concept-station/round3/A-r3-a1-1024x600.png`. Wireframe: [01
 
 <img src="station-layouts/01-home.svg" width="720" alt="Home wireframe">
 
-*Home. Wireframe, layout only, measured.*
+*Home with the ring on a resident. Wireframe, layout only, measured, 1×. Status: Decided layout (2026-10-08), with the sleeping mibi and the Shield plates per tier.*
+
+**L2.2 spec** (UI designer, 2026-10-09 12:12, America/Mexico_City; **Proposal** until the owner checks the states and navigation). For the LVGL face ([lvgl-switch.md](../proposals/lvgl-switch.md) §3 to §4, L2.2): every drawn region names its word or composition, Home's three states (home, arrival, report), the rest knob, Home's focus as `order` and `nearestIn` data, [Dock and arrival](#dock-and-arrival) and [Idle](#idle). The numbers live in `prototypes/ui/specs/station/home.json` and, for Idle, `frame.json` `idle`. Each wireframe below has a 1× PNG beside its SVG for the owner's check.
+
+<table><tr>
+<td valign="top"><img src="station-layouts/01e-home-rest.svg" width="480" alt="Home, Companion away, ring on the rest knob"><br><em>01e. Home with the Companion away and the ring on the rest knob: the Bay shut, the cradle empty, the Companion mark on the bed, `✓ Rest`. 1×, measured. Status: Proposal.</em></td>
+<td valign="top"><img src="station-layouts/01f-home-nav.svg" width="480" alt="Home's navigation map"><br><em>01f. Home, Rest, Dock and Idle: what opens first, what each key does, how ← returns, and how the states follow each other. 1×. Status: Proposal.</em></td>
+</tr></table>
 
 ### 1. Purpose
 
@@ -593,12 +600,26 @@ The vivarium's glass fills the left (16 to 672) in a thin bezel. The four module
 | Module: Incubator | 688, 304, 320, 120 | Lamp at (984, 316); dome 704, 328, 80, 80 with the bud's glow; leaves 800, 344, 192, 40 (8×12 each on a 12 px pitch, two rows of 16) |
 | Module: Probe | 688, 432, 320, 120 | Lamp at (984, 444); Probe in its cradle 704, 456, 128, 80; Shield plates 16×32 on a 24 px pitch at (848 + 24i, 480): three on a tier-1 Probe (848 to 912), four on tier 2 (848 to 936), each whole or gone, never a ghost for a plate the tier does not have; standing like the Companion's plates, centred on the cradle's middle (y 496), 16 px clear of the sitting slot at four (*decided by the UI designer, 2026-10-08, for the builder's open question*: was 3 × 28×12 at (848 + 36i, 496); four of those ran 36 px into the sitting slot); sitting slot 952, 456, 40, 80 (an empty gilt frame when a sitting is held) |
 
-**Arrival** (the Dock and arrival state of Home):
+**Regions and their words** (*L2.2, UI designer, 2026-10-09; Proposal*). Every drawn region names its word from the closed vocabulary (`component`) or the composition it is built as (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **home** (at rest, docked or away), **arrival** (from `✓ Open the bay` to the last crate) and **report** (from the arrival's end to the next press). A region with "only in" exists in those states alone.
 
-- The ribbon sits at 40, 72, 608, 40 inside the glass top, in 20 px.
-- The report card sits at 64, 120, 560 wide and at most 320 tall, over the vivarium until the next press. Its rows are below.
-- The Bay module lifts 2 px, the chrome lift, over 200 ms as its door opens, and stays lifted while its crates open; it settles when the card shows (*decided by the UI designer, 2026-10-08: was 4 px. One lift for chrome everywhere; at 4 the Bay's top would sit at y 44, 4 px under the top bar's rule, inside the 8 px gap rule, and a ring on it would meet the rule. The arrival is carried by the door, the cool beam and the crates, not by a bigger lift. Station screens' "grows a little" is read as this lift: nothing is scaled*).
-- The rest of the layout stays where it is.
+| Region (`home.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `bezel` | 16, 48, 656, 504 | living window, part frame | | — |
+| `glass` | 24, 56, 640, 488 | living window, part inside | | — |
+| `resident` | 144×152 or 104×112, where the face steps it inside the ground band (24, 300, 640, 228) | living window, part residents (clipped to the glass) | | walking; facing the column during the arrival; focused (4 px lift, ellipse) |
+| `bed` | 520, 472, 128, 56 (sleeper 512, 360, 144, 152 or 532, 400, 104, 112) | build `withYouBed` | | docked: the sleeping mibi; away: the Companion mark 16×24 at (576, 488); none: the nest alone |
+| `knob` | 624, 544, 32, 8 | build `restKnob` | | rest; focused: lifted to (624, 542), ring (616, 534, 48, 24); pressed: the rest event |
+| `bay` | 688, 48, 320, 120 | panel, build `module` | | away: door shut, lamp off; docked: door open, crates at (712 + 96i, 92, 80, 56), lamp amber while crates wait; arrival: lifted 2 px, beam (712 + 96i, 84, 80, 72) behind the opening crate; report: settled, empty |
+| `rack` | 688, 176, 320, 120 | panel, build `module` | | a well shows empty until its travelling pod lands |
+| `incubator` | 688, 304, 320, 120 | panel, build `module` | | — |
+| `probe` | 688, 432, 320, 120 | panel, build `module` | | docked: the Probe and its plates; away: the cradle empty, no plates, lamp off |
+| `travel` | 688, 48, 320, 248 | panel, build `module`, part travel (over the column) | arrival | pods 32×40 from (crate.x + 24, 100) to (716 + 48i, 216) |
+| `ribbon` | 40, 72, 608, 40 | ribbon | arrival | one crate's words at a time |
+| `report` | 64, 120, 560, 312 at most 320 | panel, build `reportCard` | report | its rows by count (below) |
+
+The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's.
+
+**Arrival** (the Dock and arrival state of Home) is specified in its own section, [Dock and arrival](#dock-and-arrival): the ribbon at 40, 72, 608, 40 inside the glass top, in 20 px; the report card at 64, 120, 560 wide and at most 320 tall, over the vivarium until the next press; the Bay module lifted 2 px, the chrome lift, over 200 ms as its door opens, staying lifted while its crates open and settling when the card shows (*decided by the UI designer, 2026-10-08: was 4 px. One lift for chrome everywhere; at 4 the Bay's top would sit at y 44, 4 px under the top bar's rule, inside the 8 px gap rule, and a ring on it would meet the rule. The arrival is carried by the door, the cool beam and the crates, not by a bigger lift. Station screens' "grows a little" is read as this lift: nothing is scaled*). The rest of the layout stays where it is.
 
 **The report card** (decided by the UI designer, 2026-10-08; the layout gave only its box). What came home, in one look, for the player who looked away during the crates, and the one thing the arrival does not show: what the world did meanwhile. It lists, in this order, the crates (what each brought and how far the land is explored), what was gathered, the Probe's mend, and the world's lines. Digits appear only beside a material icon (an amount gathered or a price: the frame's exception). Pods are pictured; everything else is words. No expedition numbers and no turn number on the card; the turn is the top bar's.
 
@@ -619,15 +640,46 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was the nearest drawn thing that way) |
+| Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was the nearest drawn thing that way). As data, [Home's focus graph](#homes-focus-as-data) below |
 | ✓ on the room (no focus) | Does what needs you: `✓ Open the bay · 2 crates`, `✓ Look at the new pod`, `✓ Open the incubator`, `✓ Meet Moss`. With nothing needed there is no ✓ cap |
 | ✓ on a resident | `✓ Look at Bean` opens Habitat on Bean. The sleeping mibi on the bed is one too |
 | ✓ on Bay | `✓ Open the bay · 2 crates` when docked with crates; otherwise no ✓ cap, and the subject says why ("closed while the Companion is away") |
 | ✓ on Rack, Incubator or Probe | Opens Pods, the Incubator or the Probe bench |
-| ✓ on the rest knob | `✓ Rest` starts idle; any press wakes |
+| ✓ on the rest knob | `✓ Rest` starts Idle ([the rest knob](#the-rest-knob) below); the first press on Idle only wakes |
 | ← | Nothing, wherever the ring is: Home is the top, so there is no ← cap; the Home key puts the ring back on the room (*corrected by the UI designer, 2026-10-09, the owner's decision on the navigation model*: was "focus back to the room"). On the room, likewise nothing: no message plate, and the bottom line shows no `← where` (*decided by the UI designer, 2026-10-08: was "a message plate says Home is the top view". Both places a plate can take on Home, its bottom edge at y 550 or its top at y 112, are over the living window, which carries no words; and the top bar already names Home. A ← with nowhere to go is not a mistake to explain*) |
 | Any press while the report card shows | Closes the card and does what it does (above): ✓ follows the bottom line, the pad moves the ring, ← only closes it |
-| During arrival | Presses are consumed; focus stays on the room |
+| During arrival | Presses are consumed; focus stays on the room ([Dock and arrival](#dock-and-arrival)) |
+| Dock (the Caddy's key) | Never a Station key and never reaches the face. On Home the crates slide into the bay; elsewhere the screen stays and the crates wait in the bay; from Idle it wakes, docks and lands on Home ([Dock and arrival](#dock-and-arrival)) |
+| ← on a child of Home (*L2.2, Proposal*) | Home opens with the ring on what leads back to that child: Pods → Rack, the Incubator → Incubator, the Probe bench → Probe, Habitat → that resident if it is at home (else the room), the Library → the room. A room key or a jump into Home lands on the room |
+
+### Home's focus as data
+
+*L2.2, UI designer, 2026-10-09; Proposal.* `home.json` `focus` replaces `nav.mjs` `homeMove` with the two graph primitives of [lvgl-switch.md §2.6](../proposals/lvgl-switch.md#26-the-focus-graph). Targets: `resident.<mibi id>` in group `resident` (the sleeping mibi on the bed is one, without the lift), and `bay`, `rack`, `incubator`, `probe`, `knob` in group `column` (`knob` is frame.json `navigation.homePad`'s "rest"). The room is the ring on nothing: no ring drawn, its point roomAt's centre (512, 300).
+
+| From | ◀ | ▶ | ▲ | ▼ |
+| --- | --- | --- | --- | --- |
+| The room | `nearestIn: resident` | `bay` | none | none |
+| `column` (`order: [bay, rack, incubator, probe, knob]`) | `nearestIn: resident` | none | the previous in the order; the end stops | the next in the order; the end stops |
+| `resident` | none | `nearestIn: column` | `nearestIn: resident, ahead` | `nearestIn: resident, ahead` |
+
+- **`order`** steps through the list as written, skipping ids that are not targets now; never a wrap.
+- **`nearestIn: g`** lands on the target of group g whose box centre is nearest the ring's row: |dy| × 4 + |dx| × 0.01, centre to centre. An empty group leaves the ring where it is.
+- **`ahead`** (the residents' ▲ ▼) takes only the group's targets more than 6 px ahead in the key's direction, nearest by along + 2.2 × across, as `homeMove` does. It is a parameter of `nearestIn` that §2.6 does not name yet ([open question 1](#open-questions-for-l22)).
+- **The Home key** on Home sets the focus to the room (`roomKey`). **Holds:** while the arrival or the rest plays, the face moves no focus and sends no intent. **The report card:** any key closes it and still does what it does.
+- **Rings:** a resident's ellipse under its feet (box width + 16 by 24, starting 8 px above the feet); a module's round ring 4 px outside its rectangle, with the 2 px chrome lift; the knob's ring is its 48×24 target, below.
+- **Vectors for the focus tests** (`nav.test.mjs`'s Home walk becomes these): room ▶ bay; bay ▲ bay; bay ▼ rack; probe ▼ knob; knob ▼ knob; knob ▶ knob; room ▲ room; room ◀ the resident nearest (512, 300) by row, or the room when no resident is home.
+
+### The rest knob
+
+*L2.2, UI designer, 2026-10-09; Proposal.* **What it is for:** the deliberate way to rest the screen (Home §2). **What it shows:** a chrome knob on the bezel's bottom rail and nothing else; no word on the stage. Its states, in `home.json` `regions.knob.states`:
+
+| State | Knob | Ring | Bottom line |
+| --- | --- | --- | --- |
+| Rest | 624, 544, 32, 8 | none | as the focus elsewhere says |
+| Focused (▼ from Probe, or ▶ from a resident whose row is nearest it) | lifted 2 px over 200 ms: 624, 542, 32, 8 | round, on its 48×24 target, riding the lift: 616, 534, 48, 24 | `✓ Rest` \| "the vivarium plays alone" \| the notice as on the room; no ← |
+| Pressed (✓) | settles back to 624, 544 over 200 ms; the ring goes | none | — |
+
+Then the screen transition (180 ms, the 16-level Bayer dither) takes the screen to [Idle](#idle). Input is held for the 380 ms. The ring sits on the 48×24 target itself, 8 px outside the knob, rather than 4 px outside the target: at 4 px outside its bottom would reach y 564, over the bottom line's rule at 562; lifted, it ends at 558. The knob cannot be reached during the arrival.
 
 ### Placeholders on Home
 
@@ -655,6 +707,197 @@ All stand-ins until the Home and bench masters.
 - The vivarium goes from (14, 50, 636×500) to the bezel and glass above.
 - The bench goes from free-placed objects at (664…1010) to four modules of 320×120.
 - The status strip and the lamp on its stand go. Residents go from 64 and 96 px to 104 and 144 px boxes.
+- The rest knob replaces the lamp on its stand as Home's way to Idle; the build's "rest" word under the lamp goes (the knob carries no word; `✓ Rest` is the bottom line's).
+- Home's pad moves from `nav.mjs` `homeMove` to `home.json` `focus` (L2.2); the build's ids `tray`, `inc`, `cradle`, `lamp` become `rack`, `incubator`, `probe`, `knob`.
+
+---
+
+## Dock and arrival
+
+A state of Home, not a screen of its own: the same layout, with the bay leading. Wireframes: [01b-home-docked.svg](station-layouts/01b-home-docked.svg), [01c-home-arrival.svg](station-layouts/01c-home-arrival.svg), [01d-home-report.svg](station-layouts/01d-home-report.svg), each with its 1× PNG.
+
+**L2.2 spec** (UI designer, 2026-10-09 12:13, America/Mexico_City; **Proposal** until the owner checks the states and navigation). The numbers live in `home.json` (`regions.bay`, `travel`, `ribbon`, `report`, `events.crateIn`, `events.arrival`).
+
+<table><tr>
+<td valign="top"><img src="station-layouts/01b-home-docked.svg" width="480" alt="Home, docked with two crates"><br><em>01b. Docked: two sealed crates slid into the open bay, the Bay's lamp amber, the ring on the room, `✓ Open the bay`. 1×, measured. Status: Proposal.</em></td>
+<td valign="top"><img src="station-layouts/01c-home-arrival.svg" width="480" alt="Home, the arrival"><br><em>01c. The arrival, the first crate opening: the Bay lifted 2 px, the beam behind the crate, a pod travelling to its well, the ribbon in the glass, the residents facing the bay, input held. 1×, measured. Status: Proposal.</em></td>
+</tr><tr>
+<td valign="top"><img src="station-layouts/01d-home-report.svg" width="480" alt="Home, the report card"><br><em>01d. The report card at its fullest (three crates, the Probe row, three world lines), 64, 120, 560×312, until the next press. 1×, measured. Status: Proposal.</em></td>
+<td></td>
+</tr></table>
+
+### 1. Purpose
+
+Cargo arrives when the Companion docks and the player opens the bay (Station screens, Dock and arrival). **Reads first:** how many crates are in the bay, then the ribbon. Docking alone shows crates and accepts nothing; opening the bay is a press.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **Crates in the Bay**, one per consignment, at most three | How much came home, before anything opens |
+| The Bay's amber lamp and the notice | The bay is what needs you; the room's ✓ opens it |
+| **The beam and the seal** on the opening crate | One crate's arrival reads as one event |
+| **Pods travelling** from the crate to the rack's wells | Where the new pods went |
+| **The ribbon** in the glass | Which crate this is, and how far the land is explored, in words |
+| The top bar's counters and turn, ticking | What was gathered, and that the world turned |
+| The Probe's plates seating | The free mend, shown on the Probe module |
+| The residents turning toward the bay | The vivarium notices; nothing of the field is drawn |
+| **The report card** | What came home, in one look, and what the world did meanwhile |
+
+### 3. Placement
+
+1. **The crates in the Bay** (top right, the first module of the column).
+2. **The ribbon**, inside the glass top, the only words on the stage during the arrival.
+3. **The travelling pods**, from the bay down into the rack.
+4. The counters and turn in the top bar; the plates on the Probe.
+5. **The report card** last, over the vivarium's upper half, clear of the column.
+
+### 4. Art direction
+
+The overview's hardware: Home §4's colour roles, unchanged. The beam is the arrival's only light change (`tealD`, the Pods beam); crates `deepTeal` lit `teal` with an `orange` seal tag; the ribbon the one ribbon look (`tealD`, `aqua` rim, `bone` words), cool on the warm field; the card an instrument `panel`. Nothing of the field is drawn.
+
+### 5. Composition
+
+| State | What is drawn, measured |
+| --- | --- |
+| **Away** (01e) | The Bay's door shut (`metal` shutter, slats on an 8 px pitch) 704, 84, 288, 72; its lamp off; the Probe's cradle empty with no plates; the bed's Companion mark |
+| **Docked** (01b) | The door open (`ground` inside). One sealed crate per consignment at (712 + 96i, 92, 80, 56), i = 0 to 2, left to right in the order they will open. The Bay's lamp amber while crates wait. The Probe in its cradle; the sleeping mibi on the bed |
+| **Crates sliding in** | Each crate slides down from 64 px above its place, (712 + 96i, 28), to (712 + 96i, 92), clipped by the door, in whole pixels, eased out, 500 ms each, 250 ms apart. Input is not held. It plays when the Companion docks while Home shows, or when Dock lands on Home from Idle. Docked on another screen, the crates are simply there when Home next shows |
+| **Arrival** (01c) | The Bay lifted 2 px to (688, 46) for the whole arrival. Behind the opening crate, the beam (712 + 96i, 84, 80, 72). The crate goes sealed → opening (the tag gone, the lid lifting) → open (empty). Pods 32×40 travel over the column from (crate.x + 24, 100) to their well's pod place (716 + 48i, 216), inside `travel` (688, 48, 320, 248); a well shows empty until its pod lands. The ribbon (40, 72, 608, 40), 20 px, centred, one line. The residents stop and face the column. The bottom line has no ✓ cap and no notice; its context reads "the bay is opening" |
+| **Report** (01d) | The ribbon and crates gone, the Bay settled, the card at (64, 120, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0), at most 312; its rows as in Home §5. The residents walk again |
+
+**One crate's timeline** (3000 ms, from the crate's start; `home.json` `events.arrival`):
+
+| ms | What plays |
+| --- | --- |
+| 0 | The beam shows behind the crate; the seal breaks and the lid lifts over 300 ms (the first crate also lifts the Bay, 2 px over 200 ms) |
+| 300 | The ribbon shows this crate's words: it appears with the first crate and changes words with the next, a cut, no fade |
+| 600 | The counters tick this crate's materials (the top bar's own tick and flash). On the first crate only, each mended Shield plate seats, gone → whole, 300 ms apart, left to right |
+| 1200 | The crate's pods travel to their wells, in well order, 150 ms apart, 600 ms each, eased in and out |
+| 1650 | The world turn jumps to the crate's turn (the top bar's tick) |
+| 2850 | The beam goes; the crate stays open and empty |
+| 3000 | The next crate starts. After the last: the ribbon and crates go, the Bay settles (2 px, 200 ms), the card shows |
+
+**The hold:** input is held for crates × 3000 + 200 ms. With reduced motion every step jumps to its end and the hold is the same 200 ms after the last crate's end state.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Dock (the Caddy's key) | A world event, never a Station key, never sent to the face. On Home: the crates slide in, the top bar's Companion returns (glyph filled, lamp `mint`, 2 px lift for 200 ms), the Bay's lamp turns amber, the notice names the crates. No message plate (a plate on Home would sit over the living window; the top bar and the bay already say it). Elsewhere: the screen stays; the top bar changes. From Idle: wake, dock, land on Home with the ring on the room, then the crates slide in |
+| Dock again while docked | Lifts the Companion: the door shuts (a cut), the bed shows the Companion mark, the top bar's Companion leaves. From Idle it wakes and lifts, and the screen under Idle shows |
+| ✓ on the room, or on the Bay, with crates | `✓ Open the bay · 2 crates`: the arrival plays (state arrival) |
+| Any key during the arrival | Consumed. The ring stays on the room and is not drawn |
+| The next press after the arrival | Closes the report card and does what it does: ✓ follows the bottom line (`✓ Look at the new pods`), the pad moves the ring, ← only closes it |
+
+### Placeholders in the arrival
+
+| Thing | Pixel size |
+| --- | --- |
+| Crate, sealed / opening / open | 80×56, one slice each |
+| Seal tag | inside the crate's slice |
+| Beam | 80×72, flat `tealD` |
+| Travelling pod | 32×40, the signed well pod |
+| Ribbon | 608×40, the ribbon word |
+
+### Changes from the current build
+
+- The ribbon loses its digits: "First crate home · half the land explored" (was "Expedition 4 home · 2 pods · explored 9 of 21"), the report card's crate wording (*decided by the UI designer, 2026-10-08, carried over*).
+- The pods travel in a straight eased line inside `travel` (the build arcs them 30 px and starts at 40% of the crate); the opened crate stays drawn open (the build writes "opened" in its place).
+- The build's message plate on Dock goes.
+
+---
+
+## Idle
+
+The Station at rest. A state of the frame (`props.idle`), not a screen: the screen under it keeps its state and focus. Wireframe: [10-idle.svg](station-layouts/10-idle.svg) and its 1× PNG.
+
+**L2.2 spec** (UI designer, 2026-10-09 12:13, America/Mexico_City; **Proposal** until the owner checks the states and navigation). The numbers live in `prototypes/ui/specs/station/frame.json` `idle`.
+
+<img src="station-layouts/10-idle.svg" width="720" alt="Idle wireframe">
+
+*10. Idle: the vivarium full screen, the residents and the with-you bed, and one line on a 32 px strip at the foot; no frame, no ring. 1×, measured. Status: Proposal.*
+
+### 1. Purpose
+
+The Station at rest, always on (Station screens, Idle). **Reads first:** the residents. The player at a distance sees the pets at ease and nothing asking for them.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The vivarium**, edge to edge | The pets, the reason the device is on |
+| **The residents**, at their full size | Alive, keeping their routines; never enlarged |
+| The with-you bed | Where the mibi with you is, as on Home |
+| **One line** on a thin cool strip | The one state worth knowing at a glance |
+
+**Not drawn:** the top bar, the bottom line, the modules, the message plate, the focus ring, any word inside the window.
+
+### 3. Placement
+
+1. **The residents**, on the ground band of the lower half.
+2. The bed at the right, where Home's bed is in the glass.
+3. **The line**, last, centred at the foot.
+
+### 4. Art direction
+
+The vivarium only: the warm field fills the screen, its light following the time of day (day, dusk, night, a master per light); at night a soft cool moonlight and the residents' own glows. The strip is chrome, cool and quiet: `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Nothing blinks; the waiting lamp may still show on a resident, steady. Until the master, the placeholder is Home's plate at Idle's size: back `forest`, ground band `clay` with a `sand` top row, the foot `soil`.
+
+### 5. Composition
+
+| Region (`frame.json` `idle`) | Rectangle | Word or build | Notes |
+| --- | --- | --- | --- |
+| `vivarium` | 0, 0, 1024, 568 | living window, part inside, no frame | Ground band 0, 320, 1024, 232; the foot 0, 552, 1024, 16 |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, part residents | Walking inside 16, 320, 992, 232 (feet in the band, 16 px from each screen edge); no lift, no ring; the waiting lamp 12×12 at the box's top right |
+| `bed` | 872, 496, 128, 56 | build `withYouBed` | The sleeping mibi bottom-centred on (936, 536): adult 864, 384, 144, 152; juvenile 884, 424, 104, 112. Away: the Companion mark 16×24 at (928, 512) |
+| `strip` | 0, 568, 1024, 32 | panel, build `idleLine` | 1 px `void` rule on its top edge |
+| `line` | 16, 568, 992, 32 | build `idleLine` | 16 px regular, `mist`, centred on x 512 and on y 584; one line, six words or fewer, no digits |
+
+**The line** is one sentence, the copywriter's slot, never dot-joined parts (the frame's rule): "Dot is out exploring", "two crates wait in the bay", "a bud is growing", "the bud is ready". Which one shows when several hold is [open question 6](#open-questions-for-l22).
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| ✓ on the rest knob (Home) | The knob settles (200 ms), then the screen transition, 180 ms, the 16-level Bayer dither, to Idle; held 380 ms |
+| The idle timer (any screen) | The same transition to Idle, never during a hold, an arrival or a report card ([open question 5](#open-questions-for-l22)) |
+| Any key on Idle (the first press) | Sends `wake` and nothing else: the transition back (180 ms, held), to the screen under Idle with its focus as it was. Nothing opens, nothing moves, nothing is spent, and waking never rewards |
+| Dock (the Caddy's key) | Wakes, docks and lands on Home with the ring on the room; the crates then slide in ([Dock and arrival](#dock-and-arrival)) |
+| Dock while docked | Wakes and lifts the Companion; the screen under Idle shows |
+
+### Placeholders on Idle
+
+| Thing | Pixel size |
+| --- | --- |
+| Vivarium | 1024×568, a master per light (day, dusk, night) |
+| Residents | 144×152 adult, 104×112 juvenile |
+| With-you bed | 128×56 |
+| Sleeping mibi | the resident's box of its stage |
+| Companion mark | 16×24 |
+
+### Changes from the current build
+
+- The build draws the vivarium at 1024×562 under a 38 px `void` strip with dot-joined words ("Companion docked · with Dot · a bud is growing"); here 1024×568, a 32 px `ground` strip and one sentence.
+- The build writes "Dot is out with you" in 28 px inside the window; no words in a living window.
+- The build's bed at (804, 486) moves to (872, 496).
+- On the face, Idle is `props.idle`: today `render()` takes the face path before it checks `UI.idle`, so the face keeps drawing the last screen (lvgl-switch.md §1.3).
+
+---
+
+## Open questions for L2.2
+
+Numbered, each with the UI designer's recommendation (2026-10-09). The owner, or the discipline named, decides.
+
+1. **`nearestIn` needs a direction filter (architect).** The residents' ▲ ▼ go to the nearest resident *that way* (homeMove: more than 6 px ahead, along + 2.2 × across); §2.6 defines `nearestIn` as row-nearest only. *Recommended:* add `ahead: true` as a parameter of `nearestIn` in §2.6 and the C focus port, as `home.json` writes it. No new primitive.
+2. **◀ on a resident does nothing (owner, navigation).** Two residents at the same height cannot reach each other by ▲ ▼ (neither is 6 px ahead), so a resident can be stranded until it walks. *Recommended:* ◀ on a resident goes to `nearestIn: resident, ahead` (the nearest to its left); ▶ still crosses to the column. From the column ◀ lands on the row-nearest resident, nearest the column, so every resident is reachable.
+3. **The ribbon's length (copywriter).** "{crate} home · {reach}" runs to eight words ("First crate home · most of the land explored"), over the six-word rule on the stage. *Recommended:* the ribbon says "{crate} home" (three words) and the reach stays on the report card; or reach words of three or fewer ("a first look", "half explored", "mostly explored", "all explored") on both.
+4. **The Incubator's and the Probe's words touch their objects (art director).** The word's 20 px line box at y 316 and y 444 runs to 336 and 464, over the dome (from 328) and the cradle (from 456); the ink meets the dome's top. *Recommended:* the dome to (704, 336, 80, 80); the cradle and the sitting slot to y 464, the plates to y 488, after the art director's look at the masters. Not changed in this spec, because the plates' decision and the wireframe test hold the current numbers.
+5. **The idle timer (owner).** The build rests after 60 s without a press (`game.mjs` `IDLE_MS`); no decided document says so. *Recommended:* record it: 60 s without a press, on any screen, never during a hold, an arrival or a report card.
+6. **What Idle's line says when several things hold (owner, copywriter).** *Recommended:* the most worth knowing, in this order: crates in the bay, the bud ready, a bud growing, who is out with the Companion; nothing else, and never a demand (nothing nags). Empty when none holds.
+7. **Pods that find no free well (game designer).** The rules keep them sealed and waiting. *Recommended:* they do not travel; they stay pictured in their crate's row on the report card, and Pods' waiting mark shows them, as today.
+8. **The Probe while away (game designer).** This spec draws the cradle empty and no plates while the Companion is away, as the build does, because the Probe is out with it. *Recommended:* confirm.
+9. **The status strip (architect).** lvgl-switch.md L2.2 lists "status strip" among the modules; Home §2 cut it (the modules show it by shape). *Recommended:* strike it from L2.2's scope.
+10. **Compositions for the binding table (architect).** No new word is needed. The compositions are `module` (with its part `travel`), `restKnob`, `withYouBed`, `reportCard` and, new, `idleLine` (a panel strip with one line of type). *Recommended:* add `idleLine` to `screens/`'s binding table as a composition, not a word.
 
 ---
 

@@ -121,6 +121,8 @@ One device, four functions, and each communicates its own mood. Type, counters, 
 
 *Dock and arrival wireframe. Layout only.*
 
+The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival) (*L2.2, UI designer, 2026-10-09; Proposal*). The ribbon has no digits there: "First crate home · half the land explored" (*decided by the UI designer, 2026-10-08*: was "Expedition 4 home · 2 pods · explored 9 of 21").
+
 ---
 
 ## Pods
@@ -434,7 +436,7 @@ No wireframe; the layout reference is the sketch in the [Station screens proposa
 - [ ] The status line is the only text.
 - [ ] Night is calm, never gloomy.
 
-No wireframe; the layout is Home's vivarium at full frame.
+The measured layout is [Station layouts, Idle](station-layouts.md#idle) (*L2.2, UI designer, 2026-10-09; Proposal*: was "no wireframe; the layout is Home's vivarium at full frame"): the vivarium 1024×568, the strip 32 px, one sentence of six words or fewer, a state of the frame.
 
 <img src="../../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept">
 

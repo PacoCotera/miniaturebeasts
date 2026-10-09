@@ -32,6 +32,26 @@
   "ring": "focus", "stageGround": "deep"
  },
  "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Cross" , "bench": "Probe" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
+ "idle": {
+  "spec": "design/style-guide/station-layouts.md#idle",
+  "status": "Proposal (UI designer, 2026-10-09 12:06, America/Mexico_City), the L2.2 spec of Idle as a state of the frame; wireframe station-layouts/10-idle.svg",
+  "state": "props.idle = true: the whole 1024×600 is Idle's composition. The top bar, the bottom line, the message plate and the focus ring are not drawn, and the screen under Idle keeps its state and focus unseen",
+  "regions": {
+   "vivarium": { "rect": [0, 0, 1024, 568], "component": "livingWindow", "part": "inside", "frame": false, "ground": [0, 320, 1024, 232], "foot": [0, 552, 1024, 16] },
+   "resident": { "component": "livingWindow", "part": "residents", "clip": "vivarium", "adult": [144, 152], "juvenile": [104, 112], "walk": { "ground": [16, 320, 992, 232] }, "lamp": [12, 12], "lift": 0, "focus": null },
+   "bed": { "rect": [872, 496, 128, 56], "build": "withYouBed", "clip": "vivarium", "mark": [16, 24], "markAt": [56, 16], "sleeper": { "pose": "nap", "foot": [936, 536], "adult": [864, 384, 144, 152], "juvenile": [884, 424, 104, 112], "asleepMark": [24, 16], "markAt": "box top right", "lift": 0 } },
+   "strip": { "rect": [0, 568, 1024, 32], "component": "panel", "build": "idleLine", "rule": "top" },
+   "line": { "rect": [16, 568, 992, 32], "build": "idleLine", "px": 16, "weight": 400, "align": "centre", "centre": 512, "middle": 584, "lines": 1, "words": 6, "noDigits": true }
+  },
+  "colours": { "strip": "ground", "rule": "void", "line": "mist", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil", "waitingLamp": "sky" },
+  "enter": { "from": ["the rest knob's ✓ on Home (home.json events.rest)", "the idle timer, on any screen, never during a hold"], "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
+  "keys": {
+   "any": "the first press sends `wake` and nothing else: no ring moves, nothing opens, nothing is spent",
+   "dock": "the Caddy's Dock is a world event, never a Station key: it wakes, docks and lands on Home with the ring on the room, then the crates slide in (home.json events.crateIn); lifting the Companion from Idle wakes and lifts, and the screen under Idle shows"
+  },
+  "wake": { "to": "the screen under Idle, its focus as it was", "transition": { "kind": "dither", "ms": 180, "levels": 16 }, "hold": 180 },
+  "strings": { "line": "one sentence, six words or fewer, no digits: the copywriter's slot", "examples": ["Dot is out exploring", "two crates wait in the bay", "a bud is growing", "the bud is ready"] }
+ },
  "navigation": {
   "spec": "design/style-guide/station-screens.md#keys-and-navigation",
   "map": "design/style-guide/station-layouts/nav-map.png",
