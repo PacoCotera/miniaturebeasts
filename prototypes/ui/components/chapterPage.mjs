@@ -13,6 +13,7 @@ import { isFilled } from "../assets.mjs";
 import { focusRing } from "./focusRing.mjs";
 import { wrap } from "./text.mjs";
 import { markNode } from "./mark.mjs";
+import { layer } from "./specimen.mjs";
 
 export function chapterPage(ctx, id, region, props) {
   // the pane shortens to its content: its height by the number of traits (page.heightByCount: one, two, else the full height), its top fixed
@@ -32,8 +33,8 @@ export function chapterPage(ctx, id, region, props) {
   const grid = pageGrid(region, props.cells.length);
   grid.cells.forEach((cell, i) => {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
-    if (c.picture && !c.sealed && !c.frost) nodes.push({ id: cid + ".pic", kind: "sprite", rect: P, asset: c.picture, region: props.cellRegion ?? null });
-    else nodes.push({ id: cid + ".pic", kind: "rect", rect: P, colour: Cc.pane, region: props.cellRegion ?? null });   // nothing of an unread trait is drawn: the ground, then frost or slats
+    nodes.push({ id: cid + ".pic", kind: "rect", rect: P, colour: Cc.pane, region: props.cellRegion ?? null });   // the cell's ground; what lies over it is the signed picture, or its stand-in card, then the signed frame
+    if (c.picture && !c.sealed && !c.frost) { nodes.push(...layer(cid + ".card", P, c.picture)); nodes.push(...layer(cid + ".frame", P, c.frame)); }   // nothing of an unread trait is drawn: the ground, then frost or slats
     if (c.sealed) { nodes.push({ id: cid + ".slats", kind: "sprite", rect: P, asset: `${props.slats}${pw}x${ph}` }); if (c.seals) nodes.push({ id: cid + ".key", kind: "sprite", rect: [cx + Math.round(pw / 2) - 22, cy + Math.round(ph / 2) - 32, 44, 64], asset: c.seals }); }
     else if (c.frost) nodes.push(props.unreadFrame && isFilled(props.unreadFrame) ? { id: cid + ".frost", kind: "sprite", rect: P, asset: props.unreadFrame } : { id: cid + ".frost", kind: "rect", rect: P, colour: Cc.frostFill || "frost" });   // the signed frosted frame; a flat frost until it is placed   // the spec's unread cell: frost fill, no picture, nothing requested
     else {

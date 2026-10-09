@@ -5,7 +5,6 @@
 // stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
 import { PB, C, HEX, art, fromRGBA, bay } from "./gfx.mjs";
-import { podSprite } from "./podsprites.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { assetEntry, placeMaster, registerSlot, asset as assetOf } from "../../ui/assets.mjs";
@@ -21,13 +20,13 @@ const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registe
 // box holds the 32×40 placeholder sprite placed 1:1 in its middle until its master is re-cut; a class whose layers are not placed is an empty (transparent) picture.
 const UNKNOWN_PAIR = () => [HEX[C.stone], HEX[C.bone]];   // only until the signed pod-<class>-unknown pictures are placed
 const podClass = ([bw, bh]) => { const classes = SPECS.pods.classes.pod; return Object.keys(classes).find((k) => classes[k][0] === bw && classes[k][1] === bh); };
-const podComposed = (size) => { const cls = podClass(size); return !!cls && cls !== "list" && layersPlaced(cls); };   // a pod from the signed layers is painted art, not the palette's
+const layerClass = (cls) => (cls === "list" ? "well" : cls);   // the list pod (40×48) is the masters' "well" class
+const podComposed = (size) => { const cls = podClass(size); return !!cls && layersPlaced(layerClass(cls)); };   // a pod from the signed layers is painted art, not the palette's
 function podPicture(species, state, [bw, bh], env) {
   const cls = podClass([bw, bh]);
-  if (cls === "list") { const pb = new PB(bw, bh), sp = podSprite(species, "well", state); pb.blit(sp, Math.round((bw - sp.w) / 2), Math.round((bh - sp.h) / 2)); return pb; }
-  if (cls && layersPlaced(cls)) {
+  if (cls && layersPlaced(layerClass(cls))) {
     const frame = species ? env.frameOf(species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
-    return podFromLayers(cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed");
+    return podFromLayers(layerClass(cls), pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed");
   }
   return new PB(bw, bh);
 }
@@ -86,7 +85,7 @@ export function registerPictures(reqs, env) {
   for (const r of reqs) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
-      case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${podClass(r.size)}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${podClass(r.size)}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
+      case "pod": if (!r.species && r.state === "sealed" && podClass(r.size) && masterAt(`pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1])) { putOrMaster(r.id, `pod-${layerClass(podClass(r.size))}-unknown`, r.size[0], r.size[1]); break; } { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
       case "place": putOrMaster(r.id, `place-${r.place}-${r.size || 16}x${r.size || 16}`, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
       case "placepanel": putOrMaster(r.id, `panel-place-${r.size[0]}x${r.size[1]}`, r.size[0], r.size[1], "the collection's place master", () => placePanelPB(r.size[0], r.size[1], r.radius)); break;
       case "kinring": putOrMaster(r.id, `ring-kin-${r.size}x${r.size}`, r.size, r.size, "the pod list master", () => kinRingPB(r.size)); break;
@@ -111,7 +110,6 @@ export function registerPictures(reqs, env) {
       case "asleep": put(r.id, 24, 16, "the marks' master", asleepPB); break;
       case "doing": put(r.id, 28, 16, "the marks' master", doingPB); break;
       case "bracket": put(r.id, 12, 12, "the marks' master", bracketPB); break;
-      case "trait": put(r.id, r.w, r.h, "the painting's close-ups", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species); return closeUpPB(fr, p.genome, r.trait, r.w, r.h); }); break;
       case "seed": put(r.id, r.w, r.h, "the seed master", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species); return seedPB(fr, shapeTrait(fr, p.genome, r.trait, r.choice), r.trait, r.w, r.h); }); break;
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), sp = stampPicture(fr, p.genome, r.read); return sp.build(); }); break;
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;

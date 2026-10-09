@@ -96,7 +96,7 @@ test("a read pod: the page by trait count, every picture at its grid size, no di
       for (const c of page.cells) {
         assert.ok(!/\d/.test(c.name + c.lines.join(" ")), `${id} ${ch.id}: digits on the page: ${c.name} ${c.lines}`);
         assert.ok(c.picture && !c.frost); assert.equal(c.lines.length, 1);
-        const pic = v.requests.find((r) => r.id === c.picture); assert.ok(pic && pic.w > 0 && pic.h > 0);
+        const pic = v.requests.find((r) => r.id === c.picture); assert.ok(pic && pic.kind === "slot" && pic.size[0] > 0, "the stand-in card slot at the picture's size: the build draws no trait picture"); assert.ok(c.frame, "the signed frame");
       }
       const sizes = new Set(page.cells.filter((c) => c.picture).map((c) => c.picture.split(":").at(-1)));
       assert.ok(sizes.size <= 1, "one picture size on a page: " + [...sizes]);
@@ -113,7 +113,7 @@ test("the props are plain JSON; every picture asked for is registered once at on
   const st = stock(["S01", "S03"], 5); S.skipRead(st, st.tray[0], settings); S.skipIdentify(st, st.tray[1]);
   const v = view(model(st)), back = JSON.parse(JSON.stringify(v)); assert.deepEqual(back, v);
   const sizes = new Map(); for (const r of v.requests) { const sz = Array.isArray(r.size) ? r.size.join("x") : r.w && r.h ? r.w + "x" + r.h : null; if (sizes.has(r.id) && sz) assert.equal(sizes.get(r.id), sz, "one id, one size: " + r.id); if (sz) sizes.set(r.id, sz); }
-  const v2 = view(chapter(st, 0)); assert.ok(v2.requests.some((r) => r.kind === "trait") && v2.requests.some((r) => r.kind === "emblem" && r.id.endsWith(":24")));
+  const v2 = view(chapter(st, 0)); assert.ok(v2.requests.some((r) => r.kind === "slot" && /standin/.test(r.id)) && v2.requests.some((r) => r.kind === "emblem" && r.id.endsWith(":24")));
 });
 
 test("the bottom line: the one action and its price as a number and an icon (no 'free', no 'half'), strings as decided", () => {

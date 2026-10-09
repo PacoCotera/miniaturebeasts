@@ -12,7 +12,8 @@ const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
 // A picture the room needs at a size: the placed master of that id when it is exactly that size, an empty slot (nothing drawn, never scaled) when it is not.
 const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
-const shellFrame = (st, p) => (st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
+// An unidentified pod is the unknown pod: its own pictures, never a species' shell, even when the species is known.
+const shellFrame = (st, p) => (p.idd && st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -150,7 +151,7 @@ function pageView(m, spec, p, fr, ch, word, region, req, present, diffIds, key =
     const cell = { name: t.name, lines: [], marks: [], diff: !!(diffIds && diffIds.includes(t.id)), isNew: !!(p.first && p.first.includes(t.id)) };
     if (!read) { cell.frost = true; return cell; }
     const state = traitState(fr, t, p.genome);
-    cell.picture = req({ kind: "trait", id: `trait:${genomeDigest(p.genome)}:${t.id}:${pw}x${ph}`, pod: p.id, species: S.speciesOf(p), trait: t.id, w: pw, h: ph });
+    cell.picture = slot(req, `trait-picture-standin-${pw}x${ph}`, [0, 0, pw, ph], "the stand-in picture card master"); cell.frame = slot(req, `trait-picture-frame-${pw}x${ph}`, [0, 0, pw, ph], "the trait frame master");   // no trait picture is drawn by the build: the signed frame and the stand-in card until the painted pictures exist
     cell.lines = [state.line];
     const small = ph < spec.page.marks.smallUnder, [sw, sh] = small ? spec.page.marks.seedSmall : spec.page.marks.seed;
     const seed = (choice) => req({ kind: "seed", id: `seed:${genomeDigest(p.genome)}:${t.id}:${choice}:${sw}x${sh}`, pod: p.id, species: S.speciesOf(p), trait: t.id, choice, w: sw, h: sh });
@@ -175,7 +176,7 @@ function compareView(view, m, spec, ctx, req) {
   const chs = fr.chapters, ci = clamp(c.ci, 0, chs.length - 1), ch = chs[ci], diff = S.compareDiff(st, A, B) || [];
   const both = A.read.includes(ch.id) && B.read.includes(ch.id), ids = both ? diff : [];
   const side = (p, region, key) => {
-    const page = pageView(m, spec, p, fr, ch, null, region, req, present, ids, key);
+    const page = { ...pageView(m, spec, p, fr, ch, null, region, req, present, ids, key), pane: spec.regions.chapter.page.pane };
     page.heading = { pod: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${R.compareA.pod.join("x")}`, species: S.speciesOf(p), state: "identified", size: R.compareA.pod }), place: PLACE_KEYS.includes(p.g) ? req({ kind: "place", id: `place:${p.g}`, place: p.g }) : null };
     return page;
   };

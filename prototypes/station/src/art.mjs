@@ -89,13 +89,10 @@ const faceless = (scene) => ({ ...scene, nodes: scene.nodes.filter((n) => (n.par
 // A trait's close-up rendered by the rig's camera at the picture's own size (the layout spec's rule: never a crop of a
 // larger render enlarged). The camera is set on the part the trait names (the whole body when no part matches), its scale
 // chosen so the part fills w×h with the old crop's margins; the placeholder renderer draws it once, at that size.
-// The stand-in picture card: the picture's ground with a quiet inset frame and a small mark, no creature in it.
-const standInCard = (w, h) => { const pb = pictureGround(w, h); pb.rect(6, 6, w - 12, 1, C.slate); pb.rect(6, h - 7, w - 12, 1, C.slate); pb.rect(6, 6, 1, h - 12, C.slate); pb.rect(w - 7, 6, 1, h - 12, C.slate); const cx = Math.round(w / 2), cy = Math.round(h / 2); pb.poly([[cx, cy - 10], [cx + 10, cy], [cx, cy + 10], [cx - 10, cy]], C.slate); return pb; };
 export function closeUpPB(frame, genome, traitId, w, h) {
   const pb = pictureGround(w, h), b = builtOf(frame, genome);
   if (b.error || b.validation.status !== "valid") { pb.blit(blobArt(w, h), 0, 0); return pb; }
   const scene = faceless(b.scene), base = fitCamera(scene, "portrait", [300, 310], 0.06), box = partBox(scene, base, partsFor(traitId)), pad = box.whole ? 0.04 : 0.3;
-  if (box.whole) return standInCard(w, h);   // a trait with no part of its own never shows the whole creature again: the stand-in picture card, until the painted trait pictures exist
   const bw = Math.max(box.x1 - box.x0, 40) * (1 + pad), bh = Math.max(box.y1 - box.y0, 40) * (1 + pad), s0 = base.scale;
   const center = [base.center[0] + ((box.x0 + box.x1) / 2 - 150) / s0, base.center[1] - ((box.y0 + box.y1) / 2 - 155) / s0];
   pb.blit(renderPB(scene, { view: "portrait", scale: s0 * Math.min(w / bw, h / bh), center, size: [w, h] }, "station"), 0, 0);
