@@ -12,18 +12,23 @@ It is also a genetics toy. Appearance and abilities follow inherited traits, and
 the player learns how through pictures, comparison and consequences rather than
 lessons or notation.
 
-**Decided:** it should work for two audiences at once. Children explore, uncover
-and pursue possibilities visually, without needing genetics vocabulary; loci stay
-under the hood. Curious parents and STEM enthusiasts can dig into a real genetics
-framework underneath. It is a sandbox: players choose their own goals.
+## Who it is for
+
+The game works for two audiences at once. Children explore, uncover and pursue
+possibilities visually, without any genetics vocabulary. Curious
+parents and STEM enthusiasts can dig into the real genetics, one press away and
+never required. It is never a text-heavy school lesson, and never childish, in
+tone or in reward. It is a sandbox: a pretty mibi, a rare one and a capable one
+are all valid goals. Player words sound like a game, not a lab report. What the
+Station shows of the genetics is in
+[research and breeding](research-and-breeding.md#what-the-player-sees-of-the-genetics).
 
 ## The loop
 
-**Decided:** research and tinkering are the core of the game. It all starts with
-a pod to be researched and incubated: the player reads what its genome carries,
-a chapter at a time, then acts on it by shaping a founder and later crossing
-mibis toward a wish, with depth that keeps pulling over the long run (see the
-[research loop](proposals/research-loop.md)).
+Research and tinkering are the core of the game. Every mibi starts as a pod to
+be researched and incubated. The player reads what its genome carries, a chapter
+at a time, then acts on it: shaping a founder, and later crossing mibis toward a
+wish. The rules are in [research and breeding](research-and-breeding.md).
 
 ```mermaid
 flowchart TD
@@ -42,11 +47,10 @@ flowchart TD
   Purpose --> Explore
 ```
 
-This is the intended shape. Its main steps come from decisions: open-map
-exploration, optional research, one fixed founder per creation, optional bonding,
-partners who help, same-species breeding. How each step works, and its status,
-is in the table below. Exploration is decided and built as a prototype; see
-[world and exploration](world-and-exploration.md).
+Exploration is open-map, research is optional, each creation makes one fixed
+founder, bonding is optional, partners help, and breeding stays within a
+species. The table below gives each mechanic in short and links the document
+that holds its rules.
 
 ## What a session feels like
 
@@ -57,13 +61,11 @@ compare two samples competing for the same supplies, or investigate how a family
 traits split across a generation.
 
 There is no minimum session, no care schedule for unbonded mibis, and no need to
-research every sample immediately. **Decided** for unbonded mibis; bonded care
-timing is **Open**.
+research every pod straight away.
 
 ## Design principles
 
-These are **Working rules**: they come from the first prototype's design work and
-fit every decision so far.
+These hold across every mechanic.
 
 - **Curiosity must be actionable.** Show enough of a place, creature or clue to
   support a choice. Variety must change what you can do or what happens, not just
@@ -88,39 +90,40 @@ fit every decision so far.
 - **Any wait has a purpose.** A minigame must add a decision or a discovery, not
   an input ritual. Waiting never happens in exploration, the most interactive part;
   if the game has waits, they belong to research or incubation running in the
-  background (**Decided**).
+  background.
 
-## Mechanics and their status
+## Mechanics
 
-| Mechanic | What holds now | Still open |
-| --- | --- | --- |
-| **Exploration** | A fogged world map of living places, permanent and turning once per expedition; start anywhere seen; reach by Probe tier; survey by walking and Call; storms, fog banks, outposts and beacons (**Decided**, **Built** in the exploration prototype). Arriving, looking and waiting award nothing (**Working rule**) | Reach and place size tuning, more expedition types and events, items and mods. See [world and exploration](world-and-exploration.md) |
-| **Gathering** | Collection is deliberate; whole items; a full hold offers a swap without loss (**Decided**, **Built** in the exploration prototype). Pods carried: 2 at tier 1, 3 at tier 2 (**Decided**); materials cap at 20 (**Built** in the exploration prototype) | More kinds of finds |
-| **Return** | Send home only from the start cell or a lit outpost; it ends the expedition, with no banking; a broken Probe sends nothing home (**Decided**, **Built** in the exploration prototype). Send seals the cargo; the Station accepts it exactly once (**Working rule**, **Built in v1**) | The real transfer between devices |
-| **Identification** | Establishes species and enough material, not hidden traits; then an unedited founder is allowed (**Decided**). 1 Energy a pod, the first free (**Built** in the exploration prototype) | Method |
-| **Research** | Optional, and the core of play. Reveals a sample's evidence and reusable understanding; never changes the sample; no locus checklist; no drowning in near-identical samples. Read a chapter at a time at 1 Data a trait, half on later pods of a species; per-chapter glints; the genome ring as the fingerprint (**Decided**). See [creatures and genomics](creatures-and-genomics.md#research) | Each species' chapters; Data income |
-| **Creation** | One sample makes one fixed individual; changes only at researched, permitted traits, using variants that sample carries; by default looks are shapeable and doings change only by breeding (**Decided**) | Each species' overrides of the default |
-| **Incubation** | Reveals the same individual; never a reroll; opening is deliberate (**Decided**). v1 uses a 20-second timer (**Built in v1**) | Duration, purpose of the wait, what the player does meanwhile |
-| **Bonding and care** | Optional; only bonded mibis need care to mature; wild and unbonded need nothing; not required for breeding (**Decided**). Learning changes behavior, never genes (**Working rule**). Forgiving care (**Proposal**) | How bonding happens, what care looks like, what missing it means, lifespan |
-| **Cooperative gathering** | Bonded partners use their real abilities to help the player discover and progress; one "with you" slot; juveniles don't join the Probe (**Decided**). Digging, calming and sniffing open gates and events (**Built** in the exploration prototype) | Abilities from traits, the swimmer, more gates |
-| **Breeding** | Same species only; shared species is necessary, not sufficient; every offspring is a viable new individual with real parents. A minimal cross with forecast seeds, and wishes, in the first Station build (**Decided**) | Eligibility, fertility, failure presentation |
-| **Supplies** | Three supplies, Data, Energy and Essence, as broad building blocks for very different creatures; whole units, interchangeable only within a type (**Decided**). Energy from struck and warm stones, Data from creature moments the player causes, Essence from dew, pressed fruit and tufts; Energy stays scarce (**Decided**, **Built** in the exploration prototype) | Recipes, what each one does in an experiment, final prices |
-| **Crafting** | Discovery with clues; learned recipes are personal and reliable; a failure wastes the ingredients or returns a fraction; deep in the long run, simple in V1 (**Decided**) | Scope, recipes, feed and habitat items |
-| **Habitats** | Places with populations, resources and conditions that can make an ability useful (**Working rule**) | Space, cohabitation, competition, freezing while away |
-| **Wild capture** | Not in the game for now (**Decided**) | Whether to add it later |
-| **Upgrades** | Limited, removable, reusable virtual research chips for the Station, found, crafted, traded or dropped by rare mibis; tiered upgrades for Station, Probe and Companion (**Decided** as direction). Probe tiers 1 and 2 (**Decided**, **Built** in the exploration prototype) | Later tiers, mods, slot counts |
-| **Sharing and paper** | One household kit serves several players, each with their own progress. Sampling someone else's mibi needs its owner's consent. No global first-discoverer rankings (**Decided**). Scanning or printing never grants ownership or breeding rights; shared research clues carry no genes (**Working rule**) | Rewards for scanning, trades, loans, printer gameplay |
-| **Online play** | Optional; core play never needs a phone, account or internet (**Working rule**) | Whether to build any of it before the core game proves itself |
+| Mechanic | How it works |
+| --- | --- |
+| **Exploration** | A fogged world map of living places that turns once per expedition. The player starts on any cell they can see; the Probe's tier sets the reach; walking and Call survey a place; storms, fog banks, outposts and beacons shape the trip ([world and exploration](world-and-exploration.md)) |
+| **Gathering** | Collecting is deliberate, in whole items. A full hold offers a swap, and nothing is lost. The Probe carries 2 pods at tier 1 and 3 at tier 2, and up to 20 of each material |
+| **Return** | Head home works only on the start cell or a lit outpost, and it ends the expedition. It seals the hold into a crate that travels in the Companion's bay until it docks; the player may keep exploring with crates aboard. The Station opens each crate exactly once. A break sends nothing home: the pods drop where the Probe broke |
+| **Identification** | Shows the species, not the pod's hidden traits; an identified pod can be grown unedited ([research and breeding](research-and-breeding.md#identify)) |
+| **Research** | Optional, and the core of play. A chapter at a time, as pictures; glints say where something new is; findings are kept; sealed chapters open with finds ([research and breeding](research-and-breeding.md#reading-a-chapter)) |
+| **Creation** | One pod makes one fixed founder, unedited or shaped among the copies that pod carries ([research and breeding](research-and-breeding.md#creating-a-founder)) |
+| **Incubation** | Reveals the same individual, never a reroll; Grow now shortens the wait for Essence; opening is a press ([research and breeding](research-and-breeding.md#the-bud)) |
+| **Life and bonding** | A mibi grows from an embryo in the bud into a juvenile, an adult and an elder. Bonding is optional, and only bonded mibis need care to mature; wild and unbonded mibis need nothing. Bonding is not needed to breed. A bonded mibi cannot be returned to the wild |
+| **Partners** | One mibi at a time is "with you" on the Companion. An adult or elder with you is a partner on expeditions; a juvenile is not. Partners use their species' abilities to open events, places and finds. They gate the higher tiers of exploring and never block exploring alone ([world and exploration](world-and-exploration.md#partners-and-gates)) |
+| **Breeding** | Two adults or elders of one species make one child with real parents; the forecast shows pictures of what is read; a wish guides it ([research and breeding](research-and-breeding.md#the-cross), [genomics](creatures-and-genomics.md)) |
+| **Supplies** | Three supplies in whole units, each spent for its function: Energy runs the machines, Data reads genomes, Essence grows bodies. Energy comes from struck and warm stones and stays scarce; Data from creature moments the player causes; Essence from dew, pressed fruit and tufts ([world and exploration](world-and-exploration.md#materials), [research and breeding](research-and-breeding.md#data-and-the-other-supplies)) |
+| **The vivarium** | The player keeps as many mibis as the vivarium holds: six bays. Returning a grown, unbonded mibi to the wild frees its bay and gives 2 Essence; its place remembers it and later sheds one pod of its line. More room comes from more vivariums |
+| **Crafting** | Discovery with clues. Recipes are personal once learned; a failure wastes the ingredients or returns a fraction. It runs deep over the long term and stays simple at first |
+| **Wild capture** | Not in the game |
+| **Upgrades** | Tiered upgrades for the Station, the Probe and the Companion. The tier 2 Probe reaches further and carries 3 pods. The Station takes virtual research chips, which are found, crafted, traded or dropped by rare mibis |
+| **Sharing and paper** | One household kit serves several players, each with their own progress. Sampling someone else's mibi needs its owner's consent. There is no global ranking of who found something first. A mibi's stamp and its code can be shared; a scanned stamp shows what its keeper has read, and never creates or moves a mibi ([research and breeding](research-and-breeding.md#stamps-and-scans)). Only portrayed mibis can be traded |
+| **Online play** | The kit plays standalone, with no account or internet. The cloud is an optional, paid layer on top, never needed to play |
 
-## What the first prototype proves
+## Not designed yet
 
-The [v1 simulator](../v1/README.md) plays one narrow version of the loop on
-simulated devices: move on a small grid map, take finite supplies and one sample,
-send them home, accept once, research, choose a supported form, incubate, open and
-visit the resident. It proves the bookkeeping underneath: nothing duplicates,
-nothing is lost on interruption, findings survive shortages, an opened mibi is the
-one that was created.
-
-It does not prove that exploring is interesting, that research creates curiosity,
-that the creatures are appealing, or that the devices work physically. Those are
-the questions the [roadmap](../ROADMAP.md) is built around.
+- What bonding involves, what care looks like, what missing it means, and how
+  long a mibi lives.
+- Which ability each species brings as a partner, and how traits shape it.
+- Fertility, and how a cross that fails is shown.
+- What crafting makes: its recipes, feed and habitat items.
+- Probe tiers beyond 2, mods, chip slots and Station upgrades.
+- The cloud layer's contents: sync, an exchange, mini-games, lineage and
+  printer play.
+- The real transfer of crates between devices.
+- Research and breeding's open questions, prices among them, are in
+  [research and breeding](research-and-breeding.md#not-designed-yet).
