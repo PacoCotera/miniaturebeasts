@@ -354,8 +354,9 @@ def framecaps():
     save("frame-cap-back-16", cap(back, (0x5d, 0x59, 0x74), (0xc6, 0xc4, 0xd8)), [None, 574, 16, 16], "the bottom line's back key cap: a 16 px disc, stone face, fog arrow", "typed by hand")
 def homemark():
     """frame-room-home-24: the living window, typed pixel by pixel (a pictorial mark is drawn by hand; the tool only sets the colour): a square-topped window
-    21 wide with a cross mullion (four panes), a low horizon line across the two lower panes (softer), a two-leaf sprout on the sill, a sill, no arch.
-    x = the line (the colour and strength of the other room marks, read from the research mark), h = the horizon (55 percent of it), . = empty."""
+    21 wide with a cross mullion (four panes), a sill, and a sprout 5 px tall rising from the sill into the lower-left pane (two leaves on a stem). No arch and no
+    horizon line (a horizon made a third row of panes and read as a grid). x = the line (the colour and strength of the other room marks, read from the
+    research mark), . = empty."""
     rows = [
         "........................",
         "........................",
@@ -371,9 +372,9 @@ def homemark():
         "..xxxxxxxxxxxxxxxxxxxxx.",
         "..x.........x.........x.",
         "..x.........x.........x.",
-        "..x.........x.........x.",
-        "..xhhhhhhhhhxhhhhhhhhhx.",
+        "..x..x...x..x.........x.",
         "..x...x.x...x.........x.",
+        "..x....x....x.........x.",
         "..x....x....x.........x.",
         "..x....x....x.........x.",
         "..xxxxxxxxxxxxxxxxxxxxx.",
@@ -388,7 +389,7 @@ def homemark():
     for y, r in enumerate(rows):
         for x, ch in enumerate(r):
             if ch != ".": im.putpixel((x, y), col + (amax if ch == "x" else int(amax * 0.55),))
-    save("frame-room-home-24", im, [16, 8, 24, 24], "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, a low horizon across the two lower panes and a two-leaf sprout on the sill; at (16,8) in the title zone", "typed by hand")
+    save("frame-room-home-24", im, [16, 8, 24, 24], "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, and a two-leaf sprout 5 px tall rising from the sill into the lower-left pane; at (16,8) in the title zone", "typed by hand")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)

@@ -49,9 +49,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `rail-emblem-glow-read-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-sealed-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-glow-unread-24x24` | 24×24 |  | signed (emblems round 3) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | withdrawn: Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | withdrawn: Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
-| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | withdrawn: Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-read-24x24` | 24×24 |  | new: Legs & tail round 6: candidate B as the art director corrected it (back line out of the left edge, hock bump, stub tail); awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-sealed-24x24` | 24×24 |  | new: Legs & tail round 6: candidate B as the art director corrected it (back line out of the left edge, hock bump, stub tail); awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
+| `rail-emblem-legs-tail-unread-24x24` | 24×24 |  | new: Legs & tail round 6: candidate B as the art director corrected it (back line out of the left edge, hock bump, stub tail); awaiting verdict | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-read-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-sealed-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
 | `rail-emblem-movement-unread-24x24` | 24×24 |  | signed (emblems round 4) | hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only |
@@ -76,7 +76,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `frame-lamp-8-mint` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, docked: a mint bead |
 | `frame-lamp-8-stone` | 8×8 | (836, 16, 8, 8) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the Companion's lamp, away: a stone bead |
 | `frame-room-habitat-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the habitat room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
-| `frame-room-home-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, a low horizon across the two lower panes and a two-leaf sprout on the sill; at (16,8) in the title zone |
+| `frame-room-home-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, and a two-leaf sprout 5 px tall rising from the sill into the lower-left pane; at (16,8) in the title zone |
 | `frame-room-library-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the library room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
 | `frame-room-research-24` | 24×24 | (16, 8, 24, 24) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the research room's mark: a fine engraved line, painted large and reduced to 24x24; at (16,8) in the title zone |
 | `frame-sun-16` | 16×16 | (·, 8, 16, 16) | new: a mark of the Station frame (design-station-frame); awaiting verdict | the world turn's sun mark, 16x16 (placed 4 px before its figure, right-aligned to x 1008) |
@@ -335,6 +335,12 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 12 - the window without a horizon, the hindquarter as B corrected
+
+- `frame-room-home-24`: the horizon line is removed (it made a third row of panes and read as a grid); the sprout now rises 5 px from the sill into the lower-left pane (two leaves on a stem). The rest is as typed in pass 11.
+- `rail-emblem-legs-tail`: round 6, candidate B as the art director corrected it (`emblems/source/legs-tail.txt`, typed rows): the level back line runs out of the left edge so the frame cuts the body, the rump rounds at the right with a stub tail rising at the upper right, the thigh narrows to a hock bump that points back, the shin runs forward-left to a filled paw. Three states. On the compact tab it reads as the back half of an animal on one bent leg; the body is a heavy wedge and the thigh could be fuller. The compact tab in the composites carries it again; the full tab stays word-alone until the verdict. If it still reads as a bird, the motif changes to the tail alone, as the lead said, and it is not drawn yet.
+
 
 ## Pass 11 - the window by hand, four hindquarters, Belatz tighter
 
