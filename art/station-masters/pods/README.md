@@ -86,7 +86,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
-| `page-pane-256x440` | 256×440 | (152, 112, 256, 440) | signed (pass 8 (d767daa verdict)): re-cut for design-pods-relayout 29b6dc9 | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
+| `page-pane-256x440` | 256×440 | (152, 112, 256, 440) | new: re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one | the page pane as a clean nine-slice: insets 16 on every side, corners 1:1, edges and fill tiled from the 32 px strips at their middles; serves 440, 264 and 248 high |
 | `page-pane-408x440` | 408×440 | (176, 112, 408, 440) | withdrawn: signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408 | 9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge |
 
 ### Name, origin and message plates
@@ -306,9 +306,9 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-144x176` | 144×176 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-144x176-sealed` | 144×176 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-144x176-unread` | 144×176 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
-| `trait-picture-frame-176x144` | 176×144 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | key magenta lip, 9-slice, with a painted-ramp inner shade |
-| `trait-picture-frame-176x144-sealed` | 176×144 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | slats texture tiled by whole slats, under the frame |
-| `trait-picture-frame-176x144-unread` | 176×144 |  | new: new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict | frost texture at 0.9 alpha under the frame |
+| `trait-picture-frame-176x144` | 176×144 |  | withdrawn: the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d) | key magenta lip, 9-slice, with a painted-ramp inner shade |
+| `trait-picture-frame-176x144-sealed` | 176×144 |  | withdrawn: the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d) | slats texture tiled by whole slats, under the frame |
+| `trait-picture-frame-176x144-unread` | 176×144 |  | withdrawn: the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d) | frost texture at 0.9 alpha under the frame |
 | `trait-picture-frame-184x104` | 184×104 |  | signed (pass 3) | key magenta lip, 9-slice, with a painted-ramp inner shade |
 | `trait-picture-frame-184x104-sealed` | 184×104 |  | signed (pass 6) | slats texture tiled by whole slats, under the frame |
 | `trait-picture-frame-184x104-unread` | 184×104 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
@@ -335,6 +335,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 14 - the page pane as a clean nine-slice
+
+The pane now shortens to its content (one trait 264, two 248, three or more 440), so `page-pane-256x440` is a nine-slice and I checked it as one. It was not clean: the painted edges varied along their length (a lit hairline of uneven brightness, standard deviation about 35 on the outer pixels) and the top-left corner was a bright block that matched nothing, so tiling the edges would have shown repeats and seams. Rebuilt (`panenine` in `tools/build.py`): insets 16 on all four sides; each edge is its median profile, constant along its length; each corner is a mitre of its two neighbouring edge profiles; the fill is one flat value (the interior's own variation was a standard deviation of 3). Tile strips are the 32 px at the middle of each edge and of the fill. The nine-slice of the master at 440 reproduces the master exactly (max difference 0), and 264 and 248 were built from it and checked by eye for seams. The manifest entry carries `nine: {insets [16,16,16,16], edgeTile 32, fillTile [32,32], heights [440,264,248]}`. The page's painted shading is gone (the old pane had a soft vignette); the pane is now a flat dark glass with the lit hairline edge. No new slices; the 176x144 picture frames stay in the folder as withdrawn (the two-trait picture is 104x160).
+
 
 ## Pass 13 - the tail alone, a typical Grid composite
 

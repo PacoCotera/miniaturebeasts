@@ -1015,9 +1015,9 @@
   "note": "re-cut for design-pods-relayout 29b6dc9"
  },
  "page-pane-256x440": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "re-cut for design-pods-relayout 29b6dc9"
+  "status": "new",
+  "signed_in": null,
+  "note": "re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one"
  },
  "trait-picture-frame-224x352": {
   "status": "signed",
@@ -1185,19 +1185,19 @@
   "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
  },
  "trait-picture-frame-176x144": {
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "trait-picture-frame-176x144-unread": {
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "trait-picture-frame-176x144-sealed": {
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "frame-cap-confirm-16": {
   "status": "new",

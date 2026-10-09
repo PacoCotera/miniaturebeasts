@@ -153,6 +153,21 @@ def pages():
         arr[..., :3] = arr[..., :3] * (1 - k[..., None]) + (arr[..., :3] * 0.30 + np.array([4.0, 10.0, 14.0]) * 0.8) * k[..., None]
         save(nm, Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGBA"), [px, 112, w, 440], "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge", "page-pane")
 # ---- picture frames
+def panenine():
+    """page-pane-256x440 made a clean nine-slice (pods.json: the pane shortens to its content, 264 / 248 / 440 high; corners 1:1, edges and fill tiled). The painted pane's
+    edges varied along their length (a lit hairline of uneven brightness) and its corners did not match them, so tiling would have shown. Insets 16 on all four sides:
+    each edge is its median profile (constant along the edge), each corner is a mitre of the two neighbouring edge profiles, the fill is one flat value (the interior's
+    own variation is a standard deviation of 3). The tile strips are the 32 px at the middle of each edge and of the fill."""
+    m = np.asarray(Image.open(OUT + "page-pane-256x440.png").convert("RGBA")).astype(float); H, W = m.shape[:2]; I = 16; new = m.copy()
+    top = np.median(m[:I, I:W - I], axis=1); bot = np.median(m[H - I:, I:W - I], axis=1); lef = np.median(m[I:H - I, :I], axis=0); rig = np.median(m[I:H - I, W - I:], axis=0)
+    cx, cy = W // 2 - 16, H // 2 - 16; patch = np.median(m[cy:cy + 32, cx:cx + 32].reshape(-1, 4), axis=0)
+    new[:I, I:W - I] = top[:, None, :]; new[H - I:, I:W - I] = bot[:, None, :]; new[I:H - I, :I] = lef[None, :, :]; new[I:H - I, W - I:] = rig[None, :, :]; new[I:H - I, I:W - I] = patch
+    for y in range(I):
+        for x in range(I):
+            new[y, x] = top[y] if y <= x else lef[x]; new[y, W - 1 - x] = top[y] if y <= x else rig[I - 1 - x]
+            new[H - 1 - y, x] = bot[I - 1 - y] if y <= x else lef[x]; new[H - 1 - y, W - 1 - x] = bot[I - 1 - y] if y <= x else rig[I - 1 - x]
+    save("page-pane-256x440", Image.fromarray(np.clip(new, 0, 255).astype(np.uint8), "RGBA"), [152, 112, 256, 440], "the page pane as a clean nine-slice: insets 16 on every side, corners 1:1, edges and fill tiled from the 32 px strips at their middles; serves 440, 264 and 248 high", "page-pane (painted), regularised")
+    MAN["page-pane-256x440"]["nine"] = {"insets": [16, 16, 16, 16], "edgeTile": 32, "fillTile": [32, 32], "heights": [440, 264, 248]}
 def frames():
     k = key_magenta(load("frame-lip.jpg")); k = k.crop(bbox_alpha(k, 10))
     sizes = [(184, 304), (184, 112), (120, 112), (376, 264), (184, 256), (184, 104), (120, 96), (224, 352), (224, 160), (104, 160), (104, 96), (104, 64), (112, 112), (144, 176), (176, 144)]
@@ -591,7 +606,7 @@ def well_pinholes():
     save("pod-well-mask-accent", Image.fromarray(A, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-accent, enclosed pixels filled", "pod-identified")
     save("pod-well-mask-body", Image.fromarray(Bd, "RGBA"), [None, None, 40, 48], "systematic pod layer: mask-body, held with the accent mask", "pod-identified")
 if __name__ == "__main__":
-    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "homemark", "framecaps", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
+    which = sys.argv[1:] or ["bench", "cradle", "listcol", "tabs", "pages", "panenine", "frames", "portrait", "tabfills", "newmark", "pagemark", "framemarks", "homemark", "framecaps", "plates", "bars", "stampcase", "stampcase152", "stampfront", "wellrings", "pods", "well_pinholes"]
     for w in which: globals()[w]()
     old = json.load(open("slices/manifest.json")) if os.path.exists("slices/manifest.json") else {}
     old.update(MAN); json.dump(old, open("slices/manifest.json", "w"), indent=1)

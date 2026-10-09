@@ -3424,12 +3424,30 @@
    256,
    440
   ],
-  "src": "page-pane",
-  "made": "9-slice of the generated pane, brought to the stage wall's values inside a lit hairline edge",
-  "sha256": "f566451a7ee873a12c6b009e49bbcab45740e2d1d264a0f1d767ff0b738d127d",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "re-cut for design-pods-relayout 29b6dc9"
+  "src": "page-pane (painted), regularised",
+  "made": "the page pane as a clean nine-slice: insets 16 on every side, corners 1:1, edges and fill tiled from the 32 px strips at their middles; serves 440, 264 and 248 high",
+  "sha256": "b97066c411d841d3505263442f8e66897b7e4497e356be8b1c4fe6b80f8fc9f2",
+  "nine": {
+   "insets": [
+    16,
+    16,
+    16,
+    16
+   ],
+   "edgeTile": 32,
+   "fillTile": [
+    32,
+    32
+   ],
+   "heights": [
+    440,
+    264,
+    248
+   ]
+  },
+  "status": "new",
+  "signed_in": null,
+  "status_note": "re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one"
  },
  "trait-picture-frame-224x352": {
   "size": [
@@ -3939,9 +3957,9 @@
   "src": "frame-thin",
   "made": "key magenta lip, 9-slice, with a painted-ramp inner shade",
   "sha256": "769fcaf61db51c41bdbad763965d733b132aa16f6b2f86a8977f98037d606198",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status_note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "trait-picture-frame-176x144-unread": {
   "size": [
@@ -3952,9 +3970,9 @@
   "src": "frost+frame-thin",
   "made": "frost texture at 0.9 alpha under the frame",
   "sha256": "c8869fd1f546f986d295e960dc9ac8b875d7074caf5758e5f110fb5a65832f81",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status_note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "trait-picture-frame-176x144-sealed": {
   "size": [
@@ -3965,9 +3983,9 @@
   "src": "slats+frame-thin",
   "made": "slats texture tiled by whole slats, under the frame",
   "sha256": "15174bd5c8e667f6be38854bf522a634469cb34d80ca9d5e9282c4dd7005c97d",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "new size of design-pods-relayout 29b6dc9 (the Read page's grid); awaiting verdict"
+  "status_note": "the two-trait picture is 104x160 now (design-pods-relayout 92fb6c7d)"
  },
  "frame-cap-confirm-16": {
   "size": [
