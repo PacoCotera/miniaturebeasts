@@ -2,35 +2,35 @@
  "_note": "Pods' goldens: the hash of the 1024×600 framebuffer of each state drawn by the C words (WebAssembly), with the PNG for review. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "collection": {
-   "hash": "69aa225e",
+   "hash": "72314dc8",
    "png": "pods-collection.png"
   },
   "overview, unidentified": {
-   "hash": "02478c3b",
+   "hash": "d3622bb9",
    "png": "pods-overview-unidentified.png"
   },
   "overview, identified, pod focused": {
-   "hash": "162b573f",
+   "hash": "843bf965",
    "png": "pods-overview-identified-pod-focused.png"
   },
   "overview, kin focused": {
-   "hash": "563407f3",
+   "hash": "bd739a45",
    "png": "pods-overview-kin-focused.png"
   },
   "overview, hatch focused": {
-   "hash": "39bd78ff",
+   "hash": "f5df7509",
    "png": "pods-overview-hatch-focused.png"
   },
   "overview, a rail tab focused": {
-   "hash": "928709ec",
+   "hash": "958dddca",
    "png": "pods-overview-a-rail-tab-focused.png"
   },
   "chapter page": {
-   "hash": "e057f16c",
+   "hash": "f61b065e",
    "png": "pods-chapter-page.png"
   },
   "compare": {
-   "hash": "12146739",
+   "hash": "8391a30e",
    "png": "pods-compare.png"
   }
  }

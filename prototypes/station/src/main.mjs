@@ -219,7 +219,8 @@ window.__st.wordsCheck = async ({ attribute = true, capture = false } = {}) => {
   registerPictures(reqs, { podById, frameOf });
   const ids = new Set(reqs.map((r) => r.id)); (function walk(o) { if (typeof o === "string") { if (assetEntry(o)) ids.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v); })([SPECS.frame.regions, body.props]);
   const pinned = pinnedPictures(SPECS.pods, SPECS.frame); for (const p of pinned) ids.add(p.id);
-  const frame = { top: { screen: "pods", title: "Pods", turn: G.st.turn + 1, turnFlash: false, materials: { e: G.st.e, d: G.st.d, s: G.st.s }, flash: {}, companion: { docked: docked(), withMibi: null } }, line: body.line, plate: { text: "" } };
+  const wid = hasWorld() ? S.withId(G.sv) : null, wm = wid == null ? null : mibiById(wid), withMibi = wm ? S.spName(wm).toLowerCase() : null;   // the live companion, as the frame screen reads it
+  const frame = { top: { screen: "pods", title: "Pods", turn: G.st.turn + 1, turnFlash: false, materials: { e: G.st.e, d: G.st.d, s: G.st.s }, flash: {}, companion: { docked: docked(), withMibi: withMibi } }, line: body.line, plate: { text: "" } };
   const pic = (id) => { const p = faceEnv.picture(id); if (!p) return null; const sl = faceEnv.slice(id); return sl ? { ...p, slice: sl, tile: faceEnv.tile(id) } : p; };
   const run = async (blank = null) => {
     const f = await bootFace(undefined, { test: true }); sendBoot(f);

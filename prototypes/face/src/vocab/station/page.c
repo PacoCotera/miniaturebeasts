@@ -36,7 +36,7 @@ void word_page(const char *key) {
   /* the pane: the open page has none; Compare's is the nine-slice master at the height the count gives, else a plain panel */
   if (!snull(base, "pane")) {
     char pane[96]; snprintf(pane, sizeof pane, "%s", v_pstr(v_fmt("%s.pane", P))); int slot = has(pane) ? wire_asset_slot(pane) : -1, ins[4], tile = 0;
-    if (slot >= 0 && wire_asset_nine(slot, ins, &tile)) { v_region(reg, LAYER_PAINTED);   /* the pane is a painted master */ prim_node(v_id("page.pane"), FN_NINE, rx, ry, size[0], size[1], ((uint32_t)ins[0] << 24) | ((uint32_t)ins[1] << 16) | ((uint32_t)ins[2] << 8) | (uint32_t)ins[3], slot, tile); }
+    if (slot >= 0 && wire_asset_nine(slot, ins, &tile)) { v_region(reg, LAYER_PAINTED);   /* the pane is a painted master */ prim_node(v_id(v_fmt("%s.pane", key)), FN_NINE, rx, ry, size[0], size[1], ((uint32_t)ins[0] << 24) | ((uint32_t)ins[1] << 16) | ((uint32_t)ins[2] << 8) | (uint32_t)ins[3], slot, tile); }
     else if (sexists(base, "pane")) { v_region(reg, LAYER_CHROME); word_panel(key, rx, ry, size[0], size[1], paneC, edgeC); }
   }
   int H0 = sa(base, "heading", 0, 0), H1 = sa(base, "heading", 1, 0), hasH = sexists(base, "heading");
