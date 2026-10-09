@@ -26,6 +26,7 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 
 | Slice id | Size | Rect on the screen | Status | Made by |
 | --- | --- | --- | --- | --- |
+| `compare-mark-differs-12x12` | 12×12 |  | new: Compare's differs mark, drawn by hand (pass 47); awaiting verdict | Compare's 'differs' mark: a 'not the same' sign of two short strokes, the lower shifted right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel; placed 1:1 after a trait's name on the name line |
 | `face-24-empty` | 24×24 | (856, 8, 24, 24) | signed (passes 8 and 9 (verdict)): a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces | no mibi with you: an empty teal ring |
 | `face-belatz-24` | 24×24 | (856, 8, 24, 24) | signed (pass 11 (verdict)): Belatz's face, re-cropped tighter | Belatz with the Companion: the head of the Grow service's standard painting (S09/3982a7117cfa0fc3) reduced to a 20 px disc inside its 2 px teal ring |
 | `face-belatz-24-away` | 24×24 | (856, 8, 24, 24) | signed (pass 11 (verdict)): Belatz's face, re-cropped tighter | Belatz, the Companion away: the face full on a dimmed ring |
@@ -582,6 +583,11 @@ Each slice is named by the register id it replaces (`room`, `ring`, `page`, `tra
 | `trait-picture-frame-376x264-unread` | 376×264 |  | signed (pass 4) | frost texture at 0.9 alpha under the frame |
 
 <!-- end of the generated Slices section -->
+
+## Pass 47 - Compare's differs mark
+
+`compare-mark-differs-12x12` (`tools/kindmarks.py`, last block): a 'not the same' sign of two short strokes, the lower shifted right, drawn pixel by pixel as typed rows (no generator): each stroke 7 px long and 2 px thick in aqua (#45d8be) with a mint (#adf6e0) lit top row and a 1 px ink keyline all round; the upper stroke at x 1 to 8, the lower at x 4 to 11, with a free row between them; placed 1:1 after a trait's name on the name line. Never a pin or a tick. `marks/compare-mark-1x.png` (a 4x proof beside it) sets it after "Markings" in 16 px Inter on the page pane's deep ground. Honest reading: it reads as two offset dashes, a small 'not equal' sign, but at 1x it is small and the keyline is invisible against the dark ground (it works only where the ground is light); the aqua is the brightest thing on the line.
+
 
 ## Pass 46 - the returns on pass 45, the Compare cuts
 

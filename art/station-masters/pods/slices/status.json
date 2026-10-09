@@ -2518,5 +2518,10 @@
   "status": "new",
   "signed_in": null,
   "note": "Compare's bench: the chapter bench without the beam and the dish glow; awaiting verdict"
+ },
+ "compare-mark-differs-12x12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "Compare's differs mark, drawn by hand (pass 47); awaiting verdict"
  }
 }

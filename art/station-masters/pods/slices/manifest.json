@@ -8234,5 +8234,18 @@
   "status": "new",
   "signed_in": null,
   "status_note": "Compare's bench: the chapter bench without the beam and the dish glow; awaiting verdict"
+ },
+ "compare-mark-differs-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "rect": null,
+  "src": "typed by hand",
+  "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes, the lower shifted right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel; placed 1:1 after a trait's name on the name line",
+  "sha256": "f189737c50ea8efbd3f9508f73e9208e59e3d871417bfa74ff77aefba4d7412e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "Compare's differs mark, drawn by hand (pass 47); awaiting verdict"
  }
 }

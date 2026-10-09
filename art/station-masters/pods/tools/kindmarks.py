@@ -128,3 +128,31 @@ for k, (kind, w, h) in enumerate((("dark", 128, 160), ("light", 104, 96))):     
     p = card(kind, w, h, [bl]); sheet.alpha_composite(p, (8 + (2 + k) * 144, 8 + 184))
 p = card("dark", 104, 64, [lambda q: put(q, "mark-seed-32x40", 104 - 40, 64 - 48)]); sheet.alpha_composite(p, (8, 8 + 2 * 184 + 8))
 os.makedirs("marks", exist_ok=True); sheet.convert("RGB").save("marks/kindmarks-round1-1x.png"); sheet.resize((sheet.width * 2, sheet.height * 2), Image.NEAREST).convert("RGB").save("marks/kindmarks-round1-2x-proof.png")
+
+# ---- pass 47: compare-mark-differs-12x12, typed pixel by pixel (no generator): a "not the same" sign, two short strokes, the lower shifted right; aqua with a 1 px ink keyline
+rows = ["............",
+        ".iiiiiiii...",
+        ".immmmmmi...",     # the upper stroke: mint lit top row
+        ".iaaaaaai...",
+        ".iiiiiiii...",
+        "............",
+        "....iiiiiiii",
+        "....immmmmmi",
+        "....iaaaaaai",
+        "....iiiiiiii",
+        "............",
+        "............"]
+rows = [r[:12] for r in rows]
+assert len(rows) == 12 and all(len(r) == 12 for r in rows)
+cmk = Image.new("RGBA", (12, 12), (0, 0, 0, 0)); pc = {"i": INK, "a": PAL["aqua"], "m": PAL["mint"]}
+for y, r in enumerate(rows):
+    for x, ch in enumerate(r):
+        if ch in pc: cmk.putpixel((x, y), pc[ch] + (255,))
+cmk.save("slices/compare-mark-differs-12x12.png", optimize=True)
+man = json.load(open("slices/manifest.json"))
+man["compare-mark-differs-12x12"] = {"size": [12, 12], "rect": None, "src": "typed by hand", "made": "Compare's 'differs' mark: a 'not the same' sign of two short strokes, the lower shifted right, aqua with a mint lit top row and a 1 px ink keyline; typed pixel by pixel; placed 1:1 after a trait's name on the name line", "sha256": hashlib.sha256(open("slices/compare-mark-differs-12x12.png", "rb").read()).hexdigest()}
+json.dump(man, open("slices/manifest.json", "w"), indent=1)
+pane = Image.open("slices/page-pane-256x440.png").convert("RGBA").crop((100, 100, 160, 130)); sh = Image.new("RGBA", (200, 40), (0, 0, 0, 255)); sh.alpha_composite(pane.resize((60, 30)), (0, 5))
+from PIL import ImageFont
+f16 = ImageFont.truetype("/usr/share/fonts/opentype/inter/Inter-Regular.otf", 16); d_ = ImageDraw.Draw(sh); sh.paste(Image.new("RGBA", (200, 40), (21, 36, 46, 255)), (0, 0)); d_.text((8, 20), "Markings", font=f16, fill=BONE + (255,), anchor="lm")
+sh.alpha_composite(cmk, (8 + int(d_.textlength("Markings", font=f16)) + 4, 14)); sh.convert("RGB").save("marks/compare-mark-1x.png"); sh.resize((800, 160), Image.NEAREST).convert("RGB").save("marks/compare-mark-4x-proof.png")
