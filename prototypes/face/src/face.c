@@ -5,6 +5,8 @@
 #include "prim/prim.h"
 #include "bridge/wire.h"
 #include "spec/spec.h"
+#include "vocab/words.h"
+#include "vocab/vocab.h"
 #include "platform/platform.h"
 #include "lvgl.h"
 #include <string.h>
@@ -110,4 +112,11 @@ int face_test_offpalette(void) {
   int bad = 0;
   for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0])) bad++; }
   return bad;
+}
+/* test mode: one focus ring word on a box, from a form given as JSON ({"ring": "round" | "feet" | "tab" | {"circle": {...}}}, or {} for the default), replacing the scene (the checks of the word alone) */
+int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *colour) {
+  if (spec_load("ringform", form_json, strlen(form_json)) < 0) return -1;
+  int box[4] = { x, y, w, h };
+  prim_begin(); v_region("focus", LAYER_CHROME); word_focusRing("focus.ring", box, "ringform", spec_raw("ringform", "ring", NULL) ? "ring" : NULL, colour); prim_end(); wire_changed();
+  return prim_unknown();
 }

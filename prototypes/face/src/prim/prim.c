@@ -13,6 +13,7 @@
 extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
 #define MAX_ASSET 256
+#define MAX_SRC 4          /* face-owned sources for nine-slices (the focus ring's 20 x 20), after the host's pictures in the same table */
 #define MAX_REGION 96
 #define NINE_PARTS 9
 typedef struct {
@@ -27,8 +28,8 @@ static node_t g_o[MAX_OBJ];
 static int g_n, g_unknown, g_nseq, g_pass = 3;
 static uint32_t g_seq[MAX_OBJ];
 static char g_text[1024];
-typedef struct { int w, h; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
-static asset_t g_a[MAX_ASSET];
+typedef struct { int w, h; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
+static asset_t g_a[MAX_ASSET + MAX_SRC];
 /* the tag of the nodes now arriving, and the clip they are inside */
 static int g_layer = LAYER_CHROME, g_region;
 static char g_reg[MAX_REGION][48];
@@ -48,7 +49,7 @@ int prim_unknown(void) { return g_unknown; }
 int prim_asset_limit(void) { return MAX_ASSET; }
 int prim_object_limit(void) { return MAX_OBJ; }
 int prim_lvgl_objects(void) { int n = g_n; for (int i = 0; i < g_n; i++) if (g_o[i].kind == FN_NINE) n += NINE_PARTS; return n; }
-int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
+int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
 static const lv_font_t *font_of(int px) { return px == 16 ? &face_inter_16 : px == 20 ? &face_inter_20 : px == 28 ? &face_inter_28 : NULL; }
 int prim_measure(int px) {
   const lv_font_t *f = font_of(px); if (!f) return -1;
@@ -141,6 +142,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops) {
 }
 
 /* ---- pictures ---- */
+static uint32_t hash_str(const char *s);
 static void dsc_of(lv_image_dsc_t *d, uint8_t *data, int w, int h, int stride) {
   memset(d, 0, sizeof *d);
   d->header.magic = LV_IMAGE_HEADER_MAGIC; d->header.cf = LV_COLOR_FORMAT_ARGB8888; d->header.w = (uint32_t)w; d->header.h = (uint32_t)h;
@@ -155,6 +157,17 @@ uint8_t *prim_asset(int handle, int w, int h) {
   return g_a[handle].px;
 }
 void prim_asset_free(int handle) { if (handle < 0 || handle >= MAX_ASSET) return; free(g_a[handle].px); memset(&g_a[handle], 0, sizeof g_a[handle]); }
+/* A face-owned source picture from composed ops (w x h), cached by the ops' hash: the same ops are the same picture, kept once. A handle for a nine-slice or a sprite, or -1 when refused or the table is full. */
+int prim_source(const char *ops, int w, int h) {
+  if (w <= 0 || h <= 0 || (long)w * h > 256 * 256) return -1;
+  uint32_t key = hash_str(ops) ^ ((uint32_t)w * 40503u) ^ ((uint32_t)h * 9973u); if (!key) key = 1;
+  int free_slot = -1;
+  for (int i = MAX_ASSET; i < MAX_ASSET + MAX_SRC; i++) { if (g_a[i].px && g_a[i].src_key == key && g_a[i].w == w && g_a[i].h == h) return i; if (!g_a[i].px && free_slot < 0) free_slot = i; }
+  if (free_slot < 0) return -1;
+  asset_t *s = &g_a[free_slot]; s->px = (uint8_t *)calloc((size_t)w * h, 4); if (!s->px) return -1;
+  if (prim_compose(s->px, w, h, ops) < 0) { free(s->px); s->px = NULL; return -1; }
+  s->w = w; s->h = h; s->src_key = key; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return free_slot;
+}
 uint8_t *prim_asset_ptr(int handle) { return handle >= 0 && handle < MAX_ASSET ? g_a[handle].px : NULL; }
 /* the nine parts of a picture as views into its own pixels (no copy): the corners at the insets l, t, r, b, and the edges and the middle as one tile each (the first `tile` px
    of the strip, or all of it when tile is 0), repeated by the objects over the target */
@@ -216,9 +229,9 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (kind < FN_RECT || kind > FN_COMPOSED) REFUSE();
   if (kind == FN_TEXT && !font_of(a)) REFUSE();
   int sx = (int)(rgb >> 16), sy = (int)(rgb & 0xffff);
-  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
-  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
+  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
   if (kind == FN_COMPOSED && (w <= 0 || h <= 0 || (long)w * h > 1024L * 600)) REFUSE();
   int i = find(id);
   if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent)) { drop(i); i = -1; }

@@ -28,6 +28,7 @@ uint8_t *prim_asset(int handle, int w, int h);   /* a picture's pixels (B, G, R,
 uint8_t *prim_asset_ptr(int handle);   /* the pixels of a picture already allocated, or NULL */
 void prim_asset_free(int handle);       /* release a picture (its pixels); a node still showing it is refused until it is sent again */
 int prim_asset_limit(void);
+int prim_source(const char *ops, int w, int h);   /* a face-owned source picture composed from ops, cached by their hash and counted once in prim_pictures(); a handle for a nine-slice or sprite, or -1 */
 int prim_count(void);           /* objects alive */
 int prim_pictures(void);        /* pictures resident (assets with pixels, composed pictures) */
 int prim_unknown(void);         /* nodes refused this frame (an unknown kind, a missing asset, a size that is not the asset's, a full table) */

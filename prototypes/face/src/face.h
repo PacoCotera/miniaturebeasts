@@ -59,6 +59,7 @@ void face_node_tag(int layer);
 /* Test mode (hello with test: true): which layers show (1 chrome, 2 chrome and art, 3 all), and the pixels of the last frame outside the palette. */
 void face_test_pass(int pass);
 int face_test_offpalette(void);
+int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *colour);   /* one focus ring word on a box (the checks of the word alone); the nodes refused */
 void face_selftest_scene(void);   /* a fixed scene for the parity check (selftest.c) */
 #ifdef __cplusplus
 }

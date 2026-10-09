@@ -5,9 +5,10 @@
 #include <stdio.h>
 #include <string.h>
 
-static int g_layer = LAYER_CHROME;
+static int g_layer = LAYER_CHROME; static char g_reg[48];
 uint32_t v_id(const char *s) { uint32_t h = 2166136261u; for (; *s; s++) { h ^= (uint8_t)*s; h *= 16777619u; } return h; }
-void v_region(const char *region, int layer) { g_layer = layer; prim_tag(layer, region); }
+void v_region(const char *region, int layer) { g_layer = layer; snprintf(g_reg, sizeof g_reg, "%s", region); prim_tag(layer, g_reg); }
+void v_layer(int layer) { g_layer = layer; prim_tag(layer, g_reg); }
 void v_error(const char *what) { wire_error(what); }
 uint32_t v_col(const char *name) {
   uint32_t rgb = 0;

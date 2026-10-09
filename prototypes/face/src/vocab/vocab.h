@@ -11,6 +11,7 @@
 #define V_ALIGN_RIGHT 2
 uint32_t v_id(const char *s);                          /* the node id: FNV-1a of the id string (the page's hash) */
 void v_region(const char *region, int layer);          /* every node from now on carries this region and layer */
+void v_layer(int layer);                               /* the same region, another layer */
 uint32_t v_col(const char *name);                      /* a palette colour by name (0 and an error when the palette has none) */
 int v_cap(int px);                                     /* Inter's cap height at 16, 20, 28 px: 12, 14, 21 */
 int v_measure(const char *s, int px);                  /* the width of a string at px */

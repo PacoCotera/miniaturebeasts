@@ -80,9 +80,9 @@ void word_topBar(void) {
   char mibi[48]; spec_str(P, "frame.top.companion.withMibi", mibi, sizeof mibi);
   if (!*mibi) fs("regions.marks.face.empty", a, sizeof a);
   else { char t[96]; fs(docked ? "regions.marks.face.docked" : "regions.marks.face.away", t, sizeof t); char *at = strstr(t, "{mibi}"); if (at) snprintf(a, sizeof a, "%.*s%s%s", (int)(at - t), t, mibi, at + 6); else snprintf(a, sizeof a, "%s", t); }
-  if (!mark("top.face", a, face)) {   /* until the face is painted, the ring alone */
-    colour(docked ? "faceRing" : "faceRingAway", c); snprintf(b, sizeof b, "ring:ellipse:%dx%d:%s:2", face[2], face[3], c);
-    if (!v_sprite("top.face.ring", b, face[0], face[1], face[2], face[3])) { snprintf(a, sizeof a, "word: the picture %.50s is not on the face", b); v_error(a); }
+  if (!mark("top.face", a, face)) {   /* until the face is painted, the ring alone: the ellipse op in the face-ring role */
+    colour(docked ? "faceRing" : "faceRingAway", c); snprintf(b, sizeof b, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", face[2], face[3], fi("focus.ring.width"), c);
+    snprintf(prim_text(), (size_t)prim_text_size(), "%s", b); prim_node(v_id("top.face.ring"), FN_COMPOSED, face[0], face[1], face[2], face[3], 0, 0, 0);
   }
   /* when: the sun mark, then the turn's figure, right-aligned to 1008 */
   int W_px = fi("regions.time.px"), W_right = fi("regions.time.right"), W_gap = fi("regions.time.gap"), tr[4], mk[2]; rect_of("regions.time.rect", tr);

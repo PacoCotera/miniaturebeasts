@@ -14,10 +14,10 @@ const specs = path.resolve(here, "../../ui/specs/station"), frameSpec = JSON.par
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const { cases } = JSON.parse(readFileSync(path.join(here, "vectors/frame-words.json"), "utf8"));
 
-// a stand-in picture for every id a frame can name: a flat block of a colour the id hashes to, at the size the id names
-const sizeOf = (id) => { let m; if ((m = /^icon:\w+:(\d+)$/.exec(id))) return [+m[1], +m[1]]; if ((m = /^ring:ellipse:(\d+)x(\d+):/.exec(id))) return [+m[1], +m[2]]; return null; };
+// a stand-in picture for every id a frame can name: a flat block of a colour the id hashes to, at the size the id names (the face composes its own rings, so there are none here)
+const sizeOf = (id) => { let m; if ((m = /^icon:\w+:(\d+)$/.exec(id))) return [+m[1], +m[1]]; return null; };
 const picture = (id) => { const s = sizeOf(id); if (!s) return null; const d = new Uint8ClampedArray(s[0] * s[1] * 4); let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; for (let i = 0; i < d.length; i += 4) { d[i] = 80 + (h & 127); d[i + 1] = 80 + ((h >> 7) & 127); d[i + 2] = 80 + ((h >> 14) & 127); d[i + 3] = 255; } return { w: s[0], h: s[1], data: d }; };
-const PICTURES = ["icon:energy:16", "icon:data:16", "icon:essence:16", "icon:cross:16", "ring:ellipse:24x24:teal:2", "ring:ellipse:24x24:stone:2"];
+const PICTURES = ["icon:energy:16", "icon:data:16", "icon:essence:16", "icon:cross:16"];
 
 async function setup() {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
@@ -53,4 +53,22 @@ test("props without a frame section are only kept; a frame section needs the fra
   f.send({ t: "palette", colours: palette }); f.send({ t: "spec", screen: "pods", json: podsSpec });
   assert.equal(f.props({ t: "props", screen: "pods", state: "overview" }), 0); assert.deepEqual(f.errors(), []);
   assert.equal(f.props(cases[0].props), -1); assert.match(f.errors()[0], /frame spec has not been sent/);
+});
+
+// the focus ring word: every form on its box, against the pixels the JavaScript component drew (focus-ring-words.json)
+const rings = JSON.parse(readFileSync(path.join(here, "vectors/focus-ring-words.json"), "utf8")).cases;
+const cstr = (M, s) => { const b = new TextEncoder().encode(s + "\0"), p = M._malloc(b.length); M.HEAPU8.set(b, p); return p; };
+const ringOn = (f, form, box, colour) => { const M = f.M, a = cstr(M, JSON.stringify(form)), c = cstr(M, colour); const rc = M._face_test_ring(a, ...box, c); M._free(a); M._free(c); frames(f); return rc; };
+for (const c of rings) {
+  test(`the focus ring word draws what the component drew: ${c.name}`, { skip }, async () => {
+    const f = await setup(); assert.equal(ringOn(f, c.form, c.box, c.colour), 0, "no node refused"); assert.deepEqual(f.errors(), []);
+    assert.equal(f.hash(), c.hash);
+  });
+}
+test("the focus ring word refuses a target too small for a round ring and a form it does not know; the source picture is kept once", { skip }, async () => {
+  const f = await setup();
+  ringOn(f, {}, [10, 10, 7, 40], "focus"); assert.match(f.errors().join(), /under 8 px/);
+  ringOn(f, { ring: "square" }, [10, 10, 40, 40], "focus"); assert.match(f.errors().join(), /not a ring form/);
+  let log = null; for (const box of [[10, 10, 40, 40], [200, 100, 90, 90], [300, 300, 50, 70]]) { ringOn(f, {}, box, "focus"); for (let m; (m = f.poll("log"));) log = m; }
+  assert.equal(log.pictures, PICTURES.length + 1, "the 20x20 source is one picture beside the host's, whatever the target's size"); assert.equal(log.table, 1);
 });
