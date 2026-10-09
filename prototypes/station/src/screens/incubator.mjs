@@ -5,15 +5,14 @@ import { SW, C, R, blit, text, textW, clipText, panel, focusRing, art, PB, clamp
 import { emblemArt, domeArt, budArt, crackArt, leafArt, stampArt, mibiArt, paintedArt } from "../art.mjs";
 import { landedSet } from "../caddy.mjs";
 import { G, FX, UI, msg, lockInput, save, goScreen, registerScreen, mibiById } from "../game.mjs";
-import { benchBg, drawTop } from "./frame.mjs";
+import { benchBg } from "./frame.mjs";
 import * as S from "../state.mjs";
 import { frameOf, codeText } from "../genome.mjs";
 
 export const HATCH_MS = 2600;
 const hatching = () => FX.hatch && clock.now - FX.hatch.at < HATCH_MS;
 function draw() {
-  benchBg(); drawTop("Incubator");
-  const B = G.st.bud, NOW = clock.now;
+  benchBg();   const B = G.st.bud, NOW = clock.now;
   if (hatching()) { drawHatch(); return; }
   if (!B) { blit(domeArt(260, 260, false), 382, 250); text("The incubator is empty", 512, 120, C.fog, 3, "center"); text("Shape a founder from a read pod at Research", 512, 166, C.mist, 2, "center"); return; }
   const fr = frameOf(B.species), pr = S.budProgress(G.st, G.settings), ready = pr >= 1;

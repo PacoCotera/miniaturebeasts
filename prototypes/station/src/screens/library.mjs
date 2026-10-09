@@ -4,7 +4,7 @@
 import { C, R, blit, text, clipText, panel, focusRing, art, PB, clamp, clock } from "../gfx.mjs";
 import { speciesArt, emblemArt, stampArt } from "../art.mjs";
 import { G, UI, msg, goScreen, registerScreen } from "../game.mjs";
-import { stageBg, drawTop } from "./frame.mjs";
+import { stageBg } from "./frame.mjs";
 import * as S from "../state.mjs";
 import { frameOf, frameIds, speciesIndex } from "../genome.mjs";
 
@@ -16,8 +16,7 @@ const pageOf = () => frameIds().slice(L().page * 16, L().page * 16 + 16);
 const known = (id) => G.st.knownIds.includes(id), met = (id) => G.st.metIds.includes(id);
 function paperBg() { blit(art("paper", () => { const pb = new PB(1024, 522); for (let y = 0; y < 522; y++) for (let x = 0; x < 1024; x++) pb.p[y * 1024 + x] = ((x * 7 + y * 13) % 97 < 2) ? C.sand : C.paper; pb.rect(510, 0, 4, 522, C.clay); return pb; }), 0, 40); }
 function drawSpread() {
-  paperBg(); drawTop("Library");
-  const ids = pageOf();
+  paperBg();   const ids = pageOf();
   ids.forEach((id, i) => { const fr = frameOf(id), { x, y } = frameXY(i);
     R(x - 2, y - 2, FRAME.w + 4, FRAME.h + 4, C.bark); R(x, y, FRAME.w, FRAME.h, C.bone);
     if (known(id)) { panel(x + 6, y + 6, FRAME.w - 12, FRAME.h - 28, C.bone, C.clay); const a = speciesArt(fr, 76, 76); blit(a, x + 10, y + 8); text(clipText(fr.species.name, FRAME.w - 4, 2), x + FRAME.w / 2, y + FRAME.h + 6, C.panel, 2, "center"); }
@@ -29,8 +28,7 @@ function drawSpread() {
   if (pages > 1) text("spread " + (L().page + 1) + " of " + pages + " · ◀ ▶ past the edge turns it", 512, 540, C.clay, 2, "center");
 }
 function drawBook() {
-  paperBg(); drawTop("Library");
-  const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
+  paperBg();   const id = L().sp, fr = frameOf(id); if (!fr) { L().f = "spread"; return; }
   panel(30, 60, 300, 330, C.bone, C.bark); blit(speciesArt(fr, 260, 270), 50, 70);
   panel(40, 400, 280, 60, C.bone, C.clay); text(clipText(fr.species.name, 260, 3), 180, 410, C.panel, 3, "center"); text(fr.taxonomy?.clan ? "clan " + fr.taxonomy.clan + " · " + S.plural(fr.chapters.length, "chapter") : S.plural(fr.chapters.length, "chapter"), 180, 440, C.bark, 2, "center");
   // the chapters as tabs and the looks found so far

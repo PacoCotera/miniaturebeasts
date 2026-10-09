@@ -9,11 +9,13 @@ import { frameOf } from "../genome.mjs";
 import { frame as frameNodes } from "../../../ui/components/frame.mjs";
 import { frameView } from "../views/frame.mjs";
 
-// The title of each screen's top bar, and the frame's nodes for a screen: the presenter's counters and flashes, the Companion's state, the screen's bottom line and the message plate while the timeline holds it.
-export const TITLES = { home: "Home", pods: "Pods", create: "Create", incubator: "Incubator", habitat: "Habitat", library: "Library", cross: "Cross", bench: "Probe bench" };
+// The frame's nodes for a screen: the title and room mark from the frame spec, the presenter's counters and flashes, who is out and whether a mibi is with the Companion,
+// the screen's bottom line and the message plate while the timeline holds it.
 export const plateText = () => (FX.msg && TL.progress("plate", "msg") != null && TL.progress("plate", "msg") < 1 ? FX.msg : "");
+// The mibi with the Companion, by the key its face is painted under (the species' name in lower case), or null when none is with it.
+const withMibiKey = () => { const id = hasWorld() ? S.withId(G.sv) : null, m = id == null ? null : mibiById(id); return m ? S.spName(m).toLowerCase() : null; };
 export function frameFor(ctx, screen, line, { need: needText = need().text, focal = null } = {}) {
-  return frameNodes(ctx, frameView({ title: TITLES[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { text: compState(), docked: docked() }, line, need: needText, message: plateText(), focal }));
+  return frameNodes(ctx, frameView({ screen, title: ctx.spec.strings.titles[screen], step: LAYER.presenter.step(clock.now, { e: G.st.e, d: G.st.d, s: G.st.s, turn: shownTurn() }, motion()), companion: { docked: docked(), withMibi: withMibiKey() }, line, need: needText, message: plateText(), focal }));
 }
 export const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 export const tgt = (id, x, y, w, h) => ({ id, x, y, w, h });
@@ -25,17 +27,6 @@ export function navSpatial(targets, curId, dir) {
     const d = along + Math.abs(vx * dy + vy * dx) * 2.2; if (d < bd) { bd = d; best = t; } }
   return best ? best.id : curId;
 }
-const CNT = {};
-function drawCounter(x, y, key, icon, value) {
-  const st = CNT[key] || (CNT[key] = { v: value, last: 0, fl: -1e9 }), NOW = clock.now;
-  if (value < st.v || !motion()) { if (value > st.v) st.fl = NOW; st.v = value; }
-  else if (value > st.v && NOW - st.last >= 70) { st.v++; st.last = NOW; st.fl = NOW; }
-  blit(ICON[icon](24), x, y + 2);
-  const s = String(st.v), fl = NOW - st.fl < 240;
-  if (fl) panel(x + 28, y - 1, textW(s, 3) + 10, 28, C.amber);
-  text(s, x + 33, y + 4, fl ? C.ink : C.bone, 3);
-  return x + 33 + textW(s, 3) + 22;
-}
 export const hm = (t) => { const d = new Date(t); return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0"); };
 export function compState() {
   if (!hasWorld()) return "no Companion yet";
@@ -43,36 +34,7 @@ export function compState() {
   if (docked()) return "Companion docked" + (n ? " · " + S.plural(n, "crate") + " in the bay" : "") + (w && !n ? " · with " + w.name : "");
   return "Companion away · since " + hm(G.st.dock.at) + (w ? " · with " + w.name : "");
 }
-let turnShown = null, turnFlash = -1e9;
 export function shownTurn() { const a = FX.arr; if (a && arriving()) { const i = Math.floor((clock.now - a.at) / ARRIVE_MS), p = a.plays[i]; return (clock.now - a.at) % ARRIVE_MS > ARRIVE_MS * 0.55 ? p.turnTo : p.turnFrom; } return G.st.turn; }
-export function drawTop(title) {
-  const NOW = clock.now;
-  R(0, 0, SW, TOP_H, C.ground); R(0, TOP_H - 1, SW, 1, C.void);
-  const tw = text(title, 16, 9, C.bone, 3), t = shownTurn();
-  if (turnShown !== t) { if (turnShown != null) turnFlash = NOW; turnShown = t; }
-  const fl = NOW - turnFlash < 1000 && Math.floor((NOW - turnFlash) / 160) % 2 === 0, lbl = "T" + (t + 1);
-  if (fl) panel(16 + tw + 10, 8, textW(lbl, 2) + 12, 24, C.amber);
-  text(lbl, 16 + tw + 16, 13, fl ? C.ink : C.mist, 2);
-  let x = Math.max(236, 16 + tw + 30 + textW(lbl, 2) + 24); x = drawCounter(x, 6, "e", "energy", G.st.e); x = drawCounter(x, 6, "d", "data", G.st.d); drawCounter(x, 6, "s", "essence", G.st.s);
-  text(clipText(compState(), 450, 2), SW - 16, 13, docked() ? C.mint : C.fog, 2, "right");
-}
-// The bottom line: ✓ action · price · ← where | the subject | what needs you. Read-only focus leaves ✓ empty.
-export function drawLine(o) {
-  const y = SH - LINE_H, ty = y + 12; R(0, y, SW, LINE_H, C.ground); R(0, y, SW, 1, C.void);
-  let x = 16;
-  if (o.ok) { x += text("✓", x, ty, C.orange) + 8; x += text(o.ok, x, ty, o.dim ? C.mist : C.bone); if (o.price) { x += text(" · ", x, ty, C.hairline); x += text(o.price, x, ty, o.dim ? C.mist : C.focus); } }
-  if (o.back) { if (o.ok) x += text(" · ", x, ty, C.hairline); x += text("← ", x, ty, C.fog); x += text(o.back, x, ty, C.fog); }
-  const nd = o.need != null ? o.need : need().text, nw = nd ? textW(nd, 2) : 0;
-  const mx = x + 18, avail = SW - 16 - (nw ? nw + 34 : 0) - mx;
-  if (o.subject && avail > 40) { R(x + 8, y + 9, 1, 20, C.bar); text(clipText(o.subject, avail, 2), mx, ty, C.mist); }
-  if (nd) { R(SW - 16 - nw - 16, y + 9, 1, 20, C.bar); text(nd, SW - 16, ty, C.amber, 2, "right"); }
-}
-export function drawMsg() {
-  if (!FX.msg || clock.now - FX.msgAt > 4000) return;
-  const lines = wrapText(FX.msg, 600, 2), w = Math.min(640, Math.max(...lines.map((l) => textW(l, 2))) + 40), h = 16 + lines.length * 22, x = Math.round((SW - w) / 2), y = SH - LINE_H - h - 12;
-  panel(x, y + 3, w, h, C.void); panel(x, y, w, h, C.bar, C.sand);
-  lines.forEach((l, i) => text(l, SW / 2, y + 10 + i * 22, C.bone, 2, "center"));
-}
 export function stageBg() {   // an evening room: deep moss, lit softly from above the middle
   blit(art("stagebg", () => { const pb = new PB(SW, STAGE_H);
     for (let y = 0; y < STAGE_H; y++) for (let x = 0; x < SW; x++) { const d = Math.hypot((x - SW * 0.5) / (SW * 0.62), (y - STAGE_H * 0.3) / (STAGE_H * 0.95)); pb.p[y * SW + x] = ramp(["ground", "panel"], 1.15 - d, x, y); }

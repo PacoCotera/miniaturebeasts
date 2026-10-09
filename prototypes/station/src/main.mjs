@@ -11,7 +11,7 @@ import * as S from "./state.mjs";
 import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
 import "./screens/home.mjs"; import "./screens/pods.mjs"; import "./screens/create.mjs"; import "./screens/incubator.mjs"; import "./screens/cross.mjs"; import "./screens/library.mjs"; import "./screens/habitat.mjs"; import "./screens/bench.mjs";
 import { HATCH_MS } from "./screens/incubator.mjs";
-import { drawLine, drawMsg, stepResidents, clearResidents, hm, frameFor } from "./screens/frame.mjs";
+import { stepResidents, clearResidents, hm, frameFor } from "./screens/frame.mjs";
 import { dockKey, openBay } from "./screens/home.mjs";
 import { drawIdle } from "./screens/bench.mjs";
 import { openBook } from "./screens/library.mjs";
@@ -56,7 +56,7 @@ function render() {
   if (FACE) { FACE.scene(faceNodes(), faceEnv); FACE.frame(clock.now); FACE.present(vctx); return; }
   const screen = screenOf(UI.screen), nodes = [];
   if (!UI.idle && screen.nodes) nodes.push(...screen.nodes(CTX));
-  else nodes.push(legacy("legacy", () => { if (UI.idle) drawIdle(); else { screen.draw(); drawLine(lineFor()); drawMsg(); } }));
+  else { nodes.push(legacy("legacy", () => { if (UI.idle) drawIdle(); else screen.draw(); })); if (!UI.idle) nodes.push(...frameFor(CTX, UI.screen, lineFor())); }   // the one frame on every screen: the top bar, the bottom line, the plate
   const ta = clock.now - (FX.transAt || -1e9);
   if (ta >= 0 && ta < 180 && motion()) nodes.push(legacy("trans", () => ditherFill(0, STAGE_Y, SW, STAGE_H, "void", 16 - Math.floor((ta / 180) * 16))));
   scene.set(nodes); SC.paint(scene); SC.composite(vctx);

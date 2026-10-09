@@ -31,6 +31,24 @@ export function railTabs(rail, n, focused = -1) {
   return { tabs, overflow: false, mode: "compact" };
 }
 
+// The slanted chapter rail (station-layouts.md, "The chapter rail", corrected): tabs hang from the top bar (y 40, 40 tall), each a
+// parallelogram of top-edge width w leaning `slant` px over its height, each starting where the one before ends. One to
+// `fullUpTo` chapters: all full (136). More, up to `max`: compact (56) and the open chapter's tab full. `x0` is where the
+// run starts: Pods at rail.pods.x, Create and Incubator centred on 512 and snapped down to the 8 px grid. More than `max`
+// comes back to the UI designer (overflow: true, no tabs). Returns { tabs: [{ rect: [x, y, w, h], full }], run, x0, overflow }.
+export function slantTabs(rail, n, open = 0, where = "pods") {
+  if (n <= 0) return { tabs: [], run: 0, x0: rail.pods.x, overflow: false };
+  if (n > rail.max) return { tabs: [], run: 0, x0: rail.pods.x, overflow: true };
+  const compact = n > rail.fullUpTo, widths = Array.from({ length: n }, (_, i) => (!compact || i === open ? rail.full : rail.compact));
+  const run = widths.reduce((a, b) => a + b, 0) + rail.slant;
+  const x0 = where === "centred" ? Math.floor((rail.centred.on - run / 2) / rail.centred.snap) * rail.centred.snap : rail.pods.x;
+  let x = x0; const tabs = widths.map((w, i) => { const r = { rect: [x, rail.y, w, rail.h], full: w === rail.full }; x += w; return r; });
+  return { tabs, run, x0, overflow: false };
+}
+// The pixel columns a slanted side has shifted right by at row r (0-based from the top): the side is the line x + slant * (y - top) / h,
+// taken at the row's centre and floored, so every row of a tab is the same width.
+export const slantAt = (rail, r) => Math.floor((rail.slant * (r + 0.5)) / rail.h);
+
 // The chapter page's grid by the focused chapter's trait count: the spec's grid table names the cells and the picture
 // size per count ("1", "2", "3-4", "5-6"); more than the table holds comes back to the UI designer (overflow).
 export function pageGrid(page, n) {

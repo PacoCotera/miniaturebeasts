@@ -4,7 +4,7 @@ import { SW, SH, LINE_H, C, R, blit, text, textW, clipText, panel, focusRing, ar
 import { podSprite } from "../podsprites.mjs";
 import { ICON, crateArt, cupArt, domeArt, budArt, leafArt, probeArt, lampArt, bedArt, vivArt, starArt } from "../art.mjs";
 import { G, FX, UI, ARRIVE_MS, msg, lockInput, save, goScreen, registerScreen, need, docked, hasWorld, bayCrates, effWithId, atHome, mibiById, arriving } from "../game.mjs";
-import { stageBg, drawTop, lampPool, drawResidents, stepResidents, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
+import { stageBg, lampPool, drawResidents, stepResidents, tgt, navSpatial, DIRS, stageWord } from "./frame.mjs";
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 
@@ -94,8 +94,7 @@ function drawStatusStrip(x, y) {
   rows.forEach(([ic, t], i) => { if (ic) blit(ICON[ic](), x + 4, y + i * 28); else R(x + 8, y + 7 + i * 28, 6, 6, C.hairline); text(clipText(t, 262, 2), x + 26, y + 3 + i * 28, C.fog); });
 }
 function drawHome() {
-  stageBg(); drawTop("Home");
-  blit(vivArt(VIV.w, VIV.h), VIV.x, VIV.y);
+  stageBg();   blit(vivArt(VIV.w, VIV.h), VIV.x, VIV.y);
   const bed = bedSpot(); drawBed(bed.x, bed.y);
   homeBoxes = drawResidents(VIV.x, VIV.y, VIV.w, VIV.h, false);
   if (!G.st.mibis.length) text("The vivarium waits for its first mibi", VIV.x + VIV.w / 2, VIV.y + 150, C.mist, 2, "center");

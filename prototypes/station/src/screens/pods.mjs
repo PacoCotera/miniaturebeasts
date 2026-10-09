@@ -7,7 +7,7 @@
 import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
 import { clock, motion } from "../gfx.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
-import { list, specimen, stampLabel, chapterRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
+import { list, specimen, stampLabel, chapterRail, slantRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
 import { podsView, inWords } from "../views/pods.mjs";
 import { registerPictures, iconRequests } from "../pictures.mjs";
 import { frameOf } from "../genome.mjs";
@@ -130,6 +130,11 @@ function ringNodes() {
 // The frame: top bar, bottom line, message plate.
 const sharedFrame = (ctx) => frameFor(ctx, "pods", last.line, { need: inWords(need().text), focal: last.box });
 // What the LVGL face draws of this screen until its stage comes over: the pictures the frame and the ring name, the ring, the frame.
-function faceNodes(ctx) { ensure(); registerPictures([...last.requests, ...iconRequests()], env); return [...ringNodes(), ...sharedFrame(ctx)]; }
+function faceNodes(ctx) { ensure(); registerPictures([...last.requests, ...iconRequests()], env); return [...ringNodes(), ...railNodes(ctx), ...sharedFrame(ctx)]; }
+// The slanted rail (the face draws this one; the canvas renderer keeps the older rail until it is retired).
+function railNodes(ctx) {
+  const v = last, F = P().focus; if (v.mode === "compare" || !v.rail) return [];
+  return slantRail(ctx, "rail", { ...v.rail, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, where: "pods", tabRegion: "rail.tab" }).nodes;
+}
 
 registerScreen("pods", { nodes, faceNodes, targets: () => { ensure(); return last.targets; }, line: () => { ensure(); return last.line; }, act, enter: ensure });
