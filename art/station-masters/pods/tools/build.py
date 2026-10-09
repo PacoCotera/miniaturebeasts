@@ -308,7 +308,7 @@ def framemarks():
     S = 8
     bz = Image.open("source/raw/belatz-portrait-600x620.png").convert("RGBA"); kz = color_to_alpha(bz, border_median(bz), 0.05)            # Belatz: the head and crest of the standard painting, keyed off its cream ground and laid on the same dark ground as Loika's
     gnd = Image.new("RGBA", kz.size, tuple(int(v) for v in border_median(f)) + (255,)); gnd.alpha_composite(kz)
-    face_b = gnd.crop((60, 150, 230, 400)).resize((20 * 8, 20 * 8), Image.LANCZOS) if False else gnd.crop((50, 190, 240, 380)).resize((20 * 8, 20 * 8), Image.LANCZOS)
+    face_b = gnd.crop((60, 150, 230, 400)).resize((20 * 8, 20 * 8), Image.LANCZOS) if False else gnd.crop((62, 245, 182, 365)).resize((20 * 8, 20 * 8), Image.LANCZOS)
     def ring_img(ringcol, with_face, dim=1.0, face=face):
         yy, xx = np.mgrid[0:24 * S, 0:24 * S].astype(float); x = (xx + 0.5) / S - 12; y = (yy + 0.5) / S - 12; r = np.hypot(x, y)
         out = np.zeros((24 * S, 24 * S, 4)); ring = np.clip(12 - r, 0, 1) * np.clip(r - 10, 0, 1) if False else (np.clip(12.0 - r, 0, 1) * np.clip(r - 10.0, 0, 1))
@@ -353,22 +353,42 @@ def framecaps():
     save("frame-cap-confirm-16-dim", cap(tick, (0x8d, 0x8a, 0xa6), (0x3d, 0x39, 0x54)), [16, 574, 16, 16], "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)", "typed by hand")
     save("frame-cap-back-16", cap(back, (0x5d, 0x59, 0x74), (0xc6, 0xc4, 0xd8)), [None, 574, 16, 16], "the bottom line's back key cap: a 16 px disc, stone face, fog arrow", "typed by hand")
 def homemark():
-    """frame-room-home-24: the living window: an arched window frame, a horizon line and one small sprout, in the line manner of the other room marks
-    (a fine engraved line in their colour), drawn procedurally with supersampling at 16x."""
-    S = 16; W = 24 * S
+    """frame-room-home-24: the living window, typed pixel by pixel (a pictorial mark is drawn by hand; the tool only sets the colour): a square-topped window
+    21 wide with a cross mullion (four panes), a low horizon line across the two lower panes (softer), a two-leaf sprout on the sill, a sill, no arch.
+    x = the line (the colour and strength of the other room marks, read from the research mark), h = the horizon (55 percent of it), . = empty."""
+    rows = [
+        "........................",
+        "........................",
+        "........................",
+        "..xxxxxxxxxxxxxxxxxxxxx.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..xxxxxxxxxxxxxxxxxxxxx.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..x.........x.........x.",
+        "..xhhhhhhhhhxhhhhhhhhhx.",
+        "..x...x.x...x.........x.",
+        "..x....x....x.........x.",
+        "..x....x....x.........x.",
+        "..xxxxxxxxxxxxxxxxxxxxx.",
+        ".xxxxxxxxxxxxxxxxxxxxxxx",
+        "........................",
+        "........................",
+        "........................"]
     ref = np.asarray(Image.open("slices/frame-room-research-24.png").convert("RGBA")).astype(float); m = ref[..., 3] > 0.8 * ref[..., 3].max()
-    col = tuple(int(v) for v in np.median(ref[m][:, :3], axis=0))
-    im = Image.new("L", (W, W), 0); d = ImageDraw.Draw(im); w = int(1.5 * S)
-    P = lambda x, y: (x * S, y * S)
-    d.arc([P(5, 3.2)[0], P(5, 3.2)[1], P(19, 17.2)[0], P(19, 17.2)[1]], 180, 360, fill=255, width=w)
-    d.line([P(5, 10.2), P(5, 21)], fill=255, width=w); d.line([P(19, 10.2), P(19, 21)], fill=255, width=w)
-    d.line([P(3.2, 21.4), P(20.8, 21.4)], fill=255, width=w)
-    d.line([P(5, 16), P(19, 16)], fill=255, width=int(1.1 * S))                                                    # the horizon
-    d.line([P(12, 16), P(12, 12.2)], fill=255, width=int(1.1 * S))                                                 # the sprout: stem and two leaves
-    d.ellipse([P(8.6, 9.4)[0], P(8.6, 9.4)[1], P(12.0, 12.2)[0], P(12.0, 12.2)[1]], fill=255); d.ellipse([P(12.0, 9.4)[0], P(12.0, 9.4)[1], P(15.4, 12.2)[0], P(15.4, 12.2)[1]], fill=255)
-    a = np.asarray(im.resize((24, 24), Image.BOX)).astype(float) * ref[..., 3].max() / 255.0                  # at the other marks' own strength
-    out = np.dstack([np.full((24, 24), c, float) for c in col] + [a]).astype(np.uint8)
-    save("frame-room-home-24", Image.fromarray(out, "RGBA"), [16, 8, 24, 24], "the home room's mark: the living window, an arched window frame with a horizon line and one small sprout, in the other marks' line manner; at (16,8) in the title zone", "procedural, supersampled 16x")
+    col = tuple(int(v) for v in np.median(ref[m][:, :3], axis=0)); amax = int(ref[..., 3].max())
+    assert len(rows) == 24 and all(len(r) == 24 and set(r) <= set("xh.") for r in rows)
+    im = Image.new("RGBA", (24, 24), (0, 0, 0, 0))
+    for y, r in enumerate(rows):
+        for x, ch in enumerate(r):
+            if ch != ".": im.putpixel((x, y), col + (amax if ch == "x" else int(amax * 0.55),))
+    save("frame-room-home-24", im, [16, 8, 24, 24], "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, a low horizon across the two lower panes and a two-leaf sprout on the sill; at (16,8) in the title zone", "typed by hand")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)

@@ -28,7 +28,7 @@ for n in m:
     elif n in ("frame-top-bar-1024x40", "frame-bottom-line-1024x38"): sign(n, "signed", "pass 1", "excluded from placing (the frame redesign)")
     elif re.match(r"rail-emblem-(coat|face|stamina|glow|character)-", n): sign(n, "signed", "emblems round 3")
     elif re.match(r"rail-emblem-(shape|movement|charge)-", n): sign(n, "signed", "emblems round 4")
-    elif re.match(r"rail-emblem-", n): sign(n, "new", None, "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict")
+    elif re.match(r"rail-emblem-", n): sign(n, "withdrawn", None, "Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then")
     elif n == "page-pane-408x440": sign(n, "withdrawn", None, "signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408")
     elif n == "room-stamp-case": sign(n, "withdrawn", None, "the old 176x328 size; the case is now 152x152")
     elif n == "room-stamp-case-152x152": sign(n, "signed", "pass 8 (d767daa verdict)", "with a condition: the front glass over the label (room-stamp-case-152x152-front)")

@@ -1838,9 +1838,9 @@
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "145ebbd085434f5f9672446136cc2332acca5534ee1e6106b6e495f5356fa6d0",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict"
+  "status_note": "Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then"
  },
  "rail-emblem-legs-tail-read-24x24": {
   "size": [
@@ -1851,9 +1851,9 @@
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "307e8fa48c7c1ed7a174014d2dce4e2f3fd5697768f2a431026a9b99bc3b324d",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict"
+  "status_note": "Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then"
  },
  "rail-emblem-legs-tail-sealed-24x24": {
   "size": [
@@ -1864,9 +1864,9 @@
   "src": "emblems/source/legs-tail.txt",
   "made": "hand-pixelled at 24x24 on the Station palette (indexed, 62 colours, index 62 transparent); state = colour only",
   "sha256": "5c892609205a7ab003857276813535fc70cdb213249a67cc37e0ea2dd4fe057d",
-  "status": "new",
+  "status": "withdrawn",
   "signed_in": null,
-  "status_note": "Legs & tail redrawn as a filled silhouette (thigh, shin, paw) in pass 10; awaiting verdict"
+  "status_note": "Legs & tail: five rounds failed; four filled hindquarter candidates are on emblems/candidates/legs-tail-candidates-1x.png for the art director to pick; the word carries the tab until then"
  },
  "rail-emblem-movement-unread-24x24": {
   "size": [
@@ -4034,9 +4034,9 @@
    24,
    24
   ],
-  "src": "procedural, supersampled 16x",
-  "made": "the home room's mark: the living window, an arched window frame with a horizon line and one small sprout, in the other marks' line manner; at (16,8) in the title zone",
-  "sha256": "42ab84f1e304d24d1e57581431569f428ccbb45acf5511e47b03af1f02261987",
+  "src": "typed by hand",
+  "made": "the home room's mark: the living window, typed by hand: a square-topped window with a cross mullion, a low horizon across the two lower panes and a two-leaf sprout on the sill; at (16,8) in the title zone",
+  "sha256": "b7f0c7c64f302375573b8b9f6a08092c95beff61e827e8afd2daa38d3219f262",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -4234,7 +4234,7 @@
   ],
   "src": "belatz-portrait",
   "made": "Belatz with the Companion: the head of the Grow service's standard painting (S09/3982a7117cfa0fc3) reduced to a 20 px disc inside its 2 px teal ring",
-  "sha256": "f4fe3132044f74b6830ed4c1ded05f26afbed40f03c20296e8ebd1ac1420a3ad",
+  "sha256": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
@@ -4252,7 +4252,7 @@
   ],
   "src": "belatz-portrait",
   "made": "Belatz, the Companion away: the face full on a dimmed ring",
-  "sha256": "f6f99976b95767af329a6d1b85a62b3faccb168ce95fc0ecab32f0f5259197d0",
+  "sha256": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad",
   "status": "new",
   "signed_in": null,
   "status_note": "a mark of the Station frame (design-station-frame); awaiting verdict"
