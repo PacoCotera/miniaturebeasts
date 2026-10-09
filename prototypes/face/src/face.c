@@ -1,4 +1,3 @@
-#define _POSIX_C_SOURCE 200809L
 /* The Station's face: a 1024x600 LVGL display that draws into a retained framebuffer, reports the rectangles it redrew,
    takes key input and builds the page's scene (prim/prim.c) and speaks the bridge (bridge/wire.c). This file is the platform-neutral core: nothing in it knows
    JavaScript, SDL or a device. */
@@ -6,7 +5,11 @@
 #include "prim/prim.h"
 #include "bridge/wire.h"
 #include "spec/spec.h"
-#include <time.h>
+#include "vocab/words.h"
+#include "screens/screens.h"
+#include "anim/anim.h"
+#include "vocab/vocab.h"
+#include "platform/platform.h"
 #include "lvgl.h"
 #include <string.h>
 
@@ -53,11 +56,11 @@ void face_frame(uint32_t ms) {
   static uint32_t last; static int started;
   if (!started) { started = 1; last = ms; }
   lv_tick_inc(ms - last); last = ms;
+  { int playing = anim_active(); anim_tick(ms); if (playing || anim_active()) screens_redraw(); }   /* an event plays: the words are drawn again at this frame's time */
   g_ndirty = 0;
-  struct timespec t0, t1; clock_gettime(CLOCK_MONOTONIC, &t0);
+  double t0 = platform_now_ms();
   lv_timer_handler();
-  clock_gettime(CLOCK_MONOTONIC, &t1);
-  wire_after_frame((double)(t1.tv_sec - t0.tv_sec) * 1000.0 + (double)(t1.tv_nsec - t0.tv_nsec) / 1e6);
+  wire_after_frame(platform_now_ms() - t0);
 }
 uint8_t *face_fb(void) { return g_fb; }
 int face_width(void) { return FACE_W; }
@@ -70,6 +73,7 @@ uint32_t face_hash(void) {
   return h;
 }
 void face_key(int code, int down) {
+  if (down) screens_key(code);   /* the words' screens move the ring and say so (focus, intent) */
   int nt = (g_kt + 1) % KEYQ; if (nt == g_kh) return;
   g_keys[g_kt].code = code; g_keys[g_kt].down = down; g_kt = nt; if (down) { g_kcount++; g_klast = code; }
 }
@@ -84,6 +88,8 @@ void face_scene_begin(void) { prim_begin(); }
 void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) { prim_node(id, kind, x, y, w, h, rgb, a, b); }
 void face_scene_end(void) { prim_end(); wire_changed(); }
 char *face_text(void) { return prim_text(); }
+char *face_ops(void) { return prim_ops(); }
+int face_ops_size(void) { return prim_ops_size(); }
 int face_text_size(void) { return prim_text_size(); }
 int face_measure(int px) { return prim_measure(px); }
 uint8_t *face_asset(int handle, int w, int h) { return prim_asset(handle, w, h); }
@@ -112,4 +118,11 @@ int face_test_offpalette(void) {
   int bad = 0;
   for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0])) bad++; }
   return bad;
+}
+/* test mode: one focus ring word on a box, from a form given as JSON ({"ring": "round" | "feet" | "tab" | {"circle": {...}}}, or {} for the default), replacing the scene (the checks of the word alone) */
+int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *colour) {
+  if (spec_load("ringform", form_json, strlen(form_json)) < 0) return -1;
+  int box[4] = { x, y, w, h };
+  prim_begin(); v_region("focus", LAYER_CHROME); word_focusRing("focus.ring", box, "ringform", spec_raw("ringform", "ring", NULL) ? "ring" : NULL, colour); prim_end(); wire_changed();
+  return prim_unknown();
 }

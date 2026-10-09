@@ -59,6 +59,26 @@ test("every Station spec file loads, and the loader reads a number from each the
   const sp = cstr(M, "frame"), pp = cstr(M, "regions.stage.rect.3"); assert.equal(M._face_spec_int(sp, pp, -1), JSON.parse(readFileSync(path.join(dir, "frame.json"), "utf8")).regions.stage.rect[3]);
 });
 
+test("a focus graph that cannot be walked is refused at load: each of focus.json's refusals as pods.json's focus.overview, and as home's focus.graph; the committed specs are accepted", { skip }, async () => {
+  const dir = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(dir, n + ".json"), "utf8")), { refusals } = JSON.parse(readFileSync(path.join(here, "vectors/focus.json"), "utf8"));
+  assert.equal(refusals.length, 15);
+  for (const r of refusals) {
+    let f = await boot(); const pods = J("pods"); pods.focus.overview = r.graph;
+    assert.equal(f.send({ t: "spec", screen: "pods", json: pods }), -1, "pods, " + r.name); assert.match(f.errors().join(), /focus\.overview/, r.name);
+    f = await boot(); const home = J("home"); home.focus.graph = r.graph;
+    assert.equal(f.send({ t: "spec", screen: "home", json: home }), -1, "home, " + r.name);
+  }
+  const f = await boot(); for (const n of ["pods", "home", "habitat", "bench"]) assert.equal(f.send({ t: "spec", screen: n, json: J(n) }), 0, n + ": " + f.errors().join());
+});
+
+test("a ring form the loader does not know is refused: only round, feet, tab, a circle with radius and centre, or a circle outside, and no extra key", { skip }, async () => {
+  const J = () => JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/pods.json"), "utf8"));
+  const bad = [["dashed", "dashed"], ["a circle of no radius", { circle: { radius: 0, centre: [1, 2] } }], ["a circle with no centre", { circle: { radius: 5 } }], ["a negative outside", { circle: { outside: -1 } }], ["an extra key on the ring", { circle: { outside: 4 }, glow: 1 }],
+    ["an extra key on the circle", { circle: { outside: 4, radius: 3 } }], ["a number", 7], ["a bare object", { radius: 5 }]];
+  for (const [what, ring] of bad) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), -1, what); assert.match(f.errors().join(), /targets\.kin\.ring/, what); }
+  for (const ring of ["round", "feet", "tab", { circle: { outside: 0 } }, { circle: { radius: 84, centre: [96, 112] } }]) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(ring) + ": " + f.errors().join()); }
+});
+
 test("pictures: an asset message makes a buffer for its id, the same id keeps its slot, a drop frees it, bad sizes and src file are refused, and the table holds 256", { skip }, async () => {
   const f = await boot(), M = f.M;
   assert.equal(f.send({ t: "asset", id: "a", w: 4, h: 4, src: "heap" }), 0); const h = M._face_last_asset(); assert.ok(h >= 0 && M._face_asset_pixels(h) > 0);
@@ -162,7 +182,7 @@ test("F2: strict JSON: bytes after the object, repeated keys, and numbers that a
   refused('{"t":"key","k":"up"} x', /not valid JSON/); refused('{"t":"key","k":"up"}{"t":"key","k":"up"}', /bytes after the object/); refused('{"t":"key","k":"up"} {}', /bytes after the object|not valid JSON/);
   assert.equal(put('{"t":"key","k":"up"}  \n'), 0, "trailing whitespace is fine");
   refused('{"t":"hello","contract":1,"contract":2}', /key contract appears twice/); refused('{"t":"hello","t":"key"}', /key t appears twice/);
-  for (const bad of ["1.5", "1e3", "01", "+1", "1.0", "-", '"1"', "true", "null", "0x1"]) refused(`{"t":"hello","contract":${bad}}`, /contract is required|not valid JSON/);
+  for (const bad of ["1.5", "1e3", "01", "+1", "1.0", "-", '"1"', "true", "null", "0x1"]) refused(`{"t":"hello","contract":${bad}}`, /contract must be an integer|not valid JSON/);
   refused('{"t":"hello","contract":tru}', /not valid JSON/); refused('{"t":"hello","contract":1,}', /not valid JSON/); refused('{"t":"hello",,"contract":1}', /not valid JSON/); refused('{"t":"hello","contract":1.2.3}', /not valid JSON/); refused('{"t":"hello","contract":[1,]}', /not valid JSON/); refused("{t:\"hello\",\"contract\":1}", /not valid JSON/);
   // jsmn's strict mode refuses an unquoted key; the face's own pass (json_clean) refuses what jsmn lets through as tokens: a malformed literal, a trailing or doubled comma
   refused('{"t":"hello","contract":1,"test":"yes"}'.replace('"contract":1', '"contract":2'), /contract 1 expected, got 2/);
@@ -182,7 +202,7 @@ test("F2: the spec loader reads integers exactly: 1.5, 1e3 and 01 are not number
 
 test("F2 and F9: a composed picture's arguments are integers exactly, and a malformed op is refused whole", { skip }, async () => {
   const f = await boot(), M = f.M; frames(f, 2);
-  const send = (ops) => { const b = new TextEncoder().encode(ops), p = M._face_text(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; M._face_scene_begin(); M._face_node(1, 1, 0, 0, 1024, 600, 0x162a37, 0, 0); M._face_node(2, 6, 200, 200, 24, 12, 0, 0, 0); M._face_scene_end(); frames(f); return f.refused(); };
+  const send = (ops) => { const b = new TextEncoder().encode(ops), p = M._face_ops(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; M._face_scene_begin(); M._face_node(1, 1, 0, 0, 1024, 600, 0x162a37, 0, 0); M._face_node(2, 6, 200, 200, 24, 12, 0, 0, 0); M._face_scene_end(); frames(f); return f.refused(); };
   for (const bad of ['[["h",0,0,4.5,"clay"]]', '[["h",0,0,"4","clay"]]', '[["dot",1e1,0,"clay"]]', '[["lattice",0,0,8,8,4.0,[[0,0]],"mist"]]', '[["lattice",0,0,8,8,4,[[0,1.5]],"mist"]]', '[["h",0,0,4,"clay"]] x', '[["h",0,0,4,"clay"],]', '[["h",0,0,4,clay]]']) assert.equal(send(bad), 1, bad);
   assert.equal(send('[["h",0,0,3,"clay"]]'), 0); assert.equal(send('[["h",0,0,3,"clay"]] \n'), 0, "trailing whitespace is fine");
 });
@@ -212,4 +232,26 @@ test("F5: a full queue drops messages and counts them; when room returns an erro
   for (let i = 0; i < 70; i++) f.M._face_send((f.M.HEAPU8.set(new TextEncoder().encode('{"t":"nope"}'), f.M._face_in_buf()), 12));
   f.M._face_poll; f.drain(); f.M._face_key(17, 1); f.M._face_key(17, 0); f.send({ t: "event", kind: "seal" }); frames(f);
   assert.ok(f.poll("log").dropped >= 1, "the log's running total");
+});
+
+test("props() is the transport's: hashed without seq, so an unchanged screen is not sent again, and seq is assigned by the transport, never the caller", { skip }, async () => {
+  const f = await boot(); f.send({ t: "spec", screen: "pods", json: { regions: {} } });
+  assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 1 }, seq: 99 }), 0); assert.equal(f.M._face_props_count(), 1); assert.equal(f.M._face_props_seq(), 1, "the caller's seq is ignored");
+  assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 1 }, seq: 5 }), 0); assert.equal(f.M._face_props_count(), 1, "the same props: not sent");
+  assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 2 } }), 0); assert.equal(f.M._face_props_count(), 2); assert.equal(f.M._face_props_seq(), 2);
+  assert.equal(f.props({ screen: "nope", regions: {} }), -1); assert.match(f.errors()[0], /spec is not loaded/); assert.equal(f.props({ screen: "pods", state: "overview", regions: { a: 2 } }), 0, "a refused send does not mark the props as sent"); 
+});
+
+test("hello with a contract that is not an integer says so", { skip }, async () => {
+  const f = await boot(); assert.equal(f.send({ t: "hello", contract: 1.5 }), -1); assert.deepEqual(f.errors(), ["hello: contract must be an integer"]);
+  assert.equal(f.send({ t: "hello", contract: "1" }), -1); assert.deepEqual(f.errors(), ["hello: contract must be an integer"]); assert.equal(f.send({ t: "hello" }), -1); assert.deepEqual(f.errors(), ["hello: contract is required"]);
+});
+
+test("composed pictures take thousands of ops: the ops have a buffer of their own (128 KiB), not the text run's 1 KiB", { skip }, async () => {
+  const f = await boot(), ops = []; for (let i = 0; i < 3000; i++) ops.push(["dot", i % 200, (i / 200) | 0, "ice"]);
+  assert.ok(JSON.stringify(ops).length > 30000);
+  f.scene([{ id: "wires", kind: "composed", rect: [0, 0, 200, 16], ops }], env); frames(f); assert.equal(f.refused(), 0); assert.deepEqual(f.errors(), []);
+  assert.deepEqual(f.pixel(5, 3), rgbOf("ice")); assert.deepEqual(f.pixel(199, 14), rgbOf("ice"));
+  const big = []; for (let i = 0; i < 6000; i++) big.push(["dot", i % 100, 0, "ice"]);
+  f.scene([{ id: "wires", kind: "composed", rect: [0, 0, 200, 16], ops: big }], env); frames(f); assert.equal(f.refused(), 0, "6000 ops, 75 KB");
 });

@@ -1,4 +1,5 @@
 #include "prim.h"
+#include "ring.h"
 #include "lvgl.h"
 #include "src/lvgl_private.h"
 #include <stdio.h>
@@ -12,7 +13,9 @@
 extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 #define MAX_OBJ 1024            /* the table is larger than the 400-object budget so a breach is measured, not refused (lvgl-switch.md §2.2) */
 #define MAX_ASSET 256
+#define MAX_SRC 4          /* face-owned sources for nine-slices (the focus ring's 20 x 20), after the host's pictures in the same table */
 #define MAX_REGION 96
+#define OPS_CAP (128 * 1024)
 #define NINE_PARTS 9
 typedef struct {
   uint32_t id, parent;          /* parent: the id of the clip this node sits in, 0 at the root */
@@ -26,8 +29,9 @@ static node_t g_o[MAX_OBJ];
 static int g_n, g_unknown, g_nseq, g_pass = 3;
 static uint32_t g_seq[MAX_OBJ];
 static char g_text[1024];
-typedef struct { int w, h; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
-static asset_t g_a[MAX_ASSET];
+static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
+typedef struct { int w, h; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
+static asset_t g_a[MAX_ASSET + MAX_SRC];
 /* the tag of the nodes now arriving, and the clip they are inside */
 static int g_layer = LAYER_CHROME, g_region;
 static char g_reg[MAX_REGION][48];
@@ -41,13 +45,16 @@ static uint32_t g_hash[1024];   /* rgb + 1, open addressing */
 
 void prim_init(void) { g_n = 0; g_unknown = 0; g_nreg = 1; strcpy(g_reg[0], "?"); g_region = 0; g_layer = LAYER_CHROME; g_pass = 3; }
 char *prim_text(void) { return g_text; }
+char *prim_ops(void) { return g_ops; }
+int prim_ops_size(void) { return (int)sizeof g_ops; }
 int prim_text_size(void) { return (int)sizeof g_text; }
 int prim_count(void) { return g_n; }
 int prim_unknown(void) { return g_unknown; }
+void prim_refuse(void) { g_unknown++; }
 int prim_asset_limit(void) { return MAX_ASSET; }
 int prim_object_limit(void) { return MAX_OBJ; }
 int prim_lvgl_objects(void) { int n = g_n; for (int i = 0; i < g_n; i++) if (g_o[i].kind == FN_NINE) n += NINE_PARTS; return n; }
-int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
+int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
 static const lv_font_t *font_of(int px) { return px == 16 ? &face_inter_16 : px == 20 ? &face_inter_20 : px == 28 ? &face_inter_28 : NULL; }
 int prim_measure(int px) {
   const lv_font_t *f = font_of(px); if (!f) return -1;
@@ -65,6 +72,7 @@ int prim_palette_add(const char *name, uint32_t rgb) {
   uint32_t h = mix(rgb) & 1023; while (g_hash[h] && g_hash[h] != (rgb & 0xffffff) + 1) h = (h + 1) & 1023; g_hash[h] = (rgb & 0xffffff) + 1;
   return 0;
 }
+int prim_palette_rgb(const char *name, uint32_t *rgb) { for (int i = 0; i < g_npal; i++) if (strcmp(g_pal[i].name, name) == 0) { *rgb = g_pal[i].rgb; return 0; } return -1; }
 int prim_palette_has(uint32_t rgb) { rgb &= 0xffffff; uint32_t h = mix(rgb) & 1023; while (g_hash[h]) { if (g_hash[h] == rgb + 1) return 1; h = (h + 1) & 1023; } return 0; }
 static int colour_of(const char *name, int len, uint32_t *rgb) {
   for (int i = 0; i < g_npal; i++) if ((int)strlen(g_pal[i].name) == len && strncmp(g_pal[i].name, name, (size_t)len) == 0) { *rgb = g_pal[i].rgb; return 0; }
@@ -79,12 +87,19 @@ static void put(uint8_t *px, int w, int h, int x, int y, uint32_t rgb) {
 static int g_bad;   /* set when an op argument is not a JSON integer: prim_compose refuses the picture */
 static int tokint(const char *s, const jsmntok_t *t) { int v = 0; if (t->type != JSMN_PRIMITIVE || !json_int(s + t->start, t->end - t->start, &v)) { g_bad = 1; return 0; } return v; }
 static int skip(const jsmntok_t *t, int i) { int n = t[i].size; i++; for (; n > 0; n--) i = skip(t, i); return i; }   /* the token after the one at i, with its children */
+static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len, jsmntok_t *tok, int ntok);
 int prim_compose(uint8_t *px, int w, int h, const char *ops) {
-  jsmn_parser p; jsmntok_t tok[2048]; jsmn_init(&p); g_bad = 0;
-  if (!json_clean(ops, (int)strlen(ops))) return -1;
-  int n = jsmn_parse(&p, ops, strlen(ops), tok, 2048);
-  if (n < 1 || tok[0].type != JSMN_ARRAY) return -1;
-  { size_t e = strlen(ops); while (e > 0 && (ops[e - 1] == ' ' || ops[e - 1] == '\n' || ops[e - 1] == '\t' || ops[e - 1] == '\r')) e--; if ((size_t)tok[0].end != e) return -1; }
+  jsmn_parser p; g_bad = 0; jsmn_init(&p);
+  size_t len = strlen(ops); int n = jsmn_parse(&p, ops, len, NULL, 0);
+  if (n < 1 || n > 40000 || !json_clean(ops, (int)len)) return -1;
+  jsmntok_t *tok = (jsmntok_t *)malloc(sizeof *tok * (size_t)n); if (!tok) return -1;
+  jsmn_init(&p); int rc = compose_tokens(px, w, h, ops, len, tok, n); free(tok); return rc;
+}
+static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len, jsmntok_t *tok, int ntok) {
+  jsmn_parser p; jsmn_init(&p);
+  int n = jsmn_parse(&p, ops, len, tok, (unsigned)ntok);
+  if (n != ntok || tok[0].type != JSMN_ARRAY) return -1;
+  { size_t e = len; while (e > 0 && (ops[e - 1] == ' ' || ops[e - 1] == '\n' || ops[e - 1] == '\t' || ops[e - 1] == '\r')) e--; if ((size_t)tok[0].end != e) return -1; }
   int drawn = 0, i = 1;
   for (int op = 0; op < tok[0].size; op++) {
     if (tok[i].type != JSMN_ARRAY || tok[i].size < 1) return -1;
@@ -109,6 +124,26 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops) {
       int np = tok[pairs].size, q = pairs + 1; int ax[16], ay[16]; if (np > 16) return -1;
       for (int k = 0; k < np; k++) { if (tok[q].type != JSMN_ARRAY || tok[q].size != 2) return -1; ax[k] = tokint(ops, &tok[q + 1]); ay[k] = tokint(ops, &tok[q + 2]); q += 3; }
       for (int yy = 0; yy < lh; yy++) for (int xx = 0; xx < lw; xx++) for (int k = 0; k < np; k++) if (xx % mod == ax[k] && yy % mod == ay[k]) { put(px, w, h, x + xx, y + yy, rgb); break; }
+    } else if (nl == 4 && strncmp(name, "ring", 4) == 0 && tok[i].size == 9) {   /* ["ring", shape, x, y, w, h, width, radius, colour] */
+      if (!COL(7)) return -1;
+      int ell = tok[j].end - tok[j].start == 7 && strncmp(ops + tok[j].start, "ellipse", 7) == 0, rnd = tok[j].end - tok[j].start == 5 && strncmp(ops + tok[j].start, "round", 5) == 0;
+      if (tok[j].type != JSMN_STRING || (!ell && !rnd)) return -1;
+      int x = A(1), y = A(2), bw = A(3), bh = A(4), width = A(5), radius = A(6);
+      if (g_bad || width > 4096 || radius > 4096 || bw < 1 || bh < 1 || x < 0 || y < 0 || x + bw > w || y + bh > h || (long)bw * bh > 1024L * 600) return -1;
+      uint8_t *mask = (uint8_t *)malloc((size_t)bw * bh); if (!mask) return -1;
+      if (ring_mask(mask, bw, bh, width, radius, ell) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
+      free(mask);
+    } else if (nl == 7 && strncmp(name, "tabRing", 7) == 0 && tok[i].size == 13) {   /* ["tabRing", x, y, body, width, slant, outside, top, slantTo, bottom, radius, tabTop, colour] */
+      if (!COL(11)) return -1;
+      int x = A(0), y = A(1); ring_tab_t t = { A(2), A(3), A(4), A(5), A(6), A(7), A(8), A(9), A(10) };
+      if (g_bad) return -1;
+      { const int *q = &t.body; for (int k = 0; k < 9; k++) if (q[k] < -4096 || q[k] > 4096) return -1; }   /* the products stay far inside int64 */
+      uint8_t *mask = (uint8_t *)malloc(1024 * 64); int bw = ring_tab_w(&t), bh = ring_tab_h(&t);
+      if (!mask) return -1;
+      if (bw < 1 || bh < 1 || bw * bh > 1024 * 64 || x < 0 || y < 0 || x + bw > w || y + bh > h || ring_tab_mask(mask, &t) < 0) { free(mask); return -1; }
+      for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
+      free(mask);
     } else return -1;
 #undef A
 #undef COL
@@ -119,6 +154,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops) {
 }
 
 /* ---- pictures ---- */
+static uint32_t hash_str(const char *s);
 static void dsc_of(lv_image_dsc_t *d, uint8_t *data, int w, int h, int stride) {
   memset(d, 0, sizeof *d);
   d->header.magic = LV_IMAGE_HEADER_MAGIC; d->header.cf = LV_COLOR_FORMAT_ARGB8888; d->header.w = (uint32_t)w; d->header.h = (uint32_t)h;
@@ -133,6 +169,17 @@ uint8_t *prim_asset(int handle, int w, int h) {
   return g_a[handle].px;
 }
 void prim_asset_free(int handle) { if (handle < 0 || handle >= MAX_ASSET) return; free(g_a[handle].px); memset(&g_a[handle], 0, sizeof g_a[handle]); }
+/* A face-owned source picture from composed ops (w x h), cached by the ops' hash: the same ops are the same picture, kept once. A handle for a nine-slice or a sprite, or -1 when refused or the table is full. */
+int prim_source(const char *ops, int w, int h) {
+  if (w <= 0 || h <= 0 || (long)w * h > 256 * 256) return -1;
+  uint32_t key = hash_str(ops) ^ ((uint32_t)w * 40503u) ^ ((uint32_t)h * 9973u); if (!key) key = 1;
+  int free_slot = -1;
+  for (int i = MAX_ASSET; i < MAX_ASSET + MAX_SRC; i++) { if (g_a[i].px && g_a[i].src_key == key && g_a[i].w == w && g_a[i].h == h) return i; if (!g_a[i].px && free_slot < 0) free_slot = i; }
+  if (free_slot < 0) return -1;
+  asset_t *s = &g_a[free_slot]; s->px = (uint8_t *)calloc((size_t)w * h, 4); if (!s->px) return -1;
+  if (prim_compose(s->px, w, h, ops) < 0) { free(s->px); s->px = NULL; return -1; }
+  s->w = w; s->h = h; s->src_key = key; s->view_key = 0; dsc_of(&s->dsc, s->px, w, h, w * 4); return free_slot;
+}
 uint8_t *prim_asset_ptr(int handle) { return handle >= 0 && handle < MAX_ASSET ? g_a[handle].px : NULL; }
 /* the nine parts of a picture as views into its own pixels (no copy): the corners at the insets l, t, r, b, and the edges and the middle as one tile each (the first `tile` px
    of the strip, or all of it when tile is 0), repeated by the objects over the target */
@@ -194,9 +241,9 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (kind < FN_RECT || kind > FN_COMPOSED) REFUSE();
   if (kind == FN_TEXT && !font_of(a)) REFUSE();
   int sx = (int)(rgb >> 16), sy = (int)(rgb & 0xffff);
-  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
+  if (kind == FN_SPRITE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || (rgb == 0 ? (g_a[a].w != w || g_a[a].h != h) : (sx + w > g_a[a].w || sy + h > g_a[a].h)))) REFUSE();
   int nl = (int)(rgb >> 24), nt = (int)((rgb >> 16) & 255), nr = (int)((rgb >> 8) & 255), nb = (int)(rgb & 255);   /* a nine-slice: its insets l, t, r, b in rgb, its tile in b */
-  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
+  if (kind == FN_NINE && (a < 0 || a >= MAX_ASSET + MAX_SRC || !g_a[a].px || g_a[a].w <= nl + nr || g_a[a].h <= nt + nb || w < nl + nr || h < nt + nb)) REFUSE();
   if (kind == FN_COMPOSED && (w <= 0 || h <= 0 || (long)w * h > 1024L * 600)) REFUSE();
   int i = find(id);
   if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent)) { drop(i); i = -1; }
@@ -226,11 +273,11 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     }
   }
   if (kind == FN_COMPOSED) {   /* the ops are drawn into the picture's own pixels again only when they or its size change */
-    uint32_t oh = hash_str(g_text) ^ ((uint32_t)w * 40503u) ^ ((uint32_t)h * 9973u);
+    uint32_t oh = hash_str(g_ops) ^ ((uint32_t)w * 40503u) ^ ((uint32_t)h * 9973u);
     if (n->fresh || n->ops_hash != oh) {
       if (n->w != w || n->h != h || !n->composed) { free(n->composed); n->composed = (uint8_t *)calloc((size_t)w * h, 4); }
       else memset(n->composed, 0, (size_t)w * h * 4);
-      if (!n->composed || prim_compose(n->composed, w, h, g_text) < 0) { g_unknown++; if (n->composed) memset(n->composed, 0, (size_t)w * h * 4); }
+      if (!n->composed || prim_compose(n->composed, w, h, g_ops) < 0) { g_unknown++; if (n->composed) memset(n->composed, 0, (size_t)w * h * 4); }
       dsc_of(&n->cdsc, n->composed, w, h, w * 4); lv_image_set_src(o, &n->cdsc); lv_obj_invalidate(o); n->ops_hash = oh;
     }
   }
