@@ -3,7 +3,7 @@
   "runs": [
     {
       "time": "2026-10-07T05:30:25Z",
-      "plan": "scratchpad/plan-round2-flat.json",
+      "plan": "plan-round2-flat.json",
       "ids": null,
       "success": 3,
       "error": 0

@@ -100,7 +100,7 @@ The ruling on item 10: deliberate pixel-by-pixel placement and editing of a gene
 
 1. **Water: a second tile variant per frame.** `water1b`/`water2b` (and `deep1b`/`deep2b`), laid by the compose script's seeded hash (below).
 2. **Stones: the charged bolt is good; the warm stone is wrong ("a circular glow doesn't make sense, it's a rock").** The charged stones are kept as they were; the warm stone is redrawn as rock with a thin warm vein, no halo and no round core (below).
-3. **The pawn: "it cannot look like a Teletubby".** Redrawn as a hooded explorer with a pack, a real hand pass in Aseprite on the VM (below).
+3. **The pawn: "it cannot look like a Teletubby".** Redrawn as a hooded explorer with a pack, a real hand pass in Aseprite (headless) (below).
 
 ## The owner's answers on round 2, and what answers each
 
@@ -113,7 +113,7 @@ The ruling on item 10: deliberate pixel-by-pixel placement and editing of a gene
 ## The owner's five notes on round 1, and what answers each
 
 1. **"Dark, and the rain too heavy."** The round 1 still darkened everything one ramp step. Round 2 uses no DARK step: the ground, water and plain stones go through a *storm table* (each colour mixed 30 % toward river, nearest palette colour; sand, clay, paper, bone and white kept), and the canopies and the lit stones keep their own colours (decision below). The pawn and mibis never pass through a table. The rain tile has 10 streaks per 96 px (round 1: 26). Limit: the storm reads mild; the owner chose that over a stronger teal cast.
-2. **"The grid is not seamless."** A real Aseprite pass (1.3.18, headless on the VM, `tools/aseprite-meadow.lua`): all eight meadow tiles (grass ×4, tall ×2, flowers ×2) take one shared outer band, the master's interior offset by half a tile, blended inward and snapped to the tile's colours; grass3 and grass4 took an 18 px band (8 px left a faint horizontal structure in their own 3×3). Any meadow tile joins any other.
+2. **"The grid is not seamless."** A real Aseprite pass (1.3.18, headless, `tools/aseprite-meadow.lua`): all eight meadow tiles (grass ×4, tall ×2, flowers ×2) take one shared outer band, the master's interior offset by half a tile, blended inward and snapped to the tile's colours; grass3 and grass4 took an 18 px band (8 px left a faint horizontal structure in their own 3×3). Any meadow tile joins any other.
 3. **"Pawn, trees and stones good but dark."** Painted values lifted 18 % before quantising, nothing darkens them in the still beyond the storm cast on plain stones; Retro Diffusion sprites run through the same lift.
 4. **"River borders too wavy."** The shoreline amplitude is 0.9 + 0.5 px (was 2.2 + 1.3); a shallows band lies between bank and water; the foam line stays.
 5. **"Water flat."** Water redrawn (below), two frames.
@@ -226,7 +226,7 @@ The picks are in [`work/props/`](work/props/) and the sheets; the round 2 script
 
 **What H is, kept exactly:** an orange hooded parka with a deep hood, the face in shadow inside it showing a silver-rimmed opening and two eyes and a nose (front) or a gold-trimmed hood with a grey face, an eye and a nose (profile), a cream fur collar, a brown backpack with a roll, dark trousers, brown boots, 39 to 40 px tall. The proportions, the detail and the read are H's (the owner's words: better detail and proportions).
 
-**How the frames were made.** Study H itself is two frames, the down walk (the passing pose) and the right walk (the contact pose); they are the originals and they are the finished down walk2 and right walk1. Every other frame is a Retro Diffusion call, img2img from H's own frame (`tools/rd-pawn-h.py`): one seed (48), one prompt, `rd_pro__topdown` with the 48-colour `input_palette`, `remove_bg`, 48 × 48. The prompt is H's own words ("a small explorer in an orange hooded parka, a backpack, dark trousers, brown boots, pixel art sprite on a plain white background, the face in shadow inside the hood showing only two eyes and a nose, no goggles, a thin fur collar at the neck, not too much face") with only the facing words (from the front, from the right side in profile, from behind, facing away) and the pose words (mid-stride with the left or right foot forward; crouching low; startled with both arms raised) changing. The right facing is drawn from H's profile frame, the down facing from H's front frame, the up facing from its own first frame (a call from H's front frame, "seen from behind", at a higher strength: the service had to turn the character round); the left facing is the right mirrored. 25 calls in all, $4.50: 19 at strength 0.45 and 6 repeats at 0.32 (`sources/rd-pawn-h/`, the first results of the six in `first-pass/`).
+**How the frames were made.** Study H itself is two frames, the down walk (the passing pose) and the right walk (the contact pose); they are the originals and they are the finished down walk2 and right walk1. Every other frame is a Retro Diffusion call, img2img from H's own frame (`tools/rd-pawn-h.py`): one seed (48), one prompt, `rd_pro__topdown` with the 48-colour `input_palette`, `remove_bg`, 48 × 48. The prompt is H's own words ("a small explorer in an orange hooded parka, a backpack, dark trousers, brown boots, pixel art sprite on a plain white background, the face in shadow inside the hood showing only two eyes and a nose, no goggles, a thin fur collar at the neck, not too much face") with only the facing words (from the front, from the right side in profile, from behind, facing away) and the pose words (mid-stride with the left or right foot forward; crouching low; startled with both arms raised) changing. The right facing is drawn from H's profile frame, the down facing from H's front frame, the up facing from its own first frame (a call from H's front frame, "seen from behind", at a higher strength: the service had to turn the character round); the left facing is the right mirrored. 25 calls in all: 19 at strength 0.45 and 6 repeats at 0.32 (`sources/rd-pawn-h/`, the first results of the six in `first-pass/`).
 
 **Where the service redrew the character** (the finding): at 0.45 it redrew the character on six frames (the down react came back as a lit window in a wooden wall; the down and up crouches as a kneeling figure with a huge pack; the right crouch as a hunched figure with a spiral on the back; the up walk and react showing a face from behind). Repeated at 0.32 the character holds, and four of the six came back usable (down creep2 and react, right creep1, up walk1). It also moves a stride only a little at the front and the back (the down walk1 and walk3 came back as the walk2), so **the service's frames stand only where they keep the character and move the pose**; the rest are derived by hand from H's own parts, never from the older pawns.
 
@@ -241,7 +241,7 @@ The picks are in [`work/props/`](work/props/) and the sheets; the round 2 script
   - **The art director's round 10 notes on these** (every other frame signed): the down and up contacts now put the front sole on row 45 and the back sole (lifted two rows) on row 43, both on the shadow, with the body one row down (no longer a hop); **right walk1 is redrawn** as walk3's open V with the legs swapped, both soles on row 43 (H's original profile legs, a bar joining the boots and a back boot on its toe, read as a kneel; H's head, torso and pack are still the original's, and `work/pawn-h-vs-original-*` shows the original beside it); **the down react's plank under the feet (a skateboard) is out**, a clean hop over the shadow; **right and left walk2 are raised a row** as the front and back ones are.
   - **right walk2** is a true passing pose (the near leg planted straight, the far leg lifted with the knee forward and the foot under it); **right walk3** is the second contact (near leg forward, far leg back) on walk1's own upper block, so its size and mass are walk1's; **right creep3** likewise; the **right react** keeps H's shadowed face inside the cell (the service's open mouth and swollen hood are out) with both arms drawn raised; the **up react** has real raised arms (the sleeves taken off the back and drawn again). **Left is the right mirrored.** The down react is the service's (it passes).
   - Every stride is shown as a strip at 3×, walk1 walk2 walk3 walk2 and creep1 creep2 creep3 creep2, per facing, in [`work/pawn-cycles-3x.png`](work/pawn-cycles-3x.png).
-The 28 frames are then assembled in Aseprite on the VM (`tools/aseprite-pawn.lua`: one tagged sprite, [`work/pawn-aseprite/pawn.aseprite`](work/pawn-aseprite/pawn.aseprite), every frame exported back; 0 pixels differ). `sh tools/pawn-h-build.sh` runs the pass, the VM step and the install.
+The 28 frames are then assembled in Aseprite (headless) (`tools/aseprite-pawn.lua`: one tagged sprite, [`work/pawn-aseprite/pawn.aseprite`](work/pawn-aseprite/pawn.aseprite), every frame exported back; 0 pixels differ). `sh tools/pawn-h-build.sh` runs the pass, the Aseprite step and the install.
 
 **Four greys, re-read** (Rec. 709 luma, four equal bands) on all 28 frames, after the round 9 coat lightening and the round 10 strides: 34 % of the pawn's pixels fall in grey 1, 29 % in grey 2, 31 % in grey 3 (the amber body, luma 179) and 6 % in grey 4 (yellow light, face); the orange shade (luma 127) is grey 2. On both grounds see "Four greys, re-read on both grounds" under the still.
 
@@ -259,7 +259,7 @@ What the owner said: too much face, goggles that look floating, a band that is t
 - **The goggles:** A, D, F on the brow on a **1 px strap that runs through both lenses** (so they sit on something, and the thick two-row band is gone); C dropped over the eyes (the lenses are the face, the strap runs back round the hood); B, E none.
 - **The ruff:** A, B, C, E, F a **1 px ring of fur with breaks** where the hood shows through; D a collar at the neck instead of a ring.
 - **The side view:** the hood's **brim comes down in front of the brow**, the eye and the nose lie inside the fur (nothing leaves its edge), the strap runs back round the hood and one lens sits on the brim.
-- **Retro Diffusion (G, H):** the round 6 down walk and right walk frames as img2img at 48 px with the owner's words in the prompt (G: a small face deep in the hood, goggles on the brow on a thin strap; H: the face in shadow with only eyes and a nose, no goggles, a thin fur collar; 4 calls, $0.72, `tools/rd-pawn-studies.py`), snapped onto the pawn's ramps (`tools/pawn-study-snap.py`). Neither is clean (G's fur reads as a beard and its side face has a long nose; H is a faceplate), which is the finding: the service redraws the whole figure, so it is useful for ideas and not for this pixel pass.
+- **Retro Diffusion (G, H):** the round 6 down walk and right walk frames as img2img at 48 px with the owner's words in the prompt (G: a small face deep in the hood, goggles on the brow on a thin strap; H: the face in shadow with only eyes and a nose, no goggles, a thin fur collar; 4 calls, `tools/rd-pawn-studies.py`), snapped onto the pawn's ramps (`tools/pawn-study-snap.py`). Neither is clean (G's fur reads as a beard and its side face has a long nose; H is a faceplate), which is the finding: the service redraws the whole figure, so it is useful for ideas and not for this pixel pass.
 - **A to F** are hand-pixelled on the parts of the round 6 pawn (`tools/pawn-study.py`: masks, polygons and pixel sets with the rim-rule shading; the legs, coat, arms, pack, shadow and outline are the pawn's own).
 
 **Pawn I (round 8), the art director's study (not chosen: the owner picked H):** A's front with C's side view, in the concept's proportions (`tools/pawn-chunky.py`; the down walk passing frame and the right walk contact frame, [3×](work/pawn-studies-3x.png) and [1×](work/pawn-studies-1x.png), last on the sheet, with the round 6 pawn and A to H). Chunky and head-heavy: a hood 20 rows tall over a torso of 11, legs of 6 and boots of 3 (round 6: hood 12, torso 13, legs 11); a bigger hood mass (18 px wide); **trousers a light stone grey** (fog, mist, stone), not navy, so the legs are not two black sticks. **The goggles' lenses rest on the hood's brim and the 1 px strap stays inside the hood's outline** (the script draws a strap pixel only where the pixel and its neighbours in the row are in the hood's mask, so it can never pass the silhouette). **The nose is 1 px** in the front view and 1 px inside the fur in the side view, and the fur is a thin ring with breaks, so nothing reads as a snout. Front: a small face deep behind a dark rim of hood (A). Side: the goggles over the eye, the strap running back inside the hood, a thin crescent of fur (C). It is a study: the pawn in the sheets, the atlas and the still stays round 6's until the lead confirms Pawn I and the cycles (4 facings, walk 3, creep 3, react) are drawn. Four greys for Pawn I: the coat and the ground are unchanged from round 6 (the pawn's body one grey darker than the lime grass); on the candidate forest ground the coat shares the ground's grey (below).
@@ -276,7 +276,7 @@ Four greys are not re-read for the studies (the coat is round 6's and the ground
 
 The owner chose B (the log hut with its porch). It replaces the outpost (`outpost-lit`, `outpost-dark`, `outpost-dark2`) in the props sheet, its atlas and the still; the other options are out of the sheets.
 
-How it was made: the painted B hut (a planted hut on a patch of grass with a base row of stones and a shadow, two bands of thatch, log walls, a porch over the door, a lantern, a bundle of sticks; Gemini Pro, `sources/C48-H-r6-a1`) cropped, its key halo removed, put on white and sent as `input_image` (strength 0.4) to `rd_pro__topdown` at 64 px with the 48-colour `input_palette` and `remove_bg`, the owner's words in the prompt, three seeds of one family (`tools/rd-hut-b.py lit`). **Seed 50 is the body**: it kept the logs and the grass base. The service's own dark and dark2 results (img2img of the lit result) came back as different drawings of the hut, so they are kept as raw candidates and not used: the dark and night states are derived from the lit hut. Hut B cost 7 Retro Diffusion calls in all, $1.26.
+How it was made: the painted B hut (a planted hut on a patch of grass with a base row of stones and a shadow, two bands of thatch, log walls, a porch over the door, a lantern, a bundle of sticks; Gemini Pro, `sources/C48-H-r6-a1`) cropped, its key halo removed, put on white and sent as `input_image` (strength 0.4) to `rd_pro__topdown` at 64 px with the 48-colour `input_palette` and `remove_bg`, the owner's words in the prompt, three seeds of one family (`tools/rd-hut-b.py lit`). **Seed 50 is the body**: it kept the logs and the grass base. The service's own dark and dark2 results (img2img of the lit result) came back as different drawings of the hut, so they are kept as raw candidates and not used: the dark and night states are derived from the lit hut. Hut B took 7 Retro Diffusion calls in all.
 
 **Round 10: seed 50's thatch to the pixel, the wall redrawn as log courses** (`tools/hut-b-edit.py`; the art director's round 9 verdict on the first edit: it is B, planted, the owner's form; the per-column shift of the service's wall texture broke the log rows into vertical streaks, a palisade, the eave was flat across ten centre columns and overhung only on the right, the porch left no wall at its right, and the apex was cut). Raw beside edit at 3×:
 
@@ -288,7 +288,7 @@ How it was made: the painted B hut (a planted hut on a patch of grass with a bas
 - **A narrow side porch at the right** (11 px: posts, a plank door, a lean-to roof of planks under the eave, a stone step), so **round wall shows 4 px at the right of it and 23 px at the left**; the eave's arc passes over it and shows past the porch roof.
 - **One small window**, no lantern, no stick bundle. The patch of grass in the lime ramp (it takes the ground's state through the ground tables) with tufts darker than the grass, and the shadow on the grass in leaf green.
 
-Dark is the same drawing with the window dark; dark2 is dark one DARK step down. Assembled in Aseprite on the VM (`tools/aseprite-huts.lua`, `tools/huts-assemble.sh B ...`, [`work/hut-b-aseprite/hut-B.aseprite`](work/hut-b-aseprite/hut-B.aseprite), 0 pixels differ). The piece is 61 × 55 px.
+Dark is the same drawing with the window dark; dark2 is dark one DARK step down. Assembled in Aseprite (headless) (`tools/aseprite-huts.lua`, `tools/huts-assemble.sh B ...`, [`work/hut-b-aseprite/hut-B.aseprite`](work/hut-b-aseprite/hut-B.aseprite), 0 pixels differ). The piece is 61 × 55 px.
 
 Limits: the wall's log courses are code-drawn, not the service's pixels (the service's texture was the streaked part); the porch is 11 px wide with a 5 px door, small at 1×.
 
@@ -300,13 +300,13 @@ grass2: the long bar, bracket and ramp of dark pixels that repeated on the grid 
 
 | Group | Source | Script | Stage |
 | --- | --- | --- | --- |
-| Ground: grass ×4, tall ×2, flowers ×2, shade, sand, wet shore | One Pro-painted 4×4 grid ([`sources/C48-T-r1-a1`](sources/C48-T-r1-a1.json)): cut by the magenta margins, 10 % trim, wrap-blend, level-match across the meadow set, BOX to 48, quantise per ramps, despeckle (`tools/build-ground.py`); then the Aseprite pass on the VM for the eight meadow tiles | generated source, scripted down-render, Aseprite pass |
+| Ground: grass ×4, tall ×2, flowers ×2, shade, sand, wet shore | One Pro-painted 4×4 grid ([`sources/C48-T-r1-a1`](sources/C48-T-r1-a1.json)): cut by the magenta margins, 10 % trim, wrap-blend, level-match across the meadow set, BOX to 48, quantise per ramps, despeckle (`tools/build-ground.py`); then the Aseprite pass (headless) for the eight meadow tiles | generated source, scripted down-render, Aseprite pass |
 | Water, deep (2 variants × 2 frames each), shallows | Scripted (`tools/build-water.py`) | scripted |
 | Ripple overlay sprites 3 sizes × 2 frames | Scripted (`tools/build-ripples.py`) | scripted |
 | Shore set: 16 cardinal masks and 4 diagonal corners × 2 frames | Cut from grass1, sand, shallows and water along a wavy shoreline; rounded land corners; bone foam (frame 1), white (frame 2) (`tools/build-shore.py`); tested by `tools/shoregrid.py` | scripted |
 | Props | One Pro-painted sheet on magenta ([`sources/C48-P-r1-a1`](sources/C48-P-r1-a1.json)): key, fit, lift 1.18, quantise per ramps, despeckle, outline (`tools/build-props.py`); the six stones, the stepping stone, the three bushes and the three outposts from Retro Diffusion (`tools/rd-sprites.py`, `rd-snap.py`) with the hand passes (`tools/hand-pass.py`: the stones, the warm ones as rock with a heat vein; `tools/hand-pass-props.py`: the bushes and the outposts) | generated source, scripted down-render; Retro Diffusion pieces with a hand pass |
 | Warned strike ×2, HUD icons, key caps, condition bolts, 9-slices | Drawn by script on the ramps from the page's own icon forms (`tools/build-ui.py`) | scripted |
-| Pawn: 4 facings × walk 3, creep 3, react | Drawn as masks and pixel sets (`tools/pawn-draw.py`), assembled and exported in Aseprite on the VM (`tools/aseprite-pawn.lua`) | hand-drawn, Aseprite |
+| Pawn: 4 facings × walk 3, creep 3, react | Drawn as masks and pixel sets (`tools/pawn-draw.py`), assembled and exported in Aseprite (headless) (`tools/aseprite-pawn.lua`) | hand-drawn, Aseprite |
 | Outpost, hut B (lit, dark, dark2; in the props sheet) | A Gemini Pro painted source ([`sources/C48-H-r6-a1`](sources/C48-H-r6-a1.json)) through Retro Diffusion at 64 px (`tools/rd-hut-b.py`), the hand pass (`tools/hut-b.py`), assembled in Aseprite (`tools/aseprite-huts.lua`) | generated source, Retro Diffusion, hand pass |
 | Pawn studies A to H (not in the sheets) | A to F hand-pixelled (`tools/pawn-study.py`); G, H Retro Diffusion from round 6's frames (`tools/rd-pawn-studies.py`, `tools/pawn-study-snap.py`); the sheet by `tools/pawn-studies-sheet.py` | studies |
 | Tokens: Pip as Loika (idle 2, walk 3); placeholders S02–S04 | The accepted Pip painting, quantised and outlined (`tools/build-tokens.py`) | derived, scripted |
@@ -335,36 +335,35 @@ From [`design/style-guide/sign-off.md`](../../../design/style-guide/sign-off.md)
 
 Signed, art director, 2026-10-08. The pawn is the owner's pick (study H), built as the lead briefed and not the art director's pick. Failures: those listed in line three (no hand pass on the tree, pod and tokens; the pawn's derived poses; the water's pool pattern recurring at a distance), the one-unit margin of the pawn's coat, and the service's scale drift on a few pawn frames.
 
-## Spend
+## Calls
 
-| Call | Tool | USD |
+| Call | Tool | Calls |
 | --- | --- | --- |
-| C48-T-r1-a1 ground grid, C48-P-r1-a1 props, C48-W-r1-a1 pawn | Pro, 1K each | 0.53 |
-| C48-R-r1-a1, a2 rain | Retro Diffusion rd_pro__topdown 96×96 | 0.36 |
-| C48-R-r2-water1, water2 | Retro Diffusion rd_pro__topdown 48×48 | 0.36 |
-| C48-S-r2 first sprite batch, 12 calls (superseded: magenta fringe on the inputs) | Retro Diffusion rd_pro__topdown | 2.16 |
-| C48-S-r2 second sprite batch, 12 calls | Retro Diffusion rd_pro__topdown | 2.16 |
-| C48-S-r2 stones batch (stone-plain2, stone-warm2, stone-charged2, stone-step), round 3 | Retro Diffusion rd_pro__topdown | 0.72 |
-| Round 4: no paid call (the pawn, the warm stone and the water variants are scripted) | | 0.00 |
-| C48-S-r2 outposts (lit, dark, dark2) and shaken bush, round 5 (the lit hut's first result, $0.18, was overwritten and is in `extra-spend.json`) | Retro Diffusion rd_pro__topdown | 0.72 |
-| C48-H-r6-a1 painted hut sheet, round 6 | Pro, 1K | 0.17 |
-| C48-H-r6 huts A to D, three states each, 12 calls, round 6 | Retro Diffusion rd_pro__topdown 64×58 | 2.16 |
-| C48-H-r7-B hut B: three lit seeds, two state calls for seed 48, two for seed 50, round 7 | Retro Diffusion rd_pro__topdown 64×58 | 1.26 |
-| C48-W-r7-G, C48-W-r7-H pawn studies, 4 calls, round 7 | Retro Diffusion rd_pro__topdown 48×48 | 0.72 |
-| Round 8: no paid call (hut B at 64 px reuses round 7's seed 50; Pawn I and the forest ground are scripted) | | 0.00 |
-| Round 10: no paid call (the strides are drawn by hand, no more service calls for poses) | | 0.00 |
-| Round 9, hut B and the ground states: no paid call (seed 50's own pixels edited; the tree refit from the painted sheet; the tables scripted) | | 0.00 |
-| C48-W-r9 the pawn from H: 19 calls at 0.45 and 6 repeats at 0.32, 25 calls, round 9 | Retro Diffusion rd_pro__topdown 48×48 | 4.50 |
-| C48-T-r11-a1 tree painting, round 11 | Pro, 1K | 0.16 |
-| C48-T-r11 tree (3 seeds, 136×152), C48-S-r11 stone (3 seeds at 48×64 and 3 at 62×80), C48-H-r11 hut (3 seeds, 144×152), round 11: 12 calls | Retro Diffusion rd_pro__topdown | 2.16 |
-| C48-H-r11-a1 hut painting, round 11 | Pro, 1K | 0.17 |
-| C48-T-r11-b1 tree painting (round 11b) | Pro, 1K | 0.17 |
-| C48-T-r11 tree, 3 seeds at 136×152 (round 11b) | Retro Diffusion rd_pro__topdown | 0.54 |
-| C48-H-r11 c1, c2, d1 hut paintings (round 11c) | Pro, 1K | 0.51 |
-| C48-H-r11 hut, 6 seeds at 144×156, and C48-T-r11 tree, 3 seeds at 224×232 (round 11c): 9 calls | Retro Diffusion rd_pro__topdown | 1.62 |
-| **Total** | | **21.13** |
+| C48-T-r1-a1 ground grid, C48-P-r1-a1 props, C48-W-r1-a1 pawn | Pro, 1K each | 3 |
+| C48-R-r1-a1, a2 rain | Retro Diffusion rd_pro__topdown 96×96 | 2 |
+| C48-R-r2-water1, water2 | Retro Diffusion rd_pro__topdown 48×48 | 2 |
+| C48-S-r2 first sprite batch, 12 calls (superseded: magenta fringe on the inputs) | Retro Diffusion rd_pro__topdown | 12 |
+| C48-S-r2 second sprite batch, 12 calls | Retro Diffusion rd_pro__topdown | 12 |
+| C48-S-r2 stones batch (stone-plain2, stone-warm2, stone-charged2, stone-step), round 3 | Retro Diffusion rd_pro__topdown | 4 |
+| Round 4: no paid call (the pawn, the warm stone and the water variants are scripted) | | 0 |
+| C48-S-r2 outposts (lit, dark, dark2) and shaken bush, round 5 (the lit hut's first result was overwritten; its call is in the internal ledger) | Retro Diffusion rd_pro__topdown | 4 |
+| C48-H-r6-a1 painted hut sheet, round 6 | Pro, 1K | 1 |
+| C48-H-r6 huts A to D, three states each, 12 calls, round 6 | Retro Diffusion rd_pro__topdown 64×58 | 12 |
+| C48-H-r7-B hut B: three lit seeds, two state calls for seed 48, two for seed 50, round 7 | Retro Diffusion rd_pro__topdown 64×58 | 7 |
+| C48-W-r7-G, C48-W-r7-H pawn studies, 4 calls, round 7 | Retro Diffusion rd_pro__topdown 48×48 | 4 |
+| Round 8: no paid call (hut B at 64 px reuses round 7's seed 50; Pawn I and the forest ground are scripted) | | 0 |
+| Round 10: no paid call (the strides are drawn by hand, no more service calls for poses) | | 0 |
+| Round 9, hut B and the ground states: no paid call (seed 50's own pixels edited; the tree refit from the painted sheet; the tables scripted) | | 0 |
+| C48-W-r9 the pawn from H: 19 calls at 0.45 and 6 repeats at 0.32, 25 calls, round 9 | Retro Diffusion rd_pro__topdown 48×48 | 25 |
+| C48-T-r11-a1 tree painting, round 11 | Pro, 1K | 1 |
+| C48-T-r11 tree (3 seeds, 136×152), C48-S-r11 stone (3 seeds at 48×64 and 3 at 62×80), C48-H-r11 hut (3 seeds, 144×152), round 11: 12 calls | Retro Diffusion rd_pro__topdown | 12 |
+| C48-H-r11-a1 hut painting, round 11 | Pro, 1K | 1 |
+| C48-T-r11-b1 tree painting (round 11b) | Pro, 1K | 1 |
+| C48-T-r11 tree, 3 seeds at 136×152 (round 11b) | Retro Diffusion rd_pro__topdown | 3 |
+| C48-H-r11 c1, c2, d1 hut paintings (round 11c) | Pro, 1K | 3 |
+| C48-H-r11 hut, 6 seeds at 144×156, and C48-T-r11 tree, 3 seeds at 224×232 (round 11c): 9 calls | Retro Diffusion rd_pro__topdown | 9 |
 
-Re-summed from the sidecars by `tools/budget.py` into [`sources/budget.json`](sources/budget.json) (the superseded batch in [`sources/extra-spend.json`](sources/extra-spend.json)). The service's balance is topped up automatically, so it is not a limit.
+Counted from the sidecars by `tools/budget.py` into [`sources/calls.json`](sources/calls.json).
 
 ## Limits and what the next round needs
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "critter-image-benchmark/1",
-  "method": "GPT-6.1 Sol High-directed built-in image tool",
+  "method": "ChatGPT built-in image tool (gpt-image, per the PNG's Content Credentials)",
   "rasterBackend": "unverified; tool exposes no model parameter or backend identifier",
   "callCount": 1,
   "startedAtUtc": "2026-10-02T01:58:37.070Z",
@@ -25,5 +25,5 @@
   "transparentBackground": false,
   "promptModified": false,
   "status": "independent genomic and integration assessments broad-fidelity pass; exact geometry and finished creature art not accepted",
-  "evidenceLimit": "One matched static projected-footprint style experiment; not native Sol raster output, valid solid organism, production sprite or animation."
+  "evidenceLimit": "One matched static projected-footprint style experiment; not a verified raster backend output, valid solid organism, production sprite or animation."
 }

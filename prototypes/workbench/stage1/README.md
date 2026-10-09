@@ -1,32 +1,32 @@
 # Stage 1 cut-off trial
 
-The first paid run of [art-pipeline.md](../../../design/proposals/art-pipeline.md) v2 §9, on 2026-10-08, from the programme lead's brief: control sets for three individuals each of S01 Loika, S09 Belatz and S12 Peplos from the workbench CLI by genome hash; the unique Station set per individual painted by a cloud model from the controls; the smaller sizes derived two ways; one side-by-side sheet per species at device size with the cost of each cut-off beside it. This is the generation trial only: nothing here is accepted art, no painted master or studio screen was touched, and no individual render here is a product render.
+The first paid run of [art-pipeline.md](../../../design/proposals/art-pipeline.md) v2 §9, on 2026-10-08, from the programme lead's brief: control sets for three individuals each of S01 Loika, S09 Belatz and S12 Peplos from the workbench CLI by genome hash; the unique Station set per individual painted by a cloud model from the controls; the smaller sizes derived two ways; one side-by-side sheet per species at device size with each cut-off beside it. This is the generation trial only: nothing here is accepted art, no painted master or studio screen was touched, and no individual render here is a product render.
 
-**Spent: $1.69.** Twelve Gemini image calls at $0.090–0.109 each (`gemini-3.1-flash-image`, 1K output, $1.152 in all, measured from the usage metadata at the standard-tier prices of 2026-10-08) and three Retro Diffusion token calls at $0.18 each ($0.54; balance $7.62 → $7.08). Every call is in [prompts.json](prompts.json) with its prompt, image inputs by name and SHA-256, response id (Gemini `responseId`, Retro Diffusion task id), usage, cost and seconds. No key material is stored anywhere here.
+Twelve Gemini image calls (`gemini-3.1-flash-image`, 1K output) and three Retro Diffusion token calls. Every call is in [prompts.json](prompts.json) with its prompt, image inputs by name and SHA-256, response id (Gemini `responseId`, Retro Diffusion task id), usage and seconds. No key material is stored anywhere here.
 
 ## What is here
 
 - `controls/<species>/<individual>/`: the main-view controls at the four sizes (shaded, slots, index, silhouette at tile 48, Companion 280×300, Station 300×310, large 600×620), the genome and the manifest, copied from `out/reference/` as `node sketch/cli.mjs --species S01 --set 3` writes them; the type specimen and three random individuals per species, each addressed by its genome digest and SHA-256 (`index.json`). The same digest gives the same controls on any machine.
 - `unique/<species>/<individual>/`: the painted Station master at 600×620 and the Station size 300×310; the Companion 280×300 and the 48 px token **derived** from it; the Companion and token **generic** per species (the type specimen's painted set with the pigment slots remapped to the individual's pool values); for one individual per species the token **painted at size** by Retro Diffusion. The raw 1024×1024 model outputs (12 × ~0.7 MB) are not committed; their SHA-256 is in prompts.json.
 - `sheets/<species>.png`: the side-by-side at 1×: unique Station, the plain version (the rig's shaded pass, not yet finished to the style guide), Companion derived and generic, token derived, generic and painted at 1× and 3×, each column with its cut-off cost, each row with the individual's digest and its validation scores.
-- `measurements.json`, `costs.json`, [trial.py](trial.py) (`controls`, `paint`, `token`, `fetch`, `derive`, `sheets`; the paid steps are `paint` and `token`).
+- `measurements.json`, `calls.json`, [trial.py](trial.py) (`controls`, `paint`, `token`, `fetch`, `derive`, `sheets`; the paid steps are `paint` and `token`).
 
 ## The call
 
-One request per individual to `gemini-3.1-flash-image` (`generateContent`, `responseModalities: ["IMAGE"]`, 1:1, 1K): the fixed template filled with frame facts (the species, the caption from the manifest, juvenile, idle) and the slot legend as the palette lock; four images in order: the shaded pass (form and light), the slot pass (the colour key), the index pass (the part map), all at 600×620 padded to a 620 square on the sketch background, and the accepted Pip at Station size (`art/miniature-lives/assets/rich-plain-300x310.png`) as the style reference. Mean 9.3 s a call (7.8–11.8), 1,356 prompt tokens (1,032 of them the four images) and 1,120 image output tokens plus the model's own text tokens, $0.096 mean. The output is JPEG at 1024²; it is scaled to the 620 square, cropped to the 600×620 master, and fitted to each control's silhouette bounds for the smaller sizes (the Station's rule in the proposal: scale and centre by bounds, quantise the subject to the 48-colour Companion palette, keep the flat background).
+One request per individual to `gemini-3.1-flash-image` (`generateContent`, `responseModalities: ["IMAGE"]`, 1:1, 1K): the fixed template filled with frame facts (the species, the caption from the manifest, juvenile, idle) and the slot legend as the palette lock; four images in order: the shaded pass (form and light), the slot pass (the colour key), the index pass (the part map), all at 600×620 padded to a 620 square on the sketch background, and the accepted Pip at Station size (`art/miniature-lives/assets/rich-plain-300x310.png`) as the style reference. Mean 9.3 s a call (7.8–11.8), 1,356 prompt tokens (1,032 of them the four images) and 1,120 image output tokens plus the model's own text tokens. The output is JPEG at 1024²; it is scaled to the 620 square, cropped to the 600×620 master, and fitted to each control's silhouette bounds for the smaller sizes (the Station's rule in the proposal: scale and centre by bounds, quantise the subject to the 48-colour Companion palette, keep the flat background).
 
-## Cost per mibi at each cut-off
+## Calls per mibi at each cut-off
 
-Measured Station call $0.096; three life stages; retries at 20 percent as the proposal assumes; token at size $0.18 (Retro Diffusion `rd_pro__default`, 48², palette, two references).
+Three life stages; retries at 20 percent as the proposal assumes; the token at size is one Retro Diffusion call (`rd_pro__default`, 48², palette, two references).
 
 | Cut-off | Calls a stage | Per mibi | With retries | Per kit-year (40 mibis) |
 | --- | ---: | ---: | ---: | ---: |
-| A. everything at size (Station main and side, token painted at size; the Companion derived here, since painting at 280 px needs a model that stops there) | 3 | $1.12 | $1.34 | $53.56 |
-| B. down to the Companion (Station main and side; Companion derived; token generic) | 2 | $0.58 | $0.69 | $27.64 |
-| C. Station main only (Companion derived; side plain; token generic) | 1 | $0.29 | $0.35 | $13.82 |
-| D. adult only | ⅓ | $0.10 | $0.12 | $4.61 |
+| A. everything at size (Station main and side, token painted at size; the Companion derived here, since painting at 280 px needs a model that stops there) | 3 | 9 | 10.8 | 432 |
+| B. down to the Companion (Station main and side; Companion derived; token generic) | 2 | 6 | 7.2 | 288 |
+| C. Station main only (Companion derived; side plain; token generic) | 1 | 3 | 3.6 | 144 |
+| D. adult only | ⅓ | 1 | 1.2 | 48 |
 
-Against the proposal's assumptions ($0.10 a call): the same to the cent for C and D; B and A are within a dollar a year of its table. The side view was not painted in this trial; B and A assume it costs what the main view costs.
+The call counts match the proposal's table. The side view was not painted in this trial; B and A assume it takes what the main view takes.
 
 ## What the sheets show
 

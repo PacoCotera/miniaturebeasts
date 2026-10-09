@@ -99,14 +99,14 @@ The material icons are the kit's 16 px icons, as on the Companion.
 
 | Region | Rectangle | Holds |
 | --- | --- | --- |
-| Top bar | 0, 0, 1024, 40 | Chrome ground (`bar`), with a 1 px rule on its bottom edge |
+| Top bar | 0, 0, 1024, 40 | Chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
 | Title | 16, 8, 232, 24 | The room's mark 24×24, then the title, 20 px medium |
 | Materials | 384, 8, 256, 24 | As above |
 | Companion | 816, 8, 64, 24 | The glyph, its lamp and the face |
 | When (the world turn) | 904, 8, 104, 24 | The sun mark and the figure, right-aligned to x 1008 |
 | Top rules | x 256 and x 888, y 8 to 32 | 1 px hairlines |
-| Stage | 0, 40, 1024, 522 | The screen's own layout |
-| Bottom line | 0, 562, 1024, 38 | Chrome ground, with a 1 px rule on its top edge |
+| Stage | 0, 40, 1024, 522 | The screen's own layout, on its painted slice; with no slice, flat `ground` |
+| Bottom line | 0, 562, 1024, 38 | Chrome ground (`ground`), with a 1 px `void` rule on its top edge |
 | Action | 16, 570, 376, 24 | ✓ cap, verb, then the price, 24 px apart |
 | Context (subject) | 408, 570, 208, 24 | Centred on x 512, 16 px, `mist`. May end in "…" |
 | Notice (what needs you) | 624, 570, 280, 24 | Right-aligned to x 904, 16 px, `amber`, with its 12×12 lamp |
@@ -196,10 +196,11 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as a grid by pitch on Home's Incubator module and Create, or as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
 
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules, Habitat's five and the Probe bench's two are the modules; on Habitat a module has no lamp.
-- **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome.
+- **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none is a word. A second screen that needs one is not designed yet.
 - **Compositions on Create:** the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; it registers the focus target `roll` at the chosen picture's rectangle) and the **trait line** (Create: the text word, with a changed tag built as Home's name tag is). Both are used on Create alone. The bud's leaves are the word `leaves` above.
-- **Compositions on Habitat and the Probe bench:** the **name tag** (Home's and Habitat's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (Habitat's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (Habitat: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
+- **Compositions on Habitat and the Probe bench:** the **name tag** (Home's, Habitat's and the Sitting's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (Habitat's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (Habitat: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
+- **Compositions on the Sitting:** the **choice cards** (`choiceCards`: a `list` with `listPitch` of `panel` rects, each holding one 96×96 sprite; used by the cards, a 3×2 grid of at most six, and the chosen pair, a 2×1 grid of exactly two; props `{ items: [{ picture: "<96 id>", chosen: bool }] }`; it refuses more items than its grid holds; its focus targets are `card.<i>`) and the **step tiles** (`stepTiles`: a `list` with `listPitch` of exactly three `panel` rects, each with its word as text and, once done, a 48×48 sprite; props `{ items: [{ state: "current" | "done" | "ahead", word, picture: "<48 id>" | null }] }`, the picture only when done). Both are used on the Sitting alone.
 
 **The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. Their JavaScript oracle is `ui/specs/derive.mjs` from L2.0, and `leafArc`'s from L2.4. Until then the spec tests hold them: `prototypes/ui/tests/specs.test.mjs` refuses any rule not in this list, and the JavaScript layout of today is in `ui/layout.mjs`, `ui/components/list.mjs`, `station/src/cross-layout.mjs` and `station/src/guide.mjs`. A rule not in this list is refused when the spec loads; a screen that needs one lists it under [Not designed yet](#not-designed-yet), never improvises it. `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` ([the leaf arcs](#the-leaf-arcs)).
 
@@ -1415,7 +1416,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
 | ✓ on Companion | `✓ Take Fig with you`, the context "goes with you now" (docked) or "goes at the next dock" (away). On the mibi with you: no ✓ cap, "already with you" |
 | ✓ ✓ on Bond | Before its first expedition: no ✓ cap, "bonds after an expedition". Offered: the first ✓ arms (the heart half fills, `Again: bond with Burr`), the second bonds (the heart full, its moment plays). Bonded: no ✓ cap, "bonded for good" |
-| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat (its section to come; ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat ([Sitting](#sitting); ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
 | ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads Habitat and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
 | ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
@@ -1436,7 +1437,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | `low` | the nearest of `low` to the left, else `name`, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
 | `tile` | the previous tile (axis; the first stops) | the next tile (the last stops) | `resident` | none |
 
-"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.1, cross ◀ name, wild ▼ the shown tile).
+"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; from the sitting, ← and its begin land on the Portrait module, which is always a target (read-only, the context saying why, unless a sitting is held and the mibi can sit); after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.1, cross ◀ name, wild ▼ the shown tile).
 
 ### Habitat's states and events
 
@@ -1477,7 +1478,6 @@ Where the build departs from this layout is listed in `habitat.json` `buildChang
 
 ### Not designed yet
 
-- The sitting's screen: its own section, to come.
 - Ecosystem dynamics for later vivariums: food, light and environmental constraints that shape mibi populations. In V1 a vivarium holds at most twelve mibis.
 
 ---
@@ -1626,6 +1626,178 @@ Where the build departs from this layout is listed in `bench.json` `buildChanges
 ### Not designed yet
 
 - The journey has no capture of the bench; the gate's region and pixel checks need one for each state.
+
+---
+
+## Sitting
+
+The screen where a held sitting is spent on one mibi: its own screen under Habitat, opened from the Portrait module. Wireframes, 1×: [14-sitting-pose](station-layouts/14-sitting-pose.svg), [14b-sitting-place](station-layouts/14b-sitting-place.svg), [14c-sitting-confirm](station-layouts/14c-sitting-confirm.svg) and the map [14d-sitting-nav](station-layouts/14d-sitting-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/sitting.json`; the rules in `prototypes/station/src/sitting.mjs`.
+
+<img src="station-layouts/14-sitting-pose.png" width="1024" alt="Sitting, the pose">
+
+*14. The pose: the deck at the right, a card for each habit Fig has been seen doing, the ring on one, `✓ Pick this pose`, `← Habitat`.*
+
+<img src="station-layouts/14b-sitting-place.png" width="1024" alt="Sitting, the place">
+
+*14b. The place: a card for each place Fig has been, the pod's place first, the backdrop the focused place's, `✓ Pick this place`, `← Pose`.*
+
+<img src="station-layouts/14c-sitting-confirm.png" width="1024" alt="Sitting, look and confirm, armed">
+
+*14c. Look and confirm, armed: the gilt frame lit round the window, the chosen pose and place, `✓ Again: portray Fig`, "one sitting each, ever".*
+
+<img src="station-layouts/14d-sitting-nav.png" width="1024" alt="The sitting's navigation map">
+
+*14d. The sitting's map: how it opens, its three steps, where ✓ and ← lead, and what Habitat and Home show after begin.*
+
+### 1. Purpose
+
+The sitting is where the player spends a held sitting on one mibi: picks a pose from the habits it has been seen doing and a place it has been, looks at the choice, and confirms. The player comes away knowing that the portrait is on its way, in the pose and place they chose, and that this mibi has had its one sitting. Nothing is spent until the last ✓.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The mibi** in Habitat's living window, with its name tag | The one being portrayed, where it stood on Habitat |
+| **The backdrop** behind it | The stage of the portrait: plain while the pose is chosen, the place's from the place step |
+| **The deck**, the right column's panel | The choices as one instrument, in the frame Habitat's card and modules and the namer stand in |
+| **The heading** | Which choice this step asks for, in one line |
+| **The cards**: one a habit seen, or one a place been | The choice, as pictures |
+| **The gilt frame** round the window (look and confirm) | The portrait to be; it lights when the confirm is armed |
+| **The steps** along the foot: Pose, Place, Portray | Where the player is in the three steps, and what was chosen |
+| **Bottom line** | `✓ Pick this pose`, `✓ Pick this place`, `✓ Portray Fig`; the way back a step |
+
+**Not on the stage:** a price, a clock or a promise of how the portrait will look beyond its pose and place. The held sitting is the only thing spent.
+
+### 3. Placement
+
+**Reading order:**
+
+1. **The mibi**, warm, in the window at the left, as on Habitat.
+2. **The heading**, then **the cards**, in the deck at the right.
+3. **The steps** along the foot.
+4. On look and confirm, **the gilt frame** round the window first, then the chosen cards.
+
+**At the edges:** the deck is the 416 px column at the right (592 to 1008, y 48 to 472), the same rectangle as Habitat's card and modules and the namer's panel, so the screen change keeps both columns where they stood.
+
+### 4. Art direction
+
+- **Room:** the vivarium's light on a plain stage: Habitat's warmth with the instrument reduced to the choices. The deck, the cards, the heading and the steps are the instrument's cool chrome.
+- **The mibi** is its standard painting; the portrait is never shown before it is painted.
+- **The pose cards** are the species' pose pictures, `pose-{species}-{habit}-96x96`, one a habit of the species frame, never this mibi acting. **The place cards** are `place-{place}-96x96`.
+- **The backdrops** are `sitting-backdrop-plain-544x408` and one a place, `sitting-backdrop-{meadow,pond,rock,wood,cave}-544x408`.
+- **The gilt frame**, `sitting-gilt-560x424` and lit `sitting-gilt-lit-560x424`, is a modelled moulding 16 px deep on every side: from the outside, a 3 px bead, an 8 px leaf face lit from the top left, a 3 px inner shade lip and a 2 px sight edge. Lit is the leaf one value brighter with a 2 px warm sight edge. Its gold is the sitting's, never the focus colour. The wireframes draw it as a stand-in in palette colours: rest, bead `soil`, leaf `gold` lit top and left and `bark` bottom and right, lip `soil`, sight edge `bark`; lit, the leaf `yellow` and `gold`, the sight edge `sand`.
+
+**Colour roles** (the one home is `sitting.json` `colours`; the backdrops, the gilt frame and the card pictures are painted masters, `sitting.json` `masters`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Bezel, glass | As Habitat | The same window |
+| Name tag | `panel` fill, `hairline` edge, the name `bone` | As Habitat |
+| Deck | `panel` fill, `hairline` edge, `bevel` top | The namer's panel, the instrument's |
+| Heading | `bone`, 20 px medium | A page heading |
+| Cards | `ground` fill, `hairline` edge, on the deck; the card chosen before `hairline` fill | The focus ring is the only highlight |
+| Steps | Strip `ground`; tile `panel`, the current `hairline`; words `bone`, the steps ahead `mist` | As Habitat's strip |
+
+### 5. Composition
+
+The left half is Habitat's: the window, the mibi and its tag at the same places, so the screen change keeps the mibi where it stood. At the right the deck holds the heading and the cards; along the foot, in Habitat's strip's place, the three steps. Every rectangle is on the 8 px grid.
+
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Bezel | 16, 48, 560, 424 | As Habitat; the gilt frame covers it on look and confirm |
+| **Glass (backdrop)** | 24, 56, 544, 408 | The plain backdrop on the pose step; the focused place's on the place step; the chosen place's on look and confirm, seen through the gilt frame's opening |
+| **The mibi (focal)** | 144, 80, 304, 312 | As Habitat: axis x 296, feet y 392 |
+| Name tag | in 184, 416, 224, 32 | As Habitat; not a target here |
+| Gilt frame | 16, 48, 560, 424 | Look and confirm only. The moulding is 16 px on every side; its opening is 32, 64, 528, 392 (local 16, 16), 8 px inside the glass on every side, the mibi and its tag inside it. Bead local 0 to 3, leaf face 3 to 11, shade lip 11 to 14, sight edge 14 to 16 |
+| **Deck** | 592, 48, 416, 424 | `panel`, every state; 16 px inside it on every side |
+| Heading | 608, 64, 384, 32 | 20 px medium, its line from y 66 |
+| Cards | 608 + 136c, 112 + 136r, 112, 112 | Three columns, two rows (c 0 to 2, r 0 to 1), at most six; 24 px between cards; the picture 96×96 at (8, 8). The row ends at x 992 and the second row at y 360 |
+| Chosen | 608 and 744, 112, 112, 112 | Look and confirm: the pose's card, then the place's; not targets |
+| Steps strip | 16, 488, 992, 64 | `panel` |
+| Step tiles | 32 + 320i, 496, 312, 48 | Pose, Place, Portray: the word 16 px at (16, 14); once chosen, its picture 48×48 at (256, 0) |
+
+**The order of the cards is the frame's.** Poses follow the species frame's habit order, the habits this mibi has been seen doing. Places put the pod's place first, then the places in the order the mibi walked to them; a bred mibi has no pod place, so it shows only the places it walked to.
+
+**Regions and their words.** States: **pose**, **place**, **confirm** and **begin**.
+
+| Region (`sitting.json`) | Rectangle | Word or build | Only in | States it shows |
+| --- | --- | --- | --- | --- |
+| `stage` | 0, 40, 1024, 522 | frame, part stage (Habitat's) | | — |
+| `bezel` | 16, 48, 560, 424 | living window, part frame | | — |
+| `glass` | 24, 56, 544, 408 | living window, part inside | | plain, a place's backdrop; the backdrop dither |
+| `resident` | 144, 80, 304, 312 | specimen (focal) | | the standard painting |
+| `nameTag` | 184, 416, 224, 32 | panel and text, build `nameTag` | | the name |
+| `gilt` | 16, 48, 560, 424 | living window, part gilt (slices `rest`, `armed`; props `{ lit }`, set from `focus.armed === "room"`) | confirm, begin | rest, lit (armed); dithering out (begin) |
+| `deck` | 592, 48, 416, 424 | panel | | — |
+| `heading` | 608, 64, 384, 32 | text | | the step's heading |
+| `cards` | 608, 112, 384, 248 | list, build `choiceCards` (rule `listPitch`, grid 3×2) | pose, place | the cards; the one chosen before; focused |
+| `chosen` | 608, 112, 248, 112 | list, build `choiceCards` (rule `listPitch`, grid 2×1) | confirm, begin | the two chosen cards |
+| `strip` | 16, 488, 992, 64 | panel | | — |
+| `steps` | 32, 496, 952, 48 | list, build `stepTiles` (rule `listPitch`) | | current, done (with its picture), ahead |
+
+The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 2 px chrome lift: on card 1, (740, 106, 120, 120). **Draw order:** stage, bezel, glass, resident, name tag, gilt frame, deck, heading, cards or chosen, strip, steps, ring, frame, message plate.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Opens | From Habitat's Portrait module, `✓ Portray Fig`, only while a sitting is held and Fig can sit (a habit seen and a place been). Always the pose step, the ring on `card.0`, no choice made |
+| Pad | Pose and place: the ring to the nearest card that way; the ends stop. Look and confirm: nothing |
+| ✓ on a pose | `✓ Pick this pose`, the context the habit ("calm"): the place step, the ring on the place chosen before in this visit, else `card.0` |
+| ✓ on a place | `✓ Pick this place`, the context the place ("the rock field"): look and confirm |
+| ✓ ✓ on look and confirm | `✓ Portray Fig`, "one sitting each, ever": the first ✓ arms (the gilt frame lights, `Again: portray Fig`); the second begins the sitting |
+| ← | A step back, the choice made there kept and ringed: look and confirm to the place (`← Place`), the place to the pose (`← Pose`); from the pose, Habitat with the ring on the Portrait module (`← Habitat`). Nothing is spent |
+| Any key but ✓ | Clears the arm |
+| A room key | Leaves the screen; nothing is spent |
+| During begin | Presses are consumed (480 ms) |
+
+**A visit.** Inside the screen, ← keeps every choice made. Leaving the screen, by ← from the pose step or by a room key, drops every choice; coming back starts on the pose step with the ring on `card.0`.
+
+**The ← cap.** The cap's x is 1008 − the word's width − 20 (16 for the cap, 4 to the word): 934 for Habitat (54 px), 950 for Pose (38 px), 946 for Place (42 px).
+
+### The sitting's focus as data
+
+`sitting.json` `focus`, one graph a state. **Pose and place:** targets `card.<i>` in group `card`, each edge `[{ "nearestIn": "card", "ahead": true }, "none"]`, so the ring goes to the nearest card that way and stops at the ends; `initial` is "the card chosen before in this visit, else card.0". **Look and confirm:** no target; the ring on nothing (`room`); every edge none; ✓ sends `confirm` and arms, then begins; `focus.armed === "room"` sets the gilt's `lit`. **Held:** while begin holds, the face moves no focus and sends no intent. Vectors are in `sitting.json` (for example card.0 ▶ card.1, card.4 ▲ card.1, card.2 ▶ card.2).
+
+### The sitting's events
+
+| Event | Hold | What plays |
+| --- | --- | --- |
+| `backdrop`: `{ kind: dither, target: glass, ms: 200, levels: 16 }` | no | The place step: the backdrop cross-dithers to the focused place's. The place backdrops load on entering the place step and are dropped on leaving the screen |
+| `step` | no | A step forward or back: the heading, the cards, the steps' tiles and the bottom line change at once; the gilt frame shows on look and confirm |
+| `begin`, the host timeline | 480 ms, presses consumed | At 0, `{ kind: dither, target: gilt, from: sitting-gilt-lit-560x424, to: null, ms: 300, levels: 16 }`: the lit gilt frame dithers out (the frame leaves for the bay). At 300, the standard 180 ms screen transition (`{ kind: dither, levels: 16 }`) to Habitat, the ring on `portrait`, the module in its painting state, and the message plate |
+
+With `motion: false` every event jumps to its end.
+
+### After begin: Habitat and Home
+
+- **The message plate on Habitat:** "Fig's portrait is on its way", one line, 16 + 20 = 36 tall, its bottom at y 550. When a welcome sitting was waiting for the slot, begin gives it at once (`beginSitting`), and the same plate takes a second line, "Another sitting is yours": 16 + 40 = 56 tall, (399, 494, 226, 56) for Fig: the longer line, 193 px, plus 16 each side, rounded up to an even width so it centres on x 512. It covers the strip, not the mibi's box or the Portrait module, so it keeps its bottom edge at y 550.
+- **Home's sitting slot** (the Probe module, 952, 464, 40, 80) shows empty after begin, or held when the welcome sitting was given.
+- **Home's Bay** holds the sitting's crate from begin until it is opened:
+
+| What | Rectangle or rule | Shows |
+| --- | --- | --- |
+| The sitting crate | The door's slots from the right: the first at 904, 92, 80, 56, a second at 808, 92. Walk crates fill from the left (712 + 96i); at most three crates show, walk crates first | `crate-sitting-80x56`; until it is painted, the walk crate's roles (`deepTeal`, `teal` lit top, `hairline` outline) with no seal tag |
+| Its lamp | 12×12 at (crate x + 34, 128), 1 px `void` rim, ten inner rows | The rows lit from the bottom: floor(10 × `crateLamp`) in `sky`, the rest `hairline`. It holds at nine rows while the portrait is painted or waits for the cloud (`LAMP_SHORT`), and fills all ten when ready. Never amber |
+| The door | 704, 84, 288, 72 | Open while a sitting crate is in the bay, docked or away; shut only on an empty bay with the Companion away |
+| The Bay's lamp | 984, 60, 12, 12 | `amber` only when a crate is ready to open (`bayState`: a ready sitting crate, or walk crates waiting while docked); otherwise off |
+
+### Placeholders on the sitting
+
+| Master | Pixel size |
+| --- | --- |
+| `sitting-backdrop-plain-544x408` and `sitting-backdrop-meadow-544x408`, `-pond-`, `-rock-`, `-wood-`, `-cave-` | 544×408 |
+| `sitting-gilt-560x424`, `sitting-gilt-lit-560x424` | 560×424 |
+| `pose-{species}-{habit}-96x96`, one a habit of each species frame, and `pose-{species}-{habit}-48x48` for the step tiles, hand-passed from the 96 | 96×96, 48×48 |
+| `place-{place}-96x96`, with the existing `place-{place}-48x48` for the step tiles | 96×96, 48×48 |
+| `crate-sitting-80x56` (Home's Bay) | 80×56 |
+
+Where the build departs from this layout is listed in `sitting.json` `buildChanges`.
+
+### Not designed yet
+
+- More than six poses or places: the cards refuse a seventh.
+- Opening a sitting's crate on Home: the portrait's arrival.
 
 ---
 
@@ -2034,6 +2206,291 @@ Rendered at their size, not masters: the parents' portraits and the ghost (48×4
 
 ---
 
+## The namer
+
+The namer gives one mibi a name with the Station's six keys. It opens at the meet after a hatch, filled with the mibi's default name, and from Habitat on the mibi shown, any time. It is an overlay: a panel over Habitat's right column, so the mibi being named stays in view in Habitat's living window. Naming happens on the Station only; the Companion shows the name it was given at the last dock. The rules for names (which characters, how long, which are refused) belong to the game's rules; this section lays out the screen that follows them. The numbers live in `prototypes/ui/specs/station/namer.json`. Wireframes, 1×: [12](station-layouts/12-namer-open.svg), [12b](station-layouts/12b-namer-typing.svg), [12c](station-layouts/12c-namer-accents.svg), [12d](station-layouts/12d-namer-refused.svg), [12e](station-layouts/12e-namer-nav.svg), each with its PNG.
+
+<img src="station-layouts/12-namer-open.png" width="1024" alt="The namer, opened at the meet">
+
+*12. The namer opened by the meet's first ✓: the default name "Fig" selected, capitals for the first letter, the ring on Done, so `✓ Keep Fig` skips in one press. The new mibi stays in view. 1×, measured.*
+
+<img src="station-layouts/12b-namer-typing.png" width="1024" alt="The namer, typing">
+
+*12b. Typing: "Bea" and the caret, small letters after the first, the ring on n, `✓ Type n`, `← Delete`. 1×, measured.*
+
+<img src="station-layouts/12c-namer-accents.png" width="1024" alt="The namer, the accents page">
+
+*12c. The accents page: one column a vowel, one row an accent (acute, grave, circumflex, diaeresis), then ç ñ œ ÿ; "Zo" typed, the ring on é. 1×, measured.*
+
+<img src="station-layouts/12d-namer-refused.png" width="1024" alt="The namer, a letter refused">
+
+*12d. The widest name the rules allow, ten Ws (290 px at 28 px semibold), fills the field; the letter keys and the ✓ cap dim, and a press is refused in words on the say line, in amber. 1×, measured.*
+
+<img src="station-layouts/12e-namer-nav.png" width="1024" alt="The namer's navigation map">
+
+*12e. How the namer opens, how the pad walks its keys, what ✓ and ← do, and how it closes. 1×.*
+
+### 1. Purpose
+
+The namer is for giving a mibi its own name, or a new one, while looking at it. The player comes away with the mibi called what they chose, having reached every letter with the pad, or with the name unchanged when they skip.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The mibi**, in Habitat's living window, uncovered | The subject: the player names what they see |
+| **The field**: the name at 28 px, the name role, with its caret, or selected | The name as it will read, at the name role's size (28 px) |
+| **The say line**, one line under the field | Why the name cannot be saved yet, or why a press was refused, in words |
+| **The keys**: 28 character keys in seven columns, then Aa, space and the page key | Every allowed character, reached with the pad and typed with ✓ |
+| **Suggest** and **Done** | A name from the pool in one press; saving the name |
+| **Bottom line** | What ✓ does on the focused key, and what ← does now |
+
+**Not here:** a heading (the field with its caret says what this is, and the bottom line's context says whose name it is); a count of letters left (the say line says when the name is full); a delete key (← deletes, and the way back names it); a cancel key (← on an empty field, a room key or Idle closes the namer, writing nothing); digits, a word filter or a list of names.
+
+### 3. Placement
+
+**Reading order:**
+
+1. **The mibi**, warm, in the window at the left, unchanged from Habitat.
+2. **The name** in the field, the brightest type in the panel.
+3. **The say line**, when it has something to say.
+4. **The key under the ring.**
+5. **Done**, at the bottom right where reading ends.
+
+**At the edges:** the panel at the right edge, over Habitat's card and modules, from the top of the stage to the foot of Habitat's right column. Habitat's strip stays visible under it and takes no key.
+
+**Why an overlay and not a state of Habitat.** The namer opens from two places on Habitat (the meet and the mibi's name) and takes the whole pad while it is open: its 33 keys have their own focus graph, which never mixes with Habitat's. As an overlay it keeps Habitat beneath exactly as it was, the mibi in view and its living window playing, and it closes back to the same Habitat. It needs only one thing of Habitat's layout: the living window left of x 584 (What Habitat gives the namer, below).
+
+### 4. Art direction
+
+- **Room:** Habitat's vivarium stays the warm, living thing on screen; the namer is the overview's cool instrument hardware over its card, the report card's look.
+- **One warm signal:** the focus ring. The selection is cool (`tealD`), the caret `bone`, refusals `amber` and only for a moment.
+- **Never childish:** small square keys in a calm grid, letters in Inter 16, no bounce, no colours per letter.
+- **Calm:** nothing moves but the ring and the lift of the focused key; the caret is steady.
+
+**Colour roles** (the one home is `namer.json` `colours`):
+
+| Region | Roles | Why |
+| --- | --- | --- |
+| Panel | `panel` fill, `hairline` edge, `bevel` top row, drop shadow `void` at (+2, +3) | The report card's look: an instrument readout standing over the scene |
+| Field | Inside `ground`, edge `hairline`; the name `bone` | A recess, as the rack's wells, so the name reads as something held |
+| Selection | `tealD` behind the name | The cool look of the ribbon: selected, not warned |
+| Caret | `bone`, 2×28, steady | Plain, the same colour as the name |
+| Say line | The reason `mist`; a refused press `amber` for 4 s | Mist informs without nagging; amber is the frame's "needs you" |
+| Keys | `panel` fill, `hairline` edge, `bevel` top; label `bone`; dimmed `mist` | The kit's instrument panel at its smallest |
+| Aa on | `hairline` fill, label `bone` | One step up from `panel`, as the rail's open tab. At the start of a name, where Aa does nothing, it shows `panel` |
+| Space's word | `fog` | A word on a key, quieter than the characters |
+| Done | label `bone`; `mist` while the name cannot be saved | Done is placed, not coloured: bottom right, wider |
+| Ring | `focus`, round | The frame's one ring |
+
+### 5. Composition
+
+The panel stands over Habitat's right column, 16 px right of the window's bezel (x 576). Inside it one column is centred, 44 px from each side, so the column's x sits 4 px off the 8 px grid (every y, width and height stays on it): the field, the say line, the keys in seven columns on a 48 px pitch, the bottom row (Aa, space, the page key, each as wide as the columns it stands under), then Suggest and Done.
+
+| Region | Rectangle | Notes |
+| --- | --- | --- |
+| Panel | 592, 48, 416, 424 | Covers Habitat's right column, the card and the modules (x 592 to 1008, y 48 to 472); 16 px from the bezel's edge at x 576 |
+| **Field** | 636, 64, 328, 48 | The name at 28 px semibold from x 652, its line box 70 to 106; holds 296 px: the widest name, 290, ends at x 942 and the caret at 946 |
+| Selection | x 648, y 70, the name's width + 8, 36 tall | While the name is as opened, or a suggestion |
+| Caret | 2×28, 2 px after the name, y 74 to 102 | While typing or empty |
+| Say line | 636, 120, 328, 24 | 16 px from x 652, its line box 122 to 142; holds 312 px |
+| **Keys** | 636, 160, 328, 184 | 40×40 on a 48 px pitch, seven columns, four rows: key i at (636 + 48 (i mod 7), 160 + 48 floor(i / 7)) |
+| Aa | 636, 352, 88, 40 | Under the first two columns |
+| Space | 732, 352, 136, 40 | Under the third to fifth |
+| Page key | 876, 352, 88, 40 | Under the last two; "àéñ" on the letters page, "abc" on the accents page |
+| Suggest | 636, 408, 160, 40 | |
+| **Done** | 804, 408, 160, 40 | Where the ring opens |
+
+The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside the lifted box: 48×48 on a 48 px pitch, so rings never touch a neighbouring key, and the ring over a key clears the row above by 2 px.
+
+**Regions and their words.** One state, **open**; the field's own states are selected, typed and empty (Interactions, below).
+
+| Region (`namer.json`) | Rectangle | Word or build | States it shows |
+| --- | --- | --- | --- |
+| `panel` | 592, 48, 416, 424 | panel, build `namer` (with its shadow) | — |
+| `field` | 636, 64, 328, 48 | panel and text, build `nameField` | selected (the selection, no caret); typed (the caret after the name); empty (the caret at the start) |
+| `say` | 636, 120, 328, 24 | text | empty; a reason in `mist`; a refusal in `amber` for 4000 ms |
+| `keys` | 636, 160, 328, 184 | panel and text, build `keyGrid` | each key: drawn or not by the page; its character in the grid's case; focused (lifted 2 px); dimmed while the field is full |
+| `shift` | 636, 352, 88, 40 | panel and text, build `keyGrid` | off, and at the start of a name, where it does nothing; on (the next letter in the other case) |
+| `space` | 732, 352, 136, 40 | panel and text, build `keyGrid` | dimmed while the field is full |
+| `page` | 876, 352, 88, 40 | panel and text, build `keyGrid` | "àéñ" or "abc", in the grid's case |
+| `suggest` | 636, 408, 160, 40 | panel and text, build `keyGrid` | — |
+| `done` | 804, 408, 160, 40 | panel and text, build `keyGrid` | dimmed while the name cannot be saved |
+
+`keyGrid` and `nameField` are compositions of the words `panel` and `text`, used by the namer alone, so neither is a word. `keyGrid` registers one focus target a key. The characters come from props (the page and the case), never from the spec. If a second device needs text entry, the key grid comes back to the UI designer and the architect as a word.
+
+### 6. Interactions
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Pad | Moves the ring between the keys ([the namer's focus as data](#the-namers-focus-as-data)); never leaves the namer, never types |
+| ✓ on a character key | Types the character as the key shows it. On a selection it replaces the whole name. Refused, in words, past the limit and for a mark (space, hyphen, ’) first or beside another mark |
+| ✓ on Aa | The next letter in the other case; the key shows on; after one letter the grid returns. At the start of a name the grid shows capitals and Aa shows off and does nothing: no ✓ cap, and the context says "a name starts with a capital" |
+| ✓ on the page key | Turns the page, letters or accents; the ring stays on the page key |
+| ✓ on Suggest | The next name from the pool, selected; each press the next, after the last the first. The pool is twelve names in the order births draw them (the curated names, then the compounds), skipping names already used, held at home, refused or over the limit. Nothing is taken from the pool until a name is saved. With no name to give, Suggest has no ✓ cap and the context says "no names left to suggest" |
+| ✓ on Done | Saves the name at once and closes the namer; the new name flashes where it stands on Habitat (240 ms). The mibi's own name exactly as it is (the same characters in the same case) is Keep: it writes and logs nothing. A change of case only is a rename, with its log line ("Renamed Dot to DOT"). While the name cannot be saved: the dimmed cap; a press turns the say line's reason amber, and nothing closes |
+| ← | A selection: clears the field. Typed characters: deletes the last one. An empty field: closes the namer, writing nothing |
+| A room key | Closes the namer, writing nothing, and opens the room's top |
+| Idle | The namer closes, writing nothing, before the living view starts |
+| Dock (the Caddy's key) | The namer stays open; the crates wait in the bay |
+| During the `named` flash | Presses are consumed (240 ms) |
+
+**Every character with the pad alone.** The letters page holds a to z in reading order, seven a row, then the hyphen and ’ at the end of the fourth row. The accents page holds one column a vowel (a, e, i, o, u) and one row an accent (acute, grave, circumflex, diaeresis), and ç ñ œ ÿ in the sixth column. Space is the wide key on the bottom row. Capitals are the case rule: a name starts with a capital, and Aa gives any later letter as a capital (Œ and Ÿ included). Every key is at most seven presses from Done, and at most eight from any other key.
+
+**The field's three states.**
+
+| State | Shows | A character key | ← | The way back slot |
+| --- | --- | --- | --- | --- |
+| Selected (as opened, or a suggestion) | The name on the `tealD` selection, no caret | Replaces the name | Clears it: the field is empty | `← Clear` |
+| Typed | The caret after the last character | Appends | Deletes the last character | `← Delete` |
+| Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← Habitat` |
+
+**Refusals, in words.** Nothing is refused silently and nothing is refused by a message plate (a plate would cover the mibi). While the name in the field cannot be saved, the say line gives the reason in `mist` and Done's cap dims. A refused press (a key or Done) turns the reason `amber` for 4 s, the message plate's time; then it returns.
+
+| Refused | When | Words |
+| --- | --- | --- |
+| Too short | at Done, and shown while the name has fewer than two letters | A name needs two letters |
+| Too long | a character past the limit; the keys dim when full | No room for more letters |
+| A mark first | space, hyphen or ’ on an empty field or a selection | Start with a letter |
+| A mark last | at Done | End with a letter |
+| Two marks together | a mark after a mark | One space or dash at a time |
+| A species' name | at Done, and shown while it is one | A species has that name |
+| A clan's name | at Done, and shown while it is one | A clan has that name |
+| Held at home | at Done, and shown while another mibi at home has it | {holder} has that name |
+
+The longest, "{holder} has that name" with the widest ten-letter holder, is 267 px, inside the say line's 312. Characters outside the allowed set are not on any key, so they are never refused.
+
+**The bottom line.**
+
+| Ring on | Action | Context | Way back |
+| --- | --- | --- | --- |
+| A character key | `✓ Type n` (`✓ Type a space`, `✓ Type a dash`, `✓ Type an apostrophe`); dimmed while the field is full | "a name for your Loika" | by the field's state |
+| Aa | `✓ Capitals` or `✓ Small letters`; no ✓ cap at the start | as above; at the start "a name starts with a capital" | by the field's state |
+| The page key | `✓ Accents` or `✓ Letters` | as above | by the field's state |
+| Suggest | `✓ Suggest a name`, then `✓ Another name`; no ✓ cap with no name to give | as above, or "no names left to suggest" | by the field's state |
+| Done | `✓ Name it Bean` (a change of case included), or `✓ Keep Fig` when exactly unchanged; dimmed while the name cannot be saved | as above | by the field's state |
+
+The notice is the frame's. Measured at Inter 16 with the widest ten-letter name: `✓ Name it` and the name is 221 px, inside the action zone's 356; the context with the longest species name is 175 px, inside 208.
+
+### The namer's focus as data
+
+`namer.json` `focus`, with the edge forms of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md#261-the-graphs-primitives-exactly). Three groups: `key` (key.0 to key.27, the keys the page draws), `mod` (mod.shift, mod.space, mod.page) and `act` (act.done, act.suggest). The ring opens on `act.done`. No spatial fallback: the graph says every move.
+
+| Group | ◀ ▶ | ▲ | ▼ |
+| --- | --- | --- | --- |
+| `key` | `[{ nearestIn: key, ahead }, "none"]` | `[{ nearestIn: key, ahead }, "none"]` | `[{ nearestIn: key, ahead }, { nearestIn: mod }]` |
+| `mod` | `[{ nearestIn: mod, ahead }, "none"]` | `{ nearestIn: key }` | `{ nearestIn: act }` |
+| `act` | `[{ nearestIn: act, ahead }, "none"]` | `{ nearestIn: mod }` | none |
+
+- Inside a group the ring goes to the nearest target more than 6 px ahead; with none, it stays: the ends stop and nothing wraps. On the accents page the empty seventh column stops ▶ at the sixth.
+- ▼ from the last row of keys takes the bottom-row key nearest its column, and the bottom-row keys stand under whole columns, so it is always the key under it: columns 1 and 2 go to Aa, 3 to 5 to space, 6 and 7 to the page key.
+- `props.focus.targets` lists the present keys, then mod.shift, mod.space, mod.page, act.done, act.suggest; on an equal score the earlier wins, so ▼ from space, as near Suggest as Done, lands on Done.
+- **Vectors** (`namer.json` `focus.vectors`, run by `specs.test.mjs`): Done ▲ page key; Done ◀ Suggest; Done ▶ Done; Suggest ▲ Aa; space ▼ Done; space ▲ y; Aa ▲ v; w ▼ Aa; x ▼ space; ’ ▼ page key; a ▲ a; a ◀ a; g ▶ g; i ▶ j; i ▼ p; on the accents page ç ▶ ç and ÿ ▶ ÿ.
+
+### The overlay on the face
+
+The namer is a spec of kind `overlay`, drawn on the face's top layer over the screen it opens from. The focus ring and the message plate are on the top layer too, in the order overlay, ring, plate, so the ring stands over the namer's keys and a plate over both. While the namer is open its graph is the only one and the screen beneath takes no key. It closes with props whose `focus.set` hands the ring back to the screen beneath. Props that name an overlay whose `over` does not list the current screen are refused.
+
+### The name label's limit
+
+Measured on the face's own fonts (`prototypes/face/src/fonts`, LVGL's sum: each glyph (adv_w + kern + 8) >> 4), over every allowed character in both cases, and on the Companion's Mibi 7×9 (`art/companion-48/type/mibi-7x9.json`).
+
+| Font | Widest character | Ten of it (NAME_MAX) | The box that holds it |
+| --- | --- | --- | --- |
+| Inter 16 regular | œ, W, Œ: 16 px | 160 px | 160 |
+| Inter 20 medium | œ, W, Œ: 20 px | 200 px | 200 |
+| Inter 28 semibold | W: 29 px | 290 px | 296, on the 8 px grid |
+| Mibi 7×9 at 2× | advance 6 (m, w, œ and most capitals) | 120 px | 120 |
+| Mibi 7×9 at 3× | advance 6 | 180 px | 180 |
+
+The face's Inter 16, 20 and 28 hold every allowed character in both cases, with the space, the hyphen and ’ (`specs.test.mjs` checks the baked ranges). For comparison, ten-letter names a player might choose: "Strawberry" 83, "Momo-Mumbo" 115 at 16 px; 153 and 206 at 28 px.
+
+**NAME_MAX stays 10.** The rule: every box that sets a mibi's name holds ten of the widest character at its size, 160 at 16 px, 200 at 20 px, 296 at 28 px, and a name is never clipped and never ends in "…". Today these hold it: Home's name tag (176 px for the widest, inside the glass's 624), Habitat's name tag (at most 224 at 20 px, 200 + 2 × 12), Cross's parent names (200 at 20 px), the `plate-name` series (its widest picture, 224, is 200 + 2 × 12), the meet's ribbon ("Meet" and the name, 254 at 20 px, in 304), the hatch ribbon ("{Name}, a young {Species}", 360 at 20 px, in 400), the namer's field, and the Companion's partner screen (180 in its 200 at 3×). The ones that do not are listed under **Not designed yet**.
+
+### What Habitat gives the namer
+
+Habitat's own spec carries these; the namer depends on them.
+
+- **The living window left of x 584.** The namer covers x 592 to 1008, y 48 to 472.
+- **The meet.** The ring lands on the new mibi (the Incubator's hand-off), and the first ✓ is `✓ Name Fig`, opening the namer. Any other key ends the meet with the default name kept, and does what it does. When the namer closes, the meet is over, and the closing props' `focus.set` puts the ring on the mibi.
+- **Rename.** Habitat's name tag is the focus target `name`, ring round, in Habitat's pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props' `focus.set` puts the ring back on that target.
+- **The `named` flash.** The regions that show the name (its name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
+- **The name boxes.** Habitat's name boxes follow the name label's rule above.
+
+---
+
+## Not built yet
+
+A screen the face does not draw yet shows the frame, the stage's ground and one line saying so. The numbers live in `prototypes/ui/specs/station/frame.json` `notBuilt`. Wireframes: [13-not-built.svg](station-layouts/13-not-built.svg) and [13b-not-built-idle.svg](station-layouts/13b-not-built-idle.svg), each with its 1× PNG; the magenta marks are measurements, everything else is drawn in its palette colour.
+
+<table><tr>
+<td valign="top"><img src="station-layouts/13-not-built.png" width="480" alt="Home, not built yet"><br><em>13. Home, not built yet, where the sandbox opens: the frame, the flat ground and the line; the notice on a fresh world. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/13b-not-built-idle.png" width="480" alt="Idle, not built yet"><br><em>13b. Idle, not built yet: the ground edge to edge and the line, no frame. 1×, measured.</em></td>
+</tr></table>
+
+### 1. Purpose
+
+Say plainly that this screen is not built yet, keep the frame and every way out working, and promise nothing the screen cannot do. **Reads first:** the line; then the title, which names the screen. The sandbox opens on Home, the hub: from there the Research key reaches Pods.
+
+### 2. Elements
+
+| Element | Why it is here |
+| --- | --- |
+| **The frame**, as on every screen | Where you are (the title), what you hold, who is out, when, what needs you, and the way back |
+| **The stage's ground**, flat | The stage with nothing on it: no picture stands in for art that is not made |
+| **One line** | That the screen is not built yet |
+
+**Not drawn:** any picture or placeholder, any target, the focus ring, the ✓ cap and its verb, the context's words.
+
+### 3. Placement
+
+The line sits centred on the stage, a little above its middle, where the eye lands on an empty stage. The title stays where it always is, so the screen's name and the line read together and the line never repeats the name.
+
+### 4. Art direction
+
+Cool and quiet, the instrument at rest. The stage is the frame's stage part with no slice, flat `ground`, the same colour as the chrome; the frame's two `void` rules at y 39 and y 562 mark its edges. No warm light: the screen has no living window. The line is `fog` (8.6:1 on `ground`), below the title's `bone` and above the context's `mist`.
+
+### 5. Composition
+
+| Region (`frame.json` `notBuilt`) | Rectangle | Word or build | Notes |
+| --- | --- | --- | --- |
+| Stage | 0, 40, 1024, 522 | the frame's stage part, no slice | `colours.stageGround`, `ground` |
+| `line` | 16, 280, 992, 32 | text, in build `notBuilt` | 20 px medium, `fog`, centred on x 512; cap top on y 288, baseline y 303. One line, six words or fewer, no digits |
+| `ground` (Idle only) | 0, 0, 1024, 600 | panel, in build `notBuilt` | Fill `ground`, no rule, no edge, under the line |
+
+`notBuilt` is a composition in the frame's binding table, as `idleLine` is; it adds no word and no layout rule.
+
+**The bottom line:**
+
+| Zone | Shows |
+| --- | --- |
+| The one action | Nothing: no ✓ cap, no verb, no price |
+| The context | Nothing |
+| The notice | The frame's notice, as on every screen, `amber` with its lamp |
+| The way back | The ← cap and the parent's word: Home on the Incubator, the Probe bench, the Library and Habitat; Library on the Book; Habitat on Cross; the pod's label on Create. None on Home |
+
+**Idle not built yet** has no frame: no top bar, no bottom line, no message plate, no ring. The frame going away is what tells the player Idle is on. The `ground` fills the screen and the line sits in the same rectangle as on a framed screen.
+
+### 6. Interactions
+
+| Input | What happens |
+| --- | --- |
+| ✓, the pad | Nothing: no ring, no plate |
+| ← | To the screen's parent ([Keys and navigation](station-screens.md#keys-and-navigation)); on Home nothing |
+| A room key | Opens its room's top screen, built or not |
+| Dock | Docks or lifts the Companion and lands on Home. With Home not built, no arrival plays and nothing is held: the counters and the turn take their new values at once, and the notice names the crates |
+| 60 s without a press | Idle, not built yet |
+| Any key on Idle | Sends `wake` and nothing else: back to the screen under Idle (180 ms dither, held) |
+
+**Words:**
+
+| Where | Line |
+| --- | --- |
+| A framed screen | "this screen is not built yet" |
+| Idle | "Idle is not built yet" |
+
+---
+
 ## What the builder decides alone, and what comes back
 
 **The builder may decide alone:**
@@ -2067,3 +2524,8 @@ Rendered at their size, not masters: the parents' portraits and the ghost (48×4
 - A rail of more than twelve chapters, a chapter page of nine or more traits, and a guide spread of more than eight chapters.
 - Any new vocabulary word or derived rule a screen needs; until it is designed, the screen lists it here and never improvises it.
 - The rest knob, the with-you bed, the report card, the roll or the trait line on a second screen.
+- [The namer](#the-namer):
+  - **The guide's "Carried by" line** gives each name 120 px at 16 px; the widest needs 160, and dropping names cannot fit one name that is too wide alone.
+  - **The Companion's HUD** draws the partner's name only when it fits beside the counters, and drops it otherwise.
+  - **The naming rules' home**: the characters, the lengths and the refusals the namer follows are not written in [game.md](../game.md) yet.
+  - **The words**: every string in `namer.json` `strings` is the copywriter's.

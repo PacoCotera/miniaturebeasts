@@ -276,6 +276,60 @@ test("the Incubator spec file agrees with the Incubator wireframes, region by re
   assert.deepEqual(paletteBad(inc.colours), []);
 });
 
+// The namer: an overlay over Habitat's right column; its keys, its focus graph by lvgl-switch.md §2.6.1, and the name label's limit.
+const namerSpec = () => rd("../specs/station/namer.json");
+const namerTargets = (nm, page) => { const R = nm.regions, T = [];
+  nm.keys.pages[page].forEach((c, i) => { if (c) T.push({ id: "key." + i, rect: [R.keys.at[0] + R.keys.pitch * (i % 7), R.keys.at[1] + R.keys.pitch * Math.floor(i / 7), ...R.keys.key] }); });
+  for (const [id, k] of [["mod.shift", "shift"], ["mod.space", "space"], ["mod.page", "page"], ["act.done", "done"], ["act.suggest", "suggest"]]) T.push({ id, rect: R[k].rect });
+  return T; };
+// §2.6.1's edge forms on doubled centres: a name, { nearestIn } (400 × across + |along|), { nearestIn, ahead } (along > 12, 5 × along + 11 × across), an ordered list with "none" last
+const namerMove = (graph, T, cur, key) => { const grp = (id) => id.split(".")[0], dc = (r) => [2 * r[0] + r[2], 2 * r[1] + r[3]], [ox, oy] = dc(T.find((t) => t.id === cur).rect), [dx, dy] = DIR[key];
+  const one = (e) => { if (e === "none") return cur; if (typeof e === "string") return T.find((t) => t.id === e)?.id ?? T.find((t) => grp(t.id) === e)?.id ?? null;
+    let best = null, bs = Infinity; for (const t of T) { if (t.id === cur || grp(t.id) !== e.nearestIn) continue; const [x, y] = dc(t.rect), vx = x - ox, vy = y - oy, along = vx * dx + vy * dy, across = Math.abs(vx * dy + vy * dx);
+      if (e.ahead && along <= 12) continue; const s = e.ahead ? 5 * along + 11 * across : 400 * across + Math.abs(along); if (s < bs) { bs = s; best = t.id; } } return best; };
+  const edge = graph[grp(cur)]?.[key]; if (edge === undefined) return cur; for (const e of [edge].flat()) { const r = one(e); if (r) return r; } return cur; };
+
+test("the namer spec file agrees with its wireframes, names a word or composition for every region, and leaves Habitat's window uncovered", () => {
+  const nm = namerSpec(), R = nm.regions, A = boxesOf("12-namer-open.svg"), B = boxesOf("12b-namer-typing.svg"), C = boxesOf("12c-namer-accents.svg");
+  const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
+  for (const k of ["panel", "field", "say", "keys", "shift", "space", "page", "suggest", "done"]) is(R[k].rect, k);
+  for (const k of ["panel", "field", "say", "keys", "shift", "space", "page", "suggest"]) is(R[k].rect, k + " (open)", A);
+  for (const t of namerTargets(nm, "accents")) if (t.id.startsWith("key.") && t.id !== "key.1") is(t.rect, "accent " + t.id, C);
+  lintRegions(nm); assert.equal(nm.kind, "overlay"); assert.deepEqual(nm.over, ["habitat"]); assert.deepEqual(nm.rules.needed, []);
+  const W = nm.overlay.uncoveredRect; assert.ok(R.panel.rect[0] >= W[0] + W[2] + 8, "8 px or more right of Habitat's window bezel: the mibi stays in view");
+  assert.equal(R.panel.rect[0] + R.panel.rect[2] / 2, nm.column.x + nm.column.w / 2, "the inner column centred in the panel"); assert.equal(nm.column.x - R.panel.rect[0], nm.column.pad);
+  for (const k of ["field", "say", "keys", "shift", "suggest"]) assert.equal(R[k].rect[0], nm.column.x, k + " on the inner column");
+  for (const k of ["field", "say", "keys", "shift", "space", "page", "suggest", "done"]) assert.ok(inside(R[k].rect, R.panel.rect), k + " inside the panel");
+  const rows = ["field", "say", "keys", "shift", "suggest"].map((k) => R[k].rect); for (let i = 1; i < rows.length; i++) assert.ok(rows[i - 1][1] + rows[i - 1][3] + 8 <= rows[i][1], "rows 8 px or more apart");
+  const T = namerTargets(nm, "letters"); for (const [i, a] of T.entries()) for (const b of T.slice(i + 1)) assert.ok(apart(a.rect, b.rect), `${a.id} and ${b.id} apart`);
+  for (const t of T) assert.ok(inside(t.rect, R.panel.rect) && t.rect.slice(1).every((n) => n % 8 === 0) && (t.rect[0] - nm.column.x) % 8 === 0, t.id + " on the grid (x on the inner column's), inside the panel");
+  assert.equal(R.keys.columns * R.keys.pitch - (R.keys.pitch - R.keys.key[0]), R.keys.rect[2], "seven keys fill the grid's width");
+  const col = (x) => (x - R.keys.at[0]) / R.keys.pitch; for (const k of ["shift", "space", "page"]) { const [x, , w] = R[k].rect; assert.ok(Number.isInteger(col(x)) && Number.isInteger((w + 8) / R.keys.pitch), k + " stands under whole columns"); }
+  // every allowed character on one key: a to z, the 24 accented letters, the hyphen and ’ (capitals by the case rule, space on its own key)
+  const set = "abcdefghijklmnopqrstuvwxyzáàâäéèêëíìîïóòôöúùûüñÿçœ", on = [...nm.keys.pages.letters, ...nm.keys.pages.accents].filter(Boolean);
+  assert.equal(on.length, set.length + 2); for (const c of [...set, "-", "’"]) assert.equal(on.filter((p) => p === c).length, 1, c + " on one key");
+  assert.equal(nm.keys.pages.letters.length, R.keys.columns * R.keys.rows); assert.equal(nm.keys.pages.accents.length, R.keys.columns * R.keys.rows);
+  // the name label's limit, measured on the face's fonts: ten of the widest letter and the caret fit the field
+  assert.equal(nm.nameLabel.nameMax, 10); assert.equal(R.field.px, 28); assert.ok(R.field.nameAt[0] + nm.nameLabel.limit.inter28 + 4 <= R.field.rect[0] + R.field.rect[2], "the widest name and the caret inside the field");
+  // the face's Inter 16, 20 and 28 hold every allowed character, both cases, the space, the hyphen and ’
+  for (const px of [16, 20, 28]) { const src = readFileSync(new URL(`../../face/src/fonts/face_inter_${px}.c`, import.meta.url), "utf8"), cps = new Set();
+    for (const m of src.matchAll(/\.range_start = (\d+), \.range_length = (\d+), \.glyph_id_start = \d+,\s*\.unicode_list = (\w+)/g)) { const s0 = +m[1];
+      if (m[3] === "NULL") for (let c = s0; c < s0 + +m[2]; c++) cps.add(c);
+      else for (const o of src.match(new RegExp(m[3] + "\\[\\] = \\{([^}]*)\\}"))[1].split(",").map((x) => x.trim()).filter(Boolean)) cps.add(s0 + Number(o)); }
+    for (const c of [...set, ...set.toLocaleUpperCase("fr"), " ", "-", "’"]) assert.ok(cps.has(c.codePointAt(0)), `Inter ${px} holds ${c}`); }
+  assert.deepEqual(paletteBad(nm.colours), []);
+});
+
+test("the namer's focus walks every key with the pad alone, by its vectors; the ends stop", () => {
+  const nm = namerSpec(), G = nm.focus.graph;
+  for (const v of nm.focus.vectors) if (DIR[v.key]) assert.equal(namerMove(G, namerTargets(nm, v.page), v.from, v.key), v.to, `${v.page}: ${v.from} ${v.key}`);
+  assert.equal(nm.focus.initial, "act.done"); assert.equal(nm.focus.fallback, "none");
+  for (const page of ["letters", "accents"]) { const T = namerTargets(nm, page), seen = new Set(["act.done"]), q = ["act.done"];
+    while (q.length) { const u = q.shift(); for (const k of Object.keys(DIR)) { const w = namerMove(G, T, u, k); if (!seen.has(w)) { seen.add(w); q.push(w); } } }
+    assert.deepEqual([...seen].sort(), T.map((t) => t.id).sort(), page + ": every key reached from Done"); }
+  for (const [g, edges] of Object.entries(G)) for (const e of Object.values(edges)) { const l = [e].flat(); assert.ok(l.length && l.every((x, i) => x !== "none" || i === l.length - 1), `${g}: "none" only last`); }
+});
+
 // The focus graph of lvgl-switch.md §2.6.1 on doubled centres, enough to play a spec's vectors: names, selectors, nearestIn (with ahead), ordered lists, order and axis.
 const DIR = { left: [-1, 0], right: [1, 0], up: [0, -1], down: [0, 1] };
 function focusMove(graph, targets, cur, key, resolve = {}) {
@@ -391,4 +445,60 @@ test("the Probe bench spec file agrees with the bench wireframes, region by regi
   for (const v of be.focus.vectors) { if (v.intent) continue; assert.equal(focusMove(be.focus.graph, v.state === "away" ? AWAY : TG, v.from, v.key), v.to, `${v.from} ${v.key} → ${v.to}`); }
   assert.ok(!JSON.stringify(be.colours).includes("amber"), "no amber on the bench"); assert.equal(be.events.install.holdMs, Math.max(...be.events.install.steps.map((s) => s.at + (s.ms ?? 0))));
   assert.equal(R.bench.until, "room-bench-stage-collection"); assert.deepEqual(paletteBad(be.colours), []);
+});
+
+test("the sitting spec file agrees with its wireframes, region by region; Habitat's half stays where it stood; its focus graphs play their vectors", () => {
+  const si = rd("../specs/station/sitting.json"), hab = rd("../specs/station/habitat.json"), R = si.regions, P = boxesOf("14-sitting-pose.svg"), C = boxesOf("14c-sitting-confirm.svg");
+  const is = (r, what, set = P) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
+  for (const k of ["bezel", "glass", "resident", "nameTag", "heading", "strip"]) is(R[k].rect, k);
+  for (const k of ["bezel", "glass", "resident", "heading", "strip"]) is(R[k].rect, k + " (confirm)", C);
+  lintRegions(si); assert.deepEqual(si.states, ["pose", "place", "confirm", "begin"]); assert.deepEqual(si.rules.needed, []);
+  for (const k of ["bezel", "glass", "resident", "nameTag"]) assert.deepEqual(R[k].rect, hab.regions[k].rect, k + " where it stood on Habitat");
+  assert.deepEqual(R.gilt.rect, R.bezel.rect, "the gilt frame round the window"); assert.deepEqual(R.gilt.inStates, ["confirm", "begin"]);
+  const K = R.cards.places, cards = Array.from({ length: K.max }, (_, i) => [K.first[0] + K.pitch[0] * (i % K.grid[0]), K.first[1] + K.pitch[1] * Math.floor(i / K.grid[0]), K.first[2], K.first[3]]);
+  assert.equal(K.grid[0] * K.grid[1], K.max); for (const c of cards) assert.ok(inside(c, R.cards.rect), "a card inside its region"); for (const c of cards.slice(0, 3)) is(c, "pose card");
+  for (const [i, c] of cards.entries()) for (const d of cards.slice(i + 1)) assert.ok(gapOk(c, d, 16), "cards 16 px apart");
+  assert.ok(R.cards.card.picture.at[0] * 2 + R.cards.card.picture.size[0] === K.first[2] && R.cards.card.picture.at[1] * 2 + R.cards.card.picture.size[1] === K.first[3], "the picture centred in its card");
+  for (const set of [P, C]) is(R.deck.rect, "the deck", set); assert.deepEqual(R.deck.rect, [592, 48, 416, 424], "the deck is Habitat's right column"); assert.ok(inside(R.heading.rect, R.deck.rect) && inside(R.cards.rect, R.deck.rect) && inside(R.chosen.rect, R.deck.rect), "the heading and the cards in the deck");
+  assert.equal(cards[2][0] + cards[2][2], R.deck.rect[0] + R.deck.rect[2] - 16, "the cards end 16 inside the deck"); assert.ok(readFileSync(new URL("../../../design/style-guide/station-layouts/14-sitting-pose.svg", import.meta.url), "utf8").includes(`<rect x="${cards[1][0] - 4}" y="${cards[1][1] - 6}" width="${cards[1][2] + 8}" height="${cards[1][3] + 8}"`), "the ring on card 1, 4 outside and lifted 2");
+  assert.equal(R.gilt.part, "gilt"); assert.deepEqual(Object.keys(R.gilt.slices), ["rest", "armed"]); is(R.gilt.opening, "the gilt's opening", C);
+  assert.deepEqual(R.gilt.opening, [R.gilt.rect[0] + R.gilt.moulding, R.gilt.rect[1] + R.gilt.moulding, R.gilt.rect[2] - 2 * R.gilt.moulding, R.gilt.rect[3] - 2 * R.gilt.moulding]); assert.equal(Object.values(R.gilt.bands).at(-1)[1], R.gilt.moulding);
+  assert.ok(inside(R.resident.rect, R.gilt.opening) && inside(R.nameTag.rect, R.gilt.opening), "the mibi and its tag inside the gilt's opening");
+  assert.deepEqual([R.cards.places.grid, R.chosen.places.grid, R.chosen.places.exactly, R.steps.places.exactly], [[3, 2], [2, 1], 2, 3]);
+  const B = si.events.begin.steps; assert.deepEqual([B[0].kind, B[0].target, B[0].from, B[0].to, B[0].ms, B[0].levels], ["dither", "gilt", R.gilt.slices.armed, null, 300, 16]); assert.deepEqual([B[1].at, B[1].ms, B[1].to, B[1].focus], [300, 180, "habitat", "portrait"]);
+  assert.deepEqual([si.strings.thisPose, si.strings.thisPlace], ["Pick this pose", "Pick this place"]); assert.deepEqual(["pose", "place", "confirm"].map((k) => si.bottomLine[k].capX), [934, 950, 946], "the ← cap at 1008 − word − 20");
+  assert.match(hab.focus.targets.portrait.enabled, /^always/); assert.match(hab.focus.entry.backFromSitting, /^portrait/); assert.match(hab.focus.entry.sittingBegun, /^portrait/);
+  const H = R.chosen.places; for (let i = 0; i < 2; i++) is([H.first[0] + H.pitch[0] * i, H.first[1], H.first[2], H.first[3]], "chosen card", C);
+  assert.ok(R.heading.rect[1] + R.heading.rect[3] + 16 <= R.cards.rect[1], "the heading 16 px above the cards"); assert.equal(R.heading.px, frame.type.title);
+  const S = R.steps.places, steps = Array.from({ length: 3 }, (_, i) => [S.first[0] + S.pitch[0] * i, S.first[1], S.first[2], S.first[3]]);
+  for (const s of steps) { is(s, "step tile"); assert.ok(inside(s, R.strip.rect)); } assert.deepEqual([steps[0][0], steps[2][0] + steps[2][2]], [32, 984], "the steps span Habitat's strip");
+  assert.ok(R.steps.tile.thumb.at[0] + R.steps.tile.thumb.size[0] <= S.first[2] - 8, "the chosen picture inside its tile");
+  // frame.json: the sitting under Habitat, ← Habitat, the Habitat mark
+  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Habitat", "Habitat", si.strings.title]);
+  assert.match(hab.bottomLine.portrait.held.opens, /sitting/, "Habitat's Portrait module opens the sitting");
+  // focus: well formed; the vectors played on five cards (pose and place) and on the room (confirm)
+  const g = si.focus.pose.graph, groups = new Set(Object.keys(g)); for (const k of STEP_KEYS) assert.ok(edgeOk(g.card[k], groups), "card." + k);
+  const TG = Object.fromEntries(cards.slice(0, 5).map((c, i) => ["card." + i, { group: "card", box: c }]));
+  let played = 0; for (const v of si.focus.vectors) { if (v.intent || v.state === "confirm") continue; assert.equal(focusMove(g, TG, v.from, v.key), v.to, `${v.state}: ${v.from} ${v.key} → ${v.to}`); played++; }
+  assert.ok(played >= 8); assert.deepEqual(si.focus.confirm.targets, {}, "no ring on look and confirm"); assert.ok(STEP_KEYS.every((k) => si.focus.confirm.graph.room[k] === "none"));
+  assert.equal(si.events.begin.holdMs, Math.max(...si.events.begin.steps.map((s) => s.at + (s.ms ?? 0))));
+  assert.ok(!JSON.stringify(si.colours).includes("amber")); assert.deepEqual(paletteBad(si.colours), []);
+});
+
+test("the not-built composition agrees with its wireframes: one line on the stage's ground, the frame kept on screens and gone on Idle", () => {
+  const N = frame.notBuilt, R = N.regions, B = boxesOf("13-not-built.svg"), I = boxesOf("13b-not-built-idle.svg");
+  lintRegions({ screen: "frame.notBuilt", regions: R });
+  assert.ok(B.has(R.line.rect.join(",")) && I.has(R.line.rect.join(",")), `line ${R.line.rect} is in both wireframes`);
+  assert.ok(B.has(frame.regions.stage.rect.join(",")), "the stage in the screen's wireframe"); assert.ok(I.has(R.ground.rect.join(",")), "the ground in Idle's");
+  for (const k of ["action", "subject", "need", "back"]) assert.ok(B.has(frame.regions[k].rect.join(",")), `${k} zone in the screen's wireframe`);
+  assert.ok(inside(R.line.rect, frame.regions.stage.rect), "the line on the stage");
+  assert.equal(R.line.rect[0] + R.line.rect[2] / 2, R.line.centre); assert.equal(R.line.centre, 512);
+  assert.deepEqual([R.line.px, R.line.weight], [20, frame.type.weight[20]]); assert.ok(R.line.capTop % 8 === 0, "the cap top on the grid");
+  assert.deepEqual(N.frame, { screen: true, idle: false }); assert.equal(N.boot, "home"); assert.equal(R.ground.on, "idle");
+  assert.equal(frame.colours.stageGround, "ground", "the stage with no slice is the instrument's ground"); assert.equal(N.colours.ground, frame.colours.stageGround);
+  assert.deepEqual(paletteBad(N.colours), []); assert.deepEqual(paletteBad(frame.idle.colours), []);
+  for (const k of ["line", "idle"]) { const s = N.strings[k]; assert.ok(s.split(/\s+/).length <= R.line.words, `${k}: six words or fewer`); assert.ok(!/\d/.test(s), `${k}: no digits`); assert.ok(!s.endsWith("."), `${k}: no full stop`); }
+  assert.equal(N.strings.line, N.strings.line.toLowerCase(), "the line in lower case, as the frame's notices; the title names the screen");
+  assert.ok(N.strings.idle.startsWith("Idle "), "Idle has no title, so its line names it");
+  assert.equal(N.strings.subject, "");
 });

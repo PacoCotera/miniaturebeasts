@@ -20,7 +20,6 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Condition 2: v7 as written, plus the species reference as Image 3 in both steps, the reference being the type specimen's own v7 painting (condition 1, the sample whose step 2 passed, else the first); the subject is the species' second individual, so this tests the mechanism the owner values: a reference in the house rendering painting an individual.",
- "costUSD": 0.3474,
  "subject": {
   "member": "S01-3ac90e8f",
   "genomeDigest": "S01-3ac90e8f",
@@ -34,7 +33,6 @@
  "step1": {
   "callId": "e0ac4bef-03cf-4464-8710-06e135837509",
   "status": "ok",
-  "costUSD": 0.18166,
   "seconds": 20.6,
   "imageOrder": [
    "index",
@@ -165,7 +163,6 @@
  "step2": {
   "callId": "3829a0bd-5dc6-44a0-a92a-c8e3980de336",
   "status": "ok",
-  "costUSD": 0.1657,
   "seconds": 19.3,
   "imageOrder": [
    "drawing",

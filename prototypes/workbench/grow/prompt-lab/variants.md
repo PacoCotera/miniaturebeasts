@@ -21,7 +21,7 @@ This plan is a lab, not a full run. Each species gets one reference individual, 
 
 ## Runs and the sheet
 
-- **Both image models:** the lab runs every variant on both gemini-3.1-flash-image and gemini-3-pro-image, with two samples per cell. Flash costs 12 variants × 3 species × 2 samples ≈ 72 calls ≈ $7. The Pro cost comes from the service log.
+- **Both image models:** the lab runs every variant on both gemini-3.1-flash-image and gemini-3-pro-image, with two samples per cell. Flash costs 12 variants × 3 species × 2 samples ≈ 72 calls. The Pro calls are in the service log.
 - **Checks:** the v4 structural checks (band, parts span, proportions at step 1's 25 %, slots) are logged and do not gate. The art director scores each image 0/1 on six faults: **box limbs**, **3D artefacts** (facets, bevels, grey untextured), **board wings**, **invented markings**, **re-laid parts** and **dull surface**. The eye score decides.
 - **Sheet:** one band per species and model. The top row is v4, v5, 1A–1G; the bottom row is the shared drawing, then v5, 2A–2C. Each cell shows its two samples, with the check numbers and fault scores in the caption.
 

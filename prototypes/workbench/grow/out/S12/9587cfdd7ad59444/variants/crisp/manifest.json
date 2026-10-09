@@ -11,7 +11,6 @@
     {
      "callId": "246ccf94-cfcc-4f46-831b-90a076163fcf",
      "status": "ok",
-     "costUSD": 0.0933,
      "seconds": 20.8,
      "checks": {
       "silhouetteIoU": 0.935,
@@ -199,7 +198,6 @@
   "token-48.png": "e77d9cec69499039fb34e3a7f0557edc1533e4c3657b00133f53805a9174f829"
  },
  "calls": 1,
- "costUSD": 0.0933,
  "seconds": 20.8,
  "finishedAt": "2026-10-08T03:51:51Z",
  "rechecked": "2026-10-08T04:22:53Z",

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>Idle, not built yet: the ground edge to edge and one line, no frame, 1024×600 at 1×, measured. Palette colours and live text as drawn; the magenta marks are measurements, not screen.</title>
+<rect x="0" y="0" width="1024" height="600" fill="#162a37"/>
+<text x="512" y="303" font-family="Inter" font-weight="500" font-size="20" fill="#c6c4d8" text-anchor="middle">Idle is not built yet</text>
+<g id="redline" fill="#ff8fe6" font-size="9">
+<rect x="0.5" y="0.5" width="1023" height="599" fill="none" stroke="#ff4fd8" stroke-width="1" stroke-dasharray="1 3"/>
+<text x="8" y="14">notBuilt.ground 0,0 1024×600 · panel, build notBuilt, fill ground, no rule, no edge (Idle only)</text>
+<rect x="16.5" y="280.5" width="991" height="31" fill="none" stroke="#ff4fd8" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="20" y="275">notBuilt.line 16,280 992×32 · the same region as on a framed screen</text>
+<text x="1004" y="275" text-anchor="end">20 px medium, fog, centred on x 512, middle y 296</text>
+<text x="24" y="96" font-size="10">Idle, not built yet (props.idle on a screen with no Idle binding).</text>
+<text x="24" y="110" font-size="10">No top bar, no bottom line, no message plate, no ring:</text>
+<text x="24" y="124" font-size="10">the frame going away is what says Idle is on.</text>
+<text x="24" y="152" font-size="10">Comes after 60 s without a press, on any screen.</text>
+<text x="24" y="166" font-size="10">The first press sends wake and nothing else: back to the screen</text>
+<text x="24" y="180" font-size="10">under Idle, its frame as it was (180 ms dither, held).</text>
+<text x="24" y="194" font-size="10">Dock wakes, docks or lifts, and lands on Home.</text>
+</g>
+</svg>

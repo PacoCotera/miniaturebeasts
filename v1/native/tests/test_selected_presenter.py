@@ -204,7 +204,7 @@ class SelectedPresenter(unittest.TestCase):
         self.request('/api/frame?revision=1')
         self.assertEqual(hashlib.sha256(self.save.read_bytes()).hexdigest(), self.save_hash)
 
-    @unittest.skipUnless(BINARY, 'Real selected executable is exercised by committed CI/VM builds')
+    @unittest.skipUnless(BINARY, 'Real selected executable is exercised by committed builds')
     def test_real_native_preview_and_return_do_not_spend_or_touch_save(self):
         revision = json.loads(self.request('/api/status')[1])['revision']
         self.input('ready', revision)

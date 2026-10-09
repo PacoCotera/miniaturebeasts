@@ -596,11 +596,11 @@
   ],
   "composites": [
     {
-      "base": "/home/user/miniaturebeasts/art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+      "base": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
       "feather": 0,
       "pastes": [
         {
-          "source": "/home/user/miniaturebeasts/art/concept-station/library-case/round2/SC-B-r2-a2-canvas.png",
+          "source": "art/concept-station/library-case/round2/SC-B-r2-a2-canvas.png",
           "screenRect": [
             40,
             492,
@@ -617,8 +617,8 @@
         }
       ],
       "outputs": {
-        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
-        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-1024x600.png",
+        "canvas": "art/concept-station/library-case/composites/SC-C1-canvas.png",
+        "screen": "art/concept-station/library-case/composites/SC-C1-1024x600.png",
         "bandRect": [
           30,
           0,
@@ -629,11 +629,11 @@
       "tag": "SC-C1"
     },
     {
-      "base": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
+      "base": "art/concept-station/library-case/composites/SC-C1-canvas.png",
       "feather": 0,
       "pastes": [
         {
-          "source": "/home/user/miniaturebeasts/art/concept-station/library-case/round3/SC-B-r3-a1-canvas.png",
+          "source": "art/concept-station/library-case/round3/SC-B-r3-a1-canvas.png",
           "screenRect": [
             44,
             176,
@@ -650,8 +650,8 @@
         }
       ],
       "outputs": {
-        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C2-canvas.png",
-        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C2-1024x600.png",
+        "canvas": "art/concept-station/library-case/composites/SC-C2-canvas.png",
+        "screen": "art/concept-station/library-case/composites/SC-C2-1024x600.png",
         "bandRect": [
           30,
           0,
@@ -665,7 +665,7 @@
   "placements": [
     {
       "tag": "SC-B-r1-a3",
-      "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
+      "screen": "art/concept-station/library-case/round1/SC-B-r1-a3-canvas.png",
       "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
       "detectedCard": [
         174,
@@ -680,8 +680,8 @@
         "h": 86
       },
       "outputs": {
-        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-B-r1-a3-pip-canvas.png",
-        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-B-r1-a3-pip-1024x600.png"
+        "canvas": "art/concept-station/library-case/placed/SC-B-r1-a3-pip-canvas.png",
+        "screen": "art/concept-station/library-case/placed/SC-B-r1-a3-pip-1024x600.png"
       },
       "textLayer": {
         "spec": "layout/text-case.json",
@@ -691,7 +691,7 @@
     },
     {
       "tag": "SC-C1",
-      "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C1-canvas.png",
+      "screen": "art/concept-station/library-case/composites/SC-C1-canvas.png",
       "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
       "detectedCard": [
         174,
@@ -706,8 +706,8 @@
         "h": 86
       },
       "outputs": {
-        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C1-pip-canvas.png",
-        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C1-pip-1024x600.png"
+        "canvas": "art/concept-station/library-case/placed/SC-C1-pip-canvas.png",
+        "screen": "art/concept-station/library-case/placed/SC-C1-pip-1024x600.png"
       },
       "textLayer": {
         "spec": "layout/text-case.json",
@@ -717,7 +717,7 @@
     },
     {
       "tag": "SC-C2",
-      "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/composites/SC-C2-canvas.png",
+      "screen": "art/concept-station/library-case/composites/SC-C2-canvas.png",
       "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
       "detectedCard": [
         174,
@@ -732,8 +732,8 @@
         "h": 86
       },
       "outputs": {
-        "canvas": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C2-pip-canvas.png",
-        "screen": "/home/user/miniaturebeasts/art/concept-station/library-case/placed/SC-C2-pip-1024x600.png"
+        "canvas": "art/concept-station/library-case/placed/SC-C2-pip-canvas.png",
+        "screen": "art/concept-station/library-case/placed/SC-C2-pip-1024x600.png"
       },
       "textLayer": {
         "spec": "layout/text-case.json",

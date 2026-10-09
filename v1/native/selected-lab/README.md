@@ -30,7 +30,7 @@ and Companion UI have [headless ESP-IDF compile proofs](../../docs/evidence/nati
 These are compile results, not physical runtime, input, display or memory evidence.
 
 Develop locally, commit and push, then fetch the exact clean revision through Git
-on the established VM. Never copy loose source to bypass version control.
+on the build machine. Never copy loose source to bypass version control.
 
 ```sh
 cmake -S native/lab -B native/build/lab -G Ninja -DCRITTER_BUILD_SELECTED_LAB=ON -DCMAKE_BUILD_TYPE=Release

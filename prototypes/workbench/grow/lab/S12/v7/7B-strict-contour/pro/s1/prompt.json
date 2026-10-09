@@ -16,7 +16,6 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Both steps, the Contour paragraph made stricter: no darker step of the body colour along the edge either, and no edge darker than the shadow step beside it. Tests whether the Belatz's line work and the drawings' dark edges need the stronger words.",
- "costUSD": 0.3368,
  "subject": {
   "member": "type-specimen",
   "genomeDigest": "S12-94f298de",
@@ -25,7 +24,6 @@
  "step1": {
   "callId": "a007bbbd-4720-4921-99a0-aa421b1d0c59",
   "status": "ok",
-  "costUSD": 0.17362,
   "seconds": 18.1,
   "imageOrder": [
    "index",
@@ -172,7 +170,6 @@
  "step2": {
   "callId": "cf7a1dbb-72b3-45e6-80f8-76f2bbf21a04",
   "status": "ok",
-  "costUSD": 0.16319,
   "seconds": 20.3,
   "imageOrder": [
    "drawing",

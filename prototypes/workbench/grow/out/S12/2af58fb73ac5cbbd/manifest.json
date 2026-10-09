@@ -13,7 +13,6 @@
      "step": 1,
      "attempt": 1,
      "status": "ok",
-     "costUSD": 0.17396,
      "seconds": 21.4,
      "checks": {
       "silhouetteIoU": 0.501,
@@ -174,7 +173,6 @@
      "step": 1,
      "attempt": 2,
      "status": "ok",
-     "costUSD": 0.18539,
      "seconds": 19.7,
      "checks": {
       "silhouetteIoU": 0.689,
@@ -332,7 +330,6 @@
      "callId": "06f3f638-0109-481a-ad92-49202d3bde38",
      "step": 2,
      "status": "ok",
-     "costUSD": 0.16724,
      "seconds": 18.1,
      "checks": {
       "silhouetteIoU": 0.324,
@@ -509,7 +506,6 @@
   "token-48.png": "fb2f1f2fa04b54dad35a68625f87e51762a3bcbf4236a9e7c72f4f0bf4c5dbab"
  },
  "calls": 3,
- "costUSD": 0.52659,
  "seconds": 59.2,
  "finishedAt": "2026-10-08T13:53:05Z"
 }

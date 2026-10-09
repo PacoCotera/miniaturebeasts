@@ -16,7 +16,6 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Both steps, the Framing paragraph removed. Measures how much of the difference in size and placement the framing rule removes, against the rig's own framing of each species.",
- "costUSD": 0.3401,
  "subject": {
   "member": "type-specimen",
   "genomeDigest": "S09-33855bb1",
@@ -25,7 +24,6 @@
  "step1": {
   "callId": "18f9a76f-a760-44b9-b101-362eeffb9c72",
   "status": "ok",
-  "costUSD": 0.1683,
   "seconds": 19.3,
   "imageOrder": [
    "index",
@@ -169,7 +167,6 @@
  "step2": {
   "callId": "2435021c-f429-4ef0-82a5-57d1910646cf",
   "status": "ok",
-  "costUSD": 0.17178,
   "seconds": 17.8,
   "imageOrder": [
    "drawing",

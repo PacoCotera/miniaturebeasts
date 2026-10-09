@@ -19,21 +19,16 @@
  "time": "2026-10-08T21:45:22Z",
  "checkCost": {
   "created_at": 1791495922,
-  "credit_cost": 0,
-  "balance_cost": 0.18,
   "output_images": [],
   "base64_images": [],
   "output_urls": [],
   "model": "check_cost",
-  "remaining_credits": 0,
-  "remaining_balance": 52.00000000000001
+  "remaining_credits": 0
  },
  "result": {
   "status": "succeeded",
   "task_id": "e96f3c9e-5994-44e0-aba8-f49cc0cfd185",
   "seconds": 41.5,
-  "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 51.82,
   "model": "rd_pro",
   "file": "C48-W-r7-H-side-rd.png",
   "sha256": "700cdb85e631f0159e365448770f7cd9a3ec2348f57239448df8158926d56c42"

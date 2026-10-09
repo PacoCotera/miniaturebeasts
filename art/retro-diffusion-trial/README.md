@@ -7,14 +7,13 @@ A small paid trial of the [Retro Diffusion](https://retrodiffusion.ai) pixel-art
 ([art-direction.md](../../design/art-direction.md), [ui-kit.md §2 and §4](../../design/proposals/ui-kit.md)).
 Everything generated here is **generated, not hand-authored**, and nothing in this folder is
 accepted art. Every PNG has a JSON sidecar with the exact request (image inputs replaced by file
-name and SHA-256), task id, cost and time. No key material is stored anywhere in the repository.
+name and SHA-256), task id and time. No key material is stored anywhere in the repository.
 
-**Spend: $2.88 of a $10.50 balance, 22 images in 12 successful requests, 3 failed requests
-(refunded).** Balance after the trial: $7.62.
+**22 images in 12 successful requests; 3 failed requests were not charged.**
 
 Contents: [API notes](#api-notes) · [A. Weather](#a-weather-for-the-reach-view) ·
 [B. Station Home](#b-station-home-scene) · [C. Tile and sprite](#c-meadow-tile-and-loika-sprite) ·
-[Measurements](#measurements) · [Costs](#costs) · [Recommendation](#recommendation) · [Files](#files)
+[Measurements](#measurements) · [Requests](#requests) · [Recommendation](#recommendation) · [Files](#files)
 
 ## API notes
 
@@ -27,11 +26,11 @@ is no OpenAPI file at the obvious paths. The GitHub README is the usable referen
   returns **202 accepted** with a `task_id`; poll `GET /v2/inferences/tasks/{id}` until
   `succeeded` or `failed`. Send an `Idempotency-Key` on paid POSTs. Images come back as raw
   base64 PNG (GIF for animations) in `base64_images`.
-- **Models and styles.** RD Fast ($0.03/image), RD Plus ($0.06), RD Pro ($0.18, the only family
+- **Models and styles.** RD Fast, RD Plus and RD Pro (the dearest; the only family
   that accepts `reference_images`, up to 9), RD Mini (aliases to low-res styles). Families used
   here: `rd_plus__low_res` (16–128 px), `rd_plus__environment` (64–512 px), `rd_pro__default`
   and `rd_pro__topdown` (12–256 px), `rd_tile__single_tile` (16–64 px), `rd_tile__tileset`
-  (16–32 px tile, Wang set, $0.10), `rd_advanced_animation__idle` ($0.14).
+  (16–32 px tile, Wang set), `rd_advanced_animation__idle`.
 - **Size limits.** 12–512 px overall; most styles stop at 256 or 384. RD Pro stops at 256, so a
   512-wide Station scene with references is not possible in one call.
 - **Palette lock.** `input_palette` (a base64 PNG with the colours) is honoured by the image
@@ -49,14 +48,11 @@ is no OpenAPI file at the obvious paths. The GitHub README is the usable referen
   are not redrawn, but they can be copied almost literally (A2 below). `input_image` plus
   `strength` is ordinary img2img on any style.
 - **Edit tools** (`/v2/edit/tools/{tool}`): `palette_converter`, `color_reducer`,
-  `k_centroid_downscale`, `pixel_correction`, `rotate` are free; `background_remover` and
-  `color_style_transfer` $0.01; `inpainting`, `outpainting`, `image_edit`, `seam_tiling` $0.18.
+  `k_centroid_downscale`, `pixel_correction`, `rotate` are free; `background_remover`,
+  `color_style_transfer`, `inpainting`, `outpainting`, `image_edit` and `seam_tiling` are paid.
   A free Pixel Fixer snaps "pixel-style" images to a true grid.
-- **Credits.** `GET /v2/inferences/credits` returns `{"credits": 50, "balance": 10.5}`. The
-  USD `balance` is what is spent; `credits` is a legacy counter that never moved during the
-  trial. Each result carries `balance_cost` and `remaining_balance`. `check_cost: true` is a
-  free dry run that returns the exact price and was accurate for every request here. Failed
-  tasks are refunded automatically.
+- **Credits.** The credits endpoint reports the account's remaining credit; each result carries its
+  cost; `check_cost: true` is a free dry run. Failed tasks are refunded automatically.
 
 ## A. Weather for the reach view
 
@@ -77,7 +73,7 @@ underside each.
 
 <img src="previews/a1-plus-lowres-palette-1-x4.png" width="256" alt="A1 palette-locked cloud wreath 1"> <img src="previews/a1-plus-lowres-palette-2-x4.png" width="256" alt="A1 palette-locked cloud wreath 2"> <img src="previews/a1-plus-lowres-palette-3-x4.png" width="256" alt="A1 pre-palette 1"> <img src="previews/a1-plus-lowres-palette-4-x4.png" width="256" alt="A1 pre-palette 2">
 
-*A1 at 4×: two palette-locked results, then their pre-palette originals (`a1-plus-lowres-palette-1..4.png`). $0.12.*
+*A1 at 4×: two palette-locked results, then their pre-palette originals (`a1-plus-lowres-palette-1..4.png`).*
 
 <img src="previews/a1-pre-vs-palette-x3.png" width="400" alt="A1 pre-palette beside palette-locked">
 
@@ -91,7 +87,7 @@ references: the model reproduced the reference map almost literally, tiles, grid
 
 <img src="previews/a2-pro-topdown-ref-palette-1-x4.png" width="384" alt="A2 cloud bank with lit rim around meadow pocket"> <img src="previews/a2-pro-topdown-ref-palette-2-x4.png" width="384" alt="A2 reference copied literally">
 
-*A2 at 4× (`a2-pro-topdown-ref-palette-1.png`, `-2.png`). 11 and 32 colours. $0.36.*
+*A2 at 4× (`a2-pro-topdown-ref-palette-1.png`, `-2.png`). 11 and 32 colours.*
 
 **A3. Cumulus pieces, `rd_pro__topdown`, 64×64, palette, `remove_bg`.** Clean transparent
 sprites, 6 and 9 colours, lit top-left with a shaded `N3` underside. These are the closest
@@ -100,7 +96,7 @@ mock-up and the kit's three-step shading rule.
 
 <img src="previews/a3-pro-cumulus-nobg-1-x4.png" width="192" alt="A3 cumulus piece 1"> <img src="previews/a3-pro-cumulus-nobg-2-x4.png" width="192" alt="A3 cumulus piece 2">
 
-*A3 at 4× (`a3-pro-cumulus-nobg-1.png`, `-2.png`), transparent background. $0.36.*
+*A3 at 4× (`a3-pro-cumulus-nobg-1.png`, `-2.png`), transparent background.*
 
 **A4. Cloud bank with an opening, `rd_pro__topdown`, 128×96, palette, A2-1 as reference.**
 The prompt described the bank filling the frame and opening in one corner, and both results
@@ -113,7 +109,7 @@ separate overlay in the kit anyway.
 
 <img src="previews/a4-pro-bank-opening-2-x4.png" width="512" alt="A4 cloud bank opening on meadow 2">
 
-*A4 at 4× (`a4-pro-bank-opening-1.png`, `-2.png`), 20 and 21 colours, both on the 48-colour palette. $0.36.*
+*A4 at 4× (`a4-pro-bank-opening-1.png`, `-2.png`), 20 and 21 colours, both on the 48-colour palette.*
 
 **Judgement.** With a palette, a top-down RD Pro style and a reference, the service produces a
 weather bank that matches the concept in colour, volume and rim light. It is 128 px wide, so a
@@ -133,11 +129,11 @@ button eyes, not a Miniature Lives creature, and the Untuva is a plain mushroom 
 
 ![B1 vivarium scene 1](b-station/b1-plus-environment-512-1.png)
 
-*B1 (`b1-plus-environment-512-1.png`, 512×304 at 1×). $0.06.*
+*B1 (`b1-plus-environment-512-1.png`, 512×304 at 1×).*
 
 ![B1 vivarium scene 2](b-station/b1-plus-environment-512-2.png)
 
-*B1 (`b1-plus-environment-512-2.png`). A square tank, lamp panel across the top, mounds of moss. $0.06.*
+*B1 (`b1-plus-environment-512-2.png`). A square tank, lamp panel across the top, mounds of moss.*
 
 ![B1-1 quantised to the 48 Companion colours](b-station/b1-plus-environment-512-1-quantised.png)
 
@@ -152,7 +148,7 @@ The scene is less composed than B1 and the size is capped at 256 by RD Pro.
 
 <img src="previews/b2-pro-refs-256-2-x2.png" width="512" alt="B2 vivarium with references 2">
 
-*B2 at 2× (`b2-pro-refs-256-1.png`, `-2.png`, 256×152 native). 43 and 42 colours. $0.36.*
+*B2 at 2× (`b2-pro-refs-256-1.png`, `-2.png`, 256×152 native). 43 and 42 colours.*
 
 **B3. img2img from the UI-kit Station Home mock-up, `rd_plus__environment`, 512×392,
 strength 0.55.** The composition of [`station-home.png`](../../design/proposals/ui-kit/station-home.png)
@@ -161,7 +157,7 @@ bunnies and the Untuva was lost. img2img keeps layout, not identity.
 
 ![B3 img2img from the Station Home mock-up](b-station/b3-plus-environment-img2img.png)
 
-*B3 (`b3-plus-environment-img2img.png`, 512×392 at 1×). $0.06.*
+*B3 (`b3-plus-environment-img2img.png`, 512×392 at 1×).*
 
 **Judgement.** The service does rounded, tactile, top-left-lit scenes with saturated colour on
 the first try. It does not keep a specific creature's identity unless RD Pro references are
@@ -179,7 +175,7 @@ all in the G, Y and R ramps.
 
 <img src="previews/c1b-single-tile-palette-noseamless-x4.png" width="128" alt="C1 meadow tile"> <img src="previews/c1b-single-tile-palette-noseamless-3x3-x4.png" width="384" alt="C1 meadow tile repeated 3 by 3">
 
-*C1 (`c1b-single-tile-palette-noseamless.png`) at 4× and repeated 3×3. $0.06. The three failed attempts are kept as `c1-*-failed.json` and `c1a-*.json`.*
+*C1 (`c1b-single-tile-palette-noseamless.png`) at 4× and repeated 3×3. The three failed attempts are kept as `c1-*-failed.json` and `c1a-*.json`.*
 
 **C3. Seamless flags on `rd_plus__low_res`, 32×32, palette.** The request succeeded, but the
 tiles are not seamless: the first has a dark one-pixel border, the second a brown rim. The
@@ -187,7 +183,7 @@ flags do not produce usable repeating ground on this style.
 
 <img src="previews/c3-plus-lowres-seamless-palette-1-3x3-x4.png" width="384" alt="C3 seamless attempt 1 repeated"> <img src="previews/c3-plus-lowres-seamless-palette-2-3x3-x4.png" width="384" alt="C3 seamless attempt 2 repeated">
 
-*C3 (`c3-plus-lowres-seamless-palette-1.png`, `-2.png`) repeated 3×3 at 4×. $0.12.*
+*C3 (`c3-plus-lowres-seamless-palette-1.png`, `-2.png`) repeated 3×3 at 4×.*
 
 **C4. `rd_tile__tileset`, 32 px, meadow meeting soil.** A Wang-style set of 32 px tiles in a
 128×160 sheet (ten 32-px tiles plus two previews). Clean edges and a soft grass fringe over
@@ -196,7 +192,7 @@ colours collapses the soil to 5 colours and bands it.
 
 <img src="previews/c4-wang-tileset-32-x4.png" width="512" alt="C4 Wang tileset meadow and soil">
 
-*C4 (`c4-wang-tileset-32.png`, 128×160 native, shown 4×). $0.10.*
+*C4 (`c4-wang-tileset-32.png`, 128×160 native, shown 4×).*
 
 <img src="c-tiles/c4-wang-tileset-32-quantised.png" width="256" alt="C4 quantised to 48 colours">
 
@@ -211,7 +207,7 @@ the top edge in two takes.
 
 <img src="previews/c2-pro-hopper-32-1-x4.png" width="128" alt="C2 Loika take 1"> <img src="previews/c2-pro-hopper-32-2-x4.png" width="128" alt="C2 Loika take 2"> <img src="previews/c2-pro-hopper-32-3-x4.png" width="128" alt="C2 Loika take 3"> <img src="previews/c2-pro-hopper-32-4-x4.png" width="128" alt="C2 Loika take 4">
 
-*C2 (`c2-pro-hopper-32-1..4.png`) at 4×, transparent. $0.72, the most expensive request of the trial.*
+*C2 (`c2-pro-hopper-32-1..4.png`) at 4×, transparent.*
 
 **C5. Idle animation of take 3, `rd_advanced_animation__idle`, 8 frames, sprite sheet.** Take
 3 was padded onto a 48×48 transparent canvas (`c5-anim-input-hopper-48.png`) as the docs
@@ -221,7 +217,7 @@ boil from frame to frame. Not a two-frame kit idle; it would need hand cleanup f
 
 <img src="previews/c5-idle-animation-hopper-x4.png" width="768" alt="C5 eight idle frames">
 
-*C5 (`c5-idle-animation-hopper.png`, 192×96 native, shown 4× on a dark ground). $0.14.*
+*C5 (`c5-idle-animation-hopper.png`, 192×96 native, shown 4× on a dark ground).*
 
 **Judgement.** Sprites: rounded, expressive, saturated, correctly lit, and palette-exact; the
 outline rule and canvas discipline need a hand pass. Tiles: the Wang tileset is the useful
@@ -265,27 +261,26 @@ palette-constrained and are listed for comparison; their Pillow-quantised copies
 | `c-tiles/c5-anim-input-hopper-48.png` | 48×48 | 22 | 34 / 479 (7.1%) | 1 | 22 | Padded start frame for C5 |
 | `c-tiles/c5-idle-animation-hopper.png` | 192×96 | 14 | 260 / 3722 (7.0%) | 2 | 14 | Motion works; frames boil |
 
-## Costs
+## Requests
 
-| Request | Style | Images | Cost | Time |
-| --- | --- | --- | --- | --- |
-| A1 | `rd_plus__low_res` 128², palette, pre-palette copies | 2 (+2 pre) | $0.12 | 1 s |
-| A2 | `rd_pro__topdown` 128², palette, 1 reference | 2 | $0.36 | 42 s |
-| A3 | `rd_pro__topdown` 64², palette, bg removed | 2 | $0.36 | 20 s |
-| A4 | `rd_pro__topdown` 128×96, palette, 1 reference | 2 | $0.36 | 105 s |
-| B1 | `rd_plus__environment` 512×304 | 2 | $0.12 | 19 s |
-| B2 | `rd_pro__default` 256×152, 3 references | 2 | $0.36 | 45 s |
-| B3 | `rd_plus__environment` 512×392 img2img | 1 | $0.06 | 19 s |
-| C1 | `rd_tile__single_tile` 32², seamless | 0 | $0 (3 failures refunded) | |
-| C1b | `rd_tile__single_tile` 32², palette | 1 | $0.06 | 10 s |
-| C2 | `rd_pro__default` 32², palette, bg removed, 2 references | 4 | $0.72 | 42 s |
-| C3 | `rd_plus__low_res` 32², seamless, palette | 2 | $0.12 | 23 s |
-| C4 | `rd_tile__tileset` 32 px | 1 sheet | $0.10 | 29 s |
-| C5 | `rd_advanced_animation__idle` 48², 8 frames, sheet | 1 sheet | $0.14 | 99 s |
-| **Total** | | **22** | **$2.88** | |
+| Request | Style | Images | Time |
+| --- | --- | --- | --- |
+| A1 | `rd_plus__low_res` 128², palette, pre-palette copies | 2 (+2 pre) | 1 s |
+| A2 | `rd_pro__topdown` 128², palette, 1 reference | 2 | 42 s |
+| A3 | `rd_pro__topdown` 64², palette, bg removed | 2 | 20 s |
+| A4 | `rd_pro__topdown` 128×96, palette, 1 reference | 2 | 105 s |
+| B1 | `rd_plus__environment` 512×304 | 2 | 19 s |
+| B2 | `rd_pro__default` 256×152, 3 references | 2 | 45 s |
+| B3 | `rd_plus__environment` 512×392 img2img | 1 | 19 s |
+| C1 | `rd_tile__single_tile` 32², seamless | 0 (3 failures, not charged) | |
+| C1b | `rd_tile__single_tile` 32², palette | 1 | 10 s |
+| C2 | `rd_pro__default` 32², palette, bg removed, 2 references | 4 | 42 s |
+| C3 | `rd_plus__low_res` 32², seamless, palette | 2 | 23 s |
+| C4 | `rd_tile__tileset` 32 px | 1 sheet | 29 s |
+| C5 | `rd_advanced_animation__idle` 48², 8 frames, sheet | 1 sheet | 99 s |
+| **Total** | | **22** | |
 
-Price is flat per image within a family regardless of size, so a 32 px sprite costs the same as
-a 256 px scene from the same model. RD Pro references are the expensive path: $0.18 per take.
+Price is flat per image within a family, regardless of size; RD Pro with references is the dearest path.
 
 ## Recommendation
 
@@ -307,15 +302,15 @@ references for the hand-authored pixel masters the art direction still requires.
   masters. "Art never changes genes" rules out generated creature art as canonical.
 
 **It cannot:** lock the palette on the tileset style; produce seamless tiles (the flags fail or
-do nothing; `seam_tiling` at $0.18 per image is untested); keep a specific individual's
+do nothing; `seam_tiling` is untested); keep a specific individual's
 identity without RD Pro references, and RD Pro stops at 256 px; follow the kit's 1 px
 sel-out outline rule or the "no anti-aliasing, Bayer only" rule by itself; produce the kit's
 two-frame idles (the idle animation redraws every frame); draw rain bands or the Bayer mist
 on request. Text, numbers and HUD stay out of generated art, as the rules already say.
 
-**Next step if the owner wants to continue:** a $5 run of A4-style weather pieces at 256 px
+**Next step if the owner wants to continue:** a small run of A4-style weather pieces at 256 px
 for the reach view mist layer, and a `seam_tiling` test on C1b to settle whether seamless
-ground is available at all. Both fit inside the remaining $7.62.
+ground is available at all.
 
 ## Files
 
@@ -323,7 +318,7 @@ ground is available at all. Both fit inside the remaining $7.62.
 - `companion-palette-48.png`, `-preview.png`, `.json`: the palette as sent, a human-readable
   strip, and the colour list with kit ids.
 - `a-weather/`, `b-station/`, `c-tiles/`: outputs as PNG, one JSON sidecar per request (exact
-  request with image inputs as file name + SHA-256, task id, cost, time, model), failed-attempt
+  request with image inputs as file name + SHA-256, task id, time, model), failed-attempt
   sidecars, and `*-quantised.png` Pillow copies for images that were not palette-constrained.
 - `previews/`: nearest-neighbour upscales and 3×3 tile repeats used in this report. Derived,
   not sources.

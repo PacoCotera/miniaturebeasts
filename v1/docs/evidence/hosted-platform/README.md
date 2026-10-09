@@ -56,3 +56,5 @@ genomic implementation, broad organism range or finished art. The
 [workbench guide](../../../prototype/generator-workbench/README.md) owns current
 coverage; the [gateway guide](../../../prototype/platform-server/README.md)
 owns routing and retention boundaries.
+
+The art-reset link in this folder's snapshots was re-pointed on 2026-10-09 to [art-reset/README.md](https://github.com/PacoCotera/miniaturebeasts/blob/main/v1/prototype/generator-workbench/evidence/art-reset/README.md) in this repository; the snapshots are otherwise as captured.
