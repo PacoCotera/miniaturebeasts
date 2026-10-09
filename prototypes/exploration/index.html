@@ -853,6 +853,7 @@ const CARE_TEXT = {
   visitLabel: n => 'Visit ' + n, visitCtx: 'with you', withYouThisExp: 'with you for this expedition',
   stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows with care',
   stHome: 'at home', stHomeBonded: 'at home · grows on the Companion',
+  noOneWith: 'no one with you', noOneGrown: 'no one grown yet',
 };
 // Assets the care screens name that have no master yet: registered here, never drawn (no heart is drawn until it lands).
 const CARE_ASSETS = [
@@ -925,7 +926,8 @@ function migrateCarried(S) {
   S.carrySeen = 0; delete S.with; return S;
 }
 // Every load and after every dock read: defaults for the additive fields, idempotent; old Vivarium bonds back-filled once.
-// A carried id the Companion does not know, or one the Station has released (`released`, the ids released in st), is dropped.
+// A carried id the Companion does not know is dropped; one the Station has released (`released`, the ids released in st)
+// only when passed, which syncStation does under the dock gate, between expeditions.
 function normalizeCare(S, released) {
   if (!Array.isArray(S.carried)) S.carried = [];
   const ids = new Set(S.mibis.map(m => m.id)), gone = released || new Set();
@@ -978,7 +980,7 @@ function save() {
   if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
-  if (S.st) { syncStation(); normalizeCare(S, releasedIds()); }
+  if (S.st) { syncStation(); normalizeCare(S); }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
@@ -1032,6 +1034,7 @@ function syncStation() {
     if (r.op === 'home') { fxMsg(CARE_TEXT.left(n), 3); logEv(n + ' stays home (from the Station)'); }
     else if (r.ok) { fxMsg(CARE_TEXT.took(n), 3); logEv(n + ' is with you (from the Station)'); }
     else { if (r.why === 'full') fxMsg(CARE_TEXT.fullRefused(n), 3); logEv(n + ' stays home · the Station’s request refused (' + r.why + ')'); } }
+  if (!S.exp) normalizeCare(S, releasedIds());   // a released mibi leaves the carried set at the dock, between expeditions; mid-expedition it waits
   for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
@@ -3788,8 +3791,8 @@ function drawWorldInset(x, y, t, u) {
 function partnerRow() {
   const pm = partnerMibi(), w = carriedMibis()[0];
   if (pm) return 'Partner: ' + pm.name + ' · ' + SPECIES[pm.sp].abText + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
-  if (w) return w.name + ' is with you · too young for the Probe';
-  return S.mibis.length ? 'No one with you' : 'No partner yet';
+  if (w) return CARE_TEXT.noOneGrown;
+  return S.mibis.length ? CARE_TEXT.noOneWith : 'No partner yet';
 }
 function digPartner() { const pm = partnerMibi(); return pm && SPECIES[pm.sp].ab === 'dig' ? pm : null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open

@@ -261,7 +261,9 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   const lost = { mibis: [mibi(1, "Dot")], with: 9, withSeen: 2, turn: 0 }; t.migrateCarried(lost); assert.deepEqual(plain(lost.carried), []);
   const none = { mibis: [], with: null, turn: 0 }; t.migrateCarried(none); assert.deepEqual(plain(none.carried), []); assert.equal(none.lead, null);
   assert.match(source("load"), /migrateCarried\(S\); normalizeCare\(S\);/);
-  assert.match(source("save"), /syncStation\(\); normalizeCare\(S, releasedIds\(\)\);/, "after every dock read, with the Station's released ids");
+  assert.match(source("save"), /syncStation\(\); normalizeCare\(S\);/, "after every dock read, defaults only");
+  assert.ok(!/releasedIds/.test(source("save")), "save never drops released ids: only the dock gate does");
+  assert.match(source("syncStation"), /if \(!S\.exp\) normalizeCare\(S, releasedIds\(\)\);/, "under the dock gate, between expeditions, with the Station's released ids");
 });
 test("ruling 2 on the fixture: Moss at home stays juvenile through 14; carried, one Walk at turn 5 grows it; Dot elder at 8", () => {
   const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
@@ -328,7 +330,7 @@ function dock(S, st, docked) {
   const ctx = vm.createContext({ console, S, CARRY_MAX: 3, SPECIES: [{ name: "Loika" }, { name: "Tuikis" }, { name: "Untuva" }], LAND_NAME: [], G: { land: [] },
     stPart: () => st, isDocked: () => docked, clamp: (v, a, b) => Math.max(a, Math.min(b, v)), reveil: () => {}, logEv: () => {}, fxMsg: t => notes.push(t),
     CARE_TEXT: { left: n => n + " stays home", took: n => n + " is with you", fullRefused: n => n + " stays home · full" } });
-  const names = ["syncStation", "carryApply", "mibiById", "normalizeCare"];
+  const names = ["syncStation", "carryApply", "mibiById", "normalizeCare", "releasedIds"];
   vm.runInContext(names.map(source).join("\n") + "\n;syncStation(); normalizeCare(S);", Object.assign(ctx, { JUVENILE_TURNS: 2 }));
   return notes;
 }
@@ -420,6 +422,13 @@ test("the approved strings: Tend's line from the species moment and the place; t
   assert.equal(T.grownLeads("Moss"), "Moss is grown · it leads the Probe now"); assert.equal(T.clockGrownHome("Fig"), "Fig is grown · at home");
   assert.equal(T.fullRefused("Pip"), "Pip stays home: the Companion is full · leave one at home first");
   assert.equal(T.tendMidExp("Dot"), "Tend Dot when the expedition is over"); assert.equal(T.notch("Dot"), "Dot gains a skill notch");
+  assert.equal(T.noOneWith, "no one with you"); assert.equal(T.noOneGrown, "no one grown yet");
+  // the expedition choice's partner card, bottom-line context (companion-screens.md, "Expedition choice: the partner card")
+  const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 6, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs narrow burrows" }] });
+  const pr = vm.runInContext(["partnerRow", "partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt"].map(source).join("\n") + "\n;partnerRow", ctx);
+  assert.equal(pr(), "no one with you");
+  S.carried = [1]; assert.equal(pr(), "no one grown yet", "a juvenile with you, no one grown");
+  S.turn = 3; assert.equal(pr(), "Partner: Dot · calms wary creatures", "as built");
   for (const k of Object.keys(T)) { const v = typeof T[k] === "function" ? T[k](k.startsWith("walk") ? ["Abcdefghij"] : k === "tended" ? { name: "Abcdefghij", sp: 0, mem: "meadow" } : "Abcdefghij") : T[k];
     assert.ok(!/[{}]/.test(v), k + ": no placeholder braces"); }
 });
@@ -441,6 +450,17 @@ test("after a dock, normalizeCare drops released ids from the carried set; witho
   // the page passes the released ids of the Station's part after every dock read
   t.env.st = { mibis: [{ id: 3, released: true }, { id: 1, released: false }] };
   t.normalizeCare(S, t.releasedIds()); assert.deepEqual(plain(S.carried), [1]);
+});
+
+test("a released mibi stays carried undocked with no new dock and mid-expedition; at the next dock between expeditions it is dropped", () => {
+  const S = save({ carried: [1, 2], bay: [], known: [], retSeen: [], pods: [], dockSeen: 1, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], mibis: S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded, released: m.id === 2 })), dock: { docked: false }, dockN: 1, returned: [] };
+  dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "undocked, no new dock: no drop");
+  S.exp = { n: 3 }; st.dockN = 2; dock(S, st, true); assert.deepEqual(plain(S.carried), [1, 2], "mid-expedition, docked: no drop");
+  st.dockN = 3; dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "mid-expedition, a new dock read after the lift: no drop");
+  S.exp = null; dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "between expeditions, undocked, that dock already seen: no drop");
+  st.dockN = 4; dock(S, st, true); assert.deepEqual(plain(S.carried), [1], "the next dock between expeditions: dropped");
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
 });
 
 // ---- Undocked, a mibi at home is never named (K3) ----
