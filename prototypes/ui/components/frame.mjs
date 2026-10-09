@@ -17,5 +17,5 @@ export { chapterRail } from "./chapterRail.mjs";
 export { slantRail } from "./slantRail.mjs";
 export { chapterPage } from "./chapterPage.mjs";
 export { textRun, runWidth, wrap, clip, iconAsset } from "./text.mjs";
-export { list } from "./list.mjs";
+export { list, kinHatch, placeRect, kinRect } from "./list.mjs";
 export { specimen, ribbon } from "./specimen.mjs";

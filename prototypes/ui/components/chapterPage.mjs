@@ -12,11 +12,12 @@ import { panel } from "./panel.mjs";
 import { isFilled } from "../assets.mjs";
 import { focusRing } from "./focusRing.mjs";
 import { wrap } from "./text.mjs";
+import { markNode } from "./mark.mjs";
 
 export function chapterPage(ctx, id, region, props) {
   // the pane shortens to its content: its height by the number of traits (page.heightByCount: one, two, else the full height), its top fixed
-  const hb = region.heightByCount, n = (props.cells || []).length, rect = region.rect.slice();
-  if (hb) rect[3] = hb[String(n)] ?? hb.else ?? rect[3];
+  const hb = region.heightByCount, n = props.count ?? (props.cells || []).length, rect = region.rect.slice();
+  if (hb) { const key = Object.keys(hb).find((k) => { const [a, b] = k.split("-").map(Number); return n >= a && n <= (b ?? a); }); rect[3] = hb[key] ?? hb.else ?? rect[3]; }
   const Cc = props.colours, nodes = props.pane && isFilled(props.pane) ? [{ id, kind: "nineSlice", rect, asset: props.pane, region: props.region ?? null }] : panel(id, rect, { fill: Cc.pane, edge: Cc.edge, region: props.region ?? null });   // the pane master is a nine-slice with its own insets, drawn at the height the count gives
   const [px, py] = rect, H = region.heading;
   if (props.heading?.pod && H) {   // Compare: the pod at 32×40 and its place picture
@@ -27,6 +28,7 @@ export function chapterPage(ctx, id, region, props) {
     nodes.push({ id: id + ".word", kind: "text", rect: [px + H[0] + 32, py + H[1], Math.round(ctx.measure(props.heading.word, 20, 500)), 24], text: props.heading.word, px: 20, weight: 500, colour: Cc.heading, align: "left" });
     for (const [k, extra] of (props.heading.extra || []).entries()) nodes.push({ id: `${id}.hx${k}`, kind: "sprite", rect: [px + H[0] + 32 + Math.round(ctx.measure(props.heading.word, 20, 500)) + 12 + extra.dx, py + H[1] + (extra.dy || 0), extra.w, extra.h], asset: extra.asset });
   }
+  if (props.sealedFind && region.sealedFind) { const [fx, fy, fw, fh] = region.sealedFind; nodes.push({ id: id + ".find", kind: "sprite", rect: [px + fx, py + fy, fw, fh], asset: props.sealedFind, region: props.cellRegion ?? null }); return { nodes, cells: [], picture: null, overflow: false }; }   // a shut chapter: the one picture of the find that opens it, no cells, no names
   const grid = pageGrid(region, props.cells.length);
   grid.cells.forEach((cell, i) => {
     const c = props.cells[i], [cx, cy] = cell, [pw, ph] = grid.picture, cid = `${id}.c${i}`, P = [cx, cy, pw, ph];
@@ -47,9 +49,10 @@ export function chapterPage(ctx, id, region, props) {
       nodes.push({ id: cid + ".diff.t", kind: "rect", rect: [cx, cy, pw, e], colour: D.edge, region: "page.diff" }, { id: cid + ".diff.b", kind: "rect", rect: [cx, cy + ph - e, pw, e], colour: D.edge }, { id: cid + ".diff.l", kind: "rect", rect: [cx, cy, e, ph], colour: D.edge }, { id: cid + ".diff.r", kind: "rect", rect: [cx + pw - e, cy, e, ph], colour: D.edge },
         { id: cid + ".bracket", kind: "sprite", rect: [cx + Math.round(pw / 2) - 6, cy + props.diff.inset, 12, 12], asset: props.bracket, region: "page.bracket" });
     }
-    const ny = cy + ph + 8, nw = Math.round(ctx.measure(c.name, 16, 400));
-    nodes.push({ id: cid + ".name", kind: "text", rect: [cx, ny, nw, 20], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
-    if (!c.sealed) { /* a cut line drops its trailing separator */ const all = wrap(ctx, (c.lines || []).join(" "), cell[2], 16), lines = all.slice(0, 2); if (all.length > 2) lines[1] = lines[1].replace(/\s*·$/, ""); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
+    const gap = region.cell?.gap ?? 8, ny = cy + ph + gap, nw = Math.round(ctx.measure(c.name, 16, 400)), N = region.newMark, dot = c.isNew && N && props.newMark ? N.size[0] + N.gapAfterName : 0, nx = region.cell ? cx + Math.round((pw - nw - dot) / 2) : cx;
+    nodes.push({ id: cid + ".name", kind: "text", rect: [nx, ny, nw, 20], text: c.name, px: 16, weight: 400, colour: Cc.name, align: "left" });
+    if (dot) nodes.push(...markNode(cid + ".new", props.newMark, [nx + nw + N.gapAfterName, ny + 10 - N.size[1] / 2, N.size[0], N.size[1]], "the field-guide mark master"));   // the name and the dot centred together, the dot's centre on the line's middle
+    if (!c.sealed && !region.cell) { /* a cut line drops its trailing separator */ const all = wrap(ctx, (c.lines || []).join(" "), cell[2], 16), lines = all.slice(0, 2); if (all.length > 2) lines[1] = lines[1].replace(/\s*·$/, ""); lines.forEach((l, j) => nodes.push({ id: `${cid}.l${j}`, kind: "text", rect: [cx, ny + 20 + j * 20, Math.round(ctx.measure(l, 16, 400)), 20], text: l, px: 16, weight: 400, colour: c.frost ? Cc.lineEmpty : Cc.line, align: "left" })); }
   });
   return { nodes, cells: grid.cells, picture: grid.picture, overflow: grid.overflow };
 }

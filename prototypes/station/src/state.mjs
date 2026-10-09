@@ -221,7 +221,7 @@ export function read(st, p, chapterId, settings = DEFAULT_SETTINGS) {
   st.d -= cost; st.readEver = true; p.read.push(chapterId);
   const once = st.readOnce[fr.species.id] || (st.readOnce[fr.species.id] = []); if (!once.includes(chapterId)) once.push(chapterId);
   const looks = chapterLooks(fr, ch, p.genome), newLooks = [];
-  for (const [t, ls] of looks) { const had = guideLooks(st, fr.species.id, t); for (const l of ls) if (!had.includes(l)) newLooks.push(l); guideAdd(st, fr.species.id, t, ls); }
+  for (const [t, ls] of looks) { const had = guideLooks(st, fr.species.id, t); let brought = false; for (const l of ls) if (!had.includes(l)) { newLooks.push(l); brought = true; } if (brought) (p.first || (p.first = [])).includes(t) || p.first.push(t); guideAdd(st, fr.species.id, t, ls); }   // p.first: the traits whose look this pod showed first, written at read time (the page's new mark stays)
   logEv(st, "Read " + fr.species.name + " " + ch.name + " on " + p.id + (first ? " · free (the first read ever)" : cost ? " · −" + cost + " Data" : " · free") + (newLooks.length ? " · new: " + newLooks.join(", ") : ""));
   return { ok: true, cost, first, chapter: ch, newLooks };
 }

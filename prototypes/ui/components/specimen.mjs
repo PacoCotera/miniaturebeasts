@@ -13,12 +13,12 @@ const capTop = (ctx, px, y, pitch) => y + Math.floor((pitch - ctx.cap(px)) / 2);
 // A layer of the room: the sprite at its rectangle when its picture is there (a placed master at that exact size), nothing when its slot is still empty.
 export const layer = (id, rect, asset, region = null) => (asset && isFilled(asset) ? [{ id, kind: "sprite", rect: rect.slice(), asset, ...(region ? { region } : {}) }] : []);
 export function specimen(ctx, id, spec, props) {
-  const R = spec.regions, Cc = props.colours, room = props.room || {}, nodes = [];
+  const R = props.R || spec.regions, Cc = props.colours, room = props.room || {}, nodes = [];
   if (!(room.bench && isFilled(room.bench))) nodes.push({ id: id + ".beam", kind: "sprite", rect: R.beam.rect.slice(), asset: props.beam });   // the cone of light, until the room master paints its own
   nodes.push(...layer(id + ".shelf", R.shelf.rect, room.shelf), ...layer(id + ".cradle", R.cradle.rect, room.cradle));
   if (props.pod) {
     const [w, h] = props.pod.size, lift = props.pod.lift || 0, rect = [R.pod.axis - Math.round(w / 2), R.pod.feet - h - lift, w, h];   // a focused creature lifts (4 px)
-    const sw = w + R.pod.shadow.widen; nodes.push(...layer(id + ".shadow", [R.pod.axis - Math.round(sw / 2), R.pod.feet - Math.round(R.pod.shadow.h / 2), sw, R.pod.shadow.h], room.shadow));
+    const sw = w + spec.shadow.widen; nodes.push(...layer(id + ".shadow", [R.pod.axis - Math.round(sw / 2), R.pod.feet - Math.round(spec.shadow.h / 2), sw, spec.shadow.h], room.shadow));
     nodes.push({ id: id + ".pod", kind: "sprite", rect, asset: props.pod.sealed, region: "pod" });
     if (props.cut != null && props.pod.identified) {
       const cut = Math.round(h * props.cut);
@@ -33,12 +33,18 @@ export function specimen(ctx, id, spec, props) {
     if (pw) nodes.push(...layer(id + ".plate", [N.centre - Math.round(pw / 2), N.rect[1], pw, N.plate.h], room.plate));
     nodes.push(centred(ctx, id + ".name", props.name, N.centre, capTop(ctx, N.px, N.rect[1], N.rect[3]), N.px, Cc.name, "name"));
   }
-  if (props.ribbon) nodes.push(...ribbon(ctx, id + ".ribbon", spec, props.ribbon, props.ribbonColours));
-  else (props.origin || []).forEach((l, i) => nodes.push(centred(ctx, `${id}.origin.${i}`, l, O.centre, capTop(ctx, O.px, O.rect[1] + O.pitch * i, O.pitch), O.px, Cc.origin, i === 0 ? "origin" : null)));
+  if (props.ribbon) nodes.push(...ribbon(ctx, id + ".ribbon", spec, props.ribbon, props.ribbonColours, R.ribbon));
+  else if (O) (props.origin || []).forEach((l, i) => nodes.push(O.align === "left"
+    ? { id: `${id}.origin.${i}`, kind: "text", rect: [O.rect[0], capTop(ctx, O.px, O.rect[1] + O.pitch * i, O.pitch), Math.round(ctx.measure(l, O.px)), Math.round(O.px * 1.25)], text: l, px: O.px, weight: SIZES[O.px], colour: Cc.origin, align: "left", ...(i === 0 ? { region: "origin" } : {}) }
+    : centred(ctx, `${id}.origin.${i}`, l, O.centre, capTop(ctx, O.px, O.rect[1] + O.pitch * i, O.pitch), O.px, Cc.origin, i === 0 ? "origin" : null)));
+  // the overview's own parts: the figure beside the pod, the marks that say who it is, the find's picture
+  if (props.figure && R.figure) nodes.push(...layer(id + ".figure", R.figure.rect, props.figure, "figure"));
+  (props.who || []).forEach((m, i) => R.who && nodes.push(...layer(`${id}.who.${i}`, R.who.marks[i], m)));
+  if (props.originPicture && R.originPicture) nodes.push({ id: id + ".find", kind: "sprite", rect: R.originPicture.rect.slice(), asset: props.originPicture, region: "find" });
   return nodes;
 }
 // A ribbon: a plate with a one-pixel edge, one line of 20 px, shown for a moment in a rectangle the layout names.
-export function ribbon(ctx, id, spec, text, Cc) {
-  const r = spec.regions.ribbon, [x, y, w, h] = r.rect;
+export function ribbon(ctx, id, spec, text, Cc, region = null) {
+  const r = region || spec.regions.ribbon, [x, y, w, h] = r.rect;
   return [...panel(id, r.rect, { fill: Cc.fill, edge: Cc.edge, region: "ribbon" }), centred(ctx, id + ".text", text, x + Math.round(w / 2), y + Math.floor((h - ctx.cap(r.px)) / 2), r.px, Cc.text)];
 }

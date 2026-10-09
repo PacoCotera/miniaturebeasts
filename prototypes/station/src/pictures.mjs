@@ -6,7 +6,7 @@
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
 import { PB, C, HEX, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
 import { podSprite } from "./podsprites.mjs";
-import { podFromLayers, layersPlaced } from "./podmasters.mjs";
+import { podFromLayers, layersPlaced, figureFromLayers } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
 import { assetEntry, placeMaster, registerSlot, asset as assetOf } from "../../ui/assets.mjs";
 import { ringArt, wellArt, emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
@@ -35,7 +35,33 @@ function podPicture(species, state, [bw, bh], env) {
 }
 const cradlePB = () => { const pb = new PB(224, 40); pb.ell(112, 24, 110, 15, C.slate); pb.ell(112, 20, 100, 12, C.stone, { sh: [C.mist, C.night] }); pb.outline(() => C.ink); return pb; };
 const hatchPB = (w = 112) => { const pb = new PB(w, 56); pb.rect(0, 2, w, 52, C.slate); pb.rect(4, 6, w - 8, 44, C.night); pb.rect(8, 24, w - 16, 8, C.void); pb.ell(w / 2, 28, 5.5, 11.5, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; };
-const placePB = (place) => { const pb = new PB(16, 16), c = C[PLACE_COL[place] || "mist"]; pb.rect(1, 1, 14, 14, c); pb.rect(3, 3, 10, 10, C.ink); pb.rect(5, 5, 6, 6, c); return pb; };
+// The find's place picture at the size it is asked for (drawn at that size, never scaled): a frame, a dark inner square and the place's colour in the middle.
+const placePB = (place, size = 16) => { const pb = new PB(size, size), c = C[PLACE_COL[place] || "mist"], k = size / 16; pb.rect(k, k, size - 2 * k, size - 2 * k, c); pb.rect(3 * k, 3 * k, size - 6 * k, size - 6 * k, C.ink); pb.rect(5 * k, 5 * k, size - 10 * k, size - 10 * k, c); return pb; };
+// A recessed place of the collection: `panel` with a one-pixel `hairline` edge and 6 px corners.
+const placePanelPB = (w, h, r = 6) => {
+  const pb = new PB(w, h), inside = (x, y) => { if (x < 0 || y < 0 || x >= w || y >= h) return false; const cx = x < r ? r : x >= w - r ? w - 1 - r : x, cy = y < r ? r : y >= h - r ? h - 1 - r : y; return (x - cx) ** 2 + (y - cy) ** 2 <= (r - 0.5) ** 2 + r * 0.5; };
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (inside(x, y)) pb.set(x, y, inside(x - 1, y) && inside(x + 1, y) && inside(x, y - 1) && inside(x, y + 1) ? C.panel : C.hairline);
+  return pb;
+};
+// The collection's progress ring (160 across, an 8 px band): one arc per chapter from the top, clockwise, 2 px apart; `bone` when read, `bevel` when not; the band closes when every chapter is read.
+// An unidentified pod, or an empty place, has the base band alone.
+const collectionRingPB = (read, size = 160, band = 8) => {
+  const pb = new PB(size, size), R = size / 2, n = read ? read.length : 0, closed = n > 0 && read.every(Boolean), step = n ? (2 * Math.PI) / n : 0, mid = R - band / 2;
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const dx = x + 0.5 - R, dy = y + 0.5 - R, d = Math.hypot(dx, dy); if (d > R || d <= R - band) continue;
+    if (!n) { pb.set(x, y, C.hairline); continue; }
+    if (closed) { pb.set(x, y, C.bone); continue; }
+    const a = (Math.atan2(dx, -dy) + 2 * Math.PI) % (2 * Math.PI), k = Math.min(n - 1, Math.floor(a / step)), edge = Math.min(a - k * step, (k + 1) * step - a) * mid;
+    if (edge >= 1) pb.set(x, y, read[k] ? C.bone : C.bevel);
+  }
+  return pb;
+};
+// A kin's ring: the small pod's circle, a 2 px band in `hairline`.
+const kinRingPB = (size = 56, band = 2) => { const pb = new PB(size, size), R = size / 2; for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) { const d = Math.hypot(x + 0.5 - R, y + 0.5 - R); if (d <= R && d > R - band) pb.set(x, y, C.hairline); } return pb; };
+// The picture of the find that opens a shut chapter: a key-shaped crystal at the size it is asked for.
+const sealPB = (n) => { const pb = new PB(n, n), c = n / 2; pb.poly([[c, 0.1 * n], [0.9 * n, c], [c, 0.9 * n], [0.1 * n, c]], C.lilac); pb.poly([[c, 0.1 * n], [0.9 * n, c], [c, c]], C.lavender); pb.outline(() => C.plumD); return pb; };
+const growPB = () => { const pb = new PB(16, 16); pb.rect(7, 6, 2, 9, C.leaf); pb.poly([[7, 8], [1, 3], [7, 5]], C.sprout); pb.poly([[9, 6], [15, 1], [9, 3]], C.sprout); pb.outline(() => C.ink); return pb; };
+const waitingPB = () => { const pb = new PB(24, 24); for (const x of [6, 12, 18]) { pb.ell(x, 12, 3, 4, C.mist); } pb.outline(() => C.slate); return pb; };
 const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
 const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const r = y % 14; pb.set(x, y, r < 2 ? C.slate : r < 4 ? C.stone : C.night); } return pb; };
 // The unread picture's frost: frosted glass over the pane, `frostS` with `frostD` at most (never `frost` or white).
@@ -75,7 +101,14 @@ export function registerPictures(reqs, env) {
       case "pod": { const composed = podComposed(r.size); put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env), composed ? { policy: "painted", status: "master" } : {}); break; }
       case "well": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, wellArt(r.current, 30))); break;
       case "ring": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31))); break;
-      case "place": put(r.id, 16, 16, "the place stamp set", () => placePB(r.place)); break;
+      case "place": put(r.id, r.size || 16, r.size || 16, "the place picture set", () => placePB(r.place, r.size || 16)); break;
+      case "placepanel": put(r.id, r.size[0], r.size[1], "the collection's place master", () => placePanelPB(r.size[0], r.size[1])); break;
+      case "cring": put(r.id, r.size, r.size, "the pod list master", () => collectionRingPB(r.read, r.size)); break;
+      case "kinring": put(r.id, r.size, r.size, "the pod list master", () => kinRingPB(r.size)); break;
+      case "seal": put(r.id, r.size, r.size, "the chapter seals' master", () => sealPB(r.size)); break;
+      case "grow": put(r.id, 16, 16, "the can-grow mark's master", growPB); break;
+      case "waiting": put(r.id, 24, 24, "the waiting mark's master", waitingPB); break;
+      case "figure": put(r.id, r.size[0], r.size[1], "the figure masters (mist and clear)", () => figureFromLayers(r.mist, r.clear, r.alpha), { policy: "painted" }); break;
       case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
         const m = assetEntry(r.master), e = assetEntry(r.id);
         if (m && m.status === "master" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed, slice: m.slice, tile: m.tile }, assetOf(r.master)); }

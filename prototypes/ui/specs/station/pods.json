@@ -10,7 +10,13 @@
   "colours": "derived, UI designer to confirm: the colour roles of the Pods regions are the builder's choice from the palette's names (the layout document names none beyond the cream focus ring, the bone stamp label with a slate edge, the frost unread page, the deep pane and the slate edge) — UI designer, 2026-10-08: confirmed but five: the ribbon (a lamp-yellow plate with rust words under the pod was a second warm, bright object beside the specimen) is the read tab's cool look, tealD with an aqua rim and creamT words; the page pane is `deep`, as the document names it (night read as dusk, not the bench's deep pane); the unread tab fill is `frostS` (rail); a sealed tab's word is `mist` (ink on the slats did not read); the difference mark is `aqua` on an `ink` keyline (diff). The frame's own roles (moss bars, the wood message plate) wait for the palette commit's migration table",
   "strings.openBay": "derived, UI designer to confirm: the empty rack's need line when the Companion is docked (open the bay at Home to bring pods in); the document gives only the undocked one — UI designer, 2026-10-08: corrected: docked with crates in the bay, \"open the bay at Home\" (strings.openBay); docked with the bay empty, \"take the Companion exploring\" (strings.explore); away, \"dock the Companion for its crates\" (strings.dockToBring, six words; the document's eight-word line was over the six-word rule)",
   "tab fills": "derived, UI designer to confirm: the unread and read tab colours (colours.rail), as the previous builder chose: unread frost with a slate hairline and ink word, read deep teal with an aqua rim and mint word, the cream ring — UI designer, 2026-10-08: read confirmed; unread corrected to a frostS fill (frostD out-shone the pod; the pod is the brightest thing on the bench), slate hairline and ink word; sealed: slats, the word in mist, the notch in the ground colour; the focused tab lifts 2 px (the chrome lift; at 4 px its ring met the top bar's rule at y 40)",
-  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen)"
+  "compare difference mark": "derived, UI designer to confirm: the 12×12 bracket sits centred on the picture's top edge (the document gives its size, not its place) — UI designer, 2026-10-08: corrected: inside the picture, top centre, 8 px in (P.x + P.w / 2 − 6, P.y + 8), like the other marks, in aqua on a 1 px ink keyline (a cream bracket vanished on the pictures' pale ground; the build draws it at P.y + 4); a differing picture also wears a 2 px aqua edge on its own rectangle, never the cream ring, which is the focus's alone (one ring per screen)",
+  "collection ring colours": "derived, UI designer to confirm: the arcs follow the layout document (filled `bone` when read, `bevel` when not, 2 px apart, the band closing when every chapter is read); the `colours.ringRead`/`ringUnread` entries of the file name the old well ring's roles (bevel, hairline) and are not used; an empty place is the base band alone in `ringBase`",
+  "can-grow mark": "derived, UI designer to confirm: the mark shows on an identified pod that can be shaped into a founder while its ring is not closed (the ring closed says it already); one 16×16 mark, a placeholder until its master",
+  "figure cross-fade": "derived (design lead, 2026-10-09): the figure is two slices per species, mibi-halo-<SNN>-128x160-mist and -clear, laid one over the other with the clear layer's alpha = chapters read / total chapters; the build composes the two, no blur; before Identify the empty halo",
+  "chapter back label": "derived, UI designer to confirm: on the chapter page the bottom line's way back says the pod's species name (← Loika), on the overview ← Pods, on the collection ← Home",
+  "overview tab focus": "derived, UI designer to confirm: with a tab focused on the overview the bottom line says `✓ Open <Chapter>` with no price (the page opens free); the read and its price sit on the chapter page",
+  "kin of an unidentified pod": "derived, UI designer to confirm: an unidentified pod's species is unknown, so no kin ring is drawn for it (a frosted ring would still tell how many share the species)"
  },
  "regions": {
   "bench": {
@@ -946,12 +952,43 @@
    "rail": "Legs & Tail",
    "heading": "Legs & Tail"
   },
-  "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name"
+  "chapterCase": "every word capitalised (owner, 2026-10-08); the chapter names come from the species frames, prototypes/workbench/frames/species-*.json, chapters[].name",
+  "subjectIs": "{name} is {state}",
+  "states": {
+   "unread": "unread",
+   "partly": "partly read",
+   "fully": "fully read",
+   "read": "read",
+   "sealed": "sealed"
+  },
+  "unknownSubject": "sealed until identified",
+  "backTo": "Back to the {place}",
+  "needMore": "needs more {icons}",
+  "glintHere": "something new here",
+  "glintPod": "something new waits"
  },
  "states": [
   "collection",
   "overview",
   "chapter"
  ],
- "initial": "collection"
+ "initial": "collection",
+ "podLayers": {
+  "patterns": {
+   "dots": "dots",
+   "ribs": "stripes",
+   "segments": "bands",
+   "plates": "bands"
+  },
+  "unknown": {
+   "A": "stone",
+   "B": "bone"
+  },
+  "note": "derived, art director and UI designer to confirm: the masters carry the pattern layers dots, stripes and bands; the frames' shell patterns (smooth dots, soft ribs, segments, plates) take dots, stripes, bands and bands; a pod of a species not yet known is a grey one (stone) with a bone accent"
+ },
+ "shadow": {
+  "widen": 16,
+  "h": 14,
+  "note": "derived, UI designer to confirm: the contact shadow layer is the class box + 16 wide and 14 tall, its middle on the foot line"
+ }
 }

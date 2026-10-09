@@ -142,7 +142,7 @@ function doNeed(nd) {
   if (nd.act === "bay") openBay();
   else if (nd.act === "inc") goScreen("incubator");
   else if (nd.act === "meet") { UI.hab.id = UI.meet; UI.hab.f = "stage"; UI.meet = null; goScreen("habitat"); }
-  else if (nd.act === "pods") { const p = G.st.tray.find((q) => !q.idd) || G.st.tray.find((q) => S.podGlints(G.st, q)) || G.st.tray[0]; if (p) { UI.pods.cur = p.id; UI.pods.ci = G.st.tray.indexOf(p); } UI.pods.f = "pod"; goScreen("pods"); }
+  else if (nd.act === "pods") { const p = G.st.tray.find((q) => !q.idd) || G.st.tray.find((q) => S.podGlints(G.st, q)) || G.st.tray[0]; if (p) UI.pods.cur = p.id; UI.pods.view = "collection"; UI.pods.focus.set(null); goScreen("pods"); }
   else if (nd.act === "hab") { UI.hab.id = nd.id; UI.hab.f = "heart"; goScreen("habitat"); }
 }
 function homeAct(k) {
@@ -154,7 +154,7 @@ function homeAct(k) {
   if (f === "room") doNeed(need());
   else if (f.startsWith("r:")) { UI.hab.id = +f.slice(2); UI.hab.f = "stage"; if (UI.meet === UI.hab.id) UI.meet = null; goScreen("habitat"); }
   else if (f === "bay") { if (docked() && bayCrates().length) openBay(); else msg(docked() ? "The bay is empty" : "Dock the Companion to open its crates"); }
-  else if (f === "tray") { UI.pods.f = "pod"; goScreen("pods"); }
+  else if (f === "tray") { UI.pods.view = "collection"; UI.pods.focus.set(null); goScreen("pods"); }
   else if (f === "inc") goScreen("incubator");
   else if (f === "cradle") { UI.bench.f = 0; goScreen("bench"); }
   else if (f === "focus") { UI.idle = true; FX.restAt = clock.now; H.f = "room"; }

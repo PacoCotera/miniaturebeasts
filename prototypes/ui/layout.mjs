@@ -41,7 +41,7 @@ export function slantTabs(rail, n, open = 0, where = "pods") {
   if (n > rail.max) return { tabs: [], run: 0, x0: rail.pods.x, overflow: true };
   const compact = n > rail.fullUpTo, widths = Array.from({ length: n }, (_, i) => (!compact || i === open ? rail.full : rail.compact));
   const run = widths.reduce((a, b) => a + b, 0) + rail.slant;
-  const x0 = where === "centred" ? Math.floor((rail.centred.on - run / 2) / rail.centred.snap) * rail.centred.snap : rail.pods.x;
+  const x0 = where === "centred" || rail.pods.x === "centred" ? Math.floor((rail.centred.on - run / 2) / rail.centred.snap) * rail.centred.snap : rail.pods.x;
   let x = x0; const tabs = widths.map((w, i) => { const r = { rect: [x, rail.y, w, rail.h], full: w === rail.full }; x += w; return r; });
   return { tabs, run, x0, overflow: false };
 }
