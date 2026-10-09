@@ -7,7 +7,8 @@
 import { G, FX, UI, TL, SPECS, LAYER, READ_MS, ID_MS, msg, save, goScreen, registerScreen, docked, podById, need, bayCrates } from "../game.mjs";
 import { clock, motion } from "../gfx.mjs";
 import { DIRS } from "../../../ui/focus.mjs";
-import { list, specimen, stampLabel, chapterRail, slantRail, chapterPage, focusRing } from "../../../ui/components/frame.mjs";
+import { layer } from "../../../ui/components/specimen.mjs";
+import { list, specimen, stampLabel, chapterRail, slantRail, chapterPage, focusRing, circleRing } from "../../../ui/components/frame.mjs";
 import { podsView } from "../views/pods.mjs";
 import { registerPictures, iconRequests } from "../pictures.mjs";
 import { frameOf } from "../genome.mjs";
@@ -105,16 +106,16 @@ function act(k) {
 function nodes(ctx) {
   ensure(); const spec = SPECS.pods, R = spec.regions, C = spec.colours, v = last, out = [], F = P().focus;
   registerPictures([...v.requests, ...iconRequests()], env);
-  out.push({ id: "bench", kind: "rect", rect: R.bench.rect.slice(), colour: C.ground });   // the bench: a flat ground, no grain
+  out.push({ id: "bench", kind: "rect", rect: R.bench.rect.slice(), colour: C.ground });   // the bench: a flat ground under the room master
+  if (v.mode !== "compare") out.push(...layer("bench.room", R.bench.rect, v.specimen.room.bench));
   const focusOn = (id) => F.cur === id;
   if (v.mode === "compare") {
-    const rail = chapterRail(ctx, "rail", R.rail, { ...v.rail, fillGround: false, focused: v.rail.current, region: "rail", tabRegion: "rail.tab" });
-    out.push(...rail.nodes);
+    out.push(...slantRail(ctx, "rail", { ...v.rail, focused: v.rail.current, where: "pods", tabRegion: "rail.tab" }).nodes);
     v.pages.forEach((pg, i) => out.push(...chapterPage(ctx, i ? "pageB" : "pageA", { ...R.compareA, rect: R[i ? "compareB" : "compareA"].rect }, { ...pg, region: i ? "compareB" : "compareA", cellRegion: "page.cell" }).nodes));
   } else {
     out.push(...list(ctx, "list", spec, v.list));
     out.push(...specimen(ctx, "specimen", spec, { ...v.specimen, pod: v.specimen.pod && focusOn("pod") ? { ...v.specimen.pod, lift: SPECS.frame.focus.lift.creature } : v.specimen.pod }));
-    if (v.rail) out.push(...chapterRail(ctx, "rail", R.rail, { ...v.rail, fillGround: false, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, region: "rail", tabRegion: "rail.tab" }).nodes);
+    if (v.rail) out.push(...slantRail(ctx, "rail", { ...v.rail, focused: F.cur && F.cur.startsWith("rail.") ? +F.cur.slice(5) : null, where: "pods", tabRegion: "rail.tab" }).nodes);
     if (v.page) out.push(...chapterPage(ctx, "page", R.page, { ...v.page, region: "page", cellRegion: "page.cell" }).nodes);
     if (v.stamp) out.push(...stampLabel(ctx, "stamp", R.stamp.rect, { stamp: v.stamp.asset, size: v.stamp.size, region: "stamp" }, v.stamp.colours));
     out.push(...ringNodes());
@@ -125,7 +126,9 @@ function nodes(ctx) {
 // The focus ring: one ring per screen, on the focused target; the rail's tabs carry their own (they lift with it).
 function ringNodes() {
   const v = last, F = P().focus, t = v.mode === "compare" ? null : v.targets.find((x) => x.id === F.cur);
-  return t && t.group !== "rail" ? focusRing("focus", t.rect, SPECS.frame, { shape: t.group === "pod" ? "ellipse" : "round" }) : [];
+  if (!t || t.group === "rail") return [];
+  const Wf = SPECS.pods.regions.well, isWell = /^list\.\d+$/.test(t.id);   // a well wears a circle round its centre; the hatch, the page's cells and the rest a rounded rectangle, the pod an ellipse on the ground
+  return isWell ? circleRing("focus", [t.rect[0] + Wf.ring.centre[0], t.rect[1] + Wf.ring.centre[1]], Wf.focus.radius, Wf.focus.width, Wf.focus.colour) : focusRing("focus", t.rect, SPECS.frame, { shape: t.group === "pod" ? "ellipse" : "round" });
 }
 // The frame: top bar, bottom line, message plate.
 const sharedFrame = (ctx) => frameFor(ctx, "pods", last.line, { need: "", focal: last.box });

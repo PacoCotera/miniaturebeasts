@@ -9,6 +9,8 @@ import { wrap } from "../../../ui/components/text.mjs";
 
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
+// A picture the room needs at a size: the placed master of that id when it is exactly that size, an empty slot (nothing drawn, never scaled) when it is not.
+const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
 const shellFrame = (st, p) => (st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
@@ -34,32 +36,40 @@ export function podsView(m, spec, ctx) {
   if (view.mode === "compare") return compareView(view, m, spec, ctx, req);
 
   // the list: one slot per well, the hatch
-  const wells = [];
+  const wells = [], ringSize = R.well.ring.slice.slice(2), podSize = R.well.pod.size;
   for (let i = 0; i < rack; i++) {
-    const q = st.tray[i], current = !!q && q.id === ui.cur, base = req({ kind: "well", id: `well:${current ? "lit" : "quiet"}`, current });
+    const q = st.tray[i], current = !!q && q.id === ui.cur, base = req({ kind: "well", id: `well:${current ? "lit" : "quiet"}:${ringSize.join("x")}`, current, size: ringSize });
     if (!q) { wells.push({ base, pod: null, ring: null, place: null }); continue; }
     const f = q.idd ? podFrame(q) : null, flags = q.idd ? flagsOf(q) : [];
     wells.push({
       base,
-      pod: req({ kind: "pod", id: `pod:${shellFrame(st, q) ? S.speciesOf(q) : "-"}:${q.idd ? "i" : "s"}:32x40`, species: shellFrame(st, q) ? S.speciesOf(q) : null, state: q.idd ? "identified" : "sealed", size: R.well.pod.size }),
-      ring: req({ kind: "ring", id: `ring:${q.idd ? S.speciesOf(q) : "-"}:${q.idd ? 1 : 0}:${flags.map((x) => x.read + (x.glint ? "g" : "") + (x.sealed ? "s" : "") + x.traits).join(",")}`, species: f ? S.speciesOf(q) : null, idd: q.idd ? 1 : 0, flags }),
+      pod: req({ kind: "pod", id: `pod:${shellFrame(st, q) ? S.speciesOf(q) : "-"}:${q.idd ? "i" : "s"}:${podSize.join("x")}`, species: shellFrame(st, q) ? S.speciesOf(q) : null, state: q.idd ? "identified" : "sealed", size: podSize }),
+      ring: req({ kind: "ring", size: ringSize, id: `ring:${ringSize.join("x")}:${q.idd ? S.speciesOf(q) : "-"}:${q.idd ? 1 : 0}:${flags.map((x) => x.read + (x.glint ? "g" : "") + (x.sealed ? "s" : "") + x.traits).join(",")}`, species: f ? S.speciesOf(q) : null, idd: q.idd ? 1 : 0, flags }),
       place: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}`, place: q.g }) : null,
     });
   }
-  view.list = { colours: { pane: C.listPane, edge: C.listEdge, rule: C.listRule }, wells, hatch: req({ kind: "hatch", id: "hatch:112x56" }) };
+  view.list = { colours: { pane: C.listPane, edge: C.listEdge, rule: C.listRule }, wells, hatch: req({ kind: "hatch", id: `hatch:${R.hatch.rect.slice(2).join("x")}`, size: R.hatch.rect.slice(2) }) };
 
   // the specimen
   const sizeClass = cur ? (shellFrame(st, cur)?.pod?.sizeClass ?? "medium") : null, box = cur ? spec.classes.pod[sizeClass] : null;
+  const N = R.name, nameText = cur ? (cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod) : null;
+  const platew = nameText ? Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((ctx.measure(nameText, N.px, N.weight) + 2 * N.plate.pad) / N.plate.round) * N.plate.round)) : 0;   // the plate: the name and its padding, rounded up to 16, between 80 and 224
   const idCut = present.idCut && cur && present.idCut.pod === cur.id ? present.idCut.p : null;
   view.specimen = {
-    colours: { name: C.name, origin: C.origin, cut: "white" }, beam: req({ kind: "beam", id: "beam:240x232" }), cradle: req({ kind: "cradle", id: "cradle:224x40" }),
+    colours: { name: C.name, origin: C.origin, cut: "white" }, beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
+    room: {   // the room's layers: each a placed master at the spec's size, or an empty slot until it is cut to that size
+      bench: slot(req, "room-bench-stage", R.bench.rect, "the room master"), shelf: slot(req, "room-shelf", R.shelf.rect, "the shelf master, cut to the spec's size"),
+      cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), cradleFront: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer"),
+      shadow: box ? slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + R.pod.shadow.widen, R.pod.shadow.h], "the contact shadow") : null,
+      plate: nameText ? slot(req, `plate-name-${platew}x${N.plate.h}`, [0, 0, platew, N.plate.h], "the name plate master") : null,
+    },
     pod: cur ? {
       size: box,
       sealed: req({ kind: "pod", id: `pod:${shellFrame(st, cur) ? S.speciesOf(cur) : "-"}:s:${box.join("x")}`, species: shellFrame(st, cur) ? S.speciesOf(cur) : null, state: "sealed", size: box }),
       identified: cur.idd ? req({ kind: "pod", id: `pod:${S.speciesOf(cur)}:i:${box.join("x")}`, species: S.speciesOf(cur), state: "identified", size: box }) : null,
     } : null,
     cut: cur && cur.idd ? idCut : null,
-    name: cur ? (cur.idd ? S.cap(S.spName(cur)) : spec.strings.unknownPod) : null,
+    name: nameText,
     origin: cur ? S.podOriginLines(cur).flatMap((l) => wrap(ctx, l, R.origin.rect[2], R.origin.px)).slice(0, R.origin.lines) : [],
     ribbon: cur && present.ribbon === cur.id ? spec.strings.newSpecies : null,
     ribbonColours: { fill: C.ribbonFill, edge: C.ribbonEdge, text: C.ribbonText },

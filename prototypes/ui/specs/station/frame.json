@@ -1,6 +1,5 @@
 {
  "screen": "frame",
- "derived": { "colours.faceRingAway": "derived, UI designer to confirm: the dimmed ring of the mibi's face while the Companion is away (the document says dimmed, not which colour); the builder's choice is stone, the lamp's own away colour" },
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#shared-frame-and-rules",
  "size": [1024, 600],

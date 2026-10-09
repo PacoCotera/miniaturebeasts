@@ -11,7 +11,7 @@ export function frame(ctx, props) {
 }
 export { topBar, bottomLine, messagePlate };
 export { panel, hairline } from "./panel.mjs";
-export { focusRing } from "./focusRing.mjs";
+export { focusRing, circleRing } from "./focusRing.mjs";
 export { stampLabel, stampCell } from "./stampLabel.mjs";
 export { chapterRail } from "./chapterRail.mjs";
 export { slantRail } from "./slantRail.mjs";

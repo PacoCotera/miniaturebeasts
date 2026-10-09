@@ -4,8 +4,11 @@
 // its size: the pod from the frame's parameters, the close-ups through the rig's camera at the picture's own size, the
 // stamp on whole-pixel cells. Nothing is ever cropped and enlarged.
 import { registerAsset, hasAsset } from "../../ui/assets.mjs";
-import { PB, C, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
-import { podSprite, classOfBox } from "./podsprites.mjs";
+import { PB, C, HEX, art, fromRGBA, bay, nearestHex } from "./gfx.mjs";
+import { podSprite } from "./podsprites.mjs";
+import { podFromLayers, layersPlaced } from "./podmasters.mjs";
+import { SPECS } from "./game.mjs";
+import { assetEntry, placeMaster, registerSlot, asset as assetOf } from "../../ui/assets.mjs";
 import { ringArt, wellArt, emblemArt, closeUpPB, ICON, PIC_GROUND } from "./art.mjs";
 import { beamArt } from "./screens/frame.mjs";
 import { shapeTrait, stampGenome, stampSizing } from "./genome.mjs";
@@ -14,10 +17,22 @@ import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 const PLACE_COL = { meadow: "lime", pond: "ice", rock: "sand", wood: "sprout", cave: "lavender" };
 const put = (id, w, h, until, build, extra = {}) => { if (!hasAsset(id)) registerAsset({ id, w, h, status: "placeholder", until, build: () => build(), ...extra }); return id; };
 
-// The pod at the exact size of its box: the placeholder sprite of its class (podsprites.mjs), placed 1:1, never scaled.
-function podPicture(species, state, [bw, bh]) { return podSprite(species, classOfBox(bw, bh), state); }
+// A picture placed 1:1 in the middle of a larger transparent one (the list's 80×80 ring slice holds the 64×64 stand-in).
+const centred = ([w, h], pic) => { const pb = new PB(w, h); pb.blit(pic, Math.round((w - pic.w) / 2), Math.round((h - pic.h) / 2)); return pb; };
+// The pod at the exact size of its box, never scaled: the stage's three classes from the signed layers recoloured by the species' pair (podmasters.mjs); the list's 40×48
+// box holds the 32×40 placeholder sprite placed 1:1 in its middle until its master is re-cut; a class whose layers are not placed is an empty (transparent) picture.
+const UNKNOWN_PAIR = () => [HEX[C[SPECS.pods.podLayers.unknown.A]], HEX[C[SPECS.pods.podLayers.unknown.B]]];
+function podPicture(species, state, [bw, bh], env) {
+  const classes = SPECS.pods.classes.pod, cls = Object.keys(classes).find((k) => classes[k][0] === bw && classes[k][1] === bh);
+  if (cls === "list") { const pb = new PB(bw, bh), sp = podSprite(species, "well", state); pb.blit(sp, Math.round((bw - sp.w) / 2), Math.round((bh - sp.h) / 2)); return pb; }
+  if (cls && layersPlaced(cls)) {
+    const frame = species ? env.frameOf(species) : null, pair = frame ? frame.pod.colourPair.map((c) => c.hex) : UNKNOWN_PAIR();
+    return podFromLayers(cls, pair, frame?.pod.shellPattern, SPECS.pods.podLayers.patterns, state === "sealed");
+  }
+  return new PB(bw, bh);
+}
 const cradlePB = () => { const pb = new PB(224, 40); pb.ell(112, 24, 110, 15, C.slate); pb.ell(112, 20, 100, 12, C.stone, { sh: [C.mist, C.night] }); pb.outline(() => C.ink); return pb; };
-const hatchPB = () => { const pb = new PB(112, 56); pb.rect(0, 2, 112, 52, C.slate); pb.rect(4, 6, 104, 44, C.night); pb.rect(8, 24, 96, 8, C.void); pb.ell(56, 28, 5.5, 11.5, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; };
+const hatchPB = (w = 112) => { const pb = new PB(w, 56); pb.rect(0, 2, w, 52, C.slate); pb.rect(4, 6, w - 8, 44, C.night); pb.rect(8, 24, w - 16, 8, C.void); pb.ell(w / 2, 28, 5.5, 11.5, C.leaf, { rot: 0.6, sh: [C.sprout, C.forest] }); pb.outline(() => C.ink); return pb; };
 const placePB = (place) => { const pb = new PB(16, 16), c = C[PLACE_COL[place] || "mist"]; pb.rect(1, 1, 14, 14, c); pb.rect(3, 3, 10, 10, C.ink); pb.rect(5, 5, 6, 6, c); return pb; };
 const starPB = () => { const pb = new PB(12, 12), r = 6; pb.poly([[r, 0], [r + 1.7, r - 1.7], [12, r], [r + 1.7, r + 1.7], [r, 12], [r - 1.7, r + 1.7], [0, r], [r - 1.7, r - 1.7]], C.cream); pb.rect(5, 5, 2, 2, C.white); pb.outline(() => C.gold); return pb; };
 const slatsPB = (w, h) => { const pb = new PB(w, h); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const r = y % 14; pb.set(x, y, r < 2 ? C.slate : r < 4 ? C.stone : C.night); } return pb; };
@@ -55,13 +70,19 @@ export function registerPictures(reqs, env) {
   for (const r of reqs) {
     const until = r.until || "the Pods masters (station-layouts.md, Placeholders on Pods)";
     switch (r.kind) {
-      case "pod": put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size)); break;
-      case "well": put(r.id, 64, 64, "the pod list master", () => wellArt(r.current, 30)); break;
-      case "ring": put(r.id, 64, 64, "the pod list master", () => ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31)); break;
+      case "pod": put(r.id, r.size[0], r.size[1], "the pod renderer's masters", () => podPicture(r.species, r.state, r.size, env)); break;
+      case "well": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, wellArt(r.current, 30))); break;
+      case "ring": put(r.id, r.size[0], r.size[1], "the pod list master", () => centred(r.size, ringArt(r.species ? env.frameOf(r.species) : null, { idd: r.idd }, r.flags, 31))); break;
       case "place": put(r.id, 16, 16, "the place stamp set", () => placePB(r.place)); break;
-      case "hatch": put(r.id, 112, 56, "the pod list master", hatchPB); break;
+      case "slot": {   // a master at exactly this size takes the id; otherwise the id is an empty slot, waiting
+        const m = assetEntry(r.master), e = assetEntry(r.id);
+        if (m && m.status === "master" && m.w === r.size[0] && m.h === r.size[1]) { if (!e || e.status === "empty") placeMaster({ id: r.id, w: m.w, h: m.h, file: m.file, hash: m.hash, signed: m.signed }, assetOf(r.master)); }
+        else registerSlot({ id: r.id, w: r.size[0], h: r.size[1], policy: "painted", until: r.until });
+        break;
+      }
+      case "hatch": put(r.id, r.size[0], r.size[1], "the pod list master", () => hatchPB(r.size[0])); break;
       case "cradle": put(r.id, 224, 40, "the pod renderer's masters", cradlePB); break;
-      case "beam": put(r.id, 240, 232, until, () => beamArt(240, 232)); break;
+      case "beam": put(r.id, r.size[0], r.size[1], until, () => beamArt(r.size[0], r.size[1])); break;
       case "emblem": put(r.id, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
       case "star": put(r.id, 12, 12, "the glint master", starPB); break;
       case "frost": put(r.id, r.w, r.h, "the research bench master", () => frostPB(r.w, r.h)); break;

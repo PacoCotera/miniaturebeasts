@@ -20,7 +20,7 @@
   "bench": { "rect": [0, 40, 1024, 522] },
   "stage": { "rect": [488, 112, 288, 440], "room": [408, 856] },
   "beam": { "rect": [512, 104, 240, 320] },
-  "pod": { "rect": [560, 216, 144, 176], "component": "specimen", "focal": true, "axis": 632, "feet": 392, "dipFloor": 388 },
+  "pod": { "shadow": { "widen": 16, "h": 14, "note": "derived, UI designer to confirm: the contact shadow layer is the class box + 16 wide and 14 tall, its middle on the foot line" }, "rect": [560, 216, 144, 176], "component": "specimen", "focal": true, "axis": 632, "feet": 392, "dipFloor": 388 },
   "cradle": { "rect": [520, 328, 224, 96], "under": "pod" },
   "cradleFront": { "rect": [520, 328, 224, 96], "over": "pod", "note": "the dish's near lip, drawn over the pod's foot" },
   "shelf": { "rect": [488, 368, 288, 72], "under": "cradle", "frontEdge": 440, "shape": "trapezoid" },
@@ -52,6 +52,7 @@
   "compareB": { "rect": [600, 112, 408, 440], "same": "compareA" },
   "ribbon": { "rect": [520, 488, 224, 40], "px": 20, "ms": 6000 }
  },
+ "podLayers": { "patterns": { "dots": "dots", "ribs": "stripes", "segments": "bands", "plates": "bands" }, "unknown": { "A": "stone", "B": "bone" }, "note": "derived, art director and UI designer to confirm: the masters carry the pattern layers dots, stripes and bands; the frames' shell patterns (smooth dots, soft ribs, segments, plates) take dots, stripes, bands and bands; a pod of a species not yet known is a grey one (stone) with a bone accent" },
  "classes": { "pod": { "large": [144, 176], "medium": [120, 152], "small": [104, 128], "list": [40, 48] } },
  "page": { "marks": { "seed": [40, 52], "seedSmall": [32, 40], "smallUnder": 120, "only": [72, 8], "asleep": [24, 16], "doing": [28, 16], "key": [44, 64] }, "diff": { "bracket": [12, 12], "bracketAt": "top centre, `inset` px in: [P.x + P.w / 2 - 6, P.y + inset]", "inset": 8, "edge": 2 } },
  "focus": {

@@ -17,7 +17,7 @@ export function bottomLine(ctx, o) {
   const A = R.action, ty = A.rect[1] + 2; let ax = A.rect[0], k = 0;
   const piece = (str, colour) => { const r = textRun(ctx, "line.a." + k++, str, ax, ty, { px: A.px, colour }); nodes.push(...r.nodes); ax = r.end; };
   if (o?.ok) {
-    nodes.push(...markNode("line.cap.ok", Mk.capConfirm, [ax, A.cap[1], A.cap[2], A.cap[3]], "the ✓ key cap, 16×16"));
+    nodes.push(...markNode("line.cap.ok", o.dim ? Mk.capConfirmDim : Mk.capConfirm, [ax, A.cap[1], A.cap[2], A.cap[3]], o.dim ? "the ✓ key cap in mist, its own slice, 16×16" : "the ✓ key cap, 16×16"));
     ax += A.capSize[0] + A.capGap;
     piece(o.ok, o.dim ? Cc.dim : Cc.verb);
     if (o.price) { ax += A.gap; piece(o.price, o.short ? Cc.need : Cc.price); }
