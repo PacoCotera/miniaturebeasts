@@ -1,5 +1,5 @@
 {
-  "screen": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/round2/CB-B-r2-a1-canvas.png",
+  "screen": "art/concept-station/library-cabinet/round2/CB-B-r2-a1-canvas.png",
   "asset": "art/miniature-lives/assets/rich-plain-300x310.png",
   "detectedCard": [
     69,
@@ -14,7 +14,7 @@
     "h": 101
   },
   "outputs": {
-    "canvas": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/placed/CB-B-r2-a1-pip-canvas.png",
-    "screen": "/home/user/miniaturebeasts/art/concept-station/library-cabinet/placed/CB-B-r2-a1-pip-1024x600.png"
+    "canvas": "art/concept-station/library-cabinet/placed/CB-B-r2-a1-pip-canvas.png",
+    "screen": "art/concept-station/library-cabinet/placed/CB-B-r2-a1-pip-1024x600.png"
   }
 }

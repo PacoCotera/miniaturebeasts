@@ -13,11 +13,9 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "Step 1: 1B's limbs sentence (living anatomy, the artefacts to avoid) and 1G's markings paragraph (the plain coat said positively) together; the owner's pick from the Loika sheet.",
- "costUSD": 0.3256,
  "step1": {
   "callId": "498c6987-33e0-4530-b9ce-8d8fb280c5d4",
   "status": "ok",
-  "costUSD": 0.16665,
   "seconds": 18.2,
   "imageOrder": [
    "index",
@@ -157,7 +155,6 @@
  "step2": {
   "callId": "c020da56-7624-43d3-a396-95ee8b8b5e18",
   "status": "ok",
-  "costUSD": 0.15891,
   "seconds": 17.8,
   "imageOrder": [
    "drawing",

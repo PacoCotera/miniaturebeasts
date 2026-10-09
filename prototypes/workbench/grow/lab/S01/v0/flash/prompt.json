@@ -28,7 +28,6 @@
  "step1": {
   "callId": "a1f8bdb7-8a80-4106-a65d-031e16919829",
   "status": "ok",
-  "costUSD": 0.09593,
   "seconds": 10.3,
   "checks": {
    "silhouetteIoU": 0.978,
@@ -153,7 +152,6 @@
  "step2": {
   "callId": "095b766e-b2cf-4262-a955-7dd1ea0915bd",
   "status": "ok",
-  "costUSD": 0.09201,
   "seconds": 8.7,
   "checks": {
    "silhouetteIoU": 0.972,
@@ -275,6 +273,5 @@
    "gated": false
   }
  },
- "costUSD": 0.1879,
  "model": "gemini-3.1-flash-image"
 }

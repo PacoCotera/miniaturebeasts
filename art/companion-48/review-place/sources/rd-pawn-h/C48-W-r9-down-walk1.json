@@ -19,21 +19,16 @@
  "time": "2026-10-08T22:05:35Z",
  "checkCost": {
   "created_at": 1791497136,
-  "credit_cost": 0,
-  "balance_cost": 0.18,
   "output_images": [],
   "base64_images": [],
   "output_urls": [],
   "model": "check_cost",
-  "remaining_credits": 0,
-  "remaining_balance": 51.28000000000001
+  "remaining_credits": 0
  },
  "result": {
   "status": "succeeded",
   "task_id": "504bb4b4-4788-40dc-93dc-ff112de9d77e",
   "seconds": 31.7,
-  "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 51.1,
   "model": "rd_pro",
   "file": "C48-W-r9-down-walk1-rd.png",
   "sha256": "660afa936a96c8684ddd6be71f99fdd429cddc13404731170ee3176ba7da97a7"

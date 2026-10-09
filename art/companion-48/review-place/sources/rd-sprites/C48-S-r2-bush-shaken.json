@@ -19,21 +19,16 @@
  "time": "2026-10-08T20:45:31Z",
  "checkCost": {
   "created_at": 1791492331,
-  "credit_cost": 0,
-  "balance_cost": 0.18,
   "output_images": [],
   "base64_images": [],
   "output_urls": [],
   "model": "check_cost",
-  "remaining_credits": 0,
-  "remaining_balance": 0.780000000000008
+  "remaining_credits": 0
  },
  "result": {
   "status": "succeeded",
   "task_id": "370f38c7-1476-4d8a-9694-679522a3c8d7",
   "seconds": 31.4,
-  "balanceCostUSD": 0.18,
-  "remainingBalanceUSD": 0.6,
   "model": "rd_pro",
   "file": "C48-S-r2-bush-shaken-rd.png",
   "sha256": "9f03b196c6129cb78db1a5e2a268d23642e577f26a79e3f8988fd71fc6a69154"

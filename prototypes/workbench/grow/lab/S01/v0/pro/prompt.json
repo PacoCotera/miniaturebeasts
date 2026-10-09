@@ -29,7 +29,6 @@
  "step1": {
   "callId": "9c0fb315-3b36-47dd-839a-3b9eb26cfb17",
   "status": "ok",
-  "costUSD": 0.16626,
   "seconds": 15.8,
   "checks": {
    "silhouetteIoU": 0.943,
@@ -152,7 +151,6 @@
  "step2": {
   "callId": "e345a146-8e11-4d2a-96dc-adc068498421",
   "status": "ok",
-  "costUSD": 0.15985,
   "seconds": 16.8,
   "checks": {
    "silhouetteIoU": 0.96,
@@ -271,6 +269,5 @@
    "passed": true,
    "gated": false
   }
- },
- "costUSD": 0.3261
+ }
 }

@@ -13,11 +13,9 @@
  "model": "gemini-3.1-flash-image",
  "sample": 2,
  "changed": "Step 1, markings words only: the markings paragraph says what the coat is instead of naming the patches it must not have, since naming them may prime them.",
- "costUSD": 0.1869,
  "step1": {
   "callId": "55936129-1726-4e90-a038-29830f528b6a",
   "status": "ok",
-  "costUSD": 0.09453,
   "seconds": 9.4,
   "imageOrder": [
    "index",
@@ -161,7 +159,6 @@
  "step2": {
   "callId": "bf7e3609-12ad-4e90-9e7c-a59244124612",
   "status": "ok",
-  "costUSD": 0.09235,
   "seconds": 9.1,
   "imageOrder": [
    "drawing",

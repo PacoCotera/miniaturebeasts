@@ -18,11 +18,9 @@
  "model": "gemini-3-pro-image",
  "sample": 1,
  "changed": "The v6 art direction (1B with 1G's coat paragraph folded in, the style statement, the light paragraph, the colour key as the authority on colour) and the v6 Loika notes.",
- "costUSD": 0.3311,
  "step1": {
   "callId": "d9e214ce-151a-43a0-8300-be6ac765b6e4",
   "status": "ok",
-  "costUSD": 0.16645,
   "seconds": 75.9,
   "imageOrder": [
    "index",
@@ -167,7 +165,6 @@
  "step2": {
   "callId": "2181a329-0002-44e4-9478-43d3132bc9d3",
   "status": "ok",
-  "costUSD": 0.16465,
   "seconds": 17.7,
   "imageOrder": [
    "drawing",

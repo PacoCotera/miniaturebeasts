@@ -68,7 +68,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0913,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -185,7 +184,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09313,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -304,7 +302,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09483,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -418,7 +415,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09047,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -559,7 +555,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.092,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -695,7 +690,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09233,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -834,7 +828,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10073,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -973,7 +966,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09665,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -1114,7 +1106,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09502,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -1260,7 +1251,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09632,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -1392,7 +1382,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09638,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -1524,7 +1513,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.101,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -1651,7 +1639,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10613,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -1783,7 +1770,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09773,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -1920,7 +1906,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09595,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -2051,7 +2036,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10495,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -2179,7 +2163,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09798,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -2318,7 +2301,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09688,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -2448,7 +2430,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09096,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -2587,7 +2568,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09662,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -2727,7 +2707,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10271,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -2861,7 +2840,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10502,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -3010,7 +2988,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0905,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -3141,7 +3118,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09323,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -3283,7 +3259,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09042,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -3435,7 +3410,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09197,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -3575,7 +3549,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09254,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -3712,7 +3685,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09515,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -3851,7 +3823,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09152,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -3979,7 +3950,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09656,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -4119,7 +4089,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09881,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -4266,7 +4235,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09256,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -4383,7 +4351,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09569,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -4517,7 +4484,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09002,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -4636,7 +4602,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09422,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -4759,7 +4724,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10295,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -4878,7 +4842,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09872,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -5000,7 +4963,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1033,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -5136,7 +5098,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09418,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -5258,7 +5219,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09521,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -5392,7 +5352,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10585,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -5523,7 +5482,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09144,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -5647,7 +5605,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0911,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -5769,7 +5726,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09825,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -5898,7 +5854,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09346,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -6021,7 +5976,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09313,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -6146,7 +6100,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08991,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -6281,7 +6234,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1053,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -6425,7 +6377,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10288,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -6574,7 +6525,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09757,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -6728,7 +6678,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09606,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -6882,7 +6831,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09483,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -7031,7 +6979,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09466,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -7167,7 +7114,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10381,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -7305,7 +7251,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09538,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -7433,7 +7378,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09011,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -7585,7 +7529,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09415,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -7737,7 +7680,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09846,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -7887,7 +7829,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10089,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -8039,7 +7980,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09385,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -8196,7 +8136,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08918,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -8339,7 +8278,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09488,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -8484,7 +8422,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09244,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -8624,7 +8561,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09239,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -8772,7 +8708,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09497,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -8919,7 +8854,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09001,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -9066,7 +9000,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09302,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -9203,7 +9136,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09101,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -9348,7 +9280,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09635,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -9498,7 +9429,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09608,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -9643,7 +9573,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09178,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -9796,7 +9725,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0944,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -9939,7 +9867,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09349,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -10078,7 +10005,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.11181,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -10226,7 +10152,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10215,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -10376,7 +10301,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08879,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -10520,7 +10444,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10194,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -10678,7 +10601,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10037,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -10842,7 +10764,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09675,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -10993,7 +10914,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09363,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -11136,7 +11056,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0935,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -11303,7 +11222,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09719,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -11454,7 +11372,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09093,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -11600,7 +11517,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09571,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -11751,7 +11667,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09287,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -11911,7 +11826,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09256,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -12058,7 +11972,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09623,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -12191,7 +12104,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.096,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -12351,7 +12263,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09427,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -12503,7 +12414,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.11251,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -12643,7 +12553,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09322,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -12779,7 +12688,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08818,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -12907,7 +12815,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09544,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -13040,7 +12947,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09697,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -13181,7 +13087,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09768,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -13314,7 +13219,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09864,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -13449,7 +13353,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09469,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -13594,7 +13497,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09094,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -13724,7 +13626,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09506,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -13862,7 +13763,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09677,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -14009,7 +13909,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09267,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -14156,7 +14055,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09992,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -14344,7 +14242,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09786,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -14537,7 +14434,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09575,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -14701,7 +14597,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09313,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -14866,7 +14761,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0937,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -15015,7 +14909,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09242,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -15201,7 +15094,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09519,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -15387,7 +15279,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09874,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -15578,7 +15469,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09269,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -15747,7 +15637,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08693,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -15920,7 +15809,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09445,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -16091,7 +15979,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09826,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -16259,7 +16146,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09068,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -16438,7 +16324,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09138,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -16613,7 +16498,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09257,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -16779,7 +16663,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0923,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -16953,7 +16836,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09259,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -17141,7 +17023,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0919,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -17315,7 +17196,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09208,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -17483,7 +17363,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09459,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -17666,7 +17545,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10014,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -17851,7 +17729,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09444,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -18032,7 +17909,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09972,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -18201,7 +18077,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10543,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -18394,7 +18269,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.092,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -18597,7 +18471,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0947,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -18786,7 +18659,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09678,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -18983,7 +18855,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10422,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -19174,7 +19045,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09246,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -19359,7 +19229,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1081,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -19544,7 +19413,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09246,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -19698,7 +19566,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09185,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -19885,7 +19752,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09432,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -20073,7 +19939,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09047,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -20269,7 +20134,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08776,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -20457,7 +20321,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09567,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -20620,7 +20483,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09375,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -20815,7 +20677,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09337,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -21005,7 +20866,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09018,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -21170,7 +21030,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10278,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -21330,7 +21189,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09318,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -21484,7 +21342,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09504,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -21653,7 +21510,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10214,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -21819,7 +21675,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09326,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -21975,7 +21830,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09044,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -22133,7 +21987,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09239,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -22286,7 +22139,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09586,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -22455,7 +22307,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10141,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -22613,7 +22464,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09673,
    "output": {
     "file": "raw/side-1.png",
     "mimeType": "image/jpeg",
@@ -22781,7 +22631,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09636,
    "output": {
     "file": "raw/side-2.png",
     "mimeType": "image/jpeg",
@@ -22946,7 +22795,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09793,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -23133,7 +22981,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09884,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -23319,7 +23166,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09898,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -23505,7 +23351,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09303,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -23694,7 +23539,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09762,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -23875,7 +23719,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08899,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -24035,7 +23878,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0933,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -24189,7 +24031,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09217,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -24372,7 +24213,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09458,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -24560,7 +24400,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09418,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -24748,7 +24587,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10107,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -24936,7 +24774,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09954,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -25120,7 +24957,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10812,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -25308,7 +25144,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09827,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -25492,7 +25327,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09067,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -25654,7 +25488,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0957,
    "output": {
     "file": "raw/portrait-1.png",
     "mimeType": "image/jpeg",
@@ -25808,7 +25641,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09442,
    "output": {
     "file": "raw/portrait-2.png",
     "mimeType": "image/jpeg",
@@ -25963,7 +25795,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09128,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -26137,7 +25968,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09219,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -26314,7 +26144,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09421,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -26490,7 +26319,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09535,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -26670,7 +26498,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09447,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -26846,7 +26673,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09291,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -27023,7 +26849,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.096,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -27187,7 +27012,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09972,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -27353,7 +27177,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08911,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -27529,7 +27352,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09663,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -27696,7 +27518,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09365,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -27864,7 +27685,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10953,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -28042,7 +27862,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09587,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -28213,7 +28032,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08823,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -28387,7 +28205,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1015,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -28558,7 +28375,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09767,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -28733,7 +28549,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10754,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -28905,7 +28720,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09501,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -29077,7 +28891,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09454,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -29240,7 +29053,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10816,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -29419,7 +29231,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1018,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -29581,7 +29392,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10053,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -29756,7 +29566,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10316,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -29928,7 +29737,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08883,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -30101,7 +29909,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09586,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -30251,7 +30058,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09634,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -30393,7 +30199,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09435,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -30544,7 +30349,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10371,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -30694,7 +30498,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09045,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -30841,7 +30644,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10014,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -30991,7 +30793,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09081,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -31136,7 +30937,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09255,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -31289,7 +31089,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09441,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -31448,7 +31247,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09789,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -31598,7 +31396,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1029,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -31754,7 +31551,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09669,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -31906,7 +31702,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08757,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -32061,7 +31856,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09749,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -32263,7 +32057,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10144,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -32442,7 +32235,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09896,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -32640,7 +32432,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10321,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -32847,7 +32638,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09543,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -33026,7 +32816,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10435,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -33222,7 +33011,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10156,
    "output": {
     "file": "side-step1-1.png",
     "mimeType": "image/jpeg",
@@ -33424,7 +33212,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09916,
    "output": {
     "file": "side-step1-1.png",
     "mimeType": "image/jpeg",
@@ -33589,7 +33376,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09542,
    "output": {
     "file": "side-step1-1.png",
     "mimeType": "image/jpeg",
@@ -33759,7 +33545,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09597,
    "output": {
     "file": "side-step2.png",
     "mimeType": "image/jpeg",
@@ -33934,7 +33719,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09579,
    "output": {
     "file": "side-step1-2.png",
     "mimeType": "image/jpeg",
@@ -34101,7 +33885,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10106,
    "output": {
     "file": "side-step1-2.png",
     "mimeType": "image/jpeg",
@@ -34303,7 +34086,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09387,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -34503,7 +34285,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09255,
    "output": {
     "file": "side-step2.png",
     "mimeType": "image/jpeg",
@@ -34703,7 +34484,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09657,
    "output": {
     "file": "side-step2.png",
     "mimeType": "image/jpeg",
@@ -34867,7 +34647,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09897,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -35057,7 +34836,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09476,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -35245,7 +35023,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09728,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -35437,7 +35214,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09822,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -35629,7 +35405,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09671,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -35815,7 +35590,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09495,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -35996,7 +35770,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.00068,
    "status": "no-image",
    "response": "{\"candidates\": [{\"content\": {}, \"finishReason\": \"NO_IMAGE\", \"index\": 0}], \"usageMetadata\": {\"promptTokenCount\": 1352, \"totalTokenCount\": 1352, \"promptTokensDetails\": [{\"modality\": \"TEXT\", \"tokenCount\": 578}, {\"modality\": \"IMAGE\", \"tokenCount\": 774}], \"serviceTier\": \"standard\"}, \"modelVersion\": \"gemini-3.1-flash-image\", \"responseId\": \"ciLHapaJB5SZ_uMP97SjqAE\"}"
   },
@@ -36068,7 +35841,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09513,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -36258,7 +36030,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09237,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -36431,7 +36202,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09289,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -36602,7 +36372,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08727,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -36773,7 +36542,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09213,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -36948,7 +36716,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0953,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -37134,7 +36901,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09207,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -37322,7 +37088,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09232,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -37458,7 +37223,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10441,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -37588,7 +37352,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08955,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -37720,7 +37483,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08567,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -37934,7 +37696,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10673,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -38137,7 +37898,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09959,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -38351,7 +38111,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09806,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -38565,7 +38324,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09698,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -38764,7 +38522,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09261,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -38974,7 +38731,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09549,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -39184,7 +38940,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08847,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -39385,7 +39140,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09515,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -39599,7 +39353,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09917,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -39813,7 +39566,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10547,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -40029,7 +39781,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09128,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -40245,7 +39996,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09968,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -40461,7 +40211,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09393,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -40673,7 +40422,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09449,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -40878,7 +40626,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09462,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -41043,7 +40790,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09405,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -41259,7 +41005,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1065,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -41458,7 +41203,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09393,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -41625,7 +41369,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09108,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -41814,7 +41557,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09645,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -42022,7 +41764,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10624,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -42211,7 +41952,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09948,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -42408,7 +42148,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09536,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -42604,7 +42343,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09912,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -42797,7 +42535,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10236,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -42990,7 +42727,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09531,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -43183,7 +42919,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09258,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -43388,7 +43123,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09765,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -43583,7 +43317,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10294,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -43782,7 +43515,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09027,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -43973,7 +43705,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09267,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -44174,7 +43905,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10112,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -44371,7 +44101,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09273,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -44570,7 +44299,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09533,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -44747,7 +44475,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09635,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -44935,7 +44662,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09995,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -45123,7 +44849,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09866,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -45306,7 +45031,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09598,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -45492,7 +45216,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.1022,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -45699,7 +45422,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09593,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -45918,7 +45640,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09201,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -46139,7 +45860,6 @@
     "thoughtsTokenCount": 267,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16626,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -46358,7 +46078,6 @@
     "thoughtsTokenCount": 228,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15985,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -46567,7 +46286,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08846,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -46781,7 +46499,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09162,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -46990,7 +46707,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0914,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -47204,7 +46920,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09108,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -47414,7 +47129,6 @@
     "thoughtsTokenCount": 262,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16746,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -47631,7 +47345,6 @@
     "thoughtsTokenCount": 204,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15793,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -47841,7 +47554,6 @@
     "thoughtsTokenCount": 228,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1659,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -48056,7 +47768,6 @@
     "thoughtsTokenCount": 315,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16645,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -48265,7 +47976,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08842,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -48475,7 +48185,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.00078,
    "status": "no-image",
    "response": "{\"candidates\": [{\"content\": {}, \"finishReason\": \"NO_IMAGE\", \"index\": 0}], \"usageMetadata\": {\"promptTokenCount\": 1563, \"totalTokenCount\": 1563, \"promptTokensDetails\": [{\"modality\": \"TEXT\", \"tokenCount\": 789}, {\"modality\": \"IMAGE\", \"tokenCount\": 774}], \"serviceTier\": \"standard\"}, \"modelVersion\": \"gemini-3.1-flash-image\", \"responseId\": \"ry3HaruCOL_U-8YPhbq_YA\"}"
   },
@@ -48559,7 +48268,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09112,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -48773,7 +48481,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.08946,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -48983,7 +48690,6 @@
     "thoughtsTokenCount": 328,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16804,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -49198,7 +48904,6 @@
     "thoughtsTokenCount": 268,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16249,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -49408,7 +49113,6 @@
     "thoughtsTokenCount": 251,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16696,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -49625,7 +49329,6 @@
     "thoughtsTokenCount": 239,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16165,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -49836,7 +49539,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09368,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -50052,7 +49754,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09432,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -50263,7 +49964,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0902,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -50479,7 +50179,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0951,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -50691,7 +50390,6 @@
     "thoughtsTokenCount": 238,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16569,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -50909,7 +50607,6 @@
     "thoughtsTokenCount": 265,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16045,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -51122,7 +50819,6 @@
     "thoughtsTokenCount": 281,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16557,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -51339,7 +51035,6 @@
     "thoughtsTokenCount": 199,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15853,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -51556,7 +51251,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0878,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -51772,7 +51466,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09596,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -51989,7 +51682,6 @@
     "thoughtsTokenCount": 288,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16485,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -52208,7 +51900,6 @@
     "thoughtsTokenCount": 225,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16341,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -52421,7 +52112,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.0938,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -52650,7 +52340,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09697,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -52874,7 +52563,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09146,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -53104,7 +52792,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10069,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -53324,7 +53011,6 @@
     "thoughtsTokenCount": 257,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16712,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -53556,7 +53242,6 @@
     "thoughtsTokenCount": 238,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16647,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -53783,7 +53468,6 @@
     "thoughtsTokenCount": 283,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16496,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -54015,7 +53699,6 @@
     "thoughtsTokenCount": 205,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16071,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -54241,7 +53924,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09976,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -54468,7 +54150,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09961,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -54690,7 +54371,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10102,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -54919,7 +54599,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09367,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -55144,7 +54823,6 @@
     "thoughtsTokenCount": 275,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16974,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -55376,7 +55054,6 @@
     "thoughtsTokenCount": 245,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16095,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -55603,7 +55280,6 @@
     "thoughtsTokenCount": 243,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1635,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -55825,7 +55501,6 @@
     "thoughtsTokenCount": 274,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16719,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -56041,7 +55716,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09417,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -56268,7 +55942,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.10381,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -56490,7 +56163,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09453,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -56720,7 +56392,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09235,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -56946,7 +56617,6 @@
     "thoughtsTokenCount": 222,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16643,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -57168,7 +56838,6 @@
     "thoughtsTokenCount": 269,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16011,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -57385,7 +57054,6 @@
     "thoughtsTokenCount": 383,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17135,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -57615,7 +57283,6 @@
     "thoughtsTokenCount": 278,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15591,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -57844,7 +57511,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09339,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -58073,7 +57739,6 @@
     ],
     "serviceTier": "standard"
    },
-   "costUSD": 0.09381,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -58303,7 +57968,6 @@
     "thoughtsTokenCount": 261,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16139,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -58535,7 +58199,6 @@
     "thoughtsTokenCount": 299,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15827,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -58762,7 +58425,6 @@
     "thoughtsTokenCount": 327,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16665,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -58989,7 +58651,6 @@
     "thoughtsTokenCount": 261,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15891,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -59212,7 +58873,6 @@
     "thoughtsTokenCount": 252,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17061,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -59440,7 +59100,6 @@
     "thoughtsTokenCount": 397,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16419,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -59663,7 +59322,6 @@
     "thoughtsTokenCount": 221,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16333,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -59886,7 +59544,6 @@
     "thoughtsTokenCount": 216,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16597,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -60105,7 +59762,6 @@
     "thoughtsTokenCount": 237,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16765,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -60328,7 +59984,6 @@
     "thoughtsTokenCount": 238,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16369,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -60551,7 +60206,6 @@
     "thoughtsTokenCount": 251,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16697,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -60775,7 +60429,6 @@
     "thoughtsTokenCount": 219,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16097,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -60999,7 +60652,6 @@
     "thoughtsTokenCount": 268,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16071,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -61223,7 +60875,6 @@
     "thoughtsTokenCount": 232,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15951,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -61447,7 +61098,6 @@
     "thoughtsTokenCount": 213,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16242,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -61671,7 +61321,6 @@
     "thoughtsTokenCount": 160,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16842,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -61890,7 +61539,6 @@
     "thoughtsTokenCount": 271,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16604,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -62123,7 +61771,6 @@
     "thoughtsTokenCount": 240,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15968,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -62349,7 +61996,6 @@
     "thoughtsTokenCount": 359,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17288,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -62579,7 +62225,6 @@
     "thoughtsTokenCount": 246,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16352,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -62810,7 +62455,6 @@
     "thoughtsTokenCount": 341,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16704,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -63042,7 +62686,6 @@
     "thoughtsTokenCount": 373,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16512,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -63275,7 +62918,6 @@
     "thoughtsTokenCount": 215,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16233,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -63508,7 +63150,6 @@
     "thoughtsTokenCount": 346,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16329,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -63741,7 +63382,6 @@
     "thoughtsTokenCount": 316,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16368,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -63974,7 +63614,6 @@
     "thoughtsTokenCount": 336,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16536,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -64202,7 +63841,6 @@
     "thoughtsTokenCount": 212,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16645,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -64434,7 +64072,6 @@
     "thoughtsTokenCount": 197,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16465,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -64663,7 +64300,6 @@
     "thoughtsTokenCount": 225,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16429,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -64895,7 +64531,6 @@
     "thoughtsTokenCount": 257,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16897,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -65127,7 +64762,6 @@
     "thoughtsTokenCount": 232,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16097,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -65361,7 +64995,6 @@
     "thoughtsTokenCount": 235,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16601,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -65595,7 +65228,6 @@
     "thoughtsTokenCount": 358,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17055,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -65827,7 +65459,6 @@
     "thoughtsTokenCount": 243,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16347,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -66059,7 +65690,6 @@
     "thoughtsTokenCount": 182,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16398,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -66293,7 +65923,6 @@
     "thoughtsTokenCount": 252,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16542,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -66515,7 +66144,6 @@
     "thoughtsTokenCount": 264,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17862,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -66727,7 +66355,6 @@
     "thoughtsTokenCount": 324,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16446,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -66940,7 +66567,6 @@
     "thoughtsTokenCount": 305,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18114,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -67150,7 +66776,6 @@
     "thoughtsTokenCount": 265,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1635,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -67372,7 +66997,6 @@
     "thoughtsTokenCount": 336,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18166,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -67590,7 +67214,6 @@
     "thoughtsTokenCount": 259,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1657,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -67809,7 +67432,6 @@
     "thoughtsTokenCount": 258,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17362,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -68024,7 +67646,6 @@
     "thoughtsTokenCount": 224,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16294,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -68229,7 +67850,6 @@
     "thoughtsTokenCount": 310,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17015,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -68441,7 +68061,6 @@
     "thoughtsTokenCount": 265,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16535,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -68655,7 +68274,6 @@
     "thoughtsTokenCount": 320,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17435,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -68867,7 +68485,6 @@
     "thoughtsTokenCount": 293,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17207,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -69080,7 +68697,6 @@
     "thoughtsTokenCount": 277,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17891,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -69292,7 +68908,6 @@
     "thoughtsTokenCount": 412,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16788,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -69505,7 +69120,6 @@
     "thoughtsTokenCount": 311,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17675,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -69717,7 +69331,6 @@
     "thoughtsTokenCount": 284,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16944,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -69930,7 +69543,6 @@
     "thoughtsTokenCount": 363,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17194,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -70142,7 +69754,6 @@
     "thoughtsTokenCount": 286,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16786,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -70356,7 +69967,6 @@
     "thoughtsTokenCount": 360,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16498,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -70569,7 +70179,6 @@
     "thoughtsTokenCount": 254,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16066,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -70785,7 +70394,6 @@
     "thoughtsTokenCount": 247,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1769,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -71002,7 +70610,6 @@
     "thoughtsTokenCount": 225,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16466,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -71225,7 +70832,6 @@
     "thoughtsTokenCount": 236,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1703,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -71436,7 +71042,6 @@
     "thoughtsTokenCount": 322,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16718,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -71661,7 +71266,6 @@
     "thoughtsTokenCount": 274,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16943,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -71875,7 +71479,6 @@
     "thoughtsTokenCount": 201,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16439,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -72092,7 +71695,6 @@
     "thoughtsTokenCount": 458,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17879,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -72306,7 +71908,6 @@
     "thoughtsTokenCount": 308,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17087,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -72512,7 +72113,6 @@
     "thoughtsTokenCount": 277,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17563,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -72731,7 +72331,6 @@
     "thoughtsTokenCount": 256,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16303,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -72954,7 +72553,6 @@
     "thoughtsTokenCount": 296,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17107,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -73171,7 +72769,6 @@
     "thoughtsTokenCount": 319,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16675,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -73391,7 +72988,6 @@
     "thoughtsTokenCount": 297,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17299,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -73602,7 +73198,6 @@
     "thoughtsTokenCount": 252,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16484,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -73816,7 +73411,6 @@
     "thoughtsTokenCount": 293,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17611,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -74030,7 +73624,6 @@
     "thoughtsTokenCount": 224,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1682,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -74247,7 +73840,6 @@
     "thoughtsTokenCount": 288,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1683,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -74468,7 +74060,6 @@
     "thoughtsTokenCount": 235,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17178,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -74692,7 +74283,6 @@
     "thoughtsTokenCount": 296,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17286,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -74909,7 +74499,6 @@
     "thoughtsTokenCount": 203,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16122,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -75133,7 +74722,6 @@
     "thoughtsTokenCount": 295,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17357,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -75359,7 +74947,6 @@
     "thoughtsTokenCount": 310,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16805,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -75588,7 +75175,6 @@
     "thoughtsTokenCount": 274,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16961,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -75814,7 +75400,6 @@
     "thoughtsTokenCount": 254,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17537,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -76053,7 +75638,6 @@
     "thoughtsTokenCount": 294,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17459,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -76277,7 +75861,6 @@
     "thoughtsTokenCount": 259,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16391,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -76505,7 +76088,6 @@
     "thoughtsTokenCount": 239,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17495,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -76728,7 +76310,6 @@
     "thoughtsTokenCount": 272,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16067,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -76944,7 +76525,6 @@
     "thoughtsTokenCount": 294,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16833,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -77168,7 +76748,6 @@
     "thoughtsTokenCount": 319,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16665,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -77395,7 +76974,6 @@
     "thoughtsTokenCount": 250,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17829,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -77621,7 +77199,6 @@
     "thoughtsTokenCount": 283,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16533,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -77849,7 +77426,6 @@
     "thoughtsTokenCount": 330,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17362,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -78073,7 +77649,6 @@
     "thoughtsTokenCount": 281,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16319,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -78300,7 +77875,6 @@
     "thoughtsTokenCount": 276,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1843,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -78524,7 +78098,6 @@
     "thoughtsTokenCount": 256,
     "serviceTier": "standard"
    },
-   "costUSD": 0.15779,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -78751,7 +78324,6 @@
     "thoughtsTokenCount": 307,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17277,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -78974,7 +78546,6 @@
     "thoughtsTokenCount": 276,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17097,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -79201,7 +78772,6 @@
     "thoughtsTokenCount": 275,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17385,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -79427,7 +78997,6 @@
     "thoughtsTokenCount": 390,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16953,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -79656,7 +79225,6 @@
     "thoughtsTokenCount": 313,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1807,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -79880,7 +79448,6 @@
     "thoughtsTokenCount": 293,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17038,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -80107,7 +79674,6 @@
     "thoughtsTokenCount": 285,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18418,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -80333,7 +79899,6 @@
     "thoughtsTokenCount": 250,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1687,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -80559,7 +80124,6 @@
     "thoughtsTokenCount": 325,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17483,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -80771,7 +80335,6 @@
     "thoughtsTokenCount": 259,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16487,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -80984,7 +80547,6 @@
     "thoughtsTokenCount": 282,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17279,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -81197,7 +80759,6 @@
     "thoughtsTokenCount": 369,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17195,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -81413,7 +80974,6 @@
     "thoughtsTokenCount": 344,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17527,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -81630,7 +81190,6 @@
     "thoughtsTokenCount": 302,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17035,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -81850,7 +81409,6 @@
     "thoughtsTokenCount": 259,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17251,
    "output": {
     "file": "step1.png",
     "mimeType": "image/jpeg",
@@ -82071,7 +81629,6 @@
     "thoughtsTokenCount": 241,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16843,
    "output": {
     "file": "step2.png",
     "mimeType": "image/jpeg",
@@ -82289,7 +81846,6 @@
     "thoughtsTokenCount": 222,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18731,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -82500,7 +82056,6 @@
     "thoughtsTokenCount": 342,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18369,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -82712,7 +82267,6 @@
     "thoughtsTokenCount": 241,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17722,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -82934,7 +82488,6 @@
     "thoughtsTokenCount": 328,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16872,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -83146,7 +82699,6 @@
     "thoughtsTokenCount": 240,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16726,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -83362,7 +82914,6 @@
     "thoughtsTokenCount": 308,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18744,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -83591,7 +83142,6 @@
     "thoughtsTokenCount": 440,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18169,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -83821,7 +83371,6 @@
     "thoughtsTokenCount": 312,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18056,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -84060,7 +83609,6 @@
     "thoughtsTokenCount": 332,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17267,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -84292,7 +83840,6 @@
     "thoughtsTokenCount": 417,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18269,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -84502,7 +84049,6 @@
     "thoughtsTokenCount": 365,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17633,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -84716,7 +84262,6 @@
     "thoughtsTokenCount": 447,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18542,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -84933,7 +84478,6 @@
     "thoughtsTokenCount": 273,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16322,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -85154,7 +84698,6 @@
     "thoughtsTokenCount": 534,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17396,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -85394,7 +84937,6 @@
     "thoughtsTokenCount": 382,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18539,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -85626,7 +85168,6 @@
     "thoughtsTokenCount": 282,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16724,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -85848,7 +85389,6 @@
     "thoughtsTokenCount": 429,
     "serviceTier": "standard"
    },
-   "costUSD": 0.19084,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -86057,7 +85597,6 @@
     "thoughtsTokenCount": 357,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17849,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -86268,7 +85807,6 @@
     "thoughtsTokenCount": 277,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1756,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -86476,7 +86014,6 @@
     "thoughtsTokenCount": 446,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16834,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -86682,7 +86219,6 @@
     "thoughtsTokenCount": 357,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17512,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -86888,7 +86424,6 @@
     "thoughtsTokenCount": 427,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18713,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -87083,7 +86618,6 @@
     "thoughtsTokenCount": 267,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17489,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -87282,7 +86816,6 @@
     "thoughtsTokenCount": 334,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18147,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -87477,7 +87010,6 @@
     "thoughtsTokenCount": 321,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17655,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -87670,7 +87202,6 @@
     "thoughtsTokenCount": 380,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18208,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -87882,7 +87413,6 @@
     "thoughtsTokenCount": 259,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18435,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -88093,7 +87623,6 @@
     "thoughtsTokenCount": 393,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17675,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -88303,7 +87832,6 @@
     "thoughtsTokenCount": 395,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17721,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -88518,7 +88046,6 @@
     "thoughtsTokenCount": 231,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17056,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -88735,7 +88262,6 @@
     "thoughtsTokenCount": 218,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17304,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -88946,7 +88472,6 @@
     "thoughtsTokenCount": 372,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17853,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -89146,7 +88671,6 @@
     "thoughtsTokenCount": 285,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17868,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -89356,7 +88880,6 @@
     "thoughtsTokenCount": 298,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1784,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -89551,7 +89074,6 @@
     "thoughtsTokenCount": 261,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16665,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -89751,7 +89273,6 @@
     "thoughtsTokenCount": 372,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16797,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -89948,7 +89469,6 @@
     "thoughtsTokenCount": 412,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18127,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -90143,7 +89663,6 @@
     "thoughtsTokenCount": 279,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18628,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -90378,7 +89897,6 @@
     "thoughtsTokenCount": 314,
     "serviceTier": "standard"
    },
-   "costUSD": 0.19372,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -90610,7 +90128,6 @@
     "thoughtsTokenCount": 322,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17507,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -90843,7 +90360,6 @@
     "thoughtsTokenCount": 322,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18146,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -91072,7 +90588,6 @@
     "thoughtsTokenCount": 235,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17644,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -91301,7 +90816,6 @@
     "thoughtsTokenCount": 437,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17583,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -91531,7 +91045,6 @@
     "thoughtsTokenCount": 339,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17666,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -91761,7 +91274,6 @@
     "thoughtsTokenCount": 311,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18391,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -91990,7 +91502,6 @@
     "thoughtsTokenCount": 338,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18687,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -92214,7 +91725,6 @@
     "thoughtsTokenCount": 267,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1794,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -92430,7 +91940,6 @@
     "thoughtsTokenCount": 319,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17218,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -92637,7 +92146,6 @@
     "thoughtsTokenCount": 343,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17319,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -92829,7 +92337,6 @@
     "thoughtsTokenCount": 333,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1779,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -93023,7 +92530,6 @@
     "thoughtsTokenCount": 200,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1599,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -93221,7 +92727,6 @@
     "thoughtsTokenCount": 331,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17866,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -93426,7 +92931,6 @@
     "thoughtsTokenCount": 342,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17902,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -93627,7 +93131,6 @@
     "thoughtsTokenCount": 319,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17168,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -93829,7 +93332,6 @@
     "thoughtsTokenCount": 213,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1646,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -94035,7 +93537,6 @@
     "thoughtsTokenCount": 306,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17674,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -94242,7 +93743,6 @@
     "thoughtsTokenCount": 370,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17235,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -94444,7 +93944,6 @@
     "thoughtsTokenCount": 272,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17441,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -94620,7 +94119,6 @@
     "thoughtsTokenCount": 277,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16565,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -94799,7 +94297,6 @@
     "thoughtsTokenCount": 314,
     "serviceTier": "standard"
    },
-   "costUSD": 0.1705,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -95004,7 +94501,6 @@
     "thoughtsTokenCount": 301,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18437,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -95201,7 +94697,6 @@
     "thoughtsTokenCount": 340,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17849,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -95397,7 +94892,6 @@
     "thoughtsTokenCount": 257,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16769,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -95595,7 +95089,6 @@
     "thoughtsTokenCount": 271,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17685,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -95809,7 +95302,6 @@
     "thoughtsTokenCount": 348,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18393,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -96013,7 +95505,6 @@
     "thoughtsTokenCount": 345,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16869,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",
@@ -96219,7 +95710,6 @@
     "thoughtsTokenCount": 344,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17659,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -96414,7 +95904,6 @@
     "thoughtsTokenCount": 356,
     "serviceTier": "standard"
    },
-   "costUSD": 0.18355,
    "output": {
     "file": "portrait-step1-2.png",
     "mimeType": "image/jpeg",
@@ -96607,7 +96096,6 @@
     "thoughtsTokenCount": 326,
     "serviceTier": "standard"
    },
-   "costUSD": 0.16989,
    "output": {
     "file": "portrait-step1-1.png",
     "mimeType": "image/jpeg",
@@ -96811,7 +96299,6 @@
     "thoughtsTokenCount": 308,
     "serviceTier": "standard"
    },
-   "costUSD": 0.17505,
    "output": {
     "file": "portrait-step2.png",
     "mimeType": "image/jpeg",

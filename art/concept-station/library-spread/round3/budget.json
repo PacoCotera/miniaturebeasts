@@ -3,14 +3,14 @@
   "runs": [
     {
       "time": "2026-10-08T07:16:05Z",
-      "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-spread-r3-flat.json",
+      "plan": "plan-spread-r3-flat.json",
       "ids": null,
       "success": 3,
       "error": 0
     },
     {
       "time": "2026-10-08T07:18:13Z",
-      "plan": "/tmp/claude-0/-home-user-miniaturebeasts/b951398d-74c3-50ba-be6f-9ba22988419a/scratchpad/plan-spread-r3b-flat.json",
+      "plan": "plan-spread-r3b-flat.json",
       "ids": null,
       "success": 2,
       "error": 0

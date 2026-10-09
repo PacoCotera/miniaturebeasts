@@ -29,11 +29,8 @@
   ],
   "response": {
     "created_at": 1791349521,
-    "credit_cost": 4,
-    "balance_cost": 0.12,
     "model": "rd_plus",
     "remaining_credits": 0,
-    "remaining_balance": 8.18,
     "request_id": "b1694028-fe7b-4d28-b56b-4305da036af1",
     "outputs_retained_until": 1791435900
   }
