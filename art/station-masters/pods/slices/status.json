@@ -1310,163 +1310,163 @@
   "note": "the collection overview place picture, redone in round 2; awaiting verdict"
  },
  "mibi-halo-S01-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S01-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S09-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S09-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S12-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S12-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S02-128x160-clear": {
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states"
  },
  "mibi-halo-S02-128x160-mist": {
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states"
  },
  "mibi-halo-S03-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S03-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S06-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S06-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S08-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S08-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S10-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S10-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S16-128x160-clear": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S16-128x160-mist": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "note": "placeholder, re-cut from the standard painting when it lands"
  },
  "pod-large-unknown": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-medium-unknown": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-small-unknown": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-well-unknown": {
-  "status": "new",
-  "signed_in": null,
-  "note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  }
 }

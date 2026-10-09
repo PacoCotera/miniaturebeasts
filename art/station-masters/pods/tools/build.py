@@ -444,17 +444,17 @@ def places():
         l2 = np.where(lum > 140, 140 + (lum - 140) * 0.30, lum); a = a * (l2 / np.maximum(lum, 1e-6))[..., None]
         save(f"place-{k}-48x48", Image.fromarray(np.clip(a, 0, 255).astype(np.uint8), "RGB"), [None, None, 48, 48], f"the {k} place picture of the collection overview: a painted miniature vignette reduced to 48x48, muted, mean grey about 88", f"place-{k}")
 def unknownpod():
-    """pod-{large,medium,small,well}-unknown: the pod before its species is known (the art director): the body mask in a neutral grey (#8a8a8e), the accent (cap and ribs) one step lighter (#b8b8bc),
+    """pod-{large,medium,small,well}-unknown: the pod before its species is known (the art director): the body mask in a neutral grey (#6e6e72), the accent (cap and ribs) a warm light grey (#bcb6aa),
     no pattern layer, the sealing band on (the band layer over it), the pod's own shade layer shading it as painted (no remap), and no species colour pair anywhere. The crack layer is left off. The
     pod set carries no separate glow layer (the sprout's glow is baked into the identified composite only), so no bone core is drawn here."""
     for cls in ("large", "medium", "small", "well"):
         L = lambda n: np.asarray(Image.open(OUT + f"pod-{cls}-{n}.png").convert("RGBA")).astype(float) / 255
         sh = L("shade")[..., 0:1]; body = L("mask-body")[..., 3:4]; acc = L("mask-accent")[..., 3:4]
-        A = np.array([0x8a, 0x8a, 0x8e]) / 255; B = np.array([0xb8, 0xb8, 0xbc]) / 255
+        A = np.array([0x6e, 0x6e, 0x72]) / 255; B = np.array([0xbc, 0xb6, 0xaa]) / 255
         col = np.clip((A * body * (1 - np.clip(acc, 0, 1)) + B * np.clip(acc, 0, 1)) * np.clip(sh * 2, 0, 1), 0, 1)
         im = Image.fromarray((np.concatenate([col, L("shade")[..., 3:4]], 2) * 255).astype(np.uint8), "RGBA"); im.alpha_composite(Image.open(OUT + f"pod-{cls}-band.png").convert("RGBA"))
         r = MAN.get(f"pod-{cls}-identified", {}).get("rect") or json.load(open(OUT + "manifest.json")).get(f"pod-{cls}-identified", {}).get("rect")
-        save(f"pod-{cls}-unknown", im, r, f"the {cls} pod before its species is known: body #8a8a8e, cap and ribs #b8b8bc, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair", "pod layers, recoloured")
+        save(f"pod-{cls}-unknown", im, r, f"the {cls} pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair", "pod layers, recoloured")
 def pagemark():
     """page-mark-new-10: the 'new to the field guide' mark as the layout now specifies it (pods.json page.newMark): a flat bone dot 6x6 with a 1 px white lit edge
     top left, no keyline, no specular, art layer (station.json colours only), placed on the trait's name line 4 px after the name. (The id keeps its 10; the art is 6x6.)

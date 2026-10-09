@@ -10,7 +10,7 @@ for n in m:
     elif n in ("room-bench-stage", "room-cradle"): sign(n, "signed", "pass 4", "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)" if n == "room-bench-stage" else "")
     elif n in ("room-cradle-front", "room-shelf"): sign(n, "signed", "pass 7b", "re-cut for the new rectangle (shelf 488,368,288,72)" if n == "room-shelf" else "")
     elif re.match(r"plate-name-\d+x24$", n): sign(n, "signed", "pass 7b", "the 20 px name on its plate (the 0.6 tone signed in pass 6)")
-    elif re.match(r"pod-(large|medium|small|well)-unknown", n): sign(n, "new", None, "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict")
+    elif re.match(r"pod-(large|medium|small|well)-unknown", n): sign(n, "signed", "pass 24 (signed on delivery)", "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)")
     elif re.match(r"pod-(large|medium|small)-", n): sign(n, "signed", "pass 6", "layers signed across passes 4 to 7b; the 33 are standing")
     elif n.startswith("pod-well-"): sign(n, "new", None, "the well pod at 32x48, the pod centred vertically (rows about 6 to 41) as the art director asked; awaiting verdict")
     elif n.startswith("trait-picture-frame-"):
@@ -40,6 +40,9 @@ for n in m:
     elif n == "page-pane-256x440": sign(n, "new", None, "re-cut as a clean nine-slice (insets 16; serves 440, 264 and 248 high); signed in pass 8 as the painted pane, awaiting verdict on the regularised one")
     elif n in ("ring-column-112x522", "ring-hatch-80x56"): sign(n, "signed", "pass 8 (d767daa verdict)", "re-cut for design-pods-relayout 29b6dc9")
     elif n == "ring-well-empty": sign(n, "withdrawn", None, "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))")
+    elif re.match(r"mibi-halo-S(01|09|12)-", n): sign(n, "signed", "pass 23 verdict", "master: cut from the species' standard painting")
+    elif re.match(r"mibi-halo-S(03|05|06|08|10|11|13|14|15|16)-", n): sign(n, "placeholder", "pass 23 verdict", "placeholder, re-cut from the standard painting when it lands")
+    elif n.startswith("mibi-halo-S02-"): sign(n, "held", None, "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states")
     elif n.startswith("mibi-halo-"): sign(n, "new", None, "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict")
     elif n in ("place-meadow-48x48", "place-pond-48x48"): sign(n, "signed", "places round 1", "")
     elif n.startswith("place-") and n.endswith("-48x48"): sign(n, "new", None, "the collection overview place picture, redone in round 2; awaiting verdict")
@@ -51,5 +54,6 @@ for n in m:
     else: sign(n, "stand-in" if False else "unclassified", None, "")
 json.dump(S, open("slices/status.json", "w"), indent=1)
 for n, v in S.items(): m[n].update({"status": v["status"], "signed_in": v["signed_in"], "status_note": v["note"]})
+m["mibi-halo-S02-128x160-clear"]["show_instead"] = "mibi-halo-S02-128x160-mist"; m["mibi-halo-S02-128x160-mist"]["show_in_both_states"] = True
 json.dump(m, open("slices/manifest.json", "w"), indent=1)
 from collections import Counter; print(Counter(v["status"] for v in S.values())); print([n for n, v in S.items() if v["status"] == "unclassified"])

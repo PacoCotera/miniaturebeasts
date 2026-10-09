@@ -4396,9 +4396,9 @@
   "src": "halo-S01-clear.jpg over the S01 silhouette from the standard painting",
   "made": "the S01 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "dc8fa2cd114711eafd0ab8227af2b8cf27a3332521d227ff66568262e75a8dca",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "status_note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S01-128x160-mist": {
   "size": [
@@ -4409,9 +4409,9 @@
   "src": "halo-S01-clear.jpg over the S01 silhouette from the standard painting",
   "made": "the S01 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "fff3da31f8c9703bd123206c60d926e72b554d1e64267c736733e4db4915e537",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "status_note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S09-128x160-clear": {
   "size": [
@@ -4422,9 +4422,9 @@
   "src": "halo-S09-clear.jpg over the S09 silhouette from the standard painting",
   "made": "the S09 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "755e835e9a7bac9149103944f3972aee8fcb439003ab334a03eadac9c6c5ba46",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "status_note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S09-128x160-mist": {
   "size": [
@@ -4435,9 +4435,9 @@
   "src": "halo-S09-clear.jpg over the S09 silhouette from the standard painting",
   "made": "the S09 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "06507bd53b10b50b28b0945d1f081b1f76f018cad7a08acb202e6a3a8b28cb9b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "status_note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S12-128x160-clear": {
   "size": [
@@ -4448,9 +4448,9 @@
   "src": "halo-S12-clear.jpg over the S12 silhouette from the standard painting",
   "made": "the S12 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "28782d356a171aa53185addbca16e0e54b09dce4cfbdbfc03d1fa63051e4f613",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "status_note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S12-128x160-mist": {
   "size": [
@@ -4461,9 +4461,9 @@
   "src": "halo-S12-clear.jpg over the S12 silhouette from the standard painting",
   "made": "the S12 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "ea5bbd450dd64586c6fe61b77cef909d96e892d7fed54d2d11c8eb01340be095",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "status_note": "master: cut from the species' standard painting"
  },
  "mibi-halo-S02-128x160-clear": {
   "size": [
@@ -4474,9 +4474,10 @@
   "src": "halo-S02-clear.jpg over the S02 silhouette from the species frame's placeholder render (side view)",
   "made": "the S02 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "b2f866d9b25c8cbd413eecdd970dd5acb4c8844b28f762042e7c07af84c77178",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status_note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states",
+  "show_instead": "mibi-halo-S02-128x160-mist"
  },
  "mibi-halo-S02-128x160-mist": {
   "size": [
@@ -4487,9 +4488,10 @@
   "src": "halo-S02-clear.jpg over the S02 silhouette from the species frame's placeholder render (side view)",
   "made": "the S02 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "034a622e5e004aae90b72fd80eb4f3d6cf959b394d57b1ba6ad5d1738d17affb",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status_note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states",
+  "show_in_both_states": true
  },
  "mibi-halo-S03-128x160-clear": {
   "size": [
@@ -4500,9 +4502,9 @@
   "src": "halo-S03-clear.jpg over the S03 silhouette from the species frame's placeholder render (side view)",
   "made": "the S03 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "3072a667feec3570fd917a9c6144763e64174a2544f08ad24ca49dea128afe25",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S03-128x160-mist": {
   "size": [
@@ -4513,9 +4515,9 @@
   "src": "halo-S03-clear.jpg over the S03 silhouette from the species frame's placeholder render (side view)",
   "made": "the S03 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "7d9e737d47eebbf69dad22c2c555f32070fbeb834c081726f84935a1f965995f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-clear": {
   "size": [
@@ -4526,9 +4528,9 @@
   "src": "halo-S05-clear.jpg over the S05 silhouette from the species frame's placeholder render (side view)",
   "made": "the S05 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "f6ff594f0aea5f9ba184a3609ee0f00b0b4db3b9b919f2a8d7613f042099de4c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S05-128x160-mist": {
   "size": [
@@ -4539,9 +4541,9 @@
   "src": "halo-S05-clear.jpg over the S05 silhouette from the species frame's placeholder render (side view)",
   "made": "the S05 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "f65dc66dfb75e173605b219bd65e7ea35278d321e6a674c60eee688af43d1f1b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S06-128x160-clear": {
   "size": [
@@ -4552,9 +4554,9 @@
   "src": "halo-S06-clear.jpg over the S06 silhouette from the species frame's placeholder render (side view)",
   "made": "the S06 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "2c7643d1d07c88ba0a48aa6d97c65874995fd2e40f2b29f199094476566f9949",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S06-128x160-mist": {
   "size": [
@@ -4565,9 +4567,9 @@
   "src": "halo-S06-clear.jpg over the S06 silhouette from the species frame's placeholder render (side view)",
   "made": "the S06 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "b76747de328cbe4ef224848f44d2ce54cccb689e0a715f637240bd95d42ef489",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S08-128x160-clear": {
   "size": [
@@ -4578,9 +4580,9 @@
   "src": "halo-S08-clear.jpg over the S08 silhouette from the species frame's placeholder render (side view)",
   "made": "the S08 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "ad28fa7f243024942553d4b0b95cad6efb910ae4779edd968b89c16b9a78f37e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S08-128x160-mist": {
   "size": [
@@ -4591,9 +4593,9 @@
   "src": "halo-S08-clear.jpg over the S08 silhouette from the species frame's placeholder render (side view)",
   "made": "the S08 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "f5744ee66691734438544c94f46c466c7c747bd6d2ed52f293b61856360cede7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S10-128x160-clear": {
   "size": [
@@ -4604,9 +4606,9 @@
   "src": "halo-S10-clear.jpg over the S10 silhouette from the species frame's placeholder render (side view)",
   "made": "the S10 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "3063ad67d42dba73088e8a44cb97cbb4aa0c39ccf766d3a46960b2fb64aab49c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S10-128x160-mist": {
   "size": [
@@ -4617,9 +4619,9 @@
   "src": "halo-S10-clear.jpg over the S10 silhouette from the species frame's placeholder render (side view)",
   "made": "the S10 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "ee3340b032c5ada8f579f324ba8dd1feedbff66dbee69bb10820d23004e59b5e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-clear": {
   "size": [
@@ -4630,9 +4632,9 @@
   "src": "halo-S11-clear.jpg over the S11 silhouette from the species frame's placeholder render (side view)",
   "made": "the S11 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "affc0035f0b2378f7332ac68e0a41d046aed780d7e0034a726c82e76bc318936",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S11-128x160-mist": {
   "size": [
@@ -4643,9 +4645,9 @@
   "src": "halo-S11-clear.jpg over the S11 silhouette from the species frame's placeholder render (side view)",
   "made": "the S11 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "24fa7d7fd610138f466e485948bbd22ed1cd0c06debe9cb32c9cf0169df13bb2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-clear": {
   "size": [
@@ -4656,9 +4658,9 @@
   "src": "halo-S13-clear.jpg over the S13 silhouette from the species frame's placeholder render (side view)",
   "made": "the S13 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "cf6bcbfe01bbbf4be7ce3301fde255cb28e9f2e317fce0cb6dff6d8d5edb30b4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S13-128x160-mist": {
   "size": [
@@ -4669,9 +4671,9 @@
   "src": "halo-S13-clear.jpg over the S13 silhouette from the species frame's placeholder render (side view)",
   "made": "the S13 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "df3f6d507a23c853352c93122de4c1e3ecd7747d0b46502b6547fef5dfb125a9",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-clear": {
   "size": [
@@ -4682,9 +4684,9 @@
   "src": "halo-S14-clear.jpg over the S14 silhouette from the species frame's placeholder render (side view)",
   "made": "the S14 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "388afbca41057f8fc0425b537716863aac25ea9e4229110175ac07fccee346f1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S14-128x160-mist": {
   "size": [
@@ -4695,9 +4697,9 @@
   "src": "halo-S14-clear.jpg over the S14 silhouette from the species frame's placeholder render (side view)",
   "made": "the S14 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "009c873f09f35d4ffa7123d0be491a87819e0f1a1d540e3ca1a9d8cb7814addc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-clear": {
   "size": [
@@ -4708,9 +4710,9 @@
   "src": "halo-S15-clear.jpg over the S15 silhouette from the species frame's placeholder render (side view)",
   "made": "the S15 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "157790c91ae1100c39475513f9677ec310a02a6ad050949c0f933091d5d36a44",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S15-128x160-mist": {
   "size": [
@@ -4721,9 +4723,9 @@
   "src": "halo-S15-clear.jpg over the S15 silhouette from the species frame's placeholder render (side view)",
   "made": "the S15 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "89fdb3c6ba7866f5a80a93d120fb6da7278f3ea2bdf71495db7bc5bc7b813984",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S16-128x160-clear": {
   "size": [
@@ -4734,9 +4736,9 @@
   "src": "halo-S16-clear.jpg over the S16 silhouette from the species frame's placeholder render (side view)",
   "made": "the S16 halo figure, clear: a figure of soft cool light painted by the image tool, masked with the species' own silhouette (soft edge), a soft halo about 6 px outside it, graded to the brief",
   "sha256": "13407b60cf8df30fddb1798a27e1272917ea34607490277ceaa503c4af6c31c0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "mibi-halo-S16-128x160-mist": {
   "size": [
@@ -4747,9 +4749,9 @@
   "src": "halo-S16-clear.jpg over the S16 silhouette from the species frame's placeholder render (side view)",
   "made": "the S16 halo figure, mist: a diffusion of the corrected clear figure, so the two cross-fade cleanly",
   "sha256": "8df26245d7b30976c0378df8dfbb165563ec75fee4a913d35b25e387eab111dd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the halo figure, round 2 (the light painted by the image tool over the silhouette); awaiting the verdict"
+  "status": "placeholder",
+  "signed_in": "pass 23 verdict",
+  "status_note": "placeholder, re-cut from the standard painting when it lands"
  },
  "pod-large-unknown": {
   "size": [
@@ -4763,11 +4765,11 @@
    176
   ],
   "src": "pod layers, recoloured",
-  "made": "the large pod before its species is known: body #8a8a8e, cap and ribs #b8b8bc, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
-  "sha256": "fd3131c77aee34a81a3d1094d0037e8d36016db0369dd45b6d580bdb007a3ff0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "made": "the large pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
+  "sha256": "e7d0644ea30d3177b4967b3515995fce4435194ac481700184f3910dc3b017c0",
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-medium-unknown": {
   "size": [
@@ -4781,11 +4783,11 @@
    152
   ],
   "src": "pod layers, recoloured",
-  "made": "the medium pod before its species is known: body #8a8a8e, cap and ribs #b8b8bc, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
-  "sha256": "9004da5989881229227271c152d1bd327b38b5278855c18f9da7a7b4aecc95d8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "made": "the medium pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
+  "sha256": "4094787088cc3f4152b25030ad8b2497eed27de1bcb17aa629a7112333e475c5",
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-small-unknown": {
   "size": [
@@ -4799,11 +4801,11 @@
    128
   ],
   "src": "pod layers, recoloured",
-  "made": "the small pod before its species is known: body #8a8a8e, cap and ribs #b8b8bc, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
-  "sha256": "65a5d63afd0bbaf7435e0d366d4947647a0dda3316df7bd12cf9a21ac89595b1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "made": "the small pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
+  "sha256": "d394efb849f88bcdc23846b5f66e711dd4f361059f9444bff9803f16c3da5244",
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  },
  "pod-well-unknown": {
   "size": [
@@ -4817,10 +4819,10 @@
    48
   ],
   "src": "pod layers, recoloured",
-  "made": "the well pod before its species is known: body #8a8a8e, cap and ribs #b8b8bc, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
-  "sha256": "51cd7e4eaf0d64ba9c88ad52ee4f85a94639b05ede42506220a5384c1635c9f1",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "the unknown pod: body #8a8a8e, accent #b8b8bc, no pattern, the band on; awaiting verdict"
+  "made": "the well pod before its species is known: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, shaded by the pod's own shade layer; never a species colour pair",
+  "sha256": "05d476feb77e39341e24a64adef2a40c56740c05fe1747066c511e7bfa930550",
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "status_note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
  }
 }
