@@ -428,7 +428,7 @@ test("one strings table for care; the heart, the 24 px face and the 48 px token 
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"]]);
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"], ["c-moment-tend-S01-280x300", 280, 300, "stand-in"], ["c-moment-tend-S02-280x300", 280, 300, "stand-in"], ["c-moment-tend-S03-280x300", 280, 300, "stand-in"], ["c-moment-walk-S01-280x300", 280, 300, "stand-in"], ["c-moment-walk-S02-280x300", 280, 300, "stand-in"], ["c-moment-walk-S03-280x300", 280, 300, "stand-in"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
   // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
   const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z]+-\d+)'/g)].map(x => x[1]);

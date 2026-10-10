@@ -506,7 +506,7 @@ Status lines: `with you · leads the Probe` (the partner), `with you · can lead
 
 Input is held to the end. Under reduced motion the heart stands at (362, 60) for 1.5 s, without the rise. No other screen plays the bond; Mibis, the expedition choice and the Station's Vivarium show the heart as a state from then on.
 
-**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, as for the bond), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event. Timing: one cut per mibi that grew, in carried order, 1200 ms apart, from the end of the action's moment. Bonds play first, 2400 ms each. Input is held until 300 ms after the last cut; reduced motion gets the same cuts.
+**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, 1200 ms apart), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event. Timing: one cut per mibi that grew, in carried order, 1200 ms apart, from the end of the action's moment. Bonds play first, 2400 ms each. Input is held until 300 ms after the last cut; reduced motion gets the same cuts.
 
 Lines the world turn writes stay on the Head home screen, as built, worded for the carried set: a juvenile grown on the clock `‹name› is grown · it leads the Probe now` (with you and now the partner), `‹name› is grown · it can lead the Probe` (with you), `‹name› is grown · at home` (at home). The elder line is unchanged.
 
@@ -557,9 +557,11 @@ Left to the field screens' next pass; the care build does not touch these screen
 | --- | --- | --- |
 | `c-heart-24` | 24×24, HiBit, the 48 colours | The active mibi's name row; at 2× in the bond event |
 | `c-heart-16` | 16×16, HiBit, its own drawing (not the 24 shrunk) | Roster rows, the Lead card, the expedition choice's partner card |
-| The species Tend moment, per species | the 280×300 stage | Tend and the bond (the built code-drawn moments stand in until it lands) |
-| The walk moment, per species | the 280×300 stage | The Walk (the built walk moment stands in) |
-| Faces at 64 and the HUD ring face (24), field tokens at 48 | as listed in [Companion mode / active mibi](#companion-mode--active-mibi) | Lead card, partner card, rows, the walk |
+| `c-moment-tend-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms) | Tend and the bond (the built code-drawn moments stand in until it lands) |
+| `c-moment-walk-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f7, 8 at 300 ms (2.4 s) | The Walk (the built walk moment stands in) |
+| `c-face-24` | 24×24, derived per mibi: a head crop of its standard painting, to the 48 colours | The HUD ring face (the ring is composed in code): the partner card's With you, rows |
+| `c-token-48` | 48×48, 2 idle frames at 4 Hz, derived per mibi from its standard painting | The field token: the walk |
+| Faces at 64 | as listed in [Companion mode / active mibi](#companion-mode--active-mibi) | Lead card, partner card |
 
 The heart is the same object as the Vivarium's enamel heart, drawn for the Companion: no face, no sparkle, never a flat emoji heart. Dashed outlines, rings, chips and the open mark are composed, not assets.
 
