@@ -5,7 +5,7 @@ import { openStation } from "./station-page.mjs";
 export async function podsStates(visit) {
   const { page, fails, fail, close } = await openStation();
   await page.evaluate(() => window.__st.seedCrate("S04", 2, 4101)); await page.evaluate(() => window.__st.act("dock")); await page.waitForTimeout(300);
-  await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
+  await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300)
   const pods = await page.evaluate(() => window.__st.ST.tray.filter((p) => p.species === "S04" && !p.idd).map((p) => p.id));   // a fresh crate of two pods of one species, as journey.mjs compareShot does
   if (pods.length !== 2) fail("no two pods of one species in the rack");
   const ui = () => page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, cur: window.__st.UI.pods.cur, focus: window.__st.UI.pods.focus.cur, cmp: !!window.__st.UI.pods.cmp }));
