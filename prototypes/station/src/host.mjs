@@ -108,46 +108,45 @@ export function frameIds() {
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----
-// h = { st, sv, settings, ui, specs, now, say, goto, play, lock, save }. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
-// the bay's own arrivals are Cargo's, and play nothing until it is built.
+// h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
+// the bay's own arrivals are Cargo's, and play nothing until it is built. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
+// latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]);
 export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
-  const holds = new Map();   // the holds in force: { until, byDone } by event. `hold` on the wire is whole ms from the event's start, independent of `ms` (lvgl-switch.md §2.1); a timeline event that holds while it plays (hold: true) is sent with hold = its ms and also ends its hold with its done (an event the face drops, or whose done was lost, expires with its time)
-  const holding = () => { const t = nowMs(); for (const [k, v] of holds) if (v.until < t) holds.delete(k); return holds.size > 0; };
+  let holdUntil = 0; const timers = [];
+  const holding = () => nowMs() < holdUntil;
   const play = (e) => {
     if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && e.target === "cargo") || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
-    const hold = e.hold === true ? e.ms || 0 : e.hold || 0, ev = { ...e, hold };
-    if (hold) holds.set(e.kind + ":" + e.target, { until: nowMs() + hold + (hold === (e.ms || 0) ? 500 : 0), byDone: hold === (e.ms || 0) });
-    send({ t: "event", ...ev });
+    const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
+    if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
+    send({ t: "event", ...e, hold });
   };
+  const at = (ms, fn) => { timers.push({ t: nowMs() + ms, fn }); };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding, holdsOf: (kind, target) => holding() && holds.has(kind + ":" + target),
+    now: () => Date.now(), motion, say: msg, play, at, save: () => { save(); afterSave(); }, holding,
+    // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
+    frame: () => {
+      const t = nowMs(); timers.sort((a, b) => a.t - b.t);
+      while (timers.length && timers[0].t <= t) timers.shift().fn();
+      if (!holding() && h.pendingRoom) { const k = h.pendingRoom; h.pendingRoom = null; dispatch(h, { screen: UI.screen, target: "room", verb: "room:" + k }); }
+    },
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
-    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => { const v = holds.get(kind + ":" + target); if (v && v.byDone) holds.delete(kind + ":" + target); },
+    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; },
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;
 }
 
 // What the face said, as the rules: the ring moved (Pods keeps the focus of its state), or a key on a focused target (an intent). A not-built screen has no targets; its ← goes to the parent in the navigation tree.
+// While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
-  if (m.t === "done") {
-    h.release(m.kind, m.target);
-    if (m.kind === "hatch") { UI.hab.id = +m.target; UI.hab.f = "door"; h.goto("habitat"); }   // the hatch is over: meet the mibi, the ring on the door
-    if (m.kind === "rest") {   // the knob has settled (events.rest.ms): the screen transition to Idle follows (its second step); with the hold still on
-      const ev = SPECS.home.events.rest, step = ev.steps[1]; UI.resting = true; h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 });
-    } else if (m.kind === "dither" && UI.resting) {   // the transition is over, and the hold with it: Idle plays the Vivarium alone, Home keeping its state and focus unseen
-      UI.resting = false; UI.idle = true; h.pendingRoom = null;   // the rest ends on Idle, where the first press only wakes: a room key pressed during the hold was dropped (home.json events.rest.keys)
-    }
-    return;
-  }
+  if (m.t === "done") return;   // informative only: nothing waits for it
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }
   if (m.t !== "intent") return;
-  if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
-  if (h.holding() && m.verb?.startsWith("room:")) { if (!UI.resting && !h.holdsOf("rest", "knob")) h.pendingRoom = m.verb.slice(5); return; }   // while the host's hold runs every intent is dropped; a room: key is kept as the last one, except in Home's rest, which ends on Idle and drops it
-  if (h.holding()) return;
-  if (m.verb === "wake") { dispatch(h, m); h.play({ kind: "dither", target: "stage", ms: 180, hold: true }); return; }
+  if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
+  if (m.verb === "wake") { dispatch(h, m); h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }
   dispatch(h, m);
 }
 export { INTENTS };

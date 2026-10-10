@@ -18,13 +18,13 @@ function go(h, view, focus) { const p = h.ui.pods; p.view = view; p.focusView = 
 
 function identify(h, p) {
   const r = S.identify(h.st, p, h.settings); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-  h.play({ kind: "seal", target: p.id, ms: ID_MS, hold: true });   // the seal clears over 2 s, whether or not the species is new
+  h.play({ kind: "seal", target: p.id, ms: ID_MS, hold: ID_MS });   // the seal clears over 2 s, whether or not the species is new
   if (r.newSp) h.play({ kind: "ribbon", target: p.id, ms: RIBBON_MS + Math.round(ID_MS * 0.7), from: Math.round(ID_MS * 0.7) });
   h.save(); return r;
 }
 function read(h, p, ch) {
   const r = S.read(h.st, p, ch.id, h.settings); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-  h.play({ kind: "wipe", target: p.id, chapter: ch.id, ms: READ_MS, hold: true }); h.save(); return r;
+  h.play({ kind: "wipe", target: p.id, chapter: ch.id, ms: READ_MS, hold: READ_MS }); h.save(); return r;
 }
 // ✓ on a target, by its group.
 const CONFIRM = {

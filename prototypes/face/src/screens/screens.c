@@ -109,11 +109,12 @@ void screens_say(const char *kind, const char *target, const char *verb) {
   wire_emit(b);
 }
 void screens_key(int code) {
-  if (anim_holding()) {   /* an event holds input: no key is acted on (§2.1); while Home's rest holds, a room key is still said, and the host keeps it until the hold ends (home.json focus.held) */
+  if (anim_holding()) {   /* an event holds input: no key is acted on but a room key, which is said on the current focus target (or the screen); the host keeps the last one and dispatches it when the hold ends (§2.1) */
     char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-    if (rv && strcmp(sc, "home") == 0) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
+    if (rv) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : strcmp(sc, "home") == 0 ? "room" : "screen", rv); }
     return;
   }
+  anim_cut();   /* a press ends the events that carry `cut` (they say done on this frame), and then acts itself */
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */

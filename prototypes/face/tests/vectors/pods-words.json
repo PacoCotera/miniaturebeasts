@@ -796,7 +796,7 @@
      "kind": "seal",
      "target": "dev-1:S01-9bae06fb",
      "ms": 2000,
-     "hold": true
+     "hold":2000
     }
    ],
    "at": 1000,
@@ -3168,7 +3168,7 @@
      "kind": "wipe",
      "target": "face",
      "ms": 2000,
-     "hold": true
+     "hold":2000
     }
    ],
    "at": 1000,

@@ -65,7 +65,7 @@ function frame(t) {
   if (G.ready && FACE) {
     const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
     if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && !H.holding()) UI.idle = true;   // the screen goes idle after a minute without a press
-    try { render(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
+    try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
   }
   requestAnimationFrame(frame);
@@ -76,9 +76,9 @@ function frame(t) {
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (H.holding()) { if (k !== "dock") { syncProps(); FACE.key(k); pump(); } return; }   // an event holds input: the Dock key does not act, and the face acts on no key but a room key while Home rests; the host keeps that intent until the hold ends (host.mjs)
+  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } return; }   // an event holds input: the Dock key does not act, and the face acts on no key but a room key while Home rests; the host keeps that intent until the hold ends (host.mjs)
   syncProps();
-  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: true }); } frameIntents.dock(H, wasIdle); return; }
+  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); } frameIntents.dock(H, wasIdle); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "confirm") H.disarm();
   FACE.key(k); pump();

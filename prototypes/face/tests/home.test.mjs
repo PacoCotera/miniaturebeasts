@@ -129,7 +129,7 @@ test("the rest (events.rest): the knob settles in the first 200 ms and the ring 
   f.frame(t0 + 210); lg = logOf(f); assert.equal(f.poll("done")?.kind, "rest", "the event ends at 200"); assert.equal(knob(lg).rect[1], R.rest.rect[1], "settled at 546"); assert.ok(!ring(lg), "no ring while the hold runs");
   f.send({ t: "event", kind: "dither", target: "stage", ms: 180, from: 0, to: 16 }); f.frame(t0 + 330); lg = logOf(f); assert.ok(dither(lg), "the dither is closing over the stage"); const mid = f.hash(); f.frame(t0 + 370); assert.notEqual(f.hash(), mid, "it deepens");
   assert.deepEqual(key(f, "confirm"), [], "input is still held at 370"); f.frame(t0 + 400); assert.equal(f.poll("done")?.kind, "dither");
-  assert.equal(f.send({ t: "event", kind: "rest", target: "knob", ms: 200, hold: true }), -1, "a boolean hold is refused"); assert.match(f.errors()[0], /boolean is refused/);
+  assert.equal(f.send({ t: "event", kind: "rest", target: "knob", ms: 200, hold: true }), -1, "a boolean hold is refused"); assert.match(f.errors()[0], /hold is a whole number of ms/);
 });
 test("motion off: every event is at its end at once, the walk is at its place, and the same hash holds at any later time", { skip }, async () => {
   const b = scene({ adults: 4, crates: 2, carry: [0] }), f = await start(b, { motion: false }), h0 = f.hash();

@@ -6,7 +6,6 @@ export const ARRIVE_MS = 3000;
 export function openBay(h) {
   const r = S.openBay(h.st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
   h.ui.report = { plays: r.plays, at: h.now() + r.plays.length * ARRIVE_MS };
-  h.lock(r.plays.length * ARRIVE_MS + 200);
   r.plays.forEach((p, i) => h.play({ kind: "arrival", target: "bay", ms: ARRIVE_MS, from: i * ARRIVE_MS }));
   h.save(); return r;
 }
@@ -33,8 +32,13 @@ export function intent(h, target, verb) {
   else if (target === "incubator") h.goto("incubator");
   else if (target === "probe") { ui.bench.f = 0; h.goto("bench"); }
   else if (target === "library") toLibrary(h);
-  else if (target === "knob") {   // the rest: the knob settles, the screen dithers to Idle over the hold; with reduced motion the event is a cut to its end and Idle comes on the frame of the key
+  else if (target === "knob") {   // the rest: the knob settles (ms 200), the stage dithers to Idle (the second step), and the hold (380) ends on Idle; with reduced motion the event is a cut and Idle comes on the frame of the key
     h.pendingRoom = null;   // a room key kept during an earlier wake never fires at the end of this rest
-    if (h.motion ? h.motion() : true) h.play({ kind: "rest", target: "knob", ms: h.specs.home.events.rest.ms, hold: h.specs.home.events.rest.hold }); else ui.idle = true;
+    const ev = h.specs.home.events.rest, step = ev.steps[1];
+    if (h.motion ? h.motion() : true) {
+      ui.resting = true; h.play({ kind: "rest", target: "knob", ms: ev.ms, hold: ev.hold });
+      h.at(step.at, () => h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 }));
+      h.at(ev.hold, () => { ui.resting = false; ui.idle = true; h.pendingRoom = null; });   // Idle: where the first press only wakes; a room key pressed in the hold was dropped (events.rest.keys)
+    } else ui.idle = true;
   }
 }
