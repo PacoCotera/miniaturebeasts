@@ -1,23 +1,23 @@
 {
  "room-bench-stage": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-cradle": {
-  "status": "signed",
-  "signed_in": "pass 4",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-cradle-front": {
-  "status": "signed",
-  "signed_in": "pass 7b",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-shelf": {
-  "status": "signed",
-  "signed_in": "pass 7b",
-  "note": "re-cut for the new rectangle (shelf 488,368,288,72)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-column": {
   "status": "withdrawn",
@@ -640,14 +640,14 @@
   "note": ""
  },
  "ring-well-selected-80x80": {
-  "status": "signed",
-  "signed_in": "well rings verdict",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-well-idle-80x80": {
-  "status": "signed",
-  "signed_in": "well rings verdict",
-  "note": ""
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-arc-selected-n4-track": {
   "status": "signed",
@@ -1005,14 +1005,14 @@
   "note": ""
  },
  "ring-column-112x522": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "re-cut for design-pods-relayout 29b6dc9"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-hatch-80x56": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "re-cut for design-pods-relayout 29b6dc9"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "page-pane-256x440": {
   "status": "signed",
@@ -1095,14 +1095,14 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-stamp-case-152x152": {
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "note": "with a condition: the front glass over the label (room-stamp-case-152x152-front)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-well-empty-80x80": {
-  "status": "signed",
-  "signed_in": "55944fb verdict",
-  "note": "signed: ring-well-empty-80x80"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "rail-tab-fill-unread-full-152x40": {
   "status": "signed",
@@ -1165,9 +1165,9 @@
   "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "room-stamp-case-152x152-front": {
-  "status": "signed",
-  "signed_in": "passes 8 and 9 (verdict)",
-  "note": "the stamp's front glass over the label"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "trait-picture-frame-144x176": {
   "status": "withdrawn",
@@ -1201,18 +1201,18 @@
  },
  "frame-cap-confirm-16": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
  },
  "frame-cap-confirm-16-dim": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
  },
  "frame-cap-back-16": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
  },
  "frame-room-home-24": {
   "status": "signed",
@@ -1545,24 +1545,24 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-overview": {
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-chapter": {
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-collection-idle-176x176": {
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-collection-closed-176x176": {
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "mark-species-S01-24x24": {
   "status": "signed",
@@ -1646,8 +1646,8 @@
  },
  "mark-species-frost-24x24": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "art director, pass 88 remap",
+  "note": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
  },
  "mark-clan-C01-24x24": {
   "status": "signed",
@@ -1810,9 +1810,9 @@
   "note": "the plates layer (scutes) and its relief"
  },
  "ring-kin-56x56": {
-  "status": "signed",
-  "signed_in": "pass 29 verdict",
-  "note": "the kin ring"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-arc-collection-n1-track-176x176": {
   "status": "signed",
@@ -2035,9 +2035,9 @@
   "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "room-bench-stage-collection": {
-  "status": "signed",
-  "signed_in": "pass 30 verdict (69ade33)",
-  "note": "the collection's bench, no cone"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "mark-can-grow-16": {
   "status": "signed",
@@ -2546,8 +2546,8 @@
  },
  "cell-outline-unread-128x160": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
  },
  "mibi-halo-S04-128x160-clear": {
   "status": "signed",
@@ -2631,8 +2631,8 @@
  },
  "cross-gate-switch-16x16-settled": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-16x16": {
   "status": "signed",
@@ -2641,8 +2641,8 @@
  },
  "cross-gate-blend-16x16-settled": {
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-switch-8x8": {
   "status": "signed",

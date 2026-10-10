@@ -10,12 +10,12 @@
    1024,
    522
   ],
-  "src": "bench-e2",
-  "made": "the generated glass wall: horizon flattened, sides and bottom extended from the wall's own strips, window on the pool (632, 424)",
-  "sha256": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": "re-cut to the layout of design-pods-relayout 29b6dc9 (pool on x 632)"
+  "src": "source/raw/room-stage-base.jpg",
+  "made": "the Pods room set (pass 93): the case's floor, the stage under everything: dark matte foam, canvas edge strips, hoses, a tall empty cut-out at the left and a slate panel with small empty cut-outs at the right; a Pro painting, 1024x522, no pods; the pods are placed by the renderer, never painted in",
+  "sha256": "29d63d59345ddfa8d70aa92ba2b3cac0e6e6d1115319d532b3bb231a7b644b6a",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-cradle": {
   "size": [
@@ -28,12 +28,12 @@
    224,
    96
   ],
-  "src": "dish-lowa",
-  "made": "the deep frosted bowl with its dark dust bed and the cool glow through its wall: opaque cut, scaled evenly into 224x96 (the bowl is 201 px wide), bottom on the last row",
-  "sha256": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459",
-  "status": "signed",
-  "signed_in": "pass 4",
-  "status_note": ""
+  "src": "composed in tools/podsroom.py from the overview stage",
+  "made": "the Pods room set (pass 93): the pod's fitted cut-out (224x96), cut from the overview stage at (144, 288); the pods are placed by the renderer, never painted in",
+  "sha256": "51f2d4985e2d50dd56f982f580611ec250641f5b3a00b9f972ee52deca73ba89",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-cradle-front": {
   "size": [
@@ -46,12 +46,12 @@
    224,
    96
   ],
-  "src": "dish-lowa",
-  "made": "the bowl's near wall cut along its own near-rim contour (both side walls from row ~19 and the dip's U), plus five uneven grit tufts lapping the pod's foot inside the dip",
-  "sha256": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611",
-  "status": "signed",
-  "signed_in": "pass 7b",
-  "status_note": ""
+  "src": "composed in tools/podsroom.py from the overview stage",
+  "made": "the Pods room set (pass 93): the cut-out's near lip as a separate layer (RGBA, 224x96): the bottom rows of the cradle, faded in over 14 rows and at both ends; the pods are placed by the renderer, never painted in",
+  "sha256": "224e1b62598eae5e7ccc444dc3b8dcd15b8afe9b5b44ca36522c8860a2885512",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-shelf": {
   "size": [
@@ -64,12 +64,12 @@
    288,
    72
   ],
-  "src": "slab4b",
-  "made": "the concept's slab, a trapezoid in perspective with a deep top face and a lit front edge, with the bowl's contact shadow on it; colour-to-alpha, scaled evenly",
-  "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6",
-  "status": "signed",
-  "signed_in": "pass 7b",
-  "status_note": "re-cut for the new rectangle (shelf 488,368,288,72)"
+  "src": "composed in tools/podsroom.py from the overview stage",
+  "made": "the Pods room set (pass 93): the case's rim under the cradle (288x72), cut from the overview stage at (112, 328); the pods are placed by the renderer, never painted in",
+  "sha256": "c3f95de44ab0d90d5f7257e656112dca8861d2ba04116b6075df8f807b814b6d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-column": {
   "size": [
@@ -2074,12 +2074,12 @@
    80,
    80
   ],
-  "src": "ring-selected",
-  "made": "the selected well's thick warm ivory band (7 px, bone to sand, lit top left) with its soft glow about 4 px outward; colour-to-alpha, scaled so the band's outer diameter is 66, centred in 80x80",
-  "sha256": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed",
-  "status": "signed",
-  "signed_in": "well rings verdict",
-  "status_note": ""
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (360, 150) r 92",
+  "made": "the Pods room set (pass 93): the same well with its rubber rim catching more warm light (the focus ring is composed in code over it); one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "683099aef4dd0bcf4091657facc3df9f9a1fe1451cbc2d59b7462b964480c024",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-well-idle-80x80": {
   "size": [
@@ -2092,12 +2092,12 @@
    80,
    80
   ],
-  "src": "ring-idle",
-  "made": "the idle well's thin dark-glass double ring, outer diameter 66, hairlines about 5 px apart; colour-to-alpha, centred in 80x80",
-  "sha256": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a",
-  "status": "signed",
-  "signed_in": "well rings verdict",
-  "status_note": ""
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (150, 150) r 92",
+  "made": "the Pods room set (pass 93): the well at rest: a matte rubber-edged circular recess in the case, empty; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "2e0a18a357f7d000569bb94eec04547a98d6531f020fd0ce345813e2a56f2726",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-arc-selected-n4-track": {
   "size": [
@@ -3388,12 +3388,12 @@
    112,
    522
   ],
-  "src": "list-column",
-  "made": "the list column at the concept's 112 px: the right part of list-column (its lit hairline on the right edge), bottom leak cropped",
-  "sha256": "d196eb9b72a86516f0280103f66e89e460cfc8dc2501f3a25da44b4382494314",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "re-cut for design-pods-relayout 29b6dc9"
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (1223, 68, 1358, 698), opaque",
+  "made": "the Pods room set (pass 93): a strip of the housing: two rows of screws, a hose clip and a small vent; one sheet painting cut at size, reduced with Lanczos, never enlarged",
+  "sha256": "e80ae6414c6ffa4c28dd11ed57cb36b4c87e2b29e7601307aa39cd48d6922dce",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-hatch-80x56": {
   "size": [
@@ -3406,12 +3406,12 @@
    80,
    56
   ],
-  "src": "hatch-leaf",
-  "made": "the hatch at the 112 px column's width: the same etched leaf centred in 80x56",
-  "sha256": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "re-cut for design-pods-relayout 29b6dc9"
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (688, 71, 912, 229)",
+  "made": "the Pods room set (pass 93): the closed gasketed service hatch in the housing's sage; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "page-pane-256x440": {
   "size": [
@@ -3659,12 +3659,12 @@
    152,
    152
   ],
-  "src": "case2",
-  "made": "the dim unlit glass case at its new size: translucent, a faint diagonal sheen, dim brushed-metal rails, closed on all four sides",
-  "sha256": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78",
-  "status": "signed",
-  "signed_in": "pass 8 (d767daa verdict)",
-  "status_note": "with a condition: the front glass over the label (room-stamp-case-152x152-front)"
+  "src": "composed in tools/podsroom.py from the overview stage",
+  "made": "the Pods room set (pass 93): the small dim unlit matte plate set into the housing where the stamp label sits, drawn by hand in code, cut from the overview stage at (856, 344); the pods are placed by the renderer, never painted in",
+  "sha256": "6acf7688337fabe22abbdef186d66ce75ab7d14267b711e9c759a10135e27fbc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-well-empty-80x80": {
   "size": [
@@ -3677,12 +3677,12 @@
    80,
    80
   ],
-  "src": "well-rings2",
-  "made": "the signed ring-well-empty re-exported only: padded to 80x80, centred on (40,40) so every well slice shares one origin",
-  "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
-  "status": "signed",
-  "signed_in": "55944fb verdict",
-  "status_note": "signed: ring-well-empty-80x80"
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (570, 150) r 92",
+  "made": "the Pods room set (pass 93): the unused well: a smooth rubber plug seated nearly flush; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "e5d8067e4428fbd76f7783706de70746991bed7cd5d2bfafd0d9e57b8118598c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "rail-tab-fill-unread-full-152x40": {
   "size": [
@@ -3906,12 +3906,12 @@
    152,
    152
   ],
-  "src": "procedural, supersampled",
-  "made": "the case's front glass over the label: a dark tint (0.41) and a faint diagonal sheen; the label's mean brightness falls to about 114 with the stamp's cells at 4.8:1 (WCAG relative luminance)",
-  "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
-  "status": "signed",
-  "signed_in": "passes 8 and 9 (verdict)",
-  "status_note": "the stamp's front glass over the label"
+  "src": "composed in tools/podsroom.py from the overview stage",
+  "made": "the Pods room set (pass 93): the plate's rim only (RGBA 152x152, the opening transparent, no glass); the pods are placed by the renderer, never painted in",
+  "sha256": "259e77958eb34530590b1f07f238f7a5ccd7de653c2402b6ccdcf8ca2726fbd1",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "trait-picture-frame-144x176": {
   "size": [
@@ -4006,8 +4006,8 @@
   "made": "the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel",
   "sha256": "89dc904227769e9e7a43644371040aa05dc80cb758d8ae3ef1bfeaefe04e20d2",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the three key caps, 16 px discs"
  },
  "frame-cap-confirm-16-dim": {
   "size": [
@@ -4024,8 +4024,8 @@
   "made": "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)",
   "sha256": "17934c119bec28e20a8138a5c0695723ddfd1b49c1502da1e451d40a73ea2be8",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the three key caps, 16 px discs"
  },
  "frame-cap-back-16": {
   "size": [
@@ -4042,8 +4042,8 @@
   "made": "the bottom line's back key cap: a 16 px disc, stone face, fog arrow",
   "sha256": "9e17a1fa25c052a8813c8edf8c69ddd33d3815238002c7da61ae9a3d31cfc0c8",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 10 (verdict)",
+  "status_note": "the three key caps, 16 px discs"
  },
  "frame-room-home-24": {
   "size": [
@@ -5091,12 +5091,12 @@
    1024,
    522
   ],
-  "src": "bench-e2",
-  "made": "the generated glass wall re-windowed so the cone's pool is on x 256 (the overview); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage",
-  "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "status_note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
+  "src": "source/raw/room-stage-overview-r2.jpg + room-stage-base.jpg",
+  "made": "the Pods room set (pass 93): the overview stage: one fitted dish (224x96 at stage (144, 288)) and its ledge (288x72 at (112, 328)) at the axis x 256, a plain worn slate panel at the right with the dim stamp plate at (856, 344); composed from Pro paintings (the dish and ledge set where the layout puts them); the pods are placed by the renderer, never painted in",
+  "sha256": "59b55d88e63e21f524282b841c64f1bbe0a6fc69b2ce05951bff9b4dc8e2e10d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5109,12 +5109,12 @@
    1024,
    522
   ],
-  "src": "bench-e2",
-  "made": "the generated glass wall re-windowed so the cone's pool is on x 216 (the chapter); the horizon flattened, sides and bottom extended from the wall's own strips, graded as room-bench-stage",
-  "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "status_note": "the bench for the pod overview (cone on x 256) and the chapter page (x 216)"
+  "src": "source/raw/room-stage-chapter-r2.jpg + room-stage-base.jpg",
+  "made": "the Pods room set (pass 93): the chapter stage: the dish (224x96 at stage (104, 288)) and its ledge (288x72 at (72, 328)) at the axis x 216, a flat matte page panel to the right; composed from Pro paintings; the pods are placed by the renderer, never painted in",
+  "sha256": "e4e666f13d9cc811deb4a2c4c3eb002404b32160ff98455ee6f4c7a0b6be2c76",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -5127,12 +5127,12 @@
    176,
    176
   ],
-  "src": "procedural, supersampled 8x",
-  "made": "the empty ring of an empty place: a continuous 8 px band (r 72 to 80), bevel fill, hairline edges, painted at 8x with soft edges; centred on the ring (placed at the place + (8, 24))",
-  "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (200, 500) r 168",
+  "made": "the Pods room set (pass 93): the open ring recess at rest (the arcs sit on top); one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "30c32aff28484c8c065a61f75c7177ae919d2cb6362d48c7790440ff67dc7cd5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-collection-closed-176x176": {
   "size": [
@@ -5145,12 +5145,12 @@
    176,
    176
   ],
-  "src": "procedural, supersampled 8x",
-  "made": "the closed ring when every chapter is read: a continuous bone band, hairline edges (the band closes)",
-  "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
-  "status": "signed",
-  "signed_in": "e97d2b8 verdict",
-  "status_note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (560, 500) r 168",
+  "made": "the Pods room set (pass 93): the ring closed by its worn rubber cover; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "f4e06d9a394f99664161dd3d5808d38093b66ec90d56f4a8d5881db4f47bdf8f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "mark-species-S01-24x24": {
   "size": [
@@ -5455,8 +5455,8 @@
   "made": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque",
   "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "art director, pass 88 remap",
+  "status_note": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
  },
  "mark-clan-C01-24x24": {
   "size": [
@@ -5470,7 +5470,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C01 (Lophessa), plan B1·L4: a circle roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
+  "made": "clan C01 (Lophessa), plan B1\u00b7L4: a circle roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
   "sha256": "46576dd881a42220f99c0570b05c4a1555a29aad0188f7b5de5761ebdcce9588",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5488,7 +5488,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C02 (Kausida), plan R1·flaps: a hexagon (pointy) roundel, a 2 px ring in coral #e98268 and a solid 8 px centre in coral #e98268",
+  "made": "clan C02 (Kausida), plan R1\u00b7flaps: a hexagon (pointy) roundel, a 2 px ring in coral #e98268 and a solid 8 px centre in coral #e98268",
   "sha256": "ef1f2925cc4b4f0e7ade7928525554d629288d1adbdce1aad071ba955735ba7f",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5506,7 +5506,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C03 (Stilbera), plan B2·L4: a rounded square roundel, a 2 px ring in lagoon #269fa5 and a solid 8 px centre in lagoon #269fa5",
+  "made": "clan C03 (Stilbera), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in lagoon #269fa5 and a solid 8 px centre in lagoon #269fa5",
   "sha256": "1dfa9dc17e01b0ad16259ad3f3473adb7071572e13d5bc2ed3128bb52ebb8398",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5524,7 +5524,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C04 (Lathreta), plan B2·L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C04 (Lathreta), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "392542bef06b18eb3faa1578230c65d79e7ea81b60adaa7bff4c76fe599e4864",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5542,7 +5542,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C05 (Dasyla), plan B2·L4: a rounded square roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
+  "made": "clan C05 (Dasyla), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
   "sha256": "3eb9eea26987eb5ea74f3a183fbee524506bf41acee653bf2b96e7954c7326d1",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5560,7 +5560,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C06 (Prosopa), plan B2·L4: a rounded square roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
+  "made": "clan C06 (Prosopa), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
   "sha256": "9fdd0e2848e0c9328e47be07cbbc7fed162bbb9fb0722f79bfda7e3cab12326e",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5578,7 +5578,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C07 (Skapana), plan B1·L4: a circle roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in russet #ae674d",
+  "made": "clan C07 (Skapana), plan B1\u00b7L4: a circle roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in russet #ae674d",
   "sha256": "62fba1c53d5c87da4046c72d7e641dcd73b140873f4cea9014e67199c4146c4b",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5596,7 +5596,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C08 (Kremnion), plan B2·L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in charcoal #465459 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C08 (Kremnion), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in charcoal #465459 (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "9097e55abab1b417b12144b07af491cd8b7e9398aade0aeeb00adfe9b69b1708",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5614,7 +5614,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C09 (Aithria), plan B2·L2·flaps: a diamond roundel, a 2 px ring in cobalt #4d7ed4 and a solid 8 px centre in cobalt #4d7ed4",
+  "made": "clan C09 (Aithria), plan B2\u00b7L2\u00b7flaps: a diamond roundel, a 2 px ring in cobalt #4d7ed4 and a solid 8 px centre in cobalt #4d7ed4",
   "sha256": "47826d455126adc3c54248c2ec5e83261de0934cfe3a9398b1dc042e20e0903e",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5632,7 +5632,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C10 (Kolymba), plan B3·L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in peach #ffd7c5 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C10 (Kolymba), plan B3\u00b7L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in peach #ffd7c5 (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "9679996bafd3aaed4e2f8e93f8f291cd8bbc534436cc979f495248f24bb966a3",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5650,7 +5650,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C11 (Thyreka), plan B1·L4: a circle roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
+  "made": "clan C11 (Thyreka), plan B1\u00b7L4: a circle roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
   "sha256": "228b8828fbea5dccc71610d818351107f861283d7b1dae17d06b93975cb21fb9",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5668,7 +5668,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C12 (Graptoma), plan B3·L6·flaps: a pentagon (up) roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
+  "made": "clan C12 (Graptoma), plan B3\u00b7L6\u00b7flaps: a pentagon (up) roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
   "sha256": "23faf90ea2b2fb501f67162b93c04138291e3e9c6b1ddd38acdd4f69a4088e43",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5686,7 +5686,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C13 (Lepidos), plan B3·L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in sand #e6c98c (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C13 (Lepidos), plan B3\u00b7L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in sand #e6c98c (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "fe92cfcdce4ab7d8aa4804c726c737f9728ae27ad36d1e66df3a4e6ccf71d3c8",
   "status": "signed",
   "signed_in": "pass 35 (signed on delivery)",
@@ -5722,7 +5722,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C15 (Phyllaxa), plan Rfan2·rays: a horizontal stadium roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
+  "made": "clan C15 (Phyllaxa), plan Rfan2\u00b7rays: a horizontal stadium roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
   "sha256": "1bac22024812da90a0ebf74064e16915cfddffe926092609248a53432bd266de",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -6045,12 +6045,12 @@
    56,
    56
   ],
-  "src": "procedural, supersampled 8x",
-  "made": "the kin ring: a 3 px band (r 25 to 28) in bevel with hairline edges, painted at 8x with soft edges and a gentle light from the upper left; centred on the 40x48 pod in the 56x56 cell (rings from (600, 224) on a 64 px pitch)",
-  "sha256": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09",
-  "status": "signed",
-  "signed_in": "pass 29 verdict",
-  "status_note": "the kin ring"
+  "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (1010, 150) r 78",
+  "made": "the Pods room set (pass 93): the small fitted round recess; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
+  "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "ring-arc-collection-n1-track-176x176": {
   "size": [
@@ -6855,12 +6855,12 @@
    1024,
    522
   ],
-  "src": "bench-e2",
-  "made": "the collection's bench: the same generated glass wall with no cone of light (the window lies wholly in the wall's own left strip, mirrored), graded as room-bench-stage with the vignette centred on x 512",
-  "sha256": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede",
-  "status": "signed",
-  "signed_in": "pass 30 verdict (69ade33)",
-  "status_note": "the collection's bench, no cone"
+  "src": "source/raw/room-stage-collection.jpg",
+  "made": "the Pods room set (pass 93): the collection stage: a 3 x 2 grid of large fitted cut-outs in dark foam; a Pro painting, not recomposed (its grid is only roughly under the places' rectangles); the pods are placed by the renderer, never painted in",
+  "sha256": "567b74cfb4a68b8b397b2d5eebce3a3f78e7eea91b6ff1eed157450dbb7048b0",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
  },
  "mark-can-grow-16": {
   "size": [
@@ -8322,8 +8322,8 @@
   "made": "the unread picture's dotted outline typed at its size: 1 px `bevel` #5a6672 dots, 1 on 2 off; all four corners lit; from each corner the dots run inward on a 3 px period, each side's remainder one gap at its middle; no two dots touch; the middle fully transparent (pass 60; replaces the withdrawn cell-outline-unread-24x24)",
   "sha256": "99e0011a77bd07601d765eec5f85fee99b76e06934629609c27ea8f4040b5010",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 61 verdict",
+  "status_note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
  },
  "mibi-halo-S04-128x160-clear": {
   "size": [
@@ -8543,8 +8543,8 @@
   "made": "the same shape in bevel (enamel lit rim, hairline shade), for a trait that is one look or missing; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "ecc83bbb84a7b7645d840e2fc20914b1874e06d8d44e07b7fb4421cc8a645c91",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-blend-16x16": {
   "size": [
@@ -8569,8 +8569,8 @@
   "made": "the same shape in bevel; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
   "sha256": "6a38827c43ab15d2a4cef30b3e2aa1654f29a5e1d5abcb71853493f42d635146",
   "status": "signed",
-  "signed_in": "palette re-sign (art director)",
-  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
+  "signed_in": "pass 70 verdict",
+  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
  },
  "cross-gate-switch-8x8": {
   "size": [

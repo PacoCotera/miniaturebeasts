@@ -1,0 +1,53 @@
+[
+ {
+  "name": "room-stage-overview",
+  "aspect": "21:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/room-stage-base.jpg",
+    "THE PICTURE TO EDIT (the empty floor of a field case, seen flat from above, very wide):"
+   ],
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE CASE DIRECTION (match its materials and rendering):"
+   ]
+  ],
+  "prompt": "Output a NEW image, the same very wide picture as the attached floor of the field case, edited as follows. EDIT: remove the tall oval cut-out at the left. In its place put ONE large wide shallow oval fitted cut-out, a worn pressed dish in the foam for a single pod to rest in, about 22 percent of the picture's width wide and about 18 percent of its height tall, centred at 25 percent across and 62 percent down; below it, a worn, slightly raised rubber ledge (a shelf rim) about 28 percent of the width wide and 14 percent tall, centred under it at 25 percent across and 78 percent down. The right-hand slate panel becomes plainer: a calm worn matte slate panel with only a small dim unlit square plate set into it at its lower right, no other cut-outs and no gauge row (keep the gauge, vent and mister in the lower right beside the plate). Keep everything else of the picture exactly as it is: the same worn dark foam, canvas edge strips, the same rubber hoses, matte gauge, vent and mister, the same warm daylight from the upper left, the same rendering. Only the listed change. NO pods or objects in any cut-out, no text, letters or digits, no glass, no chrome, no gloss, no light cone, no cool blue light."
+ },
+ {
+  "name": "room-stage-chapter",
+  "aspect": "21:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/room-stage-base.jpg",
+    "THE PICTURE TO EDIT (the empty floor of a field case, seen flat from above, very wide):"
+   ],
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE CASE DIRECTION (match its materials and rendering):"
+   ]
+  ],
+  "prompt": "Output a NEW image, the same very wide picture as the attached floor of the field case, edited as follows. EDIT: remove the tall oval cut-out at the left. In its place put ONE wide shallow oval fitted cut-out, a worn pressed dish in the foam for a single pod to rest in, about 22 percent of the picture's width wide and about 18 percent tall, centred at 21 percent across and 62 percent down, with a worn raised rubber ledge under it about 28 percent of the width wide and 14 percent tall at 21 percent across and 78 percent down. To its right, replace the slate panel with one large flat matte page panel: a plain calm worn matte slate-grey rubberised rectangle with a thin rubber edge, filling from 40 percent across to the right edge and from 10 percent down to 90 percent down, with nothing on it and no cut-outs. Keep everything else of the picture exactly as it is: the same worn dark foam, canvas edge strips, the same rubber hoses, matte gauge, vent and mister, the same warm daylight from the upper left, the same rendering. Only the listed change. NO pods or objects in any cut-out, no text, letters or digits, no glass, no chrome, no gloss, no light cone, no cool blue light."
+ },
+ {
+  "name": "room-stage-collection",
+  "aspect": "21:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/room-stage-base.jpg",
+    "THE PICTURE TO EDIT (the empty floor of a field case, seen flat from above, very wide):"
+   ],
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE CASE DIRECTION (match its materials and rendering):"
+   ]
+  ],
+  "prompt": "Output a NEW image, the same very wide picture as the attached floor of the field case, edited as follows. EDIT: remove the tall oval cut-out and the right-hand slate panel entirely and make the whole floor the same worn dark foam. Press into it a clean 3 by 2 grid of six equal, large, fitted rounded-rectangle cut-outs (worn, scuffed, empty), three across and two down, each about 31 percent of the picture's width wide and 44 percent of its height tall, with narrow even gaps of foam between them and between them and the edges. Keep the hoses along the edges and put the small matte gauge, vent and mister tucked into the foam at the very bottom right corner, small. Keep everything else of the picture exactly as it is: the same worn dark foam, canvas edge strips, the same rubber hoses, matte gauge, vent and mister, the same warm daylight from the upper left, the same rendering. Only the listed change. NO pods or objects in any cut-out, no text, letters or digits, no glass, no chrome, no gloss, no light cone, no cool blue light."
+ }
+]
