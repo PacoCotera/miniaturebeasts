@@ -696,7 +696,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Glass | A `hairline` edge, no highlight; until the master, a flat plate: back `forest`, ground band `clay` with a `sand` top row, foot `soil` | A window into the housing, never a showcase |
 | Modules | `panel` fill, `bevel` top, `hairline` edge; the word engraved in `metal`, 16 px | The objects and the lamp lead; the word is never the brightest thing |
 | Lamps | 12×12, `void` rim; off `hairline`, well `sprout`, waiting `sky`, needs you `amber` | The kit's lamp roles |
-| Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, `enamel` body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
+| Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
 | Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
 | Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting a gilt frame `gold` lit `yellow` | The Probe as the project's Probe art draws it, never a needle |
@@ -862,7 +862,7 @@ The player sees how much came home, opens it with one press, watches each crate'
 
 ### 4. Art direction
 
-The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, `enamel` body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
+The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
 
 ### 5. Composition
 
