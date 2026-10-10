@@ -1,0 +1,23 @@
+[
+ {
+  "name": "incubator-bud-early2",
+  "aspect": "3:4",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/home-chamber-growing-72x72.png",
+    "THE BEAN (the signed Home chamber's bean: a smooth warm peach bean glowing softly; take its colour and glow, but draw it larger and WITHOUT any leaf sprout and WITHOUT any dot):"
+   ],
+   [
+    "art/station-masters/pods/slices/dome-back-304x272.png",
+    "THE MOSS AND LIGHT (the chamber's moss and warm light the bean sits in):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/incubator-bud-early.jpg",
+    "THE FIRST ATTEMPT (its smooth peach skin, rust edge, soft inner glow and moss are right; its SHAPE is wrong: it lies on its side and is wider than tall; redraw it STANDING UPRIGHT):"
+   ]
+  ],
+  "prompt": "Output a NEW image, portrait 3:4: the same smooth warm bean as the last reference (same peach-to-cream skin, rust edge, soft inner glow, matte), but STANDING UPRIGHT on end, so that it is TALLER than wide: a plump upright oval bean, about 1.25 times taller than wide, with only a slight bean-like waist on one side (not a heart, not a kidney lying down), resting in a small low mound of moss that is NO wider than 1.2 times the bean's width. Centred, isolated on a FLAT dark slate background (uniform, no glow spilling onto the background); the bean and moss together fill about 75 percent of the picture's height. Straight-on front view, soft warm daylight from the upper left. The bean has NO dot, NO eye, NO spot, NO mark, NO sprout, NO leaf, NOTHING embryo-like or creature-like: a plain smooth glowing bean. Moss: leaf-green, lit grass and shaded hollow forest moss, no twigs, no stones. Soft painted forms, matte, no ink outlines, no highlights, nothing glossy, no chrome, no cool or blue light. No text, letters or digits."
+ }
+]

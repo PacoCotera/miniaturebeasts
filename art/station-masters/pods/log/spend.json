@@ -2457,5 +2457,107 @@
    "thoughtsTokenCount": 274,
    "totalTokenCount": 2461
   }
+ },
+ {
+  "tag": "incubator-sheet-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.209594,
+  "mxn": 4.1919,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:13:43Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1357,
+   "candidatesTokenCount": 1453,
+   "thoughtsTokenCount": 271,
+   "totalTokenCount": 3081
+  }
+ },
+ {
+  "tag": "incubator-sheet-a2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.204136,
+  "mxn": 4.0827,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:14:16Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1688,
+   "candidatesTokenCount": 1382,
+   "thoughtsTokenCount": 291,
+   "totalTokenCount": 3361
+  }
+ },
+ {
+  "tag": "incubator-sheet-a3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189918,
+  "mxn": 3.7984,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:14:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 939,
+   "candidatesTokenCount": 1303,
+   "thoughtsTokenCount": 264,
+   "totalTokenCount": 2506
+  }
+ },
+ {
+  "tag": "incubator-bud-early try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185012,
+  "mxn": 3.7002,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:17:28Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 826,
+   "candidatesTokenCount": 1306,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2354
+  }
+ },
+ {
+  "tag": "incubator-stage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.202418,
+  "mxn": 4.0484,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:18:14Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1009,
+   "candidatesTokenCount": 1402,
+   "thoughtsTokenCount": 268,
+   "totalTokenCount": 2679
+  }
+ },
+ {
+  "tag": "incubator-bud-early2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.190584,
+  "mxn": 3.8117,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:18:45Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1152,
+   "candidatesTokenCount": 1347,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2721
+  }
  }
 ]

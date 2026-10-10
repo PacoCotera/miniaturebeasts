@@ -22,9 +22,9 @@ def night_dist(im, ground_mid, ground_ramp, rim_rows, bg_target=19.0, ground_cap
     lin = to_lin(a); Yl = (lin @ np.array([0.2126, 0.7152, 0.0722]))[..., None]; tint = np.array([1.0, 0.80, 0.42]); tint = tint / (tint @ np.array([0.2126, 0.7152, 0.0722]))
     lin = lin * (1 - 0.55 * wb) + 0.55 * wb * Yl * tint
     def compress(l):
-        """pass 110 (the art director's rule: at night at most 3 percent of pixels above L* 70): the highlights are pulled down by a soft curve on L*, 52 + 26 (1 - exp(-(L - 52) / 20)), so the glow pools shrink and stop shining for show"""
-        Y = l @ np.array([0.2126, 0.7152, 0.0722]); Ls = np.where(Y > 0.008856, 116 * np.cbrt(Y) - 16, 903.3 * Y); L2 = np.where(Ls > 52, 52 + 26 * (1 - np.exp(-(Ls - 52) / 20.0)), Ls)
-        Y2 = np.where(L2 > 8, ((L2 + 16) / 116) ** 3, L2 / 903.3); return l * (Y2 / np.maximum(Y, 1e-6))[..., None]
+        """pass 110 (the art director's rule: at night at most 3 percent of pixels above L* 70): the highlights are pulled down by a soft curve on L*, 58 + 11.5 (1 - exp(-(L - 58) / 8)) above L* 58, ceiling L* 69.5, and the highlights are desaturated 35 percent toward their own luminance so they read as warm light, not a blast of orange, so the glow pools shrink and stop shining for show"""
+        Y = l @ np.array([0.2126, 0.7152, 0.0722]); Ls = np.where(Y > 0.008856, 116 * np.cbrt(Y) - 16, 903.3 * Y); L2 = np.where(Ls > 58, 58 + 11.5 * (1 - np.exp(-(Ls - 58) / 8.0)), Ls)
+        Y2 = np.where(L2 > 8, ((L2 + 16) / 116) ** 3, L2 / 903.3); l2 = l * (Y2 / np.maximum(Y, 1e-6))[..., None]; k = (np.clip((Ls - 58) / 20.0, 0, 1) * 0.35)[..., None]; return l2 * (1 - k) + Y2[..., None] * k
     def region(g_b, g_g):
         gain = wb * g_b + wg * g_g; l = knee(lin * gain)
         if pool_cap: l = compress(l)

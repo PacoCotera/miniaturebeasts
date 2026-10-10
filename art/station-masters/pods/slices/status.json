@@ -3215,9 +3215,9 @@
   "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director) at 1x: L* 30.4, key R-B 57, sat 66 pass, but 8.1 percent of pixels sit above L* 70 (day 9.7): the glow pools shine for show at night (rule: at most 3 percent); pale crescent rims on the top canopy leaves read as outlines; pools back down and rims into the background band, by hand"
+  "note": "pass 111: Idle's night regraded by distribution with the highlights pulled down (0.0 percent of pixels above L* 70; mean L* 30.5, R above B, background L* 20, ground 45; the rims faint in the background); awaiting the art director's judgement (not signed)"
  },
  "home-bay-shut-176x72": {
   "status": "signed",
@@ -3330,13 +3330,103 @@
   "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director) at 1x: L* 30.6, key R-B 53, sat 53 pass, but 10.9 percent of pixels above L* 70 (rule: at most 3) and the pale crescent rims on the top leaves; as Idle night, by hand"
+  "note": "pass 111: the glass night regraded the same way (0.0 percent above L* 70; mean L* 30.6, R above B); awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-create": {
   "status": "new",
   "signed_in": null,
   "note": "pass 110: the overview stage with the nest at (160, 352) and the ghost cut-out left of the panel painted out (L* 36.8, key R-B 35, sat 22); awaiting the art director's judgement (not signed)"
+ },
+ "dome-front-304x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "dome-back-304x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "dome-inside-standby-304x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "dome-inside-ready-304x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "base-336x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "nest-208x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "nest-front-208x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "bud-early-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "bud-late-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "bud-ready-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "bud-ready-front-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "bud-crack-1-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "bud-crack-2-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "leaf-empty-16x20": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "leaf-full-16x20": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "leaf-empty-8x12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "leaf-full-8x12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+ },
+ "room-bench-stage-incubator": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
  }
 }
