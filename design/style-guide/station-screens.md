@@ -95,7 +95,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 - [ ] What needs you is found in one glance.
 - [ ] No wood, felt, shelves or lamp-lit bench.
 
-<table><tr><td valign="top"><img src="../proposals/station-screens/01-home.svg" width="480" alt="Home wireframe"><br><em>Home wireframe. Layout only.</em></td>
+<table><tr><td valign="top"><img src="station-screens/01-home.svg" width="480" alt="Home wireframe"><br><em>Home wireframe. Layout only.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/companion-resident-home-450x600.png" width="225" alt="Resident at home concept"><br><em>companion-resident-home: the warmth of the vivarium, at Station resolution. Concept, generated.</em></td></tr></table>
 
 ---
@@ -125,7 +125,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 - [ ] Nothing of the field is drawn; the Station shows only what it owns.
 - [ ] A still frame tells the same story.
 
-<img src="../proposals/station-screens/02-dock-arrival.svg" width="600" alt="Dock and arrival wireframe">
+<img src="station-screens/02-dock-arrival.svg" width="600" alt="Dock and arrival wireframe">
 
 *Dock and arrival wireframe. Layout only.*
 
@@ -203,7 +203,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 - [ ] The code appears only at Grow.
 - [ ] Same trait boundaries as the Companion's HiBit drawing.
 
-<table><tr><td valign="top"><img src="../proposals/station-screens/05-create.svg" width="480" alt="Create wireframe"><br><em>Create wireframe. Layout only.</em></td>
+<table><tr><td valign="top"><img src="station-screens/05-create.svg" width="480" alt="Create wireframe"><br><em>Create wireframe. Layout only.</em></td>
 <td valign="top"><img src="../../art/miniature-lives/exports/lab-known-comparison.png" width="420" alt="Station known comparison"><br><em>Two individuals differing only in markings, at Station size. Appearance reference (creature only).</em></td></tr></table>
 
 ---
@@ -237,7 +237,7 @@ The measured layout, states and timeline are [Station layouts, Cargo](station-la
 - [ ] The juvenile that steps out is the founder from Create.
 - [ ] A still frame shows progress.
 
-<table><tr><td valign="top"><img src="../proposals/station-screens/06-incubator.svg" width="480" alt="Incubator wireframe"><br><em>Incubator wireframe. Layout only.</em></td>
+<table><tr><td valign="top"><img src="station-screens/06-incubator.svg" width="480" alt="Incubator wireframe"><br><em>Incubator wireframe. Layout only.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/pip-life-stages.png" width="420" alt="Life stages"><br><em>The juvenile that steps out reads young by proportion. Concept, generated.</em></td></tr></table>
 
 ---

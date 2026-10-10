@@ -4,7 +4,7 @@
 2026-10-07 decision that the prototypes' UI art is not acceptable even for a first playthrough.
 It applies [art direction](../art-direction.md) (Miniature Lives: rounded, tactile, directional
 light, expressive eyes, saturated playful colour) to every screen, and takes the layouts of
-[companion-controls](companion-controls.md) and [station-screens](station-screens.md) as given.
+[companion-controls](companion-controls.md) and [station-layouts](../style-guide/station-layouts.md) as given.
 Every sample and mock-up here is drawn pixel by pixel by script inside the palettes below:
 nothing is scaled, filtered or generated.
 
