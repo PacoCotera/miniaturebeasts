@@ -1,0 +1,184 @@
+[
+ {
+  "id": "cap-station-home-10mm",
+  "file": "caps/cap-station-home-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#dba53a",
+  "engraving": "cut, tone on tone",
+  "drawing": "home",
+  "sha256": "540dacf2788769af28217529dfd3b8b4c2bd2a1b8e731f678e4dd074dcf7329b",
+  "status": "signed"
+ },
+ {
+  "id": "cap-station-vivarium-10mm",
+  "file": "caps/cap-station-vivarium-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#63a046",
+  "engraving": "cut, tone on tone",
+  "drawing": "viv-dome",
+  "sha256": "f62b1d0c96ff7347bc98f1bd333773127439d13999600b3655716d3b9e9bccf3",
+  "status": "signed"
+ },
+ {
+  "id": "cap-station-research-10mm",
+  "file": "caps/cap-station-research-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#2a9f90",
+  "engraving": "cut, tone on tone",
+  "drawing": "res-lens2",
+  "sha256": "f66700025c8759cd23a120b938a7c52cd7ad7cd9cc474393613df39902bea36b",
+  "status": "signed"
+ },
+ {
+  "id": "cap-station-library-10mm",
+  "file": "caps/cap-station-library-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#8460cd",
+  "engraving": "cut, tone on tone",
+  "drawing": "library",
+  "sha256": "9d74ece05b3d78262b0f1a8da65857c6ec5267e08fa78ee9867b6671849b0447",
+  "status": "signed"
+ },
+ {
+  "id": "cap-back-10mm",
+  "file": "caps/cap-back-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#454950",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "back",
+  "sha256": "d8705135e8a73364648cbcbd047e098b5c35cc27f7aeffddb484f1875e2ace38",
+  "status": "signed"
+ },
+ {
+  "id": "cap-confirm-10mm",
+  "file": "caps/cap-confirm-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#f0661a",
+  "engraving": "cut, tone on tone",
+  "drawing": "confirm",
+  "sha256": "3fe2d24459cdc3e9bcd5249d602f9bd245415a8f1d0174f34588a0b075c68c3c",
+  "status": "signed"
+ },
+ {
+  "id": "cap-pad-10mm",
+  "file": "caps/cap-pad-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#2e3136",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "pad",
+  "sha256": "080dc84e1f372b75e4c44764c01ad0964aade437e34d346750dc88d02b579f1a",
+  "status": "signed"
+ },
+ {
+  "id": "cap-companion-call-10mm",
+  "file": "caps/cap-companion-call-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#2a9f90",
+  "engraving": "cut, tone on tone",
+  "drawing": "call",
+  "sha256": "7ac0d0178e8ab9655ce0214bd46de7b696484abbd081b1947ec8c46bc8c502e7",
+  "status": "signed"
+ },
+ {
+  "id": "cap-caddy-left-10mm",
+  "file": "caps/cap-caddy-left-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#33363b",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "left",
+  "sha256": "cb7f8b2710e0be3ecd702efd2feb6c465fe7cd64800843bc5235eaeb47e228a4",
+  "status": "signed"
+ },
+ {
+  "id": "cap-caddy-ok-10mm",
+  "file": "caps/cap-caddy-ok-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#33363b",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "confirm",
+  "sha256": "3fe2d24459cdc3e9bcd5249d602f9bd245415a8f1d0174f34588a0b075c68c3c",
+  "status": "signed"
+ },
+ {
+  "id": "cap-caddy-right-10mm",
+  "file": "caps/cap-caddy-right-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#33363b",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "right",
+  "sha256": "0ffd17ea29d4e7041c0f4a5796c26b7b36885779ce807bebb624f1874c57c02d",
+  "status": "signed"
+ },
+ {
+  "id": "cap-caddy-print-10mm",
+  "file": "caps/cap-caddy-print-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#33363b",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "print",
+  "sha256": "ec069919685110db3299cdac0763b3752f031dfa272d0d539fa9872a2c3cfe97",
+  "status": "signed"
+ },
+ {
+  "id": "cap-caddy-feed-10mm",
+  "file": "caps/cap-caddy-feed-10mm.png",
+  "slot_mm": [
+   10,
+   10
+  ],
+  "px_per_mm": 100,
+  "cap_colour": "#33363b",
+  "engraving": "paint-filled cut, #f1ebdf",
+  "drawing": "feed2",
+  "sha256": "a39d862f457debb0dad5d67517a53a78f23cfae395d13250811392bfb94a1f1f",
+  "status": "signed"
+ }
+]
