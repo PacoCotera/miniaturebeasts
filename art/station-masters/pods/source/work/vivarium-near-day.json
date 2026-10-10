@@ -1,0 +1,13 @@
+[
+ {
+  "name": "vivarium-near-day",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   ["art/station-masters/pods/slices/idle-vivarium-day-1024x568.png", "THE PLACE (the signed painting of the vivarium, seen from afar: the SAME place, with the same moss, stones, water, roots, burrow and warm light; the new picture is this place seen up close at ground level, as if you crouched beside the burrow):"],
+   ["art/visual-directions/02-miniature-lives.png", "THE RENDERING (matte sculpted miniature, soft focus depth, warm light):"]
+  ],
+  "prompt": "Output a NEW image, 4:3: the SAME vivarium place as the first reference, seen much CLOSER and at GROUND LEVEL, as if you crouched down beside the burrow at the creatures' scale. The same moss, the same stones, the same still water, the same roots, the same burrow and the same warm soft daylight from the upper left with soft shadows to the lower right, in the same matte sculpted miniature rendering. COMPOSITION in two parts. LOWER 40 PERCENT of the height: the ground, a clear, fairly flat, open stretch of moss and soil across the centre of the picture, with only low moss and tiny pebbles, nothing tall in it, wide enough for one small creature to stand in the middle (the middle 55 percent of the width must be clear and open). UPPER 60 PERCENT: soft depth behind the ground, in gentle out-of-focus: the burrow's rim and dark entrance at the left, one or two rounded stones and a few roots, the moss rising behind, warm hazy foliage and light further back. At ONE edge (the right) a hint of the device's life-support: a braided feed line coming down into the moss and a fine mist drifting in from the upper right; small, matte. NO creatures, no animals, no figures of any kind; no text, letters, digits or logos; no frame, no bezel, no screws, no UI: only the inside of the vivarium filling the canvas edge to edge. No glass reflections, no glossy surfaces, no cool blue light, no neon; nothing childish or toy-like."
+ }
+]
