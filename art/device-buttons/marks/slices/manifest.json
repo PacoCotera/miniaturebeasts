@@ -1,0 +1,66 @@
+{
+ "frame-room-home-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "typed by hand (source/marks.py)",
+  "made": "the Home title mark, the icon of the Home key, one palette colour (gold)",
+  "sha256": "cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8",
+  "status": "signed"
+ },
+ "frame-room-vivarium-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "typed by hand (source/marks.py)",
+  "made": "the Vivarium title mark, the icon of the Vivarium key, one palette colour (grass)",
+  "sha256": "50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b",
+  "status": "signed"
+ },
+ "frame-room-research-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "typed by hand (source/marks.py)",
+  "made": "the Research title mark, the icon of the Research key, one palette colour (teal)",
+  "sha256": "1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3",
+  "status": "signed"
+ },
+ "frame-room-library-24": {
+  "size": [
+   24,
+   24
+  ],
+  "rect": [
+   16,
+   8,
+   24,
+   24
+  ],
+  "src": "typed by hand (source/marks.py)",
+  "made": "the Library title mark, the icon of the Library key, one palette colour (lilac)",
+  "sha256": "764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4",
+  "status": "signed"
+ }
+}
