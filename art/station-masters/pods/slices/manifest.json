@@ -10065,12 +10065,12 @@
    568
   ],
   "rect": null,
-  "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
-  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 24.6) (pass 94)",
-  "sha256": "d9a7a133adac1edd152e11d268bc6c610e1e663f2d03e224fa3c0c77d571e34d",
-  "status": "held",
+  "src": "source/raw/idle-night-repaint.jpg (gemini-3-pro-image)",
+  "made": "Idle's Vivarium by night: a Pro repaint of the signed Idle day under the device's grow lamp dimmed to a low warm glow (the owner-approved repaint of Oct 10; the first night, vivarium-night-r2, is withdrawn), centre-cut and reduced with Lanczos, then regraded by hand within the night targets (background about 17, ground 35, at most 3 percent above L* 70) (pass 119)",
+  "sha256": "61509fb67fd50af1e86d39887d0b248a2f41669aa2a72c2bee880177b18e3fbe",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director) at 1x: L* 24.6, key R-B 51, sat 64, 0.0 percent above L* 70, meets the revised rule, but the pulled-down glow pools leave pink blotches on a salmon ground: grading cannot make this painting a night; a Pro night repaint is queued for the owner's approval; until a night is signed, night hours show the signed dusk"
+  "status_note": "pass 119: the owner-approved Pro repaint of the signed Idle day under the dimmed grow lamp, cut and graded by hand within the night targets (mean L* 24.9, background 17.6, ground 35.0, 0.0 percent above L* 70, R above B, key R-B 47, sat 58); awaiting the art director's judgement (not signed)"
  },
  "home-bay-shut-176x72": {
   "size": [
@@ -10144,8 +10144,8 @@
   ],
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet); the inner light graded brighter and creamier by hand (pass 100)",
-  "sha256": "bf245c0c28745e1fd524a4dc04ae588300720295d7812a4e3dddc96d8c0686e0",
+  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet); the inner light graded brighter and creamier by hand (pass 100); the inner light graded brighter and creamier by hand (pass 100)",
+  "sha256": "e57b1c225c968a69f355fa6fa0f645b2897a0e02de712e20a3d7edaf10893a0d",
   "status": "signed",
   "signed_in": "art director, Home column verdict (1f7d4a83)",
   "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
@@ -10236,10 +10236,10 @@
   "rect": null,
   "src": "slices/idle-vivarium-night-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by night: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "6e85273325cd3c50caa20f689ec70bcb1677cc729b2f9a7483538027d4cb6140",
-  "status": "held",
+  "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director) at 1x: L* 27.3, key R-B 65 fits its glass night 24.8/44, but waits on the night repaint; night hours show the signed dusk bed"
+  "status_note": "pass 119: re-cut from the new Idle night and fitted to the new glass night by hand (rule: key R-B at most its glass's + 40, L* at most +3); awaiting the art director's judgement (not signed)"
  },
  "vivarium-near-day-544x408": {
   "size": [
@@ -10398,18 +10398,13 @@
    640,
    488
   ],
-  "rect": [
-   24,
-   56,
-   640,
-   488
-  ],
-  "src": "source/raw/home-glass-night.jpg (gemini-3-pro-image)",
-  "made": "Home's glass by night: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's night light, cut to 640:488 and reduced with Lanczos, regraded by distribution (dark background, warm ground band, small glow pools) (pass 107)",
-  "sha256": "23ba963aec770861b0fed9a28d3a121945b7a207c50eb96410e72ee9be71b95b",
-  "status": "held",
+  "rect": null,
+  "src": "source/raw/glass-night-repaint.jpg (gemini-3-pro-image)",
+  "made": "Home's glass by night: a Pro repaint of the signed glass day under the dimmed grow lamp (the owner-approved repaint of Oct 10), centre-cut and reduced with Lanczos, then regraded by hand within the night targets (background about 17, ground 35, at most 3 percent above L* 70) (pass 119)",
+  "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director) at 1x: L* 24.8, key R-B 44, sat 50, meets the revised rule, but pale greenish blotches wash the ground; as Idle night: a Pro repaint queued for the owner's approval; night hours show the signed glass dusk until then"
+  "status_note": "pass 119: the owner-approved Pro repaint of the signed glass day under the dimmed grow lamp, graded by hand within the night targets (mean L* 25.6, background 17.9, ground 35.0, 0.0 percent above L* 70, R above B, key R-B 46, sat 51); awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-create": {
   "size": [

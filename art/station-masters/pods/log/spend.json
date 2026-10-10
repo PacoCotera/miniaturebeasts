@@ -2593,5 +2593,39 @@
    "thoughtsTokenCount": 250,
    "totalTokenCount": 2388
   }
+ },
+ {
+  "tag": "idle-night-repaint try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193438,
+  "mxn": 3.8688,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:52:09Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 599,
+   "candidatesTokenCount": 1336,
+   "thoughtsTokenCount": 266,
+   "totalTokenCount": 2201
+  }
+ },
+ {
+  "tag": "glass-night-repaint try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.18372,
+  "mxn": 3.6744,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:52:35Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 600,
+   "candidatesTokenCount": 1312,
+   "thoughtsTokenCount": 209,
+   "totalTokenCount": 2121
+  }
  }
 ]
