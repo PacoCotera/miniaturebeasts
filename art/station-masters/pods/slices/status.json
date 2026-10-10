@@ -3300,18 +3300,18 @@
   "note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
  },
  "idle-vivarium-dawn-1024x568": {
-  "status": "signed",
-  "signed_in": "art director, dawn verdict (793e47f2)",
-  "note": "signed (art director): Idle's Vivarium at dawn: low light, mist and dew, cooler and paler than dusk"
+  "status": "new",
+  "signed_in": null,
+  "note": "returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)"
  },
  "vivarium-near-dawn-544x408": {
-  "status": "signed",
-  "signed_in": "art director, dawn verdict (793e47f2)",
-  "note": "signed (art director): the Vivarium up close at dawn"
+  "status": "new",
+  "signed_in": null,
+  "note": "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"
  },
  "home-bed-dawn-192x56": {
-  "status": "signed",
-  "signed_in": "art director, dawn verdict (793e47f2)",
-  "note": "signed (art director): the with-you bed at dawn, cut from the dawn painting"
+  "status": "new",
+  "signed_in": null,
+  "note": "returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix"
  }
 }
