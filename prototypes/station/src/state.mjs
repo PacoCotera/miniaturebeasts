@@ -3,7 +3,7 @@
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
 // accepted, dockN, known, probe, carryReqs, returned, and each mibi's id, name, sp, born, from, bonded.
-// The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one.
+// The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
@@ -634,12 +634,12 @@ export function returnMibiBlock(st, sv, m) {
   if (!m || m.released) return "already released";
   if (m.bonded) return "a bonded mibi stays";
   if (mibiStage(st, m) === "juvenile") return "not until it is adult";
-  if (carriedIds(st, sv).includes(m.id)) return m.name + " is with you";
-  if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return m.name + " is waiting to go with you";   // stand-in words until the copywriter's
+  if (carriedIds(st, sv).includes(m.id)) return "already with you";
+  if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return "goes at the next dock";
   return "";
 }
 export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
-  const b = returnMibiBlock(st, sv, m); if (b) return { ok: false, msg: "Return " + (m ? m.name : "") + " · " + b };
+  const b = returnMibiBlock(st, sv, m); if (b) return { ok: false, why: b };   // the block is the Wild module's context, not a plate
   m.released = true; m.releasedAt = st.turn; st.s += PRICE.wildMibi;
   if (!Array.isArray(st.releases)) st.releases = [];
   st.releases.push({ id: m.id, name: m.name, sp: m.sp, species: m.species, k: m.from?.k ?? null, g: m.from?.g ?? null, code: m.code, turn: st.turn }); if (st.releases.length > 30) st.releases.shift();

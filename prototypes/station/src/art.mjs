@@ -18,11 +18,12 @@ export const PLACEHOLDERS = [
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "room", what: "Home's room, bench modules, vivarium, crates, cups, dome, leaves, Probe and lamp, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
-  { id: "icons", what: "the material icons, the Companion mark and the heart", until: "the icon set" },
+  { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
+  { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];
 
 // ---------- The material icons ----------
-// The material icons at any pixel size (Energy a bolt, Data a diamond, Essence a drop), the Companion mark, the heart.
+// The material icons at any pixel size (Energy a bolt, Data a diamond, Essence a drop), the Companion mark.
 export const ICON = {
   energy: (n = 14) => art("i-energy" + n, () => { const pb = new PB(n, n), k = n / 14; pb.poly([[8, 0], [3, 8], [6.5, 8], [5, 14], [11, 5.5], [7.5, 5.5]].map(([x, y]) => [x * k, y * k]), C.amber); pb.poly([[8, 0], [3, 8], [6.5, 8], [6.5, 5.5], [7.5, 5.5]].map(([x, y]) => [x * k, y * k]), C.yellow); pb.outline(() => C.rust); return pb; }),
   data: (n = 14) => art("i-data" + n, () => { const pb = new PB(n, n), c = n / 2; pb.poly([[c, 0.5], [n - 0.5, c], [c, n - 0.5], [0.5, c]], C.sky); pb.poly([[c, 0.5], [n - 0.5, c], [c, c]], C.ice); pb.poly([[0.5, c], [c, n - 0.5], [c, c]], C.river); pb.outline(() => C.sea); return pb; }),
@@ -31,7 +32,6 @@ export const ICON = {
   cross: (n = 14) => art("i-cross" + n, () => { const pb = new PB(n, n), t = Math.max(2, Math.round(n / 6)), m = Math.round(n * 0.15); for (let i = 0; i < n - 2 * m; i++) { pb.rect(m + i, m + i - (t >> 1), t, t, C.red); pb.rect(n - 1 - m - i - t + 1, m + i - (t >> 1), t, t, C.red); } return pb; }),
   star: (n = 14) => (n >= 18 ? starArt(true) : starArt(false)),
   comp: () => art("i-comp", () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.bar); return pb; }),
-  heart: (full) => art("i-heart" + full, () => { const pb = new PB(30, 28), c = full ? C.coral : C.bar; pb.ell(9, 9, 7.5, 7.5, c); pb.ell(21, 9, 7.5, 7.5, c); pb.poly([[2, 11], [28, 11], [15, 26]], c); if (full) pb.ell(8, 7, 2.5, 2.5, C.blush); pb.outline(() => (full ? C.wine : C.sand)); return pb; }),
 };
 export const starArt = (big) => art("star" + big, () => { const r = big ? 9 : 5, pb = new PB(r * 2 + 1, r * 2 + 1);
   pb.poly([[r, 0], [r + r * 0.28, r - r * 0.28], [r * 2, r], [r + r * 0.28, r + r * 0.28], [r, r * 2], [r - r * 0.28, r + r * 0.28], [0, r], [r - r * 0.28, r - r * 0.28]], C.cream); pb.ell(r + 0.5, r + 0.5, r * 0.3, r * 0.3, C.white); pb.outline(() => C.gold); return pb; });

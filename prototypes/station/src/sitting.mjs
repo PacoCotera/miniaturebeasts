@@ -104,8 +104,8 @@ export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
 // A juvenile may sit (the portrait keeps the stage it sat at); a mibi out with the Companion sits only while the Companion is docked (a sitting begun while docked goes on after undocking).
 export function portraitBlock(st, m, sv) {
   if (!m) return "pick a mibi";
-  if (m.released) return m.name + " has gone";
-  if (!docked(st) && carriedIds(st, sv).includes(m.id)) return m.name + " is out with you · it sits when the Companion is home";   // stand-in words until the copywriter's
+  if (m.released) return "back in the wild";
+  if (!docked(st) && carriedIds(st, sv).includes(m.id)) return "sits when you dock";
   if (m.portrait) return "one sitting each, ever";
   if (!habitsOf(m).length) return "no pose seen yet";
   if (!placesOf(m).length) return m.name + " needs a walk first";

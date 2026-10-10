@@ -334,7 +334,11 @@ const atRect = (r, o) => [r[0] + o[0], r[1] + o[1], o[2], o[3]];
 test("the Habitat spec file agrees with the Habitat wireframes, region by region; its focus graph plays its vectors", () => {
   const hab = rd("../specs/station/habitat.json"), R = hab.regions, B = boxesOf("06-habitat.svg"), M = boxesOf("06b-habitat-meet.svg"), A = boxesOf("06f-habitat-away.svg"), E = boxesOf("06e-habitat-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "speciesLine", "story", "code", "stamp", "door", "bond", "portrait", "cross", "wild", "strip"]) is(R[k].rect, k);
+  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "story", "code", "stamp", "portrait", "cross", "wild", "strip"]) is(R[k].rect, k);
+  // pinned until wireframes 06 and 06b/06d are redrawn (UI/UX, 2026-10-09): the species line shortened to clear the heart, the door widened to the carried set's three places; the wireframes still show the old rectangles
+  assert.deepEqual(R.speciesLine.rect, [608, 64, 216, 24]); assert.deepEqual(R.door.rect, [592, 272, 272, 96]);
+  assert.equal(R.bond, undefined, "the bond is not a region"); assert.equal(R.heart, undefined, "the heart is a state on the card, not a region"); assert.equal("target" in R.card.heart, false, "the heart is no focus target");
+  assert.deepEqual(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), [832, 64, 24, 24]); { const hr = atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]); assert.ok(inside(hr, R.card.rect) && apart(hr, R.speciesLine.rect) && apart(hr, R.stamp.rect), "the heart inside the card, clear of the species line and the stamp"); }
   for (const k of ["bezel", "glass", "strip"]) is(R[k].rect, k + " (empty)", E);
   is(R.meetRibbon.rect, "meet ribbon", M); is(R.resident.lamp.rect, "waiting lamp", M);
   lintRegions(hab); assert.deepEqual(hab.states, ["rest", "meet", "empty"]); assert.deepEqual(hab.rules.needed, []); assert.deepEqual(hab.rules.used, ["listPitch"]);
@@ -347,7 +351,7 @@ test("the Habitat spec file agrees with the Habitat wireframes, region by region
   assert.ok(R.nameTag.rect[1] >= R.resident.feet + 12 + 8, "the tag 8 px or more under the feet ring"); assert.ok(R.nameTag.rect[1] + R.nameTag.rect[3] + 8 <= glass[1] + glass[3], "the tag 8 px inside the glass");
   assert.ok(inside(R.nameTag.rect, R.meetRibbon.rect), "the ribbon in the tag's place"); assert.deepEqual([R.nameTag.px, R.nameTag.weight, R.nameTag.h], [frame.type.title, frame.type.weight[20], 32], "the tag at 20 px medium, 32 tall");
   assert.equal(R.nameTag.max, 200 + 2 * R.nameTag.pad, "the tag holds ten of the widest letter at 20 px (200) and its pads"); assert.equal(R.nameTag.rect[2], R.nameTag.max); assert.equal(R.nameTag.rect[0] + R.nameTag.rect[2] / 2, R.resident.axis); assert.ok(R.nameTag.min % R.nameTag.round === 0 && R.nameTag.max % R.nameTag.round === 0);
-  assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "bond", "portrait", "cross", "wild"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
+  assert.ok(hab.overlays.namer.panel[0] >= R.bezel.rect[0] + R.bezel.rect[2] + 8 && hab.overlays.namer.panel[0] === R.card.rect[0], "the living window left of the namer's panel"); assert.ok(inside(R.card.rect, hab.overlays.namer.panel) && ["door", "portrait", "cross", "wild"].every((k) => inside(R[k].rect, hab.overlays.namer.panel)), "the namer covers the card and the modules");
   assert.ok(inside(R.resident.lamp.rect, res) && R.resident.lamp.rect[0] + 12 === res[0] + res[2] && R.resident.lamp.rect[1] === res[1], "the lamp at the box's top right");
   const ew = res[2] + frame.focus.feet.widen; assert.equal(hab.focus.targets.resident.ring, "feet"); assert.deepEqual(hab.focus.targets.resident.ellipse, [res[0] + ((res[2] + 1) >> 1) - ((ew + 1) >> 1), R.resident.feet - 12, ew, frame.focus.feet.height], "the feet ring, as frame.json focus.ring.forms.feet places it");
   for (const spec of [hab]) for (const [k, t] of Object.entries(spec.focus.targets)) assert.ok(["round", "feet", "tab"].includes(t.ring) && !("shape" in t), k + ": a ring form of frame.json, no other key");
@@ -356,11 +360,11 @@ test("the Habitat spec file agrees with the Habitat wireframes, region by region
   for (const k of ["speciesLine", "story", "code", "plates"]) { assert.ok(inside(R[k].rect, R.card.rect), k + " inside the card"); assert.ok(apart(R[k].rect, R.stamp.rect), k + " clear of the stamp"); }
   const P = R.plates.places, plates = Array.from({ length: P.max }, (_, i) => [P.first[0] + P.pitch[0] * i, P.first[1], P.first[2], P.first[3]]);
   assert.ok(inside(plates.at(-1), R.plates.rect), "eight plates fit"); for (const p of plates.slice(0, 4)) is(p, "plate");
-  const mods = ["door", "bond", "portrait", "cross", "wild"].map((k) => R[k]);
+  const mods = ["door", "portrait", "cross", "wild"].map((k) => R[k]);
   for (const [i, m] of mods.entries()) {
     assert.ok(m.rect[0] >= 592 && m.rect[0] + m.rect[2] <= 1008 && m.rect[1] >= R.card.rect[1] + R.card.rect[3] + 16 && m.rect[1] + m.rect[3] <= 552, "the module in the column");
     for (const n of mods.slice(i + 1)) assert.ok(gapOk(m.rect, n.rect), "modules 8 px apart");
-    for (const o of [m.glyph, m.mibi, m.heart, m.frame, m.gate, ...(m.faces ? [m.faces.oneRow, ...m.faces.twoRows].map((a) => ({ at: a, size: m.faces.size })) : [])].filter(Boolean)) { assert.ok(o.at[1] >= m.word[1] + 16 + 8, "8 px from the word's baseline to the object"); assert.ok(o.at[1] + o.size[1] <= m.rect[3], "the object inside its module"); }
+    for (const o of [m.glyph, ...(m.places ? m.places.at.map((a) => ({ at: a, size: m.places.size })) : []), m.frame, m.gate, ...(m.faces ? [m.faces.oneRow, ...m.faces.twoRows].map((a) => ({ at: a, size: m.faces.size })) : [])].filter(Boolean)) { assert.ok(o.at[1] >= m.word[1] + 16 + 8, "8 px from the word's baseline to the object"); assert.ok(o.at[1] + o.size[1] <= m.rect[3], "the object inside its module"); }
   }
   const FC = R.cross.faces; assert.ok(FC.oneRow[0] + FC.pitch * (FC.perRow - 1) + FC.size[0] <= R.cross.rect[2] - 16, "seven faces fit a row"); assert.ok(2 * FC.perRow >= FC.max && FC.max === 11, "two rows hold every partner a twelve-bay vivarium can give"); assert.ok(FC.twoRows[1][1] - FC.twoRows[0][1] >= FC.size[1], "the rows do not overlap");
   // the strip: one tile a bay, full to six and compact to twelve, inside the strip; the tiles in the wireframes
@@ -375,7 +379,7 @@ test("the Habitat spec file agrees with the Habitat wireframes, region by region
   for (const [g, e] of Object.entries(hab.focus.graph)) { assert.ok(!(e.order && e.axis), g + ": order or axis, not both"); for (const k of STEP_KEYS) if (k in e) assert.ok(edgeOk(e[k], groups), `${g}.${k} is an edge form of §2.6.1`); }
   const TG = { resident: { group: "resident", box: res }, name: { group: "name", box: R.nameTag.rect }, species: { group: "species", box: R.speciesLine.rect } };
   plates.slice(0, 4).forEach((p, i) => (TG["plate." + i] = { group: "plate", box: p }));
-  for (const k of ["door", "bond", "portrait", "cross", "wild"]) TG[k] = { group: hab.focus.targets[k].group, box: R[k].rect };
+  for (const k of ["door", "portrait", "cross", "wild"]) TG[k] = { group: hab.focus.targets[k].group, box: R[k].rect };
   tiles(T.full, 6).forEach((x, i) => (TG["tile." + (i + 1)] = { group: "tile", box: x }));
   const resolve = { "tile.shown": "tile.3" }, concrete = (v) => !!v && (!!TG[v] || v === "tile.shown");
   let played = 0;

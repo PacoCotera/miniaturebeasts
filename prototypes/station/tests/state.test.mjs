@@ -271,9 +271,9 @@ test("six bays: a full vivarium refuses Grow before payment and Open until one i
   const e0 = st.e; assert.match(S.growBlock(st, st.tray[0], {}, settings), /no bay free/); assert.equal(S.grow(st, st.tray[0], {}, settings).ok, false); assert.equal(st.e, e0, "nothing paid");
   assert.equal(S.bayFull(st, { ...settings, bays: 8 }), false, "the developer's bays");
   const m = st.mibis[0], s0 = st.s;
-  m.bonded = true; assert.match(S.returnMibi(st, null, m, settings).msg, /bonded/); m.bonded = false;
-  m.born = st.turn; assert.match(S.returnMibi(st, null, m, settings).msg, /adult/); m.born = st.turn - 2;
-  const sv = { with: m.id }; assert.match(S.returnMibi(st, sv, m, settings).msg, /with you/);
+  m.bonded = true; assert.match(S.returnMibi(st, null, m, settings).why, /bonded/); m.bonded = false;
+  m.born = st.turn; assert.match(S.returnMibi(st, null, m, settings).why, /adult/); m.born = st.turn - 2;
+  const sv = { with: m.id }; const blocked = S.returnMibi(st, sv, m, settings); assert.deepEqual([blocked.ok, blocked.why, "msg" in blocked], [false, "already with you", false], "a blocked return is { ok: false, why }: no plate");
   const r = S.returnMibi(st, { with: null }, m, settings); assert.equal(r.ok, true); assert.equal(st.s, s0 + 2); assert.equal(m.released, true);
   assert.equal(S.housed(st).length, 5); assert.equal(S.freeBay(st, settings), m.bay); assert.deepEqual(st.releases.at(-1).id, m.id); assert.equal(st.guideNotes.S01.length, 1);
   assert.equal(S.grow(st, st.tray[0], {}, settings, 5000).ok, true);
@@ -506,7 +506,7 @@ test("T6 stageAt (Station): care grows a bonded mibi; the clock grows an unbonde
 });
 test("the Station's own care rules: a carried, pending or bonded mibi is not returned; carried mibis are not watched or compared; there is no bond line in need()", () => {
   const st = adults(4), [a, b, c, d] = st.mibis, sv = svOf({ carried: [a.id] }); st.carryReqs = [{ seq: 1, op: "add", id: b.id }]; st.carrySeq = 1; c.bonded = true; c.grownTurn = 2;
-  assert.match(S.returnMibiBlock(st, sv, a), /with you/); assert.match(S.returnMibiBlock(st, sv, b), /waiting/); assert.match(S.returnMibiBlock(st, sv, c), /bonded/); assert.equal(S.returnMibiBlock(st, sv, d), "", "an unbonded adult at home may be returned");
+  assert.equal(S.returnMibiBlock(st, sv, a), "already with you"); assert.equal(S.returnMibiBlock(st, sv, b), "goes at the next dock"); assert.match(S.returnMibiBlock(st, sv, c), /bonded/); assert.equal(S.returnMibiBlock(st, sv, d), "", "an unbonded adult at home may be returned");
   assert.equal(S.benchWatch(st, sv, a, 250, settings, 1000).ok, false, "a carried mibi is not watched"); assert.equal(S.benchWatch(st, sv, d, 250, settings, 1000).ok, true);
   assert.equal(S.benchCompare(st, sv, a, d, settings, 1000).ok, false, "nor compared");
   a.outings = 3; assert.ok(!/bond/i.test(S.need(st, sv, settings).text), "an offered bond is not a need"); assert.equal("bond" in S, false); assert.equal("bondOffered" in S, false); for (const k of ["withId", "effWithId", "atHome", "pendingWith", "takeWith"]) assert.equal(k in S, false, k + " is gone");

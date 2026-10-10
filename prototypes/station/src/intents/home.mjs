@@ -17,7 +17,6 @@ export function doNeed(h, nd) {
   else if (nd.act === "inc") h.goto("incubator");
   else if (nd.act === "meet") { h.ui.hab.id = h.ui.meet; h.ui.hab.f = "stage"; h.ui.meet = null; h.goto("habitat"); }
   else if (nd.act === "pods") toPods(h);
-  else if (nd.act === "hab") { h.ui.hab.id = nd.id; h.ui.hab.f = "heart"; h.goto("habitat"); }
 }
 // ✓ on a target of Home: room | r:<mibi id> | bay | tray | inc | cradle | lamp. `back` does nothing on Home (the top).
 export function intent(h, target, verb) {

@@ -206,5 +206,5 @@ test("a painted portrait is never 'waiting for the cloud', and a released mibi c
   const offline = { ...settings, paintPortraits: true, caddyReachable: false };
   assert.equal(T.crateState(c, offline, T0 + 3 * H), "waiting for the cloud", "not painted, Caddy unreachable");
   T.landPortrait(st, c.id); assert.equal(T.crateState(c, offline, T0 + 3 * H), "ready", "painted: the Caddy no longer matters"); assert.equal(T.crateLamp(c, offline, T0 + 3 * H), 1);
-  const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.match(T.portraitBlock(g, r), /gone/); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
+  const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.equal(T.portraitBlock(g, r), "back in the wild"); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
 });
