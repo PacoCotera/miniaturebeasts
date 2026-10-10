@@ -857,10 +857,10 @@ const CARE_TEXT = {
   noOneWith: 'no one with you', noOneGrown: 'no one grown yet',
   // the care screens (companion-screens.md: Mibis, the Lead card, the active mibi screen, the partner card)
   leadLabel: n => 'Let ' + n + ' lead', leads: n => n + ' leads the Probe', leadCtx: 'joins the Probe', onlyGrown: 'the only grown one', leadsThisExp: 'leads this expedition',
-  partnerCap: 'Partner', noPartner: 'No partner', noOneWithT: 'No one with you', takeOne: 'take one at the Station',
+  partnerCap: 'Partner', noPartner: 'No partner', noOneWithT: 'No one with you', takeOne: 'dock to take one along',
   youngCare: 'young · grows with care', youngTime: 'young · grows in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
-  takeAlong: 'take mibis along', atStation: 'at the Station',
+  takeAlong: 'take mibis along', whenDocked: 'when docked',
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
@@ -2334,9 +2334,20 @@ function careLines(first, evs, dur) {
   fxMsg(first, 3);
   for (const e of evs) if (e.bonded) fxMsg(CARE_TEXT.bonded(e.m.name), 3);
   for (const e of evs) if (e.grown) fxMsg((partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(e.m.name), 3);
-  const b = evs.find(e => e.bonded), gr = evs.find(e => e.grown);
-  if (b) { S.ui.aId = b.m.id; FX.bond = { id: b.m.id, at: NOW + dur }; lockInput(dur + BOND_MS); }
-  if (gr) { FX.grow = { id: gr.m.id, at: NOW + dur, cut: 0 }; lockInput(dur); }
+  const q = careQueue(evs, dur);
+  FX.cuts = q.cuts.map(c => Object.assign({}, c, { at: NOW + c.at, done: 0 })); lockInput(q.lock);
+}
+// The events after a Tend or a Walk, in ms from the press: the bonds first, in carried order, one every BOND_MS from the end of
+// the action's moment; then one grow-up cut per mibi, in carried order, every GROW_MS. Each moves the view to its mibi's page.
+// Input is held to the end of the last bond, or 300 ms after the last cut (and at least 300 ms).
+const GROW_MS = 1200;
+function careQueue(evs, dur) {
+  const bonds = evs.filter(e => e.bonded), grows = evs.filter(e => e.grown), cuts = [];
+  bonds.forEach((e, i) => cuts.push({ kind: 'bond', id: e.m.id, at: dur + i * BOND_MS }));
+  const g0 = dur + bonds.length * BOND_MS;
+  grows.forEach((e, j) => cuts.push({ kind: 'grow', id: e.m.id, at: g0 + j * GROW_MS }));
+  const lock = Math.max(300, bonds.length ? g0 : 0, grows.length ? g0 + (grows.length - 1) * GROW_MS + 300 : 0);
+  return { cuts, lock };
 }
 // The Walk as pressed on the shown mibi m: its walk moment; the line names them all. Its Data folds into the expedition's
 // field yield (research-economy §2), so it brings none of its own.
@@ -3793,7 +3804,7 @@ function drawSetup(t) {
     text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, st, stageFill(st), 'bone');
     text(clipText(SPECIES[pm.sp].abText, 220, 2), 112, 320, C.stone); }
-  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noPartner, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
+  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(carriedMibis().length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
   if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm); else blit(dashedCircleArt(24), fx, 262); }
   // the world preview: the whole map small, the last start flagged, and the count
@@ -4072,21 +4083,21 @@ function activeStatus(m) {
 function drawNoOneWith() {
   for (const x of [93, 189, 285]) blit(dashedCircleArt(72), x, 150);
   text(CARE_TEXT.noOneWithT, SCR_W / 2, 250, C.bone, 3, 'center');
-  text(CARE_TEXT.takeAlong, SCR_W / 2, 294, C.mist, 2, 'center'); text(CARE_TEXT.atStation, SCR_W / 2, 316, C.mist, 2, 'center');
+  text(CARE_TEXT.takeAlong, SCR_W / 2, 294, C.mist, 2, 'center'); text(CARE_TEXT.whenDocked, SCR_W / 2, 316, C.mist, 2, 'center');
   if (S.bay.length) text(bayLine(), SCR_W / 2, 352, C.amber, 2, 'center');
 }
 const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
 function drawActive(t) {
   viewBg(); drawHomeTop();
-  if (FX.grow && !FX.grow.cut && NOW >= FX.grow.at) { FX.grow.cut = 1; S.ui.aId = FX.grow.id; }   // after the action's moment, the view is on the mibi that grew
+  for (const c of FX.cuts || []) if (!c.done && NOW >= c.at) { c.done = 1; S.ui.aId = c.id; }   // each bond and grow-up takes the view to its mibi, in turn
   const m = shownMibi(); if (!m) { if (liveMibis().length) drawNoOneWith(); else drawNoMibi(); return; }
   const list = rosterList(), isW = isCarried(m), mo = motion();
-  const growing = FX.grow && FX.grow.id === m.id && NOW < FX.grow.at, st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes after the moment
-  const bond = FX.bond && FX.bond.id === m.id ? NOW - FX.bond.at : null;   // ms into the bond event (negative while the action's moment plays)
+  const cuts = FX.cuts || [], growing = cuts.some(c => c.kind === 'grow' && c.id === m.id && NOW < c.at), st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes at its turn
+  const bc = cuts.find(c => c.kind === 'bond' && c.id === m.id), bond = bc ? NOW - bc.at : null;   // ms into the bond event (negative before its turn)
   panel(24, 40, 402, 280, C.ink, C.slate);
   const h = callAnim(m);
   let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
-  if (bond != null && bond >= 0 && bond < 900) sp = { at: FX.bond.at };   // the bond: the species moment again, short
+  if (bond != null && bond >= 0 && bond < 900) sp = { at: bc.at };   // the bond: the species moment again, short
   const sa = sp ? (mo ? NOW - sp.at : 900) : 0;
   let x = 97, y = 52, pose = 'idle', fr = mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
@@ -4284,7 +4295,7 @@ function lineFor() {
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
       if (!m) { if (S.exp) return L1('', CARE_TEXT.leadsThisExp, bk);   // the Lead card: read-only mid-expedition
         const nx = nextLead(), g = carriedMibis().filter(isAdult).length;
-        return nx ? L1(CARE_TEXT.leadLabel(nx.name), CARE_TEXT.leadCtx, bk) : L1('', g === 1 ? CARE_TEXT.onlyGrown : CARE_TEXT.noOneGrown, bk); }
+        return nx ? L1(CARE_TEXT.leadLabel(nx.name), CARE_TEXT.leadCtx, bk) : L1('', !carriedMibis().length ? CARE_TEXT.noOneWith : g === 1 ? CARE_TEXT.onlyGrown : CARE_TEXT.noOneGrown, bk); }
       if (isCarried(m)) return canSwap() ? L1(CARE_TEXT.leaveLabel(m.name), CARE_TEXT.leaveCtx, bk) : L1(CARE_TEXT.visitLabel(m.name), CARE_TEXT.visitCtx, bk);
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, bk, !canSwap() || S.carried.length >= CARRY_MAX); }   // a mibi at home shows only docked
     case 'active': { const m = shownMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');

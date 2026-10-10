@@ -515,12 +515,13 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
     FX: {}, viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
     panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
-    CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", takeOne: "take one at the Station", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
+    CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", noOneWithT: "No one with you", takeOne: "dock to take one along", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
   const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
-  assert.ok(said.includes("No partner") && said.includes("take one at the Station") && said.includes("Caves · needs a digging partner"));
+  assert.ok(said.includes("No one with you") && said.includes("dock to take one along") && said.includes("Caves · needs a digging partner"), "none carried: No one with you (ruling 19:21)");
+  assert.ok(!said.includes("No partner"), "No partner only when juveniles are carried");
   assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
   for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
   assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
@@ -659,4 +660,32 @@ test("Cargo, no creature met: the moments line moves under 'No creatures met yet
 });
 test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
   assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
+});
+
+// ---- The UI designer's rulings (19:21) and the docking copy (c7cbfa4) ----
+test("careQueue: bonds first in carried order, 2400 ms each; then one grow-up cut per mibi, 1200 ms apart; input held to 300 ms after the last cut", () => {
+  const q = vm.runInContext(source("careQueue") + "\n" + source("GROW_MS") + ";careQueue", vm.createContext({ BOND_MS: 2400 }));
+  const ev = (id, o) => Object.assign({ m: { id }, bonded: false, grown: false }, o);
+  // a Walk where three grow: cuts at 2400, 3600, 4800, held to 5100
+  let r = q([ev(1, { grown: true }), ev(2, { grown: true }), ev(3, { grown: true })], 2400);
+  assert.deepEqual(plain(r.cuts), [{ kind: "grow", id: 1, at: 2400 }, { kind: "grow", id: 2, at: 3600 }, { kind: "grow", id: 3, at: 4800 }]); assert.equal(r.lock, 5100);
+  // bonds play first, in carried order, then the grow cuts follow at 1200 ms steps
+  r = q([ev(1, { grown: true }), ev(2, { bonded: true }), ev(3, { bonded: true }), ev(4, { grown: true })], 2400);
+  assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 2, at: 2400 }, { kind: "bond", id: 3, at: 4800 }, { kind: "grow", id: 1, at: 7200 }, { kind: "grow", id: 4, at: 8400 }]);
+  assert.equal(r.lock, 8700);
+  // a Tend that bonds: after the 1.8 s moment, held to the end of the bond
+  r = q([ev(1, { bonded: true })], 1800); assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 1, at: 1800 }]); assert.equal(r.lock, 4200);
+  r = q([ev(1, { grown: true })], 1800); assert.equal(r.lock, 2100, "one grow: 300 ms after its cut");
+  assert.equal(q([ev(1)], 1800).cuts.length, 0); assert.equal(q([ev(1)], 1800).lock, 300);
+  // the page applies them in turn: each cut moves the view; a mibi shows juvenile until its own cut
+  assert.match(source("drawActive"), /for \(const c of FX\.cuts \|\| \[\]\) if \(!c\.done && NOW >= c\.at\) \{ c\.done = 1; S\.ui\.aId = c\.id; \}/);
+  assert.match(source("careLines"), /careQueue\(evs, dur\)/);
+});
+test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to the Station", () => {
+  const T = vm.runInContext(source("TEND_MOMENT") + "\n" + source("listWords") + "\n" + PAGE.match(/^const CARE_TEXT = \{$[^]*?^\};$/m)[0] + "\n;CARE_TEXT", vm.createContext({}));
+  assert.equal(T.takeOne, "dock to take one along"); assert.equal(T.takeAlong, "take mibis along"); assert.equal(T.whenDocked, "when docked");
+  assert.ok(!/'[^'\n]*(take one at the Station|dock at the Station|lift at the Station|consignment)[^'\n]*'/.test(PAGE), "no retired docking words in any string");
+});
+test("the Lead card's context: docked with no one carried reads 'no one with you'", () => {
+  assert.match(source("lineFor"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
 });
