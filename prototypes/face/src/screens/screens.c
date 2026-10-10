@@ -84,7 +84,7 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
     char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
     snprintf(base, sizeof base, "regions.%s.forms", key);   /* a list's forms (listPitch): a form with no upTo, two with one upTo or a grid shorter than its upTo is refused at load */
     snprintf(p, sizeof p, "regions.%s.layout", key); int lp = 0; for (int j = 0, nl = spec_len(screen, p); j < nl; j++) { char q[200], w[24]; snprintf(q, sizeof q, "%s.%d", p, j); if (spec_str(screen, q, w, sizeof w) > 0 && strcmp(w, "listPitch") == 0) lp = 1; }
-    if (lp && spec_len(screen, base) > 0) { int out[LAYOUT_ITEMS][4]; snprintf(p, sizeof p, "regions.%s", key); if (layout_list_pitch(screen, p, 0, out, NULL) < 0) { snprintf(err, (size_t)cap, "spec %s: %s.forms: a form with no upTo, two forms with one upTo or a grid shorter than its upTo", screen, p); return -1; } }
+    if (lp && spec_len(screen, base) > 0) { snprintf(p, sizeof p, "regions.%s", key); if (layout_list_form(screen, p, 0, NULL, 0) < 0) { snprintf(err, (size_t)cap, "spec %s: %s.forms: a form with no upTo, two forms with one upTo or a grid shorter than its upTo", screen, p); return -1; } }
     snprintf(base, sizeof base, "regions.%s.name.plate", key); if (spec_len(screen, base) < 0) continue;
     char series[48]; snprintf(p, sizeof p, "%s.series", base);
     if (spec_str(screen, p, series, sizeof series) <= 0) { snprintf(err, (size_t)cap, "spec %s: the name plate of %s has no series", screen, key); return -1; }

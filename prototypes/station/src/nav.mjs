@@ -22,7 +22,7 @@ export const upFrom = (nav, place) => parentOf(nav, place);
 
 // --- the room keys -----------------------------------------------------------------------------------------------------------------
 // Each opens the top of its room from anywhere, even from inside it. `leaving` lists the places whose unpaid choices a room key drops.
-export const ROOM_KEYS = { home: "home", research: "pods.collection", library: "library", habitat: "vivarium" };
+export const ROOM_KEYS = { home: "home", research: "pods.collection", library: "library.spread", habitat: "vivarium" };   // each is the room key's screen and state in frame.json navigation.roomKeys
 export const DROPS_ON_ROOM_KEY = ["create", "cross"];
 export const roomTop = (key) => ROOM_KEYS[key] || null;
 

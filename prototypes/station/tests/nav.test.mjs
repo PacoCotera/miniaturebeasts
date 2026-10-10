@@ -32,7 +32,8 @@ test("the back words: Home none, the titles, the pod's label under the overview,
 
 test("the room keys open the top of their room, Create and Cross are the places whose unpaid choices a room key drops", () => {
   assert.deepEqual(Object.keys(nav.roomKeys).sort(), Object.keys(N.ROOM_KEYS).sort());
-  assert.equal(N.roomTop("research"), "pods.collection"); assert.equal(N.roomTop("library"), "library"); assert.equal(N.roomTop("habitat"), "vivarium"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
+  for (const k of Object.keys(nav.roomKeys)) assert.equal(N.roomTop(k), [nav.roomKeys[k].screen, nav.roomKeys[k].state].filter(Boolean).join("."), "the room key " + k + " opens what frame.json says");
+  assert.equal(N.roomTop("research"), "pods.collection"); assert.equal(N.roomTop("library"), "library.spread"); assert.equal(N.roomTop("habitat"), "vivarium"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
   assert.deepEqual(N.DROPS_ON_ROOM_KEY, ["create", "cross"]);
 });
 

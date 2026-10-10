@@ -27,11 +27,10 @@ void home_key(int code);
 int home_tick(uint32_t now);
 /* Home's compositions (screens/home_builds.c): a module of the column, the name tag, the rest knob and a resident's waiting lamp */
 void build_module(const char *key, int dy, const char *lamp);
-void build_nameTag(const char *name, const int box[4], int lift, int out[4]);
+void build_nameTag(const char *spec, const char *glass, const char *name, const int box[4], int lift, int out[4]);   /* the name tag for the screen of `spec`, over its window region `glass` */
 void build_restKnob(int focused);
 const char *home_lamp_pic(const char *state);   /* frame.json regions.marks.lamp12.<state>, the signed 12 × 12 lamp picture of a state */
-void builds_context(int vivarium);   /* 1: the compositions below read the `vivarium` spec (the whole), 0: `home` */
-void build_bayStrip(const char *cur, int box[4]);   /* the Vivarium's strip of bays (vivarium.json regions.strip, tiles); box: the focused tile's box, or zeros */
+void build_bayStrip(const char *spec, const char *cur, int box[4]);   /* the Vivarium's strip of bays (vivarium.json regions.strip, tiles); box: the focused tile's box, or zeros */
 void build_waitingLamp(const char *id, int x, int y, int shown);
 /* Cargo (screens/cargo.c): its words by the state the props name, and its keys */
 void cargo_words(void);

@@ -15,11 +15,16 @@ export function idleLine(m, I) {
   return T[k.key];
 }
 
+// The Vivarium's painting of a light (frame.json idle.regions.vivarium, one a light): the picture Idle shows whole and the Vivarium's whole shows rows 120 to 560 of; one request for both, so a light's painting is on the face once.
+export function paintingOf(req, frame, light) {
+  const I = frame.idle, size = I.regions.vivarium.rect.slice(2);
+  return req({ kind: "slot", id: `idle-vivarium-${light}:${size.join("x")}`, master: `${I.light.pictures[light]}-${size.join("x")}`, size, until: "Idle's Vivarium master (the light)" });
+}
+
 export function idleBuild(m, frame) {
   const I = frame.idle, R = I.regions, requests = [], req = (r) => { requests.push(r); return r.id; };
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, Placeholders on Idle)" });
-  const size = R.vivarium.rect.slice(2);
   const lw = livingOf(m, R, req, ph, frame.light);
-  const vivarium = { picture: req({ kind: "slot", id: `idle-vivarium-${m.light}:${size.join("x")}`, master: `${I.light.pictures[m.light]}-${size.join("x")}`, size, until: "Idle's Vivarium master (the light)" }) };
+  const vivarium = { picture: paintingOf(req, frame, m.light) };
   return { props: { idle: true, regions: { vivarium, residents: lw.residents, bed: lw.bed }, frame: { idle: { line: idleLine(m, I) } } }, requests };
 }

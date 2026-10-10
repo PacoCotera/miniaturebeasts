@@ -2,35 +2,35 @@
  "_note": "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, twelve residents, and the walk 8000 ms in: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "vivarium-docked": {
-   "hash": "61353e42",
+   "hash": "6d84e04d",
    "png": "vivarium-docked.png"
   },
   "vivarium-away": {
-   "hash": "86930e0d",
+   "hash": "80fc3175",
    "png": "vivarium-away.png"
   },
   "vivarium-mibi-out": {
-   "hash": "720f3e0b",
+   "hash": "b10f2365",
    "png": "vivarium-mibi-out.png"
   },
   "vivarium-empty": {
-   "hash": "b5bfa82b",
+   "hash": "b64dfd25",
    "png": "vivarium-empty.png"
   },
   "vivarium-tile": {
-   "hash": "b0928ed9",
+   "hash": "db1232b4",
    "png": "vivarium-tile.png"
   },
   "vivarium-sleeper": {
-   "hash": "1bf67633",
+   "hash": "0fcfaa03",
    "png": "vivarium-sleeper.png"
   },
   "vivarium-twelve": {
-   "hash": "e30f4bb5",
+   "hash": "ccc598b7",
    "png": "vivarium-twelve.png"
   },
   "vivarium-walk-8000ms": {
-   "hash": "27a640b9",
+   "hash": "99a1be97",
    "png": "vivarium-walk-8000ms.png"
   }
  }

@@ -405,7 +405,7 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
 test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip is one mibi up close's; its focus graph plays its vectors with ui/focus.mjs", () => {
   const vv = rd("../specs/station/vivarium.json"), hab = rd("../specs/station/habitat.json"), R = vv.regions, B = boxesOf("18-vivarium-whole.svg"), A = boxesOf("18a-vivarium-whole-away.svg"), E = boxesOf("18b-vivarium-whole-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
+  assert.deepEqual(vv.regions.tiles.forms, hab.regions.tiles.forms, "the whole's strip is one mibi up close's: the same forms"); lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
   for (const set of [B, A, E]) { is(R.window.rect, "window", set); is(R.strip.rect, "strip", set); }
   is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); assert.ok(!E.has(R.bed.rect.join(",")), "no bed drawn on the empty whole");
   // the same place as Idle, 80 px higher; the strip where one mibi up close has it

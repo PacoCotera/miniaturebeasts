@@ -79,11 +79,8 @@ int layout_page_grid_at(const char *spec, const char *page, int px, int py, int 
   return count;
 }
 
-void layout_place_rect(const char *spec, const char *collection, int i, int out[4]) {
-  char L[400]; snprintf(L, sizeof L, "%s.places", collection); int cols = ia(spec, L, "grid", 0, 1);
-  out[0] = ia(spec, L, "first", 0, 0) + ia(spec, L, "pitch", 0, 0) * (i % cols); out[1] = ia(spec, L, "first", 1, 0) + ia(spec, L, "pitch", 1, 0) * (i / cols);
-  out[2] = ia(spec, L, "first", 2, 0); out[3] = ia(spec, L, "first", 3, 0);
-}
+static void pitch_rect(const char *spec, const char *t, int i, int out[4]);
+void layout_place_rect(const char *spec, const char *collection, int i, int out[4]) { char L[400]; snprintf(L, sizeof L, "%s.places", collection); pitch_rect(spec, L, i, out); }
 void layout_kin_rect(const char *spec, const char *kin, int i, int out[4]) {
   out[0] = ia(spec, kin, "first", 0, 0) + ia(spec, kin, "pitch", 0, 0) * i; out[1] = ia(spec, kin, "first", 1, 0) + ia(spec, kin, "pitch", 1, 0) * i;
   out[2] = ia(spec, kin, "first", 2, 0); out[3] = ia(spec, kin, "first", 3, 0);
@@ -94,26 +91,34 @@ int layout_plate_width(const char *spec, const char *name, int textWidth) {
 }
 int layout_stamp_cell(int n, int inner, int least) { int c = inner / (n + 2); return c < least ? least : c; }
 
-int layout_list_pitch(const char *spec, const char *region, int n, int out[LAYOUT_ITEMS][4], int *form) {
-  char base[300]; snprintf(base, sizeof base, "%s.forms", region); int nf = spec_len(spec, base), best = -1, bestUp = 1 << 30;
-  if (nf <= 0 || n < 0) return -1;
-  for (int i = 0; i < nf; i++) {
-    char key[48], v[2], p[400]; if (!spec_member(spec, base, i, key, sizeof key, v, sizeof v)) return -1;
-    snprintf(p, sizeof p, "%s.%s", base, key); int up = ip(spec, p, "upTo", 0), g0 = ia(spec, p, "grid", 0, 0), g1 = ia(spec, p, "grid", 1, 0);
+/* the form of a list for n items: its path in base (the list itself when it has no forms), its name and its upTo; -1 when refused */
+static int list_form(const char *spec, const char *list, int n, char *base, int bcap, char *name, int ncap) {
+  char fb[300]; snprintf(fb, sizeof fb, "%s.forms", list); int nf = spec_len(spec, fb), best = -1, bestUp = 1 << 30;
+  if (name && ncap > 0) name[0] = 0;
+  if (n < 0) return -1;
+  if (nf <= 0) { snprintf(base, (size_t)bcap, "%s", list); return 0; }
+  for (int k = 0; k < nf; k++) {
+    char key[48], v[2], p[400]; if (!spec_member(spec, fb, k, key, sizeof key, v, sizeof v)) return -1;
+    snprintf(p, sizeof p, "%s.%s", fb, key); int up = ip(spec, p, "upTo", 0), g0 = ia(spec, p, "grid", 0, 0), g1 = ia(spec, p, "grid", 1, 0);
     if (up < 1 || g0 * g1 < up) return -1;
-    for (int j = 0; j < i; j++) { char k2[48], q[400]; if (spec_member(spec, base, j, k2, sizeof k2, v, sizeof v)) { snprintf(q, sizeof q, "%s.%s", base, k2); if (ip(spec, q, "upTo", 0) == up) return -1; } }
-    if (up >= n && up < bestUp) { best = i; bestUp = up; }
+    for (int j = 0; j < k; j++) { char k2[48], q[400]; if (spec_member(spec, fb, j, k2, sizeof k2, v, sizeof v)) { snprintf(q, sizeof q, "%s.%s", fb, k2); if (ip(spec, q, "upTo", 0) == up) return -1; } }
+    if (up >= n && up < bestUp) { best = k; bestUp = up; }
   }
-  if (best < 0 || n > LAYOUT_ITEMS) return -1;
-  char key[48], v[2], p[400]; spec_member(spec, base, best, key, sizeof key, v, sizeof v); snprintf(p, sizeof p, "%s.%s", base, key);
-  int g0 = ia(spec, p, "grid", 0, 1);
-  for (int i = 0; i < n; i++) {
-    out[i][0] = ia(spec, p, "first", 0, 0) + (i % g0) * ia(spec, p, "pitch", 0, 0); out[i][1] = ia(spec, p, "first", 1, 0) + (i / g0) * ia(spec, p, "pitch", 1, 0);
-    out[i][2] = ia(spec, p, "first", 2, 0); out[i][3] = ia(spec, p, "first", 3, 0);
-  }
-  if (form) *form = best;
-  return n;
+  if (best < 0) return -1;
+  char key[48], v[2]; spec_member(spec, fb, best, key, sizeof key, v, sizeof v); snprintf(base, (size_t)bcap, "%s.%s", fb, key); if (name && ncap > 0) snprintf(name, (size_t)ncap, "%s", key);
+  return bestUp;
 }
+static void pitch_rect(const char *spec, const char *t, int i, int out[4]) {
+  int cols = ia(spec, t, "grid", 0, 1);
+  out[0] = ia(spec, t, "first", 0, 0) + ia(spec, t, "pitch", 0, 0) * (i % cols); out[1] = ia(spec, t, "first", 1, 0) + ia(spec, t, "pitch", 1, 0) * (i / cols);
+  out[2] = ia(spec, t, "first", 2, 0); out[3] = ia(spec, t, "first", 3, 0);
+}
+int layout_list_pitch(const char *spec, const char *path, int n, int i, int out[4]) {
+  char base[400]; out[0] = out[1] = out[2] = out[3] = 0;
+  int up = list_form(spec, path, n, base, sizeof base, NULL, 0); if (up < 0 || i < 0 || i >= n) return -1;
+  pitch_rect(spec, base, i, out); return up;
+}
+int layout_list_form(const char *spec, const char *path, int n, char *name, int cap) { char base[400]; return list_form(spec, path, n, base, sizeof base, name, cap); }
 int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]) {
   char base[300]; snprintf(base, sizeof base, "%s.leafArc", region); int per = ip(spec, base, "perArc", 20), lw = ia(spec, region, "leaf", 0, 16), lh = ia(spec, region, "leaf", 1, 20);
   if (n < 0 || n > 2 * per || n > LAYOUT_LEAVES) return -1;
@@ -153,8 +158,8 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
     PUSH((w - mn) / st); PUSH((mx - mn) / st + 1);
   } else if (strcmp(rule, "leafArc") == 0 && na >= 1) {
     int b[LAYOUT_LEAVES][4], n = layout_leaf_arc(spec, path, a[0], b); PUSH(n < 0); PUSH(n < 0 ? 0 : n); for (int i = 0; i < n; i++) for (int j = 0; j < 4; j++) PUSH(b[i][j]);
-  } else if (strcmp(rule, "listPitch") == 0 && na >= 1) {
-    int b[LAYOUT_ITEMS][4], f = 0, n = layout_list_pitch(spec, path, a[0], b, &f); PUSH(n < 0); PUSH(n < 0 ? 0 : f); PUSH(n < 0 ? 0 : n); for (int i = 0; i < n; i++) for (int j = 0; j < 4; j++) PUSH(b[i][j]);
+  } else if (strcmp(rule, "listPitch") == 0 && na >= 2) {
+    int b[4], up = layout_list_pitch(spec, path, a[0], a[1], b); PUSH(up < 0); PUSH(up < 0 ? 0 : up); for (int j = 0; j < 4; j++) PUSH(b[j]);
   } else if (strcmp(rule, "stampCell") == 0 && na >= 3) {
     PUSH(layout_stamp_cell(a[0], a[1], a[2]));
   } else return -1;

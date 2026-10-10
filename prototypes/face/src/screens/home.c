@@ -244,9 +244,9 @@ void home_words(void) {
   ent_load(cur);
   { int st[4]; char ground[24]; spec_str("frame", "colours.stageGround", ground, sizeof ground);   /* the stage's ground under the bezel and the column, the frame's (as every screen's stage) */
     if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
-  word_livingWindow("home", "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"));
+  word_livingWindow("home", "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0);
   glass_group(cur);
-  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
+  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(sp(), g_viv ? "regions.window" : "regions.glass", g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
   build_restKnob(strcmp(cur, "knob") == 0);
   for (int m = 0; m < 5; m++) {
     int dy = strcmp(cur, MODULES[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODULES[m]), 2) : 0;
@@ -299,7 +299,7 @@ int home_tick(uint32_t now) {
    and the one line on its strip. The same living-window code as Home's glass, on the frame spec's rectangles. ---- */
 void idle_words(void) {
   g_idle = 1; ent_load("");
-  word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"));
+  word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"), 0, 0);
   glass_group("");
   g_idle = 0;
 }
@@ -308,32 +308,32 @@ void idle_words(void) {
    sleepers, the focused one's name tag, and the strip of bays along the foot (build_bayStrip); no card, no module, no word in the window but the name tag. The same code as Home's glass and Idle's painting on the spec's own rectangles. The empty state
    (no housed mibi) is the window, the strip's free bays and the frame. ---- */
 void vivarium_words(void) {
-  g_viv = 1; builds_context(1);
+  g_viv = 1;
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   ent_load(cur);
   { int st[4]; char ground[24]; spec_str("vivarium", "colours.stageGround", ground, sizeof ground);
     if (v_spec_rect("vivarium", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
-  word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"));
+  word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0));   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
   if (strcmp(v_pstr("state"), "rest") == 0) {
     glass_group(cur);
-    for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
+    for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(sp(), g_viv ? "regions.window" : "regions.glass", g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
   }
-  { int box[4]; build_bayStrip(cur, box);
+  { int box[4]; build_bayStrip("vivarium", cur, box);
     if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding()) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, "vivarium", "focus.targets.tile.ring", frame_ring()); } }
-  g_viv = 0; builds_context(0);
+  g_viv = 0;
 }
 
 /* the targets as the words drew them, in the props' order: a resident's box where the face stepped it, a tile's rectangle in its form (not lifted) */
 int vivarium_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
   snprintf(graph_key, (size_t)gcap, "graph"); g_viv = 1;
-  int n = v_plen("focus.targets"); if (n > cap) n = cap; int nt = v_plen("regions.tiles.items"), b[LAYOUT_ITEMS][4]; if (nt > LAYOUT_ITEMS) nt = LAYOUT_ITEMS;
-  int have = nt > 0 && layout_list_pitch("vivarium", "regions.tiles", nt, b, NULL) >= 0;
+  int n = v_plen("focus.targets"); if (n > cap) n = cap; int nt = v_plen("regions.tiles.items"); if (nt > 12) nt = 12;
+  int have = nt > 0 && layout_list_form("vivarium", "regions.tiles", nt, NULL, 0) >= 0;
   for (int i = 0; i < n; i++) {
     focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
     t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i;
     int r[4] = { 0, 0, 0, 0 };
     if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0) memcpy(r, g_e[e].box, sizeof r); }
-    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) memcpy(r, b[k], sizeof r); t->index = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) t->index++; }
+    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) layout_list_pitch("vivarium", "regions.tiles", nt, k, r); t->index = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) t->index++; }
     t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
   }
   g_viv = 0; return n;

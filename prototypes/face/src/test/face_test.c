@@ -158,8 +158,8 @@ static void metrics_vectors(const char *dir) {
 /* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */
 static void layout_vectors(const char *dir, const char *specs) {
   char path[512]; long len; char *js;
-  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium" };
-  for (int i = 0; i < 4; i++) {
+  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium", "habitat" };
+  for (int i = 0; i < 5; i++) {
     snprintf(path, sizeof path, "%s/%s.json", specs, FILES[i]); js = slurp(path, &len);
     if (!js || spec_load(FILES[i], js, (size_t)len) < 0) { check(0, path, js ? spec_error() : "cannot read"); free(js); return; }
     free(js);
@@ -194,8 +194,8 @@ static void layout_vectors(const char *dir, const char *specs) {
     static const char TTWO[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":2,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}}}}";
     static const char TNONE[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]}}}}}";
     static const char TSHORT[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":3,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]}}}}}";
-    char verr[200]; int lb[LAYOUT_ITEMS][4], lf = -1;
-    spec_load("tgood", TGOOD, sizeof TGOOD - 1); check(screens_vet_spec("tgood", verr, sizeof verr) == 0 && layout_list_pitch("tgood", "regions.t", 3, lb, &lf) == 3 && lf == 1 && lb[2][0] == 10 && layout_list_pitch("tgood", "regions.t", 5, lb, NULL) == -1, "listPitch: n takes the smallest form that holds it, and no form holds 5", "wrong");
+    char verr[200]; int lb[4], lf = -1;
+    spec_load("tgood", TGOOD, sizeof TGOOD - 1); check(screens_vet_spec("tgood", verr, sizeof verr) == 0 && (lf = layout_list_pitch("tgood", "regions.t", 3, 2, lb)) == 4 && lb[0] == 10 && lb[2] == 4 && layout_list_pitch("tgood", "regions.t", 2, 1, lb) == 2 && lb[0] == 10 && lb[2] == 8 && layout_list_pitch("tgood", "regions.t", 5, 0, lb) == -1 && layout_list_pitch("tgood", "regions.t", 3, 3, lb) == -1, "listPitch: n takes the smallest form that holds it, no form holds 5, an item past n is refused", "wrong");
     spec_load("ttwo", TTWO, sizeof TTWO - 1); check(screens_vet_spec("ttwo", verr, sizeof verr) == -1, "listPitch: two forms with one upTo are refused at load", "accepted");
     spec_load("tnone", TNONE, sizeof TNONE - 1); check(screens_vet_spec("tnone", verr, sizeof verr) == -1, "listPitch: a form with no upTo is refused at load", "accepted");
     spec_load("tshort", TSHORT, sizeof TSHORT - 1); check(screens_vet_spec("tshort", verr, sizeof verr) == -1, "listPitch: a grid shorter than its upTo is refused at load", "accepted");

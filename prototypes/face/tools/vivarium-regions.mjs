@@ -23,7 +23,7 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0) {
     if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); }
   for (const r of got("strip", "chrome")) must(eq(r.rect, R.strip.rect), `the strip ${r.rect} is not ${R.strip.rect}`);
   if (n > 0) {   // a region a tile (tile.<i>): its box is the list's pitch at its place, lifted by the spec's lift while the ring is on it (one tile at most)
-    const items = listPitch(R.tiles, n).items, lift = spec.focus.targets.tile.lift; let lifted = 0;
+    const items = Array.from({ length: n }, (_, i) => listPitch(R.tiles, n, i)), lift = spec.focus.targets.tile.lift; let lifted = 0;
     for (let i = 0; i < n; i++) {
       const parts = regions.filter((r) => r.id === `tile.${i}`); if (!parts.length) { out.push(`tile ${i} is not drawn`); continue; }
       for (const r of parts) {

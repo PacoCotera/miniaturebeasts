@@ -5,6 +5,7 @@
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), seen (the mibi last seen up close, or null) }
 import * as S from "../state.mjs";
 import { livingOf } from "./home-props.mjs";
+import { paintingOf } from "./idle-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
@@ -16,9 +17,8 @@ export function vivariumBuild(m, spec, frame, home) {
   const L = frame.light, lw = livingOf({ st, sv, settings, docked, light: m.light }, R, req, ph, L);
   const bayOf = new Map(housed.map((mb, i) => [String(mb.id), i]));
   const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));   // the walkers in bay order: the face steps them in this order
-  const [ww, wh] = R.window.rect.slice(2);
-  const regions = {
-    window: { picture: req({ kind: "slot", id: `vivarium-whole-${m.light}:${ww}x${wh}`, master: `vivarium-whole-${m.light}-${ww}x${wh}`, size: [ww, wh], until: "the whole's painting by the light (signed after V1)" }) },
+    const regions = {
+    window: { picture: paintingOf(req, frame, m.light) },   // rows 120 to 560 of Idle's painting of the light, 1:1 (the face shows the window; the plates stand while it is not on the face)
     residents: state === "rest" ? residents : [], bed: state === "rest" ? lw.bed : { state: "none", picture: lw.bed.picture, mark: "", sleepers: [] },
     tiles: { glyph: R.bed.markPicture, items: [] },
   };

@@ -11,15 +11,14 @@
 #include <stdio.h>
 #include <string.h>
 
-/* The compositions read the `home` spec, or the `vivarium` spec when the whole sets the context (builds_context(1)): there `regions.glass` is `regions.window`, and the name tag's text colour is `colours.nameTag.name`. */
-static int g_win;
-#define H (g_win ? "vivarium" : "home")
-void builds_context(int vivarium) { g_win = vivarium; }
-static const char *bp(const char *p) { return g_win && strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; }
-static int hi(const char *p, int d) { return spec_int(H, bp(p), d); }
-static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", bp(base), k), 0); }
-static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, bp(p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
+#define H "home"
+static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", base, k), 0); }
+static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(H, p, o, 24); return o; }
+/* the same, in the spec of the screen a composition is drawn for (the name tag and the bay strip serve Home and the Vivarium's whole) */
+static int si(const char *sp, const char *p, int d) { return spec_int(sp, p, d); }
+static int sk(const char *sp, const char *base, int k) { return spec_int(sp, v_fmt("%s.%d", base, k), 0); }
+static const char *scol(const char *sp, const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(sp, p, o, 24); return o; }
 
 /* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids are one table, frame.json regions.marks.lamp12; one node whichever state it is. A picture the host has not sent leaves a node of no size. */
 const char *home_lamp_pic(const char *state) {
@@ -44,24 +43,25 @@ void build_module(const char *key, int dy, const char *lampState) {
   v_region(key, LAYER_CHROME);
   word_panel(v_fmt("%s", key), x, y, r[2], r[3], colr("colours.module.fill"), colr("colours.module.edge"));
   v_rect(v_fmt("%s.top", key), x + 1, y + 1, r[2] - 2, 1, colr("colours.module.top"));
-  if (lampState) { v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState); }   /* the lamp logs as its own region, with the module's lift; the Vivarium's modules pass none: no lamp node */
+  v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState);   /* the lamp logs as its own region, with the module's lift */
   char w[40]; spec_str(H, v_fmt("strings.modules.%s", key), w, sizeof w);
   v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, colr("colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }
 
-/* the name tag: a panel and the name, 24 tall; its width the name's plus 16 rounded up to the 8 px grid, 48 at least; centred on the box, 12 px under the ring (top at feet + 24), over the box when it would pass 536,
-   slid to stay 8 px inside the glass. `lifted`: the box is the resident's as drawn (a sleeper does not lift). Returns the tag's rect in out. */
-void build_nameTag(const char *name, const int box[4], int lift, int out[4]) {
-  int h = hi("regions.nameTag.h", 24), pad = hi("regions.nameTag.pad", 8), px = hi("regions.nameTag.px", 16), tw = v_measure(name, px), w = tw + 2 * pad;
-  w = (w + 7) / 8 * 8; if (w < 48) w = 48;
+/* the name tag, for the screen whose spec is `sp` and whose window (Home's glass, the whole's window) is the region `glass`: a panel and the name, h tall (regions.nameTag); its width the name's plus twice the pad rounded up to the 8 px grid, 48 at least,
+   the widest the spec's max; centred on the box, 12 px under the ring (top at feet + 24), over the box (top = box.y − lift − 8 − h) when its bottom would pass 8 px above the window's bottom, slid to stay 8 px inside the window. `lift`: the box is the resident's
+   as drawn (a sleeper does not lift). Returns the tag's rect in out. */
+void build_nameTag(const char *sp, const char *glass, const char *name, const int box[4], int lift, int out[4]) {
+  int h = si(sp, "regions.nameTag.h", 24), pad = si(sp, "regions.nameTag.pad", 8), px = si(sp, "regions.nameTag.px", 16), round = si(sp, "regions.nameTag.round", 8), mn = si(sp, "regions.nameTag.min", 48), mx = si(sp, "regions.nameTag.max", 1 << 20);
+  int tw = v_measure(name, px), w = tw + 2 * pad; w = (w + round - 1) / round * round; if (w < mn) w = mn; if (w > mx) w = mx;
+  int gx = sk(sp, v_fmt("%s.rect", glass), 0), gy = sk(sp, v_fmt("%s.rect", glass), 1), gw = sk(sp, v_fmt("%s.rect", glass), 2), gh = sk(sp, v_fmt("%s.rect", glass), 3);
   int x = box[0] + v_half(box[2] - w), feet = box[1] + box[3], y = feet + 24;
-  int flip = hk("regions.glass.rect", 1) + hk("regions.glass.rect", 3) - 8;   /* the glass's bottom less 8: below it the tag goes over the box */
-  if (y + h > flip) y = box[1] - lift - 8 - h;
-  int gl = hi("regions.glass.rect.0", 24) + 8, gr = hi("regions.glass.rect.0", 24) + hi("regions.glass.rect.2", 640) - 8;
-  if (x < gl) x = gl; if (x + w > gr) x = gr - w;
+  if (y + h > gy + gh - 8) y = box[1] - lift - 8 - h;   /* the window's bottom less 8: below it the tag goes over the box */
+  if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
-  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, colr("colours.nameTag.fill"), colr("colours.nameTag.edge"));
-  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, colr(g_win ? "colours.nameTag.name" : "colours.nameTag.text"));
+  const char *ink = scol(sp, "colours.nameTag.text"); if (!*ink) ink = scol(sp, "colours.nameTag.name");   /* Home calls the name's colour `text`, the whole `name` */
+  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge"));
+  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, ink);
 }
 
 /* the rest knob on the bezel's bottom rail: 32 x 6, at rest at y 546, lifted to 544 while focused; settling from the lift while the `rest` event plays. A flat plate in the knob's three roles. */
@@ -81,20 +81,19 @@ void build_restKnob(int focused) {
    four nodes whichever it is, so a mibi going out or a bay filling never changes the order of the screen's nodes: a panel rect (none for a free bay), the thumbnail (a housed mibi's 48 x 48), the outline glyph (a mibi out with the Companion, centred where the
    thumbnail stands) and the dash outline (a free bay: 1 px `hairline`, 2 on 2 off, a composed picture with no ops while the bay is not free). A hidden node is the glyph's picture with a window of no size. `focus` is the tile the ring is on, lifted by the spec's
    tile lift. Writes the focused tile's box to box. */
-void build_bayStrip(const char *cur, int box[4]) {
-  int r[4], n = v_plen("regions.tiles.items"), form = 0, b[LAYOUT_ITEMS][4]; hrect("regions.strip.rect", r); if (box) box[0] = box[1] = box[2] = box[3] = 0;
-  v_region("strip", LAYER_CHROME); word_panel("strip", r[0], r[1], r[2], r[3], colr("colours.strip.fill"), colr("colours.strip.edge"));
-  if (n > LAYOUT_ITEMS) n = LAYOUT_ITEMS;
-  if (layout_list_pitch(H, "regions.tiles", n, b, &form) < 0) { v_error("word: the bay strip's forms hold no form for this many bays"); return; }
-  char fk[48], dummy[2]; spec_member(H, "regions.tiles.forms", form, fk, sizeof fk, dummy, sizeof dummy);
-  int tx = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
-  int gw = hk("regions.tiles.tile.outGlyph", 0), gh = hk("regions.tiles.tile.outGlyph", 1), lift = hi("focus.targets.tile.lift", 2);
-  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = colr("colours.tile.fill"), *dash = colr("colours.tile.free");
+void build_bayStrip(const char *sp, const char *cur, int box[4]) {
+  int r[4], n = v_plen("regions.tiles.items"); if (!v_spec_rect(sp, "regions.strip.rect", r)) r[0] = r[1] = r[2] = r[3] = 0; if (box) box[0] = box[1] = box[2] = box[3] = 0;
+  v_region("strip", LAYER_CHROME); word_panel("strip", r[0], r[1], r[2], r[3], scol(sp, "colours.strip.fill"), scol(sp, "colours.strip.edge"));
+  char fk[48]; if (n > 12 || layout_list_form(sp, "regions.tiles", n, fk, sizeof fk) < 0) { v_error("word: the bay strip holds twelve bays at most, and its forms must hold this many"); return; }
+  int tx = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
+  int gw = sk(sp, "regions.tiles.tile.outGlyph", 0), gh = sk(sp, "regions.tiles.tile.outGlyph", 1), lift = si(sp, "focus.targets.tile.lift", 2);
+  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = scol(sp, "colours.tile.fill"), *dash = scol(sp, "colours.tile.free");
   for (int i = 0; i < n; i++) {
     char P[64]; snprintf(P, sizeof P, "regions.tiles.items.%d", i);
     const char *id = v_pstr(v_fmt("%s.id", P)), *state = v_pstr(v_fmt("%s.state", P)), *pic = v_pstr(v_fmt("%s.picture", P));
     int housed = strcmp(state, "housed") == 0, out = strcmp(state, "out") == 0, free_ = !housed && !out;
-    int focused = strncmp(cur, "tile.", 5) == 0 && *id && strcmp(cur + 5, id) == 0, x = b[i][0], y = b[i][1] - (focused ? lift : 0), w = b[i][2], h = b[i][3];
+    int b[4]; layout_list_pitch(sp, "regions.tiles", n, i, b);
+    int focused = strncmp(cur, "tile.", 5) == 0 && *id && strcmp(cur + 5, id) == 0, x = b[0], y = b[1] - (focused ? lift : 0), w = b[2], h = b[3];
     if (focused && box) { box[0] = x; box[1] = y; box[2] = w; box[3] = h; }
     char nm[40], reg[24]; snprintf(reg, sizeof reg, "tile.%d", i); v_region(reg, LAYER_CHROME);   /* a region a tile: the log holds each tile's box */
     snprintf(nm, sizeof nm, "tile.%d", i); v_rect(nm, x, y, free_ ? 0 : w, free_ ? 0 : h, fill);

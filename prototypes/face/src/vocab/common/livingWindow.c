@@ -15,7 +15,7 @@ static const char *g_spec;
 static void wrect(const char *p, int r[4]) { if (!v_spec_rect(g_spec, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(g_spec, p, o, 24); return o; }
 
-void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture) {
+void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy) {
   g_spec = spec; int b[4] = { 0, 0, 0, 0 }, g[4], ground[4], foot[4]; char p[96], id[64];
   wrect(v_fmt("%s.rect", glass), g); wrect(v_fmt("%s.ground", glass), ground); wrect(v_fmt("%s.foot", glass), foot);
   if (bezel) {
@@ -38,7 +38,7 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
     v_rect(NAME("edge.t"), g[0], g[1], painted ? 0 : g[2], painted ? 0 : 1, COL("edge")); v_rect(NAME("edge.b"), g[0], g[1] + g[3] - 1, painted ? 0 : g[2], painted ? 0 : 1, COL("edge"));
     v_rect(NAME("edge.l"), g[0], g[1], painted ? 0 : 1, painted ? 0 : g[3], COL("edge")); v_rect(NAME("edge.r"), g[0] + g[2] - 1, g[1], painted ? 0 : 1, painted ? 0 : g[3], COL("edge"));
   }
-  if (painted) { v_name(region); v_sprite(NAME("master"), glassPicture, g[0], g[1], g[2], g[3]); }
+  if (painted) { v_name(region); v_sprite_window(NAME("master"), glassPicture, sx, sy, g[0], g[1], g[2], g[3]); }
 #undef NAME
 #undef COL
 }

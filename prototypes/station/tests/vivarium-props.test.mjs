@@ -88,9 +88,9 @@ test("the targets are the residents in bay order (sleepers in their bays' places
   { const { w, sv } = S0.empty, b = build(w, sv); assert.equal(b.line.ok, null); assert.equal(b.line.subject, "nobody lives here yet"); assert.equal(b.line.back, "Home"); }
 });
 
-test("the window's picture is the light's slot, the painting waiting on its way is the line's context", () => {
+test("the window's picture is Idle's painting of the light (no slot of its own), the painting waiting on its way is the line's context", () => {
   const { w, sv } = scenes().docked;
-  for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }), id = b.props.regions.window.picture; assert.equal(id, `vivarium-whole-${light}:1024x440`); assert.ok(b.requests.some((r) => r.id === id && r.kind === "slot")); }
+  for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }), id = b.props.regions.window.picture; assert.equal(id, `idle-vivarium-${light}:1024x568`); assert.ok(b.requests.some((r) => r.id === id && r.kind === "slot")); assert.ok(!b.requests.some((r) => /vivarium-whole/.test(r.id)), "no register entry of its own"); }
   const id = w.st.mibis[0].id; w.st.mibis[0].paint = { state: "sent" };
   assert.equal(build(w, sv, { focus: "resident." + id }).line.subject, "its painting is on its way");
 });
