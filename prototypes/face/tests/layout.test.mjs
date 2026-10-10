@@ -10,7 +10,7 @@ import path from "node:path";
 import { slantTabs, slantAt, pageSize, pageGrid, placeRect, kinRect, plateWidth, platePosition, stampCell, evaluate } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), specs = path.resolve(here, "../../ui/specs/station");
-const spec = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frame = spec("frame"), pods = spec("pods");
+const spec = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frame = spec("frame"), pods = spec("pods"), incubator = spec("incubator");
 
 test("the committed layout vectors are what derive.mjs gives today", () => {
   execFileSync(process.execPath, [path.resolve(here, "../tools/make-layout-vectors.mjs"), "--check"], { stdio: "pipe" });
@@ -18,7 +18,7 @@ test("the committed layout vectors are what derive.mjs gives today", () => {
 test("every case of the vectors evaluates to its expectation", () => {
   const { cases } = JSON.parse(readFileSync(path.join(here, "vectors/layout.json"), "utf8"));
   assert.ok(cases.length > 250);
-  for (const c of cases) assert.deepEqual(evaluate(c.rule, c.path.split(".").reduce((o, k) => o[k], c.spec === "frame" ? frame : pods), c.args), c.expect, `${c.rule} ${c.path} ${c.args}`);
+  for (const c of cases) assert.deepEqual(evaluate(c.rule, c.path.split(".").reduce((o, k) => o[k], ({ frame, pods, incubator })[c.spec]), c.args), c.expect, `${c.rule} ${c.path} ${c.args}`);
 });
 test("the slanted rail: full tabs to six, compact with the open one full to twelve, more is the UI designer's; centred runs snap down to the grid", () => {
   const R = frame.regions.rail;

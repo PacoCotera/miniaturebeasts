@@ -45,13 +45,14 @@ int prim_palette_count(void);
 int prim_palette_has(uint32_t rgb);
 int prim_palette_rgb(const char *name, uint32_t *rgb);   /* a palette colour by name: 0, or -1 when the palette has no such name */
 /* The composed picture's ops, JSON: [["h", x, y, len, "colour"], ["v", x, y, len, "colour"], ["dash", x, y, len, "h"|"v", on, off, "colour"], ["dot", x, y, "colour"],
-   ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"]] with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
+   ["lattice", x, y, w, h, mod, [[ax, ay], ...], "colour"], ["bayerPick", from, to, level, ox, oy]] (bayerPick: the picture of asset `to` where the Bayer cell at the screen position (ox + x, oy + y) is below `level`, else that of asset `from`; both are the picture's size) with x, y relative to the picture. One pixel wide, palette colours only, no anti-aliasing, no opacity.
    Returns the ops drawn, or -1 when the JSON or a colour name is refused. */
 int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
 /* Test mode: which layers show (1: chrome; 2: chrome and art; 3: all), and the logs the checks read. */
 void prim_set_pass(int pass);
 void prim_asset_layer(int handle, int layer);
+int prim_asset_layer_of(int handle);   /* the layer the host gave a picture (art or painted; art when it gave none) */
 /* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"table":n,"pictures":n} into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table); returns its length, or -1 if it does not fit. */
 int prim_log_json(char *buf, int cap);
 #endif

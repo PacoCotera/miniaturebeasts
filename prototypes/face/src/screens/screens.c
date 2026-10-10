@@ -76,6 +76,7 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
       for (int i = 0, n = spec_len(screen, "focus"); i < n; i++) {
         char key[48], dummy[2]; if (!spec_member(screen, "focus", i, key, sizeof key, dummy, sizeof dummy)) continue;
         snprintf(b, sizeof b, "focus.%s", key); int sl; const char *sg = spec_raw(screen, b, &sl); if (!sg || sg[0] != '{') continue;
+        { char gp[176]; int gl; snprintf(gp, sizeof gp, "focus.%s.graph", key); const char *own = spec_raw(screen, gp, &gl); if (own && own[0] == '{') { sg = own; sl = gl; snprintf(b, sizeof b, "focus.%.140s.graph", key); } }   /* a state that keeps its graph beside its targets (Create, Incubator): that graph */
         char why[160]; focus_graph_t *fg = focus_graph_parse(sg, sl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, b, why); return -1; } focus_graph_free(fg);
       } }
   for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
@@ -95,6 +96,7 @@ static void draw(void) {
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
+    else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); create_words(); }
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") >= 0) build_idleLine(); }   /* Idle: the living window above, its line last */
   else if (is_not_built()) not_built();
@@ -136,6 +138,7 @@ void screens_key(int code) {
   }
   if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) { home_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
+  if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }
   if (strcmp(screen, "pods") != 0 || spec_len("props", "regions") < 0 || !spec_has("pods")) return;
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
