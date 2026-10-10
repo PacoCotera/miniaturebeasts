@@ -10041,10 +10041,7 @@
   "rect": null,
   "src": "source/raw/vivarium-day.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by day: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (pass 94)",
-  "sha256": "21dd3b20491ddfbb2d67403801250802626d18b809c84c4646a91fccb39ed200",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60"
  },
  "idle-vivarium-dusk-1024x568": {
   "size": [
@@ -10054,10 +10051,7 @@
   "rect": null,
   "src": "source/raw/vivarium-dusk.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dusk: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (the day picture's edit: dusk is warmer and lower) (pass 94)",
-  "sha256": "e04f86587d2e0bcf124226c301ac5073a56133d286aa83514c7b9c7c8eaffc48",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c"
  },
  "idle-vivarium-night-1024x568": {
   "size": [
@@ -10066,10 +10060,7 @@
   ],
   "rect": null,
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
-  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x1.48 in linear light to a mean L* of 30.5) (pass 94)",
-  "sha256": "461cf198584af26952f308a76fd9f263e7fc3e04e823609371fbd85cdc7056ad",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x1.48 in linear light to a mean L* of 30.6) (pass 94)",
+  "sha256": "de75e05559ba33f2209395ffb8491366e58cc8dd4ee6bb7d4ca8dbc0e734ce14"
  }
 }
