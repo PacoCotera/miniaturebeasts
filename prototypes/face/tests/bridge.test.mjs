@@ -153,7 +153,7 @@ test("the palette passes: chrome alone and chrome with art have no pixel off the
   const f = await boot({ test: true }); frames(f, 2);
   const stray = new Uint8ClampedArray(8 * 8 * 4); for (let i = 0; i < 64; i++) stray.set([1, 2, 3, 255], i * 4);   // #010203 is in no palette
   const e = { ...env, picture: () => ({ w: 8, h: 8, data: stray }) };
-  f.setBackground(0x162a37);
+  f.setBackground(parseInt(palette.find(([n]) => n === "ground")[1].slice(1), 16));
   f.scene([{ id: "r", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, { id: "s", kind: "sprite", rect: [300, 300, 8, 8], asset: "x", layer: "painted" }, { id: "t", kind: "text", rect: [40, 100, 0, 0], colour: "ice", text: "Type", px: 16 }], e); frames(f);
   f.pass(1); assert.equal(f.offPalette(), 0, "chrome only"); f.pass(2); assert.equal(f.offPalette(), 0, "chrome and art"); f.pass(3); assert.equal(f.offPalette() >= 64, true, "the painted layer's stray colour appears in the full pass");
   f.scene([{ id: "r", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, { id: "s", kind: "sprite", rect: [300, 300, 8, 8], asset: "y", layer: "art" }], e); frames(f); f.pass(1); assert.equal(f.offPalette(), 0); f.pass(2); assert.ok(f.offPalette() >= 64, "an art-layer picture off the palette is caught by the second pass");

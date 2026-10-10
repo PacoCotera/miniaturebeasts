@@ -16,7 +16,7 @@ test("the WebAssembly face is LVGL 9.6 at 1024×600 and draws its empty display 
   assert.deepEqual([M._face_width(), M._face_height()], [1024, 600]);
   M._face_background(0x162a37); M._face_frame(0); M._face_frame(16);
   const fb = M._face_fb(), px = M.HEAPU8.subarray(fb, fb + 4);
-  assert.deepEqual([...px], [0x37, 0x2a, 0x16, 0xff]);   // B, G, R, A: the palette's `ground`, #162a37
+  assert.deepEqual([...px], [0x37, 0x2a, 0x16, 0xff]);   // B, G, R, A: the fixed scene's own ground #162a37 (its own colour, not the Station palette's)
   assert.equal(M._face_dirty_count(), 0, "a second frame with nothing changed redraws nothing");
 });
 
