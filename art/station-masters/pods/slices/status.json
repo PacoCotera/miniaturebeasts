@@ -3215,9 +3215,9 @@
   "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director) at 1x: L* 30.5, key R-B 58, sat 63, 0.0 percent above L* 70, but the ground reads spotlit and blown orange, not night: the art director's own rule (ground 38-45, mean >= 30) forced it; revised night rule sent (mean 24-28, ground 30-36, even warm lamp spill, no clipped patches, at most 3 percent above L* 70)"
+  "note": "pass 112: Idle's night regraded to the revised night rule by hand (mean L* 24.6, background 16.7, ground 35.5, 0.0 percent above L* 70, R above B, key R-B 52, sat 64); awaiting the art director's judgement (not signed)"
  },
  "home-bay-shut-176x72": {
   "status": "signed",
@@ -3280,9 +3280,9 @@
   "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-night-192x56": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director) at 1x: L* 33.1, key R-B 86 fits its glass night 30.6/51 (limits L* +3, R-B +40), but it is re-fitted to the regraded night"
+  "note": "pass 112: Home's bed by night re-fitted to the new glass night by hand (L* 27.2, key R-B 67 against its glass 24.8 / 44: limits +3 and +40 hold); awaiting the art director's judgement (not signed)"
  },
  "vivarium-near-day-544x408": {
   "status": "signed",
@@ -3330,9 +3330,9 @@
   "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director) at 1x: L* 30.6, key R-B 51, sat 49, 0.0 percent above L* 70, but the ground reads pale and daylit; as Idle night, under the revised night rule"
+  "note": "pass 112: the glass night regraded to the revised night rule (mean L* 24.8, background 16.9, ground 34.5, 0.0 percent above L* 70, R above B, key R-B 44, sat 50); awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-create": {
   "status": "signed",
@@ -3342,22 +3342,22 @@
  "dome-front-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "note": "pass 112: the chamber's housing rebuilt at 304 wide, ink inside the radius-152 arch, one window about 226 wide, no lit patches under the hood; awaiting the art director's judgement (not signed)"
  },
  "dome-back-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "note": "pass 112: the chamber rebuilt at the arch's full width, 304 (the housing redrawn by hand in sheet a3's material, one 226-wide window, its interior sheet a3's lamp-less wall with a drawn lamp and its moss bed; key R-B 74, sat 48); awaiting the art director's judgement (not signed)"
  },
  "dome-inside-standby-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "note": "pass 112: standby from the new back (a soft warm pool on the bed; key R-B 84, sat 48); awaiting the art director's judgement (not signed)"
  },
  "dome-inside-ready-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "note": "pass 112: ready from the new back (the light up toward cream; key R-B 90, sat 49); awaiting the art director's judgement (not signed)"
  },
  "base-336x96": {
   "status": "signed",
@@ -3367,12 +3367,12 @@
  "nest-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): judged with the rebuilt chamber; the bed must read inside the wider window"
+  "note": "pass 112: unchanged; to be judged in the wider window (the bed reads inside the new chamber at the foot of the window); awaiting the art director's judgement (not signed)"
  },
  "nest-front-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): judged with the rebuilt chamber; the bed must read inside the wider window"
+  "note": "pass 112: unchanged; to be judged in the wider window; awaiting the art director's judgement (not signed)"
  },
  "bud-early-128x160": {
   "status": "new",

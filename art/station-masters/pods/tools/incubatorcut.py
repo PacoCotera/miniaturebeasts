@@ -8,6 +8,8 @@ import numpy as np
 from PIL import Image, ImageFilter, ImageDraw
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 exec(open("tools/lightfit.py").read(), globals())
+def gblur(a_, sg):
+    fy = np.fft.fftfreq(a_.shape[0])[:, None]; fx = np.fft.rfftfreq(a_.shape[1])[None, :]; return np.fft.irfft2(np.fft.rfft2(a_) * np.exp(-2 * (np.pi * sg) ** 2 * (fx ** 2 + fy ** 2)), a_.shape)
 SRC = "source/raw/incubator-sheet-a3.jpg"; im = Image.open(SRC).convert("RGB"); a = np.asarray(im).astype(float); H, W, _ = a.shape
 bg = np.median(np.concatenate([a[:30].reshape(-1, 3), a[-30:].reshape(-1, 3)]), axis=0); dist = np.sqrt(((a - bg) ** 2).sum(2)); keyed = np.clip((dist - 12) / 22.0, 0, 1)
 def rgba(box):
@@ -21,35 +23,48 @@ def fit(arr, w, h, align="centre"):
 man = json.load(open("slices/manifest.json")); outs = {}
 def save(n, t, made):
     t.save(f"slices/{n}.png", optimize=True); outs[n] = t; man[n] = {"size": list(t.size), "rect": None, "src": SRC + " (gemini-3-pro-image)", "made": made + " (pass 111)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
-# --- the chamber: the opening by flood fill of what is not sage
-cb = (98, 40, 567, 727); ch = a[cb[1]:cb[3], cb[0]:cb[2]]; sage = np.array([131.0, 144.0, 119.0]); notsage = np.sqrt(((ch - sage) ** 2).sum(2)) > 40
-# the opening: the arch drawn on the picture (an ellipse on top, a rect with rounded corners below), cut by colour (what is not sage), so the hood lip stays frame; the largest piece, holes closed
-G = Image.new("L", (ch.shape[1], ch.shape[0]), 0); dg = ImageDraw.Draw(G); dg.ellipse([108 - 98 + 98 - 98 + 0, 150, 108 - 98 + 98 - 98 + 0 + 256, 150 + 280], fill=255) if False else None
-dg.ellipse([100, 135, 376, 430], fill=255); dg.rounded_rectangle([100, 290, 376, 548], radius=22, fill=255); geom = np.asarray(G) > 0
-op = notsage & geom      # every non-sage pixel inside the arch (the hood's shaded underside included), not only the connected piece
-opi = Image.fromarray((op * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(9)).filter(ImageFilter.MinFilter(9)); op = np.asarray(opi) > 0
-chal = keyed[cb[1]:cb[3], cb[0]:cb[2]]
-def tile(mask_img, source_alpha):
-    arr = np.dstack([ch, source_alpha * 255]); return fit(arr, 304, 272)
-op_f = np.asarray(opi.filter(ImageFilter.GaussianBlur(0.8))).astype(float) / 255.0
-front_a = chal * (1 - op_f); front, s_ch = tile(None, front_a)
-opd = np.asarray(opi.filter(ImageFilter.MaxFilter(11))).astype(float) / 255.0; back = None
-# the back is the interior: its pixels are the picture's, the part under the frame is the interior's own edge, repeated outward (the nearest opening pixel)
-from PIL import ImageOps
-inner = ch.copy(); idx = np.where(op)
-yy, xx = np.mgrid[0:op.shape[0], 0:op.shape[1]]
-def nearest_fill(img, mask):
-    out = img.copy(); m = mask.copy(); need = ~m
-    for _ in range(8):
-        pad = np.pad(out, ((1, 1), (1, 1), (0, 0)), mode="edge"); mp = np.pad(m, 1)
-        acc = np.zeros_like(out); cnt = np.zeros(m.shape)
-        for dy in (-1, 0, 1):
-            for dx in (-1, 0, 1):
-                mm = mp[1 + dy:1 + dy + m.shape[0], 1 + dx:1 + dx + m.shape[1]]; acc += pad[1 + dy:1 + dy + m.shape[0], 1 + dx:1 + dx + m.shape[1]] * mm[..., None]; cnt += mm
-        new = need & ~m & (cnt > 0); out[new] = acc[new] / cnt[new][:, None]; m = m | new
-    return out
-inner = nearest_fill(ch, op)
-back_arr = np.dstack([inner, opd * 255]); back, _ = fit(back_arr, 304, 272)
+# --- the chamber, rebuilt at the arch's full width (the art director's return: 184 px was too narrow). The housing is redrawn by hand in sheet a3's material (sage about (130, 144, 119), a flat matte paint a little darker toward the foot, a hairline edge, a shallow hood lip) on the dome's geometry: a half circle of radius 152 on (152, 152), the body straight down to y 272, so 304 wide; ONE arched window 226 wide (x 39 to 265), its top an ellipse of 113 x 105 on (152, 150), its sides straight down to y 236, rounded corners; the window's interior is sheet a3's own lamp and moss bed (scaled uniformly) on a plain lit wall.
+sage = np.array([131.0, 144.0, 119.0]); rng = np.random.default_rng(5); Wd, Hd = 304, 272; Yg, Xg = np.mgrid[0:Hd, 0:Wd].astype(float)
+def sup(w, h, f):
+    im_ = Image.new("L", (w * 4, h * 4), 0); f(ImageDraw.Draw(im_)); return np.asarray(im_.resize((w, h), Image.LANCZOS)).astype(float) / 255.0       # an anti-aliased shape, drawn at 4x
+def outer(d): d.pieslice([0, 0, 4 * 304 - 1, 4 * 304 - 1], 180, 360, fill=255); d.rectangle([0, 4 * 152, 4 * 304 - 1, 4 * 272 - 1], fill=255)
+def window(d, dx=0, dy=0):
+    d.pieslice([4 * (39 - dx), 4 * (45 - dy), 4 * (265 + dx), 4 * (255 - dy)], 180, 360, fill=255); d.rounded_rectangle([4 * (39 - dx), 4 * 148, 4 * (265 + dx), 4 * (236 + dy)], radius=4 * 18, fill=255, corners=(False, False, True, True))
+body = sup(Wd, Hd, outer); win = sup(Wd, Hd, window)
+SAGEC = np.array([130.0, 144.0, 119.0]); foot = np.clip((Yg - 200) / 72.0, 0, 1)[..., None]; hous = SAGEC * (1 - 0.14 * foot) * (1 + 0.012 * np.clip((152 - Yg) / 152.0, -1, 1))[..., None] * np.ones((Hd, Wd, 3))
+low = gblur(rng.standard_normal((Hd, Wd)), 6.0); hous = hous + (low * 40.0)[..., None] * np.array([1.0, 1.0, 0.8]); hous = hous + rng.standard_normal((Hd, Wd, 1)) * 1.2          # a soft painted unevenness and a fine grain
+lip_o = sup(Wd, Hd, lambda d: d.pieslice([4 * (39 - 11), 4 * (45 - 11), 4 * (265 + 11), 4 * (255 + 11)], 180, 360, fill=255)) * (Yg < 160)[..., None][..., 0]
+lip = np.clip(lip_o - win, 0, 1) * (Yg < 150)
+hous = hous * (1 - lip[..., None] * 0.0) + lip[..., None] * np.array([6.0, 6.0, 5.0])                                                  # the hood lip a little lighter, matte
+edge = np.clip(body - np.asarray(Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))).astype(float) / 255.0, 0, 1)
+wedge = np.clip(np.asarray(Image.fromarray((win * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3))).astype(float) / 255.0 - win, 0, 1); ledge = np.clip(np.asarray(Image.fromarray((lip_o * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))).astype(float) / 255.0 - 0, 0, 1)
+ledge = np.clip(lip_o - np.asarray(Image.fromarray((lip_o * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))).astype(float) / 255.0, 0, 1) * (Yg < 150)
+hair = np.array([92.0, 106.0, 84.0]); hous = hous * (1 - 0.6 * edge[..., None]) + hair * 0.6 * edge[..., None]; hous = hous * (1 - 0.7 * wedge[..., None]) + hair * 0.7 * wedge[..., None]; hous = hous * (1 - 0.45 * ledge[..., None]) + hair * 0.45 * ledge[..., None]
+feet = np.zeros((Hd, Wd)); feet[262:272, 0:6] = 1; feet[262:272, 298:304] = 1; hous = hous * (1 - 0.18 * feet[..., None])
+front = Image.fromarray(np.dstack([hous.clip(0, 255), body * (1 - win) * 255]).astype(np.uint8), "RGBA")
+# the interior: a plain lit wall (sheet a3's wall colours, a vignette to its edges), the hood's shadow under the lip, sheet a3's lamp and moss bed
+wall_top, wall_mid, wall_edge = np.array([214.0, 186.0, 140.0]), np.array([206.0, 183.0, 146.0]), np.array([195.0, 168.0, 131.0])
+ty = np.clip((Yg - 45) / 190.0, 0, 1)[..., None]; wall = wall_top * (1 - ty) + wall_mid * ty; vx = np.clip(np.abs(Xg - 152) / 113.0, 0, 1)[..., None] ** 2.2; wall = wall * (1 - vx) + wall_edge * vx
+hood_sh = np.clip(1 - (Yg - 45 - 5) / 34.0, 0, 1)[..., None] * 0.20; wall = wall * (1 - hood_sh) + hood_sh * np.array([120.0, 95.0, 66.0])
+wall = wall + gblur(rng.standard_normal((Hd, Wd)), 3.0)[..., None] * 5.0
+sc = 226.0 / 253.0
+def sprite(box, thr_fn):
+    x0, y0, x1, y1 = box; reg = a[y0:y1, x0:x1]; m = thr_fn(reg).astype(float); m = np.asarray(Image.fromarray((m * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.7))).astype(float) / 255.0
+    arr = np.dstack([reg, m * 255]); w2, h2 = round((x1 - x0) * sc), round((y1 - y0) * sc); return fit(arr, w2, h2)[0], (x1 - x0, y1 - y0)
+back_rgb = wall.copy()
+# the moss bed: sheet a3's own moss texture (its bottom rows, x 230 to 440, y 510 to 572), mirrored to cover the window's foot, under an undulating top edge with a soft hollow; the lamp: a small brown shade and a warm bulb, drawn
+tex = a[505:570, 214:446]; mh = 62; moss = np.zeros((Hd, Wd, 4)); ys0 = 236 - mh                                   # a straight crop (230 px wide, no mirroring): the bed fills the window's foot
+for x in range(Wd):
+    top = ys0 + 6 * np.sin(x / 19.0 + 0.7) + 3 * np.sin(x / 7.0) + 3 * (1 - np.exp(-((x - 152) / 70.0) ** 2))      # the hollow dips in the middle
+    for y in range(int(top) - 3, Hd):
+        t = float(np.clip((y - top) / 3.0 + 0.5, 0, 1)); ty_ = min(tex.shape[0] - 1, y - ys0 + 6); tx_ = min(tex.shape[1] - 1, max(0, x - 39)); moss[y, x, :3] = tex[ty_, tx_] * (0.85 + 0.15 * min(1.0, (y - top) / 40.0)); moss[y, x, 3] = t * 255
+back_img = Image.fromarray(back_rgb.clip(0, 255).astype(np.uint8), "RGB").convert("RGBA"); back_img.alpha_composite(Image.fromarray(moss.astype(np.uint8), "RGBA"))
+lamp = Image.new("RGBA", (Wd * 4, Hd * 4), (0, 0, 0, 0)); dl = ImageDraw.Draw(lamp)
+dl.rectangle([4 * 151, 4 * 45, 4 * 153, 4 * 55], fill=(96, 70, 44, 255)); dl.pieslice([4 * 132, 4 * 52, 4 * 172, 4 * 76], 180, 360, fill=(122, 86, 52, 255)); dl.ellipse([4 * 144, 4 * 63, 4 * 160, 4 * 78], fill=(255, 236, 170, 255))
+glw = np.exp(-(((Xg - 152) / 26.0) ** 2 + ((Yg - 72) / 22.0) ** 2))[..., None]; bi = np.asarray(back_img).astype(float); bi[..., :3] = bi[..., :3] * (1 - 0.35 * glw) + np.array([255.0, 224.0, 150.0]) * 0.35 * glw; back_img = Image.fromarray(bi.clip(0, 255).astype(np.uint8), "RGBA")
+back_img.alpha_composite(lamp.resize((Wd, Hd), Image.LANCZOS))
+win_d = np.asarray(sup(Wd, Hd, lambda d: window(d, 7, -7))).astype(float)                                                                 # the window dilated 7 px: the interior tucks under the frame
+back = Image.fromarray(np.dstack([np.asarray(back_img)[..., :3], win_d * 255]).astype(np.uint8), "RGBA")
 save("dome-front-304x272", front, "the chamber's housing and window frame (sage metal, one arched window, the opening cleared), cut from the sheet, scaled uniformly to the dome's 272 rows")
 back, brep = fit_light(back, warm=True); print("dome-back", brep)
 save("dome-back-304x272", back, "the chamber's warm interior (a plain lit wall, a small lamp, the moss bed with its hollow), empty, behind the housing")

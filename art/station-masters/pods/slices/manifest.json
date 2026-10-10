@@ -10066,11 +10066,11 @@
   ],
   "rect": null,
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
-  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 30.5) (pass 94)",
-  "sha256": "14098f4c0228adee6864da087c92e3da55d84341628e493508b2329f0d53af6a",
-  "status": "held",
+  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 24.6) (pass 94)",
+  "sha256": "d9a7a133adac1edd152e11d268bc6c610e1e663f2d03e224fa3c0c77d571e34d",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director) at 1x: L* 30.5, key R-B 58, sat 63, 0.0 percent above L* 70, but the ground reads spotlit and blown orange, not night: the art director's own rule (ground 38-45, mean >= 30) forced it; revised night rule sent (mean 24-28, ground 30-36, even warm lamp spill, no clipped patches, at most 3 percent above L* 70)"
+  "status_note": "pass 112: Idle's night regraded to the revised night rule by hand (mean L* 24.6, background 16.7, ground 35.5, 0.0 percent above L* 70, R above B, key R-B 52, sat 64); awaiting the art director's judgement (not signed)"
  },
  "home-bay-shut-176x72": {
   "size": [
@@ -10236,10 +10236,10 @@
   "rect": null,
   "src": "slices/idle-vivarium-night-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by night: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "3ed59482f4c4b8e6b3cfe1963e21be89d5e69c5731ee762bd720da061133fe73",
-  "status": "held",
+  "sha256": "6e85273325cd3c50caa20f689ec70bcb1677cc729b2f9a7483538027d4cb6140",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director) at 1x: L* 33.1, key R-B 86 fits its glass night 30.6/51 (limits L* +3, R-B +40), but it is re-fitted to the regraded night"
+  "status_note": "pass 112: Home's bed by night re-fitted to the new glass night by hand (L* 27.2, key R-B 67 against its glass 24.8 / 44: limits +3 and +40 hold); awaiting the art director's judgement (not signed)"
  },
  "vivarium-near-day-544x408": {
   "size": [
@@ -10406,10 +10406,10 @@
   ],
   "src": "source/raw/home-glass-night.jpg (gemini-3-pro-image)",
   "made": "Home's glass by night: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's night light, cut to 640:488 and reduced with Lanczos, regraded by distribution (dark background, warm ground band, small glow pools) (pass 107)",
-  "sha256": "3da11bb319ba8c17002330c210aefeeda06e0dc19187d867e420b6631a5a1917",
-  "status": "held",
+  "sha256": "23ba963aec770861b0fed9a28d3a121945b7a207c50eb96410e72ee9be71b95b",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director) at 1x: L* 30.6, key R-B 51, sat 49, 0.0 percent above L* 70, but the ground reads pale and daylit; as Idle night, under the revised night rule"
+  "status_note": "pass 112: the glass night regraded to the revised night rule (mean L* 24.8, background 16.9, ground 34.5, 0.0 percent above L* 70, R above B, key R-B 44, sat 50); awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-create": {
   "size": [
@@ -10432,10 +10432,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the chamber's housing and window frame (sage metal, one arched window, the opening cleared), cut from the sheet, scaled uniformly to the dome's 272 rows (pass 111)",
-  "sha256": "3b8a4dc5d5324945f7fe343cf2ff708285e84c5eb55fddc460ac9facc67d13f1",
+  "sha256": "bfa4d896defee38ec6044ea2df00f1e2bd07c75e8bd99f93137f9d53154d7d9f",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "status_note": "pass 112: the chamber's housing rebuilt at 304 wide, ink inside the radius-152 arch, one window about 226 wide, no lit patches under the hood; awaiting the art director's judgement (not signed)"
  },
  "dome-back-304x272": {
   "size": [
@@ -10445,10 +10445,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the chamber's warm interior (a plain lit wall, a small lamp, the moss bed with its hollow), empty, behind the housing (pass 111)",
-  "sha256": "c22eda7eca61274df7db1deb9fd1a411b0468bdc4515204c789b980aebe51fa0",
+  "sha256": "7297fe513695210790e5e4620fd70b67e3f16af7392673e5f93ca4f800b463be",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "status_note": "pass 112: the chamber rebuilt at the arch's full width, 304 (the housing redrawn by hand in sheet a3's material, one 226-wide window, its interior sheet a3's lamp-less wall with a drawn lamp and its moss bed; key R-B 74, sat 48); awaiting the art director's judgement (not signed)"
  },
  "dome-inside-standby-304x272": {
   "size": [
@@ -10458,10 +10458,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the interior with a soft warm pool on the bed (about half a growing glow), standby (pass 111)",
-  "sha256": "07250bc2bb918569839ea06030d7daa22467d431aae3d7e37fd8d2e4d480e727",
+  "sha256": "8c89f49bb2e0b9f1fc8a6344a8e1c47a90c8e00e58acaf1e4f93540d3d2373e4",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "status_note": "pass 112: standby from the new back (a soft warm pool on the bed; key R-B 84, sat 48); awaiting the art director's judgement (not signed)"
  },
  "dome-inside-ready-304x272": {
   "size": [
@@ -10471,10 +10471,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the interior with its light up toward cream, ready (by hand: a cream light added on the wall and the bed, nothing else changed) (pass 111)",
-  "sha256": "4e8d3befe32c1b43fbafe6dececa538f0e1e8c6c0a82173d9cecec5e2d0d885f",
+  "sha256": "b75ee59e2953fd3790ef07bbc0f705abe16652bff33782640fb2485796fd930e",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
+  "status_note": "pass 112: ready from the new back (the light up toward cream; key R-B 90, sat 49); awaiting the art director's judgement (not signed)"
  },
  "base-336x96": {
   "size": [
@@ -10500,7 +10500,7 @@
   "sha256": "070b2d2cce42b0ac268ef6092a25396241df8eb192a063ed082fb696b3c96a45",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): judged with the rebuilt chamber; the bed must read inside the wider window"
+  "status_note": "pass 112: unchanged; to be judged in the wider window (the bed reads inside the new chamber at the foot of the window); awaiting the art director's judgement (not signed)"
  },
  "nest-front-208x48": {
   "size": [
@@ -10513,7 +10513,7 @@
   "sha256": "f12e5e6fdd7c7e83d75ef67ec45e33a8748e6db583283a20384b7b2b384dcbf6",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): judged with the rebuilt chamber; the bed must read inside the wider window"
+  "status_note": "pass 112: unchanged; to be judged in the wider window; awaiting the art director's judgement (not signed)"
  },
  "bud-early-128x160": {
   "size": [

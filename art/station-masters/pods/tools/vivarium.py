@@ -53,7 +53,7 @@ SRC = {"day": "vivarium-day", "dusk": "vivarium-dusk", "night": "vivarium-night-
 for k, s in SRC.items():
     im = fix_seams(cut(s))
     if k == "night":
-        exec(open("tools/nightdist.py").read(), globals()); im, nrep = night_dist(im, 330, 90, 190, pool_cap=True, rim_scale=0.5); rep["night detail"] = nrep
+        exec(open("tools/nightdist.py").read(), globals()); im, nrep = night_dist(im, 330, 90, 190, bg_target=16.0, pool_cap=True, rim_scale=0.5, ground_exact=35.5, bloom=(34.0, 0.9), knee_p=(42.0, 10.0, 8.0)); rep["night detail"] = nrep
     if k == "dawn":
         exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 700, goal=37); rep["dawn detail"] = drep
     n = f"idle-vivarium-{k}-1024x568"; im.save(f"slices/{n}.png", optimize=True); out[k] = im; rep[k] = {"mean L*": round(float(lstar(np.asarray(im).astype(float)).mean()), 1)}
