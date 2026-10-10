@@ -583,7 +583,7 @@
   "back": "strings.back, its cap at x 922"
  },
  "frameZones": {
-  "title": "strings.title, after the Vivarium key's icon (frame-room-vivarium-24; today's slice frame-room-habitat-24)",
+  "title": "strings.title, after the Vivarium key's icon (frame-room-vivarium-24)",
   "companion": "the top bar's Companion zone (station-layouts.md The frame): the glyph and its lamp, then three face places in carried order at (800, 8), (828, 8) and (856, 8), 24×24",
   "back": "← Vivarium, its cap at x 922"
  },

@@ -159,7 +159,7 @@ Each milestone pushes to main, passes CI, deploys to the sandbox and is playable
 | **M5 Library** | The spread, the Book, looks found and "more?", the stamp at 120 px, a pinned wish | The collection as a tome, a species page filling as pods are read |
 | **M6 Sitting and the whole journey** | Home's sitting slot, the welcome sitting, the ceremony, the crate; the CI journey complete; the README | The whole loop from a walk to a sitting's crate, every step playable |
 
-**Decided** (owner, 2026-10-09 11:27): every screen from here is built on the LVGL face, never on the JavaScript drawing layer. M5's Library is L2.1 of [lvgl-switch.md](lvgl-switch.md) §3, and M6's Sitting screen is built on the face at L2.5 or when its spec lands.
+Every screen from here is built on the LVGL face, never on the JavaScript drawing layer. M5's Library is the Library spread and the Book and the field guide of [lvgl-switch.md](lvgl-switch.md) §3 (slots 5 and 8), and M6's Sitting screen is built on the face in its slot (slot 9).
 
 ## 7. Risks
 
