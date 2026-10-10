@@ -3335,9 +3335,9 @@
   "note": "held (art director) at 1x: L* 30.6, key R-B 51, sat 49, 0.0 percent above L* 70, but the ground reads pale and daylit; as Idle night, under the revised night rule"
  },
  "room-bench-stage-create": {
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "note": "signed (art director) at 1x: L* 36.8, key R-B 35, sat 22, the overview's numbers; the ghost cut-out painted out"
+  "status": "held",
+  "signed_in": null,
+  "note": "held (art director): signed as a cut (L* 36.8, key R-B 35, sat 22), but it is the Pods overview's stage with the nest moved, and its panel crosses Create's work tray (x 584-712); replaced by the Create set's own stage"
  },
  "dome-front-304x272": {
   "status": "new",
