@@ -31,7 +31,8 @@ export function picture(id) {
 // The ids the frame names in its own spec (the room marks, the lamps, the caps, the sun): the same on every screen.
 const walk = (o, into) => { if (typeof o === "string") { if (assetEntry(o)) into.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v, into); };
 // The Companion's face mark, docked or away, as the frame resolves it (the species' name in lower case).
-const withMibiKey = () => { const id = hasWorld() ? S.withId(G.sv) : null, m = id == null ? null : mibiById(id); return m ? S.spName(m).toLowerCase() : null; };
+// The Companion's face mark names the mibi it is out with: its lead if carried, else the first it carries.
+const withMibiKey = () => { const c = hasWorld() ? S.carriedIds(G.st, G.sv) : [], id = c.includes(G.sv.lead) ? G.sv.lead : c[0] ?? null, m = id == null ? null : mibiById(id); return m ? S.spName(m).toLowerCase() : null; };
 function companionIds() {
   const fm = SPECS.frame.regions?.marks?.face || {}, key = withMibiKey(), out = [];
   for (const t of [fm.docked, fm.away, fm.empty]) if (typeof t === "string") out.push(key ? t.replace("{mibi}", key) : t);
@@ -112,7 +113,7 @@ export function createHost({ send, nowMs, afterSave = () => {} }) {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
     now: () => Date.now(), say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
     // Any key but ✓ disarms: the hatch, the bond and the gate wait for a second ✓ and nothing else.
-    disarm: () => { UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
+    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;

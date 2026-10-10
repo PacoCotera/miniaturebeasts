@@ -38,7 +38,7 @@ test("the room keys: the unpaid choices of Create and Cross are dropped; Researc
   assert.equal(INTENTS.frame.roomKey(h, "research"), true);
   assert.equal(h.ui.create, null); assert.equal(h.ui.cross, null); assert.deepEqual(h.went, ["pods"]); assert.equal(h.ui.pods.view, "collection"); assert.equal(h.ui.pods.cur, a.id); assert.equal(h.ui.pods.focus.cur, "place.0");
   h.ui.lib.f = "book"; INTENTS.frame.roomKey(h, "library"); assert.equal(h.ui.lib.f, "spread"); assert.equal(h.went.at(-1), "library");
-  h.ui.hab.bondArm = 1; INTENTS.frame.roomKey(h, "habitat"); assert.deepEqual([h.ui.hab.f, h.ui.hab.bondArm, h.went.at(-1)], ["stage", 0, "habitat"]);
+  h.ui.hab.wildArm = 1; INTENTS.frame.roomKey(h, "habitat"); assert.deepEqual([h.ui.hab.f, h.ui.hab.wildArm, h.went.at(-1)], ["stage", 0, "habitat"]);
   assert.equal(INTENTS.frame.roomKey(h, "nonsense"), false);
 });
 
@@ -70,11 +70,11 @@ test("the Library: ✓ on a known or met species opens its book, on an empty fra
   S.seedAdults(st, "S01", 5, 2, settings); INTENTS.library.openBook(h, "S01"); INTENTS.library.intent(h, "book", "confirm"); assert.equal(h.went.at(-1), "habitat"); assert.ok(h.ui.hab.id != null);
 });
 
-test("the Vivarium: the stage leans, the door takes the resident with you, the gate and the heart arm on the first ✓ and act on the second, any other key disarms, ← goes Home", () => {
+test("the Vivarium: the stage leans, the door takes the resident with you (a queued add), the gate arms on the first ✓ and acts on the second, any other key disarms, ← goes Home", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis, h = host(st); h.ui.hab.id = b.id;
   INTENTS.habitat.intent(h, "stage", "confirm"); assert.match(h.said.at(-1), /leans on the glass/); assert.equal(h.played.at(-1).kind, "moment");
-  INTENTS.habitat.intent(h, "door", "confirm"); assert.equal(S.effWithId(st, h.sv) === b.id || S.pendingWith(st, h.sv)?.id === b.id || h.sv.with === b.id || st.withReq?.id === b.id, true, "the door asked to take it");
   INTENTS.habitat.intent(h, "wild", "confirm"); assert.equal(h.ui.hab.wildArm, 1); assert.equal(b.released, false); INTENTS.habitat.intent(h, "wild", "back"); assert.equal(h.ui.hab.wildArm, 0); assert.equal(h.went.at(-1), "home");
+  INTENTS.habitat.intent(h, "door", "confirm"); assert.deepEqual(st.carryReqs, [{ seq: 1, op: "add", id: b.id }], "the door queued an add"); assert.deepEqual(S.projectCarried(st, h.sv), [b.id]); assert.deepEqual(S.carriedIds(st, h.sv), [], "nothing is carried until the Companion applies it");
   h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "wild", "confirm"); INTENTS.habitat.intent(h, "wild", "confirm");
   if (S.returnMibiBlock(st, h.sv, a)) assert.ok(h.said.at(-1)); else { assert.equal(a.released, true); assert.equal(h.ui.hab.id, null); }
 });

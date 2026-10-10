@@ -91,7 +91,7 @@ const assertFace = async (when) => {
 
 // 1. the fixture migrated: pods carry genomes from their seeds, the mibi keeps its id and name, the Companion's part is byte-identical
 let s = await st();
-expect(s.schema === 2, "schema 2 after the migration");
+expect(s.schema === 3, "schema 3 after the migration");
 expect(s.tray.length === 2 && s.tray[0].genome && s.tray[0].gs === 1111, "the pods keep their seeds and carry genomes");
 expect(s.mibis.length === 1 && s.mibis[0].id === 1 && s.mibis[0].name === "Dot" && s.mibis[0].code, "Dot keeps id and name and has a code");
 const svNow = await sv();
@@ -427,7 +427,7 @@ const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlac
   expect(!(await ui()).idle && (await focusNow()) === f0 && (await ui()).screen === "pods", "on Pods the first press on Idle wakes and the ring stays: " + JSON.stringify([await ui(), f0, await focusNow()]));
 }
 const stored = await page.evaluate(() => JSON.parse(localStorage.getItem("mb-save-v8")));
-expect(stored.st.schema === 2 && stored.st.tray.length === (await st()).tray.length && stored.st.mibis.length === (await st()).mibis.length && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
+expect(stored.st.schema === 3 && stored.st.tray.length === (await st()).tray.length && stored.st.mibis.length === (await st()).mibis.length && JSON.stringify({ ...stored, st: undefined }) === companionBefore, "the save round-trips and the Companion's part is untouched");
 // 8. the CI smoke's presses, from a fresh world with no save
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
