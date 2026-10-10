@@ -78,7 +78,7 @@ export function homeBuild(m, spec, frame) {
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : incState === "painting" ? "waiting" : "off"),
     chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}`, R.incubator.chamber.slice(2)),
-    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, filling: bud && !ready && total ? Math.min(19, Math.floor((progress * total - Math.floor(progress * total)) * 20)) : 0, emptyPicture: ph(`home-leaf-empty-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf, true), fullPicture: ph(`home-leaf-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf) },
+    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, filling: bud && !ready && total ? Math.min(19, Math.floor((progress * total - Math.floor(progress * total)) * 20)) : 0, emptyPicture: ph(`leaf-empty-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf, true), fullPicture: ph(`leaf-full-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;

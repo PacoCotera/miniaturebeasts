@@ -1,8 +1,9 @@
 /* The Incubator's binding table (lvgl-switch.md §2.2, §4 R; incubator.json): the words that draw each of its states (empty, growing, ready, hatch) in draw order, from the `incubator` spec and the props' regions, the frame's
-   words after (screens.c). bench, rail, the leaves on their two arcs, the chamber's back, the nest, the bud (and the ready bud's shape), the base with its plaque plate and word, the base's waiting lamp, the juvenile, the stamp label,
-   the code and the ribbon. No ring in any state: ✓ acts on the room. The nest's front, the window's front, the ready bud's front and the base's foot light are registered and not drawn (incubator.json placeholders).
-   The events: `growNow` (the leaves still to fill turn whole one by one over its length, in the leaves word), `wipe` (a tab turns read, its pips filling, in the rail word) and `hatch` (the chamber's back lifts 384 px in 600 ms clipped to
-   the stage, the bud cracks at 600 and 800 and goes at 1000, the juvenile stands at 1000, the ribbon shows at 1200, the juvenile steps out at 1400 and 1800; the hand-off at 2600 is the host's).
+   words after (screens.c). bench, rail, the leaves on their two arcs, the chamber's back, the nest, the bud (and the ready bud's shape), the nest's front, the window's front, the base (its master carries the plaque plate and the foot
+   light) with its plaque word, the base's waiting lamp, the juvenile, the stamp label, the code and the ribbon. No ring in any state: ✓ acts on the room. The ready bud's front is registered and not drawn (incubator.json placeholders).
+   The events: `growNow` (the leaves still to fill turn whole one by one over its length, in the leaves word), `wipe` (a tab turns read, its pips filling, in the rail word) and `hatch` (a still beat: the chamber stays as it stands, its
+   window open with no pane, and nothing moves; the bud keeps its ready picture and shape until the crack at 600, opens at 800 and goes at 1000, the juvenile stands at 1000 over the chamber, the ribbon shows at 1200, the juvenile steps
+   out at 1400 and 1800; the hand-off at 2600 is the host's).
    Every part has its node in every state from growing on (a part not shown has none of the size), so a minute passing, growNow and the hatch change nodes and never add or remove one (§2.2). A picture the host has not sent is a slot not yet filled. */
 #include "../layout/layout.h"
 #include "screens.h"
@@ -43,15 +44,6 @@ static void build_bench(void) {
 }
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
-/* the chamber's back: in the hatch its ready picture lifts 384 px by the Cargo travel's ease over 600 ms, whole pixels, clipped to the stage (0, 88, 1024, 474), and is not drawn after */
-static void build_dome(int t) {
-  int r[4]; crect("regions.dome.rect", r); const char *pic = v_pstr("regions.dome.back"); if (!has(pic)) return;
-  int dy = 0, gone = 0;
-  if (t >= 0) { int ms = ci("events.hatch.steps.1.ms", 600); if (t >= ms) gone = 1; else { int p = t * 1000 / ms; dy = layout_lerp(0, 384, layout_ease_io(p)); } }
-  int y = r[1] - dy, top = y < 88 ? 88 : y, bot = y + r[3] > 562 ? 562 : y + r[3], h = gone || bot <= top ? 0 : bot - top;
-  v_name("dome"); prim_node(v_id("dome.clip"), FN_CLIP, r[0], top, h ? r[2] : 0, h, 0, 1, 0);
-  if (h) v_sprite("dome", pic, r[0], y, r[2], r[3]); else v_sprite_hidden("dome", pic, r[0], y);   /* drawn clipped; after the lift a window of no size */
-}
 /* the bud: its five pictures and the ready shape are always nodes, one shown by the state (and the hatch's time): the wait's first half, the second, ready (with the shape), the crack at 600, the opening at 800, nothing at 1000 */
 static void build_bud(int t) {
   if (spec_len("props", "regions.bud") < 0) return;
@@ -62,11 +54,10 @@ static void build_bud(int t) {
   static const char *K[5] = { "early", "late", "ready", "crack1", "crack2" };
   for (int i = 0; i < 5; i++) { v_name("bud"); const char *pic = v_pstr(v_fmt("regions.bud.%s", K[i])); const char *id = v_fmt("bud.%s", K[i]);
     if (has(pic) && strcmp(which, K[i]) == 0) v_sprite(id, pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden(id, has(pic) ? pic : v_pstr("regions.bud.ready"), r[0], r[1]); }
-  { const char *pic = v_pstr("regions.bud.shape"); int on = has(pic) && strcmp(which, "ready") == 0 && strcmp(stage, "ready") == 0; v_name("bud"); if (on) v_sprite("bud.shape", pic, s[0], s[1], s[2], s[3]); else v_sprite_hidden("bud.shape", has(pic) ? pic : v_pstr("regions.bud.ready"), s[0], s[1]); }
+  { const char *pic = v_pstr("regions.bud.shape"); int on = has(pic) && strcmp(which, "ready") == 0 && (strcmp(stage, "ready") == 0 || strcmp(stage, "hatch") == 0);   /* ready, and in the hatch until the crack at 600 */ v_name("bud"); if (on) v_sprite("bud.shape", pic, s[0], s[1], s[2], s[3]); else v_sprite_hidden("bud.shape", has(pic) ? pic : v_pstr("regions.bud.ready"), s[0], s[1]); }
 }
 static void build_base(void) {
   picture("base", "base", "regions.base.rect", v_pstr("regions.base.picture"));
-  picture("base", "base.plate", "regions.base.plate", v_pstr("regions.base.plate"));
   { int r[4]; crect("regions.plaque.rect", r); int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); int tw = v_measure(w, px);
     const char *st = v_pstr("state"); v_region("plaque", LAYER_TYPE);
     v_text("plaque", w, cx - v_half(tw), ci("regions.plaque.lineTop", 502) + v_fdiv(20 - v_cap(px), 2), *w ? tw : 0, px, colr(v_fmt("colours.plaque.%s", strcmp(st, "hatch") == 0 ? "ready" : st))); }
@@ -102,9 +93,11 @@ void incubator_words(void) {
   build_bench();
   if (spec_len("props", "regions.rail") >= 0) word_rail(NULL);
   if (spec_len("props", "regions.leaves") >= 0) { v_name("leaves"); word_leavesArc(I, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), v_pint("regions.leaves.full", 0), v_pint("regions.leaves.rows", 0)); }
-  build_dome(t);
+  picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
   picture("nest", "nest", "regions.nest.rect", v_pstr("regions.nest.picture"));
   build_bud(t);
+  picture("nestFront", "nestFront", "regions.nestFront.rect", v_pstr("regions.nestFront.picture"));
+  picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.domeFront.picture"));
   build_base();
   build_juvenile(t);
   build_stamp();

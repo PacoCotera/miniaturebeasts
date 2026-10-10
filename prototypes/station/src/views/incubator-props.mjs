@@ -28,7 +28,7 @@ export function incubatorBuild(m, spec, pods) {
   const ready = !!B && !gs && S.budReady(st, settings, now);
   const state = hatch ? "hatch" : !B ? "empty" : ready ? "ready" : "growing";
   const regions = {};
-  regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Incubator stage master"), slot(req, R.bench.until, R.bench.rect, "the room master")] };
+  regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Incubator stage master (signed)")] };
 
   // the bud being shown: the one in the chamber, or while the hatch plays the one that was opened (the rule has emptied the chamber)
   const species = hatch ? hatch.species : B?.species, fr = species ? frameOf(species) : null, kind = hatch ? hatch.kind : B?.kind, readIds = hatch ? hatch.read : B?.read;
@@ -45,16 +45,18 @@ export function incubatorBuild(m, spec, pods) {
     const L = state === "hatch" ? { total: 0, full: 0, rows: 0 } : gs ? gs.leaves : leavesOf(st, settings, now, R.leaves.max, R.leaves.leaf[1]);
     regions.leaves = { total: L.total, full: L.full, rows: L.rows, empty: ph("leaf-empty-16x20", R.leaves.leaf, true, stale), filled: ph("leaf-full-16x20", R.leaves.leaf, false, stale) };
   }
-  // the chamber: its back by state, the nest, the bud, the nest's front and the window's front (registered; what is drawn of them waits for the Station lead's ruling), the base with its plaque
-  const back = state === "empty" ? "standby" : state === "growing" ? "growing" : "ready";
-  regions.dome = { back: ph(`dome-inside-${back}-304x272`, R.dome.rect.slice(2), false, stale) };
+  // the chamber (signed masters): its back by state (standby, growing, ready; the hatch keeps ready), the nest and its front, the window's front over the nest and the bud; the base master carries the plaque plate and the foot light
+  const back = state === "empty" ? "dome-inside-standby-304x272" : state === "growing" ? "dome-back-304x272" : "dome-inside-ready-304x272";
+  regions.dome = { back: ph(back, R.dome.rect.slice(2), false, stale) };
+  regions.nestFront = { picture: ph("nest-front-208x48", R.nestFront.rect.slice(2), true, stale) };
+  regions.domeFront = { picture: ph("dome-front-304x272", R.domeFront.rect.slice(2), true, stale) };
   regions.nest = { picture: ph("nest-208x48", R.nest.rect.slice(2), false, stale) };
   if (state !== "empty") {
     const [bw, bh] = R.bud.rect.slice(2), p = B ? S.budProgress(st, settings, now) : 1, pic = (id) => ph(id, [bw, bh], false, stale);
     regions.bud = { stage: state === "hatch" ? "hatch" : ready ? "ready" : p < 0.5 ? "early" : "late", early: pic("bud-early-128x160"), late: pic("bud-late-128x160"), ready: pic("bud-ready-128x160"),
       crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master") };
   }
-  regions.base = { picture: ph("incubator-base-336x96", R.base.rect.slice(2), false, stale), plate: ph("incubator-plaque-128x32", R.base.plate.slice(2), false, stale) };
+  regions.base = { picture: ph("base-336x96", R.base.rect.slice(2), false, stale) };
   regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
   const waiting = (state === "hatch" || state === "ready") && (m.lamp === spec.strings.painting || m.lamp === spec.strings.offline);   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
   regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp === spec.strings.offline ? "offline" : "waiting" };   // the lamp's node is there in every state
