@@ -3,10 +3,29 @@ place-masters tool. Reconciled with the art director's consolidated list (2026-1
 import json, re
 m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
+AD_RECORDS = {
+ "room-bench-stage-compare": ('withdrawn', None, "withdrawn (art director): the old glass-lab compare stage; Compare is not in the current layout, and the room was redrawn in the world brief's look without it"),
+ "idle-vivarium-night-1024x568": ("new", None, "pass 102: the art director held it for the Station lead's measurement; fixed by hand (moon rim recoloured toward (168, 182, 204) at 70 percent, glow blooms cut 50 percent toward a 31 px median, regraded to mean L* 30.6 with R above B); awaiting the art director's judgement (not signed)"),
+ "home-bay-shut-176x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-bay-open-176x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-well-32x32": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-chamber-empty-72x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-chamber-growing-72x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-chamber-ready-72x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-cradle-empty-96x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-cradle-full-96x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-journal-104x72": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-bed-192x56": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-bed-day-192x56": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+ "home-bed-dusk-192x56": ('signed', 'art director, Home column verdict (1f7d4a83)', "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"),
+}
+
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
     AD = "art director, field guide"
-    if n in ("room-bench-stage", "room-bench-stage-overview", "room-bench-stage-chapter", "room-bench-stage-collection", "room-cradle", "room-cradle-front", "room-shelf", "room-stamp-case-152x152", "room-stamp-case-152x152-front", "ring-well-idle-80x80", "ring-well-selected-80x80", "ring-well-empty-80x80", "ring-hatch-80x56", "ring-kin-56x56", "ring-collection-idle-176x176", "ring-collection-closed-176x176"): sign(n, "signed", "art director, Pods room verdict (68130857)", "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)")
+    if n == "home-bed-night-192x56": sign(n, "new", None, "pass 102: re-cut from the fixed Idle night (the art director held it until the night was fixed); awaiting the art director's judgement (not signed)")
+    elif n in AD_RECORDS: sign(n, *AD_RECORDS[n])      # the art director's own records (verdicts of Oct 10), carried so that a re-run keeps them
+    elif n in ("room-bench-stage", "room-bench-stage-overview", "room-bench-stage-chapter", "room-bench-stage-collection", "room-cradle", "room-cradle-front", "room-shelf", "room-stamp-case-152x152", "room-stamp-case-152x152-front", "ring-well-idle-80x80", "ring-well-selected-80x80", "ring-well-empty-80x80", "ring-hatch-80x56", "ring-kin-56x56", "ring-collection-idle-176x176", "ring-collection-closed-176x176"): sign(n, "signed", "art director, Pods room verdict (68130857)", "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)")
     elif n == "ring-column-112x522": sign(n, "signed", "art director, Pods room verdict (ac57c715)", "a strip of the housing: two rows of screws, a hose clip and a small vent; signed by the art director")
     elif re.match(r"home-(bay|well|chamber|cradle|journal|bed)-", n): sign(n, "new", None, "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)")
     elif re.match(r"vivarium-near-(day|dusk|night)-544x408$", n): sign(n, "new", None, "pass 101: the near Vivarium by light (a Pro painting; dusk and night are Pro edits of the near day picture, matched to the signed Idle lights), no creatures; awaiting the art director's judgement (not signed); the slice id is the art director's")

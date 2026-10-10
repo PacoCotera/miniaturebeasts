@@ -34,6 +34,21 @@ def fix_seams(im):
     wx = np.clip(1 - np.abs(np.arange(W) - 695) / 14.0, 0, 1)[None, :, None]; wy = np.zeros((H, 1, 1)); wy[120:420] = 1
     b = b * (1 - wx * wy) + hb * (wx * wy)
     return Image.fromarray(b.clip(0, 255).round().astype(np.uint8))
+def night_fix(im):
+    """Pass 102, the Station lead's measurement (art director's hand fix): (1) the moon rim's near-white strokes in the canopy (rows 0 to 190) recoloured 70 percent toward (168, 182, 204); (2) the glow blooms (everything above L* 50) cut 50 percent toward a 31 px median; (3) the shadows lifted by the least gain (weighted to L* under 50) that brings the mean L* back to 30.5 or more, keeping mean R at or above mean B."""
+    from PIL import ImageFilter
+    a = np.asarray(im).astype(float); L = lstar(a); mx = a.max(2); mn = a.min(2); sat = (mx - mn) / np.maximum(mx, 1)
+    rim = ((L > 60) & (sat < 0.25)).astype(float); rim[190:] = 0; rim = np.asarray(Image.fromarray((rim * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.GaussianBlur(1.0))).astype(float)[..., None] / 255.0
+    a = a + 0.7 * rim * (np.array([168.0, 182.0, 204.0]) - a)
+    sm = im.resize((512, 284), Image.LANCZOS).filter(ImageFilter.MedianFilter(15)).resize((1024, 568), Image.BICUBIC); med = np.asarray(sm).astype(float)
+    L = lstar(a); w = np.clip((L - 50.0) / 12.0, 0, 1)[..., None]; w = np.asarray(Image.fromarray((w[..., 0] * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.5))).astype(float)[..., None] / 255.0
+    a = a + 0.5 * w * (med - a)
+    lin = np.where(a / 255 <= 0.04045, a / 255 / 12.92, ((a / 255 + 0.055) / 1.055) ** 2.4)
+    for g in np.arange(1.0, 2.0, 0.01):
+        Lw = lstar(a); wt = 1.0 - np.clip((Lw - 40.0) / 15.0, 0, 1); l2 = np.clip(lin * (1 + (g - 1) * wt[..., None]), 0, 1)
+        cand = np.clip(np.rint(np.where(l2 <= 0.0031308, l2 * 12.92, 1.055 * l2 ** (1 / 2.4) - 0.055) * 255), 0, 255)
+        if lstar(cand).mean() >= 30.5 and cand[..., 0].mean() >= cand[..., 2].mean(): break
+    return Image.fromarray(cand.astype(np.uint8))
 SRC = {"day": "vivarium-day", "dusk": "vivarium-dusk", "night": "vivarium-night-r2"}; man = json.load(open("slices/manifest.json")); out = {}; rep = {}
 for k, s in SRC.items():
     im = fix_seams(cut(s))
@@ -43,7 +58,7 @@ for k, s in SRC.items():
             l2 = lin * g; l2 = np.where(l2 > 0.8, 0.8 + (1 - np.exp(-(l2 - 0.8) / 0.2)) * 0.2, l2); l2 = np.clip(l2, 0, 1)
             sr = np.where(l2 <= 0.0031308, l2 * 12.92, 1.055 * l2 ** (1 / 2.4) - 0.055); cand = np.clip(np.rint(sr * 255), 0, 255)
             if lstar(cand).mean() >= 30.5: break
-        im = Image.fromarray(cand.astype(np.uint8)); rep["night gain"] = round(float(g), 2)
+        im = night_fix(Image.fromarray(cand.astype(np.uint8))); rep["night gain"] = round(float(g), 2)
     n = f"idle-vivarium-{k}-1024x568"; im.save(f"slices/{n}.png", optimize=True); out[k] = im; rep[k] = {"mean L*": round(float(lstar(np.asarray(im).astype(float)).mean()), 1)}
     man[n] = {"size": [1024, 568], "rect": None, "src": f"source/raw/{s}.jpg (gemini-3-pro-image)", "made": f"Idle's Vivarium by {k}: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos" + (f" (the day picture's edit: dusk is warmer and lower)" if k == "dusk" else f" (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x{rep.get('night gain')} in linear light to a mean L* of {rep[k]['mean L*']})" if k == "night" else "") + " (pass 94)",
                       "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}

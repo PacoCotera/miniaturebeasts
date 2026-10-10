@@ -3215,9 +3215,9 @@
   "note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director): withdrawn from signature after the Station lead's review; a hand fix pending (the moon rim toward a cool grey, the glow blooms cut, regraded to L* 30 or more with R >= B)"
+  "note": "pass 102: the art director held it for the Station lead's measurement; fixed by hand (moon rim recoloured toward (168, 182, 204) at 70 percent, glow blooms cut 50 percent toward a 31 px median, regraded to mean L* 30.6 with R above B); awaiting the art director's judgement (not signed)"
  },
  "home-bay-shut-176x72": {
   "status": "signed",
@@ -3282,7 +3282,7 @@
  "home-bed-night-192x56": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "note": "pass 102: re-cut from the fixed Idle night (the art director held it until the night was fixed); awaiting the art director's judgement (not signed)"
  },
  "vivarium-near-day-544x408": {
   "status": "new",
