@@ -3,7 +3,7 @@ bud-early-128x160: cut from source/raw/incubator-bud-early2.jpg (one Pro request
 bud-late-128x160 (by hand): toward blush, no drift to a species' hue: the skin's red kept and its yellow lowered, a little pink added, the inner light a little up.
 bud-ready-128x160 (by hand): the inner light up full: a soft cream light across the bean's middle, the window where the shape's 112x112 sits (the shape is drawn by the renderer at (456, 288) on the screen); bud-ready-front-128x160: the skin over the shape, the bean's silhouette at half opacity, lighter at the middle.
 bud-crack-1-128x160 and bud-crack-2-128x160 (by hand): the two crack steps over the ready bud: a short rust crack with a thread of light, then a longer, wider one with the light coming through; each is a transparent layer over the bud.
-leaf-empty-16x20, leaf-full-16x20, leaf-empty-8x12, leaf-full-8x12 (hand-pixelled, 0 MXN): one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; full = sage #84ae78 with a sageD #5d7a5f vein and stem, empty = a one-pixel metal #717c86 outline, vein and stem in metal; palette-exact, no anti-aliasing.
+leaf-empty-16x20, leaf-full-16x20, leaf-empty-8x12, leaf-full-8x12 (hand-pixelled, 0 MXN): one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; full = sage #84ae78 with a sageD #5d7a5f vein and stem, empty = a one-pixel outline, vein and stem in metal #8a947b (16x20) or bevel #565c63 (8x12), main's station palette; palette-exact, no anti-aliasing.
 python3 -I tools/incubatorbud.py -> slices/bud-*.png, slices/leaf-*.png, marks/incubator-bud-proof-1x.png"""
 import os, json, hashlib
 import numpy as np
@@ -28,8 +28,8 @@ early, erep = fit_light(early); print("bud-early", erep)
 E = np.asarray(early).astype(float); bean = ((E[..., 0] > E[..., 1] + 6) & (E[..., 3] > 128)); bean = np.asarray(Image.fromarray((bean * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))) > 0
 ys, xs = np.where(bean); bx0, bx1, by0, by1 = xs.min(), xs.max(), ys.min(), ys.max(); cx, cy_ = (bx0 + bx1) / 2.0, (by0 + by1) / 2.0
 man = json.load(open("slices/manifest.json")); outs = {}
-def save(n, t, made, src_=SRC):
-    t.save(f"slices/{n}.png", optimize=True); outs[n] = t; man[n] = {"size": list(t.size), "rect": None, "src": src_, "made": made + " (pass 111)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
+def save(n, t, made, src_=SRC):      # the signed empty leaves were saved without PNG optimisation: kept so, so that a rerun reproduces their bytes
+    t.save(f"slices/{n}.png", optimize=not n.startswith("leaf-empty")); outs[n] = t; man[n] = {"size": list(t.size), "rect": None, "src": src_, "made": made + " (pass 111)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
 save("bud-early-128x160", early, "the bud, early: a smooth warm bean (peach, lit cream, rust edge) glowing softly from within on a little moss, no dot, no eye, no sprout; keyed from the slate, scaled uniformly, bottom-centred in 128x160", SRC + " (gemini-3-pro-image)")
 def shade(img, f):
     r_ = np.asarray(img).astype(float); lin = to_lin(r_[..., :3]); out = f(lin); r_[..., :3] = to_srgb(np.clip(out, 0, 1)); return Image.fromarray(r_.astype(np.uint8), "RGBA")
@@ -49,7 +49,7 @@ c1 = crack(zig(5, 0.28 * (by1 - by0), 3.0), 1, False); c2a = crack(zig(8, 0.58 *
 save("bud-crack-1-128x160", c1, "the first crack step over the ready bud: a short rust crack with a thread of light, a transparent layer drawn by hand")
 save("bud-crack-2-128x160", c2, "the second crack step over the ready bud: a longer, wider crack with the light coming through, a transparent layer drawn by hand")
 # --- the leaves, hand-pixelled
-SAGE = (0x84, 0xAE, 0x78, 255); SAGED = (0x5D, 0x7A, 0x5F, 255); METAL = (0x71, 0x7C, 0x86, 255)
+SAGE = (0x84, 0xAE, 0x78, 255); SAGED = (0x5D, 0x7A, 0x5F, 255); METAL = (0x8A, 0x94, 0x7B, 255); BEVEL = (0x56, 0x5C, 0x63, 255)      # main's station palette: metal #8a947b (the 16x20 empty leaf), bevel #565c63 (the 8x12 empty leaf); the art director's fix, ported
 def leaf(w, h, full):
     ang = np.radians(40); u = np.array([np.sin(ang), -np.cos(ang)]); nn = np.array([np.cos(ang), np.sin(ang)])
     B = np.array([1.3 * w / 16, h - 1.0]); L = (h - 2.5) / np.cos(ang) * 0.93; half = 0.205 * L
@@ -62,11 +62,11 @@ def leaf(w, h, full):
     if full:
         img[body] = SAGE; img[vein & body] = SAGED; img[stem] = SAGED
     else:
-        er = np.asarray(Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))) > 0; edge = body & ~er; img[edge] = METAL; img[vein & body] = METAL; img[stem] = METAL
+        er = np.asarray(Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))) > 0; edge = body & ~er; mc = METAL if w == 16 else BEVEL; img[edge] = mc; img[vein & body] = mc; img[stem] = mc
     return Image.fromarray(img, "RGBA")
 for (w, h) in ((16, 20), (8, 12)):
     for full in (False, True):
-        n = f"leaf-{'full' if full else 'empty'}-{w}x{h}"; save(n, leaf(w, h, full), f"the leaf, {'full' if full else 'empty'}, hand-pixelled {w}x{h}: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; " + ("sage #84ae78 with a sageD #5d7a5f vein" if full else "a one-pixel metal #717c86 outline"), "hand-pixelled in tools/incubatorbud.py")
+        n = f"leaf-{'full' if full else 'empty'}-{w}x{h}"; save(n, leaf(w, h, full), f"the leaf, {'full' if full else 'empty'}, hand-pixelled {w}x{h}: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; " + ("sage #84ae78 with a sageD #5d7a5f vein" if full else "a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12)"), "hand-pixelled in tools/incubatorbud.py")
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 S = 5; names = ["bud-early-128x160", "bud-late-128x160", "bud-ready-128x160", "bud-ready-front-128x160", "bud-crack-1-128x160", "bud-crack-2-128x160"]
 sheet = Image.new("RGB", (6 * 134 + 8 + 200, 168 + 130), (45, 53, 63)); x = 4

@@ -21,8 +21,8 @@ def fit(arr, w, h, align="centre"):
     al = r[..., 3:] / 255.0; col = np.where(al > 0.01, r[..., :3] / np.maximum(al, 0.01), 0); t = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     t.paste(Image.fromarray(np.dstack([col, r[..., 3:]]).clip(0, 255).astype(np.uint8), "RGBA"), ((w - nw) // 2, (h - nh) // 2 if align == "centre" else h - nh)); return t, s
 man = json.load(open("slices/manifest.json")); outs = {}
-def save(n, t, made):
-    t.save(f"slices/{n}.png", optimize=True); outs[n] = t; man[n] = {"size": list(t.size), "rect": None, "src": SRC + " (gemini-3-pro-image)", "made": made + " (pass 111)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
+def save(n, t, made, opt=True):
+    t.save(f"slices/{n}.png", optimize=opt); outs[n] = t; man[n] = {"size": list(t.size), "rect": None, "src": SRC + " (gemini-3-pro-image)", "made": made + " (pass 111)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
 # --- the chamber, rebuilt at the arch's full width (the art director's return: 184 px was too narrow). The housing is redrawn by hand in sheet a3's material (sage about (130, 144, 119), a flat matte paint a little darker toward the foot, a hairline edge, a shallow hood lip) on the dome's geometry: a half circle of radius 152 on (152, 152), the body straight down to y 272, so 304 wide; ONE arched window 226 wide (x 39 to 265), its top an ellipse of 113 x 105 on (152, 150), its sides straight down to y 236, rounded corners; the window's interior is sheet a3's own lamp and moss bed (scaled uniformly) on a plain lit wall.
 sage = np.array([131.0, 144.0, 119.0]); rng = np.random.default_rng(5); Wd, Hd = 304, 272; Yg, Xg = np.mgrid[0:Hd, 0:Wd].astype(float)
 def sup(w, h, f):
@@ -95,9 +95,19 @@ base = Image.new("RGBA", (336, 96), (0, 0, 0, 0)); base.paste(tile_b, (0, 91 - t
 d = ImageDraw.Draw(base); sand = tuple(int(v) for v in np.asarray(base)[50:70, 20:100, :3].reshape(-1, 3).mean(0)); pf = tuple(max(0, int(v * 0.93)) for v in sand); edge = tuple(max(0, int(v * 0.78)) for v in sand)
 d.rectangle([104, 40, 231, 71], fill=pf + (255,)); d.rectangle([104, 40, 231, 71], outline=edge + (255,)); d.line([(105, 41), (230, 41)], fill=tuple(min(255, int(v * 1.05)) for v in sand) + (255,))
 sg = tuple(int(v) for v in sage); d.rectangle([8, 92, 327, 93], fill=sg + (255,))
-save("base-336x96", base, "the enamel base, matte lit sand: the sand band cut from the sheet and scaled uniformly to 336 wide (the painted plaque and foot painted out), the plaque plate 128x32 at (104, 40) drawn by hand (panel fill, hairline edge, left empty), the foot light a sage line at (8, 92, 320, 2)")
+TICK = {(219, 72): (169, 154, 130, 255), (219, 73): (169, 154, 131, 255), (219, 74): (169, 155, 131, 255), (219, 75): (170, 155, 131, 255), (219, 76): (169, 154, 131, 255), (219, 77): (168, 154, 130, 255), (219, 78): (168, 152, 128, 255), (220, 72): (170, 155, 131, 255), (220, 73): (170, 155, 131, 255), (220, 74): (170, 155, 131, 255), (220, 75): (170, 155, 131, 255), (220, 76): (170, 155, 131, 255), (220, 77): (169, 154, 130, 255), (220, 78): (167, 153, 129, 255)}      # the art director's hand fix (pass 113 verdict): a 2 px tick at x 219-220, y 72-78 filled in from its neighbours; the pixels are the signed ones, so that a rerun reproduces the signed file
+base_a = np.asarray(base).copy()
+for (tx, ty), v in TICK.items(): base_a[ty, tx] = v
+base = Image.fromarray(base_a, "RGBA")
+save("base-336x96", base, opt=False, made="the enamel base, matte lit sand: the sand band cut from the sheet and scaled uniformly to 336 wide (the painted plaque and foot painted out), the plaque plate 128x32 at (104, 40) drawn by hand (panel fill, hairline edge, left empty), the foot light a sage line at (8, 92, 320, 2)")
 # --- the nest
-nb = (668, 440, 1292, 610); nest = rgba(nb); t_n, sn = fit(nest, 208, 48); save("nest-208x48", t_n, "the moss nest, plump with its hollow visible and no twigs, scaled uniformly to 48 rows")
+nb = (668, 440, 1292, 610); nest = rgba(nb); t_n, sn = fit(nest, 208, 48)
+# pass 115 (the art director: when empty the bed read as a closed green log): a shallow, forest-shaded hollow at the top centre, seen into: the moss darkened to a deep forest green in a soft oval (104 x 18 on (104, 13)), its near lip a little lit; the silhouette is unchanged
+tn = np.asarray(t_n).astype(float); hh, ww = tn.shape[:2]; Yn, Xn = np.mgrid[0:hh, 0:ww].astype(float)
+hol = np.exp(-(((Xn - ww / 2.0) / 58.0) ** 4 + ((Yn - 15.0) / 11.0) ** 2)); lipl = np.exp(-(((Xn - ww / 2.0) / 54.0) ** 4 + ((Yn - 25.0) / 3.0) ** 2))
+shade = np.array([20.0, 40.0, 20.0]); tn[..., :3] = tn[..., :3] * (1 - 0.88 * hol[..., None] * (tn[..., 3:] / 255.0)) + shade * 0.88 * hol[..., None] * (tn[..., 3:] / 255.0)
+tn[..., :3] = tn[..., :3] * (1 + 0.22 * lipl[..., None]) + np.array([10.0, 14.0, 4.0]) * lipl[..., None]; t_n = Image.fromarray(tn.clip(0, 255).astype(np.uint8), "RGBA")
+save("nest-208x48", t_n, "the moss nest, plump with its hollow visible and no twigs, scaled uniformly to 48 rows")
 f = np.asarray(t_n).astype(float); h_ = f.shape[0]; ramp = np.clip((np.arange(h_) - 0.50 * h_) / (0.14 * h_), 0, 1)[:, None]; f[..., 3] = f[..., 3] * ramp
 save("nest-front-208x48", Image.fromarray(f.astype(np.uint8), "RGBA"), "the nest's rim fibres only, the near half of the cushion with its top edge soft, drawn over the bud")
 # --- proof on the stage floor (the Pods overview floor) at 1x

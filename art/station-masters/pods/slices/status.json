@@ -3367,12 +3367,12 @@
  "nest-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): the bed reads in the window, but empty it is a closed green log; the spec asks it lit and plump with its hollow visible: a shallow forest-shaded hollow in the top centre, by hand"
+  "note": "pass 115: a shallow, forest-shaded hollow at the top centre (a soft deep-green oval 116 wide, its near lip a little lit), so the empty bed reads lit and plump with its hollow visible, not a closed log; awaiting the art director's judgement (not signed)"
  },
  "nest-front-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "judged with the nest's hollow fix"
+  "note": "pass 115: the near rim, as before (the hollow lies in the back half); awaiting the art director's judgement (not signed)"
  },
  "bud-early-128x160": {
   "status": "new",
@@ -3432,16 +3432,26 @@
  "chamber-back-400x320": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director) at 1x: L* 38.6, key R-B 35, sat 29 fit, but the tray reads as a flat UI box, not a tray in the housing; give it the stage's rendering: the enamel rim lit top-left and shaded lower right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners"
+  "note": "pass 115: the tray in the stage's rendering by hand: the enamel rim lit top-left and shaded lower-right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners (key R-B 36, sat 29, L* 38.1); awaiting the art director's judgement (not signed)"
  },
  "chamber-front-400x320": {
   "status": "new",
   "signed_in": null,
-  "note": "judged with the tray's rendering fix"
+  "note": "pass 115: the tray's front lip in the same rendering; awaiting the art director's judgement (not signed)"
  },
  "plate-name-88x24": {
   "status": "signed",
   "signed_in": "art director, verdict (5238569a)",
   "note": "signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from"
+ },
+ "dome-small-back-176x224": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 115: the small chamber for Create: the signed Incubator chamber reduced uniformly to 176 wide, its foot at region y 192, empty; awaiting the art director's judgement (not signed)"
+ },
+ "dome-small-front-176x224": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 115: the small chamber for Create: the signed Incubator chamber reduced uniformly to 176 wide, its foot at region y 192, empty; awaiting the art director's judgement (not signed)"
  }
 }

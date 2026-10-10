@@ -10497,10 +10497,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the moss nest, plump with its hollow visible and no twigs, scaled uniformly to 48 rows (pass 111)",
-  "sha256": "070b2d2cce42b0ac268ef6092a25396241df8eb192a063ed082fb696b3c96a45",
+  "sha256": "a8ea49b3767277677818359a1f38ae120b497eb81767bed7d15b6aa90d7c2796",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): the bed reads in the window, but empty it is a closed green log; the spec asks it lit and plump with its hollow visible: a shallow forest-shaded hollow in the top centre, by hand"
+  "status_note": "pass 115: a shallow, forest-shaded hollow at the top centre (a soft deep-green oval 116 wide, its near lip a little lit), so the empty bed reads lit and plump with its hollow visible, not a closed log; awaiting the art director's judgement (not signed)"
  },
  "nest-front-208x48": {
   "size": [
@@ -10510,10 +10510,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the nest's rim fibres only, the near half of the cushion with its top edge soft, drawn over the bud (pass 111)",
-  "sha256": "f12e5e6fdd7c7e83d75ef67ec45e33a8748e6db583283a20384b7b2b384dcbf6",
+  "sha256": "c107b3853b2160251065592941a09c7c6ca3f115e8498df23c373617a1b5d472",
   "status": "new",
   "signed_in": null,
-  "status_note": "judged with the nest's hollow fix"
+  "status_note": "pass 115: the near rim, as before (the hollow lies in the back half); awaiting the art director's judgement (not signed)"
  },
  "bud-early-128x160": {
   "size": [
@@ -10600,7 +10600,7 @@
   ],
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
-  "made": "the leaf, empty, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel metal #717c86 outline (pass 111)",
+  "made": "the leaf, empty, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12) (pass 111)",
   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
   "status": "signed",
   "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
@@ -10626,7 +10626,7 @@
   ],
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
-  "made": "the leaf, empty, hand-pixelled 8x12: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel metal #717c86 outline (pass 111)",
+  "made": "the leaf, empty, hand-pixelled 8x12: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12) (pass 111)",
   "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb",
   "status": "signed",
   "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
@@ -10671,10 +10671,10 @@
   "rect": null,
   "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
   "made": "the work tray in the housing, drawn by hand: a panel back (the Incubator stage's warm foam), an enamel rim (the sand of base-336x96), the floor 400x16 at (0, 304) in enamel with a bevel edge; matte, no glass edge, no highlight (pass 113)",
-  "sha256": "7ae3dfb8c63c9b484e042016112717fbaa42f97a33048c46beb8ed6e79873321",
+  "sha256": "1461315c826094795877827f277003fc8c9a1607baa10d53d3802ec641536228",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director) at 1x: L* 38.6, key R-B 35, sat 29 fit, but the tray reads as a flat UI box, not a tray in the housing; give it the stage's rendering: the enamel rim lit top-left and shaded lower right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners"
+  "status_note": "pass 115: the tray in the stage's rendering by hand: the enamel rim lit top-left and shaded lower-right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners (key R-B 36, sat 29, L* 38.1); awaiting the art director's judgement (not signed)"
  },
  "chamber-front-400x320": {
   "size": [
@@ -10684,10 +10684,10 @@
   "rect": null,
   "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
   "made": "the work tray's front: the rim only, over the founder's feet: the floor's front lip (rows 310 to 319), a transparent layer (pass 113)",
-  "sha256": "3d6d7ed5f44725bf93981bbb88d2ba95c9246886f5994d1545953812afabadaa",
+  "sha256": "e156b1f2b90d15eec36da296fac058efe14e3e651c3e24577d0e2b7c9dc854c3",
   "status": "new",
   "signed_in": null,
-  "status_note": "judged with the tray's rendering fix"
+  "status_note": "pass 115: the tray's front lip in the same rendering; awaiting the art director's judgement (not signed)"
  },
  "plate-name-88x24": {
   "size": [
@@ -10701,5 +10701,41 @@
   "status": "signed",
   "signed_in": "art director, verdict (5238569a)",
   "status_note": "signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from"
+ },
+ "dome-small-back-176x224": {
+  "size": [
+   176,
+   224
+  ],
+  "rect": [
+   776,
+   104,
+   176,
+   224
+  ],
+  "src": "slices/dome-back-304x272.png (signed)",
+  "made": "the small chamber for Create, back: the signed Incubator chamber's back reduced uniformly to 176 wide (scale 0.5789, only ever reduced), set on the 176x224 region with its foot at region y 192, empty (pass 115)",
+  "sha256": "2a4a9dffc00610517078f6e5d8f518e9ad383ba54c64ab0e70f4c661f55b2343",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 115: the small chamber for Create: the signed Incubator chamber reduced uniformly to 176 wide, its foot at region y 192, empty; awaiting the art director's judgement (not signed)"
+ },
+ "dome-small-front-176x224": {
+  "size": [
+   176,
+   224
+  ],
+  "rect": [
+   776,
+   104,
+   176,
+   224
+  ],
+  "src": "slices/dome-front-304x272.png (signed)",
+  "made": "the small chamber for Create, front: the signed Incubator chamber's front reduced uniformly to 176 wide (scale 0.5789, only ever reduced), set on the 176x224 region with its foot at region y 192, empty (pass 115)",
+  "sha256": "24dce9f66d98282db3f07a352a87a9c23bd293aeb76410193d7e9ad2cf2b227d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 115: the small chamber for Create: the signed Incubator chamber reduced uniformly to 176 wide, its foot at region y 192, empty; awaiting the art director's judgement (not signed)"
  }
 }

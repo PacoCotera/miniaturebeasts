@@ -24,6 +24,18 @@ pan = FOAM[None, None] * (1 + 0.10 * np.clip(1 - (Xg / 400.0 + Yg / 320.0), 0, 1
 dist_in = np.asarray(Image.fromarray((inner * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(5))).astype(float) / 255.0
 pan = pan * (1 - 0.22 * (1 - dist_in)[..., None] * (inner[..., None] > 0.5))
 rgb = enamel * (1 - inner[..., None]) + pan * inner[..., None]
+# the stage's rendering (the art director's verdict on pass 113: the tray read as a flat UI box): light from the upper left: the rim lit along its top and left, shaded along its bottom and right (matte, no shine), a soft inner shadow under the rim falling onto the panel, four screws at the rim's corners
+rimm = body * (1 - inner)
+dgl = (Xg / W + Yg / H) / 2.0; rgb = rgb * (1 + (0.09 - 0.20 * dgl) * rimm)[..., None] + 0.0
+def _sh(m, dx, dy): return np.asarray(Image.fromarray((m * 255).astype(np.uint8)).transform((W, H), Image.AFFINE, (1, 0, dx, 0, 1, dy))).astype(float) / 255.0
+litr = np.clip(body - _sh(body, 3, 3), 0, 1); darkr = np.clip(body - _sh(body, -3, -3), 0, 1); rgb = rgb * (1 + 0.10 * litr[..., None]) * (1 - 0.16 * darkr[..., None])
+inl = np.clip(inner - _sh(inner, 3, 3), 0, 1); ind = np.clip(inner - _sh(inner, -3, -3), 0, 1); rgb = rgb * (1 - 0.10 * inl[..., None]) * (1 + 0.04 * ind[..., None])          # the panel's edge: the rim's inner lip lit at the lower right, shaded at the upper left
+cast = np.asarray(Image.fromarray((_sh(inner, 5, 6) * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(5))).astype(float) / 255.0
+under = np.clip(inner - cast, 0, 1)                                                                                                                                  # the rim's shadow on the panel: strongest under the top and left rim
+rgb = rgb * (1 - 0.42 * under[..., None])
+for (sx, sy) in ((6, 6), (393, 6), (6, 296), (393, 296)):
+    rr = np.hypot(Xg - sx, Yg - sy); ring = np.clip(1 - np.abs(rr - 2.8) / 0.9, 0, 1) * (rr < 3.8); slot = np.clip(1 - np.abs((Xg - sx) * 0.7 + (Yg - sy) * 0.7) / 0.7, 0, 1) * (rr < 2.2)
+    rgb = rgb * (1 - 0.6 * ring[..., None]) + SAND * 0.55 * 0.6 * ring[..., None]; rgb = rgb * (1 - 0.3 * slot[..., None])
 hair = SAND * 0.74; edge_o = np.clip(body - np.asarray(Image.fromarray((body * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))).astype(float) / 255.0, 0, 1)
 edge_i = np.clip(np.asarray(Image.fromarray((inner * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3))).astype(float) / 255.0 - inner, 0, 1)
 rgb = rgb * (1 - 0.7 * edge_o[..., None]) + hair * 0.7 * edge_o[..., None]; rgb = rgb * (1 - 0.7 * edge_i[..., None]) + hair * 0.7 * edge_i[..., None]
