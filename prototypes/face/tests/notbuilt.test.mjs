@@ -26,7 +26,7 @@ test("a framed screen: the stage in the ground, the line centred on 512 with its
   const f = await setup(); assert.equal(f.props(props("Home")), 0, f.errors().join("; ")); frames(f);
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
   const lg = logOf(f), t = lg.type.find((x) => x.text === N.strings.line); assert.ok(t, "the line is on the type layer"); assert.equal(t.px, N.regions.line.px);
-  const r = lg.regions.find((x) => x.id === "line" && x.layer === "type"); assert.ok(r, "its region is the line"); assert.equal(r.rect[1] + 7, N.regions.line.capTop, "the text box starts 7 px above the cap top at 20 px");
+  const r = lg.regions.find((x) => x.id === "notBuilt.line" && x.layer === "type"); assert.ok(r, "its region is the line"); assert.equal(r.rect[1] + 7, N.regions.line.capTop, "the text box starts 7 px above the cap top at 20 px");
   assert.ok(Math.abs(r.rect[0] + r.rect[2] / 2 - N.regions.line.centre) <= 1, `centred: ${r.rect}`);
   assert.deepEqual(f.pixel(20, 100), rgbOf(frameSpec.colours.stageGround), "the stage ground");
   assert.ok(lg.type.some((x) => x.text === "Library"), "the title"); assert.ok(lg.type.some((x) => x.text === "Home"), "the back word");

@@ -11,12 +11,12 @@
 /* The composition of a screen the face has no binding table for (frame.json notBuilt): the stage in colours.stageGround (Idle: the whole 1024x600 in notBuilt.colours.ground) and one line, centred. No picture, no target, no ring. */
 static void not_built(int idle) {
   char c[24], s[V_STR]; int r[4];
-  if (idle) { spec_str("frame", "notBuilt.colours.ground", c, sizeof c); if (v_spec_rect("frame", "notBuilt.regions.ground.rect", r)) { v_region("ground", LAYER_CHROME); v_rect("notBuilt.ground", r[0], r[1], r[2], r[3], c); } }
-  else { spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); } }
+  if (idle) { spec_str("frame", "notBuilt.colours.ground", c, sizeof c); if (v_spec_rect("frame", "notBuilt.regions.ground.rect", r)) { v_region("notBuilt.ground", LAYER_CHROME); v_rect("notBuilt.ground", r[0], r[1], r[2], r[3], c); } }
+  else { spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("notBuilt.stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); } }
   spec_str("frame", idle ? "notBuilt.strings.idle" : "notBuilt.strings.line", s, sizeof s);
   int px = spec_int("frame", "notBuilt.regions.line.px", 20), w = v_measure(s, px), x = spec_int("frame", "notBuilt.regions.line.centre", 512) - v_half(w);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
-  v_region("line", LAYER_TYPE); v_text("notBuilt.line", s, x, spec_int("frame", "notBuilt.regions.line.capTop", 288), w, px, c);
+  v_region("notBuilt.line", LAYER_TYPE); v_text("notBuilt.line", s, x, spec_int("frame", "notBuilt.regions.line.capTop", 288), w, px, c);
 }
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */

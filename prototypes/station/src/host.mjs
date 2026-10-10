@@ -44,7 +44,7 @@ export function topFor(screen) {
 }
 // A screen the face has no words for: no action, no subject, the way back from navigation and the default notice.
 export function notBuiltLine(screen) {
-  const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, back = backWord(nav, place);
+  const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, pod = podById(UI.create?.podId ?? UI.pods.cur), back = backWord(nav, place, pod ? S.cap(S.spName(pod)) : "");   // a way back that names the pod ("{pod}") names the pod Create was opened on; the face reads "Back" when the name does not fit
   return { ok: null, back, subject: "", need: need().text };
 }
 // The place a screen's way back lands on: the parent in the navigation tree, as a screen id (and the state of Pods it opens on).
@@ -99,7 +99,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, say, goto, play, lock, save }. Effects reach the face as events; a held arrival, a rest and the Dock's tick are Home's, and Home is not built:
 // no arrival plays and nothing is held.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch"]);
-export function createHost({ send, nowMs }) {
+export function createHost({ send, nowMs, afterSave = () => {} }) {
   const holds = new Map();   // the events sent with hold: true that have not said done (an event the face drops, or whose done was lost, expires with its time)
   const holding = () => { const t = nowMs(); for (const [k, until] of holds) if (until < t) holds.delete(k); return holds.size > 0; };
   const play = (e) => {
@@ -109,7 +109,9 @@ export function createHost({ send, nowMs }) {
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), say: msg, play, lock: () => {}, save, holding, release: (kind, target) => holds.delete(kind + ":" + target),
+    now: () => Date.now(), say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
+    // Any key but ✓ disarms: the hatch, the bond and the gate wait for a second ✓ and nothing else.
+    disarm: () => { UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;
@@ -117,7 +119,11 @@ export function createHost({ send, nowMs }) {
 
 // What the face said, as the rules: the ring moved (Pods keeps the focus of its state), or a key on a focused target (an intent). A not-built screen has no targets; its ← goes to the parent in the navigation tree.
 export function onFaceMessage(h, m) {
-  if (m.t === "done") { h.release(m.kind, m.target); return; }
+  if (m.t === "done") {
+    h.release(m.kind, m.target);
+    if (m.kind === "hatch") { UI.hab.id = +m.target; UI.hab.f = "door"; h.goto("habitat"); }   // the hatch is over: meet the mibi, the ring on the door
+    return;
+  }
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); return; }
   if (m.t !== "intent") return;
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }

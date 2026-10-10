@@ -79,6 +79,7 @@ export function act(k) {
   syncProps();
   if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: true }); } frameIntents.dock(H, wasIdle); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
+  if (k !== "confirm") H.disarm();
   FACE.key(k); pump();
 }
 const stationEl = $("station");
@@ -157,7 +158,7 @@ const faceBoot = async () => {
   f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) });
   for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
   f.pin(pinned(), picture);
-  FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now() });
+  FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
 };
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();
@@ -183,14 +184,16 @@ window.__st = { ready, renderErrors, faceErrors, get props() { return lastProps 
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; },
   forecastOf: (aId, bId) => S.forecastOf(G.st, mibiById(aId), mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
-  podsGo,
+  doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
+  podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); }, growCost: (choices) => S.growCost(G.st, choices || {}, G.settings),
   openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };
 
 // What the CI checks read at a screenshot point: the screen, the face's log (every string it set, each drawn region) and its counts.
 function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null, f = FACE;
-  return { screen: UI.screen, idle: UI.idle, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
+  const pr = lastProps ? JSON.parse(lastProps) : null;
+  return { screen: UI.screen, idle: UI.idle, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
     pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null,
     placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }

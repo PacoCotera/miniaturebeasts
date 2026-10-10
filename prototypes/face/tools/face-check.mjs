@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The face in a browser: the Station page with ?face=lvgl loads the WebAssembly face, shows its 1024×600 display, takes keys,
+// The face in a browser: the Station page (/sandbox/station/) boots the WebAssembly face, shows its 1024×600 display, takes keys,
 // and draws the same pixels as the native Linux build. Measures and prints the load time, the size on the wire and the
 // cost of copying a full frame to the canvas, at full speed and with the CPU throttled 4× (a phone's stand-in).
 //   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/face-check.mjs   (after build.sh)
@@ -25,10 +25,10 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const port = server.address().port, fails = [], expect = (ok, what) => { if (!ok) { fails.push(what); console.error("FAIL " + what); } };
 const browser = await chromium.launch(), page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1 });
 const errors = []; page.on("pageerror", (e) => errors.push("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) errors.push("console: " + m.text()); });
-await page.goto(`http://127.0.0.1:${port}/sandbox/station/?face=lvgl`, { waitUntil: "load" });
+await page.goto(`http://127.0.0.1:${port}/sandbox/station/`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
 const f = await page.evaluate(() => window.__st.face);
-expect(f, "the face is loaded (?face=lvgl)");
+expect(f, "the face is loaded");
 if (f) {
   expect(f.version === "LVGL 9.6.0", "LVGL 9.6.0: " + f.version); expect(f.size[0] === 1024 && f.size[1] === 600, "a 1024×600 display: " + f.size);
   expect(JSON.stringify(await page.evaluate(() => window.__st.face.pixel(10, 10))) === JSON.stringify([22, 42, 55]), "the top bar is the palette's ground colour");
