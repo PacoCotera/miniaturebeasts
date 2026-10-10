@@ -49,11 +49,13 @@ AD_RECORDS = {
  "dome-inside-standby-304x272": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x, opaque pixels: L* 60.3, key R-B 94, sat 48, a step below growing'),
  "dome-inside-ready-304x272": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x, opaque pixels: L* 62.8, key R-B 88, sat 47'),
  "dome-front-304x272": ('signed', 'art director, verdict (5238569a)', "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; the sage housing at 304 on the radius-152 arch with the stage's rendering (lit top-left edge, shade, four screws, hairline seam), hood lip, no highlight"),
- "nest-208x48": ('new', None, "pass 115: a shallow, forest-shaded hollow at the top centre (a soft deep-green oval 116 wide, its near lip a little lit), so the empty bed reads lit and plump with its hollow visible, not a closed log; awaiting the art director's judgement (not signed)"),
- "nest-front-208x48": ('new', None, "pass 115: the near rim, as before (the hollow lies in the back half); awaiting the art director's judgement (not signed)"),
  "plate-name-88x24": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from'),
- "chamber-back-400x320": ('new', None, "pass 115: the tray in the stage's rendering by hand: the enamel rim lit top-left and shaded lower-right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners (key R-B 36, sat 29, L* 38.1); awaiting the art director's judgement (not signed)"),
- "chamber-front-400x320": ('new', None, "pass 115: the tray's front lip in the same rendering; awaiting the art director's judgement (not signed)"),
+ "chamber-back-400x320": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x: L* 38.1, key R-B 36, sat 29 against the stage 36.0/38/24; the work tray in the stage's rendering (rim lit top-left, shaded lower-right, inner shadow, four screws); the founder fills most of it"),
+ "chamber-front-400x320": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 55.6, key R-B 38, sat 25; the tray's front lip over the founder's feet"),
+ "dome-small-back-176x224": ('signed', 'art director, verdict (72561d74)', 'signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192'),
+ "dome-small-front-176x224": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"),
+ "nest-208x48": ('new', None, 'returned (art director) at 1x: L* 30.2, key R-B 44, sat 58; the hollow now reads, but a pale cut fringe runs along the top contour (332 px with R+G+B above 480): defringe to the moss, by hand'),
+ "nest-front-208x48": ('new', None, 'returned (art director) at 1x: L* 26.6, key R-B 40, sat 60; the same pale fringe (143 px): defringe, by hand'),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}

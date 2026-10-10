@@ -10500,7 +10500,7 @@
   "sha256": "a8ea49b3767277677818359a1f38ae120b497eb81767bed7d15b6aa90d7c2796",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 115: a shallow, forest-shaded hollow at the top centre (a soft deep-green oval 116 wide, its near lip a little lit), so the empty bed reads lit and plump with its hollow visible, not a closed log; awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 30.2, key R-B 44, sat 58; the hollow now reads, but a pale cut fringe runs along the top contour (332 px with R+G+B above 480): defringe to the moss, by hand"
  },
  "nest-front-208x48": {
   "size": [
@@ -10513,7 +10513,7 @@
   "sha256": "c107b3853b2160251065592941a09c7c6ca3f115e8498df23c373617a1b5d472",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 115: the near rim, as before (the hollow lies in the back half); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 26.6, key R-B 40, sat 60; the same pale fringe (143 px): defringe, by hand"
  },
  "bud-early-128x160": {
   "size": [
@@ -10672,9 +10672,9 @@
   "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
   "made": "the work tray in the housing, drawn by hand: a panel back (the Incubator stage's warm foam), an enamel rim (the sand of base-336x96), the floor 400x16 at (0, 304) in enamel with a bevel edge; matte, no glass edge, no highlight (pass 113)",
   "sha256": "1461315c826094795877827f277003fc8c9a1607baa10d53d3802ec641536228",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 115: the tray in the stage's rendering by hand: the enamel rim lit top-left and shaded lower-right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners (key R-B 36, sat 29, L* 38.1); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "status_note": "signed (art director) at 1x: L* 38.1, key R-B 36, sat 29 against the stage 36.0/38/24; the work tray in the stage's rendering (rim lit top-left, shaded lower-right, inner shadow, four screws); the founder fills most of it"
  },
  "chamber-front-400x320": {
   "size": [
@@ -10685,9 +10685,9 @@
   "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
   "made": "the work tray's front: the rim only, over the founder's feet: the floor's front lip (rows 310 to 319), a transparent layer (pass 113)",
   "sha256": "e156b1f2b90d15eec36da296fac058efe14e3e651c3e24577d0e2b7c9dc854c3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 115: the tray's front lip in the same rendering; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 55.6, key R-B 38, sat 25; the tray's front lip over the founder's feet"
  },
  "plate-name-88x24": {
   "size": [
@@ -10716,9 +10716,9 @@
   "src": "slices/dome-back-304x272.png (signed)",
   "made": "the small chamber for Create, back: the signed Incubator chamber's back reduced uniformly to 176 wide (scale 0.5789, only ever reduced), set on the 176x224 region with its foot at region y 192, empty (pass 115)",
   "sha256": "2a4a9dffc00610517078f6e5d8f518e9ad383ba54c64ab0e70f4c661f55b2343",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 115: the small chamber for Create: the signed Incubator chamber reduced uniformly to 176 wide, its foot at region y 192, empty; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192"
  },
  "dome-small-front-176x224": {
   "size": [
@@ -10734,8 +10734,8 @@
   "src": "slices/dome-front-304x272.png (signed)",
   "made": "the small chamber for Create, front: the signed Incubator chamber's front reduced uniformly to 176 wide (scale 0.5789, only ever reduced), set on the 176x224 region with its foot at region y 192, empty (pass 115)",
   "sha256": "24dce9f66d98282db3f07a352a87a9c23bd293aeb76410193d7e9ad2cf2b227d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 115: the small chamber for Create: the signed Incubator chamber reduced uniformly to 176 wide, its foot at region y 192, empty; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"
  }
 }
