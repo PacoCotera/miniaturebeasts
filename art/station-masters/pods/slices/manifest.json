@@ -9654,7 +9654,7 @@
   "sha256": "62f42f25e63b4155bf3a822deb1752d0764e507ee1b146770f567d39dcdbbd23",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; the sitting crate with the gilt frame glyph on the lid; replaces the old teal crate-sitting-80x56 (pass 89, no longer tracked); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director): no pods ride on it, so the crate fits whole: reduce the full sealed case into the box with about 8 px clear on every side (the sides and corner guards are cut now); and the sitting mark is a flat pasted sticker with a teal centre: make it a small matte brass plate on the lid (gold frame, panel inside, 48x32 on the 256 crate, the 24x16 glyph's own size on the 80x56), lit from the top left; clean the tag paint-out smear on the handle; mean R-B 25.9 is over the band (13.5 +8) because of the plate"
  },
  "place-meadow-96x96": {
   "size": [
@@ -10760,9 +10760,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale) (pass 122)",
   "sha256": "ffdbea3a38550345f26da924b7f472d38a74af12fa8337217149418ded3223eb",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered"
  },
  "crate-closer-sealed-384x256": {
   "size": [
@@ -10773,9 +10773,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel (pass 122)",
   "sha256": "14ff3809f835e8faaff66b5a3641197eaa494817a6a305c3d0e044536193f644",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered"
  },
  "crate-closer-opening-384x256": {
   "size": [
@@ -10786,9 +10786,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122)",
   "sha256": "d234f23293cd519e15e9b43e3c67120d2311eb5d8f270535153a0987998851ec",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered; also, by hand: the torn gap reads as a flat dark line: give the lifted lid a lit lower lip and the gap a soft shadow"
  },
  "crate-sealed-256x176": {
   "size": [
@@ -10801,7 +10801,7 @@
   "sha256": "67bf64354117dbe045af38c95d32edc15609cc9867ad3b00905b8e8c035a37bf",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director): no pods ride on it, so the crate fits whole: reduce the full sealed case into the box with about 8 px clear on every side (the sides and corner guards are cut now); at 1x L* 49.3, mean R-B 21.4, sat 21.7 within the band"
  },
  "crate-sitting-256x176": {
   "size": [
@@ -10814,6 +10814,6 @@
   "sha256": "77f4bc4a52e1ed398fbdb76f6d6b8ca67fb9bd0f8a9d6d4d6ecb8acc7ab4dd85",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; the sitting crate with the gilt frame glyph on the lid; replaces the old teal crate-sitting-80x56 (pass 89, no longer tracked); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director): no pods ride on it, so the crate fits whole: reduce the full sealed case into the box with about 8 px clear on every side (the sides and corner guards are cut now); and the sitting mark is a flat pasted sticker with a teal centre: make it a small matte brass plate on the lid (gold frame, panel inside, 48x32 on the 256 crate, the 24x16 glyph's own size on the 80x56), lit from the top left; clean the tag paint-out smear on the handle; mean R-B 25.9 is over the band (13.5 +8) because of the plate"
  }
 }
