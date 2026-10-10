@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-09",
+  "updated": "2026-10-10",
   "modules": [
     {
       "id": "station",
@@ -9,15 +9,16 @@
       "items": [
         { "title": "Bring pods home and read them", "status": "live", "text": "Dock the Companion, open its crates, identify each pod and read its genome chapter by chapter, then compare two pods of the same species side by side.", "link": "prototypes/station/README.md" },
         { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read, grow the mibi in its bud and open it to meet the juvenile.", "link": "design/proposals/station-loop.md" },
-        { "title": "The Vivarium and its bays", "status": "live", "text": "Six bays hold your mibis in the Vivarium, and any pod, or any grown mibi you have not bonded, can be returned to the wild.", "link": "design/proposals/station-screens.md" },
+        { "title": "The Vivarium and its bays", "status": "live", "text": "Six bays hold your mibis in the Vivarium, and up to three of them travel on the Companion and keep their beds. Any pod, or any grown mibi you have not bonded, can be returned to the wild.", "link": "design/proposals/station-screens.md" },
         { "title": "Cross two mibis", "status": "live", "text": "Pick two adults of one species and see what their child could inherit, drawn only from the chapters you have read.", "link": "design/proposals/the-cross.md" },
         { "title": "A new face for every Station screen", "status": "building", "text": "The Station build runs on the graphics engine the real device will run. Pods is built on it; every other screen shows that it is not built yet until its turn comes.", "link": "design/proposals/lvgl-switch.md" },
         { "title": "The Library and the field guide", "status": "building", "text": "A tome with a plate for every species you have found and a book per species that fills in as you read more pods.", "link": "design/proposals/collection-display.md" },
         { "title": "Portrait sittings", "status": "building", "text": "Research milestones earn a mibi a sitting for its own portrait, which comes home as a crate at the dock.", "link": "design/proposals/the-portrait.md" },
-        { "title": "Home and Idle on the new face", "status": "next", "text": "Home with the Vivarium at its centre and the sections beside it, Cargo where the Companion's crates open, and the Idle view that keeps the Vivarium on show all day.", "link": "design/style-guide/station-layouts.md" },
-        { "title": "The Cross on the new face", "status": "next", "text": "Pick two mibis and see what their child could inherit, chapter by chapter, redrawn on the new face.", "link": "design/proposals/the-cross.md" },
+        { "title": "Home and Idle on the new face", "status": "building", "text": "Home with the Vivarium at its centre and the sections beside it, Cargo where the Companion's crates open, and the Idle view that keeps the Vivarium on show all day.", "link": "design/style-guide/station-layouts.md" },
         { "title": "Create and the Incubator on the new face", "status": "next", "text": "Shape a mibi's traits, then watch it grow under the dome leaf by leaf until it is ready to open.", "link": "design/proposals/station-screens.md" },
-        { "title": "The Vivarium and the Probe on the new face", "status": "next", "text": "The whole Vivarium, each mibi up close with its card, and the Probe section, where the Shield is mended and upgraded.", "link": "design/proposals/station-screens.md" },
+        { "title": "The Vivarium on the new face", "status": "next", "text": "The whole Vivarium, and each mibi up close with its card.", "link": "design/proposals/station-screens.md" },
+        { "title": "The Probe on the new face", "status": "next", "text": "The Probe section, where the Shield is mended and upgraded.", "link": "design/proposals/station-screens.md" },
+        { "title": "The Cross on the new face", "status": "next", "text": "Pick two mibis and see what their child could inherit, chapter by chapter, redrawn on the new face.", "link": "design/proposals/the-cross.md" },
         { "title": "The family tree", "status": "later", "text": "Each mibi's book will show its lineage once there are enough bred families to design it around.", "link": "design/proposals/family-tree.md" }
       ]
     },
@@ -32,8 +33,8 @@
         { "title": "Storms, Energy and the Shield", "status": "live", "text": "Storms charge stones with Energy but can strike you in the open, so your Shield and shelter matter.", "link": "design/proposals/exploration-round-2.md" },
         { "title": "Outposts and beacons", "status": "live", "text": "Light an outpost to head home and shelter there, or light a beacon to reveal the land around it.", "link": "design/proposals/outposts.md" },
         { "title": "Head home with your crates", "status": "live", "text": "Heading home seals what you found into crates in the bay, ready to open at the Station.", "link": "design/proposals/send-home-and-trail.md" },
-        { "title": "Your partner on the road", "status": "live", "text": "One mibi comes along with you, has its own screen between expeditions and helps in the field, such as digging into caves.", "link": "design/proposals/companion-mode.md" },
-        { "title": "Care and the bond", "status": "next", "text": "Tend the mibis the Companion carries, up to three: tending earns a mibi its bond, a bonded juvenile grows up through your care, and nothing is lost while you are away.", "link": "design/style-guide/companion-screens.md" },
+        { "title": "Your partner on the road", "status": "live", "text": "Up to three mibis travel with you on the Companion. One at a time is your partner, has its own screen between expeditions and helps in the field, such as digging into caves.", "link": "design/proposals/companion-mode.md" },
+        { "title": "Care and the bond", "status": "live", "text": "Tend the mibis the Companion carries, up to three: tending earns a mibi its bond, a bonded juvenile grows up through your care, and nothing is lost while you are away.", "link": "design/style-guide/companion-screens.md" },
         { "title": "Redrawn Companion art", "status": "building", "text": "The world, the explorer and the signs are being redrawn at a larger tile size in the game's art style.", "link": "design/proposals/companion-48px-redraw.md" },
         { "title": "Companion software for the device", "status": "later", "text": "Once the game loop is settled, the Companion's screens move to native code for the real handheld.", "link": "design/proposals/technical-architecture.md" }
       ]
@@ -61,7 +62,7 @@
         { "title": "The genome stamp", "status": "live", "text": "Every mibi carries a stamp that encodes its real genome, and a phone scan page reads it back.", "link": "prototypes/genome-stamp/README.md" },
         { "title": "Art for all sixteen species", "status": "building", "text": "Each species is getting its finished look; most still show a placeholder for now.", "link": "design/proposals/taxonomy.md" },
         { "title": "Mutation", "status": "later", "text": "Rare changes may one day appear during growing, breeding or exploring.", "link": "design/proposals/the-cross.md" },
-        { "title": "Growing up and growing old", "status": "later", "text": "Mibis will age from juvenile to adult to elder, with strengths that shift along the way.", "link": "design/proposals/companion-mode.md" }
+        { "title": "Growing up and growing old", "status": "live", "text": "Mibis grow from juvenile to adult to elder, with strengths that shift along the way; a bonded juvenile grows up through your care.", "link": "design/play-manual.md" }
       ]
     },
     {
