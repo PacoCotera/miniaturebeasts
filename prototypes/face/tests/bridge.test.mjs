@@ -10,7 +10,7 @@ import path from "node:path";
 import { bootFace, CONTRACT } from "../../station/src/face-lvgl.mjs";
 import { installScene } from "./node-scene.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
+const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node")   /* the test build: the node path (-DFACE_NODE_API) */, built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const base = pathToFileURL(dist + "/");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const boot = async (opts) => { const f = installScene(await bootFace(base, opts)); f.send({ t: "palette", name: "station", colours: palette }); return f; };

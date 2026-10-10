@@ -2,7 +2,7 @@
 // runs its frames from the animation frame, copies what it redrew onto the page's canvas, and turns the keys and the face's intents into the rules. Everything on the screen is the face's:
 // there is no drawing here. Also: the Caddy's one key, the shared save's storage event, the developer panel and the test hooks. Rules are in state.mjs, the key's rule call in intents/*, the
 // props in host.mjs.
-import { SW, SH, PALETTE, clock, motion } from "./pixels.mjs";
+import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
 import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
@@ -20,7 +20,7 @@ import { createHost, onFaceMessage, screenProps, frameIds as frameMarkIds, pinne
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
 
 const $ = (id) => document.getElementById(id);
-const vis = $("screen"), vctx = vis.getContext("2d"); vctx.imageSmoothingEnabled = false; vctx.fillStyle = "#121a16"; vctx.fillRect(0, 0, SW, SH);
+const vis = $("screen"); let vctx = null;   // the page's screen: the face copies what it redrew onto it (face.display)
 const stampEl = $("stamp"), bootEl = $("boot");
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
@@ -158,7 +158,7 @@ const faceBoot = async () => {
   f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) });
   for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
   f.pin(pinned(), picture);
-  FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
+  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
 };
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();

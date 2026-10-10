@@ -16,6 +16,7 @@ export function installScene(f) {
   const setRegion = (s) => { const b = enc.encode(String(s)).subarray(0, 47), p = M._face_region(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
   const layerOf = (n) => LAYERS[n.layer] ?? (n.kind === "text" ? 3 : n.kind === "sprite" ? 1 : 0);
   f.setBackground = (rgb) => M._face_background(rgb);
+  f.measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
   f.scene = (nodes, env) => {
     f.beginScene();
     const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };

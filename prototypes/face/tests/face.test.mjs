@@ -7,7 +7,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-const dist = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../dist"), built = existsSync(path.join(dist, "face.mjs"));
+const prod = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../dist"), dist = path.join(prod, "node"), built = existsSync(path.join(dist, "face.mjs"));   // the test build carries the fixed scene
 const load = async () => { const create = (await import(path.join(dist, "face.mjs"))).default, M = await create(); M._face_init(); return M; };
 
 test("the WebAssembly face is LVGL 9.6 at 1024×600 and draws its empty display in the colour the page names", { skip: !built && "face not built (prototypes/face/build.sh)" }, async () => {
@@ -26,7 +26,7 @@ test("keys go in and are counted", { skip: !built && "face not built" }, async (
   assert.equal(M._face_key_count(), 2); assert.equal(M._face_last_key(), 10);
 });
 
-test("the WebAssembly face and the native Linux face draw the same pixels", { skip: !built || !existsSync(path.join(dist, "native.hash")) ? "face not built natively" : false }, async () => {
+test("the WebAssembly face and the native Linux face draw the same pixels", { skip: !built || !existsSync(path.join(prod, "native.hash")) ? "face not built natively" : false }, async () => {
   const M = await load(); M._face_selftest_scene(); for (let t = 0; t < 4; t++) M._face_frame(t * 16); M._face_key(17, 1); M._face_key(17, 0); M._face_frame(80);
-  assert.equal((M._face_hash() >>> 0).toString(16).padStart(8, "0"), readFileSync(path.join(dist, "native.hash"), "utf8").trim());
+  assert.equal((M._face_hash() >>> 0).toString(16).padStart(8, "0"), readFileSync(path.join(prod, "native.hash"), "utf8").trim());
 });
