@@ -93,7 +93,7 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 | --- | --- | --- | --- |
 | Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a round ring 4 px outside the bezel (12, 44, 664, 512); ▲ from the topmost resident; `✓ Open the vivarium` |
 | Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`, to that mibi up close |
-| With-you bed | 448, 472, 192, 56 | The carried set: one to three asleep when docked, the Companion mark when away | each sleeper is a `resident` target, without the lift |
+| With-you bed | 448, 472, 192, 56 | The carried set: one to three asleep when docked; away, the bed empty | each sleeper is a `resident` target, without the lift |
 | Name tag | under the focused resident | Which mibi this is | — |
 | Rest knob | 624, 544, 32, 8 | Put the Station on Idle | `knob`; `✓ Rest` |
 | Cargo module | 688, 48, 320, 88 | The crates in the bay; amber while they wait | `cargo`; `✓ Open the bay` |
@@ -670,7 +670,7 @@ Home is the always-on view of the device. The player comes away knowing that the
 | Element | Why it is here |
 | --- | --- |
 | **The vivarium panel** (a living window in the sage housing) and its **residents** | The mibis at home, alive: the reason the device is on |
-| **The with-you bed**, one to three sleepers | The carried set: asleep here while the Companion is docked, the Companion mark while it is away |
+| **The with-you bed**, one to three sleepers | The carried set: asleep here while the Companion is docked; the bed empty while it is away |
 | **The name tag** under the focused resident | Which mibi this is, in the window, only while focused |
 | **The rest knob** on the bezel's bottom rail | The deliberate way to [Idle](#idle) |
 | **The column of five modules**: Cargo, Pods, Incubator, Probe, Library | The device's sections, each read by its objects; one press opens each |
@@ -701,7 +701,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
 | Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting a gilt frame `gold` lit `yellow` | The Probe as the project's Probe art draws it, never a needle |
 | Library | The field journal: cover `bark`, page edge `sand`; the glint `yellow` | The worn expedition volume |
-| Bed | A low nest: rim `bark`, hollow `soil`, lit rim `sand`; the Companion mark `mist` | Inside the warm field |
+| Bed | A low nest: rim `bark`, hollow `soil`, lit rim `sand` | Inside the warm field |
 | Rest knob | `enamel`, lit `sand`, shade `bevel` | One step lighter than the bezel it sits on |
 | Name tag | `panel`, `hairline` edge, the name `bone` | The kit's small plate |
 
@@ -714,7 +714,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
-| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the Companion mark 16×24 at (536, 488). Docked with nobody carried: the nest alone |
+| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, with no mark until the hand-drawn mark lands (`home-bed-mark-16x24` at (536, 488, 16, 24), registered, not drawn). Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
 | `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
 
@@ -753,7 +753,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 ### 6. Interactions
 
 <table><tr>
-<td valign="top"><img src="station-layouts/01c-home-away.png" width="480" alt="Home with the Companion away, the ring on the panel"><br><em>01c. Away: the bay shut, the cradle empty, the Companion mark on the bed; the ring on the panel, <code>✓ Open the Vivarium</code>. 1×, measured (<a href="station-layouts/01c-home-away.svg">SVG</a>).</em></td>
+<td valign="top"><img src="station-layouts/01c-home-away.png" width="480" alt="Home with the Companion away, the ring on the panel"><br><em>01c. Away: the bay shut, the cradle empty, the bed empty; the ring on the panel, <code>✓ Open the Vivarium</code>. 1×, measured (<a href="station-layouts/01c-home-away.svg">SVG</a>).</em></td>
 <td valign="top"><img src="station-layouts/01e-home-rest.png" width="480" alt="Home with three asleep and the ring on the rest knob"><br><em>01e. Three carried, asleep; the ring on the rest knob, <code>✓ Rest</code>. 1×, measured (<a href="station-layouts/01e-home-rest.svg">SVG</a>).</em></td>
 </tr><tr>
 <td valign="top"><img src="station-layouts/01f-home-nav.png" width="480" alt="Home's pad"><br><em>01f. Home's pad: the edges of the focus graph, ✓, ← and the keys. 1× (<a href="station-layouts/01f-home-nav.svg">SVG</a>).</em></td>
@@ -809,7 +809,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Vivarium (Home's glass) | 640×488 |
 | Residents, sleepers | 144×152 adult or elder, 104×112 juvenile; a sleeper in its nap pose |
 | Bed | 192×56 |
-| Companion mark | 16×24 |
+| Bed mark | 16×24, registered, not drawn until the hand-drawn mark lands |
 | Cargo's bay, open and shut | 176×72 |
 | Crate in the module | 48×40 |
 | Waiting mark | 24×24, `mark-waiting-24` |
