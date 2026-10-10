@@ -83,10 +83,13 @@
   "travel": { "rect": [88, 120, 848, 288], "component": "specimen", "part": "travel", "inStates": ["grow"], "from": [88, 232, 144, 176], "to": [792, 120, 144, 176], "path": "a straight line, whole pixels, eased in and out", "foot": { "from": [160, 408], "to": [864, 296] }, "layer": "drawn after the dome's back and before the chamber, the roll and the dome's front: it passes behind the specimen chamber and ends inside the dome" }
  },
  "drawOrder": ["bench", "rail", "cradle", "dome", "bud", "pod", "cradleFront", "origin", "chamber", "founder", "chamberFront", "roll", "traitLine", "domeFront", "leaves", "stamp", "code", "focus ring", "frame (top bar, bottom line)", "message plate"],
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The roll's dither is a cut; Grow it prints the stamp, sets the code and lands on the Incubator, growing, on the frame of ✓. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts."
+ },
  "events": {
-  "roll": { "kind": "dither", "target": "founder", "hold": false, "ms": 200, "levels": 16, "do": "the founder's old picture cross-dithers to the new one in its own box (Bayer, a composed picture; architect, 2026-10-09 13:24); the roll, the ring, the line, the pip, the stamp and the price change at once (cuts)" },
+  "roll": { "kind": "dither", "target": "founder", "ms": 200, "hold": 0, "levels": 16, "do": "the founder's old picture cross-dithers to the new one in its own box (Bayer, a composed picture; architect, 2026-10-09 13:24); the roll, the ring, the line, the pip, the stamp and the price change at once (cuts)" },
   "grow": {
-   "kind": "grow", "target": "pod", "hold": true, "holdMs": 1080,
+   "kind": "grow", "target": "pod", "ms": 900, "hold": 1080,
    "steps": [
     { "at": 0, "ms": 300, "do": "the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
     { "at": 300, "do": "the code appears on the rule (a cut)" },
@@ -112,7 +115,7 @@
    "back": "the pod's overview with the ring on the pod, nothing spent, the choices dropped (frame.json navigation.screens.create)",
    "room": "a coloured key drops the unpaid choices; coming back starts fresh (frame.json navigation.leaving.create); during the grow event it waits until the Incubator shows (derived.keys during the grow event)"
   },
-  "held": "while events.grow holds, the face moves no focus and sends no intent; a coloured key pressed meanwhile acts when the Incubator shows",
+  "held": "while events.grow holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends), when the Incubator shows",
   "vectors": [
    { "state": "shape", "from": "roll", "key": "up", "intent": "step:up", "to": "roll" },
    { "state": "shape", "from": "roll", "key": "down", "intent": "step:down", "to": "roll" },

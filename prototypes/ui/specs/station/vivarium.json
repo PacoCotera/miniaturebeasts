@@ -14,6 +14,7 @@
  "note": "The one home of the numbers of the Vivarium's whole, transcribed from station-layouts.md (The Vivarium: the whole and one mibi up close) and its wireframes 18-vivarium-whole.svg to 18b-vivarium-whole-empty.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The whole is the living window edge to edge, the residents walking in it, the with-you bed at its right, and the strip of bays along the foot; nothing else is on the stage. Its closer level is one mibi up close (habitat.json).",
  "purpose": "Every mibi at home, at its size, alive in one full-width window, and every bay along the foot: the player sees the whole household (who is home, who is out with the Companion, how many bays are free) and chooses one mibi to come closer to, with one press. Home's panel is the same place in a glance among the device's sections; Idle is the same painting with no frame and nothing to choose; the whole is the place with the keys in hand. Reads first: the residents; then the bays",
  "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. look and back are cuts to the other level. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
   "painting": "the window shows rows 120 to 560 of Idle's painting (frame.json idle.regions.vivarium.theWhole) at 1:1: one painting a light, never cropped and enlarged; a resident at y on Idle stands at y − 80 here",
   "strip": "the same strip, at the same rectangle and with the same tile forms, as one mibi up close (habitat.json regions.strip and tiles): going one level closer or back keeps the strip and the ring's tile where they stood",
   "nothing else": "no card, no modules, no stamp, no words in the window but the focused resident's name tag; nothing is amber",
@@ -76,6 +77,7 @@
   },
   "bed": {
    "rect": [792, 416, 192, 56],
+   "component": "livingWindow",
    "build": "withYouBed",
    "clip": "window",
    "mark": [16, 24],
@@ -154,13 +156,13 @@
  "events": {
   "look": {
    "kind": "dither",
-   "hold": true,
-   "holdMs": 180,
+   "target": "stage",
    "ms": 180,
+   "hold": 180,
    "levels": 16,
    "do": "✓ on a resident or a tile: the frame's screen transition to one mibi up close (habitat.json), that mibi shown, the ring on it (its name tag when it is out with the Companion)"
   },
-  "back": {"kind": "dither", "hold": true, "holdMs": 180, "ms": 180, "levels": 16, "do": "← from one mibi up close lands here, the ring on that mibi's resident, else its tile"}
+  "back": {"kind": "dither", "target": "stage", "ms": 180, "hold": 180, "levels": 16, "do": "← from one mibi up close lands here, the ring on that mibi's resident, else its tile"}
  },
  "focus": {
   "initial": "by the way in (focus.entry)",
@@ -212,7 +214,7 @@
    }
   },
   "list": "the order the view lists the targets: the residents in bay order (sleepers in their bays' places), then the tiles in bay order",
-  "held": "while events.look or events.back holds, the face moves no focus and sends no intent",
+  "held": "while events.look or events.back holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
   "layout": {
    "note": "the targets the vectors are played on: the wireframe 18, eight bays, seven mibis, docked, Pip and Sorrel asleep on the bed",
    "resident.bean": [48, 264, 144, 152],

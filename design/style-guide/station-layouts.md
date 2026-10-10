@@ -62,6 +62,8 @@ Home's column is the device's sections, one module each: Cargo, Pods, Incubator,
 
 The device's coloured keys are shortcuts, one for each family of sections on the map: Home with Cargo; the living (the Vivarium, one mibi, Cross, the Sitting); the research (Pods, Create, the Incubator, the Probe); the reference (the Library, the Book). A key opens its section's whole from anywhere, even from inside that section, and never spends. Every key drops Create's and Cross's unpaid choices and closes the namer, writing nothing; while a moment holds input (the arrival, the hatch), the key waits. The Caddy's Dock is never a Station key.
 
+**Holds.** Each event names its length (`ms`) and its hold (`hold`): whole milliseconds of held input from the event's start, 0 for none, independent of its length. During a hold the pad, ✓ and ← do nothing; a coloured key waits, and the last one pressed opens its section when the hold ends. An event marked `cut` (the moment) ends on the first key after its hold: it jumps to its end on that frame and the key then does what it does, so no press is spent on skipping. With reduced motion every event is a cut to its end and nothing is held: the host sends hold 0 and what follows an event's end (a hand-off, a jump) happens on the frame of the key. Cargo's opening is the one exception: its crates keep their 3000 ms each, as cuts, and its hold.
+
 <img src="station-layouts/16-key-set.png" width="1440" alt="The Station's front with the four coloured keys, each an icon slot, beside Home's screen, and what each key opens">
 
 *16. The coloured keys on the Station's front at 4 px/mm, each cap a marked icon slot, the pad's four arrows in their 20 × 20 mm slot, the branding slot on the top bezel, Home (15a) on the screen at 0.6×, and what each key opens. Positions from the [device-family concepts](../../hardware/concepts/device-family/concepts.md) ([SVG](station-layouts/16-key-set.svg)).*
@@ -912,7 +914,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | 1650 | The world turn jumps to the crate's turn |
 | 3000 | The next crate; after the last, the dither back to the bay, empty, with the report card over it |
 
-Input is held for crates × 3000 + 200 ms. With reduced motion each step jumps to its end; the hold is the same.
+The opening plays crates × 3000 + 180 ms and holds input crates × 3000 + 200 ms: one crate 3180 and 3200, two 6180 and 6200, three 9180 and 9200. With reduced motion each step is a cut at its time; the pace and the hold are the same, since each crate's words, materials and turn are read in turn.
 
 ### 6. Interactions
 
@@ -991,7 +993,7 @@ The Vivarium only, one painting a light (day, dusk, night), the warm key light f
 | --- | --- | --- |
 | `vivarium` | 0, 0, 1024, 568 | One painting. Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag; the waiting lamp steady at its box's top right. Drawn by the feet's y |
-| `bed` | 792, 496, 192, 56 | The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the Companion mark 16×24 at (880, 512) |
+| `bed` | 792, 496, 192, 56 | Living window, build `withYouBed`, coloured as the whole's: rim `bark`, hollow `soil`, lit rim `sand`, the Companion mark `mist`. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the Companion mark 16×24 at (880, 512) |
 | `strip` | 0, 568, 1024, 32 | Build `idleLine`; a 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | 16 px `mist`, centred on x 512 and y 584; one sentence, six words or fewer, no digits |
 
@@ -1237,14 +1239,14 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 - **Shape:** one target, `roll`, in group `roll`, its box the chosen picture's rectangle (the roll composition registers target `roll` there), round ring, no lift (it never leaves the roll). The group is a **stepper**: `"stepper": ["left", "right", "up", "down"]`. A stepper key is step 0 of the move order: the face sends the intent `step:<key>`, the ring stays, and no focus message goes. The loader refuses an empty list, a duplicate or unknown key, a stepper key that also has an edge in the group, `axis` horizontal with left or right, `axis` vertical with up or down, and `order` with up or down. As on Cross, the rail is not a target: its open tab follows the focused trait.
 - **Nothing read:** no target; the ring on nothing (`room`), every edge none; ✓ sends `confirm` on the room.
 
-Vectors: from `roll`, each of ◀ ▶ ▲ ▼ sends its step and the ring stays on `roll`; ✓ sends `confirm` on `roll`; nothing read, room ◀ room and room ✓ `confirm`. Held: during `grow` the face moves no focus and sends no intent.
+Vectors: from `roll`, each of ◀ ▶ ▲ ▼ sends its step and the ring stays on `roll`; ✓ sends `confirm` on `roll`; nothing read, room ◀ room and room ✓ `confirm`. Held: during `grow` the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends).
 
 ### Create's events
 
 | Event | Hold | What plays |
 | --- | --- | --- |
-| `roll`: `{ kind: dither, target: founder, ms: 200, levels: 16 }` | no | The founder's old picture cross-dithers to the new one in its own box, 16-level Bayer, as a composed picture; the roll, the ring, the line, the pip, the stamp and the price are cuts |
-| `grow` (1080 ms) | yes | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
+| `roll`: `{ kind: dither, target: founder, ms: 200, levels: 16 }` | 0 | The founder's old picture cross-dithers to the new one in its own box, 16-level Bayer, as a composed picture; the roll, the ring, the line, the pip, the stamp and the price are cuts |
+| `grow` (900 ms) | 1080 ms | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
 
 With `motion: false` both jump to their ends.
 
@@ -1437,9 +1439,9 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 
 | Event | Hold | What plays |
 | --- | --- | --- |
-| `wipe` (1000 ms), a tab clearing | no | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
-| `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the chamber's window opens on its hood's hinge, swinging up and back in three slices (at 0, 200 and 400 ms). Until the chamber master lands, the placeholder's window lifts 384 px instead, eased, whole pixels, out of sight under the rail, in the same 600 ms. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
+| `wipe` (1000 ms), a tab clearing | 0 | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
+| `growNow` (400 ms) | 400 ms | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
+| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: the chamber's window opens on its hood's hinge, swinging up and back in three slices (at 0, 200 and 400 ms). Until the chamber master lands, the placeholder's window lifts 384 px instead, eased, whole pixels, out of sight under the rail, in the same 600 ms. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
 **The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the Vivarium: states and events](#the-vivarium-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). This is the target: `frame.json` keeps main's navigation until the build, which makes the change `habitat.json` `buildChanges` names. With `motion: false` the hatch jumps to its end, the meet.
 
@@ -1563,7 +1565,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `stage` | 0, 40, 1024, 522 | frame, part stage | Flat `ground` round the strip |
 | `window` | 0, 40, 1024, 440 | living window, part inside, no frame | Idle's painting rows 120 to 560 at 1:1; ground band 0, 296, 1024, 176; foot 0, 472, 1024, 8 |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
-| `bed` | 792, 416, 192, 56 | build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
+| `bed` | 792, 416, 192, 56 | living window, build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
 | `nameTag` | 24 tall; the name + 16, up to 8, 48 to 176 | panel and text, build `nameTag` | Home's tag (16 px). Top at feet + 24; if its bottom would pass y 472 it sits over the resident (top = box.y − 4 − 32); a sleeper's over it. Slid to stay 8 px inside the window |
 | `strip` | 16, 488, 992, 64 | panel | The rectangle of one mibi up close |
 | `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch`) | Up close's forms: up to six bays 152×48 on a 160 pitch, the thumbnail at (52, 0); seven to twelve 72×48 on an 80 pitch, at (12, 0). A mibi out with the Companion: the outline glyph 16×24 centred where its thumbnail stands. No tile is "shown" here |
@@ -1676,7 +1678,7 @@ Both graphs use the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-swi
 | `low` | the nearest of `low` to the left, else `name`, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
 | `tile` (axis) | the previous tile; the first stops | the next tile; the last stops | `resident`, else `name` | none |
 
-**Opens on** the mibi; out, its name; the meet, the new mibi. From Cross, ← lands on the Cross module; from the Sitting, on the Portrait module; after the namer, on the mibi (from the meet) or the name (from Rename). **Held:** while the moment, a read, a release or a screen transition holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key.
+**Opens on** the mibi; out, its name; the meet, the new mibi. From Cross, ← lands on the Cross module; from the Sitting, on the Portrait module; after the namer, on the mibi (from the meet) or the name (from Rename). **Held:** while the moment, a read, a release or a screen transition holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends); after the moment's hold, the first key cuts it to its end and then acts; while the namer is open its own graph takes every key.
 
 ### The Vivarium: states and events
 
@@ -1692,17 +1694,20 @@ Docked and away are conditions of every state: the bed, the Companion module's g
 
 | Event | Level | Hold | What plays |
 | --- | --- | --- | --- |
-| `walk` | the whole | no | The residents walk, rest and play their species' idle, as on Home and Idle |
-| `look` | the whole | 180 ms | The screen transition to one mibi up close |
-| `back` | up close | 180 ms | The screen transition to the whole, the ring on this mibi |
-| `moment` | up close | 300 ms | Greet: the species moment; until it has one, the placeholder hops twice |
-| `swap` | up close | no | A 200 ms dither in the mibi's box as the ring walks the strip |
-| `read` | up close | 300 ms | The plate turns read; the stamp prints the chapter's cells |
-| `release` | up close | 200 ms | The mibi dithers out to the next in bay order; none left, the whole, empty |
-| `named` | up close | no | The tag (or the ribbon) takes the frame's 240 ms flash |
-| `watch` | up close | no | After 60 s summed over the day on the shown mibi at home and not carried, once a mibi a day: the habit recorded, the plate, and the tick under the day's cap (none at the cap) |
+| `walk` | the whole | 0 | The residents walk, rest and play their species' idle, as on Home and Idle |
+| `look` (180 ms) | the whole | 180 ms | The screen transition to one mibi up close |
+| `back` (180 ms) | up close | 180 ms | The screen transition to the whole, the ring on this mibi |
+| `moment` (1800 ms, cut) | up close | 300 ms | Greet: the species moment; until it has one, the placeholder hops twice, at 0 and 900 ms, each 400 ms: up 1 px every 50 ms to 4 px at 150, down to 0 at 350, whole pixels. The first key after the hold cuts it and then acts |
+| `swap` (200 ms) | up close | 0 | A 200 ms dither in the mibi's box as the ring walks the strip |
+| `read` (300 ms) | up close | 300 ms | The plate turns read; the stamp prints the chapter's cells |
+| `release` (200 ms) | up close | 200 ms | The mibi dithers out to the next in bay order; none left, the whole, empty |
+| `named` (240 ms) | up close | 0 | The tag (or the ribbon) takes the frame's 240 ms flash |
+| `meet` (0 ms) | up close | 0 | Landed from the hatch: the ribbon in the tag's place, the moment once with hold 0; the first key takes the ribbon away and acts |
+| `refused` (4000 ms) | up close | 0 | The message plate after a refusal, once a refusal |
 
-A painting that lands while its mibi is on screen waits for the next fresh draw; it never swaps in view. With `motion: false` every event jumps to its end.
+**The watch** is a host rule, not an event (`habitat.json` `rules.watch`): after 60 s summed over the day on the shown mibi at home and not carried, once a mibi a day: the habit recorded, the plate, and the tick under the day's cap (none at the cap); it plays the message plate and the counter's tick.
+
+A painting that lands while its mibi is on screen waits for the next fresh draw; it never swaps in view. With `motion: false` every event jumps to its end and the host sends hold 0.
 
 ### The Vivarium: the words
 
@@ -1866,7 +1871,7 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | `plates` | none | `nearestIn: module` (the slot, the row nearest) | none | none |
 | `module` (`order: [switch, slot]`) | `plates`, else none | none | the previous in the order | the next in the order |
 
-**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift. **Held:** while a mend or the install holds, the face moves no focus and sends no intent.
+**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift. **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends).
 
 ### The bench's states and events
 
@@ -1875,9 +1880,9 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 
 | Event | Hold | What plays |
 | --- | --- | --- |
-| `mend` | 300 ms | The first gone plate seats, gone → whole (a 16-level dither between its two pictures); the counter ticks the price |
-| `switch` | no | The knob slides from x 16 to 56 (or back) over 200 ms in whole pixels; the picture's plates and the lamp change at the end |
-| `install` | 900 ms | 0 to 300: the part drops 8 px into the socket; the counters tick. 300: the cradle's picture cuts to tier 2 and the plates move to the tier-2 places, whole. 300 to 600: the fourth plate seats. 600 to 900: what it adds draws full; the lamp steadies |
+| `mend` (300 ms) | 300 ms | The first gone plate seats, gone → whole (a 16-level dither between its two pictures); the counter ticks the price |
+| `switch` (200 ms) | 0 | The knob slides from x 16 to 56 (or back) over 200 ms in whole pixels; the picture's plates and the lamp change at the end |
+| `install` (900 ms) | 900 ms | 0 to 300: the part drops 8 px into the socket; the counters tick. 300: the cradle's picture cuts to tier 2 and the plates move to the tier-2 places, whole. 300 to 600: the fourth plate seats. 600 to 900: what it adds draws full; the lamp steadies |
 
 With `motion: false` every event jumps to its end.
 
@@ -2025,7 +2030,7 @@ The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 
 | ← | A step back, the choice made there kept and ringed: look and confirm to the place (`← Place`), the place to the pose (`← Pose`); from the pose, the vivarium, up close, with the ring on the Portrait module (`← Vivarium`). Nothing is spent |
 | Any key but ✓ | Clears the arm |
 | A room key | Leaves the screen; nothing is spent |
-| During begin | Presses are consumed (480 ms) |
+| During begin | Held 480 ms: the pad, ✓ and ← do nothing; a coloured key waits and acts when the hold ends |
 
 **A visit.** Inside the screen, ← keeps every choice made. Leaving the screen, by ← from the pose step or by a room key, drops every choice; coming back starts on the pose step with the ring on `card.0`.
 
@@ -2039,9 +2044,9 @@ The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 
 
 | Event | Hold | What plays |
 | --- | --- | --- |
-| `backdrop`: `{ kind: dither, target: glass, ms: 200, levels: 16 }` | no | The place step: the backdrop cross-dithers to the focused place's. The place backdrops load on entering the place step and are dropped on leaving the screen |
-| `step` | no | A step forward or back: the heading, the cards, the steps' tiles and the bottom line change at once; the gilt frame shows on look and confirm |
-| `begin`, the host timeline | 480 ms, presses consumed | At 0, `{ kind: dither, target: gilt, from: sitting-gilt-lit-560x424, to: null, ms: 300, levels: 16 }`: the lit gilt frame dithers out (the frame leaves for the bay). At 300, the standard 180 ms screen transition (`{ kind: dither, levels: 16 }`) to the vivarium, up close, the ring on `portrait`, the module in its painting state, and the message plate |
+| `backdrop`: `{ kind: dither, target: glass, ms: 200, levels: 16 }` | 0 | The place step: the backdrop cross-dithers to the focused place's. The place backdrops load on entering the place step and are dropped on leaving the screen |
+| `step` (0 ms) | 0 | A step forward or back: the heading, the cards, the steps' tiles and the bottom line change at once; the gilt frame shows on look and confirm |
+| `begin` (480 ms), the host timeline | 480 ms | At 0, `{ kind: dither, target: gilt, from: sitting-gilt-lit-560x424, to: null, ms: 300, levels: 16 }`: the lit gilt frame dithers out (the frame leaves for the bay). At 300, the standard 180 ms screen transition (`{ kind: dither, levels: 16 }`) to the vivarium, up close, the ring on `portrait`, the module in its painting state, and the message plate |
 
 With `motion: false` every event jumps to its end.
 
@@ -2602,7 +2607,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 | A room key | Closes the namer, writing nothing, and opens the room's top |
 | Idle | The namer closes, writing nothing, before the living view starts |
 | Dock (the Caddy's key) | The namer stays open; the crates wait in the bay |
-| During the `named` flash | Presses are consumed (240 ms) |
+| During the `named` flash | Held 240 ms: the pad, ✓ and ← do nothing; a coloured key waits and acts when the hold ends |
 
 **Every character with the pad alone.** The letters page holds a to z in reading order, seven a row, then the hyphen and ’ at the end of the fourth row. The accents page holds one column a vowel (a, e, i, o, u) and one row an accent (acute, grave, circumflex, diaeresis), and ç ñ œ ÿ in the sixth column. Space is the wide key on the bottom row. Capitals are the case rule: a name starts with a capital, and Aa gives any later letter as a capital (Œ and Ÿ included). Every key is at most seven presses from Done, and at most eight from any other key.
 

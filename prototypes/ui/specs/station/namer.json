@@ -115,7 +115,7 @@
   "order": "props.focus.targets lists the present keys key.0 to key.27, then mod.shift, mod.space, mod.page, act.done, act.suggest: on an equal score the earlier wins, so ▼ from the space bar, as near Suggest as Done, lands on Done",
   "reach": "every key is reached from Done in at most 7 presses (Done ▲ page, then the grid); at most 8 between any two targets",
   "ringClear": "a ring is 4 px outside its lifted key: 48×48 on a 48 pitch, so neighbouring rings meet no key and the ring above clears the row by 2 px",
-  "held": "while events.named plays the face moves no focus and sends no intent",
+  "held": "while events.named holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
   "vectors": [
    { "page": "letters", "from": "act.done", "key": "up", "to": "mod.page" },
    { "page": "letters", "from": "act.done", "key": "left", "to": "act.suggest" },
@@ -151,8 +151,11 @@
    { "page": "letters", "from": "act.done", "key": "back", "intent": "back", "target": "act.done" }
   ]
  },
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The namer closes and the name stands, with no flash. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts."
+ },
  "events": {
-  "named": { "kind": "flash", "target": "the regions of the screen beneath that show the name (on Habitat its name, and the meet ribbon while it shows)", "hold": true, "holdMs": 240, "ms": 240, "do": "the namer closes (a cut); the new name stands where the old one stood, with the frame's 240 ms flash behind it (as a counter's)" }
+  "named": { "kind": "flash", "target": "the regions of the screen beneath that show the name (on Habitat its name, and the meet ribbon while it shows)", "ms": 240, "hold": 240, "do": "the namer closes (a cut); the new name stands where the old one stood, with the frame's 240 ms flash behind it (as a counter's)" }
  },
  "bottomLine": {
   "key": { "action": "✓ strings.type (the character as the key shows it: strings.typeSpace, strings.typeDash, strings.typeApostrophe for the marks), dimmed while the field is full", "context": "strings.context", "back": "by the field: strings.backClear, strings.backDelete or strings.backLeave" },

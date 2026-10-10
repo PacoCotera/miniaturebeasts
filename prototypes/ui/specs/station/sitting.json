@@ -7,6 +7,7 @@
  "wireframes": ["design/style-guide/station-layouts/14-sitting-pose.png", "design/style-guide/station-layouts/14b-sitting-place.png", "design/style-guide/station-layouts/14c-sitting-confirm.png", "design/style-guide/station-layouts/14d-sitting-nav.png"],
  "note": "The one home of the sitting's numbers, transcribed from station-layouts.md (Sitting) and its wireframes 14-sitting-pose.svg to 14d-sitting-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The sitting spends a held sitting on one mibi: the player picks a pose from its habits and a place it has been, looks, and confirms. Its left half is Habitat's living window, unchanged, so the mibi stays where it stood; the choices are in the deck at the right (Habitat's right column, the namer's panel rectangle), the three steps along the foot. Every rectangle is on the 8 px grid.",
  "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The backdrop's dither is a cut; begin lands on one mibi up close, the ring on the Portrait module, on the frame of the second ✓, and its plate shows. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
   "where": "its own screen under one mibi up close (frame.json navigation.screens.sitting: parent habitat, back {name}), opened from its Portrait module with ✓ Portray {name}, only while a sitting is held and the mibi can sit (sitting.portraitBlock empty: it has a habit seen and a place been)",
   "rules": "prototypes/station/src/sitting.mjs: offer(st, m) gives the poses (the habits seen, habitsOf) and the places (where it has been, placesOf); beginSitting(st, m, pose, place) spends the held sitting and nothing else, sends the crate to the bay and sets the mibi's portrait painting. Nothing is spent before the last ✓",
   "window": "the same bezel, glass, mibi box and name tag as Habitat, so the screen change keeps the mibi where it stood; the glass shows a plain backdrop, washed in the focused place's colours on the place step",
@@ -57,10 +58,10 @@
  },
  "drawOrder": ["stage", "bezel", "glass", "resident", "nameTag", "gilt", "deck", "heading", "cards", "chosen", "strip", "steps", "ring", "frame (top bar, bottom line)", "message plate"],
  "events": {
-  "backdrop": { "kind": "dither", "target": "glass", "hold": false, "ms": 200, "levels": 16, "do": "the place step: the ring moved to another place card; the backdrop cross-dithers to that place's (lvgl-switch.md §2.7). Entering the place step dithers from the plain backdrop to the focused place's; going back to the pose step dithers to the plain one", "load": "regions.glass.load" },
-  "step": { "kind": "step", "hold": false, "do": "✓ on a card or ← inside: the heading, the cards, the steps' tiles and the bottom line change on the frame of the key (cuts); the gilt frame shows on the confirm step (a cut)" },
+  "backdrop": { "kind": "dither", "target": "glass", "ms": 200, "hold": 0, "levels": 16, "do": "the place step: the ring moved to another place card; the backdrop cross-dithers to that place's (lvgl-switch.md §2.7). Entering the place step dithers from the plain backdrop to the focused place's; going back to the pose step dithers to the plain one", "load": "regions.glass.load" },
+  "step": { "kind": "step", "ms": 0, "hold": 0, "do": "✓ on a card or ← inside: the heading, the cards, the steps' tiles and the bottom line change on the frame of the key (cuts); the gilt frame shows on the confirm step (a cut)" },
   "begin": {
-   "timeline": "begin, the host timeline", "hold": true, "holdMs": 480, "presses": "consumed",
+   "timeline": "begin, the host timeline", "ms": 480, "hold": 480, "presses": "the pad, ✓ and ← do nothing; a coloured key waits and acts when the hold ends (focus.held)",
    "steps": [
     { "at": 0, "kind": "dither", "target": "gilt", "from": "sitting-gilt-lit-560x424", "to": null, "ms": 300, "levels": 16, "do": "the lit gilt frame dithers out: the frame leaves for the bay" },
     { "at": 300, "kind": "dither", "target": "screen", "from": "sitting", "to": "habitat", "ms": 180, "levels": 16, "focus": "portrait", "do": "the standard screen transition to Habitat, the ring on the Portrait module in its painting state; the message plate (home.plate)" }
@@ -82,7 +83,7 @@
    "armed": "room: after the first ✓; regions.gilt.props.lit is focus.armed === \"room\"; any key but ✓ clears the arm",
    "room": "the ring on nothing: the gilt frame is the focus; ✓ arms, then begins"
   },
-  "held": "while events.begin holds, the face moves no focus and sends no intent",
+  "held": "while events.begin holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
   "vectors": [
    { "state": "pose", "from": "card.0", "key": "right", "to": "card.1" },
    { "state": "pose", "from": "card.2", "key": "right", "to": "card.2" },
