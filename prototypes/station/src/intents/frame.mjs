@@ -21,8 +21,14 @@ export function dock(h, fromIdle = false) {
   const r = T.dock(h.st, h.sv, h.settings, h.now());
   if (!r.ok) { h.say(r.msg); return r; }
   if (r.docked && fromIdle && h.ui.screen !== "home") h.goto("home");
-  if (r.docked) h.play({ kind: "tick", target: "dock", ms: 0 });
-  h.say(r.msg); h.save(); return r;
+  if (r.docked) {
+    h.play({ kind: "tick", target: "dock", ms: 0 });
+    // the crates slide into the Cargo module (home.json events.crateIn), one after another, while Home shows; docked on another screen they are in the bay when Home next shows
+    const n = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.home.regions.cargo.max), each = h.specs.home.events.crateIn.each;
+    if (n && h.ui.screen === "home") h.play({ kind: "arrival", target: "cargo", ms: each.ms + each.stagger * (n - 1) });
+  }
+  if (h.ui.screen !== "home") h.say(r.msg);   // on Home the Dock key leaves no plate (home.json keys.dock): the top bar, the bed, the column and the notice say it
+  h.save(); return r;
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.
 export function wake(h, verb) { h.ui.idle = false; return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }

@@ -499,6 +499,31 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   return { text: "", act: null };
 }
 
+// The room's one need, as facts (home.json strings.needs.order, the same order as need() above): the key of the first that holds, its count and the max the picture holds, the name or species and article it is about, the materials
+// short for it, and the screen its ✓ goes to. The Home view builds the words from home.json's strings; the room's ✓ goes where `act` says. null when nothing needs the player.
+export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
+  const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
+  if (docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
+  const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
+  if (meet) return { key: "meet", name: meet.name, act: "meet" };
+  const fresh = st.tray.filter((p) => !p.idd); if (fresh.length) return { key: "newPods", n: fresh.length, max: 6, act: "pods" };
+  const glint = st.tray.filter((p) => podGlints(st, p)); if (glint.length) return { key: "glints", n: glint.length, max: 6, act: "pods" };
+  if (st.waiting.length) return { key: "waitingPods", n: st.waiting.length, max: 6, act: "pods" };
+  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
+  if (grown.length && !bayFull(st, settings)) {
+    const p = grown[0], c = growCost(st, {}, settings), short = [st.e < c.e ? "⚡" : "", st.s < c.s ? "❀" : ""].filter(Boolean).join(" ");
+    return { key: "couldGrow", species: spName(p), a: art(spName(p)), short: short || null, act: "pods" };
+  }
+  const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
+  if (unread.length) {
+    const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
+    return { key: "toRead", species: spName(p), a: art(spName(p)), short: cost && st.d < cost ? "◆" : null, act: "pods" };
+  }
+  if (st.bud) return { key: "budGrowing", act: "incubator" };
+  return null;
+}
+
 // --- developer seeds and skips (dev.mjs calls these; they go through the same rules) ------------------
 // A crate of pods of one species in the Station's own dev bay: it arrives like any crate, at the dock.
 export function seedCrate(st, species, count, seed, now = Date.now()) {

@@ -109,11 +109,11 @@ jobs:
         # 4× as a phone's stand-in) are printed.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/face-check.mjs
       - name: Station layer table in a browser (LVGL)
-        # Pods in each of its states on the Station page itself (the face in test mode, ?test): the pixels outside the palette on pass 1 (chrome)
-        # and pass 2 (chrome and art) read 0, painted masters showing only on pass 3 (the art director's layer table); a page error, a render error or an error the face sent fails it.
+        # Pods in each of its states and Home at each of its capture points on the Station page itself (the face in test mode, ?test): the pixels outside the palette on pass 1 (chrome)
+        # and pass 2 (chrome and art) read 0, Home's regions have no departure from home.json and its budgets are printed, painted masters showing only on pass 3 (the art director's layer table); a page error, a render error or an error the face sent fails it.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/layer-check.mjs
-      - name: Pods goldens (LVGL)
-        # Each of Pods' states drawn by the page's own face (the C words on the page's own pictures): the framebuffer hash against prototypes/face/golden/pods/pods.json.
+      - name: Pods and Home goldens (LVGL)
+        # Each of Pods' states and Home's capture points drawn by the page's own face (the C words on the page's own pictures; Home with reduced motion, its two timed points on a virtual clock): the framebuffer hash against prototypes/face/golden/pods/pods.json and prototypes/face/golden/home/home.json.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check
       - name: Station layer checks
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):

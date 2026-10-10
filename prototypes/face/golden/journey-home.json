@@ -1,0 +1,489 @@
+{
+ "_note": "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "home-dock-arrival": [
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Open Cargo",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "arrival": true,
+    "crates": 2,
+    "cargoLamp": "needsYou",
+    "bed": "docked",
+    "notice": "two crates wait in the bay",
+    "plate": ""
+   }
+  ],
+  "home-pad": [
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "cargo"
+     }
+    ],
+    "screen": "home",
+    "focus": "cargo",
+    "ok": "Open Cargo",
+    "subject": "the bay is empty",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "pods"
+     }
+    ],
+    "screen": "home",
+    "focus": "pods",
+    "ok": "Look at the pods",
+    "subject": "four pods in the rack",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "incubator"
+     }
+    ],
+    "screen": "home",
+    "focus": "incubator",
+    "ok": "Open the Incubator",
+    "subject": "the Incubator is empty",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "probe"
+     }
+    ],
+    "screen": "home",
+    "focus": "probe",
+    "ok": "Open the Probe",
+    "subject": "the Probe in its cradle",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "library"
+     }
+    ],
+    "screen": "home",
+    "focus": "library",
+    "ok": "Open the Library",
+    "subject": "the field journal",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "knob"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "down",
+    "said": [],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "resident.1"
+     }
+    ],
+    "screen": "home",
+    "focus": "resident.1",
+    "ok": "Look at Dot",
+    "subject": "an adult Loika, asleep",
+    "idle": false
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "vivarium"
+     }
+    ],
+    "screen": "home",
+    "focus": "vivarium",
+    "ok": "Open the Vivarium",
+    "subject": "one mibi at home",
+    "idle": false
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "home",
+      "target": "cargo"
+     }
+    ],
+    "screen": "home",
+    "focus": "cargo",
+    "ok": "Open Cargo",
+    "subject": "the bay is empty",
+    "idle": false
+   },
+   {
+    "key": "home",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "cargo",
+      "verb": "room:home"
+     }
+    ],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Look at the pods",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Look at the pods",
+    "subject": "",
+    "idle": false
+   }
+  ],
+  "home-rack": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "cargo",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "cargo",
+    "focus": "cargo",
+    "ok": null,
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "cargo",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "cargo",
+    "ok": "Open Cargo",
+    "subject": "the bay is empty",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "incubator",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "incubator",
+    "focus": "incubator",
+    "ok": null,
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "incubator",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "incubator",
+    "ok": "Open the Incubator",
+    "subject": "the Incubator is empty",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "probe",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "bench",
+    "focus": "probe",
+    "ok": null,
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "bench",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "probe",
+    "ok": "Open the Probe",
+    "subject": "the Probe in its cradle",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "library",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library",
+    "focus": "library",
+    "ok": null,
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "library",
+    "ok": "Open the Library",
+    "subject": "the field journal",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "resident.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "focus": "resident.1",
+    "ok": null,
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "resident.1",
+    "ok": "Look at Dot",
+    "subject": "an adult Loika, asleep",
+    "idle": false
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "pods",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "pods",
+    "focus": "pods",
+    "ok": "Open",
+    "subject": "sealed until identified",
+    "idle": false
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "pods",
+      "target": "place.0",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "pods",
+    "ok": "Look at the pods",
+    "subject": "four pods in the rack",
+    "idle": false
+   }
+  ],
+  "home-lamp": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": null,
+    "subject": null,
+    "idle": true
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "idle",
+      "verb": "wake"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   }
+  ],
+  "home-rest-hold": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "idle",
+      "verb": "wake"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "pods",
+    "focus": "knob",
+    "ok": "Open",
+    "subject": "sealed until identified",
+    "idle": false
+   }
+  ]
+ }
+}

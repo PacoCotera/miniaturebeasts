@@ -1,0 +1,23 @@
+{
+ "$comment": "The props of Home (lvgl-switch.md §2.1): what views/home-props.mjs gives the face, beside the frame's. Props name what, never where: strings, states, counts, asset ids, seeds, flags and the focus targets by id; no rectangle, no measure, no layout rule, no colour (the words read those from home.json and the palette). An asset id names a picture the host has made ready (the view's `requests` list them); a picture the face does not hold draws nothing. Checked by prototypes/station/tests/home-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum, oneOf).",
+ "$defs": {
+  "lamp": { "enum": ["off", "well", "waiting", "needsYou"] },
+  "person": { "type": "object", "required": ["id", "name", "stage", "picture", "waiting", "seed"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "stage": { "enum": ["juvenile", "adult", "elder"] }, "picture": { "type": "string" }, "waiting": { "type": "boolean" }, "seed": { "type": "integer" } } },
+  "well": { "type": "object", "required": ["pod", "glint"], "additionalProperties": false, "properties": { "pod": { "type": "string" }, "glint": { "type": "string" } } },
+  "target": { "type": "object", "required": ["id", "group"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "group": { "enum": ["vivarium", "resident", "column"] }, "enabled": { "type": "boolean" } } }
+ },
+ "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
+ "properties": {
+  "state": { "enum": ["home"] },
+  "regions": { "type": "object", "required": ["glass", "residents", "bed", "cargo", "pods", "incubator", "probe", "library"], "additionalProperties": false, "properties": {
+   "glass": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "residents": { "type": "array", "items": { "$ref": "person" } },
+   "bed": { "type": "object", "required": ["state", "picture", "sleepers"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away", "none"] }, "picture": { "type": "string" }, "sleepers": { "type": "array", "items": { "$ref": "person" } } } },
+   "cargo": { "type": "object", "required": ["state", "crates", "lamp", "bay", "crate", "waiting"], "additionalProperties": false, "properties": { "state": { "enum": ["away", "empty", "crates", "waiting"] }, "crates": { "type": "integer" }, "lamp": { "$ref": "lamp" }, "bay": { "type": "string" }, "crate": { "type": "string" }, "waiting": { "type": "string" } } },
+   "pods": { "type": "object", "required": ["lamp", "well", "wells"], "additionalProperties": false, "properties": { "lamp": { "$ref": "lamp" }, "well": { "type": "string" }, "wells": { "type": "array", "items": { "$ref": "well" } } } },
+   "incubator": { "type": "object", "required": ["state", "lamp", "chamber", "leaves"], "additionalProperties": false, "properties": { "state": { "enum": ["empty", "growing", "ready", "painting"] }, "lamp": { "$ref": "lamp" }, "chamber": { "type": "string" }, "leaves": { "type": "object", "required": ["total", "rows", "full", "emptyPicture", "fullPicture"], "additionalProperties": false, "properties": { "total": { "type": "integer" }, "rows": { "type": "integer" }, "full": { "type": "integer" }, "emptyPicture": { "type": "string" }, "fullPicture": { "type": "string" } } } } },
+   "probe": { "type": "object", "required": ["state", "lamp", "cradle", "shields", "frame"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away"] }, "lamp": { "$ref": "lamp" }, "cradle": { "type": "string" }, "shields": { "type": "object", "required": ["count", "whole", "wholePicture", "gonePicture"], "additionalProperties": false, "properties": { "count": { "type": "integer" }, "whole": { "type": "integer" }, "wholePicture": { "type": "string" }, "gonePicture": { "type": "string" } } }, "frame": { "type": "string" } } },
+   "library": { "type": "object", "required": ["state", "lamp", "journal"], "additionalProperties": false, "properties": { "state": { "enum": ["pages", "empty"] }, "lamp": { "$ref": "lamp" }, "journal": { "type": "string" } } } } },
+  "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "type": "string" }, "targets": { "type": "array", "items": { "$ref": "target" } } } }
+ }
+}

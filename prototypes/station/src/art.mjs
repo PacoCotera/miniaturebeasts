@@ -9,7 +9,7 @@ import { plainRender, BG } from "../../workbench/framework/plain.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
 export const PLACEHOLDERS = [
-  { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
+  { id: "mibi", what: "every mibi and founder: the placeholder of the plain renderer (flat slots, outline, no face, no material), quantised to the palette; on Home a resident (144×152 or 104×112) and a sleeper (fitted in 96×88) are the same stand-in, standing and never mirrored, with no nap pose", until: "the Grow painting lands (M3), and the rig's own placeholder brief is finished" },
   { id: "pod", what: "the pod placeholder sprites: hand-drawn, per size class and state, coloured per species by remap (prototypes/ui/assets/placeholders/pod)", until: "the pod renderer's masters (research-loop.md §6)" },
   { id: "trait-picture", what: "a trait's picture: a close-up of this pod's mibi in the placeholder, cropped around the part the trait names", until: "the Grow painting's close-ups" },
   { id: "seed", what: "the misty seed: the hidden look as a frosted close-up in a pearl", until: "the seed master" },
@@ -17,7 +17,14 @@ export const PLACEHOLDERS = [
   { id: "ring", what: "the progress ring: a centre dot, one arc per chapter sized by its traits, a star for a glint, a notch for a sealed chapter", until: "the pod list master" },
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
-  { id: "room", what: "Home's room, bench modules, vivarium, crates, cups, dome, leaves, Probe and lamp, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
+  { id: "home-glass-day", what: "Home's glass, 640×488 (the flat plates of home.json's colours show: the back, the ground band with its top row, the foot): no master, nothing else is drawn", until: "Home's glass master (day, dusk and night)" },
+  { id: "home-bed-192x56", what: "the with-you bed: a PH plate (stone, 1 px mist edge) at [448,472,192,56] in every bed state", until: "the bed master" },
+  { id: "home-bed-mark-16x24", what: "the Companion's mark on the bed: registered, nothing drawn (frame-companion-outline-16x24 is a painted crop, never drawn here)", until: "the art director's hand-drawn bed mark" },
+  { id: "home-crate-48x40", what: "a walk crate in the Cargo module's bay: a PH plate; the bay itself (open and shut, 176×72) is left empty", until: "the Cargo module masters" },
+  { id: "home-rack-pod-24x32", what: "a pod in the Pods module's rack: a PH plate at well + (4,0); the 32×32 wells are left empty", until: "the rack pod and the well master" },
+  { id: "home-leaf-8x12", what: "the Incubator module's leaves: a full leaf a PH plate, an empty one a PH hollow (home-leaf-empty-8x12), only while a bud is in the chamber; the chamber is left empty", until: "the leaf masters and the chamber master" },
+  { id: "home-shield-12x24", what: "the Probe module's Shield plates: a whole plate a PH plate, a lost one a PH hollow (home-shield-gone-12x24); a held sitting a PH plate (home-sitting-24x32); the cradle is left empty", until: "the Probe module masters" },
+  { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
   { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];

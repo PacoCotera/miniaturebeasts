@@ -1,5 +1,5 @@
 // The host's side of the face (lvgl-switch.md §2.1, §2.7): what the page sends the face and what it does with what the face says, with no DOM, no canvas and no clock of its own.
-//   props    the screen's props for the face: frame props for every screen (the top bar, the bottom line, the message plate), Pods props for Pods, and for every other screen
+//   props    the screen's props for the face: frame props for every screen (the top bar, the bottom line, the message plate), Home props for Home, Pods props for Pods, and for every other screen
 //            state "notBuilt" (the face draws frame.json notBuilt); Idle is `idle: true` and nothing else
 //   events   the presenter's ticks and flashes, the plate, the screen change's dither
 //   faces    the intents and the focus the face sends, turned into the rules (intents/*) and the screens' state (UI)
@@ -8,6 +8,7 @@ import { G, FX, UI, SPECS, LAYER, msg, goScreen, save, need, docked, hasWorld, p
 import * as S from "./state.mjs";
 import { frameOf } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
+import { homeBuild } from "./views/home-props.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
@@ -16,7 +17,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["pods"];
+export const BUILT = ["home", "pods"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -76,6 +77,15 @@ export function podsBody() {
   return body;
 }
 
+// ---- Home ----
+// Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
+export function homeBody() {
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f });
+  const body = homeBuild(model(), SPECS.home, SPECS.frame);
+  if (body.props.focus.cur === "room") UI.home.f = "room";
+  return body;
+}
+
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
@@ -83,8 +93,8 @@ export function screenProps(plate) {
   if (UI.idle) return { msg: { screen, idle: true }, ids: [] };
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
-  const body = podsBody(), reqs = [...body.requests, ...iconRequests()];
-  registerPictures(reqs, { podById, frameOf });
+  const body = screen === "home" ? homeBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  registerPictures(reqs, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
   return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids] };
@@ -98,22 +108,23 @@ export function frameIds() {
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----
-// h = { st, sv, settings, ui, specs, now, say, goto, play, lock, save }. Effects reach the face as events; a held arrival, a rest and the Dock's tick are Home's, and Home is not built:
-// no arrival plays and nothing is held.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch"]);
-export function createHost({ send, nowMs, afterSave = () => {} }) {
-  const holds = new Map();   // the events sent with hold: true that have not said done (an event the face drops, or whose done was lost, expires with its time)
-  const holding = () => { const t = nowMs(); for (const [k, until] of holds) if (until < t) holds.delete(k); return holds.size > 0; };
+// h = { st, sv, settings, ui, specs, now, say, goto, play, lock, save }. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
+// the bay's own arrivals are Cargo's, and play nothing until it is built.
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]);
+export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
+  const holds = new Map();   // the holds in force: { until, byDone } by event. `hold` on the wire is whole ms from the event's start, independent of `ms` (lvgl-switch.md §2.1); a timeline event that holds while it plays (hold: true) is sent with hold = its ms and also ends its hold with its done (an event the face drops, or whose done was lost, expires with its time)
+  const holding = () => { const t = nowMs(); for (const [k, v] of holds) if (v.until < t) holds.delete(k); return holds.size > 0; };
   const play = (e) => {
-    if (!(PLAYS.has(e.kind) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
-    if (e.hold) holds.set(e.kind + ":" + e.target, nowMs() + (e.ms || 0) + 500);
-    send({ t: "event", ...e });
+    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && e.target === "cargo") || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
+    const hold = e.hold === true ? e.ms || 0 : e.hold || 0, ev = { ...e, hold };
+    if (hold) holds.set(e.kind + ":" + e.target, { until: nowMs() + hold + (hold === (e.ms || 0) ? 500 : 0), byDone: hold === (e.ms || 0) });
+    send({ t: "event", ...ev });
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
+    now: () => Date.now(), motion, say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding, holdsOf: (kind, target) => holding() && holds.has(kind + ":" + target),
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
-    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
+    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => { const v = holds.get(kind + ":" + target); if (v && v.byDone) holds.delete(kind + ":" + target); },
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;
@@ -124,11 +135,18 @@ export function onFaceMessage(h, m) {
   if (m.t === "done") {
     h.release(m.kind, m.target);
     if (m.kind === "hatch") { UI.hab.id = +m.target; UI.hab.f = "door"; h.goto("habitat"); }   // the hatch is over: meet the mibi, the ring on the door
+    if (m.kind === "rest") {   // the knob has settled (events.rest.ms): the screen transition to Idle follows (its second step); with the hold still on
+      const ev = SPECS.home.events.rest, step = ev.steps[1]; UI.resting = true; h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 });
+    } else if (m.kind === "dither" && UI.resting) {   // the transition is over, and the hold with it: Idle plays the Vivarium alone, Home keeping its state and focus unseen
+      UI.resting = false; UI.idle = true; h.pendingRoom = null;   // the rest ends on Idle, where the first press only wakes: a room key pressed during the hold was dropped (home.json events.rest.keys)
+    }
     return;
   }
-  if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); return; }
+  if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }
   if (m.t !== "intent") return;
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (h.holding() && m.verb?.startsWith("room:")) { if (!UI.resting && !h.holdsOf("rest", "knob")) h.pendingRoom = m.verb.slice(5); return; }   // while the host's hold runs every intent is dropped; a room: key is kept as the last one, except in Home's rest, which ends on Idle and drops it
+  if (h.holding()) return;
   if (m.verb === "wake") { dispatch(h, m); h.play({ kind: "dither", target: "stage", ms: 180, hold: true }); return; }
   dispatch(h, m);
 }

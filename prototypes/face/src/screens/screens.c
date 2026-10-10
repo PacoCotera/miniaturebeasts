@@ -30,7 +30,8 @@ static void frame_words(void) {
 static void stage_dither(void) {
   static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
   anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) return;
-  int level = 16 - (16 * t.elapsed) / t.ms, r[4]; if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
+  int level = t.to > t.from ? t.from + ((t.to - t.from) * t.elapsed) / t.ms : 16 - (16 * t.elapsed) / t.ms, r[4];   /* from < to: the dither closes over the stage (Home's rest to Idle) */ if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
+  if (level > 16) level = 16;
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
@@ -80,7 +81,10 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
 }
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
-  { char screen[32]; spec_str("props", "screen", screen, sizeof screen); if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();   /* a screen draws its words when the props carry its regions */ }
+  { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
+    if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
+    else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
+    else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) not_built(1);          /* Idle has no binding table yet */
   else if (is_not_built()) not_built(0);
   frame_words();
@@ -98,26 +102,31 @@ int screens_props(const char *json, int len) {
 }
 
 /* ---- keys ---- */
-static void say(const char *kind, const char *target, const char *verb) {
+void screens_say(const char *kind, const char *target, const char *verb) {
   char screen[32], b[300]; spec_str("props", "screen", screen, sizeof screen);
   if (verb) snprintf(b, sizeof b, "{\"t\":\"intent\",\"seq\":%u,\"screen\":\"%s\",\"target\":\"%s\",\"verb\":\"%s\"}", wire_props_seq(), screen, target, verb);
   else snprintf(b, sizeof b, "{\"t\":\"%s\",\"seq\":%u,\"screen\":\"%s\",\"target\":\"%s\"}", kind, wire_props_seq(), screen, target);
   wire_emit(b);
 }
 void screens_key(int code) {
-  if (anim_holding()) return;   /* an event holds input: no key is acted on (§2.1) */
+  if (anim_holding()) {   /* an event holds input: no key is acted on (§2.1); while Home's rest holds, a room key is still said, and the host keeps it until the hold ends (home.json focus.held) */
+    char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+    if (rv && strcmp(sc, "home") == 0) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
+    return;
+  }
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
-  if (spec_bool("props", "idle", 0)) { say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
+  if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
     const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[64];
     if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";
-    if (v) say("intent", "screen", v);
+    if (v) screens_say("intent", "screen", v);
     return;
   }
+  if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) { home_key(code); return; }
   if (strcmp(screen, "pods") != 0 || spec_len("props", "regions") < 0 || !spec_has("pods")) return;
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-  if (verb) { say("intent", cur, verb); return; }
+  if (verb) { screens_say("intent", cur, verb); return; }
   int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
   focus_target_t t[64]; char gkey[24]; int n = pods_focus(t, 64, gkey, sizeof gkey); if (n <= 0) return;
   char path[48], err[200]; snprintf(path, sizeof path, "focus.%s", gkey); int glen; const char *graph = spec_raw("pods", path, &glen);
@@ -125,7 +134,8 @@ void screens_key(int code) {
   focus_resolve_t r[16]; int nr = 0;
   for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 16; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
   char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, NULL, to, sizeof to); focus_graph_free(g);
-  if (step) { char v[16]; snprintf(v, sizeof v, "step:%s", dir == FOCUS_UP ? "up" : dir == FOCUS_DOWN ? "down" : dir == FOCUS_LEFT ? "left" : "right"); say("intent", cur, v); return; }
+  if (step) { char v[16]; snprintf(v, sizeof v, "step:%s", dir == FOCUS_UP ? "up" : dir == FOCUS_DOWN ? "down" : dir == FOCUS_LEFT ? "left" : "right"); screens_say("intent", cur, v); return; }
   if (strcmp(to, cur) == 0) return;
-  v_focus_set(to); draw(); say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
+  v_focus_set(to); draw(); screens_say("focus", to, NULL);   /* the ring moves on the frame of the key: the words are drawn again at once */
 }
+int screens_tick(uint32_t now) { return spec_has("props") && spec_has("frame") && home_tick(now); }

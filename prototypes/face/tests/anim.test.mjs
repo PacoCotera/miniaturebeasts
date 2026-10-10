@@ -31,7 +31,7 @@ const find = (state, re) => cases.find((c) => c.state === state && re.test(c.nam
 
 test("a seal clears from the top down over its length: the cut grows in whole pixels, the frame is drawn each step, and `done` says it ended", { skip }, async () => {
   const c = find("overview", /the seal half cleared/), f = await start(c); const pod = c.props.regions.specimen.pod, hs = [];
-  send(f, { kind: "seal", target: pod.id, ms: 2000, hold: true });
+  send(f, { kind: "seal", target: pod.id, ms: 2000, hold: 2000 });
   for (const ms of [250, 500, 750, 1000]) { at(f, ms); hs.push(f.hash()); }   // the cradle's front lip hides the pod below its 88th row, so the cut shows to 76 px
   assert.equal(new Set(hs).size, hs.length, "each step draws a different frame"); assert.deepEqual(msgs(f, "done"), [], "not done yet");
   at(f, 2000); const done = msgs(f, "done"); assert.deepEqual(done, [{ t: "done", kind: "seal", target: pod.id }]);
@@ -39,14 +39,14 @@ test("a seal clears from the top down over its length: the cut grows in whole pi
 });
 test("a held event holds input: no key is acted on until it ends", { skip }, async () => {
   const c = find("overview", /unidentified pod, the pod focused/), f = await start(c);
-  send(f, { kind: "seal", target: c.props.regions.specimen.pod.id, ms: 2000, hold: true }); at(f, 100);
+  send(f, { kind: "seal", target: c.props.regions.specimen.pod.id, ms: 2000, hold: 2000 }); at(f, 100);
   f.send({ t: "key", k: "right" }); f.send({ t: "key", k: "confirm" }); assert.deepEqual(msgs(f).filter((m) => m.t === "focus" || m.t === "intent"), [], "held");
   at(f, 2000); f.send({ t: "key", k: "right" }); assert.equal(msgs(f).filter((m) => m.t === "focus").length, 1, "free again");
   send(f, { kind: "plate", target: "msg", ms: 4000 }); at(f, 100); f.send({ t: "key", k: "left" }); assert.equal(msgs(f).filter((m) => m.t === "focus").length, 1, "a plate does not hold");
 });
 test("motion off: every event jumps to its end (done at once, nothing drawn in between)", { skip }, async () => {
   const c = find("overview", /the seal half cleared/), f = await start(c, { motion: false }), before = f.hash();
-  send(f, { kind: "seal", target: c.props.regions.specimen.pod.id, ms: 2000, hold: true }); assert.equal(msgs(f, "done").length, 1); at(f, 500); assert.equal(f.hash(), before);
+  send(f, { kind: "seal", target: c.props.regions.specimen.pod.id, ms: 2000, hold: 2000 }); assert.equal(msgs(f, "done").length, 1); at(f, 500); assert.equal(f.hash(), before);
 });
 test("the ribbon shows from its `from` and not before; the same event again starts over", { skip }, async () => {
   const c = find("overview", /a ribbon in the origin/), f = await start(c);
@@ -58,7 +58,7 @@ test("the ribbon shows from its `from` and not before; the same event again star
 test("Read fills the pips ceil(p * n) over the event, then the end state", { skip }, async () => {
   const c = find("overview", /a read wipe in progress/), f = await start(c), chap = c.events[0].target, tabs = c.props.regions.rail.tabs, ti = tabs.findIndex((t) => t.id === chap), n = tabs[ti].pips;
   assert.ok(n >= 2 && tabs[ti].filled === n && tabs[ti].state === "read");
-  const seen = new Set(); send(f, { kind: "wipe", target: chap, ms: 2000, hold: true });
+  const seen = new Set(); send(f, { kind: "wipe", target: chap, ms: 2000, hold: 2000 });
   for (let ms = 0; ms <= 2000; ms += 100) { at(f, ms); seen.add(f.hash()); }
   assert.equal(seen.size, n + 1, `${n} pips fill in ${n} steps (and the empty tab before)`); assert.equal(msgs(f, "done").length, 1);
 });
