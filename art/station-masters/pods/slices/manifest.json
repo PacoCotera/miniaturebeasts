@@ -10144,8 +10144,8 @@
   ],
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "f2cf2339915a5eb4883dbb00028edaf2a6767cc6be335c0c1a31179f5299cc4f",
+  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet); the inner light graded brighter and creamier by hand (pass 100)",
+  "sha256": "bf245c0c28745e1fd524a4dc04ae588300720295d7812a4e3dddc96d8c0686e0",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
@@ -10195,9 +10195,48 @@
    56
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: bed, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 192x56, transparent around it (pass 99, the second sheet)",
-  "sha256": "0ea14f4f939dd8d629addb214ec0c4a5dc20cad1ff08674c69897191f301f34e",
+  "src": "slices/idle-vivarium-day-1024x568.png (signed, gemini-3-pro-image)",
+  "made": "Home's bed, the id the builder already knows: the day version (the same file as home-bed-day-192x56), replacing the bowl of pass 99 (pass 100)",
+  "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-bed-day-192x56": {
+  "size": [
+   192,
+   56
+  ],
+  "rect": null,
+  "src": "slices/idle-vivarium-day-1024x568.png (signed, gemini-3-pro-image)",
+  "made": "Home's bed by day: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
+  "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-bed-dusk-192x56": {
+  "size": [
+   192,
+   56
+  ],
+  "rect": null,
+  "src": "slices/idle-vivarium-dusk-1024x568.png (signed, gemini-3-pro-image)",
+  "made": "Home's bed by dusk: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
+  "sha256": "61cdc351cdac866a47d488b9b7a6cb1043f8860dfe7aba712324492ba62765a7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-bed-night-192x56": {
+  "size": [
+   192,
+   56
+  ],
+  "rect": null,
+  "src": "slices/idle-vivarium-night-1024x568.png (signed, gemini-3-pro-image)",
+  "made": "Home's bed by night: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
+  "sha256": "1c845078951ff06cd6ea82bdc9c5825774abc6fa6f19d620d0c55c6d48d5c796",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
