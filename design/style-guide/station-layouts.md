@@ -225,7 +225,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | --- | --- | --- |
 | Room marks (the device keys' icons) | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24` | 24×24 |
 | The Companion's glyph | `frame-companion-solid-16x24` (docked), `frame-companion-outline-16x24` (away) | 16×24 |
-| Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `frame-lamp-12-amber` (the notice's): one painted shape per colour | 8×8, 12×12 |
+| Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `home-lamp-amber-12x12` (the notice's, frame.json `lamp12.needsYou`): one painted shape per colour | 8×8, 12×12 |
 | The sun (the world turn) | `frame-sun-16` | 16×16 |
 | Key caps | `frame-cap-confirm-16` (✓, `orange`), `frame-cap-confirm-16-dim` (✓ when the action cannot be paid, `mist`), `frame-cap-back-16` (←, `stone`) | 16×16 discs, as on the Companion: the frame shares one language, and the Station's own keys have no set shape (`design/devices.md` gives no key shape; the device-family renders are appearance references only). If the Station's keys are square, the caps follow them. The dimmed ✓ is a state of the cap drawn as its own slice, not a tint of the orange one: the build never recolours art |
 | The mibi's face | `face-<mibi>-24` (docked), `face-<mibi>-24-away` (on its `stone` ring), `face-24-empty` (no mibi with you): Station masters painted at 24, never the Companion's face scaled | 24×24, on its `teal` ring |
@@ -248,14 +248,14 @@ The material icons are the kit's 16 px icons, as on the Companion.
 
 | Region | Rectangle | Holds |
 | --- | --- | --- |
-| Top bar | 0, 0, 1024, 40 | Chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
+| Top bar | 0, 0, 1024, 40 | The signed bar `frame-top-bar-1024x40` (frame.json `regions.top.slice`), 1:1, with its own edge rows; the zones, the top rules and the marks over it. While the bar is not on the face: chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
 | Title | 16, 8, 232, 24 | The room's mark 24×24, then the title, 20 px medium |
 | Materials | 384, 8, 256, 24 | As above |
 | Companion | 760, 8, 120, 24 | The glyph 760, 8, 16, 24; its lamp 780, 16, 8, 8; three faces at 800, 8, 24, 24, at 828, 8, 24, 24 and at 856, 8, 24, 24; right edge x 880 |
 | When (the world turn) | 904, 8, 104, 24 | The sun mark and the figure, right-aligned to x 1008 |
 | Top rules | x 256 and x 888, y 8 to 32 | 1 px hairlines |
 | Stage | 0, 40, 1024, 522 | The screen's own layout, on its painted slice; with no slice, flat `ground` |
-| Bottom line | 0, 562, 1024, 38 | Chrome ground (`ground`), with a 1 px `void` rule on its top edge |
+| Bottom line | 0, 562, 1024, 38 | The signed bar `frame-bottom-line-1024x38` (frame.json `regions.line.slice`), 1:1, with its own edge rows; the zones, the separators and the marks over it. While the bar is not on the face: chrome ground (`ground`), with a 1 px `void` rule on its top edge |
 | Action | 16, 570, 376, 24 | ✓ cap, verb, then the price, 24 px apart |
 | Context (subject) | 408, 570, 208, 24 | Centred on x 512, 16 px, `mist`. May end in "…" |
 | Notice (what needs you) | 624, 570, 272, 24 | Right-aligned to x 896, 16 px, `amber`, with its 12×12 lamp |
@@ -695,7 +695,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Bezel | The sage housing `metal`, lit edge `enamel`, shade `bevel`, edge `hairline` | The window set in the device's housing |
 | Glass | A `hairline` edge, no highlight; the master of the light (`home-glass-dawn|day|dusk|night-640x488`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20); a flat plate (back `forest`, ground band `clay` with a `sand` top row, foot `soil`) only while a light's slot is empty | A window into the housing, never a showcase |
 | Modules | `panel` fill, `bevel` top, `hairline` edge; the word engraved in `metal`, 16 px | The objects and the lamp lead; the word is never the brightest thing |
-| Lamps | 12×12, `void` rim; off `hairline`, well `sprout`, waiting `sky`, needs you `amber` | The kit's lamp roles |
+| Lamps | 12×12, the signed picture of the state, frame.json `regions.marks.lamp12`: off `home-lamp-hairline-12x12`, well `home-lamp-sprout-12x12`, waiting `home-lamp-sky-12x12`, needs you `home-lamp-amber-12x12` | The kit's lamp roles |
 | Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
 | Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
@@ -714,7 +714,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
-| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (536, 488, 16, 24) over it; docked, no mark. Docked with nobody carried: the nest alone |
+| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`), 1:1. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (536, 488, 16, 24) over it; docked, no mark. Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
 | `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
 
@@ -978,7 +978,7 @@ A living view the Station can show permanently: the Vivarium, alive and worth lo
 
 ### 4. Art direction
 
-The Vivarium only, one painting a light (day, dusk, night), the warm key light from the top left in every light; at night warm and low, the moon only a cool rim; the glass's mean L* 30 or more at night, its mean red at least its mean blue. The strip is the device's slate, `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Until the master: back `forest`, ground band `clay` with a `sand` top row, foot `soil`.
+The Vivarium only, one painting a light (dawn, day, dusk, night), the warm key light from the top left in every light; at night warm and low, the moon only a cool rim; the glass's mean L* 30 or more at night, its mean red at least its mean blue. The strip is the device's slate, `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Until the master: back `forest`, ground band `clay` with a `sand` top row, foot `soil`.
 
 ### 5. Composition
 
@@ -986,7 +986,7 @@ The Vivarium only, one painting a light (day, dusk, night), the warm key light f
 | --- | --- | --- |
 | `vivarium` | 0, 0, 1024, 568 | One painting, the master of the light (`idle-vivarium-dawn|day|dusk|night-1024x568`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20; frame.json `light`). Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag; the waiting lamp steady at its box's top right. Drawn by the feet's y |
-| `bed` | 792, 496, 192, 56 | Living window, build `withYouBed`, coloured as the whole's: rim `bark`, hollow `soil`, lit rim `sand`. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (880, 512, 16, 24) over it; docked, no mark |
+| `bed` | 792, 496, 192, 56 | The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`; the same picture as Home's), 1:1. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (880, 512, 16, 24) over it; docked, no mark |
 | `strip` | 0, 568, 1024, 32 | Build `idleLine`; a 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | 16 px `mist`, centred on x 512 and y 584; one sentence, six words or fewer, no digits |
 
@@ -1719,7 +1719,7 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 
 | Master | Size | Region | Shows | New |
 | --- | --- | --- | --- | --- |
-| Idle's painting | 1024×568, day, dusk, night | the whole's `window` (rows 120 to 560) | The Vivarium | — |
+| Idle's painting | 1024×568, dawn, day, dusk, night | the whole's `window` (rows 120 to 560) | The Vivarium | — |
 | `vivarium-near-{day,dusk,night}-544x408` | 544×408 | up close's `glass` | The Vivarium close by, its ground band at y 304 to 464 of the glass, no mibi in it | yes |
 | `notch-skill-16x24` | 16×24 | the card's notches | One filled skill notch cut into the card's plate | yes |
 | `mark-out-with-companion-64x96` | 64×96 | `resident.out` | The mibi's place, kept: the Companion's outline standing on the ground | yes |
@@ -1731,7 +1731,7 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 | `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
 | `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
 | `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
-| `mark-guide-16`, `frame-lamp-12-sky`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
+| `mark-guide-16`, `home-lamp-sky-12x12`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
 
 ### What changed from the old up-close layout
 

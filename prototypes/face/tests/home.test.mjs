@@ -184,3 +184,15 @@ test("Home's filling leaf: the empty leaf whole, over it the full picture clippe
   for (let k = 0; k < L.total; k++) if (k !== i) { const kx = R.rect[0] + R.pitch * (k % R.perRow), ky = R.rect[1] + R.rowPitch * Math.floor(k / R.perRow); assert.equal(at(kx + 4, ky + 6), k < L.full ? col(L.fullPicture) : col(L.emptyPicture), `leaf ${k}`); }
   assert.deepEqual(f.errors(), []);
 });
+
+// a light change (the developer's, or the hour) is a cut, like a screen change: the glass, the bed and the residents' sprites take the next light on one refresh, under its own ceiling (the glass 640 × 488), not the 153,600 of an animation
+const dirty = (f) => { const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
+test("a light change is a cut: Home redraws the whole of its glass at most (312,320 px), every pair of lights", { skip }, async () => {
+  const LIGHTS = ["dawn", "day", "dusk", "night"];
+  for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {
+    const f = await start(scene({ adults: 4, young: 2, carry: [0, 1], light: from }), { motion: false, t0: 1000 }), b = scene({ adults: 4, young: 2, carry: [0, 1], light: to });
+    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-crate-/.test(i) ? { policy: "art" } : {}) })));
+    assert.equal(f.props({ screen: "home", ...b.props, motion: false, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16));
+    const a = dirty(f); assert.ok(a <= 312320, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
+  }
+});

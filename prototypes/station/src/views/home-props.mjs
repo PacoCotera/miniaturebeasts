@@ -26,8 +26,7 @@ export function wordsOf(need, spec) {
   return { notice, action: fill(N.action, vals) };
 }
 
-// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and
-// PH plate. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
+// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state, its picture by the light and, away, its mark. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
 // The light of an hour (frame.json light.from: [[start hour, light], …]): a light runs until the next start, the last wraps midnight. The hour is the host's; a view never reads a clock.
 export function lightAt(hour, L) {
   const from = [...L.from].sort((a, b) => a[0] - b[0]), at = from.filter(([h]) => h <= hour).at(-1) ?? from.at(-1);
@@ -59,7 +58,7 @@ export function homeBuild(m, spec, frame) {
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
   const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
 
-  // the living window: the glass's master (day), the residents at home walking, the bed with the carried set asleep
+  // the living window: the glass's master of the light, the residents at home walking, the bed with the carried set asleep
   const lw = livingOf({ st, sv, settings, docked, light: m.light }, R, req, ph, frame.light);
   const { residents, sleepers, bed } = lw;
   // the modules

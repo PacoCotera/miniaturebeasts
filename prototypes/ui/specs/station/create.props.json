@@ -6,7 +6,7 @@
  "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
  "properties": {
   "state": { "enum": ["nothingRead", "shape", "grow"] },
-  "regions": { "type": "object", "required": ["bench", "rail", "traitLine", "chamber", "founder", "pod", "origin", "dome", "bud", "leaves", "stamp", "code"], "additionalProperties": false, "properties": {
+  "regions": { "type": "object", "required": ["bench", "rail", "traitLine", "chamber", "founder", "pod", "cradle", "origin", "dome", "bud", "leaves", "stamp", "code"], "additionalProperties": false, "properties": {
    "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "type": "string" } } } },
    "rail": { "type": "object", "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": "null" }, "open": { "type": "integer" }, "star": { "type": "string" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
    "roll": { "type": "object", "required": ["form", "chosen", "clash", "pictures", "notches"], "additionalProperties": false, "properties": { "form": { "enum": ["roll", "single"] }, "chosen": { "enum": [0, 1, 2] }, "clash": { "type": "boolean" }, "pictures": { "type": "array", "items": { "type": "string" } }, "notches": { "type": "boolean" } } },
@@ -14,6 +14,7 @@
    "chamber": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
    "founder": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
    "pod": { "type": "object", "required": ["sizeClass", "picture"], "additionalProperties": false, "properties": { "sizeClass": { "enum": ["large", "medium", "small"] }, "picture": { "type": "string" } } },
+   "cradle": { "type": "object", "required": ["front"], "additionalProperties": false, "properties": { "front": { "type": "string" } } },
    "origin": { "type": "array", "items": { "type": "string" } },
    "dome": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
    "bud": { "type": "object", "required": ["picture", "busy"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "busy": { "type": "boolean" } } },
