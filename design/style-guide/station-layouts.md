@@ -1413,7 +1413,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- |
 | ✓ when empty | `✓ Choose a pod`: Pods' collection, the ring on the first identified pod (a jump; ← there reads Home). With the rack empty or no bay free: no ✓ cap, nothing |
 | ✓ while growing | `✓ Grow now · ❀ 7`: the `growNow` event (the leaves fill in 400 ms), then ready |
-| ✓ when ready | `✓ Open`: the `hatch` event, then one mibi up close, in the meet (a jump; ← there reads Vivarium). No bay free (a guard): the dimmed cap; ✓ shows a plate, nothing opens |
+| ✓ when ready | `✓ Open`: the `hatch` event, then one mibi up close, in the meet (a jump; ← there reads Home). No bay free (a guard): the dimmed cap; ✓ shows a plate, nothing opens |
 | Pad | Nothing: the screen has one subject, and no ring is drawn |
 | ← | Home, with the ring on Home's Incubator module, in every state and after a jump |
 | A coloured key | Opens its section, as everywhere |
