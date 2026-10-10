@@ -54,8 +54,8 @@ AD_RECORDS = {
  "chamber-front-400x320": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 55.6, key R-B 38, sat 25; the tray's front lip over the founder's feet"),
  "dome-small-back-176x224": ('signed', 'art director, verdict (72561d74)', 'signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192'),
  "dome-small-front-176x224": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"),
- "nest-208x48": ('new', None, "pass 116: the pale cut fringe along the top contour defringed to the moss by hand (every pixel over R+G+B 440 takes the nearest dark moss colour; 0 pixels over 480 now, was 332 and 143), the hollow kept; awaiting the art director's judgement (not signed)"),
- "nest-front-208x48": ('new', None, "pass 116: the pale cut fringe along the top contour defringed to the moss by hand (every pixel over R+G+B 440 takes the nearest dark moss colour; 0 pixels over 480 now, was 332 and 143), the hollow kept; awaiting the art director's judgement (not signed)"),
+ "nest-208x48": ('signed', 'art director, verdict (38affaae)', 'signed (art director) at 1x, opaque pixels: L* 30.1, sat 59; the moss bed, plump, its hollow visible, defringed (no pixel above R+G+B 480)'),
+ "nest-front-208x48": ('signed', 'art director, verdict (38affaae)', "signed (art director) at 1x, opaque pixels: L* 25.5, sat 61; the bed's front rim fibres, defringed"),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
