@@ -30,6 +30,10 @@ void build_waitingLamp(const char *id, int x, int y, int shown);
 /* Cargo (screens/cargo.c): its words by the state the props name, and its keys */
 void cargo_words(void);
 void cargo_key(int code);
+/* Create (screens/create.c): its words by the state the props name, its keys and its targets as the words drew them */
+void create_words(void);
+void create_key(int code);
+int create_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 /* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */
 void home_hidden(void);
 /* An intent or a focus message for the screen of the props (kind "intent" with a verb, or "focus"). */

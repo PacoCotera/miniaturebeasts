@@ -15,6 +15,7 @@ import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters } from "./masters.mjs";
 import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
+import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
 import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, pinned, picture, setEnv } from "./host.mjs";
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
@@ -145,10 +146,10 @@ const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the
 bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
 const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
-// The spec files the face takes (frame, pods, home and cargo), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
+// The spec files the face takes (frame, pods, home, cargo and create), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods", "home", "cargo"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home", "cargo", "create"]) SPECS[k] = await spec(k + ".json");
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
@@ -190,6 +191,7 @@ window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pen
   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
   podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); }, growCost: (choices) => S.growCost(G.st, choices || {}, G.settings),
   openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; },
+  openCreate: (podId) => create.openCreate(H, podById(podId)), readSome: (podId, n) => { const p = podById(podId); S.skipIdentify(G.st, p); const fr = frameOf(S.speciesOf(p)); fr.chapters.slice(0, n).forEach((c) => S.read(G.st, p, c.id, G.settings)); save(); },
   seedPod: (species, gs) => { const r = S.seedPodFromGenome(G.st, podGenome(frameOf(species), gs), G.settings, Date.now()); save(); return r; },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };
 

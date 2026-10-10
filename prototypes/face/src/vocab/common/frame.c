@@ -118,13 +118,22 @@ void word_bottomLine(void) {
   int A_px = fi("regions.action.px"), A_gap = fi("regions.action.gap"), A_capGap = fi("regions.action.capGap"), A_capW = fi("regions.action.capSize.0"), cap[4];
   rect_of("regions.action.rect", r2); rect_of("regions.action.cap", cap);
   int ax = r2[0], ty = r2[1] + 2, k = 0;
+  /* `short` is true (the whole price amber) or the icons of the materials that are short ("⚡❀": only their figures amber); `blocked` is an action that cannot be taken: no cap, the verb and the price in `dim` (so the total still reads) */
+  char shorts[16] = ""; { int sl; const char *sr = spec_raw(P, "frame.line.short", &sl); if (sr && sr[0] == '"') { spec_str(P, "frame.line.short", shorts, sizeof shorts); shortp = 0; } }
+  int blocked = spec_bool(P, "frame.line.blocked", 0);
   if (ok) {
-    v_region("action", LAYER_ART);
-    int cr[4] = { ax, cap[1], cap[2], cap[3] }; fs(dim ? "regions.marks.capConfirmDim" : "regions.marks.capConfirm", a, sizeof a); mark("line.cap.ok", a, cr);
-    ax += A_capW + A_capGap;
+    if (!blocked) {
+      v_region("action", LAYER_ART);
+      int cr[4] = { ax, cap[1], cap[2], cap[3] }; fs(dim ? "regions.marks.capConfirmDim" : "regions.marks.capConfirm", a, sizeof a); mark("line.cap.ok", a, cr);
+      ax += A_capW + A_capGap;
+    }
     v_region("action", LAYER_TYPE);
-    snprintf(a, sizeof a, "line.a.%d", k++); colour(dim ? "dim" : "verb", c); ax = v_run(a, s, ax, ty, A_px, c, V_ALIGN_LEFT).end;
-    if (spec_str(P, "frame.line.price", t, sizeof t) > 0) { ax += A_gap; snprintf(a, sizeof a, "line.a.%d", k++); colour(shortp ? "need" : "price", c); v_run(a, t, ax, ty, A_px, c, V_ALIGN_LEFT); }
+    snprintf(a, sizeof a, "line.a.%d", k++); colour(dim || blocked ? "dim" : "verb", c); ax = v_run(a, s, ax, ty, A_px, c, V_ALIGN_LEFT).end;
+    if (spec_str(P, "frame.line.price", t, sizeof t) > 0) {   /* the price: each material's icon and figure (its own colour: amber when short), the nodes the same whichever materials it names */
+      ax += A_gap; char cb[3][24], co[24]; const char *cols[3]; static const char *GLYPH[3] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86" };
+      for (int g = 0; g < 3; g++) { colour(blocked ? "dim" : shortp || (shorts[0] && strstr(shorts, GLYPH[g])) ? "need" : "price", cb[g]); cols[g] = cb[g]; }
+      colour(blocked ? "dim" : shortp ? "need" : "price", co); snprintf(a, sizeof a, "line.a.%d", k++); v_price(a, t, ax, ty, A_px, cols, co);
+    }
   }
   /* the context, centred on 512, clipped with an ellipsis to its zone */
   if (spec_str(P, "frame.line.subject", s, sizeof s) > 0) {

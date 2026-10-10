@@ -1,0 +1,57 @@
+{
+ "_note": "Create's goldens: nothing read, the shape (as the pod is, changed, a clash, a doing, one look, short, busy, the first founder), the roll's dither halfway and the grow event at three instants: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
+ "states": {
+  "create-nothingRead": {
+   "hash": "e4fe4e49",
+   "png": "create-nothingread.png"
+  },
+  "create-shape": {
+   "hash": "fc5d58ed",
+   "png": "create-shape.png"
+  },
+  "create-shape-changed": {
+   "hash": "5122c399",
+   "png": "create-shape-changed.png"
+  },
+  "create-shape-clash": {
+   "hash": "2242aa8b",
+   "png": "create-shape-clash.png"
+  },
+  "create-shape-doing": {
+   "hash": "6e8daeeb",
+   "png": "create-shape-doing.png"
+  },
+  "create-shape-onelook": {
+   "hash": "e4bb77f3",
+   "png": "create-shape-onelook.png"
+  },
+  "create-shape-short": {
+   "hash": "5dc31423",
+   "png": "create-shape-short.png"
+  },
+  "create-shape-busy": {
+   "hash": "b199e176",
+   "png": "create-shape-busy.png"
+  },
+  "create-shape-first": {
+   "hash": "f25e3984",
+   "png": "create-shape-first.png"
+  },
+  "create-roll-100": {
+   "hash": "ff2f9ef7",
+   "png": "create-roll-100.png"
+  },
+  "create-grow-150": {
+   "hash": "2799ce95",
+   "png": "create-grow-150.png"
+  },
+  "create-grow": {
+   "hash": "83060e82",
+   "png": "create-grow.png"
+  },
+  "create-grow-end": {
+   "hash": "8cb09b91",
+   "png": "create-grow-end.png"
+  }
+ }
+}

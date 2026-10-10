@@ -25,10 +25,14 @@ void v_plate(const char *id, const char *namePath, int w, int x, int y);
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
 /* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
 int v_sprite_hidden(const char *id, const char *asset, int x, int y);
+/* A cross-dither between two pictures of one size (a `dither` event's frame, lvgl-switch.md §2.7): the pixels of `toAsset` where the Bayer cell at the screen position is below `level` (0..16), else those of `fromAsset`, one composed picture at (x, y), on the layer of `toAsset`. 1 when drawn, 0 when the host has not sent one of them. */
+int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h);
 /* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);
 v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *colour, int align);
+/* A price run with stable nodes: Energy, Essence and Data each have an icon and a figure node (no size when the price does not name it); `cols` is the figure's colour for each, `other` the colour of a price with no material ("free"). Returns the end x. */
+int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[3], const char *other);
 /* Words wrapped to a width; the lines are written NUL-separated into buf and their count returned (at most max). */
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max);
 /* A string cut to a width with an ellipsis. */

@@ -23,6 +23,11 @@ static void cut_outline(const char *id, int x, int y, int w, int h, const char *
   v_rect(v_fmt("%s.l", id), x, y + 1, 1, h - 2, col); v_rect(v_fmt("%s.r", id), x + w - 1, y + 1, 1, h - 2, col);
 }
 
+/* the same four rectangles' nodes with no size, so a hollow pip becoming another never adds or removes a node */
+static void no_outline(const char *id, int x, int y, const char *col) {
+  v_rect(v_fmt("%s.t", id), x, y, 0, 0, col); v_rect(v_fmt("%s.b", id), x, y, 0, 0, col); v_rect(v_fmt("%s.l", id), x, y, 0, 0, col); v_rect(v_fmt("%s.r", id), x, y, 0, 0, col);
+}
+
 void word_rail(void) {
   int n = v_plen("regions.rail.tabs"); if (n <= 0) return;
   int open = v_pint("regions.rail.open", 0); layout_tab_t tabs[LAYOUT_TABS];
@@ -59,9 +64,20 @@ void word_rail(void) {
     if (!sealed && tpips > 0) {
       v_region("rail.tab", LAYER_CHROME);
       int px0 = pipCx - v_half((tpips - 1) * pitch + psz);
+      /* a tab with `marks` (Create): each pip is filled, hollow, a changed diamond or a clash cross, and the focused trait's pip (`lift`) stands `pip.lift` px higher. Every pip keeps the nodes of all four (the one it is has the size), so a trait's look changing
+         changes nodes and never adds or removes one (§2.2). */
+      int marks = v_plen(v_fmt("regions.rail.tabs.%d.marks", i)) == tpips, lift = v_pint(v_fmt("regions.rail.tabs.%d.lift", i), -1), liftPx = fi("pip.lift", 0);
       for (int k = 0; k < tpips; k++) {
-        int px = px0 + k * pitch;
-        if (k < filled) v_rect(v_fmt("%s.pip.%d", tid, k), px, pipY, psz, psz, pipc); else cut_outline(v_fmt("%s.pip.%d", tid, k), px, pipY, psz, psz, pipc);
+        int px = px0 + k * pitch, py = pipY - (marks && k == lift ? liftPx : 0); const char *id = v_fmt("%s.pip.%d", tid, k);
+        if (!marks) { if (k < filled) v_rect(id, px, py, psz, psz, pipc); else cut_outline(id, px, py, psz, psz, pipc); continue; }
+        const char *mk = v_pstr(v_fmt("regions.rail.tabs.%d.marks.%d", i, k)); int f = strcmp(mk, "filled") == 0, h = strcmp(mk, "hollow") == 0, c = strcmp(mk, "changed") == 0, x = strcmp(mk, "clash") == 0;
+        char sid[96]; snprintf(sid, sizeof sid, "%s", id);
+        v_rect(v_fmt("%s.f", sid), px, py, f ? psz : 0, f ? psz : 0, pipc);
+        if (h) cut_outline(v_fmt("%s.o", sid), px, py, psz, psz, pipc); else no_outline(v_fmt("%s.o", sid), px, py, pipc);
+        v_name("rail.tab");
+        if (c) v_sprite(v_fmt("%s.c", sid), v_pstr("regions.rail.changed"), px, py, psz, psz); else v_sprite_hidden(v_fmt("%s.c", sid), v_pstr("regions.rail.changed"), px, py);
+        if (x) v_sprite(v_fmt("%s.x", sid), v_pstr("regions.rail.clash"), px, py, psz, psz); else v_sprite_hidden(v_fmt("%s.x", sid), v_pstr("regions.rail.clash"), px, py);
+        v_region("rail.tab", LAYER_CHROME);
       }
     }
     if (v_pbool(v_fmt("regions.rail.tabs.%d.glint", i), 0) && has(star)) { v_region("rail.tab", LAYER_ART); v_sprite(v_fmt("%s.glint", tid), star, x + S + v_half(w) - gsz / 2, y + h + gbelow, gsz, gsz); }

@@ -9,7 +9,7 @@ import { pageGrid } from "../../../ui/specs/derive.mjs";
 const PLACE_KEYS = ["meadow", "pond", "rock", "wood", "cave"];
 const podFrame = (p) => frameOf(S.speciesOf(p));
 // A picture the room needs at a size: the placed master of that id when it is exactly that size, an empty slot (nothing drawn, never scaled) when it is not.
-const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
+export const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
 // An unidentified pod is the unknown pod: its own pictures, never a species' shell, even when the species is known.
 const shellFrame = (st, p) => (p.idd && st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
 // The species a pod's shell shows (an unidentified pod, and a species not yet known, show the unknown shell): Pods' collection and Cargo's rack draw the same pod.
@@ -60,7 +60,7 @@ export function podsBuild(m, spec) {
 const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
 
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
-function railOf(m, spec, cur, chapters, req, open, focused) {
+export function railOf(m, spec, cur, chapters, req, open, focused) {
   if (!cur.idd || !chapters.length) return null;
   const { st, settings } = m;
   return { focused, open, star: req({ kind: "star", id: "star:12" }), tabs: chapters.map((c) => {
@@ -189,7 +189,7 @@ function compareView(view, m, spec, req) {
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
 const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
 // What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
-const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
+export const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
 const priceOf = (cost, icon) => (cost ? icon + " " + cost : "");   // the icon before its figure
 function lineOf(m, spec, p, chapters, ci, view) {
   const { st, settings, ui, docked } = m, f = m.focus ?? (view.mode === "collection" ? null : "pod"), Sg = spec.strings, glintOf = (q) => (q && S.podGlints(st, q) ? Sg.glintPod : null);

@@ -151,7 +151,12 @@ static int on_event(const msg_t *m) {
   if (kind < 0) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
   int ms = 0, from = 0, to = 0; char target[48] = "";
   if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
-  if (key(m, "from") >= 0 && !num(m, key(m, "from"), &from)) return fail("event: from must be a number");
+  char from_id[96] = "";
+  if (key(m, "from") >= 0) {   /* a number, or for a dither the previous picture's id (a string, which stays loaded until the event ends); a string `from` on any other kind is refused */
+    int fk = key(m, "from");
+    if (m->tok[fk].type == JSMN_STRING) { if (kind != ANIM_DITHER) return fail("event: from is a number (a string only on a dither)"); if (!str(m, fk, from_id, sizeof from_id)) return fail("event: from is a string of at most 95 bytes"); }
+    else if (!num(m, fk, &from)) return fail("event: from must be a number");
+  }
   if (key(m, "to") >= 0 && !num(m, key(m, "to"), &to)) return fail("event: to must be a number");
   if (key(m, "target") >= 0 && !str(m, key(m, "target"), target, sizeof target)) return fail("event: target must be a string of at most 47 bytes");
   int hold = 0;
@@ -159,7 +164,7 @@ static int on_event(const msg_t *m) {
   int cut = 0;
   if (key(m, "cut") >= 0) { int c = key(m, "cut"), len = m->tok[c].end - m->tok[c].start; const char *p = m->js + m->tok[c].start;
     if (m->tok[c].type != JSMN_PRIMITIVE || !((len == 4 && strncmp(p, "true", 4) == 0) || (len == 5 && strncmp(p, "false", 5) == 0))) return fail("event: cut is true or false"); cut = len == 4; }
-  if (anim_add(kind, target, ms, hold, cut, from, to, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
+  if (anim_add(kind, target, ms, hold, cut, from, to, from_id[0] ? from_id : NULL, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
   g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
 }
 static const struct { const char *name; int code; } KEYS[] = { { "up", 17 }, { "down", 18 }, { "right", 19 }, { "left", 20 }, { "confirm", 10 }, { "back", 27 }, { "home", 2 }, { "research", 114 }, { "library", 108 }, { "habitat", 98 }, { "dock", 100 } };

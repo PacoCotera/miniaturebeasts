@@ -22,7 +22,7 @@ void word_focusRingFor(const char *id, const int box[4], const char *group, cons
 void word_rail(void);    /* the chapter rail (frame spec) with the ring on its focused tab */
 /* station/ (Home) */
 void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture);   /* the living window: the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
-void word_leaves(const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy);   /* the leaves word, grid form */
+void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots);   /* the leaves word, grid form: the screen spec and the region's path in it */
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);
