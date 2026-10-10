@@ -88,7 +88,7 @@ static int price_pairs(const char *s) {
   return 1;
 }
 int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[3], const char *other) {
-  if (*s && !price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); return v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; }
+  if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); return v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; }
   int cx = x, groups = 0; char fig[3][24]; int has[3];
   for (int g = 0; g < 3; g++) {
     const char *p = strstr(s, PRICE[g].glyph); has[g] = p != NULL; fig[g][0] = 0; if (!p) continue;

@@ -15,8 +15,10 @@ import { cargoStates } from "./cargo-states.mjs";
 import { departures as cargoDepartures } from "./cargo-regions.mjs";
 import { createStates } from "./create-states.mjs";
 import { departures as createDepartures } from "./create-regions.mjs";
+import { incubatorStates } from "./incubator-states.mjs";
+import { departures as incubatorDepartures } from "./incubator-regions.mjs";
 
-const specs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), home = J("home"), cargo = J("cargo"), create = J("create"), frame = J("frame");
+const specs = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), home = J("home"), cargo = J("cargo"), create = J("create"), incubator = J("incubator"), frame = J("frame");
 let failed = 0;
 const reading = (screen) => async (name, page, fail) => {
   const r = await page.evaluate(() => window.__st.snapshot());
@@ -24,6 +26,11 @@ const reading = (screen) => async (name, page, fail) => {
   if (screen === "home") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, cur: window.__st.props?.focus?.cur ?? "room", size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
     const d = departures(c.log, home, frame, c.cur); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
+  }
+  if (screen === "incubator") {
+    const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
+    const d = incubatorDepartures(c.log, incubator, frame, c.state); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
   if (screen === "idle") {
@@ -45,5 +52,5 @@ const reading = (screen) => async (name, page, fail) => {
   if (r.errors.length || r.refused) fail(name + ": " + r.errors.join("; ") + " refused " + r.refused);
   if (r.pass1 !== 0) fail(name + ": chrome reads " + r.pass1 + " off-palette pixels"); if (r.pass2 !== 0) fail(name + ": art reads " + r.pass2 + " off-palette pixels");
 };
-for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["idle", idleStates]]) { const { fails } = await states(reading(screen)); failed += fails.length; }
+for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["create", createStates], ["incubator", incubatorStates], ["idle", idleStates]]) { const { fails } = await states(reading(screen)); failed += fails.length; }
 console.log(failed ? failed + " failure(s)" : "layer check ok"); process.exit(failed ? 1 : 0);

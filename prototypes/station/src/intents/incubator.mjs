@@ -19,7 +19,7 @@ export function intent(h, target, verb) {
   if (S.budReady(h.st, h.settings, h.now())) {
     const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
     const ev = spec.events.hatch, id = r.mibi.id; h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind, parents: B.parents ?? null }; h.save();
-    const over = () => { h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "stage"; h.goto("habitat"); };   // the hatch is over: meet the mibi, the ring on the resident
+    const over = () => { h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "resident"; h.goto("habitat"); };   // the hatch is over: meet the mibi, the ring on the resident (habitat.json focus.targets.resident)
     if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, over); } else over();   // reduced motion: a cut, the meet on the frame of ✓
     return r;
   }
