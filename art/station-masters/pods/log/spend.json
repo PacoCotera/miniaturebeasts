@@ -2355,5 +2355,22 @@
    "thoughtsTokenCount": 255,
    "totalTokenCount": 2341
   }
+ },
+ {
+  "tag": "vivarium-dawn try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185232,
+  "mxn": 3.7046,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:41:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 876,
+   "candidatesTokenCount": 1334,
+   "thoughtsTokenCount": 195,
+   "totalTokenCount": 2405
+  }
  }
 ]

@@ -10294,5 +10294,18 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
+ },
+ "idle-vivarium-dawn-1024x568": {
+  "size": [
+   1024,
+   568
+  ],
+  "rect": null,
+  "src": "source/raw/vivarium-dawn.jpg (gemini-3-pro-image)",
+  "made": "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded by the least linear gain that brings the mean L* to 41 or less (the brief asks 38 to 42)",
+  "sha256": "a11ef57b656f6d8ef84a001ec9f51c561caaaf1b7567690d1e43417ee8c73305",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 104: Idle's Vivarium by dawn (the owner's decision of Oct 10; a Pro edit of the signed day picture, graded to a mean L* of 40.8); awaiting the art director's judgement (not signed)"
  }
 }

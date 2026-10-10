@@ -3298,5 +3298,10 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
+ },
+ "idle-vivarium-dawn-1024x568": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 104: Idle's Vivarium by dawn (the owner's decision of Oct 10; a Pro edit of the signed day picture, graded to a mean L* of 40.8); awaiting the art director's judgement (not signed)"
  }
 }

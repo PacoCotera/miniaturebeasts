@@ -1,0 +1,13 @@
+[
+ {
+  "name": "vivarium-dawn",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   ["art/station-masters/pods/slices/idle-vivarium-day-1024x568.png", "THE PICTURE TO EDIT (the signed vivarium by day: keep everything, change only the light and the air):"],
+   ["art/station-masters/pods/slices/idle-vivarium-dusk-1024x568.png", "THE LIGHT TO AVOID (this is dusk, the evening: warm amber and golden; the new picture must NOT look like this, it must be paler, cleaner and cooler):"]
+  ],
+  "prompt": "Output a NEW image: the same vivarium picture at DAWN, early morning. LIGHT: low, cool-gold, clean morning light coming from the left, pale and fresh, clearly cooler and cleaner than the amber dusk of the second reference (no deep amber, no orange, no golden-hour glow); the shadows are long and soft and fall to the right; the sky in the canopy is a pale clean white-gold with only a little soft rose in it, nowhere else any rose. AIR: a soft low mist lies over the water and the moss, thin and white, thicker at the pool and lifting between the stones; fine dew drops on the leaves and the moss tips catch the light as tiny soft points (never glowing, never sparkling for show). Overall brightness a clean mid-light tone (average brightness about 40 percent), calm and fresh. Nothing glows: no glow-moss, no mushrooms lit from within, no lamps. Keep the picture EXACTLY the same in composition and content: the same canopy band at the top, the same feed line, mister, vent, the same burrow, water, stones, roots, moss and plants in the same places and the same sizes, the same matte sculpted miniature rendering; change ONLY the lighting, its colour, and add the mist and dew. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]
