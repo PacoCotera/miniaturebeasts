@@ -19,7 +19,7 @@ export const PLACEHOLDERS = [
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "room", what: "Home's room, bench modules, vivarium, crates, cups, dome, leaves, Probe and lamp, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
-  { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
+  { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];
 
 // ---------- The material icons ----------

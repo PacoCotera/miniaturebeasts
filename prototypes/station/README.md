@@ -45,7 +45,7 @@ The Station's depicted keys, mapped to the keyboard. Routine play uses these onl
 | Home (amber) | H | The vivarium and the bench |
 | Research (teal) | R | The pods |
 | Library (violet) | L | The tome's spread of sixteen frames and a Book per species |
-| Vivarium (green) | B | Residents, the with-you door, the bond |
+| Vivarium (green) | B | Residents, the with-you door |
 | ← | Esc / Backspace | Back one view. On Home: focus back to the room; on the room it only says so |
 | ✓ Confirm | Enter / Space | Exactly what the bottom line names, with its price |
 | Caddy: Dock / Lift | D | Prototype only, beside the Station: docks or lifts the Companion. It is not a Station key |

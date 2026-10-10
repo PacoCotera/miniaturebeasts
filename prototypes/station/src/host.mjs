@@ -112,7 +112,7 @@ export function createHost({ send, nowMs, afterSave = () => {} }) {
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
     now: () => Date.now(), say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
-    // Any key but ✓ disarms: the hatch, the bond and the gate wait for a second ✓ and nothing else.
+    // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };

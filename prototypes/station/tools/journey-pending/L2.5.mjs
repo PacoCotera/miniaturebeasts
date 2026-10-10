@@ -3,7 +3,7 @@
 export const milestone = "L2.5 (Vivarium and the Probe bench)";
 export const steps = [
   { id: "vivarium-pad", what: "the fixed pad: the stage, the species row, the chapter plates, Cross, the door row, the strip; ▲ from the door row is Cross; the Vivarium key puts the ring on the resident" },
-  { id: "vivarium-card", what: "the door takes the resident with the Companion; a chapter plate reads a chapter at its price; the heart bonds (✓ twice); the gate returns a mibi to the wild for +2 Essence (✓ twice), and a juvenile stays" },
+  { id: "vivarium-card", what: "the door takes the resident with the Companion; a chapter plate reads a chapter at its price; the gate returns a mibi to the wild for +2 Essence (✓ twice), and a juvenile stays" },
   { id: "vivarium-meet", what: "after a hatch the meet view shows the new mibi with the ring on the door" },
   { id: "vivarium-trickle", what: "a resident watched on the Vivarium for the timer earns +1 Data once a day" },
   { id: "probe-bench", what: "the Probe bench opens on a target that has an action; the shield is mended or upgraded at its price" },
