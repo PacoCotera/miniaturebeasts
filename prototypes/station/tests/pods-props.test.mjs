@@ -1,6 +1,5 @@
 // Pods' props (lvgl-switch.md §2.1): the view the face takes, views/pods-props.mjs, in Node. Plain JSON that names what and never where: it validates against pods.props.json for every species in every
-// state, holds no rectangle, no measure and no layout rule (the view imports neither ui/layout.mjs nor ui/components/*), fits the 32 KiB props budget with the frame beside it, and agrees with the view
-// the JavaScript drawing still uses (views/pods.mjs, deleted with that drawing at L2.0 B4) on the bottom line, the targets, the rail and the pictures.
+// state, holds no rectangle, no measure and no layout rule (the view imports neither a layout nor a component), and fits the 32 KiB props budget with the frame beside it.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -10,7 +9,6 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { podsProps, compareBackFocus } from "../src/views/pods-props.mjs";
-import { podsView } from "../src/views/pods.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -73,15 +71,6 @@ test("the props and the frame beside them fit the 32 KiB budget in every scene",
   let worst = 0, at = "";
   for (const [name, m] of SCENES) { const v = bodyOf(m), n = JSON.stringify({ t: "props", seq: 1, screen: "pods", ...v.props, frame: { top: { screen: "pods", title: "Pods", turn: 99, turnFlash: false, materials: { e: 1, d: 2, s: 3 }, flash: {}, companion: { docked: true, withMibi: "kestrel" } }, line: v.line, plate: { text: "a plate of words for the budget, about a sentence long" } } }).length; if (n > worst) { worst = n; at = name; } }
   assert.ok(worst < 32768, `${worst} bytes in "${at}"`);
-});
-test("the view agrees with the view the JavaScript drawing uses: the bottom line, the targets, the rail's words and the pictures asked for", () => {
-  for (const [name, m] of SCENES) {
-    const a = bodyOf(m), b = podsView(m, spec, ctx);
-    assert.deepEqual(a.line, b.line, name + ": the line"); assert.equal(a.mode, b.mode, name); assert.equal(a.cur, b.cur, name);
-    assert.deepEqual(a.props.focus.targets.map((t) => t.id), a.mode === "compare" ? (b.rail?.tabs ?? []).map((_, i) => "rail." + i) : b.targets.map((t) => t.id), name + ": the targets (Compare's are its rail's tabs; the drawing's Compare has none)");
-    assert.deepEqual(a.props.regions.rail?.tabs.map((t) => [t.word, t.state, t.pips, t.filled, t.glint]) ?? null, b.rail?.tabs.map((t) => [t.word, t.state, t.pips, t.filled, t.glint]) ?? null, name + ": the rail");
-    const ids = new Set(a.requests.map((r) => r.id)); for (const r of b.requests) assert.ok(ids.has(r.id) || /^plate-name-/.test(r.id), `${name}: the picture ${r.id} is asked for`);
-  }
 });
 test("the selectors resolve to ids or to nothing: kin.first is null with no kin, rail.last the chapter the page shows", () => {
   const one = bodyOf(model(rich(["S01"]))).props.focus.resolve; assert.equal(one["kin.first"], null); assert.match(one["rail.last"], /^rail\.\d+$/);

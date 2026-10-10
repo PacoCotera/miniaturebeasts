@@ -32,6 +32,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   if (!ready) throw new Error("the LVGL face refused the handshake: " + (refused ? refused.what : "no answer"));
 
   let frames = 0, copied = 0, first = true;
+  // The page's screen: a 2D context with no smoothing, the one place the page touches a canvas (present() below copies into it).
+  const display = (canvas) => { canvas.width = W; canvas.height = H; const ctx = canvas.getContext("2d"); ctx.imageSmoothingEnabled = false; return ctx; };
   // Copy the redrawn rectangles from LVGL's framebuffer (B, G, R, A in memory) to a 2D canvas context as RGBA.
   function present(ctx) {
     const n = first ? 1 : M._face_dirty_count(), rects = first ? [0, 0, W, H] : Array.from(M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4));
@@ -43,12 +45,6 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       ctx.putImageData(img, x, y); copied += w * h;
     }
   }
-  const fnv = (str) => { let h = 2166136261; for (const b of enc.encode(str)) { h ^= b; h = Math.imul(h, 16777619); } return h >>> 0; };
-  const setText = (str) => { const b = enc.encode(str), cap = M._face_text_size() - 1, p = M._face_text(); if (b.length > cap) throw new Error(`the face's text buffer holds ${cap} bytes; "${String(str).slice(0, 24)}…" is ${b.length}`); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
-  const setOps = (str) => { const b = enc.encode(str), cap = M._face_ops_size() - 1, p = M._face_ops(); if (b.length > cap) throw new Error(`the face's ops buffer holds ${cap} bytes; a composed picture of ${b.length} is refused`); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
-  const setRegion = (name) => { const b = enc.encode(String(name)).subarray(0, 47), p = M._face_region(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
-  const measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
-
   // A picture's pixels into the face (RGBA bytes, straight alpha: a picture's rgba(), stored as B, G, R, A), once per asset id, by the `asset` message: the face allocates the buffer for the id and the page fills it.
   // The table holds 256 pictures: a picture's slot is kept while its scene draws it and recycled, least recently used first, when a scene needs a slot and none is free;
   // a single scene that needs more than the table holds is refused loudly.
@@ -76,10 +72,10 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     const rc = send({ t: "props", seq: seq + 1, ...body }); if (rc === 0) { seq++; lastProps = key; } return rc;
   }
     return {
-    M, version, ready, measure, objects: () => M._face_object_count(), refused: () => M._face_node_refused(), beginScene: () => ++sceneNo,
+    M, version, ready, objects: () => M._face_object_count(), refused: () => M._face_node_refused(), beginScene: () => ++sceneNo,
     size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },
-    present, forceFull: () => { first = true; },
+    display, present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },
     hash: () => (M._face_hash() >>> 0).toString(16).padStart(8, "0"),
     stats: () => ({ frames, copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: handles.size, props: M._face_props_count(), events: M._face_event_count() }),

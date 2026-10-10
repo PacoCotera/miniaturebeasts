@@ -13,7 +13,7 @@ import { ringMask, tabRingMask } from "../../ui/rings.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { installScene } from "./node-scene.mjs";
 
-const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
+const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node")   /* the test build: the node path (-DFACE_NODE_API) */, built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const frame = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")), F = frame.focus.ring, tabSpec = { tab: F.tab, width: F.width, tabTop: frame.regions.rail.y };
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const sha = (m) => createHash("sha256").update(m).digest("hex");

@@ -412,16 +412,8 @@ test("nav fix: 'open the Companion page' clears once a seeded world has a crate,
   const b = fresh(); S.seedAdults(b, "S01", 3, 1, settings); assert.notEqual(S.need(b, sv, settings).text, "open the Companion page");
 });
 
-test("nav fix: Home's rest lamp is one id in the targets and the line and the act", async () => {
-  const src = readFileSync(path.join(here, "../src/screens/home.mjs"), "utf8");
-  assert.match(src, /lamp: \[/); assert.doesNotMatch(src, /f === "focus"/);
-  assert.match(src, /f === "lamp"\) return \{ ok: "Rest"/); assert.match(src, /f === "lamp"\) \{ UI\.idle = true/);
-});
-
-test("nav fix: every screen the Station registers has a mark in the title bar", () => {
-  const frame = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8"));
-  const dir = path.join(here, "../src/screens"), ids = [];
-  for (const f of readdirSync(dir)) for (const m of readFileSync(path.join(dir, f), "utf8").matchAll(/registerScreen\("(\w+)"/g)) ids.push(m[1]);
+test("nav fix: every screen the Station names has a mark in the title bar", () => {
+  const frame = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")), ids = Object.keys(frame.strings.titles);
   assert.ok(ids.includes("bench"));
   for (const id of ids) assert.ok(frame.regions.title.marks[id], "a title mark for the screen " + id);
 });

@@ -77,25 +77,11 @@ jobs:
           time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null
           time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
-      - name: Freeze check (the JavaScript drawing layer)
-        # prototypes/face/deprecated.json lists every deprecated drawing module with its hash and the files allowed to import it (lvgl-switch.md §5.1):
-        # a listed file may not change, no new file may import one, no registered screen may gain draw, nodes or faceNodes, and a path leaves the list
-        # only with its file's deletion or its screen's goldens. Exemptions are printed on every run.
-        # The checkout keeps no credentials, so the base is fetched with the job's token on the command line, as the publish steps below do. On a push the base is the commit
-        # before the push; on a pull request and on dispatch it is main.
-        env:
-          BEFORE: ${{ github.event.before }}
-        run: |
-          set -euo pipefail
-          url="https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git"
-          if [ "$GITHUB_EVENT_NAME" = push ]; then
-            git fetch --no-tags --depth=1 "$url" "$BEFORE"
-            BASE="$BEFORE"
-          else
-            git fetch --no-tags --depth=1 "$url" main:refs/remotes/origin/main
-            BASE=origin/main
-          fi
-          node prototypes/face/tools/freeze-check.mjs --base "$BASE"
+      - name: Import guard (the JavaScript drawing layer is removed)
+        # prototypes/face/removed.json lists every removed drawing module (lvgl-switch.md §5.1); the guard fails when one exists again or anything imports one, when the canvas is touched outside the face's
+        # present and the named decoders, when JavaScript outside face/tests names an export of the node path, when a screen is registered with draw, nodes or faceNodes, or when an lv_*_create call
+        # appears outside face/src/prim/. No exemptions. It reads the tree only, so it needs no base.
+        run: node prototypes/face/tools/guard.mjs
       - name: Station rules and journey
         timeout-minutes: 12   # the step takes about 2.5 minutes; a hang fails fast instead of holding the runner for the job's six hours
         # The Station's rules and the Caddy service in Node, and the Station's browser journey on the face with the service

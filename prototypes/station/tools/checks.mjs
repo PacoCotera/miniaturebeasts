@@ -12,7 +12,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { pageSize } from "../../ui/layout.mjs";
+import { pageSize } from "../../ui/specs/derive.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");

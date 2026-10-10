@@ -84,6 +84,7 @@ const char *face_version(void) {
   return v;
 }
 
+#ifdef FACE_NODE_API   /* the node path: the test build only (lvgl-switch.md §2.1: the page speaks words, never nodes) */
 void face_scene_begin(void) { prim_begin(); }
 void face_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b) { prim_node(id, kind, x, y, w, h, rgb, a, b); }
 void face_scene_end(void) { prim_end(); wire_changed(); }
@@ -93,9 +94,12 @@ int face_ops_size(void) { return prim_ops_size(); }
 int face_text_size(void) { return prim_text_size(); }
 int face_measure(int px) { return prim_measure(px); }
 uint8_t *face_asset(int handle, int w, int h) { return prim_asset(handle, w, h); }
+#endif
 int face_object_count(void) { return prim_count(); }
 int face_node_refused(void) { return prim_unknown(); }
+#ifdef FACE_NODE_API
 void face_background(uint32_t rgb) { lv_obj_set_style_bg_color(lv_screen_active(), lv_color_hex(rgb), 0); }
+#endif
 int face_asset_limit(void) { return prim_asset_limit(); }
 
 /* ---- the bridge, the tags and test mode ---- */
@@ -110,9 +114,11 @@ int face_props_count(void) { return wire_props_count(); }
 unsigned face_props_seq(void) { return wire_props_seq(); }
 int face_event_count(void) { return wire_event_count(); }
 int face_spec_int(const char *screen, const char *path, int dflt) { return spec_int(screen, path, dflt); }
+#ifdef FACE_NODE_API
 static char g_region[48];
 char *face_region(void) { return g_region; }
 void face_node_tag(int layer) { prim_tag(layer, g_region); }
+#endif
 void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
 int face_test_offpalette(void) {
   int bad = 0;

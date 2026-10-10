@@ -1,6 +1,7 @@
 /* A fixed scene for the build's own checks, sent through the same calls the page uses: rules, the three Inter sizes, a picture,
    a nine-slice ring and the creature's ellipse as a picture. The native Linux face and the WebAssembly face must draw the same
    pixels for it. The pictures are made here the way the page makes its own: whole-pixel masks decided by pixel-centre tests. */
+#ifdef FACE_NODE_API
 #include "face.h"
 #include "prim/prim.h"
 #include "prim/ring.h"
@@ -34,3 +35,4 @@ void face_selftest_scene(void) {
   face_node(9, FN_SPRITE, 600, 220, 8, 8, 0, 0, 0);
   face_scene_end();
 }
+#endif

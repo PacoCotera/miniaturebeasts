@@ -251,39 +251,12 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 
-// ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
-class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } rgba() { return this.cv.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, this.w, this.h).data; } }
-const PAINTED = new Map();
-// The ground of a painting cleared by a flood from its corners (the painter's plain ground, the derived sizes' white), so the mibi stands free in the vivarium.
-function clearGround(img, w, h) {
-  const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(img, 0, 0, w, h);
-  const id = ctx.getImageData(0, 0, w, h), d = id.data, seen = new Uint8Array(w * h), stack = [];
-  const corner = (x, y) => [d[(y * w + x) * 4], d[(y * w + x) * 4 + 1], d[(y * w + x) * 4 + 2]];
-  const grounds = [corner(0, 0), corner(w - 1, 0), corner(0, h - 1), corner(w - 1, h - 1)];
-  const near = (i) => grounds.some(([r, g2, b]) => Math.abs(d[i * 4] - r) + Math.abs(d[i * 4 + 1] - g2) + Math.abs(d[i * 4 + 2] - b) < 48);
-  for (const [x, y] of [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1], [w >> 1, 0], [0, h >> 1], [w - 1, h >> 1]]) stack.push(y * w + x);
-  while (stack.length) { const i = stack.pop(); if (seen[i] || !near(i)) continue; seen[i] = 1; d[i * 4 + 3] = 0; const x = i % w, y = (i / w) | 0; if (x > 0) stack.push(i - 1); if (x < w - 1) stack.push(i + 1); if (y > 0) stack.push(i - w); if (y < h - 1) stack.push(i + w); }
-  ctx.putImageData(id, 0, 0); return cv;
-}
-// A mibi's landed painting at w×h: the portrait as a plate when it is large, a cleared sprite when it is small; flipped for a facing.
-export function paintedArt(set, sha, w, h, { sprite = false, flip = false } = {}) {
-  const key = sha + ":" + w + "x" + h + ":" + (sprite ? "s" : "p") + (flip ? "f" : "");
-  let p = PAINTED.get(key); if (p) return p;
-  const src = sprite ? (w <= 64 && set.token ? set.token : set.companion || set.portrait) : set.portrait;
-  if (!src) return null;
-  let cv;
-  if (sprite) { cv = clearGround(src, Math.round(w), Math.round(h)); }
-  else { cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.drawImage(src, 0, 0, w, h); }
-  if (flip) { const w2 = cv.width, h2 = cv.height, src = cv.getContext("2d").getImageData(0, 0, w2, h2), out = new ImageData(w2, h2); for (let y = 0; y < h2; y++) for (let x = 0; x < w2; x++) { const a = (y * w2 + x) * 4, b = (y * w2 + (w2 - 1 - x)) * 4; out.data[b] = src.data[a]; out.data[b + 1] = src.data[a + 1]; out.data[b + 2] = src.data[a + 2]; out.data[b + 3] = src.data[a + 3]; } const f = document.createElement("canvas"); f.width = w2; f.height = h2; f.getContext("2d").putImageData(out, 0, 0); cv = f; }   // the facing is a pre-flipped picture in the cache, never a canvas transform
-  p = new Painted(cv); if (PAINTED.size > 200) PAINTED.clear(); PAINTED.set(key, p); return p;
-}
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });
 
 // A whole body under frost: the child to be on the Cross screen, never a promise.
 export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }
 
-// A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). (Moved here from screens/frame.mjs, which keeps its own copy until the JavaScript drawing layer is deleted.)
+// A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). 
 export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
   for (let y = 0; y < h; y++) { const hw = w * 0.12 + (w * 0.38 * y) / h, x0 = Math.ceil(w / 2 - hw), x1 = Math.floor(w / 2 + hw); pb.rect(x0, y, x1 - x0, 1, C.tealD); }
   return pb; }); }
