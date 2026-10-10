@@ -4,7 +4,7 @@
 #ifndef ANIM_H
 #define ANIM_H
 #include <stdint.h>
-enum { ANIM_SEAL, ANIM_WIPE, ANIM_RIBBON, ANIM_PLATE, ANIM_TICK, ANIM_FLASH, ANIM_DITHER, ANIM_ARRIVAL, ANIM_HATCH, ANIM_WAKE, ANIM_REST, ANIM_KINDS };
+enum { ANIM_SEAL, ANIM_WIPE, ANIM_RIBBON, ANIM_PLATE, ANIM_TICK, ANIM_FLASH, ANIM_DITHER, ANIM_ARRIVAL, ANIM_HATCH, ANIM_WAKE, ANIM_REST, ANIM_GROW_NOW, ANIM_KINDS };
 int anim_kind(const char *name);                 /* the kind's number, or -1 */
 const char *anim_name(int kind);
 void anim_reset(void);

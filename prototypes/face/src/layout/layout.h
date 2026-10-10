@@ -28,6 +28,10 @@ void layout_kin_rect(const char *spec, const char *kin, int i, int out[4]);
 int layout_plate_width(const char *spec, const char *name, int textWidth);
 /* The stamp's cell: floor(inner / (N + 2)), never less than `least`. */
 int layout_stamp_cell(int n, int inner, int least);
+#define LAYOUT_LEAVES 40
+/* The Incubator's leaves on their arcs (the leaves region at `region`, rule leafArc): n leaves fill the inner arc first, left to right, then the outer; the k leaves of a run take the slots perArc - k + 2j (j = 0 .. k - 1) of the arc's table of
+   2 perArc - 1 places, so every run is centred on the top. out: the boxes x, y, w, h in fill order. Returns n, or -1 when n is below 0 or over 2 perArc. */
+int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]);
 /* The vectors' interface: a rule by name with integer arguments, its answer flattened to integers (see tests/vectors/layout.json). Returns the count, or -1 for an unknown rule. */
 int layout_eval(const char *rule, const char *spec, const char *path, const int *args, int nargs, int *out, int cap);
 #endif

@@ -93,6 +93,17 @@ int layout_plate_width(const char *spec, const char *name, int textWidth) {
 }
 int layout_stamp_cell(int n, int inner, int least) { int c = inner / (n + 2); return c < least ? least : c; }
 
+int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]) {
+  char base[300]; snprintf(base, sizeof base, "%s.leafArc", region); int per = ip(spec, base, "perArc", 20), lw = ia(spec, region, "leaf", 0, 16), lh = ia(spec, region, "leaf", 1, 20);
+  if (n < 0 || n > 2 * per || n > LAYOUT_LEAVES) return -1;
+  int a = n < per ? n : per;
+  for (int i = 0; i < n; i++) {
+    int arc = i >= a, k = arc ? n - a : a, j = arc ? i - a : i, slot = per - k + 2 * j; char t[330]; snprintf(t, sizeof t, "%s.%s", base, arc ? "outer" : "inner");
+    { char q[360]; snprintf(q, sizeof q, "%s.%d.0", t, slot); out[i][0] = spec_int(spec, q, 0); snprintf(q, sizeof q, "%s.%d.1", t, slot); out[i][1] = spec_int(spec, q, 0); }
+    out[i][2] = lw; out[i][3] = lh;
+  }
+  return n;
+}
 int layout_eval(const char *rule, const char *spec, const char *path, const int *a, int na, int *out, int cap) {
   int k = 0;
 #define PUSH(v) do { if (k < cap) out[k] = (v); k++; } while (0)
@@ -118,6 +129,8 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
   } else if (strcmp(rule, "plateIndex") == 0 && na >= 1) {   /* the place of the width's id in the series, and the series' length */
     int w = layout_plate_width(spec, path, a[0]), mn = ip(spec, path, "plate.min", 0), mx = ip(spec, path, "plate.max", 0), st = ip(spec, path, "plate.round", 1);
     PUSH((w - mn) / st); PUSH((mx - mn) / st + 1);
+  } else if (strcmp(rule, "leafArc") == 0 && na >= 1) {
+    int b[LAYOUT_LEAVES][4], n = layout_leaf_arc(spec, path, a[0], b); PUSH(n < 0); PUSH(n < 0 ? 0 : n); for (int i = 0; i < n; i++) for (int j = 0; j < 4; j++) PUSH(b[i][j]);
   } else if (strcmp(rule, "stampCell") == 0 && na >= 3) {
     PUSH(layout_stamp_cell(a[0], a[1], a[2]));
   } else return -1;

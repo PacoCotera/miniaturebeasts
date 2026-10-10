@@ -80,6 +80,7 @@ export function evaluate(rule, node, args) {
     case "plateWidth": out.push(plateWidth(node, args[0])); break;
     case "platePosition": out.push(...platePosition(node, args[0], args[1], args[2] ? args.slice(3, 7) : null)); break;
     case "stampCell": out.push(stampCell(args[0], args[1], args[2])); break;
+    case "leafArc": { let boxes = null; try { boxes = leafArc(node, args[0]); } catch { /* refused */ } out.push(+!boxes, boxes ? boxes.length : 0); for (const b of boxes ?? []) out.push(...b); break; }
     case "plateIndex": out.push(plateSeries(node).indexOf(`${node.plate.series}-${plateWidth(node, args[0])}x${node.plate.h}`), plateSeries(node).length); break;
     default: throw new Error("unknown rule " + rule);
   }

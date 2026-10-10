@@ -6,7 +6,7 @@
 #define MAXA 24
 typedef struct { int kind, ms, cut, from, to; uint32_t start; char target[48]; } ev_t;
 static ev_t g_e[MAXA]; static int g_n; static uint32_t g_now, g_hold_until; static int g_hold;   /* input is held until g_hold_until: the latest start + hold of any event, on the face's own clock, whether or not the event is still playing */
-static const char *NAMES[ANIM_KINDS] = { "seal", "wipe", "ribbon", "plate", "tick", "flash", "dither", "arrival", "hatch", "wake", "rest" };
+static const char *NAMES[ANIM_KINDS] = { "seal", "wipe", "ribbon", "plate", "tick", "flash", "dither", "arrival", "hatch", "wake", "rest", "growNow" };
 int anim_kind(const char *name) { for (int i = 0; i < ANIM_KINDS; i++) if (strcmp(NAMES[i], name) == 0) return i; return -1; }
 const char *anim_name(int kind) { return kind >= 0 && kind < ANIM_KINDS ? NAMES[kind] : "?"; }
 void anim_reset(void) { g_n = 0; g_now = 0; g_hold = 0; g_hold_until = 0; }
