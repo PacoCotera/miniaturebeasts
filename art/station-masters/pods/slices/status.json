@@ -2035,9 +2035,9 @@
   "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "room-bench-stage-collection": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 110: the plain collection floor rebuilt from the floor model, no hardware, no ghost cut-outs, no band, no seams (L* 31.8, key R-B 34, sat 25); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 31.8, key R-B 35, sat 25 against the overview 36.8/35/22; a plain floor, no hardware, no ghost cut-outs; its faint residual banding sits under the place rects"
  },
  "mark-can-grow-16": {
   "status": "signed",
@@ -3215,9 +3215,9 @@
   "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "note": "pass 111: Idle's night regraded by distribution with the highlights pulled down (0.0 percent of pixels above L* 70; mean L* 30.5, R above B, background L* 20, ground 45; the rims faint in the background); awaiting the art director's judgement (not signed)"
+  "note": "held (art director) at 1x: L* 30.5, key R-B 58, sat 63, 0.0 percent above L* 70, but the ground reads spotlit and blown orange, not night: the art director's own rule (ground 38-45, mean >= 30) forced it; revised night rule sent (mean 24-28, ground 30-36, even warm lamp spill, no clipped patches, at most 3 percent above L* 70)"
  },
  "home-bay-shut-176x72": {
   "status": "signed",
@@ -3280,9 +3280,9 @@
   "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-night-192x56": {
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "note": "pass 110: Home's bed by night fitted to its glass by hand (L* 33.0, key R-B 89 against its glass night 30.5 / 53); awaiting the art director's judgement (not signed)"
+  "note": "held (art director) at 1x: L* 33.1, key R-B 86 fits its glass night 30.6/51 (limits L* +3, R-B +40), but it is re-fitted to the regraded night"
  },
  "vivarium-near-day-544x408": {
   "status": "signed",
@@ -3300,9 +3300,9 @@
   "note": "signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame"
  },
  "idle-vivarium-dawn-1024x568": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 110: Idle's dawn with the gold tint raised by hand (key R-B 38 on my tool, rule >= 36 on the art director's; L* 40.5, sat 33); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 40.5, key R-B 37, sat 33 against the dawn rule (key R-B >= 35, L* 38-42); day 43.1/72/48"
  },
  "vivarium-near-dawn-544x408": {
   "status": "signed",
@@ -3310,14 +3310,14 @@
   "note": "signed (art director) at 1x: L* 40.5, key R-B 36, sat 36 against the dawn rule (key R-B >= 35, L* 38-42); day 52.4/59/57"
  },
  "home-bed-dawn-192x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 110: Home's bed by dawn re-cut from the new dawn and fitted to its glass (L* 43.0, key R-B 73 against its glass 40.5 / 37); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 43.0, key R-B 72, sat 50 against its glass dawn 40.5/36 (limits: L* +3, R-B +40)"
  },
  "home-glass-dawn-640x488": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 110: Home's glass by dawn with the gold tint raised by hand (key R-B 37 on my tool; L* 40.5, sat 42); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 40.5, key R-B 36, sat 42 against the dawn rule; Idle dawn 40.5/37/33"
  },
  "home-glass-day-640x488": {
   "status": "signed",
@@ -3330,103 +3330,103 @@
   "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "note": "pass 111: the glass night regraded the same way (0.0 percent above L* 70; mean L* 30.6, R above B); awaiting the art director's judgement (not signed)"
+  "note": "held (art director) at 1x: L* 30.6, key R-B 51, sat 49, 0.0 percent above L* 70, but the ground reads pale and daylit; as Idle night, under the revised night rule"
  },
  "room-bench-stage-create": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 110: the overview stage with the nest at (160, 352) and the ghost cut-out left of the panel painted out (L* 36.8, key R-B 35, sat 22); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 36.8, key R-B 35, sat 22, the overview's numbers; the ghost cut-out painted out"
  },
  "dome-front-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
  },
  "dome-back-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
  },
  "dome-inside-standby-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
  },
  "dome-inside-ready-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the chamber came out 184 px wide in the 304x272 dome (the spec: centred and large, its ink to the radius-152 arch), so the bud fills the window and the bed barely shows; rebuild the housing by hand at the arch's full width with a wider window; lose the two lit patches under the hood corners"
  },
  "base-336x96": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the sand housing, matte, plaque plate and foot line at the spec's rects"
  },
  "nest-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): judged with the rebuilt chamber; the bed must read inside the wider window"
  },
  "nest-front-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): judged with the rebuilt chamber; the bed must read inside the wider window"
  },
  "bud-early-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
  },
  "bud-late-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
  },
  "bud-ready-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
  },
  "bud-ready-front-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
  },
  "bud-crack-1-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
  },
  "bud-crack-2-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
  },
  "leaf-empty-16x20": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director): hand-pixelled, palette-exact, the spec's leaf (metal outline)"
  },
  "leaf-full-16x20": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director): hand-pixelled, palette-exact, the spec's leaf (sage, sageD vein)"
  },
  "leaf-empty-8x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact"
  },
  "leaf-full-8x12": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact"
  },
  "room-bench-stage-incubator": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 111: the Incubator set (the art director's brief of Oct 10): cut or drawn by hand from the Pro sheets of this pass; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 36.0, key R-B 38, sat 24 against the Pods overview 36.8/35/22; floor 0.5 percent above L* 70 (the lit sand rim brings the whole to 4.7, as the overview's 3.3: housing, not glow); hoses clear of the gauges"
  }
 }
