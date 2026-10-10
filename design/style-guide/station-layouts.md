@@ -62,7 +62,7 @@ Home's column is the device's sections, one module each: Cargo, Pods, Incubator,
 
 The device's coloured keys are shortcuts, one for each family of sections on the map: Home with Cargo; the living (the Vivarium, one mibi, Cross, the Sitting); the research (Pods, Create, the Incubator, the Probe); the reference (the Library, the Book). A key opens its section's whole from anywhere, even from inside that section, and never spends. Every key drops Create's and Cross's unpaid choices and closes the namer, writing nothing; while a moment holds input (the arrival, the hatch), the key waits. The Caddy's Dock is never a Station key.
 
-**Holds.** Each event names its length (`ms`) and its hold (`hold`): whole milliseconds of held input from the event's start, 0 for none, independent of its length. During a hold the pad, ✓ and ← do nothing; a coloured key waits, and the last one pressed opens its section when the hold ends. An event marked `cut` (the moment) ends on the first key after its hold: it jumps to its end on that frame and the key then does what it does, so no press is spent on skipping. With reduced motion every event is a cut to its end and nothing is held: the host sends hold 0 and what follows an event's end (a hand-off, a jump) happens on the frame of the key. Cargo's opening is the one exception: its crates keep their 3000 ms each, as cuts, and its hold.
+**Holds.** Each event names its length (`ms`) and its hold (`hold`): whole milliseconds of held input from the event's start, 0 for none, independent of its length. During a hold the pad, ✓ and ← do nothing; a coloured key waits, and the last one pressed opens its section when the hold ends, except the rest (Home), whose hold ends on Idle: there the key is dropped. An event marked `cut` (the moment) ends on the first key after its hold: it jumps to its end on that frame and the key then does what it does, so no press is spent on skipping. With reduced motion every event is a cut to its end and nothing is held: the host sends hold 0 and what follows an event's end (a hand-off, a jump) happens on the frame of the key. Cargo's opening is the one exception: its crates keep their 3000 ms each, as cuts, and its hold.
 
 <img src="station-layouts/16-key-set.png" width="1440" alt="The Station's front with the four coloured keys, each an icon slot, beside Home's screen, and what each key opens">
 
@@ -770,7 +770,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Cargo | `✓ Open Cargo`, to its bay | "two sealed crates", "a sealed crate", "the bay is empty", "the bay is shut", "two pods wait for a well" |
 | Pods | `✓ Look at the pods`, to the collection, the ring on the pod that most needs you | "four pods in the rack", "a pod in the rack", "the rack is empty" |
 | Incubator | `✓ Open the Incubator` | "a Loika bud, growing", "a Loika bud, ready", "the Incubator is empty" |
-| Probe | `✓ Open the Probe bench` | "the Probe in its cradle", "the Probe is away" |
+| Probe | `✓ Open the Probe` | "the Probe in its cradle", "the Probe is away" |
 | Library | `✓ Open the Library`, to the spread | "the field journal", "the journal is empty" |
 | Rest knob | `✓ Rest`, to Idle | "the Vivarium plays alone" |
 
@@ -1036,7 +1036,7 @@ Every string on these screens, its zone and its longest case, measured in the re
 | Zone (room) | Strings | Longest |
 | --- | --- | --- |
 | Module word (16 px, 80 px to the objects) | Cargo, Pods, Incubator, Probe, Library | Incubator 72 |
-| Action (16 px, 356 after the cap) | Open the Vivarium · Look at {name} · Open Cargo · Look at the pods · Open the Incubator · Look at the Incubator · Open the Probe bench · Open the Library · Rest · Meet {name} · Open the bay · See the new pod · See the new pods · Done | Look at {name} 221 |
+| Action (16 px, 356 after the cap) | Open the Vivarium · Look at {name} · Open Cargo · Look at the pods · Open the Incubator · Look at the Incubator · Open the Probe · Open the Library · Rest · Meet {name} · Open the bay · See the new pod · See the new pods · Done | Look at {name} 221 |
 | Context (16 px, 208) | Home's and Cargo's contexts above; the stages young, adult, elder | the Incubator is empty 169; an elder Untuva, asleep 178 |
 | Notice (16 px, 256 after the lamp) | The needs above | an Untuva pod needs more ◆ 224 (the words 204, 4, the 16 px icon); an Untuva pod waits unread 212; three crates wait in the bay 204; meet {name} 204 |
 | Way back (16 px, 68) | Home, Cargo | Cargo 46 |
