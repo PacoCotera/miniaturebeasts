@@ -7,9 +7,9 @@ const ART = [/^emblem:/, /^page-mark-/, /^icon:/, /^grow:/, /^waiting:/, /^beam:
 const PAINTED = [
   /^pod[:-]/, /^figure:/, /^mibi-halo/, /^crop:/, /^trait[:-]/, /^plate-/, /^rail-tab-fill-/, /^mark-clan-/, /^mark-seed/, /^place:[a-z]+:(64|112|48)$/, /^room-/, /^ring-(arc-)?collection-/, /^placepanel:/, /^panel-/, /^well/, /^pane/, /^page-pane/,
   /^stamp:/, /^frame-(room|companion|sun|lamp|top-bar|bottom-line)/, /^face-/, /^find-/, /^ring-kin-/, /^ring-hatch-/,
-  /^home-(glass|bay|well|chamber|cradle|journal)/, /^idle-vivarium/,
+  /^home-(glass|bay|well|chamber|cradle|journal)/, /^idle-vivarium/, /^home-bed-(dawn|day|dusk|night)-192x56$/,
 ];
-const MOVES_WITH_MASTER = [/^kinring:/, /^hatch:/, /^mibi:/, /^home-bed-\d/, /^crate-(sealed|opening|open|sitting)-\d/, /^cargo-(well|bay-shut)-\d/, /^icon-(pod|shield)-\d/, /^founder:/, /^create-(chamber|dome)-/, /^roll-/, /^bud-small-/, /^leaf-small-/];   // a resident's stand-in is art until its painting lands; Home's bed is a PH plate until its master; Cargo's crates, rack well, shut-bay lid and report icons are PH plates until theirs; Create's founder stand-in is art until its painting lands, and its work tray, small chamber, roll pictures, busy bud and small leaves are PH plates until theirs
+const MOVES_WITH_MASTER = [/^kinring:/, /^hatch:/, /^mibi:/, /^crate-(sealed|opening|open|sitting)-\d/, /^cargo-(well|bay-shut)-\d/, /^icon-(pod|shield)-\d/, /^founder:/, /^create-(chamber|dome)-/, /^roll-/, /^bud-small-/, /^leaf-small-/];   // a resident's stand-in is art until its painting lands; Home's bed is a PH plate until its master; Cargo's crates, rack well, shut-bay lid and report icons are PH plates until theirs; Create's founder stand-in is art until its painting lands, and its work tray, small chamber, roll pictures, busy bud and small leaves are PH plates until theirs
 export function policyOf(id, status = "placeholder") {
   if (MOVES_WITH_MASTER.some((re) => re.test(id))) return status === "master" ? "painted" : "art";
   if (ART.some((re) => re.test(id))) return "art";

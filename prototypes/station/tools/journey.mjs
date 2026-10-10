@@ -67,7 +67,7 @@ const shot = async (name, ink = false) => { await record(name, ink); return page
 const fixture = readFileSync(path.join(here, "../tests/fixtures/save-v8-schema1.json"), "utf8");
 const companionBefore = JSON.stringify({ ...JSON.parse(fixture), st: undefined });
 await page.addInitScript(() => { window.__fillTextCalls = 0; for (const f of ["fillText", "strokeText", "measureText"]) { const o = CanvasRenderingContext2D.prototype[f]; CanvasRenderingContext2D.prototype[f] = function (...a) { window.__fillTextCalls++; return o.apply(this, a); }; } });
-await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
+await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.setItem("mb-station-dev", '{"light":"day"}'); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
 // The page draws with the face and nothing else: the type is Inter in the face, no font is loaded by the page, no request leaves the page's origin, and the canvas text API is never called.
@@ -100,7 +100,7 @@ await page.waitForTimeout(400);
 { const p = await props(), c = await page.evaluate(() => window.__st.check());   // the fixture opens on Home with the Companion lifted: Home draws, the bed shows the Companion mark, the bay is shut
   expect(p.screen === "home" && p.state === "home" && p.frame.top.title === "Home", "Home is built: " + JSON.stringify([p.screen, p.state, p.frame?.top?.title]));
   expect(p.regions.bed.state === "away" && p.regions.cargo.state === "away" && p.regions.probe.state === "away" && p.regions.cargo.lamp === "off", "away: the bed, the bay and the Probe say so: " + JSON.stringify([p.regions.bed.state, p.regions.cargo.state, p.regions.probe.state]));
-  expect(!(c.log?.type ?? []).some((t) => /not built/.test(t.text)) && (c.log?.regions ?? []).some((r) => r.id === "glass" && r.layer === "chrome"), "Home draws its living window and says nothing is not built: " + JSON.stringify((c.log?.type ?? []).map((t) => t.text))); }
+  expect(!(c.log?.type ?? []).some((t) => /not built/.test(t.text)) && (c.log?.regions ?? []).some((r) => r.id === "glass" && (r.layer === "chrome" || r.layer === "painted")), "Home draws its living window and says nothing is not built: " + JSON.stringify((c.log?.type ?? []).map((t) => t.text))); }
 await frameShot("page-home", true);
 const trace = {}; let cur = null;
 const stepOf = (id) => { cur = trace[id] = []; };

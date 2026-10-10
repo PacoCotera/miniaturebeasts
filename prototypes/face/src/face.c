@@ -123,7 +123,7 @@ void face_node_tag(int layer) { prim_tag(layer, g_region); }
 void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
 int face_test_offpalette(void) {
   int bad = 0;
-  for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0])) bad++; }
+  for (int i = 0; i < FACE_W * FACE_H; i++) { const uint8_t *p = g_fb + i * 4; if (!prim_palette_has(((uint32_t)p[2] << 16) | ((uint32_t)p[1] << 8) | p[0]) && !prim_painted_at(i % FACE_W, i / FACE_W)) bad++; }   /* (a painted picture covers its own pixels: on the chrome and art passes they are not findings) */
   return bad;
 }
 /* test mode: one focus ring word on a box, from a form given as JSON ({"ring": "round" | "feet" | "tab" | {"circle": {...}}}, or {} for the default), replacing the scene (the checks of the word alone) */

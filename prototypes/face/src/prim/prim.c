@@ -54,6 +54,12 @@ void prim_refuse(void) { g_unknown++; }
 int prim_asset_limit(void) { return MAX_ASSET; }
 int prim_object_limit(void) { return MAX_OBJ; }
 int prim_lvgl_objects(void) { int n = g_n; for (int i = 0; i < g_n; i++) if (g_o[i].kind == FN_NINE) n += NINE_PARTS; return n; }
+/* A painted picture of the scene covering a pixel, whatever pass is showing: the test's pass 1 and 2 hide the painted layer, and a painting that carries a whole region (the light's painting under Home's and Idle's living window) leaves no chrome under it by design, so its pixels are not off-palette findings (face_test_offpalette). */
+int prim_painted_at(int x, int y) {
+  if (g_pass >= 3) return 0;   /* the painted layer shows: its pixels are counted like any other */
+  for (int i = 0; i < g_n; i++) { const node_t *n = &g_o[i]; if (n->seen && n->kind == FN_SPRITE && n->parent == 0 && n->layer == LAYER_PAINTED && n->w > 0 && n->h > 0 && x >= n->x && y >= n->y && x < n->x + n->w && y < n->y + n->h) return 1; }
+  return 0;
+}
 int prim_pictures(void) { int n = 0; for (int i = 0; i < MAX_ASSET + MAX_SRC; i++) if (g_a[i].px) n++; for (int i = 0; i < g_n; i++) if (g_o[i].composed) n++; return n; }
 static const lv_font_t *font_of(int px) { return px == 16 ? &face_inter_16 : px == 20 ? &face_inter_20 : px == 28 ? &face_inter_28 : NULL; }
 int prim_measure(int px) {

@@ -8,7 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { homeBuild } from "../src/views/home-props.mjs";
+import { homeBuild, lightAt } from "../src/views/home-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -34,7 +34,7 @@ const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e =
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, ...over });
 const pod = (st, id, gs = 5, identified = true) => { S.seedPodFromGenome(st, podGenome(frameOf(id), gs), settings, T0); const p = st.tray[st.tray.length - 1]; if (identified) S.skipIdentify(st, p); return p; };
 const crate = (n) => ({ id: "c" + n, n, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
-const build = (st, sv, over = {}) => homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: null, ...over }, spec, frameSpec);
+const build = (st, sv, over = {}) => homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: null, light: "day", ...over }, spec, frameSpec);
 const dock = (st, d = true) => { st.dock = { docked: d, at: T0 }; };
 
 function scenes() {
@@ -61,7 +61,7 @@ test("Home's props validate against home.props.json in every scene, name no rect
 
 test("residents at home walk (a seed each), the carried set sleeps on the bed (no seed), the bed is a PH plate in every state", () => {
   const sc = scenes(), d = build(sc.docked.st, sc.docked.sv).props.regions;
-  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.deepEqual(d.bed.sleepers.map((s) => s.seed), [0, 0]); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-192x56/);
+  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.deepEqual(d.bed.sleepers.map((s) => s.seed), [0, 0]); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
   const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "home-bed-mark-16x24", "away: the bed shows its mark"); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
   const n = build(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
   const seeds = d.residents.map((r) => r.seed), again = build(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed); assert.deepEqual(again, seeds, "the seed is the mibi's, the same every time");
@@ -114,4 +114,24 @@ test("the short notices carry each short material once, Energy before Essence, a
   { const { st, c } = mk(99, 0); assert.ok(c.s > 0); assert.match(need(st), /pod needs more ❀$/); assert.ok(!/⚡/.test(need(st))); }
   { const { st } = mk(0, 0); assert.match(need(st), /pod needs more ⚡ ❀$/); }
   { const st = world(); dock(st); const p = pod(st, "S01"); st.d = 0; st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; p.read = []; st.readEver = true; const n = need(st); assert.match(n, /^an? \S+ pod needs more ◆$/); assert.equal((n.match(/◆/g) || []).length, 1); }
+});
+
+// ---- the light by the clock (frame.json light): the hours, the pictures of a light, the bed's masters ----
+test("lightAt: the hour's light from frame.json light.from, the last wrapping midnight", () => {
+  const L = frameSpec.light;
+  for (const [h, want] of [[0, "night"], [5, "night"], [6, "dawn"], [7, "day"], [12, "day"], [17, "day"], [18, "dusk"], [19, "dusk"], [20, "night"], [23, "night"]]) assert.equal(lightAt(h, L), want, `${h}:00`);
+});
+test("the light picks the pictures: Home's glass, the bed and Idle's painting are the masters of that light, the bed the same on both screens", async () => {
+  const { idleBuild } = await import("../src/views/idle-props.mjs"), sc = scenes();
+  for (const light of ["dawn", "day", "dusk", "night"]) {
+    const h = build(sc.docked.st, sc.docked.sv, { light }), i = idleBuild({ st: sc.docked.st, sv: sc.docked.sv, settings, docked: true, light }, frameSpec), ids = (b) => b.requests.filter((r) => r.kind === "slot");
+    const glass = ids(h).find((r) => r.id.startsWith("home-glass-")), bed = ids(h).find((r) => r.id.startsWith("home-bed-")), bedI = ids(i).find((r) => r.id.startsWith("home-bed-")), viv = ids(i).find((r) => r.id.startsWith("idle-vivarium-"));
+    assert.deepEqual([glass.id, glass.master], [`home-glass-${light}:640x488`, `home-glass-${light}-640x488`]);
+    assert.deepEqual([bed.id, bed.master], [`home-bed-${light}-192x56`, `home-bed-${light}-192x56`]); assert.deepEqual([bedI.id, bedI.master], [bed.id, bed.master], "one bed on Home and Idle");
+    assert.deepEqual([viv.id, viv.master], [`idle-vivarium-${light}:1024x568`, `idle-vivarium-${light}-1024x568`]);
+  }
+});
+test("every light of frame.light.from has its pictures on both screens and its bed, and no more", () => {
+  const lights = frameSpec.light.from.map(([, l]) => l).sort();
+  for (const m of [frameSpec.idle.light.pictures, spec.light.pictures, frameSpec.light.bed]) assert.deepEqual(Object.keys(m).sort(), lights);
 });

@@ -316,6 +316,27 @@
    "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-bed-dawn-192x56": {
+   "file": "home/home-bed-dawn-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "0f1aeae238eb7bd1902f979176abd4e03fe2aaae18a681235333d671c43e56d9",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "home-bed-day-192x56": {
+   "file": "home/home-bed-day-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "home-bed-dusk-192x56": {
+   "file": "home/home-bed-dusk-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "61cdc351cdac866a47d488b9b7a6cb1043f8860dfe7aba712324492ba62765a7",
+   "signed": "art director, verdict (d09acb12)"
+  },
   "home-bed-mark-16x24": {
    "file": "pods/home-bed-mark-16x24.png",
    "w": 16,
@@ -323,12 +344,47 @@
    "sha256": "7a24eb5c34293974ea3b07ba29b422b3ec11cf424e15018e24ec54a93932fb18",
    "signed": "art director (home hand masters, #112 and #116)"
   },
+  "home-bed-night-192x56": {
+   "file": "home/home-bed-night-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
+   "signed": "art director, verdict (d09acb12)"
+  },
   "home-crate-48x40": {
    "file": "pods/home-crate-48x40.png",
    "w": 48,
    "h": 40,
    "sha256": "87d9a930ffd62bfcbb1a9fb522e12aefb8f29595dcd0e4d90346c867a4bb7d0d",
    "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-glass-dawn-640x488": {
+   "file": "home/home-glass-dawn-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "02db0fe36bf506c245de863f3096b1f4babd37f9968729645699b6cf873f073b",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-glass-day-640x488": {
+   "file": "home/home-glass-day-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "805ace1a75e3533d858faaac9f3781febdad7612d6f516cd210028c97cef8c8f",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-glass-dusk-640x488": {
+   "file": "home/home-glass-dusk-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "da687a78a14ae933e6d54ff3d71fc5f75ff6ab67944236bf79d8f796ef71b07e",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-glass-night-640x488": {
+   "file": "home/home-glass-night-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
+   "signed": "art director, light verdict (eb64c0d6)"
   },
   "home-lamp-amber-12x12": {
    "file": "pods/home-lamp-amber-12x12.png",
@@ -378,6 +434,34 @@
    "h": 32,
    "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
    "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "idle-vivarium-dawn-1024x568": {
+   "file": "vivarium/idle-vivarium-dawn-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "4f1938a8b44c8143dd05768e7027deeeb505b9a4f08a06af6f3d0aad176749eb",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "idle-vivarium-day-1024x568": {
+   "file": "vivarium/idle-vivarium-day-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "idle-vivarium-dusk-1024x568": {
+   "file": "vivarium/idle-vivarium-dusk-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "idle-vivarium-night-1024x568": {
+   "file": "vivarium/idle-vivarium-night-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "3dd1077137c080904691b283088b6def18be9f3b71876ec8ab49a46532dde9ab",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
   },
   "leaf-empty-8x12": {
    "file": "pods/leaf-empty-8x12.png",

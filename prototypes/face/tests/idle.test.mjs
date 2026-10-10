@@ -29,7 +29,7 @@ function scene(o = {}) {
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };
   if (o.away) st.dock = { docked: false, at: T0 }; if (o.bud) st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })), mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
-  return idleBuild({ st, sv, settings, docked: S.docked(st) }, frameSpec);
+  return idleBuild({ st, sv, settings, docked: S.docked(st), light: "day" }, frameSpec);
 }
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }

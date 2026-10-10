@@ -26,6 +26,8 @@ export function buildDevPanel(container, hooks) {
   loadSettings(); root = container; root.innerHTML = "";
   const groups = [];
   const group = (title, ...kids) => { const d = h("details", { class: "dev-group", open: "" }, h("summary", {}, title), ...kids); groups.push(d); return d; };
+  // The light of the Vivarium on Home and Idle: the Station's clock, or one light by hand (frame.json light)
+  group("Light", h("div", { class: "dev-row" }, "Light ", (() => { const s = h("select", { onchange: () => { saveSettings({ light: s.value === "clock" ? null : s.value }); redraw(); } }); for (const o of ["clock", "dawn", "day", "dusk", "night"]) s.append(opt(o, o, (G.settings.light ?? "clock") === o)); return s; })()), h("p", { class: "dev-note" }, "The clock reads the Station's local hour (dawn 6, day 7, dusk 18, night 20); a light chosen here is kept in the developer settings."));
   // Timers
   group("Timers", h("div", { class: "dev-row" }, "Bud scale ", select("budScale", [1, 10, 60, "instant"], (v) => (v === 1 ? "real" : v === "instant" ? "instant" : "×" + v))), toggle("firstBud", "the first bud ever grows in five minutes"),
     h("div", { class: "dev-row" }, "Sitting wait ", select("sittingWait", ["hours", "minute", "now"])), h("div", { class: "dev-row" }, "Juvenile to adult ", select("adultTurns", [2, 1, 0], (v) => (v === 0 ? "now" : v + " world turns"))),

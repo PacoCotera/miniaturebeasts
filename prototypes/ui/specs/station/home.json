@@ -8,6 +8,7 @@
  "states": ["home"],
  "initial": "home",
  "stateRule": "Home has one state. Docked or away (the Companion in the Caddy or not) changes what the panel's bed and the Cargo and Probe modules show, never the layout",
+ "light": { "pictures": { "dawn": "home-glass-dawn", "day": "home-glass-day", "dusk": "home-glass-dusk", "night": "home-glass-night" } },
  "regions": {
   "stage": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "fill": "frame.json colours.stageGround", "note": "the ground under the bezel and the column and in the gaps between modules; Home has no stage slice" },
   "bezel": { "rect": [16, 48, 656, 504], "inset": 8, "component": "livingWindow", "part": "frame" },
@@ -243,10 +244,6 @@
   "mibi": {
    "region": "residents and sleepers",
    "show": "the register `mibi` placeholder, standing, unmirrored: a resident at its box size (144×152 or 104×112), a sleeper fitted inside 96×88, centred on footX and bottom-aligned at y 512"
-  },
-  "home-bed-192x56": {
-   "region": "bed",
-   "show": "a PH plate at [448,472,192,56] in every bed state"
   },
   "home-rack-pod-24x32": {
    "region": "pods",

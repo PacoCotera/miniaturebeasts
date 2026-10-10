@@ -6,6 +6,7 @@ import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
 import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
+import { lightAt } from "./views/home-props.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
@@ -34,7 +35,7 @@ async function loadFrames() {
 }
 
 // --- the face ---
-let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1;
+let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1, lastLight = null;   // lastLight: the light of the props the face has, so the old light's paintings can be dropped
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
 const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
@@ -55,6 +56,7 @@ function syncProps() {
   if (key === lastProps) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? [] : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
+  else { const light = H.light(); if (lastLight && lastLight !== light) for (const id of [`idle-vivarium-${lastLight}:1024x568`, `home-glass-${lastLight}:640x488`, `home-bed-${lastLight}-192x56`]) FACE.drop(id); lastLight = light; }   // one light's pictures in memory, plus one frame of the next
   lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
 }
 function render() {
@@ -162,7 +164,7 @@ const faceBoot = async () => {
   f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) });
   for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
   f.pin(pinned(), picture);
-  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), motion, onDock: dockKey, afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
+  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), light: () => G.settings.light ?? lightAt(new Date().getHours(), SPECS.frame.light), motion, onDock: dockKey, afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
 };
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();

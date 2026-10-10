@@ -18,7 +18,7 @@ setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => J
 for (const k of ["frame", "pods", "home", "cargo", "create"]) SPECS[k] = JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
 const rig = ({ motion = true, onDock } = {}) => {
   G.st = S.freshSt("w1", 1, 1000); S.normalize(G.st); G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st: G.st }; UI.screen = "home"; UI.idle = false; UI.resting = false; UI.home.f = "room";
-  const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, motion: () => motion, ...(onDock ? { onDock } : {}) }); h.save = () => {};
+  const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, light: () => "day", motion: () => motion, ...(onDock ? { onDock } : {}) }); h.save = () => {};
   return { h, sent, at: (ms) => { t = ms; h.frame(); } };
 };
 const room = (verb) => ({ t: "intent", seq: 1, screen: "home", target: "room", verb });

@@ -28,7 +28,13 @@ export function wordsOf(need, spec) {
 
 // The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and
 // PH plate. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
-export function livingOf(m, R, req, ph) {
+// The light of an hour (frame.json light.from: [[start hour, light], …]): a light runs until the next start, the last wraps midnight. The hour is the host's; a view never reads a clock.
+export function lightAt(hour, L) {
+  const from = [...L.from].sort((a, b) => a[0] - b[0]), at = from.filter(([h]) => h <= hour).at(-1) ?? from.at(-1);
+  return at[1];
+}
+
+export function livingOf(m, R, req, ph, L) {
   const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
@@ -38,7 +44,7 @@ export function livingOf(m, R, req, ph) {
   const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => person(mb, { seed: 0, nap: true })) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
-    picture: ph(`home-bed-${R.bed.rect[2]}x${R.bed.rect[3]}`, R.bed.rect.slice(2)),   // the bed's PH plate in every state
+    picture: req({ kind: "slot", id: `home-bed-${m.light}-${R.bed.rect[2]}x${R.bed.rect[3]}`, master: `${L.bed[m.light]}-${R.bed.rect[2]}x${R.bed.rect[3]}`, size: R.bed.rect.slice(2), until: "the bed masters" }),   // the bed of the light, in every state
     mark: docked ? "" : ph(R.bed.markPicture, R.bed.mark),   // away only: the Companion's mark (home-bed-mark-16x24), 1:1 over the bed
     sleepers,
   };
@@ -54,7 +60,7 @@ export function homeBuild(m, spec, frame) {
   const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
 
   // the living window: the glass's master (day), the residents at home walking, the bed with the carried set asleep
-  const lw = livingOf({ st, sv, settings, docked }, R, req, ph);
+  const lw = livingOf({ st, sv, settings, docked, light: m.light }, R, req, ph, frame.light);
   const { residents, sleepers, bed } = lw;
   // the modules
   const crates = docked ? S.bayCrates(st, sv).length : 0;
@@ -93,7 +99,7 @@ export function homeBuild(m, spec, frame) {
   const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal", R.library.journal.slice(2)) };
 
   const lamps = Object.fromEntries(Object.entries(spec.lamps.pictures).map(([k, id]) => [k, ph(id, [12, 12])]));   // the signed lamps: off, well, waiting, needsYou (home.json lamps.pictures)
-  const regions = { glass: { picture: slot("home-glass-day", [R.glass.rect[2], R.glass.rect[3]]) }, residents, bed, cargo, pods, incubator, probe, library, lamps };
+  const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library, lamps };
 
   // the focus: the targets present, in the spec's group order; the ring is on `cur` or nowhere ("room")
   const targets = [{ id: "vivarium", group: "vivarium" }];

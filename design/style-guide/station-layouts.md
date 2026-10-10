@@ -693,7 +693,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Region | Roles | Why |
 | --- | --- | --- |
 | Bezel | The sage housing `metal`, lit edge `enamel`, shade `bevel`, edge `hairline` | The window set in the device's housing |
-| Glass | A `hairline` edge, no highlight; until the master, a flat plate: back `forest`, ground band `clay` with a `sand` top row, foot `soil` | A window into the housing, never a showcase |
+| Glass | A `hairline` edge, no highlight; the master of the light (`home-glass-dawn|day|dusk|night-640x488`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20); a flat plate (back `forest`, ground band `clay` with a `sand` top row, foot `soil`) only while a light's slot is empty | A window into the housing, never a showcase |
 | Modules | `panel` fill, `bevel` top, `hairline` edge; the word engraved in `metal`, 16 px | The objects and the lamp lead; the word is never the brightest thing |
 | Lamps | 12×12, `void` rim; off `hairline`, well `sprout`, waiting `sky`, needs you `amber` | The kit's lamp roles |
 | Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
@@ -984,7 +984,7 @@ The Vivarium only, one painting a light (day, dusk, night), the warm key light f
 
 | Region (`frame.json` `idle`) | Rectangle | Notes |
 | --- | --- | --- |
-| `vivarium` | 0, 0, 1024, 568 | One painting. Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
+| `vivarium` | 0, 0, 1024, 568 | One painting, the master of the light (`idle-vivarium-dawn|day|dusk|night-1024x568`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20; frame.json `light`). Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag; the waiting lamp steady at its box's top right. Drawn by the feet's y |
 | `bed` | 792, 496, 192, 56 | Living window, build `withYouBed`, coloured as the whole's: rim `bark`, hollow `soil`, lit rim `sand`. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (880, 512, 16, 24) over it; docked, no mark |
 | `strip` | 0, 568, 1024, 32 | Build `idleLine`; a 1 px `void` rule on its top edge |

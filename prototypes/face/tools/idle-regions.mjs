@@ -9,7 +9,9 @@ export function departures(log, frame) {
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
   for (const id of ["top", "line", "plate", "focus", "title", "materials", "notBuilt.ground", "notBuilt.line"]) must(got(id).length === 0, `Idle draws no ${id}`);
   for (const r of got("vivarium", "chrome")) must(within(r.rect, R.vivarium.rect), `the Vivarium's plates ${r.rect} leave ${R.vivarium.rect}`);
-  { const back = got("vivarium", "chrome")[0]; must(!!back && eq(back.rect, R.vivarium.rect), `the Vivarium's plates ${back?.rect} are not the whole ${R.vivarium.rect}`); }
+  { const back = got("vivarium", "chrome")[0], master = got("vivarium", "painted")[0];   // the light's painting is on the face: the plates are gone (nodes with no size) and the painting is the whole; else the plates are the whole
+    if (master) { must(eq(master.rect, R.vivarium.rect), `the Vivarium's painting ${master.rect} is not the whole ${R.vivarium.rect}`); must(!back, `the Vivarium's plates ${back?.rect} show under its painting`); }
+    else must(!!back && eq(back.rect, R.vivarium.rect), `the Vivarium's plates ${back?.rect} are not the whole ${R.vivarium.rect}`); }
   for (const r of [...got("vivarium", "painted"), ...got("vivarium", "art")]) must(eq(r.rect, R.vivarium.rect), `the painting ${r.rect} is not ${R.vivarium.rect} (1:1, never cropped and enlarged)`);
   for (const id of ["resident", "bed", "resident.lamp", "bed.lamp"]) for (const r of got(id)) must(within(r.rect, R.vivarium.rect), `${id} (${r.layer}) ${r.rect} leaves the painting ${R.vivarium.rect}`);
   { const w = R.resident.walk.ground; for (const r of [...got("resident", "art"), ...got("resident", "painted")]) must(r.rect[0] >= w[0] && r.rect[0] + r.rect[2] <= w[0] + w[2] && r.rect[1] + r.rect[3] >= w[1] && r.rect[1] + r.rect[3] <= w[1] + w[3] + 1, `the residents ${r.rect}: their feet are not in the walk ground ${w}`); }

@@ -33,7 +33,7 @@ function scene(o = {}) {
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
   if (o.away) st.dock = { docked: false, at: T0 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1)), mibis: [], carried: (o.carry ?? [0, 1]).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
-  return homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: o.focus ?? null }, homeSpec, frameSpec);
+  return homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: o.focus ?? null, light: o.light ?? "day" }, homeSpec, frameSpec);
 }
 const frameProps = (line = {}) => ({ top: { screen: "home", title: "Home", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "" } });
 

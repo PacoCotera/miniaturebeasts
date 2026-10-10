@@ -58,12 +58,12 @@ for (const s of rec.shots) {
   const must = (ok, m) => { regionsChecked++; if (!ok) fail(`${s.name}: ${m}`); };
   const one = (layer, id, want, what) => { for (const r of got(layer, id)) must(eq(r.rect, want), `${what ?? id} ${r.rect} is not ${want}`); };
   const inside = (layer, id, box) => { for (const r of got(layer, id)) must(within(r.rect, box), `${id} ${r.rect} is not inside ${box}`); };
-  if (c.idle) { for (const m of idleDepartures(lg, frame)) must(false, m); regionsChecked += lg.regions.length; must(got("chrome", "idle.strip").length === 1 && got("chrome", "vivarium").length >= 1, "Idle draws the Vivarium's plates and the strip"); continue; }   // Idle: every region of the face's log against frame.json idle (face/tools/idle-regions.mjs)
+  if (c.idle) { for (const m of idleDepartures(lg, frame)) must(false, m); regionsChecked += lg.regions.length; must(got("chrome", "idle.strip").length === 1 && got("chrome", "vivarium").length + got("painted", "vivarium").length >= 1, "Idle draws the Vivarium (its plates, or the light's painting) and the strip"); continue; }   // Idle: every region of the face's log against frame.json idle (face/tools/idle-regions.mjs)
   one("chrome", "top", F.top.rect, "top bar"); one("chrome", "line", F.line.rect, "bottom line");
   for (const r of got("chrome", "plate")) { const w = r.rect[2], cx = r.rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (r.rect[1] + r.rect[3] - 3 === F.plate.bottom || r.rect[1] === F.plate.topOverFocal), `message plate ${r.rect}`); }
   if (c.screen === "home" && c.props?.state === "home") {   // Home: every region of the face's log against home.json (face/tools/home-regions.mjs): zero departures; the strings are Inter at their sizes
     const d = departures(lg, home, frame, c.homeFocus ?? "room"); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
-    must(got("chrome", "glass").length === 1 && got("chrome", "bezel").length === 1 && MODULES.every((m) => got("chrome", m).length === 1), "Home draws the bezel, the glass and the five modules once each");
+    must(got("chrome", "glass").length + got("painted", "glass").length === 1 && got("chrome", "bezel").length === 1 && MODULES.every((m) => got("chrome", m).length === 1), "Home draws the bezel, the glass and the five modules once each");
   } else if (c.screen === "create" && c.props?.state !== "notBuilt") {   // Create: every region of the face's log against create.json (face/tools/create-regions.mjs): zero departures; the roll, the founder and the stamp label are drawn
     const d = createDepartures(lg, createSpec, frame, c.props.state); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
     must(got("chrome", "stamp").length === 1 && got("art", "founder").length + got("painted", "founder").length >= 1 && got("chrome", "roll").length >= 1, "Create draws the roll, the founder and the stamp label");

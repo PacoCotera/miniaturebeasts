@@ -86,7 +86,7 @@ export function podsBody() {
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
 export function homeBody() {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f });
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, light: lightNow() });
   const body = homeBuild(model(), SPECS.home, SPECS.frame);
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
@@ -110,7 +110,7 @@ export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   const screen = UI.screen;
   if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
-    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked() }, SPECS.frame);
+    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light: lightNow() }, SPECS.frame);
     registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
     return { msg: { screen, ...body.props }, ids: [...ids] };
@@ -137,7 +137,10 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
-export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
+// The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
+let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
+export function createHost({ send, nowMs, light, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
+  lightNow = light;
   let holdUntil = 0, arrivalUntil = 0; const timers = [];
   const holding = () => nowMs() < holdUntil;
   const arriving = () => nowMs() < arrivalUntil;   // an arrival plays (Home's crates sliding in holds nothing, and the idle timer waits for its end)
@@ -161,6 +164,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
     },
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; },
+    light: () => lightNow(),
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;

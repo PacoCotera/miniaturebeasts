@@ -19,7 +19,7 @@ export function idleBuild(m, frame) {
   const I = frame.idle, R = I.regions, requests = [], req = (r) => { requests.push(r); return r.id; };
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (station-layouts.md, Placeholders on Idle)" });
   const size = R.vivarium.rect.slice(2);
-  const lw = livingOf(m, R, req, ph);
-  const vivarium = { picture: req({ kind: "slot", id: `idle-vivarium-day:${size.join("x")}`, master: "idle-vivarium-day", size, until: "Idle's Vivarium master (day, dusk and night)" }) };
+  const lw = livingOf(m, R, req, ph, frame.light);
+  const vivarium = { picture: req({ kind: "slot", id: `idle-vivarium-${m.light}:${size.join("x")}`, master: `${I.light.pictures[m.light]}-${size.join("x")}`, size, until: "Idle's Vivarium master (the light)" }) };
   return { props: { idle: true, regions: { vivarium, residents: lw.residents, bed: lw.bed, lamps: { waiting: ph(R.resident.waitingLamp, [12, 12]) } }, frame: { idle: { line: idleLine(m, I) } } }, requests };
 }
