@@ -56,7 +56,7 @@
   "leaves": {
    "rect": [256, 88, 512, 216], "component": "leaves", "form": "arc", "layout": ["leafArc"], "inStates": ["growing", "ready"], "leaf": [16, 20], "max": 40,
    "pictures": { "empty": "leaf-empty-16x20", "full": "leaf-full-16x20" },
-   "states": { "empty": "the outline, `metal`", "filling": "the full leaf clipped from the bottom: its lowest `rows` rows of 20", "full": "the full leaf" },
+   "states": { "empty": "the outline, `metal`", "filling": "the full leaf clipped from the bottom over the outline: its lowest `rows` rows of 20", "full": "the full leaf" },
    "props": "leaves: { total, full, rows }: total the bud's minutes, full the whole minutes passed, rows 0 to 19 of the current leaf, stepped every 3 s by the view; ready: full = total",
    "leafArc": {
     "centre": [512, 344], "arcs": { "inner": 216, "outer": 244 }, "span": [-76, 76], "pitch": 8, "half": 4, "perArc": 20, "offset": [-8, -10], "fill": ["inner", "outer"],
