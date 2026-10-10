@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(here, "../.."), dist = path.join(here, "../dist");
+const GROUND = (() => { const h = JSON.parse(readFileSync(path.join(root, "ui/palettes/station.json"), "utf8")).colours.find(([n]) => n === "ground")[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); })();   // the palette's `ground`
 if (!existsSync(path.join(dist, "face.wasm"))) { console.error("the face is not built (prototypes/face/build.sh)"); process.exit(2); }
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".wasm": "application/wasm", ".css": "text/css" };
 const server = createServer((req, res) => {
@@ -31,9 +32,9 @@ const f = await page.evaluate(() => window.__st.face);
 expect(f, "the face is loaded");
 if (f) {
   expect(f.version === "LVGL 9.6.0", "LVGL 9.6.0: " + f.version); expect(f.size[0] === 1024 && f.size[1] === 600, "a 1024×600 display: " + f.size);
-  expect(JSON.stringify(await page.evaluate(() => window.__st.face.pixel(10, 10))) === JSON.stringify([22, 42, 55]), "the top bar is the palette's ground colour");
+  expect(JSON.stringify(await page.evaluate(() => window.__st.face.pixel(10, 10))) === JSON.stringify(GROUND), "the top bar is the palette's ground colour");
   const onCanvas = await page.evaluate(() => { const d = document.getElementById("screen").getContext("2d").getImageData(10, 10, 1, 1).data; return [d[0], d[1], d[2]]; });
-  expect(JSON.stringify(onCanvas) === JSON.stringify([22, 42, 55]), "the page's canvas shows the face's pixels: " + onCanvas);
+  expect(JSON.stringify(onCanvas) === JSON.stringify(GROUND), "the page's canvas shows the face's pixels: " + onCanvas);
   if (existsSync(path.join(dist, "native.hash"))) {   // the fixed scene (rules, the three Inter sizes, both rings, a picture) in a fresh face: the same pixels as the native build's
     const h = await page.evaluate(async () => { const { bootFace } = await import("/sandbox/station/src/face-lvgl.mjs"), g = await bootFace(); g.M._face_selftest_scene(); for (let t = 0; t < 4; t++) g.M._face_frame(t * 16); g.M._face_key(17, 1); g.M._face_key(17, 0); g.M._face_frame(80); return g.hash(); });
     expect(h === readFileSync(path.join(dist, "native.hash"), "utf8").trim(), `the wasm and native faces draw the same pixels for the fixed scene: ${h} vs ${readFileSync(path.join(dist, "native.hash"), "utf8").trim()}`);
