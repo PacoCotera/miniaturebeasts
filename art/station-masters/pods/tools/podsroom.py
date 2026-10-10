@@ -21,11 +21,17 @@ nest = Image.open("source/raw/pods-nest.jpg").convert("RGB"); pl = Image.open("s
 NB = (300, 150, 1050, 730); EC = (694 - 300, 385 - 150); EGG_H = 400.0
 nmask = soft((NB[2] - NB[0], NB[3] - NB[1]), [("e", (EC[0] - 335, EC[1] - 222, EC[0] + 335, EC[1] + 222)), ("e", (440 - 300 - 150, 500 - 150 - 112, 440 - 300 + 150, 500 - 150 + 112)), ("r", (600 - 300, 590 - 150, 800 - 300, 725 - 150))], 14)
 nobj = nest.crop(NB)
-bgm = np.asarray(nest).astype(float)[20:140, 1180:1360].reshape(-1, 3).mean(0); fm = np.asarray(floor).astype(float)[150:370, 300:700].reshape(-1, 3).mean(0)         # the nest painting's plain foam (its upper right) is matched to the floor's foam by a per-channel gain, so no lighter halo shows round the nest
-nobj = Image.fromarray(np.clip(np.asarray(nobj).astype(float) * (fm / bgm), 0, 255).astype(np.uint8))
+# the nest is laid on as a RATIO to its own smooth ground (a quadratic fit to the painting's plain foam, the object zones left out), multiplied onto whatever floor lies there: where the nest painting is plain foam the ratio is 1, so no light box can remain around the moss, the tag or the dust (pass 98, the art director's halo fix)
+nn = np.asarray(nest).astype(float); yy, xx = np.mgrid[0:nn.shape[0], 0:nn.shape[1]]; X, Y = xx / 1376.0, yy / 768.0
+ex = (((xx - 694) / 395.0) ** 2 + ((yy - 385) / 282.0) ** 2 < 1) | (((xx - 440) / 215.0) ** 2 + ((yy - 500) / 170.0) ** 2 < 1) | ((xx > 520) & (xx < 830) & (yy > 520) & (yy < 760))
+sel = ~ex; sel[::, :] &= (xx % 5 == 0) & (yy % 5 == 0); A = np.stack([np.ones_like(X), X, Y, X * X, X * Y, Y * Y], -1)
+coef = np.linalg.lstsq(A[sel], nn[sel], rcond=None)[0]; fit = np.einsum("hwk,kc->hwc", A, coef)
+ratio = np.clip(nn / np.maximum(fit, 1.0), 0, 4.5)[NB[1]:NB[3], NB[0]:NB[2]]
 def put_nest(canvas, cx, cy, egg_h):
-    s = egg_h / EGG_H; w, h = round(nobj.width * s), round(nobj.height * s); o = nobj.resize((w, h), Image.LANCZOS); m = nmask.resize((w, h), Image.LANCZOS)
-    canvas.paste(o, (round(cx - EC[0] * s), round(cy - EC[1] * s)), m); return s
+    s = egg_h / EGG_H; w, h = round(ratio.shape[1] * s), round(ratio.shape[0] * s); x0, y0 = round(cx - EC[0] * s), round(cy - EC[1] * s)
+    rs = np.stack([np.asarray(Image.fromarray(ratio[..., c].astype(np.float32), "F").resize((w, h), Image.BICUBIC)) for c in range(3)], -1); m = np.asarray(nmask.resize((w, h), Image.LANCZOS)).astype(float)[..., None] / 255.0
+    cv = np.asarray(canvas).astype(float); reg = cv[y0:y0 + h, x0:x0 + w]; assert reg.shape[:2] == (h, w), (x0, y0, w, h)
+    cv[y0:y0 + h, x0:x0 + w] = np.clip(reg * (1 + m * (rs - 1)), 0, 255); canvas.paste(Image.fromarray(cv.astype(np.uint8))); return s
 # panels and plate from the plate painting
 panel = pl.crop((710, 69, 1328, 711)); plate = pl.crop((240, 278, 450, 490)).resize((152, 152), Image.LANCZOS)
 def put_panel(canvas, rect):
@@ -33,7 +39,37 @@ def put_panel(canvas, rect):
 def put_plate(canvas): m = Image.new("L", (152, 152), 0); ImageDraw.Draw(m).rounded_rectangle([0, 0, 151, 151], radius=14, fill=255); canvas.paste(plate, (856, 344), m.filter(ImageFilter.GaussianBlur(0.8)))
 ov = floor.copy(); put_panel(ov, (584, 80, 424, 432)); put_plate(ov); s_ov = put_nest(ov, 256, 336, 96)
 ch_ = floor.copy(); put_panel(ch_, (424, 72, 584, 440)); put_nest(ch_, 216, 336, 96)
-col = floor.copy()
+# the collection's floor: the floor's hoses, gauge and vent come out of the six places (foam refilled), and go back in the margin strip between the rows (stage y 236..290) and at the right rim
+def gblur(a, sg):
+    """Gaussian blur of a float 2D array by FFT (PIL cannot blur float images), edges wrapped"""
+    fy = np.fft.fftfreq(a.shape[0])[:, None]; fx = np.fft.rfftfreq(a.shape[1])[None, :]; return np.fft.irfft2(np.fft.rfft2(a) * np.exp(-2 * (np.pi * sg) ** 2 * (fx ** 2 + fy ** 2)), a.shape)
+def coons(img, box, sm=5, lift=None):
+    """fill a rectangle of foam from its four bounding lines (each smoothed along its length): a Coons patch, so the rim's shadow gradient runs through unbroken"""
+    x0, y0, x1, y1 = box; w, h = x1 - x0, y1 - y0
+    def line(a, ax):
+        a = a.mean(ax); return np.stack([gblur(np.stack([a[:, c]] * 8), sm)[0] for c in range(3)], -1) if False else np.stack([np.convolve(np.pad(a[:, c], 3 * sm, mode="edge"), np.exp(-0.5 * (np.arange(-3 * sm, 3 * sm + 1) / sm) ** 2) / (sm * 2.5066), "valid") for c in range(3)], -1)
+    T = line(img[y0 - 3:y0, x0:x1], 0); B = line(img[y1:y1 + 3, x0:x1], 0); L = line(img[y0:y1, x0 - 3:x0], 1); R = line(img[y0:y1, x1:x1 + 3], 1)
+    s_ = np.linspace(0, 1, w)[None, :, None]; t_ = np.linspace(0, 1, h)[:, None, None]
+    c = (1 - t_) * T[None] + t_ * B[None] + (1 - s_) * L[:, None] + s_ * R[:, None] - ((1 - s_) * (1 - t_) * T[0] + s_ * (1 - t_) * T[-1] + (1 - s_) * t_ * B[0] + s_ * t_ * B[-1])
+    if lift is not None: wgt = (np.sin(np.pi * s_) * np.sin(np.pi * t_)) ** 0.5; c = c + wgt * (lift - c[h // 2, w // 2])    # a large patch in the middle of the case: the middle is lifted to the foam beside it, the rim keeps its shadow
+    img[y0:y1, x0:x1] = c; return img
+def clean_floor():
+    fa = np.asarray(floor).astype(float); out = fa.copy(); hole = np.zeros(fa.shape[:2], bool)
+    for bx in ((84, 46, 700, 112), (712, 42, 936, 106), (84, 112, 130, 286), (668, 232, 950, 490)):
+        out = coons(out, bx, lift=(0.5 * (fa[190:226, 700:880].reshape(-1, 3).mean(0) + fa[300:460, 590:650].reshape(-1, 3).mean(0)) if bx[0] == 668 else None)); hole[bx[1]:bx[3], bx[0]:bx[2]] = True
+    grain = fa[400:480, 380:500] - np.stack([gblur(fa[400:480, 380:500, c], 3) for c in range(3)], -1)
+    tile = np.tile(grain, (fa.shape[0] // 80 + 1, fa.shape[1] // 120 + 1, 1))[:fa.shape[0], :fa.shape[1]]
+    out = np.where(hole[..., None], out + tile, out); return fa, Image.fromarray(out.clip(0, 255).astype(np.uint8))
+fa, clean = clean_floor(); ca = np.asarray(clean).astype(float)
+def hardware(box, dest, fade_bottom=0):
+    """cut a fitting from the original floor (alpha from its difference to the refilled foam) and set it down at dest on the collection floor"""
+    x0, y0, x1, y1 = box; d = np.sqrt(((fa[y0:y1, x0:x1] - ca[y0:y1, x0:x1]) ** 2).sum(2)); al = np.clip((d - 10) / 30.0, 0, 1)
+    al = np.asarray(Image.fromarray((al * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.8))).astype(float) / 255.0
+    if fade_bottom: al[-fade_bottom:] *= np.linspace(1, 0, fade_bottom)[:, None]
+    return fa[y0:y1, x0:x1], al, dest
+col = clean.copy()
+for src, al, (dx, dy) in (hardware((296, 48, 692, 108), (66, 238)), hardware((714, 44, 804, 104), (470, 238)), hardware((842, 44, 934, 104), (640, 238)), hardware((890, 232, 960, 300), (890, 232), 16)):
+    h_, w_ = al.shape; reg = np.asarray(col).astype(float); reg[dy:dy + h_, dx:dx + w_] = reg[dy:dy + h_, dx:dx + w_] * (1 - al[..., None]) + src * al[..., None]; col = Image.fromarray(reg.clip(0, 255).astype(np.uint8))
 for c in range(3):
     for r in range(2): put_nest(col, 176 + 336 * c, 120 + 240 * r, 0.34 * EGG_H)
 out = {"room-bench-stage": floor, "room-bench-stage-overview": ov, "room-bench-stage-chapter": ch_, "room-bench-stage-collection": col}

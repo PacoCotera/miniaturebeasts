@@ -12,10 +12,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the case's floor, the stage under everything: the housing rim at the edges, warm dark foam, hoses, a vent and a small gauge at the margins, no cut-outs; a Pro painting (pods-floor.jpg), 1024x522; the pods are placed by the renderer, never painted in",
-  "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b"
  },
  "room-cradle": {
   "size": [
@@ -30,10 +27,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the pod's fitted nest (224x96), cut from the composed overview at (144, 288); the pods are placed by the renderer, never painted in",
-  "sha256": "921de473910027c7aa1f66d0a1a9b6a4d61880d8f51fce2453f6aa4ef6ab503c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "d2d51648c2916128312d500b9b802fa8d3f56af109d9ea4aeacc2f4ccbe05f34"
  },
  "room-cradle-front": {
   "size": [
@@ -48,10 +42,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the nest's near rim as a separate layer (RGBA 224x96): the lower arc of the egg's rim, cut from the cradle; the pods are placed by the renderer, never painted in",
-  "sha256": "7fa013a679ca883cf7b776da0f8444c32f6331db713aa4e1d9285b0b3cf82d13",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a"
  },
  "room-shelf": {
   "size": [
@@ -66,10 +57,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the case floor under the cradle (288x72), cut from the composed overview at (112, 328); the pods are placed by the renderer, never painted in",
-  "sha256": "ef5540a3d2d94c5db6feafbdcffd77b550c42bf84172387298035d7c39426343",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "ef81494d369d839927e2e17c5fb750d645e887c58498e88a253c58706108c32b"
  },
  "ring-column": {
   "size": [
@@ -2076,10 +2064,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (360, 150) r 92",
   "made": "the Pods room set (pass 93): the same well with its rubber rim catching more warm light (the focus ring is composed in code over it); one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "683099aef4dd0bcf4091657facc3df9f9a1fe1451cbc2d59b7462b964480c024",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "683099aef4dd0bcf4091657facc3df9f9a1fe1451cbc2d59b7462b964480c024"
  },
  "ring-well-idle-80x80": {
   "size": [
@@ -2094,10 +2079,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (150, 150) r 92",
   "made": "the Pods room set (pass 93): the well at rest: a matte rubber-edged circular recess in the case, empty; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "2e0a18a357f7d000569bb94eec04547a98d6531f020fd0ce345813e2a56f2726",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "2e0a18a357f7d000569bb94eec04547a98d6531f020fd0ce345813e2a56f2726"
  },
  "ring-arc-selected-n4-track": {
   "size": [
@@ -3390,10 +3372,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (1223, 68, 1358, 698), opaque",
   "made": "the Pods room set (pass 93): a strip of the housing: two rows of screws, a hose clip and a small vent; one sheet painting cut at size, reduced with Lanczos, never enlarged",
-  "sha256": "e80ae6414c6ffa4c28dd11ed57cb36b4c87e2b29e7601307aa39cd48d6922dce",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (ac57c715)",
-  "status_note": "a strip of the housing: two rows of screws, a hose clip and a small vent; signed by the art director"
+  "sha256": "e80ae6414c6ffa4c28dd11ed57cb36b4c87e2b29e7601307aa39cd48d6922dce"
  },
  "ring-hatch-80x56": {
   "size": [
@@ -3408,10 +3387,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (688, 71, 912, 229)",
   "made": "the Pods room set (pass 93): the closed gasketed service hatch in the housing's sage; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318"
  },
  "page-pane-256x440": {
   "size": [
@@ -3661,10 +3637,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the small dim unlit matte stamp plate set into the housing, painted (pods-plate.jpg), cut at (856, 344); the pods are placed by the renderer, never painted in",
-  "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4"
  },
  "ring-well-empty-80x80": {
   "size": [
@@ -3679,10 +3652,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (570, 150) r 92",
   "made": "the Pods room set (pass 93): the unused well: a smooth rubber plug seated nearly flush; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "e5d8067e4428fbd76f7783706de70746991bed7cd5d2bfafd0d9e57b8118598c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "e5d8067e4428fbd76f7783706de70746991bed7cd5d2bfafd0d9e57b8118598c"
  },
  "rail-tab-fill-unread-full-152x40": {
   "size": [
@@ -3908,10 +3878,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the plate's rim only (RGBA 152x152, the opening transparent, no glass); the pods are placed by the renderer, never painted in",
-  "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc"
  },
  "trait-picture-frame-144x176": {
   "size": [
@@ -5093,10 +5060,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the overview stage: the floor with ONE fitted egg-shaped nest (about 150x96, uniformly scaled) on the pod axis x 256, the stamp plate at (856, 344) and a plain warm slate panel at the right; composed from three Pro paintings; the pods are placed by the renderer, never painted in",
-  "sha256": "692f44db25398fd8303934f32cea5a2ffae8d5e4dbfdfc53328182c3508aee7d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5111,10 +5075,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the chapter stage: the floor with the nest on the axis x 216 and a warm matte slate page panel to the right (424, 72, 584, 440); composed; the pods are placed by the renderer, never painted in",
-  "sha256": "5c1b2ad24adf6751810b49c88f3d782bf13d78ccec862e18c898971348e19923",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -5129,10 +5090,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (200, 500) r 168",
   "made": "the Pods room set (pass 93): the open ring recess at rest (the arcs sit on top); one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "30c32aff28484c8c065a61f75c7177ae919d2cb6362d48c7790440ff67dc7cd5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "30c32aff28484c8c065a61f75c7177ae919d2cb6362d48c7790440ff67dc7cd5"
  },
  "ring-collection-closed-176x176": {
   "size": [
@@ -5147,10 +5105,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (560, 500) r 168",
   "made": "the Pods room set (pass 93): the ring closed by its worn rubber cover; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "f4e06d9a394f99664161dd3d5808d38093b66ec90d56f4a8d5881db4f47bdf8f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "f4e06d9a394f99664161dd3d5808d38093b66ec90d56f4a8d5881db4f47bdf8f"
  },
  "mark-species-S01-24x24": {
   "size": [
@@ -6047,10 +6002,7 @@
   ],
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (1010, 150) r 78",
   "made": "the Pods room set (pass 93): the small fitted round recess; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
-  "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2"
  },
  "ring-arc-collection-n1-track-176x176": {
   "size": [
@@ -6857,10 +6809,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the collection stage: the floor with six nests at the six places' centres; composed; the pods are placed by the renderer, never painted in",
-  "sha256": "e5164d248709c07e32ca3766eaecf36f7d8faea901cd7137ae872311f2dddeeb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "sha256": "2a22134de9009b9575c455f1e35590c9298d691b924351226c745642f634179e"
  },
  "mark-can-grow-16": {
   "size": [
@@ -10042,9 +9991,9 @@
   "src": "source/raw/vivarium-day.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by day: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (pass 94)",
   "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "status": "signed",
+  "signed_in": "art director, 10-10 09:27",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
  },
  "idle-vivarium-dusk-1024x568": {
   "size": [
@@ -10055,9 +10004,9 @@
   "src": "source/raw/vivarium-dusk.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dusk: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (the day picture's edit: dusk is warmer and lower) (pass 94)",
   "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "status": "signed",
+  "signed_in": "art director, 10-10 09:27",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
  },
  "idle-vivarium-night-1024x568": {
   "size": [
@@ -10068,9 +10017,9 @@
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x1.48 in linear light to a mean L* of 30.6) (pass 94)",
   "sha256": "de75e05559ba33f2209395ffb8491366e58cc8dd4ee6bb7d4ca8dbc0e734ce14",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "status": "signed",
+  "signed_in": "art director, 10-10 09:27",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
  },
  "home-bay-shut-176x72": {
   "size": [
