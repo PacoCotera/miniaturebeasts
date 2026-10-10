@@ -3,7 +3,7 @@
  "device": "station",
  "spec": "design/style-guide/station-layouts.md#create",
  "frame": "frame.json",
- "status": "The L2.4 spec: the states nothingRead, shape and grow; the roll of the focused trait as a ▲▼ stepper; the founder's dither; the bench ground; the leaves word, grid form, with the small leaf; the strings",
+ "status": "The L2.4 spec: the states nothingRead, shape and grow; the roll of the focused trait as a ▲▼ stepper; the founder's dither; the bench ground; the leaves word, grid form, with the small leaf; the strings. Pass R (2026-10-10): Grow it a jump to the Incubator, the coloured keys during the grow event, the code's spaces, the work tray and the small chamber by the art reset, every stale master kept as a labelled placeholder (placeholders)",
  "wireframes": ["design/style-guide/station-layouts/03-create.png", "design/style-guide/station-layouts/03b-create-clash.png", "design/style-guide/station-layouts/03c-create-grow.png", "design/style-guide/station-layouts/03d-create-nav.png", "design/style-guide/station-layouts/03e-create-nothing-read.png"],
  "note": "The one home of the Create numbers, transcribed from station-layouts.md (Create) and its wireframes 03-create.svg to 03e-create-nothing-read.svg. Rectangles are [x, y, w, h] in screen pixels. Create shapes a founder from one identified pod: the founder is the spotlight, the roll of the focused trait sits over it, the pod at the left and the incubation dome, its leaves and the stamp at the right balance it, the total is on the bottom line.",
  "derived": {
@@ -18,7 +18,11 @@
   "leaves": "architect, 2026-10-09 13:24: the Station word `leaves`, form grid. Three rows of 16 (48): a bud takes 20 minutes plus one a change, up to 38 today; the first founder 5 whatever is shaped (game designer, 13:27). The small leaf is the Incubator's leaf drawn at 8×12, its empty outline `bevel` (art director, 13:28)",
   "nothing read": "game designer, 2026-10-09 13:27: the state exists (identifying the species is enough to grow an unedited founder). Pods' way in, UI designer: ✓ on an identified pod is always `✓ Shape a founder` and opens Create; a chapter opens from the rail (▲, then ✓ Open). Was: ✓ on an identified pod with nothing read opened its first chapter",
   "bench": "architect, 2026-10-09 13:24: the frame word's stage part with the room's master; art director, 13:28: room-bench-stage-create, to be commissioned, until then room-bench-stage-collection",
-  "plate on one look": "UI designer, 2026-10-09: no message plate on ▲ ▼ where a trait carries one look or is a doing; the trait line already says why"
+  "plate on one look": "UI designer, 2026-10-09: no message plate on ▲ ▼ where a trait carries one look or is a doing; the trait line already says why",
+  "grow is a jump": "UI designer, 2026-10-10 01:33, pass R: Grow it lands on the Incubator, growing, in another part of the tree (station-layouts.md, The screen map: the jumps), so ← there reads Home with the ring on Home's Incubator module, never back to Create; the pod is gone from the rack",
+  "keys during the grow event": "UI designer, 2026-10-10 01:33, pass R: while events.grow holds (1080 ms) the pad, ✓ and ← do nothing; a coloured key waits until the Incubator shows, then opens its section (station-layouts.md, The column and the keys); the choices are paid by then, so nothing is dropped. Was \"presses are consumed\" for every key",
+  "code spaces": "UI designer, 2026-10-10 01:33, pass R: the code in three groups with spaces, as codeText on main (\"K7Q 4MX P2D\"), no dots; the widest, \"WWW WWW WWW\", is 152 px in the face's Inter 16; the region's 176 holds it (was \"WWW · WWW · WWW\", 168 to 171)",
+  "art reset": "UI designer, 2026-10-10 01:33, pass R, by the art director's material table for this pass (geometry stays, materials change) and the approved Station world brief (Research is the work tray: what is under study in the device's light among field tools and small gauges): the specimen chamber becomes a work tray in the housing, `panel` back and `enamel` rim, no glass edge or highlight; the small dome becomes the Incubator's sheltered chamber with one hooded window, small, in the sand housing (`enamel`), its window a `hairline` edge with no highlight, as on the Incubator and Home's module; frost only where something is unread, which on Create is the founder's unread parts. Every master the reset makes stale is a labelled placeholder (placeholders)"
  },
  "rules": {
   "used": ["railCompaction", "slantTabs"],
@@ -57,16 +61,16 @@
    "place": "the group (tag or mark, its gap, the line) centred on x 512; the composition sizes its own tag from the word, as Home's name tag",
    "nothingRead": "the line alone: strings.traitLine.none"
   },
-  "chamber": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "inside", "note": "the specimen chamber's glass back; no words" },
+  "chamber": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "inside", "note": "the work tray's back, where the founder stands; no words", "placeholder": "stale by the art reset: the specimen chamber's glass; the master is a work tray in the housing (derived.art reset)" },
   "founder": { "rect": [360, 240, 304, 312], "component": "specimen", "focal": true, "axis": 512, "feet": 536, "asset": "the founder's placeholder at 304×312 (the stylised rig pass)", "frost": "the parts of every unread chapter's traits frosted, never a guess", "frostNothingRead": "the frost follows the founder's own outline: the species' shape and its locked parts read through the frost, as Pods' halo figure does; every look is frosted. (art director, 2026-10-09 13:47)" },
-  "chamberFront": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "frame", "floor": [312, 536, 400, 16], "note": "the glass's edge and highlight and the floor, drawn over the founder" },
+  "chamberFront": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "frame", "floor": [312, 536, 400, 16], "note": "the tray's rim and its floor, drawn over the founder; no glass edge, no highlight", "placeholder": "stale by the art reset: the glass front" },
   "pod": { "rect": [88, 232, 144, 176], "component": "specimen", "focal": false, "axis": 160, "feet": 408, "state": "identified", "classes": "pods.json classes.pod: large 144×176, medium 120×152, small 104×128 by the species' size class, bottom-centred on (axis, feet)" },
   "cradle": { "rect": [48, 344, 224, 96], "component": "specimen", "part": "cradle", "slice": "room-cradle", "under": "pod" },
   "cradleFront": { "rect": [48, 344, 224, 96], "component": "specimen", "part": "cradleFront", "slice": "room-cradle-front", "over": "pod", "note": "the dish's near lip over the pod's foot, as on Pods" },
   "origin": { "rect": [40, 456, 240, 40], "component": "text", "px": 16, "weight": 400, "lines": 2, "pitch": 20, "align": "centre", "centre": 160, "noDigits": true, "text": "the origin sentence of Pods' overview (pods.json regions.overview.origin)" },
-  "dome": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "inside", "floor": 296, "note": "the incubation chamber, empty: the dome's back and its base; Create's own small dome (art director, 2026-10-09 13:28: was 776, 120, 176, 208)" },
+  "dome": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "inside", "floor": 296, "note": "the Incubator's sheltered chamber, small and empty: its back and its housing; Create's own small chamber (art director, 2026-10-09 13:28: was 776, 120, 176, 208)", "placeholder": "stale by the art reset: a small bell jar on an enamel base; the master is the Incubator's chamber with one hooded window, small (derived.art reset)" },
   "bud": { "rect": [832, 216, 64, 80], "component": "specimen", "focal": false, "when": "busy: a bud is growing, its glow in the dome", "asset": "bud-small-64x80", "foot": [864, 296] },
-  "domeFront": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "frame", "note": "the dome's glass edge and highlight, drawn over the bud and the travelling pod" },
+  "domeFront": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "frame", "note": "the small chamber's window front, drawn over the bud and the travelling pod", "placeholder": "stale by the art reset: the glass front with its highlight" },
   "leaves": {
    "rect": [768, 336, 192, 48], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 12, "perRow": 16, "rowPitch": 16, "rows": 3, "max": 48,
    "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" },
@@ -75,7 +79,7 @@
    "props": "{ total, full: 0, rows: 0 }"
   },
   "stamp": { "rect": [804, 400, 120, 120], "component": "stampLabel", "offGrid": "x 804 centres the 120 label on the right column's axis (864), 4 px off the grid, as Home's juvenile and the medium pod are", "live": "the stamp of the read and changed chapters, redrawn as the rolls change; nothingRead: no chapter filled", "fromFocal": 140 },
-  "code": { "rect": [776, 525, 176, 25], "component": "text", "offGrid": "the line box 525 to 545 keeps 8 px from the baseline (541) to the rule (549) (art director, 2026-10-09 13:28)", "px": 16, "weight": 400, "align": "centre", "centre": 864, "lineTop": 525, "baseline": 541, "rule": { "y": 549, "h": 1, "x": [776, 952] }, "before": "blank: the rule alone", "after": "the code, printed at Grow (events.grow)" },
+  "code": { "rect": [776, 525, 176, 25], "component": "text", "offGrid": "the line box 525 to 545 keeps 8 px from the baseline (541) to the rule (549) (art director, 2026-10-09 13:28)", "px": 16, "weight": 400, "align": "centre", "centre": 864, "lineTop": 525, "baseline": 541, "rule": { "y": 549, "h": 1, "x": [776, 952] }, "before": "blank: the rule alone", "after": "the code, printed at Grow (events.grow): three groups with spaces, \"K7Q 4MX P2D\"; the widest 152 px" },
   "travel": { "rect": [88, 120, 848, 288], "component": "specimen", "part": "travel", "inStates": ["grow"], "from": [88, 232, 144, 176], "to": [792, 120, 144, 176], "path": "a straight line, whole pixels, eased in and out", "foot": { "from": [160, 408], "to": [864, 296] }, "layer": "drawn after the dome's back and before the chamber, the roll and the dome's front: it passes behind the specimen chamber and ends inside the dome" }
  },
  "drawOrder": ["bench", "rail", "cradle", "dome", "bud", "pod", "cradleFront", "origin", "chamber", "founder", "chamberFront", "roll", "traitLine", "domeFront", "leaves", "stamp", "code", "focus ring", "frame (top bar, bottom line)", "message plate"],
@@ -87,7 +91,7 @@
     { "at": 0, "ms": 300, "do": "the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
     { "at": 300, "do": "the code appears on the rule (a cut)" },
     { "at": 300, "ms": 600, "do": "the pod travels from its box to the dome (regions.travel); the dish stays, empty" },
-    { "at": 900, "ms": 180, "do": "the screen transition (16-level Bayer dither) to the Incubator, growing (incubator.json)" }
+    { "at": 900, "ms": 180, "do": "the screen transition (16-level Bayer dither) to the Incubator, growing (incubator.json): a jump, so ← there reads Home (derived.grow is a jump)" }
    ]
   }
  },
@@ -106,9 +110,9 @@
    "down": "shape: step:down, the next look, wrapping; a single: nothing. nothingRead: nothing",
    "confirm": "Grow it, exactly as the bottom line says; no ✓ cap when blocked (busy, no bay, clash): nothing happens; a dimmed cap when short: a message plate names what is short (frame.json navigation.keys.confirm)",
    "back": "the pod's overview with the ring on the pod, nothing spent, the choices dropped (frame.json navigation.screens.create)",
-   "room": "drops the unpaid choices; coming back starts fresh (frame.json navigation.leaving.create)"
+   "room": "a coloured key drops the unpaid choices; coming back starts fresh (frame.json navigation.leaving.create); during the grow event it waits until the Incubator shows (derived.keys during the grow event)"
   },
-  "held": "while events.grow holds, the face moves no focus and sends no intent",
+  "held": "while events.grow holds, the face moves no focus and sends no intent; a coloured key pressed meanwhile acts when the Incubator shows",
   "vectors": [
    { "state": "shape", "from": "roll", "key": "up", "intent": "step:up", "to": "roll" },
    { "state": "shape", "from": "roll", "key": "down", "intent": "step:down", "to": "roll" },
@@ -134,10 +138,10 @@
   "rail": { "changed": "bone", "clash": "red", "note": "the tabs' fills, words and pips are frame.json rail.states" },
   "roll": { "ground": "ground", "notch": "bone", "clashEdge": "red" },
   "traitLine": { "line": "bone", "clash": "red", "tagFill": "panel", "tagEdge": "hairline", "tagWord": "bone" },
-  "chamber": { "back": "ground", "glassEdge": "frostD", "glassLight": "frost", "floor": "enamel", "floorEdge": "bevel" },
+  "chamber": { "back": "panel", "rim": "enamel", "floor": "enamel", "floorEdge": "bevel", "note": "art reset: a work tray in the housing; no glass edge, no highlight (was back ground, glass edge frostD, highlight frost)" },
   "founder": { "frost": "frostS", "frostTexture": "frostD" },
   "origin": "mist",
-  "dome": { "back": "ground", "base": "enamel", "glassEdge": "frostD", "glassLight": "frost" },
+  "dome": { "back": "ground", "housing": "enamel", "windowEdge": "hairline", "note": "art reset: the Incubator's chamber, small: a window set in the sand housing, no highlight (was base enamel, glass edge frostD, highlight frost)" },
   "bud": { "bean": "peach", "light": "cream", "edge": "rust" },
   "leaves": { "empty": "bevel", "full": "sage", "vein": "sageD" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
@@ -162,5 +166,22 @@
   "founder": "{a/an} {Species}, fully known",
   "notices": { "busy": "a bud is already growing", "noBay": "no bay free", "clash": "these looks clash", "short": "needs more {icons} (Pods' needMore, pods.json strings)" },
   "by": "copywriter, 2026-10-09 13:27"
+ },
+ "placeholders": {
+  "rule": "every master this screen names, with its id, size and region. Stale: made or specified for the look the art reset replaced; it stays its region's labelled placeholder, drawn at its size, until the art director's master lands. Carried: unaffected by the reset. No art is made or commissioned by this list",
+  "stale": [
+   { "id": "room-bench-stage-create (until it lands, room-bench-stage-collection, also stale)", "size": [1024, 522], "region": "bench", "why": "the dark glass research bench of the old look; becomes the work tray in the device's housing" },
+   { "id": "the specimen chamber, back and front, its floor 400×16", "size": [400, 320], "region": "chamber, chamberFront", "why": "glass with frost edges and a highlight; becomes a work tray, panel back, enamel rim" },
+   { "id": "room-cradle, room-cradle-front (Pods' signed dish)", "size": [224, 96], "region": "cradle, cradleFront", "why": "the glass dish under a cool cone, clinical; the room set's repaint replaces it" },
+   { "id": "Create's small dome, back and front", "size": [176, 224], "region": "dome, domeFront", "why": "a small bell jar on an enamel base; becomes the Incubator's chamber with one hooded window, small" },
+   { "id": "bud-small-64x80", "size": [64, 80], "region": "bud", "why": "the busy bud, re-judged with the Incubator's buds against the concept board's bean on moss" },
+   { "id": "leaf-small-empty-8x12, leaf-small-full-8x12", "size": [8, 12], "region": "leaves", "why": "the Incubator's leaf at the small size, re-judged with it; Home's module uses the same pictures" }
+  ],
+  "carried": [
+   { "id": "the founder's placeholder (the stylised rig pass)", "size": [304, 312], "region": "founder", "why": "creature art" },
+   { "id": "roll-{species}-{trait}-{look}-128x72", "size": [128, 72], "region": "roll", "why": "cut from the mibi paintings" },
+   { "id": "the pod sprites by size class", "size": [144, 176], "region": "pod", "why": "the pod renderer's; checked against the concept board's Pods frame with Pods, not here" },
+   { "id": "pip-changed-6x6, pip-clash-6x6, plate-name-88x24, the notches 12×6, the stamp label", "size": null, "region": "rail, traitLine, roll, stamp", "why": "the kit's chrome" }
+  ]
  }
 }

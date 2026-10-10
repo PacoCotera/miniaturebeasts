@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator, the hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon, input held 2780 ms, then Habitat's meet, 1024×600 at 1×, measured. Layout only, no art.</title>
+<title>Incubator, the hatch at 1500 ms: the chamber window lifted out of sight, the bud gone, the juvenile on the base, the ribbon, input held 2780 ms, then one mibi up close, in the meet, 1024×600 at 1×, measured. Layout only, no art.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
@@ -24,18 +24,18 @@
 <rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
 <text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
 <text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the glass</text>
+<text x="844" y="334" font-size="9" fill="#777">176 from the window</text>
 <rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
+<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
 <text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
 <line x1="668" y1="300" x2="668" y2="96" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="674" y="200" font-size="9" fill="#2b6cb0">glass lifts 384 px</text>
+<text x="674" y="200" font-size="9" fill="#2b6cb0">window lifts 384 px</text>
 <text x="674" y="211" font-size="9" fill="#2b6cb0">0–600 ms, clipped</text>
 <text x="674" y="222" font-size="9" fill="#2b6cb0">at y 88: out of sight</text>
 <rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
 <text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
 <rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · enamel</text>
+<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · placeholder</text>
 <rect x="448.5" y="496.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
 <rect x="352.5" y="547.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
 <text x="672" y="544" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
@@ -56,16 +56,16 @@
 <text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms,</text>
 <text x="24" y="109" font-size="10" fill="#2b6cb0">a held state):</text>
 <text x="24" y="122" font-size="10" fill="#2b6cb0">0 leaves and plaque word go;</text>
-<text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the glass lifts;</text>
+<text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the window lifts;</text>
 <text x="24" y="148" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
 <text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands</text>
 <text x="24" y="174" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>
 <text x="24" y="187" font-size="10" fill="#2b6cb0">1200 the ribbon;</text>
 <text x="24" y="200" font-size="10" fill="#2b6cb0">1400, 1800 it steps 4 px;</text>
 <text x="24" y="213" font-size="10" fill="#2b6cb0">2600 dither (180 ms) to</text>
-<text x="24" y="226" font-size="10" fill="#2b6cb0">  Habitat, the meet:</text>
-<text x="24" y="239" font-size="10" fill="#2b6cb0">  the same 304×312 box,</text>
-<text x="24" y="252" font-size="10" fill="#2b6cb0">  ← Home.</text>
+<text x="24" y="226" font-size="10" fill="#2b6cb0">  one mibi up close, the meet:</text>
+<text x="24" y="239" font-size="10" fill="#2b6cb0">  304×312 at 144,80, the ring on it,</text>
+<text x="24" y="252" font-size="10" fill="#2b6cb0">  ← Vivarium.</text>
 <line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
@@ -75,23 +75,25 @@
 <line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
-<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
 <line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
 <line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
 <text x="16" y="587" font-size="9" fill="#999">(no ✓ cap)</text>
 <text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">its painting is on its way</text>
-<circle cx="962.4" cy="582" r="8" fill="#5d5974"/>
-<text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
 </svg>
