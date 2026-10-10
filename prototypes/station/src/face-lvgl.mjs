@@ -2,11 +2,9 @@
 // from the page's animation frame, copies the rectangles LVGL redrew onto the screen canvas, and speaks the bridge's wire format with the face: JSON messages in through a shared buffer
 // (send), JSON messages out by polling (poll). The same messages cross a Unix socket on the Pi. The rules, the views and the specs stay in JavaScript; the face holds no game state.
 //   messages in:  hello, palette, spec, asset, props, event, key        messages out: ready, focus, intent, done, log, error
-// Until the words replace it (L2.0 B3 and B4), the page's scene nodes still reach the face by `scene()`, the adapter of the node path (the closed set: rect, text, sprite, nineSlice, clip,
-// composed), tagged with a layer and a region; it is deleted with the last JavaScript drawing of Pods.
+// The face is driven by words only: there is no node path. Tests that need to place primitives by hand use face/tests/node-scene.mjs.
 export const LV_KEYS = { up: 17, down: 18, right: 19, left: 20, confirm: 10, back: 27, home: 2, research: 114, library: 108, habitat: 98, dock: 100 };
 export const CONTRACT = 1;
-const LAYERS = { chrome: 0, art: 1, painted: 2, type: 3 };
 
 export async function bootFace(base = new URL("../../face/dist/", import.meta.url), { test = false } = {}) {
   const t0 = performance.now();
@@ -62,57 +60,23 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       if (!victim) throw new Error(`the face's picture table is full (${limit} pictures all in this scene); ${id} cannot be added`);
       send({ t: "asset", id: victim[0], drop: true }); handles.delete(victim[0]);
     }
-    if (send({ t: "asset", id, w: pic.w, h: pic.h, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(pic.tile ? { tile: pic.tile } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
+    if (pic.policy !== "art" && pic.policy !== "painted") throw new Error(`the picture ${id} has no layer policy: the host sends "art" or "painted" with every picture (host.mjs picture())`);   // the layer a picture shows on is the host's (ui/asset-policy.mjs); the transport never guesses it
+    const status = pic.status === "master" ? "master" : "placeholder", policy = pic.policy;
+    if (send({ t: "asset", id, w: pic.w, h: pic.h, policy, status, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(pic.tile ? { tile: pic.tile } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
     const h = M._face_last_asset(), p = M._face_asset_pixels(h), d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
     handles.set(id, { h, used: sceneNo }); return h;
   }
   // The pictures the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds (lvgl-switch.md §2.4). `pictures`: [{ id, w, h }]; `picture(id)` gives its pixels.
   function pin(pictures, picture) { for (const p of pictures) { handleOf(p.id, picture); handles.get(p.id).pinned = true; } }
-  // ---- the adapter of the node path ----
-  const KIND = { rect: 1, text: 2, sprite: 3, nine: 4, clip: 5, composed: 6 };
-  // The layer a node is checked on: its own, else by kind (text on the type layer, pictures on the art layer, the rest chrome); env.layer(node) may say better (the painted layer).
-  const layerOf = (n, env) => LAYERS[n.layer] ?? LAYERS[env.layer?.(n)] ?? (n.kind === "text" ? 3 : n.kind === "sprite" ? 1 : 0);
-  // One frame's nodes in draw order. env: { rgb(name) -> [r, g, b], cap(px), picture(assetId) -> { w, h, data (RGBA) }, slice(assetId) -> [l, t, r, b] | null, tile(assetId) -> px (0: the whole strip), layer?(node) }.
-  // A frame identical to the last one is not sent again. Returns the nodes the face cannot draw (a kind outside the closed set, a picture it lacks).
-  let lastKey = null;
-  const keyOf = (nodes) => { let h = 2166136261; const mix = (v) => { for (const b of enc.encode(String(v))) { h ^= b; h = Math.imul(h, 16777619); } h ^= 0xff; h = Math.imul(h, 16777619); }; for (const n of nodes) { mix(n.id); mix(n.kind); mix(n.rect); mix(n.colour); mix(n.text); mix(n.px); mix(n.asset); mix(n.ops); mix(n.layer); mix(n.region); if (n.children) for (const c of n.children) { mix(c.id); mix(c.rect); mix(c.asset); } } return h; };
-  function scene(nodes, env) {
-    const key = keyOf(nodes); if (key === lastKey) return []; sceneNo++;   // lastKey is set only once the scene is whole: a throw leaves it unset, so the next identical scene is sent again
-    const left = [], hex = (n) => { const [r, g, b] = env.rgb(n); return (r << 16) | (g << 8) | b; };
-    M._face_scene_begin();
-    const node = (id, kind, x, y, w, h, rgb, a, b, n) => { setRegion(n.region ?? n.id); M._face_node_tag(layerOf(n, env)); M._face_node(fnv(id), kind, x, y, w, h, rgb, a, b); };
-    try {
-    for (const n of nodes) {
-      const [x, y, w, h] = n.rect;
-      if (n.kind === "rect") node(n.id, KIND.rect, x, y, w, h, hex(n.colour), 0, 0, n);
-      else if (n.kind === "text") { setText(n.text); node(n.id, KIND.text, x, y, w, h, hex(n.colour), n.px, env.cap(n.px), n); }
-      else if (n.kind === "sprite") { const hd = handleOf(n.asset, env.picture); if (hd < 0) left.push(n); else node(n.id, KIND.sprite, x, y, w, h, 0, hd, 0, { ...n, layer: n.layer ?? env.layer?.(n) ?? "art" }); }
-      else if (n.kind === "clip") {   // children shown only inside the clip: the face cuts them (a clip is a real primitive); a child the face cannot draw is left to the caller
-        const kids = []; for (const c of n.children || []) { if (c.kind === "sprite") { const hd = handleOf(c.asset, env.picture); if (hd < 0) left.push(c); else kids.push([c, hd]); } else left.push(c); }
-        node(n.id, KIND.clip, x, y, w, h, 0, kids.length, 0, n);
-        for (const [c, hd] of kids) { const [cx, cy, cw, ch] = c.rect; node(c.id, KIND.sprite, cx, cy, cw, ch, 0, hd, 0, { ...c, region: n.region ?? n.id }); }
-      }
-      else if (n.kind === "composed") { setOps(JSON.stringify(n.ops)); node(n.id, KIND.composed, x, y, w, h, 0, 0, 0, n); }
-      else if (n.kind === "nineSlice") {   // the insets [l, t, r, b] packed a byte each, the edge tile in b
-        const hd = handleOf(n.asset, env.picture), sl = env.slice(n.asset);
-        if (hd < 0 || !sl || sl.some((v) => v < 0 || v > 255)) left.push(n); else node(n.id, KIND.nine, x, y, w, h, ((sl[0] << 24) | (sl[1] << 16) | (sl[2] << 8) | sl[3]) >>> 0, hd, env.tile(n.asset), n);
-      }
-      else left.push(n);
-    }
-    } catch (e) { M._face_scene_end(); throw e; }
-    lastKey = key;
-    M._face_scene_end(); return left;
-  }
   // The props of a screen (lvgl-switch.md §2.1): hashed without their seq, so an unchanged screen is not sent again; seq is the transport's, one more than the last sent, never the caller's.
   let seq = 0, lastProps = null;
   function props(p) {
     const { seq: _ignored, ...body } = p, key = JSON.stringify(body); if (key === lastProps) return 0;
     const rc = send({ t: "props", seq: seq + 1, ...body }); if (rc === 0) { seq++; lastProps = key; } return rc;
   }
-  const setBackground = (rgb) => M._face_background(rgb);
   return {
-    M, version, ready, measure, scene, setBackground, objects: () => M._face_object_count(), refused: () => M._face_node_refused(),
+    M, version, ready, measure, objects: () => M._face_object_count(), refused: () => M._face_node_refused(), beginScene: () => ++sceneNo,
     size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },
     present, forceFull: () => { first = true; },

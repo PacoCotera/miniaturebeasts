@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Station Field Test</title>
-<meta name="description" content="Miniature Beasts Station build (M1 Read): a simulated 1024×600 Station screen on the real species frames, sharing its save with the Companion page. Dock, open the bay, identify a pod, read its chapters, compare and return.">
+<meta name="description" content="Miniature Beasts Station build (M1 Read): a simulated 1024×600 Station screen on the real species frames, sharing its save with the Companion page. Dock, open the crates, identify a pod, read its chapters, compare and return.">
 <style>
 /* ===== The device's type is not a web font: the Station draws Inter from glyph atlases baked from the OFL sources in ../ui/fonts/ (see ../ui/tools/bake-type.mjs); the surround uses the system's fonts. ===== */
 /* ===== Surround tokens (light / dark). The device screen never uses these; the surround uses the system's fonts. ===== */
@@ -163,7 +163,7 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
             <button class="k home" data-key="home" aria-label="Home">Home</button>
             <button class="k research" data-key="research" aria-label="Research">Research</button>
             <button class="k library" data-key="library" aria-label="Library">Library</button>
-            <button class="k habitat" data-key="habitat" aria-label="Habitat">Habitat</button>
+            <button class="k habitat" data-key="habitat" aria-label="Vivarium">Vivarium</button>
           </div>
           <div class="act">
             <div class="key"><button class="k back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button><span class="eng">←</span></div>
@@ -194,28 +194,28 @@ kbd{font:500 12px/1 var(--font-ui); background:var(--chip); border:1px solid var
 
   <aside class="panel" aria-label="Playtest notes">
     <h1>Station Field Test</h1>
-    <p class="lede">The Station build, milestone 1 (Read): a simulated 1024×600 Station screen on the real species frames. It shares one save with the Companion page in this browser.</p>
+    <p class="lede">The Station build (Read): a simulated 1024×600 Station screen on the real species frames. It shares one save with the Companion page in this browser.</p>
     <div class="pair">Explore on the <a href="../exploration/">Companion page</a>, Head home, then dock here.</div>
     <details id="howTo">
       <summary>How to play</summary>
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or the pad: move the focus ring between things in the picture. On Pods: <kbd>↑</kbd><kbd>↓</kbd> walk the wells, <kbd>→</kbd> to the pod, <kbd>↑</kbd> to its chapters, <kbd>←</kbd><kbd>→</kbd> among them.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange key: <b>Confirm</b>. It does exactly what the bottom line names after ✓, with its price.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view (on Home it only says so). The lamp on Home's bench rests the screen: the vivarium fills it.</li>
-        <li>The four middle keys switch views and never spend: <kbd>H</kbd> Home, <kbd>R</kbd> Research (the pods), <kbd>L</kbd> Library, <kbd>B</kbd> Habitat.</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key: back one view, to the screen above; on Home nothing happens.</li>
+        <li>The four middle keys switch views and never spend: <kbd>H</kbd> Home, <kbd>R</kbd> Research (the pods), <kbd>L</kbd> Library, <kbd>B</kbd> Vivarium.</li>
         <li><kbd>D</kbd> or the Caddy's key: <b>Dock</b> or <b>Lift</b> the Companion (prototype only; it is not a Station key).</li>
-        <li>After a minute without a press the vivarium plays alone. Any press wakes it and does what it says.</li>
+        <li>After a minute without a press the screen goes idle; any press wakes it and does nothing else.</li>
       </ul>
     </details>
     <details id="whatTry">
       <summary>What to try</summary>
       <ol>
         <li>On the <a href="../exploration/">Companion page</a>, explore and <b>Head home</b>: the hold is sealed into a crate in the Companion's bay (three at most), and the world turns.</li>
-        <li>Here, press <kbd>D</kbd> to dock. The crates slide into the bay door; ✓ <b>Open the bay</b> plays one arrival per crate.</li>
+        <li>Here, press <kbd>D</kbd> to dock, then <b>Open the crates</b> in the developer panel.</li>
         <li><kbd>R</kbd> Research: ✓ <b>Identify</b> a pod (1 Energy; the first ever is free). The seal breaks, the species shows, its chapters rise as a rail and its stamp appears on the label with every chapter as hairlines.</li>
         <li>↑ to a chapter, ✓ <b>Read</b> it (1 Data a trait; half, rounded up, once that chapter was read on an earlier pod of the species; the first read ever is free). Its page shows each trait as a picture of this pod's mibi: shows X · hides Y, only X, asleep, or breed to change. The stamp's sector fills.</li>
         <li>A star on a chapter is a <b>glint</b>: this pod carries a look the species has not shown yet. ✓ on another identified pod of the same species <b>compares</b> the two, free. The hatch under the wells <b>returns</b> a pod to the wild for +1 Essence (✓ twice).</li>
-        <li>Create, Grow and the incubator come with the next build (M2). Without a Companion world, the developer panel under the device seeds a crate: dock (<kbd>D</kbd>) and open the bay at Home.</li>
+        <li>Create, Grow and the incubator come with the next build (M2). Without a Companion world, the developer panel seeds a crate: dock (<kbd>D</kbd>), then <b>Open the crates</b> in the panel.</li>
       </ol>
     </details>
   </aside>

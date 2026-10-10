@@ -8,11 +8,12 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { bootFace, CONTRACT } from "../../station/src/face-lvgl.mjs";
+import { installScene } from "./node-scene.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const base = pathToFileURL(dist + "/");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-const boot = async (opts) => { const f = await bootFace(base, opts); f.send({ t: "palette", name: "station", colours: palette }); return f; };
+const boot = async (opts) => { const f = installScene(await bootFace(base, opts)); f.send({ t: "palette", name: "station", colours: palette }); return f; };
 const cstr = (M, s) => { const b = new TextEncoder().encode(s + "\0"), p = M._malloc(b.length); M.HEAPU8.set(b, p); return p; };
 const rgbOf = (name) => { const h = palette.find(([n]) => n === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const env = { rgb: rgbOf, cap: (px) => Math.round(px * 0.7), picture: () => null, slice: () => null, tile: () => 0 };
@@ -79,15 +80,24 @@ test("a ring form the loader does not know is refused: only round, feet, tab, a 
   for (const ring of ["round", "feet", "tab", { circle: { outside: 0 } }, { circle: { radius: 84, centre: [96, 112] } }]) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(ring) + ": " + f.errors().join()); }
 });
 
+test("an asset carries its layer policy and status, and is refused without a valid pair; a sprite takes its layer from its asset, a rect from its word", { skip }, async () => {
+  const f = await boot(), M = f.M;
+  for (const [what, bad] of [["no policy", { status: "master" }], ["a policy of nowhere", { policy: "gilt", status: "master" }], ["no status", { policy: "art" }], ["a status of nothing", { policy: "art", status: "held" }]]) {
+    assert.equal(f.send({ t: "asset", id: "q", w: 2, h: 2, src: "heap", ...bad }), -1, what); assert.match(f.errors()[0], /policy is|status is/, what);
+  }
+  assert.equal(f.send({ t: "asset", id: "q", w: 2, h: 2, src: "heap", policy: "painted", status: "master" }), 0);
+  assert.equal(f.send({ t: "asset", id: "r", w: 2, h: 2, src: "heap", policy: "art", status: "placeholder" }), 0);
+});
+
 test("pictures: an asset message makes a buffer for its id, the same id keeps its slot, a drop frees it, bad sizes and src file are refused, and the table holds 256", { skip }, async () => {
   const f = await boot(), M = f.M;
-  assert.equal(f.send({ t: "asset", id: "a", w: 4, h: 4, src: "heap" }), 0); const h = M._face_last_asset(); assert.ok(h >= 0 && M._face_asset_pixels(h) > 0);
-  assert.equal(f.send({ t: "asset", id: "a", w: 8, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "the same id: the same slot");
-  assert.equal(f.send({ t: "asset", id: "b", w: 0, h: 4 }), -1); assert.match(f.errors()[0], /is refused/); assert.equal(f.send({ t: "asset", id: "b", w: 4, h: 4, src: "file", path: "/x" }), -1); assert.match(f.errors()[0], /src "heap" only/);
-  assert.equal(f.send({ t: "asset", w: 4, h: 4 }), -1); assert.match(f.errors()[0], /id is required/);
-  assert.equal(f.send({ t: "asset", id: "a", drop: true }), 0); assert.equal(f.send({ t: "asset", id: "c", w: 2, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "a dropped slot is reused");
-  for (let i = 0; i < 255; i++) assert.equal(f.send({ t: "asset", id: "p" + i, w: 1, h: 1 }), 0);
-  assert.equal(f.send({ t: "asset", id: "one-too-many", w: 1, h: 1 }), -1); assert.match(f.errors()[0], /picture table holds 256/);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "a", w: 4, h: 4, src: "heap" }), 0); const h = M._face_last_asset(); assert.ok(h >= 0 && M._face_asset_pixels(h) > 0);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "a", w: 8, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "the same id: the same slot");
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "b", w: 0, h: 4 }), -1); assert.match(f.errors()[0], /is refused/); assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "b", w: 4, h: 4, src: "file", path: "/x" }), -1); assert.match(f.errors()[0], /src "heap" only/);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", w: 4, h: 4 }), -1); assert.match(f.errors()[0], /id is required/);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "a", drop: true }), 0); assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "c", w: 2, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "a dropped slot is reused");
+  for (let i = 0; i < 255; i++) assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "p" + i, w: 1, h: 1 }), 0);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "one-too-many", w: 1, h: 1 }), -1); assert.match(f.errors()[0], /picture table holds 256/);
 });
 
 test("props: the screen's spec must be loaded, seq may not go back, the budget is 32 KiB, regions is an object; events and keys are validated", { skip }, async () => {
@@ -143,10 +153,10 @@ test("the palette passes: chrome alone and chrome with art have no pixel off the
   const f = await boot({ test: true }); frames(f, 2);
   const stray = new Uint8ClampedArray(8 * 8 * 4); for (let i = 0; i < 64; i++) stray.set([1, 2, 3, 255], i * 4);   // #010203 is in no palette
   const e = { ...env, picture: () => ({ w: 8, h: 8, data: stray }) };
-  f.setBackground(0x162a37);
+  f.setBackground(parseInt(palette.find(([n]) => n === "ground")[1].slice(1), 16));
   f.scene([{ id: "r", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, { id: "s", kind: "sprite", rect: [300, 300, 8, 8], asset: "x", layer: "painted" }, { id: "t", kind: "text", rect: [40, 100, 0, 0], colour: "ice", text: "Type", px: 16 }], e); frames(f);
   f.pass(1); assert.equal(f.offPalette(), 0, "chrome only"); f.pass(2); assert.equal(f.offPalette(), 0, "chrome and art"); f.pass(3); assert.equal(f.offPalette() >= 64, true, "the painted layer's stray colour appears in the full pass");
-  f.scene([{ id: "r", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, { id: "s", kind: "sprite", rect: [300, 300, 8, 8], asset: "x", layer: "art" }], e); frames(f); f.pass(1); assert.equal(f.offPalette(), 0); f.pass(2); assert.ok(f.offPalette() >= 64, "an art-layer picture off the palette is caught by the second pass");
+  f.scene([{ id: "r", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, { id: "s", kind: "sprite", rect: [300, 300, 8, 8], asset: "y", layer: "art" }], e); frames(f); f.pass(1); assert.equal(f.offPalette(), 0); f.pass(2); assert.ok(f.offPalette() >= 64, "an art-layer picture off the palette is caught by the second pass");
 });
 
 test("the object table holds 1,024; a 1,025th node is refused and counted", { skip }, async () => {
@@ -254,4 +264,14 @@ test("composed pictures take thousands of ops: the ops have a buffer of their ow
   assert.deepEqual(f.pixel(5, 3), rgbOf("ice")); assert.deepEqual(f.pixel(199, 14), rgbOf("ice"));
   const big = []; for (let i = 0; i < 6000; i++) big.push(["dot", i % 100, 0, "ice"]);
   f.scene([{ id: "wires", kind: "composed", rect: [0, 0, 200, 16], ops: big }], env); frames(f); assert.equal(f.refused(), 0, "6000 ops, 75 KB");
+});
+
+test("a node moved into a removed node's place keeps its picture: a composed ring drawn after an earlier node was dropped is still drawn once new nodes arrive", { skip }, async () => {
+  const f = await boot(); frames(f, 2);
+  const ring = { id: "ring", kind: "composed", rect: [100, 100, 60, 40], ops: [["ring", "round", 0, 0, 60, 40, 2, 6, "focus"]] };
+  const bg = { id: "bg", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, a = { id: "a", kind: "rect", rect: [300, 300, 10, 10], colour: "ice" };
+  f.scene([bg, a, ring], env); frames(f); assert.deepEqual(f.pixel(100, 120), rgbOf("focus"), "the ring is drawn");
+  f.scene([bg, ring], env); frames(f);   // `a` goes; the last node (the ring) takes its place in the table
+  f.scene([bg, { id: "b", kind: "rect", rect: [90, 90, 80, 60], colour: "clay" }, ring, { id: "c", kind: "rect", rect: [420, 400, 10, 10], colour: "ice" }], env); frames(f);   // new nodes reuse the table's end, and one is drawn under the ring so the ring is drawn again
+  assert.deepEqual(f.pixel(100, 120), rgbOf("focus"), "the ring is still drawn");
 });

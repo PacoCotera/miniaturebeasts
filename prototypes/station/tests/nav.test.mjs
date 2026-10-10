@@ -25,7 +25,7 @@ test("the tree: every screen's parent is in the tree, Home alone has none, and �
 
 test("the back words: Home none, the titles, the pod's label under the overview, and Back when the name will not fit", () => {
   assert.equal(N.backWord(nav, "home"), null, "no ← cap on Home");
-  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["habitat", "Home"], ["cross", "Habitat"]]) assert.equal(N.backWord(nav, p), w, p);
+  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["habitat", "Home"], ["cross", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
   for (const p of ["pods.chapter", "pods.compare", "create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
 });
 
@@ -77,5 +77,5 @@ test("the Habitat pad with no mibi, the bench and the pod line are wired as the 
   assert.match(src("screens/habitat.mjs"), /if \(k in DIRS\) \{ if \(!m\) return;/, "with no mibi the pad does nothing");
   assert.match(src("screens/bench.mjs"), /b\.f = pr && pr\.shield < pr\.smax \? 0 : 1/, "the bench starts on the switch when the plates have no action");
   assert.match(src("views/pods.mjs"), /"Open " \+ railWord\(first, spec\)/, "an unread pod's line names the chapter ✓ opens");
-  assert.match(src("main.mjs"), /if \(k !== "dock"\) return;/, "Dock on Idle wakes and still acts");
+  assert.match(src("main.mjs"), /const wasIdle = UI\.idle; if \(wasIdle\) \{ UI\.idle = false;.*frameIntents\.dock\(H, wasIdle\)/, "Dock on Idle wakes and still acts");
 });

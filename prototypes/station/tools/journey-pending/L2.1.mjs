@@ -1,10 +1,11 @@
-// The field guide's journey steps, PENDING until the guide is built on the LVGL face (lvgl-switch.md §4 L2.1). They were written for the JavaScript face on the frozen `field-guide` branch (5927d91d)
-// and are kept here as they ran there: each step is `run({ page, press, ui, line, expect, frameShot })` with the journey's own helpers. journey.mjs imports `pending` and prints the list; it runs
+// The field guide's journey steps, PENDING until the guide is built on the LVGL face (lvgl-switch.md §4 L2.1; this file is journey-pending/L2.1.mjs). They were written for the JavaScript face on the frozen `field-guide` branch (5927d91d)
+// and are kept here as they ran there: each step is `run({ page, press, ui, line, expect, frameShot })` with the journey's own helpers. journey.mjs imports `steps` and prints the list; it runs
 // none of them. At L2.1 the steps are re-pointed at the face (the same focused-target sequence, intents and save hash as the gate's check 5 asks) and moved into the journey proper.
 // "guide-captures" reads window.__st.lib (the Library module), a test hook the pending build adds with the face's own hooks.
 // The captures they name (guide-loika, guide-loika-species, book-belatz-face, book-belatz-portrait, guide-belatz-seven, guide-tuikis-eight, guide-tuikis-plate, guide-no-carriers) are produced
 // from the LVGL face only; their goldens are committed once the UI designer and the art director sign them.
-export const pending = [
+export const milestone = "L2.1 (Library: spread, Book and the field guide)";
+export const steps = [
   { id: "pods-figure-guide", what: "on an identified pod ▶ is the figure (✓ Open the guide, 'every …'); ✓ opens the species' guide, ← reads Library; the pod's pad is pod, figure, kin, hatch; Compare takes one more ▶",
     run: async ({ page, press, line, expect, frameShot, loika }) => {
       await press("right", 150); const fg = await page.evaluate(() => window.__st.UI.pods.focus.cur); let l = await line(); expect(fg === "figure" && l.ok === "Open the guide" && /^every /.test(l.subject), "▶ from the pod is the figure: " + JSON.stringify([fg, l]));

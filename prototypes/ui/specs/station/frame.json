@@ -6,7 +6,7 @@
  "grid": 8,
  "regions": {
   "top": { "rect": [0, 0, 1024, 40], "component": "topBar", "rule": "bottom" },
-  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "bench": "Research", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Habitat", "sitting": "Habitat" }, "fadeMs": 200 },
+  "title": { "rect": [16, 8, 232, 24], "turnPx": 16, "mark": [16, 8, 24, 24], "text": [48, 8, 200, 24], "px": 20, "weight": 500, "words": 1, "case": "title", "marks": { "home": "Home", "pods": "Research", "create": "Research", "incubator": "Research", "probe": "Research", "bench": "Research", "library": "Library", "book": "Library", "habitat": "Vivarium", "cross": "Vivarium", "sitting": "Vivarium" }, "fadeMs": 200 },
   "materials": { "rect": [384, 8, 256, 24], "centre": 512, "icon": 16, "gap": 4, "between": 24, "px": 16, "flashMs": 240 },
   "companion": { "rect": [816, 8, 64, 24], "right": 880, "lamp": 8, "px": 16, "glyph": [816, 8, 16, 24], "lampAt": [836, 16, 8, 8], "face": [856, 8, 24, 24], "words": 0, "liftMs": 200, "lift": 2 },
   "time": { "rect": [904, 8, 104, 24], "right": 1008, "mark": [16, 16], "gap": 4, "px": 16 },
@@ -15,10 +15,10 @@
   "line": { "rect": [0, 562, 1024, 38], "component": "bottomLine", "rule": "top" },
   "action": { "rect": [16, 570, 376, 24], "px": 16, "gap": 24, "capGap": 4, "cap": [16, 574, 16, 16], "capSize": [16, 16], "verbWords": 4, "backMoved": "regions.back" },
   "subject": { "rect": [408, 570, 208, 24], "centre": 512, "px": 16, "words": 6, "shrinks": true },
-  "need": { "rect": [624, 570, 280, 24], "right": 904, "px": 16, "lamp": [12, 12], "lampGap": 4, "words": 6, "slideMs": 200 },
-  "back": { "rect": [928, 570, 80, 24], "right": 1008, "px": 16, "cap": [16, 16], "capGap": 4, "words": 1, "gapBefore": 24 },
+  "need": { "rect": [624, 570, 272, 24], "right": 896, "px": 16, "lamp": [12, 12], "lampGap": 4, "words": 6, "slideMs": 200 },
+  "back": { "rect": [920, 570, 88, 24], "right": 1008, "px": 16, "cap": [16, 16], "capGap": 4, "words": 1, "gapBefore": 24 },
   "separators": { "x": [404, 620], "y0": 571, "y1": 591 },
-  "marks": { "room": { "home": "frame-room-home-24", "research": "frame-room-research-24", "library": "frame-room-library-24", "habitat": "frame-room-habitat-24", "size": [24, 24] }, "companion": { "docked": "frame-companion-solid-16x24", "away": "frame-companion-outline-16x24" }, "lamp8": { "docked": "frame-lamp-8-mint", "away": "frame-lamp-8-stone" }, "lamp12": "frame-lamp-12-amber", "sun": "frame-sun-16", "capShape": "disc", "capConfirm": "frame-cap-confirm-16", "capConfirmDim": "frame-cap-confirm-16-dim", "capBack": "frame-cap-back-16", "face": { "docked": "face-{mibi}-24", "away": "face-{mibi}-24-away", "empty": "face-24-empty" }, "faceNote": "a Station master painted at 24, never a scaled Companion face", "scale": "never" },
+  "marks": { "room": { "home": "frame-room-home-24", "research": "frame-room-research-24", "library": "frame-room-library-24", "habitat": "frame-room-habitat-24", "vivarium": "frame-room-habitat-24", "size": [24, 24] }, "companion": { "docked": "frame-companion-solid-16x24", "away": "frame-companion-outline-16x24" }, "lamp8": { "docked": "frame-lamp-8-mint", "away": "frame-lamp-8-stone" }, "lamp12": "frame-lamp-12-amber", "sun": "frame-sun-16", "capShape": "disc", "capConfirm": "frame-cap-confirm-16", "capConfirmDim": "frame-cap-confirm-16-dim", "capBack": "frame-cap-back-16", "face": { "docked": "face-{mibi}-24", "away": "face-{mibi}-24-away", "empty": "face-24-empty" }, "faceNote": "a Station master painted at 24, never a scaled Companion face", "scale": "never" },
   "rail": { "y": 40, "h": 40, "slant": 16, "full": 136, "compact": 56, "fullUpTo": 6, "max": 12, "pip": { "size": 6, "pitch": 8 }, "full_layout": { "emblem": [24, 24], "gap": 8, "labelY": 43, "labelCentre": 74, "pipsY": 71, "pipsCentre": 82, "pipsUnder": "label" }, "compact_layout": { "emblemY": 43, "emblemCentre": 34, "pipsY": 71, "pipsCentre": 42 }, "gap": 0, "grid": 8, "case": "every word capitalised", "states": { "unread": { "fill": "panel", "word": "mist", "pip": "mist" }, "read": { "fill": "panel", "word": "bone", "pip": "bone" }, "open": { "fill": "hairline", "word": "bone", "pip": "bone" }, "sealed": { "fill": "panel", "slats": "bar", "word": "mist", "pip": null }, "focused": { "same": "its state", "ring": "focus" }, "edge": "bevel" }, "glint": { "size": 12, "below": 2 }, "pods": { "x": "centred" }, "centred": { "on": 512, "snap": 8 }, "slideMs": 300, "note": "The shared chapter rail (station-layouts.md, The chapter rail): tabs are parallelograms hanging from the top bar's rule (y 40 to 80), both sides leaning 16 px right over the height, touching along their slants (pitch = width, run = sum of widths + 16). One to six chapters: full tabs of 136. Seven to twelve: compact tabs of 56 and the open chapter's tab full. Every bench screen centres the run on x 512, snapped down to the grid (Pods since its three states, 2026-10-09). A hanging tab does not lift." },
   "plate": { "centre": 512, "maxWidth": 640, "pad": 16, "line": 20, "lead": 16, "bottom": 550, "topOverFocal": 112, "showMs": 4000, "px": 16 }
  },
@@ -31,7 +31,7 @@
   "plate": "bar", "plateEdge": "sand", "plateShadow": "void", "plateText": "bone",
   "ring": "focus", "stageGround": "ground"
  },
- "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Habitat", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
+ "strings": { "turn": "{n}", "tick": "✓", "backArrow": "← ", "dot": " · ", "withdrawn": ["dot", "backArrow"], "titles": { "home": "Home", "pods": "Pods", "create": "Create", "incubator": "Incubator", "probe": "Probe", "library": "Library", "book": "Library", "habitat": "Vivarium", "cross": "Cross" , "bench": "Probe", "sitting": "Sitting" }, "note": "every word in the frame is a slot the copywriter fills to its zone's rule (station-layouts.md, The frame); the titles are today's words. Was: turn \"T{n}\", backArrow \"← \", dot \" · \" (the dot-joined parts go)" },
  "idle": {
   "spec": "design/style-guide/station-layouts.md#idle",
   "status": "Idle's structure, the idle timer and the line's order, with the details below; wireframe station-layouts/10-idle.svg",
@@ -111,10 +111,10 @@
    "library": {"parent": "home", "back": "Home"},
    "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
    "habitat": {"parent": "home", "back": "Home"},
-   "cross": {"parent": "habitat", "back": "Habitat"},
-   "sitting": {"parent": "habitat", "back": "Habitat", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to Habitat (sitting.json keys.back)"}
+   "cross": {"parent": "habitat", "back": "Vivarium"},
+   "sitting": {"parent": "habitat", "back": "Vivarium", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to the Vivarium (sitting.json keys.back)"}
   },
-  "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 60 px for its word reads \"Back\"",
+  "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
   "jumps": [
    {"from": "create", "action": "Grow it", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},

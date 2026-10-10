@@ -38,7 +38,7 @@ test("an empty rack: the collection of six empty places and nothing else on the 
   assert.equal(v.mode, "collection"); assert.equal(v.empty, true); assert.equal(v.specimen, null); assert.equal(v.rail, null); assert.equal(v.page, null); assert.equal(v.stamp, null);
   const empty = S.freshSt("w1", 1, 1000);
   assert.equal(v.line.subject, "the rack is empty"); assert.equal(v.line.need, spec.strings.explore);   // docked, the bay empty
-  assert.equal(view(model(empty, { crates: 2 })).line.need, "open the bay at Home");   // docked, crates in the bay
+  assert.equal(view(model(empty, { crates: 2 })).line.need, "open the crates first");   // docked, crates in the bay
   assert.equal(view(model(empty, { docked: false })).line.need, "dock the Companion for its crates");
   assert.equal(v.list.places.length, 6); assert.ok(v.list.places.every((w) => w.empty && !w.pod)); assert.equal(v.list.waiting, null);
   assert.deepEqual(v.targets, []);

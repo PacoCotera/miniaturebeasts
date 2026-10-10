@@ -127,8 +127,8 @@ complete in software.
   shared words. They port once the loop is stable.
 - **Screens.** A screen is a spec file, a pure view that gives props, and an
   intent table, drawn by the face's C words. Rules are pure functions. The
-  layout numbers have one home, the spec file. The JavaScript drawing layer is
-  deprecated and frozen.
+  layout numbers have one home, the spec file. The LVGL face is the only face;
+  nothing is drawn in JavaScript.
 
 The layers, contracts and milestones are
 [technical-architecture.md](proposals/technical-architecture.md); the face is

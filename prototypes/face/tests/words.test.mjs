@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import { withPolicy } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -22,7 +23,7 @@ const PICTURES = ["icon:energy:16", "icon:data:16", "icon:essence:16", "icon:cro
 async function setup() {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   assert.equal(f.send({ t: "palette", name: "station", colours: palette }), 0); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0); assert.equal(f.send({ t: "spec", screen: "pods", json: podsSpec }), 0);
-  for (const id of PICTURES) f.handleOf(id, picture);
+  for (const id of PICTURES) f.handleOf(id, withPolicy(picture));
   return f;
 }
 const frames = (f, n = 3) => { for (let i = 0; i < n; i++) f.frame((f.t = (f.t ?? 0) + 16)); };

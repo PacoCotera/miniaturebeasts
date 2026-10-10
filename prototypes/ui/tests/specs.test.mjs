@@ -474,7 +474,7 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   for (const s of steps) { is(s, "step tile"); assert.ok(inside(s, R.strip.rect)); } assert.deepEqual([steps[0][0], steps[2][0] + steps[2][2]], [32, 984], "the steps span Habitat's strip");
   assert.ok(R.steps.tile.thumb.at[0] + R.steps.tile.thumb.size[0] <= S.first[2] - 8, "the chosen picture inside its tile");
   // frame.json: the sitting under Habitat, ← Habitat, the Habitat mark
-  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Habitat", "Habitat", si.strings.title]);
+  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Vivarium", "Vivarium", si.strings.title]);
   assert.match(hab.bottomLine.portrait.held.opens, /sitting/, "Habitat's Portrait module opens the sitting");
   // focus: well formed; the vectors played on five cards (pose and place) and on the room (confirm)
   const g = si.focus.pose.graph, groups = new Set(Object.keys(g)); for (const k of STEP_KEYS) assert.ok(edgeOk(g.card[k], groups), "card." + k);
@@ -501,4 +501,10 @@ test("the not-built composition agrees with its wireframes: one line on the stag
   assert.equal(N.strings.line, N.strings.line.toLowerCase(), "the line in lower case, as the frame's notices; the title names the screen");
   assert.ok(N.strings.idle.startsWith("Idle "), "Idle has no title, so its line names it");
   assert.equal(N.strings.subject, "");
+});
+
+test("every title mark, lower-cased, has a room mark picture: the face looks the mark up by the title's word (frame.c), so a word without one draws an empty mark", () => {
+  const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")), rooms = frame.regions.marks.room;
+  for (const [screen, word] of Object.entries(frame.regions.title.marks)) assert.ok(typeof rooms[word.toLowerCase()] === "string", `the title mark of ${screen} is "${word}": marks.room has no "${word.toLowerCase()}"`);
+  assert.equal(rooms.vivarium, rooms.habitat, "the Vivarium's mark is the habitat's picture (the identifiers stay)");
 });
