@@ -54,8 +54,8 @@ AD_RECORDS = {
  "dome-small-front-176x224": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"),
  "nest-208x48": ('signed', 'art director, verdict (38affaae)', 'signed (art director) at 1x, opaque pixels: L* 30.1, sat 59; the moss bed, plump, its hollow visible, defringed (no pixel above R+G+B 480)'),
  "nest-front-208x48": ('signed', 'art director, verdict (38affaae)', "signed (art director) at 1x, opaque pixels: L* 25.5, sat 61; the bed's front rim fibres, defringed"),
- "dome-inside-ready-304x272": ('signed', "art director, verdict (Station lead's hand fixes)", "signed (art director) at 1x, opaque pixels: L* 68.7 against growing (dome-back) 65.8 and standby 60.3, so ready is the brightest; rebuilt from dome-back with cream #fff4a6 screened on (t 0.07), the lamp's 582 pixels untouched; 30 percent above L* 70 by design: the ready light the spec asks for, exempt from the glow rule"),
- "dome-front-304x272": ('signed', "art director, verdict (Station lead's hand fixes)", 'signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; trimmed to the radius-152 arch on (152, 154) with coverage edges (1020 px cleared), ink from row 2 (inkTop 2)'),
+ "dome-inside-ready-304x272": ('signed', "art director, verdict (Station lead's hand fixes)", "signed (art director) at 1x, opaque pixels: L* 68.6, sat 45, against growing (dome-back) 65.8 and standby 60.3, so ready is the brightest; rebuilt from dome-back with cream #fff4a6 screened on (t 0.07), the lamp's 582 pixels untouched; 30 percent above L* 70 by design: the ready light the spec asks for, exempt from the glow rule"),
+ "dome-front-304x272": ('signed', "art director, verdict (Station lead's hand fixes)", 'signed (art director) at 1x, opaque pixels: L* 53.8, key R-B 12, sat 17; trimmed to the radius-152 arch on (152, 154) with coverage edges (1020 px cleared), ink from row 2 (inkTop 2)'),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
