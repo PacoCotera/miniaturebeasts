@@ -61,7 +61,7 @@
   "incubator": {
    "rect": [688, 256, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
-   "leaves": { "at": [200, 8, 88, 72], "rect": [888, 264, 88, 72], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 11, "perRow": 8, "rowPitch": 14, "rows": 5, "max": 40, "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" }, "place": "leaf i at (888 + 11 × (i mod 8), 264 + 14 × floor(i / 8)): the last ink at x 973 and y 332", "count": "one a minute the bud will take, up to 40 (create.json regions.leaves.count)", "props": "{ total, full, rows }" },
+   "leaves": { "at": [200, 8, 88, 72], "rect": [888, 264, 88, 72], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 11, "perRow": 8, "rowPitch": 14, "rows": 5, "max": 40, "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" }, "place": "leaf i at (888 + 11 × (i mod 8), 264 + 14 × floor(i / 8)): the last ink at x 973 and y 332", "count": "one a minute the bud will take, up to 40 (create.json regions.leaves.count)", "filling": "the filling leaf (a partly grown leaf) is drawn from the Incubator slot, with its master; until then a leaf is full or empty", "props": "{ total, full, rows }" },
    "states": { "empty": "the chamber dark, no leaves, lamp off", "growing": "the bud in the chamber, its leaves filling, lamp well", "ready": "every leaf full, lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
   },
   "probe": {
