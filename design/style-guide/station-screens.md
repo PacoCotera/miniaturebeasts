@@ -339,7 +339,7 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 - **Light.** Warm key light from the top left in the window; cool on the card.
 - **Palette.** The vivarium's greens and earth; card chrome; the heart a small enamel heart in the house light. Nothing on the vivarium up close is amber.
 - **Type.** Inter: the name 20 px medium on its tag; the card's lines 16 px.
-- **Chrome.** The four zones, the price icon first, no dots: `✓ Greet Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock", or `✓ Bring Fig home` | "home at the next dock"; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Home`.
+- **Chrome.** The four zones, the price icon first, no dots: `✓ Greet Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock", or `✓ Bring Fig home` | "home at the next dock"; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Vivarium`.
 - **Motion.** Walking the strip dithers the mibi shown in 200 ms; the species moment plays about 2 s.
 
 The measured layout, the focus graph and the states (rest, the meet, out) are [Station layouts, the Vivarium](station-layouts.md#the-vivarium-the-whole-and-one-mibi-up-close).

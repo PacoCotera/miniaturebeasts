@@ -379,13 +379,15 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
   for (const x of tiles(T.full, 6)) is(x, "full tile"); for (const x of tiles(T.compact, 8)) is(x, "compact tile", A);
   assert.ok(R.bezel.rect[1] + R.bezel.rect[3] + 16 <= R.strip.rect[1], "the strip 16 px under the window");
   // the focus graph: well formed, and its vectors played on the rest layout with four chapters and six mibis
-  const groups = new Set(Object.keys(hab.focus.graph));
-  for (const [g, e] of Object.entries(hab.focus.graph)) { assert.ok(!(e.order && e.axis), g + ": order or axis, not both"); for (const k of STEP_KEYS) if (k in e) assert.ok(edgeOk(e[k], groups), `${g}.${k} is an edge form of §2.6.1`); }
+  const HG = hab.focus.graph; assert.equal(HG.fallback, "none", "the fallback inside the graph"); assert.equal(graphProblem(HG), null);
+  const groups = new Set(Object.keys(HG).filter((k) => HG[k] && typeof HG[k] === "object"));
+  for (const [g, e] of Object.entries(HG)) { if (!e || typeof e !== "object") continue; assert.ok(!(e.order && e.axis), g + ": order or axis, not both"); for (const k of STEP_KEYS) if (k in e) assert.ok(edgeOk(e[k], groups), `${g}.${k} is an edge form of §2.6.1`); }
   const TG = { resident: { group: "resident", box: res }, name: { group: "name", box: R.nameTag.rect }, species: { group: "species", box: R.speciesLine.rect } };
   plates.slice(0, 4).forEach((p, i) => (TG["plate." + i] = { group: "plate", box: p }));
   for (const k of ["door", "portrait", "cross", "wild"]) TG[k] = { group: hab.focus.targets[k].group, box: R[k].rect };
   tiles(T.full, 6).forEach((x, i) => (TG["tile." + (i + 1)] = { group: "tile", box: x }));
   const resolve = { "tile.shown": "tile.3" }, concrete = (v) => !!v && (!!TG[v] || v === "tile.shown");
+  const focusMove = (graph, T, from, key) => moveFocus(graph, Object.entries(T).map(([id, t]) => ({ id, rect: t.box, group: t.group })), from, key, (sel) => resolve[sel] ?? null).to;   // ui/focus.mjs, the module the face's C port matches
   let played = 0;
   for (const v of hab.focus.vectors) { if (v.state || v.intent || !concrete(v.from) || !concrete(v.to)) continue; const from = resolve[v.from] ?? v.from, to = resolve[v.to] ?? v.to; assert.equal(focusMove(hab.focus.graph, TG, from, v.key, resolve), to, `${v.from} ${v.key} → ${v.to}`); played++; }
   assert.ok(played >= 24, "the vectors are played: " + played);
@@ -411,7 +413,8 @@ test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip
   assert.deepEqual(R.window.rect, I.vivarium.theWhole.at); assert.deepEqual(R.window.ground, [I.vivarium.ground[0], I.vivarium.ground[1] - off, ...I.vivarium.ground.slice(2)]);
   assert.deepEqual(R.bed.rect, [I.bed.rect[0], I.bed.rect[1] - off, ...I.bed.rect.slice(2)]); assert.equal(R.bed.sleepers.footY, I.bed.sleepers.footY - off); assert.deepEqual(R.bed.sleepers.places, I.bed.sleepers.places);
   assert.deepEqual(R.resident.walk.ground, [I.resident.walk.ground[0], I.resident.walk.ground[1] - off, ...I.resident.walk.ground.slice(2)]); assert.ok(inside(R.resident.walk.ground, R.window.rect));
-  assert.deepEqual(R.strip.rect, hab.regions.strip.rect); assert.deepEqual(R.tiles.rect, hab.regions.tiles.rect); assert.ok(R.window.rect[1] + R.window.rect[3] + 8 <= R.strip.rect[1], "the strip 8 px under the window");
+  assert.deepEqual(R.strip.rect, hab.regions.strip.rect); assert.deepEqual(R.tiles.rect, hab.regions.tiles.rect); assert.deepEqual(R.tiles.forms, hab.regions.tiles.forms, "the same tile forms as up close"); assert.deepEqual(R.tiles.tile.thumb, hab.regions.tiles.tile.thumb, "the same thumbnails");
+  for (const [id, r] of Object.entries(R)) assert.ok(r.component || r.build, id + " names its word or composition, with a rect or without"); assert.ok(R.window.rect[1] + R.window.rect[3] + 8 <= R.strip.rect[1], "the strip 8 px under the window");
   for (const [n, xs] of Object.entries(R.bed.sleepers.places)) for (const x of xs) is([x - 48, R.bed.sleepers.footY - 88, 96, 88], "nap ink (" + n + ")", n === "2" ? B : new Set([[x - 48, R.bed.sleepers.footY - 88, 96, 88].join(",")]));
   // the residents and tiles the vectors are played on: in the wireframe, the residents on the ground band, the tiles by the compact form
   const L = Object.entries(vv.focus.layout).filter(([k]) => k !== "note"), C = hab.regions.tiles.forms.compact;
@@ -500,7 +503,7 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   for (const s of steps) { is(s, "step tile"); assert.ok(inside(s, R.strip.rect)); } assert.deepEqual([steps[0][0], steps[2][0] + steps[2][2]], [32, 984], "the steps span Habitat's strip");
   assert.ok(R.steps.tile.thumb.at[0] + R.steps.tile.thumb.size[0] <= S.first[2] - 8, "the chosen picture inside its tile");
   // frame.json: the sitting under Habitat, ← Habitat, the Habitat mark
-  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Vivarium", "Vivarium", si.strings.title]);
+  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "{name}", "Vivarium", si.strings.title]);
   assert.match(hab.bottomLine.portrait.held.opens, /sitting/, "Habitat's Portrait module opens the sitting");
   // focus: well formed; the vectors played on five cards (pose and place) and on the room (confirm)
   const g = si.focus.pose.graph, groups = new Set(Object.keys(g)); for (const k of STEP_KEYS) assert.ok(edgeOk(g.card[k], groups), "card." + k);

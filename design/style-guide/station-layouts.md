@@ -155,7 +155,6 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 
 ### Not designed yet
 
-- The context line for a mibi out with the Companion, on the whole's tile and on one mibi up close: the copywriter's; until it lands, "already with you" ([The Vivarium: the words](#the-vivarium-the-words)). Every level now has its detail spec: [Home](#home-the-panel-and-the-column), [Cargo](#cargo), [Idle](#idle), [the Vivarium](#the-vivarium-the-whole-and-one-mibi-up-close) and the [Probe](#probe-bench).
 - What a sitting crate shows when it opens in Cargo: its portrait's reveal, beyond its ribbon. Until the reveal is designed, a build leaves sitting crates out of Cargo and out of Home's Cargo module.
 - A new page in the Library's journal on Home's Library module (a mark, a context): the save holds no unopened page, so the module has no new-page state.
 - The could-grow notice for a pod short of ❀ but not ⚡.
@@ -1487,7 +1486,7 @@ The Vivarium is the place the mibis live, opened as a section in two levels: **t
 | --- | --- |
 | **The living window**, edge to edge: Idle's painting, its rows 120 to 560 at 1:1 | The Vivarium itself, the same place Home and Idle show |
 | **The residents**, at their size, walking | Every mibi at home, alive |
-| **The with-you bed**: the carried set asleep, or the Companion mark | Where the carried mibis are |
+| **The with-you bed**: the carried set asleep, the Companion mark away, or the empty nest when nobody is carried | Where the carried mibis are |
 | **The name tag** under the focused resident | Which mibi this is, only while focused |
 | **The strip of bays**, one tile a bay | Every mibi in bay order, the ones out with the Companion (the outline glyph) and the free bays: the household's order and size, and a way to reach a mibi that is not in the window |
 | **Bottom line** | `✓ Look at Bean`; the context; `← Home` |
@@ -1503,7 +1502,7 @@ The Vivarium is the place the mibis live, opened as a section in two levels: **t
 | **The name tag** under it | Which mibi this is; the way to rename it |
 | **The card**: "your Loika, adult" (the species word is the door to the guide), where it came from and what it remembers, its code, the heart, the skill notches, the stamp label and one plate a chapter | Who it is, as a readout, without a text page |
 | **The heart** on the card | Bonded: drawn; unbonded: nothing. A state, never a target; the bond is made by Tends on the Companion |
-| **The skill notches** on the card | Its skill: filled notches only, one to three; nothing at zero; never an empty notch or a figure; shown here and nowhere else on the Station |
+| **The skill notches** on the card | Its skill: filled notches only, min(notches, 3); nothing at zero; never an empty notch or a figure; shown here and nowhere else on the Station |
 | **Four modules**: Companion, Portrait, Cross, Wild | The four next steps, each one engraved word and one object, on every mibi |
 | **The strip** of bays | The other mibis; walking it changes the mibi shown |
 | **The meet ribbon** (the meet only) | A new mibi, met for the first time |
@@ -1558,7 +1557,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `stage` | 0, 40, 1024, 522 | frame, part stage | Flat `ground` round the strip |
 | `window` | 0, 40, 1024, 440 | living window, part inside, no frame | Idle's painting rows 120 to 560 at 1:1; ground band 0, 296, 1024, 176; foot 0, 472, 1024, 8 |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
-| `bed` | 792, 416, 192, 56 | build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432) |
+| `bed` | 792, 416, 192, 56 | build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
 | `nameTag` | 24 tall; the name + 16, up to 8, 48 to 176 | panel and text, build `nameTag` | Home's tag (16 px). Top at feet + 24; if its bottom would pass y 472 it sits over the resident (top = box.y − 4 − 32); a sleeper's over it. Slid to stay 8 px inside the window |
 | `strip` | 16, 488, 992, 64 | panel | The rectangle of one mibi up close |
 | `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch`) | Up close's forms: up to six bays 152×48 on a 160 pitch, the thumbnail at (52, 0); seven to twelve 72×48 on an 80 pitch, at (12, 0). A mibi out with the Companion: the outline glyph 16×24 centred where its thumbnail stands. No tile is "shown" here |
@@ -1581,12 +1580,12 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `speciesLine` | 608, 64, 216, 24 | text | | "your Loika, adult", `mark-guide-16` 4 px after the last word; a target |
 | `story` | 608, 88, 248, 72 | text | | Up to three lines on a 24 pitch: a founder "from the rock field"; a bred mibi "of Pip" and "and Sorrel"; then "remembers the pond edge" |
 | `code` | 608, 160, 152, 24 | text | | Three groups with spaces; the widest, "WWW WWW WWW", is 152 at 16 px |
-| Notches | 768, 160, 88, 24 | the card's sprites `notch-skill-16x24` | | 16×24 on a 24 pitch, right-aligned to x 856: one at 840; two at 816, 840; three at 792, 816, 840 (y 160). None at zero |
+| Notches | 768, 160, 88, 24 | the card's sprites `notch-skill-16x24` | | 16×24 on a 24 pitch, right-aligned to x 856: min(notches, 3) of them, one at 840; two at 816, 840; three at 792, 816, 840 (y 160). None at zero |
 | `stamp` | 872, 64, 120, 120 | stamp label | | 424 px from the mibi's box |
 | `plates` | 608, 200, 376, 40 | list, build `chapterPlates` (rule `listPitch`) | | 40×40 on a 48 pitch from 608, up to eight, in ring order; the emblem 24×24 at (8, 8); no word, no pips |
 | `door` (Companion) | 592, 272, 272, 96 | panel, build `module`, no lamp | | Word at (16, 12); the glyph 16×24 at (24, 52), solid docked, outline away; three places 48×48 at (56, 40), (120, 40), (184, 40): the set as it will be, docked or away; an add waiting with `frame-lamp-8-stone` at the place's (40, 0); a free place a dashed `hairline` outline 1 px inside it |
 | `portrait` | 872, 272, 136, 96 | panel, build `module` | | The sitting frame 32×48 at (52, 40): none, held, painting, portrayed |
-| `cross` | 592, 376, 272, 96 | panel, build `module` | | A face a partner, 24 on a 32 pitch: up to seven at (16, 56); eight to eleven in two rows at y 38 and 64 |
+| `cross` | 592, 376, 272, 96 | panel, build `module` | | A face a partner, 24 on a 32 pitch: up to seven at (16, 56); eight to eleven in two rows at y 38 and 64. A partner out with the Companion while it is away is drawn dimmed, on a `stone` ring, and cannot be picked |
 | `wild` | 872, 376, 136, 96 | panel, build `module` | | The gate 48×48 at (44, 40), shut or ajar (armed) |
 | `strip` | 16, 488, 992, 64 | panel | | |
 | `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch` with forms) | | As the whole's; the shown mibi's tile `hairline`; an out mibi's tile the outline glyph, still a target |
@@ -1623,7 +1622,7 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 | --- | --- | --- |
 | A resident | `✓ Look at Bean` | "an adult Untuva"; a sleeper "an elder Untuva, asleep"; the placeholder "its painting is on its way" |
 | A tile, the mibi at home | As its resident | As its resident |
-| A tile, the mibi out | `✓ Look at Pip` | "already with you" (the carried set's words, until the copywriter's line) |
+| A tile, the mibi out | `✓ Look at Pip` | "out with the Companion" |
 | Nothing (empty) | no ✓ cap | "nobody lives here yet" |
 
 **One mibi up close.**
@@ -1637,13 +1636,13 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 | ✓ on a plate | A bred child's unread chapter, at home or out: `✓ Read Coat   ◆ 1` (no price when free): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, "Coat, read", "Coat, sealed" |
 | ✓ on Companion | `✓ Take Fig with you` when Fig is not in the set as it will be and that set holds fewer than three: "goes with you now" (docked) or "goes at the next dock" (away). `✓ Bring Fig home` when Fig is carried and no request for it waits: "comes home now" or "home at the next dock". A request waiting: no ✓ cap, the context says what waits. Three in the set and Fig not one: no ✓ cap, "the Companion is full". A mibi the Companion could not take shows the plate "Fig stayed home, no room" once |
 | ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the [Sitting](#sitting). Otherwise no ✓ cap and the reason: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way"; out, "sits when you dock" |
-| ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
+| ✓ on Cross | An adult or an elder with a partner it can pick: `✓ Cross Burr`, "two Loika to pair with" (counting only the partners it can pick), opens Cross. Docked, a carried mibi crosses as any adult. Away, the shown mibi out with the Companion: no ✓ cap, "crosses when you dock"; at home with every partner out: no ✓ cap, "pairs when you dock". A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
 | ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it: it dithers out to the next mibi in bay order (the whole, empty, when none is left), its tile frees, the plate "Burr goes back to the rock field". Refused with no ✓ cap and the reason: "a bonded mibi stays", "not until it is adult", "already with you", "goes at the next dock" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
 | ← | The whole, however this level was opened (a jump, Home's ✓ Look at, the hatch), the ring on this mibi's resident, or its tile while it is out. While the namer is open, ← is the namer's |
 | The Vivarium key | The whole, the ring on this mibi |
 
-The way back reads "Vivarium", its ← cap at x 922. **The watch:** the shown mibi at rest or in the meet, on screen for 60 s, once a mibi a day, is watched (the Data trickle and the first habit not yet seen), shown only by a message plate ("Fig is seen digging") and the counter's tick; never while it is out.
+The way back reads "Vivarium", its ← cap at x 922. **The watch** (`state.benchWatch`): only on one mibi up close, the shown mibi at rest or in the meet that is not carried (never while it is with the Companion, docked or away). Its time is summed over the day while this level shows and the face is awake; at 60 s, once a mibi a day, the first of its habits not yet seen is recorded and the message plate shows ("Fig is seen digging"), with the Data trickle and the counter's tick while under the day's cap; at the cap the habit is still recorded and the plate shows, with no tick.
 
 ### The Vivarium: focus as data
 
@@ -1679,8 +1678,8 @@ Both graphs use the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-swi
 | --- | --- | --- |
 | The whole | rest | At least one housed mibi: the residents, the bed, the strip |
 | The whole | empty | No housed mibi: the window, the free bays, the frame; it does not lead toward growing (Home's ✓ leads to what needs you) |
-| Up close | rest | One mibi at home |
-| Up close | meet | The first look at a new mibi, from the hatch or Home's ✓ Meet: the ribbon in the tag's place until the first press |
+| Up close | rest | One mibi at home; a carried mibi while the Companion is docked too (greet, Cross, Portrait, Bring home, its plates; Wild refuses it, "already with you"; never watched) |
+| Up close | meet | The first look at a new mibi, from the hatch or Home's ✓ Meet: the ribbon in the tag's place until the first press. Never out: a new mibi is at home |
 | Up close | out | The shown mibi is out with the Companion: the out mark in its place, no greet, everything else as at rest |
 
 Docked and away are conditions of every state: the bed, the Companion module's glyph, the tiles' glyphs and the top bar's three faces.
@@ -1695,7 +1694,7 @@ Docked and away are conditions of every state: the bed, the Companion module's g
 | `read` | up close | 300 ms | The plate turns read; the stamp prints the chapter's cells |
 | `release` | up close | 200 ms | The mibi dithers out to the next in bay order; none left, the whole, empty |
 | `named` | up close | no | The tag (or the ribbon) takes the frame's 240 ms flash |
-| `watch` | up close | no | After 60 s on the shown mibi at home, once a day: the plate and the tick |
+| `watch` | up close | no | After 60 s summed over the day on the shown mibi at home and not carried, once a mibi a day: the habit recorded, the plate, and the tick under the day's cap (none at the cap) |
 
 A painting that lands while its mibi is on screen waits for the next fresh draw; it never swaps in view. With `motion: false` every event jumps to its end.
 
@@ -1708,10 +1707,8 @@ Every string, its zone and its longest case, measured in the face's metrics at i
 | Title (20 px medium) | Vivarium | 85 |
 | Way back (16 px, 68) | Home (the whole), Vivarium (up close) | Vivarium 66 |
 | Action (16 px, 356) | Look at {name}, Greet {name}, Name {name}, Rename {name}, Open the guide, Read {Chapter}, Take {name} with you, Bring {name} home, Portray {name}, Cross {name}, Return {name}, Again: return {name} | Take {name} with you 268 |
-| Context (16 px, 208) | The contexts above | its painting is on its way 176 |
+| Context (16 px, 208) | The contexts above; out with the Companion, crosses when you dock, pairs when you dock, sits when you dock | out with the Companion 177 |
 | Tag (16 px on the whole, 20 px up close) | the name | 160 at 16, 200 at 20 |
-
-**For the copywriter:** one line, the context for a mibi out with the Companion (six words or fewer, 208 px), on the whole's tile and on one mibi up close's name. Until it lands both show the carried set's "already with you".
 
 ### The Vivarium: the masters
 

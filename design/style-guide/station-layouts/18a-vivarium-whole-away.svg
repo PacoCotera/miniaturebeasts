@@ -42,8 +42,7 @@
 <text x="24" y="64" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Away: Pip and Sorrel are out with the Companion. They are not in the</text>
 <text x="24" y="77" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">window; the bed shows the Companion mark, their tiles the outline glyph.</text>
 <text x="24" y="90" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">An out mibi's tile is a target: ✓ shows it up close, in state out.</text>
-<text x="24" y="103" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The context is a stand-in until the copywriter's line (six words, 208 px).</text>
-<text x="24" y="116" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▲ from an out tile: the first resident in bay order (the selector rule).</text>
+<text x="24" y="103" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▲ from an out tile: the first resident in bay order (the selector rule).</text>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
 <text x="48" y="27" font-size="20" fill="#222" font-weight="500">Vivarium</text>
@@ -62,7 +61,7 @@
 <circle cx="24" cy="582" r="8" fill="#f2671b"/>
 <text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
 <text x="36" y="588" font-size="16" fill="#c4500f">Look at Pip</text>
-<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">already with you</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">out with the Companion</text>
 <circle cx="951" cy="582" r="8" fill="#9a9a9a"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1008" y="588" font-size="16" fill="#555" text-anchor="end">Home</text>

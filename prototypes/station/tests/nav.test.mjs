@@ -17,7 +17,7 @@ const nav = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/f
 test("the tree: every screen's parent is in the tree, Home alone has none, and ← is the parent whichever way you came", () => {
   const places = Object.keys(nav.screens);
   for (const p of places) { const up = N.upFrom(nav, p); if (p === "home") assert.equal(up, null); else assert.ok(places.includes(up), p + " has a parent"); }
-  assert.equal(N.upFrom(nav, "incubator"), "home", "after Grow the Incubator reads ← Home"); assert.equal(N.upFrom(nav, "habitat"), "home", "after the Book's Visit Habitat reads ← Home");
+  assert.equal(N.upFrom(nav, "incubator"), "home", "after Grow the Incubator reads ← Home"); assert.equal(N.upFrom(nav, "habitat"), "vivarium", "after the Book's Visit one mibi up close reads ← Vivarium"); assert.equal(N.upFrom(nav, "vivarium"), "home");
   assert.equal(N.upFrom(nav, "cross"), "habitat"); assert.equal(N.upFrom(nav, "book"), "library"); assert.equal(N.upFrom(nav, "pods.chapter"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.compare"), "pods.overview");
   assert.equal(N.upFrom(nav, "create"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.overview"), "pods.collection"); assert.equal(N.upFrom(nav, "pods.collection"), "home");
   assert.equal(N.placeOf({ screen: "bench" }), "probe", "the live Probe bench screen is the tree's probe"); assert.equal(N.placeOf({ screen: "pods", podsView: "chapter" }), "pods.chapter"); assert.equal(N.placeOf({ screen: "pods", podsView: "overview", compare: true }), "pods.compare");
@@ -25,7 +25,7 @@ test("the tree: every screen's parent is in the tree, Home alone has none, and �
 
 test("the back words: Home none, the titles, the pod's label under the overview, and Back when the name will not fit", () => {
   assert.equal(N.backWord(nav, "home"), null, "no ← cap on Home");
-  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["habitat", "Home"], ["cross", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
+  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["vivarium", "Home"], ["habitat", "Vivarium"], ["cross", "{name}"], ["sitting", "{name}"]]) assert.equal(N.backWord(nav, p), w, p);
   for (const p of ["pods.chapter", "pods.compare", "create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
 });
 

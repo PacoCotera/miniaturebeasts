@@ -97,7 +97,7 @@
    "home": {"screen": "home", "focus": "room"},
    "research": {"screen": "pods", "state": "collection", "focus": "the pod that most needs the player"},
    "library": {"screen": "library", "state": "spread", "focus": "the current frame"},
-   "habitat": {"screen": "habitat", "mibi": "the one last seen", "focus": "the resident"}
+   "habitat": {"screen": "vivarium", "mibi": "the one last seen up close", "focus": "its resident, else its tile (vivarium.json focus.entry.vivariumKey)", "note": "the Vivarium key; its id stays habitat until the code is next touched"}
   },
   "screens": {
    "home": {"parent": null, "back": null},
@@ -112,16 +112,18 @@
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home"},
    "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
-   "habitat": {"parent": "home", "back": "Home"},
-   "cross": {"parent": "habitat", "back": "Vivarium"},
-   "sitting": {"parent": "habitat", "back": "Vivarium", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to the Vivarium (sitting.json keys.back)"}
+   "vivarium": {"parent": "home", "back": "Home", "spec": "vivarium.json"},
+   "habitat": {"parent": "vivarium", "back": "Vivarium", "spec": "habitat.json", "note": "one mibi up close, the Vivarium's closest level"},
+   "cross": {"parent": "habitat", "back": "{name}"},
+   "sitting": {"parent": "habitat", "back": "{name}", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to one mibi up close (sitting.json keys.back)"}
   },
   "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
+  "nameBack": "{name} is the shown mibi's name (\"Burr\"), on Cross and the Sitting; a name wider than the way back's 68 px for its word reads \"Back\"",
   "jumps": [
    {"from": "cargo", "state": "report", "action": "See the new pods", "to": "pods", "view": "collection", "focus": "the pod that most needs the player", "when": "a new pod landed in the rack"},
    {"from": "create", "action": "Grow it", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},
-   {"from": "incubator", "action": "Open", "to": "habitat"},
+   {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
    {"from": "incubator", "state": "empty", "action": "Choose a pod", "to": "pods", "view": "collection", "focus": "the first identified pod in rack order, else the first pod", "when": "the rack holds a pod and a bay is free", "pending": "L2.4"},
    {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
    {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "L2.1"},
