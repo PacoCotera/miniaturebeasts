@@ -132,7 +132,8 @@ void word_bottomLine(void) {
     ax += A_capW + A_capGap;
     v_region("action", LAYER_TYPE);
     snprintf(a, sizeof a, "line.a.%d", k++); colour(dim || blocked ? "dim" : "verb", c); ax = v_run(a, s, ax, ty, A_px, c, V_ALIGN_LEFT).end;
-    if (spec_str(P, "frame.line.price", t, sizeof t) > 0) {   /* the price: each material's icon and figure (the figure amber when short), the nodes the same whichever materials it names */
+    if (spec_str(P, "frame.line.price", t, sizeof t) <= 0) t[0] = 0;   /* no price: the same nodes with no size, so a price coming or going (Grow now, then Open) changes nodes and never adds or removes one */
+    {   /* the price: each material's icon and figure (the figure amber when short), the nodes the same whichever materials it names */
       ax += A_gap; char cb[3][24], co[24]; const char *cols[3]; static const char *GLYPH[3] = { "\xe2\x9a\xa1", "\xe2\x9d\x80", "\xe2\x97\x86" };
       for (int g = 0; g < 3; g++) { colour(blocked ? "dim" : (shorts[0] && strstr(shorts, GLYPH[g])) ? "need" : "price", cb[g]); cols[g] = cb[g]; }
       colour(blocked ? "dim" : "price", co); snprintf(a, sizeof a, "line.a.%d", k++); v_price(a, t, ax, ty, A_px, cols, co);

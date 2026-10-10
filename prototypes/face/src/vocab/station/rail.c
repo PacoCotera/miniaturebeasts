@@ -17,17 +17,11 @@
 static int fi(const char *key, int dflt) { char p[160]; snprintf(p, sizeof p, R ".%s", key); return spec_int(F, p, dflt); }
 static void fcol(const char *key, char *out, int cap) { char p[160]; snprintf(p, sizeof p, R ".%s", key); spec_str(F, p, out, cap); out[cap - 1] = 0; }
 static int has(const char *s) { return s && *s; }
-/* a pip's hollow outline with its corners cut: four rectangles */
-static void cut_outline(const char *id, int x, int y, int w, int h, const char *col) {
-  v_rect(v_fmt("%s.t", id), x + 1, y, w - 2, 1, col); v_rect(v_fmt("%s.b", id), x + 1, y + h - 1, w - 2, 1, col);
-  v_rect(v_fmt("%s.l", id), x, y + 1, 1, h - 2, col); v_rect(v_fmt("%s.r", id), x + w - 1, y + 1, 1, h - 2, col);
-}
-
-/* A marked pip (Create): one composed picture, 6 × 6, in chrome rects of palette colours (create.json: the kit's chrome): filled, hollow (its corners cut), a changed diamond (`bone`, rows x 2/1/0/0/1/2 wide 2/4/6/6/4/2) or a clash cross (`red`, the pixels
+/* A pip: one composed picture, 6 × 6, in chrome rects of palette colours (create.json: the kit's chrome): filled, hollow (its corners cut), a changed diamond (`bone`, rows x 2/1/0/0/1/2 wide 2/4/6/6/4/2) or a clash cross (`red`, the pixels
    (k, k) and (5 − k, k)). Every pip is one node whichever it is, so a trait's look changing changes a node and never adds or removes one (§2.2). */
 static void marked_pip(const char *spec, const char *id, int x, int y, const char *mark, const char *pipc) {
   char ops[640]; int n = 0; static const int CX[6] = { 2, 1, 0, 0, 1, 2 }, CW[6] = { 2, 4, 6, 6, 4, 2 }; char bone[24] = "bone", red[24] = "red";
-  spec_str(spec, "colours.rail.changed", bone, sizeof bone); spec_str(spec, "colours.rail.clash", red, sizeof red);
+  if (spec) { spec_str(spec, "colours.rail.changed", bone, sizeof bone); spec_str(spec, "colours.rail.clash", red, sizeof red); }
   n += snprintf(ops + n, sizeof ops - (size_t)n, "[");
   if (strcmp(mark, "filled") == 0) for (int r = 0; r < 6; r++) n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",0,%d,6,\"%s\"]", r ? "," : "", r, pipc);
   else if (strcmp(mark, "hollow") == 0) n += snprintf(ops + n, sizeof ops - (size_t)n, "[\"h\",1,0,4,\"%s\"],[\"h\",1,5,4,\"%s\"],[\"v\",0,1,4,\"%s\"],[\"v\",5,1,4,\"%s\"]", pipc, pipc, pipc, pipc);
@@ -76,8 +70,7 @@ void word_rail(const char *marksSpec) {
       int marks = marksSpec && v_plen(v_fmt("regions.rail.tabs.%d.marks", i)) == tpips, lift = v_pint(v_fmt("regions.rail.tabs.%d.lift", i), -1), liftPx = spec_int(F, "focus.lift.chrome", 2);
       for (int k = 0; k < tpips; k++) {
         int px = px0 + k * pitch, py = pipY - (marks && k == lift ? liftPx : 0); const char *id = v_fmt("%s.pip.%d", tid, k);
-        if (marks) marked_pip(marksSpec, id, px, py, v_pstr(v_fmt("regions.rail.tabs.%d.marks.%d", i, k)), pipc);
-        else if (k < filled) v_rect(id, px, py, psz, psz, pipc); else cut_outline(id, px, py, psz, psz, pipc);
+        marked_pip(marksSpec, id, px, py, marks ? v_pstr(v_fmt("regions.rail.tabs.%d.marks.%d", i, k)) : k < filled ? "filled" : "hollow", pipc);   /* every pip is one composed node whichever it is, so a pip filling (a wipe, a chapter read) changes a node and never adds or removes one (§2.2) */
       }
     }
     if (v_pbool(v_fmt("regions.rail.tabs.%d.glint", i), 0) && has(star)) { v_region("rail.tab", LAYER_ART); v_sprite(v_fmt("%s.glint", tid), star, x + S + v_half(w) - gsz / 2, y + h + gbelow, gsz, gsz); }
