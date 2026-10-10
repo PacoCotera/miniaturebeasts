@@ -3055,9 +3055,9 @@
   "note": "a Sitting master signed by the art director after the 1x composite"
  },
  "crate-sitting-80x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 48.7, mean R-B 27.0, over the +-8 band only because the brass plate (the mark) is a tenth of so small a crate; the case is the signed 256 reduced"
  },
  "place-meadow-96x96": {
   "status": "signed",
@@ -3375,34 +3375,34 @@
   "note": "signed (art director) at 1x, opaque pixels: L* 25.5, sat 61; the bed's front rim fibres, defringed"
  },
  "bud-early-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 63.3, key R-B 73, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "bud-late-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 61.7, key R-B 84, sat 56, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist; late warms toward blush, ready brightest"
  },
  "bud-ready-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 65.9, key R-B 72, sat 52, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist; late warms toward blush, ready brightest"
  },
  "bud-ready-front-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "bud-crack-1-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "bud-crack-2-128x160": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "leaf-empty-16x20": {
   "status": "signed",
@@ -3455,9 +3455,9 @@
   "note": "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"
  },
  "bud-small-64x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 61.5, key R-B 71, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "crate-closer-open-384x256": {
   "status": "held",
@@ -3475,13 +3475,13 @@
   "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered; also, by hand: the torn gap reads as a flat dark line: give the lifted lid a lit lower lip and the gap a soft shadow"
  },
  "crate-sealed-256x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 49.1, mean R-B 21.0, sat 22 against home-bay-shut 48.0/13.5/18.5 (band L* +-4, mean R-B +-8); the whole sealed case, 8 px clear"
  },
  "crate-sitting-256x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 48.0, mean R-B 19.8, sat 27; the whole case with a matte brass plate on the lid, the tag smear gone"
  }
 }

@@ -9652,9 +9652,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sitting Cargo crate for Home's bay, 80x56: the whole sealed crate (2 px clear) with the tag painted out and the small brass plate (24x16, the old glyph's size) on the lid; it replaces the old teal crate-sitting-80x56 of pass 89 (pass 122)",
   "sha256": "b522c468d9a3984f464cb8b139c1b3e89509f70671098fb15ec0b434b9682642",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 48.7, mean R-B 27.0, over the +-8 band only because the brass plate (the mark) is a tenth of so small a crate; the case is the signed 256 reduced"
  },
  "place-meadow-96x96": {
   "size": [
@@ -10524,9 +10524,9 @@
   "src": "source/raw/incubator-bud-early3.jpg (gemini-3-pro-image)",
   "made": "the bud, early: a smooth warm bean (peach, lit cream, rust edge) glowing softly from within on a little moss, no dot, no eye, no sprout; keyed from the slate, scaled uniformly, bottom-centred in 128x160 (pass 111)",
   "sha256": "d501777f1429debef83d1916270ca02b60982fc097ba4b987c484e55504c21ec",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 63.3, key R-B 73, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "bud-late-128x160": {
   "size": [
@@ -10537,9 +10537,9 @@
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, late: by hand, the skin toward blush (its yellow lowered, a little pink added, the inner light a little up), no drift to a species' hue (pass 111)",
   "sha256": "aa690e07d6b7688b539706d5c68406a51acd099843136cd6311725144e1adbd0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 61.7, key R-B 84, sat 56, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist; late warms toward blush, ready brightest"
  },
  "bud-ready-128x160": {
   "size": [
@@ -10550,9 +10550,9 @@
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, ready: by hand, the inner light up full, a soft cream light across the bean's middle where the shape's window sits (pass 111)",
   "sha256": "096fa94f4a37519d2387e0ca137cb62d3e5eb693cfd1d96d5293d3bfa2896d51",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 65.9, key R-B 72, sat 52, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist; late warms toward blush, ready brightest"
  },
  "bud-ready-front-128x160": {
   "size": [
@@ -10563,9 +10563,9 @@
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the skin over the shape: the bean's silhouette at half opacity, lighter at the middle, drawn over the shape in the ready bud (pass 111)",
   "sha256": "3e15f90972aea62904fa57af25c3db6f8d53790d4ba998d2a6d6cb4b812982ea",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "bud-crack-1-128x160": {
   "size": [
@@ -10576,9 +10576,9 @@
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the first crack step over the ready bud: a short rust crack with a thread of light, a transparent layer drawn by hand (pass 111)",
   "sha256": "4355c8c9141e8ca85486105adbd22376dfe725816397a5b0e8d77d1ae63bfc75",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "bud-crack-2-128x160": {
   "size": [
@@ -10589,9 +10589,9 @@
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the second crack step over the ready bud: a longer, wider crack with the light coming through, a transparent layer drawn by hand (pass 111)",
   "sha256": "40b180a053aa0e586cfc68827e9861f4de9049193e78bb9d773380ada4d84c1b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "leaf-empty-16x20": {
   "size": [
@@ -10747,9 +10747,9 @@
   "src": "slices/bud-early-128x160.png",
   "made": "the bud for Create's small chamber: the new bud-early reduced by one half (64x80, only ever reduced) (pass 111)",
   "sha256": "2e68b3c526f406a9c1cbe6442d13c56f8316a47a4c0a255295482d4230aeb355",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 123: the outline redrawn as a clean ellipse (112x140, 1 px soft rust edge) and a soft cream #fff4a6 highlight from the top left added over about a third of the bean; late, ready, front, cracks and bud-small re-cut from it; 0 percent above L* 70 (bud-small capped by a soft curve); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 61.5, key R-B 71, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "crate-closer-open-384x256": {
   "size": [
@@ -10799,9 +10799,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sealed Cargo crate for the bay's places, 256x176: the whole sealed crate reduced uniformly into the box with 8 px clear on every side (never enlarged) (pass 122)",
   "sha256": "2d499384b3695989a9cfe05f5aef52c411f867abecdbda052ae84fa204090889",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 49.1, mean R-B 21.0, sat 22 against home-bay-shut 48.0/13.5/18.5 (band L* +-4, mean R-B +-8); the whole sealed case, 8 px clear"
  },
  "crate-sitting-256x176": {
   "size": [
@@ -10812,8 +10812,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the sitting Cargo crate, 256x176: the whole sealed crate (8 px clear on every side) with the tag painted out (the handle part from its mirror image) and a small matte brass plate (gold frame, a panel inside, 48x32, lit from the top left) on the lid instead; replaces the old teal crate-sitting-80x56 look (pass 122)",
   "sha256": "3e09ad8cecbf3742b522f021c691575d63b6e12ee171e52c80b5be8ece95da64",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 48.0, mean R-B 19.8, sat 27; the whole case with a matte brass plate on the lid, the tag smear gone"
  }
 }
