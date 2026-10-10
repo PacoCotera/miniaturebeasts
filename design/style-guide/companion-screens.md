@@ -4,13 +4,96 @@
 
 ## The frame
 
-- **HUD, 32 px, ink.** Left to right: reach grid; Shield plates; pod slots, with the crate count beside them; the partner's face on its teal ring. Then Energy, Data and Essence as 16 px icons with 2× numbers; Call's slot in teal when Call means something here; the world turn ("T7" with a small sun). At the far right, battery and radio.
-- **View, 532 px.** One picture to act on. Margins 6–8 px.
-- **Bottom line, 36 px, ink.** Three parts split by 1 px muted rules: `✓ verb · ← where` | the place and its survey (mist, the only part that shrinks) | conditions (1–3 bolts with ◀ or ▶, a fog patch with its drift). ✓ is an orange cap with the verb in orange, ← a grey cap. A read-only screen draws no ✓ cap.
+- **HUD, rows 0–31, ink.** Left to right: reach grid; Shield plates; pod slots, with the crate count beside them; the partner's face on its teal ring. Then Energy, Data and Essence as 16 px icons with 2× numbers; Call's slot in teal when Call means something here; the world turn ("T7" with a small sun). At the far right, battery and radio.
+- **View, rows 32–563 (532 px).** One picture to act on. Margins 6–8 px.
+- **Bottom line, rows 564–599 (36 px), ink.** Three parts split by 1 px muted rules: `✓ verb · ← where` | the place and its survey (mist, the only part that shrinks) | conditions (1–3 bolts with ◀ or ▶, a fog patch with its drift). ✓ is an orange cap with the verb in orange, ← a grey cap. A read-only screen draws no ✓ cap.
 - **Panels.** *Ink*: dark fill, a darker line, a lighter top bevel. *Paper*: warm cream, a brown line, a white top bevel, a darker foot. Radius 4 px; drop shadow from the dark table at (+2, +3).
 - **Focus.** Orange corner brackets; the focused row or card lifts 2 px.
 
 <table><tr><td valign="top"><img src="../../art/concept-homepage/companion-map-hands.png" width="440" alt="Map concept in hands"><br><em>companion-map-hands. Approved concept, generated. Take the HUD's weight and the bottom line's calm; its strings are not specs.</em></td></tr></table>
+
+### Moving a screen onto the frame
+
+The screens were first laid out on a smaller frame: HUD 0–25 (its rule on row 25), view 26–565, bottom line 566–599. Three rules move every screen onto this one. Nothing moves sideways: every x stays as it is.
+
+1. **The HUD's contents move down 3 px. Nothing in it changes size.** The 6 px the HUD gains is padding, 3 above and 3 below, so every element stays centred on the HUD's middle row. Type stays 2×, icons stay 14–16 px, the Shield plates stay 6×12 and the partner's ring stays 14×6.
+2. **The bottom line's contents stay on their rows.** Its 2 extra px go above the text, between the rule and the capitals.
+3. **The view's contents move down 6 px with the view's top.** Anything placed up from the view's foot is placed from 564 instead of 566, so it moves up 2 px. The screens below that break this rule say so.
+
+All rows below are at 1×, top-left origin. "Rows a–b" includes both rows.
+
+#### The HUD at 32
+
+| Element | Was | Now |
+| --- | --- | --- |
+| Fill and rule | ink rows 0–24, 1 px `night` rule on row 25 | ink rows 0–30, 1 px `night` rule on row 31 |
+| Title (screens away from the field) and the mist note at the right | 2× at y 6 | 2× at y 9: capitals on rows 9–22 |
+| Reach grid, 5×5 | 3×3 dots at a 4 px pitch from y 3; 1 px frame rows 1–23 | dots from y 6; frame rows 4–26 |
+| Reach grid, 9×9 | 2×2 dots at a 3 px pitch from y 0; frame sides only, rows 0–24 | dots from y 3 (rows 3–28); a full 1 px frame, all four sides, rows 1–30. It fits now, so it is drawn whole |
+| The reach-done tick | top at y 17 | top at y 20 |
+| Shield plates | each 6×12 at y 7, its dark outline 8×14 at y 6 | plates at y 10, outlines at y 9 |
+| Pod slots | at y 3; the catch flash 18×22 at y 2 | slots at y 6; flash at y 5 |
+| Crate count | icon 16×14 and number at y 6 | at y 9 |
+| Partner | token 12×12 at y 7, teal ring 14×6 at y 18, name at y 6 | token at y 10, ring at y 21, name at y 9. When the 24 px HUD ring face lands it sits at y 4 (rows 4–27) |
+| Energy, Data, Essence | icons 14×14 and numbers at y 6; the gain flash panel at y 4, 18 high | icons and numbers at y 9; flash at y 7 |
+| World turn | sun 11×11 at y 7, "T7" at y 6, the turn flash panel at y 3, 20 high | sun at y 10, "T7" at y 9, flash at y 6 |
+| Battery 15×9, radio 9×9 | at y 8 | at y 11 |
+
+The hit warning under the HUD ("Shield 2/3", ink panel with a coral line) belongs to the view and follows rule 3: panel (4, 35, 112, 22), text at y 39.
+
+#### The bottom line at 36
+
+| Element | Was | Now |
+| --- | --- | --- |
+| Fill and rule | ink rows 566–599, 1 px `night` rule on row 566 | ink rows 564–599, 1 px `night` rule on row 564 |
+| Text (✓ part, ← part, the middle) | 2× at y 576, set 10 px below the line's top | 2× at y 576, set 12 px below the line's top: capitals on rows 576–589, descenders to 593 |
+| Dividers | 1 px `slate`, rows 574–593, from the line's top + 8, height line − 14 | the same rows, 574–593: from the line's top + 10, height line − 16 (20 px) |
+| Conditions (1–3 bolts, ◀ ▶, the fog patch) | placed from y 574 (line top + 8); bolts at 575 | the same rows: placed from line top + 10 |
+| Left pad, ✓ · ← spacing, divider x | 8 px, as built | unchanged |
+
+That leaves 11 rows of ink between the rule and the capitals, and 6 under the descenders.
+
+#### The view at 32–564, screen by screen
+
+| Screen | Rule | The result |
+| --- | --- | --- |
+| Reach view | Already placed from the view's top: +6 | Tier 1 (5×5 at 78 px): the reach on rows 36–425, its dashes on rows 34–35 and 426–427. The band at y 434: the flag at (12, 436), the head-home words at (30, 438), the survey line at (12, 462). The inset (6 px a cell, 96×120) at (344, 437), its frame (341, 434, 102, 126): its last row is 559. Tier 2 (9×9 at 48 px): the reach on rows 36–467, the band at y 476, the inset (4 px a cell, 64×80) at (376, 479), its frame (373, 476, 70, 86), last row 561. A message in the band keeps the band's width and ends by row 547: up to five lines at tier 1, three at tier 2 |
+| Full map, start map, Full map from the expedition choice | A new rect, see [Map tiles](#map-tiles) | The ink frame (13, 34, 424, 528), the map (17, 38, 416, 520): +2, not +6 |
+| Place | Placed from the view (the camera keeps the pawn in the middle third of 532 rows) | No fixed rows to move. The pod-swap chooser is placed up from the foot: (6, 460, 438, 98), was 462. The hit frame and the Wait ripple run on the view's edges, rows 32–563. Name tags keep to x 6–444, y 38–558, as set in [Place](#place) |
+| Menu | +6, and the menu starts below a top message box | Over the field: rows 44 high, 250 wide, 8 px from the side away from the pawn: x 192 when the pawn's screen x is 225 or less, x 8 when it is more. Six rows make it 284 high (rows × 44 + 20). Over a place: the card (192 or 8, 40, 250, 284), rows 40–323, its shadow to 327, while the message box is at the foot or no message shows; while the box is at the top, the card starts 8 px under the box's foot, y 60 + lines × 20: (·, 80, 250, 284) under one line, (·, 100, 250, 284) under two, (·, 120, 250, 284) under three, last row 403. The box never moves for the menu. Over the map: the card (192 or 8, 40, 250, 284), rows 40–323, always; the message there is in the reach view's band (y 434 at tier 1, 476 at tier 2), below the card. Everywhere else: the card (60, 116, 330, rows × 62 + 20), was y 110; five rows end at 446. The darkening fills rows 32–563 |
+| Probe | +6 | "Probe" at y 40; plates (12×22) at (24, 64); the two lines at y 60 and 82; Energy row at y 108; the tier 2 note panel (18, 130, 414, 26); "On the map" at y 172; legend rows from y 190 at an 18 px pitch, the 14th ending on row 440; the four stone tiles 34×34 at y 442, labels at 479; "Field guide" at y 500; species tokens (24 + 138*i*, 518, 130, 40), last row 557, 6 px over the line |
+| Cargo, in the field | +6 | Counters (22 + 138*i*, 42, 130, 40); "Pods" at y 94; pod panels (24 + 130*i*, 114, 122, 36); "This expedition" at y 162; met tiles 42×42 at y 182; the reach line at y 238; the Head home card (95, 268, 260, 50); the seal preview from y 332 at a 22 px pitch; "The sealed bay" at y 406; crates (24 + 140*i*, 428, 130, 66); the foot line at y 510 |
+| Cargo, at home | +6 | "In the hold" at y 42; counters at y 62; pod panels at y 110; "The sealed bay" at y 166; crates at y 190; the bay line at y 272; the Probe line at y 316; docked or away at y 342; the note from y 386 at 22; the world turn at y 476 |
+| Mibis (the list as built) | +6 | The first card (20, 42, 410, 64), a 72 px pitch. The scroll keeps the focused card's foot at y 526, 38 px over the line, as before. The roster in [Care and the carried set](#care-and-the-carried-set) replaces this list with its own rects, which are already on this frame |
+| Active mibi | The rects in [The active mibi screen, with care](#the-active-mibi-screen-with-care), now | Stage (24, 40, 402, 280), was (24, 36, 402, 276); the mibi's box at (97, 52), was 44; its shadow 180×22 at (135, 296), was 280; ◀ ▶ at y 172, was 166; name at y 332, was 324; the stage chip at y 331; species and ability at y 370; status at y 396, a 22 px pitch; page dots at y 452, the ring 10×10 at y 450. The species moments move with the mibi's box (+8): the Tuikis glow at (75, 60), the Loika's paws at y 78, the Untuva's puffs centred on (225, 178), the Tuikis sparks and the chirp +8 (the chirp's top at y 100) |
+| Head home | +6, and every line clipped | The outcome at y 46; the lines below keep their steps (34 after the outcome, 24 a line, 34 after a group, 84 for the bay). Every line is clipped at 410 px, so nothing passes x 432. World-turn lines stop when the next would start below y 506 (was 500). The bay-full and Probe-broke lines are fixed below |
+| Expedition choice | +6, and the message box rule below | The strip at y 40; Weather (20, 64, 410, 84); Deep ground (20, 158, 410, 84); the partner card (20, 252, 410, 92); the inset 96×120 at (24, 360); the words beside it at y 362, 386, 410, the last-start flag at (136, 436), the at-home line at y 464. Docked: the panel (70, 512, 310, 26), its words at y 517. Away with crates sealed: the panel (70, 494, 310, 48), its words at y 500 and 520 |
+| New world | +6 | The question at y 136; the warning at y 182 and 204; the two choices (75, 266, 300, 54) and (75, 346, 300, 54), the brackets 7 px outside |
+| No mibi yet | +6 | The dotted pod centred on (225, 196); "No mibi yet" at y 276; the two lines at y 320 and 342; the bay line at y 378 |
+| Message box | Placed from the view's foot or top | At the foot, its foot on row 555 (8 px over the line): its top is 556 − height, was 558 − height. At the top, its top at y 40, was 34. The pawn test is unchanged: the box goes to the top when the pawn's screen y + 20 passes the low box's top. Width, 20 px line pitch and three lines at most as built: (225 − w/2, y, w, lines × 20 + 12), w the widest line + 26. With the menu open over a place, the box keeps its place and the menu starts under it, see Menu |
+
+The developer panel beside the screen is not part of the 450×600 face and does not move.
+
+#### Map tiles
+
+The world map stays 16×20 cells at 26 px a cell, 416×520. With its 4 px ink frame it is 424×528, which leaves 4 rows of the 532: the frame sits 2 px under the HUD (rows 34–561) and 2 px over the bottom line. So the map is placed from the view's top + 6 (y 38), not from the HUD's foot + 10: at the new HUD that would put the frame's last row on 565, inside the bottom line. On the start map a good start's sign tag (26×20, set 12 px above its cell) on the top row would lose 6 px under the HUD; its top is held at y 34.
+
+The reach view's 78 px and 48 px cells and both insets fit as given above. In a place, 48 px tiles give 9.4 columns and 11.1 rows of the view.
+
+#### Faults the move fixes
+
+- **Head home, bay full.** "A break would lose them · dock to free the bay." runs from x 22 off the screen's right edge (measured to x 449, no margin). The line now reads `A break would lose them.` (x 22–243). The amber bay line under the crates already says to dock. Every Head home line is clipped at 410 px, as above.
+- **Menu over a place, message at the top.** With the pawn low the message box goes to the top, (21, 40, 408, 52) for two lines, and the menu card (192, 40, 250, 284) under it loses its first entry, Leave this place. The card now starts 8 px under the box (Menu, above): (192, 100, 250, 284) under two lines.
+- **Head home, the Probe broke.** `Dock at the Station: it mends the Probe free.` is 414 px and the 410 px clip cuts it. The line reads `Docking mends the Probe free.` (272 px, x 22–293), the copy already taken on the care branch: the Companion docks in the Caddy, never at the Station.
+- **Expedition choice, docked.** Pressing ✓ while docked writes a two-line message (`Docked · lift the Companion at the Station to explore`) whose box, rows 506–557 on the old frame, covers the "Docked · lift at the Station" panel (rows 506–531) whole. While a message shows on the expedition choice, neither the docked panel nor the sealed-crates panel is drawn: the message box takes the view's foot as on every screen (rows 504–555 for two lines), and the panel comes back with the next press. The message says the same thing, and the strip and the bottom line keep the rest.
+
+**Pass when**
+- [ ] The HUD's rule is on row 31 and its capitals on rows 9–22, on every screen.
+- [ ] The bottom line's rule is on row 564 and its capitals on rows 576–589.
+- [ ] Nothing of the view is drawn on rows 0–31 or 564–599.
+- [ ] No line of text in the view passes x 442.
+- [ ] No panel overlaps another panel or the message box.
+- [ ] The full map's frame is whole, rows 34–561.
 
 ---
 
