@@ -21,7 +21,7 @@ export function registerAsset({ id, w, h, policy = "stationChrome", status = "pl
 }
 // Place a signed master over its stand-in by id (technical-architecture.md §5.5): the master must be the stand-in's size, 1:1, or it is refused
 // loudly; the entry becomes status `master`, names its file and hash, and builds from the decoded picture. A master placed before its stand-in
-// is registered takes the id first, and a stand-in of another size then throws at registration. `picture` is anything with w, h and canvas().
+// is registered takes the id first, and a stand-in of another size then throws at registration. `picture` is anything with w, h and rgba() (RGBA bytes, straight alpha); canvas() too until the JavaScript drawing layer goes.
 export function placeMaster({ id, w, h, file, hash, policy = "painted", signed = null, slice = null, tile = null, status = "master" }, picture) {
   if (!/\.png$/i.test(file)) throw new Error(`master ${id}: ${file} is not a PNG (PNG only)`);
   if (picture.w !== w || picture.h !== h) throw new Error(`master ${id}: the file is ${picture.w}×${picture.h}, the index says ${w}×${h}`);
@@ -43,7 +43,7 @@ export const isFilled = (id) => { const e = ENTRIES.get(id); return !!e && e.sta
 export const empties = () => manifest().filter((e) => e.status === "empty");
 export const hasAsset = (id) => ENTRIES.has(id);
 export const assetEntry = (id) => ENTRIES.get(id) ?? null;
-// The built picture (anything with w, h and canvas()) or null when the id is unknown. `env` reaches the builder (palette lookup).
+// The built picture (anything with w, h and rgba(); canvas() too until the JavaScript drawing layer goes) or null when the id is unknown. `env` reaches the builder (palette lookup).
 export function asset(id, env = null) {
   let b = BUILT.get(id); if (b) return b;
   const e = ENTRIES.get(id); if (!e) return null;

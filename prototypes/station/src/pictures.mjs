@@ -7,8 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, art, fromRGBA, bay } from "./pixels.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON } from "./art.mjs";
-import { beamArt } from "./screens/frame.mjs";
+import { emblemArt, ICON, beamArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 

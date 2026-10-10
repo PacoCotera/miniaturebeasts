@@ -50,7 +50,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   const setRegion = (name) => { const b = enc.encode(String(name)).subarray(0, 47), p = M._face_region(); M.HEAPU8.set(b, p); M.HEAPU8[p + b.length] = 0; };
   const measure = (str, px) => { setText(String(str)); return M._face_measure(px); };
 
-  // A picture's pixels into the face (RGBA from a canvas, stored as B, G, R, A), once per asset id, by the `asset` message: the face allocates the buffer for the id and the page fills it.
+  // A picture's pixels into the face (RGBA bytes, straight alpha: a picture's rgba(), stored as B, G, R, A), once per asset id, by the `asset` message: the face allocates the buffer for the id and the page fills it.
   // The table holds 256 pictures: a picture's slot is kept while its scene draws it and recycled, least recently used first, when a scene needs a slot and none is free;
   // a single scene that needs more than the table holds is refused loudly.
   const handles = new Map(); let sceneNo = 0; const limit = ready.limits.pictures;
