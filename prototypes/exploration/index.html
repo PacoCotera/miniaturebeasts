@@ -867,7 +867,10 @@ const CARE_TEXT = {
 const CARE_ASSETS = [
   { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
   { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'placeholder' },
+  { id: 'c-face-24', what: 'the mibi’s HUD ring face: the partner card’s faces, the notch row on Head home (its ring is drawn as the partner’s marker)', until: 'the derived face from the Station', w: 24, h: 24, status: 'placeholder' },
+  { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
 ];
+const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f']], 'c-token-48': ['stone', ['token', 't']] };   // each placeholder's plate colour and labels, longest first
 const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 // The Companion's local date, Y-M-D on its own clock (never toISOString: that is UTC).
@@ -3787,7 +3790,7 @@ function drawSetup(t) {
   card(20, 252, 410, 92, sel === 2, true);
   if (pm) { const st = mibiStage(pm), nm = clipText(pm.name, 220, 3);
     blit(RING(), 46, 322); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, 264);
-    text(nm, 112, 260, C.ink, 3); if (pm.bonded) heartPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
+    text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, st, stageFill(st), 'bone');
     text(clipText(SPECIES[pm.sp].abText, 220, 2), 112, 320, C.stone); }
   else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noPartner, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
@@ -3982,18 +3985,19 @@ function dashedRect(x, y, w, h, c) {
 const dashedCircleArt = d => art('dcirc' + d, () => { const pb = new PB(d, d), c = d / 2, r = d / 2 - .5, pts = [];
   for (let y = 0; y < d; y++) for (let x = 0; x < d; x++) { const q = Math.hypot(x + .5 - c, y + .5 - c); if (Math.abs(q - r) < .5) pts.push([x, y, Math.atan2(y + .5 - c, x + .5 - c)]); }
   pts.sort((a, b) => a[2] - b[2]); pts.forEach(([x, y], i) => { if ((i >> 1) % 2 === 0) pb.set(x, y, C.stone); }); return pb; });
-// The 24 px HUD ring face, until the derived face lands: the HUD's own face icon pixel for pixel at 2×, on its ring (`teal` for
-// the partner, `stone` for the others) at its foot.
+// The 24 px HUD ring face: the face is the missing asset c-face-24, drawn as its labelled placeholder; the ring at its foot is
+// the partner's marker (`teal` for the partner, `stone` for the others), a plain outline.
 function ringFace(x, y, sp, partner) {
   const ring = partner ? ringArt('rf24t', 24, 8) : ringArt('rf24s', 24, 8, C.stone, C.slate);
-  blit(ring, x, y + 16); blit(upArt('mini' + sp, ICON.mini(sp), 2), x, y);
+  blit(ring, x, y + 16); placeholderPlate('c-face-24', x, y);
   g.save(); g.beginPath(); g.rect(x, y + 20, 24, 4); g.clip(); blit(ring, x, y + 16); g.restore();   // the ring's front arc in front of the face: it stands on it
 }
-// A missing asset of the register (CARE_ASSETS), drawn as its labelled placeholder at its exact size (k: pixel for pixel at k×).
-function heartPlate(id, x, y, k) {
-  const a = CARE_ASSETS.find(e => e.id === id); k = k || 1; const w = a.w * k, h = a.h * k;
-  R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C.red);
-  const lbl = ['heart', 'h'].find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
+// A missing asset of the register (CARE_ASSETS), drawn as its labelled placeholder at its exact size (k: pixel for pixel at k×):
+// a flat plate, outlined, with its label where it fits. Never drawn art; the master replaces it by id.
+function placeholderPlate(id, x, y, k) {
+  const a = CARE_ASSETS.find(e => e.id === id), [fill, labels] = PLATE[id]; k = k || 1; const w = a.w * k, h = a.h * k;
+  R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C[fill]);
+  const lbl = labels.find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
 }
 // Why there is no partner, on the Lead card and the partner card.
 function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; const j = cm.find(m => !isAdult(m)); return j && j.bonded ? CARE_TEXT.youngCare : CARE_TEXT.youngTime; }
@@ -4018,8 +4022,8 @@ function rosterRow(m, y0, sel, isP, fr) {
   rosterCard(16, y0, 418, 64, sel); const y = sel ? y0 - 2 : y0, st = mibiStage(m);
   const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
   if (isP) blit(RING(), 38, y + 48);
-  blit(creatureArt(m.sp, h ? 'alert' : 'idle', h ? 0 : fr, 1.5), 28, y + 8 - hy);
-  const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) heartPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
+  placeholderPlate('c-token-48', 28, y + 8 - hy);   // the 48 px field token is a missing asset
+  const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) placeholderPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
   let cx = 88; cx += chip(cx, y + 38, st, stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
   if (sel) text('▶', 422, y + 22, C.mist, 2, 'right');   // the open mark: ▶ opens this mibi's page
 }
@@ -4035,7 +4039,7 @@ function drawMibis(t) {
   { const y = LEAD_Y - off - (sel === 0 ? 2 : 0); rosterCard(16, LEAD_Y - off, 418, 92, sel === 0);
     text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
     if (pm) { blit(RING(), 46, y + 70); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, y + 12);
-      const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) heartPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
+      const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
       text(clipText(SPECIES[pm.sp].abText, 314, 2), 104, y + 64, C.stone); }
     else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
   text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
@@ -4097,16 +4101,16 @@ function drawActive(t) {
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 78);
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
-  // the Walk: every other mibi with you at the stage's foot as its 48 px field token, 2 idle frames at 4 Hz, for 2.4 s
+  // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
   const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
-  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) blit(creatureArt(q.sp, 'idle', mo ? Math.floor((NOW - wk.at) / 250) % 2 : 0, 1.5), i ? 366 : 36, 260); });
+  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260); });   // the 48 px field token is a missing asset
   // the bond's heart: c-heart-24 at 2×, rising beside the head from y 140 to 60 in four 20 px steps of 150 ms, held 900 ms;
   // under reduced motion it stands at y 60 for 1.5 s
-  if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; heartPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
+  if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; placeholderPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
   if (list.length > 1) { text('◀', 10, 172, C.mist); text('▶', 440, 172, C.mist, 2, 'right'); }
   const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
   const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, st, stageFill(st), 'bone');
-  if (m.bonded && !(bond != null && bond < BOND_MS)) heartPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
+  if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
   text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
   wrapText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
   // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home

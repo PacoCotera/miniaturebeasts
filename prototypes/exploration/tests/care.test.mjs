@@ -425,17 +425,18 @@ test("T4 merge: Companion care writes reach the Station by max and OR, and a sec
 });
 
 // ---- The words and the heart ----
-test("one strings table for care; the heart is a missing asset in the register, drawn only as its labelled placeholder", () => {
+test("one strings table for care; the heart, the 24 px face and the 48 px token are missing assets in the register, drawn only as labelled placeholders", () => {
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"]]);
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"], ["c-face-24", 24, 24, "placeholder"], ["c-token-48", 48, 48, "placeholder"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
-  // every heart on a screen goes through heartPlate, which reads its size from the register: a flat plate and its label, no drawn heart
-  const uses = [...PAGE.matchAll(/'(c-heart-\d+)'/g)].map(x => x[1]), calls = [...PAGE.matchAll(/heartPlate\('(c-heart-\d+)'/g)].map(x => x[1]);
-  assert.equal(uses.length, 2 + calls.length, "named in the register and in heartPlate calls only");
-  assert.ok(calls.includes("c-heart-24") && calls.includes("c-heart-16"));
-  const hp = source("heartPlate"); assert.match(hp, /CARE_ASSETS\.find/); assert.ok(!/ell\(|poly\(|pline\(/.test(hp), "no drawn shape");
+  // every missing asset on a screen goes through placeholderPlate, which reads its size from the register: a flat plate and its label, no drawn art
+  const ids = ["c-heart-24", "c-heart-16", "c-face-24", "c-token-48"], calls = [...PAGE.matchAll(/placeholderPlate\('(c-[a-z]+-\d+)'/g)].map(x => x[1]);
+  for (const id of ids) { assert.ok(calls.includes(id), id + " is drawn as its placeholder"); assert.equal(PAGE.split("'" + id + "'").length - 1, 2 + calls.filter(c => c === id).length, id + ": named in the register, the plate table and placeholderPlate calls only"); }
+  const hp = source("placeholderPlate"); assert.match(hp, /CARE_ASSETS\.find/); assert.ok(!/ell\(|poly\(|pline\(|blit\(/.test(hp), "no drawn shape");
+  assert.ok(!/upArt\('mini'/.test(source("ringFace")) && /placeholderPlate\('c-face-24'/.test(source("ringFace")), "the 24 px face is its placeholder, never the HUD icon enlarged");
+  assert.ok(!/creatureArt\([^)]*1\.5\)/.test(PAGE), "no token drawn at 1.5× for the 48 px slot");
 });
 
 // ---- No count on the Companion (game designer, 16:24; the approved copy) ----
@@ -514,7 +515,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
     FX: {}, viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
     panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
-    CARRY_MAX: 3, textW: () => 0, heartPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", takeOne: "take one at the Station", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
+    CARRY_MAX: 3, textW: () => 0, placeholderPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", takeOne: "take one at the Station", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
   const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
