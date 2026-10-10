@@ -1,12 +1,16 @@
 # Home, the Vivarium card and the Library spread: hand-pixelled masters
 
-The art-layer pieces of Home, the Vivarium card and the Library spread, hand-placed pixel by pixel at size in the Station palette (no scaling, no anti-aliasing). `source/home_marks.py`, `source/more_marks.py` and `source/roundels.py` draw them; `slices/manifest.json` gives each size and hash. Painted pieces (the glass, the bay, the well, the chamber, the cradle, the journal, the bed) come from their own paintings.
+The art-layer pieces of Home, the Vivarium card and the Library spread, hand-placed pixel by pixel at size in the Station palette (no scaling, no anti-aliasing). `source/home_marks.py`, `source/more_marks.py` and `source/roundels.py`, `source/frame_bars.py` and `source/rackpod.py` draw them; `slices/manifest.json` gives each size and hash. Painted pieces (the glass, the bay, the well, the chamber, the cradle, the journal, the bed) come from their own paintings.
 
 ![The set at 6×](proof-6x.png)
 
 *proof-6x.png: the set at 6× on `panel`. Hand-drawn masters.*
 
 ![The clan roundels at 10× and 1×](clan-roundels-proof.png)
+
+![The rack pod composed for six species](rack-pod-proof.png)
+
+*rack-pod-proof.png: the rack pod's layers composed as the renderer will, six species ramps and patterns, at 6× and 1× on `panel`. The layers are 1-bit masks; the renderer fills each with the species' palette ramp, never scaling the 32×40 well pod down.*
 
 *clan-roundels-proof.png: the sixteen clan roundels at 10× and 1× on `paper`. Hand-drawn masters.*
 
@@ -46,3 +50,16 @@ The art-layer pieces of Home, the Vivarium card and the Library spread, hand-pla
 | `clan-roundel-C14-12x12` | 12×12 | clan C14's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2×2 dot in `rock` |
 | `clan-roundel-C15-12x12` | 12×12 | clan C15's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2×2 dot in `sageD` |
 | `clan-roundel-C16-12x12` | 12×12 | clan C16's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2×2 dot in `stone` |
+| `frame-top-bar-1024x40` | 1024×40 | the top bar: flat `bar`, a `bevel` lit top row, a `hairline` rule along its foot; replaces the old painted strip |
+| `frame-bottom-line-1024x38` | 1024×38 | the bottom line: flat `bar`, a `hairline` rule along its top, a `bevel` lit row under it; replaces the old painted strip |
+| `home-rack-pod-accent-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the cap and two curved side straps, filled with colour B |
+| `home-rack-pod-body-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the shell and cap, filled with the species colour A |
+| `home-rack-pod-light-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the lit upper left, filled with A's lighter neighbour |
+| `home-rack-pod-outline-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the 1 px outline, filled with the darkest of A's ramp (never black) |
+| `home-rack-pod-pattern-bands-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the bands pattern over the body, filled with colour B |
+| `home-rack-pod-pattern-dots-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the dots pattern over the body, filled with colour B |
+| `home-rack-pod-pattern-plates-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the plates pattern over the body, filled with colour B |
+| `home-rack-pod-pattern-ribs-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the ribs pattern over the body, filled with colour B |
+| `home-rack-pod-pattern-segments-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the segments pattern over the body, filled with colour B |
+| `home-rack-pod-pattern-stripes-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the stripes pattern over the body, filled with colour B |
+| `home-rack-pod-shade-24x32` | 24×32 | a rack pod layer (1-bit, white = on): the lower right in shade, filled with A's darker neighbour |
