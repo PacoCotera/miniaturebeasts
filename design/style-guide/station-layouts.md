@@ -64,7 +64,7 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 
 <img src="station-layouts/16-key-set.png" width="1440" alt="The Station's front with the four coloured keys, each an icon slot, beside Home's screen, and what each key opens">
 
-*16. The coloured keys on the Station's front at 4 px/mm, each cap a marked icon slot, the branding slot on the top bezel, Home (15a) on the screen at 0.6×, and what each key opens. Positions from the [device-family concepts](../../hardware/concepts/device-family/concepts.md) ([SVG](station-layouts/16-key-set.svg)).*
+*16. The coloured keys on the Station's front at 4 px/mm, each cap a marked icon slot, the pad's four arrows in their 20 × 20 mm slot, the branding slot on the top bezel, Home (15a) on the screen at 0.6×, and what each key opens. Positions from the [device-family concepts](../../hardware/concepts/device-family/concepts.md) ([SVG](station-layouts/16-key-set.svg)).*
 
 | Position | Key | Colour | Opens | The ring lands | Its icon marks the titles |
 | --- | --- | --- | --- | --- | --- |
@@ -76,6 +76,7 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 - **The row reads like Home.** The Vivarium key sits at the left as the panel does, the column's sections to its right, the Library at the column's foot.
 - **Cargo, the Incubator and the Probe have no key.** Each is one press from Home's column. Cargo calls the player from the room (its amber module and the notice), and the Incubator is also reached by its jumps (Grow it, Cross them, Choose a pod).
 - **On the device.** The four keys sit on the four workspace positions at x 64, 88, 112 and 136 mm, y 166 mm, on a 24 mm pitch, with 18 mm reserved for each cap. A fifth key does not fit the row: 15 mm is free left of x 64 (to the pad's 30 mm reservation) and 16 mm right of x 136 (to ←'s), against an 18 mm cap.
+- **The direction pad** is one round 26 mm face centred on (25, 158) mm, inside its 30 mm reservation. Its four arrows sit on the face, one on each axis, inside a 20 × 20 mm icon slot centred on the pad; the centre of the face is blank and nothing is printed around it. The 10 mm slot is the rule for the 15 mm caps.
 - **Icons, never words.** Each cap carries one icon and no word: the Home icon, the Vivarium icon, the Research icon and the Library icon. The icon sits in a 10×10 mm slot centred on the cap, which fits inside a round cap of 15 mm (the slot's diagonal is 14.1 mm). The ✓ and ← caps carry their marks. The only text on the Station's front is the branding on the top bezel.
 - **The title mark is the key's icon.** The mark before each title, 24×24 at (16, 8), is the icon of the key that leads there, drawn for the screen at 24: `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`. The icons on the caps and in the title are art: studio masters, placed 1:1, never drawn by the build.
 - **Colour.** Each colour stays with its family. Home's key is ochre (`#dba53a`), not amber: it stands beside Cargo's amber lamp, whose screen carries Home's mark, without taking amber, the frame's one colour for what needs you. Ochre is the nearest key colour to ✓'s orange (`#f0661a`); the two are checked apart on the shell.

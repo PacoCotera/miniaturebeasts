@@ -99,6 +99,7 @@
 <text x="424" y="948" font-size="10" fill="#444" text-anchor="middle">y 166 mm, 24 mm pitch, 18 mm caps reserved; drawn: 15 mm caps</text>
 <line x1="124" y1="782" x2="124" y2="900" stroke="#555" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="124" y="914" font-size="11" fill="#222" text-anchor="middle" font-weight="700">pad</text>
+<text x="124" y="928" font-size="10" fill="#555" text-anchor="middle">26 mm face, 30 mm reserved</text>
 <line x1="704" y1="752" x2="704" y2="900" stroke="#555" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="704" y="914" font-size="11" fill="#222" text-anchor="middle" font-weight="700">← x 170</text>
 <line x1="804" y1="752" x2="804" y2="900" stroke="#555" stroke-width="1" stroke-dasharray="2 2"/>
@@ -106,10 +107,12 @@
 <text x="912" y="790" font-size="11" fill="#222" font-weight="700">Screen</text><text x="984" y="790" font-size="11" fill="#333">module outline 164.9×124.3 mm at (25.05, 18) mm;</text><text x="984" y="805" font-size="11" fill="#333">Home drawn at 0.6× (0.1506 mm a pixel).</text>
 <circle cx="124" cy="720" r="60" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
 <circle cx="124" cy="720" r="52" fill="#34373c"/>
-<path transform="translate(124,690) rotate(0)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
-<path transform="translate(154,720) rotate(90)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
-<path transform="translate(124,750) rotate(180)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
-<path transform="translate(94,720) rotate(270)" d="M0 -9L8 5H-8z" fill="#9a9ea6"/>
+<path transform="translate(124,720) rotate(0)" d="M0 -38L10 -21.2H-10z" fill="#9a9ea6"/>
+<path transform="translate(124,720) rotate(90)" d="M0 -38L10 -21.2H-10z" fill="#9a9ea6"/>
+<path transform="translate(124,720) rotate(180)" d="M0 -38L10 -21.2H-10z" fill="#9a9ea6"/>
+<path transform="translate(124,720) rotate(270)" d="M0 -38L10 -21.2H-10z" fill="#9a9ea6"/>
+<rect x="84" y="680" width="80" height="80" fill="none" stroke="#c9ccd2" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="38" y="789" width="172" height="13" fill="#d9dccf"/><text x="124" y="799" font-size="9" fill="#444" text-anchor="middle">pad: four arrows, 20×20 mm slot</text>
 <rect x="244" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
 <circle cx="280" cy="752" r="30" fill="#dba53a" stroke="#1f2430" stroke-width="1.5"/>
 <rect x="340" y="716" width="72" height="72" rx="4" fill="none" stroke="#6b705f" stroke-width="1" stroke-dasharray="3 3"/>
@@ -124,7 +127,7 @@
 <rect x="548" y="732" width="40" height="40" fill="none" stroke="#1f2430" stroke-width="1.5" stroke-dasharray="4 3"/><path d="M548 732L588 772M588 732L548 772" stroke="#1f2430" stroke-width="1"/>
 <circle cx="704" cy="720" r="30" fill="#4a4d52" stroke="#1f2430" stroke-width="1.5"/>
 <path d="M716 720H692M701 711L692 720L701 729" fill="none" stroke="#e9e6df" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
-<circle cx="804" cy="720" r="34" fill="#f0661a" stroke="#1f2430" stroke-width="1.5"/>
+<circle cx="804" cy="720" r="30" fill="#f0661a" stroke="#1f2430" stroke-width="1.5"/>
 <path d="M791 721L800 730L818 710" fill="none" stroke="#fff8ef" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
 <text x="912" y="96" font-size="14" fill="#222" font-weight="700">What each key opens, and where the ring lands</text>
 <circle cx="924" cy="130" r="11" fill="#dba53a" stroke="#1f2430" stroke-width="1"/>
