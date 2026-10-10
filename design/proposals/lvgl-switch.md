@@ -67,7 +67,7 @@ Messages from the face to JavaScript:
 
 The contract number is 1. The sandbox's transport is `face_send(len)` over the face's own `face_in_buf`, so the host never allocates in the face's heap.
 
-**The intent table stays JavaScript.** Each screen's intent table (for Pods, `intents/pods.mjs`) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the Wild gate) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline: while `TL.holding()` the dispatcher drops intents, and the face, which also knows from the event's `hold` that one is playing, does not move focus.
+**The intent table stays JavaScript.** Each screen's intent table (for Pods, `intents/pods.mjs`) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the Wild gate) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline. While an event holds, the face, which knows it from the event's `hold`, moves no focus and sends no `confirm`, `back` or `step`; it still sends `room:<x>`. While `TL.holding()` the dispatcher drops every other intent and keeps the last `room:` intent received, and dispatches it when the hold ends on its own clock. This is how a coloured key waits while a moment holds input (`station-layouts.md`, The screen map).
 
 **Screen glue becomes DOM-free.** For S1 the screens' JavaScript must run in Node. Each screen becomes three modules: `views/<screen>.mjs` (state and focus to props), `intents/<screen>.mjs` (the intent table and the screen's UI state), and its spec file. None of them imports `gfx.mjs`, `document` or a canvas. The page and the Pi host differ only in the save adapter and the transport.
 
@@ -97,9 +97,9 @@ screens/    one binding table a screen: region id → word, and the compositions
 The compositions of Home, Habitat and the Probe bench, each in its screen's binding table and built from words already in the vocabulary:
 
 - **`module`** (Home, Habitat, the Probe bench): a `panel` with its engraved word at the spec's `word` offset and its object, and the spec's `lamp` rect, or `"lamp": null` for none (Habitat's modules).
-- **`nameTag`** (Home and Habitat, one composition shared): a `panel` and its `text`, the height, size, weight, padding, rounding, least and most width from each screen's spec.
+- **`nameTag`** (Home, the Vivarium's whole and Habitat, one composition shared): a `panel` and its `text`, the height, size, weight, padding, rounding, least and most width from each screen's spec.
 - **`chapterPlates`** (Habitat's card): a `list` by `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40` with the rail's 24×24 emblem at (8, 8).
-- **`bayStrip`** (Habitat): a `list` by `listPitch` with forms (§2.3), each tile a `panel` and its thumbnail, a free bay a composed `dash` outline.
+- **`bayStrip`** (the Vivarium's whole and Habitat): a `list` by `listPitch` with forms (§2.3), each tile a `panel` and its thumbnail, a free bay a composed `dash` outline.
 - **`shieldPlates`** (the Probe bench): one sprite a place, the places a table by tier.
 
 A further screen using one of them goes to the UI designer and the architect first.
@@ -229,6 +229,7 @@ The rule: **the timeline in JavaScript decides that something plays and whether 
 | Counters' tick (70 ms a unit, 240 ms flash) and the turn's flash (1 s, 160 ms blink) | `present.mjs` `createFramePresenter` | The top bar word, from old and new values |
 | Screen change (180 ms, 16-level Bayer) | `main.mjs`, the host | A `dither` transition: 16 lattice pictures over the stage. No opacity |
 | A region's picture changing (Create's founder: 200 ms, 16 levels) | — | A `dither` event between the two pictures, composed by `bayerPick` (below) |
+| `grow` (Create, 1080 ms, hold) | — | The stamp label prints row by row, the code is cut in, the pod travels |
 | Grow now's fill on the Incubator | — | The `leaves` word's `growNow`: one whole leaf a step over 400 ms (§2.2) |
 | Arrival (3 s a crate, input locked; crates slide 500 ms, staggered 250 ms), hatch (2.6 s), wake, Rest | `home.mjs`, `incubator.mjs`, `FX` fields | Named events on Home and the Incubator with whole-pixel slides |
 | Residents walking | — | The living window word: positions stepped in C from a seed and bounds in props, the same seed giving the same path. Their boxes are focus targets (§2.6) |
@@ -381,12 +382,12 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 ### 4. V: the Vivarium, whole and up close (size: about 1.25 × L2)
 
-- **Scope.** The Vivarium's whole from its spec: every mibi at home at its size in one full-width window, the bays along the foot, ✓ on a resident or a bay tile to that mibi up close, ← to Home with the ring on the panel. One mibi up close (`habitat.json`) in rest and meet: the resident large, card, stamp, the carried set's door, the card's heart (a state, never a target), the bays strip, the meet with its placeholder, and the targets that lead to Cross, the Sitting and the guide, which draw "not built yet" until their slots. The compositions `module` (with `lamp: null` on the Vivarium's modules), `nameTag`, `chapterPlates` and `bayStrip`, and `listPitch`'s forms (§2.2, §2.3). The Vivarium's graph as data: named edges, `nearestIn` with `ahead`, ordered lists, the strip's `axis`, in place of `nav.mjs` `habitatMove`. The namer (`namer.json`) as an overlay on the top layer (§2.2, §2.6); the meet's first ✓ opens it.
-- **Acceptance.** The gate. `page-habitat`, `page-habitat-empty`, `page-meet`, `page-meet-placeholder` and `page-namer` captured on the face, and the whole's captures, each named `vivarium-<state>` by its spec's state, a fresh world's empty Vivarium among them. `page-meet` and `page-meet-placeholder` differ from one another. From a fresh world the loop plays end to end on the face (§4).
+- **Scope.** The Vivarium's whole, the `vivarium` screen, from its spec: every mibi at home at its size in one full-width window, the bays along the foot, ✓ on a resident or a bay tile to that mibi up close, ← to Home with the ring on the panel. One mibi up close (`habitat.json`) in rest and meet: the resident large, card, stamp, the carried set's door, the card's heart (a state, never a target), the bays strip, the meet with its placeholder, and the targets that lead to Cross, the Sitting and the guide, which draw "not built yet" until their slots. The compositions `module` (with `lamp: null` on the Vivarium's modules), `nameTag`, `chapterPlates` and `bayStrip`, and `listPitch`'s forms (§2.2, §2.3). The Vivarium's graph as data: named edges, `nearestIn` with `ahead`, ordered lists, the strip's `axis`, in place of `nav.mjs` `habitatMove`. The namer (`namer.json`) as an overlay on the top layer (§2.2, §2.6); the meet's first ✓ opens it.
+- **Acceptance.** The gate. `page-vivarium`, `page-vivarium-away`, `page-vivarium-empty` (a fresh world's), `page-mibi-out`, `page-habitat`, `page-meet`, `page-meet-placeholder` and `page-namer` captured on the face. `page-meet` and `page-meet-placeholder` differ from one another. From a fresh world the loop plays end to end on the face (§4).
 - **Journey steps.** From `journey-pending/L2.5.mjs`: `vivarium-pad`, `vivarium-card`, `vivarium-meet` and `vivarium-trickle`. New: `vivarium-whole` (Home's panel opens the whole; a resident opens that mibi up close; ← from up close is the whole, ← from the whole is Home) and `vivarium-namer` (the meet's first ✓ opens the namer; Done names the mibi and hands the ring back).
 - **Later.** `page-habitat-compact`, `page-painted` and `page-offline` (slot 10); Cross (slot 7); the guide from the card's species word (slot 8); the Sitting (slot 9).
 - **Tests.** The whole's, `habitat.json`'s and `namer.json`'s `focus` as focus vectors (`focus.json`); the hatch's landing in the meet and the namer's open and close as timeline tests.
-- **CI gates.** The gate for `habitat` and `namer`.
+- **CI gates.** The gate for `vivarium`, `habitat` and `namer`.
 
 ### 5. L: the Library spread (size: about 0.5 × L2)
 
