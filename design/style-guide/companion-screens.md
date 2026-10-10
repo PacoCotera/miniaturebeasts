@@ -594,6 +594,8 @@ The menu entry and screen read **Head home**: it seals the hold into the bay.
 
 Measured on the frame at 1× (HUD rows 0–31, view 32–563, bottom line 564–599). Every y is a top row; a 2× line is 18 rows tall (capitals 14, descenders 4), a 3× line 27.
 
+Wireframes, 450×600 at 1×: [17 sealed with the notch row](wireframes/companion-care/17-headhome-sealed-notch.png), [18 the Probe broke with the notch row and world lines](wireframes/companion-care/18-headhome-broke-notch.png), [19 a wrapped world line cut at the 476 foot](wireframes/companion-care/19-headhome-cutoff.png).
+
 **The skill notch row.** A notch is not a world-turn line. It is a row of the outcome block, directly under the outcome's last 2× line, on the block's 24 px pitch: row top = the last 2× line's y + 24. The row holds the partner's 24 px HUD ring face on its teal ring at (22, row top − 3, 24, 24), and `‹name› gains a skill notch` 2× `bone` at (54, row top), clipped at 374 px (it ends by x 428; a ten-letter name in the widest letters measures 290 px, x 54–343). The face is centred on the text: face rows row top − 3 to row top + 20, text rows row top to row top + 17. No count, no icon of notches. The row takes 28 px: the crates and everything under them move down 28 px. Only the partner earns a notch, so there is at most one row. Nothing explored earns none.
 
 | Outcome | 2× lines at y | Crates at y, no notch | Notch row top · face · crates at y |
