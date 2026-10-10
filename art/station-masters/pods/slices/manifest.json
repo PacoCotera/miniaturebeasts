@@ -10880,5 +10880,18 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
+ },
+ "cargo-essence-48x64": {
+  "size": [
+   48,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-haul-4-essence.jpg (gemini-3-pro-image)",
+  "made": "the Essence haul container: the caged sealed glass sample tube (the art director's E1 sketch) with flat green essence (#5cbb4c), a light open cage of two bars and two hoops, dark rubber end caps and a steel clip on the top cap; a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
+  "sha256": "5102dadb7d025c9ce07e5d757d1a6097312647ee74a05aa4a735b7a845567b3d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
  }
 }
