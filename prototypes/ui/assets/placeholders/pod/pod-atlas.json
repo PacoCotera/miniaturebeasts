@@ -1467,7 +1467,6 @@
    "file": "prototypes/ui/assets/placeholders/pod/pod-bodies.png",
    "w": 490,
    "h": 550,
-   "policy": "stationChrome",
    "status": "placeholder"
   },
   {
@@ -1475,7 +1474,6 @@
    "file": "prototypes/ui/assets/placeholders/pod/pod-glyphs.png",
    "w": 510,
    "h": 86,
-   "policy": "stationChrome",
    "status": "placeholder"
   }
  ]
