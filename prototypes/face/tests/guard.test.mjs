@@ -25,13 +25,18 @@ test("a removed path that exists again, and an import of one (static, dynamic, o
   assert.match(fails({ "prototypes/station/src/main.mjs": `${IMP} { Scene } ${FRM} "../../ui/scene.mjs";` }).join("\n"), /main\.mjs imports ui\/scene\.mjs/);
   assert.match(fails({ "prototypes/station/src/main.mjs": `const m = await ${IMP}("./screens/home.mjs");` }).join("\n"), /imports station\/src\/screens\/home\.mjs/);
   assert.match(fails({ "prototypes/station/index.html": `<script type="module" ${SRC}="../ui/scene.mjs"></script>` }).join("\n"), /index\.html imports ui\/scene\.mjs/);
+  assert.match(fails({ "prototypes/station/src/main.mjs": `${IMP} { Scene } ${FRM} "/sandbox/ui/scene.mjs";` }).join("\n"), /main\.mjs imports ui\/scene\.mjs/, "an absolute /sandbox/ import");
+  assert.match(fails({ "website/x.mjs": `${IMP} { Scene } ${FRM} "/sandbox/ui/scene.mjs";` }).join("\n"), /x\.mjs imports ui\/scene\.mjs/, "website is walked");
   assert.deepEqual(fails({ "prototypes/station/src/main.mjs": `// ${IMP} { Scene } ${FRM} "../../ui/scene.mjs";\nexport const x = 1;` }), [], "a comment imports nothing");
 });
 test("the canvas is touched only by the face's present and the named decoders", () => {
   assert.match(fails({ "prototypes/station/src/art.mjs": 'const c = document.createElement("canvas");' }).join("\n"), /art\.mjs:1 uses the canvas/);
   assert.match(fails({ "prototypes/ui/assets.mjs": "const g = cv.getContext('2d');" }).join("\n"), /ui\/assets\.mjs:1 uses the canvas/);
   assert.match(fails({ "prototypes/station/src/x.mjs": "ctx.putImageData(a, 0, 0);" }).join("\n"), /putImageData/);
-  assert.deepEqual(fails({ "prototypes/station/src/face-lvgl.mjs": "ctx.putImageData(a, 0, 0);", "prototypes/station/src/masters.mjs": 'document.createElement("canvas").getContext("2d");', "prototypes/station/src/art.mjs": "// a canvas in a comment\nexport const a = 1;" }), []);
+  assert.match(fails({ "prototypes/ui/tests/x.test.mjs": "const c = { canvas: 1 };" }).join("\n"), /tests\/x\.test\.mjs:1 uses the canvas/);
+  assert.match(fails({ "prototypes/ui/tools/x.mjs": "cv.getContext('2d');" }).join("\n"), /ui\/tools\/x\.mjs:1/);
+  assert.match(fails({ "prototypes/station/src/face-lvgl.mjs": "ctx.putImageData(a, 0, 0);" }).join("\n"), /face-lvgl\.mjs:1 uses the canvas/, "only the marked lines of face-lvgl are exempt");
+  assert.deepEqual(fails({ "prototypes/station/src/face-lvgl.mjs": "// guard:canvas begin\nctx.putImageData(a, 0, 0);\n// guard:canvas end\nexport const a = 1;", "prototypes/station/src/masters.mjs": 'document.createElement("canvas").getContext("2d");', "prototypes/station/src/art.mjs": "// a canvas in a comment\nexport const a = 1;" }), []);
 });
 test("JavaScript outside face/tests may not name an export of the node path", () => {
   assert.match(fails({ "prototypes/station/src/face-lvgl.mjs": "M._face_scene_begin();" }).join("\n"), /names an export of the node path/);
@@ -42,6 +47,11 @@ test("a screen registered with draw, nodes or faceNodes fails", () => {
   assert.match(fails({ "prototypes/station/src/screens/x.mjs": 'registerScreen("x", { draw, line, act });' }).join("\n"), /registers a screen with draw/);
   assert.match(fails({ "prototypes/station/src/screens/x.mjs": 'registerScreen("x", { nodes, faceNodes });' }).join("\n"), /with nodes/);
   assert.deepEqual(fails({ "prototypes/station/src/screens/x.mjs": 'registerScreen("x", { line, act, enter });' }), []);
+});
+test("a screen object held in a variable cannot get past registerScreen", async () => {
+  const { registerScreen } = await import("../../station/src/game.mjs");
+  const draw = () => {};
+  for (const k of ["draw", "nodes", "faceNodes"]) assert.throws(() => registerScreen("x", { [k]: draw }), new RegExp(k));
 });
 test("LVGL objects are made in face/src/prim/ only; the platform may make its display and its input device", () => {
   assert.match(fails({ "prototypes/face/src/vocab/x.c": "lv_obj_t *o = lv_label_create(parent);" }).join("\n"), /x\.c:1 calls lv_label_create outside face\/src\/prim\//);

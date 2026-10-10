@@ -32,8 +32,11 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
 
   let frames = 0, copied = 0, first = true;
   // The page's screen: a 2D context with no smoothing, the one place the page touches a canvas (present() below copies into it).
+  // guard:canvas begin
   const display = (canvas) => { canvas.width = W; canvas.height = H; const ctx = canvas.getContext("2d"); ctx.imageSmoothingEnabled = false; return ctx; };
+  // guard:canvas end
   // Copy the redrawn rectangles from LVGL's framebuffer (B, G, R, A in memory) to a 2D canvas context as RGBA.
+  // guard:canvas begin
   function present(ctx) {
     const n = first ? 1 : M._face_dirty_count(), rects = first ? [0, 0, W, H] : Array.from(M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4));
     first = false;
@@ -43,7 +46,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       for (let r = 0; r < h; r++) { let s = (y + r) * W + x, d = r * w; for (let c = 0; c < w; c++, s++, d++) { const v = u32[s]; out[d] = 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff); } }
       ctx.putImageData(img, x, y); copied += w * h;
     }
-  }
+  }  // guard:canvas end
+
   // A picture's pixels into the face (RGBA bytes, straight alpha: a picture's rgba(), stored as B, G, R, A), once per asset id, by the `asset` message: the face allocates the buffer for the id and the page fills it.
   // The table holds 256 pictures: a picture's slot is kept while its scene draws it and recycled, least recently used first, when a scene needs a slot and none is free;
   // a single scene that needs more than the table holds is refused loudly.

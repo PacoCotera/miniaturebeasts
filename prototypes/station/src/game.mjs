@@ -81,7 +81,8 @@ export function saveSettings(patch) { Object.assign(G.settings, patch || {}); tr
 const SCREENS = {};
 const screenListeners = new Set();
 export const onScreenChange = (fn) => screenListeners.add(fn);
-export const registerScreen = (name, screen) => { SCREENS[name] = screen; };
+// A screen is a binding table on the face, never a drawing: registering one with a draw, nodes or faceNodes throws (the import guard checks the same, lvgl-switch.md §5.1).
+export const registerScreen = (name, screen) => { for (const k of ["draw", "nodes", "faceNodes"]) if (screen && k in screen) throw new Error(`registerScreen(${name}): ${k} is the removed JavaScript drawing layer; the face draws the screen`); SCREENS[name] = screen; };
 export const screenOf = (name) => SCREENS[name];
 export function goScreen(name) {
   const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;

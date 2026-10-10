@@ -45,7 +45,7 @@ test("the timeline plays events on its own clock and holds input while a holding
 });
 
 test("the asset manifest registers each picture at its size and refuses a build at another", () => {
-  const pic = { w: 4, h: 4, canvas: () => null };
+  const pic = { w: 4, h: 4, rgba: () => null };
   registerAsset({ id: "t:a", w: 4, h: 4, status: "placeholder", until: "a master", build: () => pic });
   registerAsset({ id: "t:a", w: 4, h: 4, build: () => pic });   // idempotent
   assert.throws(() => registerAsset({ id: "t:a", w: 5, h: 4, build: () => pic }), /different sizes/);

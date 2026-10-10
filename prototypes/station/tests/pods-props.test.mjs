@@ -105,3 +105,56 @@ test("Compare's focus: the targets are the rail's tabs, the ring opens on the op
   assert.equal(compareBackFocus(cm, spec, frameSpec), "kin.1", "the kin whose pod is ui.cmp.b"); assert.equal(compareBackFocus({ ...m(0), ui: { ...m(0).ui, cmp: { a: a.id, b: "nobody", ci: 0 } } }, spec, frameSpec), "pod", "else the pod");
   assert.equal(compareBackFocus(model(whole), spec, frameSpec), null, "not in Compare");
 });
+
+// ---- the Pods strings (moved from the deleted pods-view test): the words the face is given are the table's
+const lineOf = (m) => bodyOf(m).line, pageOf = (m) => bodyOf(m).props.regions.page;
+const open = (st, over = {}) => ({ st, settings, docked: true, crates: 0, present: {}, focus: "pod", ...over, ui: { view: "overview", cur: st.tray[0]?.id ?? null, ci: 0, cmp: null, wildArm: 0, ...(over.ui || {}) } });
+test("no digits on a page, in the origin, in a place's subject or in a trait's name", () => {
+  for (const id of SPECIES) {
+    const st = stock([id], 11); st.tray[0].n = 7; S.skipRead(st, st.tray[0], settings);
+    const fr = frameOf(id);
+    for (let ci = 0; ci < fr.chapters.length; ci++) {
+      const page = pageOf(open(st, { focus: "rail." + ci, ui: { view: "chapter", ci } }));
+      for (const c of page.cells) assert.ok(!/\d/.test(c.name + (c.lines || []).join(" ")), `${id} ${fr.chapters[ci].id}: digits on the page: ${c.name} ${c.lines}`);
+    }
+    const spec1 = bodyOf(open(st)).props.regions.specimen; assert.ok(spec1.origin.every((l) => !/\d/.test(l)), spec1.origin.join("|"));
+    assert.ok(!/\d/.test(lineOf(open(st, { focus: "place.0", ui: { view: "collection" } })).subject));
+  }
+});
+test("the bottom line's three slots: no dots, the centre fits 24 characters, one sentence of six words or fewer on the right, no 'free' or 'half'", () => {
+  const words = (t) => t.trim().split(/\s+/).length;
+  for (const id of SPECIES) {
+    const st = stock([id], 7), p = st.tray[0], check = (what, l) => {
+      for (const k of ["ok", "price", "back", "subject", "need"]) if (l[k]) assert.ok(!/·/.test(l[k]), `${id} ${what}: no "·" in ${k}: ${l[k]}`);
+      if (l.subject) assert.ok(l.subject.length <= 24 || /…$/.test(l.subject), `${id} ${what}: the subject fits 24 characters: ${l.subject}`);
+      if (l.need) assert.ok(words(l.need) <= 6, `${id} ${what}: the need is six words or fewer: ${l.need}`);
+      assert.ok(!/free|half/.test(l.price || ""), `${id} ${what}: no free or half`);
+    };
+    check("unidentified", lineOf(open(st)));
+    S.skipIdentify(st, p); st.d = 20; st.e = 20;
+    for (const f of ["pod", "rail.0", "rail.1", "hatch"]) check(f, lineOf(open(st, { focus: f })));
+    check("place", lineOf(open(st, { focus: "place.0", ui: { view: "collection" } }))); check("page", lineOf(open(st, { focus: "rail.0", ui: { view: "chapter", ci: 0 } })));
+  }
+  const st = stock(["S01"], 3), p = st.tray[0], line = (f) => lineOf(open(st, { focus: f }));
+  assert.equal(line("pod").subject, "sealed until identified");
+  S.skipIdentify(st, p); assert.equal(line("pod").subject, S.spName(p) + " is unread");
+  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, S.spName(p) + " is partly read");
+  st.d = 0; st.readEver = true; const l1 = lineOf(open(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })); assert.equal(l1.need, "needs more ◆"); assert.equal(l1.dim, true);
+});
+test("a sealed tab's subject is '<chapter> is sealed'; the hatch's is 'Back to the <place>'", () => {
+  const st = stock(["S02"], 11), p = st.tray[0]; S.skipRead(st, p, settings);
+  const fr = frameOf("S02"), ci = fr.chapters.findIndex((c) => c.sealed);
+  assert.equal(lineOf(open(st, { focus: "rail." + ci, ui: { view: "chapter", ci } })).subject, fr.chapters[ci].name + " is sealed");
+  assert.equal(lineOf(open(st, { focus: "hatch" })).subject, "Back to the " + S.PLACE_WORD[p.g]);
+});
+test("the hatch's arming plate says only '✓ again'", () => {
+  assert.equal(spec.strings.hatchAgain, "✓ again"); assert.ok(spec.strings.hatchAgain.split(" ").length <= 6);
+});
+test("Compare's need line follows the spec's strings: here, in another chapter, or none", () => {
+  const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);
+  const A = st.tray[0], B = st.tray[1], diff = S.compareDiff(st, A, B), chs = frameOf("S01").chapters;
+  for (let ci = 0; ci < chs.length; ci++) {
+    const l = lineOf(open(st, { focus: null, ui: { cur: A.id, cmp: { a: A.id, b: B.id, ci } } }));
+    assert.equal(l.need, !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere, `chapter ${ci}`);
+  }
+});

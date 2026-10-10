@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 // The import guard (lvgl-switch.md §5.1): the JavaScript drawing layer is gone and stays gone, and the page speaks words to the face, never nodes. No exemptions. It fails when
 //   1. a path in removed.json exists again;
-//   2. anything imports a removed path (a static or dynamic import, a script tag);
-//   3. `canvas`, `getContext`, `putImageData` or another canvas call appears in code under station/src or ui/, except the face's own present and display (station/src/face-lvgl.mjs) and the named
-//      decoders of the placed masters and the pod sprites (station/src/masters.mjs, podsprites.mjs) until png.mjs decodes them;
+//   2. anything imports a removed path (a static or dynamic import, a script tag; relative, or absolute under /sandbox/), in prototypes, .github and website;
+//   3. `canvas`, `getContext`, `putImageData` or another canvas call appears in code under station/src or ui/ (tests and tools too), except the face's own display() and present() (the lines between
+//      the guard:canvas markers in station/src/face-lvgl.mjs) and the named decoders of the placed masters and the pod sprites (station/src/masters.mjs, podsprites.mjs) until png.mjs decodes them;
 //   4. JavaScript outside face/tests names an export of the node path (the test build's `_face_scene_begin`, `_face_node`, `_face_text` and the rest);
-//   5. registerScreen is given a draw, nodes or faceNodes;
+//   5. registerScreen is given a draw, nodes or faceNodes (a literal here; the function itself throws on any object that has one, so a variable cannot get past);
 //   6. an lv_*_create call appears in the face's C outside face/src/prim/ (the platform's lv_display_create and lv_indev_create excepted).
 //   node prototypes/face/tools/guard.mjs        (from anywhere; --root <dir> checks another tree)
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
@@ -23,9 +23,11 @@ function walk(dir, ext, out = []) {
   return out;
 }
 // the code of a JavaScript file with its comments blanked (line and block), strings left as they are
-const code = (s) => s.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " ")).replace(/(^|[^:"'`\\])\/\/[^\n]*/g, "$1");
+const code = (s) => s.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " ")).replace(/(^|[^:"'`\\])\/\/[^\n]*/g, (_, a) => a);
 const CANVAS = /\b(canvas|getContext|putImageData|createImageData|getImageData|OffscreenCanvas|drawImage)\b/i;
-const CANVAS_OK = new Set(["station/src/face-lvgl.mjs", "station/src/masters.mjs", "station/src/podsprites.mjs"]);
+const CANVAS_OK = new Set(["station/src/masters.mjs", "station/src/podsprites.mjs"]);   // the named decoders, until png.mjs decodes the masters and the sprite sheets
+const FACE_LVGL = "station/src/face-lvgl.mjs";   // the face's own display() and present(): the lines between its guard:canvas markers, and no other
+const marked = (raw) => { const ok = new Set(); let on = false; raw.split("\n").forEach((l, i) => { if (/guard:canvas end/.test(l)) on = false; if (on) ok.add(i); if (/guard:canvas begin/.test(l)) on = true; }); return ok; };
 const NODE_EXPORTS = /\b_?face_(scene_begin|scene_end|node|node_tag|text|text_size|ops|ops_size|measure|asset|background|region|selftest_scene)\b/;
 const LV_CREATE = /\blv_[a-z0-9_]+_create\s*\(/g, LV_OK = new Set(["lv_display_create", "lv_indev_create"]);
 
@@ -34,21 +36,22 @@ export function check(root) {
   const removed = JSON.parse(readFileSync(path.join(proto, "face/removed.json"), "utf8")).paths, gone = new Set(removed);
   // 1. a removed path exists again
   for (const p of removed) if (existsSync(path.join(proto, p))) fails.push(`${p} exists again (removed.json)`);
-  const js = [...walk(proto, [".mjs", ".js"]), ...walk(path.join(root, ".github"), [".mjs"])], html = walk(proto, [".html"]);
+  const web = path.join(root, "website"), js = [...walk(proto, [".mjs", ".js"]), ...walk(path.join(root, ".github"), [".mjs"]), ...walk(web, [".mjs", ".js"])], html = [...walk(proto, [".html"]), ...walk(web, [".html"])];
   // 2. anything imports a removed path
   const imports = /(?:\bfrom\s*|\bimport\s*\(?\s*|\bsrc\s*=\s*)["']([^"']+)["']/g;
   for (const f of [...js, ...html]) {
     const s = readFileSync(f, "utf8");
     for (const m of (f.endsWith(".html") ? s : code(s)).matchAll(imports)) {
-      if (!m[1].startsWith(".")) continue;
-      const r = rel(path.resolve(path.dirname(f), m[1]));
+      const r = m[1].startsWith(".") ? rel(path.resolve(path.dirname(f), m[1])) : m[1].startsWith("/sandbox/") ? m[1].slice("/sandbox/".length).replace(/[?#].*$/, "") : null;   // an absolute /sandbox/<p> is prototypes/<p>
+      if (r === null) continue;
       if (gone.has(r)) fails.push(`${rel(f)} imports ${r}, which is removed`);
     }
   }
-  // 3. canvas calls in the page's code
+  // 3. canvas calls in the page's code (tests and tools under station/src and ui/ included)
   for (const f of js) {
-    const r = rel(f); if (!(r.startsWith("station/src/") || r.startsWith("ui/")) || r.includes("/tests/") || r.startsWith("ui/tools/") || CANVAS_OK.has(r)) continue;
-    code(readFileSync(f, "utf8")).split("\n").forEach((l, i) => { if (CANVAS.test(l)) fails.push(`${r}:${i + 1} uses the canvas: ${l.trim().slice(0, 80)}`); });
+    const r = rel(f); if (!(r.startsWith("station/src/") || r.startsWith("ui/")) || CANVAS_OK.has(r)) continue;
+    const raw = readFileSync(f, "utf8"), allowed = r === FACE_LVGL ? marked(raw) : new Set();
+    code(raw).split("\n").forEach((l, i) => { if (CANVAS.test(l) && !allowed.has(i)) fails.push(`${r}:${i + 1} uses the canvas: ${l.trim().slice(0, 80)}`); });
   }
   // 4. the node path's exports named outside face/tests
   for (const f of js) {

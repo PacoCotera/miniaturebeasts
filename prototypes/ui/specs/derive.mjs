@@ -1,7 +1,7 @@
 // The spec's derived rules (lvgl-switch.md §2.3 item 5): pure functions of a spec file's numbers and the counts the props give. They draw nothing. They are the reference the regions check
 // compares the face against, and the second implementation of each rule beside the C one in prototypes/face/src/layout/layout.c; tests/vectors/layout.json, made from this file, is run by both.
 // The rules are the closed list of station-layouts.md: the slanted rail's run, the page's size and grid by trait count, the rack's pitch, the kin ring's pitch, the name plate's width, the
-// message plate's place, the stamp's cell. They were ui/layout.mjs, components/list.mjs, views/pods.mjs and components/stampLabel.mjs, which are frozen with the JavaScript drawing layer.
+// message plate's place, the stamp's cell. They were ui/layout.mjs, components/list.mjs, views/pods.mjs and components/stampLabel.mjs, which were removed with the JavaScript drawing layer.
 
 // The slanted chapter rail (frame.json regions.rail): tabs hang from the top bar, each a parallelogram of top-edge width w leaning `slant` px over its height, each starting where the one
 // before ends. One to `fullUpTo` chapters: all full. More, up to `max`: compact, and the open chapter's tab full. `x0`: Pods at rail.pods.x, or centred on 512 and snapped down to the grid.

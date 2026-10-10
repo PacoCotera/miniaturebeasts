@@ -1,5 +1,5 @@
-// The pixel core, with no canvas and no renderer: the palette, the Bayer dither, the indexed pixel buffer (PB) and its helpers, the frame's constants. Split from gfx.mjs at the freeze
-// (lvgl-switch.md §5.1); this half is kept, the drawing half stays in gfx.mjs until each screen moves to the face. Nothing here touches a document, a canvas or the renderer.
+// The pixel core, with no canvas and no renderer: the palette, the Bayer dither, the indexed pixel buffer (PB) and its helpers, the frame's constants. Kept when the JavaScript drawing layer was deleted
+// (lvgl-switch.md §5.1); the face draws now. Nothing here touches a document, a canvas or the renderer.
 import stationPalette from "../../ui/palettes/station.json" with { type: "json" };
 export const SW = 1024, SH = 600, TOP_H = 40, LINE_H = 38, STAGE_Y = TOP_H, STAGE_H = SH - TOP_H - LINE_H;   // stage 1024×522
 
