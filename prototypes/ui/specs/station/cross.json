@@ -138,7 +138,7 @@
   "find-{kind}-16x16": "crystal, pearl, shard: the overview's sealed chapter",
   "find-{kind}-112x112": "existing (pods.json chapter.page.sealedFindSlot): the chapter view's sealed chapter",
   "rail": "existing: the shared chapter rail's tabs, emblems and pips (frame.json rail)",
-  "frame": "existing: frame-room-habitat-24, frame-cap-confirm-16, frame-cap-confirm-16-dim, frame-cap-back-16, frame-lamp-12-amber",
+  "frame": "existing: frame-room-vivarium-24, frame-cap-confirm-16, frame-cap-confirm-16-dim, frame-cap-back-16, frame-lamp-12-amber",
   "rendered": "not masters but rendered at their size by the build: the parents' portraits 48×48, the ghost 48×48, the seed and end pictures 64×32"
  },
  "buildDraws": "rect (wires, dashes, plates, bands, seeds 8×8, chips, frost and slats), text, and 1 px lines; nothing else",
