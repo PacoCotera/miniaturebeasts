@@ -108,5 +108,45 @@
   "made": "the bonded heart on the Vivarium card: an enamel heart in the house light, no face, no sparkle",
   "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
   "status": "signed"
+ },
+ "notch-skill-16x24": {
+  "size": [
+   16,
+   24
+  ],
+  "src": "typed by hand (source/more_marks.py)",
+  "made": "one skill notch cut into the Vivarium card's plate: sand fill, a shadowed upper-left wall, a lit lower-right wall",
+  "sha256": "2aaf738413d1a649c5947ed2d29b09bae6aa9fc82af722edbfe3cc4e387d2ec4",
+  "status": "signed"
+ },
+ "mark-out-with-companion-64x96": {
+  "size": [
+   64,
+   96
+  ],
+  "src": "typed by hand (source/more_marks.py)",
+  "made": "the mibi's place, kept: the Companion's outline (screen, pad, keys, strap) in mist, standing on a stone ground line",
+  "sha256": "ddb00522eb6431035437331c043ae83c2ec69fd4d6af9c9b3afb0b53e2222d64",
+  "status": "signed"
+ },
+ "spread-progress-full-8x8": {
+  "size": [
+   8,
+   8
+  ],
+  "src": "typed by hand (source/more_marks.py)",
+  "made": "a Library spread progress step, read: a pressed seed inked in soil, a bark edge, lit upper left",
+  "sha256": "71beb5ba2d7b7619bf9fb33bf1d46e5fb1fca2d8745be3d55336560f6e80d98f",
+  "status": "signed"
+ },
+ "spread-progress-empty-8x8": {
+  "size": [
+   8,
+   8
+  ],
+  "src": "typed by hand (source/more_marks.py)",
+  "made": "a Library spread progress step, unread: the same seed as a clay outline",
+  "sha256": "f6eeb286a2828a9336c469b78335c3c44b3100b5d3e6c428710c7efb27184d83",
+  "status": "signed"
  }
 }
