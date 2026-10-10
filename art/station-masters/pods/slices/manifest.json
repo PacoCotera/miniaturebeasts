@@ -10662,5 +10662,44 @@
   "status": "signed",
   "signed_in": "art director, verdict (d09acb12)",
   "status_note": "signed (art director) at 1x: L* 36.0, key R-B 38, sat 24 against the Pods overview 36.8/35/22; floor 0.5 percent above L* 70 (the lit sand rim brings the whole to 4.7, as the overview's 3.3: housing, not glow); hoses clear of the gauges"
+ },
+ "chamber-back-400x320": {
+  "size": [
+   400,
+   320
+  ],
+  "rect": null,
+  "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
+  "made": "the work tray in the housing, drawn by hand: a panel back (the Incubator stage's warm foam), an enamel rim (the sand of base-336x96), the floor 400x16 at (0, 304) in enamel with a bevel edge; matte, no glass edge, no highlight (pass 113)",
+  "sha256": "7ae3dfb8c63c9b484e042016112717fbaa42f97a33048c46beb8ed6e79873321",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+ },
+ "chamber-front-400x320": {
+  "size": [
+   400,
+   320
+  ],
+  "rect": null,
+  "src": "hand-drawn in tools/createpieces.py from room-bench-stage-incubator and base-336x96",
+  "made": "the work tray's front: the rim only, over the founder's feet: the floor's front lip (rows 310 to 319), a transparent layer (pass 113)",
+  "sha256": "3d6d7ed5f44725bf93981bbb88d2ba95c9246886f5994d1545953812afabadaa",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+ },
+ "plate-name-88x24": {
+  "size": [
+   88,
+   24
+  ],
+  "rect": null,
+  "src": "slices/plate-name-80x24.png (signed 9-slice)",
+  "made": "the small plate for the trait line's tag, cut from the signed plate-name 9-slice (insets 14 px across, 8 px down): the 80 px plate widened to 88, its middle 52 px stretched to 60 (pass 113)",
+  "sha256": "69eb5544e9405b2ef311d9968dba3fae0bec6695971d8fa4ef2b527185e09aa7",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
  }
 }
