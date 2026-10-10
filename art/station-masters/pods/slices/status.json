@@ -3296,8 +3296,8 @@
  },
  "vivarium-near-night-544x408": {
   "status": "signed",
-  "signed_in": "art director, light verdict (eb64c0d6)",
-  "note": "signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame"
+  "signed_in": "art director, verdict (night pair grade)",
+  "note": "signed (art director) at 1x: L* 26.0, key R-B 38, sat 64, 0.9 percent above L* 70, R above B; graded down by hand from 30.5 by one linear-light gain of 0.73 so the near view pairs with Idle night 25.0/45/58 and glass night 25.6/46/51 (the pair rule)"
  },
  "idle-vivarium-dawn-1024x568": {
   "status": "signed",

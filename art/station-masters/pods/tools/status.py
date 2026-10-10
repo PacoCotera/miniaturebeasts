@@ -22,7 +22,6 @@ AD_RECORDS = {
  "home-glass-day-640x488": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 38.9, key R-B 75, sat 50 against Idle day 43.1/72/48'),
  "home-glass-dusk-640x488": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56'),
  "vivarium-near-dawn-544x408": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 40.5, key R-B 36, sat 36 against the dawn rule (key R-B >= 35, L* 38-42); day 52.4/59/57'),
- "vivarium-near-night-544x408": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame'),
  "idle-vivarium-day-1024x568": ('signed', 'art director, Idle verdict (62bbd883)', "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference)"),
  "idle-vivarium-dusk-1024x568": ('signed', 'art director, Idle verdict (62bbd883)', "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"),
  "idle-vivarium-dawn-1024x568": ('signed', 'art director, verdict (d09acb12)', 'signed (art director) at 1x: L* 40.5, key R-B 37, sat 33 against the dawn rule (key R-B >= 35, L* 38-42); day 43.1/72/48'),
@@ -57,6 +56,7 @@ AD_RECORDS = {
  "bud-small-64x80": ('new', None, "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"),
  "room-bench-stage-create": ('signed', 'art director, verdict (528b73d5)', "signed (art director) at 1x: L* 35.5, key R-B 37, sat 25 against the Pods overview 36.8/35/22; the signed Incubator stage's frame with its hardware painted out, plain in every keep-clear zone"),
  "idle-vivarium-night-1024x568": ('signed', 'art director, verdict (528b73d5)', 'signed (art director) at 1x: L* 25.0, key R-B 45, sat 58, 0.0 percent above L* 70, R above B, against the revised night rule; the grow-lamp hood painted out, its light kept; placed as the night set with Idle night, glass night and night bed (the pair rule)'),
+ "vivarium-near-night-544x408": ('signed', 'art director, verdict (night pair grade)', 'signed (art director) at 1x: L* 26.0, key R-B 38, sat 64, 0.9 percent above L* 70, R above B; graded down by hand from 30.5 by one linear-light gain of 0.73 so the near view pairs with Idle night 25.0/45/58 and glass night 25.6/46/51 (the pair rule)'),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
