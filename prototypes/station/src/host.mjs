@@ -12,7 +12,7 @@ import { homeBuild } from "./views/home-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
-import { incubatorBuild } from "./views/incubator-props.mjs";
+import { incubatorBuild, knownChapters } from "./views/incubator-props.mjs";
 import { lampText } from "./caddy.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
@@ -109,8 +109,8 @@ export function createBody() {
 // ---- Incubator ----
 // The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). The lamp is the hatched mibi's painting, as Home's.
 export function incubatorBody() {
-  const hm = UI.inc?.hatch ? mibiById(UI.inc.hatch.mibi) : null;
-  return incubatorBuild({ st: G.st, settings: G.settings, ui: UI, lamp: hm ? lampText(hm) ?? "" : "" }, SPECS.incubator, SPECS.pods);
+  const hm = UI.inc?.hatch ? mibiById(UI.inc.hatch.mibi) : null, B = G.st.bud;   // the lamp: the hatched mibi's painting, or the ready bud's
+  return incubatorBuild({ st: G.st, settings: G.settings, ui: UI, lamp: hm ? lampText(hm) ?? "" : B && S.budReady(G.st, G.settings, Date.now()) ? lampText(B) ?? "" : "" }, SPECS.incubator, SPECS.pods);
 }
 
 // ---- the props of the screen on the page ----
@@ -157,6 +157,13 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
     if (e.kind === "arrival") arrivalUntil = Math.max(arrivalUntil, nowMs() + (e.ms || 0));
     send({ t: "event", ...e, hold });
   };
+  // The Incubator's tabs: while a founder's bud grows its unread chapters clear one at a time; each tab that turns read plays the wipe (incubator.json events.wipe), which fills its pips over 1000 ms. The first look at a screen plays none.
+  let seen = null;
+  const wipes = () => {
+    if (UI.screen !== "incubator" || !G.st.bud || UI.inc?.grow || motion && !motion()) { seen = null; return; }
+    const known = knownChapters(G.st, G.st.bud, G.settings, Date.now()), prev = seen; seen = known;
+    if (prev) for (const id of known) if (!prev.includes(id)) play({ kind: "wipe", target: id, ms: SPECS.incubator.events.wipe.ms, hold: SPECS.incubator.events.wipe.hold });
+  };
   const at = (ms, fn) => { timers.push({ t: nowMs() + ms, fn }); };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
@@ -165,6 +172,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
       while (timers.length && timers[0].t <= t) timers.shift().fn();
+      wipes();
       if (!holding() && h.pendingDock) { h.pendingDock = false; onDock(h); }   // a Dock key pressed in a hold is kept (two presses cancel) and acts when the hold ends, before a kept room key: the Dock is a world event (cargo.json keys.dock, frame.json idle.keys.dock)
       if (!holding() && h.pendingRoom) { const k = h.pendingRoom; h.pendingRoom = null; dispatch(h, { screen: UI.screen, target: "room", verb: "room:" + k }); }
     },

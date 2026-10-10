@@ -12,11 +12,13 @@ import { homeStates } from "./home-states.mjs";
 import { cargoStates } from "./cargo-states.mjs";
 import { idleStates } from "./idle-states.mjs";
 import { createStates } from "./create-states.mjs";
+import { incubatorStates } from "./incubator-states.mjs";
 
 const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), check = process.argv.includes("--check");
 const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' goldens" }, home: { states: homeStates, prefix: "", note: "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones)" },
   cargo: { states: cargoStates, prefix: "", note: "Cargo's goldens: the bay (one to three crates, empty, shut, pods waiting), each step of one crate's opening, the report" },
   create: { states: createStates, prefix: "", note: "Create's goldens: nothing read, the shape (as the pod is, changed, a clash, a doing, one look, short, busy, the first founder), the roll's dither halfway and the grow event at three instants" },
+  incubator: { states: incubatorStates, prefix: "", note: "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants and growNow at two" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
