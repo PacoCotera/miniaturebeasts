@@ -803,6 +803,18 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 135 - Energy's three bars (no paid call)
+
+The art director's hand fix on `cargo-energy-48x64`: the three amber bars read as one block, so two 2 px dark gaps (the window's dark, #22201c) are cut across the window's columns in `tools/haulcut.py`, at the thirds of its height, so three bars read at 1x. Energy's mean L* moves 48.0 to 47.0; Data is byte-identical to pass 133 and Essence (pass 134, the Essence Pro edit already run) is unchanged by this. Hashes (sha256 prefix): cargo-energy-48x64 bab3edbd4fd9, cargo-data-48x64 715b0486c948, cargo-essence-48x64 5102dadb7d02. All `new`. 1x numbers, opaque pixels (the three together, for the lead):
+
+| slice | mean L* | key RGB | key R-B | sat |
+| --- | --- | --- | --- | --- |
+| `cargo-energy-48x64` | 47.0 | (144, 143, 131) | 13 | 15 |
+| `cargo-data-48x64` | 51.2 | (114, 171, 200) | -86 | 23 |
+| `cargo-essence-48x64` | 50.2 | (88, 174, 73) | 14 | 29 |
+
+All three: feet on the bottom row, 0.0 percent above L* 70, sat 15, 23 and 29.
+
 ## Pass 134 - the Essence container, and the three together (owner-approved Pro edit)
 
 The art director's approved edit for Essence (the owner reads the vial as an alchemy kit; the art director's sketch E1, "caged sample tube, opened": `essence-field-sketches.png`, masters-pods 6ffb4f0d, cropped to E1 with every caption removed): **1 Pro request** to gemini-3-pro-image (`cargo-haul-4-essence`, with a crop of the Energy and Data painting for the look), succeeded, no retry: **3.86 MXN**; today's total **201.18 MXN of 250** (197.32 + 3.86). Picture kept at `concepts/cargo-haul-3/`. [`tools/haulcut.py`](tools/haulcut.py) cuts `cargo-essence-48x64` by hand: the two dark rubber caps are the solid core, the glass between them is filled in (it is nearly the ground's colour) as a flat dull pale green-grey, the steel clip and the cage keep their painted pixels, the essence is a flat green (#5cbb4c, capped at L* 64), 64 rows, feet on the bottom row, the body graded to L* 41 so the large green field brings the whole to L* 50. Hash (sha256 prefix) 5102dadb7d02. `new`. Energy and Data are byte-identical to pass 133. 1x numbers, opaque pixels (L* 45-49 +-4, sat 35 or less, at most 3 percent above L* 70):

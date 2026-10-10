@@ -82,7 +82,13 @@ for name, box, kind, flatc, made in (("cargo-energy-48x64", (200, 90, 640, 690),
         else: hi = g
     g = (lo * hi) ** 0.5; lin2 = lin * g; Y = lin2 @ np.array([0.2126, 0.7152, 0.0722]); Ls = np.where(Y > 0.008856, 116 * np.cbrt(Y) - 16, 903.3 * Y); knee = 58.0
     L2 = np.where(Ls > knee, knee + 11.0 * (1 - np.exp(-(Ls - knee) / 8.0)), Ls); Y2 = np.where(L2 > 8, ((L2 + 16) / 116) ** 3, L2 / 903.3); out = to_srgb(lin2 * (Y2 / np.maximum(Y, 1e-6))[..., None])
-    out[wm2] = fl; t[..., :3] = out; im = Image.fromarray(np.rint(t).clip(0, 255).astype(np.uint8), "RGBA"); im.save(f"slices/{name}.png", optimize=True); outs[name] = im
+    out[wm2] = fl
+    if kind == "amber":              # the art director's hand fix (pass 134): the three amber bars read as one block: two 2 px gaps in the window's dark cut the window into three bars at 1x
+        ys_w, xs_w = np.where(wm2); wy0, wy1 = int(ys_w.min()), int(ys_w.max()) + 1; bh = (wy1 - wy0 - 4) / 3.0
+        for gi in (1, 2):
+            gy = int(round(wy0 + gi * bh + (gi - 1) * 2)); wx0, wx1 = int(xs_w.min()), int(xs_w.max()) + 1; out[gy:gy + 2, wx0:wx1] = np.array([34.0, 32.0, 28.0]); wm2[gy:gy + 2] = False                  # full-width gaps across the window's columns
+        print("energy window rows", wy0, wy1, "gaps cut")
+    t[..., :3] = out; im = Image.fromarray(np.rint(t).clip(0, 255).astype(np.uint8), "RGBA"); im.save(f"slices/{name}.png", optimize=True); outs[name] = im
     man[name] = {"size": [48, 64], "rect": None, "src": ("source/raw/cargo-haul-4-essence.jpg" if name.startswith("cargo-essence") else SRC) + " (gemini-3-pro-image)", "made": made + "; a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)", "sha256": hashlib.sha256(open(f"slices/{name}.png", "rb").read()).hexdigest()}
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 # proof over the open crate: the Cargo bay (screen 1024x600): the crate region (296, 120, 432, 272), the open crate; Energy at the left and Data at the right of the crate, feet on y 384 (the crate's foot line), the empty third place for Essence (held)
