@@ -10416,13 +10416,18 @@
    1024,
    522
   ],
-  "rect": null,
-  "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
-  "made": "the Pods room set, the redo (pass 95): the Create stage: the overview stage with the nest moved by (-96, +16) to (160, 352), so Create's cradle-front registers on it; the rest as the overview (the panel and the plate); composed; the pods are placed by the renderer, never painted in",
-  "sha256": "0de5a138c598c69829c9d39db2ccd82e51b52ac1d9716769d7927478f6b4eaae",
-  "status": "held",
+  "rect": [
+   0,
+   40,
+   1024,
+   522
+  ],
+  "src": "source/raw/create-stage.jpg (gemini-3-pro-image)",
+  "made": "Create's own stage: the Pods room's sage and sand frame and dark foam floor, plain, with one small gauge and its hose in the upper left (outside every keep-clear zone: rail, roll and trait line, work tray, pod and dish, small chamber and leaves); the gauge low in the middle and the two gauges and the hose at the lower right, which lay in the zones, painted out by hand; a Pro painting, centre-cut to 1024x522, the foam rebuilt by a floor model, raised to a mean L* of 36 (pass 118)",
+  "sha256": "1e16035aa24ee2f23983daa2bd447c19aed56a4e3f858a9b75a6e4ee567f7510",
+  "status": "new",
   "signed_in": null,
-  "status_note": "held (art director): signed as a cut (L* 36.8, key R-B 35, sat 22), but it is the Pods overview's stage with the nest moved, and its panel crosses Create's work tray (x 584-712); replaced by the Create set's own stage"
+  "status_note": "pass 118: Create's own stage (a new Pro painting, owner-approved): the same frame and slate floor as the Incubator stage, plain, one small gauge and its hose in the upper left outside every keep-clear zone, the gauges and hose that lay in the zones painted out by hand; L* 36.0, key R-B 40, sat 25; awaiting the art director's judgement (not signed)"
  },
  "dome-front-304x272": {
   "size": [

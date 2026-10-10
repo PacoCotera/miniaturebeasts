@@ -2576,5 +2576,22 @@
    "thoughtsTokenCount": 248,
    "totalTokenCount": 2473
   }
+ },
+ {
+  "tag": "create-stage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.197824,
+  "mxn": 3.9565,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:49:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 752,
+   "candidatesTokenCount": 1386,
+   "thoughtsTokenCount": 250,
+   "totalTokenCount": 2388
+  }
  }
 ]
