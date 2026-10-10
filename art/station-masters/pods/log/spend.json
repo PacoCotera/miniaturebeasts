@@ -2304,5 +2304,56 @@
    "thoughtsTokenCount": 381,
    "totalTokenCount": 4013
   }
+ },
+ {
+  "tag": "vivarium-near-day try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189188,
+  "mxn": 3.7838,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:37:05Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 934,
+   "candidatesTokenCount": 1333,
+   "thoughtsTokenCount": 228,
+   "totalTokenCount": 2495
+  }
+ },
+ {
+  "tag": "vivarium-near-dusk try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180172,
+  "mxn": 3.6034,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:37:34Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 746,
+   "candidatesTokenCount": 1295,
+   "thoughtsTokenCount": 194,
+   "totalTokenCount": 2235
+  }
+ },
+ {
+  "tag": "vivarium-near-night try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189234,
+  "mxn": 3.7847,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:37:56Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 777,
+   "candidatesTokenCount": 1309,
+   "thoughtsTokenCount": 255,
+   "totalTokenCount": 2341
+  }
  }
 ]
