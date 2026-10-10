@@ -69,10 +69,11 @@ comp = out.copy(); a_u = up_shift[..., 3:] / 255.0; comp[..., :3] = comp[..., :3
 save("crate-closer-opening-384x256", comp, "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture", S2)
 # --- the sealed crate reduced to 256x176 (the whole crate, uniform scale)
 sa = alo = als; bm = als > 0.6; bm[:, 985:] = False; ys, xs = np.where(bm); bx = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1); w_, h_ = bx[2] - bx[0], bx[3] - bx[1]; s = min(256 / w_, 176 / h_)
-def fit_box(arr_rgba, box):
-    x0, y0, x1, y1 = box; w, h = x1 - x0, y1 - y0; s_ = min(256.0 / w, 176.0 / h); nw, nh = max(1, round(w * s_)), max(1, round(h * s_)); r = cut(arr_rgba, box, (nw, nh)); t = np.zeros((176, 256, 4)); t[(176 - nh) // 2 + (176 - nh) % 2:(176 - nh) // 2 + (176 - nh) % 2 + nh, (256 - nw) // 2:(256 - nw) // 2 + nw] = r; return t
-sg_full = rgba(asl, als); sg_full[..., :3] = to_srgb(to_lin(sg_full[..., :3]) * (1 + np.array([0.5, 0.0, -0.7]) * WARM)); sg_full = grade(sg_full, 49.0, 0.0); sealed_small = fit_box(sg_full, bx)
-save("crate-sealed-256x176", sealed_small, "the sealed Cargo crate for the bay's places, 256x176: the sealed picture's crate reduced uniformly (never enlarged)", S2)
+def fit_box(arr_rgba, box, TW=256, TH=176, M=8):
+    """the whole crate reduced uniformly into TW x TH with M px clear on every side (the art director's return on pass 122: no pods ride on it, so it fits whole)"""
+    x0, y0, x1, y1 = box; w, h = x1 - x0, y1 - y0; s_ = min((TW - 2 * M) / float(w), (TH - 2 * M) / float(h)); nw, nh = max(1, round(w * s_)), max(1, round(h * s_)); r = cut(arr_rgba, box, (nw, nh)); t = np.zeros((TH, TW, 4)); oy_ = (TH - nh) // 2; ox_ = (TW - nw) // 2; t[oy_:oy_ + nh, ox_:ox_ + nw] = r; return t, (ox_, oy_, s_)
+sg_full = rgba(asl, als); sg_full[..., :3] = to_srgb(to_lin(sg_full[..., :3]) * (1 + np.array([0.5, 0.0, -0.7]) * WARM)); sg_full = grade(sg_full, 49.0, 0.0); sealed_small, _ = fit_box(sg_full, bx)
+save("crate-sealed-256x176", sealed_small, "the sealed Cargo crate for the bay's places, 256x176: the whole sealed crate reduced uniformly into the box with 8 px clear on every side (never enlarged)", S2)
 # --- the sitting crate: the tag painted out, the gilt sitting glyph on the lid
 asit = sg_full.copy(); ta = (asit[..., 0] > 185) & (asit[..., 1] > 105) & (asit[..., 1] < 205) & (asit[..., 2] < 125) & (asit[..., 3] > 128)
 ta = np.asarray(Image.fromarray((ta * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(15))) > 0; good = (asit[..., 3] > 128) & ~ta
@@ -84,18 +85,26 @@ for _ in range(40):
             mm = hp[1 + dy:1 + dy + have.shape[0], 1 + dx:1 + dx + have.shape[1]]; acc += pad[1 + dy:1 + dy + have.shape[0], 1 + dx:1 + dx + have.shape[1]] * mm[..., None]; cnt += mm
     new_ = (~have) & (cnt > 0) & (asit[..., 3] > 128) | ((~have) & (cnt > 0) & ta); fillc[new_] = acc[new_] / cnt[new_][:, None]; have = have | new_
 asit[..., :3][ta & (asit[..., 3] > 128)] = fillc[ta & (asit[..., 3] > 128)]
+# the tag's lower half lies over the handle (source rows under 590): there the pixels come from the mirror image of the handle about the case's centre line (x 636), which is symmetric, so no smear is left
+CXM = 636.0; yy_s, xx_s = np.mgrid[0:asit.shape[0], 0:asit.shape[1]]; lowm = ta & (asit[..., 3] > 128) & (yy_s >= 590); mx_ = np.clip(np.rint(2 * CXM - xx_s[lowm]).astype(int), 0, asit.shape[1] - 1); srcm = ~ta[yy_s[lowm], mx_]
+ysel, xsel = yy_s[lowm][srcm], xx_s[lowm][srcm]; asit[ysel, xsel, :3] = asit[ysel, mx_[srcm], :3]
 tcx, tcy = (np.where(tag)[1].mean() / 384.0 if len(tx) else 0.5), 0
 ys_t, xs_t = np.where(ta & (asit[..., 3] > 128)); gx, gy = int(xs_t.mean()), int(ys_t.min() + 4) if len(ys_t) else (700, 560)
 print("glyph centre at source", gx, gy)
-sit = fit_box(asit, bx); sc = min(256.0 / (bx[2] - bx[0]), 176.0 / (bx[3] - bx[1])); nw_ = round((bx[2] - bx[0]) * sc); nh_ = round((bx[3] - bx[1]) * sc); ox = (256 - nw_) // 2; oy = (176 - nh_) // 2 + (176 - nh_) % 2
-cx = ox + nw_ / 2.0 + 2; cy = oy + 0.40 * nh_                  # the glyph centred on the lid, a little above the seam where the tag lay
-G = Image.new("RGBA", (256 * 4, 176 * 4), (0, 0, 0, 0)); d = ImageDraw.Draw(G); gw, gh = 24 * 3.2, 16 * 3.2; X0, Y0, X1, Y1 = (cx - gw / 2) * 4, (cy - gh / 2) * 4, (cx + gw / 2) * 4, (cy + gh / 2) * 4
-d.rectangle([X0, Y0, X1, Y1], fill=(125, 84, 53, 255)); d.rectangle([X0 + 12, Y0 + 12, X1 - 12, Y1 - 12], fill=(216, 155, 20, 255)); d.line([(X0 + 12, Y0 + 12), (X1 - 12, Y0 + 12)], fill=(255, 238, 168, 255), width=8); d.line([(X0 + 12, Y0 + 12), (X0 + 12, Y1 - 12)], fill=(255, 238, 168, 255), width=8)
-d.rectangle([X0 + 56, Y0 + 52, X1 - 56, Y1 - 52], fill=(125, 84, 53, 255)); d.rectangle([X0 + 68, Y0 + 64, X1 - 68, Y1 - 64], fill=(15, 76, 80, 255))
-Gs = G.resize((256, 176), Image.LANCZOS); base = Image.fromarray(sit.astype(np.uint8), "RGBA"); base.alpha_composite(Gs); sit = np.asarray(base).astype(float)
-save("crate-sitting-256x176", sit, "the sitting Cargo crate, 256x176: the sealed crate with the tag painted out and the gilt sitting glyph (a 24x16 gilt frame, scaled with the crate) on the lid instead; replaces the old teal crate-sitting-80x56 look", S2)
-s80 = cut(sit, (0, 0, 256, 176), (80, 55)); t80 = np.zeros((56, 80, 4)); t80[0:55] = s80
-save("crate-sitting-80x56", t80, "the sitting Cargo crate for Home's bay, 80x56: the 256x176 sitting crate reduced uniformly (it replaces the old teal crate-sitting-80x56 of pass 89)", S2)
+sit0, (ox, oy, sc) = fit_box(asit, bx); nh_ = (bx[3] - bx[1]) * sc
+def plate(W_, H_, cx_, cy_, pw, ph, scale):
+    """a small matte brass plate (gold frame, a panel inside, lit from the top left): pw x ph px on a W_ x H_ canvas, drawn at 8x and reduced; a hairline shade at the bottom and right, a lit edge at the top and left"""
+    Z = 8; G_ = Image.new("RGBA", (W_ * Z, H_ * Z), (0, 0, 0, 0)); d_ = ImageDraw.Draw(G_); X0_, Y0_ = (cx_ - pw / 2.0) * Z, (cy_ - ph / 2.0) * Z; X1_, Y1_ = (cx_ + pw / 2.0) * Z, (cy_ + ph / 2.0) * Z; r_ = max(1.0, ph * 0.12) * Z
+    d_.rounded_rectangle([X0_, Y0_, X1_, Y1_], radius=r_, fill=(150, 110, 44, 255))                                  # the shade body
+    d_.rounded_rectangle([X0_, Y0_, X1_ - Z * max(0.6, ph * 0.045), Y1_ - Z * max(0.6, ph * 0.045)], radius=r_, fill=(196, 152, 64, 255))   # the lit frame
+    fw = max(2.0, ph * 0.19) * Z; d_.rounded_rectangle([X0_ + fw, Y0_ + fw, X1_ - fw - Z * 0.5, Y1_ - fw - Z * 0.5], radius=r_ * 0.5, fill=(112, 80, 36, 255))   # the panel inside, a deeper brass
+    d_.line([(X0_ + r_, Y0_ + Z * 0.5), (X1_ - r_ - Z, Y0_ + Z * 0.5)], fill=(226, 190, 104, 255), width=max(1, int(Z * max(0.5, ph * 0.04)))); d_.line([(X0_ + Z * 0.5, Y0_ + r_), (X0_ + Z * 0.5, Y1_ - r_ - Z)], fill=(226, 190, 104, 255), width=max(1, int(Z * max(0.5, ph * 0.04))))
+    return G_.resize((W_, H_), Image.LANCZOS)
+lidx = ox + (bx[2] - bx[0]) * sc / 2.0 + 1; lidy = oy + 0.40 * nh_
+base = Image.fromarray(sit0.astype(np.uint8), "RGBA"); base.alpha_composite(plate(256, 176, lidx, lidy, 48, 32, 1.0)); sit = np.asarray(base).astype(float)
+save("crate-sitting-256x176", sit, "the sitting Cargo crate, 256x176: the whole sealed crate (8 px clear on every side) with the tag painted out (the handle part from its mirror image) and a small matte brass plate (gold frame, a panel inside, 48x32, lit from the top left) on the lid instead; replaces the old teal crate-sitting-80x56 look", S2)
+s80_0, (ox8, oy8, sc8) = fit_box(asit, bx, 80, 56, 2); b80 = Image.fromarray(s80_0.astype(np.uint8), "RGBA"); b80.alpha_composite(plate(80, 56, ox8 + (bx[2] - bx[0]) * sc8 / 2.0 + 0.5, oy8 + 0.40 * (bx[3] - bx[1]) * sc8, 24, 16, 1.0))
+save("crate-sitting-80x56", np.asarray(b80).astype(float), "the sitting Cargo crate for Home's bay, 80x56: the whole sealed crate (2 px clear) with the tag painted out and the small brass plate (24x16, the old glyph's size) on the lid; it replaces the old teal crate-sitting-80x56 of pass 89", S2)
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 # proof: sealed, opening and open on the layout's region (the walls are the slate), three placeholder pods in the open crate, beside Home's bay crates
 P = Image.new("RGB", (3 * 392 + 8 + 200, 270 + 8 + 60 + 80), (60, 66, 76)); x = 4

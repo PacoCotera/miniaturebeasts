@@ -3057,7 +3057,7 @@
  "crate-sitting-80x56": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): no pods ride on it, so the crate fits whole: reduce the full sealed case into the box with about 8 px clear on every side (the sides and corner guards are cut now); and the sitting mark is a flat pasted sticker with a teal centre: make it a small matte brass plate on the lid (gold frame, panel inside, 48x32 on the 256 crate, the 24x16 glyph's own size on the 80x56), lit from the top left; clean the tag paint-out smear on the handle; mean R-B 25.9 is over the band (13.5 +8) because of the plate"
+  "note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
  },
  "place-meadow-96x96": {
   "status": "signed",
@@ -3477,11 +3477,11 @@
  "crate-sealed-256x176": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): no pods ride on it, so the crate fits whole: reduce the full sealed case into the box with about 8 px clear on every side (the sides and corner guards are cut now); at 1x L* 49.3, mean R-B 21.4, sat 21.7 within the band"
+  "note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
  },
  "crate-sitting-256x176": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): no pods ride on it, so the crate fits whole: reduce the full sealed case into the box with about 8 px clear on every side (the sides and corner guards are cut now); and the sitting mark is a flat pasted sticker with a teal centre: make it a small matte brass plate on the lid (gold frame, panel inside, 48x32 on the 256 crate, the 24x16 glyph's own size on the 80x56), lit from the top left; clean the tag paint-out smear on the handle; mean R-B 25.9 is over the band (13.5 +8) because of the plate"
+  "note": "pass 124: the whole sealed crate reduced into the box with 8 px clear on every side (2 px at 80x56); the sitting crate with the tag painted out (the handle part from its mirror image, no smear) and a small matte brass plate (gold frame, a panel inside, 48x32 at 256, 24x16 at 80x56, lit from the top left) on the lid; mean R-B 21.0 / 19.8 / 27.0 (home-bay-shut 13.2, band +-8; the 80x56's plate runs over), L* 49.1 / 48.0 / 48.7; awaiting the art director's judgement (not signed)"
  }
 }
