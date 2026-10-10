@@ -43,7 +43,7 @@ void word_page(const char *key) {
   const char *pod = v_pstr(v_fmt("%s.heading.pod", P));
   if (has(pod) && hasH) {   /* Compare: the pod (the list class) and the marks that say who it is */
     v_region(reg, LAYER_PAINTED); v_sprite(v_fmt("%s.pod", key), pod, rx + sa(base, "podAt", 0, 0), ry + sa(base, "podAt", 1, 0), sa(base, "pod", 0, 0), sa(base, "pod", 1, 0));
-    for (int k = 0, nw = v_plen(v_fmt("%s.heading.who", P)); k < nw; k++) { char kind[24]; spec_str(S, v_fmt("%s.who.kinds.%d", base, k), kind, sizeof kind); v_layer(strcmp(kind, "clan") == 0 ? LAYER_PAINTED : LAYER_ART); layer(v_fmt("%s.who.%d", key, k), rx + spec_int(S, v_fmt("%s.who.marks.%d.0", base, k), 0), ry + spec_int(S, v_fmt("%s.who.marks.%d.1", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.2", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.3", base, k), 0), v_pstr(v_fmt("%s.heading.who.%d", P, k))); }
+    for (int k = 0, nw = v_plen(v_fmt("%s.heading.who", P)); k < nw; k++) { char kind[24]; spec_str(S, v_fmt("%s.who.kinds.%d", base, k), kind, sizeof kind); layer(v_fmt("%s.who.%d", key, k), rx + spec_int(S, v_fmt("%s.who.marks.%d.0", base, k), 0), ry + spec_int(S, v_fmt("%s.who.marks.%d.1", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.2", base, k), 0), spec_int(S, v_fmt("%s.who.marks.%d.3", base, k), 0), v_pstr(v_fmt("%s.heading.who.%d", P, k))); }
   } else if (spec_len("props", v_fmt("%s.heading", P)) >= 0 && hasH) {
     char word[V_STR]; snprintf(word, sizeof word, "%s", v_pstr(v_fmt("%s.heading.word", P)));
     v_region(reg, LAYER_ART); layer(v_fmt("%s.emblem", key), rx + H0, ry + H1, 24, 24, v_pstr(v_fmt("%s.heading.emblem", P)));

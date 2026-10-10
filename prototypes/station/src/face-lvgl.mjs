@@ -3,7 +3,6 @@
 // (send), JSON messages out by polling (poll). The same messages cross a Unix socket on the Pi. The rules, the views and the specs stay in JavaScript; the face holds no game state.
 //   messages in:  hello, palette, spec, asset, props, event, key        messages out: ready, focus, intent, done, log, error
 // The face is driven by words only: there is no node path. Tests that need to place primitives by hand use face/tests/node-scene.mjs.
-import { policyOf } from "../../ui/asset-policy.mjs";
 export const LV_KEYS = { up: 17, down: 18, right: 19, left: 20, confirm: 10, back: 27, home: 2, research: 114, library: 108, habitat: 98, dock: 100 };
 export const CONTRACT = 1;
 
@@ -57,7 +56,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
       if (!victim) throw new Error(`the face's picture table is full (${limit} pictures all in this scene); ${id} cannot be added`);
       send({ t: "asset", id: victim[0], drop: true }); handles.delete(victim[0]);
     }
-    const status = pic.status === "master" ? "master" : "placeholder", policy = pic.policy ?? policyOf(id, status);   // the layer the picture shows on: the host's, else its family's (ui/asset-policy.mjs)
+    if (pic.policy !== "art" && pic.policy !== "painted") throw new Error(`the picture ${id} has no layer policy: the host sends "art" or "painted" with every picture (host.mjs picture())`);   // the layer a picture shows on is the host's (ui/asset-policy.mjs); the transport never guesses it
+    const status = pic.status === "master" ? "master" : "placeholder", policy = pic.policy;
     if (send({ t: "asset", id, w: pic.w, h: pic.h, policy, status, src: "heap", ...(pic.slice ? { slice: pic.slice } : {}), ...(pic.tile ? { tile: pic.tile } : {}) }) < 0) throw new Error(`the face refused the picture ${id} (${pic.w}×${pic.h}): ${errors().pop()}`);
     const h = M._face_last_asset(), p = M._face_asset_pixels(h), d = pic.data, out = M.HEAPU8.subarray(p, p + pic.w * pic.h * 4);
     for (let i = 0; i < d.length; i += 4) { out[i] = d[i + 2]; out[i + 1] = d[i + 1]; out[i + 2] = d[i]; out[i + 3] = d[i + 3]; }
@@ -71,7 +71,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     const { seq: _ignored, ...body } = p, key = JSON.stringify(body); if (key === lastProps) return 0;
     const rc = send({ t: "props", seq: seq + 1, ...body }); if (rc === 0) { seq++; lastProps = key; } return rc;
   }
-    return {
+  return {
     M, version, ready, objects: () => M._face_object_count(), refused: () => M._face_node_refused(), beginScene: () => ++sceneNo,
     size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },

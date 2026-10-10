@@ -502,3 +502,9 @@ test("the not-built composition agrees with its wireframes: one line on the stag
   assert.ok(N.strings.idle.startsWith("Idle "), "Idle has no title, so its line names it");
   assert.equal(N.strings.subject, "");
 });
+
+test("every title mark, lower-cased, has a room mark picture: the face looks the mark up by the title's word (frame.c), so a word without one draws an empty mark", () => {
+  const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")), rooms = frame.regions.marks.room;
+  for (const [screen, word] of Object.entries(frame.regions.title.marks)) assert.ok(typeof rooms[word.toLowerCase()] === "string", `the title mark of ${screen} is "${word}": marks.room has no "${word.toLowerCase()}"`);
+  assert.equal(rooms.vivarium, rooms.habitat, "the Vivarium's mark is the habitat's picture (the identifiers stay)");
+});

@@ -2,7 +2,11 @@
 // installScene(f) adds f.scene(nodes, env) and f.setBackground(rgb). env: { rgb(name), cap(px), picture(id) -> { w, h, data }, slice(id), tile(id) }.
 // A sprite or nine-slice picture takes its layer from the node (layer "painted", else art): the helper tells the face so in the asset's `policy`.
 const KIND = { rect: 1, text: 2, sprite: 3, nine: 4, clip: 5, composed: 6 }, LAYERS = { chrome: 0, art: 1, painted: 2, type: 3 };
+import { policyOf } from "../../ui/asset-policy.mjs";
 const enc = new TextEncoder();
+// A test's picture function, given the policy the host's picture() gives a real picture (the page's family table; a stand-in id outside every family is art).
+export const policyFor = (id, status = "placeholder") => { try { return policyOf(id, status); } catch { return "art"; } };
+export const withPolicy = (fn) => (id) => { const p = fn(id); return p && { ...p, status: p.status ?? "placeholder", policy: p.policy ?? policyFor(id, p.status ?? "placeholder") }; };
 const fnv = (str) => { let h = 2166136261; for (const b of enc.encode(str)) { h ^= b; h = Math.imul(h, 16777619); } return h >>> 0; };
 
 export function installScene(f) {
