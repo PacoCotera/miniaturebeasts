@@ -1,0 +1,50 @@
+{
+ "v": 8,
+ "seed": 123456,
+ "wid": "w2n9c",
+ "turn": 4,
+ "expN": 5,
+ "phase": "setup",
+ "tier": 1,
+ "shield": 3,
+ "with": 1,
+ "withSeen": 1,
+ "bay": [],
+ "hold": null,
+ "walkTurn": -1,
+ "probeSeen": 0,
+ "retSeen": [],
+ "dockSeen": 1,
+ "trips": [],
+ "known": [0, 1, 2],
+ "cr": [],
+ "pods": [],
+ "mibis": [
+  { "id": 1, "name": "Dot", "sp": 0, "born": 0, "from": 1, "bonded": true, "mem": "meadow", "outings": 2, "notches": 0 },
+  { "id": 2, "name": "Moss", "sp": 2, "born": 3, "from": 3, "bonded": true, "mem": "wood", "outings": 1, "notches": 0 },
+  { "id": 3, "name": "Fig", "sp": 1, "born": 1, "from": 2, "bonded": false, "mem": null, "outings": 0, "notches": 0 }
+ ],
+ "st": {
+  "schema": 2,
+  "wid": "w2n9c",
+  "at": 5,
+  "turn": 4,
+  "e": 0,
+  "d": 0,
+  "s": 0,
+  "mibis": [
+   { "id": 1, "name": "Dot", "sp": 0, "gs": 3333, "born": 0, "from": { "n": 1, "g": "meadow", "how": "shake" }, "mem": "meadow", "outings": 2, "notches": 0, "bonded": true, "parents": null, "bay": 0, "paint": null, "released": false },
+   { "id": 2, "name": "Moss", "sp": 2, "gs": 4444, "born": 3, "from": { "n": 3, "g": "wood", "how": "calm" }, "mem": "wood", "outings": 1, "notches": 0, "bonded": true, "parents": null, "bay": 1, "paint": null, "released": false },
+   { "id": 3, "name": "Fig", "sp": 1, "gs": 5555, "born": 1, "from": { "n": 2, "g": "rock", "how": "slab" }, "mem": null, "outings": 0, "notches": 0, "bonded": false, "parents": null, "bay": 2, "paint": null, "released": false }
+  ],
+  "nextMibi": 4,
+  "nameN": 3,
+  "dock": { "docked": false, "at": 5 },
+  "dockN": 1,
+  "withReq": { "id": 3, "seq": 2 },
+  "probe": null,
+  "mendFull": true,
+  "returned": [],
+  "log": []
+ }
+}

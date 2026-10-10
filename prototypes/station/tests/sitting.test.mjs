@@ -14,7 +14,7 @@ const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.reso
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", sittingWait: "hours" };
 const H = 3600000, T0 = 1000000;
-const sv = (mibis, turn = 4) => ({ v: 8, seed: 7, wid: "w1", turn, bay: [], mibis, with: null, tier: 1, shield: 3 });   // the Companion's save part, as a dock reads it
+const sv = (mibis, turn = 4, trips = []) => ({ v: 8, seed: 7, wid: "w1", turn, bay: [], mibis, trips, with: null, tier: 1, shield: 3 });   // the Companion's save part, as a dock reads it
 const world = (n = 2) => { const st = S.freshSt("w1", 3, T0); S.normalize(st); S.seedAdults(st, "S01", 7, n, settings); return st; };
 const walked = (st, m, habit = "calm", place = "wood") => { T.recordHabit(st, m, habit); T.recordWalk(st, m, place); return m; };
 const money = (st) => [st.e, st.d, st.s];
@@ -42,11 +42,11 @@ test("the bench's watch: a resident in focus for a minute of its routine records
 });
 
 test("the dock records what came home with the Companion: the habit the mibi did and each place it entered, once; the mibi is listed as home only when its outings went up", () => {
-  const st = world(1), m = st.mibis[0], S1 = sv([{ id: m.id, outings: 1, habitsDone: ["calm"], placesEntered: ["wood", "pond"] }]);
+  const st = world(1), m = st.mibis[0], S1 = sv([{ id: m.id, outings: 1, habitsDone: ["calm"] }], 4, [{ v: 1, n: 1, partner: m.id, places: ["wood", "pond"], carried: [m.id] }]);   // the places come from the trip records, whole every time
   const r = T.dock(st, S1, settings, T0); assert.ok(r.ok && r.docked); assert.deepEqual(r.home, [m.id]); assert.deepEqual(T.habitsOf(m), ["calm"]); assert.deepEqual(m.walked, ["wood", "pond"]); assert.equal(m.outings, 1);
   T.dock(st, S1, settings, T0 + 1);   // lift
   const r2 = T.dock(st, S1, settings, T0 + 2); assert.deepEqual(r2.home, [], "the same outings: nobody came home"); assert.deepEqual(m.walked, ["wood", "pond"]);
-  S1.mibis = [{ id: m.id, outings: 2, habitsDone: ["calm", "nope"], placesEntered: ["wood", "rock"] }]; T.dock(st, S1, settings, T0 + 3); const r3 = T.dock(st, S1, settings, T0 + 4);
+  S1.mibis = [{ id: m.id, outings: 2, habitsDone: ["calm", "nope"] }]; S1.trips.push({ v: 1, n: 2, partner: m.id, places: ["wood", "rock"], carried: [m.id] }); T.dock(st, S1, settings, T0 + 3); const r3 = T.dock(st, S1, settings, T0 + 4);
   assert.deepEqual(r3.home, [m.id]); assert.deepEqual(m.walked, ["wood", "pond", "rock"]); assert.deepEqual(T.habitsOf(m), ["calm"], "an unknown habit is not recorded");
 });
 
@@ -96,7 +96,7 @@ test("the warnings, before the act that pays a moment, only while a sitting is h
 test("the welcome sitting: at the first dock at which a mibi comes home from a walk; the bench alone never gives it; one per player; it waits for the slot and is never lost", () => {
   const st = world(1), m = st.mibis[0];
   T.recordHabit(st, m, "calm"); assert.ok(T.checkWelcome(st, T0, []).early, "a watched habit at the bench: no welcome"); assert.ok(!st.welcomeGiven);
-  const r = T.dock(st, sv([{ id: m.id, outings: 1, habitsDone: ["calm"], placesEntered: ["wood"] }]), settings, T0); assert.ok(r.welcome.ok); assert.equal(st.sitting.source, "welcome"); assert.ok(st.welcomeGiven);
+  const r = T.dock(st, sv([{ id: m.id, outings: 1, habitsDone: ["calm"] }], 4, [{ v: 1, n: 1, partner: m.id, places: ["wood"], carried: [m.id] }]), settings, T0); assert.ok(r.welcome.ok); assert.equal(st.sitting.source, "welcome"); assert.ok(st.welcomeGiven);
   const sv2 = sv([{ id: m.id, outings: 2 }], 5); T.dock(st, sv2, settings, T0 + 1); assert.ok(T.dock(st, sv2, settings, T0 + 2).welcome.again, "one per player");
   // a walk home with no habit recorded still gives it: the dock is the trigger
   const w = world(1), wm = w.mibis[0]; assert.ok(T.dock(w, sv([{ id: wm.id, outings: 1 }]), settings, T0).welcome.ok);
@@ -206,5 +206,5 @@ test("a painted portrait is never 'waiting for the cloud', and a released mibi c
   const offline = { ...settings, paintPortraits: true, caddyReachable: false };
   assert.equal(T.crateState(c, offline, T0 + 3 * H), "waiting for the cloud", "not painted, Caddy unreachable");
   T.landPortrait(st, c.id); assert.equal(T.crateState(c, offline, T0 + 3 * H), "ready", "painted: the Caddy no longer matters"); assert.equal(T.crateLamp(c, offline, T0 + 3 * H), 1);
-  const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.match(T.portraitBlock(g, r), /gone/); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
+  const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.equal(T.portraitBlock(g, r), "back in the wild"); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
 });

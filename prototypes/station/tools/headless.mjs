@@ -23,7 +23,7 @@ export class Player {
     loadFrames();
     this.settings = { ...S.DEFAULT_SETTINGS, economy: "decided", ...settings };   // the decided prices, no top-up
     this.species = species; this.seed = seed; this.start = start; this.now = start; this.walks = 0; this.podN = 0; this.field = field; this.probe = probe; this.walkE = energy; this.growNow = growNow; this.bench = bench; this.carry = 0;
-    this.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 };
+    this.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], trips: [], carried: [], lead: null, carrySeen: 0, tier: 1, shield: 3 };
     this.st = S.freshSt("w1", 0, this.now); S.normalize(this.st);
     this.steps = []; this.with = null; this.marks = {};
   }
@@ -43,8 +43,8 @@ export class Player {
     const crate = { id: "w" + this.walks, n: this.walks, turn: this.sv.turn, at: this.now, e: this.walkE, d: WALK.d, s: WALK.s, pods: [{ id: "p0", sp: speciesIndex(species), species, g: "meadow", how: "calm", gs, k: null }], met: [species], explored: 5, of: 20, lines: [] };
     this.sv.bay.push(crate);
     const m = this.with != null ? S.mibiById(this.st, this.with) : null;
-    this.sv.mibis = m ? [{ id: m.id, outings: (m.outings || 0) + 1, habitsDone: [S.frameFor(m).habits[this.walks % S.frameFor(m).habits.length]], placesEntered: ["wood"] }] : [];   // the Companion's hand-off
-    this.sv.with = m ? m.id : null;
+    this.sv.mibis = m ? [{ id: m.id, outings: (m.outings || 0) + 1, habitsDone: [S.frameFor(m).habits[this.walks % S.frameFor(m).habits.length]] }] : [];   // the Companion's hand-off: the outing and the habit; the places come in the trip record
+    this.sv.carried = m ? [m.id] : []; if (m) this.sv.trips.push({ v: 1, n: this.walks, partner: m.id, places: ["wood"], storm: false, carried: [m.id] });
     if (S.docked(this.st)) S.dockKey(this.st, this.sv, this.settings, this.now);   // lift, so the next dock docks
     const d = T.dock(this.st, this.sv, this.settings, this.now), o = S.openBay(this.st, this.sv, this.settings, this.now);
     let tier2 = null; if (this.probe && S.tier2Ready(this.st, this.settings)) { const a = [this.st.e, this.st.d, this.st.s]; S.installTier2(this.st, this.settings); tier2 = { e: this.st.e - a[0], d: this.st.d - a[1], s: this.st.s - a[2] }; }   // bought at the dock

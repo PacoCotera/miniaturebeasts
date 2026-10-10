@@ -12,7 +12,7 @@ export function roomKey(h, key) {
   if (key === "home") ui.home.f = "room";
   else if (key === "research") { const p = ui.pods; p.cmp = null; p.wildArm = 0; const q = S.neediestPod(h.st); if (q) p.cur = q.id; p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? "place." + Math.max(0, h.st.tray.findIndex((x) => x.id === q.id)) : null); }
   else if (key === "library") { const l = ui.lib; if (l.page == null) { l.page = 0; l.i = 0; } l.f = "spread"; }
-  else if (key === "habitat") { const a = ui.hab; a.f = "stage"; a.bondArm = 0; a.wildArm = 0; }
+  else if (key === "habitat") { const a = ui.hab; a.f = "stage"; a.wildArm = 0; }
   h.goto(SCREEN_OF[key]);
   return true;
 }

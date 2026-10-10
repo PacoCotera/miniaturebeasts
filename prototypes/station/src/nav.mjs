@@ -63,14 +63,14 @@ export function homeMove(targets, cur, dir, room = [480, 280]) {
 }
 
 // --- Habitat's pad: a fixed order -----------------------------------------------------------------------------------------------------
-// Rows, top to bottom: the stage (the resident), the card's chapter plates four to a row, Cross (an adult only), the door, the heart and the gate, and the strip of residents.
+// Rows, top to bottom: the stage (the resident), the card's chapter plates four to a row, Cross (an adult only), the door and the gate, and the strip of residents.
 // ◀▶ walk a row (the strip changes the resident); ◀ off the card's left edge goes back to the stage, ▶ on the stage goes to the card's first plate; ▲▼ go to the row above or
 // below, keeping the column as near as it can; ▼ on the stage and ▼ below the gate go to the strip, ▲ on the strip goes to the gate row, so Cross is one ▲ from the door row.
 export function habitatRows({ chapters = 0, adult = false, bays = [], shown = null } = {}) {
   const ch = Array.from({ length: chapters }, (_, i) => "ch" + i), rows = [["stage"]];
   for (let i = 0; i < ch.length; i += 4) rows.push(ch.slice(i, i + 4));
   if (adult) rows.push(["cross"]);
-  rows.push(["door", "heart", "wild"]);
+  rows.push(["door", "wild"]);
   if (bays.length) rows.push(bays.map((b) => "s" + b));
   return rows;
 }
