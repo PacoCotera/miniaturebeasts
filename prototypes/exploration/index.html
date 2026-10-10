@@ -306,8 +306,9 @@ const LIGHT_OF = { void: 'ink', ink: 'night', night: 'slate', slate: 'stone', st
 // ===================== 1. Constants =====================
 const MW = 16, MH = 20;                       // world map, cells
 const PW = 28, PH = 32, TS = 32;              // living patch, tiles of 32×32 px (about 2×2 screens)
-const SCR_W = 450, SCR_H = 600, HUD_H = 26, LINE_H = 34, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×540
-const CELL = 26, MAP_X = 17, MAP_Y = HUD_H + 10;   // map 416×520 px
+const SCR_W = 450, SCR_H = 600, HUD_H = 32, LINE_H = 36, VIEW_Y = HUD_H, VIEW_H = SCR_H - HUD_H - LINE_H; // view 450×532
+const HUD_T = 3;   // the HUD's padding above (and below) its 26 px of contents
+const CELL = 26, MAP_X = 17, MAP_Y = VIEW_Y + 6;   // map 416×520 px, its 4 px frame on rows 34–561
 const DIRS = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
 const L = { MEADOW: 0, POND: 1, ROCK: 2, WOOD: 3, WATER: 4, CLIFF: 5 };
 const LAND_NAME = ['meadow', 'pond edge', 'rock field', 'wood', 'shallows', 'cliff'];
@@ -3190,8 +3191,8 @@ function drawMap(mode, t) {
   if (mode === 'place') {
     if (firstPlacement()) for (const c of G.spawns) { const p = cxy(c), big = motion() ? (Math.floor(t * 3 + c) % 2) : 1, a = sparkArt(big), px = ox + p.x * CELL, py = oy + p.y * CELL;
       blit(a, px + 13 - Math.floor(a.w / 2), py + 13 - Math.floor(a.h / 2));
-      const sg = spawnSign(c); if (sg) { panel(px + 14, py - 12, 26, 20, C.ink, C.stone);
-        if (sg === 'b') blit(ICON.beat(fr), px + 16, py - 10); else { blit(ICON.paw('bone'), px + 17, py - 6); blit(ICON.paw('bone'), px + 25, py - 10); } } }
+      const sg = spawnSign(c); if (sg) { const ty = Math.max(VIEW_Y + 2, py - 12); panel(px + 14, ty, 26, 20, C.ink, C.stone);   // held at y 34 on the top row
+        if (sg === 'b') blit(ICON.beat(fr), px + 16, ty + 2); else { blit(ICON.paw('bone'), px + 17, ty + 6); blit(ICON.paw('bone'), px + 25, ty + 2); } } }
     const cur = S.ui.cur, p = cxy(cur), pu = motion() && Math.floor(t * 4) % 2 ? 1 : 0;
     brackets(ox + p.x * CELL - 4 - pu, oy + p.y * CELL - 4 - pu, CELL + 8 + pu * 2, CELL + 8 + pu * 2, C.void);   // dark outline under the marker
     brackets(ox + p.x * CELL - 3 - pu, oy + p.y * CELL - 3 - pu, CELL + 6 + pu * 2, CELL + 6 + pu * 2, placeValid(cur) ? C.amber : C.mist);
@@ -3457,9 +3458,9 @@ function drawCallSlot(cs, right) { return right; }
 function drawCallSlotOld(cs, right) {
   if (!cs) return right;
   let rx = right; const col = cs.dim ? C.stone : C.mint;
-  if (cs.energy) { blit(ICON.energy(), rx - 14, 6, cs.dim ? 4 : 0); rx -= 16; }
-  text(cs.label, rx, 6, col, 2, 'right'); rx -= textW(cs.label, 2) + 5;
-  blit(ICON.call(cs.dim ? 'stone' : 'aqua'), rx - 14, 6); return rx - 24;
+  if (cs.energy) { blit(ICON.energy(), rx - 14, 9, cs.dim ? 4 : 0); rx -= 16; }
+  text(cs.label, rx, 9, col, 2, 'right'); rx -= textW(cs.label, 2) + 5;
+  blit(ICON.call(cs.dim ? 'stone' : 'aqua'), rx - 14, 9); return rx - 24;
 }
 function shieldBars(x, y, n, max, w, h) {
   for (let i = 0; i < max; i++) { const bx = x + i * (w + 3); if (i < n) { R(bx, y, w, h, C.bone); R(bx, y + h - 2, w, 2, C.fog); } else { R(bx, y, w, h, C.stone); R(bx + 1, y + 1, w - 2, h - 2, C.ink); } }
@@ -3475,22 +3476,22 @@ function drawClock(right) {
   const lbl = 'T' + wTurn(), w = textW(lbl, 2), x = right - w;
   if (RT.turnShown !== S.turn) { if (RT.turnShown != null) RT.turnFlash = NOW; RT.turnShown = S.turn; }
   const fl = NOW - (RT.turnFlash || -1e9) < 900 && Math.floor((NOW - RT.turnFlash) / 150) % 2 === 0;
-  if (fl) panel(x - 18, 3, w + 22, 20, C.amber);
-  blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 7);
-  text(lbl, x, 6, fl ? C.ink : C.fog); return x - 22;
+  if (fl) panel(x - 18, 6, w + 22, 20, C.amber);
+  blit(art('i-sun', () => { const pb = new PB(11, 11); pb.ell(5.5, 5.5, 2.6, 2.6, C.amber); for (const [x, y] of [[5, 0], [5, 10], [0, 5], [10, 5], [1, 1], [9, 1], [1, 9], [9, 9]]) pb.set(x, y, C.yellow); return pb; }), x - 14, 10);
+  text(lbl, x, 9, fl ? C.ink : C.fog); return x - 22;
 }
 function drawStatus(right) {
-  blit(art('i-radio', () => { const pb = new PB(9, 9); [3, 5, 8].forEach((h, i) => pb.rect(i * 3, 9 - h, 2, h, i < 2 ? C.mist : C.stone)); return pb; }), right - 9, 8);
-  blit(art('i-batt', () => { const pb = new PB(15, 9); pb.rect(0, 0, 13, 9, C.mist); pb.rect(1, 1, 11, 7, C.ink); pb.rect(13, 3, 2, 3, C.mist); pb.rect(2, 2, 3, 5, C.mint); pb.rect(6, 2, 3, 5, C.mint); return pb; }), right - 27, 8);
+  blit(art('i-radio', () => { const pb = new PB(9, 9); [3, 5, 8].forEach((h, i) => pb.rect(i * 3, 9 - h, 2, h, i < 2 ? C.mist : C.stone)); return pb; }), right - 9, 11);
+  blit(art('i-batt', () => { const pb = new PB(15, 9); pb.rect(0, 0, 13, 9, C.mist); pb.rect(1, 1, 11, 7, C.ink); pb.rect(13, 3, 2, 3, C.mist); pb.rect(2, 2, 3, 5, C.mint); pb.rect(6, 2, 3, 5, C.mint); return pb; }), right - 27, 11);
   return drawClock(right - STATUS_W - 6) - 4;
 }
 // The reach grid, top-left corner: one dot per reachable cell in the Probe's range (5×5 at tier 1, 9×9 at tier 2).
 // Hollow: not explored; filled: explored (visited and Called in); your cell is framed; cells you can't reach get no dot.
 function drawReachGrid(x0) {
   const ex = S.exp, r = ex.range, n = r * 2 + 1, big = n <= 5, d = big ? 3 : 2, pitch = d + 1, s0 = cxy(ex.start), rk = S.seed + ':' + ex.n, reach = RT.reachSet && RT.reachKey === rk ? RT.reachSet : (RT.reachSet = new Set(ex.reach), RT.reachKey = rk, RT.reachSet);
-  const y0 = Math.max(0, Math.floor((HUD_H - 1 - (n * pitch - 1)) / 2)), gw = n * pitch - 1;
+  const gw = n * pitch - 1, y0 = HUD_T + Math.max(0, Math.floor((HUD_H - 2 * HUD_T - 1 - gw) / 2));
   const done = !!ex.saidDone, fc = done ? C.mint : C.stone;
-  { const fy = Math.max(0, y0 - 2), fh = Math.min(HUD_H - 1, y0 + gw + 2) - fy; R(x0 - 2, fy, 1, fh, fc); R(x0 + gw + 1, fy, 1, fh, fc);   // a 1 px frame (sides only where 9×9 fills the height)
+  { const fy = Math.max(0, y0 - 2), fh = Math.min(HUD_H - 1, y0 + gw + 2) - fy; R(x0 - 2, fy, 1, fh, fc); R(x0 + gw + 1, fy, 1, fh, fc);   // a 1 px frame, all four sides
     if (y0 >= 2) { R(x0 - 2, fy, gw + 4, 1, fc); R(x0 - 2, fy + fh - 1, gw + 4, 1, fc); } }
   for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
     const X = s0.x - r + i, Y = s0.y - r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue;
@@ -3501,7 +3502,7 @@ function drawReachGrid(x0) {
     else if (big) { R(px, py, 3, 3, C.stone); R(px + 1, py + 1, 1, 1, C.ink); }
     else R(px, py, d, d, C.slate);
   }
-  if (done) { const tx = x0 + gw + 3, ty = HUD_H - 9; for (const [a, b] of [[0, 3], [1, 4], [2, 5], [3, 4], [4, 3], [5, 2], [6, 1], [7, 0]]) R(tx + a, ty + b, 1, 2, C.mint); return tx + 9; }   // a tick that stays: the reach is done
+  if (done) { const tx = x0 + gw + 3, ty = HUD_H - HUD_T - 9; for (const [a, b] of [[0, 3], [1, 4], [2, 5], [3, 4], [4, 3], [5, 2], [6, 1], [7, 0]]) R(tx + a, ty + b, 1, 2, C.mint); return tx + 9; }   // a tick that stays: the reach is done
   return x0 + gw + 2;
 }
 // Material counters (Energy, Data, Essence): icon and number. A gain counts up one per 90 ms with a brief bright
@@ -3513,9 +3514,9 @@ function drawCounter(x, key, icon, value) {
   if (value < st.v || !motion()) { if (value > st.v) st.fl = NOW; st.v = value; }
   else if (value > st.v && NOW - st.last >= 90) { st.v++; st.last = NOW; st.fl = NOW; }
   const shown = String(st.v), fl = NOW - st.fl < 260;
-  blit(ICON[icon](), x, 6);
-  if (fl) panel(x + 15, 4, textW(shown, 2) + 6, 18, C.amber);
-  text(shown, x + 18, 6, fl ? C.ink : C.bone);
+  blit(ICON[icon](), x, 9);
+  if (fl) panel(x + 15, 7, textW(shown, 2) + 6, 18, C.amber);
+  text(shown, x + 18, 9, fl ? C.ink : C.bone);
   return x + counterW(st.v);
 }
 function drawCounters(x, c, pre) { x = drawCounter(x, pre + 'e', 'energy', c.e) + 4; x = drawCounter(x, pre + 'd', 'data', c.d) + 4; return drawCounter(x, pre + 's', 'essence', c.s); }
@@ -3525,23 +3526,23 @@ function drawHUD() {
   const ex = S.exp; R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
   if (!ex) return;
   let x = drawReachGrid(7) + 4;
-  for (let i = 0; i < ex.smax; i++) R(x + i * 9 - 1, 6, 8, 14, C.void);   // each bar with a 1 px dark outline
-  shieldBars(x, 7, ex.shield, ex.smax, 6, 12);
+  for (let i = 0; i < ex.smax; i++) R(x + i * 9 - 1, 9, 8, 14, C.void);   // each bar with a 1 px dark outline
+  shieldBars(x, 10, ex.shield, ex.smax, 6, 12);
   x += ex.smax * 9 + 3;
   const pf = FX.podFlash && NOW - FX.podFlash.at < 700 ? FX.podFlash : null;
-  for (let i = 0; i < ex.hold; i++) { if (pf && pf.i === i && Math.floor((NOW - pf.at) / 120) % 2 === 0) R(x - 1, 2, 18, 22, C.amber); podSlot(x, 3, ex.cargo.pods[i]); x += 18; }
+  for (let i = 0; i < ex.hold; i++) { if (pf && pf.i === i && Math.floor((NOW - pf.at) / 120) % 2 === 0) R(x - 1, 5, 18, 22, C.amber); podSlot(x, 6, ex.cargo.pods[i]); x += 18; }
   x += 4; if (S.bay.length) x = drawCrateCount(x);
   // what has to fit right of the partner's token: storm and fog headings, three counters, Call, battery and radio
   const lvl = 0, fogW = 0, stormW = 0;   // conditions (storm, fog bank) live on the bottom line now
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
-  if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 18); blit(ICON.mini(ex.pt.sp), x, 7); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 6, C.amber); }
+  if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 21); blit(ICON.mini(ex.pt.sp), x, 10); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 9, C.amber); }
   if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }
 }
 function drawTop(title, right, cs) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
-  text(title, 10, 6, C.bone); const rx = drawCallSlot(cs, drawStatus(SCR_W - 6));
-  if (right) text(clipText(right, rx - 30 - textW(title), 2), rx, 6, C.mist, 2, 'right');
+  text(title, 10, 9, C.bone); const rx = drawCallSlot(cs, drawStatus(SCR_W - 6));
+  if (right) text(clipText(right, rx - 30 - textW(title), 2), rx, 9, C.mist, 2, 'right');
 }
 // The bottom line: [✓ what Confirm does · ← where Back goes] | where you are | conditions.
 // Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
@@ -3559,13 +3560,13 @@ function drawWx(w, x, y) {
 function drawLine(o) {
   // [✓ action · ← back] | [where you are] | [conditions]: the two actions together on the left, the data in its own
   // sections, 1 px muted dividers with even padding. The middle shrinks first; the actions are never dropped.
-  const y = SCR_H - LINE_H, ty = y + 10, PAD = 8; R(0, y, SCR_W, LINE_H, C.ink); R(0, y, SCR_W, 1, C.night);
-  const sep = sx => R(sx, y + 8, 1, LINE_H - 14, C.slate);
+  const y = SCR_H - LINE_H, ty = y + 12, PAD = 8; R(0, y, SCR_W, LINE_H, C.ink); R(0, y, SCR_W, 1, C.night);
+  const sep = sx => R(sx, y + 10, 1, LINE_H - 16, C.slate);
   let x = PAD;
   if (o.ok) { text('✓', x, ty, C.orange); x += textW('✓', 2) + 5; text(o.ok, x, ty, o.dim ? C.stone : C.bone, 2, null, true); x += textWT(o.ok, 2); }   // an empty Confirm part: ← is the only way out
   if (o.back) { if (o.ok) { x += 7; text('·', x, ty, C.slate); x += textW('·', 2) + 7; } text('←', x, ty, C.fog); x += textW('←', 2) + 2; text(o.back, x, ty, C.fog, 2, null, true); x += textWT(o.back, 2); }
   const wx = lineWx(), aw = textW('◀', 2), ww = wx ? (wx.lvl ? wx.lvl * 13 + (wx.fog ? 20 : aw) : 0) + (wx.fog ? 14 + aw : 0) : 0, wsx = wx ? SCR_W - PAD - ww - PAD : SCR_W;   // the conditions section and its divider
-  if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 8); }
+  if (wx) { sep(wsx); drawWx(wx, wsx + PAD + 1, y + 10); }
   const mx = x + PAD + 1 + PAD, avail = wsx - PAD - mx, cands = Array.isArray(o.ctx) ? o.ctx : [o.ctx || ''], tw = c => textWT(c.replace('\x01', ''), 2);
   let r = cands.find(c => tw(c) <= avail);
   if (r == null) { r = cands[cands.length - 1]; while (tw(r) > avail && r.includes(' · ')) r = r.slice(0, r.lastIndexOf(' · ')); if (tw(r) > avail) r = ''; }
@@ -3610,32 +3611,33 @@ function drawSetup(t) {
   drawTop('Expedition ' + S.expN, '');
   const fr = motion() ? Math.floor(t * 2) % 2 : 0, shN = S.shield != null ? Math.min(S.shield, tierOf().shield) : tierOf().shield, hurt = shN < tierOf().shield;
   const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier + ' · Shield ' + Math.max(0, shN) + '/' + tierOf().shield + (S.bay.length ? ' · ' + S.bay.length + ' sealed' : '');
-  text(clipText(strip, 420, 2), SCR_W / 2, 34, hurt ? C.amber : C.mist, 2, 'center');
-  if (isDocked()) { panel(70, 506, 310, 26, C.ink, C.mint); text('Docked · lift at the Station', SCR_W / 2, 511, C.mint, 2, 'center'); }
-  else if (S.bay.length) { const n = S.bay.length; panel(70, 488, 310, 48, C.ink, C.amber); text(n + ' consignment' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 494, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 514, C.amber, 2, 'center'); }
+  text(clipText(strip, 420, 2), SCR_W / 2, 40, hurt ? C.amber : C.mist, 2, 'center');
+  // while a message shows, the message box takes the view's foot and neither panel is drawn
+  if (!FX.msg && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift at the Station', SCR_W / 2, 517, C.mint, 2, 'center'); }
+  else if (!FX.msg && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' consignment' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
   const sel = S.ui.sel, dig = digPartner(), digHome = !dig && mibiWith('dig'), deepOk = !!dig;
   // Weather: a storm cloud with a flickering bolt
-  card(20, 58, 410, 84, sel === 0, true);
-  disc(32, 68, 32, 'sand', 'clay'); blit(ICON.cloud(1), 49, 82); blit(ICON.bolt(fr ? 'cream' : 'yellow'), 62 + fr, 96);
-  text('Weather', 112, 68, C.ink, 3); text('Charge stones · pods in the rain', 112, 106, C.stone);
+  card(20, 64, 410, 84, sel === 0, true);
+  disc(32, 74, 32, 'sand', 'clay'); blit(ICON.cloud(1), 49, 88); blit(ICON.bolt(fr ? 'cream' : 'yellow'), 62 + fr, 102);
+  text('Weather', 112, 74, C.ink, 3); text('Charge stones · pods in the rain', 112, 112, C.stone);
   // Deep ground: the burrow's mouth with a glint
-  card(20, 152, 410, 84, sel === 1, deepOk);
-  disc(32, 162, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 186);
-  if (deepOk && fr) { R(70, 186, 2, 2, C.cream); R(69, 187, 4, 1, C.yellow); }
-  text('Deep ground', 112, 162, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : digHome ? 'Caves · take ' + digHome.name + ' at the Station' : 'Caves · needs a digging partner', 306, 2), 112, 200, deepOk ? C.stone : C.fog);
+  card(20, 158, 410, 84, sel === 1, deepOk);
+  disc(32, 168, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 192);
+  if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
+  text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
+  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : digHome ? 'Caves · take ' + digHome.name + ' at the Station' : 'Caves · needs a digging partner', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
   // the partner, as a card
   const w = withMibi(), pm = partnerMibi();
-  card(20, 246, 410, 92, sel === 2, true);
+  card(20, 252, 410, 92, sel === 2, true);
   if (w) { const st = mibiStage(w);
-    if (pm) blit(RING(), 46, 316); blit(creatureArt(w.sp, 'idle', fr, 2), 28, 258);
-    text(clipText(w.name, 200, 3), 112, 254, C.ink, 3);
-    let cx = 112; cx += chip(cx, 286, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 286, 'with you', 'orange', 'bone');
-    text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 314, pm ? C.stone : C.rust); }
-  else if (S.mibis.length) { emptyPodSmall(52, 292); text('No one with you', 112, 258, C.ink, 3); text(clipText('take one at the Station · ' + S.mibis.length + ' at home', 306, 2), 112, 300, C.stone); }
-  else { emptyPodSmall(52, 292); text('No partner yet', 112, 258, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 296 + i * 20, C.stone)); }
+    if (pm) blit(RING(), 46, 322); blit(creatureArt(w.sp, 'idle', fr, 2), 28, 264);
+    text(clipText(w.name, 200, 3), 112, 260, C.ink, 3);
+    let cx = 112; cx += chip(cx, 292, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 292, 'with you', 'orange', 'bone');
+    text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 320, pm ? C.stone : C.rust); }
+  else if (S.mibis.length) { emptyPodSmall(52, 298); text('No one with you', 112, 264, C.ink, 3); text(clipText('take one at the Station · ' + S.mibis.length + ' at home', 306, 2), 112, 306, C.stone); }
+  else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
   // the world preview: the whole map small, the last start flagged, and the count
-  const iy = 354, u = 6; drawWorldInset(24, iy, t, u);
+  const iy = 360, u = 6; drawWorldInset(24, iy, t, u);
   const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
   text('Your world', 136, iy + 2, C.mist); text('Explored ' + done + ' of ' + all + ' cells', 136, iy + 26, C.bone); text('Seen ' + seen + ' · fog ' + (all - seen), 136, iy + 50, C.fog);
   if (S.ui.lastPos != null) { blit(ICON.flag(), 136, iy + 76); text('last start', 154, iy + 78, C.fog); }
@@ -3691,7 +3693,7 @@ function drawMenu(t) {
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
-  const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top = overField ? VIEW_Y + 8 : 110, sc = overField ? 2 : 3;
+  const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
   if (!overField) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10); else if (S.ui.from === 'map') ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 5);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);
   panel(x, top, w, items.length * rowH + 20, C.paper, C.ink);
@@ -3707,15 +3709,15 @@ function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex
 function drawProbe(t) {
   const ex = S.exp, tier = tierOf(); viewBg(); drawTop('Probe', 'tier ' + S.tier);
   const head = (l, y) => text(l, 24, y, C.mist), C1 = 70, C2 = 212;
-  head('Probe', 34);
-  shieldBars(24, 58, ex ? ex.shield : (S.shield != null ? Math.max(0, S.shield) : tier.shield), ex ? ex.smax : tier.shield, 12, 22);
-  text('Reaches ' + tier.range + ' cells each way · ' + tier.hold + ' pods', 120, 54, C.fog);
+  head('Probe', 40);
+  shieldBars(24, 64, ex ? ex.shield : (S.shield != null ? Math.max(0, S.shield) : tier.shield), ex ? ex.smax : tier.shield, 12, 22);
+  text('Reaches ' + tier.range + ' cells each way · ' + tier.hold + ' pods', 120, 60, C.fog);
   const sh = ex ? (canPatch() ? (S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar') : ex.shield >= ex.smax ? 'Shield is whole' : 'Patch: 3 Energy · have ' + ex.cargo.e) : 'Station mends 1 Energy a bar';
-  text(sh, 120, 76, ex && canPatch() ? C.amber : C.stone);
-  { const er = energyInReach(); blit(ICON.energy(), 24, 103); text(ex ? 'Energy in reach: ' + er.e : 'Energy in the hold: ' + ((S.hold && S.hold.e) || 0), 44, 102, C.bone);
-    if (ex) text(er.n ? 'found, not drawn' : 'Call to find it', 426, 102, C.mist, 2, 'right'); }
-  if (S.tier < 2) { panel(18, 124, 414, 26, C.night); text('Tier 2 at the Station: ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 26, 129, C.amber); }
-  head('On the map', 166);
+  text(sh, 120, 82, ex && canPatch() ? C.amber : C.stone);
+  { const er = energyInReach(); blit(ICON.energy(), 24, 109); text(ex ? 'Energy in reach: ' + er.e : 'Energy in the hold: ' + ((S.hold && S.hold.e) || 0), 44, 108, C.bone);
+    if (ex) text(er.n ? 'found, not drawn' : 'Call to find it', 426, 108, C.mist, 2, 'right'); }
+  if (S.tier < 2) { panel(18, 130, 414, 26, C.night); text('Tier 2 at the Station: ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 26, 135, C.amber); }
+  head('On the map', 172);
   const rows = [
     [(x, y) => { blit(ICON.paw('bone'), x - 8, y); blit(ICON.paw('bone'), x - 1, y - 6); }, 'Tracks', 'creatures live here'],
     [(x, y) => blit(ICON.beat(1), x - 11, y - 8), 'Slow beat', 'often a pod'],
@@ -3732,15 +3734,15 @@ function drawProbe(t) {
     [(x, y) => { R(x - 16, y - 11, 32, 22, C.grass); blit(quarterVeil(0, 0), x - 13, y - 11); blit(quarterAlmost(0, 0), x + 1, y - 11); }, 'Quarters', 'dotted till surveyed'],
     [(x, y) => blit(podArt('bone', 1), x - 8, y - 10), 'Pod', 'seen, left behind'],
   ];
-  rows.forEach(([ic, a, b], i) => { const y = 184 + i * 18; panel(22, y, 36, 17, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 17); g.clip(); ic(40, y + 8); g.restore(); text(a, C1, y + 1, C.bone); text(clipText(b, SCR_W - C2 - 8, 2), C2, y + 1, C.mist); });
+  rows.forEach(([ic, a, b], i) => { const y = 190 + i * 18; panel(22, y, 36, 17, C.slate); g.save(); g.beginPath(); g.rect(22, y, 36, 17); g.clip(); ic(40, y + 8); g.restore(); text(a, C1, y + 1, C.bone); text(clipText(b, SCR_W - C2 - 8, 2), C2, y + 1, C.mist); });
   // stones in a place, at 1×: plain, warm (amber ring), charged (crackle and a bolt), and a warned strike (the tile's outline)
-  { const fr = motion() ? Math.floor(NOW / 400) % 2 : 0, y = 436;
+  { const fr = motion() ? Math.floor(NOW / 400) % 2 : 0, y = 442;
     [['plain', () => stoneArt(0, false, 0)], ['warm', () => stoneArt(0, false, fr, 1)], ['charged', () => stoneArt(1, false, fr)], ['strike', null]].forEach(([l, a], i) => { const x = 50 + i * 104;
       panel(x, y, 34, 34, C.sand); if (a) blit(a(), x + 1, y + 1); else { const col = fr ? C.cream : C.yellow; R(x + 1, y + 1, 32, 2, col); R(x + 1, y + 31, 32, 2, col); R(x + 1, y + 1, 2, 32, col); R(x + 31, y + 1, 2, 32, col); }
       text(l, x + 17, y + 37, C.fog, 2, 'center'); }); }
-  head('Field guide', 494);
-  if (!S.known.length) text('No species identified yet', 24, 516, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 512, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 516); text(SPECIES[sp].name, x + 42, 524, C.bone); });
+  head('Field guide', 500);
+  if (!S.known.length) text('No species identified yet', 24, 522, C.stone);
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 518, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 522); text(SPECIES[sp].name, x + 42, 530, C.bone); });
 }
 function drawMats(c, y, cap) {
   [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
@@ -3759,56 +3761,56 @@ function drawBay(x, y) { for (let i = 0; i < BAY; i++) crateIcon(x + i * 140, y,
 function drawCargo(t) {
   const ex = S.exp; viewBg(); drawTop('Cargo', ex ? 'expedition ' + ex.n : 'between expeditions');
   if (ex) {
-    drawMats(ex.cargo, 36, true);
-    text('Pods', 24, 88, C.mist);
-    for (let i = 0; i < ex.hold; i++) { const p = ex.cargo.pods[i], x = 24 + i * 130; panel(x, 108, 122, 36, C.ink, C.slate); podSlot(x + 6, 116, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 118, p ? C.bone : C.stone); }
-    text('This expedition', 24, 156, C.mist);
-    if (!ex.met.length) text('No creatures met yet', 24, 180, C.stone);
-    ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 176, 42, 42, C.ink, C.slate);
-      if (S.known.includes(sp)) blit(creatureArt(sp, 'idle', 0), x + 5, 180); else { blit(silhouette(sp), x + 5, 180); text('?', x + 16, 190, C.bone); }
-      if (ex.newMet.includes(sp)) R(x + 33, 180, 5, 5, C.amber); });
-    text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', 180, 190, C.fog);
+    drawMats(ex.cargo, 42, true);
+    text('Pods', 24, 94, C.mist);
+    for (let i = 0; i < ex.hold; i++) { const p = ex.cargo.pods[i], x = 24 + i * 130; panel(x, 114, 122, 36, C.ink, C.slate); podSlot(x + 6, 122, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 124, p ? C.bone : C.stone); }
+    text('This expedition', 24, 162, C.mist);
+    if (!ex.met.length) text('No creatures met yet', 24, 186, C.stone);
+    ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 182, 42, 42, C.ink, C.slate);
+      if (S.known.includes(sp)) blit(creatureArt(sp, 'idle', 0), x + 5, 186); else { blit(silhouette(sp), x + 5, 186); text('?', x + 16, 196, C.bone); }
+      if (ex.newMet.includes(sp)) R(x + 33, 186, 5, 5, C.amber); });
+    text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', 180, 196, C.fog);
     // how much of the reach is done, in the same picture as the HUD corner
-    text(cargoLine(), 24, 232, C.fog);
-    { const r = S.exp.range, n = r * 2 + 1, pitch = n <= 5 ? 7 : 4, s0 = cxy(ex.start), reach = new Set(ex.reach), gx = 24 + textW(cargoLine(), 2) + 14, gy = 239 - Math.floor(n * pitch / 2);
+    text(cargoLine(), 24, 238, C.fog);
+    { const r = S.exp.range, n = r * 2 + 1, pitch = n <= 5 ? 7 : 4, s0 = cxy(ex.start), reach = new Set(ex.reach), gx = 24 + textW(cargoLine(), 2) + 14, gy = 245 - Math.floor(n * pitch / 2);
       for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) { const X = s0.x - r + i, Y = s0.y - r + j; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue; const c = Y * MW + X; if (!reach.has(c)) continue;
         const px = gx + i * pitch, py = gy + j * pitch, d = pitch - 2;
         if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
         R(px, py, d, d, explored(c) ? C.mint : C.stone); if (!explored(c) && d > 2) R(px + 1, py + 1, d - 2, d - 2, C.night); } }
-    if (canSend()) { card(95, 262, 260, 50, true, true); R(98, 265, 254, 44, C.orange); text('Head home', SCR_W / 2, 276, C.bone, 3, 'center'); }
-    else { card(95, 262, 260, 50, false, false); text('Head home', SCR_W / 2, 270, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 294, C.fog, 2, 'center'); }
-    let y = 326; for (const l of sealPreview().slice(0, 3)) { R(40, y + 6, 4, 4, C.orange); text(clipText(l, 384, 2), 54, y, C.bone); y += 22; }
-    text('The sealed bay', 24, 400, C.mist); drawBay(24, 422);
-    text('Ends the expedition · the world turns', SCR_W / 2, 504, C.stone, 2, 'center');
+    if (canSend()) { card(95, 268, 260, 50, true, true); R(98, 271, 254, 44, C.orange); text('Head home', SCR_W / 2, 282, C.bone, 3, 'center'); }
+    else { card(95, 268, 260, 50, false, false); text('Head home', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 300, C.fog, 2, 'center'); }
+    let y = 332; for (const l of sealPreview().slice(0, 3)) { R(40, y + 6, 4, 4, C.orange); text(clipText(l, 384, 2), 54, y, C.bone); y += 22; }
+    text('The sealed bay', 24, 406, C.mist); drawBay(24, 428);
+    text('Ends the expedition · the world turns', SCR_W / 2, 510, C.stone, 2, 'center');
   } else {
     const h = S.hold || { e: 0, d: 0, s: 0, pods: [] };
-    text('In the hold (unsealed)', 24, 36, C.mist); drawMats(h, 56, true);
-    for (let i = 0; i < 3; i++) { const p = h.pods[i], x = 24 + i * 130; panel(x, 104, 122, 36, C.ink, C.slate); podSlot(x + 6, 112, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 114, p ? C.bone : C.stone); }
-    text('The sealed bay', 24, 160, C.mist); drawBay(24, 184);
-    text(S.bay.length ? bayLine() : 'Nothing sealed · Head home seals the hold', 24, 266, S.bay.length ? C.amber : C.stone);
-    text('Probe tier ' + S.tier + ' · Shield ' + (S.shield == null ? tierOf().shield : Math.max(0, S.shield)) + '/' + tierOf().shield, 24, 310, C.fog);
-    text(isDocked() ? 'Docked at the Station' : 'Away from the Station', 24, 336, isDocked() ? C.mint : C.fog);
-    wrapText('The Station accepts each crate once, when you dock. It cannot see what the Companion carries until then.', 400, 2).forEach((l, i) => text(l, 24, 380 + i * 22, C.stone));
-    text(clipText(turnLine(), 400, 2), 24, 470, C.mist);
+    text('In the hold (unsealed)', 24, 42, C.mist); drawMats(h, 62, true);
+    for (let i = 0; i < 3; i++) { const p = h.pods[i], x = 24 + i * 130; panel(x, 110, 122, 36, C.ink, C.slate); podSlot(x + 6, 118, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 120, p ? C.bone : C.stone); }
+    text('The sealed bay', 24, 166, C.mist); drawBay(24, 190);
+    text(S.bay.length ? bayLine() : 'Nothing sealed · Head home seals the hold', 24, 272, S.bay.length ? C.amber : C.stone);
+    text('Probe tier ' + S.tier + ' · Shield ' + (S.shield == null ? tierOf().shield : Math.max(0, S.shield)) + '/' + tierOf().shield, 24, 316, C.fog);
+    text(isDocked() ? 'Docked at the Station' : 'Away from the Station', 24, 342, isDocked() ? C.mint : C.fog);
+    wrapText('The Station accepts each crate once, when you dock. It cannot see what the Companion carries until then.', 400, 2).forEach((l, i) => text(l, 24, 386 + i * 22, C.stone));
+    text(clipText(turnLine(), 400, 2), 24, 476, C.mist);
   }
 }
 // The top bar at home: Energy, then battery and connectivity, then what Call does.
 function drawHomeTop(title) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
   let x = 8;
-  if (title) { text(title, x, 6, C.bone); x += textW(title, 2) + 14; }
+  if (title) { text(title, x, 9, C.bone); x += textW(title, 2) + 14; }
   x = drawCounters(x, S.exp ? S.exp.cargo : (S.hold || { e: 0, d: 0, s: 0 }), S.exp ? 'x' : 'h');
   drawCrateCount(x + 8);
   drawCallSlot(callSlot(), drawStatus(SCR_W - 6));
 }
 // The bay in the top bar: a crate with the count of sealed consignments.
-function drawCrateCount(x) { if (!S.bay.length) return x; blit(art('i-crate', () => { const pb = new PB(16, 14); pb.rect(0, 2, 16, 12, C.clay); pb.rect(0, 2, 16, 3, C.bark); pb.rect(7, 2, 2, 12, C.paper); pb.outline(); return pb; }), x, 6); text(String(S.bay.length), x + 19, 6, C.sand); return x + 19 + textW(String(S.bay.length), 2) + 6; }
+function drawCrateCount(x) { if (!S.bay.length) return x; blit(art('i-crate', () => { const pb = new PB(16, 14); pb.rect(0, 2, 16, 12, C.clay); pb.rect(0, 2, 16, 3, C.bark); pb.rect(7, 2, 2, 12, C.paper); pb.outline(); return pb; }), x, 9); text(String(S.bay.length), x + 19, 9, C.sand); return x + 19 + textW(String(S.bay.length), 2) + 6; }
 function emptyPod(cx, cy) { for (let a = 0; a < 6.28; a += .1) R(cx + Math.round(Math.cos(a) * 34), cy + Math.round(Math.sin(a) * 44), 2, 2, C.stone); }
 function drawNoMibi() {
-  emptyPod(225, 190);
-  text('No mibi yet', SCR_W / 2, 270, C.bone, 3, 'center');
-  text('Bring a pod home,', SCR_W / 2, 314, C.mist, 2, 'center'); text('raise it at the Station.', SCR_W / 2, 336, C.mist, 2, 'center');
-  if (S.bay.length) text(bayLine(), SCR_W / 2, 372, C.amber, 2, 'center');
+  emptyPod(225, 196);
+  text('No mibi yet', SCR_W / 2, 276, C.bone, 3, 'center');
+  text('Bring a pod home,', SCR_W / 2, 320, C.mist, 2, 'center'); text('raise it at the Station.', SCR_W / 2, 342, C.mist, 2, 'center');
+  if (S.bay.length) text(bayLine(), SCR_W / 2, 378, C.amber, 2, 'center');
 }
 // A juvenile answering Call is still learning: it looks the wrong way first, on two calls in three.
 function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a < 1500 ? Object.assign({ a }, h) : null; }
@@ -3817,7 +3819,7 @@ function drawMibis(t) {
   viewBg(); drawTop('Mibis', S.mibis.length ? S.mibis.length + ' raised' : '', callSlot());
   const list = rosterList(), w = withMibi();
   if (!list.length) { drawNoMibi(); return; }
-  const fr = motion() ? Math.floor(t * 1.2) % 2 : 0, PITCH = 72, top = 36, sel = clamp(S.ui.rSel, 0, list.length - 1);
+  const fr = motion() ? Math.floor(t * 1.2) % 2 : 0, PITCH = 72, top = 42, sel = clamp(S.ui.rSel, 0, list.length - 1);
   const off = Math.max(0, (sel + 1) * PITCH - (VIEW_H - 40));
   const tag = (x, y, label, fill) => { const tw = textW(label, 2) + 10; panel(x, y, tw, 20, C[fill]); text(label, x + 5, y + 3, C.bone); return tw + 4; };
   g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip();
@@ -3851,29 +3853,29 @@ function drawActive(t) {
   viewBg(); drawHomeTop();
   const m = shownMibi(); if (!m) { drawNoMibi(); return; }
   const list = rosterList(), isW = m === withMibi(), st = mibiStage(m), mo = motion();
-  panel(24, 36, 402, 276, C.ink, C.slate);
+  panel(24, 40, 402, 280, C.ink, C.slate);
   const h = callAnim(m), sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < 1800 ? FX.moment : null, sa = sp ? (mo ? NOW - sp.at : 900) : 0;
-  let x = 97, y = 44, pose = 'idle', fr = mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
+  let x = 97, y = 52, pose = 'idle', fr = mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
     if (a < d) flip = true;   // looking the wrong way first
     else { const k = a - d; pose = 'alert'; fr = 0; if (k < 600) y -= Math.round(Math.abs(Math.sin(k / 600 * Math.PI)) * 30); else y += 6; } }
-  if (sp && m.sp === 1) blit(haloArt(), 75, 52);   // a Tuikis glows
+  if (sp && m.sp === 1) blit(haloArt(), 75, 60);   // a Tuikis glows
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
-  blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 280);
+  blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
   blit(bigArt(m.sp, pose, fr), x, y, 0, flip);
-  if (h && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 92 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
-  if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 70);
-  if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 170 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
-  if (sp && m.sp === 1) for (const [sx, sy] of [[90, 80], [340, 110], [120, 240], [320, 230]]) blit(sparkArt(true), sx, sy);
-  if (list.length > 1) { text('◀', 10, 166, C.mist); text('▶', 440, 166, C.mist, 2, 'right'); }
-  text(clipText(m.name, 260, 3), 30, 324, C.bone, 3);
-  chip(30 + textW(clipText(m.name, 260, 3), 3) + 14, 323, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone');
-  text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 362, C.fog);
-  wrapText(activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 388 + i * 22, isW ? C.amber : C.mist));
+  if (h && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
+  if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 78);
+  if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
+  if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
+  if (list.length > 1) { text('◀', 10, 172, C.mist); text('▶', 440, 172, C.mist, 2, 'right'); }
+  text(clipText(m.name, 260, 3), 30, 332, C.bone, 3);
+  chip(30 + textW(clipText(m.name, 260, 3), 3) + 14, 331, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone');
+  text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
+  wrapText(activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
   // the mood slot stays empty until bonding and care exist
   const n = list.length, dx = 16, x0 = Math.round(SCR_W / 2 - (n - 1) * dx / 2);
-  if (n > 1) list.forEach((q, i) => { const px = x0 + i * dx; if (q === withMibi()) R(px - 2, 442, 10, 10, C.amber); R(px, 444, 6, 6, q === m ? C.bone : C.stone); });
+  if (n > 1) list.forEach((q, i) => { const px = x0 + i * dx; if (q === withMibi()) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
 }
 // Call at home: the mibi with you answers. On another mibi's screen it brings the view back first. Free.
 function callWith() {
@@ -3891,9 +3893,9 @@ function spendTime(m) {
 }
 function drawNewWorld() {
   viewBg(); drawTop('New world');
-  text('Start a new world?', SCR_W / 2, 130, C.bone, 3, 'center');
-  text('This map, its creatures, your mibis', SCR_W / 2, 176, C.mist, 2, 'center'); text('and your pins will be gone for good.', SCR_W / 2, 198, C.mist, 2, 'center');
-  ['Keep this world', 'Start a new world'].forEach((s, i) => { const y = 260 + i * 80, sel = S.ui.nw === i;
+  text('Start a new world?', SCR_W / 2, 136, C.bone, 3, 'center');
+  text('This map, its creatures, your mibis', SCR_W / 2, 182, C.mist, 2, 'center'); text('and your pins will be gone for good.', SCR_W / 2, 204, C.mist, 2, 'center');
+  ['Keep this world', 'Start a new world'].forEach((s, i) => { const y = 266 + i * 80, sel = S.ui.nw === i;
     panel(75, y, 300, 54, sel ? (i ? C.red : C.paper) : C.slate, sel ? C.ink : null); if (sel) brackets(68, y - 7, 314, 68, C.amber);
     text(s, SCR_W / 2, y + 20, sel ? (i ? C.bone : C.ink) : C.fog, 2, 'center'); });
 }
@@ -3902,15 +3904,15 @@ function drawNewWorld() {
 function drawSealed(t) {
   const r = S.report; viewBg(); drawTop('Head home', r ? 'expedition ' + r.n : '');
   if (!r) return;
-  let y = 40;
-  if (r.reason === 'break') { text('The Probe broke', 22, y, C.coral, 3); y += 34;
+  let y = 46;   // every line below is clipped at 410 px, so nothing passes x 432
+  if (r.reason === 'break') { text(clipText('The Probe broke', 410, 3), 22, y, C.coral, 3); y += 34;
     text(clipText(r.dropped ? 'Your ' + numWord(r.dropped) + ' pod' + (r.dropped === 1 ? '' : 's') + ' fell where it broke (skull on the map).' : 'Nothing was in the hold.', 410, 2), 22, y, C.bone); y += 24;
     text(clipText('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), 410, 2), 22, y, C.peach); y += 24;
-    text('Dock at the Station: it mends the Probe free.', 22, y, C.amber); y += 34; }
-  else if (r.waited) { text('Nothing explored', 22, y, C.bone, 3); y += 34; text('The world waits · nothing is sealed.', 22, y, C.fog); y += 24; text('Your finds stay in the hold.', 22, y, C.fog); y += 34; }
-  else if (r.sealed) { text('Sealed', 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
-  else if (r.kept) { text('Bay full', 22, y, C.amber, 3); y += 34; text('Your finds stay in the hold, unsealed.', 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text('A break would lose them · dock to free the bay.', 22, y, C.fog); y += 34; }
-  else { text('Home, hold empty', 22, y, C.bone, 3); y += 34; text('Nothing to seal this time.', 22, y, C.fog); y += 34; }
+    text(clipText('Dock at the Station: it mends the Probe free.', 410, 2), 22, y, C.amber); y += 34; }
+  else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('The world waits · nothing is sealed.', 410, 2), 22, y, C.fog); y += 24; text(clipText('Your finds stay in the hold.', 410, 2), 22, y, C.fog); y += 34; }
+  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
+  else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; text(clipText('Your finds stay in the hold, unsealed.', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text(clipText('A break would lose them.', 410, 2), 22, y, C.fog); y += 34; }
+  else { text(clipText('Home, hold empty', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Nothing to seal this time.', 410, 2), 22, y, C.fog); y += 34; }
   // the bay: three crates, the new one sliding in
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
   for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
@@ -3921,8 +3923,8 @@ function drawSealed(t) {
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
 function drawTurnLines(r, y) {
-  text('Meanwhile, the world turned', 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
-  for (const l of r.lines.slice(0, 3)) { if (y > 500) break; R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s2, i) => text(s2, 40, y + i * 20, C.bone)); y += 20 * wrapText(l, 390, 2).length + 6; }
+  text(clipText('Meanwhile, the world turned', 410, 2), 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
+  for (const l of r.lines.slice(0, 3)) { if (y > 506) break; R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s2, i) => text(clipText(s2, 410 - 18, 2), 40, y + i * 20, C.bone)); y += 20 * wrapText(l, 390, 2).length + 6; }
 }
 function outpostLights() { const out = []; for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && fs(String(c), f.id).lightT) out.push(outpostLeft(String(c), f)); } return out; }
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
