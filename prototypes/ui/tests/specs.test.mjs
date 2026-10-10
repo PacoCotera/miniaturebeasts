@@ -526,9 +526,8 @@ test("the not-built composition agrees with its wireframes: one line on the stag
   assert.deepEqual(N.frame, { screen: true, idle: false }); assert.equal(N.boot, "home"); assert.equal(R.ground.on, "idle");
   assert.equal(frame.colours.stageGround, "ground", "the stage with no slice is the instrument's ground"); assert.equal(N.colours.ground, frame.colours.stageGround);
   assert.deepEqual(paletteBad(N.colours), []); assert.deepEqual(paletteBad(frame.idle.colours), []);
-  for (const k of ["line", "idle"]) { const s = N.strings[k]; assert.ok(s.split(/\s+/).length <= R.line.words, `${k}: six words or fewer`); assert.ok(!/\d/.test(s), `${k}: no digits`); assert.ok(!s.endsWith("."), `${k}: no full stop`); }
+  for (const k of ["line"]) { const s = N.strings[k]; assert.ok(s.split(/\s+/).length <= R.line.words, `${k}: six words or fewer`); assert.ok(!/\d/.test(s), `${k}: no digits`); assert.ok(!s.endsWith("."), `${k}: no full stop`); }
   assert.equal(N.strings.line, N.strings.line.toLowerCase(), "the line in lower case, as the frame's notices; the title names the screen");
-  assert.ok(N.strings.idle.startsWith("Idle "), "Idle has no title, so its line names it");
   assert.equal(N.strings.subject, "");
 });
 

@@ -57,3 +57,10 @@ test("the line: the first that holds of crates (docked), the bud ready, the bud 
     st.dock = { docked: true, at: T0 }; assert.equal(L(st, sv0({ carried: [st.mibis[0].id] })), "", "docked, nothing about them"); }
   for (const t of [...Object.values(frame.idle.strings.crates), frame.idle.strings.budReady, frame.idle.strings.budGrowing, ...Object.values(frame.idle.strings.out)]) { assert.ok(t.replace("{name}", "Bean").split(" ").length <= 6, t); assert.ok(!/\d/.test(t), t); }
 });
+test("the line's one fact comes from the rule (state.mjs idleKey) and its order is frame.json's: crates, budReady, budGrowing, out", () => {
+  const order = frame.idle.strings.order, st = world(); adults(st, 3); st.dock = { docked: true, at: T0 }; st.bud = { kind: "founder", species: "S01", start: Date.now() - 1e9, minutes: 5 };
+  const seen = [], sv = sv0({ bay: [crate(1)], carried: [st.mibis[0].id] });
+  seen.push(S.idleKey(st, sv, settings).key); sv.bay = []; seen.push(S.idleKey(st, sv, settings).key); st.bud.start = Date.now(); seen.push(S.idleKey(st, sv, settings).key); st.bud = null; st.dock = { docked: false, at: T0 }; seen.push(S.idleKey(st, sv, settings).key);
+  assert.deepEqual(seen, order, "each key shows only when the ones before it do not hold"); assert.deepEqual(S.idleKey(st, sv0(), settings), null);
+  assert.deepEqual(S.idleKey(st, sv, settings), { key: "out", n: 1, name: st.mibis[0].name });
+});

@@ -104,4 +104,3 @@ export const projectCarried = () => S.projectCarried(G.st, G.sv);
 export const homeMibis = () => S.homeMibis(G.st, G.sv);
 export const mibiById = (id) => S.mibiById(G.st, id);
 export const podById = (id) => S.podById(G.st, id);
-export const arriving = () => UI.cargo.state === "opening";   // the crates open one at a time (cargo.json events.opening): the screen does not go idle meanwhile

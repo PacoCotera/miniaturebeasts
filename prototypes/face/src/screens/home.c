@@ -237,7 +237,7 @@ void home_words(void) {
   ent_load(cur);
   { int st[4]; char ground[24]; spec_str("frame", "colours.stageGround", ground, sizeof ground);   /* the stage's ground under the bezel and the column, the frame's (as every screen's stage) */
     if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
-  word_livingWindow("home", "bezel", "glass", v_pstr("regions.glass.picture"));
+  word_livingWindow("home", "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"));
   glass_group(cur);
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
   build_restKnob(strcmp(cur, "knob") == 0);
@@ -284,26 +284,15 @@ void home_key(int code) {
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
   int idle = v_pbool("idle", 0);
-  if ((strcmp(v_pstr("screen"), "home") != 0 && !idle) || !spec_has(H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
+  if ((strcmp(v_pstr("screen"), "home") != 0 && !idle) || !spec_has(idle ? "frame" : H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
   int t = (int)((now - g_t0) / STEP_MS); if (t == g_last_tick) return 0; g_last_tick = t; return 1;
 }
 
 /* ---- Idle (frame.json idle, station-layouts.md Idle): the whole 1024 x 600 with no frame: the Vivarium's painting (until its master the flat plates of idle.colours), the residents walking, the bed and the carried set asleep,
    and the one line on its strip. The same living-window code as Home's glass, on the frame spec's rectangles. ---- */
-static const char *ic(const char *key) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str("frame", v_fmt("idle.colours.%s", key), o, 24); return o; }
 void idle_words(void) {
   g_idle = 1; ent_load("");
-  int v[4], ground[4], foot[4]; hrect("regions.glass.rect", v); hrect("regions.glass.ground", ground); hrect("regions.glass.foot", foot);
-  v_region("vivarium", LAYER_CHROME);
-  v_rect("vivarium.back", v[0], v[1], v[2], v[3], ic("back"));
-  v_rect("vivarium.ground", ground[0], ground[1], ground[2], ground[3], ic("ground")); v_rect("vivarium.groundTop", ground[0], ground[1], ground[2], 1, ic("groundTop"));
-  v_rect("vivarium.foot", foot[0], foot[1], foot[2], foot[3], ic("foot"));
-  const char *pic = v_pstr("regions.vivarium.picture"); if (has(pic)) { v_name("vivarium"); v_sprite("vivarium.master", pic, v[0], v[1], v[2], v[3]); }
+  word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"));
   glass_group("");
-  { int s[4], l[4];
-    if (v_spec_rect("frame", "idle.regions.strip.rect", s) && v_spec_rect("frame", "idle.regions.line.rect", l)) {
-      v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ic("strip")); v_rect("idle.strip.rule", s[0], s[1], s[2], 1, ic("rule"));
-      const char *line = v_pstr("frame.idle.line"); int px = spec_int("frame", "idle.regions.line.px", 16);
-      if (*line) { int w = v_measure(line, px), mid = spec_int("frame", "idle.regions.line.middle", 584), cx = spec_int("frame", "idle.regions.line.centre", 512); v_region("idle.line", LAYER_TYPE); v_text("idle.line", line, cx - v_half(w), mid - v_half(v_cap(px)), w, px, ic("line")); } } }
   g_idle = 0;
 }

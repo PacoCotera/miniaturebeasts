@@ -7,19 +7,12 @@ import { livingOf } from "./home-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
-// The line (frame.json idle.strings): the first of the order that holds, none (empty) otherwise. Crates only while docked (the walk crates, one to three; more, the count dropped); `out` only while the Companion is away with mibis carried.
+// The line (frame.json idle.strings): the words of the one fact the rule gives (S.idleKey); none, empty. More than three crates read without a count; one mibi out is named, two or three are counted.
 export function idleLine(m, I) {
-  const { st, sv, settings } = m, T = I.strings, docked = !!m.docked;
-  for (const key of T.order) {
-    if (key === "crates") { const n = docked ? S.bayCrates(st, sv).length : 0; if (n) return n > 3 ? T.crates.many : T.crates[n]; }
-    else if (key === "budReady") { if (S.budReady(st, settings)) return T.budReady; }
-    else if (key === "budGrowing") { if (st.bud) return T.budGrowing; }
-    else if (key === "out") {
-      const ids = docked ? [] : S.carriedIds(st, sv), mibis = ids.map((id) => S.mibiById(st, id)).filter(Boolean);
-      if (mibis.length) return mibis.length === 1 ? fill(T.out["1"], { name: mibis[0].name }) : T.out[String(Math.min(mibis.length, 3))];
-    }
-  }
-  return T.none;
+  const T = I.strings, k = S.idleKey(m.st, m.sv, m.settings); if (!k) return T.none;
+  if (k.key === "crates") return k.n > 3 ? T.crates.many : T.crates[k.n];
+  if (k.key === "out") return k.n === 1 ? fill(T.out["1"], { name: k.name }) : T.out[String(Math.min(k.n, 3))];
+  return T[k.key];
 }
 
 export function idleBuild(m, frame) {

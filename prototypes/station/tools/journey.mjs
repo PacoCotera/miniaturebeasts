@@ -184,12 +184,13 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
 { stepOf("idle-vivarium");   // Idle is the whole screen with its living window and one line; the first press only wakes; the Dock key wakes and docks (or lifts)
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.evaluate(() => { window.__st.UI.idle = false; window.__st.UI.home.f = "room"; window.__st.goto("pods"); window.__st.goto("home"); }); await page.waitForTimeout(500);
-  await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(500);
+  await page.evaluate(() => { window.__st.UI.lastInput = performance.now() - 61000; }); await page.waitForTimeout(700);   // the idle timer (60 s without a press), not a flag
   { const p = await props(), st0 = await st(); expect(p.idle === true && p.regions.bed.state === "docked" && p.regions.bed.sleepers.length === 1 && p.regions.residents.length === st0.mibis.filter((m) => !m.released).length - 1 && !p.frame.top, "idle-vivarium: Idle shows the residents and the carried mibi asleep on the bed, no frame: " + JSON.stringify([p.regions.bed.state, p.regions.residents.length, Object.keys(p.frame)])); }
   const e = (await st()).e; let u = await hpress("confirm", 400); expect(!u.idle && u.screen === "home" && (await st()).e === e, "idle-vivarium: the first press wakes and nothing else: " + JSON.stringify(u));
-  await page.evaluate(() => { window.__st.UI.home.f = "pods"; window.__st.goto("pods"); window.__st.UI.idle = true; }); await page.waitForTimeout(400);
+  await page.evaluate(() => { window.__st.UI.home.f = "pods"; window.__st.goto("pods"); window.__st.UI.lastInput = performance.now() - 61000; }); await page.waitForTimeout(700);
   u = await hpress("dock", 500); expect(!u.idle && u.screen === "pods" && !(await st()).dock.docked, "idle-vivarium: the Dock key on Idle (docked) wakes and lifts, the screen under Idle shows: " + JSON.stringify([u, (await st()).dock]));
-  await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(400);
+  await page.evaluate(() => { window.__st.UI.lastInput = performance.now() - 61000; }); await page.waitForTimeout(700);
+  { const u0 = await ui(); expect(u0.idle === true, "idle-vivarium: the timer brings Idle again: " + JSON.stringify(u0)); }
   u = await hpress("dock", 500); expect(!u.idle && u.screen === "home" && u.home === "room" && (await st()).dock.docked, "idle-vivarium: the Dock key on Idle (lifted) wakes, docks and lands on Home with the ring on the room: " + JSON.stringify([u, (await st()).dock])); }
 { const file = path.resolve(here, "../../face/golden/journey-home.json"), json = JSON.stringify({ _note: "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps: trace }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }

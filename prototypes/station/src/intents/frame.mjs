@@ -36,6 +36,12 @@ export function dock(h, fromIdle = false) {
   if (h.ui.screen !== "home" && h.ui.screen !== "cargo") h.say(r.msg);   // on Home and Cargo the Dock key leaves no plate (home.json keys.dock, cargo.json keys.dock): the top bar, the bed, the bay and the line say it; a refusal (above) shows its plate
   h.save(); return r;
 }
+// The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's report card; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card.
+export function idleTick(h, t, idleMs) {
+  const ui = h.ui; if (ui.idle) return;
+  if (ui.resting || ui.entering || h.arriving() || h.holding() || ui.cargo?.state === "report") ui.lastInput = Math.max(ui.lastInput, t);
+  else if (t - ui.lastInput > idleMs) enterIdle(h);
+}
 // The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
 export function enterIdle(h) {
   const ev = h.specs.frame.idle.enter.transition;
