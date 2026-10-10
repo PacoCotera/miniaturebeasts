@@ -797,6 +797,10 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 126 - the opening crate's lid lip and gap shadow (no paid call)
+
+The art director's hand fix on `crate-closer-opening-384x256` (the closer set stays held for the region question): the lifted lid has a lit lower lip (its last two rows lightened, matte) and the gap a soft shadow, darkest under the lid and fading down the case's front over 5 px, so it no longer reads as a flat dark line (`tools/cargocut.py`). The open and sealed closers and the small crates are byte-identical. Honest note: the gap's left and right ends still run into the cropped corner guards.
+
 ## Pass 125 - the Probe drafts (owner-approved Pro requests)
 
 The Station art director's PROBE DESIGN step, 2 Pro requests, one per direction, no retry, cap 9 MXN: A, the sampler **4.56 MXN** and B, the scout **4.07 MXN**: 8.63; today's total **154.83 MXN of 250**. Two concept drafts for the art director to choose from (not slices, not in the manifest or status): `concepts/station-probe-drafts/` (its README has the table and the honest notes). Neither shows a needle, syringe, net, drill, weapon or face.

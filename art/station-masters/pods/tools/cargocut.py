@@ -66,6 +66,19 @@ for x in range(W):
 dark = np.array([46.0, 40.0, 34.0, 255.0]); gp = gapm & ~(low[..., 3] > 128)
 out[gp] = dark
 comp = out.copy(); a_u = up_shift[..., 3:] / 255.0; comp[..., :3] = comp[..., :3] * (1 - a_u) + up_shift[..., :3] * a_u; comp[..., 3] = np.maximum(comp[..., 3], up_shift[..., 3])
+# the art director's return on pass 122 (the torn gap read as a flat dark line): the lifted lid gets a lit lower lip (its last two rows lightened, matte) and the gap a soft shadow: darkest under the lid, fading down the case's front over 5 px
+cl = comp.copy(); H2, W2, _ = cl.shape
+for x in range(W2):
+    col = up_shift[:, x, 3] > 128
+    if not col.any(): continue
+    yb = int(np.where(col)[0].max()); cl[yb - 1:yb + 1, x, :3] = np.clip(cl[yb - 1:yb + 1, x, :3] * 1.22 + 6, 0, 255)           # the lit lip
+    ys_g = np.where(gp[:, x])[0]
+    for k_, yg in enumerate(ys_g): cl[yg, x, :3] = np.array([38.0, 34.0, 30.0]) + (np.array([84.0, 88.0, 78.0]) - np.array([38.0, 34.0, 30.0])) * (k_ / max(1, len(ys_g)))     # the gap, soft: dark at the top, the shadowed case at the bottom
+    if len(ys_g):
+        y0g = int(ys_g.max()) + 1
+        for k_ in range(5):
+            if y0g + k_ < H2 and cl[y0g + k_, x, 3] > 128: cl[y0g + k_, x, :3] = cl[y0g + k_, x, :3] * (0.62 + 0.076 * k_)                      # the shadow on the case's front
+comp = cl
 save("crate-closer-opening-384x256", comp, "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture", S2)
 # --- the sealed crate reduced to 256x176 (the whole crate, uniform scale)
 sa = alo = als; bm = als > 0.6; bm[:, 985:] = False; ys, xs = np.where(bm); bx = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1); w_, h_ = bx[2] - bx[0], bx[3] - bx[1]; s = min(256 / w_, 176 / h_)
