@@ -797,6 +797,10 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 125 - the Probe drafts (owner-approved Pro requests)
+
+The Station art director's PROBE DESIGN step, 2 Pro requests, one per direction, no retry, cap 9 MXN: A, the sampler **4.56 MXN** and B, the scout **4.07 MXN**: 8.63; today's total **154.83 MXN of 250**. Two concept drafts for the art director to choose from (not slices, not in the manifest or status): `concepts/station-probe-drafts/` (its README has the table and the honest notes). Neither shows a needle, syringe, net, drill, weapon or face.
+
 ## Pass 124 - the small Cargo crates fit whole (no paid call)
 
 The art director's returns on pass 122 (the closer set is held for the layout conflict; unchanged and byte-identical). `crate-sealed-256x176`, `crate-sitting-256x176` and `crate-sitting-80x56` ([`tools/cargocut.py`](tools/cargocut.py)): no pods ride on them, so the crate fits whole, reduced uniformly into the box with 8 px clear on every side (2 px at 80x56), the sides and corner guards no longer cut. The sitting crate: the tag painted out, its lower half over the handle taken from the handle's mirror image about the case's centre line (no smear), and a small matte brass plate on the lid in place of the pasted sticker (a gold frame, a panel inside, lit from the top left, 48x32 on the 256 crate, 24x16 at 80x56, the old glyph's own size). Hashes (sha256 prefix): crate-sealed-256x176 2d499384b369, crate-sitting-256x176 3e09ad8cecbf, crate-sitting-80x56 b522c468d9a3. `new`. At 1x on opaque pixels (the art director's band: L* 48.0 and mean R-B 13.5 within 4 and 8; home-bay-shut reads 48.0 and 13.2): sealed 256x176 L* 49.1, mean R-B 21.0, sat 21.7; sitting 256x176 48.0, 19.8, 22.0; sitting 80x56 48.7, **27.0** (over the band: at that size the brass plate is a tenth of the crate), 25.7. Share above L* 70: 0.6, 0.8 and 2.7 percent.
