@@ -6,7 +6,7 @@
    "w": 128,
    "h": 160,
    "sha256": "99e0011a77bd07601d765eec5f85fee99b76e06934629609c27ea8f4040b5010",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "cross-gate-blend-16x16": {
    "file": "pods/cross-gate-blend-16x16.png",
@@ -20,7 +20,7 @@
    "w": 16,
    "h": 16,
    "sha256": "6a38827c43ab15d2a4cef30b3e2aa1654f29a5e1d5abcb71853493f42d635146",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "cross-gate-blend-8x8": {
    "file": "pods/cross-gate-blend-8x8.png",
@@ -41,7 +41,7 @@
    "w": 16,
    "h": 16,
    "sha256": "ecc83bbb84a7b7645d840e2fc20914b1874e06d8d44e07b7fb4421cc8a645c91",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "cross-gate-switch-8x8": {
    "file": "pods/cross-gate-switch-8x8.png",
@@ -202,21 +202,21 @@
    "w": 16,
    "h": 16,
    "sha256": "9e17a1fa25c052a8813c8edf8c69ddd33d3815238002c7da61ae9a3d31cfc0c8",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "frame-cap-confirm-16": {
    "file": "pods/frame-cap-confirm-16.png",
    "w": 16,
    "h": 16,
    "sha256": "89dc904227769e9e7a43644371040aa05dc80cb758d8ae3ef1bfeaefe04e20d2",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "frame-cap-confirm-16-dim": {
    "file": "pods/frame-cap-confirm-16-dim.png",
    "w": 16,
    "h": 16,
    "sha256": "17934c119bec28e20a8138a5c0695723ddfd1b49c1502da1e451d40a73ea2be8",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "frame-companion-outline-16x24": {
    "file": "pods/frame-companion-outline-16x24.png",
@@ -503,7 +503,7 @@
    "w": 24,
    "h": 24,
    "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
-   "signed": "named with --ids"
+   "signed": "art director (palette re-sign, masters-pods a60d822b)"
   },
   "mark-species-S01-24x24": {
    "file": "pods/mark-species-S01-24x24.png",
