@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>Library, the spread: the pad walks the frames along a row, across the gutter and between rows, the edges stop; ✓ opens a found or met species' Book; ← Home. 1024×600 at 1×, measured.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="8.5" y="48.5" width="1007" height="503" fill="#8a6a4e" stroke="#5a4330" stroke-width="1"/>
+<text x="1012" y="551" font-size="7" fill="#f3e9d2" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">boards 8,48 1008×504</text>
+<rect x="24.5" y="56.5" width="479" height="487" fill="#f6ecd2" stroke="#bf9157" stroke-width="1"/>
+<rect x="520.5" y="56.5" width="479" height="487" fill="#f6ecd2" stroke="#bf9157" stroke-width="1"/>
+<text x="28" y="66" font-size="7" fill="#a08a6a" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">page 24,56 480×488</text>
+<text x="524" y="66" font-size="7" fill="#a08a6a" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">page 520,56 480×488</text>
+<rect x="40.5" y="464.5" width="447" height="71" fill="none" stroke="#c9b48f" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="536.5" y="464.5" width="399" height="71" fill="none" stroke="#c9b48f" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="44" y="476" font-size="7" fill="#a08a6a" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margin life 40,464 448×72 (in the stage slice)</text>
+<text x="540" y="476" font-size="7" fill="#a08a6a" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">margin life 536,464 400×72</text>
+<rect x="500.5" y="48.5" width="23" height="263" fill="#d9c9a8" stroke="#a08a6a" stroke-width="1" stroke-dasharray="3 3"/>
+<text x="512" y="196" font-size="7" fill="#7d5435" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace" transform="rotate(-90 512 196)">marker 500,48 24×264</text>
+<rect x="48.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M56.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M48 256h96v1h-96z" fill="#bf9157"/>
+<rect x="160.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M168.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M160 256h96v1h-96z" fill="#bf9157"/>
+<rect x="272.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M280.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M272 256h96v1h-96z" fill="#bf9157"/>
+<rect x="384.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M392.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M384 256h96v1h-96z" fill="#bf9157"/>
+<rect x="48.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M56.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M48 440h96v1h-96z" fill="#bf9157"/>
+<rect x="160.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M168.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M160 440h96v1h-96z" fill="#bf9157"/>
+<rect x="272.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M280.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M272 440h96v1h-96z" fill="#bf9157"/>
+<rect x="384.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M392.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M384 440h96v1h-96z" fill="#bf9157"/>
+<rect x="544.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M552.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M544 256h96v1h-96z" fill="#bf9157"/>
+<rect x="656.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M664.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M656 256h96v1h-96z" fill="#bf9157"/>
+<rect x="768.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M776.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M768 256h96v1h-96z" fill="#bf9157"/>
+<rect x="880.5" y="112.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M888.5 120.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M880 256h96v1h-96z" fill="#bf9157"/>
+<rect x="544.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M552.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M544 440h96v1h-96z" fill="#bf9157"/>
+<rect x="656.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M664.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M656 440h96v1h-96z" fill="#bf9157"/>
+<rect x="768.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M776.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M768 440h96v1h-96z" fill="#bf9157"/>
+<rect x="880.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
+<path d="M888.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
+<path d="M880 440h96v1h-96z" fill="#bf9157"/>
+<rect x="48.5" y="100.5" width="95" height="3" fill="#3d3954" stroke="none" stroke-width="0"/>
+<rect x="56.5" y="120.5" width="79" height="95" fill="#ffe2bf" stroke="#c45f12" stroke-width="1.5"/>
+<text x="96" y="168" font-size="8" fill="#7d5435" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate</text>
+<text x="96" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
+<rect x="48.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="96" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Loika</text>
+<rect x="136.5" y="104.5" width="15" height="15" fill="#d89b14" stroke="#7d5435" stroke-width="1"/>
+<rect x="160.5" y="100.5" width="95" height="3" fill="#ff5f57" stroke="none" stroke-width="0"/>
+<rect x="168.5" y="120.5" width="79" height="95" fill="#ffe2bf" stroke="#c45f12" stroke-width="1.5"/>
+<text x="208" y="168" font-size="8" fill="#7d5435" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate</text>
+<text x="208" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
+<rect x="160.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="208" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Untuva</text>
+<rect x="272.5" y="100.5" width="95" height="3" fill="#1f9d8f" stroke="none" stroke-width="0"/>
+<rect x="280.5" y="120.5" width="79" height="95" fill="#ffe2bf" stroke="#c45f12" stroke-width="1.5"/>
+<text x="320" y="168" font-size="8" fill="#7d5435" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate</text>
+<text x="320" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
+<rect x="272.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="320" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Tuikis</text>
+<rect x="384.5" y="100.5" width="95" height="3" fill="#a6420c" stroke="none" stroke-width="0"/>
+<rect x="392.5" y="120.5" width="79" height="95" fill="#f1efe9" stroke="#8d8aa6" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="432" y="168" font-size="8" fill="#5d5974" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">study</text>
+<text x="432" y="178" font-size="7" fill="#8d8aa6" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
+<rect x="384.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="432" y="247" font-size="16" fill="#5d5974" text-anchor="middle">Hiljan</text>
+<rect x="544.5" y="100.5" width="95" height="3" fill="#1e5196" stroke="none" stroke-width="0"/>
+<rect x="552.5" y="120.5" width="79" height="95" fill="#ffe2bf" stroke="#c45f12" stroke-width="1.5"/>
+<text x="592" y="168" font-size="8" fill="#7d5435" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate</text>
+<text x="592" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
+<rect x="544.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
+<text x="592" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Belatz</text>
+<rect x="632.5" y="216.5" width="15" height="15" fill="#a6420c" stroke="#7d5435" stroke-width="1"/>
+<rect rx="6" x="381" y="109" width="102" height="118" fill="none" stroke="#a6420c" stroke-width="2"/>
+<path d="M480 150L544 150" stroke="#2b6cb0" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+<path d="M544 170L480 170" stroke="#2b6cb0" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+<text x="512" y="136" font-size="8" fill="#2b6cb0" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">▶ ◀ across the gutter</text>
+<path d="M454 258L454 296" stroke="#2b6cb0" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+<text x="458" y="280" font-size="9" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">▼</text>
+<path d="M256 200L272 200" stroke="#2b6cb0" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+<text x="264" y="196" font-size="9" fill="#2b6cb0" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">▶</text>
+<text x="32" y="272" font-size="8" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">◀ stops</text>
+<text x="984" y="104" font-size="8" fill="#2b6cb0" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">▶ stops</text>
+<text x="984" y="424" font-size="8" fill="#2b6cb0" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">▼ stops</text>
+<rect x="560.5" y="480.5" width="359" height="55" fill="#ffffff" stroke="#2b6cb0" stroke-width="1"/>
+<text x="568" y="494" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ found or met: its Book (not built yet until slot 8)</text>
+<text x="568" y="506" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ unmet: no cap; the plate "Nothing is known…"</text>
+<text x="568" y="518" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">← Home (ring on Home's Library module)</text>
+<text x="568" y="530" font-size="7" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">Library key, Home's module: the ring where it was</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
+<text x="28" y="23" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">lib</text>
+<text x="48" y="27" font-size="20" fill="#222" font-weight="500">Library</text>
+<path d="M256 8h1v24h-1z" fill="#888"/>
+<path d="M888 8h1v24h-1z" fill="#888"/>
+<text x="512" y="26" font-size="16" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<path d="M760 8h16v24h-16z" fill="#9a96ae"/>
+<path d="M780 16h8v8h-8z" fill="#7fd8a6"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1008" y="26" font-size="16" fill="#222" text-anchor="end">☀ 6</text>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<path d="M404 571h1v20h-1z" fill="#888"/>
+<path d="M620 571h1v20h-1z" fill="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="588" font-size="16" fill="#c4500f">Open</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">Hiljan</text>
+<circle cx="951" cy="582" r="8" fill="#9a9a9a"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1008" y="588" font-size="16" fill="#555" text-anchor="end">Home</text>
+</svg>

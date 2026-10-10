@@ -6,12 +6,146 @@
  "wireframes": ["design/style-guide/station-layouts/10a-library-guide-seven.png", "design/style-guide/station-layouts/10b-library-guide-eight.png"],
  "note": "The one home of the field guide's numbers, transcribed from station-layouts.md (Book: the guide spread, and the Book's face spread). Rectangles are [x, y, w, h] in screen pixels. Decided with the owner (2026-10-09): the guide is the Book's fold-out second spread, turned with ◀ ▶, and ← reads Library; eight chapters fit by narrower columns, never a scroll; one shared header panel per chapter, tinted by the species; the face is a guide-face master; the progress pips come in groups of five. Every field is bound to the M5 rules in prototypes/station/src/library.mjs (`derived`): nothing here is new state. The build draws only rectangles, text and 1 px lines; every other mark is a master placed 1:1 (masters).",
  "level": "species: the Book, the guide and the Library are about the species, filled in by every pod and mibi the player has read (fieldGuide). Pods and Habitat show one individual. station-layouts.md, The two levels",
+ "status": "L: the Library spread (lvgl-switch.md §3, slot 5) builds `spread`; the Book's face spread and the guide spread (`regions`, `focus`, `bottomLine`) are slot 8, the Book and the field guide",
+ "screens": { "library": "spread", "book": "the face spread and the guide spread: everything outside `spread`" },
+ "spread": {
+  "screen": "library",
+  "spec": "design/style-guide/station-layouts.md#library-spread",
+  "wireframes": ["design/style-guide/station-layouts/18-library-spread.svg", "design/style-guide/station-layouts/18a-library-spread-empty.svg", "design/style-guide/station-layouts/18b-library-spread-nav.svg"],
+  "note": "The Library's whole, its overview level (station-layouts.md, The screen map): one frame a species, every species at once. Written by the UI designer, 2026-10-10 01:50, from the decided spread (SP-P-r4-a1, decisions.md 2026-10-08), the Station's structure (2026-10-09 17:29), the world brief (Library: the field journal the device keeps, paper and ink held in the same frame) and the rules on main (library.mjs spread, speciesStatus, faceOf, fieldGuide; intents/library.mjs). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the frame's own place.",
+  "purpose": "the whole collection at a glance: which species the player has found (a painted plate), which they have only met (a pencil study), and that empty frames remain (no cue of what waits); each found or met species' clan by its inked rule, a portrait by the gilt corner, a full guide by the seal; ✓ opens that species' Book",
+  "title": { "word": "Library", "mark": "Library" },
+  "states": ["spread"],
+  "initial": "spread",
+  "conditions": { "empty": "every frame unmet (a fresh world): the stage alone, sixteen empty frames, the ring on the first; capture library-spread-empty", "filled": "at least one frame found or met; capture library-spread" },
+  "derived": {
+   "frames": "spread(st, ids) (library.mjs) over ids = frameIds().slice(16 × page, 16 × page + 16): sixteen { id, status }, status found, met or unmet (speciesStatus). Today frameIds() holds sixteen species, so there is one spread and page is 0",
+   "place": "the species' own place, never the order it was found: item i of the spread (frameIds order) sits on the left page for i < 8, the right page otherwise, at k = i mod 8 in its page's list (places.grid: k mod 4 along the row, floor(k / 4) the row). S01 to S04 the left page's top row, S05 to S08 its second, S09 to S12 the right page's top row, S13 to S16 its second",
+   "name": "frame.species.name, as written; found and met only",
+   "clan": "the clan's anchor colour: the species' first pod pigment (frameOf(id).pod.colourPair[0].pigment) through cross.json colours.pigmentChips to a palette name; a pigment not listed is `mist`. The same colour the guide's panels take (regions.panel.tint); found and met only",
+   "portrayed": "faceOf(st, id) is not null: a portrait of a mibi of this species is the Book's face. Found only (a portrayed mibi makes the species found)",
+   "complete": "fieldGuide(st, id).complete: every look of the species found. Found only",
+   "lastOn": "the ring's frame is kept in the Library's UI state (ui.lib.i, intents/library.mjs), so the Library key and Home's Library module land where the player left it, and ← from the Book lands on that species (openBook sets it)"
+  },
+  "regions": {
+   "stage": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "library-stage-spread-1024x522", "until": null, "untilNote": "while the master is unsigned its labelled placeholder is placed (placeholders), never the flat ground: the empty frames and the pages are the screen's message",
+    "parts": {
+     "_note": "painted into the stage slice, never drawn by the build: screen rects, so the painter and the checks know where each sits",
+     "boards": [8, 48, 1008, 504],
+     "pages": [[24, 56, 480, 488], [520, 56, 480, 488]],
+     "gutter": [504, 56, 16, 488],
+     "frames": "the sixteen empty ruled frames, each 96×112 at the places of leftPage and rightPage, with its 8 px mat and nothing in it",
+     "captionRules": "one 1 px rule under each frame, 96 wide, at y 256 (row 1) and y 440 (row 2), from the frame's x",
+     "marginLife": [[40, 464, 448, 72], [536, 464, 400, 72]],
+     "marker": [500, 48, 24, 264],
+     "markerNote": "the cloth marker over the gutter, centred on x 512, 4 px off the grid as a region centred on an axis may be",
+     "around": "the 8 px between the stage's edge and the boards: the device's own panel the volume is held in (art director)"
+    },
+    "keepClear": "nothing painted in the slice crosses a frame's place, its clan rule's row (y 100 to 104 and 284 to 288), its name's box or the corner and seal places: the margin life and the marker keep to their rects"
+   },
+   "leftPage": {
+    "rect": [40, 96, 464, 352], "component": "list", "layout": ["listPitch"], "build": "spreadPage",
+    "places": { "first": [48, 112, 96, 112], "pitch": [112, 184], "grid": [4, 2] },
+    "items": "spread items 0 to 7",
+    "rects": [[48, 112, 96, 112], [160, 112, 96, 112], [272, 112, 96, 112], [384, 112, 96, 112], [48, 296, 96, 112], [160, 296, 96, 112], [272, 296, 96, 112], [384, 296, 96, 112]]
+   },
+   "rightPage": {
+    "rect": [536, 96, 464, 352], "component": "list", "layout": ["listPitch"], "build": "spreadPage",
+    "places": { "first": [544, 112, 96, 112], "pitch": [112, 184], "grid": [4, 2] },
+    "items": "spread items 8 to 15",
+    "rects": [[544, 112, 96, 112], [656, 112, 96, 112], [768, 112, 96, 112], [880, 112, 96, 112], [544, 296, 96, 112], [656, 296, 96, 112], [768, 296, 96, 112], [880, 296, 96, 112]]
+   }
+  },
+  "item": {
+   "_note": "one frame of spreadPage, offsets from its place (x, y, 96, 112). The ruled frame and its mat are the stage's; the build adds only what the status gives, in this order",
+   "plate": { "at": [8, 8, 80, 96], "when": "found", "slice": "spread-plate-{SNN}-80x96", "note": "the focal thing: the only colour on the page" },
+   "study": { "at": [8, 8, 80, 96], "when": "met", "slice": "spread-study-{SNN}-80x96" },
+   "clanRule": { "at": [0, -12, 96, 4], "when": "found or met", "draw": "rect", "colour": "derived.clan", "note": "the clan's inked rule over the frame (decided 2026-10-08): y 100 on row 1, 284 on row 2; 8 px of paper between it and the frame. Never on an unmet frame" },
+   "name": { "at": [0, 120, 96, 20], "when": "found or met", "px": 16, "weight": 400, "align": "centre", "lines": 1, "colour": { "found": "ink", "met": "stone" }, "text": "derived.name", "fit": "the widest of the sixteen, Untuva, is 53 px at 16: 21 px clear a side. A wider name comes back to the UI designer; never clipped, never shrunk", "note": "on the caption rule: y 232 to 252 on row 1, 416 to 436 on row 2; the rule at y 256 and 440 is the stage's" },
+   "gilt": { "at": [88, -8, 16, 16], "when": "found and derived.portrayed", "slice": "spread-gilt-corner-16x16", "note": "centred on the frame's top right corner; it meets the clan rule's end and the plate's corner, overlapping neither" },
+   "seal": { "at": [88, 104, 16, 16], "when": "found and derived.complete", "slice": "spread-seal-16x16", "note": "centred on the frame's bottom right corner; clear of the plate and of the name's box, 8 px from the next frame" },
+   "unmet": "nothing: the stage's empty frame alone, no name, no rule, no mark, no cue of what waits (decisions.md 2026-10-08)",
+   "lift": 0,
+   "liftNote": "on paper nothing lifts: the plates are tipped into the page and the frames are printed; the ring alone marks the focus"
+  },
+  "focus": {
+   "initial": "derived.lastOn; with nothing kept (a fresh world), frame.S01, the first frame",
+   "targets": { "frame": { "group": "frame", "id": "frame.<SNN>", "ring": "round", "box": "the frame's place (leftPage or rightPage rects)", "ringBox": "[x − 4, y − 4, 104, 120]", "colour": "frame.json focus.ring.onPaper (rust)", "every": "all sixteen frames, found, met or unmet: an empty frame is a place too, and the ring walks the grid without holes", "lift": 0 } },
+   "graph": {
+    "fallback": "none",
+    "frame": { "left": { "nearestIn": "frame", "ahead": true }, "right": { "nearestIn": "frame", "ahead": true }, "up": { "nearestIn": "frame", "ahead": true }, "down": { "nearestIn": "frame", "ahead": true } }
+   },
+   "graphNote": "◀ ▶ along the row and across the gutter to the other page's same row; ▲ ▼ between the two rows of a page; the edges stop, never a wrap (lvgl-switch.md §2.6.1, nearestIn ahead: the frame more than 6 px ahead with the least 5 × along + 11 × across on doubled centres)",
+   "vectors": [
+    { "from": "frame.S01", "key": "right", "to": "frame.S02" },
+    { "from": "frame.S01", "key": "left", "to": "frame.S01" },
+    { "from": "frame.S01", "key": "up", "to": "frame.S01" },
+    { "from": "frame.S01", "key": "down", "to": "frame.S05" },
+    { "from": "frame.S04", "key": "right", "to": "frame.S09" },
+    { "from": "frame.S08", "key": "right", "to": "frame.S13" },
+    { "from": "frame.S09", "key": "left", "to": "frame.S04" },
+    { "from": "frame.S13", "key": "left", "to": "frame.S08" },
+    { "from": "frame.S12", "key": "right", "to": "frame.S12" },
+    { "from": "frame.S12", "key": "down", "to": "frame.S16" },
+    { "from": "frame.S16", "key": "down", "to": "frame.S16" },
+    { "from": "frame.S16", "key": "right", "to": "frame.S16" },
+    { "from": "frame.S07", "key": "up", "to": "frame.S03" },
+    { "from": "frame.S15", "key": "left", "to": "frame.S14" }
+   ]
+  },
+  "keys": {
+   "pad": "focus.graph",
+   "confirm": "a found or met frame: the Book of that species (intent target `sp:<SNN>`, events.open); an unmet frame: no ✓ cap, and the press shows the message plate strings.unmet (intents/library.mjs), nothing opens",
+   "back": "Home, with the ring on Home's Library module",
+   "library": "the spread, the ring where it was (derived.lastOn); from the Book, the spread with the ring on that species",
+   "home": "Home, the ring on the room",
+   "dock": "as on every screen: a world event; docking lands on Home"
+  },
+  "events": {
+   "open": { "kind": "cut", "target": "frame", "hold": false, "to": "book, the face spread", "note": "✓ on a found or met frame. Until slot 8 the Book draws \"not built yet\" (frame.json notBuilt) with ← Library. The old \"the plate lifts off the page and becomes the Book's mounted plate\" is withdrawn: it would enlarge an 80×96 plate to the 304×312 face (station-layouts.md, Never upscaled); the Book's own entry is slot 8's to design" },
+   "back": { "kind": "cut", "from": "book", "note": "← Library from either spread of the Book: the spread, the ring on that species' frame" }
+  },
+  "line": {
+   "found": { "action": "strings.open", "subject": "strings.subjects.found", "need": "the frame's notice (home.json strings.needs)", "back": "strings.back" },
+   "met": { "action": "strings.open", "subject": "strings.subjects.met", "need": "the frame's notice", "back": "strings.back" },
+   "unmet": { "action": null, "subject": "strings.subjects.unmet", "need": "the frame's notice", "back": "strings.back" }
+  },
+  "colours": { "nameFound": "ink", "nameMet": "stone", "clanUnlisted": "mist", "ring": "rust", "placeholderPaper": "paper", "placeholderEdge": "clay", "placeholderFrame": "bark", "placeholderMat": "sand", "placeholderBoards": "bark", "placeholderGilt": "gold", "placeholderSeal": "rust", "placeholderStudy": "stone" },
+  "strings": {
+   "_note": "the copywriter's slots. Today's words come from the old spread section (Open, an empty frame) and from intents/library.mjs (the plate); none is new. Slot rules: the action a verb phrase of four words or fewer, the subject six words or fewer with no digits, the plate one sentence",
+   "title": "Library",
+   "open": "Open",
+   "subjects": { "found": "{species}", "met": "{species}", "unmet": "an empty frame" },
+   "unmet": "Nothing is known of this frame yet",
+   "back": "Home"
+  },
+  "never": ["a digit or a count on the spread (no \"4 of 16\", no \"1 of 2\")", "a cue on an unmet frame: no silhouette, no shape, no name, no rule", "hatching for met: the pencil study says it", "a rule thicker than 1 px but the clan rule", "a plate or study enlarged: rendered at 80×96 or downsampled", "a word in the stage slice"],
+  "turn": { "pending": "more than sixteen species (a second spread): the page-turn corner book-corner-turn-24x24 at (968, 512, 24, 24) when another spread follows, ▶ past the right page's last column turning it (300 ms), and ◀ past the left page's first column turning back. Not built in slot L: frameIds() holds sixteen" },
+  "masters": {
+   "_note": "placed 1:1 at these sizes, never scaled or recoloured; the art director signs them under the world brief. None is made or commissioned by this spec",
+   "library-stage-spread-1024x522": "new. The stage: the field journal open across it, held in the device's panel; the boards (8, 8, 1008, 504 of the slice), two pages and the gutter, the sixteen empty ruled frames with their mats, the caption rules, the margin life in its two bands, the cloth marker over the gutter (stage.parts). No plates, no rules over frames, no words",
+   "spread-plate-{SNN}-80x96": "new, sixteen (S01 to S16). The found plate: the species' type, tipped in, painted at Pip's craft, rendered at 80×96 or downsampled, never enlarged",
+   "spread-study-{SNN}-80x96": "new, sixteen. The met study: a pencil field study of the species, grey line on the paper",
+   "spread-gilt-corner-16x16": "new. The gilt corner of a portrayed species, centred on the frame's top right corner",
+   "spread-seal-16x16": "new. The seal of a complete guide at the spread's size, kin to guide-seal-32 (painted at 16 or downsampled from it, never enlarged)"
+  },
+  "placeholders": {
+   "_note": "labelled stand-ins the build places until each master is signed; entered in the placeholder register at these sizes",
+   "library-stage-spread-1024x522": "flat: the stage in `ground`, the boards in `bark`, each page `paper` with a 1 px `clay` edge, each frame a 1 px `bark` outline with a `sand` mat band 8 px inside, the caption rules 1 px `clay`; the margin bands and the marker as 1 px dashed `clay` outlines; labelled \"spread stage, placeholder\" in the bottom margin",
+   "spread-plate-{SNN}-80x96": "the species' placeholder render (the type specimen), downsampled to 80×96; the accepted Pip for S01",
+   "spread-study-{SNN}-80x96": "the index pass in `stone` line on `paper`",
+   "spread-gilt-corner-16x16": "a 16×16 `gold` L, 4 px thick, along the top and right edges",
+   "spread-seal-16x16": "a 16×16 `rust` disc with a 1 px `bark` edge"
+  },
+  "journey": "library-spread (lvgl-switch.md §3, slot 5): Home's Library module and the Library key open the spread; the pad walks the frames by focus.vectors; an unmet frame has no ✓ cap and its press shows strings.unmet; ✓ on a found frame reaches the Book (\"not built yet\" until slot 8), whose ← lands on that frame; ← on the spread is Home"
+ },
  "spreads": {
   "order": ["face", "guide"],
   "face": "the Book's first spread: the species' face (or a portrait), its name, habit and clarity line, places, frame plate, stamp, tree and pinned wish",
   "guide": "the fold-out second spread: every chapter as a column, every trait as a cell with its pips, one detail band. Only when book(st, id).guide is not null (the species is found); a met species has no guide and no page-turn corner",
   "turn": "▶ from the face spread's right-most target turns to the guide (300 ms page turn); ◀ from the guide's left-most column turns back. ◀ ▶ otherwise move the ring inside the spread",
-  "back": "Library on both spreads (frame.json navigation.screens.book)"
+  "back": "Library on both spreads (frame.json navigation.screens.book); it lands on the Library spread with the ring on this species' frame (spread.events.back)",
+  "entry": "the face spread opens from the Library spread's ✓ on a found or met frame (spread.events.open); the guide spread from the jumps (elsewhere)"
  },
  "derived": {
   "book": "book(st, id): status, guide, face, wish",

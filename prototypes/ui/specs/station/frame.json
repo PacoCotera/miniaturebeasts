@@ -110,7 +110,7 @@
    "incubator": {"parent": "home", "back": "Home"},
    "probe": {"parent": "home", "back": "Home"},
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
-   "library": {"parent": "home", "back": "Home"},
+   "library": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"},
    "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
    "habitat": {"parent": "home", "back": "Home"},
    "cross": {"parent": "habitat", "back": "Vivarium"},

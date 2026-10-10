@@ -41,7 +41,7 @@ This section is the Station's structure: which screens exist, their levels from 
 | **Pods** | the collection, a pod's overview, one chapter (with Compare and Create) | As built ([Pods](#pods-collection-pod-overview-chapter-page)) | one level closer | "Home", "Pods", "{pod}" |
 | **Incubator** | one level (it holds one bud) | The bridge between the research and the Vivarium: the bud grows from research and hatches into the Vivarium | Open: the hatch, then a jump to the new mibi up close, in the meet | Home ("Home") |
 | **Probe** (the bench) | one level (it holds one Probe) | Mend and switch the Probe | as built | Home ("Home") |
-| **Library** | the spread, a species' Book (face and guide spreads) | As built | one level closer; Visit {name}: a jump to that mibi up close | "Home", "Library" |
+| **Library** | the spread, a species' Book (face and guide spreads) | The spread: every species at once, one frame each, found, met or empty ([Library spread](#library-spread)); the Book: one species | one level closer; Visit {name}: a jump to that mibi up close | "Home", "Library" |
 
 - **"{name}" and "{pod}"** are the mibi's and the pod's own names, as the way back already names a pod. A name wider than the way back's word room (68 px) reads "Back".
 - **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium".
@@ -1981,88 +1981,139 @@ Where the build departs from this layout is listed in `sitting.json` `buildChang
 
 ## Library spread
 
-Concept plate: `art/concept-station/library-spread/placed/SP-P-r4-a1-pip-named-1024x600.png`. Wireframe: [07-library-spread.svg](station-layouts/07-library-spread.svg).
+The Library's whole, its overview level ([The screen map](#the-screen-map)): Home's Library module and the Library key open it, ✓ goes one level closer to a species' Book, and ← goes Home. Spec: [`library.json`](../../prototypes/ui/specs/station/library.json) `spread`, the one home of these numbers. Concept plate, decided 2026-10-08: `art/concept-station/library-spread/placed/SP-P-r4-a1-pip-named-1024x600.png`. Built in slot 5, L: the Library spread ([lvgl-switch.md §3](../proposals/lvgl-switch.md)).
 
-<img src="station-layouts/07-library-spread.svg" width="720" alt="Library spread wireframe">
+<img src="station-layouts/18-library-spread.png" width="1024" alt="The Library spread: sixteen frames, four found, one met, eleven empty, the ring on Tuikis">
 
-*Library spread. Wireframe, layout only, measured.*
+*18. The spread: Loika found and portrayed (the gilt corner), Untuva and Tuikis found, Hiljan met (the study, the name in pencil grey), Belatz found with its guide complete (the seal), eleven empty frames; the ring on Tuikis, `✓ Open`. 1×, measured ([SVG](station-layouts/18-library-spread.svg)).*
+
+<img src="station-layouts/18a-library-spread-empty.png" width="1024" alt="The Library spread with the journal empty: sixteen empty frames, the ring on the first">
+
+*18a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap; the message plate a press shows. 1×, measured ([SVG](station-layouts/18a-library-spread-empty.svg)).*
+
+<img src="station-layouts/18b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows">
+
+*18b. The pad, ✓, ← and the keys. 1×, measured ([SVG](station-layouts/18b-library-spread-nav.svg)).*
 
 ### 1. Purpose
 
-The spread shows the whole collection at a glance, as plates in a naturalist's volume. The player comes away knowing which species they have found, which they have only met, and that empty frames remain, and can open any found or met species' Book.
+The spread shows the whole collection at a glance, as plates in the field journal the device keeps. The player comes away knowing which species they have found, which they have only met, and that empty frames remain, with no cue of what waits; and, for each species they know, its clan, whether one of their mibis sat for its portrait, and whether its guide is complete. From any found or met frame, ✓ opens that species' Book. It is about the species, never one mibi ([The two levels](#the-two-levels-species-and-mibi)).
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **Sixteen ruled frames**, eight a page, two rows of four | One place per species, all seen at once |
-| **Found plate** (a tipped-in painted plate), **met study** (pencil), **unmet** (empty, no cue) | The three states of knowledge, told apart by craft rather than words |
-| **Names** on caption rules, 16 px | Found in ink, met in pencil grey, unmet nothing |
-| **Clan rule**, 4 px inked band over each met frame | The clan, by colour on the ink and never on unmet frames |
-| **Margin life** (a leaf and seeds, a dried flower, a survey sketch, the cloth marker) | The tome's character, never over a frame |
-| **Page-turn corner** | That more species wait on the next spread, without "1 of 2" |
+| **The journal open across the stage** (the stage slice: boards, two pages, sixteen empty ruled frames, caption rules, margin life, the cloth marker) | The Library is a volume held in the device's panel; the empty frames are a quiet grid that promises more |
+| **Sixteen frames**, eight a page, two rows of four, one per species in its own place | Every species at once; a gap shows where a species waits |
+| **Found plate**, a painted plate tipped into the frame | Found: the only colour on the page |
+| **Met study**, a pencil study | Met on a walk, not yet found: told apart by craft, not by a word |
+| **Unmet**: the empty frame alone | Nothing to read: no silhouette, no name, no rule |
+| **Name** on the caption rule, 16 px | Found in `ink`, met in `stone` (pencil grey) |
+| **Clan rule**, a 4 px inked band over a found or met frame | The clan, by its anchor colour, the same colour as the guide's panels |
+| **Gilt corner** on a found frame | A mibi of this species sat for the Book's face |
+| **Seal** on a found frame | Every look of the species found |
 
-**Not drawn:**
-
-- "spread 1 of 2 · ◀ ▶ past the edge turns it": the corner says it.
-- Diagonal hatching for "met": a pencil study shows it.
-- Rules thicker than 1 px.
+**Not drawn:** a count or "1 of 2"; diagonal hatching for met (the study says it); a cue on an unmet frame; a clan's name; rules thicker than 1 px but the clan rule; the old "plate lifts and becomes the Book's face" (it would enlarge an 80×96 plate, [Never upscaled](#never-upscaled)).
 
 ### 3. Placement
 
+**Each species in its own place**, in frame order (`frameIds()`): S01 to S04 the left page's top row, S05 to S08 its second, S09 to S12 the right page's top row, S13 to S16 its second. A species never moves as others are found, so the gaps read as places to fill.
+
 **Reading order:**
 
-1. **The found plates**, the only colour on the page, in the order species were found.
+1. **The found plates**, the only colour on the page.
 2. **Their names.**
-3. **The met studies.**
-4. **The empty frames**, as a quiet grid that promises more.
-5. **The margins.**
+3. **The met studies** and their pencil names.
+4. **The empty frames**, a quiet grid.
+5. **The gilt corners and the seals**, small marks at the frames' corners.
+6. **The margins.**
 
-**At the edges:** the page-turn corner at the bottom right, the cloth marker over the gutter.
+**At the edges:** the cloth marker over the gutter; the margin life under the second rows. The page-turn corner waits for a second spread (more than sixteen species), not designed for the build yet.
 
 ### 4. Art direction
 
-- **Room:** the Library, an old botanical-expedition volume in ink and watercolour, with aged foxed paper, worn boards and restrained ornament.
-- **The plates are painted** at Pip's level of craft (Loika is the placed Pip). They are never flat cards or stickers.
-- **Device type on the chrome:** Inter, never a serif. Nothing childish: no lanterns, scrollwork or ribbons.
-- **No living window:** the plates' own warmth is the only warmth.
+With the art director, against the Station's approved world brief: the Library is the field journal the device keeps, a worn botanical-expedition volume shown in the device's panel, paper and ink held in the same frame.
+
+- **One stage slice** (`library-stage-spread-1024x522`) carries the volume, its empty frames, caption rules, margin life and marker, and the 8 px of the device's panel around the boards. The build adds only what the save gives.
+- **The plates are painted** at Pip's level of craft; the studies are real pencil field studies. Never flat cards or stickers.
+- **No living window:** the plates' own warmth is the only warmth. The ring on paper is `rust` (frame.json `focus.ring.onPaper`).
+- **Device type:** Inter on the names and the chrome, never a serif. Nothing childish: no lanterns, scrollwork or ribbons.
 
 ### 5. Composition
 
-The open book fills the stage. Each page holds a 4 × 2 grid of frames with a 16 px gutter between frames, a 24 px margin to the page's edge, and the margin life in the band under the second row.
+The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on a 112 px pitch with 16 px between frames and 24 px to the page's edge, rows at y 112 and 296; the margin life sits in the band under the second row.
 
-| Region | Rectangle | Notes |
-| --- | --- | --- |
-| Book (boards) | 8, 48, 1008, 504 | |
-| Left page | 24, 56, 480, 488 | |
-| Right page | 520, 56, 480, 488 | Gutter 504 to 520 |
-| Frame columns | x 48, 160, 272, 384 (left page); 544, 656, 768, 880 (right page) | Each 96 wide on a 112 px pitch |
-| Frame row 1 | y 112, 96×112 | Clan rule 96×4 at y 100; name 16 px in (x − 8, 232, 112, 20); caption rule 96×1 at y 256 |
-| Frame row 2 | y 296, 96×112 | Clan rule at y 284; name at y 416; caption rule at y 440 |
-| **Found plate (focal)** | inside the frame, 8 px mat: 80×96 | Rendered or downsampled to 80×96; never enlarged |
-| Met study | 80×96 | Grey pencil line |
-| Focus | frame outset 4 with the 6 px radius: 104×120 | Thin rounded rectangle in `rust`, the ring on paper (frame.json `focus.ring.onPaper`); the frame lifts 2 px |
-| Margin life | 40, 464, 448, 72 and 536, 464, 400, 72 | Never over a frame or a caption |
-| Cloth marker | 500, 48, 24, 264 | Over the gutter |
-| Page-turn corner | 968, 512, 24, 24 | Shown only when another spread exists |
+| Region | Rectangle | Word or composition | Notes |
+| --- | --- | --- | --- |
+| Stage | 0, 40, 1024, 522 | `frame`, part `stage`, slice `library-stage-spread-1024x522` | Its labelled placeholder until signed, never the flat ground |
+| Boards (in the slice) | 8, 48, 1008, 504 | — | The 8 px around them: the device's panel |
+| Pages (in the slice) | 24, 56, 480, 488 and 520, 56, 480, 488 | — | Gutter 504 to 520 |
+| Margin life (in the slice) | 40, 464, 448, 72 and 536, 464, 400, 72 | — | Never over a frame, a rule, a name or a mark |
+| Cloth marker (in the slice) | 500, 48, 24, 264 | — | Centred on x 512, 4 px off the grid as a centred region may be |
+| Left page's frames | 40, 96, 464, 352 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
+| Right page's frames | 536, 96, 464, 352 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
+| Frame columns | x 48, 160, 272, 384; 544, 656, 768, 880 | | Rows y 112 and 296 |
+| **Found plate (focal)** | frame + (8, 8), 80×96 | sprite `spread-plate-<SNN>-80x96` | In the 8 px mat; rendered or downsampled, never enlarged |
+| Met study | frame + (8, 8), 80×96 | sprite `spread-study-<SNN>-80x96` | |
+| Clan rule | frame + (0, −12), 96×4 | rect in the clan's colour | y 100 and 284; found and met only |
+| Name | frame + (0, 120), 96×20 | text, 16 px, centred | y 232 and 416, on the caption rule at y 256 and 440 (the slice's). Widest today: Untuva, 53 px |
+| Gilt corner | frame + (88, −8), 16×16 | sprite `spread-gilt-corner-16x16` | Centred on the frame's top right corner; found and portrayed |
+| Seal | frame + (88, 104), 16×16 | sprite `spread-seal-16x16` | Centred on the frame's bottom right corner; found and complete |
+| Focus | frame outset 4, radius 6: 104×120 | the ring | `rust` on paper; nothing lifts |
+| Message plate | centred on x 512, bottom at y 550 | the frame's | 286×36 for "Nothing is known of this frame yet" |
+
+`spreadPage` is a composition, not a word: a `list` by `listPitch` whose items are the frame's parts above (two sprites, one rect, one text), each drawn only when its status gives it. The clan's colour is the species' first pod pigment through `cross.json` `colours.pigmentChips` (a pigment not listed is `mist`), the guide panels' tint.
 
 ### 6. Interactions
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| ◀ ▶ | Along a row, across the gutter to the other page; past the right edge with another spread, the page turns (300 ms) |
-| ▲ ▼ | Between the two rows |
-| ✓ on a found or met frame | `✓ Open`: the plate lifts off the page and becomes the Book's mounted plate (300 ms) |
-| ✓ on an unmet frame | No ✓ cap; the subject says "an empty frame"; a message plate on press |
-| ← | Home |
+| Arrive | From Home's Library module or the Library key, the ring on the frame it was last on; a fresh world, on the first frame. From the Book's ←, the ring on that species |
+| ◀ ▶ | Along a row, across the gutter to the other page's same row; the outer edges stop, never a wrap |
+| ▲ ▼ | Between the page's two rows; the edges stop |
+| ✓ on a found or met frame | `✓ Open`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library) |
+| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press shows the message plate "Nothing is known of this frame yet" and nothing opens |
+| The notice | The frame's notice, as on every screen |
+| ← | Home, the ring on the Library module |
 
-### Placeholders on the spread
+**Focus as data** (`library.json` `spread.focus`): sixteen targets `frame.<SNN>`, found, met or unmet, each its frame's place with the round ring; one group `frame` whose four edges are `{ "nearestIn": "frame", "ahead": true }`, `fallback` `none`. Fourteen vectors play it with `ui/focus.mjs`, among them S04 ▶ S09 and S13 ◀ S08 across the gutter, S01 ▼ S05, and S01 ◀, S12 ▶ and S16 ▼ staying put.
 
-| Thing | Pixel size | Notes |
+**Events** (`spread.events`): `open`, a cut to the Book's face spread; `back`, the cut from the Book to the spread with the ring on that species. The screen change itself is the host's, as everywhere.
+
+**Bound to the rules:** the frames are `spread(st, ids)` over `frameIds()`, sixteen to a spread; the status is `speciesStatus`; the gilt corner is `faceOf(st, id)` not null; the seal is `fieldGuide(st, id).complete`; the ring's frame is the Library's UI state (`ui.lib.i`, `intents/library.mjs`). Nothing is new state.
+
+### Words on the spread
+
+The copywriter's slots (`spread.strings`); today's words come from this section's earlier version and from `intents/library.mjs`, none new.
+
+| Slot | Rule | Today |
 | --- | --- | --- |
-| Found plate | 80×96 | The species' placeholder; the accepted Pip for Loika, downsampled |
-| Met study | 80×96 | The index pass in grey line |
-| Paper | 1008×504 | Flat paper |
+| Title | One word | "Library" |
+| Action on a found or met frame | A verb phrase, four words or fewer | "Open" |
+| Context, found | Six words or fewer, no digits | "{species}" |
+| Context, met | Six words or fewer, no digits | "{species}" |
+| Context, unmet | Six words or fewer, no digits | "an empty frame" |
+| Plate on an unmet frame | One sentence | "Nothing is known of this frame yet" |
+| Way back | One word | "Home" |
+
+### Masters for the spread
+
+Placed 1:1 at these sizes, never scaled or recoloured; the art director signs them. None is made or commissioned by this spec; each has a labelled placeholder (`spread.placeholders`).
+
+| Id | Size | What | Placeholder |
+| --- | --- | --- | --- |
+| `library-stage-spread-1024x522` | 1024×522 | The stage: the journal open in the device's panel, boards, pages, the sixteen empty frames with mats, caption rules, margin life, marker. No plates, no clan rules, no words | Flat: `ground`, boards `bark`, pages `paper` edged `clay`, frames edged `bark` with a `sand` mat line, rules `clay`, the bands and marker dashed `clay`, labelled |
+| `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The species' placeholder render, downsampled; the accepted Pip for S01 |
+| `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
+| `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `gold` L, 4 px |
+| `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `rust` disc edged `bark` |
+
+### Not designed yet
+
+- **A second spread** (more than sixteen species): the page-turn corner `book-corner-turn-24x24` at (968, 512, 24, 24), ▶ past the right page's last column and ◀ past the left page's first. `frameIds()` holds sixteen today.
+- **A name wider than 96 px** at 16: none today (Untuva, 53, is the widest).
+- **The Book's entry from a frame**: a cut until slot 8 designs it.
+- **What a newly found species shows** on the spread the first time (a mark, a moment): the save holds no unopened page, as on Home's Library module.
 
 ---
 
@@ -2145,7 +2196,7 @@ The build stub has ← only; the rest arrives with M5.
 | ✓ on the face | `✓ Visit Fig` opens the vivarium, up close, only when `faceOf(st, id)` is a living mibi (a portrait whose mibi is not released). The type face and a released portrait have no ✓ cap |
 | ✓ on the wish | `✓ Find a pair` (M4) |
 | ✓ on "more?", the stamp or the tree | Read-only: no ✓ cap |
-| ← | The spread: the way back reads "← Library" |
+| ← | The spread, the ring on this species' frame: the way back reads "← Library" |
 
 ### Placeholders on the Book
 
