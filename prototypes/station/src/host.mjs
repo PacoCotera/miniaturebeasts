@@ -11,6 +11,7 @@ import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild } from "./views/home-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
+import { createBuild, createPod } from "./views/create-props.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
@@ -19,7 +20,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "cargo", "pods"];
+export const BUILT = ["home", "cargo", "pods", "create"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -97,9 +98,16 @@ export function cargoBody() {
   return cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI }, SPECS.cargo, SPECS.home, SPECS.frame);
 }
 
+// ---- Create ----
+// The founder's shaping: Create's state is the UI's (UI.create), the pod and the rules are the rules'. The ring is on the roll when a trait is read, else on nothing.
+export function createBody() {
+  return createBuild({ st: G.st, settings: G.settings, ui: UI }, SPECS.create, SPECS.pods);
+}
+
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
+  if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
   const screen = UI.screen;
   if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
     const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked() }, SPECS.frame);
@@ -109,9 +117,10 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
-  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
-  registerPictures(reqs, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
+  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
+  if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
   return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids] };
 }
@@ -127,7 +136,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
 export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
   let holdUntil = 0, arrivalUntil = 0; const timers = [];
   const holding = () => nowMs() < holdUntil;

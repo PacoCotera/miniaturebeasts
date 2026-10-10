@@ -236,6 +236,8 @@ export const podOrigin = (p) => podOriginLines(p).join(" ");
 // --- prices ------------------------------------------------------------------------------------------
 export const price = (base, settings = DEFAULT_SETTINGS) => (settings.economy === "free" ? 0 : base);
 export const canPay = (st, e, d, s) => st.e >= (e || 0) && st.d >= (d || 0) && st.s >= (s || 0);
+// The materials a price is short of, as icons in the order of shortText, space-separated (the form of needKey's icons): "⚡ ◆", "◆"; "" when none is short.
+export const shortIcons = (st, e, d, s) => [e > st.e ? "⚡" : "", d > st.d ? "◆" : "", s > st.s ? "❀" : ""].filter(Boolean).join(" ");
 export function shortText(st, e, d, s) {
   const p = []; if (e > st.e) p.push("⚡ " + (e - st.e)); if (d > st.d) p.push("◆ " + (d - st.d)); if (s > st.s) p.push("❀ " + (s - st.s));   // the icon before its figure
   return "needs " + p.join(" ") + " more";
@@ -607,13 +609,22 @@ export const bayFull = (st, settings = DEFAULT_SETTINGS) => housed(st).length >=
 export const freeBay = (st, settings = DEFAULT_SETTINGS) => { const taken = new Set(housed(st).map((m) => m.bay)); for (let i = 0; i < bayCount(st, settings); i++) if (!taken.has(i)) return i; return -1; };
 // Minutes a bud takes: the first ever five (the dev rule), else twenty plus one per shaped trait.
 export const budMinutes = (st, nChanged, settings = DEFAULT_SETTINGS) => (st.firstMibi && settings.firstBud ? 5 : 20 + nChanged);
+// What stops Grow, as a key, in the rules' order (unidentified, busy, no bay, clash, short): null when nothing does, else { key, short } where short is the icons of the materials the price is short of (key "short" only).
+export function growBlockKey(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
+  if (!p || !p.idd) return { key: "unidentified", short: null };
+  if (st.bud) return { key: "busy", short: null };
+  if (bayFull(st, settings)) return { key: "noBay", short: null };
+  if ((clash ?? clashTraits(p, choices)).length) return { key: "clash", short: null };
+  const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return { key: "short", short: shortIcons(st, cost.e, cost.d, cost.s) };
+  return null;
+}
 export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
-  if (!p || !p.idd) return "identify it first";
-  if (st.bud) return "the incubator is busy";
-  if (bayFull(st, settings)) return "no bay free · return one";
-  const c = clash ?? clashTraits(p, choices); if (c.length) return "this shape won't grow · " + c.map((id) => traitOf(frameFor(p), id)?.name ?? id).join(", ");
-  const cost = growCost(st, choices, settings); if (!canPay(st, cost.e, cost.d, cost.s)) return shortText(st, cost.e, cost.d, cost.s);
-  return "";
+  const k = growBlockKey(st, p, choices, settings, clash); if (!k) return "";
+  if (k.key === "unidentified") return "identify it first";
+  if (k.key === "busy") return "the incubator is busy";
+  if (k.key === "noBay") return "no bay free · return one";
+  if (k.key === "clash") { const c = clash ?? clashTraits(p, choices); return "this shape won't grow · " + c.map((id) => traitOf(frameFor(p), id)?.name ?? id).join(", "); }
+  const cost = growCost(st, choices, settings); return shortText(st, cost.e, cost.d, cost.s);
 }
 // Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the
 // genome joins the outbox for the Caddy service (M3). Validated whole before anything is spent.

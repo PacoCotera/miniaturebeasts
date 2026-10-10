@@ -10,9 +10,9 @@
    24,
    24
   ],
-  "src": "typed by hand (source/marks.py)",
-  "made": "the Home title mark, the icon of the Home key, one palette colour (gold)",
-  "sha256": "cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8",
+  "src": "typed by hand (source/original.py)",
+  "made": "the Home title mark, one palette colour (#ffd441), from the original concept glyph",
+  "sha256": "d4f4e3ad0c0e68ede883ab33a96529135a7bc8d3494de1a35e09956718641cd7",
   "status": "signed"
  },
  "frame-room-vivarium-24": {
@@ -26,9 +26,9 @@
    24,
    24
   ],
-  "src": "typed by hand (source/marks.py)",
-  "made": "the Vivarium title mark, the icon of the Vivarium key, one palette colour (grass)",
-  "sha256": "50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b",
+  "src": "typed by hand (source/original.py)",
+  "made": "the Vivarium title mark, one palette colour (#5cbb4c), from the original concept glyph",
+  "sha256": "c38244b25463abe0700244cd2d783313f07027cce402cafe87028adcc9c56ee5",
   "status": "signed"
  },
  "frame-room-research-24": {
@@ -42,9 +42,9 @@
    24,
    24
   ],
-  "src": "typed by hand (source/marks.py)",
-  "made": "the Research title mark, the icon of the Research key, one palette colour (teal)",
-  "sha256": "1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3",
+  "src": "typed by hand (source/original.py)",
+  "made": "the Research title mark, one palette colour (#3084d8), from the original concept glyph",
+  "sha256": "239e82dba592f147a149a96c9247bc016644b3a0d3631ea6f81e437c6a0d884d",
   "status": "signed"
  },
  "frame-room-library-24": {
@@ -58,9 +58,49 @@
    24,
    24
   ],
-  "src": "typed by hand (source/marks.py)",
-  "made": "the Library title mark, the icon of the Library key, one palette colour (lilac)",
-  "sha256": "764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4",
+  "src": "typed by hand (source/original.py)",
+  "made": "the Library title mark, one palette colour (#dbc0ff), from the original concept glyph",
+  "sha256": "bb4ad9b4d7b635fd224e01a88b1df307e493e4e12625355822470f51e393ee3c",
+  "status": "signed"
+ },
+ "shell-key-home-24": {
+  "size": [
+   24,
+   24
+  ],
+  "src": "typed by hand (source/original.py)",
+  "made": "the Home sandbox key icon, the title mark's alpha in the key ink (#2f2b28), from the original concept glyph",
+  "sha256": "045b6298939b4588492ed8e3b800805358d67f5e3a8694b1f566db1e29f7f67d",
+  "status": "signed"
+ },
+ "shell-key-research-24": {
+  "size": [
+   24,
+   24
+  ],
+  "src": "typed by hand (source/original.py)",
+  "made": "the Research sandbox key icon, the title mark's alpha in the key ink (#f6f1e6), from the original concept glyph",
+  "sha256": "b406792f7b6950096746563adc76ff32490f627e66e17c36b7b9ed0b6589a136",
+  "status": "signed"
+ },
+ "shell-key-library-24": {
+  "size": [
+   24,
+   24
+  ],
+  "src": "typed by hand (source/original.py)",
+  "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f6f1e6), from the original concept glyph",
+  "sha256": "b6dd26ff25918a5e40573a47d5c62d11eae76895e7e1d07b7e41d67ff79367ae",
+  "status": "signed"
+ },
+ "shell-key-vivarium-24": {
+  "size": [
+   24,
+   24
+  ],
+  "src": "typed by hand (source/original.py)",
+  "made": "the Vivarium sandbox key icon, the title mark's alpha in the key ink (#2f2b28), from the original concept glyph",
+  "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
   "status": "signed"
  }
 }

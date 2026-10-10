@@ -5,6 +5,7 @@
    report   the bay emptied, the waiting mark, the rack, and the report card over the bay.
    The compositions are the spec's: `crates` (the bay's crates, the waiting mark, the crate closer and the pod travelling) and `reportCard`. A picture the host has not sent is a slot not yet filled: nothing is drawn.
    Cargo has no focus target: the ring is on nothing, the pad does nothing, and a key says an intent on "room". */
+#include "../layout/layout.h"
 #include "screens.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
@@ -27,8 +28,6 @@ static int has(const char *id) { return id && *id && wire_has_asset(id); }
 
 /* p, e in 0..1000 */
 static int ease_out(int p) { return 1000 - (1000 - p) * (1000 - p) / 1000; }
-static int ease_io(int p) { return (int)((int64_t)p * p * (3000 - 2 * p) / 1000000); }   /* cargo.json regions.travel.ease: e = p·p·(3000 − 2p)/1000000 in 64 bits, p in 0..1000 */
-static int lerp(int a, int b, int e) { return a + (int)((int64_t)(b - a) * e / 1000); }   /* from + (to − from)·e/1000, integer division truncating toward zero */
 
 /* ---- the time of the crate opening: which crate, and how far into it ---- */
 static void opening_clock(int *k, int *lt) {
@@ -122,7 +121,7 @@ static void build_opening(int k, int lt) {
     int well = v_pint(v_fmt("%s.pods.%d.well", P, j), -1), start = pod_start(j); if (well < 0) continue;
     const char *pic = v_pstr(v_fmt("%s.pods.%d.picture", P, j)); if (!*pic) continue;
     int e = lt - start, on = motion && e >= 0 && e < tms, x = px[j], y = py[j];
-    if (on) { int to[2]; pod_place(well, to); int ee = ease_io(e * 1000 / tms); x = lerp(px[j], to[0], ee); y = lerp(py[j], to[1], ee); }
+    if (on) { int to[2]; pod_place(well, to); int ee = layout_ease_io(e * 1000 / tms); x = layout_lerp(px[j], to[0], ee); y = layout_lerp(py[j], to[1], ee); }
     v_name("travel"); slot(v_fmt("travel.%d", j), pic, x, y, pw, ph, on);
   }
 }
