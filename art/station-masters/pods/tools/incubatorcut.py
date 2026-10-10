@@ -71,16 +71,20 @@ glw = np.exp(-(((Xg - 152) / 26.0) ** 2 + ((Yg - 72) / 22.0) ** 2))[..., None]; 
 back_img.alpha_composite(lamp.resize((Wd, Hd), Image.LANCZOS))
 win_d = np.asarray(sup(Wd, Hd, lambda d: window(d, 7, -7))).astype(float)                                                                 # the window dilated 7 px: the interior tucks under the frame
 back = Image.fromarray(np.dstack([np.asarray(back_img)[..., :3], win_d * 255]).astype(np.uint8), "RGBA")
-save("dome-front-304x272", front, "the chamber's housing and window frame (sage metal, one arched window, the opening cleared), cut from the sheet, scaled uniformly to the dome's 272 rows")
+fa_ = np.asarray(front).astype(float); yy_, xx_ = np.mgrid[0:272, 0:304]; dd_ = np.hypot(xx_ + 0.5 - 152.0, yy_ + 0.5 - 154.0) - 152.0; fa_[..., 3] = np.where(yy_ < 154, fa_[..., 3] * np.clip(0.5 - dd_, 0, 1), fa_[..., 3]); front = Image.fromarray(np.rint(fa_).clip(0, 255).astype(np.uint8), "RGBA")      # the art director's hand fix (e863f47b): the housing trimmed to the radius-152 arch: alpha x clip(0.5 - d, 0, 1) for y < 154, d the distance from (152, 154) to the pixel centre minus 152, then rounded
+save("dome-front-304x272", front, opt=False, made="the chamber's housing and window frame (sage metal, one arched window, the opening cleared), cut from the sheet, scaled uniformly to the dome's 272 rows")
 back, brep = fit_light(back, warm=True); print("dome-back", brep)
-save("dome-back-304x272", back, "the chamber's warm interior (a plain lit wall, a small lamp, the moss bed with its hollow), empty, behind the housing")
+save("dome-back-304x272", back, "the chamber's warm interior (a plain warm matte wall and a small lamp under the hood; the bed is the nest slice), empty, behind the housing")
 def glow(t, strength, cream):
     r = np.asarray(t).astype(float); h, w = r.shape[:2]; lin = to_lin(r[..., :3]); Y, X = np.mgrid[0:h, 0:w]
     bed = np.exp(-(((X - w / 2) / (0.28 * w)) ** 2 + ((Y - 0.72 * h) / (0.13 * h)) ** 2)); lamp = np.exp(-(((X - w / 2) / (0.3 * w)) ** 2 + ((Y - 0.28 * h) / (0.25 * h)) ** 2))
     add = (strength * bed + cream * lamp)[..., None] * np.array([1.0, 0.86, 0.58]); out = 1 - (1 - lin) * (1 - np.clip(add, 0, 0.95)); r[..., :3] = to_srgb(out); return Image.fromarray(r.astype(np.uint8), "RGBA")
 bk = np.asarray(back).astype(float); mask_a = bk[..., 3:] / 255.0
 st_, srep = fit_light(glow(back, 0.16, 0.0), warm=True); print("standby", srep); st_ = Image.fromarray(np.dstack([np.asarray(st_)[..., :3] * 0.94, np.asarray(st_)[..., 3]]).astype(np.uint8), "RGBA"); save("dome-inside-standby-304x272", st_, "the interior with a soft warm pool on the bed (about half a growing glow), standby")
-rd, rrep = fit_light(glow(back, 0.40, 0.30), warm=True, cap=69.9); print("ready", rrep); save("dome-inside-ready-304x272", rd, "the interior with its light up toward cream, ready (by hand: a cream light added on the wall and the bed, nothing else changed)")
+# the ready light, the art director's hand fix (e863f47b): built from dome-back in linear light: out = 1 - (1 - c)(1 - 0.07 * cream #fff4a6), back to sRGB, rounded; the lamp pixels in the box x 124-180, y 45-82 that have R < 150 or L* > 72 (582 px) are left untouched
+bk_ = np.asarray(back).astype(float); lin_ = to_lin(bk_[..., :3]); cr_ = to_lin(np.array([255.0, 244.0, 166.0])); rdn = np.rint(to_srgb(1 - (1 - lin_) * (1 - 0.07 * cr_))); keep_ = np.zeros(bk_.shape[:2], bool); keep_[45:83, 124:181] = ((bk_[45:83, 124:181, 0] < 150) | (lstar(bk_[45:83, 124:181, :3]) > 72)) & (bk_[45:83, 124:181, 3] > 0)
+rdn[keep_] = bk_[keep_][:, :3]; rd = Image.fromarray(np.dstack([rdn, bk_[..., 3]]).astype(np.uint8), "RGBA"); print("ready lamp pixels kept", int(keep_.sum()))
+save("dome-inside-ready-304x272", rd, opt=False, made= "the interior with its light up toward cream, ready (by hand: a cream light added on the wall and the bed, nothing else changed)")
 # --- the base
 bx = (661, 189, 1280, 330); b = a[bx[1]:bx[3], bx[0]:bx[2]]; ba = keyed[bx[1]:bx[3], bx[0]:bx[2]]
 body = b[:int(0.88 * b.shape[0])]; sand_rows = np.arange(body.shape[0])

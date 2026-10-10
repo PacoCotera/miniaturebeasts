@@ -10523,10 +10523,7 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg (gemini-3-pro-image)",
   "made": "the bud, early: a smooth warm bean (peach, lit cream, rust edge) glowing softly from within on a little moss, no dot, no eye, no sprout; keyed from the slate, scaled uniformly, bottom-centred in 128x160 (pass 111)",
-  "sha256": "1a4f8d27d789c135fc846e707bf332c3c2002dcdac56aaa3b9928930594de7b8",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "d501777f1429debef83d1916270ca02b60982fc097ba4b987c484e55504c21ec"
  },
  "bud-late-128x160": {
   "size": [
@@ -10536,10 +10533,7 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, late: by hand, the skin toward blush (its yellow lowered, a little pink added, the inner light a little up), no drift to a species' hue (pass 111)",
-  "sha256": "6c240f273fd3b3db266110d05d712cf05b8d4e5c326903486fd36ebe6fc8d8e4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "aa690e07d6b7688b539706d5c68406a51acd099843136cd6311725144e1adbd0"
  },
  "bud-ready-128x160": {
   "size": [
@@ -10549,10 +10543,7 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, ready: by hand, the inner light up full, a soft cream light across the bean's middle where the shape's window sits (pass 111)",
-  "sha256": "ac0de46537dd23737425b42f3feb04445677bb2890b7e674f9fd4fd4dac0e0d3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "096fa94f4a37519d2387e0ca137cb62d3e5eb693cfd1d96d5293d3bfa2896d51"
  },
  "bud-ready-front-128x160": {
   "size": [
@@ -10562,10 +10553,7 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the skin over the shape: the bean's silhouette at half opacity, lighter at the middle, drawn over the shape in the ready bud (pass 111)",
-  "sha256": "277d8ec89d525070ee702e025a860772c335e75af6e0a43902be4cad8eb2464a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "3e15f90972aea62904fa57af25c3db6f8d53790d4ba998d2a6d6cb4b812982ea"
  },
  "bud-crack-1-128x160": {
   "size": [
@@ -10575,10 +10563,7 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the first crack step over the ready bud: a short rust crack with a thread of light, a transparent layer drawn by hand (pass 111)",
-  "sha256": "efc178ea834f86fbf12a00438d02d58149923cc8d562f73644c88d27076ad15c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "4355c8c9141e8ca85486105adbd22376dfe725816397a5b0e8d77d1ae63bfc75"
  },
  "bud-crack-2-128x160": {
   "size": [
@@ -10588,10 +10573,7 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the second crack step over the ready bud: a longer, wider crack with the light coming through, a transparent layer drawn by hand (pass 111)",
-  "sha256": "5001ded68fe7652cd217121d52ff7765455c515da2c8ff04c180676f93b794d4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "40b180a053aa0e586cfc68827e9861f4de9049193e78bb9d773380ada4d84c1b"
  },
  "leaf-empty-16x20": {
   "size": [
@@ -10601,10 +10583,7 @@
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
   "made": "the leaf, empty, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12) (pass 111)",
-  "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
-  "status_note": "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"
+  "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6"
  },
  "leaf-full-16x20": {
   "size": [
@@ -10614,10 +10593,7 @@
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
   "made": "the leaf, full, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; sage #84ae78 with a sageD #5d7a5f vein (pass 111)",
-  "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "status_note": "signed (art director): hand-pixelled, palette-exact, the spec's leaf (sage, sageD vein)"
+  "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687"
  },
  "leaf-empty-8x12": {
   "size": [
@@ -10627,10 +10603,7 @@
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
   "made": "the leaf, empty, hand-pixelled 8x12: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12) (pass 111)",
-  "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb",
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
-  "status_note": "signed (art director): the small leaf's outline recoloured to bevel #565c63 (the Create spec's empty small leaf), palette-exact, 36 px"
+  "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb"
  },
  "leaf-full-8x12": {
   "size": [
@@ -10640,10 +10613,7 @@
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
   "made": "the leaf, full, hand-pixelled 8x12: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; sage #84ae78 with a sageD #5d7a5f vein (pass 111)",
-  "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a",
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "status_note": "signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact"
+  "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a"
  },
  "room-bench-stage-incubator": {
   "size": [
@@ -10746,10 +10716,7 @@
   "rect": null,
   "src": "slices/bud-early-128x160.png",
   "made": "the bud for Create's small chamber: the new bud-early reduced by one half (64x80, only ever reduced) (pass 111)",
-  "sha256": "8db175b45d97c8296655ad6fa2c14b3b242679f2bf39eae8cae208d2325b0202",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
+  "sha256": "2e68b3c526f406a9c1cbe6442d13c56f8316a47a4c0a255295482d4230aeb355"
  },
  "crate-closer-open-384x256": {
   "size": [

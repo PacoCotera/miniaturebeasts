@@ -28,8 +28,8 @@ for k in ("day", "dusk", "night", "dawn"):
     if k == "dawn":
         exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 370); rep["dawn detail"] = drep
     if k == "night":
-        exec(open("tools/nightdist.py").read(), globals()); before = im; im, nrep = night_dist(im, 212, 82, 135); rep["night detail"] = nrep; before.save("/tmp/near-night-before.png")
-    n = f"vivarium-near-{k}-544x408"; im.save(f"slices/{n}.png", optimize=True); outs[k] = im
+        im = Image.open("slices/vivarium-near-night-544x408.png").convert("RGB"); before = im; rep["night"] = "the signed near night (the art director graded it by hand with a linear gain of 0.73, pass 112 pairing, hash f5ac46fcd661); this tool keeps the file as it is"
+    n = f"vivarium-near-{k}-544x408"; (im.save(f"slices/{n}.png", optimize=True) if k != "night" else None); outs[k] = im
     rep[k] = round(float(lstar(np.asarray(im).astype(float)).mean()), 1)
     man[n] = {"size": [544, 408], "rect": [24, 56, 544, 408], "src": f"source/raw/vivarium-near-{k}.jpg (gemini-3-pro-image)", "made": f"the near Vivarium by {k} ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting" + ("" if k == "day" else f" (an edit of the near day picture, matched to Idle's {k} light)") + ", cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
 man["vivarium-near-dawn-544x408"]["made"] = "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, given a gold tint by hand and set to a mean L* of 40.5 (tools/dawntint.py; passes 105 and 108)"

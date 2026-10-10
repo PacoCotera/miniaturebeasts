@@ -33,7 +33,19 @@ for y in range(160):
 pmv = np.dstack([mp[..., :3] * mp[..., 3:] / 255.0, mp[..., 3:]]); pad = np.pad(pmv, ((2, 2), (0, 0), (0, 0)), mode="edge"); pmv = (pad[0:-4] * 1 + pad[1:-3] * 4 + pad[2:-2] * 6 + pad[3:-1] * 4 + pad[4:] * 1) / 16.0            # the rows are smoothed vertically (a 1-4-6-4-1 kernel) so the edge has no row-by-row steps
 pmv = np.asarray(Image.fromarray(pmv.clip(0, 255).astype(np.uint8), "RGBA").filter(ImageFilter.GaussianBlur(0.6))).astype(float); alv = pmv[..., 3:] / 255.0
 mp = np.dstack([np.where(alv > 0.004, pmv[..., :3] / np.maximum(alv, 0.004), 0), pmv[..., 3:]])
-early = Image.fromarray(mp.clip(0, 255).astype(np.uint8), "RGBA")
+# the art director's return on pass 120: the right edge was ragged from the row remap: the outline is redrawn as a CLEAN ELLIPSE (112 x 140, bottom y 152, centred x 64, anti-aliased at 4x) with a 1 px soft rust edge (#a6420c), and a soft cream #fff4a6 highlight from the top left over about a third of the bean is added so it reads peach lit cream with a rust edge
+Ee = Image.new("L", (128 * 4, 160 * 4), 0); ImageDraw.Draw(Ee).ellipse([4 * 8, 4 * 12, 4 * 120, 4 * 152], fill=255); Ee = np.asarray(Ee.resize((128, 160), Image.LANCZOS)).astype(float) / 255.0
+rgb_ = mp[..., :3].copy(); have_ = mp[..., 3] > 200
+for _ in range(10):                                  # the colour is grown outward from the opaque remapped pixels, so the ellipse has colour right up to its clean edge
+    pad = np.pad(rgb_, ((1, 1), (1, 1), (0, 0)), mode="edge"); hp = np.pad(have_, 1); acc = np.zeros_like(rgb_); cnt = np.zeros(have_.shape)
+    for dy in (-1, 0, 1):
+        for dx in (-1, 0, 1):
+            mm = hp[1 + dy:1 + dy + 160, 1 + dx:1 + dx + 128]; acc += pad[1 + dy:1 + dy + 160, 1 + dx:1 + dx + 128] * mm[..., None]; cnt += mm
+    nw_ = (~have_) & (cnt > 0); rgb_[nw_] = acc[nw_] / cnt[nw_][:, None]; have_ = have_ | nw_
+Yg_, Xg_ = np.mgrid[0:160, 0:128].astype(float); rr_ = np.hypot((Xg_ + 0.5 - 64.0) / 56.0, (Yg_ + 0.5 - 82.0) / 70.0); edge_ = np.clip((rr_ - (1 - 1.4 / 63.0)) / (1.4 / 63.0), 0, 1) * 0.55                  # a 1 px soft rust edge
+lin_ = to_lin(rgb_); rust_ = to_lin(np.array([166.0, 66.0, 12.0])); lin_ = lin_ * (1 - edge_[..., None]) + rust_ * edge_[..., None]
+cr_ = to_lin(np.array([255.0, 244.0, 166.0])); hl_ = np.exp(-(((Xg_ - 46.0) / 38.0) ** 2 + ((Yg_ - 56.0) / 52.0) ** 2)) * np.clip(1.15 - rr_, 0, 1); lin_ = 1 - (1 - lin_) * (1 - 0.5 * hl_[..., None] * cr_)
+early = Image.fromarray(np.dstack([to_srgb(lin_), Ee * 255]).clip(0, 255).astype(np.uint8), "RGBA")
 early, erep = fit_light(early, warm=True, soft=True); print("bud-early", erep)
 E = np.asarray(early).astype(float); bean = ((E[..., 0] > E[..., 1] + 6) & (E[..., 3] > 128)); bean = np.asarray(Image.fromarray((bean * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))) > 0
 ys, xs = np.where(bean); bx0, bx1, by0, by1 = xs.min(), xs.max(), ys.min(), ys.max(); cx, cy_ = (bx0 + bx1) / 2.0, (by0 + by1) / 2.0
@@ -80,6 +92,7 @@ for (w, h) in ((16, 20), (8, 12)):
 # bud-small-64x80 (Create: a busy bud's glow in the small chamber, a 64x80 bud): the new bud-early reduced by one half, only ever reduced
 e = np.asarray(early).astype(float); pm_ = np.dstack([e[..., :3] * e[..., 3:] / 255.0, e[..., 3:]]).astype(np.uint8); rs_ = np.asarray(Image.fromarray(pm_, "RGBA").resize((64, 80), Image.LANCZOS)).astype(float); a_ = rs_[..., 3:] / 255.0
 small = Image.fromarray(np.dstack([np.where(a_ > 0.004, rs_[..., :3] / np.maximum(a_, 0.004), 0), rs_[..., 3:]]).clip(0, 255).astype(np.uint8), "RGBA")
+small, _srep = fit_light(small, soft=True, cap=69.0); print("bud-small", _srep)
 save("bud-small-64x80", small, "the bud for Create's small chamber: the new bud-early reduced by one half (64x80, only ever reduced)", "slices/bud-early-128x160.png")
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 S = 5; names = ["bud-early-128x160", "bud-late-128x160", "bud-ready-128x160", "bud-ready-front-128x160", "bud-crack-1-128x160", "bud-crack-2-128x160"]
