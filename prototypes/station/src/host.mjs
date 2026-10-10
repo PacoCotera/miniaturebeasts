@@ -12,6 +12,8 @@ import { homeBuild } from "./views/home-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
+import { incubatorBuild } from "./views/incubator-props.mjs";
+import { lampText } from "./caddy.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
@@ -20,7 +22,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "cargo", "pods", "create"];
+export const BUILT = ["home", "cargo", "pods", "create", "incubator"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -104,6 +106,13 @@ export function createBody() {
   return createBuild({ st: G.st, settings: G.settings, ui: UI }, SPECS.create, SPECS.pods);
 }
 
+// ---- Incubator ----
+// The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). The lamp is the hatched mibi's painting, as Home's.
+export function incubatorBody() {
+  const hm = UI.inc?.hatch ? mibiById(UI.inc.hatch.mibi) : null;
+  return incubatorBuild({ st: G.st, settings: G.settings, ui: UI, lamp: hm ? lampText(hm) ?? "" : "" }, SPECS.incubator, SPECS.pods);
+}
+
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
@@ -117,8 +126,8 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
-  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
-  registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, founderGenome: S.founderGenome });
+  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own

@@ -36,7 +36,7 @@ export function incubatorBuild(m, spec, pods) {
     const known = hatch ? fr.chapters.filter((c) => (readIds || []).includes(c.id) || (kind !== "cross" && !(c.sealed && !settings.sealedOpen))).map((c) => c.id) : knownChapters(st, B, settings, now);
     regions.rail = { focused: null, open: -1, star: req({ kind: "star", id: "star:12" }), tabs: fr.chapters.map((c) => {
       const isKnown = known.includes(c.id), n = Math.min(c.traits.length, maxTraits(pods.regions.chapter.page));
-      return { id: c.id, word: c.legsTail ? c.name : c.name, state: isKnown ? "read" : "unread", pips: n, filled: isKnown ? n : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${c.id}:${isKnown ? "read" : "unread"}:24`, chapter: c.id, state: isKnown ? "read" : "unread" }) };
+      return { id: c.id, word: c.name, state: isKnown ? "read" : "unread", pips: n, filled: isKnown ? n : 0, glint: false, emblem: req({ kind: "emblem", id: `emblem:${c.id}:${isKnown ? "read" : "unread"}:24`, chapter: c.id, state: isKnown ? "read" : "unread" }) };
     }) };
   }
   // the leaves (growing and ready): empty outlines, the full leaf, the filling one by its rows
@@ -60,7 +60,7 @@ export function incubatorBuild(m, spec, pods) {
   regions.lamp = state === "hatch" && (m.lamp === spec.strings.painting || m.lamp === spec.strings.offline) ? (m.lamp === spec.strings.offline ? "offline" : "waiting") : "";
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon
   if (state !== "empty") {
-    const known = hatch ? (regions.rail.tabs.filter((t) => t.state === "read").map((t) => t.id)) : knownChapters(st, B, settings, now), g = hatch ? m.mibiGenome : B.genome, sz = stampSizing(fr, g);
+    const hm = hatch ? st.mibis.find((x) => x.id === hatch.mibi) : null, known = hatch ? hm.read : knownChapters(st, B, settings, now), g = hatch ? hm.genome : B.genome, sz = stampSizing(fr, g);
     regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}`, species, read: known, size: sz.size, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
     regions.code = codeText(hatch ? hatch.code : B.code);
   }
