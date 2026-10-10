@@ -61,7 +61,8 @@ for (const s of rec.shots) {
   const one = (layer, id, want, what) => { for (const r of got(layer, id)) must(eq(r.rect, want), `${what ?? id} ${r.rect} is not ${want}`); };
   const inside = (layer, id, box) => { for (const r of got(layer, id)) must(within(r.rect, box), `${id} ${r.rect} is not inside ${box}`); };
   if (c.idle) { for (const m of idleDepartures(lg, frame)) must(false, m); regionsChecked += lg.regions.length; must(got("chrome", "idle.strip").length === 1 && got("chrome", "vivarium").length + got("painted", "vivarium").length >= 1, "Idle draws the Vivarium (its plates, or the light's painting) and the strip"); continue; }   // Idle: every region of the face's log against frame.json idle (face/tools/idle-regions.mjs)
-  one("chrome", "top", F.top.rect, "top bar"); one("chrome", "line", F.line.rect, "bottom line");
+  one("painted", "top", F.top.rect, "top bar"); one("painted", "line", F.line.rect, "bottom line");   // the signed bars 1:1 (frame.json top.slice, line.slice); the code panel and rule are nodes of no size while they are on the face
+  for (const id of ["top", "line"]) must(got("painted", id).length === 1 && got("chrome", id).every((r) => !eq(r.rect, F[id].rect)), `${id}: one painted bar, and no full-width code panel beside it: ` + JSON.stringify(got("chrome", id).map((r) => r.rect)));
   for (const r of got("chrome", "plate")) { const w = r.rect[2], cx = r.rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (r.rect[1] + r.rect[3] - 3 === F.plate.bottom || r.rect[1] === F.plate.topOverFocal), `message plate ${r.rect}`); }
   if (c.screen === "home" && c.props?.state === "home") {   // Home: every region of the face's log against home.json (face/tools/home-regions.mjs): zero departures; the strings are Inter at their sizes
     const d = departures(lg, home, frame, c.homeFocus ?? "room"); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
@@ -113,7 +114,7 @@ console.log("== ink against the frame spec");
   for (const s of rec.shots.filter((x) => x.png && !x.check.idle)) {
     const d = decodePNG(Buffer.from(s.png, "base64")).data, says = new Set(s.check.log.type.map((t) => t.region));   // what the face set in each slot
     const px = (i, j) => [d[(j * 1024 + i) * 4], d[(j * 1024 + i) * 4 + 1], d[(j * 1024 + i) * 4 + 2]];
-    if (!eq(px(300, 20), rgbOf(C.chrome)) || !eq(px(500, 39), rgbOf(C.rule)) || !eq(px(500, 562), rgbOf(C.rule))) fail(`${s.name}: the top bar is the chrome ground with its rule, and the bottom line's rule is on its top edge`);
+    if (!eq(px(300, 20), rgbOf("bar")) || !eq(px(500, 39), rgbOf("hairline")) || !eq(px(500, 562), rgbOf("hairline")) || !eq(px(500, 563), rgbOf("bevel")) || !eq(px(500, 0), rgbOf("bevel"))) fail(`${s.name}: the signed bars: the top bar is \`bar\` with a \`bevel\` row on top and a \`hairline\` row at the foot, the bottom line a \`hairline\` row then a \`bevel\` row on its top edge`);
     for (const x of F.separators.x) if (!eq(px(x, 580), rgbOf(C.dot))) fail(`${s.name}: no 1 px separator at x ${x}`);
     for (const [name, r] of Object.entries(regions)) {
       const a = ink(d, r), want = says.has(name); n++;

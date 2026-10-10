@@ -29,7 +29,7 @@ function scene(o = {}) {
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };
   if (o.away) st.dock = { docked: false, at: T0 }; if (o.bud) st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] })), mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
-  return idleBuild({ st, sv, settings, docked: S.docked(st), light: "day" }, frameSpec);
+  return idleBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day" }, frameSpec);
 }
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, size) { const [w, h] = size, d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { d[i * 4] = 70 + (k & 127); d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d }; }
@@ -105,4 +105,16 @@ for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0
   }
   assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
   console.log(`# Idle's walk, ${name}, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);
+});
+
+// a light change is a cut, like a screen change: the painting (1024 × 568) is redrawn on one refresh, under its own ceiling, not the 153,600 of an animation
+const dirty = (f) => { const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
+test("a light change is a cut: Idle redraws the whole of its painting at most (581,632 px), every pair of lights", { skip }, async () => {
+  const LIGHTS = ["dawn", "day", "dusk", "night"];
+  for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {
+    const f = await start(scene({ adults: 4, young: 2, carry: [0, 1], light: from }), { motion: false, t0: 1000 }), b = scene({ adults: 4, young: 2, carry: [0, 1], light: to });
+    for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-bed-/.test(i) ? { policy: "art" } : {}) })));
+    assert.equal(f.props({ screen: "home", ...b.props, motion: false }), 0, f.errors().join("; ")); f.frame((f.t += 16));
+    const a = dirty(f); assert.ok(a <= 581632, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
+  }
 });

@@ -1213,7 +1213,7 @@
  "targets": {
   "place": {
    "group": "place",
-   "ring": { "circle": { "radius": 84, "centre": [96, 112] } },
+   "ring": { "circle": { "radius": 84, "centre": [96, 88] } },
    "state": "collection"
   },
   "pod": {

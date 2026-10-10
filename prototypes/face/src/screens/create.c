@@ -157,6 +157,7 @@ void create_words(void) {
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
   { int r[4]; crect("regions.bud.rect", r); v_name("bud"); pic_or("bud", v_pbool("regions.bud.busy", 0), v_pstr("regions.bud.picture"), r[0], r[1], r[2], r[3]); }
   build_pod(grow);
+  { char u[8]; if (spec_str(C, "regions.cradleFront.until", u, sizeof u) <= 0) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front")); }   /* the dish's near lip over the pod, drawn once Create's own stage lands (the spec drops `until`) */
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
   build_founder();

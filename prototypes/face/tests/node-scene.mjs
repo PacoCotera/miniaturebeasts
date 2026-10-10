@@ -6,6 +6,8 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 const enc = new TextEncoder();
 // A test's picture function, given the policy the host's picture() gives a real picture (the page's family table; a stand-in id outside every family is art).
 export const policyFor = (id, status = "placeholder") => { try { return policyOf(id, status); } catch { return "art"; } };
+// The flat amber 12×12 stand-in for the signed need lamp (home-lamp-amber-12x12), the same in every test and vector tool that draws the frame's notice.
+export const amberLamp = () => { const d = new Uint8ClampedArray(12 * 12 * 4); for (let i = 0; i < d.length; i += 4) { d[i] = 0xff; d[i + 1] = 0xa8; d[i + 2] = 0x3f; d[i + 3] = 255; } return { w: 12, h: 12, data: d }; };
 export const withPolicy = (fn) => (id) => { const p = fn(id); return p && { ...p, status: p.status ?? "placeholder", policy: p.policy ?? policyFor(id, p.status ?? "placeholder") }; };
 const fnv = (str) => { let h = 2166136261; for (const b of enc.encode(str)) { h ^= b; h = Math.imul(h, 16777619); } return h >>> 0; };
 

@@ -1,5 +1,4 @@
-// Idle in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `idle-docked` (the carried set asleep on the bed), `idle-away` (the Companion's mark, nothing drawn
-// for it until its master), `idle-none` (the nest alone), each with the line frame.json idle.strings.order gives, and `idle-walk-8000ms` (twelve residents walking, 8000 ms of the face's clock into Idle, the reference of the three builds).
+// Idle in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `idle-docked` (the carried set asleep on the bed), `idle-away` (the bed's mark), `idle-none` (the nest alone), each with the line frame.json idle.strings.order gives, and `idle-walk-8000ms` (twelve residents walking, 8000 ms of the face's clock into Idle, the reference of the three builds).
 // The still points are taken with reduced motion; the walk on a virtual clock with motion. Each is reached by the page's own state (Idle on the screen under it) and asserted before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";

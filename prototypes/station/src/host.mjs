@@ -88,8 +88,8 @@ export function podsBody() {
 
 // ---- Home ----
 // Keep Home's focus valid (the ring on a target present, else on the room) and return its props body. The pad is the face's; the host keeps what the face says in UI.home.f.
-export function homeBody() {
-  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, light: lightNow() });
+export function homeBody(light = lightNow()) {
+  const model = () => ({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI, focus: UI.home.f === "room" ? null : UI.home.f, light });
   const body = homeBuild(model(), SPECS.home, SPECS.frame);
   if (body.props.focus.cur === "room") UI.home.f = "room";
   return body;
@@ -118,22 +118,24 @@ export function incubatorBody() {
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
-  const screen = UI.screen;
+  const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it
   if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
-    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light: lightNow() }, SPECS.frame);
+    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light }, SPECS.frame);
     registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
     const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
-    return { msg: { screen, ...body.props }, ids: [...ids] };
+    return { msg: { screen, ...body.props }, ids: [...ids], light };
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
-  if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
-  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };
+  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
-  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids] };
+  return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light };
 }
+// The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
+export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, g = SPECS.home.regions.glass.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-glass-${light}:${g[2]}x${g[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`]; };
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
   const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
@@ -141,7 +143,7 @@ export function frameIds() {
   return [...ids];
 }
 // Idle takes none of the frame's marks but the one its waiting lamps are (frame.json regions.marks.lamp12.waiting).
-export const idleMarkIds = () => [SPECS.frame.regions.marks.lamp12.waiting];
+export const idleMarkIds = () => [SPECS.frame.regions.marks.lamp12.waiting].filter(assetEntry);
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----

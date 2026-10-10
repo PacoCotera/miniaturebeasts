@@ -1,6 +1,6 @@
-/* The list word (Pods' collection, station-layouts.md Pods §5 A), ported from components/list.mjs: every rack place on the 3 x 2 grid, each a recessed place (a panel picture), the progress ring
+/* The list word (Pods' collection, station-layouts.md Pods §5 A), ported from components/list.mjs: every rack place on the 3 x 2 grid, each the progress ring
    (the studio's masters in layers), the pod in the ring, the name on its plate, the find, the can-grow mark and the glint star; an empty place is the empty ring. Then the waiting mark.
-   Spec: `pods` regions.collection. Props: regions.list { places: [ { empty, panel, ringLayers: [ids] } | { panel, ringLayers, pod, name, plate (the series), find, grow, glint } ], waiting }.
+   Spec: `pods` regions.collection. Props: regions.list { places: [ { empty, ringLayers: [ids] } | { ringLayers, pod, name, plate (the series), find, grow, glint } ], waiting }.
    A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. */
 #include "../vocab.h"
 #include "../words.h"

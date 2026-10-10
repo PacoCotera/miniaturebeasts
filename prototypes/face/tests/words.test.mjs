@@ -7,7 +7,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
-import { withPolicy } from "./node-scene.mjs";
+import { withPolicy, amberLamp } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -17,7 +17,7 @@ const { cases } = JSON.parse(readFileSync(path.join(here, "vectors/frame-words.j
 
 // a stand-in picture for every id a frame can name: a flat block of a colour the id hashes to, at the size the id names (the face composes its own rings, so there are none here)
 const sizeOf = (id) => { let m; if ((m = /^icon:\w+:(\d+)$/.exec(id))) return [+m[1], +m[1]]; return null; };
-const picture = (id) => { if (id === "home-lamp-amber-12x12") { const d = new Uint8ClampedArray(12 * 12 * 4); for (let i = 0; i < d.length; i += 4) { d[i] = 0xff; d[i + 1] = 0xa8; d[i + 2] = 0x3f; d[i + 3] = 255; } return { w: 12, h: 12, data: d }; }   // the signed amber lamp, here a flat block of `amber` (what the code-drawn one was)
+const picture = (id) => { if (id === "home-lamp-amber-12x12") return amberLamp();   // the signed amber lamp, here a flat block of `amber` (what the code-drawn one was)
   const s = sizeOf(id); if (!s) return null; const d = new Uint8ClampedArray(s[0] * s[1] * 4); let h = 0; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; for (let i = 0; i < d.length; i += 4) { d[i] = 80 + (h & 127); d[i + 1] = 80 + ((h >> 7) & 127); d[i + 2] = 80 + ((h >> 14) & 127); d[i + 3] = 255; } return { w: s[0], h: s[1], data: d }; };
 const PICTURES = ["icon:energy:16", "icon:data:16", "icon:essence:16", "icon:cross:16", "home-lamp-amber-12x12"];
 
