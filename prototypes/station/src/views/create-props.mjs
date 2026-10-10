@@ -6,7 +6,7 @@
 //   ui.create.grown is what ✓ Grow it made (intents/create.mjs): { code, cost }; it holds the screen in its grow state while the pod, no longer in the rack, travels.
 import * as S from "../state.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
-import { slot, railOf, blockNeed } from "./pods-props.mjs";
+import { slot, railOf } from "./pods-props.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 const SPELL = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
@@ -46,15 +46,14 @@ export function createBuild(m, spec, pods) {
     tab.marks = c.traits.slice(0, n).map((t) => (!read ? "hollow" : cr.clash.includes(t.id) ? "clash" : cr.choices[t.id] ? "changed" : "filled"));
     tab.lift = cur && cur.c === c ? Math.min(c.traits.indexOf(cur.t), n - 1) : -1;
   });
-  const pipPic = (name) => ph(`pip-${name}-6x6`, [6, 6], false, "the kit's chrome (create.json placeholders)");
-  regions.rail = { ...rail, changed: pipPic("changed"), clash: pipPic("clash") };
+  regions.rail = rail;   // the changed and clash pips are the words' chrome rects (create.json: the kit's chrome), never pictures
 
   // the roll: three pictures (as the pod is, only the first copy, only the second copy) or one; the chosen one ringed
   if (list.length) {
     const opts = S.rollOptions(p, cur.t.id), rolls = opts.length > 1, pic = (look) => ph(`roll-${S.speciesOf(p)}-${slug(cur.t.name)}-${slug(look)}-128x72`, R.roll.picture.size, false, "the roll picture master (cut from the painting)");
     const chosen = rolls ? (cr.choices[cur.t.id] || 0) : 0, clash = cr.clash.includes(cur.t.id);
     const pictures = rolls ? opts.map((o) => pic(o.look)) : [pic(traitState(fr, cur.t, genome).shows)];
-    regions.roll = { form: rolls ? "roll" : "single", chosen, clash, pictures, notchUp: ph("create-notch-up-12x6", R.roll.notch.size, false, "the kit's chrome (create.json placeholders)"), notchDown: ph("create-notch-down-12x6", R.roll.notch.size, false, "the kit's chrome (create.json placeholders)") };   // the notches are named whether or not the trait rolls: the face keeps their nodes
+    regions.roll = { form: rolls ? "roll" : "single", chosen, clash, pictures, notches: rolls };   // the notches are the words' chrome, drawn only while the trait rolls
   }
 
   // the trait line: the focused trait and its chosen look; the changed tag, the clash cross or the breed mark (the tag's plate and the mark are named in every state: the face keeps their nodes)
@@ -72,14 +71,16 @@ export function createBuild(m, spec, pods) {
   regions.traitLine = line;
 
   // the work tray, the founder, the pod and its dish, the origin, the small chamber
-  regions.chamber = { back: ph("create-chamber-400x320", R.chamber.rect.slice(2), false, stale), front: ph("create-chamber-front-400x320", R.chamber.rect.slice(2), true, stale) };
+  ph("create-chamber-front-400x320", R.chamber.rect.slice(2), true, stale);   // registered, nothing drawn: a front plate would cover the founder, the bud and the arriving pod (art director, 2026-10-10)
+  regions.chamber = { back: ph("create-chamber-400x320", R.chamber.rect.slice(2), false, stale) };
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
   regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }) };
   regions.cradle = { cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };
   regions.origin = S.podOriginLines(p);
-  regions.dome = { back: ph("create-dome-176x224", R.dome.rect.slice(2), false, stale), front: ph("create-dome-front-176x224", R.dome.rect.slice(2), true, stale) };
+  ph("create-dome-front-176x224", R.dome.rect.slice(2), true, stale);   // registered, nothing drawn
+  regions.dome = { back: ph("create-dome-176x224", R.dome.rect.slice(2), false, stale) };
   regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2), false, stale), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
 
   // the leaves the bud will take, every one empty: the minutes it will grow
@@ -90,15 +91,13 @@ export function createBuild(m, spec, pods) {
   regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(genome)}:${[...readIds].sort().join(",")}:${sz.size}`, pod: p.id, species: S.speciesOf(p), read: readIds, size: sz.size, choices: cr.choices }) };
   regions.code = grown ? codeText(cr.grown.code) : "";
 
-  // the bottom line: ✓ Grow it and the total, what stays a surprise, the first block, ← the pod
-  const Sg = spec.strings, cost = grown ? cr.grown.cost : S.growCost(st, cr.choices, settings), block = grown ? "" : S.growBlock(st, p, cr.choices, settings, cr.clash);
+  // the bottom line: ✓ Grow it and the price, what stays a surprise, the first block (the rules' order, growBlockKey) with its notice; ← the pod
+  const Sg = spec.strings, cost = grown ? cr.grown.cost : S.growCost(st, cr.choices, settings), key = grown ? null : S.growBlockKey(st, p, cr.choices, settings, cr.clash);
   const unread = fr.chapters.filter((c) => !p.read.includes(c.id)), name = S.spName(p);
   const subject = !unread.length ? S.cap(S.aAn(name)) + ", fully known" : unread.length === fr.chapters.length ? Sg.surprise.all : unread.length === 1 ? fill(Sg.surprise.one, { Chapter: unread[0].name }) : fill(Sg.surprise.more, { "n in words": SPELL[unread.length] ?? "many" });
-  const sayOf = (b) => /^the incubator is busy/.test(b) ? Sg.notices.busy : /^no bay free/.test(b) ? Sg.notices.noBay : /^this shape won't grow/.test(b) ? Sg.notices.clash : blockNeed(b, pods.strings);
-  const blocked = /^(the incubator is busy|no bay free|this shape won't grow)/.test(block), short = !blocked && block ? [["⚡", st.e < cost.e], ["◆", st.d < cost.d], ["❀", st.s < cost.s]].filter(([, s]) => s).map(([i]) => i).join("") : "";
-  const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s), back: S.cap(name), subject, need: block ? sayOf(block) : null };
-  if (blocked) bottom.blocked = true; else if (short) { bottom.dim = true; bottom.short = short; }
-  if (grown) bottom.need = null;
+  const bottom = { ok: Sg.action, price: S.priceText(cost.e, cost.d, cost.s), back: S.cap(name), subject, need: null };
+  if (key && key.key === "short") { bottom.dim = true; bottom.short = key.short; bottom.need = fill(pods.strings.needMore, { icons: key.short }); }   // short: the dimmed ✓, the short figures amber
+  else if (key) { bottom.blocked = true; bottom.need = key.key === "busy" ? Sg.notices.busy : key.key === "noBay" ? Sg.notices.noBay : key.key === "clash" ? Sg.notices.clash : null; }   // busy, no bay, clash: no ✓ cap, the verb and the price in mist
 
   const props = { state, regions, focus: { cur: list.length ? "roll" : "room", targets: list.length ? [{ id: "roll", group: "roll" }] : [] } };
   return { props, line: bottom, requests };

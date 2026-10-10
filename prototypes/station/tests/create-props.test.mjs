@@ -70,7 +70,7 @@ test("the roll: three pictures in the order as the pod is, only the first copy, 
     m.cr.f = f; const r = m.build().props.regions.roll, opts = S.rollOptions(m.p, t.id);
     if (opts.length > 1) { assert.equal(r.form, "roll"); assert.equal(r.pictures.length, 3); assert.deepEqual(r.pictures, opts.map((o) => `roll-S01-${t.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${o.look.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-128x72`)); }
     else { assert.equal(r.form, "single"); assert.equal(r.pictures.length, 1); assert.equal(r.chosen, 0); }
-    assert.ok(r.notchUp && r.notchDown, "the notches are named in every state");
+    assert.equal(r.notches, opts.length > 1, "the notches only while the trait rolls");
   });
 });
 
@@ -98,11 +98,13 @@ test("the bottom line: ✓ Grow it and the price with ◆ a change (the first fo
   const roll = list.findIndex(({ t }) => S.rollOptions(m.p, t.id).length > 1); m.cr.f = roll; m.cr.choices = { [list[roll].t.id]: 1 }; assert.equal(m.build().line.price, "⚡ 2 ❀ 4 ◆ 1");
   m.st.firstMibi = true; assert.equal(m.build().props.regions.leaves.total, 5, "the first founder: five leaves whatever is shaped"); m.st.firstMibi = false; assert.equal(m.build().props.regions.leaves.total, 21, "20 and one a change");
   assert.equal(make("S01", 3, 0).build().line.subject, Sg.surprise.all); assert.equal(make("S01", 3, 3).build().line.subject, "Stamina stays a surprise"); assert.equal(make("S01", 3, 4).build().line.subject, "A Loika, fully known");
-  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.need], [true, Sg.notices.busy]); assert.equal(k.build().props.regions.bud.busy, true); }
+  { const k = make("S01", 3, 2); L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked], [undefined, undefined, undefined], "nothing blocks"); }
+  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.busy]); assert.equal(k.build().props.regions.bud.busy, true); }
+  { const k = make("S01", 3, 2); for (let i = 0; i < 12; i++) k.st.mibis.push({ id: 100 + i, bay: i, released: false }); L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.noBay]); }
   { const k = make("S01", 3, 2); k.st.s = 1; L = k.build().line; assert.deepEqual([L.dim, L.short, L.blocked, L.need], [true, "❀", undefined, "needs more ❀"]); }
-  { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.equal(L.short, "⚡❀"); assert.equal(L.need, "needs more ⚡ ❀"); }
-  { const k = make("S01", 3, 2); k.cr.f = roll; k.cr.choices = { [list[roll].t.id]: 1 }; k.cr.clash = [list[roll].t.id]; L = k.build().line; assert.deepEqual([L.blocked, L.need], [true, Sg.notices.clash]); }
-  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, Sg.notices.busy, "busy before short"); }
+  { const k = make("S01", 3, 2); k.st.e = 0; k.st.s = 0; L = k.build().line; assert.deepEqual([L.dim, L.short, L.need], [true, "⚡ ❀", "needs more ⚡ ❀"]); }
+  { const k = make("S01", 3, 2); k.cr.f = roll; k.cr.choices = { [list[roll].t.id]: 1 }; k.cr.clash = [list[roll].t.id]; L = k.build().line; assert.deepEqual([L.blocked, L.dim, L.short, L.need], [true, undefined, undefined, Sg.notices.clash]); }
+  { const k = make("S01", 3, 2); k.st.bud = { kind: "founder" }; k.st.s = 0; assert.equal(k.build().line.need, Sg.notices.busy, "busy before short"); assert.equal(k.build().line.short, undefined, "blocked is never beside short"); }
 });
 
 test("the rail: a tab a chapter, the open tab the focused trait's chapter with its pip lifted, a pip a trait filled, hollow, changed or clash; nothing read opens none", () => {

@@ -98,7 +98,7 @@
      "line": {
       "ok": "Hatch ⚡ 3",
       "price": "⚡ 3 ◆ 12",
-      "short": true,
+      "short": "⚡ ◆",
       "subject": "A subject that is far too long to fit in the little room the context has between its two rules",
       "need": "Not enough ❀",
       "back": "A name far wider than the room"
@@ -145,6 +145,81 @@
     }
    },
    "hash": "1e44028a"
+  },
+  {
+   "name": "a blocked action with a price: no cap, the verb and the price in mist, the verb where it stood (face; 1x capture to the UI designer)",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "library",
+      "title": "Library",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Grow it",
+      "price": "⚡ 2 ❀ 4 ◆ 1",
+      "blocked": true,
+      "subject": "two surprises to come",
+      "need": "a bud is already growing",
+      "back": "Loika"
+     },
+     "plate": {
+      "text": "",
+      "focal": null
+     }
+    }
+   },
+   "hash": "0731338a"
+  },
+  {
+   "name": "a dimmed action, one figure short: only that figure amber (face; 1x capture to the UI designer)",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "library",
+      "title": "Library",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Grow it",
+      "price": "⚡ 4 ◆ 12",
+      "dim": true,
+      "short": "◆",
+      "subject": "two surprises to come",
+      "need": "needs more ◆",
+      "back": "Loika"
+     },
+     "plate": {
+      "text": "",
+      "focal": null
+     }
+    }
+   },
+   "hash": "759c80c5"
   },
   {
    "name": "a one-line message",

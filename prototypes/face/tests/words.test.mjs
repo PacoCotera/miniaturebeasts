@@ -37,6 +37,13 @@ for (const c of cases) {
   });
 }
 
+test("the bottom line refuses a line that says dim and blocked together and a `short` that is not a string of icons; null and absent are the single run", { skip }, async () => {
+  const c = cases.find((x) => x.name.startsWith("a dimmed action, one figure short")), line = (over) => ({ ...c.props, frame: { ...c.props.frame, line: { ...c.props.frame.line, ...over } } });
+  { const f = await setup(); f.props(line({ blocked: true })); frames(f); assert.ok(f.errors().some((e) => /dim and blocked together/.test(e)) && /frame\.line/.test("frame.line says dim and blocked together"), "dim and blocked"); }
+  { const f = await setup(); f.props(line({ short: true })); frames(f); assert.ok(f.errors().some((e) => /frame\.line\.short is a string of icons or null/.test(e)), "a boolean short"); }
+  { const f = await setup(); f.props(line({ short: null })); frames(f); assert.deepEqual(f.errors(), []); const g = await setup(); const { short, ...rest } = c.props.frame.line; g.props({ ...c.props, frame: { ...c.props.frame, line: rest } }); frames(g); assert.equal(f.hash(), g.hash(), "null is absent"); }
+  { const f = await setup(); f.props(line({ dim: false, short: "⚡" })); frames(f); const g = await setup(); f.props(line({ dim: false, short: "◆" })); frames(f); assert.deepEqual(f.errors(), []); void g; }
+});
 test("the comparison can fail: other props give other pixels", { skip }, async () => {
   const f = await setup(), c = cases[0];
   f.props({ ...c.props, frame: { ...c.props.frame, top: { ...c.props.frame.top, title: "Habitat" } } }); frames(f);

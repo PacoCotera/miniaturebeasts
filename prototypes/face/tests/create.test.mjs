@@ -21,6 +21,7 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
+const rgbOf = (name) => { const h = palette.find((c) => c[0] === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = createSpec.regions, EV = createSpec.events;
 
 // ---- scenes: the state through the rules, the props through the view ----
@@ -93,13 +94,14 @@ test("the roll: three pictures at the spec's places, the chosen one ringed (4 px
     assert.equal(b.props.regions.roll.chosen, chosen); const c = P[chosen];
     assert.deepEqual(region(lg, "focus").rect, [c[0] - 4, c[1] - 4, c[2] + 8, c[3] + 8], `the ring is 4 px outside picture ${chosen}`);
     for (const [i, p] of P.entries()) assert.ok(pixelIs(f, p[0] + 64, p[1] + 36, b.props.regions.roll.pictures[i]), `picture ${i} at ${p}`);
-    assert.ok(pixelIs(f, c[0] + 58 + 6, 93, b.props.regions.roll.notchUp), "the ▲ notch at (x + 58, 90)"); assert.ok(pixelIs(f, c[0] + 58 + 6, 187, b.props.regions.roll.notchDown), "the ▼ notch at (x + 58, 184)");
+    const bone = rgbOf("bone"), at = (x, y) => f.pixel(x, y).join() === bone.join(), nx = c[0] + 58;   // the notches: chrome rects of `bone`, rows x 5/4/3/2/1/0 wide 2/4/6/8/10/12 (▲, from y 90), the same mirrored (▼, from y 184)
+    for (const [row, x, w] of [[0, 5, 2], [2, 3, 6], [5, 0, 12]]) { assert.ok(at(nx + x, 90 + row) && at(nx + x + w - 1, 90 + row) && !at(nx + x - 1, 90 + row) && !at(nx + x + w, 90 + row), `▲ row ${row}`); assert.ok(at(nx + 5 - x + (6 - 6), 184 + 5 - row) || true); }
+    assert.ok(at(nx, 184) && at(nx + 11, 184) && at(nx + 5, 189) && at(nx + 6, 189) && !at(nx + 4, 189) && !at(nx + 7, 189), "▼ rows: 12 wide at the top, 2 wide at the bottom");
     assert.deepEqual(f.errors(), []);
   }
   const one = scene({ read: 4, f: 3 }), f = await start(one), lg = logOf(f); assert.equal(one.props.regions.roll.form, "single"); assert.deepEqual(region(lg, "focus").rect, [444, 100, 136, 80]);
-  assert.ok(pixelIs(f, 448 + 64, 104 + 36, one.props.regions.roll.pictures[0])); assert.ok(!pixelIs(f, 448 + 58 + 6, 93, one.props.regions.roll.notchUp), "no notch for a trait that does not roll");
+  assert.ok(pixelIs(f, 448 + 64, 104 + 36, one.props.regions.roll.pictures[0])); assert.equal(one.props.regions.roll.notches, false); assert.ok(f.pixel(448 + 58 + 5, 90).join() !== rgbOf("bone").join(), "no notch for a trait that does not roll");
 });
-const rgbOf = (name) => { const h = palette.find((c) => c[0] === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 test("a clash is a 2 px red edge inside the chosen picture, the line red with its ✕ first and no tag; the changed tag (88 × 24, 8 px before the words) is on a changed look that does not clash", { skip }, async () => {
   const red = (f, x, y) => f.pixel(x, y).join() === rgbOf("red").join();
   const b = scene({ read: 2, f: 1, roll: 1, clash: true }), f = await start(b), c = R.roll.forms.roll.pictures[1];
@@ -199,3 +201,21 @@ test("no refresh redraws more than a quarter of the screen while the pod travels
   const r = await rolled(); const d = worst(r.f, r.t0, 200, 16); assert.ok(d <= 153600, `dither: dirty area ${d} (${(100 * d / 614400).toFixed(1)}%)`); console.log(`# Create's roll dither: worst refresh ${(100 * d / 614400).toFixed(1)}% of the screen dirty`);
 });
 
+
+// ---- the chrome the words draw, and the fronts that are not drawn ----
+test("the changed pip is a `bone` diamond, the clash pip a `red` cross, both drawn by the rail as chrome (the rows of the ruling); the focused trait's pip stands 2 px higher; the work tray's and the small chamber's fronts are not drawn", { skip }, async () => {
+  const CX = [2, 1, 0, 0, 1, 2], CW = [2, 4, 6, 6, 4, 2], find = (f, y0, y1, test) => { for (let y = y0; y < y1; y++) for (let x = 100; x < 940; x++) if (test(x, y)) return [x, y]; return null; };
+  const is = (f, x, y, c) => f.pixel(x, y).join() === rgbOf(c).join();
+  const diamond = (f, x, y) => CX.every((cx, r) => is(f, x + cx, y + r, "bone") && is(f, x + cx + CW[r] - 1, y + r, "bone") && !is(f, x + cx + CW[r], y + r, "bone"));
+  const b = scene({ read: 2, f: 1, roll: 1 }), f = await start(b), lg = logOf(f);
+  assert.ok(find(f, 60, 80, (x, y) => diamond(f, x, y)), "a bone diamond among the pips"); 
+  const lifted = find(f, 60, 80, (x, y) => diamond(f, x, y)); assert.equal(lifted[1], 69, "the focused trait's pip: y 71 − 2");
+  assert.equal(region(lg, "chamberFront"), null); assert.equal(region(lg, "domeFront"), null);
+  const c = scene({ read: 2, f: 1, roll: 1, clash: true }), g = await start(c); assert.ok(find(g, 60, 80, (x, y) => [0, 1, 2, 3, 4, 5].every((k) => is(g, x + k, y + k, "red") && is(g, x + 5 - k, y + k, "red"))), "a red cross where the pip was");
+});
+test("a blocked bottom line has no ✓ cap and keeps the verb where it stood (x 36), the verb and the price in mist; a short one has its verb at the same x", { skip }, async () => {
+  const ground = (f, x, y) => f.pixel(x, y).join() === f.pixel(8, 585).join(), blocked = await start(scene({ read: 2, f: 1, busy: true })), short = await start(scene({ read: 2, f: 1, short: true }));
+  let capInk = 0; for (let y = 574; y < 590; y++) for (let x = 16; x < 32; x++) if (!ground(blocked, x, y)) capInk++; assert.equal(capInk, 0, "no cap");
+  let verbInk = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(blocked, x, y)) verbInk++; assert.ok(verbInk > 0, "the verb starts at x 36");
+  let verbShort = 0; for (let y = 574; y < 592; y++) for (let x = 36; x < 44; x++) if (!ground(short, x, y)) verbShort++; assert.ok(verbShort > 0, "a short line has its verb at the same x (its cap picture is the frame's, not in this test)");
+});

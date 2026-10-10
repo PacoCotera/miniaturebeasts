@@ -99,7 +99,8 @@ int v_price(const char *id, const char *s, int x, int y, int px, const char *col
   for (int g = 0; g < 3; g++) {
     char ic[48], nid[96]; snprintf(ic, sizeof ic, "icon:%s:%d", PRICE[g].icon, px);
     if (has[g]) {
-      if (cx > x) cx += v_measure(" ", px);
+      char prefix[V_STR]; const char *at = strstr(s, PRICE[g].glyph); snprintf(prefix, sizeof prefix, "%.*s", (int)(at - s), s);   /* each icon stands where the single run would put it: after the width of the price up to it */
+      cx = x + (at == s ? 0 : v_run_width(prefix, px));
       snprintf(nid, sizeof nid, "%s.%d.i", id, g); if (!v_sprite(nid, ic, cx + 2, iy, px, px)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); }
       cx += px + 4; int w = v_measure(fig[g], px); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, fig[g], cx, y, w, px, cols[g]); cx += w;
     } else {

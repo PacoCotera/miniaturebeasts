@@ -93,8 +93,15 @@ static void build_roll(void) {
   }
   { int r[4] = { 0, 0, 0, 0 }, on = clash && chosen >= 0 && chosen < n; if (on) roll_rect(chosen, r); const char *red = colr("colours.roll.clashEdge"); v_region("roll", LAYER_CHROME);   /* a 2 px red edge inside the chosen picture's own rectangle */
     rect_or("roll.clash.t", on, r[0], r[1], r[2], w, red); rect_or("roll.clash.b", on, r[0], r[1] + r[3] - w, r[2], w, red); rect_or("roll.clash.l", on, r[0], r[1] + w, w, r[3] - 2 * w, red); rect_or("roll.clash.r", on, r[0] + r[2] - w, r[1] + w, w, r[3] - 2 * w, red); }
-  { int r[4] = { 0, 0, 0, 0 }, on = form && chosen >= 0 && chosen < n, nw = ck("regions.roll.notch.size", 0), nh = ck("regions.roll.notch.size", 1); if (on) roll_rect(chosen, r); int x = r[0] + (r[2] - nw) / 2;   /* the notches ▲ ▼ above and below the chosen picture, centred on it, outside the ring */
-    v_name("roll"); pic_or("roll.up", on, v_pstr("regions.roll.notchUp"), x, ci("regions.roll.notch.up", 90), nw, nh); pic_or("roll.down", on, v_pstr("regions.roll.notchDown"), x, ci("regions.roll.notch.down", 184), nw, nh); }
+  { int r[4] = { 0, 0, 0, 0 }, on = form && chosen >= 0 && chosen < n, nw = ck("regions.roll.notch.size", 0), nh = ck("regions.roll.notch.size", 1); if (on) roll_rect(chosen, r); else crect("regions.roll.forms.roll.pictures.1", r);   /* the notches ▲ ▼ above and below the chosen picture, outside the ring: chrome rects of `bone` in one composed 12 × 6 picture each (empty when the trait does not roll) */
+    int x = r[0] + (r[2] - nw) / 2; static const int UX[6] = { 5, 4, 3, 2, 1, 0 }, UW[6] = { 2, 4, 6, 8, 10, 12 }; v_region("roll", LAYER_CHROME);
+    for (int d = 0; d < 2; d++) {
+      char ops[400]; int o = 0; o += snprintf(ops + o, sizeof ops - (size_t)o, "[");
+      if (on) for (int row = 0; row < 6; row++) { int rr = d ? 5 - row : row; o += snprintf(ops + o, sizeof ops - (size_t)o, "%s[\"h\",%d,%d,%d,\"%s\"]", row ? "," : "", UX[rr], row, UW[rr], colr("colours.roll.notch")); }
+      snprintf(ops + o, sizeof ops - (size_t)o, "]"); snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
+      prim_node(v_id(d ? "roll.notch.down" : "roll.notch.up"), FN_COMPOSED, x, ci(d ? "regions.roll.notch.down" : "regions.roll.notch.up", d ? 184 : 90), nw, nh, 0, 0, 0);
+    }
+  }
 }
 /* the trait line: the changed tag or the breed mark with the line, the group centred on x 512; a clash's ✕ is the line's first glyph. Every part has its node in every state (the tag, its word, the ✕, the line, the mark) and a part that is not shown has none of the size. */
 static void build_traitLine(void) {
@@ -157,10 +164,8 @@ void create_words(void) {
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
   build_founder();
-  picture("chamberFront", "chamberFront", "regions.chamberFront.rect", v_pstr("regions.chamber.front"));
   build_roll();
   build_traitLine();
-  picture("domeFront", "domeFront", "regions.domeFront.rect", v_pstr("regions.dome.front"));
   { v_name("leaves"); word_leaves(C, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), 0, v_pint("regions.leaves.full", 0), 0, ci("regions.leaves.max", 48));   /* a leaf the bud will not take is a node with no size */ }
   build_stamp();
   build_code();

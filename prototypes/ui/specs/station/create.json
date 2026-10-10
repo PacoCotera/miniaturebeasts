@@ -38,7 +38,7 @@
    "rect": [96, 40, 832, 40], "component": "chapterRail", "rule": "frame.rail", "layout": ["railCompaction", "slantTabs"], "focusable": false, "glint": false,
    "open": "shape: the focused trait's chapter (frame.json rail.states.open); nothingRead: none",
    "tabs": { "read": "a read chapter", "unread": "a chapter not read: it stays a surprise", "sealed": "as on Pods", "open": "the focused trait's chapter" },
-   "pips": { "read": "filled", "unread": "hollow", "changed": "a 6×6 `bone` diamond, pip-changed-6x6 (art director, 2026-10-09 13:28)", "clash": "the 6×6 ✕ pip-clash-6x6 in place of the pip", "focused": "the focused trait's pip lifted 2 px: y 69 to 75 (was 71 to 77); no ring" }
+   "pips": { "read": "filled", "unread": "hollow", "changed": "a 6×6 `bone` diamond, pip-changed-6x6 (art director, 2026-10-09 13:28)", "clash": "the 6×6 ✕ pip-clash-6x6 in place of the pip", "focused": "the focused trait's pip lifted 2 px: y 69 to 75 (was 71 to 77); no ring", "focusedLift": 2 }
   },
   "roll": {
    "rect": [296, 88, 432, 104], "build": "roll", "inStates": ["shape", "grow"], "composition": ["sprite: a picture per look", "sprite: notch up", "sprite: notch down"],
@@ -55,10 +55,10 @@
   },
   "traitLine": {
    "rect": [296, 200, 432, 24], "component": "text", "build": "traitLine", "px": 16, "weight": 400, "lines": 1, "words": 6, "noDigits": true, "centre": 512, "lineTop": 202,
-   "tag": { "component": "panel", "slice": "plate-name-88x24", "status": "to be cut (art director, 2026-10-09 13:28)", "h": 24, "w": "the word's width + 16, rounded up to the 8 px grid (\"changed\": 66 + 16 → 88)", "pad": 8, "gap": 8, "when": "the focused trait is changed and does not clash" },
+   "tag": { "component": "panel", "slice": "plate-name-88x24", "status": "to be cut (art director, 2026-10-09 13:28)", "h": 24, "w": "the word's width + 16, rounded up to the 8 px grid (\"changed\": 66 + 16 → 88)", "pad": 8, "gap": 8, "y": 200, "when": "the focused trait is changed and does not clash" },
    "clashMark": { "inline": "✕", "asset": "icon:cross:16", "size": [16, 16], "when": "the focused trait clashes", "note": "the text word's inline 16 px icon, the line's first glyph; no tag then" },
-   "breedMark": { "slice": "mark-breed-28x16", "size": [28, 16], "gap": 8, "when": "the focused trait is a doing", "note": "the two joined rings after the trait's name, as on the chapter page" },
-   "place": "the group (tag or mark, its gap, the line) centred on x 512; the composition sizes its own tag from the word, as Home's name tag",
+   "breedMark": { "slice": "mark-breed-28x16", "size": [28, 16], "gap": 8, "y": 204, "after": "the line", "when": "the focused trait is a doing", "note": "the two joined rings after the trait's name, as on the chapter page" },
+   "place": "the group centred on x 512: x0 = 512 − (W + 1) / 2 (integer), W = 88 + 8 + the line's width with the tag (tag at (x0, 200, 88, 24), the words at x0 + 96, lineTop 202), or the line's width + 8 + 28 with the breed mark (the words at x0, the mark at (x0 + width + 8, 204, 28, 16)), or the line's width alone; the composition sizes its own tag from the word, as Home's name tag",
    "nothingRead": "the line alone: strings.traitLine.none"
   },
   "chamber": { "rect": [312, 232, 400, 320], "component": "livingWindow", "part": "inside", "note": "the work tray's back, where the founder stands; no words", "placeholder": "stale by the art reset: the specimen chamber's glass; the master is a work tray in the housing (derived.art reset)" },
@@ -80,7 +80,7 @@
   },
   "stamp": { "rect": [804, 400, 120, 120], "component": "stampLabel", "offGrid": "x 804 centres the 120 label on the right column's axis (864), 4 px off the grid, as Home's juvenile and the medium pod are", "live": "the stamp of the read and changed chapters, redrawn as the rolls change; nothingRead: no chapter filled", "fromFocal": 140 },
   "code": { "rect": [776, 525, 176, 25], "component": "text", "offGrid": "the line box 525 to 545 keeps 8 px from the baseline (541) to the rule (549) (art director, 2026-10-09 13:28)", "px": 16, "weight": 400, "align": "centre", "centre": 864, "lineTop": 525, "baseline": 541, "rule": { "y": 549, "h": 1, "x": [776, 952] }, "before": "blank: the rule alone", "after": "the code, printed at Grow (events.grow): three groups with spaces, \"K7Q 4MX P2D\"; the widest 152 px" },
-  "travel": { "rect": [88, 120, 848, 288], "component": "specimen", "part": "travel", "inStates": ["grow"], "from": [88, 232, 144, 176], "to": [792, 120, 144, 176], "path": "a straight line, whole pixels, eased in and out", "foot": { "from": [160, 408], "to": [864, 296] }, "layer": "drawn after the dome's back and before the chamber, the roll and the dome's front: it passes behind the specimen chamber and ends inside the dome" }
+  "travel": { "rect": [88, 120, 848, 288], "component": "specimen", "part": "travel", "inStates": ["grow"], "from": [88, 232, 144, 176], "to": [792, 120, 144, 176], "path": "a straight line, whole pixels, eased in and out", "foot": { "from": [160, 408], "to": [864, 296] }, "ease": "cargo.json regions.travel.ease with t from the step's start (grow at 300): p = min(1000, t·1000/600); e = p·p·(3000 − 2p)/1000000 (64-bit); foot = from + (to − from)·e/1000, truncating toward zero; at p = 1000 exactly to; the pod's box bottom-centred on the foot by its class (pods.json classes.pod)", "motion": "reduced motion: a cut to the dome (notes.motion)", "layer": "drawn after the dome's back and before the chamber, the roll and the dome's front: it passes behind the specimen chamber and ends inside the dome" }
  },
  "drawOrder": ["bench", "rail", "cradle", "dome", "bud", "pod", "cradleFront", "origin", "chamber", "founder", "chamberFront", "roll", "traitLine", "domeFront", "leaves", "stamp", "code", "focus ring", "frame (top bar, bottom line)", "message plate"],
  "notes": {
@@ -91,7 +91,7 @@
   "grow": {
    "kind": "grow", "target": "pod", "ms": 900, "hold": 1080,
    "steps": [
-    { "at": 0, "ms": 300, "do": "the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
+    { "at": 0, "ms": 300, "rows": "N+2", "rowsRule": "rows drawn at t = min(N + 2, floor(t × (N + 2) / 300)), top first, whole rows; N the stamp's modules a side (station-layouts.md, the stamp's cells); nothingRead: the empty frame at t 0, a cut; reduced motion: every row on the frame of ✓", "do": "the stamp prints: its cells drawn row by row from the top, N + 2 rows over 300 ms, whole rows (nothingRead: the label's empty stamp frame)" },
     { "at": 300, "do": "the code appears on the rule (a cut)" },
     { "at": 300, "ms": 600, "do": "the pod travels from its box to the dome (regions.travel); the dish stays, empty" },
     { "at": 900, "ms": 180, "do": "the screen transition (16-level Bayer dither) to the Incubator, growing (incubator.json): a jump, so ← there reads Home (derived.grow is a jump)" }
@@ -172,19 +172,20 @@
  },
  "placeholders": {
   "rule": "every master this screen names, with its id, size and region. Stale: made or specified for the look the art reset replaced; it stays its region's labelled placeholder, drawn at its size, until the art director's master lands. Carried: unaffected by the reset. No art is made or commissioned by this list",
+  "look": "A PH plate is a `stone` fill with a 1 px `mist` edge inside the rect. A PH hollow is a 1 px `stone` edge with no fill. No text, shape or shading. Each id is in the register with status placeholder.",
   "stale": [
    { "id": "room-bench-stage-create (until it lands, room-bench-stage-collection, also stale)", "size": [1024, 522], "region": "bench", "why": "the dark glass research bench of the old look; becomes the work tray in the device's housing" },
-   { "id": "the specimen chamber, back and front, its floor 400×16", "size": [400, 320], "region": "chamber, chamberFront", "why": "glass with frost edges and a highlight; becomes a work tray, panel back, enamel rim" },
+   { "id": "create-chamber-400x320 (a PH plate at chamber.rect); create-chamber-front-400x320, its floor 400×16 included (registered, nothing drawn)", "size": [400, 320], "region": "chamber, chamberFront", "why": "glass with frost edges and a highlight; becomes a work tray, panel back, enamel rim" },
    { "id": "room-cradle, room-cradle-front (Pods' signed dish)", "size": [224, 96], "region": "cradle, cradleFront", "why": "the glass dish under a cool cone, clinical; the room set's repaint replaces it" },
-   { "id": "Create's small dome, back and front", "size": [176, 224], "region": "dome, domeFront", "why": "a small bell jar on an enamel base; becomes the Incubator's chamber with one hooded window, small" },
-   { "id": "bud-small-64x80", "size": [64, 80], "region": "bud", "why": "the busy bud, re-judged with the Incubator's buds against the concept board's bean on moss" },
+   { "id": "create-dome-176x224 (a PH plate at dome.rect); create-dome-front-176x224 (registered, nothing drawn)", "size": [176, 224], "region": "dome, domeFront", "why": "a small bell jar on an enamel base; becomes the Incubator's chamber with one hooded window, small" },
+   { "id": "bud-small-64x80 (a PH plate at bud.rect, busy only)", "size": [64, 80], "region": "bud", "why": "the busy bud, re-judged with the Incubator's buds against the concept board's bean on moss" },
    { "id": "leaf-small-empty-8x12, leaf-small-full-8x12", "size": [8, 12], "region": "leaves", "why": "the Incubator's leaf at the small size, re-judged with it; Home's module uses the same pictures" }
   ],
   "carried": [
    { "id": "the founder's placeholder (the stylised rig pass)", "size": [304, 312], "region": "founder", "why": "creature art" },
    { "id": "roll-{species}-{trait}-{look}-128x72", "size": [128, 72], "region": "roll", "why": "cut from the mibi paintings" },
    { "id": "the pod sprites by size class", "size": [144, 176], "region": "pod", "why": "the pod renderer's; checked against the concept board's Pods frame with Pods, not here" },
-   { "id": "pip-changed-6x6, pip-clash-6x6, plate-name-88x24, the notches 12×6, the stamp label", "size": null, "region": "rail, traitLine, roll, stamp", "why": "the kit's chrome" }
+   { "id": "pip-changed-6x6, pip-clash-6x6, plate-name-88x24, the notches 12×6, the stamp label", "size": null, "region": "rail, traitLine, roll, stamp", "why": "the kit's chrome; drawn by the words as chrome rects, never a PH plate or register picture" }
   ]
  }
 }
