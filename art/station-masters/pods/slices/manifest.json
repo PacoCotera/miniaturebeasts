@@ -10484,10 +10484,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the enamel base, matte lit sand: the sand band cut from the sheet and scaled uniformly to 336 wide (the painted plaque and foot painted out), the plaque plate 128x32 at (104, 40) drawn by hand (panel fill, hairline edge, left empty), the foot light a sage line at (8, 92, 320, 2) (pass 111)",
-  "sha256": "5aa34a7af07917f3cf7b23a67f734aea84a4691735f8f548a1d3d65ffaca9508",
+  "sha256": "4130e141b41a1453dba1b2cf335f50c703c5d56beeb4096aff1a617d212bbe98",
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the sand housing, matte, plaque plate and foot line at the spec's rects"
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the 1 px tick at (219-220, 72-78) filled from its neighbours; the sand housing, matte, plaque plate and foot line at the spec's rects"
  },
  "nest-208x48": {
   "size": [
@@ -10601,10 +10601,10 @@
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
   "made": "the leaf, empty, hand-pixelled 16x20: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel metal #717c86 outline (pass 111)",
-  "sha256": "3b98967d7e4017be4292dd992e43d9b13332474acba502e76f82018231d9ecf9",
+  "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "status_note": "signed (art director): hand-pixelled, palette-exact, the spec's leaf (metal outline)"
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "status_note": "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"
  },
  "leaf-full-16x20": {
   "size": [
@@ -10627,10 +10627,10 @@
   "rect": null,
   "src": "hand-pixelled in tools/incubatorbud.py",
   "made": "the leaf, empty, hand-pixelled 8x12: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; a one-pixel metal #717c86 outline (pass 111)",
-  "sha256": "fd61076f2e3a8984ea027c58bc69bf845dfe16670cebcf9892f5cea67e34bab0",
+  "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb",
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "status_note": "signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact"
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "status_note": "signed (art director): the small leaf's outline recoloured to bevel #565c63 (the Create spec's empty small leaf), palette-exact, 36 px"
  },
  "leaf-full-8x12": {
   "size": [

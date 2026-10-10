@@ -31,10 +31,7 @@ AD_RECORDS = {
  "room-bench-stage-create": ('held', None, "held (art director): signed as a cut (L* 36.8, key R-B 35, sat 22), but it is the Pods overview's stage with the nest moved, and its panel crosses Create's work tray (x 584-712); replaced by the Create set's own stage"),
  "room-bench-stage-collection": ('signed', 'art director, verdict (d09acb12)', 'signed (art director) at 1x: L* 31.8, key R-B 35, sat 25 against the overview 36.8/35/22; a plain floor, no hardware, no ghost cut-outs; its faint residual banding sits under the place rects'),
  "room-bench-stage-incubator": ('signed', 'art director, verdict (d09acb12)', "signed (art director) at 1x: L* 36.0, key R-B 38, sat 24 against the Pods overview 36.8/35/22; floor 0.5 percent above L* 70 (the lit sand rim brings the whole to 4.7, as the overview's 3.3: housing, not glow); hoses clear of the gauges"),
- "base-336x96": ('signed', 'art director, verdict (d09acb12)', "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the sand housing, matte, plaque plate and foot line at the spec's rects"),
- "leaf-empty-16x20": ('signed', 'art director, verdict (d09acb12)', "signed (art director): hand-pixelled, palette-exact, the spec's leaf (metal outline)"),
  "leaf-full-16x20": ('signed', 'art director, verdict (d09acb12)', "signed (art director): hand-pixelled, palette-exact, the spec's leaf (sage, sageD vein)"),
- "leaf-empty-8x12": ('signed', 'art director, verdict (d09acb12)', 'signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact'),
  "leaf-full-8x12": ('signed', 'art director, verdict (d09acb12)', 'signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact'),
  "bud-early-128x160": ('new', None, 'returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean'),
  "bud-late-128x160": ('new', None, 'returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean'),
@@ -51,6 +48,9 @@ AD_RECORDS = {
  "dome-front-304x272": ('new', None, "pass 114: the housing in the stage's rendering by hand: a lit top-left edge, shade at the lower right, four screws on the frame, a hairline seam below the window; the width and the window as signed off; awaiting the art director's judgement (not signed)"),
  "dome-inside-standby-304x272": ('new', None, "pass 114: standby from the new plain back (a soft warm pool low on the wall); awaiting the art director's judgement (not signed)"),
  "dome-inside-ready-304x272": ('new', None, "pass 114: ready from the new plain back (the light up toward cream); awaiting the art director's judgement (not signed)"),
+ "leaf-empty-8x12": ('signed', 'art director, verdict (d09acb12; palette and tick fixes)', "signed (art director): the small leaf's outline recoloured to bevel #565c63 (the Create spec's empty small leaf), palette-exact, 36 px"),
+ "leaf-empty-16x20": ('signed', 'art director, verdict (d09acb12; palette and tick fixes)', "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"),
+ "base-336x96": ('signed', 'art director, verdict (d09acb12; palette and tick fixes)', "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the 1 px tick at (219-220, 72-78) filled from its neighbours; the sand housing, matte, plaque plate and foot line at the spec's rects"),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}

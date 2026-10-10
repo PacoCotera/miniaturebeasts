@@ -3361,8 +3361,8 @@
  },
  "base-336x96": {
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the sand housing, matte, plaque plate and foot line at the spec's rects"
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the 1 px tick at (219-220, 72-78) filled from its neighbours; the sand housing, matte, plaque plate and foot line at the spec's rects"
  },
  "nest-208x48": {
   "status": "new",
@@ -3406,8 +3406,8 @@
  },
  "leaf-empty-16x20": {
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "note": "signed (art director): hand-pixelled, palette-exact, the spec's leaf (metal outline)"
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "note": "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"
  },
  "leaf-full-16x20": {
   "status": "signed",
@@ -3416,8 +3416,8 @@
  },
  "leaf-empty-8x12": {
   "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "note": "signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact"
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "note": "signed (art director): the small leaf's outline recoloured to bevel #565c63 (the Create spec's empty small leaf), palette-exact, 36 px"
  },
  "leaf-full-8x12": {
   "status": "signed",
