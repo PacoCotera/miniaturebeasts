@@ -8,6 +8,7 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { createMeasure } from "../../ui/specs/measure.mjs";
+import { installScene } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")) && existsSync(path.join(dist, "metrics.json")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -24,7 +25,7 @@ const corpus = [...strings].filter((s) => s.length && s.length < 400 && !/[\n\r\
 
 test("the table's sums equal lv_text_get_width on the WebAssembly face for every Station string, at 16, 20 and 28 px", { skip }, async () => {
   const metrics = JSON.parse(readFileSync(path.join(dist, "metrics.json"), "utf8")), measure = createMeasure(metrics);
-  const f = await bootFace(pathToFileURL(dist + "/")); let n = 0, bad = [];
+  const f = installScene(await bootFace(pathToFileURL(dist + "/node/"))); let n = 0, bad = [];
   for (const px of [16, 20, 28]) for (const s of corpus) {
     // the face sets a string whole; icons are other runs, so a string with ⚡ ◆ ❀ ✕ is measured piece by piece, as the words do
     for (const piece of s.split(/[⚡◆❀✕]/)) { if (!piece) continue; n++; const a = measure(piece, px), b = f.measure(piece, px); if (a !== b) bad.push(`${px}px ${JSON.stringify(piece)}: table ${a}, face ${b}`); }

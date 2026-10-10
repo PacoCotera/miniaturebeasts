@@ -51,6 +51,7 @@ int prim_compose(uint8_t *px, int w, int h, const char *ops);
 
 /* Test mode: which layers show (1: chrome; 2: chrome and art; 3: all), and the logs the checks read. */
 void prim_set_pass(int pass);
+void prim_asset_layer(int handle, int layer);
 /* {"regions":[{"id","layer","rect":[x,y,w,h]}...],"type":[{"text","px","region"}...],"refused":n,"objects":n,"table":n,"pictures":n} into buf (a clip's children count only where the clip shows them; objects are LVGL's, table is the face's node table); returns its length, or -1 if it does not fit. */
 int prim_log_json(char *buf, int cap);
 #endif

@@ -1,8 +1,7 @@
 // The Pods props (lvgl-switch.md §2.1): pure selectors from the state, the focus and the presentation progress to the props of the face's words. Props name *what*, never *where*: strings, states,
 // counts, asset ids, flags, and the focus targets by id; no rectangle, no measure, no layout rule (the words place everything from the spec, the face wraps and fits the type), no canvas, no keys.
 // The output is plain JSON: { props (the part sent to the face: state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props: plain requests the
-// asset manifest registers), mode, cur, empty }. Runs in Node, tested there. It is the face's counterpart of views/pods.mjs, which the JavaScript drawing of Pods still uses until that
-// screen's goldens pass (L2.0 B4); that file and its drawing are deleted then and this one takes its name.
+// asset manifest registers), mode, cur, empty }. Runs in Node, tested there. It is the only view of Pods: the JavaScript drawing it replaced is deleted.
 import * as S from "../state.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing } from "../genome.mjs";
 import { pageGrid } from "../../../ui/specs/derive.mjs";

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The Pods goldens (lvgl-switch.md §5): the framebuffer hash of each of Pods' states drawn by the C words from pods-props on the page's own pictures (the placed masters, the generated stand-ins, the pod from
+// The Pods goldens (lvgl-switch.md §5): the framebuffer hash of each of Pods' states, drawn by the page's own face (the C words from pods-props) on its own pictures (the placed masters, the generated stand-ins, the pod from
 // its layers), committed in prototypes/face/golden/pods/pods.json beside the PNG of each for review. `--check` draws them again and fails on any difference (hash, or a state missing). Taken on WebAssembly;
 // the native x86-64 and aarch64 builds must give the same hashes (B4).
 //   PW_DIR=/path/with/node_modules/playwright node prototypes/face/tools/goldens.mjs [--check]
@@ -12,7 +12,7 @@ const dir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golde
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();
 const got = {};
 const { fails } = await podsStates(async (name, page, fail) => {
-  const a = await page.evaluate(() => window.__st.wordsCheck({ attribute: false, capture: true })), b = await page.evaluate(() => window.__st.wordsCheck({ attribute: false, capture: true }));
+  const a = await page.evaluate(() => window.__st.snapshot({ capture: true })), b = await page.evaluate(() => window.__st.snapshot({ capture: true }));
   if (a.errors.length || a.refused) fail(name + ": errors " + a.errors.join("; ") + " refused " + a.refused);
   if (a.hash !== b.hash) fail(name + ": drawn twice, two hashes (" + a.hash + ", " + b.hash + "): the state is not deterministic");
   got[name] = { hash: a.hash, png: "pods-" + slug(name) + ".png" };

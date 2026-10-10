@@ -77,30 +77,17 @@ jobs:
           time npx --prefix "$RUNNER_TEMP" playwright install-deps chromium >/dev/null
           time PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" npx --prefix "$RUNNER_TEMP" playwright install chromium >/dev/null
           PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node .github/smoke.mjs
-      - name: Freeze check (the JavaScript drawing layer)
-        # prototypes/face/deprecated.json lists every deprecated drawing module with its hash and the files allowed to import it (lvgl-switch.md §5.1):
-        # a listed file may not change, no new file may import one, no registered screen may gain draw, nodes or faceNodes, and a path leaves the list
-        # only with its file's deletion or its screen's goldens. Exemptions are printed on every run.
-        # The checkout keeps no credentials, so the base is fetched with the job's token on the command line, as the publish steps below do. On a push the base is the commit
-        # before the push; on a pull request and on dispatch it is main.
-        env:
-          BEFORE: ${{ github.event.before }}
-        run: |
-          set -euo pipefail
-          url="https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git"
-          if [ "$GITHUB_EVENT_NAME" = push ]; then
-            git fetch --no-tags --depth=1 "$url" "$BEFORE"
-            BASE="$BEFORE"
-          else
-            git fetch --no-tags --depth=1 "$url" main:refs/remotes/origin/main
-            BASE=origin/main
-          fi
-          node prototypes/face/tools/freeze-check.mjs --base "$BASE"
+      - name: Import guard (the JavaScript drawing layer is removed)
+        # prototypes/face/removed.json lists every removed drawing module (lvgl-switch.md §5.1); the guard fails when one exists again or anything imports one, when the canvas is touched outside the face's
+        # present and the named decoders, when JavaScript outside face/tests names an export of the node path, when a screen is registered with draw, nodes or faceNodes, or when an lv_*_create call
+        # appears outside face/src/prim/. No exemptions. It reads the tree only, so it needs no base.
+        run: node prototypes/face/tools/guard.mjs
       - name: Station rules and journey
         timeout-minutes: 12   # the step takes about 2.5 minutes; a hang fails fast instead of holding the runner for the job's six hours
-        # The Station's rules and the Caddy service in Node, and the Station's browser journey with the service
-        # in mock mode beside it (a fixture save, a seeded pod, dock, identify, read, compare, return, grow, open,
-        # the painting landing, the service down and back); station-build.md §5.
+        # The Station's rules and the Caddy service in Node, and the Station's browser journey on the face with the service
+        # in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
+        # not built yet through their intents, the painting landing, the service down and back, every not-built screen, Idle); station-build.md §5.
+        # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
         run: |
           set -euo pipefail
           node --test .github/roadmap.test.mjs prototypes/ui/tests/*.test.mjs prototypes/station/tests/*.test.mjs prototypes/exploration/tests/*.test.mjs prototypes/caddy/tests/*.test.mjs prototypes/face/tests/*.test.mjs prototypes/workbench/tests/framework.test.mjs prototypes/genome-stamp/tests/bins.test.mjs
@@ -117,27 +104,22 @@ jobs:
           sh prototypes/face/tools/bake-fonts.sh "$RUNNER_TEMP/lvfc/node_modules/.bin/lv_font_conv"
           git diff --exit-code -- prototypes/face/src/fonts
       - name: Station face in a browser (LVGL)
-        # The page with ?face=lvgl loads the WebAssembly face: LVGL 9.6.0, a 1024×600 display, keys in, the same pixels as
+        # The Station page boots the WebAssembly face and draws nothing else: LVGL 9.6.0, a 1024×600 display, keys in, the same pixels as
         # the native Linux build; the load time, the size on the wire and the cost of a full-frame copy (CPU throttled
         # 4× as a phone's stand-in) are printed.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/face-check.mjs
-      - name: Station frame in LVGL
-        # The top bar, the bottom line, the message plate and the focus ring as LVGL objects: the rules, the separators and the
-        # ground from the frame spec, where each text run's ink lies against the canvas renderer's, the ring in the focus role,
-        # the plate and the counter's tick; no node refused. The captures it checks are written to prototypes/face/img.
-        run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/frame-check.mjs
       - name: Station layer table in a browser (LVGL)
-        # Pods in each of its states on the page's own pictures, test mode: the pixels outside the palette on pass 1 (chrome)
-        # and pass 2 (chrome and art) read 0, painted masters showing only on pass 3 (the art director's layer table).
+        # Pods in each of its states on the Station page itself (the face in test mode, ?test): the pixels outside the palette on pass 1 (chrome)
+        # and pass 2 (chrome and art) read 0, painted masters showing only on pass 3 (the art director's layer table); a page error, a render error or an error the face sent fails it.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/layer-check.mjs
       - name: Pods goldens (LVGL)
-        # Each of Pods' states drawn by the C words on the page's own pictures: the framebuffer hash against prototypes/face/golden/pods/pods.json.
+        # Each of Pods' states drawn by the page's own face (the C words on the page's own pictures): the framebuffer hash against prototypes/face/golden/pods/pods.json.
         run: PLAYWRIGHT_BROWSERS_PATH="$RUNNER_TEMP/pw" PW_DIR="$RUNNER_TEMP" node prototypes/face/tools/goldens.mjs --check
       - name: Station layer checks
         # What the journey recorded at each screenshot point, measured and printed (technical-architecture.md §5.6):
-        # the art layer at exactly 0 off-palette pixels; the type layer's run log (every string Inter at 16, 20 or 28 px
-        # from the bundled atlases, no text API call); every drawn region's box against its spec file; the stamp label
-        # at 120 and the rail's tab count against the frame.
+        # the chrome and art layers at exactly 0 off-palette pixels; the face's log (every string Inter at 16, 20 or 28 px,
+        # none refused, no error, no canvas text call); every drawn region's box against its spec file; the stamp label
+        # at 120 and the rail's tab count against the frame; where each frame region's ink lies against the spec.
         run: |
           set -euo pipefail
           node prototypes/station/tools/checks.mjs

@@ -22,7 +22,7 @@ export async function loadPodSprites(base) {
     SHEETS[name] = { w: cv.width, h: cv.height, idx };
   }
   // the two sheets themselves are in the manifest, from the atlas's own entries (the pods are composed from their sub-rectangles)
-  for (const m of ATLAS.manifest) if (!hasAsset(m.id)) registerAsset({ id: m.id, w: m.w, h: m.h, policy: m.policy, status: m.status, until: "the pod renderer's masters (research-loop.md §6)", file: m.file, build: () => { const sh = SHEETS[m.file.split("/").pop()], pb = new PB(sh.w, sh.h); for (let i = 0; i < sh.idx.length; i++) if (sh.idx[i] >= 0) pb.p[i] = sh.idx[i]; return pb; } });
+  for (const m of ATLAS.manifest) if (!hasAsset(m.id)) registerAsset({ id: m.id, w: m.w, h: m.h, status: m.status, until: "the pod renderer's masters (research-loop.md §6)", file: m.file, build: () => { const sh = SHEETS[m.file.split("/").pop()], pb = new PB(sh.w, sh.h); for (let i = 0; i < sh.idx.length; i++) if (sh.idx[i] >= 0) pb.p[i] = sh.idx[i]; return pb; } });
 }
 export const podClasses = () => ATLAS.classes;
 // The class whose box is exactly [w, h].

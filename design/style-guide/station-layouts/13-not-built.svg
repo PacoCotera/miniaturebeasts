@@ -49,6 +49,6 @@
 <rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#ff4fd8" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="16" y="530">action 16,570 376×24: empty, no ✓ cap, no verb</text>
 <text x="16" y="542">subject 408,570 208×24: empty · need 624,570 272×24: the frame's notice, amber, its lamp</text>
-<text x="16" y="554">back 920,570 88×24: ← and the parent's word (Library, Habitat, Incubator, Probe: Home; Book: Library; Cross, Sitting: Vivarium)</text>
+<text x="16" y="554">back 920,570 88×24: ← and the parent's word (Library, Vivarium, Incubator, Probe: Home; Book: Library; Cross, Sitting: Vivarium)</text>
 </g>
 </svg>

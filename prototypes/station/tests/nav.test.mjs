@@ -72,10 +72,7 @@ test("the Book's Visit goes to a housed mibi of the species: its face if one is 
   assert.equal(L.visitTarget(st, "S02"), null, "another species");
 });
 
-test("the Habitat pad with no mibi, the bench and the pod line are wired as the UX designer asked (source checks: the screens need a page)", () => {
+test("Dock on Idle wakes and still acts (a source check on the host: the Dock key is the Caddy's, not a face verb)", () => {
   const src = (f) => readFileSync(path.resolve(here, "../src", f), "utf8");
-  assert.match(src("screens/habitat.mjs"), /if \(k in DIRS\) \{ if \(!m\) return;/, "with no mibi the pad does nothing");
-  assert.match(src("screens/bench.mjs"), /b\.f = pr && pr\.shield < pr\.smax \? 0 : 1/, "the bench starts on the switch when the plates have no action");
-  assert.match(src("views/pods.mjs"), /"Open " \+ railWord\(first, spec\)/, "an unread pod's line names the chapter ✓ opens");
-  assert.match(src("main.mjs"), /if \(k !== "dock"\) return;/, "Dock on Idle wakes and still acts");
+  assert.match(src("main.mjs"), /const wasIdle = UI\.idle; if \(wasIdle\) \{ UI\.idle = false;.*frameIntents\.dock\(H, wasIdle\)/, "Dock on Idle wakes and still acts");
 });

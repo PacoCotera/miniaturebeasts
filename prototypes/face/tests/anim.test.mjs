@@ -6,6 +6,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import { withPolicy } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
@@ -18,7 +19,7 @@ const standIn = (id, w, h, slice, tile) => { const d = new Uint8ClampedArray(w *
 async function start(c, over = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", colours: palette }); f.send({ t: "spec", screen: "frame", json: frameSpec }); f.send({ t: "spec", screen: "pods", json: podsSpec });
-  for (const p of c.pictures) f.handleOf(p.id, (id) => standIn(id, p.w, p.h, p.slice, p.tile));
+  for (const p of c.pictures) f.handleOf(p.id, withPolicy((id) => standIn(id, p.w, p.h, p.slice, p.tile)));
   const props = JSON.parse(JSON.stringify(c.props)); Object.assign(props, over); f.t = 1000; f.frame(f.t); assert.equal(f.props(props), 0, f.errors().join()); f.frame((f.t += 16)); f.pass(3); f.poll("log"); return f;
 }
 // the face's clock to `ms` into the event, and the frame drawn at once (the display's own refresh period is 33 ms)

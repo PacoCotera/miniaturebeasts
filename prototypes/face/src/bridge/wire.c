@@ -130,6 +130,12 @@ static int on_asset(const msg_t *m) {
   strcpy(g_ids[slot], id);
   if (!prim_asset(slot, w, h)) { g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: %dx%d is refused", id, w, h); return fail(b); }
   g_has_slice[slot] = 0; g_tile[slot] = 0;
+  { /* every picture names the layer it shows on, and what it is: policy "art" (palette-exact) or "painted"; status "placeholder" or "master" (lvgl-switch.md §2.1). A picture without them is refused, never guessed. */
+    char pol[12], stat[16];
+    if (!str(m, key(m, "policy"), pol, sizeof pol) || (strcmp(pol, "art") && strcmp(pol, "painted"))) { prim_asset_free(slot); g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: policy is \"art\" or \"painted\"", id); return fail(b); }
+    if (!str(m, key(m, "status"), stat, sizeof stat) || (strcmp(stat, "placeholder") && strcmp(stat, "master"))) { prim_asset_free(slot); g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: status is \"placeholder\" or \"master\"", id); return fail(b); }
+    prim_asset_layer(slot, strcmp(pol, "painted") == 0 ? LAYER_PAINTED : LAYER_ART);
+  }
   int sl = key(m, "slice");
   if (sl >= 0) {   /* a nine-slice's insets l, t, r, b (a byte each) and the tile of its edges and middle */
     if (m->tok[sl].type != JSMN_ARRAY || m->tok[sl].size != 4) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: slice is [left, top, right, bottom]"); }
@@ -163,12 +169,14 @@ static int on_props(const msg_t *m, int len) {
   int seq; char screen[32];
   if (!num(m, key(m, "seq"), &seq) || seq < 0) return fail("props: seq is required");
   if (!str(m, key(m, "screen"), screen, sizeof screen)) return fail("props: screen is required");
-  if (!spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
+  char state[16] = ""; str(m, key(m, "state"), state, sizeof state);
+  int unbuilt = flag(m, key(m, "idle")) || strcmp(state, "notBuilt") == 0;   /* a screen with no binding table needs no spec: the frame's notBuilt composition draws it */
+  if (!unbuilt && !spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
   int r = key(m, "regions"); if (r >= 0 && m->tok[r].type != JSMN_OBJECT) return fail("props: regions must be an object");
   free(g_props); g_props = (char *)malloc((size_t)len + 1); if (!g_props) return -1; memcpy(g_props, m->js, (size_t)len); g_props[len] = 0;
   strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1;
-  if (key(m, "frame") >= 0) return screens_props(g_props, len);   /* props that carry the frame are drawn by the words */
+  if (key(m, "frame") >= 0 || unbuilt) return screens_props(g_props, len);   /* props that carry the frame are drawn by the words */
   return 0;
 }
 int wire_send(const char *json, int len) {
