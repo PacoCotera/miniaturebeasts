@@ -284,7 +284,7 @@ def main():
     manifest = []
     for sheet, im in (("pod-bodies.png", bodies), ("pod-glyphs.png", glyphs)):
         manifest.append({"id": "pod.sheet." + sheet[4:-4], "file": "prototypes/ui/assets/placeholders/pod/" + sheet,
-                         "w": im.w, "h": im.h, "policy": "stationChrome", "status": "placeholder"})
+                         "w": im.w, "h": im.h, "status": "placeholder"})
     atlas = {
         "name": "Pod placeholders", "status": layout["status"],
         "note": "Hand-drawn placeholders: one drawing per size class and state, coloured per species by remap. Never a master.",

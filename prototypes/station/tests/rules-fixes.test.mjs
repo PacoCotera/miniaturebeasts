@@ -240,8 +240,8 @@ test("a mibi out with the Companion sits only while the Companion is docked; at 
   const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: a.id, tier: 1, shield: 3 };
   T.devGrantSitting(st, T0);
   st.dock = { docked: false, at: T0 };
-  assert.match(T.portraitBlock(st, a, sv), /is out with you · it sits when the Companion is home/, "carried and undocked is refused");
-  assert.match(T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv).msg, /is out with you/); assert.match(T.offer(st, a, sv).block, /is out with you/);
+  assert.equal(T.portraitBlock(st, a, sv), "sits when you dock", "carried and undocked is refused");
+  assert.match(T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv).msg, /sits when you dock/); assert.match(T.offer(st, a, sv).block, /sits when you dock/);
   assert.equal(T.portraitBlock(st, b, sv), "", "at home and undocked passes");
   st.dock = { docked: true, at: T0 }; assert.equal(T.portraitBlock(st, a, sv), "", "carried and docked passes");
   const r = T.beginSitting(st, a, S.habitsOf(a)[0], "wood", settings, T0, sv); assert.ok(r.ok, r.msg);

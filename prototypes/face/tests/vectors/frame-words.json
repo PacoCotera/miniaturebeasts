@@ -1,5 +1,5 @@
 {
- "note": "The frame as components/frame.mjs draws it (the JavaScript, through the node path of face-lvgl.mjs, on the WebAssembly face with the stand-in pictures of words.test.mjs and the face's own Inter widths): the props of each case and the framebuffer's hash. The words must draw the same pixels. Frozen: regenerated only when the frame spec or the stand-ins change.",
+ "note": "The frame as components/frame.mjs draws it (the JavaScript, through the node path of face-lvgl.mjs, on the WebAssembly face with the stand-in pictures of words.test.mjs and the face's own Inter widths): the props of each case and the framebuffer's hash. The words must draw the same pixels. Frozen: regenerated only when the frame spec or the stand-ins change. Retaken from the words on B4a-2 when the frame spec moved the notice and the way back (Vivarium): the old spec reproduced every hash, and the pixels that differ lie in the notice and way-back zone only. Retaken again on B4a-2 for the Station palette of ui-kit.md §2 (the Station's 14): each case drawn under the old and the new palette, and every old colour maps to one new colour, so only the colours changed.",
  "cases": [
   {
    "name": "a plain screen",
@@ -34,7 +34,7 @@
      }
     }
    },
-   "hash": "b5a6c1c7"
+   "hash": "8f123891"
   },
   {
    "name": "flashes, a big turn, the Companion away with a mibi",
@@ -72,7 +72,7 @@
      }
     }
    },
-   "hash": "ac767445"
+   "hash": "65cb009f"
   },
   {
    "name": "a long subject, a price too short for it, a notice, a long way back",
@@ -109,7 +109,7 @@
      }
     }
    },
-   "hash": "3431d42f"
+   "hash": "2d51fbec"
   },
   {
    "name": "a dimmed action with a price",
@@ -144,7 +144,7 @@
      }
     }
    },
-   "hash": "24f5febe"
+   "hash": "1e44028a"
   },
   {
    "name": "a one-line message",
@@ -179,7 +179,7 @@
      }
     }
    },
-   "hash": "471b3505"
+   "hash": "80c3062f"
   },
   {
    "name": "a message of three lines",
@@ -214,7 +214,7 @@
      }
     }
    },
-   "hash": "8619e095"
+   "hash": "a1c10d43"
   },
   {
    "name": "a message over the focal box goes to the top",
@@ -254,7 +254,7 @@
      }
     }
    },
-   "hash": "64844547"
+   "hash": "2fa683af"
   }
  ]
 }

@@ -8,7 +8,7 @@ You send your **Probe** out on **expeditions**. An expedition starts on one cell
 
 When you **Head home**, the Companion seals what it carries into a crate, and the world turns once: creatures move and have young, storms leave charged stones behind, and new pods appear. Nothing comes back on its own between turns, so every expedition finds a slightly different world. Back at home you dock the Companion at the **Station**, which opens the crates. There you find out which species a pod holds, study it, shape a mibi from it, and watch it grow.
 
-Your **mibis** are the creatures you raise at the Station. One of them can be **with you** in the Companion. When it is grown, it comes on expeditions as your **partner** and helps with what it is good at: digging, calming creatures, or sniffing out pods. Some places can only be opened with the right partner.
+Your **mibis** are the creatures you raise at the Station. Up to three of them can be **with you** in the Companion. One of them at a time, when it is grown, comes on expeditions as your **partner** and helps with what it is good at: digging, calming creatures, or sniffing out pods. Some places can only be opened with the right partner.
 
 ## 2. The Companion
 
@@ -272,32 +272,32 @@ The lamp on Home's bench rests the screen (the vivarium plays alone); any press 
 | Tier 2 Probe (Probe bench, two presses) | 12 Energy + 4 Data |
 | Return a pod to the wild | gives +1 Essence |
 
-The vivarium has room for four mibis plus the one with you.
+The vivarium has six bays. The mibis with you keep their beds.
 
 ## 9. Your mibis
 
 ### Life stages
 
-- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. It grows up after 2 world turns.
+- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. An unbonded juvenile grows up after 2 world turns; a bonded one grows through care on the Companion, and waits at home, not growing, until it is carried and tended.
 - **Adult**: a full partner, using its ability at full strength.
 - **Elder**: after 6 more world turns. Still a partner: it calms and sniffs twice as far and feels every stray strike coming, but it is slow, and digs in two actions instead of one.
 
-### The "with you" slot
+### Mibis with you
 
-At most one mibi is **with you** in the Companion; the others live in the Station's vivarium. If the mibi with you is grown, it is also your expedition partner. A juvenile with you comes along in the Companion only: "too young for the Probe".
+Up to three mibis are **with you** in the Companion; the others live in the Station's vivarium. One of them at a time is your expedition partner, and only a grown one can be. A juvenile with you comes along in the Companion only: "too young for the Probe".
 
-To choose, open the **Vivarium** on the Station, up close on the mibi, move to the door and press ✓ **Take Fig with you**. While the Companion is docked it moves at once (the one with you comes home); while it is away it moves at the next dock. While docked you can also swap on the Companion: ✓ "Take Moss" on its Mibis screen. During an expedition you can't change who is with you. A newly opened mibi is never put with you by itself.
+To choose, open the **Vivarium** on the Station, up close on the mibi, move to the Companion module and press ✓ **Take Fig with you**, or ✓ **Bring Fig home** for a mibi already with you. While the Companion is docked the change happens at once; while it is away it happens at the next dock. When three are with you, the module says "the Companion is full". A mibi the Companion has no room for at the dock stays home: "Fig stayed home, no room". While docked you can also take a mibi on the Companion: ✓ "Take Moss" on its Mibis screen. During an expedition you can't change who is with you. A newly opened mibi is never put with you by itself.
 
 ### The active mibi screen
 
 Between expeditions the Companion shows the mibi with you, large: its name, stage, species, ability and how it is doing ("with you · joins the Probe"). The pad shows your other mibis. **Call** makes it answer (a juvenile sometimes looks the wrong way first).
-- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does, and **+1 Data** into the hold.
-- After the walk, ✓ **Spend time** shows a little moment with it and what it remembers from its last expedition. Free.
+- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does. A walk helps a mibi grow, but never bonds it.
+- ✓ **Tend** it, once a day for each mibi with you. A few Tends (three) bond it, and a small heart marks it; a bond is never lost.
 
 ### Getting better and bonding
 
 - **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you Head home, three at most. A notch is earned only on an expedition that explored something, and a break keeps it. The notches show on the mibi's card in the vivarium, never as a number.
-- **Bond**: after a mibi's first expedition or walk with you, its page in the vivarium, up close, offers a **bond**: ✓, then ✓ again. A small heart marks it. Bonding is a choice; nothing else depends on it yet.
+- **Bond**: a mibi bonds only through **Tends** on the Companion. ✓ **Tend** works on any mibi with you, once a day; a few Tends (three) bond it, and a small heart then marks its card in the vivarium. Walks make a mibi grow but never bond it, and the vivarium never makes a bond. There is no limit on bonds, a bond is never lost, and a bonded mibi is never returned to the wild. A bonded juvenile grows up through care, and waits at home, not growing, until it is with you and tended.
 
 ### Partners and what they do
 
@@ -318,7 +318,7 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | | Map | Place | Screens | Home |
 | --- | --- | --- | --- | --- |
 | Pad | Step / hold to walk | Tap: creep · hold: walk | Move choice | Other mibis |
-| ✓ | Go down | Act on what you face, or Wait | Choose | Spend time / Take |
+| ✓ | Go down | Act on what you face, or Wait | Choose | Walk, Tend / Take |
 | ← | Head home (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 

@@ -1,6 +1,5 @@
 // Pods' props (lvgl-switch.md §2.1): the view the face takes, views/pods-props.mjs, in Node. Plain JSON that names what and never where: it validates against pods.props.json for every species in every
-// state, holds no rectangle, no measure and no layout rule (the view imports neither ui/layout.mjs nor ui/components/*), fits the 32 KiB props budget with the frame beside it, and agrees with the view
-// the JavaScript drawing still uses (views/pods.mjs, deleted with that drawing at L2.0 B4) on the bottom line, the targets, the rail and the pictures.
+// state, holds no rectangle, no measure and no layout rule (the view imports neither a layout nor a component), and fits the 32 KiB props budget with the frame beside it.
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -10,7 +9,6 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { podsProps, compareBackFocus } from "../src/views/pods-props.mjs";
-import { podsView } from "../src/views/pods.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -74,15 +72,6 @@ test("the props and the frame beside them fit the 32 KiB budget in every scene",
   for (const [name, m] of SCENES) { const v = bodyOf(m), n = JSON.stringify({ t: "props", seq: 1, screen: "pods", ...v.props, frame: { top: { screen: "pods", title: "Pods", turn: 99, turnFlash: false, materials: { e: 1, d: 2, s: 3 }, flash: {}, companion: { docked: true, withMibi: "kestrel" } }, line: v.line, plate: { text: "a plate of words for the budget, about a sentence long" } } }).length; if (n > worst) { worst = n; at = name; } }
   assert.ok(worst < 32768, `${worst} bytes in "${at}"`);
 });
-test("the view agrees with the view the JavaScript drawing uses: the bottom line, the targets, the rail's words and the pictures asked for", () => {
-  for (const [name, m] of SCENES) {
-    const a = bodyOf(m), b = podsView(m, spec, ctx);
-    assert.deepEqual(a.line, b.line, name + ": the line"); assert.equal(a.mode, b.mode, name); assert.equal(a.cur, b.cur, name);
-    assert.deepEqual(a.props.focus.targets.map((t) => t.id), a.mode === "compare" ? (b.rail?.tabs ?? []).map((_, i) => "rail." + i) : b.targets.map((t) => t.id), name + ": the targets (Compare's are its rail's tabs; the drawing's Compare has none)");
-    assert.deepEqual(a.props.regions.rail?.tabs.map((t) => [t.word, t.state, t.pips, t.filled, t.glint]) ?? null, b.rail?.tabs.map((t) => [t.word, t.state, t.pips, t.filled, t.glint]) ?? null, name + ": the rail");
-    const ids = new Set(a.requests.map((r) => r.id)); for (const r of b.requests) assert.ok(ids.has(r.id) || /^plate-name-/.test(r.id), `${name}: the picture ${r.id} is asked for`);
-  }
-});
 test("the selectors resolve to ids or to nothing: kin.first is null with no kin, rail.last the chapter the page shows", () => {
   const one = bodyOf(model(rich(["S01"]))).props.focus.resolve; assert.equal(one["kin.first"], null); assert.match(one["rail.last"], /^rail\.\d+$/);
   const two = bodyOf(model(rich(["S01", "S01"]))).props.focus.resolve; assert.equal(two["kin.first"], "kin.0");
@@ -115,4 +104,57 @@ test("Compare's focus: the targets are the rail's tabs, the ring opens on the op
   assert.equal(compareBackFocus(m(0), spec, frameSpec), "kin.0", "b is the first kin"); const cm = { ...m(0), ui: { ...m(0).ui, cmp: { a: a.id, b: c.id, ci: 0 } } };
   assert.equal(compareBackFocus(cm, spec, frameSpec), "kin.1", "the kin whose pod is ui.cmp.b"); assert.equal(compareBackFocus({ ...m(0), ui: { ...m(0).ui, cmp: { a: a.id, b: "nobody", ci: 0 } } }, spec, frameSpec), "pod", "else the pod");
   assert.equal(compareBackFocus(model(whole), spec, frameSpec), null, "not in Compare");
+});
+
+// ---- the Pods strings (moved from the deleted pods-view test): the words the face is given are the table's
+const lineOf = (m) => bodyOf(m).line, pageOf = (m) => bodyOf(m).props.regions.page;
+const open = (st, over = {}) => ({ st, settings, docked: true, crates: 0, present: {}, focus: "pod", ...over, ui: { view: "overview", cur: st.tray[0]?.id ?? null, ci: 0, cmp: null, wildArm: 0, ...(over.ui || {}) } });
+test("no digits on a page, in the origin, in a place's subject or in a trait's name", () => {
+  for (const id of SPECIES) {
+    const st = stock([id], 11); st.tray[0].n = 7; S.skipRead(st, st.tray[0], settings);
+    const fr = frameOf(id);
+    for (let ci = 0; ci < fr.chapters.length; ci++) {
+      const page = pageOf(open(st, { focus: "rail." + ci, ui: { view: "chapter", ci } }));
+      for (const c of page.cells) assert.ok(!/\d/.test(c.name + (c.lines || []).join(" ")), `${id} ${fr.chapters[ci].id}: digits on the page: ${c.name} ${c.lines}`);
+    }
+    const spec1 = bodyOf(open(st)).props.regions.specimen; assert.ok(spec1.origin.every((l) => !/\d/.test(l)), spec1.origin.join("|"));
+    assert.ok(!/\d/.test(lineOf(open(st, { focus: "place.0", ui: { view: "collection" } })).subject));
+  }
+});
+test("the bottom line's three slots: no dots, the centre fits 24 characters, one sentence of six words or fewer on the right, no 'free' or 'half'", () => {
+  const words = (t) => t.trim().split(/\s+/).length;
+  for (const id of SPECIES) {
+    const st = stock([id], 7), p = st.tray[0], check = (what, l) => {
+      for (const k of ["ok", "price", "back", "subject", "need"]) if (l[k]) assert.ok(!/·/.test(l[k]), `${id} ${what}: no "·" in ${k}: ${l[k]}`);
+      if (l.subject) assert.ok(l.subject.length <= 24 || /…$/.test(l.subject), `${id} ${what}: the subject fits 24 characters: ${l.subject}`);
+      if (l.need) assert.ok(words(l.need) <= 6, `${id} ${what}: the need is six words or fewer: ${l.need}`);
+      assert.ok(!/free|half/.test(l.price || ""), `${id} ${what}: no free or half`);
+    };
+    check("unidentified", lineOf(open(st)));
+    S.skipIdentify(st, p); st.d = 20; st.e = 20;
+    for (const f of ["pod", "rail.0", "rail.1", "hatch"]) check(f, lineOf(open(st, { focus: f })));
+    check("place", lineOf(open(st, { focus: "place.0", ui: { view: "collection" } }))); check("page", lineOf(open(st, { focus: "rail.0", ui: { view: "chapter", ci: 0 } })));
+  }
+  const st = stock(["S01"], 3), p = st.tray[0], line = (f) => lineOf(open(st, { focus: f }));
+  assert.equal(line("pod").subject, "sealed until identified");
+  S.skipIdentify(st, p); assert.equal(line("pod").subject, S.spName(p) + " is unread");
+  st.d = 10; S.read(st, p, "coat", settings); assert.equal(line("pod").subject, S.spName(p) + " is partly read");
+  st.d = 0; st.readEver = true; const l1 = lineOf(open(st, { focus: "rail.1", ui: { view: "chapter", ci: 1 } })); assert.equal(l1.need, "needs more ◆"); assert.equal(l1.dim, true);
+});
+test("a sealed tab's subject is '<chapter> is sealed'; the hatch's is 'Back to the <place>'", () => {
+  const st = stock(["S02"], 11), p = st.tray[0]; S.skipRead(st, p, settings);
+  const fr = frameOf("S02"), ci = fr.chapters.findIndex((c) => c.sealed);
+  assert.equal(lineOf(open(st, { focus: "rail." + ci, ui: { view: "chapter", ci } })).subject, fr.chapters[ci].name + " is sealed");
+  assert.equal(lineOf(open(st, { focus: "hatch" })).subject, "Back to the " + S.PLACE_WORD[p.g]);
+});
+test("the hatch's arming plate says only '✓ again'", () => {
+  assert.equal(spec.strings.hatchAgain, "✓ again"); assert.ok(spec.strings.hatchAgain.split(" ").length <= 6);
+});
+test("Compare's need line follows the spec's strings: here, in another chapter, or none", () => {
+  const st = stock(["S01", "S01"], 11); S.skipRead(st, st.tray[0], settings); S.skipRead(st, st.tray[1], settings);
+  const A = st.tray[0], B = st.tray[1], diff = S.compareDiff(st, A, B), chs = frameOf("S01").chapters;
+  for (let ci = 0; ci < chs.length; ci++) {
+    const l = lineOf(open(st, { focus: null, ui: { cur: A.id, cmp: { a: A.id, b: B.id, ci } } }));
+    assert.equal(l.need, !diff.length ? spec.strings.compareSame : chs[ci].traits.some((t) => diff.includes(t.id)) ? spec.strings.compareHere : spec.strings.compareElsewhere, `chapter ${ci}`);
+  }
 });

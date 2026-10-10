@@ -2,11 +2,12 @@
 // function over it. No drawing, no DOM: the tests run this in Node. Screens call these and read
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
-// accepted, dockN, known, probe, withReq, returned, and each mibi's id, name, sp, born, from, bonded.
+// accepted, dockN, known, probe, carryReqs, returned, and each mibi's id, name, sp, born, from, bonded.
+// The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
-export const ST_SCHEMA = 2;
+export const ST_SCHEMA = 3;
 export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
 export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-exploration-v3", "mb-exploration-v4", "mb-exploration-v5", "mb-exploration-v6", V7_KEY];
 export const DEV_KEY = "mb-station-dev";
@@ -16,7 +17,7 @@ export const RACK = 6, BAY = 3, BAYS = 6;
 export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 // What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
 export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
-export const JUVENILE_TURNS = 2, ELDER_TURNS = 6;
+export const JUVENILE_TURNS = 2, ELDER_TURNS = 6, CARRY_MAX = 3;
 export const MIBI_NAMES = ["Dot", "Moss", "Bean", "Fig", "Nib", "Tuft", "Pebble", "Wren", "Pip", "Sorrel", "Burr", "Quill"];
 // --- names (the game designer's brief): a name never carries a digit and is never reused among living mibis, released ones included -----------------------------------------------------------
 export const NAME_MAX = 10;
@@ -57,7 +58,7 @@ export function freshSt(wid, turn, now = Date.now()) {
   return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, readEver: false, freeId: false, firstMibi: true,
     mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, wish: {}, face: {}, sittingCrates: [], outbox: [],
-    dock: { docked: false, at: now }, dockN: 0, withReq: null, probe: null, mendFull: true, returned: [], log: [] };
+    dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: true, returned: [], log: [] };
 }
 export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
 
@@ -71,13 +72,12 @@ const mibiFromGenome = (frame, genome) => {
   const sha = genomeSha(genome);
   return { genome, sha, code: nameCode(sha), read: openChapterIds(frame) };
 };
-// The migration of a v8 `st` written by the stand-in (schema 1) to schema 2: once, forward only, logged.
+// The migration steps, in order, each idempotent on its own output: forward only, logged. Step 2: a v8 `st` written by the stand-in (schema 1) becomes the research loop.
 // Pods keep their identity (the genome is sampled from the pod's seed); studies start again; an existing
 // mibi becomes a founder from its seed, fully read. The Companion-read fields keep their shape.
-export function migrate(st, now = Date.now()) {
-  if (!st || st.schema >= ST_SCHEMA) return st;
+function toResearch(st, now) {
   const out = Object.assign(freshSt(st.wid, st.turn, now), st);
-  out.schema = ST_SCHEMA;
+  out.schema = 2;
   const notes = [];
   const podOf = (p) => {
     const q = { id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, how: p.how, gs: p.gs >>> 0, k: p.k ?? null, n: p.n || 0, idd: p.idd ? 1 : 0, newSp: 0, read: [], fresh: p.fresh ? 1 : 0 };
@@ -100,7 +100,21 @@ export function migrate(st, now = Date.now()) {
   out.bays = BAYS; out.sitting = null; out.moments = {}; out.welcomeGiven = false; out.wish = {}; out.outbox = []; out.devBay = [];
   delete out.seen; delete out.studiedW; delete out.studyPaid; delete out.inc;
   rebuildGuide(out);
-  logEv(out, `Save migrated to the research loop (schema ${ST_SCHEMA})` + (notes.length ? " · " + notes.join(" · ") : ""));
+  logEv(out, `Save migrated to the research loop (schema 2)` + (notes.length ? " · " + notes.join(" · ") : ""));
+  return out;
+}
+// Step 3, the carried set: the old single request ("swap") becomes an add in the queue when the Companion has not applied it (the Station never cleared withReq, so withSeen decides); the old mibi stays carried.
+function toCarry(st, now, sv) {
+  const r = st.withReq;
+  if (r && r.seq > ((sv && sv.withSeen) || 0) && !carriedIds(st, sv).includes(r.id)) { st.carryReqs = [{ seq: 1, op: "add", id: r.id }]; st.carrySeq = 1; } else { st.carryReqs = []; st.carrySeq = 0; }
+  delete st.withReq; st.carryRefusedSeen = st.carryRefusedSeen || 0;
+  return st;
+}
+const STEPS = [[2, toResearch], [3, toCarry]];
+export function migrate(st, now = Date.now(), sv = null) {
+  if (!st || st.schema >= ST_SCHEMA) return st;
+  let out = st;
+  for (const [n, step] of STEPS) if (n > (out.schema || 0)) { out = step(out, now, sv); out.schema = n; }
   return out;
 }
 // What a record may lack after an older write.
@@ -109,7 +123,10 @@ export function normalize(st, now = Date.now()) {
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
-  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null; }
+  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
+    m.care = m.care > 0 ? m.care | 0 : 0; m.tends = m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;
+    if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
+  if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
   syncKnown(st);
   claimExisting(st); renameDigits(st);
   return st;
@@ -152,13 +169,56 @@ export const guideLooks = (st, species, traitId) => st.guide[species]?.[traitId]
 export const hasWorld = (sv) => !!(sv && sv.wid && typeof sv.seed === "number");
 export const docked = (st) => !!(st.dock && st.dock.docked);
 export const bayCrates = (st, sv) => (sv && Array.isArray(sv.bay) ? sv.bay : []).concat(st.devBay).filter((c) => !st.accepted.includes(c.id));
-export const withId = (sv) => (sv && sv.with != null ? sv.with : null);
 export const mibiById = (st, id) => st.mibis.find((m) => m.id === id) || null;
 export const podById = (st, id) => st.tray.find((p) => p.id === id) || null;
-export function effWithId(st, sv) { const r = st.withReq; if (r && docked(st) && r.seq > ((sv && sv.withSeen) || 0)) return r.id; return withId(sv); }
-export function pendingWith(st, sv) { const r = st.withReq; return r && r.seq > ((sv && sv.withSeen) || 0) && r.id !== withId(sv) ? mibiById(st, r.id) : null; }
-export const atHome = (st, sv) => st.mibis.filter((m) => m.id !== effWithId(st, sv) && !m.released);
-export function mibiStage(st, m, settings = DEFAULT_SETTINGS) { const age = st.turn - (m.born || 0), j = settings.adultTurns ?? JUVENILE_TURNS; return age < j ? "juvenile" : age >= j + ELDER_TURNS ? "elder" : "adult"; }
+// The carried set lives on the Companion (`sv.carried`); the Station reads it and asks for changes through the request queue `st.carryReqs`.
+// carriedIds is the one accessor: the Companion's carried list (or the old single `with` of a save the Companion has not migrated), as ids of the Station's mibis that are not released.
+export function carriedIds(st, sv) {
+  const raw = sv && Array.isArray(sv.carried) ? sv.carried : sv && sv.with != null ? [sv.with] : [];
+  return raw.filter((id) => { const m = mibiById(st, id); return m && !m.released; });
+}
+// The requests the Companion has not applied yet, in seq order. The face shows them as pending, never as carried.
+export const pendingCarry = (st, sv) => (st.carryReqs || []).filter((r) => r.seq > ((sv && sv.carrySeen) || 0)).sort((a, b) => a.seq - b.seq);
+// The set as it will be once every request applies (the Companion's own rules: an add is refused when full, already carried or released; a home is a no-op when not carried).
+export function projectCarried(st, sv) {
+  const out = carriedIds(st, sv);
+  for (const r of pendingCarry(st, sv)) {
+    if (r.op === "home") { const i = out.indexOf(r.id); if (i >= 0) out.splice(i, 1); }
+    else { const m = mibiById(st, r.id); if (m && !m.released && !out.includes(r.id) && out.length < CARRY_MAX) out.push(r.id); }
+  }
+  return out;
+}
+export const homeMibis = (st, sv) => { const c = carriedIds(st, sv); return st.mibis.filter((m) => !m.released && !c.includes(m.id)); };
+// A Station request to take a mibi with the Companion or bring it home: queued, applied by the Companion at the dock. why: "full" | "carried" | "not-carried" | "released" | "unknown".
+function carryOp(st, sv, m, op) {
+  if (!m || !mibiById(st, m.id)) return { ok: false, why: "unknown" };
+  const proj = projectCarried(st, sv);
+  if (op === "add") { if (m.released) return { ok: false, why: "released" }; if (proj.includes(m.id)) return { ok: false, why: "carried" }; if (proj.length >= CARRY_MAX) return { ok: false, why: "full" }; }
+  else if (!proj.includes(m.id)) return { ok: false, why: "not-carried" };
+  st.carryReqs.push({ seq: ++st.carrySeq, op, id: m.id });
+  logEv(st, op === "add" ? m.name + " chosen to go with you" : m.name + " chosen to come home");
+  return { ok: true };
+}
+export const carryAdd = (st, sv, m) => carryOp(st, sv, m, "add");
+export const carryHome = (st, sv, m) => carryOp(st, sv, m, "home");
+// On save: the ops the Companion has applied or refused are gone (carrySeq is never reused).
+export function trimCarryReqs(st, sv) { const seen = (sv && sv.carrySeen) || 0; if (st.carryReqs.some((r) => r.seq <= seen)) st.carryReqs = st.carryReqs.filter((r) => r.seq > seen); }
+// The Companion's refusal to show once on Habitat: the newest refused add (why "full") that is a Station mibi and not yet seen. Other reasons show nothing.
+export function carryRefusal(st, sv) {
+  const seen = st.carryRefusedSeen || 0, list = sv && Array.isArray(sv.carryRefused) ? sv.carryRefused : [];
+  const r = list.filter((x) => x && x.seq > seen && x.why === "full" && mibiById(st, x.id)).sort((a, b) => b.seq - a.seq)[0];
+  return r ? { seq: r.seq, id: r.id, name: mibiById(st, r.id).name } : null;
+}
+export function seenCarryRefusal(st, sv) { const r = carryRefusal(st, sv); if (r) st.carryRefusedSeen = r.seq; return r; }
+// The stage, one definition on both pages (the Companion's index.html has the same text; the parity test proves they agree).
+export function stageAt(m, turn, j, e) {
+  if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
+  if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
+  const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
+}
+export const mibiStage = (st, m, settings = DEFAULT_SETTINGS) => stageAt(m, st.turn, settings.adultTurns ?? JUVENILE_TURNS, ELDER_TURNS);
+// Who walked with a trip record: its carried set, else (an older record) its partner.
+export const tripCarried = (rec) => (Array.isArray(rec.carried) ? rec.carried : rec.partner != null ? [rec.partner] : []);
 export const tierNow = (st, sv) => (st.probe && st.probe.tier) || (sv && sv.tier) || 1;
 export const podName = (p) => (p.idd ? spName(p) + " pod" : "unknown pod");
 // The sentence in its two halves, which are the two lines under the pod; a pod with no find has one.
@@ -192,6 +252,23 @@ export function payMend(st, settings = DEFAULT_SETTINGS) {
   if (paid) { st.probe.seq++; logEv(st, "Mended " + plural(paid, "plate") + (cost ? " · " + spendText(paid * cost, 0, 0) : "")); }
   return paid;
 }
+// The care the Companion earned, taken in at the dock and whenever the Station reads the save while docked. Max / OR only, so a repeated dock, a lift and redock and a reload change nothing; the Station never sets `bonded`
+// itself and never writes a care field the Companion has not sent. Returns the ids of the mibis whose outings went up (they came home from a walk).
+export function mergeCare(st, sv) {
+  const home = [];
+  for (const m of (sv && sv.mibis) || []) {
+    const q = mibiById(st, m.id); if (!q) continue;
+    const was = q.outings || 0;
+    if (m.mem) q.mem = m.mem; if (m.places) q.places = m.places;
+    q.outings = Math.max(was, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); q.care = Math.max(q.care || 0, m.care || 0); q.tends = Math.max(q.tends || 0, m.tends || 0);
+    if (m.bondCare != null) q.bondCare = q.bondCare == null ? m.bondCare : Math.max(q.bondCare, m.bondCare);
+    if (m.grownTurn != null) q.grownTurn = q.grownTurn == null ? m.grownTurn : Math.max(q.grownTurn, m.grownTurn);
+    q.bonded = !!q.bonded || !!m.bonded;
+    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) recordHabit(st, q, h); }
+  }
+  for (const rec of (sv && Array.isArray(sv.trips)) ? sv.trips : []) for (const id of tripCarried(rec)) { const q = mibiById(st, id); if (q) for (const p of rec.places || []) recordWalk(st, q, p); }   // a set insert: the whole list every time is idempotent
+  return home;
+}
 // Dock or lift: docking always works; it brings the crates and the Probe (a break mended free, else up to two plates, then 1 Energy a plate while the switch is on).
 export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!hasWorld(sv) && !st.devBay.length && !st.devWorld) return { ok: false, msg: "No Companion world yet · open the Companion page first, or seed a crate in the developer panel" };
@@ -202,10 +279,8 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
   st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
   const paid = st.mendFull ? payMend(st, settings) : 0;
-  // what came home with the Companion: the mibi that walked (its outings went up), the habits it did and the places it entered on the way (the Companion's hand-off: habitsDone, placesEntered)
-  const home = [];
-  for (const m of (sv && sv.mibis) || []) { const q = mibiById(st, m.id); if (q) { const was = q.outings || 0; if (m.mem) q.mem = m.mem; q.outings = Math.max(was, m.outings || 0); q.notches = Math.max(q.notches || 0, m.notches || 0); if (m.places) q.places = m.places;
-    if (q.outings > was) { home.push(q.id); for (const h of m.habitsDone || []) recordHabit(st, q, h); for (const p of m.placesEntered || []) recordWalk(st, q, p); } } }
+  // what came home with the Companion: the care it earned (mergeCare), the habits it did and the places it entered on the way
+  const home = mergeCare(st, sv);
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
   return { ok: true, docked: true, home, mend: { free, paid, broke }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
@@ -286,7 +361,7 @@ function benchEarn(st, L, settings, text) {
 // The resident shown on Habitat, watched for dtMs (clamped to 250 ms a frame). At watchMs of awake time today it earns once and, once, records the first of the frame's habits it has not been seen doing.
 export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const none = { ok: false, earned: 0, full: false };
-  if (!m || m.released || m.id === effWithId(st, sv)) return none;
+  if (!m || m.released || carriedIds(st, sv).includes(m.id)) return none;
   const L = benchLedger(st, now), need = settings.watchMs ?? WATCH_MS; if (L.watched.includes(m.id)) return { ok: true, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
   const dt = Math.max(0, Math.min(250, +dtMs || 0)); L.watchMs[m.id] = (L.watchMs[m.id] || 0) + dt;
   if (L.watchMs[m.id] < need) return { ok: true, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
@@ -299,7 +374,7 @@ export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS, now = D
 export function benchCompare(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const none = { ok: false, earned: 0, full: false };
   if (!a || !b || a === b || a.id === b.id || a.released || b.released || speciesOf(a) !== speciesOf(b)) return none;
-  const w = effWithId(st, sv); if (a.id === w || b.id === w) return none;
+  const c = carriedIds(st, sv); if (c.includes(a.id) || c.includes(b.id)) return none;
   if (!(a.read || []).some((c) => (b.read || []).includes(c))) return none;
   const L = benchLedger(st, now), key = Math.min(a.id, b.id) + "-" + Math.max(a.id, b.id);
   if (L.compared.includes(key) || settings.trickleCap === 0) return { ok: false, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
@@ -384,15 +459,6 @@ export function returnPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) 
 }
 
 // --- residents and the Probe (as built) --------------------------------------------------------------
-export function takeWith(st, sv, m) {
-  if (!m || m.id === effWithId(st, sv)) return { ok: false };
-  const prev = mibiById(st, effWithId(st, sv));
-  st.withReq = { id: m.id, seq: (st.withReq ? st.withReq.seq : 0) + 1 };
-  logEv(st, m.name + " chosen to go with you");
-  return { ok: true, msg: docked(st) ? m.name + " goes into the Companion" + (prev ? " · " + prev.name + " comes home" : "") : m.name + " goes with you at the next dock" };
-}
-export const bondOffered = (m) => !!m && !m.bonded && (m.outings || 0) >= 1;
-export function bond(st, m) { m.bonded = true; logEv(st, "Bonded with " + m.name); return { ok: true, msg: m.name + " and you are bonded · a small heart" }; }
 export function mendPlate(st, settings = DEFAULT_SETTINGS) {
   const pr = st.probe; if (!docked(st) || !pr || pr.shield >= pr.smax) return { ok: false };
   const cost = price(PRICE.mend, settings); if (st.e < cost) return { ok: false, msg: "Mend a plate · " + shortText(st, cost, 0, 0) };
@@ -428,7 +494,6 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
   const unread = st.tray.filter((p) => p.idd && !fullyRead(p, settings));
   if (unread.length) { const p = unread[0], ch = frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? readCost(st, p, ch.id, settings) : 0;
     return { text: aAn(spName(p)) + " pod waits" + (cost && st.d < cost ? " for ◆ " + (cost - st.d) + " more" : " to be read"), act: "pods", label: "Look at the pods" }; }
-  // an offered bond is not a need (the game designer, 2026-10-09): nothing turns amber for it
   if (st.bud) return { text: "a bud is growing", act: "inc", label: "Look at the incubator" };
   if (!hasWorld(sv) && !st.devBay.length && !st.tray.length && !st.waiting.length && !st.mibis.length) return { text: "open the Companion page", act: null };
   return { text: "", act: null };
@@ -564,16 +629,17 @@ export function openBud(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   return { ok: true, mibi: m };
 }
 // Return a mibi to the wild (research-economy.md §6): +2 Essence, a field-guide note, the release handed to the
-// Companion at the next dock. Never a bonded mibi, a juvenile, or the one with you.
+// Companion at the next dock. Never a bonded mibi, a juvenile, one carried by the Companion or waiting to be.
 export function returnMibiBlock(st, sv, m) {
   if (!m || m.released) return "already released";
   if (m.bonded) return "a bonded mibi stays";
   if (mibiStage(st, m) === "juvenile") return "not until it is adult";
-  if (m.id === effWithId(st, sv)) return m.name + " is with you";
+  if (carriedIds(st, sv).includes(m.id)) return "already with you";
+  if (pendingCarry(st, sv).some((r) => r.op === "add" && r.id === m.id)) return "goes at the next dock";
   return "";
 }
 export function returnMibi(st, sv, m, settings = DEFAULT_SETTINGS) {
-  const b = returnMibiBlock(st, sv, m); if (b) return { ok: false, msg: "Return " + (m ? m.name : "") + " · " + b };
+  const b = returnMibiBlock(st, sv, m); if (b) return { ok: false, why: b };   // the block is the Wild module's context, not a plate
   m.released = true; m.releasedAt = st.turn; st.s += PRICE.wildMibi;
   if (!Array.isArray(st.releases)) st.releases = [];
   st.releases.push({ id: m.id, name: m.name, sp: m.sp, species: m.species, k: m.from?.k ?? null, g: m.from?.g ?? null, code: m.code, turn: st.turn }); if (st.releases.length > 30) st.releases.shift();

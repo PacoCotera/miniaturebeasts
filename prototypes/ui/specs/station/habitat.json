@@ -5,16 +5,16 @@
  "frame": "frame.json",
  "status": "The L2.5 layout spec for Habitat on the LVGL face: every drawn region names its word or composition, the states rest, meet and empty, the namer as an overlay, Habitat's focus as data in place of nav.mjs habitatMove, the events, the bottom line and the strings",
  "wireframes": ["design/style-guide/station-layouts/06-habitat.png", "design/style-guide/station-layouts/06b-habitat-meet.png", "design/style-guide/station-layouts/06c-habitat-child.png", "design/style-guide/station-layouts/06d-habitat-armed.png", "design/style-guide/station-layouts/06e-habitat-empty.png", "design/style-guide/station-layouts/06f-habitat-away.png", "design/style-guide/station-layouts/06g-habitat-nav.png"],
- "note": "The one home of the Habitat numbers, transcribed from station-layouts.md (Habitat) and its wireframes 06-habitat.svg to 06g-habitat-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. Habitat is one mibi up close: the mibi in the living window at the left with its name on a tag under it, its card at the top right, five modules under the card, the strip of bays along the foot.",
+ "note": "The one home of the Habitat numbers, transcribed from station-layouts.md (Habitat) and its wireframes 06-habitat.svg to 06g-habitat-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. Habitat is one mibi up close: the mibi in the living window at the left with its name on a tag under it, its card at the top right, four modules under the card, the strip of bays along the foot.",
  "notes": {
   "name tag": "the mibi's name sits on a tag under it inside the living window, as on Home, so it does not float and the chrome carries system information only; the card does not repeat it. 20 px medium; the box holds ten of the widest letter (200 px, NAME_MAX 10), so the tag is at most 224 wide and a name is never clipped",
   "meet box": "the resident's box is 304×312, the box the juvenile stood in on the Incubator's hatch (incubator.json regions.juvenile), so the new mibi reads as the same creature across the hand-off's dither",
   "card": "the instrument's readout of this one mibi: who it is (species and stage, where it came from, what it remembers), its code, its stamp and its chapters. The species word is the door to the species' guide",
-  "modules": "Home's `module` build with its lamp null: one engraved word and its object. All five show on every mibi; the Portrait module is always there and opens the sitting, its own screen under Habitat (sitting.json). Companion, Bond and Portrait on the first row, Cross (wide, it opens a screen) and Wild on the second; Wild, the act that lets a mibi go, sits last, at the bottom right",
+  "modules": "Home's `module` build with its lamp null: one engraved word and its object. All four show on every mibi; the Portrait module is always there and opens the sitting, its own screen under Habitat (sitting.json). Companion (wide, the carried set) and Portrait on the first row, Cross (wide, it opens a screen) and Wild on the second; Wild, the act that lets a mibi go, sits last, at the bottom right. The bond is not a module: it is made on the Companion, and the heart on the card is its state (regions.card.heart)",
   "strip": "one tile a bay, at most twelve (one vivarium holds at most twelve mibis): the housed mibis in bay order, then the free bays. Each tile shows the mibi's thumbnail only; focusing a tile shows that mibi in the window with its name on its tag, and the action names it",
   "namer": "the namer (namer.json) is an overlay on Habitat, not a screen of its own, over Habitat's right column, its panel at 592, 48, 416, 424; the living window stays left of x 592 and in view, and the strip stays visible under it",
   "painting": "a mibi whose painting has not landed shows its placeholder with the waiting lamp; the words are on the bottom line only. A painting that lands while the mibi is on screen waits for the next fresh draw (Habitat opened again, the strip bringing the mibi back, a wake): never a swap in view",
-  "amber": "nothing on Habitat is amber: no module, tile, count or offered bond is a need. The notice is the frame's (what needs the player anywhere)"
+  "amber": "nothing on Habitat is amber: no module, tile, count or heart is a need. The notice is the frame's (what needs the player anywhere)"
  },
  "rules": {
   "used": ["listPitch"],
@@ -24,7 +24,7 @@
  },
  "states": ["rest", "meet", "empty"],
  "initial": "by the save and the way in: no housed mibi, empty; arriving from the Incubator's hatch (or Home's ✓ Meet), meet; else rest",
- "stateRule": "rest: one housed mibi shown, at rest. meet: the same layout on the first look at a new mibi, from the hatch's hand-off until the first press; the meet ribbon stands in the name tag's place, and the first ✓ opens the namer. empty: no housed mibi; the window, the strip of free bays and the frame only; it does not lead toward growing (Home's ✓ leads to what needs the player). A region with `inStates` exists only in those states; the arm of Bond and Wild is focus.armed, not a state; the namer is an overlay (overlays.namer), not a state",
+ "stateRule": "rest: one housed mibi shown, at rest. meet: the same layout on the first look at a new mibi, from the hatch's hand-off until the first press; the meet ribbon stands in the name tag's place, and the first ✓ opens the namer. empty: no housed mibi; the window, the strip of free bays and the frame only; it does not lead toward growing (Home's ✓ leads to what needs the player). A region with `inStates` exists only in those states; the arm of Wild is focus.armed, not a state; the namer is an overlay (overlays.namer), not a state",
  "overlays": { "namer": { "spec": "namer.json", "panel": [592, 48, 416, 424], "over": "the card and the modules; the living window and the strip stay in view", "from": ["the meet's first ✓ (✓ Name {name})", "✓ on the name tag (✓ Rename {name})"], "closes": "to rest, the ring on the mibi (from the meet) or on the name (from Rename)" } },
  "regions": {
   "stage": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "offGrid": true, "slice": "room-vivarium-stage-habitat", "until": "the stage ground rect, colours.stageGround", "note": "the frame's stage; the Habitat master, 1024×522, is to be commissioned" },
@@ -44,8 +44,8 @@
    "clearance": "its top at feet + 24, 12 px under the feet ring (380 to 404), as on Home; its bottom 16 px inside the glass", "lift": 0, "flash": "the frame's 240 ms flash when a name is saved (namer.json, `named`)"
   },
   "meetRibbon": { "rect": [144, 416, 304, 40], "component": "ribbon", "inStates": ["meet"], "px": 20, "align": "centre", "centre": 296, "lines": 1, "words": "strings.meet", "note": "in the name tag's place, the one ribbon look; it goes on the first press (the namer opens over the right column on ✓; any other key keeps the default name) and the tag shows" },
-  "card": { "rect": [592, 48, 416, 208], "component": "panel", "inStates": ["rest", "meet"] },
-  "speciesLine": { "rect": [608, 64, 248, 24], "component": "text", "inStates": ["rest", "meet"], "px": 16, "lineTop": 66, "text": "strings.speciesLine", "mark": { "slice": "mark-guide-16", "size": [16, 16], "gap": 4, "at": "4 px after the line's last word, on the line's centre" }, "target": "species" },
+  "card": { "rect": [592, 48, 416, 208], "component": "panel", "inStates": ["rest", "meet"], "heart": { "at": [240, 16], "size": [24, 24], "slice": "heart-full-24", "when": "the mibi is bonded (m.bonded); unbonded: nothing drawn", "look": "a small enamel heart painted in the house light; never a flat emoji heart, no face, no sparkle" } },
+  "speciesLine": { "rect": [608, 64, 216, 24], "component": "text", "inStates": ["rest", "meet"], "px": 16, "lineTop": 66, "text": "strings.speciesLine", "mark": { "slice": "mark-guide-16", "size": [16, 16], "gap": 4, "at": "4 px after the line's last word, on the line's centre" }, "target": "species" },
   "story": { "rect": [608, 88, 248, 72], "component": "text", "inStates": ["rest", "meet"], "px": 16, "lines": 3, "pitch": 24, "lineTops": [90, 114, 138], "text": "strings.story: a founder, where it was found, then what it remembers; a bred mibi, \"of {A}\" and \"and {B}\" on two lines, then what it remembers; filled from the top" },
   "code": { "rect": [608, 160, 248, 24], "component": "text", "inStates": ["rest", "meet"], "px": 16, "lineTop": 162, "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable" },
   "stamp": { "rect": [872, 64, 120, 120], "component": "stampLabel", "inStates": ["rest", "meet"], "live": "the mibi's stamp, its read chapters filled", "fromFocal": 424 },
@@ -57,15 +57,10 @@
    "note": "one plate a chapter, in ring order, left-aligned from x 608: the signed ground, then the emblem 24×24 at (8, 8); no word and no pips: the focused plate's chapter is the bottom line's context"
   },
   "door": {
-   "rect": [592, 272, 128, 96], "component": "panel", "build": "module", "inStates": ["rest", "meet"], "word": [16, 12], "lamp": null,
+   "rect": [592, 272, 272, 96], "component": "panel", "build": "module", "inStates": ["rest", "meet"], "word": [16, 12], "lamp": null,
    "glyph": { "at": [24, 52], "size": [16, 24], "docked": "frame-companion-solid-16x24", "away": "frame-companion-outline-16x24" },
-   "mibi": { "at": [56, 40], "size": [48, 48], "asset": "the mibi with you, its painting or placeholder at 48", "away": "not drawn: it is out with the Companion" },
-   "states": { "docked": "the solid glyph and the mibi with you", "away": "the outline glyph alone", "none": "the solid glyph alone" }
-  },
-  "bond": {
-   "rect": [728, 272, 136, 96], "component": "panel", "build": "module", "inStates": ["rest", "meet"], "word": [16, 12], "lamp": null,
-   "heart": { "at": [52, 52], "size": [32, 28], "slices": { "notYet": "heart-dim-32x28", "offered": "heart-open-32x28", "armed": "heart-armed-32x28", "bonded": "heart-full-32x28" }, "look": "a small enamel heart painted in the house light; never a flat emoji heart, no face, no sparkle" },
-   "states": { "notYet": "before its first expedition: dim", "offered": "open", "armed": "half filled, after the first ✓", "bonded": "full" }
+   "places": { "at": [[56, 40], [120, 40], [184, 40]], "size": [48, 48], "order": "the set as it will be (state.projectCarried)", "docked": "each mibi's painting or placeholder at 48", "away": "a carried mibi is not drawn (it is out)", "waiting": "an add request waiting: its picture at 48 with frame-lamp-8-stone at the place's (40, 0)" },
+   "states": { "docked": "the solid glyph and the carried mibis", "away": "the outline glyph alone", "none": "the solid glyph alone" }
   },
   "portrait": {
    "rect": [872, 272, 136, 96], "component": "panel", "build": "module", "inStates": ["rest", "meet"], "word": [16, 12], "lamp": null,
@@ -94,16 +89,16 @@
    "states": { "shown": "the mibi in the window: fill `hairline`, one step up", "housed": "fill `panel`", "free": "the dashed outline", "away": "the outline glyph" }
   }
  },
- "drawOrder": ["stage", "bezel", "glass", "resident", "resident lamp", "nameTag", "meetRibbon", "card", "speciesLine", "story", "code", "stamp", "plates", "door", "bond", "portrait", "cross", "wild", "strip", "tiles", "ring", "frame (top bar, bottom line)", "message plate", "the namer overlay (namer.json)"],
+ "drawOrder": ["stage", "bezel", "glass", "resident", "resident lamp", "nameTag", "meetRibbon", "card", "speciesLine", "story", "code", "stamp", "plates", "door", "portrait", "cross", "wild", "strip", "tiles", "ring", "frame (top bar, bottom line)", "message plate", "the namer overlay (namer.json)"],
  "events": {
-  "moment": { "kind": "moment", "target": "resident", "hold": true, "holdMs": 300, "ms": 1800, "do": "Spend time: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice, the creature lift 4 px up and back, whole pixels, at 0 and 900 ms. Rewards nothing and shows nothing like a reward. A press after the hold cuts it to its end" },
+  "moment": { "kind": "moment", "target": "resident", "hold": true, "holdMs": 300, "ms": 1800, "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice, the creature lift 4 px up and back, whole pixels, at 0 and 900 ms. Rewards nothing and shows nothing like a reward. A press after the hold cuts it to its end" },
   "swap": { "kind": "dither", "target": "resident", "hold": false, "ms": 200, "levels": 16, "do": "the ring moved to another tile: the resident cross-dithers to the tile's mibi (lvgl-switch.md §2.7, the dither event); the tag, the card, the modules and the strip's shown tile are cuts on the frame of the key" },
   "meet": { "kind": "meet", "target": "resident", "hold": false, "from": "the Incubator's hatch: its 180 ms dither ends on Habitat in state meet (incubator.json handoff)", "do": "the meet ribbon shows in the tag's place; the new mibi plays its moment once (no hold); the first press removes the ribbon (a cut): ✓ opens the namer, any other key keeps the default name and does what it does" },
   "watch": { "kind": "watch", "target": "resident", "hold": false, "after": 60000, "do": "the shown mibi in rest or meet, kept on screen for 60 s, once a mibi a day: the bench trickle (+1 Data within its daily cap) and state.watchResident (the first habit of its not yet seen). Shows only a message plate (strings.watchPlate) and the counter's tick; nothing amber" },
   "read": { "kind": "read", "target": "plate.<i>", "hold": true, "holdMs": 300, "do": "a bred child's chapter read: the plate turns from unread to read (a cut) and the stamp prints the chapter's cells row by row from the top over 300 ms, as on Create's grow" },
-  "bond": { "kind": "bond", "target": "bond", "hold": true, "holdMs": 300, "do": "the second ✓: the heart goes from armed to full (a cut); the mibi plays its moment (events.moment)" },
   "release": { "kind": "dither", "target": "resident", "hold": true, "holdMs": 200, "ms": 200, "levels": 16, "do": "the second ✓ on Wild: the resident dithers out to the next housed mibi in bay order (none: the empty state, a cut); its tile becomes a free bay (a cut); the message plate strings.releasePlate" },
   "take": { "kind": "take", "target": "door", "hold": false, "do": "a cut: the door shows the mibi taken (docked), the strip's marks change" },
+  "refused": { "kind": "plate", "hold": false, "do": "the first Habitat draw after a refusal: the message plate strings.carryRefused, once a refusal (state.seenCarryRefusal)" },
   "named": { "kind": "flash", "target": "nameTag", "hold": false, "ms": 240, "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash" }
  },
  "focus": {
@@ -142,15 +137,14 @@
    "name": { "group": "name", "ring": "round", "box": "the tag as drawn, inside regions.nameTag.rect", "lift": 0, "present": "rest (in the meet the ribbon stands there and is not a target)", "enabled": "always: any mibi at home may be renamed, bonded or with you; never a released one" },
    "species": { "group": "species", "ring": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "always" },
    "plate": { "group": "plate", "id": "plate.<i>, i from 0 in ring order", "ring": "round", "box": "regions.plates.places, plate i", "lift": 2, "enabled": "an unread chapter of a bred child that is not sealed" },
-   "door": { "group": "top", "ring": "round", "box": "regions.door.rect", "lift": 2, "enabled": "the shown mibi is not the one with you and is not already chosen" },
-   "bond": { "group": "top", "ring": "round", "box": "regions.bond.rect", "lift": 2, "enabled": "state.bondOffered" },
+   "door": { "group": "top", "ring": "round", "box": "regions.door.rect", "lift": 2, "enabled": "always on a shown mibi: ✓ Take when it is not in the set as it will be (state.projectCarried) and that set holds fewer than three; ✓ Bring when it is carried (state.carriedIds) and no request for it waits; otherwise read-only, no ✓ cap: a request for it waits (state.pendingCarry) or the set is full, and the context says which (bottomLine.door)" },
    "portrait": { "group": "top", "ring": "round", "box": "regions.portrait.rect", "lift": 2, "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting" },
    "cross": { "group": "low", "ring": "round", "box": "regions.cross.rect", "lift": 2, "enabled": "an adult or an elder with at least one partner (state.crossPartners, elders counted as adults)" },
    "wild": { "group": "low", "ring": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty" },
    "tile": { "group": "tile", "id": "tile.<mibi id>, housed mibis only; free bays are not targets", "ring": "round", "box": "the tile's rectangle (regions.tiles, its form)", "lift": 2, "focusShows": "focusing a tile shows its mibi in the window (events.swap); the resident target is then that mibi" }
   },
-  "armed": { "bond": "after the first ✓ on an offered bond", "wild": "after the first ✓ on a mibi that may go", "clear": "any key but ✓ clears the arm; the arm never survives a screen change" },
-  "held": "while events.moment, read, bond or release holds, the face moves no focus and sends no intent; while the namer is open its own graph has every key",
+  "armed": { "wild": "after the first ✓ on a mibi that may go", "clear": "any key but ✓ clears the arm; the arm never survives a screen change" },
+  "held": "while events.moment, read or release holds, the face moves no focus and sends no intent; while the namer is open its own graph has every key",
   "vectors": [
    { "from": "resident", "key": "right", "to": "name" },
    { "from": "resident", "key": "down", "to": "tile.shown" },
@@ -165,13 +159,13 @@
    { "from": "plate.0", "key": "right", "to": "plate.1" },
    { "from": "plate.3", "key": "right", "to": "plate.3", "chapters": 4 },
    { "from": "plate.0", "key": "down", "to": "door" },
-   { "from": "plate.3", "key": "down", "to": "bond" },
+   { "from": "plate.3", "key": "down", "to": "door" },
    { "from": "plate.2", "key": "up", "to": "species" },
-   { "from": "door", "key": "right", "to": "bond" },
+   { "from": "door", "key": "right", "to": "portrait" },
    { "from": "door", "key": "left", "to": "resident" },
    { "from": "door", "key": "down", "to": "cross" },
-   { "from": "door", "key": "up", "to": "plate.1", "note": "the column nearest: plate 1 (centre x 676) is nearer the door (656) than plate 0 (628)" },
-   { "from": "bond", "key": "down", "to": "cross" },
+   { "from": "door", "key": "up", "to": "plate.2", "note": "the column nearest: plate 2 (centre x 724) is nearest the door (728)" },
+   { "from": "portrait", "key": "left", "to": "door" },
    { "from": "portrait", "key": "down", "to": "wild" },
    { "from": "portrait", "key": "right", "to": "portrait" },
    { "from": "cross", "key": "right", "to": "wild" },
@@ -181,24 +175,22 @@
    { "from": "tile.first", "key": "left", "to": "tile.first" },
    { "from": "a tile", "key": "up", "to": "resident" },
    { "state": "empty", "from": "room", "key": "right", "to": "room" },
-   { "from": "bond", "key": "confirm", "intent": "confirm", "to": "bond", "armed": "bond" },
    { "state": "meet", "from": "resident", "key": "confirm", "intent": "confirm", "to": "resident", "opens": "the namer" }
   ]
  },
  "keys": {
   "pad": "moves the ring by focus.graph; on a tile it also shows that mibi (events.swap)",
-  "confirm": "does the bottom line's action exactly; no ✓ cap, nothing happens; Bond and Wild arm on the first ✓ and act on the second; in the meet the first ✓ names the new mibi",
+  "confirm": "does the bottom line's action exactly; no ✓ cap, nothing happens; Wild arms on the first ✓ and acts on the second; in the meet the first ✓ names the new mibi",
   "back": "Home, wherever Habitat was opened from; Home's ring lands on that mibi when it is at home, else on the room (home.json, ← on a child of Home). While the namer is open, ← is the namer's (namer.json)",
   "room": "as everywhere (frame.json navigation.roomKeys); the Habitat key on Habitat puts the ring back on the resident"
  },
  "bottomLine": {
-  "resident": { "action": "strings.spend; in the meet, strings.name", "context": "strings.residentContext; while the placeholder is drawn, strings.painting (strings.offline while the Caddy is unreachable)" },
-  "name": { "action": "strings.rename", "context": "strings.residentContext" },
+  "resident": { "action": "strings.greet; in the meet, strings.name", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); while the placeholder is drawn, strings.painting (strings.offline while the Caddy is unreachable)" },
+  "name": { "action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi)" },
   "tile": "as resident, for the tile's mibi",
   "species": { "action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library" },
   "plate": { "read": { "action": null, "context": "strings.plateRead" }, "unread": { "action": "strings.read", "price": "◆ and its figure (state.mibiReadCost); none when it costs nothing", "context": "strings.plateUnread", "short": "the frame's dimmed cap" }, "sealed": { "action": null, "context": "strings.plateSealed" } },
-  "door": { "other": { "action": "strings.take", "context": "strings.takeNow docked, strings.takeNext away" }, "withYou": { "action": null, "context": "strings.withYou" }, "chosen": { "action": null, "context": "strings.takeNext" } },
-  "bond": { "notYet": { "action": null, "context": "strings.bondNotYet" }, "offered": { "action": "strings.bond", "context": "strings.bondContext" }, "armed": { "action": "strings.bondAgain", "context": "strings.bondContext" }, "bonded": { "action": null, "context": "strings.bonded" } },
+  "door": { "take": { "action": "strings.take", "context": "strings.takeNow docked, strings.takeNext away" }, "bring": { "action": "strings.bring", "context": "strings.bringNow docked, strings.bringNext away" }, "toGo": { "action": null, "context": "strings.takeNow docked, strings.takeNext away", "when": "an add request waits (state.pendingCarry)" }, "toCome": { "action": null, "context": "strings.bringNext", "when": "a home request waits" }, "full": { "action": null, "context": "strings.full", "when": "the set as it will be holds three and the shown mibi is not in it" } },
   "portrait": { "none": { "action": null, "context": "strings.noSitting" }, "held": { "action": "strings.portray", "price": null, "context": "strings.portrayContext", "opens": "the sitting, its own screen under Habitat (parent habitat, ← Habitat; sitting.json)" }, "blocked": { "action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.portrayed" }, "painting": { "action": null, "context": "strings.portraitOnWay" }, "portrayed": { "action": null, "context": "strings.portrayed" } },
   "cross": { "adult": { "action": "strings.cross", "context": "strings.partners" }, "alone": { "action": null, "context": "strings.noPartner" }, "young": { "action": null, "context": "strings.crossLater" } },
   "wild": { "may": { "action": "strings.wild", "price": "❀ +2 (state.PRICE.wildMibi), icon before figure", "context": "strings.wildContext" }, "armed": { "action": "strings.wildAgain", "price": "❀ +2", "context": "strings.wildAgainContext" }, "blocked": { "action": null, "context": "state.returnMibiBlock's words (strings.wildBlocks)" } },
@@ -223,7 +215,7 @@
  },
  "masters": {
   "note": "every master Habitat names, at the size it is shown; none is drawn by the build",
-  "list": ["room-vivarium-stage-habitat 1024×522", "heart-dim-32x28", "heart-open-32x28", "heart-armed-32x28", "heart-full-32x28", "sitting-frame-empty-32x48", "sitting-frame-held-32x48", "sitting-frame-portrait-32x48", "gate-wild-shut-48x48", "gate-wild-open-48x48", "chapter-plate-read-40x40", "chapter-plate-unread-40x40", "chapter-plate-sealed-40x40", "rail-emblem-{chapter}-{read,unread,sealed}-24x24 (existing)", "mark-guide-16", "frame-lamp-12-sky", "face-{species}-24, one a species", "frame-companion-solid-16x24 and -outline-16x24 (existing)"]
+  "list": ["room-vivarium-stage-habitat 1024×522", "heart-full-24", "sitting-frame-empty-32x48", "sitting-frame-held-32x48", "sitting-frame-portrait-32x48", "gate-wild-shut-48x48", "gate-wild-open-48x48", "chapter-plate-read-40x40", "chapter-plate-unread-40x40", "chapter-plate-sealed-40x40", "rail-emblem-{chapter}-{read,unread,sealed}-24x24 (existing)", "mark-guide-16", "frame-lamp-12-sky", "face-{species}-24, one a species", "frame-companion-solid-16x24 and -outline-16x24 (existing)"]
  },
  "strings": {
   "title": "Habitat",
@@ -234,8 +226,9 @@
   "speciesLine": "your {Species}, {stage}",
   "speciesLineExamples": ["your Loika, adult", "your Loika, young", "your Loika, elder"],
   "story": { "founder": ["from the {place}"], "bred": ["of {A}", "and {B}"], "memory": "remembers the {place}", "rule": "filled from the top, at most three lines: where it came from (one line for a founder, two for a bred mibi), then what it remembers" },
-  "spend": "Spend time with {name}",
+  "greet": "Greet {name}",
   "residentContext": "{a} {stage} {species}",
+  "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
   "painting": "its painting is on its way",
   "offline": "waiting for the cloud",
@@ -248,12 +241,12 @@
   "take": "Take {name} with you",
   "takeNow": "goes with you now",
   "takeNext": "goes at the next dock",
+  "bring": "Bring {name} home",
+  "bringNow": "comes home now",
+  "bringNext": "home at the next dock",
+  "full": "the Companion is full",
+  "carryRefused": "{name} stayed home, no room",
   "withYou": "already with you",
-  "bondNotYet": "bonds after an expedition",
-  "bond": "Bond with {name}",
-  "bondAgain": "Again: bond with {name}",
-  "bondContext": "a bond is for good",
-  "bonded": "bonded for good",
   "noSitting": "no sitting held",
   "portray": "Portray {name}",
   "portrayContext": "one sitting each, ever",
@@ -268,7 +261,7 @@
   "wildContext": "goes back to the wild",
   "wildAgain": "Again: return {name}",
   "wildAgainContext": "never taken back",
-  "wildBlocks": { "bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": "already with you" },
+  "wildBlocks": { "bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": "already with you", "waiting": "goes at the next dock" },
   "releasePlate": "{name} goes back to the {place}",
   "watchPlate": "{name} is seen {habit}",
   "watchPlateExamples": ["Fig is seen digging", "Moss is seen sleeping curled"],
@@ -283,13 +276,14 @@
   "the card goes from 636, 50, 374×246 in `paper` to 592, 48, 416×208 in `panel`; the stamp from 88 at 904, 58 to the 120 label at 872, 64; the code reads in three groups with spaces, no dots",
   "the chapter tabs (80×40 with words, prices and \"read\") become 40×40 plates on signed grounds with the rail's emblems and no words, one a chapter; the price is on the bottom line",
   "the Cross bar (636, 250, 374×46) becomes the Cross module 592, 376, 272×96 with a face a partner; elders count as adults",
-  "the door, heart and gate (128, 118, 108 wide at y 306) become the modules Companion, Bond and Wild, and a Portrait module is added; their words leave the stage for the bottom line",
+  "the door, heart and gate (128, 118, 108 wide at y 306) become the modules Companion (592, 272, 272, 96, the carried set's three places) and Wild, and a Portrait module is added; the heart goes from a target to a state on the card (regions.card.heart, 832, 64, 24, 24); their words leave the stage for the bottom line",
   "the waiting lamp's words inside the window (\"its painting is on its way · placeholder\") go: the lamp at the box's top right, the words on the bottom line",
   "the meet panel (\"Meet Moss · new\" in `focus` at 36, 70) becomes the meet ribbon in the tag's place; after the hatch the ring lands on the resident (main.mjs sets it on the door), and the first ✓ opens the namer",
   "the strip goes from 16, 450, 994×104 with 128×92 tiles on a 140 pitch (they run off the stage at seven or more mibis) to 16, 488, 992×64, thumbnails only, full tiles up to six bays and compact tiles to twelve",
   "the with-you mibi's tile name in `amber` and the partner count in the notice (amber) go: nothing on Habitat is amber",
-  "nav.mjs habitatRows and habitatMove are replaced by focus.graph; the ids stage, ch<i>, s<id>, heart become resident, plate.<i>, tile.<id>, bond, and name is added",
+  "nav.mjs habitatRows and habitatMove are replaced by focus.graph; the ids stage, ch<i>, s<id> become resident, plate.<i>, tile.<id>, name is added, and heart goes (the bond is not a target)",
   "the empty screen's \"No mibis yet\" and \"Grow a founder from a read pod · the next build\" in the window go: the glass stays wordless, the context says it",
-  "the bench watch (state.watchResident and the Data trickle) runs on the shown mibi after 60 s, once a mibi a day"
+  "the bench watch (state.watchResident and the Data trickle) runs on the shown mibi after 60 s, once a mibi a day",
+  "the bond offer goes (state.bondOffered, bond(), events.bond, the bond strings): the bond is made by Tends on the Companion only"
  ]
 }

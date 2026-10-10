@@ -16,8 +16,9 @@ if [[ "$what" == wasm || "$what" == all ]]; then
   command -v emcc >/dev/null || { echo "emcc not found: set EMSDK to the pinned SDK ($(cat "$here/emsdk.version"))" >&2; exit 2; }
   t0=$(now)
   run emcmake cmake -S "$here" -B "$bld/wasm" -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2"
-  run cmake --build "$bld/wasm" --target face_wasm
-  cp "$bld/wasm/face.mjs" "$bld/wasm/face.wasm" "$here/dist/"
+  run cmake --build "$bld/wasm" --target face_wasm face_wasm_node
+  cp "$bld/wasm/wasm/face.mjs" "$bld/wasm/wasm/face.wasm" "$here/dist/"
+  mkdir -p "$here/dist/node" && cp "$bld/wasm/node/face.mjs" "$bld/wasm/node/face.wasm" "$here/dist/node/"   # the test build: the node path for the tests that place nodes by hand
   t1=$(now)
   printf 'wasm   build %.1f s   face.wasm %d bytes (%d gzipped)   face.mjs %d bytes\n' "$(echo "$t1 - $t0" | bc)" "$(stat -c %s "$here/dist/face.wasm")" "$(gzip -9 -c "$here/dist/face.wasm" | wc -c)" "$(stat -c %s "$here/dist/face.mjs")"
 fi

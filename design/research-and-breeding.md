@@ -53,6 +53,7 @@ chapter holds a few **traits**, and each trait is one picture.
 - A read costs **1 Data per trait** in the chapter. Once that chapter has been
   read on any earlier pod or mibi of the species, it costs **half, rounded up**.
 - The first read ever is free. A chapter already read is free to look at again.
+- A chapter can be read on a mibi that is out with the Companion: a read is knowledge of the genome kept at the Station, not a check on the animal.
 - A pod's progress shows as a ring around it that fills chapter by chapter. It
   is never shown as digits.
 

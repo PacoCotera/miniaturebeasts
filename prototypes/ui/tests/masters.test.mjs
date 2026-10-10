@@ -34,26 +34,26 @@ test("only the slices under a (signed) heading, or named, are placed; the files 
 });
 
 test("a master takes its stand-in's id and size: status master with its file and hash; another size is refused", () => {
-  registerAsset({ id: "t:pane", w: 8, h: 4, status: "placeholder", until: "the master", build: () => ({ w: 8, h: 4, canvas: () => null }) });
-  const pic = { w: 8, h: 4, canvas: () => "master-canvas" };
+  registerAsset({ id: "t:pane", w: 8, h: 4, status: "placeholder", until: "the master", build: () => ({ w: 8, h: 4, rgba: () => null }) });
+  const pic = { w: 8, h: 4, rgba: () => "master-pixels" };
   placeMaster({ id: "t:pane", w: 8, h: 4, file: "pods/pane.png", hash: "ab", signed: "AD" }, pic);
-  const e = assetEntry("t:pane"); assert.equal(e.status, "master"); assert.equal(e.file, "pods/pane.png"); assert.equal(e.until, null); assert.equal(asset("t:pane").canvas(), "master-canvas");
+  const e = assetEntry("t:pane"); assert.equal(e.status, "master"); assert.equal(e.file, "pods/pane.png"); assert.equal(e.until, null); assert.equal(asset("t:pane").rgba(), "master-pixels");
   registerAsset({ id: "t:wrong", w: 8, h: 4, build: () => null });
-  assert.throws(() => placeMaster({ id: "t:wrong", w: 9, h: 4, file: "x.png", hash: "" }, { w: 9, h: 4, canvas: () => null }), /stand-in's size/);
-  assert.throws(() => placeMaster({ id: "t:pane", w: 8, h: 4, file: "x.png", hash: "" }, { w: 7, h: 4, canvas: () => null }), /index says/);
+  assert.throws(() => placeMaster({ id: "t:wrong", w: 9, h: 4, file: "x.png", hash: "" }, { w: 9, h: 4, rgba: () => null }), /stand-in's size/);
+  assert.throws(() => placeMaster({ id: "t:pane", w: 8, h: 4, file: "x.png", hash: "" }, { w: 7, h: 4, rgba: () => null }), /index says/);
   assert.throws(() => placeMaster({ id: "t:pane", w: 8, h: 4, file: "x.jpg", hash: "" }, pic), /PNG only/);
   for (const id of ["t:pane", "t:wrong"]) dropAsset(id);
 });
 
 test("a master placed before its stand-in is registered holds the id; a stand-in of another size then throws", () => {
-  placeMaster({ id: "t:early", w: 4, h: 4, file: "pods/early.png", hash: "" }, { w: 4, h: 4, canvas: () => "m" });
+  placeMaster({ id: "t:early", w: 4, h: 4, file: "pods/early.png", hash: "" }, { w: 4, h: 4, rgba: () => "m" });
   assert.equal(registerAsset({ id: "t:early", w: 4, h: 4, build: () => null }).status, "master");
   assert.throws(() => registerAsset({ id: "t:early", w: 5, h: 4, build: () => null }), /different sizes/);
   dropAsset("t:early");
 });
 
 test("the studio's record is carried through: held, placeholder and new masters are placed, flagged, counted as not final; signed ones are masters", () => {
-  const pic = (w, h) => ({ w, h, canvas: () => null });
+  const pic = (w, h) => ({ w, h, rgba: () => null });
   for (const [id, status] of [["t:signed", "master"], ["t:held", "held"], ["t:ph", "placeholder"], ["t:new", "new"]]) placeMaster({ id, w: 2, h: 2, file: "pods/" + id.slice(2) + ".png", hash: "ab", status }, pic(2, 2));
   assert.equal(assetEntry("t:signed").status, "master"); assert.equal(assetEntry("t:held").status, "held");
   const counted = placeholders().map((e) => e.id).filter((i) => i.startsWith("t:")).sort();

@@ -9,6 +9,8 @@
 static int g_layer = LAYER_CHROME; static char g_reg[48];
 uint32_t v_id(const char *s) { uint32_t h = 2166136261u; for (; *s; s++) { h ^= (uint8_t)*s; h *= 16777619u; } return h; }
 void v_region(const char *region, int layer) { g_layer = layer; snprintf(g_reg, sizeof g_reg, "%s", region); prim_tag(layer, g_reg); }
+/* A region for pictures only: a sprite takes its layer from its asset, so the word names the region and chooses no layer (the current one stays for whatever else follows). */
+void v_name(const char *region) { snprintf(g_reg, sizeof g_reg, "%s", region); prim_tag(g_layer, g_reg); }
 void v_layer(int layer) { g_layer = layer; prim_tag(layer, g_reg); }
 void v_error(const char *what) { wire_error(what); }
 uint32_t v_col(const char *name) {

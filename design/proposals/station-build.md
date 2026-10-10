@@ -14,7 +14,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 | **Create** | Shape each read look among three pictures from the pod's own copies, +1 Data a change; doings breed only; a shape that won't build marks its traits and withholds Grow | Research loop §5 |
 | **Grow** | 2 Energy and 4 Essence (the first founder 2 Energy). The bud takes twenty minutes plus one per shaped trait; **the first bud ever five**; **an instant grow for a price**; unread chapters clear across the wait; a full vivarium refuses before payment | Research economy §5–6 (**Decided**) |
 | **The painting** | At Grow the genome joins the Caddy's queue. The mibi wears the placeholder until its painting lands, at the next fresh draw; offline, a cool lamp and "waiting for the cloud" | Art pipeline §1.1 (**Decided**) |
-| **Vivarium** | **Six bays**, the one with you keeping its bed. The vivarium, up close: spend time, take with you, bond, return a mibi to the wild (+2 Essence and a field-guide note) | Research economy §6 |
+| **Vivarium** | **Six bays**, the mibis with you keeping their beds. The vivarium, up close: greet, take with you or bring home, return a mibi to the wild (+2 Essence and a field-guide note) | Research economy §6 |
 | **Cross** | Two adults of one species; refusals before cost; per trait four seeds (switches) or a range picture (blends); kinship from recorded parents, penalty B with A; 2 Energy 4 Essence; the child grows in the bud and is known only where switch parents match | The cross (**Decided**) |
 | **Library** | The tome's spread of sixteen frames; a book per species with its face, places, frame, a tab per chapter, looks found and "more?", the stamp at 120 px, a pinned wish | Style guide, Library (**Decided**) |
 | **Sitting (stub)** | A held sitting (the welcome one, or a field guide filled); the vivarium's offer, pose, place, confirm; a crate waits in the sample bay and opens to the mibi in its standard painting in a gilt frame. No portrait is painted | The portrait §1 |
@@ -28,7 +28,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 The Station stays `prototypes/station/index.html`: the depicted device, the 1024×600 screen at 1×, the row of keys below. Its single inline script splits into ES modules under `prototypes/station/src/`, loaded by one `<script type="module" src>` (the CI parse check reads inline scripts only, and an inline `import` would fail it). Three layers, and nothing else holds state:
 
 - **State** (`state.mjs`): the save's Station part and every rule as a pure function (prices, reads, glints, shaping, bud, refusal, forecast, kinship). No drawing; testable in Node.
-- **Screens**: a spec file (`prototypes/ui/specs/station/<screen>.json`), a view that turns state into props (`views/<screen>.mjs`) and an intent table that turns the face's intents into rule calls (`intents/<screen>.mjs`), drawn by the LVGL face (`prototypes/face`; [technical-architecture.md §5.4](technical-architecture.md#54-how-a-builder-adds-a-screen), [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face)). The screens not yet moved still draw through the frozen JavaScript layer (`screens/*.mjs`, `gfx.mjs`) until their milestone; nothing new is built there (lvgl-switch.md §5).
+- **Screens**: a spec file (`prototypes/ui/specs/station/<screen>.json`), a view that turns state into props (`views/<screen>.mjs`) and an intent table that turns the face's intents into rule calls (`intents/<screen>.mjs`), drawn by the LVGL face (`prototypes/face`; [technical-architecture.md §5.4](technical-architecture.md#54-how-a-builder-adds-a-screen), [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face)). A screen not yet on the face draws "not built yet" (lvgl-switch.md §2.2).
 - **Edges**: `caddy.mjs` (the client of the Caddy service), `art.mjs` (the placeholder register: every drawn stand-in listed, so masters replace them one by one), `dev.mjs` (the developer tools).
 
 ### 2.2 Imported, never copied
@@ -48,7 +48,7 @@ The sandbox publishes `prototypes/*` side by side, so `../workbench/` and `../ge
 
 ### 2.3 The save and its migration
 
-The key stays `mb-save-v8` and the Companion's top-level part is untouched. Only the Station's part `st` changes, under a schema number of its own (`st.schema: 2`). The fields the Companion reads (`accepted`, `dockN`, `known`, `probe`, `withReq`, `returned`, and each mibi's `id`, `name`, `sp`, `born`, `from`, `bonded`) keep their shape, so the Companion page needs one change only: drop a mibi marked released. The migration runs once on load, is logged, and never runs backward.
+The key stays `mb-save-v8` and the Companion's top-level part is untouched. Only the Station's part `st` changes, under a schema number of its own (`st.schema`: 2 for the research loop, 3 for the carried set). The fields the Companion reads (`accepted`, `dockN`, `known`, `probe`, `carryReqs`, `carrySeq`, `carryRefusedSeen`, `returned`, and each mibi's `id`, `name`, `sp`, `born`, `from`, `bonded`) keep their shape, so the Companion page needs one change only: drop a mibi marked released. The migration runs once on load, is logged, and never runs backward.
 
 | Field | v8 `st`, as built | After migration |
 | --- | --- | --- |
@@ -144,7 +144,7 @@ CI keeps the parse check and the page smoke, and adds two things. **Unit tests**
 | 13 | Stop the service; Grow; restart it | "Waiting for the cloud", then the painting lands |
 | All | | No page errors; the save round-trips; the placeholder's hash matches Node's for the same genome |
 
-The journey grows with each milestone, so every push to main proves the loop that is live. On the LVGL face it also runs the checks of [lvgl-switch.md §2.8](lvgl-switch.md#28-checks-against-the-lvgl-framebuffer) and each screen milestone's gate (lvgl-switch.md §4): regions, pixels, palette, type, goldens, budgets and the freeze.
+The journey grows with each milestone, so every push to main proves the loop that is live. On the LVGL face it also runs the checks of [lvgl-switch.md §2.8](lvgl-switch.md#28-checks-against-the-lvgl-framebuffer) and each screen milestone's gate (lvgl-switch.md §4): regions, pixels, palette, type, goldens, budgets and the import guard.
 
 ## 6. Milestones
 

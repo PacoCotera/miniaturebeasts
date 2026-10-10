@@ -10,7 +10,7 @@ import { createFocus } from "../../ui/focus.mjs";
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, lockUntil: 0, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", bondArm: 0, wildArm: 0 }, bench: { f: 0, arm: 0 },
+  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 },
   report: null, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
@@ -38,8 +38,9 @@ export function readStored() {
 function adopt(sv) {
   if (!sv.st || sv.st.wid !== sv.wid) sv.st = S.freshSt(sv.wid, sv.turn || 0);   // a new world on the Companion: a fresh Station
   const migrated = sv.st.schema !== S.ST_SCHEMA;
-  sv.st = S.normalize(S.migrate(sv.st));
+  sv.st = S.normalize(S.migrate(sv.st, Date.now(), sv));
   G.sv = sv; G.st = sv.st;
+  if (S.docked(G.st)) S.mergeCare(G.st, G.sv);   // docked: the care the Companion earned since
   if (migrated) save();
 }
 export function load() {
@@ -54,7 +55,7 @@ export function save() {
     const cur = readStored();
     if (cur && cur.wid === G.st.wid) G.sv = cur;
     else if (cur && cur.wid !== G.st.wid) { G.sv = cur; G.st = S.freshSt(cur.wid, cur.turn || 0); }
-    G.sv.st = G.st; S.normalize(G.st); G.st.at = Date.now();
+    G.sv.st = G.st; S.normalize(G.st); S.trimCarryReqs(G.st, G.sv); G.st.at = Date.now();
     localStorage.setItem(S.SAVE_KEY, JSON.stringify(G.sv));
   } catch { /* storage unavailable: keep playing in memory */ }
   changed();
@@ -64,7 +65,9 @@ export function storageChanged() {
   const cur = readStored();
   if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; goScreen("home"); changed(); return; }
   if (cur.wid !== G.st.wid) { adopt(cur); goScreen("home"); save(); return; }
-  const mine = G.st; G.sv = cur; G.sv.st = mine; changed();
+  const mine = G.st; G.sv = cur; G.sv.st = mine;
+  if (S.docked(mine)) S.mergeCare(mine, cur);   // docked: the care the Companion earned since
+  changed();
 }
 export function resetSave() {
   G.resetting = true;
@@ -81,12 +84,13 @@ export function saveSettings(patch) { Object.assign(G.settings, patch || {}); tr
 const SCREENS = {};
 const screenListeners = new Set();
 export const onScreenChange = (fn) => screenListeners.add(fn);
-export const registerScreen = (name, screen) => { SCREENS[name] = screen; };
+// A screen is a binding table on the face, never a drawing: registering one with a draw, nodes or faceNodes throws (the import guard checks the same, lvgl-switch.md §5.1).
+export const registerScreen = (name, screen) => { for (const k of ["draw", "nodes", "faceNodes"]) if (screen && k in screen) throw new Error(`registerScreen(${name}): ${k} is the removed JavaScript drawing layer; the face draws the screen`); SCREENS[name] = screen; };
 export const screenOf = (name) => SCREENS[name];
 export function goScreen(name) {
   const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
   UI.screen = name;
-  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.bondArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
+  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
   if (name === "habitat" && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
 }
@@ -96,8 +100,9 @@ export const lineFor = () => (UI.idle ? {} : SCREENS[UI.screen].line());
 export const docked = () => S.docked(G.st);
 export const hasWorld = () => S.hasWorld(G.sv) || !!G.st.devWorld;
 export const bayCrates = () => S.bayCrates(G.st, G.sv);
-export const effWithId = () => S.effWithId(G.st, G.sv);
-export const atHome = () => S.atHome(G.st, G.sv);
+export const carriedIds = () => S.carriedIds(G.st, G.sv);
+export const projectCarried = () => S.projectCarried(G.st, G.sv);
+export const homeMibis = () => S.homeMibis(G.st, G.sv);
 export const mibiById = (id) => S.mibiById(G.st, id);
 export const podById = (id) => S.podById(G.st, id);
 export const arriving = () => !!(FX.arr && clock.now - FX.arr.at < FX.arr.plays.length * ARRIVE_MS);

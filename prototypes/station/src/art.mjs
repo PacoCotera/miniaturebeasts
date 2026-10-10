@@ -18,11 +18,12 @@ export const PLACEHOLDERS = [
   { id: "chapter-emblem", what: "one 16 px emblem per chapter", until: "the chapter rail master" },
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "room", what: "Home's room, bench modules, vivarium, crates, cups, dome, leaves, Probe and lamp, as the stand-in v2 drew them", until: "the Home and bench masters (station-screens.md: no wood, felt or lamp-lit bench)" },
-  { id: "icons", what: "the material icons, the Companion mark and the heart", until: "the icon set" },
+  { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
+  { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];
 
 // ---------- The material icons ----------
-// The material icons at any pixel size (Energy a bolt, Data a diamond, Essence a drop), the Companion mark, the heart.
+// The material icons at any pixel size (Energy a bolt, Data a diamond, Essence a drop), the Companion mark.
 export const ICON = {
   energy: (n = 14) => art("i-energy" + n, () => { const pb = new PB(n, n), k = n / 14; pb.poly([[8, 0], [3, 8], [6.5, 8], [5, 14], [11, 5.5], [7.5, 5.5]].map(([x, y]) => [x * k, y * k]), C.amber); pb.poly([[8, 0], [3, 8], [6.5, 8], [6.5, 5.5], [7.5, 5.5]].map(([x, y]) => [x * k, y * k]), C.yellow); pb.outline(() => C.rust); return pb; }),
   data: (n = 14) => art("i-data" + n, () => { const pb = new PB(n, n), c = n / 2; pb.poly([[c, 0.5], [n - 0.5, c], [c, n - 0.5], [0.5, c]], C.sky); pb.poly([[c, 0.5], [n - 0.5, c], [c, c]], C.ice); pb.poly([[0.5, c], [c, n - 0.5], [c, c]], C.river); pb.outline(() => C.sea); return pb; }),
@@ -31,7 +32,6 @@ export const ICON = {
   cross: (n = 14) => art("i-cross" + n, () => { const pb = new PB(n, n), t = Math.max(2, Math.round(n / 6)), m = Math.round(n * 0.15); for (let i = 0; i < n - 2 * m; i++) { pb.rect(m + i, m + i - (t >> 1), t, t, C.red); pb.rect(n - 1 - m - i - t + 1, m + i - (t >> 1), t, t, C.red); } return pb; }),
   star: (n = 14) => (n >= 18 ? starArt(true) : starArt(false)),
   comp: () => art("i-comp", () => { const pb = new PB(14, 20); pb.rect(1, 0, 12, 20, C.sand); pb.rect(3, 2, 8, 9, C.ink); pb.ell(9.5, 15, 2, 2, C.orange); pb.ell(4.5, 15, 1.6, 1.6, C.teal); pb.outline(() => C.bar); return pb; }),
-  heart: (full) => art("i-heart" + full, () => { const pb = new PB(30, 28), c = full ? C.coral : C.bar; pb.ell(9, 9, 7.5, 7.5, c); pb.ell(21, 9, 7.5, 7.5, c); pb.poly([[2, 11], [28, 11], [15, 26]], c); if (full) pb.ell(8, 7, 2.5, 2.5, C.blush); pb.outline(() => (full ? C.wine : C.sand)); return pb; }),
 };
 export const starArt = (big) => art("star" + big, () => { const r = big ? 9 : 5, pb = new PB(r * 2 + 1, r * 2 + 1);
   pb.poly([[r, 0], [r + r * 0.28, r - r * 0.28], [r * 2, r], [r + r * 0.28, r + r * 0.28], [r, r * 2], [r - r * 0.28, r + r * 0.28], [0, r], [r - r * 0.28, r - r * 0.28]], C.cream); pb.ell(r + 0.5, r + 0.5, r * 0.3, r * 0.3, C.white); pb.outline(() => C.gold); return pb; });
@@ -251,34 +251,12 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
 // The hatch: the dome's glass lifting, the bud cracking (drawn in the incubator screen with these pieces).
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 
-// ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
-class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
-const PAINTED = new Map();
-// The ground of a painting cleared by a flood from its corners (the painter's plain ground, the derived sizes' white), so the mibi stands free in the vivarium.
-function clearGround(img, w, h) {
-  const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(img, 0, 0, w, h);
-  const id = ctx.getImageData(0, 0, w, h), d = id.data, seen = new Uint8Array(w * h), stack = [];
-  const corner = (x, y) => [d[(y * w + x) * 4], d[(y * w + x) * 4 + 1], d[(y * w + x) * 4 + 2]];
-  const grounds = [corner(0, 0), corner(w - 1, 0), corner(0, h - 1), corner(w - 1, h - 1)];
-  const near = (i) => grounds.some(([r, g2, b]) => Math.abs(d[i * 4] - r) + Math.abs(d[i * 4 + 1] - g2) + Math.abs(d[i * 4 + 2] - b) < 48);
-  for (const [x, y] of [[0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1], [w >> 1, 0], [0, h >> 1], [w - 1, h >> 1]]) stack.push(y * w + x);
-  while (stack.length) { const i = stack.pop(); if (seen[i] || !near(i)) continue; seen[i] = 1; d[i * 4 + 3] = 0; const x = i % w, y = (i / w) | 0; if (x > 0) stack.push(i - 1); if (x < w - 1) stack.push(i + 1); if (y > 0) stack.push(i - w); if (y < h - 1) stack.push(i + w); }
-  ctx.putImageData(id, 0, 0); return cv;
-}
-// A mibi's landed painting at w×h: the portrait as a plate when it is large, a cleared sprite when it is small; flipped for a facing.
-export function paintedArt(set, sha, w, h, { sprite = false, flip = false } = {}) {
-  const key = sha + ":" + w + "x" + h + ":" + (sprite ? "s" : "p") + (flip ? "f" : "");
-  let p = PAINTED.get(key); if (p) return p;
-  const src = sprite ? (w <= 64 && set.token ? set.token : set.companion || set.portrait) : set.portrait;
-  if (!src) return null;
-  let cv;
-  if (sprite) { cv = clearGround(src, Math.round(w), Math.round(h)); }
-  else { cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high"; ctx.drawImage(src, 0, 0, w, h); }
-  if (flip) { const w2 = cv.width, h2 = cv.height, src = cv.getContext("2d").getImageData(0, 0, w2, h2), out = new ImageData(w2, h2); for (let y = 0; y < h2; y++) for (let x = 0; x < w2; x++) { const a = (y * w2 + x) * 4, b = (y * w2 + (w2 - 1 - x)) * 4; out.data[b] = src.data[a]; out.data[b + 1] = src.data[a + 1]; out.data[b + 2] = src.data[a + 2]; out.data[b + 3] = src.data[a + 3]; } const f = document.createElement("canvas"); f.width = w2; f.height = h2; f.getContext("2d").putImageData(out, 0, 0); cv = f; }   // the facing is a pre-flipped picture in the cache, never a canvas transform
-  p = new Painted(cv); if (PAINTED.size > 200) PAINTED.clear(); PAINTED.set(key, p); return p;
-}
 export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10); pb.ell(5, 5, 4, 4, C.sky); pb.ell(3.5, 3.5, 1.3, 1.3, C.ice); pb.outline(() => C.deep); return pb; });
 
 // A whole body under frost: the child to be on the Cross screen, never a promise.
 export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }
+
+// A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). 
+export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
+  for (let y = 0; y < h; y++) { const hw = w * 0.12 + (w * 0.38 * y) / h, x0 = Math.ceil(w / 2 - hw), x1 = Math.floor(w / 2 + hw); pb.rect(x0, y, x1 - x0, 1, C.tealD); }
+  return pb; }); }

@@ -9,7 +9,7 @@ import path from "node:path";
 import vm from "node:vm";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const FIXTURE = () => JSON.parse(readFileSync(new URL("./fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
+const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
 
 // The source of one top-level declaration: a function (to its closing brace) or a one-line const.
 function source(name) {

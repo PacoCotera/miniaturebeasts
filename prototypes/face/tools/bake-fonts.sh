@@ -1,6 +1,6 @@
 #!/bin/sh
-# Bakes the face's Inter fonts as LVGL C sources with lv_font_conv (the converter the type atlases use), from the same frozen
-# TrueType files and the same ranges as prototypes/ui/tools/bake-type.mjs: Regular 16, Medium 20, SemiBold 28, 4 bpp, kerning on, uncompressed.
+# Bakes the face's Inter fonts as LVGL C sources with lv_font_conv from the frozen
+# TrueType files in ui/fonts/inter/src, with these ranges: Regular 16, Medium 20, SemiBold 28, 4 bpp, kerning on, uncompressed.
 #   npm install --prefix /tmp/lvfc lv_font_conv@1.5.3
 #   sh prototypes/face/tools/bake-fonts.sh [/tmp/lvfc/node_modules/.bin/lv_font_conv]
 set -e

@@ -10,7 +10,7 @@
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf, chapterLooks } from "./genome.mjs";
-import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, withId, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -101,13 +101,11 @@ export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
 }
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
-// Who is out with the Companion: the one it carries (an away request does not count until the dock). Until the carried set is built this is the one mibi.
-export const carriedIds = (st, sv) => (withId(sv) != null ? [withId(sv)] : []);
 // A juvenile may sit (the portrait keeps the stage it sat at); a mibi out with the Companion sits only while the Companion is docked (a sitting begun while docked goes on after undocking).
 export function portraitBlock(st, m, sv) {
   if (!m) return "pick a mibi";
-  if (m.released) return m.name + " has gone";
-  if (!docked(st) && carriedIds(st, sv).includes(m.id)) return m.name + " is out with you · it sits when the Companion is home";   // stand-in words until the copywriter's
+  if (m.released) return "back in the wild";
+  if (!docked(st) && carriedIds(st, sv).includes(m.id)) return "sits when you dock";
   if (m.portrait) return "one sitting each, ever";
   if (!habitsOf(m).length) return "no pose seen yet";
   if (!placesOf(m).length) return m.name + " needs a walk first";

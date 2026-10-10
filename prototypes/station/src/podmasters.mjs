@@ -5,33 +5,28 @@ import { composePod, patternLayer, figureComposite, figureAlpha } from "../../ui
 
 const need = (cls) => ["shade", "mask-body", "mask-accent"].map((l) => `pod-${cls}-${l}`);
 export const layersPlaced = (cls) => need(cls).every(isFilled);
-const pixels = (id) => { const a = assetOf(id); const g = a.canvas().getContext("2d", { willReadFrequently: true }); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; };
+const pixels = (id) => { const a = assetOf(id); return { w: a.w, h: a.h, data: a.rgba() }; };
 
 // cls: "large" | "medium" | "small"; pair: ["#rrggbb", "#rrggbb"]; shellPattern: the frame's words; patterns: the spec's word-to-layer map; sealed: the band over the pod
 export function podFromLayers(cls, pair, shellPattern, patterns, sealed) {
-  let cv = null;
+  let px = null;
   const make = () => {
     const sh = pixels(`pod-${cls}-shade`), L = { shade: sh.data, body: pixels(`pod-${cls}-mask-body`).data, accent: pixels(`pod-${cls}-mask-accent`).data };
     const pl = patternLayer(shellPattern || "", patterns); if (pl && isFilled(`pod-${cls}-pattern-${pl}`)) { L.pattern = pixels(`pod-${cls}-pattern-${pl}`).data; if (isFilled(`pod-${cls}-pattern-${pl}-relief`)) L.relief = pixels(`pod-${cls}-pattern-${pl}-relief`).data; }
     if (sealed && isFilled(`pod-${cls}-band`)) L.band = pixels(`pod-${cls}-band`).data;
-    const data = composePod(L, pair[0], pair[1], sh.w, sh.h, { sealed });
-    cv = document.createElement("canvas"); cv.width = sh.w; cv.height = sh.h; const g = cv.getContext("2d"), id = g.createImageData(sh.w, sh.h); id.data.set(data); g.putImageData(id, 0, 0); return cv;
+    return composePod(L, pair[0], pair[1], sh.w, sh.h, { sealed });
   };
-  const a = assetOf(`pod-${cls}-shade`);
-  return { w: a.w, h: a.h, canvas: () => cv || make() };
+  const a = assetOf(`pod-${cls}-shade`), rgba = () => px || (px = make());
+  return { w: a.w, h: a.h, rgba };
 }
 
 // The figure beside the pod: the species' two slices laid one over the other (ui/podlayers.mjs figureComposite). Until both are placed it is an empty picture; a held figure shows its mist in both states.
 // Its status is the least final of its slices'.
 export function figureFromLayers(mistId, clearId, alpha, [w, h]) {
-  let cv = null;
+  let px = null;
   const a = isFilled(mistId) ? assetOf(mistId) : null;
-  const make = () => {
-    cv = document.createElement("canvas"); cv.width = w; cv.height = h; if (!a || !isFilled(clearId)) return cv;
-    const out = figureComposite(pixels(mistId).data, pixels(clearId).data, figureAlpha([assetEntry(mistId)?.status, assetEntry(clearId)?.status], alpha));
-    const g = cv.getContext("2d"), id = g.createImageData(w, h); id.data.set(out); g.putImageData(id, 0, 0); return cv;
-  };
-  return { w, h, canvas: () => cv || make() };
+  const rgba = () => px || (px = !a || !isFilled(clearId) ? new Uint8ClampedArray(w * h * 4) : figureComposite(pixels(mistId).data, pixels(clearId).data, figureAlpha([assetEntry(mistId)?.status, assetEntry(clearId)?.status], alpha)));
+  return { w, h, rgba };
 }
 // The least final status among placed layers: placeholder, then held, then new, else master.
 export const leastFinal = (ids) => { const order = ["placeholder", "held", "new"], got = ids.map((i) => assetEntry(i)?.status).filter((x) => order.includes(x)); return order.find((x) => got.includes(x)) ?? "master"; };

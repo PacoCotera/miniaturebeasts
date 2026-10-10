@@ -1343,7 +1343,7 @@
   "newSpecies": "New species",
   "empty": "the rack is empty",
   "dockToBring": "dock the Companion for its crates",
-  "openBay": "open the bay at Home",
+  "openBay": "open the crates first",
   "explore": "take the Companion exploring",
   "hatchArm": "Back to the {place}? ✓ again",
   "hatchPlace": {

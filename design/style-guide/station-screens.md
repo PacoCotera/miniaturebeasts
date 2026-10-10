@@ -77,7 +77,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 
 **Purpose.** The always-on view: the collection alive, the equipment's state. **Reads first:** the residents, then whatever needs you (the bottom line's right part).
 
-- **Living window.** The vivarium, the left two thirds (about 640×500): a lit glass habitat with plants, stones, water and a burrow. Residents in the rich treatment keep their species' routines. The with-you bed shows the mibi with you, or a small Companion mark while away.
+- **Living window.** The vivarium, the left two thirds (about 640×500): a lit glass habitat with plants, stones, water and a burrow. Residents in the rich treatment keep their species' routines. The with-you bed shows the one to three mibis with you, or a small Companion mark while they are away.
 - **Instrument.** The right third, four stacked modules, each with a status lamp and one engraved word (Bay, Rack, Incubator, Probe): the sample bay (crates behind a door), the pod rack (six wells, shells in place colours, a star where one glints), the incubation chamber (a dome and its leaves), the Probe dock (the Probe and its Shield plates).
 - **Composition.** The vivarium's glass sits in a thin bezel; the modules align to one column with 8 px gaps. Nothing overlaps the vivarium.
 - **Lively / quiet.** Lively: residents, plants, water, the bud's glow. Quiet: the modules; one lamp pulses slowly when its module needs you.
@@ -129,7 +129,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 
 *Dock and arrival wireframe. Layout only.*
 
-The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival). The ribbon has no digits and says the crate only: "First crate home"; how far the land is explored is on the report card.
+The measured layout, states and timeline are [Station layouts, Cargo](station-layouts.md#cargo). The ribbon has no digits and says the crate only: "First crate home"; how far the land is explored is on the report card.
 
 ---
 
@@ -330,16 +330,16 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 
 **Vibe.** Vivarium: cozy, warm, the pet happy at home.
 
-**Purpose.** One mibi up close: name it, spend time with it, take it with you, bond, cross, have it sit for its portrait, or return it to the wild. **Reads first:** the mibi, then its name.
+**Purpose.** One mibi up close: name it, greet it, take it with you, cross, have it sit for its portrait, or return it to the wild. **Reads first:** the mibi, then its name.
 
-- **Living window.** The mibi at 304×312 in the vivarium's light, its standard painting or its placeholder with the waiting lamp, doing its species moment on Spend time. Its name on a tag under its feet, 20 px.
-- **Instrument.** A card at the right: "your Loika, adult" (the species word, with `mark-guide-16`, is the door to the guide), where it came from and what it remembers, its code, the stamp on its 120 label (the stamp is the genome code), and one plate a chapter. Under it five modules, one engraved word each: Companion, Bond, Portrait, Cross, Wild. The strip of bays along the foot, thumbnails only.
+- **Living window.** The mibi at 304×312 in the vivarium's light, its standard painting or its placeholder with the waiting lamp, doing its species moment on Greet. Its name on a tag under its feet, 20 px.
+- **Instrument.** A card at the right: "your Loika, adult" (the species word, with `mark-guide-16`, is the door to the guide), where it came from and what it remembers, its code, the stamp on its 120 label (the stamp is the genome code), and one plate a chapter. Under it four modules, one engraved word each: Companion, Portrait, Cross, Wild. The strip of bays along the foot, thumbnails only.
 - **Composition.** The window at the left (16 to 576), the card and modules in a 416 px column at the right, the strip 64 px along the foot.
 - **Lively / quiet.** Lively: the mibi. Quiet: card, modules, strip.
 - **Light.** Warm key light from the top left in the window; cool on the card.
 - **Palette.** The vivarium's greens and earth; card chrome; the heart a small enamel heart in the house light. Nothing on the vivarium up close is amber.
 - **Type.** Inter: the name 20 px medium on its tag; the card's lines 16 px.
-- **Chrome.** The four zones, the price icon first, no dots: `✓ Spend time with Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock"; `✓ Bond with Fig`, then `✓ Again: bond with Fig`; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Home`.
+- **Chrome.** The four zones, the price icon first, no dots: `✓ Greet Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock", or `✓ Bring Fig home` | "home at the next dock"; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Home`.
 - **Motion.** Walking the strip dithers the mibi shown in 200 ms; the species moment plays about 2 s.
 
 The measured layout, the focus graph and the states (rest, the meet, empty) are [Station layouts, the vivarium up close](station-layouts.md#the-vivarium-up-close).
@@ -348,8 +348,8 @@ The measured layout, the focus graph and the states (rest, the meet, empty) are 
 - [ ] The mibi is the same individual as on the Companion.
 - [ ] Stage reads from proportion and bearing; elders calm and dignified.
 - [ ] No meters or needs.
-- [ ] The door shows where the mibi with you is.
-- [ ] Spend time rewards nothing and shows nothing like a reward.
+- [ ] The Companion module shows which mibis are with you.
+- [ ] Greet rewards nothing and shows nothing like a reward.
 
 ---
 
