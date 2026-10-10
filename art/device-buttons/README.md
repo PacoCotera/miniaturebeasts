@@ -14,7 +14,7 @@ Every button on the Station, the Companion and the Caddy carries an engraved ico
 
 ## Cap masters
 
-`caps/`: one master per cap, the 10 × 10 mm icon slot centred on the 15 mm cap, at 100 px per mm, one colour (white is the cut). Every cap shares one scale, so icons keep their relative sizes. The Station and Companion keys are cut tone on tone into the coloured cap; on the dark caps (pad, back, the Caddy's keys) the cut is filled with bone paint. Cap colours: Home ochre `#dba53a`, Vivarium green `#63a046`, Research and Call teal `#2a9f90`, Library violet `#8460cd`, confirm orange `#f0661a`, back `#454950`, pad `#2e3136`, Caddy charcoal `#33363b`. `caps/manifest.json` lists each with its hash. The pad's master is drawn to the same 10 mm slot until the pad's own slot is set.
+`caps/`: one master per cap, the 10 × 10 mm icon slot centred on the 15 mm cap (the pad: a 20 × 20 mm slot centred on its 26 mm rocker face, an arrow on each axis where the thumb presses, the centre blank), at 100 px per mm, one colour (white is the cut). Every cap shares one scale, so icons keep their relative sizes. The Station and Companion keys are cut tone on tone into the coloured cap; on the dark caps (pad, back, the Caddy's keys) the cut is filled with bone paint. Cap colours: Home ochre `#dba53a`, Vivarium green `#63a046`, Research and Call teal `#2a9f90`, Library violet `#8460cd`, confirm orange `#f0661a`, back `#454950`, pad `#2e3136`, Caddy charcoal `#33363b`. `caps/manifest.json` lists each with its hash.
 
 ## Title marks
 

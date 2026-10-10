@@ -84,17 +84,17 @@
   "status": "signed"
  },
  {
-  "id": "cap-pad-10mm",
-  "file": "caps/cap-pad-10mm.png",
+  "id": "cap-pad-20mm",
+  "file": "caps/cap-pad-20mm.png",
   "slot_mm": [
-   10,
-   10
+   20,
+   20
   ],
   "px_per_mm": 100,
   "cap_colour": "#2e3136",
   "engraving": "paint-filled cut, #f1ebdf",
   "drawing": "pad",
-  "sha256": "080dc84e1f372b75e4c44764c01ad0964aade437e34d346750dc88d02b579f1a",
+  "sha256": "b5db5c2152037a85dfddf55f78e501f142a7533d36551e0bd9e03ffeb9b6f979",
   "status": "signed"
  },
  {
