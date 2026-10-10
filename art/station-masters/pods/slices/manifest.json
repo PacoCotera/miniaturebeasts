@@ -10068,9 +10068,9 @@
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 24.6) (pass 94)",
   "sha256": "d9a7a133adac1edd152e11d268bc6c610e1e663f2d03e224fa3c0c77d571e34d",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 112: Idle's night regraded to the revised night rule by hand (mean L* 24.6, background 16.7, ground 35.5, 0.0 percent above L* 70, R above B, key R-B 52, sat 64); awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director) at 1x: L* 24.6, key R-B 51, sat 64, 0.0 percent above L* 70, meets the revised rule, but the pulled-down glow pools leave pink blotches on a salmon ground: grading cannot make this painting a night; a Pro night repaint is queued for the owner's approval; until a night is signed, night hours show the signed dusk"
  },
  "home-bay-shut-176x72": {
   "size": [
@@ -10237,9 +10237,9 @@
   "src": "slices/idle-vivarium-night-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by night: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
   "sha256": "6e85273325cd3c50caa20f689ec70bcb1677cc729b2f9a7483538027d4cb6140",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 112: Home's bed by night re-fitted to the new glass night by hand (L* 27.2, key R-B 67 against its glass 24.8 / 44: limits +3 and +40 hold); awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director) at 1x: L* 27.3, key R-B 65 fits its glass night 24.8/44, but waits on the night repaint; night hours show the signed dusk bed"
  },
  "vivarium-near-day-544x408": {
   "size": [
@@ -10407,9 +10407,9 @@
   "src": "source/raw/home-glass-night.jpg (gemini-3-pro-image)",
   "made": "Home's glass by night: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's night light, cut to 640:488 and reduced with Lanczos, regraded by distribution (dark background, warm ground band, small glow pools) (pass 107)",
   "sha256": "23ba963aec770861b0fed9a28d3a121945b7a207c50eb96410e72ee9be71b95b",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 112: the glass night regraded to the revised night rule (mean L* 24.8, background 16.9, ground 34.5, 0.0 percent above L* 70, R above B, key R-B 44, sat 50); awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director) at 1x: L* 24.8, key R-B 44, sat 50, meets the revised rule, but pale greenish blotches wash the ground; as Idle night: a Pro repaint queued for the owner's approval; night hours show the signed glass dusk until then"
  },
  "room-bench-stage-create": {
   "size": [
@@ -10435,7 +10435,7 @@
   "sha256": "bfa4d896defee38ec6044ea2df00f1e2bd07c75e8bd99f93137f9d53154d7d9f",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 112: the chamber's housing rebuilt at 304 wide, ink inside the radius-152 arch, one window about 226 wide, no lit patches under the hood; awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
  },
  "dome-back-304x272": {
   "size": [
@@ -10448,7 +10448,7 @@
   "sha256": "7297fe513695210790e5e4620fd70b67e3f16af7392673e5f93ca4f800b463be",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 112: the chamber rebuilt at the arch's full width, 304 (the housing redrawn by hand in sheet a3's material, one 226-wide window, its interior sheet a3's lamp-less wall with a drawn lamp and its moss bed; key R-B 74, sat 48); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
  },
  "dome-inside-standby-304x272": {
   "size": [
@@ -10461,7 +10461,7 @@
   "sha256": "8c89f49bb2e0b9f1fc8a6344a8e1c47a90c8e00e58acaf1e4f93540d3d2373e4",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 112: standby from the new back (a soft warm pool on the bed; key R-B 84, sat 48); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
  },
  "dome-inside-ready-304x272": {
   "size": [
@@ -10474,7 +10474,7 @@
   "sha256": "b75ee59e2953fd3790ef07bbc0f705abe16652bff33782640fb2485796fd930e",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 112: ready from the new back (the light up toward cream; key R-B 90, sat 49); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
  },
  "base-336x96": {
   "size": [
