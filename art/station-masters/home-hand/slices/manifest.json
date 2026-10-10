@@ -148,5 +148,165 @@
   "made": "a Library spread progress step, unread: the same seed as a clay outline",
   "sha256": "f6eeb286a2828a9336c469b78335c3c44b3100b5d3e6c428710c7efb27184d83",
   "status": "signed"
+ },
+ "clan-roundel-C01-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C01's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `tealD`",
+  "sha256": "7bab21d5e210b0786e126c115b51683ff390cd74ef1aadb2240a72acee4f4945",
+  "status": "signed"
+ },
+ "clan-roundel-C02-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C02's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `sea`",
+  "sha256": "e8ee46f6b98cfe994c7315a942a3f70a6119832d00e5d65989152f196a7840cd",
+  "status": "signed"
+ },
+ "clan-roundel-C03-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C03's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `leaf`",
+  "sha256": "8a5cec16bd5c04af863c3a2179c532a785ef04bcfe4d2034bbf8ffbcb1849db0",
+  "status": "signed"
+ },
+ "clan-roundel-C04-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C04's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `plum`",
+  "sha256": "20c4e0bb77b2be41f052b0ffb0db5125e00791bf6f264732b1b00049184c81c0",
+  "status": "signed"
+ },
+ "clan-roundel-C05-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C05's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `bark`",
+  "sha256": "c653524070fa6b2cc6453d4521db201edc1627d69eb9413063036492fa0865cc",
+  "status": "signed"
+ },
+ "clan-roundel-C06-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C06's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `river`",
+  "sha256": "c6b1b589b00f74cf0b9698a03e29e08544cd7805972f08400c30b11c5cdc0fbd",
+  "status": "signed"
+ },
+ "clan-roundel-C07-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C07's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `pine`",
+  "sha256": "9b3179450cd8aa565677e55ecf2581d86dd0488e805c0704ab15f0c09fa61d1a",
+  "status": "signed"
+ },
+ "clan-roundel-C08-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C08's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `magenta`",
+  "sha256": "017552ef7295be11681339c1ab59dcdb79a4e903b0031aad3e6e7fe7111459c6",
+  "status": "signed"
+ },
+ "clan-roundel-C09-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C09's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `soil`",
+  "sha256": "c7510489e0a52797367c78bde4e50abf9284d0dbb3d395ab8257e76bca30b4a8",
+  "status": "signed"
+ },
+ "clan-roundel-C10-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C10's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `deep`",
+  "sha256": "017df447de616bde50c3632dec11f2bb57442f0b948049fbf46f638cc2d204c1",
+  "status": "signed"
+ },
+ "clan-roundel-C11-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C11's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `forest`",
+  "sha256": "52e06fbb8c59e449f873548896835b380b6722d178ad1f06ff32bab3ed71f406",
+  "status": "signed"
+ },
+ "clan-roundel-C12-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C12's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `plumD`",
+  "sha256": "9a8f4535a923b4240e933321c5d25ff350af039a02da9cb36bbe9131ea134849",
+  "status": "signed"
+ },
+ "clan-roundel-C13-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C13's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `wine`",
+  "sha256": "3d64e08ccc57ced3b7857d5b33733b839db79a4cbd123cbfee4e72c3b7e99800",
+  "status": "signed"
+ },
+ "clan-roundel-C14-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C14's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `rock`",
+  "sha256": "ce465d7452880d9bf1b71291741d1af14aa0f6999486b548112463011447fdeb",
+  "status": "signed"
+ },
+ "clan-roundel-C15-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C15's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `sageD`",
+  "sha256": "dca90b590d8dbbca9fe609d6e91ed10261c91298e813480c168835e3cf2b36b4",
+  "status": "signed"
+ },
+ "clan-roundel-C16-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/roundels.py)",
+  "made": "clan C16's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `stone`",
+  "sha256": "08178e9744f4eb41f6ec21dc6efbd32f324cb68fcf9ad07df80b99472cceb792",
+  "status": "signed"
  }
 }
