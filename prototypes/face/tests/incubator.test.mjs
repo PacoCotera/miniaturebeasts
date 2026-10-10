@@ -1,6 +1,6 @@
 // The Incubator on the face (lvgl-switch.md §4 R): the words and the binding table (screens/incubator.c) on the props views/incubator-props.mjs gives, in Node on the WebAssembly build: every state draws without an error or a refusal
 // inside the budgets with no region departing from incubator.json (tools/incubator-regions.mjs, proved here to fail on a moved region), the leaves on their arcs and the filling leaf's rows, growNow (leaf k whole at floor(k · 400 / n) ms),
-// the hatch (the chamber's back lifting by the Cargo ease, the bud's cracks, the juvenile, the ribbon, the step-out table), the keys (one subject: ✓ ← and the room keys say theirs on the room, the pad says nothing; a hold says only a room
+// the hatch (a still beat, the bud's cracks, the juvenile, the ribbon, the step-out table), the keys (one subject: ✓ ← and the room keys say theirs on the room, the pad says nothing; a hold says only a room
 // key), and the dirty area of a refresh. Skipped when the face has not been built (build.sh).
 //   node --test prototypes/face/tests/incubator.test.mjs
 import { test } from "node:test";
@@ -140,7 +140,7 @@ test("the hatch: the bud is the ready picture until 600, cracks at 600 and 800, 
   for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!BP.length || !colourIs(f, ...BP, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.equal(lg.type.some((t) => t.region === "plaque"), false); }
   at(999); assert.ok(!colourIs(f, jx + 40, jy + 40, J), "the juvenile is not there at 999");
   let lg = at(1199); assert.ok(!lg.type.some((t) => t.region === "ribbon" && t.text), "no ribbon at 1199"); lg = at(1200); assert.ok(lg.type.some((t) => t.region === "ribbon" && /young/.test(t.text)), "the ribbon's words at 1200");
-  const TABLE = [[0, 1], [25, 2], [50, 3], [75, 4], [100, 3], [125, 2], [150, 1], [175, 0]], lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], top = (ms) => { for (let y = jy - 6; y < jy + 8; y++) if (colourIs(f, jx + 40, y, J)) return y; return null; };
+  const TABLE = EV.hatch.steps[6].lift, lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], top = (ms) => { for (let y = jy - 6; y < jy + 8; y++) if (colourIs(f, jx + 40, y, J)) return y; return null; };
   for (const start of [1400, 1800]) for (const d of [0, 20, 30, 60, 80, 110, 130, 160, 180, 199]) { at(start + d); assert.equal(top(start + d), jy - lift(d), `${start + d} ms: ${lift(d)} px up`); }
   for (const ms of [1300, 1600, 2000, 2400]) { at(ms); assert.equal(top(ms), jy, `${ms} ms: standing`); }
   assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
@@ -179,4 +179,14 @@ test("growNow with reduced motion is one cut on the key's frame: the leaves, the
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
   assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f);
   console.log(`# the Incubator's growNow cut (motion off), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 162432, `dirty ${a}`);
+});
+
+test("growNow with motion on: the props show the bud as it was until 400, then the ready state lands on one refresh of at most 153,600 px", { skip }, async () => {
+  const b = scene({ minutes: 13.2 }), L = b.props.regions.leaves, f = await start(b, { t0: 1000 }), t0 = f.t;
+  f.send({ t: "event", kind: "growNow", target: "room", from: L.full, to: L.total, ms: EV.growNow.ms, hold: EV.growNow.hold }); for (let t = 16; t < 400; t += 16) f.frame(t0 + t);
+  const after = scene({ minutes: 13.2 }); S.instantGrow(after.st, settings, after.now);
+  const b2 = incubatorBuild({ st: after.st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
+  for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  assert.equal(f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame(t0 + 400); const a = area(f);
+  console.log(`# the Incubator's growNow, ready at 400 (motion on): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 153600, `dirty ${a}`); assert.deepEqual(f.errors(), []);
 });

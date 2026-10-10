@@ -29,10 +29,9 @@ static int in_state(const char *s) { return strcmp(v_pstr("state"), s) == 0; }
 /* ---- the hatch: how far it has got (the end state when no event plays) ---- */
 #define HATCH_END 1000000
 static int hatch_time(void) { anim_state_t t; if (!in_state("hatch")) return -1; return v_pbool("motion", 1) && anim_get(ANIM_HATCH, "room", &t) ? t.elapsed : HATCH_END; }
-/* the juvenile's step-out: the meet's hop at half its period (incubator.json events.hatch steps 6 and 7): [ms into the step, px above the feet line], each a cut */
+/* the juvenile's step-out: incubator.json events.hatch.steps.6.lift, [ms into the step, px above the feet line], each a cut (the second step reads the same table) */
 static int step_lift(int ms) {
-  static const int T[8][2] = { { 0, 1 }, { 25, 2 }, { 50, 3 }, { 75, 4 }, { 100, 3 }, { 125, 2 }, { 150, 1 }, { 175, 0 } }; int v = 0;
-  for (int i = 0; i < 8; i++) if (ms >= T[i][0]) v = T[i][1];
+  int v = 0; for (int i = 0, n = spec_len(I, "events.hatch.steps.6.lift"); i < n; i++) { if (ms >= spec_int(I, v_fmt("events.hatch.steps.6.lift.%d.0", i), 1 << 30)) v = spec_int(I, v_fmt("events.hatch.steps.6.lift.%d.1", i), 0); }
   return v;
 }
 
@@ -85,7 +84,7 @@ static void build_code(void) {
 static void build_ribbon(int t) {
   if (spec_len("props", "regions.bud") < 0) return;
   int r[4]; crect("regions.ribbon.rect", r); int at = ci("events.hatch.steps.5.at", 1200); const char *words = v_pstr("regions.ribbon");
-  v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 16), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text"));
+  v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, t >= at ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 0), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text"));
 }
 
 void incubator_words(void) {

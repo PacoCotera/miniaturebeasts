@@ -34,6 +34,7 @@ void word_rail(const char *marksSpec) {
   int n = v_plen("regions.rail.tabs"); if (n <= 0) return;
   int open = v_pint("regions.rail.open", 0); layout_tab_t tabs[LAYOUT_TABS];
   int placed = layout_slant_tabs(F, R, n, open, 0, tabs, NULL, NULL); if (placed <= 0) return;
+  if (fi("pip.size", 6) != 6) { v_error("word: a rail pip is 6 Ã 6 (frame.json regions.rail.pip.size): the marks are defined at 6"); prim_refuse(); return; }
   int S = fi("slant", 16), pitch = fi("pip.pitch", 8), psz = fi("pip.size", 6), gsz = fi("glint.size", 12), gbelow = fi("glint.below", 2);
   int em0 = fi("full_layout.emblem.0", 24), em1 = fi("full_layout.emblem.1", 24), gap = fi("full_layout.gap", 8), labelY = fi("full_layout.labelY", 0), labelC = fi("full_layout.labelCentre", 0), pipsY = fi("full_layout.pipsY", 0), pipsC = fi("full_layout.pipsCentre", 0);
   int cEmY = fi("compact_layout.emblemY", 0), cEmC = fi("compact_layout.emblemCentre", 0), cPipsY = fi("compact_layout.pipsY", 0), cPipsC = fi("compact_layout.pipsCentre", 0);

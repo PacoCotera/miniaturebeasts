@@ -81,7 +81,7 @@
   "plaque": { "rect": [448, 496, 128, 32], "component": "text", "px": 16, "weight": 400, "align": "centre", "centre": 512, "lineTop": 502, "words": 1, "noDigits": true, "text": { "empty": "strings.plaque.empty", "growing": "strings.plaque.growing", "ready": "strings.plaque.ready", "hatch": "" } },
   "stamp": { "rect": [840, 296, 120, 120], "component": "stampLabel", "inStates": ["growing", "ready", "hatch"], "live": "the bud's stamp, its chapters filling as they clear", "fromDome": 176 },
   "code": { "rect": [808, 424, 184, 24], "component": "text", "inStates": ["growing", "ready", "hatch"], "px": 16, "weight": 400, "align": "centre", "centre": 900, "lineTop": 426, "text": "the bud's code (genome.codeText): three groups with spaces, \"K7Q 4MX P2D\", live text, shareable; the widest, \"WWW WWW WWW\", 152 px" },
-  "ribbon": { "rect": [312, 104, 400, 40], "component": "ribbon", "inStates": ["hatch"], "px": 20, "align": "centre", "lines": 1, "words": "strings.hatchRibbon" },
+  "ribbon": { "rect": [312, 104, 400, 40], "component": "ribbon", "inStates": ["hatch"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "look": "the one ribbon look (cargo.json regions.ribbon)", "lines": 1, "words": "strings.hatchRibbon" },
   "juvenile": { "rect": [360, 160, 304, 312], "component": "specimen", "inStates": ["hatch"], "axis": 512, "feet": 472, "asset": "the new mibi in its standard painting if it has landed, else its placeholder (the stylised rig pass)", "lift": 4, "handoff": "its size, 304×312, is one mibi up close's mibi (144, 80, 304, 312), where the hand-off lands it" }
  },
  "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "nestFront", "domeFront", "base", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
@@ -89,8 +89,8 @@
   "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. growNow fills every leaf at once and the tabs turn read; the hatch lands on one mibi up close in the meet on the frame of ✓ Open; the wipe is a cut. The leaf fill (props) still steps a row every 3 s. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts. growNow's cut lands every leaf, the tabs and the ready state on the key's frame (up to 162,432 px, a key's frame, not an animation frame)."
  },
  "events": {
-  "wipe": { "kind": "wipe", "target": "rail.<i>", "ms": 1000, "hold": 0, "do": "a founder's bud: the tab turns from unread to read (its word and emblem at once), its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter at the end" },
-  "growNow": { "kind": "growNow", "target": "room", "ms": 400, "hold": 400, "do": "the n = total − full leaves still to fill, the filling leaf first (k = 0, from its props rows), each turn whole at floor(k·400/n) ms, k = 0 to n − 1, in fill order (inner left to right, then outer), each redrawing its own 16×20 box; then, at 400, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; a cross bud keeps its unread chapters; the state is ready" },
+  "wipe": { "kind": "wipe", "target": "the chapter's id (regions.rail.tabs[i].id)", "ms": 1000, "hold": 0, "do": "a founder's bud: the tab turns from unread to read (its word and emblem at once), its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter on the wipe's first frame. One wipe per chapter that turns read while the screen is shown; none on the first look, none for growNow's tabs (its cut), none under reduced motion (a cut on the next refresh); chapters turning read on the same frame wipe at once, each in its own tab's boxes (≤ 47,680 px)" },
+  "growNow": { "kind": "growNow", "target": "room", "ms": 400, "hold": 400, "do": "the n = total − full leaves still to fill, the filling leaf first (k = 0, from its props rows), each turn whole at floor(k·400/n) ms, k = 0 to n − 1, in fill order (inner left to right, then outer), each redrawing its own 16×20 box; then, at 400, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; a cross bud keeps its unread chapters; the state is ready; the props show the bud as it was (leaves, tabs, stamp, line) until 400, and the ready state lands on one refresh at 400 (an animation frame: ≤ 153,600 px, printed and asserted)" },
   "hatch": {
    "kind": "hatch", "target": "room", "ms": 2600, "hold": 2780,
    "steps": [
@@ -100,15 +100,15 @@
     { "at": 800, "do": "the crack opens (bud-crack-2)" },
     { "at": 1000, "do": "the bud goes; the juvenile stands in its box on the base (a cut), in its painting or its placeholder" },
     { "at": 1200, "do": "the ribbon shows the new mibi's words" },
-    { "at": 1400, "ms": 200, "do": "the juvenile steps out: `lift` [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]] ([ms into the step, px above its feet line 472]), each a cut, whole pixels, no ease; the ribbon and the base's lamp stay (the meet's hop at half its period, habitat.json events.moment.placeholder; UI designer, 2026-10-10 09:15)" },
-    { "at": 1800, "ms": 200, "do": "a second step, the same table" },
+    { "at": 1400, "ms": 200, "lift": [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]], "do": "the juvenile steps out: `lift` ([ms into the step, px above its feet line 472]), each a cut, whole pixels, no ease; the ribbon and the base's lamp stay (the meet's hop at half its period, habitat.json events.moment.placeholder; UI designer, 2026-10-10 09:15)" },
+    { "at": 1800, "ms": 200, "lift": "the same table as the step at 1400", "do": "a second step, the same table" },
     { "at": 2600, "ms": 180, "do": "the screen transition (16-level Bayer dither) to one mibi up close, in the meet (handoff)" }
    ]
   }
  },
  "handoff": {
   "to": "habitat", "level": "one mibi up close, the Vivarium's closest level (the screen id stays habitat until that screen is next touched)", "state": "meet", "mibi": "the new mibi (the juvenile)", "box": [144, 80, 304, 312], "focus": "the resident: the new mibi, its feet ring", "back": "Vivarium", "backTo": "the Vivarium's whole, the ring on the new mibi", "transition": { "kind": "dither", "ms": 180, "levels": 16 },
-  "note": "The meet is habitat.json state meet (events.meet); this spec fixes only the hand-off: the new mibi at 304×312 in one mibi up close's box (144, 80), the ring on it, and Open a jump, so ← there reads Vivarium (station-layouts.md, The screen map; frame.json navigation.jumps); the Incubator is then empty. Reported, outside this file: frame.json navigation.screens.habitat still reads parent home, back Home; main's host (prototypes/station/src/host.mjs) lands the ring on the door after the hatch"
+  "note": "The meet is habitat.json state meet (events.meet); this spec fixes only the hand-off: the new mibi at 304×312 in one mibi up close's box (144, 80), the ring on it, and Open a jump, so ← there reads Vivarium (station-layouts.md, The screen map; frame.json navigation.jumps); the Incubator is then empty. Reported, outside this file: frame.json navigation.screens.habitat still reads parent home, back Home"
  },
  "focus": {
   "initial": "room",

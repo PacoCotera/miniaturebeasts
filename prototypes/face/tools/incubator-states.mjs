@@ -1,5 +1,5 @@
 // The Incubator in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `incubator-empty` (a pod in the rack: ✓ Choose a pod), `incubator-growing` (the wait's first half),
-// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready` (the waiting lamp on), and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` the chamber's back lifting, `-300`,
+// `incubator-growing-late` (the second half, a leaf filling), `incubator-ready` (the waiting lamp on), and with motion on at exact instants of the face's clock: the hatch (`incubator-hatch-100` and `-300` the still beat,
 // `-650` the crack, `-850` the opening, `-1100` the juvenile standing, `-1500` its first step, `-2000`) and growNow (`incubator-growNow-200` the leaves turning whole, `incubator-growNow-420` the ready state).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
