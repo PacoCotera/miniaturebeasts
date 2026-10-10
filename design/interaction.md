@@ -108,7 +108,8 @@ No button on any device carries a word: each carries one icon, and the
 branding on top is the only text on a front face. One icon means one thing on
 every device: the pad, back and confirm look the same everywhere, and the
 Caddy's OK is confirm. The icons are engraved, tone on tone on the coloured
-caps and filled with bone paint on the dark caps.
+caps and filled with bone paint on the dark caps. The masters are in
+[art/device-buttons](../art/device-buttons/).
 
 | Device | Button | Icon |
 | --- | --- | --- |
