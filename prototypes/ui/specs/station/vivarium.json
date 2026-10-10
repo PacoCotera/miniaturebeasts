@@ -1,0 +1,210 @@
+{
+ "screen": "vivarium",
+ "device": "station",
+ "section": "vivarium",
+ "level": "whole",
+ "spec": "design/style-guide/station-layouts.md#the-vivarium-the-whole-and-one-mibi-up-close",
+ "frame": "frame.json",
+ "status": "The L2.5 layout spec for the Vivarium's whole, the section's first level: every drawn region names its word or composition, the states rest and empty, the conditions docked and away, the focus as data, the events, the bottom line, the strings and the masters",
+ "wireframes": ["design/style-guide/station-layouts/18-vivarium-whole.png", "design/style-guide/station-layouts/18a-vivarium-whole-away.png", "design/style-guide/station-layouts/18b-vivarium-whole-empty.png"],
+ "note": "The one home of the numbers of the Vivarium's whole, transcribed from station-layouts.md (The Vivarium: the whole and one mibi up close) and its wireframes 18-vivarium-whole.svg to 18b-vivarium-whole-empty.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The whole is the living window edge to edge, the residents walking in it, the with-you bed at its right, and the strip of bays along the foot; nothing else is on the stage. Its closer level is one mibi up close (habitat.json).",
+ "purpose": "Every mibi at home, at its size, alive in one full-width window, and every bay along the foot: the player sees the whole household (who is home, who is out with the Companion, how many bays are free) and chooses one mibi to come closer to, with one press. Home's panel is the same place in a glance among the device's sections; Idle is the same painting with no frame and nothing to choose; the whole is the place with the keys in hand. Reads first: the residents; then the bays",
+ "notes": {
+  "painting": "the window shows rows 120 to 560 of Idle's painting (frame.json idle.regions.vivarium.theWhole) at 1:1: one painting a light, never cropped and enlarged; a resident at y on Idle stands at y − 80 here",
+  "strip": "the same strip, at the same rectangle and with the same tile forms, as one mibi up close (habitat.json regions.strip and tiles): going one level closer or back keeps the strip and the ring's tile where they stood",
+  "nothing else": "no card, no modules, no stamp, no words in the window but the focused resident's name tag; nothing is amber",
+  "residents": "every mibi at home walks; the carried set sleeps on the bed while the Companion is docked (each sleeper a resident target, with no lift); while it is away, the bed shows the Companion mark and the carried mibis are only on the strip, each tile with the outline glyph"
+ },
+ "rules": {
+  "used": ["listPitch"],
+  "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
+  "needed": [],
+  "listPitch": "the strip's tiles, by habitat.json regions.tiles.forms: n bays take the form with the smallest upTo at least n"
+ },
+ "states": ["rest", "empty"],
+ "conditions": { "docked": "the Companion in the Caddy: the carried set asleep on the bed, their tiles thumbnails", "away": "the Companion out: the bed shows the Companion mark, the carried mibis' tiles show the outline glyph" },
+ "initial": "by the save: no housed mibi, empty; else rest",
+ "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window, the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
+ "regions": {
+  "stage": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "offGrid": true, "slice": null, "until": "the stage ground rect, colours.stageGround", "note": "the window covers the stage's top; the ground shows round the strip (y 480 to 562)" },
+  "window": {
+   "rect": [0, 40, 1024, 440], "component": "livingWindow", "part": "inside", "frame": false,
+   "painting": { "source": "frame.json idle.regions.vivarium, one painting a light", "rows": [120, 560], "at": [0, 40, 1024, 440], "rule": "rows 120 to 560 of Idle's painting at 1:1" },
+   "ground": [0, 296, 1024, 176], "foot": [0, 472, 1024, 8],
+   "until": "the placeholder: back `forest`, ground band `clay` with a `sand` top row, foot `soil`",
+   "note": "edge to edge, no bezel; no words inside but the focused resident's name tag"
+  },
+  "resident": {
+   "component": "livingWindow", "part": "residents", "clip": "window", "inStates": ["rest"],
+   "adult": [144, 152], "juvenile": [104, 112],
+   "walk": { "ground": [16, 296, 992, 176], "rule": "each walks with its feet in the band, as on Idle 80 px higher" },
+   "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
+   "lamp": { "size": [12, 12], "slice": "frame-lamp-12-sky", "at": "the box's top right", "when": "while the placeholder is drawn" },
+   "lift": 4,
+   "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk, as on Home and Idle"
+  },
+  "bed": {
+   "rect": [792, 416, 192, 56], "build": "withYouBed", "clip": "window", "mark": [16, 24], "markAt": [88, 16], "markRect": [880, 432, 16, 24],
+   "sleepers": {
+    "max": 3, "pose": "nap", "pitch": 48, "footY": 456, "centre": 888,
+    "places": { "1": [888], "2": [864, 912], "3": [840, 888, 936] },
+    "adult": { "size": [144, 152], "box": "[footX − 72, 304, 144, 152]" },
+    "juvenile": { "size": [104, 112], "box": "[footX − 52, 344, 104, 112]" },
+    "ink": { "max": [96, 88], "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY: at most [footX − 48, 368, 96, 88]; three sit on the 192 px bed (792 to 984)", "rects": { "3": [[792, 368, 96, 88], [840, 368, 96, 88], [888, 368, 96, 88]] } },
+    "mark": null, "lift": 0, "focus": "each sleeper is a resident target, with the feet ring and no lift"
+   },
+   "states": { "docked": "the nest, then one to three sleepers, the carried set in carried order", "away": "the nest, then the Companion mark at markRect", "none": "docked with nobody carried: the nest alone" },
+   "note": "Idle's bed (frame.json idle.regions.bed) 80 px higher: the same place in the same painting"
+  },
+  "nameTag": {
+   "build": "nameTag", "component": "panel", "text": "text", "clip": "window", "inStates": ["rest"],
+   "when": "a resident or a sleeper is focused; never otherwise",
+   "h": 24, "px": 16, "weight": 400, "pad": 8, "round": 8, "min": 48, "max": 176,
+   "w": "the name's width + 16, rounded up to 8, at least 48; the widest name (160 px at 16) gives 176",
+   "y": "top at feet + 24, 12 px under the feet ring; if its bottom would pass y 472 (8 px inside the window), it sits over the resident: top = box.y − 4 − 32; a sleeper's tag is always over it: top = box.y − 32",
+   "x": "centred on the resident's box, slid to stay 8 px inside the window (8 to 1016)",
+   "words": "the name only", "lift": 0, "note": "Home's tag (home.json regions.nameTag), the same size: the residents are Home's size"
+  },
+  "strip": { "rect": [16, 488, 992, 64], "component": "panel", "note": "habitat.json regions.strip" },
+  "tiles": {
+   "rect": [32, 496, 952, 48], "component": "list", "build": "bayStrip", "layout": ["listPitch"],
+   "forms": "habitat.json regions.tiles.forms: full up to six bays (152×48 on a 160 pitch from 32, 496), compact up to twelve (72×48 on an 80 pitch)",
+   "tile": "habitat.json regions.tiles.tile: a panel rect, its thumbnail 48×48 (full at (52, 0), compact at (12, 0)), no name; a free bay a composed dash outline, not a target; a mibi out with the Companion the outline glyph 16×24 centred where its thumbnail stands",
+   "count": "one tile a bay (state.bayCount, 1 to 12): the housed mibis in bay order, then the free bays",
+   "states": { "housed": "fill `panel`, the thumbnail", "out": "fill `panel`, the outline glyph", "free": "the dashed outline" },
+   "noShown": "the whole shows no mibi up close, so no tile is `shown`: the ring is the only highlight"
+  }
+ },
+ "drawOrder": ["stage", "window", "residents and the bed (by the feet's y)", "resident lamps", "nameTag", "strip", "tiles", "ring", "frame (top bar, bottom line)", "message plate"],
+ "events": {
+  "walk": { "kind": "walk", "target": "resident", "hold": false, "do": "each resident walks, rests and plays its species' idle on the seed the face steps, as on Home and Idle; the focused one stops while it is focused, lifted 4 px" },
+  "look": { "kind": "dither", "hold": true, "holdMs": 180, "ms": 180, "levels": 16, "do": "✓ on a resident or a tile: the frame's screen transition to one mibi up close (habitat.json), that mibi shown, the ring on it (its name tag when it is out with the Companion)" },
+  "back": { "kind": "dither", "hold": true, "holdMs": 180, "ms": 180, "levels": 16, "do": "← from one mibi up close lands here, the ring on that mibi's resident, else its tile" },
+  "dock": { "kind": "cut", "hold": false, "do": "Dock while the whole shows: the bed's Companion mark goes and the carried set lies down on it; their tiles' outline glyphs become thumbnails. Lifted: the reverse. Cuts, on the frame of the event" },
+  "painting": { "kind": "cut", "hold": false, "do": "a painting that lands while its mibi is on screen waits for the next fresh draw (the whole opened again, a wake): never a swap in view" }
+ },
+ "focus": {
+  "initial": "by the way in (focus.entry)",
+  "roomKey": "room",
+  "roomAt": [496, 248, 32, 24],
+  "room": "only in the empty state: the ring on nothing, no ring drawn; ✓ does nothing (no ✓ cap)",
+  "fallback": "none",
+  "entry": {
+   "homePanel": "Home's ✓ Open the Vivarium: the mibi last seen up close, its resident, else its tile; none seen yet, the first resident from the left; none at home, the first tile; none housed, room",
+   "vivariumKey": "the same as homePanel (frame.json navigation.roomKeys, station-layouts.md The column and the keys)",
+   "backFromMibi": "← from one mibi up close: that mibi's resident, else its tile",
+   "wake": "the screen under Idle, its focus as it was",
+   "empty": "room"
+  },
+  "graph": {
+   "roomKey": "room",
+   "fallback": "none",
+   "resident": { "left": [{ "nearestIn": "resident", "ahead": true }, "none"], "right": [{ "nearestIn": "resident", "ahead": true }, "none"], "up": [{ "nearestIn": "resident", "ahead": true }, "none"], "down": "tile.of" },
+   "tile": { "axis": "horizontal", "up": ["resident.of", "none"], "down": "none" },
+   "room": { "up": "none", "down": "none", "left": "none", "right": "none" }
+  },
+  "selectors": {
+   "tile.of": "the focused resident's own tile; every housed mibi has one, so it is never null",
+   "resident.of": "the focused tile's mibi's resident; for a mibi out with the Companion, null, and the selector rule of lvgl-switch.md §2.6.1 takes the first resident in the list (the first at home in bay order)"
+  },
+  "rings": "the resident `feet` (sleepers too); every tile `round`",
+  "primitives": "lvgl-switch.md §2.6.1 governs: the edge forms, the order of a move and the integer scores on doubled centres; `axis` walks the group's present targets by index and stops at the ends",
+  "targets": {
+   "resident": { "group": "resident", "id": "resident.<mibi id>", "ring": "feet", "box": "the resident's box where the face has stepped it; each sleeper is one, with no lift", "lift": 4, "present": "rest, every mibi at home" },
+   "tile": { "group": "tile", "id": "tile.<mibi id>", "ring": "round", "box": "the tile's rectangle (regions.tiles, its form)", "lift": 2, "present": "rest, every housed mibi, at home or out; free bays are not targets" }
+  },
+  "list": "the order the view lists the targets: the residents in bay order (sleepers in their bays' places), then the tiles in bay order",
+  "held": "while events.look or events.back holds, the face moves no focus and sends no intent",
+  "layout": {
+   "note": "the targets the vectors are played on: the wireframe 18, eight bays, seven mibis, docked, Pip and Sorrel asleep on the bed",
+   "resident.bean": [48, 264, 144, 152],
+   "resident.dot": [224, 312, 104, 112],
+   "resident.fig": [360, 296, 144, 152],
+   "resident.burr": [544, 272, 144, 152],
+   "resident.moss": [664, 336, 104, 112],
+   "resident.pip": [792, 304, 144, 152],
+   "resident.sorrel": [840, 304, 144, 152],
+   "tile.bean": [32, 496, 72, 48],
+   "tile.dot": [112, 496, 72, 48],
+   "tile.fig": [192, 496, 72, 48],
+   "tile.burr": [272, 496, 72, 48],
+   "tile.moss": [352, 496, 72, 48],
+   "tile.pip": [432, 496, 72, 48],
+   "tile.sorrel": [512, 496, 72, 48]
+  },
+  "vectors": [
+   {"from":  "resident.bean", "key":  "right", "to":  "resident.dot"},
+   {"from":  "resident.bean", "key":  "left", "to":  "resident.bean"},
+   {"from":  "resident.bean", "key":  "up", "to":  "resident.bean"},
+   {"from":  "resident.bean", "key":  "down", "to":  "tile.bean"},
+   {"from":  "resident.dot", "key":  "left", "to":  "resident.bean"},
+   {"from":  "resident.dot", "key":  "up", "to":  "resident.bean"},
+   {"from":  "resident.fig", "key":  "right", "to":  "resident.burr"},
+   {"from":  "resident.fig", "key":  "down", "to":  "tile.fig"},
+   {"from":  "resident.moss", "key":  "right", "to":  "resident.pip"},
+   {"from":  "resident.pip", "key":  "right", "to":  "resident.sorrel"},
+   {"from":  "resident.sorrel", "key":  "right", "to":  "resident.sorrel"},
+   {"from":  "resident.pip", "key":  "left", "to":  "resident.moss"},
+   {"from":  "resident.sorrel", "key":  "down", "to":  "tile.sorrel"},
+   {"from":  "tile.bean", "key":  "left", "to":  "tile.bean"},
+   {"from":  "tile.bean", "key":  "right", "to":  "tile.dot"},
+   {"from":  "tile.fig", "key":  "up", "to":  "resident.fig"},
+   {"from":  "tile.sorrel", "key":  "right", "to":  "tile.sorrel"},
+   {"from":  "tile.moss", "key":  "down", "to":  "tile.moss"},
+   {"from":  "tile.pip", "key":  "up", "to":  "resident.pip"},
+   {"from":  "tile.pip", "key":  "up", "to":  "resident.bean", "away":  ["pip", "sorrel"], "note":  "Pip is out: resident.of is null, and the selector takes the first resident in the list"},
+   {"from":  "tile.moss", "key":  "right", "to":  "tile.pip", "away":  ["pip", "sorrel"], "note":  "an out mibi's tile is a target"},
+   {"state":  "empty", "from":  "room", "key":  "left", "to":  "room"}
+  ]
+ },
+ "keys": {
+  "pad": "moves the ring by focus.graph",
+  "confirm": "the bottom line's action: on a resident or a tile, one mibi up close (events.look)",
+  "back": "Home, the ring on the vivarium panel (home.json, ← from a section)",
+  "vivarium": "on the whole, the ring back by focus.entry.vivariumKey",
+  "room": "as everywhere (frame.json navigation.roomKeys)",
+  "dock": "the Caddy's Dock, a world event: events.dock; no message plate"
+ },
+ "bottomLine": {
+  "resident": { "action": "strings.look", "context": "strings.resident; a sleeper strings.sleeper; while the placeholder is drawn, strings.painting" },
+  "tile": { "home": "as its resident", "out": { "action": "strings.look", "context": "strings.out" } },
+  "room": { "action": null, "context": "strings.empty" },
+  "notice": "the frame's notice only (what needs the player anywhere); nothing on the whole sets one",
+  "back": "strings.back"
+ },
+ "frame": {
+  "title": "strings.title, after the Vivarium key's icon (frame-room-vivarium-24; today's slice frame-room-habitat-24)",
+  "companion": "the top bar's Companion zone (station-layouts.md The frame): the glyph and its lamp, then three face places in carried order at (800, 8), (828, 8) and (856, 8), 24×24",
+  "back": "← Home, its cap at x 943"
+ },
+ "colours": {
+  "window": { "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil" },
+  "waitingLamp": { "fill": "sky", "rim": "void" },
+  "bed": { "rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist" },
+  "nameTag": { "fill": "panel", "edge": "hairline", "name": "bone" },
+  "strip": { "fill": "ground", "edge": "hairline" },
+  "tile": { "fill": "panel", "free": "hairline" },
+  "stageGround": "ground"
+ },
+ "masters": {
+  "note": "every picture the whole names, at the size it is shown; none is drawn by the build, and the whole needs no new master",
+  "list": ["Idle's painting 1024×568, day, dusk and night (frame.json idle; rows 120 to 560 shown here)", "the residents at 144×152 and 104×112, and the nap poses (as on Home and Idle)", "the bed 192×56", "frame-companion-outline-16x24 (the bed's mark and the out tile's glyph)", "the thumbnails 48×48 (the painting or placeholder rendered at that size)", "frame-lamp-12-sky"]
+ },
+ "strings": {
+  "title": "Vivarium",
+  "back": "Home",
+  "look": "Look at {name}",
+  "resident": "{a} {stage} {species}",
+  "sleeper": "{a} {stage} {species}, asleep",
+  "painting": "its painting is on its way",
+  "out": "already with you",
+  "outNote": "a stand-in from the carried set's words (habitat.json strings.withYou) until the copywriter's line for a mibi out with the Companion: six words or fewer, 208 px",
+  "empty": "nobody lives here yet",
+  "measured": "16 px Inter, the face's metrics (prototypes/face/tests/vectors/metrics.json), a name as ten of the widest letter (160): look 220 in the action's 356; in the context's 208: painting 176, sleeper 174 (\"an elder Untuva, asleep\"), empty 160, out 123; back 45 in its 68; title 85 at 20 px",
+  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer, a context of six or fewer; Home's words where Home says the same thing (home.json strings.actions.resident, strings.subjects)"
+ },
+ "buildChanges": [
+  "frame.json navigation: a new place `vivarium` (parent home, back Home) for the whole; `habitat` (one mibi up close) moves under it (parent vivarium, back Vivarium); the Vivarium key (roomKeys.habitat) opens `vivarium`, not `habitat`; Home's ✓ Open the Vivarium opens `vivarium`. nav.mjs, nav.test.mjs and the journey follow",
+  "the whole is a new screen: its binding table, its view's props (residents, bed, tiles) and its intents; it reuses Home's resident walk, the withYouBed build and habitat.json's bayStrip"
+ ]
+}

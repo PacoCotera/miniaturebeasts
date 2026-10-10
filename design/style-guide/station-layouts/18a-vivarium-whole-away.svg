@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>The Vivarium's whole, the Companion away with Pip and Sorrel: the bed shows the Companion mark, their tiles the outline glyph, the ring on Pip's tile. 1024×600 at 1×, measured; no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="0.5" y="40.5" width="1023" height="439" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<path d="M0 296.5L1024 296.5" fill="none" stroke="#e0b880" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="1018" y="291" font-size="8" fill="#a07040" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">ground 0,296 1024×176 · walk 16,296 992×176</text>
+<text x="1018" y="51" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">living window 0,40 1024×440 · edge to edge, no bezel · Idle's rows 120 to 560 at 1:1</text>
+<rect x="48.5" y="264.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="54" y="278" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult 144×152</text>
+<rect x="224.5" y="312.5" width="103" height="111" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="230" y="326" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">juvenile 104×112</text>
+<rect x="360.5" y="296.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="366" y="310" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult</text>
+<rect x="544.5" y="272.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="550" y="286" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">elder</text>
+<rect x="664.5" y="336.5" width="103" height="111" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="670" y="350" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">juvenile</text>
+<rect x="792.5" y="416.5" width="191" height="55" fill="#efe0c8" stroke="#8a6a44" stroke-width="1"/>
+<text x="796" y="466" font-size="8" fill="#8a6a44" font-family="DejaVu Sans Mono, ui-monospace, monospace">with-you bed 792,416 192×56</text>
+<rect x="880.5" y="432.5" width="15" height="23" fill="none" stroke="#6f6a85" stroke-width="1"/>
+<text x="904" y="446" font-size="8" fill="#6f6a85" font-family="DejaVu Sans Mono, ui-monospace, monospace">the Companion mark</text>
+<rect x="16.5" y="488.5" width="991" height="63" fill="#e6e7e3" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="32.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="44.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="112.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="124.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="192.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="204.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="272.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="284.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="352.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="364.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="432.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="460.5" y="508.5" width="15" height="23" fill="none" stroke="#6f6a85" stroke-width="1"/>
+<rect x="428" y="490" width="80" height="56" rx="6" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<rect x="512.5" y="496.5" width="71" height="47" fill="#f3f4f5" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="540.5" y="508.5" width="15" height="23" fill="none" stroke="#6f6a85" stroke-width="1"/>
+<rect x="592.5" y="496.5" width="71" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="484" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">strip of bays 16,488 992×64 · 72×48 tiles on an 80 pitch · one a bay, at most twelve</text>
+<text x="24" y="64" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Away: Pip and Sorrel are out with the Companion. They are not in the</text>
+<text x="24" y="77" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">window; the bed shows the Companion mark, their tiles the outline glyph.</text>
+<text x="24" y="90" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">An out mibi's tile is a target: ✓ shows it up close, in state out.</text>
+<text x="24" y="103" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The context is a stand-in until the copywriter's line (six words, 208 px).</text>
+<text x="24" y="116" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▲ from an out tile: the first resident in bay order (the selector rule).</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#222" font-weight="500">Vivarium</text>
+<path d="M256 8h1v24h-1z" fill="#888"/>
+<path d="M888 8h1v24h-1z" fill="#888"/>
+<text x="512" y="26" font-size="16" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="760.5" y="8.5" width="15" height="23" fill="none" stroke="#9a96ae" stroke-width="1"/>
+<path d="M780 16h8v8h-8z" fill="#a39e94"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#a39e94" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#a39e94" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1008" y="26" font-size="16" fill="#222" text-anchor="end">☀ 6</text>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<path d="M404 571h1v20h-1z" fill="#888"/>
+<path d="M620 571h1v20h-1z" fill="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="588" font-size="16" fill="#c4500f">Look at Pip</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">already with you</text>
+<circle cx="951" cy="582" r="8" fill="#9a9a9a"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1008" y="588" font-size="16" fill="#555" text-anchor="end">Home</text>
+</svg>

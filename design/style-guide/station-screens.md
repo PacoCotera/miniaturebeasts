@@ -342,7 +342,7 @@ The field guide is the Book's fold-out second spread, turned with ◀ ▶; ← r
 - **Chrome.** The four zones, the price icon first, no dots: `✓ Greet Fig`; `✓ Rename Fig`; `✓ Take Fig with you` | "goes at the next dock", or `✓ Bring Fig home` | "home at the next dock"; `✓ Cross Fig`; `✓ Portray Fig` | "one sitting each, ever"; `✓ Return Fig   ❀ +2` | "goes back to the wild", then `✓ Again: return Fig` | "never taken back"; `← Home`.
 - **Motion.** Walking the strip dithers the mibi shown in 200 ms; the species moment plays about 2 s.
 
-The measured layout, the focus graph and the states (rest, the meet, empty) are [Station layouts, the vivarium up close](station-layouts.md#the-vivarium-up-close).
+The measured layout, the focus graph and the states (rest, the meet, out) are [Station layouts, the Vivarium](station-layouts.md#the-vivarium-the-whole-and-one-mibi-up-close).
 
 **Pass when**
 - [ ] The mibi is the same individual as on the Companion.
@@ -357,7 +357,7 @@ The measured layout, the focus graph and the states (rest, the meet, empty) are 
 
 A sitting is spent in a ceremony on the Station: the player chooses the one mibi, a pose from its habits and a place it has been. It takes real time, longer than a bud, and the portrait arrives as a crate at the dock. The words are sitting, portrait, portrait card and `✓ Portray`. One sitting a mibi, ever; a sitting earned while one is held is not given, and the Station warns ahead. Its rules are in `prototypes/station/src/sitting.mjs`.
 
-In the vivarium, up close, the Portrait module offers `✓ Portray Fig` while a sitting is held and the mibi can sit ([Station layouts, the vivarium up close](station-layouts.md#the-vivarium-up-close)).
+In the vivarium, up close, the Portrait module offers `✓ Portray Fig` while a sitting is held and the mibi can sit ([Station layouts, the vivarium up close](station-layouts.md#the-vivarium-the-whole-and-one-mibi-up-close)).
 
 The sitting is its own screen under the vivarium, up close, opened from the Portrait module, with three steps: the pose, the place, then look and confirm. Its layout is [Station layouts, Sitting](station-layouts.md#sitting).
 
