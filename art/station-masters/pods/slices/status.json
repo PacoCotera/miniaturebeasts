@@ -2415,9 +2415,9 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-compare": {
-  "status": "signed",
-  "signed_in": "pass 48 verdict",
-  "note": "Compare's bench from the chapter's own wall"
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "withdrawn (art director): the old glass-lab compare stage; Compare is not in the current layout, and the room was redrawn in the world brief's look without it"
  },
  "compare-mark-differs-12x12": {
   "status": "withdrawn",
@@ -3215,69 +3215,69 @@
   "note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "status": "held",
+  "signed_in": null,
+  "note": "held (art director): withdrawn from signature after the Station lead's review; a hand fix pending (the moon rim toward a cool grey, the glow blooms cut, regraded to L* 30 or more with R >= B)"
  },
  "home-bay-shut-176x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bay-open-176x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-well-32x32": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-chamber-empty-72x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-chamber-growing-72x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-chamber-ready-72x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-cradle-empty-96x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-cradle-full-96x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-journal-104x72": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-192x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-day-192x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-dusk-192x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-night-192x56": {
   "status": "new",
