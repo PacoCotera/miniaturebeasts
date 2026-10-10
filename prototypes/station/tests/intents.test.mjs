@@ -62,7 +62,7 @@ test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key pl
   INTENTS.home.intent(h, "room", "confirm"); assert.equal(h.went.at(-1), "cargo");
   const h2 = host(world(), sv); h2.ui.screen = "pods"; h2.st.dock = { docked: false, at: T0 }; INTENTS.frame.dock(h2); assert.equal(h2.played.filter((e) => e.kind === "arrival").length, 0, "docked on another screen: no arrival, the crates are in the bay when Home next shows");
 });
-test("Cargo's bay opening is the rule, kept for the developer panel until Cargo is built: it opens every crate, an arrival each, input held, and says why when the bay is empty or shut", () => {
+test("Cargo's bay opening is the rule, kept for the developer panel until Cargo is built: it opens every crate, an arrival each, and says why when the bay is empty or shut", () => {
   const st = world(); S.seedCrate(st, "S01", 2, 4101, T0); st.dock = { docked: true, at: T0 };
   const h = host(st); openBay(h);
   assert.equal(h.played.filter((e) => e.kind === "arrival").length, 1, "one crate, one arrival"); assert.ok(h.ui.report && h.saved === 1); assert.equal(st.tray.length, 2);

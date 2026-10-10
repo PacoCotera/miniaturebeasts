@@ -2,7 +2,6 @@
 import * as S from "../state.mjs";
 import { codeText, frameOf } from "../genome.mjs";
 
-export const STAMP_MS = 900;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // The traits a pod can be shaped on: the read ones, in chapter order, with their chapter.
 export const reviewTraits = (p, frame) => frame.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => ({ c, t })));
