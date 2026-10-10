@@ -18,7 +18,7 @@ Every button on the Station, the Companion and the Caddy carries an engraved ico
 
 ## Title marks
 
-`marks/frame-room-{home,vivarium,research,library}-24.png`: the Station's on-screen title marks, 24 × 24, hand-placed pixel by pixel from the same four drawings, each in one Station palette colour that matches its key (`gold`, `grass`, `teal`, `lilac`). `frame-room-vivarium-24` replaces the habitat mark. Proofs at 1× and 8× on the bar's slate are beside them.
+`marks/slices/frame-room-{home,vivarium,research,library}-24.png` (with `marks/slices/manifest.json`): the Station's on-screen title marks, 24 × 24, hand-placed pixel by pixel from the same four drawings, each in one Station palette colour that matches its key (`gold`, `grass`, `teal`, `lilac`). `frame-room-vivarium-24` replaces the habitat mark. Proofs at 1× and 8× on the bar's slate are beside them.
 
 ## Source
 
@@ -27,9 +27,9 @@ Every button on the Station, the Companion and the Caddy carries an engraved ico
 ## Hashes (sha256)
 
 - `device-buttons-final.png`: `7eb6fd1dee3a841146821e1f641338d729bc24b662a91519213c5392421c715b`
-- `marks/frame-room-home-24.png`: `cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8`
-- `marks/frame-room-library-24.png`: `764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4`
-- `marks/frame-room-research-24.png`: `1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3`
-- `marks/frame-room-vivarium-24.png`: `50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b`
+- `marks/slices/frame-room-home-24.png`: `cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8`
+- `marks/slices/frame-room-library-24.png`: `764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4`
+- `marks/slices/frame-room-research-24.png`: `1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3`
+- `marks/slices/frame-room-vivarium-24.png`: `50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b`
 
 Cap master hashes are in `caps/manifest.json`.
