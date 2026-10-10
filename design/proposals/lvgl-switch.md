@@ -94,12 +94,13 @@ screens/    one binding table a screen: region id → word, and the compositions
 
 `notBuilt` is the second composition in the frame's binding table, beside `idleLine`. A screen with no binding table in `screens/` sends `state: "notBuilt"`, and the face draws the frame (the title from `frame.json` `strings.titles`, the counters, the Companion mark, the bottom line, the message plate), the stage ground, and one text region built with the `text` word, its rect, size, colour role, alignment and words from `frame.json` `notBuilt`. It draws no picture, no target and no ring. Navigation works as on any screen: room keys, ← to the parent, Dock, plates. Idle, until L2.2 builds `idleLine`, draws the same text region with no frame, and its first key sends `wake`. It adds no word and no layout rule.
 
-The compositions of Home, Habitat and the Probe bench, each in its screen's binding table and built from words already in the vocabulary:
+The compositions of Home, Idle, the Vivarium's whole, Habitat and the Probe bench, each in its screen's binding table (Idle's in the frame's, `screens/frame.c`) and built from words already in the vocabulary:
 
 - **`module`** (Home, Habitat, the Probe bench): a `panel` with its engraved word at the spec's `word` offset and its object, and the spec's `lamp` rect, or `"lamp": null` for none (Habitat's modules).
 - **`nameTag`** (Home, the Vivarium's whole and Habitat, one composition shared): a `panel` and its `text`, the height, size, weight, padding, rounding, least and most width from each screen's spec.
 - **`chapterPlates`** (Habitat's card): a `list` by `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40` with the rail's 24×24 emblem at (8, 8).
 - **`bayStrip`** (the Vivarium's whole and Habitat): a `list` by `listPitch` with forms (§2.3), each tile a `panel` and its thumbnail, a free bay a composed `dash` outline.
+- **`withYouBed`** (Home, Idle and the Vivarium's whole, one composition shared; Idle's in the frame's binding table): the carried set inside a living window, built of sprites and the `livingWindow` word's residents. The nest, 192×56; docked, one to three sleepers in carried order, each a resident in its nap pose with no lift, its ink at most 96×88 centred on its feet; away, the Companion mark, 16×24, at `markAt` (88, 16); docked with nobody carried, the nest alone. The bed and its sleepers sort with the residents as one, at the bed's foot. From each screen's spec: `rect`, `clip` (its window's `inside` region), `markRect`, `sleepers` (`max` 3, `pitch` 48, `footY`, `centre`, `places`, the adult and juvenile boxes) and `colours.bed` (rim, hollow, lit rim, mark). On Home and the whole each sleeper is a `resident` target with the feet ring; on Idle none is.
 - **`shieldPlates`** (the Probe bench): one sprite a place, the places a table by tier.
 
 A further screen using one of them goes to the UI designer and the architect first.
@@ -230,6 +231,10 @@ The rule: **the timeline in JavaScript decides that something plays and whether 
 | Screen change (180 ms, 16-level Bayer) | `main.mjs`, the host | A `dither` transition: 16 lattice pictures over the stage. No opacity |
 | A region's picture changing (Create's founder: 200 ms, 16 levels) | — | A `dither` event between the two pictures, composed by `bayerPick` (below) |
 | `grow` (Create, 1080 ms, hold) | — | The stamp label prints row by row, the code is cut in, the pod travels |
+| `moment` (one mibi up close, 1800 ms, hold 300 ms) | `intents/habitat.mjs`: `h.lock` and `h.play` for `MOMENT_MS` (300 ms) | The living window word plays the mibi's species moment from its moving set; until it has one, the placeholder hops twice, the creature lift 4 px up and back in whole pixels, at 0 and 900 ms. A key after the hold cuts it to its end |
+| `meet` (one mibi up close, no hold) | `UI.meet` and `FX.meetId` (`game.mjs`), set by the hatch's hand-off (`host.mjs`) | The state `meet`, landed in as the hatch's 180 ms dither ends: the ribbon word in the name tag's place, and the mibi's `moment` played once with no hold. The first key takes the ribbon away (a cut) |
+| `read` (one mibi up close, 300 ms, hold) | — | The plate turns read (a cut); the stamp label prints the chapter's cells row by row from the top over 300 ms, as in `grow` |
+| `watch` (one mibi up close, at 60 s, no hold) | `trickle.mjs` `watchFrame`, `state.mjs` `benchWatch` | Nothing of its own: the face plays the `plate` and, under the day's cap, the counters' tick |
 | Grow now's fill on the Incubator | — | The `leaves` word's `growNow`: one whole leaf a step over 400 ms (§2.2) |
 | Arrival (3 s a crate, input locked; crates slide 500 ms, staggered 250 ms), hatch (2.6 s), wake, Rest | `home.mjs`, `incubator.mjs`, `FX` fields | Named events on Home and the Incubator with whole-pixel slides |
 | Residents walking | — | The living window word: positions stepped in C from a seed and bounds in props, the same seed giving the same path. Their boxes are focus targets (§2.6) |

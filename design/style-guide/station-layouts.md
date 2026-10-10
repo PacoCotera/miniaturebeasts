@@ -271,7 +271,7 @@ Three sizes and no others: **28 px** semibold for names (a pod, a mibi, a specie
 
 - **The label is 120×120**, a bone-coloured plate with a 1 px slate edge, and the stamp is centred on it.
 - **The stamp is drawn on whole-pixel cells.** For a stamp of N modules (N + 2 with its quiet margin), the cell is the largest whole number of pixels that keeps the stamp within 104 px: `cell = floor(104 / (N + 2))`, never less than 2. For example, 21 modules give 23 × 4 = 92 px and 49 modules give 51 × 2 = 102 px.
-- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. One exception, on Pods only: the label stands inside a small, dim, unlit glass case at the right, the label plus 16 px a side; the case has no light, glow or beam of its own.
+- **It is never the focal point.** It sits at the edge of the composition, at least 96 px from the focal box. It never has its own beam, glow, frame or pane, and it is never larger than 120. One exception, on Pods only: the label stands on a small, dim, matte plate in the housing at the right, the label plus 16 px a side; the plate has no light, glow or beam of its own.
 - **It reads fifth or later** on every screen.
 
 ### The chapter rail (Pods, Create, Incubator)
@@ -437,12 +437,12 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 ### 4. Art direction
 
-- **Room:** the research bench, a modern digital lab.
-- **The pod is the only warm thing,** lit by a cool cone of light onto its frosted dish (224×96, never squashed) on the thick glass slab.
+- **Room:** the sample case: the pods rest in fitted, worn cut-outs in the device's sage and sand housing, each handled and labelled, with a hose, a mister and a small gauge in service of them, in the device's warm daylight, one soft key light from the top left, as on every section. Never a lab: no cool cone, no glass, no glossy bench.
+- **The pod is the one warm thing,** resting in its fitted cut-out (the dish region, 224×96, never squashed) on the case's ledge (the slab region), the brightest object on the case, with no beam.
 - **The figure suggests the type.** It is the species' silhouette in a soft halo: two painted slices per species (mist and clear, cross-faded by the chapters read), drawn from the standard painting's silhouette. It is cooler and dimmer than the pod and never shows the individual's colours or marks, so the player never takes it for the mibi they will get. Before Identify it is an empty halo.
-- **Everything else is cool:** the deep blue-teal ground, slate and graphite chrome, frost on what is unread.
+- **Everything else is the device:** dark matte slate panels, the sage and sand housing and dark rubber; frost only on what is unread.
 - **The page lights warm from inside only once it is read.**
-- **The stamp is a plain bone label** inside a small, dim, unlit glass case, its front glass bringing it below the pod's brightness.
+- **The stamp is a plain bone label** on a small, dim, matte plate in the housing, below the pod's brightness.
 - **Restraint, and never childish.**
 
 ### 5. Composition
@@ -1957,7 +1957,7 @@ The sitting is where the player spends a held sitting on one mibi: picks a pose 
 
 ### 4. Art direction
 
-- **Room:** the vivarium's light on a plain stage: the vivarium's warmth with the instrument reduced to the choices. The deck, the cards, the heading and the steps are the instrument's cool chrome.
+- **Room:** the vivarium's light on a plain stage: the vivarium's warmth with the device reduced to the choices. The deck, the cards, the heading and the steps are the device's slate panels (`panel`).
 - **The mibi** is its standard painting; the portrait is never shown before it is painted.
 - **The pose cards** are the species' pose pictures, `pose-{species}-{habit}-96x96`, one a habit of the species frame, never this mibi acting. **The place cards** are `place-{place}-96x96`.
 - **The backdrops** are `sitting-backdrop-plain-544x408` and one a place, `sitting-backdrop-{meadow,pond,rock,wood,cave}-544x408`.
@@ -2487,7 +2487,7 @@ The reference lends principles only: modules in columns, values carried and prin
 
 ### 4. Art direction
 
-The instrument's cool, even light, on the bench's ground. The wires are crisp 2 px rects, so the chrome stays flat. Only the gates, ticks, wish glints, the kin corner and the finds are painted masters. Seed and end pictures are the trait pictures, rendered at 64×32, never scaled. Never childish: no faces on gates, no sparkles on wires, no cartoon arrows.
+The device's warm daylight from the top left, as on every section, on the work tray's slate. The wires are crisp 2 px rects, so the chrome stays flat. Only the gates, ticks, wish glints, the kin corner and the finds are painted masters. Seed and end pictures are the trait pictures, rendered at 64×32, never scaled. Never childish: no faces on gates, no sparkles on wires, no cartoon arrows.
 
 ### 5. Composition and density
 
@@ -2593,7 +2593,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 ### 4. Art direction
 
-- **Room:** the vivarium's vivarium stays the warm, living thing on screen; the namer is the overview's cool instrument hardware over its card, the report card's look.
+- **Room:** the vivarium stays the warm, living thing on screen; the namer is a panel of the device's slate over its card, the report card's look.
 - **One warm signal:** the focus ring. The selection is cool (`tealD`), the caret `bone`, refusals `amber` and only for a moment.
 - **Never childish:** small square keys in a calm grid, letters in Inter 16, no bounce, no colours per letter.
 - **Calm:** nothing moves but the ring and the lift of the focused key; the caret is steady.
@@ -2778,7 +2778,7 @@ The line sits centred on the stage, a little above its middle, where the eye lan
 
 ### 4. Art direction
 
-Cool and quiet, the instrument at rest. The stage is the frame's stage part with no slice, flat `ground`, the same colour as the chrome; the frame's two `void` rules at y 39 and y 562 mark its edges. No warm light: the screen has no living window. The line is `fog` (8.6:1 on `ground`), below the title's `bone` and above the context's `mist`.
+Quiet, the device at rest. The stage is the frame's stage part with no slice, flat `ground`, the same colour as the chrome; the frame's two `void` rules at y 39 and y 562 mark its edges. No warm light: the screen has no living window. The line is `fog` (8.6:1 on `ground`), below the title's `bone` and above the context's `mist`.
 
 ### 5. Composition
 
@@ -2845,7 +2845,6 @@ Cool and quiet, the instrument at rest. The stage is the frame's stage part with
   - more looks in a trait than its row holds.
 - A master whose silhouette needs a different focal box, or any focal box shrinking below its listed size (300×310 where the guide asks).
 - Any change to the reading order, or a second warm or bright object competing with the specimen.
-- Screens not covered here: the Probe bench and Sitting.
 
 ---
 

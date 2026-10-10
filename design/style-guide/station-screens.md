@@ -73,7 +73,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 
 ## Home
 
-**Vibe.** Overview: the frame is the hardware, industrial and plasticky; the window is the vivarium, cozy and alive.
+**Vibe.** The device at rest: the vivarium in the central panel, the sections at the right.
 
 **Purpose.** The always-on view: the collection alive, the equipment's state. **Reads first:** the residents, then whatever needs you (the bottom line's right part).
 
