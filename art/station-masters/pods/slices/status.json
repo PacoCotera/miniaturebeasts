@@ -3057,7 +3057,7 @@
  "crate-sitting-80x56": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 89: repainted after the hold (a079009f): a steel case with a lit top edge, lid seam, two latches and steel posts round a teal front like Home A-r3-a1's crates, the 24x16 gilt glyph at (28, 12), 33..46 x 35..48 plain teal for the lamp, no seal tag; awaiting the art director's sign"
+  "note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; the sitting crate with the gilt frame glyph on the lid; replaces the old teal crate-sitting-80x56 (pass 89, no longer tracked); awaiting the art director's judgement (not signed)"
  },
  "place-meadow-96x96": {
   "status": "signed",
@@ -3458,5 +3458,30 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+ },
+ "crate-closer-open-384x256": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-closer-sealed-384x256": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-closer-opening-384x256": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sealed-256x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sitting-256x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; the sitting crate with the gilt frame glyph on the lid; replaces the old teal crate-sitting-80x56 (pass 89, no longer tracked); awaiting the art director's judgement (not signed)"
  }
 }

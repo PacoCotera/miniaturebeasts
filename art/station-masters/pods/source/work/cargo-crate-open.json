@@ -1,0 +1,23 @@
+[
+ {
+  "name": "cargo-crate-open",
+  "aspect": "3:2",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/home-bay-open-176x72.png",
+    "THE CRATE (the signed Home bay's field case, OPEN: a sage moulded field case with sand latches and a carry handle; this is the same object, seen closer):"
+   ],
+   [
+    "art/station-masters/pods/slices/home-bay-shut-176x72.png",
+    "THE SAME CRATE SHUT (the sage body, sand latches, handle):"
+   ],
+   [
+    "art/station-masters/pods/slices/nest-208x48.png",
+    "THE NESTS (a plump moss bed with a shallow hollow; each cut-out of the crate holds a little moss like this, and a small paper tag):"
+   ]
+  ],
+  "prompt": "Output a NEW image, 3:2, on a FLAT dark slate background (deep desaturated blue-black slate, uniform): ONE rugged FIELD CASE, the same object as the references (a sage green moulded plastic field case with sand-coloured latches and a carry handle), seen FRONT-ON and slightly from above, wide, filling most of the picture, its LID OPEN: the lid raised and tilted back behind the case, its inner face visible but plain. Added to the case: DARK RUBBER CORNER GUARDS (a deep dark teal-black rubber) on the four corners of the body and lid. NO wood, NO planks, NO rope, NO rustic crate, no gilt: matte moulded sage plastic, sand latches, dark rubber. The open case's INSIDE is a fitted foam tray with exactly THREE worn, rounded-rectangle cut-outs in a row, each a fitted hollow for a small creature pod (each hollow about one quarter of the case's width wide and a little taller than wide, evenly spaced, left, centre, right), each EMPTY (no pod, no creature, no egg), each with a little moss in its bottom and one small paper tag tucked in its edge (blank, no writing). The tray foam is a warm dark slate-brown, matte, the cut-outs slightly worn at their edges. Soft warm key light from the TOP LEFT, soft shadows to the lower right. Inside the cut-outs warm and dim, never glowing. Soft painted forms, matte, NO ink outlines, hairline edges only, no glossy highlights, no glass, no chrome, no blue or cool light. NO text, letters or digits anywhere."
+ }
+]

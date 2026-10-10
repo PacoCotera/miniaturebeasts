@@ -2627,5 +2627,39 @@
    "thoughtsTokenCount": 209,
    "totalTokenCount": 2121
   }
+ },
+ {
+  "tag": "cargo-crate-open try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185434,
+  "mxn": 3.7087,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:59:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1217,
+   "candidatesTokenCount": 1348,
+   "thoughtsTokenCount": 177,
+   "totalTokenCount": 2742
+  }
+ },
+ {
+  "tag": "cargo-crate-sealed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186238,
+  "mxn": 3.7248,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:59:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 539,
+   "candidatesTokenCount": 1330,
+   "thoughtsTokenCount": 213,
+   "totalTokenCount": 2082
+  }
  }
 ]

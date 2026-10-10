@@ -9649,12 +9649,12 @@
    56
   ],
   "rect": null,
-  "src": "typed by hand",
-  "made": "Home's Bay crate for the sitting, 80x56, painted like Home A-r3-a1's crates: a steel case with a lit top edge, a lid seam, two latches and steel posts round a teal front; a 24x16 gilt frame glyph at (28, 12) where the walk crate has its seal tag (not drawn); 33..46 x 35..48 plain teal for the lamp; hand-placed at 1x (pass 89) (pass 84)",
-  "sha256": "3dbf1287538a9a76c686e675a6c68d76b9c501789f62710b4e45e41265bf0c77",
+  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
+  "made": "the sitting Cargo crate for Home's bay, 80x56: the 256x176 sitting crate reduced uniformly (it replaces the old teal crate-sitting-80x56 of pass 89) (pass 122)",
+  "sha256": "62f42f25e63b4155bf3a822deb1752d0764e507ee1b146770f567d39dcdbbd23",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 89: repainted after the hold (a079009f): a steel case with a lit top edge, lid seam, two latches and steel posts round a teal front like Home A-r3-a1's crates, the 24x16 gilt glyph at (28, 12), 33..46 x 35..48 plain teal for the lamp, no seal tag; awaiting the art director's sign"
+  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; the sitting crate with the gilt frame glyph on the lid; replaces the old teal crate-sitting-80x56 (pass 89, no longer tracked); awaiting the art director's judgement (not signed)"
  },
  "place-meadow-96x96": {
   "size": [
@@ -10750,5 +10750,70 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+ },
+ "crate-closer-open-384x256": {
+  "size": [
+   384,
+   256
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
+  "made": "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale) (pass 122)",
+  "sha256": "ffdbea3a38550345f26da924b7f472d38a74af12fa8337217149418ded3223eb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-closer-sealed-384x256": {
+  "size": [
+   384,
+   256
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
+  "made": "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel (pass 122)",
+  "sha256": "14ff3809f835e8faaff66b5a3641197eaa494817a6a305c3d0e044536193f644",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-closer-opening-384x256": {
+  "size": [
+   384,
+   256
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
+  "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122)",
+  "sha256": "d234f23293cd519e15e9b43e3c67120d2311eb5d8f270535153a0987998851ec",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sealed-256x176": {
+  "size": [
+   256,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
+  "made": "the sealed Cargo crate for the bay's places, 256x176: the sealed picture's crate reduced uniformly (never enlarged) (pass 122)",
+  "sha256": "67bf64354117dbe045af38c95d32edc15609cc9867ad3b00905b8e8c035a37bf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; cut and drawn by hand from the two Pro pictures; awaiting the art director's judgement (not signed)"
+ },
+ "crate-sitting-256x176": {
+  "size": [
+   256,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
+  "made": "the sitting Cargo crate, 256x176: the sealed crate with the tag painted out and the gilt sitting glyph (a 24x16 gilt frame, scaled with the crate) on the lid instead; replaces the old teal crate-sitting-80x56 look (pass 122)",
+  "sha256": "77f4bc4a52e1ed398fbdb76f6d6b8ca67fb9bd0f8a9d6d4d6ecb8acc7ab4dd85",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 122: the Cargo crate (the art director's Cargo brief, owner-approved Pro): the Home bay's sage field case seen closer with dark rubber corners and an orange seal tag, no wood; the sitting crate with the gilt frame glyph on the lid; replaces the old teal crate-sitting-80x56 (pass 89, no longer tracked); awaiting the art director's judgement (not signed)"
  }
 }
