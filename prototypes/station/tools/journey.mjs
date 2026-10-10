@@ -97,20 +97,68 @@ expect(s.mibis.length === 1 && s.mibis[0].id === 1 && s.mibis[0].name === "Dot" 
 const svNow = await sv();
 expect(JSON.stringify({ ...svNow, st: undefined }) === companionBefore, "the Companion's part is byte-identical after the migration");
 await page.waitForTimeout(400);
-{ const p = await props(), c = await page.evaluate(() => window.__st.check());   // a fresh world opens on Home, which is not built: the frame and the line
-  expect(p.screen === "home" && p.state === "notBuilt" && p.frame.top.title === "Home", "Home draws the not-built composition: " + JSON.stringify([p.screen, p.state, p.frame?.top?.title]));
-  expect((c.log?.type ?? []).some((t) => t.text === "this screen is not built yet"), "the line says so: " + JSON.stringify((c.log?.type ?? []).map((t) => t.text))); }
+{ const p = await props(), c = await page.evaluate(() => window.__st.check());   // the fixture opens on Home with the Companion lifted: Home draws, the bed shows the Companion mark, the bay is shut
+  expect(p.screen === "home" && p.state === "home" && p.frame.top.title === "Home", "Home is built: " + JSON.stringify([p.screen, p.state, p.frame?.top?.title]));
+  expect(p.regions.bed.state === "away" && p.regions.cargo.state === "away" && p.regions.probe.state === "away" && p.regions.cargo.lamp === "off", "away: the bed, the bay and the Probe say so: " + JSON.stringify([p.regions.bed.state, p.regions.cargo.state, p.regions.probe.state]));
+  expect(!(c.log?.type ?? []).some((t) => /not built/.test(t.text)) && (c.log?.regions ?? []).some((r) => r.id === "glass" && r.layer === "chrome"), "Home draws its living window and says nothing is not built: " + JSON.stringify((c.log?.type ?? []).map((t) => t.text))); }
 await frameShot("page-home", true);
-// 2. seed one Loika pod (fixed seed) beside the fixture's crate; dock; open the crates through the developer hook
+// 2. seed one Loika pod (fixed seed) beside the fixture's crate; dock while Home shows: the crates slide into the Cargo module (home-dock-arrival)
 await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
+const events0 = await page.evaluate(() => window.__st.face.stats.events);
 await press("dock", 300);
 s = await st(); expect(s.dock.docked, "docked");
+{ const p = await props(), l = p.frame.line, events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
+  expect(events >= 1 && !(await page.evaluate(() => window.__st.holding())), `home-dock-arrival: the crates' slide is an event for the face (${events}) and holds nothing`);
+  expect(p.regions.cargo.state === "crates" && p.regions.cargo.crates === 2 && p.regions.cargo.lamp === "needsYou" && p.regions.bed.state === "docked" && p.regions.bed.sleepers.length === 1 && p.regions.bed.mark === "" && p.regions.probe.state === "docked", "home-dock-arrival: docked, two crates in the Cargo module, the Companion's mibi asleep on the bed: " + JSON.stringify([p.regions.cargo, p.regions.bed.state, p.regions.probe.state]));
+  expect(l.need === "two crates wait in the bay" && l.ok === "Open Cargo" && !(await page.evaluate(() => window.__st.msg)), "home-dock-arrival: the notice names the crates, the room's ✓ opens Cargo and no plate is shown: " + JSON.stringify(l)); }
+await page.waitForTimeout(900); await frameShot("home-docked", true);
 await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(200);
 s = await st();
 expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1, "both crates accepted once");
 expect(s.tray.length === 4, "four pods in the wells: " + s.tray.length);
 await page.evaluate(() => window.__st.openBay()); s = await st(); expect(s.tray.length === 4, "an accepted crate never reopens");
-expect(!(await page.evaluate(() => window.__st.holding())), "no arrival plays and nothing is held while Home is not built");
+expect(!(await page.evaluate(() => window.__st.holding())), "the bay's arrivals are Cargo's: nothing plays and nothing is held until Cargo is built");
+// Home's steps on the face (L2.2 H1: home-pad, home-rack, home-lamp; home-dock-arrival is above): the walks are deterministic (reduced motion: the residents stand on their first waypoint); the focus the face says and the intents are
+// recorded per step and held to prototypes/face/golden/journey-home.json (lvgl-switch.md §4, gate check 5).
+const trace = {}; let cur = null;
+const stepOf = (id) => { cur = trace[id] = []; };
+const said = () => page.evaluate(() => window.__st.said());
+const hpress = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(); cur.push({ key: k, said: m, screen: u.screen, focus: u.home, ok: l.ok ?? null, subject: l.subject ?? null, idle: u.idle }); return u; };
+const hintent = async (m, ms = 200) => { await said(); await intent(m, ms); const got = await said(), u = await ui(); cur.push({ intent: m, said: got, screen: u.screen, focus: u.home }); return u; };
+await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => { window.__st.goto("incubator"); }); await page.waitForTimeout(250); await page.evaluate(() => { window.__st.UI.home.f = "room"; window.__st.goto("home"); }); await page.waitForTimeout(500);
+{ stepOf("home-pad"); let u = await ui(); expect(u.screen === "home" && u.home === "room", "home-pad: Home with the ring on the room: " + JSON.stringify(u));
+  const first = (await line()); expect(first.ok === "Look at the pods" && !first.back, "home-pad: the room's ✓ is the notice's action and there is no ← cap on Home: " + JSON.stringify(first));
+  u = await hpress("right"); expect(u.home === "cargo", "home-pad: ▶ from the room is Cargo: " + u.home);
+  const col = []; for (let i = 0; i < 5; i++) col.push((await hpress("down")).home); expect(JSON.stringify(col) === JSON.stringify(["pods", "incubator", "probe", "library", "knob"]), "home-pad: ▼ walks the column Pods, Incubator, Probe, Library, the knob: " + col);
+  u = await hpress("down"); expect(u.home === "knob", "home-pad: the end of the column stops: " + u.home);
+  u = await hpress("left"); expect(u.home === "resident.1", "home-pad: ◀ from the column is the nearest resident (Dot, asleep on the bed): " + u.home);
+  expect(/asleep$/.test((await line()).subject), "home-pad: the subject says it is asleep: " + JSON.stringify(await line()));
+  u = await hpress("up"); expect(u.home === "vivarium", "home-pad: ▲ from the only resident is the Vivarium: " + u.home);
+  u = await hpress("right"); expect(u.home === "cargo", "home-pad: ▶ from the Vivarium is Cargo: " + u.home);
+  u = await hpress("home"); expect(u.home === "room" && u.screen === "home", "home-pad: the Home key on Home puts the ring back on the room: " + JSON.stringify(u));
+  const e = (await st()).e; u = await hpress("back"); expect(u.screen === "home" && u.home === "room" && !(await page.evaluate(() => window.__st.msg)) && (await st()).e === e, "home-pad: ← on Home does nothing: no plate, no cap: " + JSON.stringify(u)); }
+{ stepOf("home-rack");
+  for (const [m, id, to] of [["cargo", "cargo", "cargo"], ["incubator", "incubator", "incubator"], ["probe", "probe", "bench"], ["library", "library", "library"]]) {
+    await page.evaluate((f) => { window.__st.UI.home.f = f; window.__st.goto("home"); }, m); await page.waitForTimeout(300);
+    let u = await hpress("confirm", 400); expect(u.screen === to, `home-rack: ✓ on the ${m} module opens ${to}: ` + u.screen);
+    u = await hpress("back", 400); expect(u.screen === "home" && u.home === m, `home-rack: ← from ${to} is Home with the ring on ${m}: ` + JSON.stringify(u)); }
+  await page.evaluate(() => { window.__st.UI.home.f = "resident.1"; window.__st.goto("home"); }); await page.waitForTimeout(300);
+  let u = await hpress("confirm", 400); expect(u.screen === "habitat" && u.habId === 1, "home-rack: ✓ on a resident opens the Vivarium on that mibi: " + JSON.stringify(u));
+  await hpress("back", 400);
+  await page.evaluate(() => { window.__st.UI.home.f = "pods"; window.__st.goto("home"); }); await page.waitForTimeout(300);
+  u = await hpress("confirm", 400); expect(u.screen === "pods" && u.view === "collection", "home-rack: ✓ on the Pods module opens the collection: " + JSON.stringify(u));
+  const need = (await st()).tray.find((p) => !p.idd) ?? (await st()).tray[0]; expect((await page.evaluate(() => window.__st.UI.pods.cur)) === need.id, "home-rack: the ring is on the pod that most needs the player");
+  u = await hpress("back", 400); expect(u.screen === "home" && u.home === "pods", "home-rack: ← from the collection is Home: " + JSON.stringify(u)); }
+{ stepOf("home-lamp");
+  await page.evaluate(() => { window.__st.UI.home.f = "knob"; window.__st.goto("home"); }); await page.waitForTimeout(300);
+  expect((await line()).ok === "Rest", "home-lamp: the knob's ✓ is Rest: " + JSON.stringify(await line()));
+  const e = (await st()).e; let u = await hpress("confirm", 700); expect(u.idle === true && u.screen === "home", "home-lamp: ✓ on the knob rests the screen: Idle plays: " + JSON.stringify(u));
+  u = await hpress("confirm", 400); expect(!u.idle && u.screen === "home" && u.home === "knob" && (await st()).e === e, "home-lamp: the first press on Idle only wakes: Home, the ring where it was, nothing spent: " + JSON.stringify(u)); }
+{ const file = path.resolve(here, "../../face/golden/journey-home.json"), json = JSON.stringify({ _note: "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps: trace }, null, 1) + "\n";
+  if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
+  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(trace)])) if (JSON.stringify(want[id]) !== JSON.stringify(trace[id])) fail(`journey-home.json: step ${id} differs from the golden: ${JSON.stringify(trace[id]).slice(0, 300)}`); }
+  console.log(`home steps: ${Object.entries(trace).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
+await page.emulateMedia({ reducedMotion: "no-preference" }); await page.evaluate(() => { window.__st.goto("pods"); window.__st.goto("home"); }); await page.waitForTimeout(300);
 // 3. Pods: identify the new Loika pod
 await press("research", 200);
 { const u = await ui(); expect(u.screen === "pods" && u.view === "collection", "Research opens the collection: " + JSON.stringify(u)); }
@@ -393,11 +441,11 @@ expect(sib.ok, "two siblings seeded: " + sib.msg);
 expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [sib.mibis[0].id, sib.mibis[1].id])) === 0.25, "siblings: kinship a quarter");
 await press("home", 200);
 
-// 7. every screen but Pods is not built: its room keys, ← and the first press on Idle work, with today's keys
+// 7. every screen but Home and Pods is not built: its room keys, ← and the first press on Idle work, with today's keys
 const NAV = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")).navigation.screens;
 const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlace = (pl) => ({ probe: "bench" }[pl.split(".")[0]] || pl.split(".")[0]);
 {
-  const SCREENS = ["home", "create", "incubator", "library", "habitat", "bench", "cross"];
+  const SCREENS = ["cargo", "create", "incubator", "library", "habitat", "bench", "cross"];
   for (const name of SCREENS) {
     await page.evaluate((n) => window.__st.goto(n), name); await page.waitForTimeout(500);
     const p = await props(), c = await page.evaluate(() => window.__st.check()), nav = NAV[placeOf(name)];
@@ -408,7 +456,7 @@ const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlac
     expect((p.frame.line.back ?? null) === wantBack && !p.frame.line.ok, `${name}: ← names the parent (${wantBack ?? "none"}) and ✓ does nothing: ` + JSON.stringify(p.frame.line));
     const e = (await st()).e; await press("confirm", 150); await press("up", 100); await press("right", 100);
     expect((await ui()).screen === name && (await st()).e === e && (await props()).state === "notBuilt", `${name}: ✓ and the pad do nothing`);
-    await frameShot("notbuilt-" + name, name === "home" || name === "habitat");
+    await frameShot("notbuilt-" + name, name === "habitat");
     // ← goes to the parent in the navigation tree; on Home nothing
     await press("back", 300); const to = (await ui()).screen;
     expect(nav?.parent ? to === screenOfPlace(nav.parent) : to === name, `${name}: ← goes to ${nav?.parent ?? "nowhere"}: ` + to);
@@ -422,7 +470,7 @@ const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlac
   await press("home", 300); await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(400);
   { const p = await props(), c = await page.evaluate(() => window.__st.check()); expect(p.idle === true && !p.frame, "Idle sends no frame: " + JSON.stringify(Object.keys(p))); expect(JSON.stringify(c.log.type.map((t) => t.text)) === JSON.stringify(["Idle is not built yet"]), "Idle shows its line and nothing else: " + JSON.stringify(c.log.type.map((t) => t.text))); await frameShot("notbuilt-idle", true); }
   const e = (await st()).e; await press("confirm", 400); u = await ui();
-  expect(!u.idle && u.screen === "home" && (await st()).e === e && (await props()).state === "notBuilt", "the first press on Idle only wakes: " + JSON.stringify(u));
+  expect(!u.idle && u.screen === "home" && (await st()).e === e && (await props()).state === "home", "the first press on Idle only wakes: " + JSON.stringify(u));
   await press("research", 300); const f0 = await focusNow(); await page.evaluate(() => { window.__st.UI.idle = true; }); await page.waitForTimeout(400); await press("right", 400);
   expect(!(await ui()).idle && (await focusNow()) === f0 && (await ui()).screen === "pods", "on Pods the first press on Idle wakes and the ring stays: " + JSON.stringify([await ui(), f0, await focusNow()]));
 }
@@ -451,6 +499,6 @@ console.log("recorded " + checks.shots.length + " screenshot points for the laye
 await browser.close(); server.close(); caddy.stop(); caddyServer.close();
 if (errors.length) { console.error("journey failed:\n" + errors.join("\n")); process.exit(1); }
 // The milestones whose screens are not on the face yet: their steps are listed from journey-pending/ on every run and run when the screen is built (lvgl-switch.md §4).
-{ const dir = path.join(here, "journey-pending"), files = readdirSync(dir).filter((f) => /^L2\.\d\.mjs$/.test(f)).sort();
+{ const dir = path.join(here, "journey-pending"), files = readdirSync(dir).filter((f) => f.endsWith(".mjs")).sort();
   for (const f of files) { const { milestone, steps } = await import(pathToFileURL(path.join(dir, f)).href); console.log(`pending until ${milestone} is on the LVGL face (${steps.length} steps in tools/journey-pending/${f}):\n` + steps.map((p) => "  · " + p.id + ": " + p.what).join("\n")); } }
 console.log("journey ok · screenshots in img/");

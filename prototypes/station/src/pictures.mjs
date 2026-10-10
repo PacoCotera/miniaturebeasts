@@ -7,7 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, art, fromRGBA, bay } from "./pixels.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON, beamArt } from "./art.mjs";
+import { emblemArt, ICON, beamArt, mibiArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
@@ -76,6 +76,7 @@ export function registerPictures(reqs, env) {
       case "emblem": putOrMaster(r.id, `rail-emblem-${r.chapter}-${r.state || "unread"}-24x24`, 24, 24, "the chapter rail master", () => emblemArt(r.chapter, 24)); break;
       case "star": putOrMaster(r.id, "glint-star-12x12", 12, 12, "the glint master", starPB); break;
       case "stamp": put(r.id, r.size, r.size, "the stamp's label art", () => { const p = env.podById(r.pod), fr = env.frameOf(r.species), sp = stampPicture(fr, p.genome, r.read); return sp.build(); }); break;
+      case "mibi": put(r.id, r.size[0], r.size[1], "the painted mibis (the painting once landed)", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), r.size[0], r.size[1], "three-quarter")); break;
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
       default: throw new Error("unknown picture kind " + r.kind);
     }

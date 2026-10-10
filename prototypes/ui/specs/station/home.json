@@ -206,7 +206,7 @@
    "cargo": "Open Cargo",
    "pods": "Look at the pods",
    "incubator": "Open the Incubator",
-   "probe": "Open the Probe bench",
+   "probe": "Open the Probe",
    "library": "Open the Library",
    "knob": "Rest"
   },

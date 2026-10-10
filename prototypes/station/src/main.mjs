@@ -6,7 +6,7 @@ import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
 import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
-import { setFrames, frameOf, frameIds, stampGenome } from "./genome.mjs";
+import { setFrames, frameOf, frameIds, stampGenome, podGenome } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
 import { watchFrame } from "./trickle.mjs";
@@ -35,6 +35,7 @@ async function loadFrames() {
 // --- the face ---
 let FACE = null, H = null, lastLog = null, lastProps = null, msgSent = -1;
 const renderErrors = [];   // every error the face or a frame raised, kept for the checks to read
+const said = [];   // the focus and the intents the face said, for the journey's golden (window.__st.said() takes and clears them)
 const faceErrors = [];
 const sendEvent = (m) => { if (FACE.send(m) < 0) faceErrors.push(...FACE.errors()); };
 // What the face said since the last call: its intents and its focus become the rules (host.mjs), its errors are kept, its log is the checks'.
@@ -42,7 +43,7 @@ function pump() {
   for (let m; (m = FACE.poll());) {
     if (m.t === "error") { faceErrors.push(m.what); console.error("face: " + m.what); }
     else if (m.t === "log") lastLog = m;
-    else { if (m.t === "intent" && m.verb === "wake") { FX.wake = clock.now; caddy.wake(); } onFaceMessage(H, m); }
+    else { if (m.t === "intent" && m.verb === "wake") { FX.wake = clock.now; caddy.wake(); } if (m.t === "intent" || m.t === "focus") said.push({ t: m.t, screen: m.screen, target: m.target, ...(m.verb ? { verb: m.verb } : {}) }); onFaceMessage(H, m); }
   }
 }
 // The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
@@ -142,10 +143,10 @@ const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the
 bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
 const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
-// The spec files the face takes (frame and pods), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
+// The spec files the face takes (frame, pods and home), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home"]) SPECS[k] = await spec(k + ".json");
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
@@ -173,7 +174,7 @@ const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
 
 // Test hooks (not part of play).
 const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") H.goto("pods"); };
-window.__st = { ready, renderErrors, faceErrors, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
+window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), act: (k) => { FX.lockUntil = 0; act(k); }, press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => home.openBay(H), unlock: () => { FX.lockUntil = 0; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, pass: FACE.pass, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, and with `capture` the PNG.
@@ -187,13 +188,14 @@ window.__st = { ready, renderErrors, faceErrors, get props() { return lastProps 
   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
   podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); }, growCost: (choices) => S.growCost(G.st, choices || {}, G.settings),
   openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; },
+  seedPod: (species, gs) => { const r = S.seedPodFromGenome(G.st, podGenome(frameOf(species), gs), G.settings, Date.now()); save(); return r; },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };
 
 // What the CI checks read at a screenshot point: the screen, the face's log (every string it set, each drawn region) and its counts.
 function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null, f = FACE;
   const pr = lastProps ? JSON.parse(lastProps) : null;
-  return { screen: UI.screen, idle: UI.idle, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
+  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
     pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null,
     placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }

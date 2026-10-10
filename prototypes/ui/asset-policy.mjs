@@ -7,6 +7,7 @@ const ART = [/^emblem:/, /^page-mark-/, /^icon:/, /^grow:/, /^waiting:/, /^beam:
 const PAINTED = [
   /^pod[:-]/, /^figure:/, /^mibi-halo/, /^crop:/, /^trait[:-]/, /^plate-/, /^rail-tab-fill-/, /^mark-clan-/, /^mark-seed/, /^place:[a-z]+:(64|112|48)$/, /^room-/, /^ring-(arc-)?collection-/, /^placepanel:/, /^panel-/, /^well/, /^pane/, /^page-pane/,
   /^stamp:/, /^frame-(room|companion|sun|lamp|top-bar|bottom-line)/, /^face-/, /^find-/, /^ring-kin-/, /^ring-hatch-/,
+  /^home-(glass|bed|bay|well|chamber|cradle|journal)/, /^crate-/, /^shield-plate/, /^sitting-frame/, /^leaf-small-/, /^mibi:/,
 ];
 const MOVES_WITH_MASTER = [/^kinring:/, /^hatch:/];
 export function policyOf(id, status = "placeholder") {

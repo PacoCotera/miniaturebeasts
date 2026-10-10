@@ -14,17 +14,18 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { pageSize } from "../../ui/specs/derive.mjs";
 import { decodePNG } from "../../ui/png.mjs";
+import { departures } from "../../face/tools/home-regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 if (!existsSync(file)) { console.error("no journey record at " + file); process.exit(2); }
-const rec = JSON.parse(readFileSync(file, "utf8")), pods = JSON.parse(readFileSync(path.join(ui, "specs/station/pods.json"), "utf8")), frame = JSON.parse(readFileSync(path.join(ui, "specs/station/frame.json"), "utf8"));
+const rec = JSON.parse(readFileSync(file, "utf8")), home = JSON.parse(readFileSync(path.join(ui, "specs/station/home.json"), "utf8")), pods = JSON.parse(readFileSync(path.join(ui, "specs/station/pods.json"), "utf8")), frame = JSON.parse(readFileSync(path.join(ui, "specs/station/frame.json"), "utf8"));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.join(ui, "palettes/station.json"), "utf8")).colours);
 const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
-const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [16, 20, 28];
+const F = frame.regions, R = pods.regions, N = frame.notBuilt, SIZES = [16, 20, 28], MODULES = ["cargo", "pods", "incubator", "probe", "library"];
 
 // the plate's chrome region is the plate and its shadow, 3 px lower
 // ---- 1. palette, 2. type, 4. size, at every point
@@ -58,7 +59,10 @@ for (const s of rec.shots) {
   if (c.idle) { must(eq(c.log.regions.find((r) => r.id === "notBuilt.ground")?.rect ?? [], N.regions.ground.rect), `Idle's ground is the whole screen ${N.regions.ground.rect}`); must(!c.log.regions.some((r) => r.id === "top" || r.id === "line"), "Idle draws no frame"); continue; }
   one("chrome", "top", F.top.rect, "top bar"); one("chrome", "line", F.line.rect, "bottom line");
   for (const r of got("chrome", "plate")) { const w = r.rect[2], cx = r.rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (r.rect[1] + r.rect[3] - 3 === F.plate.bottom || r.rect[1] === F.plate.topOverFocal), `message plate ${r.rect}`); }
-  if (c.screen !== "pods" || c.props?.state === "notBuilt") {   // a screen the face has no words for: the frame, the stage in the ground and the line, centred on 512 with its cap top on 288
+  if (c.screen === "home" && c.props?.state === "home") {   // Home: every region of the face's log against home.json (face/tools/home-regions.mjs): zero departures; the strings are Inter at their sizes
+    const d = departures(lg, home, frame, c.homeFocus ?? "room"); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+    must(got("chrome", "glass").length === 1 && got("chrome", "bezel").length === 1 && MODULES.every((m) => got("chrome", m).length === 1), "Home draws the bezel, the glass and the five modules once each");
+  } else if (c.screen !== "pods" || c.props?.state === "notBuilt") {   // a screen the face has no words for: the frame, the stage in the ground and the line, centred on 512 with its cap top on 288
     must(c.props?.state === "notBuilt", `${c.screen} is not built and sends state notBuilt`);
     one("chrome", "notBuilt.stage", F.stage.rect, "the stage ground");
     const t = got("type", "notBuilt.line")[0]; must(!!t && Math.abs(t.rect[0] + t.rect[2] / 2 - N.regions.line.centre) <= 1 && t.rect[1] + 7 === N.regions.line.capTop, `the not-built line ${t?.rect} is centred on ${N.regions.line.centre} with its cap top on ${N.regions.line.capTop}`);
@@ -83,7 +87,8 @@ for (const s of rec.shots) {
   for (const [mode, ids] of Object.entries(need)) { const shots = rec.shots.filter((x) => x.check.screen === "pods" && x.check.mode === mode); if (!shots.length) { fail(`no screenshot point records Pods in its ${mode} state`); continue; }
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }
-for (const screen of ["home", "create", "incubator", "library", "habitat", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
+for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
+for (const screen of ["cargo", "create", "incubator", "library", "habitat", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "notbuilt-idle" && x.check.idle)) fail("no screenshot point records Idle");
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
 
