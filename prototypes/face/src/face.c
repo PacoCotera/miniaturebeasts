@@ -44,6 +44,7 @@ void face_init(void) {
   lv_display_set_color_format(g_disp, LV_COLOR_FORMAT_ARGB8888);
   lv_display_set_buffers(g_disp, g_fb, NULL, sizeof g_fb, LV_DISPLAY_RENDER_MODE_DIRECT);
   lv_display_set_flush_cb(g_disp, flush_cb);
+  lv_timer_set_period(lv_display_get_refr_timer(g_disp), 1);   /* one refresh per face_frame: LVGL's default period (33 ms) would carry two steps of the walk in one refresh at a frame of 16 ms */
   lv_indev_t *kp = lv_indev_create();
   lv_indev_set_type(kp, LV_INDEV_TYPE_KEYPAD);
   lv_indev_set_read_cb(kp, key_read_cb);

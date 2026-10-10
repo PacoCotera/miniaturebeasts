@@ -155,6 +155,14 @@ await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => 
   expect((await line()).ok === "Rest", "home-lamp: the knob's ✓ is Rest: " + JSON.stringify(await line()));
   const e = (await st()).e; let u = await hpress("confirm", 700); expect(u.idle === true && u.screen === "home", "home-lamp: ✓ on the knob rests the screen: Idle plays: " + JSON.stringify(u));
   u = await hpress("confirm", 400); expect(!u.idle && u.screen === "home" && u.home === "knob" && (await st()).e === e, "home-lamp: the first press on Idle only wakes: Home, the ring where it was, nothing spent: " + JSON.stringify(u)); }
+{ stepOf("home-rest-hold");   // with motion: ✓ on the knob, a room key at +100 ms is dropped, the rest ends on Idle, the next press only wakes, the one after opens the section
+  await page.emulateMedia({ reducedMotion: "no-preference" }); await page.evaluate(() => { window.__st.goto("incubator"); }); await page.waitForTimeout(250);
+  await page.evaluate(() => { window.__st.UI.home.f = "knob"; window.__st.goto("home"); }); await page.waitForTimeout(600);
+  await hpress("confirm", 100); expect(await page.evaluate(() => window.__st.holding()), "home-rest-hold: the rest holds input");
+  let u = await hpress("research", 50); expect(u.screen === "home", "home-rest-hold: a room key during the hold opens nothing: " + JSON.stringify(u));
+  await page.waitForTimeout(800); u = await ui(); expect(u.idle && u.screen === "home" && u.home === "knob" && !(await page.evaluate(() => window.__st.pendingRoom())) && !(await page.evaluate(() => window.__st.holding())), "home-rest-hold: the rest ends on Idle with Home's focus unchanged and no key kept: " + JSON.stringify(u));
+  u = await hpress("research", 450); expect(!u.idle && u.screen === "home" && u.home === "knob", "home-rest-hold: the next key only wakes: " + JSON.stringify(u));
+  u = await hpress("research", 400); expect(u.screen === "pods", "home-rest-hold: the key after it opens Pods: " + JSON.stringify(u)); }
 { const file = path.resolve(here, "../../face/golden/journey-home.json"), json = JSON.stringify({ _note: "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps: trace }, null, 1) + "\n";
   if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
   else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(trace)])) if (JSON.stringify(want[id]) !== JSON.stringify(trace[id])) fail(`journey-home.json: step ${id} differs from the golden: ${JSON.stringify(trace[id]).slice(0, 300)}`); }

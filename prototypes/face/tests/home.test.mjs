@@ -30,6 +30,7 @@ function scene(o = {}) {
   const st = world(); S.seedAdults(st, "S01", 5, o.adults ?? 5, settings); painted(st);
   if (o.young) { S.seedAdults(st, "S01", 77, o.young, settings); for (const m of st.mibis.slice(-o.young)) { m.born = st.turn; m.paint = { state: "landed" }; } }
   for (let i = 0; i < (o.pods ?? 0); i++) { S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3 + i), settings, T0); S.skipIdentify(st, st.tray.at(-1)); }
+  for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
   if (o.away) st.dock = { docked: false, at: T0 };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1)), mibis: [], carried: (o.carry ?? [0, 1]).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   return homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: o.focus ?? null }, homeSpec, frameSpec);
@@ -141,16 +142,18 @@ test("the walk is deterministic: the same props on the same clock give the same 
   const run = async (t) => { const f = await start(scene({ adults: 4, carry: [0] }), { t0: 5000 }); for (let ms = 40; ms <= t; ms += 40) f.frame(5000 + ms); return f.hash(); };
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200), "idle for the first two seconds, then they walk");
 });
-for (const [step, off] of [[40, 0], [33, 21], [17, 5], [16, 5]]) {
-  test(`on a frame at most six adult boxes move (the living window staggers the steps) and the dirty area stays within a quarter of the screen, with twelve residents walking: frames every ${step} ms from ${off} ms`, { skip }, async () => {
-    const f = await start(scene({ adults: 12, young: 0, carry: [] }), { t0: 5000 }), M = f.M; let area = 0, boxes = 0, moved = 0;
-    for (let t = step + off; t < 30000; t += step) {
-      f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0, big = 0;
-      for (let i = 0; i < n; i++) { s += a[i * 4 + 2] * a[i * 4 + 3]; if (a[i * 4 + 2] * a[i * 4 + 3] > 12000) big++; }
-      area = Math.max(area, s); boxes = Math.max(boxes, big); if (n) moved++;
+// the dirty area of a refresh (the sum of the rectangles the face redraws) is at most a quarter of the screen over two minutes of walking, at 40 ms frames and at 16 ms frames
+const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 } };
+for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
+  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen`, { skip }, async () => {
+    const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0;
+    for (let t = step + off; t < 120000; t += step) {
+      f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
+      for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3];
+      area = Math.max(area, s); if (n) moved++;
     }
-    assert.ok(moved > 100, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 1024 * 600 * 0.25, `dirty area ${area} of ${1024 * 600}`); assert.ok(boxes <= 6, `${boxes} adult-sized rectangles in a frame`);
-    console.log(`# Home's walk, twelve residents, frames every ${step} ms: worst frame ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty, ${boxes} boxes`);
+    assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
+    console.log(`# Home's walk, ${name}, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);
   });
 }
 

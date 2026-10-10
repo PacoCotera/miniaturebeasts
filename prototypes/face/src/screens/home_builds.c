@@ -26,8 +26,11 @@ static void lamp(const char *id, int x, int y, const char *state) {
   snprintf(n, sizeof n, "%s.fill", id); v_rect(n, x + 1, y + 1, 10, 10, colr(p));
 }
 
-/* a waiting lamp on a resident or a sleeper: the flat plate in the spec's colours */
-void build_waitingLamp(const char *id, int x, int y) { lamp(id, x, y, "waiting"); }
+/* a waiting lamp on a resident or a sleeper: the flat plate in the spec's colours; not shown, its two nodes stay with no size */
+void build_waitingLamp(const char *id, int x, int y, int shown) {
+  if (shown) { lamp(id, x, y, "waiting"); return; }
+  char n[64]; snprintf(n, sizeof n, "%s.rim", id); v_rect(n, x, y, 0, 0, colr("colours.lamp.rim")); snprintf(n, sizeof n, "%s.fill", id); v_rect(n, x, y, 0, 0, colr("colours.lamp.waiting"));   /* hidden: the same two nodes, empty, so the order of the glass never changes kind */
+}
 
 /* the module: a panel (fill, bevel top, hairline edge), its engraved word at the spec's offset and its lamp; the objects are the screen's. `dy` is the focused module's lift (negative). Draws region `key`. */
 void build_module(const char *key, int dy, const char *lampState) {

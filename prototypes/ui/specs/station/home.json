@@ -87,7 +87,7 @@
  },
  "events": {
   "crateIn": { "kind": "arrival", "target": "cargo", "ms": "(crates − 1) × 250 + 500", "hold": 0, "when": "the Companion docks with crates while Home shows, or Home is landed on from Idle by Dock; docked on another screen, the crates are in the bay when Home next shows", "each": { "from": [0, -40], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay (800, 56, 176, 72)" } },
-  "rest": { "kind": "rest", "target": "knob", "ms": 200, "hold": 380, "steps": [{ "at": 0, "ms": 200, "do": "the knob settles from its lift; the ring goes" }, { "at": 200, "ms": 180, "do": "the screen transition (16-level Bayer dither) to Idle" }] },
+  "rest": { "kind": "rest", "target": "knob", "ms": 200, "hold": 380, "keys": "a room key during the hold is dropped, never kept: the rest ends on Idle, where the first press only wakes (frame.json idle.keys.rest)", "steps": [{ "at": 0, "ms": 200, "do": "the knob settles from its lift; the ring goes" }, { "at": 200, "ms": 180, "do": "the screen transition (16-level Bayer dither) to Idle" }] },
   "motion": "Reduced motion (props.motion false): every event is a cut to its end, so the host sends hold 0 and runs what follows an event's end on the frame of the key (rest lands on Idle at once; the crates stand in the bay)"
  },
  "focus": {
@@ -109,7 +109,7 @@
    "nearestIn ahead": "only the group's present targets more than 6 px ahead in the key's direction (along > 12 on doubled centres), least 5 × along + 11 × across",
    "list": "an ordered list: the first entry that yields a present target wins; \"none\" last means the ring stays"
   },
-  "held": "while events.rest holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
+  "held": "while events.rest holds, the face moves no focus and sends no intent but room:<x>, which the host drops (events.rest.keys); every other hold keeps the last room:<x> and dispatches it when the hold ends",
   "targets": {
    "vivarium": { "group": "vivarium", "ring": "round", "box": "regions.bezel.rect", "ringRect": [12, 44, 664, 512], "lift": 0, "liftNote": "the living window never moves: the ring alone marks it" },
    "resident": { "group": "resident", "id": "resident.<mibi id>", "ring": "feet", "box": "the resident's box where the face has stepped it; each sleeper is one (regions.bed.sleepers), with no lift", "lift": 4 },
@@ -170,7 +170,7 @@
   "vivarium": "the Vivarium's whole, the ring on the mibi last seen up close",
   "research": "Pods, the collection, the ring on the pod that most needs the player",
   "library": "the Library's spread, the ring on the frame it was last on",
-  "dock": "the Caddy's Dock, a world event: the Companion returns in the top bar, the crates slide into the Cargo module (events.crateIn), the bed fills with the carried set and the notice names the crates. No message plate. Dock again lifts the Companion: the bay shuts (a cut), the bed shows the Companion mark"
+  "dock": "the Caddy's Dock, a world event: the Companion returns in the top bar, the crates slide into the Cargo module (events.crateIn), the bed fills with the carried set and the notice names the crates. No message plate. Dock again lifts the Companion: the bay shuts (a cut), the bed empties (no mark until the hand-drawn mark lands)"
  },
  "line": {
   "rule": "the bottom line for each focus: the action (✓ and its verb), the context (mist, at most six words, the only part that may end in …), the notice (the most pressing need, strings.needs, amber with its lamp, the same wherever the ring is) and no way back",

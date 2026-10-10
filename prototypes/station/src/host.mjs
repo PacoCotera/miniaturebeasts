@@ -122,7 +122,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
+    now: () => Date.now(), motion, say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding, holdsOf: (kind, target) => holding() && holds.has(kind + ":" + target),
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => { const v = holds.get(kind + ":" + target); if (v && v.byDone) holds.delete(kind + ":" + target); },
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
@@ -137,16 +137,15 @@ export function onFaceMessage(h, m) {
     if (m.kind === "hatch") { UI.hab.id = +m.target; UI.hab.f = "door"; h.goto("habitat"); }   // the hatch is over: meet the mibi, the ring on the door
     if (m.kind === "rest") {   // the knob has settled (events.rest.ms): the screen transition to Idle follows (its second step); with the hold still on
       const ev = SPECS.home.events.rest, step = ev.steps[1]; UI.resting = true; h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 });
-    } else if (m.kind === "dither" && UI.resting) {   // the transition is over, and the hold with it: Idle plays the Vivarium alone, Home keeping its state and focus unseen; the room key kept during the hold is dispatched now
-      UI.resting = false; UI.idle = true; const k = h.pendingRoom; h.pendingRoom = null;
-      if (k) { UI.idle = false; dispatch(h, { screen: "home", target: "room", verb: "room:" + k }); }
+    } else if (m.kind === "dither" && UI.resting) {   // the transition is over, and the hold with it: Idle plays the Vivarium alone, Home keeping its state and focus unseen
+      UI.resting = false; UI.idle = true; h.pendingRoom = null;   // the rest ends on Idle, where the first press only wakes: a room key pressed during the hold was dropped (home.json events.rest.keys)
     }
     return;
   }
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }
   if (m.t !== "intent") return;
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
-  if (h.holding() && m.verb?.startsWith("room:")) { h.pendingRoom = m.verb.slice(5); return; }   // while the host's hold runs the last room: intent is kept and dispatched when the hold ends; every other intent is dropped
+  if (h.holding() && m.verb?.startsWith("room:")) { if (!UI.resting && !h.holdsOf("rest", "knob")) h.pendingRoom = m.verb.slice(5); return; }   // while the host's hold runs every intent is dropped; a room: key is kept as the last one, except in Home's rest, which ends on Idle and drops it
   if (h.holding()) return;
   if (m.verb === "wake") { dispatch(h, m); h.play({ kind: "dither", target: "stage", ms: 180, hold: true }); return; }
   dispatch(h, m);

@@ -418,6 +418,72 @@
     "subject": "the Vivarium plays alone",
     "idle": false
    }
+  ],
+  "home-rest-hold": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "idle",
+      "verb": "wake"
+     }
+    ],
+    "screen": "home",
+    "focus": "knob",
+    "ok": "Rest",
+    "subject": "the Vivarium plays alone",
+    "idle": false
+   },
+   {
+    "key": "research",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "knob",
+      "verb": "room:research"
+     }
+    ],
+    "screen": "pods",
+    "focus": "knob",
+    "ok": "Open",
+    "subject": "sealed until identified",
+    "idle": false
+   }
   ]
  }
 }

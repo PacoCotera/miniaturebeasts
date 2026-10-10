@@ -134,8 +134,8 @@ static void glass_group(const char *cur) {
   int count = 0, lift = hi("regions.resident.lift", 4);
   int bedPic = has(v_pstr("regions.bed.picture"));
   for (int k = 0; k < ni; k++) {
-    if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent]; count += has(e->pic) + (e->waiting ? 2 : 0) + (it[k].kind == 2 ? 1 : 0); }
-    else { count += bedPic; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && i != focused) count += has(g_e[i].pic) + (g_e[i].waiting ? 2 : 0); }
+    if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent]; count += has(e->pic) + 2 + (it[k].kind == 2 ? 1 : 0); }
+    else { count += bedPic; for (int i = 0; i < g_ne; i++) if (g_e[i].sleeper && i != focused) count += has(g_e[i].pic) + 2; }
   }
   if (count == 0) return;
   prim_node(v_id("glass.clip"), FN_CLIP, glass[0], glass[1], glass[2], glass[3], 0, count, 0);
@@ -144,15 +144,15 @@ static void glass_group(const char *cur) {
   int n = 0;
   for (int k = 0; k < ni; k++) {
     if (it[k].kind != 1) {
-      const ent_t *e = &g_e[it[k].ent]; int y = e->draw[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0);
+      const ent_t *e = &g_e[it[k].ent]; int y = e->draw[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0), ly = e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0);
       if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, "home", "focus.targets.resident.ring", frame_ring()); }
-      v_name(e->sleeper ? "bed" : "resident"); v_sprite(v_fmt("g.%d", n++), e->pic, e->draw[0], y, e->draw[2], e->draw[3]);
-      if (e->waiting) { v_region(e->sleeper ? "bed" : "resident", LAYER_CHROME); build_waitingLamp(v_fmt("g.%d", n++), e->box[0] + e->box[2] - 12, e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0)); }
+      v_name(e->sleeper ? "bed" : "resident"); v_sprite(v_fmt("g.%d", n), e->pic, e->draw[0], y, e->draw[2], e->draw[3]);   /* a slot is a picture and its waiting lamp, the same two nodes every draw */
+      v_region(e->sleeper ? "bed" : "resident", LAYER_CHROME); build_waitingLamp(v_fmt("g.%d", n + 1), e->box[0] + e->box[2] - 12, ly, e->waiting); n += 2;
     } else {
       v_name("bed"); v_sprite(v_fmt("g.%d", n++), v_pstr("regions.bed.picture"), bed[0], bed[1], bed[2], bed[3]);
       for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first carried is drawn last, in front */
-        const ent_t *e = &g_e[i]; v_name("bed"); v_sprite(v_fmt("g.%d", n++), e->pic, e->draw[0], e->draw[1], e->draw[2], e->draw[3]);
-        if (e->waiting) { v_region("bed", LAYER_CHROME); build_waitingLamp(v_fmt("g.%d", n++), e->box[0] + e->box[2] - 12, e->box[1]); }
+        const ent_t *e = &g_e[i]; v_name("bed"); v_sprite(v_fmt("g.%d", n), e->pic, e->draw[0], e->draw[1], e->draw[2], e->draw[3]);
+        v_region("bed", LAYER_CHROME); build_waitingLamp(v_fmt("g.%d", n + 1), e->box[0] + e->box[2] - 12, e->box[1], e->waiting); n += 2;
       }
     }
   }
