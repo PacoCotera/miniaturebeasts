@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
+import { withPolicy } from "./node-scene.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
@@ -37,7 +38,7 @@ const standIn = (id, w, h, slice, tile, salt = 0) => {
 async function setup(c, salted = null) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   assert.equal(f.send({ t: "palette", name: "station", colours: palette }), 0); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0); assert.equal(f.send({ t: "spec", screen: "pods", json: podsSpec }), 0);
-  for (const p of c.pictures) f.handleOf(p.id, (id) => standIn(id, p.w, p.h, p.slice, p.tile, id === salted ? 1 : 0));
+  for (const p of c.pictures) f.handleOf(p.id, withPolicy((id) => standIn(id, p.w, p.h, p.slice, p.tile, id === salted ? 1 : 0)));
   return f;
 }
 const frames = (f, n = 3) => { for (let i = 0; i < n; i++) f.frame((f.t = (f.t ?? 0) + 16)); };
@@ -86,7 +87,7 @@ test("the kin ring and the hatch switch layer with their master: art while a pla
     const draw = async (status) => {
       const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
       assert.equal(f.send({ t: "palette", name: "station", colours: palette }), 0); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0); assert.equal(f.send({ t: "spec", screen: "pods", json: podsSpec }), 0);
-      for (const p of ov.pictures) f.handleOf(p.id, (x) => (x === id ? (status === "master" ? realMaster(x) : { ...standInArt(x, p.w, p.h), status: "placeholder" }) : standIn(x, p.w, p.h, p.slice, p.tile)));
+      for (const p of ov.pictures) f.handleOf(p.id, withPolicy((x) => (x === id ? (status === "master" ? realMaster(x) : { ...standInArt(x, p.w, p.h), status: "placeholder" }) : standIn(x, p.w, p.h, p.slice, p.tile))));
       assert.equal(f.props(ov.props), 0); frames(f); f.pass(2); return { hash: f.hash(), off: f.offPalette() };
     };
     const placeholder = await draw("placeholder"), master = await draw("master");

@@ -151,7 +151,7 @@ const bootAssets = async () => {
   setEnv({ rgb: rgbOfName });
 };
 // The icons the text runs inline (⚡ ◆ ❀ ✕ at the 16 px body size) are registered in the manifest as type assets.
-for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, policy: "type", status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
+for (const name of ["energy", "data", "essence", "cross"]) registerAsset({ id: `icon:${name}:16`, w: 16, h: 16, status: "placeholder", until: "the icon set", build: () => ICON[name](16) });
 // The handshake's follow-up (lvgl-switch.md §2.1): the palette, then the spec files the page loaded, then the pictures the face never drops (the name plates and the rail tab grounds).
 const faceBoot = async () => {
   const f = await bootFace(undefined, { test: TEST });

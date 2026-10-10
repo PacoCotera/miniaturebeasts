@@ -12,6 +12,7 @@ import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
 import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
+import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
@@ -24,7 +25,7 @@ let ENV = null;
 export const setEnv = (env) => { ENV = env; };
 export function picture(id) {
   const a = assetOf(id, ENV); if (!a) return null;
-  const e = assetEntry(id), p = { w: a.w, h: a.h, status: e?.status === "master" ? "master" : "placeholder", data: a.rgba() };
+  const e = assetEntry(id), status = e?.status === "master" ? "master" : "placeholder", p = { w: a.w, h: a.h, status, policy: policyOf(id, status), data: a.rgba() };   // the layer it shows on, from the one family table (an id outside every family throws: a new family is the art director's to place)
   return e?.slice ? { ...p, slice: e.slice, tile: e.tile ?? 0 } : p;
 }
 // The ids the frame names in its own spec (the room marks, the lamps, the caps, the sun): the same on every screen.
