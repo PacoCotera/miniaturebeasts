@@ -395,8 +395,8 @@
     ],
     "screen": "incubator",
     "focus": "incubator",
-    "ok": null,
-    "subject": "",
+    "ok": "Choose a pod",
+    "subject": "ready for a new bud",
     "idle": false
    },
    {
@@ -405,7 +405,7 @@
      {
       "t": "intent",
       "screen": "incubator",
-      "target": "screen",
+      "target": "room",
       "verb": "back"
      }
     ],

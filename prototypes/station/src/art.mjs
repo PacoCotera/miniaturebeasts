@@ -22,7 +22,7 @@ export const PLACEHOLDERS = [
   { id: "home-bed-mark-16x24", what: "the Companion's mark on the bed: registered, nothing drawn (frame-companion-outline-16x24 is a painted crop, never drawn here)", until: "the art director's hand-drawn bed mark" },
   { id: "home-crate-48x40", what: "a walk crate in the Cargo module's bay: a PH plate; the bay itself (open and shut, 176×72) is left empty", until: "the Cargo module masters" },
   { id: "home-rack-pod-24x32", what: "a pod in the Pods module's rack: a PH plate at well + (4,0); the 32×32 wells are left empty", until: "the rack pod and the well master" },
-  { id: "home-leaf-8x12", what: "the Incubator module's leaves: a full leaf a PH plate, an empty one a PH hollow (home-leaf-empty-8x12), only while a bud is in the chamber; the chamber is left empty", until: "the leaf masters and the chamber master" },
+  { id: "leaf-8x12", what: "the Incubator module's leaves: a full leaf a PH plate, an empty one a PH hollow (leaf-empty-8x12), only while a bud is in the chamber; the chamber is left empty", until: "the leaf masters and the chamber master" },
   { id: "home-shield-12x24", what: "the Probe module's Shield plates: a whole plate a PH plate, a lost one a PH hollow (home-shield-gone-12x24); a held sitting a PH plate (home-sitting-24x32); the cradle is left empty", until: "the Probe module masters" },
   { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
   { id: "idle-vivarium-day", what: "Idle's Vivarium, 1024×568, one painting a light: no master, so the flat plates of frame.json idle.colours show (back forest, ground clay with a sand top row, foot soil) and the slot idle-vivarium-day (1024×568 at 0,0, over the plates) stays empty; the bed is Home's PH plate (home-bed-192x56) and the Companion mark is drawn as nothing", until: "Idle's Vivarium master (day, dusk and night)" },
@@ -42,6 +42,8 @@ export const PLACEHOLDERS = [
   { id: "bud-small-64x80", what: "Create's busy bud, 64×80: a PH plate at the bud's rectangle, only while another bud grows (the Incubator's buds are other pictures)", until: "the bud master, re-judged with the Incubator's" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
   { id: "leaf-small-8x12", what: "Create's leaves, 8×12: leaf-small-empty-8x12 a PH hollow, leaf-small-full-8x12 a PH plate; every leaf is empty here", until: "the leaf masters" },
+  { id: "bud-128x160", what: "the Incubator's buds, 128×160: bud-early, bud-late, bud-ready, bud-crack-1 and bud-crack-2 are PH plates at the bud's rectangle; bud-ready-front-128x160 is registered and nothing drawn", until: "the bud masters (bean on moss)" },
+  { id: "bud-ready-front-128x160", what: "the ready bud's front: registered, nothing drawn", until: "the bud masters (bean on moss)" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
   { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];
