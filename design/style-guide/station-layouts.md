@@ -214,7 +214,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 | Zone | Rectangle | What it says | Sentence or mark |
 | --- | --- | --- | --- |
-| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `bone` | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
+| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `focus` (cream) | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
 | **The context** | 408, 570, 208, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
 | **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
