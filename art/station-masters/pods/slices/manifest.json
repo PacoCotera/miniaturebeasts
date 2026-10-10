@@ -10854,5 +10854,31 @@
   "status": "signed",
   "signed_in": "art director, verdict (87d6a9a9)",
   "status_note": "signed (art director) at 1x, opaque pixels: L* 48.2, mean R-B 14.8, sat 19.5, 0.7 percent above L* 70; the lid lifting inside the rect, its lit lip and gap shadow, the tag torn"
+ },
+ "cargo-energy-48x64": {
+  "size": [
+   48,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-haul-3.jpg (gemini-3-pro-image)",
+  "made": "the Energy haul container: the banded steel battery cell with dark rubber corners, a cap terminal and a charge window of three flat amber bars (#ffa83f); a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
+  "sha256": "876f9369dba0fd6eec3bbafc9d5a4fb8244e8b974e43d10f1b2474048ccb62a4",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
+ },
+ "cargo-data-48x64": {
+  "size": [
+   48,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/cargo-haul-3.jpg (gemini-3-pro-image)",
+  "made": "the Data haul container: the rugged ribbed cartridge standing upright, its connector at the foot, a flat sky window (#5bb9f3); a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
+  "sha256": "715b0486c9489ca986be031b3698efa7848efbcdc3673e3d8d5df2f2a7ed7a26",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
  }
 }

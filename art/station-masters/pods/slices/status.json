@@ -3498,5 +3498,15 @@
   "status": "signed",
   "signed_in": "art director, verdict (87d6a9a9)",
   "note": "signed (art director) at 1x, opaque pixels: L* 48.2, mean R-B 14.8, sat 19.5, 0.7 percent above L* 70; the lid lifting inside the rect, its lit lip and gap shadow, the tag torn"
+ },
+ "cargo-energy-48x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
+ },
+ "cargo-data-48x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
  }
 }

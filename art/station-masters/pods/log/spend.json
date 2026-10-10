@@ -2848,5 +2848,22 @@
    "thoughtsTokenCount": 290,
    "totalTokenCount": 3660
   }
+ },
+ {
+  "tag": "cargo-haul-3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.205502,
+  "mxn": 4.11,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:55:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1351,
+   "candidatesTokenCount": 1455,
+   "thoughtsTokenCount": 235,
+   "totalTokenCount": 3041
+  }
  }
 ]
