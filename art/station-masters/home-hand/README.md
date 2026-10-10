@@ -28,7 +28,7 @@ The art-layer pieces of Home, the Vivarium card and the Library spread, hand-pla
 | `home-shield-lost-12x24` | 12×24 | a lost Shield plate: a stone outline |
 | `home-bed-mark-16x24` | 16×24 | the bed's Companion mark: the handheld's silhouette with its strap loop, a 1 px mist outline |
 | `home-sitting-24x32` | 24×32 | the held sitting: a matte card frame in the sand housing, the portrait window dark |
-| `home-crate-48x40` | 48×40 | a walk crate: a rugged field case, sand body, rubber corners, a sage lid band, an orange seal tag |
+| `home-crate-48x40` | 48×40 | a walk crate, the one crate look of the Home bay crates: a sage moulded field case, a handle, two sand latches, rubber corners, an orange seal tag across the lid seam |
 | `heart-full-24` | 24×24 | the bonded heart on the Vivarium card: an enamel heart in the house light, no face, no sparkle |
 | `notch-skill-16x24` | 16×24 | one skill notch cut into the Vivarium card's plate: sand fill, a shadowed upper-left wall, a lit lower-right wall |
 | `mark-out-with-companion-64x96` | 64×96 | the mibi's place, kept: the Companion's outline (screen, pad, keys, strap) in mist, standing on a stone ground line |
