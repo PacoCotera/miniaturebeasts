@@ -11,7 +11,7 @@
  "spread": {
   "screen": "library",
   "spec": "design/style-guide/station-layouts.md#library-spread",
-  "wireframes": ["design/style-guide/station-layouts/18-library-spread.svg", "design/style-guide/station-layouts/18a-library-spread-empty.svg", "design/style-guide/station-layouts/18b-library-spread-nav.svg"],
+  "wireframes": ["design/style-guide/station-layouts/20-library-spread.svg", "design/style-guide/station-layouts/20a-library-spread-empty.svg", "design/style-guide/station-layouts/20b-library-spread-nav.svg"],
   "note": "The Library's whole, its overview level (station-layouts.md, The screen map): one frame a species, every species at once. Written by the UI designer, 2026-10-10 01:50, from the decided spread (SP-P-r4-a1, decisions.md 2026-10-08), the Station's structure (2026-10-09 17:29), the world brief (Library: the field journal the device keeps, paper and ink held in the same frame) and the rules on main (library.mjs spread, speciesStatus, faceOf, fieldGuide; intents/library.mjs). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the frame's own place.",
   "purpose": "the whole collection at a glance: which species the player has found (a painted plate), which they have only met (a pencil study), and that empty frames remain (no cue of what waits); each found or met species' clan by its inked rule, a portrait by the gilt corner, a full guide by the seal; ✓ opens that species' Book",
   "title": { "word": "Library", "mark": "Library" },
@@ -137,7 +137,10 @@
    "spread-gilt-corner-16x16": "a 16×16 `gold` L, 4 px thick, along the top and right edges",
    "spread-seal-16x16": "a 16×16 `rust` disc with a 1 px `bark` edge"
   },
-  "journey": "library-spread (lvgl-switch.md §3, slot 5): Home's Library module and the Library key open the spread; the pad walks the frames by focus.vectors; an unmet frame has no ✓ cap and its press shows strings.unmet; ✓ on a found frame reaches the Book (\"not built yet\" until slot 8), whose ← lands on that frame; ← on the spread is Home"
+  "buildChanges": [
+   { "file": "prototypes/ui/specs/station/frame.json", "key": "navigation.screens.library", "now": {"parent": "home", "back": "Home"}, "becomes": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"}, "when": "slot 5, L: the Library spread, in the build's own change: the sandbox reads frame.json navigation (nav.mjs parentOf and backWord, host.mjs), so the spec PR leaves it as it is" }
+  ],
+ "journey": "library-spread (lvgl-switch.md §3, slot 5): Home's Library module and the Library key open the spread; the pad walks the frames by focus.vectors; an unmet frame has no ✓ cap and its press shows strings.unmet; ✓ on a found frame reaches the Book (\"not built yet\" until slot 8), whose ← lands on that frame; ← on the spread is Home"
  },
  "spreads": {
   "order": ["face", "guide"],

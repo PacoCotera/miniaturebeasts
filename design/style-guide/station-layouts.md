@@ -1983,17 +1983,17 @@ Where the build departs from this layout is listed in `sitting.json` `buildChang
 
 The Library's whole, its overview level ([The screen map](#the-screen-map)): Home's Library module and the Library key open it, ✓ goes one level closer to a species' Book, and ← goes Home. Spec: [`library.json`](../../prototypes/ui/specs/station/library.json) `spread`, the one home of these numbers. Concept plate, decided 2026-10-08: `art/concept-station/library-spread/placed/SP-P-r4-a1-pip-named-1024x600.png`. Built in slot 5, L: the Library spread ([lvgl-switch.md §3](../proposals/lvgl-switch.md)).
 
-<img src="station-layouts/18-library-spread.png" width="1024" alt="The Library spread: sixteen frames, four found, one met, eleven empty, the ring on Tuikis">
+<img src="station-layouts/20-library-spread.png" width="1024" alt="The Library spread: sixteen frames, four found, one met, eleven empty, the ring on Tuikis">
 
-*18. The spread: Loika found and portrayed (the gilt corner), Untuva and Tuikis found, Hiljan met (the study, the name in pencil grey), Belatz found with its guide complete (the seal), eleven empty frames; the ring on Tuikis, `✓ Open`. 1×, measured ([SVG](station-layouts/18-library-spread.svg)).*
+*20. The spread: Loika found and portrayed (the gilt corner), Untuva and Tuikis found, Hiljan met (the study, the name in pencil grey), Belatz found with its guide complete (the seal), eleven empty frames; the ring on Tuikis, `✓ Open`. 1×, measured ([SVG](station-layouts/20-library-spread.svg)).*
 
-<img src="station-layouts/18a-library-spread-empty.png" width="1024" alt="The Library spread with the journal empty: sixteen empty frames, the ring on the first">
+<img src="station-layouts/20a-library-spread-empty.png" width="1024" alt="The Library spread with the journal empty: sixteen empty frames, the ring on the first">
 
-*18a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap; the message plate a press shows. 1×, measured ([SVG](station-layouts/18a-library-spread-empty.svg)).*
+*20a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap; the message plate a press shows. 1×, measured ([SVG](station-layouts/20a-library-spread-empty.svg)).*
 
-<img src="station-layouts/18b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows">
+<img src="station-layouts/20b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows">
 
-*18b. The pad, ✓, ← and the keys. 1×, measured ([SVG](station-layouts/18b-library-spread-nav.svg)).*
+*20b. The pad, ✓, ← and the keys. 1×, measured ([SVG](station-layouts/20b-library-spread-nav.svg)).*
 
 ### 1. Purpose
 
@@ -2081,6 +2081,8 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 **Events** (`spread.events`): `open`, a cut to the Book's face spread; `back`, the cut from the Book to the spread with the ring on that species. The screen change itself is the host's, as everywhere.
 
 **Bound to the rules:** the frames are `spread(st, ids)` over `frameIds()`, sixteen to a spread; the status is `speciesStatus`; the gilt corner is `faceOf(st, id)` not null; the seal is `fieldGuide(st, id).complete`; the ring's frame is the Library's UI state (`ui.lib.i`, `intents/library.mjs`). Nothing is new state.
+
+Where the build changes what the sandbox reads today (`frame.json` `navigation.screens.library` gains its states and spec) is listed in `library.json` `spread.buildChanges`, and lands with slot 5's build.
 
 ### Words on the spread
 

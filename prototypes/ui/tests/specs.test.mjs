@@ -617,9 +617,9 @@ test("every title mark, lower-cased, has a room mark picture: the face looks the
   for (const id of Object.values(rooms).filter((v) => typeof v === "string")) assert.ok(JSON.stringify(masters).includes(`"${id}"`), `${id} is a registered master`);
 });
 
-// The Library spread (station-layouts.md, Library spread; library.json `spread`): the Library's whole, against its wireframes 18 and 18a, its focus played on its vectors
+// The Library spread (station-layouts.md, Library spread; library.json `spread`): the Library's whole, against its wireframes 20 and 20a, its focus played on its vectors
 test("the Library spread agrees with its wireframes: sixteen frames, two pages of four by two, each frame's parts in place; its focus walks the grid by its vectors; ← Home", () => {
-  const lib = rd("../specs/station/library.json"), S = lib.spread, R = S.regions, I = S.item, B = boxesOf("18-library-spread.svg"), E = boxesOf("18a-library-spread-empty.svg");
+  const lib = rd("../specs/station/library.json"), S = lib.spread, R = S.regions, I = S.item, B = boxesOf("20-library-spread.svg"), E = boxesOf("20a-library-spread-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
   lintRegions({ screen: "library.spread", regions: Object.fromEntries(Object.entries(R).map(([k, r]) => [k, k === "stage" ? { ...r, offGrid: true } : r])) });   // the stage is the frame's (40, 522)
   assert.deepEqual(S.states, ["spread"]); assert.deepEqual(R.stage.rect, frame.regions.stage.rect); assert.equal(R.stage.component, "frame"); assert.equal(R.stage.part, "stage"); assert.ok(R.stage.slice.endsWith("-1024x522"), "a stage slice is 1024×522");
@@ -648,9 +648,9 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
     assert.ok(all.every((g) => g === f || apart(name, at(g, I.name.at))), "the names apart"); for (const b of P.marginLife) assert.ok(apart(b, f) && apart(b, name) && apart(b, seal), "the margin life clear");
     const page = i < 8 ? L : Rp; for (const r of [plate, rule, name, gilt, seal]) assert.ok(inside(r, page), "inside its page"); assert.ok(apart(P.marker, gilt) && apart(P.marker, f));
   }
-  // in 18: four found (S01 portrayed, S09 complete), S04 met; the plate or study, rule and name where the spec puts them; nothing on the eleven empty frames; in 18a nothing at all
+  // in 20: four found (S01 portrayed, S09 complete), S04 met; the plate or study, rule and name where the spec puts them; nothing on the eleven empty frames; in 20a nothing at all
   const shown = { 0: "found", 1: "found", 2: "found", 3: "met", 8: "found" };
-  for (const [i, f] of all.entries()) for (const a of [I.plate.at, I.clanRule.at, I.name.at]) { const r = at(f, a); assert.equal(B.has(r.join(",")), i in shown, `frame ${i} ${r}`); assert.ok(!E.has(r.join(",")), "18a draws no part"); }
+  for (const [i, f] of all.entries()) for (const a of [I.plate.at, I.clanRule.at, I.name.at]) { const r = at(f, a); assert.equal(B.has(r.join(",")), i in shown, `frame ${i} ${r}`); assert.ok(!E.has(r.join(",")), "20a draws no part"); }
   is(at(all[0], I.gilt.at), "gilt corner"); is(at(all[8], I.seal.at), "seal"); assert.ok(!B.has(at(all[1], I.gilt.at).join(",")) && !B.has(at(all[1], I.seal.at).join(",")));
   assert.equal(I.lift, 0); assert.ok(I.name.fit.includes("Untuva"));
   // the names fit their 96 px at 16 (the widest of the sixteen frames, by the face's metrics when the table is built)
@@ -663,7 +663,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   for (const v of S.focus.vectors) assert.equal(moveFocus(G, T, v.from, v.key).to, v.to, `${v.from} ${v.key} → ${v.to}`);
   assert.ok(S.focus.vectors.some((v) => v.from === "frame.S04" && v.to === "frame.S09"), "across the gutter"); assert.ok(S.focus.vectors.length >= 12);
   // the frame: the title and its mark, the way back, the room key, the jumps; Home's Library module opens it
-  assert.equal(frame.strings.titles.library, S.strings.title); assert.equal(frame.regions.title.marks.library, S.title.mark); assert.deepEqual(frame.navigation.screens.library, { parent: "home", back: "Home", states: S.states, spec: "library.json" });
+  assert.equal(frame.strings.titles.library, S.strings.title); assert.equal(frame.regions.title.marks.library, S.title.mark); assert.deepEqual(frame.navigation.screens.library, { parent: "home", back: "Home" }, "the sandbox's tree unchanged before the build"); const BC = S.buildChanges.find((c) => c.key === "navigation.screens.library"); assert.deepEqual(BC.now, frame.navigation.screens.library); assert.deepEqual(BC.becomes, { ...BC.now, states: S.states, spec: "library.json" });
   assert.equal(frame.navigation.roomKeys.library.state, "spread"); assert.equal(frame.navigation.screens.book.back, "Library"); assert.equal(S.strings.back, frame.navigation.screens.library.back);
   const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Open the Library"); assert.ok(/spread/.test(home.keys.library));
   // the words: an action of four words or fewer, contexts of six or fewer, no digits; no ✓ cap on an empty frame
