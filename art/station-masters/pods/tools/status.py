@@ -4,6 +4,9 @@ import json, re
 m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 AD_RECORDS = {
+ "idle-vivarium-dawn-1024x568": ('signed', 'art director, dawn verdict (793e47f2)', "signed (art director): Idle's Vivarium at dawn: low light, mist and dew, cooler and paler than dusk"),
+ "vivarium-near-dawn-544x408": ('signed', 'art director, dawn verdict (793e47f2)', 'signed (art director): the Vivarium up close at dawn'),
+ "home-bed-dawn-192x56": ('signed', 'art director, dawn verdict (793e47f2)', 'signed (art director): the with-you bed at dawn, cut from the dawn painting'),
  "vivarium-near-day-544x408": ('signed', 'art director, near Vivarium verdict (57490118)', 'signed (art director): the Vivarium up close, the same place as Idle at ground level'),
  "vivarium-near-dusk-544x408": ('signed', 'art director, near Vivarium verdict (57490118)', 'signed (art director): the Vivarium up close, the same place as Idle at ground level'),
  "room-bench-stage-compare": ('withdrawn', None, "withdrawn (art director): the old glass-lab compare stage; Compare is not in the current layout, and the room was redrawn in the world brief's look without it"),
@@ -25,8 +28,7 @@ AD_RECORDS = {
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
 for n in m:
     AD = "art director, field guide"
-    if n == "home-bed-dawn-192x56": sign(n, "new", None, "pass 105: Home's bed by dawn, cut from the Idle dawn (the owner's decision of Oct 10); awaiting the art director's judgement (not signed)")
-    elif n == "home-bed-night-192x56": sign(n, "new", None, "pass 102: re-cut from the fixed Idle night (the art director held it until the night was fixed); awaiting the art director's judgement (not signed)")
+    if n == "home-bed-night-192x56": sign(n, "new", None, "pass 102: re-cut from the fixed Idle night (the art director held it until the night was fixed); awaiting the art director's judgement (not signed)")
     elif n in AD_RECORDS: sign(n, *AD_RECORDS[n])      # the art director's own records (verdicts of Oct 10), carried so that a re-run keeps them
     elif n in ("room-bench-stage", "room-bench-stage-overview", "room-bench-stage-chapter", "room-bench-stage-collection", "room-cradle", "room-cradle-front", "room-shelf", "room-stamp-case-152x152", "room-stamp-case-152x152-front", "ring-well-idle-80x80", "ring-well-selected-80x80", "ring-well-empty-80x80", "ring-hatch-80x56", "ring-kin-56x56", "ring-collection-idle-176x176", "ring-collection-closed-176x176"): sign(n, "signed", "art director, Pods room verdict (68130857)", "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)")
     elif n == "ring-column-112x522": sign(n, "signed", "art director, Pods room verdict (ac57c715)", "a strip of the housing: two rows of screws, a hose clip and a small vent; signed by the art director")
