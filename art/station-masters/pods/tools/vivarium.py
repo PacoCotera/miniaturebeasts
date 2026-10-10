@@ -53,12 +53,7 @@ SRC = {"day": "vivarium-day", "dusk": "vivarium-dusk", "night": "vivarium-night-
 for k, s in SRC.items():
     im = fix_seams(cut(s))
     if k == "night":
-        a = np.asarray(im).astype(float) / 255.0; lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
-        for g in np.arange(1.0, 3.0, 0.02):
-            l2 = lin * g; l2 = np.where(l2 > 0.8, 0.8 + (1 - np.exp(-(l2 - 0.8) / 0.2)) * 0.2, l2); l2 = np.clip(l2, 0, 1)
-            sr = np.where(l2 <= 0.0031308, l2 * 12.92, 1.055 * l2 ** (1 / 2.4) - 0.055); cand = np.clip(np.rint(sr * 255), 0, 255)
-            if lstar(cand).mean() >= 30.5: break
-        im = night_fix(Image.fromarray(cand.astype(np.uint8))); rep["night gain"] = round(float(g), 2)
+        exec(open("tools/nightdist.py").read(), globals()); im, nrep = night_dist(im, 330, 90, 190); rep["night detail"] = nrep
     if k == "dawn":
         a = np.asarray(im).astype(float) / 255.0; lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
         for g in np.arange(1.0, 0.3, -0.01):

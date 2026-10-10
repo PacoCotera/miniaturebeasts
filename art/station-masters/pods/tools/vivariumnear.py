@@ -31,7 +31,8 @@ for k in ("day", "dusk", "night", "dawn"):
             l2 = lin * g; cand = np.clip(np.rint(np.where(l2 <= 0.0031308, l2 * 12.92, 1.055 * l2 ** (1 / 2.4) - 0.055) * 255), 0, 255)
             if lstar(cand).mean() <= 41.0: break
         im = Image.fromarray(cand.astype(np.uint8)); rep["dawn gain"] = round(float(g), 2)
-    if k == "night": before = im; im = bloom_fix(im); before.save("/tmp/near-night-before.png")
+    if k == "night":
+        exec(open("tools/nightdist.py").read(), globals()); before = im; im, nrep = night_dist(im, 212, 82, 135); rep["night detail"] = nrep; before.save("/tmp/near-night-before.png")
     n = f"vivarium-near-{k}-544x408"; im.save(f"slices/{n}.png", optimize=True); outs[k] = im
     rep[k] = round(float(lstar(np.asarray(im).astype(float)).mean()), 1)
     man[n] = {"size": [544, 408], "rect": [24, 56, 544, 408], "src": f"source/raw/vivarium-near-{k}.jpg (gemini-3-pro-image)", "made": f"the near Vivarium by {k} ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting" + ("" if k == "day" else f" (an edit of the near day picture, matched to Idle's {k} light)") + ", cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
