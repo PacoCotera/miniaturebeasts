@@ -133,7 +133,7 @@
   "notice": "the first block in the rules' order: busy, no bay, clash, short (game designer, 2026-10-09 13:27), with the amber lamp; otherwise the frame's notice",
   "back": "{pod} (frame.json navigation.screens.create)",
   "conditions": {
-   "ok": "the ✓ cap and the verb in orange, the price in bone",
+   "ok": "the ✓ cap and the verb in orange, the price in focus (cream)",
    "short": "the frame's dimmed ✓: cap and verb mist, the short material's figure amber; ✓ shows a message plate naming what is short, nothing spent",
    "blocked": "busy, no bay or clash: no ✓ cap; the verb and the price in mist, so the total still reads; the notice says why; ✓ does nothing"
   }

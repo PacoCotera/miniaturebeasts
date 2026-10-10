@@ -214,7 +214,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 
 | Zone | Rectangle | What it says | Sentence or mark |
 | --- | --- | --- | --- |
-| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `bone` | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
+| **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `focus` (cream) | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
 | **The context** | 408, 570, 208, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
 | **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
@@ -696,7 +696,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Glass | A `hairline` edge, no highlight; until the master, a flat plate: back `forest`, ground band `clay` with a `sand` top row, foot `soil` | A window into the housing, never a showcase |
 | Modules | `panel` fill, `bevel` top, `hairline` edge; the word engraved in `metal`, 16 px | The objects and the lamp lead; the word is never the brightest thing |
 | Lamps | 12×12, `void` rim; off `hairline`, well `sprout`, waiting `sky`, needs you `amber` | The kit's lamp roles |
-| Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, `enamel` body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
+| Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
 | Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
 | Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting a gilt frame `gold` lit `yellow` | The Probe as the project's Probe art draws it, never a needle |
@@ -862,7 +862,7 @@ The player sees how much came home, opens it with one press, watches each crate'
 
 ### 4. Art direction
 
-The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, `enamel` body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
+The device's materials, as on Home: the bay a `panel` recess with an `enamel` rim and a `ground` floor; shut, the field-case lid in `enamel` with `deepTeal` seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` rubber corners, an `orange` seal tag; the rack the case's fitted wells. The light is the device's warm daylight: no beam. The ribbon is the one ribbon look (`tealD`, `aqua` rim, `bone` words); the card an instrument `panel`. Nothing on Cargo's stage is amber.
 
 ### 5. Composition
 
