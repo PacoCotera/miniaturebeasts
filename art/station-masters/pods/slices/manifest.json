@@ -10762,7 +10762,7 @@
   "sha256": "ffdbea3a38550345f26da924b7f472d38a74af12fa8337217149418ded3223eb",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "withdrawn (art director, UI/UX ruling 11:12): replaced by crate-{sealed,opening,open}-432x272 for the crate region (296, 120, 432, 272); the files stay as the record of pass 122"
+  "status_note": "withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12"
  },
  "crate-closer-sealed-384x256": {
   "size": [
@@ -10775,7 +10775,7 @@
   "sha256": "14ff3809f835e8faaff66b5a3641197eaa494817a6a305c3d0e044536193f644",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "withdrawn (art director, UI/UX ruling 11:12): replaced by crate-{sealed,opening,open}-432x272 for the crate region (296, 120, 432, 272); the files stay as the record of pass 122"
+  "status_note": "withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12"
  },
  "crate-closer-opening-384x256": {
   "size": [
@@ -10788,7 +10788,7 @@
   "sha256": "3531822cec8fa9c72dbc84c7421ecceda9c20053f4546ead67e7f4cba83b9c47",
   "status": "withdrawn",
   "signed_in": null,
-  "status_note": "withdrawn (art director, UI/UX ruling 11:12): replaced by crate-{sealed,opening,open}-432x272 for the crate region (296, 120, 432, 272); the files stay as the record of pass 122"
+  "status_note": "withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12"
  },
  "crate-sealed-256x176": {
   "size": [
@@ -10825,9 +10825,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale) (pass 122)",
   "sha256": "d01bb748fd122e6bbce9f2ecaf2764c71f4a0694900d0e601bb275849e80a4c4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 127: the open case, the lid OFF (everything above the body's back rim cut away), the three cut-outs registering at region x 68, 172, 276, top 32, feet 144; scale 0.6057 from the pass-122 pictures, cut box (283, 332, 997, 781), the whole case inside with 8 px or more clear; L* 44.9 / 49.0 / 48.2, mean R-B 14.1 / 15.0 / 14.8 (home-bay-shut 48.0 / 13.2); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (87d6a9a9)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 44.9, mean R-B 14.1, sat 21.2, 0.0 percent above L* 70; the lid off, its three cut-outs at region x 68/172/276, top 32, feet 144, under the pods at screen y 152"
  },
  "crate-sealed-432x272": {
   "size": [
@@ -10838,9 +10838,9 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel (pass 122)",
   "sha256": "b8c3476801552ffefae81636e04d13571ee8b96f55ccf6b814be2eeaca3669e6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 127: the whole sealed case with the orange seal tag; scale 0.6057 from the pass-122 pictures, cut box (283, 332, 997, 781), the whole case inside with 8 px or more clear; L* 44.9 / 49.0 / 48.2, mean R-B 14.1 / 15.0 / 14.8 (home-bay-shut 48.0 / 13.2); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (87d6a9a9)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 49.0, mean R-B 15.0, sat 19.6, 0.5 percent above L* 70, against home-bay-shut 48.0/13.2/18.5 (band L* +-4, mean R-B +-8); the whole case inside the ruled region (296,120,432,272), 8 px clear"
  },
  "crate-opening-432x272": {
   "size": [
@@ -10851,8 +10851,8 @@
   "src": "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)",
   "made": "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture (pass 122)",
   "sha256": "0e6f7d6ca896b32c7ae0888100003c858c4967961c30490e1baa48afa0a13ccd",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 127: the lid lifting 4 px entirely inside the rect, with the lit lip and the gap shadow, the tag torn; scale 0.6057 from the pass-122 pictures, cut box (283, 332, 997, 781), the whole case inside with 8 px or more clear; L* 44.9 / 49.0 / 48.2, mean R-B 14.1 / 15.0 / 14.8 (home-bay-shut 48.0 / 13.2); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (87d6a9a9)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 48.2, mean R-B 14.8, sat 19.5, 0.7 percent above L* 70; the lid lifting inside the rect, its lit lip and gap shadow, the tag torn"
  }
 }
