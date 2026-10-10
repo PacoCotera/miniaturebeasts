@@ -2,7 +2,7 @@
 // asset ids, strings, flags and which trait and look is chosen; no rectangle, no measure, no layout rule, no colour (the words place everything from create.json). The output is plain JSON:
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }.
 // Runs in Node, tested there (tests/create-props.test.mjs); the shape is create.props.json.
-//   m: { st, settings, ui: { create: { podId, pod, choices, f, clash, grown } } }, spec create.json, pods pods.json
+//   m: { st, settings, ui: { create: { podId, choices, f, clash, grown } } }, spec create.json, pods pods.json
 //   ui.create.grown is what ✓ Grow it made (intents/create.mjs): { code, cost }; it holds the screen in its grow state while the pod, no longer in the rack, travels.
 import * as S from "../state.mjs";
 import { frameOf, traitState, genomeDigest, stampSizing, codeText } from "../genome.mjs";
