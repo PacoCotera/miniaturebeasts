@@ -10866,7 +10866,7 @@
   "sha256": "bab3edbd4fd91201be7a1f403cd93c115d4c778edf0c49be5453f4abfb0d1d9a",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
+  "status_note": "new, awaiting the owner (art director): at 1x on opaque pixels L* 46.8, mean R-B 21.2, sat 15.4, 0.0 percent above L* 70; the riveted, banded cell (the owner's Energy #1), three amber bars"
  },
  "cargo-data-48x64": {
   "size": [
@@ -10879,7 +10879,7 @@
   "sha256": "715b0486c9489ca986be031b3698efa7848efbcdc3673e3d8d5df2f2a7ed7a26",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
+  "status_note": "new, awaiting the owner (art director): at 1x on opaque pixels L* 51.1, mean R-B -21.2 (the sky window), sat 23.5, 0.0 percent above L* 70; the ribbed cartridge (the owner's Data #1), upright"
  },
  "cargo-essence-48x64": {
   "size": [
@@ -10889,9 +10889,9 @@
   "rect": null,
   "src": "source/raw/cargo-haul-4-essence.jpg (gemini-3-pro-image)",
   "made": "the Essence haul container: the caged sealed glass sample tube (the art director's E1 sketch) with flat green essence (#5cbb4c), a light open cage of two bars and two hoops, dark rubber end caps and a steel clip on the top cap; a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
-  "sha256": "5102dadb7d025c9ce07e5d757d1a6097312647ee74a05aa4a735b7a845567b3d",
+  "sha256": "c224adc2011f5c3f058305e549b3902d540bf463385d54ce8bb9540aa172962f",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 133: the Cargo haul container (the owner-approved Pro edit from the owner's own sketch, cut by hand): 64 rows, feet on the bottom row, body graded to L* 47, highlights capped, the window a flat colour; awaiting the art director's judgement (not signed)"
+  "status_note": "new, awaiting the owner (art director): at 1x on opaque pixels L* 48.9, mean R-B 5.4, sat 27.3, 0.0 percent above L* 70; the caged sample tube, opened (E1); the cage, the foot's glass and the base drawn by hand at 1 px so they hold at 48x64"
  }
 }
