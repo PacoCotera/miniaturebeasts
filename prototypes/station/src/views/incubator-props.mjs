@@ -15,17 +15,12 @@ export function knownChapters(st, B, settings, now) {
   const fr = frameOf(B.species);
   return fr.chapters.filter((c) => (B.read || []).includes(c.id) || (B.kind !== "cross" && S.budChapterKnown(st, c.id, settings, now))).map((c) => c.id);
 }
-// The leaves of the wait: total the bud's minutes (at most the spec's maximum), full the whole minutes passed, rows 0 to 19 of the current leaf (its 20 whole rows a minute: a row every 3 s at the real pace).
-export function leavesOf(st, settings, now, max, rowsOf = 20) {
-  const B = st.bud, total = Math.min(B.minutes, max), p = S.budProgress(st, settings, now), done = p * total, full = S.budReady(st, settings, now) ? total : Math.min(total, Math.floor(done));
-  return { total, full, rows: full >= total ? 0 : Math.min(rowsOf - 1, Math.floor((done - full) * rowsOf)) };
-}
-
 export function incubatorBuild(m, spec, pods) {
   const { st, settings } = m, now = m.now ?? Date.now(), requests = [], req = (r) => { requests.push(r); return r.id; }, R = spec.regions, hatch = m.ui.inc.hatch ?? null;
   const ph = (id, size, hollow, until) => req({ kind: "ph", id, size, hollow, until });
-  const stale = "its master (incubator.json placeholders)", B = st.bud, gs = !hatch && B && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null;   // gs: growNow is playing: the screen shows the bud as it was (the leaves, the tabs, the stamp, the line) until the event ends, then the ready state on one refresh
+  const stale = "its master (incubator.json placeholders)", signed = "signed (art director)", B = st.bud, gs = !hatch && B && m.ui.inc.grow && now < m.ui.inc.grow.until ? m.ui.inc.grow : null;   // gs: growNow is playing: the screen shows the bud as it was (the leaves, the tabs, the stamp, the line) until the event ends, then the ready state on one refresh
   const ready = !!B && !gs && S.budReady(st, settings, now);
+  const mb = hatch ? S.mibiById(st, hatch.mibi) : null;   // the mibi that hatched, while the hatch plays
   const state = hatch ? "hatch" : !B ? "empty" : ready ? "ready" : "growing";
   const regions = {};
   regions.bench = { room: [slot(req, R.bench.slice, R.bench.rect, "the Incubator stage master (signed)")] };
@@ -42,32 +37,32 @@ export function incubatorBuild(m, spec, pods) {
   }
   // the leaves (growing and ready): empty outlines, the full leaf, the filling one by its rows
   if (state !== "empty") {   // (the hatch: no leaf, the nodes stay)
-    const L = state === "hatch" ? { total: 0, full: 0, rows: 0 } : gs ? gs.leaves : leavesOf(st, settings, now, R.leaves.max, R.leaves.leaf[1]);
-    regions.leaves = { total: L.total, full: L.full, rows: L.rows, empty: ph("leaf-empty-16x20", R.leaves.leaf, true, stale), filled: ph("leaf-full-16x20", R.leaves.leaf, false, stale) };
+    const L = state === "hatch" ? { total: 0, full: 0, rows: 0 } : gs ? gs.leaves : S.budLeaves(st, settings, now, R.leaves.max, R.leaves.leaf[1]);
+    regions.leaves = { total: L.total, full: L.full, rows: L.rows, empty: slot(req, "leaf-empty-16x20", [0, 0, ...R.leaves.leaf], signed), filled: slot(req, "leaf-full-16x20", [0, 0, ...R.leaves.leaf], signed) };
   }
   // the chamber (signed masters): its back by state (standby, growing, ready; the hatch keeps ready), the nest and its front, the window's front over the nest and the bud; the base master carries the plaque plate and the foot light
   const back = state === "empty" ? "dome-inside-standby-304x272" : state === "growing" ? "dome-back-304x272" : "dome-inside-ready-304x272";
-  regions.dome = { back: ph(back, R.dome.rect.slice(2), false, stale) };
-  regions.nestFront = { picture: ph("nest-front-208x48", R.nestFront.rect.slice(2), true, stale) };
-  regions.domeFront = { picture: ph("dome-front-304x272", R.domeFront.rect.slice(2), true, stale) };
-  regions.nest = { picture: ph("nest-208x48", R.nest.rect.slice(2), false, stale) };
+  regions.dome = { back: slot(req, back, R.dome.rect, signed) };
+  regions.nestFront = { picture: slot(req, "nest-front-208x48", R.nestFront.rect, signed) };
+  regions.domeFront = { picture: slot(req, "dome-front-304x272", R.domeFront.rect, signed) };
+  regions.nest = { picture: slot(req, "nest-208x48", R.nest.rect, signed) };
   if (state !== "empty") {
     const [bw, bh] = R.bud.rect.slice(2), p = B ? S.budProgress(st, settings, now) : 1, pic = (id) => ph(id, [bw, bh], false, stale);
     regions.bud = { stage: state === "hatch" ? "hatch" : ready ? "ready" : p < 0.5 ? "early" : "late", early: pic("bud-early-128x160"), late: pic("bud-late-128x160"), ready: pic("bud-ready-128x160"),
       crack1: pic("bud-crack-1-128x160"), crack2: pic("bud-crack-2-128x160"), shape: slot(req, `bud-shape-${species}-112x112`, R.bud.shape.rect, "the species' silhouette master") };
   }
-  regions.base = { picture: ph("base-336x96", R.base.rect.slice(2), false, stale) };
+  regions.base = { picture: slot(req, "base-336x96", R.base.rect, signed) };
   regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
   const waiting = (state === "hatch" || state === "ready") && (m.lamp === spec.strings.painting || m.lamp === spec.strings.offline);   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
   regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp === spec.strings.offline ? "offline" : "waiting" };   // the lamp's node is there in every state
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon
   if (state !== "empty") {
-    const hm = hatch ? st.mibis.find((x) => x.id === hatch.mibi) : null, known = hatch ? hm.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? hm.genome : B.genome, sz = stampSizing(fr, g);
+    const known = hatch ? mb.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? mb.genome : B.genome, sz = stampSizing(fr, g);
     regions.stamp = { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(g)}:${[...known].sort().join(",")}:${sz.size}`, species, read: known, size: sz.size, ...(hatch ? { mibi: hatch.mibi } : { bud: true }) }) };
     regions.code = codeText(hatch ? hatch.code : B.code);
   }
   if (state === "hatch") {
-    const mb = S.mibiById ? S.mibiById(st, hatch.mibi) : st.mibis.find((x) => x.id === hatch.mibi), [jw, jh] = R.juvenile.rect.slice(2);
+    const [jw, jh] = R.juvenile.rect.slice(2);
     regions.juvenile = { picture: req({ kind: "mibi", id: `mibi:${mb.id}:${jw}x${jh}`, mibi: mb.id, species, size: [jw, jh] }) };
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
@@ -80,7 +75,7 @@ export function incubatorBuild(m, spec, pods) {
     const bud = kind === "cross" && B.parents?.length === 2 ? subject : S.cap(S.aAn(S.spName(B))) + " bud";
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
-      line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: null };
+      line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)
       if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
     } else {
       const noBay = S.bayFull(st, settings);

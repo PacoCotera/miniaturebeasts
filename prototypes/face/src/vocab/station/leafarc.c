@@ -1,7 +1,7 @@
 /* The leaves word, arc form (vocabulary (closed), lvgl-switch.md §2.2; incubator.json regions.leaves): `total` leaves on the two arcs of the leafArc rule (layout.c), inner then outer, the first `full` of them full, the next one filling from its
    foot (`rows` of its 20 whole rows, the full leaf clipped from the bottom over the empty one), the rest empty. Every leaf up to the spec's `max` has its three nodes (the empty leaf, a clip, the full leaf in it) in every state, the ones the bud
    does not take with no size, so a minute passing, a leaf filling or growNow never adds or removes a node (§2.2). growNow (an event with from and to, the leaves full before and after): the leaves still to fill fill one whole leaf a step over its length, leaf k at
-   floor(k · ms / n) ms from its start. Spec: `spec`, the leaves region at `region`; the pictures are the host's (leaf-empty-16x20 a PH hollow, leaf-full-16x20 a PH plate until their masters). */
+   floor(k · ms / n) ms from its start. Spec: `spec`, the leaves region at `region`; the pictures are the host's (leaf-empty-16x20 and leaf-full-16x20, signed masters). */
 #include "../vocab.h"
 #include "../words.h"
 #include "../../prim/prim.h"

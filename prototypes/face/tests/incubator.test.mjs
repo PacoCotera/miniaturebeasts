@@ -21,7 +21,6 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const rgbOf = (name) => { const h = palette.find((c) => c[0] === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000, R = incSpec.regions, EV = incSpec.events;
 
 // ---- scenes: the state through the rules, the props through the view ----
@@ -49,7 +48,7 @@ async function start(b, { motion = true, t0 = 0 } = {}) {
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["incubator", incSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "incubator", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -57,9 +56,9 @@ const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
 const region = (lg, id, layer) => lg.regions.find((r) => r.id === id && (!layer || r.layer === layer)) ?? null;
-const pixelIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
-const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
 
+// the two fronts are painted with a clear window; their stand-ins are clear as well
+const hollowOf = (r) => r.hollow || /^(dome|nest)-front-/.test(r.id);
 const area = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
 
 const colourIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
@@ -114,17 +113,16 @@ test("growNow: the n leaves still to fill (the filling one first) each turn whol
 });
 
 // ---- the hatch (events.hatch) ----
-const ease = (p) => { p = Math.min(1000, Math.floor(p)); return Math.floor(p * p * (3000 - 2 * p) / 1000000); };
 async function hatching(o = {}) {   // as the host does it: on ✓ Open the event is sent, then the props of the hatch
   const ready = scene({ minutes: 30, ...o }), b = scene({ minutes: 30, open: true, ...o }), f = await start(ready, { t0: 1000 }), t0 = f.t; logOf(f);
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   f.send({ t: "event", kind: "hatch", target: "room", ms: EV.hatch.ms, hold: EV.hatch.hold });
   assert.equal(f.props({ screen: "incubator", ...b.props, motion: true, frame: frameProps(b.line) }), 0, f.errors().join("; ")); f.build = b;
   return { b, f, t0, at: (ms) => { f.frame(t0 + ms); return logOf(f); } };
 }
 test("the hatch is a still beat: the chamber's back, the nest and the window's front stay where they stand from 0 to the hand-off, nothing lifts or opens", { skip }, async () => {
   const { b, f, at } = await hatching(), back = b.props.regions.dome.back, front = b.props.regions.domeFront.picture;
-  assert.equal(back, "dome-inside-ready-304x272"); assert.equal(front, "dome-front-304x272");
+  assert.equal(back, "dome-inside-ready-304x272:304x272"); assert.equal(front, "dome-front-304x272:304x272");
   const [dx, dy, dw, dh] = R.dome.rect;
   for (const ms of [1, 40, 100, 300, 599, 600, 900, 999]) {
     const lg = at(ms); assert.ok(colourIs(f, dx + 20, dy + 40, back), `${ms} ms: the back at rest`); assert.ok(colourIs(f, dx, dy + 100, front), `${ms} ms: the window's front's edge at rest`);
@@ -137,7 +135,7 @@ test("the hatch: the bud is the ready picture until 600, cracks at 600 and 800, 
   assert.equal(b.props.regions.leaves.total, 0); assert.equal(b.props.regions.plaque, "");
   for (const [ms, want] of [[100, B.ready], [599, B.ready], [650, B.crack1], [799, B.crack1], [850, B.crack2], [999, B.crack2]]) { at(ms); assert.ok(colourIs(f, ...BP, want), `${ms} ms: the bud's ${want}`); }
   for (const [ms, on] of [[100, true], [599, true], [650, false], [850, false]]) { at(ms); assert.equal(colourIs(f, 512, 344, B.shape), on, `${ms} ms: the ready shape ${on ? "stands" : "is gone"} (in the hatch until the crack at 600)`); }
-  for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!BP.length || !colourIs(f, ...BP, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.equal(lg.type.some((t) => t.region === "plaque"), false); }
+  for (const ms of [1000, 1100]) { const lg = at(ms); assert.ok(!colourIs(f, ...BP, B.crack2), `${ms} ms: the bud has gone`); assert.ok(colourIs(f, jx + 40, jy + 40, J), `${ms} ms: the juvenile stands`); assert.equal(lg.type.some((t) => t.region === "plaque"), false); }
   at(999); assert.ok(!colourIs(f, jx + 40, jy + 40, J), "the juvenile is not there at 999");
   let lg = at(1199); assert.ok(!lg.type.some((t) => t.region === "ribbon" && t.text), "no ribbon at 1199"); lg = at(1200); assert.ok(lg.type.some((t) => t.region === "ribbon" && /young/.test(t.text)), "the ribbon's words at 1200");
   const TABLE = EV.hatch.steps[6].lift, lift = (ms) => TABLE.filter(([m]) => ms >= m).at(-1)[1], top = (ms) => { for (let y = jy - 6; y < jy + 8; y++) if (colourIs(f, jx + 40, y, J)) return y; return null; };
@@ -166,7 +164,7 @@ test("keys: ✓ ← and the room keys say their intent on the room, the pad says
 test("no refresh redraws more than a quarter of the screen across the hatch (frames every 16 ms and every 40 ms) and growNow; the hatch's first frames and growNow's key frame are printed", { skip }, async () => {
   const worst = (f, t0, until, step) => { let w = 0; for (let t = step; t < until; t += step) { f.frame(t0 + t); w = Math.max(w, area(f)); } return w; };
   { const { f, t0 } = await hatching(); const at = {}; for (let t = 16; t < 2700; t += 16) { f.frame(t0 + t); at[t] = area(f); }   // the ruling's beats: the first frame (≤ 55,808), the cracks (20,480), the juvenile standing (94,848), the ribbon at 1200 (16,000 by the ruling), the steps (96,064)
-    assert.ok(at[16] <= 55808, `t = 0: ${at[16]}`); assert.ok(at[608] <= 20480 && at[800] <= 20480, `cracks ${at[608]}, ${at[800]}`); assert.ok(at[1008] <= 94848, `1000: ${at[1008]}`); console.log(`# the Incubator's hatch beats (px): t=0 ${at[16]} · 600 ${at[608]} · 800 ${at[800]} · 1000 ${at[1008]} · 1200 ${at[1200]} (the ruling: 16,000) · steps ${Math.max(...[1408, 1456, 1808, 1952].map((t) => at[t]))}`); }
+    assert.ok(at[16] <= 55808, `t = 0: ${at[16]}`); assert.ok(at[608] <= 20480 && at[800] <= 20480, `cracks ${at[608]}, ${at[800]}`); assert.ok(at[1008] <= 94848, `1000: ${at[1008]}`); assert.ok(at[1200] <= 16000, `1200: ${at[1200]}`); console.log(`# the Incubator's hatch beats (px): t=0 ${at[16]} · 600 ${at[608]} · 800 ${at[800]} · 1000 ${at[1008]} · 1200 ${at[1200]} (the ruling: 16,000) · steps ${Math.max(...[1408, 1456, 1808, 1952].map((t) => at[t]))}`); }
   { const { f, t0 } = await hatching(); const w = worst(f, t0, 2700, 16); assert.ok(w <= 96064, `hatch (16 ms): dirty ${w} (${(100 * w / 614400).toFixed(1)}%)`); console.log(`# the Incubator's hatch, 16 ms frames: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
   { const { f, t0 } = await hatching(); const w = worst(f, t0, 2700, 40); assert.ok(w <= 96064, `hatch (40 ms): dirty ${w}`); console.log(`# the Incubator's hatch, 40 ms frames: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
   { const b = scene({ minutes: 13.2 }), L = b.props.regions.leaves, f = await start(b, { t0: 1000 }), t0 = f.t; f.send({ t: "event", kind: "growNow", target: "room", from: L.full, to: L.total, ms: EV.growNow.ms, hold: EV.growNow.hold });
@@ -176,7 +174,7 @@ test("growNow with reduced motion is one cut on the key's frame: the leaves, the
   const before = scene({ minutes: 13.2 }), f = await start(before, { motion: false, t0: 1000 });
   const after = scene({ minutes: 13.2, grow: undefined }); const st = after.st; S.instantGrow(st, settings, after.now);
   const b2 = incubatorBuild({ st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
-  for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f);
   console.log(`# the Incubator's growNow cut (motion off), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 162432, `dirty ${a}`);
 });
@@ -186,7 +184,14 @@ test("growNow with motion on: the props show the bud as it was until 400, then t
   f.send({ t: "event", kind: "growNow", target: "room", from: L.full, to: L.total, ms: EV.growNow.ms, hold: EV.growNow.hold }); for (let t = 16; t < 400; t += 16) f.frame(t0 + t);
   const after = scene({ minutes: 13.2 }); S.instantGrow(after.st, settings, after.now);
   const b2 = incubatorBuild({ st: after.st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
-  for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), r.hollow)));
+  for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame(t0 + 400); const a = area(f);
   console.log(`# the Incubator's growNow, ready at 400 (motion on): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 153600, `dirty ${a}`); assert.deepEqual(f.errors(), []);
+});
+test("the rail refuses a pip that is not 6 × 6: the composed marks are defined at 6, and the error says so", { skip }, async () => {
+  const b = scene({ minutes: 2 }), f = await start(b), bad = JSON.parse(JSON.stringify(frameSpec));
+  bad.regions.rail.pip.size = 8; assert.equal(f.send({ t: "spec", screen: "frame", json: bad }), 0);
+  const b2 = scene({ minutes: 13.2 }); for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
+  f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }); frames(f);
+  assert.match(f.errors().join("; "), /a rail pip is 6 × 6/); assert.ok(f.refused() > 0, "the screen is refused");
 });

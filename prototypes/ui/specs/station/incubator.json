@@ -142,8 +142,8 @@
   "dome": { "back": "ground", "housing": "metal", "windowEdge": "hairline", "standby": "sand", "ready": "cream", "note": "the art director's rulings (2026-10-10 01:44): the chamber in the sage housing (metal), its window a hairline edge with no highlight; the standby pool sand, about half the ready light; ready cream, warm, never a ring" },
   "nest": { "fill": "leaf", "light": "grass", "shade": "forest", "hollow": "forest", "note": "the moss bed (art director, 2026-10-10 01:44); no bark twigs" },
   "bud": { "bean": "peach", "light": "cream", "edge": "rust", "late": "blush", "shape": "bark", "note": "the bud pictures' colours, never a drawn glow" },
-  "base": { "fill": "enamel", "light": "sand", "shade": "bevel", "edge": "hairline", "footLight": "sage", "plate": "panel", "plateEdge": "hairline", "note": "the sand housing, matte, lit as Home's rest knob is (was lit frost); the foot light sage, a quiet alive-and-working line, never frost, never amber (art director, 2026-10-10 01:44)" },
-  "plaque": { "growing": "fog", "ready": "bone", "empty": "fog" },
+  "base": { "fill": "enamel", "light": "sand", "shade": "bevel", "edge": "hairline", "footLight": "sage", "plate": "painted in base-336x96 (#92846d)", "plateEdge": "hairline", "note": "the sand housing, matte, lit as Home's rest knob is (was lit frost); the foot light sage, a quiet alive-and-working line, never frost, never amber (art director, 2026-10-10 01:44)" },
+  "plaque": { "empty": "ink", "growing": "ink", "ready": "ink", "floor": "4.5:1 on the painted plate (16 px, weight 400); ink 4.81:1" },
   "leaves": { "full": "sage", "vein": "sageD", "empty": "metal" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
   "code": "bone",
@@ -172,7 +172,6 @@
   "rule": "every master this screen names, with its id, size and region. Stale: made or specified for the look the art reset replaced; it stays its region's labelled placeholder, drawn at its size, until the art director's master lands. Carried: unaffected by the reset (creature art, the kit's chrome). No art is made or commissioned by this list",
   "look": "A PH plate is a `stone` fill with a 1 px `mist` edge inside the rect. A PH hollow is a 1 px `stone` edge with no fill. No text, shape or shading. Each id is in the register with status placeholder.",
   "stale": [
-   { "id": "base-336x96 (the base master: sand housing, the plaque plate at base.plate, the foot light at base.footLight)", "size": [336, 96], "region": "base, base.plate, base.footLight", "why": "signed (art director)" },
    { "id": "bud-early-128x160, bud-late-128x160, bud-ready-128x160, bud-crack-1-128x160, bud-crack-2-128x160 (PH plates at bud.rect); bud-ready-front-128x160 (registered, nothing drawn)", "size": [128, 160], "region": "bud", "why": "re-judged against the concept board's bean on moss (no dot, Home's warmth); the box stays" }
   ],
   "carried": [

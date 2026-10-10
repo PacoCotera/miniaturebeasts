@@ -160,7 +160,7 @@ test("the founder's dither is a cut with reduced motion: the new picture at once
 test("the dither's `from` is a string on a dither alone: a number there still means levels, a string on any other event, an empty or a longer-than-95-bytes one is refused", { skip }, async () => {
   const f = await start(scene({ read: 2, f: 1 }));
   assert.equal(f.send({ t: "event", kind: "dither", target: "stage", from: 16, to: 0, ms: 180 }), 0); assert.equal(f.send({ t: "event", kind: "dither", target: "founder", from: "founder:S01:x", ms: 200 }), 0);
-  for (const kind of ["seal", "wipe", "grow", "arrival"]) { assert.equal(f.send({ t: "event", kind, target: "x", from: "a-picture", ms: 100 }), -1, kind); assert.match(f.errors().join(), /a string only on a dither/); }
+  for (const kind of ["seal", "wipe", "grow", "growNow", "hatch", "arrival"]) { assert.equal(f.send({ t: "event", kind, target: "x", from: "a-picture", ms: 100 }), -1, kind); assert.match(f.errors().join(), /a string only on a dither/); }
   assert.equal(f.send({ t: "event", kind: "dither", target: "founder", from: "x".repeat(96), ms: 200 }), -1); assert.match(f.errors().join(), /at most 95 bytes/);
   assert.equal(f.send({ t: "event", kind: "dither", target: "founder", from: ["a"], ms: 200 }), -1); assert.deepEqual(f.errors().length > 0, true);
 });

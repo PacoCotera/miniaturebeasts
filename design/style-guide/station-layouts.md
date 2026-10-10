@@ -1284,7 +1284,7 @@ Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x60
 
 <img src="station-layouts/05b-incubator-hatch.png" width="1024" alt="Incubator, the hatch">
 
-*05b. The hatch at 1500 ms: the chamber's window lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then one mibi up close, in the meet (← Vivarium). 1×, measured.*
+*05b. The hatch at 1500 ms: the chamber as it stands, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then one mibi up close, in the meet (← Vivarium). 1×, measured.*
 
 <img src="station-layouts/05c-incubator-empty.png" width="1024" alt="Incubator, empty">
 
@@ -1381,14 +1381,14 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 
 | Region (`incubator.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
-| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-incubator`, to be commissioned; until then `room-bench-stage-collection`) | | — |
+| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-incubator`) | | — |
 | `rail` | 96, 40, 832, 40 | chapter rail (rules `railCompaction`, `slantTabs`) | growing, ready, hatch | tabs read or unread; a founder's clearing by the `wipe` event |
 | `leaves` | 256, 88, 512, 216 | leaves, form arc (rule `leafArc`) | growing, ready | each leaf empty, filling (rows of 20) or full |
-| `dome` | 360, 200, 304, 272 | living window, part inside | | standby (empty); the glow; lifting in the hatch |
+| `dome` | 360, 200, 304, 272 | living window, part inside | | standby (empty); the glow |
 | `nest` | 408, 400, 208, 48 | living window, part inside | | lit and plump when empty |
-| `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`, a placeholder to be painted) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
+| `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
 | `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking |
-| `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready); lifting |
+| `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready) |
 | `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
 | `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
 | `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
@@ -1396,7 +1396,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
 | `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting or its placeholder; the step lift |
 
-**Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, its foot light, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top; the lifting window is clipped to (0, 88, 1024, 474), under the rail.
+**Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top.
 
 **Clearance:** every leaf lies 10 px or more under the rail (the outer arc's top leaf at y 90; with the 16×20 leaf an outer radius of 248 would put it at 86, 6 px under) and 56 px or more outside the chamber's arch, measured on the slot tables; no two leaves of any run overlap, their boxes 2 px apart at the closest, where the leaf's empty corners keep its ink clear. The code's line box starts 10 px under the stamp label; the ribbon ends 16 px above the juvenile's box.
 
@@ -1440,7 +1440,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | 0 | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | 400 ms | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600 (art director, 2026-10-10 10:48: the lift is retired). 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
+| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
 **The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the Vivarium: states and events](#the-vivarium-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). This is the target: `frame.json` keeps main's navigation until the build, which makes the change `habitat.json` `buildChanges` names. With `motion: false` the hatch jumps to its end, the meet.
 

@@ -1,7 +1,7 @@
 // The Incubator's intents (incubator.json keys, events, handoff): ✓ on an empty one chooses a pod (a jump to Pods' collection), on a growing bud grows it now (events.growNow), on a ready one opens it (the hatch, then a jump to one mibi up close, in
 // the meet); ← goes Home. The screen's own state is `h.ui.inc.hatch` while the hatch holds: { mibi, species, code, read } of the bud that was opened (the rule has already made the mibi and emptied the chamber).
 import * as S from "../state.mjs";
-import { knownChapters, leavesOf } from "../views/incubator-props.mjs";
+import { knownChapters } from "../views/incubator-props.mjs";
 
 // The pod Choose a pod lands on: the first identified pod in rack order, else the first pod (frame.json navigation.jumps); only when the rack holds a pod and a bay is free.
 export function choosePod(h) {
@@ -18,16 +18,24 @@ export function intent(h, target, verb) {
   const spec = h.specs.incubator, motion = h.motion ? h.motion() : true;
   if (S.budReady(h.st, h.settings, h.now())) {
     const B = h.st.bud, r = S.openBud(h.st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-    const ev = spec.events.hatch, id = r.mibi.id; h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind, parents: B.parents ?? null }; h.save();
+    const ev = spec.events.hatch, id = r.mibi.id; h.ui.meet = id; h.ui.inc.hatch = { mibi: id, species: B.species, code: B.code, read: B.read, kind: B.kind }; h.save();
     const over = () => { h.ui.inc.hatch = null; h.ui.hab.id = id; h.ui.hab.f = "resident"; h.goto("habitat"); };   // the hatch is over: meet the mibi, the ring on the resident (habitat.json focus.targets.resident)
     if (motion) { h.play({ kind: "hatch", target: "room", ms: ev.ms, hold: ev.hold }); h.at(ev.ms, over); } else over();   // reduced motion: a cut, the meet on the frame of ✓
     return r;
   }
-  const B = h.st.bud, L = leavesOf(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves[ "leaf" ][1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()) };
+  const B = h.st.bud, L = S.budLeaves(h.st, h.settings, h.now(), spec.regions.leaves.max, spec.regions.leaves.leaf[1]), before = { known: knownChapters(h.st, B, h.settings, h.now()), leaves: L, cost: S.instantGrowCost(h.st, h.settings, h.now()), need: S.need(h.st, h.sv, h.settings, h.ui).text ?? "" };
   const r = S.instantGrow(h.st, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
   if (motion) {   // the leaves still to fill (the filling one first) turn whole one by one over 400 ms; the screen shows the bud as it was until the event ends, then ready on one refresh
     const ev = spec.events.growNow; h.ui.inc.grow = { ...before, until: h.now() + ev.ms };
     h.play({ kind: "growNow", target: "room", from: L.full, to: L.total, ms: ev.ms, hold: ev.hold }); h.at(ev.ms, () => { h.ui.inc.grow = null; });
   }
   h.save(); return r;
+}
+
+// The Incubator's tabs, once a frame: while a founder's bud grows its unread chapters clear one at a time; each tab that turns read plays the wipe (incubator.json events.wipe), which fills its pips over 1000 ms. The first look at a screen plays none, nor do growNow's cut or reduced motion.
+export function incubatorTick(h) {
+  const inc = h.ui.inc;
+  if (h.ui.screen !== "incubator" || !h.st.bud || inc.grow || (h.motion && !h.motion())) { inc.seen = null; return; }
+  const known = knownChapters(h.st, h.st.bud, h.settings, h.now()), prev = inc.seen; inc.seen = known;
+  if (prev) for (const id of known) if (!prev.includes(id)) { const ev = h.specs.incubator.events.wipe; h.play({ kind: "wipe", target: id, ms: ev.ms, hold: ev.hold }); }
 }

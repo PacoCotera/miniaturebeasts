@@ -29,9 +29,19 @@ static int in_state(const char *s) { return strcmp(v_pstr("state"), s) == 0; }
 /* ---- the hatch: how far it has got (the end state when no event plays) ---- */
 #define HATCH_END 1000000
 static int hatch_time(void) { anim_state_t t; if (!in_state("hatch")) return -1; return v_pbool("motion", 1) && anim_get(ANIM_HATCH, "room", &t) ? t.elapsed : HATCH_END; }
-/* the juvenile's step-out: incubator.json events.hatch.steps.6.lift, [ms into the step, px above the feet line], each a cut (the second step reads the same table) */
-static int step_lift(int ms) {
-  int v = 0; for (int i = 0, n = spec_len(I, "events.hatch.steps.6.lift"); i < n; i++) { if (ms >= spec_int(I, v_fmt("events.hatch.steps.6.lift.%d.0", i), 1 << 30)) v = spec_int(I, v_fmt("events.hatch.steps.6.lift.%d.1", i), 0); }
+/* the juvenile's step-outs: the steps of incubator.json events.hatch that carry a `lift` key, each with its `at` and `ms`; the table is the first `lift` that is an array, [ms into the step, px above the feet line], each a cut (a step whose lift is a note reads the same table) */
+static int lift_steps(int *at, int *ms, int *table, int cap) {
+  int k = 0; *table = -1;
+  for (int i = 0, n = spec_len(I, "events.hatch.steps"); i < n && k < cap; i++) {
+    const char *key = v_fmt("events.hatch.steps.%d.lift", i); if (!spec_raw(I, key, NULL)) continue;
+    if (*table < 0 && spec_len(I, key) >= 0) *table = i;
+    at[k] = spec_int(I, v_fmt("events.hatch.steps.%d.at", i), 0); ms[k] = spec_int(I, v_fmt("events.hatch.steps.%d.ms", i), 0); k++;
+  }
+  return k;
+}
+static int step_lift(int table, int ms) {
+  int v = 0; if (table < 0) return 0;
+  for (int i = 0, n = spec_len(I, v_fmt("events.hatch.steps.%d.lift", table)); i < n; i++) { if (ms >= spec_int(I, v_fmt("events.hatch.steps.%d.lift.%d.0", table, i), 1 << 30)) v = spec_int(I, v_fmt("events.hatch.steps.%d.lift.%d.1", table, i), 0); }
   return v;
 }
 
@@ -57,7 +67,7 @@ static void build_bud(int t) {
 }
 static void build_base(void) {
   picture("base", "base", "regions.base.rect", v_pstr("regions.base.picture"));
-  { int r[4]; crect("regions.plaque.rect", r); int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); int tw = v_measure(w, px);
+  { int px = ci("regions.plaque.px", 16), cx = ci("regions.plaque.centre", 512); const char *w = v_pstr("regions.plaque"); int tw = v_measure(w, px);
     const char *st = v_pstr("state"); v_region("plaque", LAYER_TYPE);
     v_text("plaque", w, cx - v_half(tw), ci("regions.plaque.lineTop", 502) + v_fdiv(20 - v_cap(px), 2), *w ? tw : 0, px, colr(v_fmt("colours.plaque.%s", strcmp(st, "hatch") == 0 ? "ready" : st))); }
   { const char *pic = v_pstr("regions.lamp.picture"); if (spec_len("props", "regions.lamp") >= 0) { int r[4]; crect("regions.base.lamp.rect", r); v_name("lamp"); if (v_pbool("regions.lamp.on", 0)) v_sprite("lamp", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("lamp", pic, r[0], r[1]); } }
@@ -65,8 +75,8 @@ static void build_base(void) {
 /* the juvenile stands in its box on the base from 1000 and steps out at 1400 and 1800; the picture is the new mibi's, its placeholder until the painting lands */
 static void build_juvenile(int t) {
   if (spec_len("props", "regions.bud") < 0) return;
-  int r[4]; crect("regions.juvenile.rect", r); const char *pic = v_pstr("regions.juvenile.picture"); int a = ci("events.hatch.steps.4.at", 1000), s1 = ci("events.hatch.steps.6.at", 1400), s2 = ci("events.hatch.steps.7.at", 1800), up = 0;
-  int on = has(pic) && t >= a; if (on && t >= s1 && t < s1 + 200) up = step_lift(t - s1); if (on && t >= s2 && t < s2 + 200) up = step_lift(t - s2);
+  int r[4]; crect("regions.juvenile.rect", r); const char *pic = v_pstr("regions.juvenile.picture"); int a = ci("events.hatch.steps.4.at", 1000), up = 0, sat[4], sms[4], table, ns = lift_steps(sat, sms, &table, 4);
+  int on = has(pic) && t >= a; for (int i = 0; on && i < ns; i++) if (t >= sat[i] && t < sat[i] + sms[i]) up = step_lift(table, t - sat[i]);
   v_name("juvenile"); if (on) v_sprite("juvenile", pic, r[0], r[1] - up, r[2], r[3]); else v_sprite_hidden("juvenile", has(pic) ? pic : v_pstr("regions.bud.ready"), r[0], r[1]);
 }
 /* the stamp label: a bone plate with a slate edge, the stamp centred on it */

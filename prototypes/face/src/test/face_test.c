@@ -184,6 +184,15 @@ static void layout_vectors(const char *dir, const char *specs) {
   }
   printf("layout: %d cases, %d differ\n", n, bad);
   free(js);
+  {   /* leafArc: each arc's table holds 2·perArc − 1 slots, no other length (lvgl-switch.md §2.2) */
+    static const char GOOD[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0]],\"outer\":[[0,1],[1,1],[2,1]]}}}";
+    static const char SHORT[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0]],\"outer\":[[0,1],[1,1]]}}}";
+    static const char LONG[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0],[3,0]],\"outer\":[[0,1],[1,1],[2,1]]}}}";
+    int box[LAYOUT_LEAVES][4];
+    spec_load("arcgood", GOOD, sizeof GOOD - 1); check(layout_leaf_arc("arcgood", "r", 3, box) == 3, "leafArc: a table of 2·perArc − 1 slots", "refused");
+    spec_load("arcshort", SHORT, sizeof SHORT - 1); check(layout_leaf_arc("arcshort", "r", 3, box) == -1, "leafArc: a short outer table is refused", "accepted");
+    spec_load("arclong", LONG, sizeof LONG - 1); check(layout_leaf_arc("arclong", "r", 3, box) == -1, "leafArc: a long inner table is refused", "accepted");
+  }
 }
 int main(int argc, char **argv) {
   const char *dir = argc > 1 ? argv[1] : "tests/vectors";

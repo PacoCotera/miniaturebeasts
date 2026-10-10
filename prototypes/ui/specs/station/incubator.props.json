@@ -10,7 +10,7 @@
   "regions": { "type": "object", "required": ["bench", "dome", "nest", "nestFront", "domeFront", "base", "plaque", "lamp"], "additionalProperties": false, "properties": {
    "bench": { "type": "object", "required": ["room"], "additionalProperties": false, "properties": { "room": { "type": "array", "items": { "$ref": "pic" } } } },
    "rail": { "type": "object", "required": ["focused", "open", "star", "tabs"], "additionalProperties": false, "properties": { "focused": { "type": "null" }, "open": { "type": "integer" }, "star": { "type": "string" }, "tabs": { "type": "array", "items": { "$ref": "tab" } } } },
-   "leaves": { "type": "object", "required": ["total", "full", "rows", "empty", "filled"], "additionalProperties": false, "properties": { "total": { "type": "integer" }, "full": { "type": "integer" }, "rows": { "type": "integer" }, "empty": { "$ref": "pic" }, "filled": { "$ref": "pic" } } },
+   "leaves": { "type": "object", "required": ["total", "full", "rows", "empty", "filled"], "additionalProperties": false, "properties": { "total": { "type": "integer", "minimum": 0, "maximum": 40 }, "full": { "type": "integer", "minimum": 0, "maximum": 40 }, "rows": { "type": "integer", "minimum": 0, "maximum": 19 }, "empty": { "$ref": "pic" }, "filled": { "$ref": "pic" } } },
    "dome": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "$ref": "pic" } } },
    "nest": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },
    "nestFront": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "$ref": "pic" } } },

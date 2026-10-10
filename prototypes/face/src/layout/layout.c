@@ -97,6 +97,7 @@ int layout_stamp_cell(int n, int inner, int least) { int c = inner / (n + 2); re
 int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]) {
   char base[300]; snprintf(base, sizeof base, "%s.leafArc", region); int per = ip(spec, base, "perArc", 20), lw = ia(spec, region, "leaf", 0, 16), lh = ia(spec, region, "leaf", 1, 20);
   if (n < 0 || n > 2 * per || n > LAYOUT_LEAVES) return -1;
+  { char t[330]; snprintf(t, sizeof t, "%s.inner", base); if (spec_len(spec, t) != 2 * per - 1) return -1; snprintf(t, sizeof t, "%s.outer", base); if (spec_len(spec, t) != 2 * per - 1) return -1; }   /* each arc holds 2·perArc − 1 slots, no other length */
   int a = n < per ? n : per;
   for (int i = 0; i < n; i++) {
     int arc = i >= a, k = arc ? n - a : a, j = arc ? i - a : i, slot = per - k + 2 * j; char t[330]; snprintf(t, sizeof t, "%s.%s", base, arc ? "outer" : "inner");
