@@ -66,9 +66,9 @@ AD_RECORDS = {
  "crate-closer-open-384x256": ('withdrawn', None, 'withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12'),
  "crate-closer-sealed-384x256": ('withdrawn', None, 'withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12'),
  "crate-closer-opening-384x256": ('withdrawn', None, 'withdrawn (art director): replaced by crate-{sealed,opening,open}-432x272 in the region UI/UX ruled at 11:12'),
- "cargo-energy-48x64": ('new', None, "new, awaiting the owner (art director): at 1x on opaque pixels L* 46.8, mean R-B 21.2, sat 15.4, 0.0 percent above L* 70; the riveted, banded cell (the owner's Energy #1), three amber bars"),
- "cargo-data-48x64": ('new', None, "new, awaiting the owner (art director): at 1x on opaque pixels L* 51.1, mean R-B -21.2 (the sky window), sat 23.5, 0.0 percent above L* 70; the ribbed cartridge (the owner's Data #1), upright"),
- "cargo-essence-48x64": ('new', None, "new, awaiting the owner (art director): at 1x on opaque pixels L* 48.9, mean R-B 5.4, sat 27.3, 0.0 percent above L* 70; the caged sample tube, opened (E1); the cage, the foot's glass and the base drawn by hand at 1 px so they hold at 48x64"),
+ "cargo-energy-48x64": ('signed', "art director, the haul trio (owner's yes)", "signed (art director) at 1x, opaque pixels: L* 46.8, mean R-B 21.2, sat 15.4, 0.0 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); the riveted, banded cell, three amber cells in its window"),
+ "cargo-data-48x64": ('signed', "art director, the haul trio (owner's yes)", "signed (art director) at 1x, opaque pixels: L* 51.1, mean R-B -21.2, sat 23.5, 0.0 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); the ribbed cartridge, upright, sky window, gold contacts"),
+ "cargo-essence-48x64": ('signed', "art director, the haul trio (owner's yes)", "signed (art director) at 1x, opaque pixels: L* 49.3, mean R-B 5.9, sat 28.5, 0.0 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); the sealed sample tube in a light cage, the green one continuous liquid (one hoop above it)"),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
