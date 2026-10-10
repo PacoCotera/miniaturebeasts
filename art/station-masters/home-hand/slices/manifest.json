@@ -338,5 +338,115 @@
   "made": "the bottom line: flat `bar`, a `hairline` rule along its top, a `bevel` lit row under it; replaces the old painted strip",
   "sha256": "8788ad07ae353c3d1c2cb83e87c6d6299f8a685fd3d4dd6dcbf5a8d24d5c4b3f",
   "status": "signed"
+ },
+ "home-rack-pod-accent-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the cap and two curved side straps, filled with colour B",
+  "sha256": "172313d6d3c600d6a4617c0d77524fcdd0eb16ca0774b3ec9a8572c58979795b",
+  "status": "signed"
+ },
+ "home-rack-pod-body-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the shell and cap, filled with the species colour A",
+  "sha256": "e78384b3cac271c61f01d00db0704ab1f017aa7bdeee2ce326fac7d267e447ce",
+  "status": "signed"
+ },
+ "home-rack-pod-light-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the lit upper left, filled with A's lighter neighbour",
+  "sha256": "4ce2f1ce69dc60ba5dcbc41e53fb7ddb2f05a8f2b661af9b5ca8086ed9f37d1b",
+  "status": "signed"
+ },
+ "home-rack-pod-outline-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the 1 px outline, filled with the darkest of A's ramp (never black)",
+  "sha256": "ab4144236c16519639a4546f8c16af2a5f466397d86cfbc91c8215c1aca91e5d",
+  "status": "signed"
+ },
+ "home-rack-pod-pattern-bands-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the bands pattern over the body, filled with colour B",
+  "sha256": "89b5db434b657898ec82702f653867d3c9b885c6ed1edc0d3093a489e89c1d40",
+  "status": "signed"
+ },
+ "home-rack-pod-pattern-dots-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the dots pattern over the body, filled with colour B",
+  "sha256": "0ba226431bb006e34696cd192295522f0438a0c07690e5c6f7c91cd17e86511d",
+  "status": "signed"
+ },
+ "home-rack-pod-pattern-plates-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the plates pattern over the body, filled with colour B",
+  "sha256": "aa14653e529546fc8f0a253a60aa850459620283d3eed19b8134f71b1bfcfd14",
+  "status": "signed"
+ },
+ "home-rack-pod-pattern-ribs-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the ribs pattern over the body, filled with colour B",
+  "sha256": "8589a8563b5ba33fcd68503ee9b70fa14c6fcb0ff3cd284d72cc0519a6c2de1f",
+  "status": "signed"
+ },
+ "home-rack-pod-pattern-segments-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the segments pattern over the body, filled with colour B",
+  "sha256": "c77d41c42620a81f2ad95d44707c3fe756c7ed0b9c97f0851b2313030a65775b",
+  "status": "signed"
+ },
+ "home-rack-pod-pattern-stripes-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the stripes pattern over the body, filled with colour B",
+  "sha256": "1ba72652eb378b2d603842be198dd6141a1c4857d62889a2ce6a55c907684bff",
+  "status": "signed"
+ },
+ "home-rack-pod-shade-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/rackpod.py)",
+  "made": "a rack pod layer (1-bit, white = on): the lower right in shade, filled with A's darker neighbour",
+  "sha256": "19916a8e503df7c97ee3886b4dd2e2ca2f8de896231f381b23478109d2c6ba49",
+  "status": "signed"
  }
 }
