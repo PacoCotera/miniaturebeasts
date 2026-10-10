@@ -3206,13 +3206,13 @@
  },
  "idle-vivarium-day-1024x568": {
   "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "signed_in": "art director, Idle verdict (62bbd883)",
+  "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference)"
  },
  "idle-vivarium-dusk-1024x568": {
   "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "signed_in": "art director, Idle verdict (62bbd883)",
+  "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
  },
  "idle-vivarium-night-1024x568": {
   "status": "held",
