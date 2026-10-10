@@ -38,7 +38,8 @@ export function livingOf(m, R, req, ph) {
   const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => person(mb, { seed: 0, nap: true })) : [];
   const bed = {
     state: docked ? (sleepers.length ? "docked" : "none") : "away",
-    picture: ph(`home-bed-${R.bed.rect[2]}x${R.bed.rect[3]}`, R.bed.rect.slice(2)),   // the bed's PH plate in every state; no Companion mark is drawn until the art director's hand-drawn mark (home-bed-mark-16x24) lands
+    picture: ph(`home-bed-${R.bed.rect[2]}x${R.bed.rect[3]}`, R.bed.rect.slice(2)),   // the bed's PH plate in every state
+    mark: docked ? "" : ph(R.bed.markPicture, R.bed.mark),   // away only: the Companion's mark (home-bed-mark-16x24), 1:1 over the bed
     sleepers,
   };
   return { residents, sleepers, bed };
@@ -78,20 +79,21 @@ export function homeBuild(m, spec, frame) {
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : incState === "painting" ? "waiting" : "off"),
     chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}`, R.incubator.chamber.slice(2)),
-    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, emptyPicture: ph(`home-leaf-empty-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf, true), fullPicture: ph(`home-leaf-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf) },
+    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;
   const probe = {
     state: docked ? "docked" : "away", lamp: lampOf("probe") ?? (docked ? "well" : "off"),
     cradle: slot(docked ? "home-cradle-full" : "home-cradle-empty", R.probe.cradle.slice(2)),
-    shields: { count: pr ? Math.min(pr.smax, R.probe.shields.count) : 0, whole: pr ? Math.min(pr.shield, pr.smax) : 0, wholePicture: ph(`home-shield-${R.probe.shields.size.join("x")}`, R.probe.shields.size), gonePicture: ph(`home-shield-gone-${R.probe.shields.size.join("x")}`, R.probe.shields.size, true) },
-    frame: held ? ph(`home-sitting-${R.probe.slot.slice(2).join("x")}`, R.probe.slot.slice(2)) : "",
+    shields: { count: pr ? Math.min(pr.smax, R.probe.shields.count) : 0, whole: pr ? Math.min(pr.shield, pr.smax) : 0, wholePicture: ph(R.probe.shields.pictures.whole, R.probe.shields.size), gonePicture: ph(R.probe.shields.pictures.gone, R.probe.shields.size, true) },
+    frame: held ? ph(R.probe.slotPicture, R.probe.slot.slice(2)) : "",
   };
   const found = st.knownIds.length;
   const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal", R.library.journal.slice(2)) };
 
-  const regions = { glass: { picture: slot("home-glass-day", [R.glass.rect[2], R.glass.rect[3]]) }, residents, bed, cargo, pods, incubator, probe, library };
+  const lamps = Object.fromEntries(Object.entries(spec.lamps.pictures).map(([k, id]) => [k, ph(id, [12, 12])]));   // the signed lamps: off, well, waiting, needsYou (home.json lamps.pictures)
+  const regions = { glass: { picture: slot("home-glass-day", [R.glass.rect[2], R.glass.rect[3]]) }, residents, bed, cargo, pods, incubator, probe, library, lamps };
 
   // the focus: the targets present, in the spec's group order; the ring is on `cur` or nowhere ("room")
   const targets = [{ id: "vivarium", group: "vivarium" }];

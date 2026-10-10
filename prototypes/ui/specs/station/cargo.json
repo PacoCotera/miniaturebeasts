@@ -92,7 +92,7 @@
  },
  "colours": {
   "bay": { "fill": "panel", "top": "bevel", "edge": "hairline", "inside": "ground", "rim": "enamel", "lid": "enamel", "seal": "deepTeal" },
-  "crate": { "body": "enamel", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },
+  "crate": { "body": "metal", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },
   "rack": { "fill": "panel", "top": "bevel", "edge": "hairline", "well": "ground", "wellShade": "void", "wellLip": "bevel" },
   "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" },
   "report": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void", "heading": "bone", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel" }
@@ -111,7 +111,7 @@
   }
  },
  "placeholders": {
-  "crate-sealed-256x176": "the bay's crate, a rugged field case: enamel body, deepTeal rubber corners, an orange seal tag",
+  "crate-sealed-256x176": "the bay's crate, a rugged field case: sage housing (metal) body, deepTeal rubber corners, an orange seal tag",
   "crate-sealed-384x256": "the same case, closer", "crate-opening-384x256": "the tag torn, the lid lifting", "crate-open-384x256": "the lid off, its fitted cut-outs",
   "bay": "992×320 panel; the lid enamel with deepTeal seals",
   "pod": "88×112, the collection class",

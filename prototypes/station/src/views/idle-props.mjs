@@ -21,5 +21,5 @@ export function idleBuild(m, frame) {
   const size = R.vivarium.rect.slice(2);
   const lw = livingOf(m, R, req, ph);
   const vivarium = { picture: req({ kind: "slot", id: `idle-vivarium-day:${size.join("x")}`, master: "idle-vivarium-day", size, until: "Idle's Vivarium master (day, dusk and night)" }) };
-  return { props: { idle: true, regions: { vivarium, residents: lw.residents, bed: lw.bed }, frame: { idle: { line: idleLine(m, I) } } }, requests };
+  return { props: { idle: true, regions: { vivarium, residents: lw.residents, bed: lw.bed, lamps: { waiting: ph(R.resident.waitingLamp, [12, 12]) } }, frame: { idle: { line: idleLine(m, I) } } }, requests };
 }

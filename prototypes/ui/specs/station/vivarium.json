@@ -71,7 +71,7 @@
    "juvenile": [104, 112],
    "walk": {"ground": [16, 296, 992, 176], "rule": "each walks with its feet in the band, as on Idle 80 px higher"},
    "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
-   "lamp": {"size": [12, 12], "slice": "frame-lamp-12-sky", "at": "the box's top right", "when": "while the placeholder is drawn"},
+   "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
    "lift": 4,
    "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk, as on Home and Idle; each walks, rests and plays its species' idle on that seed, as on Home and Idle; the focused one stops while it is focused, lifted 4 px"
   },
@@ -300,7 +300,7 @@
    "the bed 192×56",
    "frame-companion-outline-16x24 (the bed's mark and the out tile's glyph)",
    "the thumbnails 48×48 (the painting or placeholder rendered at that size)",
-   "frame-lamp-12-sky"
+   "home-lamp-sky-12x12"
   ]
  },
  "strings": {

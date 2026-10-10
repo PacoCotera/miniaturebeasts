@@ -74,7 +74,7 @@
   "domeFront": { "rect": [776, 104, 176, 224], "component": "livingWindow", "part": "frame", "note": "the small chamber's window front, drawn over the bud and the travelling pod", "placeholder": "stale by the art reset: the glass front with its highlight" },
   "leaves": {
    "rect": [768, 336, 192, 48], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 12, "perRow": 16, "rowPitch": 16, "rows": 3, "max": 48,
-   "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" },
+   "pictures": { "empty": "leaf-empty-8x12", "full": "leaf-full-8x12" },
    "place": "leaf i at (x + 12 × (i mod 16), y + 16 × floor(i / 16)) of the region",
    "count": "one a minute the bud will take: 20 plus one a change, the first founder 5 whatever is shaped (game designer, 2026-10-09 13:27); every leaf empty here",
    "props": "{ total, full: 0, rows: 0 }"
@@ -180,7 +180,7 @@
    { "id": "room-cradle, room-cradle-front (Pods' signed dish)", "size": [224, 96], "region": "cradle, cradleFront", "why": "the glass dish under a cool cone, clinical; the room set's repaint replaces it" },
    { "id": "create-dome-176x224 (a PH plate at dome.rect); create-dome-front-176x224 (registered, nothing drawn)", "size": [176, 224], "region": "dome, domeFront", "why": "a small bell jar on an enamel base; becomes the Incubator's chamber with one hooded window, small" },
    { "id": "bud-small-64x80 (a PH plate at bud.rect, busy only)", "size": [64, 80], "region": "bud", "why": "the busy bud, re-judged with the Incubator's buds against the concept board's bean on moss" },
-   { "id": "leaf-small-empty-8x12, leaf-small-full-8x12", "size": [8, 12], "region": "leaves", "why": "the Incubator's leaf at the small size, re-judged with it; Home's module uses the same pictures" }
+   { "id": "leaf-empty-8x12, leaf-full-8x12", "size": [8, 12], "region": "leaves", "why": "the Incubator's leaf at the small size, re-judged with it; Home's module uses the same pictures" }
   ],
   "carried": [
    { "id": "the founder's placeholder (the stylised rig pass)", "size": [304, 312], "region": "founder", "why": "creature art" },

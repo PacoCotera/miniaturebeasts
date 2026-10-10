@@ -10,11 +10,11 @@
    "png": "cargo-bay-one.png"
   },
   "cargo-bay-three": {
-   "hash": "df817579",
+   "hash": "3ad81d11",
    "png": "cargo-bay-three.png"
   },
   "cargo-bay-empty": {
-   "hash": "26e7301b",
+   "hash": "f50ca7af",
    "png": "cargo-bay-empty.png"
   },
   "cargo-bay-away": {
@@ -22,7 +22,7 @@
    "png": "cargo-bay-away.png"
   },
   "cargo-bay-waiting": {
-   "hash": "83730667",
+   "hash": "7b64e223",
    "png": "cargo-bay-waiting.png"
   },
   "cargo-report": {

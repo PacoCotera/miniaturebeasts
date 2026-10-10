@@ -16,20 +16,16 @@ static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", base,
 static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(H, p, o, 24); return o; }
 
-/* a lamp: 12 x 12, a `void` rim and the state's fill (off, well, waiting, needsYou) */
+/* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids the props name (regions.lamps); one node whichever state it is. A picture the host has not sent leaves a node of no size. */
 static void lamp(const char *id, int x, int y, const char *state) {
-  if (strcmp(state, "needsYou") == 0) {   /* the signed amber lamp (frame.json regions.marks.lamp12); until the host has it, nothing */
-    char a[96]; spec_str("frame", "regions.marks.lamp12", a, sizeof a); if (a[0] && wire_has_asset(a)) v_sprite(id, a, x, y, 12, 12); return;
-  }
-  char p[48]; snprintf(p, sizeof p, "colours.lamp.%s", *state ? state : "off");
-  char n[64]; snprintf(n, sizeof n, "%s.rim", id); v_rect(n, x, y, 12, 12, colr("colours.lamp.rim"));
-  snprintf(n, sizeof n, "%s.fill", id); v_rect(n, x + 1, y + 1, 10, 10, colr(p));
+  const char *pic = v_pstr(v_fmt("regions.lamps.%s", *state ? state : "off"));
+  if (pic && *pic) v_sprite(id, pic, x, y, 12, 12); else v_sprite_hidden(id, v_pstr("regions.lamps.off"), x, y);
 }
 
-/* a waiting lamp on a resident or a sleeper: the flat plate in the spec's colours; not shown, its two nodes stay with no size */
+/* a waiting lamp on a resident or a sleeper: home-lamp-sky-12x12, steady; not shown, the same node with no size, so the order of the glass never changes kind */
 void build_waitingLamp(const char *id, int x, int y, int shown) {
   if (shown) { lamp(id, x, y, "waiting"); return; }
-  char n[64]; snprintf(n, sizeof n, "%s.rim", id); v_rect(n, x, y, 0, 0, colr("colours.lamp.rim")); snprintf(n, sizeof n, "%s.fill", id); v_rect(n, x, y, 0, 0, colr("colours.lamp.waiting"));   /* hidden: the same two nodes, empty, so the order of the glass never changes kind */
+  v_sprite_hidden(id, v_pstr("regions.lamps.waiting"), x, y);
 }
 
 /* the module: a panel (fill, bevel top, hairline edge), its engraved word at the spec's offset and its lamp; the objects are the screen's. `dy` is the focused module's lift (negative). Draws region `key`. */
@@ -40,7 +36,7 @@ void build_module(const char *key, int dy, const char *lampState) {
   v_region(key, LAYER_CHROME);
   word_panel(v_fmt("%s", key), x, y, r[2], r[3], colr("colours.module.fill"), colr("colours.module.edge"));
   v_rect(v_fmt("%s.top", key), x + 1, y + 1, r[2] - 2, 1, colr("colours.module.top"));
-  lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState);
+  v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState);   /* the lamp logs as its own region, with the module's lift */
   char w[40]; spec_str(H, v_fmt("strings.modules.%s", key), w, sizeof w);
   v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, colr("colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }

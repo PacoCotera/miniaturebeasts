@@ -23,6 +23,7 @@ async function setup(c) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   assert.equal(f.send({ t: "palette", name: "station", colours: palette }), 0); assert.equal(f.send({ t: "spec", screen: "frame", json: frameSpec }), 0); assert.equal(f.send({ t: "spec", screen: "pods", json: podsSpec }), 0);
   for (const p of c.pictures) f.handleOf(p.id, withPolicy((id) => standIn(id, p.w, p.h, p.slice, p.tile)));
+  f.handleOf("home-lamp-amber-12x12", withPolicy(() => { const d = new Uint8ClampedArray(12 * 12 * 4); for (let i = 0; i < d.length; i += 4) { d[i] = 0xff; d[i + 1] = 0xa8; d[i + 2] = 0x3f; d[i + 3] = 255; } return { w: 12, h: 12, data: d }; }));   // the signed amber lamp of the need notice: here a flat block of `amber`, what the code-drawn one was
   return f;
 }
 const frames = (f, n = 3) => { for (let i = 0; i < n; i++) f.frame((f.t = (f.t ?? 0) + 16)); };

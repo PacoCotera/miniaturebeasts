@@ -309,6 +309,90 @@
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
   },
+  "heart-full-24": {
+   "file": "pods/heart-full-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-bed-mark-16x24": {
+   "file": "pods/home-bed-mark-16x24.png",
+   "w": 16,
+   "h": 24,
+   "sha256": "7a24eb5c34293974ea3b07ba29b422b3ec11cf424e15018e24ec54a93932fb18",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-crate-48x40": {
+   "file": "pods/home-crate-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "87d9a930ffd62bfcbb1a9fb522e12aefb8f29595dcd0e4d90346c867a4bb7d0d",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-amber-12x12": {
+   "file": "pods/home-lamp-amber-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "1ae7134a8be71e91e83f6c5d9c8248103cfbef47ec835e399842709228ce6304",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-hairline-12x12": {
+   "file": "pods/home-lamp-hairline-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "52d364d03a7254830de666f77cce3ce06e4573053b2fd89ec291f35aa807bd6e",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-sky-12x12": {
+   "file": "pods/home-lamp-sky-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "1db1946ae38a4ed2c56fefa6e3b62ba1e9727f9fb600a86221875d2a34820fcf",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-sprout-12x12": {
+   "file": "pods/home-lamp-sprout-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "96321b87d0283a57d0543a22bd46b398b4d2acea4af77304a01cfc8251326ee7",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-shield-lost-12x24": {
+   "file": "pods/home-shield-lost-12x24.png",
+   "w": 12,
+   "h": 24,
+   "sha256": "8e65ee2f3a5f05582c2b5c33a0ed4910cea9d102f4b2886f24053911d2c177a2",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-shield-whole-12x24": {
+   "file": "pods/home-shield-whole-12x24.png",
+   "w": 12,
+   "h": 24,
+   "sha256": "7ee2c9c9237a32278cbd14034e3e9d7f840637e9629f832fa1788e19b2eca3a9",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-sitting-24x32": {
+   "file": "pods/home-sitting-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "leaf-empty-8x12": {
+   "file": "pods/leaf-empty-8x12.png",
+   "w": 8,
+   "h": 12,
+   "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "leaf-full-8x12": {
+   "file": "pods/leaf-full-8x12.png",
+   "w": 8,
+   "h": 12,
+   "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a",
+   "signed": "art director, verdict (d09acb12)"
+  },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
    "w": 24,
@@ -476,6 +560,13 @@
    "h": 8,
    "sha256": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mark-out-with-companion-64x96": {
+   "file": "pods/mark-out-with-companion-64x96.png",
+   "w": 64,
+   "h": 96,
+   "sha256": "ddb00522eb6431035437331c043ae83c2ec69fd4d6af9c9b3afb0b53e2222d64",
+   "signed": "art director (home hand masters, #112 and #116)"
   },
   "mark-seed-32x40": {
    "file": "pods/mark-seed-32x40.png",
@@ -876,6 +967,13 @@
    "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
    "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
+  },
+  "notch-skill-16x24": {
+   "file": "pods/notch-skill-16x24.png",
+   "w": 16,
+   "h": 24,
+   "sha256": "2aaf738413d1a649c5947ed2d29b09bae6aa9fc82af722edbfe3cc4e387d2ec4",
+   "signed": "art director (home hand masters, #112 and #116)"
   },
   "page-mark-new-10": {
    "file": "pods/page-mark-new-10.png",
@@ -2829,6 +2927,20 @@
    "h": 152,
    "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "spread-progress-empty-8x8": {
+   "file": "pods/spread-progress-empty-8x8.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "f6eeb286a2828a9336c469b78335c3c44b3100b5d3e6c428710c7efb27184d83",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "spread-progress-full-8x8": {
+   "file": "pods/spread-progress-full-8x8.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "71beb5ba2d7b7619bf9fb33bf1d46e5fb1fca2d8745be3d55336560f6e80d98f",
+   "signed": "art director (home hand masters, #112 and #116)"
   },
   "stamp-label-120x120": {
    "file": "pods/stamp-label-120x120.png",
