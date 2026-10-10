@@ -28,7 +28,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 The Station stays `prototypes/station/index.html`: the depicted device, the 1024×600 screen at 1×, the row of keys below. Its single inline script splits into ES modules under `prototypes/station/src/`, loaded by one `<script type="module" src>` (the CI parse check reads inline scripts only, and an inline `import` would fail it). Three layers, and nothing else holds state:
 
 - **State** (`state.mjs`): the save's Station part and every rule as a pure function (prices, reads, glints, shaping, bud, refusal, forecast, kinship). No drawing; testable in Node.
-- **Screens**: a spec file (`prototypes/ui/specs/station/<screen>.json`), a view that turns state into props (`views/<screen>.mjs`) and an intent table that turns the face's intents into rule calls (`intents/<screen>.mjs`), drawn by the LVGL face (`prototypes/face`; [technical-architecture.md §5.4](technical-architecture.md#54-how-a-builder-adds-a-screen), [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face)). The screens not yet moved still draw through the frozen JavaScript layer (`screens/*.mjs`, `gfx.mjs`) until their milestone; nothing new is built there (lvgl-switch.md §5).
+- **Screens**: a spec file (`prototypes/ui/specs/station/<screen>.json`), a view that turns state into props (`views/<screen>.mjs`) and an intent table that turns the face's intents into rule calls (`intents/<screen>.mjs`), drawn by the LVGL face (`prototypes/face`; [technical-architecture.md §5.4](technical-architecture.md#54-how-a-builder-adds-a-screen), [lvgl-switch.md §2](lvgl-switch.md#2-target-architecture-of-the-face)). A screen not yet on the face draws "not built yet" (lvgl-switch.md §2.2).
 - **Edges**: `caddy.mjs` (the client of the Caddy service), `art.mjs` (the placeholder register: every drawn stand-in listed, so masters replace them one by one), `dev.mjs` (the developer tools).
 
 ### 2.2 Imported, never copied
@@ -144,7 +144,7 @@ CI keeps the parse check and the page smoke, and adds two things. **Unit tests**
 | 13 | Stop the service; Grow; restart it | "Waiting for the cloud", then the painting lands |
 | All | | No page errors; the save round-trips; the placeholder's hash matches Node's for the same genome |
 
-The journey grows with each milestone, so every push to main proves the loop that is live. On the LVGL face it also runs the checks of [lvgl-switch.md §2.8](lvgl-switch.md#28-checks-against-the-lvgl-framebuffer) and each screen milestone's gate (lvgl-switch.md §4): regions, pixels, palette, type, goldens, budgets and the freeze.
+The journey grows with each milestone, so every push to main proves the loop that is live. On the LVGL face it also runs the checks of [lvgl-switch.md §2.8](lvgl-switch.md#28-checks-against-the-lvgl-framebuffer) and each screen milestone's gate (lvgl-switch.md §4): regions, pixels, palette, type, goldens, budgets and the import guard.
 
 ## 6. Milestones
 
