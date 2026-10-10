@@ -1,6 +1,6 @@
 """Pass 122: Cargo's crate pieces (Station art director's Cargo brief of Oct 10, cap 13.5 MXN, owner-approved: 2 Pro requests, the held one unspent). One sage moulded field case, the Home bay's object seen closer, with dark rubber corners and an orange seal tag; no wood, rope or planks.
 Pro: source/raw/cargo-crate-open.jpg (3:2: the case open, the lid up and back, three fitted worn cut-outs with a little moss and a blank tag in each) and source/raw/cargo-crate-sealed.jpg (an edit of it: the lid shut, the latches closed, an orange seal tag across the seam; the case body registers with the open picture).
-By hand: both pictures are keyed from the slate and cut with ONE transform to the layout's crate region 384x256 (station-layouts.md "Cargo": the crate closer at (320, 104, 384, 256)), uniform scale 0.605 chosen so the three cut-outs fall under the pods (88x112 at region x 44, 148 and 252, feet at y 192): crate-closer-open-384x256, crate-closer-sealed-384x256 (so they register pixel for pixel); crate-closer-opening-384x256: the sealed lid lifted 6 px, a dark gap under it, the orange tag torn along a jagged line across the seam; crate-sealed-256x176: the sealed crate reduced uniformly into 256x176; crate-sitting-256x176 and crate-sitting-80x56: the sealed crate with the tag painted out and the gilt sitting glyph (the 24x16 gilt frame of the old crate-sitting) on the lid instead, reduced.
+By hand: both pictures are keyed from the slate and cut with ONE transform to the layout's crate region 384x256 (station-layouts.md "Cargo", as ruled by UI/UX 11:12: the crate region (296, 120, 432, 272)), uniform scale 0.605 chosen so the three cut-outs fall under the pods (88x112 at region x 44, 148 and 252, feet at y 192): crate-open-432x272, crate-sealed-432x272 (so they register pixel for pixel); crate-opening-432x272: the sealed lid lifted 6 px, a dark gap under it, the orange tag torn along a jagged line across the seam; crate-sealed-256x176: the sealed crate reduced uniformly into 256x176; crate-sitting-256x176 and crate-sitting-80x56: the sealed crate with the tag painted out and the gilt sitting glyph (the 24x16 gilt frame of the old crate-sitting) on the lid instead, reduced.
 python3 -I tools/cargocut.py -> slices/crate-*.png, marks/cargo-proof-1x.png"""
 import os, json, hashlib
 import numpy as np
@@ -23,7 +23,7 @@ def rgba(a, al): return np.dstack([a, al * 255])
 def cut(arr, box, size):
     x0, y0, x1, y1 = box; sub = arr[y0:y1, x0:x1]; pm = np.dstack([sub[..., :3] * sub[..., 3:] / 255.0, sub[..., 3:]]).astype(np.uint8); r = np.asarray(Image.fromarray(pm, "RGBA").resize(size, Image.LANCZOS)).astype(float)
     al = r[..., 3:] / 255.0; return np.dstack([np.where(al > 0.004, r[..., :3] / np.maximum(al, 0.004), 0), r[..., 3:]]).clip(0, 255)
-ao, alo = load("cargo-crate-open"); asl, als = load("cargo-crate-sealed"); BOX = (323, 253, 957, 676)              # the common transform: 634 x 423 -> 384 x 256 (scale 0.6057)
+ao, alo = load("cargo-crate-open"); asl, als = load("cargo-crate-sealed"); BOX = (283, 332, 997, 781)              # the common transform: 634 x 423 -> 384 x 256 (scale 0.6057)
 # the light, by hand (the art director's targets: within +-4 L* and +-8 key R-B of home-bay-shut: 48.0 L*, key R-B 22, sat <= 35): the opaque pixels' linear light is scaled to a mean L* of 46 (open) and 49 (sealed), and the sealed picture is warmed a little (red up, blue down) so its key R-B reaches 18; the whole sealed picture is graded BEFORE the opening, small and sitting pieces are derived from it
 def grade(arr_rgba, target, warm=0.0):
     op = arr_rgba[..., 3] > 128; lin = to_lin(arr_rgba[..., :3]) * (1 + np.array([0.5, 0.0, -0.7]) * warm); lo, hi = 0.3, 3.0
@@ -36,8 +36,9 @@ def keyrb(arr_rgba):
     op = arr_rgba[..., 3] > 128; L_ = lstar(arr_rgba[..., :3]); h_, w_ = L_.shape; q = np.zeros_like(op); q[:h_ // 2, :w_ // 2] = True; qq = op & q
     if qq.sum() < 20: qq = op
     k = arr_rgba[..., :3][qq & (L_ >= np.percentile(L_[qq], 80))].mean(0); return float(k[0] - k[2])
-open_r = grade(cut(rgba(ao, alo), BOX, (384, 256)), 46.0); open_r = np.asarray(fit_light(Image.fromarray(open_r.astype(np.uint8), 'RGBA'), soft=True, cap=69.0)[0]).astype(float);      # the paper tags' highlights pulled under L* 70
-seal_r = cut(rgba(asl, als), BOX, (384, 256))
+open_c = cut(rgba(ao, alo), BOX, (432, 272)); open_c[:52, :, 3] = 0           # the lid OFF (the art director's ruling, 11:12): the lid, its hinges and its inner face are cut away above the case body's back rim (source y 418), so nothing rises above the body
+open_r = grade(open_c, 46.0); open_r = np.asarray(fit_light(Image.fromarray(open_r.astype(np.uint8), 'RGBA'), soft=True, cap=69.0)[0]).astype(float);      # the paper tags' highlights pulled under L* 70
+seal_r = cut(rgba(asl, als), BOX, (432, 272))
 for WARM in np.arange(0.0, 1.5, 0.05):
     seal_g = grade(seal_r, 49.0, WARM)
     if keyrb(seal_g) >= 18: break
@@ -46,16 +47,16 @@ man = json.load(open("slices/manifest.json")); outs = {}
 def save(n, arr, made, src):
     t = Image.fromarray(arr.astype(np.uint8), "RGBA"); t.save(f"slices/{n}.png", optimize=True); outs[n] = t; man[n] = {"size": list(t.size), "rect": None, "src": src, "made": made + " (pass 122)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
 S2 = "source/raw/cargo-crate-open.jpg, cargo-crate-sealed.jpg (gemini-3-pro-image)"
-save("crate-closer-open-384x256", open_r, "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale)", S2)
-save("crate-closer-sealed-384x256", seal_r, "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel", S2)
+save("crate-open-432x272", open_r, "the Cargo crate closer, open: the sage moulded field case with sand latches, a carry handle and dark rubber corners, the lid up and back, three fitted worn cut-outs for the pods (88x112 at region x 44, 148, 252, feet at y 192), each empty with a little moss and a blank tag; a Pro painting keyed from the slate and cut to the layout's 384x256 region (uniform scale)", S2)
+save("crate-sealed-432x272", seal_r, "the Cargo crate closer, sealed: the same case, the lid shut, the latches closed, an orange seal tag across the lid seam; a Pro edit of the open picture, cut by the same transform so it registers with it pixel for pixel", S2)
 # --- opening: the sealed lid lifted 6 px, the tag torn
-rng = np.random.default_rng(41); H, W = 256, 384; SEAM = 207
+rng = np.random.default_rng(41); H, W = 272, 432; SEAM = 159
 tag = (seal_r[..., 0] > 190) & (seal_r[..., 1] > 110) & (seal_r[..., 1] < 200) & (seal_r[..., 2] < 120) & (seal_r[..., 3] > 128); ty, tx = np.where(tag); print("tag px", len(ty), (tx.min(), tx.max(), ty.min(), ty.max()) if len(ty) else None)
 jag = np.zeros(W); 
 if len(tx):
     walk = np.cumsum(rng.integers(-1, 2, tx.max() - tx.min() + 5)); walk = np.convolve(walk - walk.mean(), np.ones(5) / 5, "same"); jag[tx.min() - 2:tx.max() + 3] = np.clip(np.round(walk * 1.5), -4, 4)          # a torn edge: a smoothed random walk, not noise
 yy = np.arange(H)[:, None]; seam_y = SEAM + jag[None, :]; upper = yy < seam_y
-lift = 6; out = np.zeros_like(seal_r); gap = np.zeros((H, W), bool)
+lift = 4; out = np.zeros_like(seal_r); gap = np.zeros((H, W), bool)
 low = np.where(~upper[..., None], seal_r, 0.0); out = low.copy()
 up_shift = np.zeros_like(seal_r); up_shift[0:H - lift] = np.where(upper[..., None], seal_r, 0.0)[lift:H]
 mask_up = up_shift[..., 3] > 0
@@ -79,7 +80,7 @@ for x in range(W2):
         for k_ in range(5):
             if y0g + k_ < H2 and cl[y0g + k_, x, 3] > 128: cl[y0g + k_, x, :3] = cl[y0g + k_, x, :3] * (0.62 + 0.076 * k_)                      # the shadow on the case's front
 comp = cl
-save("crate-closer-opening-384x256", comp, "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture", S2)
+save("crate-opening-432x272", comp, "the Cargo crate closer, opening: the sealed crate's lid lifted 6 px with a dark gap under it and the orange seal tag torn along a jagged line across the seam, composed by hand from the sealed picture", S2)
 # --- the sealed crate reduced to 256x176 (the whole crate, uniform scale)
 sa = alo = als; bm = als > 0.6; bm[:, 985:] = False; ys, xs = np.where(bm); bx = (xs.min(), ys.min(), xs.max() + 1, ys.max() + 1); w_, h_ = bx[2] - bx[0], bx[3] - bx[1]; s = min(256 / w_, 176 / h_)
 def fit_box(arr_rgba, box, TW=256, TH=176, M=8):
@@ -119,18 +120,22 @@ save("crate-sitting-256x176", sit, "the sitting Cargo crate, 256x176: the whole 
 s80_0, (ox8, oy8, sc8) = fit_box(asit, bx, 80, 56, 2); b80 = Image.fromarray(s80_0.astype(np.uint8), "RGBA"); b80.alpha_composite(plate(80, 56, ox8 + (bx[2] - bx[0]) * sc8 / 2.0 + 0.5, oy8 + 0.40 * (bx[3] - bx[1]) * sc8, 24, 16, 1.0))
 save("crate-sitting-80x56", np.asarray(b80).astype(float), "the sitting Cargo crate for Home's bay, 80x56: the whole sealed crate (2 px clear) with the tag painted out and the small brass plate (24x16, the old glyph's size) on the lid; it replaces the old teal crate-sitting-80x56 of pass 89", S2)
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
-# proof: sealed, opening and open on the layout's region (the walls are the slate), three placeholder pods in the open crate, beside Home's bay crates
-P = Image.new("RGB", (3 * 392 + 8 + 200, 270 + 8 + 60 + 80), (60, 66, 76)); x = 4
-for n in ("crate-closer-sealed-384x256", "crate-closer-opening-384x256", "crate-closer-open-384x256"):
-    t = outs[n].copy()
-    if n.endswith("open-384x256"):
-        pods = Image.new("RGBA", (384, 256), (0, 0, 0, 0)); dp = ImageDraw.Draw(pods)
-        for px in (44, 148, 252): dp.rounded_rectangle([px, 80, px + 87, 191], radius=30, fill=(222, 178, 130, 255))
-        base_ = Image.new("RGBA", (384, 256), (0, 0, 0, 0)); base_.alpha_composite(t); t = base_
-        # the pods stand in the cut-outs: drawn above the cut-outs' back, below the tray's front lip (the lip is not separate here, so they are shown translucent)
-        pods.putalpha(pods.getchannel("A").point(lambda v: int(v * 0.55))); t.alpha_composite(pods)
-    P.paste(t.convert("RGB"), (x, 4), t); x += 392
-y = 270
+# proof over the Cargo bay (screen 1024x600, the bay a panel recess), 1x: the three crate pictures each in the crate region (296, 120, 432, 272) (the sealed, the opening, the open one), with three placeholder pods at screen y 152 (x 364, 468, 572, 88x112) in the open one, the ribbon (208, 56, 608, 40) and the rack (176, 400, 672, 144) outlined with its six wells (96x128 on a 112 pitch from (184, 408)); beside Home's bay crates and the small crates
+def bay_frame():
+    f = Image.new("RGB", (1024, 600), (43, 48, 56)); d_ = ImageDraw.Draw(f); d_.rectangle([16, 48, 1007, 367], outline=(169, 159, 138), width=4); d_.rectangle([24, 56, 999, 359], fill=(29, 35, 43)); d_.rectangle([208, 56, 815, 95], outline=(141, 138, 166)); d_.rectangle([176, 400, 847, 543], outline=(141, 138, 166))
+    for i in range(6): d_.rectangle([184 + 112 * i, 408, 184 + 112 * i + 95, 535], outline=(93, 89, 116))
+    return f
+panels = []
+for n in ("crate-sealed-432x272", "crate-opening-432x272", "crate-open-432x272"):
+    f = bay_frame().convert("RGBA"); t = outs[n].copy(); f.alpha_composite(t, (296, 120))
+    if n == "crate-open-432x272":
+        pods = Image.new("RGBA", (1024, 600), (0, 0, 0, 0)); dp = ImageDraw.Draw(pods)
+        for px in (364, 468, 572): dp.rounded_rectangle([px, 152, px + 87, 263], radius=30, fill=(222, 178, 130, 255))
+        pods.putalpha(pods.getchannel("A").point(lambda v: int(v * 0.6))); f.alpha_composite(pods)
+    panels.append(f.convert("RGB").crop((176, 40, 848, 420)))
+P = Image.new("RGB", (3 * 676 + 8, 380 + 8 + 100), (30, 34, 40))
+for i, pn in enumerate(panels): P.paste(pn, (4 + i * 676, 4))
+y = 388
 for i, k in enumerate(("home-bay-shut-176x72", "home-bay-open-176x72")): b = Image.open(f"slices/{k}.png").convert("RGBA"); P.paste(b.convert("RGB"), (4 + i * 184, y + 4), b)
 for i, k in enumerate(("crate-sealed-256x176", "crate-sitting-256x176")): b = outs[k]; P.paste(b.convert("RGB").resize((128, 88)), (380 + i * 136, y + 4), b.resize((128, 88)))
 b = outs["crate-sitting-80x56"]; P.paste(b.convert("RGB"), (660, y + 4), b); P.save("marks/cargo-proof-1x.png"); print("ok")

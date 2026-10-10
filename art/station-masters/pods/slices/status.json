@@ -3460,19 +3460,19 @@
   "note": "signed (art director) at 1x, opaque pixels: L* 61.5, key R-B 71, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
  },
  "crate-closer-open-384x256": {
-  "status": "held",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered"
+  "note": "withdrawn (art director, UI/UX ruling 11:12): replaced by crate-{sealed,opening,open}-432x272 for the crate region (296, 120, 432, 272); the files stay as the record of pass 122"
  },
  "crate-closer-sealed-384x256": {
-  "status": "held",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered"
+  "note": "withdrawn (art director, UI/UX ruling 11:12): replaced by crate-{sealed,opening,open}-432x272 for the crate region (296, 120, 432, 272); the files stay as the record of pass 122"
  },
  "crate-closer-opening-384x256": {
-  "status": "held",
+  "status": "withdrawn",
   "signed_in": null,
-  "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered; also, by hand: the torn gap reads as a flat dark line: give the lifted lid a lit lower lip and the gap a soft shadow"
+  "note": "withdrawn (art director, UI/UX ruling 11:12): replaced by crate-{sealed,opening,open}-432x272 for the crate region (296, 120, 432, 272); the files stay as the record of pass 122"
  },
  "crate-sealed-256x176": {
   "status": "signed",
@@ -3483,5 +3483,20 @@
   "status": "signed",
   "signed_in": "art director, verdict (963f4eab)",
   "note": "signed (art director) at 1x, opaque pixels: L* 48.0, mean R-B 19.8, sat 27; the whole case with a matte brass plate on the lid, the tag smear gone"
+ },
+ "crate-open-432x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 127: the open case, the lid OFF (everything above the body's back rim cut away), the three cut-outs registering at region x 68, 172, 276, top 32, feet 144; scale 0.6057 from the pass-122 pictures, cut box (283, 332, 997, 781), the whole case inside with 8 px or more clear; L* 44.9 / 49.0 / 48.2, mean R-B 14.1 / 15.0 / 14.8 (home-bay-shut 48.0 / 13.2); awaiting the art director's judgement (not signed)"
+ },
+ "crate-sealed-432x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 127: the whole sealed case with the orange seal tag; scale 0.6057 from the pass-122 pictures, cut box (283, 332, 997, 781), the whole case inside with 8 px or more clear; L* 44.9 / 49.0 / 48.2, mean R-B 14.1 / 15.0 / 14.8 (home-bay-shut 48.0 / 13.2); awaiting the art director's judgement (not signed)"
+ },
+ "crate-opening-432x272": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 127: the lid lifting 4 px entirely inside the rect, with the lit lip and the gap shadow, the tag torn; scale 0.6057 from the pass-122 pictures, cut box (283, 332, 997, 781), the whole case inside with 8 px or more clear; L* 44.9 / 49.0 / 48.2, mean R-B 14.1 / 15.0 / 14.8 (home-bay-shut 48.0 / 13.2); awaiting the art director's judgement (not signed)"
  }
 }
