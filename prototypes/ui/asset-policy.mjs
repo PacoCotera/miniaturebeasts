@@ -9,7 +9,7 @@ const PAINTED = [
   /^stamp:/, /^frame-(room|companion|sun|lamp|top-bar|bottom-line)/, /^face-/, /^find-/, /^ring-kin-/, /^ring-hatch-/,
   /^home-(glass|bay|well|chamber|cradle|journal)/, /^idle-vivarium/,
 ];
-const MOVES_WITH_MASTER = [/^kinring:/, /^hatch:/, /^mibi:/, /^home-bed-\d/];   // a resident's stand-in is art until its painting lands; Home's bed is a PH plate until its master
+const MOVES_WITH_MASTER = [/^kinring:/, /^hatch:/, /^mibi:/, /^home-bed-\d/, /^crate-(sealed|opening|open|sitting)-\d/, /^cargo-(well|bay-shut)-\d/, /^icon-(pod|shield)-\d/];   // a resident's stand-in is art until its painting lands; Home's bed is a PH plate until its master; Cargo's crates, rack well, shut-bay lid and report icons are PH plates until theirs
 export function policyOf(id, status = "placeholder") {
   if (MOVES_WITH_MASTER.some((re) => re.test(id))) return status === "master" ? "painted" : "art";
   if (ART.some((re) => re.test(id))) return "art";

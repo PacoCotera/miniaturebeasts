@@ -12,6 +12,8 @@ const podFrame = (p) => frameOf(S.speciesOf(p));
 const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
 // An unidentified pod is the unknown pod: its own pictures, never a species' shell, even when the species is known.
 const shellFrame = (st, p) => (p.idd && st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
+// The species a pod's shell shows (an unidentified pod, and a species not yet known, show the unknown shell): Pods' collection and Cargo's rack draw the same pod.
+export const shellSpecies = (st, p) => (shellFrame(st, p) ? S.speciesOf(p) : null);
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
@@ -110,7 +112,7 @@ const whoOf = (p, fr, W, req) => [slot(req, `mark-species-${S.speciesOf(p)}-24x2
 function collectionView(view, m, spec, req) {
   const { st, settings, ui } = m, R = spec.regions.collection, L = R.places, N = R.name;
   view.mode = "collection";
-  const rack = Math.min(settings.rack || S.RACK, L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2), radius: L.radius });
+  const rack = Math.min(S.rackSize(settings), L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2), radius: L.radius });
   const places = [];
   const RM = R.ring.masters, RS = R.ring.slice, rs = (id) => slot(req, id, [0, 0, RS[2], RS[3]], "the collection ring master"), from = RM.segmentFrom ?? 0;
   for (let i = 0; i < rack; i++) {

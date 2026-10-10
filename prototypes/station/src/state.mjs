@@ -13,7 +13,9 @@ export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-expl
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
 export const PRICE = { identify: 1, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, wild: 1, wildMibi: 2 };
-export const RACK = 6, BAY = 3, BAYS = 6;
+export const RACK = 6, BAYS = 6;
+// The rack: the wells in play (the developer setting, else the six of the Station)
+export const rackSize = (settings = DEFAULT_SETTINGS) => settings.rack || RACK;
 export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 // What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
 export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
@@ -165,6 +167,9 @@ export function rebuildGuide(st) {
 export function guideAdd(st, species, traitId, looks) { const g = st.guide[species] || (st.guide[species] = {}), a = g[traitId] || (g[traitId] = []); for (const l of looks) if (!a.includes(l)) a.push(l); }
 export const guideLooks = (st, species, traitId) => st.guide[species]?.[traitId] ?? [];
 
+// The band of a crate's reach (explored of the land, `of`): thirds of it, all of it, none for a crate with no map (cargo.json regions.report.reach.thresholds)
+export const reachBand = (c) => { const of = c.of | 0, x = c.explored | 0; return of <= 0 ? "" : x * 3 < of ? "underThird" : x * 3 < 2 * of ? "underTwoThirds" : x < of ? "underAll" : "all"; };
+
 // --- what the Station can know about the Companion (read-only) -----------------------------------
 export const hasWorld = (sv) => !!(sv && sv.wid && typeof sv.seed === "number");
 export const docked = (st) => !!(st.dock && st.dock.docked);
@@ -283,13 +288,13 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const home = mergeCare(st, sv);
   const n = bayCrates(st, sv).length;
   logEv(st, "Companion docked" + (n ? " · " + plural(n, "crate") : ""));
-  return { ok: true, docked: true, home, mend: { free, paid, broke }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
+  return { ok: true, docked: true, home, mend: { free, paid, broke, spent: paid * price(PRICE.mend, settings) }, crates: n, msg: n ? "Docked · " + plural(n, "sealed crate") + " in the bay" : broke ? "Docked · the Probe is mended free" : "Docked · the bay is empty" };
 }
-export function fillWells(st, settings = DEFAULT_SETTINGS, now = Date.now()) { const rack = settings.rack || RACK; while (st.tray.length < rack && st.waiting.length) { const p = st.waiting.shift(); p.landAt = now; st.tray.push(p); } }
+export function fillWells(st, settings = DEFAULT_SETTINGS, now = Date.now()) { const rack = rackSize(settings); while (st.tray.length < rack && st.waiting.length) { const p = st.waiting.shift(); p.landAt = now; st.tray.push(p); } }
 // Opening the bay: one arrival per crate, in order, each accepted exactly once (the ids are kept).
 export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const cs = bayCrates(st, sv); if (!docked(st) || !cs.length) return { ok: false, plays: [] };
-  const plays = [], rack = settings.rack || RACK;
+  const plays = [], rack = rackSize(settings);
   for (const c of cs) {
     st.accepted.push(c.id); if (st.accepted.length > 60) st.accepted.splice(0, st.accepted.length - 60);
     const top = settings.economy === "loose" && !c.dev ? settings.topUp || DEFAULT_SETTINGS.topUp : { e: 0, d: 0, s: 0 };
@@ -305,8 +310,9 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
     for (const sp of c.met || []) { const id = typeof sp === "string" ? sp : speciesId(sp); if (id && !st.metIds.includes(id)) st.metIds.push(id); }
     const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
-    plays.push({ c, ids, paid, turnFrom: before, turnTo: st.turn, top });
-    logEv(st, "Crate " + c.n + " opened · " + plural((c.pods || []).length, "pod") + " · +" + ((c.e | 0) + top.e) + " Energy +" + ((c.d | 0) + top.d) + " Data +" + ((c.s | 0) + top.s) + " Essence");
+    const gained = { e: (c.e | 0) + top.e, d: (c.d | 0) + top.d, s: (c.s | 0) + top.s };   // what the crate brought, the top-up with it; the plates it paid for cost `spent` Energy
+    plays.push({ c, ids, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
+    logEv(st, "Crate " + c.n + " opened · " + plural((c.pods || []).length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence");
   }
   st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
   syncKnown(st);
@@ -501,9 +507,9 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
 
 // The room's one need, as facts (home.json strings.needs.order, the same order as need() above): the key of the first that holds, its count and the max the picture holds, the name or species and article it is about, the materials
 // short for it, and the screen its ✓ goes to. The Home view builds the words from home.json's strings; the room's ✓ goes where `act` says. null when nothing needs the player.
-export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
+export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrates = false) {
   const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
-  if (docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
   if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
@@ -530,7 +536,7 @@ export function seedCrate(st, species, count, seed, now = Date.now()) {
   const fr = frameOf(species); if (!fr) return { ok: false, msg: "no frame " + species };
   const n = (st.devN = (st.devN || 0) + 1), id = "dev-" + n + "-" + (seed >>> 0).toString(36);
   const places = ["meadow", "pond", "rock", "wood", "cave"], hows = ["calm", "shake", "ground", "slab", "meal"];
-  const pods = Array.from({ length: Math.max(1, count | 0) }, (_, i) => { const gs = (Math.imul((seed >>> 0) + i * 7919, 2654435761) ^ (i * 40503)) >>> 0; return { id: "p" + i, species, sp: speciesIndex(species), g: places[(seed + i) % 5], how: hows[(seed + 2 * i) % 5], gs, k: null }; });
+  const pods = Array.from({ length: Math.min(6, Math.max(1, count | 0)) }, (_, i) => { const gs = (Math.imul((seed >>> 0) + i * 7919, 2654435761) ^ (i * 40503)) >>> 0; return { id: "p" + i, species, sp: speciesIndex(species), g: places[(seed + i) % 5], how: hows[(seed + 2 * i) % 5], gs, k: null }; });
   const crate = { id, n, turn: st.turn, at: now, e: 3, d: 3, s: 4, pods, met: [species], explored: 0, of: 0, lines: [], dev: true };
   st.devBay.push(crate); st.devWorld = true;
   logEv(st, "Developer crate " + n + " · " + plural(pods.length, fr.species.name + " pod") + " · seed " + (seed >>> 0));
@@ -542,7 +548,7 @@ export function seedPodFromGenome(st, genome, settings = DEFAULT_SETTINGS, now =
   const problems = checkGenome(fr, genome); if (problems.length) return { ok: false, msg: problems.slice(0, 3).join("; ") };
   const n = (st.devN = (st.devN || 0) + 1), digest = genomeDigest(genome);
   const pod = { id: "dev-" + n + ":" + digest, sp: speciesIndex(fr.species.id), species: fr.species.id, g: "meadow", how: "ground", gs: parseInt(digest.slice(-8), 16) >>> 0, k: null, n: 0, idd: 0, newSp: 0, read: [], fresh: 1, genome: structuredClone(genome) };
-  if (st.tray.length < (settings.rack || RACK)) st.tray.push(pod); else st.waiting.push(pod);
+  if (st.tray.length < rackSize(settings)) st.tray.push(pod); else st.waiting.push(pod);
   logEv(st, "Developer pod from a genome · " + digest);
   return { ok: true, pod };
 }

@@ -89,7 +89,7 @@ for (const s of rec.shots) {
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
-for (const screen of ["cargo", "create", "incubator", "library", "habitat", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
+for (const screen of ["create", "incubator", "library", "habitat", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
 

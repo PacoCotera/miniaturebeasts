@@ -27,6 +27,9 @@ void build_module(const char *key, int dy, const char *lamp);
 void build_nameTag(const char *name, const int box[4], int lift, int out[4]);
 void build_restKnob(int focused);
 void build_waitingLamp(const char *id, int x, int y, int shown);
+/* Cargo (screens/cargo.c): its words by the state the props name, and its keys */
+void cargo_words(void);
+void cargo_key(int code);
 /* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */
 void home_hidden(void);
 /* An intent or a focus message for the screen of the props (kind "intent" with a verb, or "focus"). */

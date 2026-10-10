@@ -14,9 +14,9 @@ import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters } from "./masters.mjs";
 import { bootFace } from "./face-lvgl.mjs";
-import * as home from "./intents/home.mjs";
+import * as cargo from "./intents/cargo.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { createHost, onFaceMessage, screenProps, frameIds as frameMarkIds, pinned, picture, setEnv } from "./host.mjs";
+import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, pinned, picture, setEnv } from "./host.mjs";
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
 
 const $ = (id) => document.getElementById(id);
@@ -49,7 +49,7 @@ function pump() {
 // The screen's props, when they changed: the pictures first (the face takes a picture once, by id), then the props.
 function syncProps() {
   if (msgSent !== FX.msgAt) { msgSent = FX.msgAt; if (FX.msg) H.play({ kind: "plate", target: "msg", ms: 4000 }); }
-  for (const e of LAYER.presenter.events({ e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn })) H.play(e);
+  for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   if (key === lastProps) return;
   { FACE.beginScene(); for (const id of [...(UI.idle ? [] : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
@@ -74,12 +74,14 @@ function frame(t) {
 
 // --- the Station's keys: pad, Home/Research/Library/Vivarium, ← and ✓, plus the Caddy's Dock/Lift key ---
 // A key goes to the face, which moves the ring or says an intent; the intent is the rule call (intents/*). The Dock key is the Caddy's, a world event and not a Station key: the host calls the frame's dock.
+// The Caddy's Dock key, a world event and never a Station key: it wakes Idle (the dither back, held) and docks or lifts. A Dock pressed in a hold is kept by the host and acts when the hold ends (host.mjs).
+function dockKey() { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: motion() ? 180 : 0 }); } frameIntents.dock(H, wasIdle); }
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } return; }   // an event holds input: the Dock key does not act; the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs)
+  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } else H.pendingDock = !H.pendingDock; return; }   // an event holds input: the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs); a Dock key is kept too (two presses cancel) and acts when the hold ends
   syncProps();
-  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: motion() ? 180 : 0 }); } frameIntents.dock(H, wasIdle); return; }
+  if (k === "dock") { dockKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "confirm") H.disarm();
   FACE.key(k); pump();
@@ -144,10 +146,10 @@ const bootText = (t) => { if (bootEl) bootEl.textContent = t; };   // before the
 bootText("loading the species frames…");
 const TEST = new URLSearchParams(location.search).has("test");
 const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]; if (!hex) throw new Error("no palette colour " + name); return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16)); };
-// The spec files the face takes (frame, pods and home), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
+// The spec files the face takes (frame, pods, home and cargo), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods", "home"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home", "cargo"]) SPECS[k] = await spec(k + ".json");
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
@@ -160,23 +162,23 @@ const faceBoot = async () => {
   f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) });
   for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
   f.pin(pinned(), picture);
-  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), motion, afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
+  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), motion, onDock: dockKey, afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
 };
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
   UI.lastInput = performance.now(); G.ready = true;
-  buildDevPanel($("devPanel"), { changed: refreshDev, openCrates: () => home.openBay(H) });
+  buildDevPanel($("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); } });
   caddy.startClient();
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
 }).catch((e) => { bootText("the Station did not start: " + e.message); console.error(e); throw e; });
 
-// Test hooks (not part of play).
+// Test hooks (not part of play). `openBay` is the rule alone, for the tests that need pods in the wells at once; Cargo plays the opening through its own ✓.
 const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") H.goto("pods"); };
 window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pendingRoom: () => H.pendingRoom ?? null, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
-  say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => home.openBay(H), wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
+  say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => { const r = S.openBay(G.st, G.sv, G.settings, Date.now()); save(); return r; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, pass: FACE.pass, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, and with `capture` the PNG.
   snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },

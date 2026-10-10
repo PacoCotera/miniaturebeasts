@@ -1,6 +1,0 @@
-// The journey steps of slot L2.2 that are still PENDING (lvgl-switch.md §4): Cargo's and Idle's. Home's steps (home-pad, home-rack, home-dock-arrival, home-lamp) moved into the journey on the face with the Home PR
-// and are held to prototypes/face/golden/journey-home.json. Each step below is written against cargo.json and frame.json `idle`, and is re-pointed at the face by keys and intents when its screen lands.
-export const milestone = "L2.2 Cargo and Idle (cargo.json; frame.json idle)";
-export const steps = [
-  { id: "home-bay", what: "✓ on the Cargo module (or on the room with crates waiting) opens Cargo, whose bay shows up to three sealed crates; ✓ Open the bay opens them one at a time, an arrival each with input held for crates × 3000 + 200 ms, the ribbon, the counters and the turn counting up, the pods travelling to the rack; the report card's ✓ lands on Pods' collection (cargo.json `handoff`); an empty bay (cargo-bay-empty) and a shut bay away (cargo-bay-away) say why in the line" },
-]
