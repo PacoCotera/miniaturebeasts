@@ -1,5 +1,6 @@
 #include "layout.h"
 #include "../spec/spec.h"
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -124,3 +125,6 @@ int layout_eval(const char *rule, const char *spec, const char *path, const int 
 #undef PUSH
   return k;
 }
+
+int layout_ease_io(int p) { return (int)((int64_t)p * p * (3000 - 2 * p) / 1000000); }
+int layout_lerp(int a, int b, int e) { return a + (int)((int64_t)(b - a) * e / 1000); }

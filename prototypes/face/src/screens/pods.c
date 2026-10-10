@@ -59,12 +59,12 @@ void pods_words(void) {
   const char *base = strcmp(state, "overview") == 0 ? "regions.overview" : strcmp(state, "chapter") == 0 ? "regions.chapter" : "regions.collection";
   word_bench();
   if (strcmp(state, "collection") == 0) word_list();
-  else if (strcmp(state, "compare") == 0) { word_rail(); word_page("pageA"); word_page("pageB"); }
+  else if (strcmp(state, "compare") == 0) { word_rail(NULL); word_page("pageA"); word_page("pageB"); }
   else if (strcmp(state, "overview") == 0 || strcmp(state, "chapter") == 0) {
     int box[4]; if (pod_box(base, box)) v_set_focal(box);
     word_specimen(base);
     if (strcmp(state, "overview") == 0) { word_kin(base); word_stamp(base); }
-    word_rail();
+    word_rail(NULL);
     if (strcmp(state, "chapter") == 0) word_page("page");
   }
   focus_ring(state, base);

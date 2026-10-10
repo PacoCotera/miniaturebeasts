@@ -29,5 +29,8 @@ int layout_plate_width(const char *spec, const char *name, int textWidth);
 /* The stamp's cell: floor(inner / (N + 2)), never less than `least`. */
 int layout_stamp_cell(int n, int inner, int least);
 /* The vectors' interface: a rule by name with integer arguments, its answer flattened to integers (see tests/vectors/layout.json). Returns the count, or -1 for an unknown rule. */
+/* the Cargo travel's easing (cargo.json regions.travel.ease): p in 0..1000, e = p·p·(3000 − 2p)/1000000 in 64 bits, truncating; and from + (to − from)·e/1000, truncating toward zero */
+int layout_ease_io(int p);
+int layout_lerp(int a, int b, int e);
 int layout_eval(const char *rule, const char *spec, const char *path, const int *args, int nargs, int *out, int cap);
 #endif

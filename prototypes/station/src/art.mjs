@@ -41,7 +41,6 @@ export const PLACEHOLDERS = [
   { id: "create-dome-front-176x224", what: "Create's small chamber, front: registered, nothing drawn", until: "the Incubator's chamber master, small" },
   { id: "bud-small-64x80", what: "Create's busy bud, 64×80: a PH plate at the bud's rectangle, only while another bud grows (the Incubator's buds are other pictures)", until: "the bud master, re-judged with the Incubator's" },
   { id: "roll-128x72", what: "the roll's pictures, roll-{species}-{trait}-{look}-128x72: one PH plate for each look; the ring, the notches and the order are the real ones", until: "the roll close-ups cut from the paintings" },
-  { id: "plate-name-88x24", what: "the changed tag's plate: a PH plate, the word `changed` on it; the breed mark is the signed mark-breed-28x16", until: "the tag plate (to be cut)" },
   { id: "leaf-small-8x12", what: "Create's leaves, 8×12: leaf-small-empty-8x12 a PH hollow, leaf-small-full-8x12 a PH plate; every leaf is empty here", until: "the leaf masters" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
   { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },

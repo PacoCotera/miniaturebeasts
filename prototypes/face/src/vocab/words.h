@@ -19,7 +19,7 @@ void word_focusRingShape(const char *id, const int box[4], const char *shape, co
 void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, int cy, int outside, const char *colour);   /* radius > 0: fixed, centre (x + cx, y + cy); else from the box, rho = w/2 + outside */
 /* the ring in the form the screen spec names for the target group (targets.<name>.ring of the target whose `group` this is), colour a palette name; a group the spec does not list gets the default round ring */
 void word_focusRingFor(const char *id, const int box[4], const char *group, const char *colour);
-void word_rail(void);    /* the chapter rail (frame spec) with the ring on its focused tab */
+void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
 /* station/ (Home) */
 void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture);   /* the living window: the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
 void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots);   /* the leaves word, grid form: the screen spec and the region's path in it */

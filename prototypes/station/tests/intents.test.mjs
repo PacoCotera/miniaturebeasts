@@ -136,13 +136,13 @@ test("the Vivarium's door: take and bring say the signed words docked and away; 
 });
 
 test("Create: ◀ ▶ walk the read traits, ← returns to the pod's overview with nothing spent", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, pod: p, choices: {}, f: 0, clash: [], grown: null };
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null };
   INTENTS.create.intent(h, "x", "step:right"); assert.equal(h.ui.create.f, 1); INTENTS.create.intent(h, "x", "step:left"); assert.equal(h.ui.create.f, 0);
   INTENTS.create.intent(h, "x", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.create], ["pods", "overview", "pod", null]); assert.equal(st.tray.length, 1);
 });
 
 test("Create ▲ ▼: a trait that rolls changes its look and the founder cross-dithers (a dither on the founder from the old picture's id, 200 ms, no hold); a doing or a trait with one look does nothing, no plate", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st), fr = frameOf("S01"); h.ui.create = { podId: p.id, pod: p, choices: {}, f: 0, clash: [], grown: null };
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st), fr = frameOf("S01"); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null };
   const list = fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits), at = list.findIndex((t) => S.rollOptions(p, t.id).length > 1), still = list.findIndex((t) => S.rollOptions(p, t.id).length <= 1);
   assert.ok(at >= 0, "a trait that rolls");
   h.ui.create.f = at; INTENTS.create.intent(h, "roll", "step:down");
@@ -153,19 +153,29 @@ test("Create ▲ ▼: a trait that rolls changes its look and the founder cross-
 });
 
 test("Create ✓: the rule pays and the grow event plays (900 ms, input held 1080), the code is the screen's while it holds, and the jump to the Incubator comes at 900 ms from the timer; with reduced motion the jump is on the frame of ✓", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, pod: p, choices: {}, f: 0, clash: [], grown: null };
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null };
   INTENTS.create.intent(h, "roll", "confirm");
   assert.ok(st.bud); assert.ok(!st.tray.includes(p), "the pod is gone from the rack"); assert.deepEqual(h.played.map((e) => [e.kind, e.target, e.ms, e.hold]), [["grow", "pod", 900, 1080]]);
   assert.deepEqual([h.went.length, h.ui.create.grown.code, typeof h.ui.create.grown.cost.e], [0, st.bud.code, "number"], "still on Create, holding"); assert.deepEqual(h.timers.map((t) => t.ms), [900]); assert.deepEqual(h.said, [], "no plate");
   INTENTS.create.intent(h, "roll", "confirm"); INTENTS.create.intent(h, "roll", "step:down"); assert.equal(h.timers.length, 1, "nothing acts while it grows");
   h.timers[0].fn(); assert.deepEqual([h.went.at(-1), h.ui.create], ["incubator", null]);
-  const st2 = world(), p2 = pod(st2, "S01", []), h2 = host(st2); h2.moving = false; h2.ui.create = { podId: p2.id, pod: p2, choices: {}, f: 0, clash: [], grown: null };
+  const st2 = world(), p2 = pod(st2, "S01", []), h2 = host(st2); h2.moving = false; h2.ui.create = { podId: p2.id, choices: {}, f: 0, clash: [], grown: null };
   INTENTS.create.intent(h2, "room", "confirm"); assert.deepEqual([h2.went.at(-1), h2.ui.create, h2.played.length, h2.timers.length], ["incubator", null, 0, 0], "a cut: nothing to wait for");
 });
 
 test("Create ✓ refused: a short purse says what is short and nothing is spent, the screen stays", () => {
-  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 1)), h = host(st); st.e = 0; h.ui.create = { podId: p.id, pod: p, choices: {}, f: 0, clash: [], grown: null };
+  const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 1)), h = host(st); st.e = 0; h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null };
   const e = st.e; INTENTS.create.intent(h, "roll", "confirm"); assert.equal(st.e, e); assert.ok(!st.bud); assert.equal(h.ui.create.grown, null); assert.equal(h.said.length, 1); assert.deepEqual(h.played, []);
+});
+
+test("Create ✓ blocked (busy, no bay, clash): nothing happens and no plate", () => {
+  const mk = (over) => { const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 1)), h = host(st); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; over(st, h); return { st, h }; };
+  const cases = { busy: (st) => { st.bud = { minutes: 5 }; }, noBay: (st) => { st.mibis = Array.from({ length: S.bayCount(st, settings) }, (_, i) => ({ id: 900 + i, bay: i, released: false })); }, clash: (st, h) => { h.ui.create.clash = ["x"]; } };
+  for (const [k, f] of Object.entries(cases)) {
+    const { st, h } = mk(f), e = st.e; assert.equal(S.growBlockKey(st, st.tray[0], {}, settings, h.ui.create.clash)?.key, k);
+    INTENTS.create.intent(h, "room", "confirm");
+    assert.deepEqual([h.said, h.played, h.timers.length, st.e, h.ui.create.grown], [[], [], 0, e, null], k + ": ✓ does nothing, no plate");
+  }
 });
 
 test("Pods ✓: Identify plays the seal (and a ribbon for a new species), an identified pod opens Create whatever has been read, a tab opens its page free and on the page reads, ← climbs one level", () => {

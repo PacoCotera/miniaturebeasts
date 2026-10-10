@@ -30,12 +30,12 @@ const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e =
 function scene(o = {}) {
   const st = world(), id = o.species ?? "S01"; S.seedPodFromGenome(st, podGenome(frameOf(id), o.gs ?? 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p);
   frameOf(id).chapters.slice(0, o.read ?? 0).forEach((c) => S.read(st, p, c.id, settings));
-  const cr = { podId: p.id, pod: p, choices: {}, f: o.f ?? 0, clash: [], grown: null };
+  const cr = { podId: p.id, choices: {}, f: o.f ?? 0, clash: [], grown: null };
   if (o.roll) { const list = reviewTraits(p, frameOf(id)), t = list[cr.f].t, opts = S.rollOptions(p, t.id); cr.choices[t.id] = o.roll; assert.ok(opts.length > 1, "the trait rolls"); }
   if (o.clash) cr.clash = Object.keys(cr.choices);
   if (o.busy) st.bud = { kind: "founder", species: id, sp: 0, gs: 5, genome: p.genome, sha: "bud", code: "BUD", start: T0, minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false };
   if (o.short) st.s = 1;
-  if (o.grown) { const r = S.grow(st, p, cr.choices, settings, T0); assert.ok(r.ok); cr.grown = { code: r.bud.code, cost: r.cost }; }
+  if (o.grown) { const r = S.grow(st, p, cr.choices, settings, T0); assert.ok(r.ok); cr.grown = { code: r.bud.code, cost: r.cost, pod: p }; }
   return { ...createBuild({ st, settings, ui: { create: cr } }, createSpec, podsSpec), st, p, cr };
 }
 const frameProps = (line = {}) => ({ top: { screen: "create", title: "Create", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "", timed: false } });
@@ -108,9 +108,10 @@ test("a clash is a 2 px red edge inside the chosen picture, the line red with it
   assert.ok(b.props.regions.roll.clash); assert.equal(b.props.regions.traitLine.changed, false); assert.match(b.props.regions.traitLine.text, /^✕ /); assert.equal(b.props.regions.traitLine.clash, true);
   for (const [x, y] of [[c[0], c[1] + 30], [c[0] + 1, c[1] + 30], [c[0] + 60, c[1]], [c[0] + 60, c[1] + 1], [c[0] + 60, c[1] + 71], [c[0] + 126, c[1] + 30], [c[0] + 127, c[1] + 30]]) assert.ok(red(f, x, y), `red at ${x}, ${y}`);
   assert.ok(!red(f, c[0] + 2, c[1] + 30) && !red(f, c[0] + 60, c[1] + 2) && !red(f, c[0] + 60, c[1] + 69), "the edge is 2 px, inside the picture"); assert.ok(pixelIs(f, c[0] + 60, c[1] + 30, b.props.regions.roll.pictures[1]));
-  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "painted"), words = lg.type.filter((x) => x.region === "traitLine");
+  const n = scene({ read: 2, f: 1, roll: 1 }), g = await start(n), lg = logOf(g); assert.ok(n.props.regions.traitLine.changed && !n.props.regions.roll.clash); const t = region(lg, "traitLine", "chrome"), words = lg.type.filter((x) => x.region === "traitLine");
   assert.deepEqual([t.rect[2], t.rect[3], t.rect[1]], [88, 24, 200], "the tag: 88 wide, 24 tall, at the line's top"); assert.equal(words.length, 2, "the tag's word and the line"); assert.ok(words.some((x) => x.text === "changed"));
   const ty = lg.regions.find((r) => r.id === "traitLine" && r.layer === "type"); assert.equal(ty.rect[0], t.rect[0] + 8, "the tag's word is 8 px inside the tag"); assert.ok(Math.abs((t.rect[0] + ty.rect[0] + ty.rect[2]) / 2 - 512) <= 1, "the group (tag, 8 px, the line) is centred on 512");
+  assert.deepEqual(g.pixel(t.rect[0] + 4, t.rect[1] + 12).join(), rgbOf("panel").join(), "the tag is a `panel` fill"); assert.deepEqual(g.pixel(t.rect[0], t.rect[1] + 12).join(), rgbOf("hairline").join(), "with a 1 px `hairline` edge");
 });
 
 
@@ -175,6 +176,11 @@ test("the stamp prints row by row from the top over 300 ms, N + 2 rows of its ce
   assert.equal(region(at(0), "stamp", "painted"), null, "no row at 0");
   for (const ms of [30, 100, 160, 250, 299]) { const lg = at(ms), want = Math.floor(rows * ms / 300) * cell, r = region(lg, "stamp", "painted"); assert.deepEqual(r ? r.rect : null, want ? [sx, sy, size, want] : null, `${ms} ms: ${Math.floor(rows * ms / 300)} rows of ${cell} px`); }
   assert.deepEqual(region(at(300), "stamp", "painted").rect, [sx, sy, size, size], "the whole stamp at 300"); assert.deepEqual(f.errors(), []);
+});
+test("grow from nothing read is a cut: with no roll the whole stamp shows from 0 ms", { skip }, async () => {
+  const { b, f, at } = await growing({ read: 0, f: 0, roll: 0 }), { cell, size } = b.props.regions.stamp, L = R.stamp.rect;
+  assert.equal(b.props.regions.roll, undefined, "nothing read: no roll");
+  for (const ms of [0, 100, 299]) assert.deepEqual(region(at(ms), "stamp", "painted").rect, [L[0] + Math.round((L[2] - size) / 2), L[1] + Math.round((L[3] - size) / 2), size, size], `${ms} ms: the whole stamp`); assert.ok(cell > 0); assert.deepEqual(f.errors(), []);
 });
 test("the code appears on the rule at 300 ms (a cut), three groups with spaces centred on x 864 with its baseline on 541; the rule is there from the start", { skip }, async () => {
   const { b, at } = await growing(); assert.match(b.props.regions.code, /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/);

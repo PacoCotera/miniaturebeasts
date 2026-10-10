@@ -3,6 +3,7 @@
    leaves it will take, the stamp label and the code, then the ring. The compositions are the spec's: `roll` and `traitLine`.
    The events: `dither` on the founder (the old picture to the new in 16 Bayer levels over 200 ms; the props carry the new one), and `grow` (the stamp prints row by row for 300 ms, the code appears at 300, the pod travels from 300 to 900).
    A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. The work tray, the small chamber, the notches and the roll's pictures are labelled placeholders until their masters (create.json placeholders). */
+#include "../layout/layout.h"
 #include "screens.h"
 #include "../vocab/vocab.h"
 #include "../vocab/words.h"
@@ -24,8 +25,6 @@ static const char *colr(const char *p) { static char b[8][24]; static int k; cha
 static int has(const char *id) { return id && *id; }
 static int cap_top(int px, int y, int pitch) { return y + v_fdiv(pitch - v_cap(px), 2); }
 
-static int ease_io(int p) { return (int)((int64_t)p * p * (3000 - 2 * p) / 1000000); }   /* p in 0..1000: e = p·p·(3000 − 2p)/1000000 in 64 bits (the Cargo travel's easing) */
-static int lerp(int a, int b, int e) { return a + (int)((int64_t)(b - a) * e / 1000); }
 
 /* ---- the grow event: how far it has got (-1: not playing, the end state shows) ---- */
 static int grow_time(void) { anim_state_t t; return v_pbool("motion", 1) && anim_get(ANIM_GROW, "pod", &t) ? t.elapsed : -1; }
@@ -56,8 +55,8 @@ static void build_pod(int grow) {
   int b[4]; if (!pod_box(b)) return; const char *pic = v_pstr("regions.pod.picture"); if (!has(pic)) return;
   int dx = 0, dy = 0;
   if (grow) {   /* the pod travels from its box to the dome in a straight line, whole pixels, eased: from `travel.at` over `travel.ms`, feet (160, 408) to (864, 296) */
-    int at = ci("events.grow.steps.2.at", 300), ms = ci("events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = ease_io(p);
-    dx = lerp(0, ck("regions.travel.foot.to", 0) - ck("regions.travel.foot.from", 0), e); dy = lerp(0, ck("regions.travel.foot.to", 1) - ck("regions.travel.foot.from", 1), e);
+    int at = ci("events.grow.steps.2.at", 300), ms = ci("events.grow.steps.2.ms", 600), t = grow_time(), p = t < 0 || t >= at + ms ? 1000 : t <= at ? 0 : (t - at) * 1000 / ms, e = layout_ease_io(p);
+    dx = layout_lerp(0, ck("regions.travel.foot.to", 0) - ck("regions.travel.foot.from", 0), e); dy = layout_lerp(0, ck("regions.travel.foot.to", 1) - ck("regions.travel.foot.from", 1), e);
   }
   v_region(grow ? "travel" : "pod", LAYER_PAINTED); v_sprite("pod", pic, b[0] + dx, b[1] + dy, b[2], b[3]);
 }
@@ -107,13 +106,12 @@ static void build_roll(void) {
 static void build_traitLine(void) {
   int r[4]; crect("regions.traitLine.rect", r); int px = ci("regions.traitLine.px", 16), pad = ci("regions.traitLine.tag.pad", 8), gap = ci("regions.traitLine.tag.gap", 8), th = ci("regions.traitLine.tag.h", 24), cx = ci("regions.traitLine.centre", 512), ic = px + 4;
   char s[V_STR], word[24]; snprintf(s, sizeof s, "%s", v_pstr("regions.traitLine.text")); spec_str(C, "strings.changed", word, sizeof word);
-  const char *tag = v_pstr("regions.traitLine.tag"), *breed = v_pstr("regions.traitLine.breed"), *line = s;
+  const char *breed = v_pstr("regions.traitLine.breed"), *line = s;
   int changed = v_pbool("regions.traitLine.changed", 0), doing = v_pbool("regions.traitLine.doing", 0), clash = v_pbool("regions.traitLine.clash", 0), cross = strncmp(s, "\xe2\x9c\x95 ", 4) == 0;
   if (cross) line = s + 4;   /* the ✕ is the icon's own node, ahead of the words */
   int tw = changed ? ((v_measure(word, px) + 2 * pad + 7) / 8) * 8 : 0, lw = v_run_width(line, px), bw = doing ? ck("regions.traitLine.breedMark.size", 0) : 0, bg = ci("regions.traitLine.breedMark.gap", 8);
   int total = (tw ? tw + gap : 0) + (cross ? ic : 0) + lw + (bw ? bg + bw : 0), x = cx - v_half(total), tx = r[1] + v_fdiv(r[3] - th, 2);
-  v_name("traitLine"); if (tw) { if (!v_sprite("traitLine.tag", v_fmt("plate-name-%dx%d", tw, th), x, tx, tw, th)) { char e[140]; snprintf(e, sizeof e, "word: the changed tag plate-name-%dx%d is not on the face", tw, th); v_error(e); prim_refuse(); } }
-  else v_sprite_hidden("traitLine.tag", tag, x, tx);
+  v_region("traitLine", LAYER_CHROME); word_panel("traitLine.tag", x, tx, tw, tw ? th : 0, colr("colours.traitLine.tagFill"), colr("colours.traitLine.tagEdge"));   /* the tag is chrome: a `panel` fill, a 1 px `hairline` edge (zero-size while it is not shown) */
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.tag.word", tw ? word : "", x + pad, cap_top(px, tx + v_fdiv(th - 20, 2), 20), tw ? v_measure(word, px) : 0, px, colr("colours.traitLine.tagWord")); if (tw) x += tw + gap;
   v_name("traitLine"); pic_or("traitLine.cross", cross, "icon:cross:16", x + 2, r[1] + v_fdiv(r[3] - 16, 2), px, px); if (cross) x += ic;
   v_region("traitLine", LAYER_TYPE); v_text("traitLine.text", line, x, ci("regions.traitLine.lineTop", 202) + v_fdiv(20 - v_cap(px), 2), lw, px, colr(clash ? "colours.traitLine.clash" : "colours.traitLine.line"));
@@ -125,7 +123,7 @@ static void build_stamp(void) {
   const char *a = v_pstr("regions.stamp.asset"); int size = v_pint("regions.stamp.size", 0), N = v_pint("regions.stamp.N", 0), cell = v_pint("regions.stamp.cell", 0);
   if (!has(a) || !size) return;
   int x = r[0] + v_half(r[2] - size), y = r[1] + v_half(r[3] - size), rows = N + 2, shown = rows;
-  if (strcmp(v_pstr("state"), "grow") == 0) { int t = grow_time(), ms = ci("events.grow.steps.0.ms", 300); if (t >= 0 && t < ms) shown = rows * t / ms; }
+  if (strcmp(v_pstr("state"), "grow") == 0) { int t = grow_time(), ms = ci("events.grow.steps.0.ms", 300); if (has_roll() && t >= 0 && t < ms) shown = rows * t / ms; }   /* nothing read (no roll): the stamp is a cut, the whole of it from 0 */
   v_name("stamp"); prim_node(v_id("stamp.clip"), FN_CLIP, x, y, size, shown * cell, 0, 1, 0);
   v_sprite("stamp.stamp", a, x, y, size, size);
 }
@@ -155,7 +153,7 @@ static void build_ring(void) {
 void create_words(void) {
   int grow = strcmp(v_pstr("state"), "grow") == 0;
   build_bench();
-  word_rail();
+  word_rail("create");
   { const char *c = v_pstr("regions.cradle.cradle"); picture("cradle", "cradle", "regions.cradle.rect", c); }
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
   { int r[4]; crect("regions.bud.rect", r); v_name("bud"); pic_or("bud", v_pbool("regions.bud.busy", 0), v_pstr("regions.bud.picture"), r[0], r[1], r[2], r[3]); }

@@ -1,7 +1,7 @@
 // Create in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `create-nothingRead`, `create-shape` (a trait read, as the pod is), `create-shape-changed`
 // (a rolled look: the tag, the diamond pip), `create-shape-clash` (the red edge, the ✕ in the line and on the pip, no ✓ cap), `create-shape-doing` (breed to change, the breed mark), `create-shape-onelook`, `create-shape-short` (the dimmed ✓,
 // the short figure amber), `create-shape-busy` (a bud in the small chamber, Grow blocked), `create-shape-first` (the first founder: five leaves), and with motion on at exact instants of the face's clock: the roll's dither
-// halfway (`create-roll-100`) and the grow event (`create-grow-150` the stamp printing, `create-grow` at 600 ms the pod travelling behind the work tray, `create-grow-end` at 890 ms, the travel over and the jump still to come).
+// halfway (`create-roll-100`) and the grow event (`create-grow-150` the stamp printing, `create-grow` at 600 ms the pod travelling behind the work tray, `create-grow-end` at 890 ms, the travel over and the jump still to come; `create-grow-nothing`, Grow from nothing read 20 ms in: a cut, the whole stamp from the first frame).
 // Each point is reached by the page's own state and the keys, and asserted (screen, state) before `visit(name, page, fail)` is called. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
@@ -31,6 +31,7 @@ const TIMED = {
   "grow-150":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 150, want: "grow" },
   "grow":       { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 600, want: "grow" },
   "grow-end":   { scene: "shape-changed", go: () => window.__st.press("confirm"), at: 890, want: "grow" },
+  "grow-nothing": { scene: "nothingRead", go: () => window.__st.press("confirm"), at: 20, want: "grow" },
 };
 async function apply(page, sc) {
   await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); w.fresh(); w.adults(2); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; }, [sc.set.toString()]);
