@@ -324,7 +324,7 @@ await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f =
 const s2 = (await st()).s; await intent({ screen: "habitat", target: "wild", verb: "confirm" }, 150); await intent({ screen: "habitat", target: "wild", verb: "confirm" }, 300);
 s = await st(); expect(s.s === s2 + 2 && s.mibis.find((m) => m.id === adult.id).released && s.releases.at(-1).id === adult.id, "returned for +2 Essence and released");
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "wild"; }, fig.id);
-await intent({ screen: "habitat", target: "wild", verb: "confirm" }, 200); expect(/not until it is adult/.test(await page.evaluate(() => window.__st.msg)), "a juvenile stays: " + (await page.evaluate(() => window.__st.msg)));
+const msgBefore = await page.evaluate(() => window.__st.msg); await intent({ screen: "habitat", target: "wild", verb: "confirm" }, 200); expect((await page.evaluate(() => window.__st.msg)) === msgBefore && !(await st()).mibis.find((m) => m.id === fig.id).released, "a juvenile stays, and the intent says nothing (the block is the Wild module's context): " + (await page.evaluate(() => window.__st.msg)));
 await press("home", 200);
 // 13. the service stops: Grow still works, the genome waits in the outbox and the lamp says waiting for the cloud; the service returns and the painting lands
 caddyUp = false;
