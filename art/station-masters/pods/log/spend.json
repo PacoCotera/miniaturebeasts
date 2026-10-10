@@ -2797,5 +2797,39 @@
    "thoughtsTokenCount": 321,
    "totalTokenCount": 2831
   }
+ },
+ {
+  "tag": "cargo-haul-2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.218632,
+  "mxn": 4.3726,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:50:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1136,
+   "candidatesTokenCount": 1522,
+   "thoughtsTokenCount": 281,
+   "totalTokenCount": 2939
+  }
+ },
+ {
+  "tag": "probe-p1 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.215376,
+  "mxn": 4.3075,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:50:47Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1248,
+   "candidatesTokenCount": 1522,
+   "thoughtsTokenCount": 252,
+   "totalTokenCount": 3022
+  }
  }
 ]
