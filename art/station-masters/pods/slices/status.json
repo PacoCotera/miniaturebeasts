@@ -3313,5 +3313,25 @@
   "status": "signed",
   "signed_in": "art director, dawn verdict (793e47f2)",
   "note": "signed (art director): the with-you bed at dawn, cut from the dawn painting"
+ },
+ "home-glass-dawn-640x488": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "home-glass-day-640x488": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "home-glass-dusk-640x488": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "home-glass-night-640x488": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
  }
 }

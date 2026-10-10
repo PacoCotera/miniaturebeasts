@@ -1,0 +1,19 @@
+[
+ {
+  "name": "home-glass-dawn",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/home-glass-day.jpg",
+    "THE PICTURE TO EDIT (the vivarium by day: keep everything, change only the light and the air):"
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-dawn-1024x568.png",
+    "THE LIGHT TO MATCH (the signed dawn painting of the same place from afar: take its pale, clean, cool-gold morning light, its mist and dew, not its composition):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same vivarium picture at DAWN, early morning: low, pale, clean cool-gold light from the left, clearly cooler and cleaner than an amber dusk (no deep amber, no orange glow), long soft shadows to the right, a little soft rose only high in the sky; a soft low white mist over the water and the moss and fine dew drops on the leaves catching the light as tiny soft points; a clean mid-light tone (about 40 percent average brightness); nothing glows. Keep the picture EXACTLY the same in composition and content: the same burrow, pool, stones, roots, moss, feed line at the left, mister and vent at the right, plants and the same plain dark soil along the bottom, in the same places and sizes, the same matte sculpted miniature rendering; change ONLY the lighting, its colour and the air. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]

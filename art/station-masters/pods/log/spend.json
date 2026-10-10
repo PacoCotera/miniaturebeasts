@@ -2406,5 +2406,56 @@
    "thoughtsTokenCount": 243,
    "totalTokenCount": 2233
   }
+ },
+ {
+  "tag": "home-glass-dawn try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.192142,
+  "mxn": 3.8428,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:51:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 791,
+   "candidatesTokenCount": 1308,
+   "thoughtsTokenCount": 280,
+   "totalTokenCount": 2379
+  }
+ },
+ {
+  "tag": "home-glass-dusk try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181274,
+  "mxn": 3.6255,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:51:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 757,
+   "candidatesTokenCount": 1288,
+   "thoughtsTokenCount": 210,
+   "totalTokenCount": 2255
+  }
+ },
+ {
+  "tag": "home-glass-night try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.196436,
+  "mxn": 3.9287,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:52:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 838,
+   "candidatesTokenCount": 1349,
+   "thoughtsTokenCount": 274,
+   "totalTokenCount": 2461
+  }
  }
 ]

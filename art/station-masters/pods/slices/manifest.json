@@ -10338,5 +10338,77 @@
   "status": "signed",
   "signed_in": "art director, dawn verdict (793e47f2)",
   "status_note": "signed (art director): the with-you bed at dawn, cut from the dawn painting"
+ },
+ "home-glass-dawn-640x488": {
+  "size": [
+   640,
+   488
+  ],
+  "rect": [
+   24,
+   56,
+   640,
+   488
+  ],
+  "src": "source/raw/home-glass-dawn.jpg (gemini-3-pro-image)",
+  "made": "Home's glass by dawn: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dawn light, cut to 640:488 and reduced with Lanczos, graded down to a mean L* of 41 or less (pass 107)",
+  "sha256": "fafa805723b08931b734340494fb33bad47bd7c43c6300c4191b399a5796e74e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "home-glass-day-640x488": {
+  "size": [
+   640,
+   488
+  ],
+  "rect": [
+   24,
+   56,
+   640,
+   488
+  ],
+  "src": "source/raw/home-glass-day.jpg (gemini-3-pro-image)",
+  "made": "Home's glass by day: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro recompose of the signed day picture, cut to 640:488 and reduced with Lanczos (pass 107)",
+  "sha256": "805ace1a75e3533d858faaac9f3781febdad7612d6f516cd210028c97cef8c8f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "home-glass-dusk-640x488": {
+  "size": [
+   640,
+   488
+  ],
+  "rect": [
+   24,
+   56,
+   640,
+   488
+  ],
+  "src": "source/raw/home-glass-dusk.jpg (gemini-3-pro-image)",
+  "made": "Home's glass by dusk: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dusk light, cut to 640:488 and reduced with Lanczos (pass 107)",
+  "sha256": "da687a78a14ae933e6d54ff3d71fc5f75ff6ab67944236bf79d8f796ef71b07e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "home-glass-night-640x488": {
+  "size": [
+   640,
+   488
+  ],
+  "rect": [
+   24,
+   56,
+   640,
+   488
+  ],
+  "src": "source/raw/home-glass-night.jpg (gemini-3-pro-image)",
+  "made": "Home's glass by night: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's night light, cut to 640:488 and reduced with Lanczos, regraded by distribution (dark background, warm ground band, small glow pools) (pass 107)",
+  "sha256": "f7b7f1725630c99bf301d998a4b168f2cdba947ffe63c3444220ba24c6ef6cbe",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
  }
 }
