@@ -1,0 +1,19 @@
+[
+ {
+  "name": "vivarium-near-dawn",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/vivarium-near-day.jpg",
+    "THE PICTURE TO EDIT (the signed close-up vivarium by day: keep everything, change only the light and the air):"
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-dawn-1024x568.png",
+    "THE LIGHT TO MATCH (the dawn painting of the same place from afar: take its pale, clean, cool-gold morning light, its mist and its dew, not its composition):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same close-up vivarium picture at DAWN, early morning, in the light of the second reference. LIGHT: low, pale, clean cool-gold morning light from the left, clearly cooler and cleaner than an amber dusk (no deep amber, no orange glow), long soft shadows to the right, a little soft rose only high in the background. AIR: a soft low white mist drifting over the moss and between the stones, fine dew drops on the leaves and moss tips catching the light as tiny soft points (never glowing for show). A clean mid-light tone (about 40 percent average brightness). Nothing glows: no glow-moss, no lit mushrooms. Keep the picture EXACTLY the same in composition and content: the same burrow, stones, roots, moss, feed line, mist from the upper right and plants in the same places and sizes, the same clear open moss across the centre of the lower part, the same matte sculpted miniature rendering; change ONLY the lighting and its colour and add the mist and dew. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]

@@ -9,7 +9,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROO
 man = json.load(open("slices/manifest.json")); W, H = 192, 56; CX, CY = 848, 480; made = []
 yy, xx = np.mgrid[0:H, 0:W]; u = np.abs((xx + 0.5 - W / 2) / (W / 2)); v = np.abs((yy + 0.5 - H / 2) / (H / 2))
 sq = (u ** 3.0 + v ** 3.0) ** (1 / 3.0); alpha = np.clip((1.0 - sq) / 0.30, 0, 1); alpha = alpha * alpha * (3 - 2 * alpha)
-for k in ("day", "dusk", "night"):
+for k in ("day", "dusk", "night", "dawn"):
     src = Image.open(f"slices/idle-vivarium-{k}-1024x568.png").convert("RGB").crop((CX - W // 2, CY - H // 2, CX + W // 2, CY + H // 2))
     t = np.dstack([np.asarray(src), (alpha * 255).round().astype(np.uint8)]); n = f"home-bed-{k}-{W}x{H}"; Image.fromarray(t, "RGBA").save(f"slices/{n}.png", optimize=True); made.append(n)
     man[n] = {"size": [W, H], "rect": None, "src": f"slices/idle-vivarium-{k}-1024x568.png (signed, gemini-3-pro-image)", "made": f"Home's bed by {k}: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
@@ -25,7 +25,7 @@ add = (win * (0.22 + 0.42 * rad))[..., None] * cream; out = 1 - (1 - lin) * (1 -
 Image.fromarray(a.astype(np.uint8), "RGBA").save(f"slices/{n}.png", optimize=True)
 man[n]["made"] += "; the inner light graded brighter and creamier by hand (pass 100)"; man[n]["sha256"] = hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
-bg = (19, 26, 38); sheet = Image.new("RGB", (192 * 3 + 40 + 72 * 3 * 2 + 20, 130), bg); x = 8
-for k in ("day", "dusk", "night"): t = Image.open(f"slices/home-bed-{k}-192x56.png"); sheet.paste(t, (8 + (192 + 8) * ("day", "dusk", "night").index(k), 8), t)
+bg = (19, 26, 38); sheet = Image.new("RGB", (192 * 4 + 40 + 72 * 3 * 2 + 20, 130), bg); x = 8
+for k in ("day", "dusk", "night", "dawn"): t = Image.open(f"slices/home-bed-{k}-192x56.png"); sheet.paste(t, (8 + (192 + 8) * ("day", "dusk", "night", "dawn").index(k), 8), t)
 for i, c in enumerate(("growing", "ready")): t = Image.open(f"slices/home-chamber-{c}-72x72.png"); sheet.paste(t, (8 + i * 80, 66), t)
 sheet.save("marks/home-fix-proof-1x.png"); print("ok", made)

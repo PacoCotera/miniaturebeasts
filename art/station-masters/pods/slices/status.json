@@ -3303,5 +3303,15 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 104: Idle's Vivarium by dawn (the owner's decision of Oct 10; a Pro edit of the signed day picture, graded to a mean L* of 40.8); awaiting the art director's judgement (not signed)"
+ },
+ "vivarium-near-dawn-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 105: the near Vivarium by dawn (the owner's decision of Oct 10; a Pro edit of the signed near day, in Idle's dawn light, graded to a mean L* of about 41); awaiting the art director's judgement (not signed)"
+ },
+ "home-bed-dawn-192x56": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 105: Home's bed by dawn, cut from the Idle dawn (the owner's decision of Oct 10); awaiting the art director's judgement (not signed)"
  }
 }
