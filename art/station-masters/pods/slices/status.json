@@ -3217,7 +3217,7 @@
  "idle-vivarium-night-1024x568": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 119: the owner-approved Pro repaint of the signed Idle day under the dimmed grow lamp, cut and graded by hand within the night targets (mean L* 24.9, background 17.6, ground 35.0, 0.0 percent above L* 70, R above B, key R-B 47, sat 58); awaiting the art director's judgement (not signed)"
+  "note": "returned (art director) at 1x: L* 24.9, key R-B 47, sat 58, 0.0 percent above L* 70, background 17.6, ground 35.0 all pass and it reads as night; but the repaint adds a grow-lamp hood at the top left that the day, dawn and dusk do not have, so Idle's light change would make an object appear; paint the hood and its rim out into the background by hand, keep its light"
  },
  "home-bay-shut-176x72": {
   "status": "signed",
@@ -3280,9 +3280,9 @@
   "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-night-192x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 119: re-cut from the new Idle night and fitted to the new glass night by hand (rule: key R-B at most its glass's + 40, L* at most +3); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (2cc0e62f)",
+  "note": "signed (art director) at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40)"
  },
  "vivarium-near-day-544x408": {
   "status": "signed",
@@ -3330,9 +3330,9 @@
   "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 119: the owner-approved Pro repaint of the signed glass day under the dimmed grow lamp, graded by hand within the night targets (mean L* 25.6, background 17.9, ground 35.0, 0.0 percent above L* 70, R above B, key R-B 46, sat 51); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (2cc0e62f)",
+  "note": "signed (art director) at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept"
  },
  "room-bench-stage-create": {
   "status": "new",
