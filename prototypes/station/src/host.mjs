@@ -179,7 +179,6 @@ export function createHost({ send, nowMs, light, afterSave = () => {}, motion = 
     },
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; },
-    light: () => lightNow(),
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;

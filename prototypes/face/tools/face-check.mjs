@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const { chromium } = require(process.env.PW_DIR ? path.join(process.env.PW_DIR, "node_modules/playwright") : "playwright");
 const here = path.dirname(fileURLToPath(import.meta.url)), root = path.resolve(here, "../.."), dist = path.join(here, "../dist");
-const GROUND = (() => { const h = JSON.parse(readFileSync(path.join(root, "ui/palettes/station.json"), "utf8")).colours.find(([n]) => n === "bar")[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); })();   // the palette's `ground`
+const GROUND = (() => { const h = JSON.parse(readFileSync(path.join(root, "ui/palettes/station.json"), "utf8")).colours.find(([n]) => n === "bar")[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); })();   // the palette's `bar` (the signed top bar's rest rows)
 if (!existsSync(path.join(dist, "face.wasm"))) { console.error("the face is not built (prototypes/face/build.sh)"); process.exit(2); }
 const types = { ".html": "text/html", ".mjs": "text/javascript", ".js": "text/javascript", ".json": "application/json", ".png": "image/png", ".wasm": "application/wasm", ".css": "text/css" };
 const server = createServer((req, res) => {

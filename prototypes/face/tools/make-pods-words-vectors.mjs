@@ -16,7 +16,7 @@ const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt
 const standIn = (id, w, h, slice, tile) => { const d = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { const x = i % w, y = (i / w) | 0, notch = x < 3 && y < 3 ? 60 : 0; d[i * 4] = 70 + (k & 127) + notch; d[i * 4 + 1] = 70 + ((k >> 7) & 127); d[i * 4 + 2] = 70 + ((k >> 14) & 127); d[i * 4 + 3] = 255; } return { w, h, data: d, slice, tile }; };
 let changed = 0;
 for (const c of V.cases) {
-    const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); f.send({ t: "spec", screen: "frame", json: frameSpec }); f.send({ t: "spec", screen: "pods", json: podsSpec });
   for (const p of c.pictures) f.handleOf(p.id, withPolicy((id) => standIn(id, p.w, p.h, p.slice, p.tile)));
   f.handleOf("home-lamp-amber-12x12", withPolicy(amberLamp));   // the need notice's signed amber lamp, here a flat block of `amber`
