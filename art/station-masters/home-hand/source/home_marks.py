@@ -89,25 +89,38 @@ for y in range(32):
 for x in range(9, 15): im.putpixel((x, 27), H('bark'))
 save('home-sitting-24x32', im)
 
-# The crate 48x40: a rugged field case: sand body, dark rubber corners, a sage lid band, an orange seal tag.
+# The crate 48x40: the one crate look (the signed Home bay crates, the art director's ruling): a sage moulded field case
+# (metal), a handle on top, two sand latches (enamel, lit sand, shade clay), dark rubber corners (deepTeal), an orange
+# seal tag across the lid seam; lit enamel top edges from the top left, bevel shade lower right, hairline seams.
 im = img(48, 40)
-for y in range(40):
+def put(x, y, c): im.putpixel((x, y), H(c))
+for y in range(0, 6):                                   # the handle
+    for x in range(16, 32):
+        bar = y <= 1; leg = x in (16, 17, 30, 31)
+        if bar or leg: put(x, y, 'enamel' if (y == 0 and not leg) or (x == 16) else ('bevel' if x == 31 or (y == 1 and not leg) else 'metal'))
+for y in range(5, 40):                                  # the body and lid
     for x in range(48):
-        if not (0 <= x < 48 and 2 <= y < 40): continue
-        corner = (x < 6 or x > 41) and (y < 8 or y > 33)
-        if x in (0, 47) or y in (2, 39): c = 'deepTeal'
-        elif corner: c = 'deepTeal' if not ((x in (1,) or y in (3,)) ) else 'bevel'
-        elif 10 <= y <= 13: c = 'metal' if y != 10 else 'sage'
-        elif y in (3, 4) or x in (1, 2): c = 'sand'
-        elif y >= 36 or x >= 45: c = 'clay'
-        else: c = 'enamel'
-        im.putpixel((x, y), H(c))
-for y in range(9, 17):
-    for x in range(21, 27): im.putpixel((x, y), H('deepTeal') if y in (9, 16) or x in (21, 26) else H('bevel'))
-for y in range(16, 22):
-    for x in range(30, 35): im.putpixel((x, y), H('orange') if y > 16 else H('rust'))
-im.putpixel((32, 18), H('rust'))
-for x in range(8, 40, 8): im.putpixel((x, 26), H('clay')); im.putpixel((x, 27), H('clay'))
+        edge = x in (0, 47) or y in (5, 39)
+        corner = (x < 5 or x > 42) and (y < 10 or y > 34)
+        if corner: c = 'deepTeal' if not (x in (1,) and y in (6, 36)) else 'bevel'
+        elif edge: c = 'hairline'
+        elif y == 6 or x == 1: c = 'enamel'
+        elif y >= 35 or x >= 44: c = 'bevel'
+        elif y == 15: c = 'hairline'                    # the lid seam
+        elif y == 16: c = 'enamel'
+        elif x in (11, 36) and y > 6: c = 'bevel'       # moulded ribs
+        else: c = 'metal'
+        put(x, y, c)
+for x0 in (7, 37):                                      # the latches
+    for y in range(11, 21):
+        for x in range(x0, x0 + 5):
+            c = 'clay' if (x == x0 + 4 or y == 20) else ('sand' if x == x0 or y == 11 else 'enamel')
+            put(x, y, c)
+    put(x0 + 2, 15, 'clay'); put(x0 + 2, 16, 'clay')
+for y in range(12, 20):                                 # the orange seal tag across the seam
+    for x in range(22, 27):
+        put(x, y, 'rust' if (x == 26 or y == 19) else 'orange')
+put(24, 13, 'rust')
 save('home-crate-48x40', im)
 
 # heart-full-24: the enamel heart in the house light; coral body, peach light, red shade, wine edge; no face, no sparkle.
