@@ -306,7 +306,7 @@ The developer panel stays a DOM panel under the device in the sandbox (station-b
 | **L2.5 Vivarium and the Probe bench** (and the Sitting's first screen when its spec lands) | New spec files; the Probe bench needs its layout section first | Last, because their specs are the least ready |
 | **L3 Close-out** | — | Every screen on the face: goldens for each, the budgets failing CI, the Node host playing the whole journey |
 
-**The spec dependency.** The UI designer delivers each spec file one milestone ahead: Idle (`frame.json` `idle`) with L2.2, `create.json` and `incubator.json` before L2.4, the Vivarium, up close, and the Probe bench before L2.5. The Vivarium, up close, and the Probe bench have no spec file yet, and the Probe bench has no layout section in `station-layouts.md` (`station-screens.md` describes it). A milestone without its spec waits. It is never built from the old screen's numbers.
+**The spec dependency.** The UI designer delivers each spec file one milestone ahead: Idle (`frame.json` `idle`) with L2.2, `create.json` and `incubator.json` before L2.4, the Vivarium, up close, and the Probe bench before L2.5. The Vivarium, up close, and the Probe bench have spec files (`habitat.json`, `bench.json`) and layout sections in `station-layouts.md`, but they predate the Station's structure and are being re-specified; L2.5 waits for the new ones. A milestone without its spec waits. It is never built from the old screen's numbers.
 
 ## 4. Milestones
 
