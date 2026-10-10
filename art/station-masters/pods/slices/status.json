@@ -3335,9 +3335,9 @@
   "note": "pass 112: the glass night regraded to the revised night rule (mean L* 24.8, background 16.9, ground 34.5, 0.0 percent above L* 70, R above B, key R-B 44, sat 50); awaiting the art director's judgement (not signed)"
  },
  "room-bench-stage-create": {
-  "status": "signed",
-  "signed_in": "art director, verdict (d09acb12)",
-  "note": "signed (art director) at 1x: L* 36.8, key R-B 35, sat 22, the overview's numbers; the ghost cut-out painted out"
+  "status": "held",
+  "signed_in": null,
+  "note": "held (art director): signed as a cut (L* 36.8, key R-B 35, sat 22), but it is the Pods overview's stage with the nest moved, and its panel crosses Create's work tray (x 584-712); replaced by the Create set's own stage"
  },
  "dome-front-304x272": {
   "status": "new",
