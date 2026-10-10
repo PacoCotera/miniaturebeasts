@@ -10876,10 +10876,10 @@
   "rect": null,
   "src": "source/raw/cargo-haul-3.jpg (gemini-3-pro-image)",
   "made": "the Data haul container: the rugged ribbed cartridge standing upright, its connector at the foot, a flat sky window (#5bb9f3); a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
-  "sha256": "722d66370d15fb7b40198185c080a39bb2bfd5e2b07b79c08ec2ea07d9af8337",
+  "sha256": "f5e3f5c27ffdc817399686dfcfb7b98242d5c0398b1e642e0b25b2bd7c245029",
   "status": "signed",
   "signed_in": "art director, the haul trio (owner's yes)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 51.4, mean R-B -20.3, sat 23.5, 4.1 percent above L* 70, in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED (a painting, cut and graded, hand-touched); the ribbed cartridge, upright, slimmed by hand to 28 px wide (the owner: thinner), sky window, gold contacts"
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 51.3, mean R-B -20.2, sat 23.5, 0.0 percent above L* 70 (the window capped at L* 69.5), in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED (a painting, cut and graded, hand-touched); the ribbed cartridge, upright, slimmed by hand to 28 px wide (the owner: thinner), sky window, gold contacts"
  },
  "cargo-essence-48x64": {
   "size": [
