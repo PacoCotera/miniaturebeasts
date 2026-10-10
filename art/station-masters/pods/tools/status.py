@@ -47,8 +47,6 @@ AD_RECORDS = {
  "base-336x96": ('signed', 'art director, verdict (d09acb12; palette and tick fixes)', "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the 1 px tick at (219-220, 72-78) filled from its neighbours; the sand housing, matte, plaque plate and foot line at the spec's rects"),
  "dome-back-304x272": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x, opaque pixels: L* 65.7, key R-B 101, sat 48 against the chamber rule (key R-B >= 70, sat 45-60); a plain warm matte inner wall with the lamp; the one window 226 wide'),
  "dome-inside-standby-304x272": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x, opaque pixels: L* 60.3, key R-B 94, sat 48, a step below growing'),
- "dome-inside-ready-304x272": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x, opaque pixels: L* 62.8, key R-B 88, sat 47'),
- "dome-front-304x272": ('signed', 'art director, verdict (5238569a)', "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; the sage housing at 304 on the radius-152 arch with the stage's rendering (lit top-left edge, shade, four screws, hairline seam), hood lip, no highlight"),
  "plate-name-88x24": ('signed', 'art director, verdict (5238569a)', 'signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from'),
  "chamber-back-400x320": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x: L* 38.1, key R-B 36, sat 29 against the stage 36.0/38/24; the work tray in the stage's rendering (rim lit top-left, shaded lower-right, inner shadow, four screws); the founder fills most of it"),
  "chamber-front-400x320": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 55.6, key R-B 38, sat 25; the tray's front lip over the founder's feet"),
@@ -56,6 +54,8 @@ AD_RECORDS = {
  "dome-small-front-176x224": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"),
  "nest-208x48": ('signed', 'art director, verdict (38affaae)', 'signed (art director) at 1x, opaque pixels: L* 30.1, sat 59; the moss bed, plump, its hollow visible, defringed (no pixel above R+G+B 480)'),
  "nest-front-208x48": ('signed', 'art director, verdict (38affaae)', "signed (art director) at 1x, opaque pixels: L* 25.5, sat 61; the bed's front rim fibres, defringed"),
+ "dome-inside-ready-304x272": ('signed', "art director, verdict (Station lead's hand fixes)", "signed (art director) at 1x, opaque pixels: L* 68.6, sat 45, against growing (dome-back) 65.8 and standby 60.3, so ready is the brightest; rebuilt from dome-back with cream #fff4a6 screened on (t 0.07), the lamp's 582 pixels untouched; 30 percent above L* 70 by design: the ready light the spec asks for, exempt from the glow rule"),
+ "dome-front-304x272": ('signed', "art director, verdict (Station lead's hand fixes)", 'signed (art director) at 1x, opaque pixels: L* 53.8, key R-B 12, sat 17; trimmed to the radius-152 arch on (152, 154) with coverage edges (1020 px cleared), ink from row 2 (inkTop 2)'),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}
