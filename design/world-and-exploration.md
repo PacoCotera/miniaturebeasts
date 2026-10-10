@@ -260,10 +260,10 @@ at 20 carried; Essence never turns into Energy (**Built**).
   shifted strengths and weaknesses (**Decided**). Juveniles grow up after 2 world
   turns and become elders after 6 more; elders calm and sniff twice as far and feel
   every stray strike, but are slow (**Built**).
-- **One "with you" slot.** Exactly one mibi is with the player in the Companion;
-  grown, it is also the expedition partner; a juvenile with you means no partner
-  (**Decided**). Choosing is one press between expeditions; it can't change during
-  one (**Built**). A partner is never hurt (**Decided**).
+- **The carried set.** Up to three mibis are with the player in the Companion.
+  One at a time is the expedition partner, and only a grown one can be; a
+  juvenile is never the partner. Choosing is one press between expeditions; it
+  can't change during one. A partner is never hurt.
 - **Partners are optional gates.** A partner opens events, map areas and
   expedition types otherwise unavailable, using its real abilities; without one the
   player still explores (**Decided**). Built abilities: the Tuikis digs narrow

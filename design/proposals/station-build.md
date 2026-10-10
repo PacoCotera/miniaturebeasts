@@ -14,7 +14,7 @@ The first build lets a tester play one pod from the dock to a meet, then a cross
 | **Create** | Shape each read look among three pictures from the pod's own copies, +1 Data a change; doings breed only; a shape that won't build marks its traits and withholds Grow | Research loop §5 |
 | **Grow** | 2 Energy and 4 Essence (the first founder 2 Energy). The bud takes twenty minutes plus one per shaped trait; **the first bud ever five**; **an instant grow for a price**; unread chapters clear across the wait; a full vivarium refuses before payment | Research economy §5–6 (**Decided**) |
 | **The painting** | At Grow the genome joins the Caddy's queue. The mibi wears the placeholder until its painting lands, at the next fresh draw; offline, a cool lamp and "waiting for the cloud" | Art pipeline §1.1 (**Decided**) |
-| **Vivarium** | **Six bays**, the one with you keeping its bed. The vivarium, up close: spend time, take with you, bond, return a mibi to the wild (+2 Essence and a field-guide note) | Research economy §6 |
+| **Vivarium** | **Six bays**, the mibis with you keeping their beds. The vivarium, up close: spend time, take with you or bring home, return a mibi to the wild (+2 Essence and a field-guide note) | Research economy §6 |
 | **Cross** | Two adults of one species; refusals before cost; per trait four seeds (switches) or a range picture (blends); kinship from recorded parents, penalty B with A; 2 Energy 4 Essence; the child grows in the bud and is known only where switch parents match | The cross (**Decided**) |
 | **Library** | The tome's spread of sixteen frames; a book per species with its face, places, frame, a tab per chapter, looks found and "more?", the stamp at 120 px, a pinned wish | Style guide, Library (**Decided**) |
 | **Sitting (stub)** | A held sitting (the welcome one, or a field guide filled); the vivarium's offer, pose, place, confirm; a crate waits in the sample bay and opens to the mibi in its standard painting in a gilt frame. No portrait is painted | The portrait §1 |
@@ -48,7 +48,7 @@ The sandbox publishes `prototypes/*` side by side, so `../workbench/` and `../ge
 
 ### 2.3 The save and its migration
 
-The key stays `mb-save-v8` and the Companion's top-level part is untouched. Only the Station's part `st` changes, under a schema number of its own (`st.schema: 2`). The fields the Companion reads (`accepted`, `dockN`, `known`, `probe`, `withReq`, `returned`, and each mibi's `id`, `name`, `sp`, `born`, `from`, `bonded`) keep their shape, so the Companion page needs one change only: drop a mibi marked released. The migration runs once on load, is logged, and never runs backward.
+The key stays `mb-save-v8` and the Companion's top-level part is untouched. Only the Station's part `st` changes, under a schema number of its own (`st.schema`: 2 for the research loop, 3 for the carried set). The fields the Companion reads (`accepted`, `dockN`, `known`, `probe`, `carryReqs`, `carrySeq`, `carryRefusedSeen`, `returned`, and each mibi's `id`, `name`, `sp`, `born`, `from`, `bonded`) keep their shape, so the Companion page needs one change only: drop a mibi marked released. The migration runs once on load, is logged, and never runs backward.
 
 | Field | v8 `st`, as built | After migration |
 | --- | --- | --- |
