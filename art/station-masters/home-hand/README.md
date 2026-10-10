@@ -1,6 +1,6 @@
 # Home, the Vivarium card and the Library spread: hand-pixelled masters
 
-The art-layer pieces of Home, the Vivarium card and the Library spread, hand-placed pixel by pixel at size in the Station palette (no scaling, no anti-aliasing). `source/home_marks.py`, `source/more_marks.py` and `source/roundels.py` draw them; `slices/manifest.json` gives each size and hash. Painted pieces (the glass, the bay, the well, the chamber, the cradle, the journal, the bed) come from their own paintings.
+The art-layer pieces of Home, the Vivarium card and the Library spread, hand-placed pixel by pixel at size in the Station palette (no scaling, no anti-aliasing). `source/home_marks.py`, `source/more_marks.py` and `source/roundels.py` and `source/frame_bars.py` draw them; `slices/manifest.json` gives each size and hash. Painted pieces (the glass, the bay, the well, the chamber, the cradle, the journal, the bed) come from their own paintings.
 
 ![The set at 6×](proof-6x.png)
 
@@ -46,3 +46,5 @@ The art-layer pieces of Home, the Vivarium card and the Library spread, hand-pla
 | `clan-roundel-C14-12x12` | 12×12 | clan C14's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2×2 dot in `rock` |
 | `clan-roundel-C15-12x12` | 12×12 | clan C15's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2×2 dot in `sageD` |
 | `clan-roundel-C16-12x12` | 12×12 | clan C16's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2×2 dot in `stone` |
+| `frame-top-bar-1024x40` | 1024×40 | the top bar: flat `bar`, a `bevel` lit top row, a `hairline` rule along its foot; replaces the old painted strip |
+| `frame-bottom-line-1024x38` | 1024×38 | the bottom line: flat `bar`, a `hairline` rule along its top, a `bevel` lit row under it; replaces the old painted strip |

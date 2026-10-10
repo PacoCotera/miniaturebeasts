@@ -318,5 +318,25 @@
   "made": "the lamp that needs you: an amber disc, void rim, a cream light at the upper left",
   "sha256": "1ae7134a8be71e91e83f6c5d9c8248103cfbef47ec835e399842709228ce6304",
   "status": "signed"
+ },
+ "frame-top-bar-1024x40": {
+  "size": [
+   1024,
+   40
+  ],
+  "src": "set by hand (source/frame_bars.py)",
+  "made": "the top bar: flat `bar`, a `bevel` lit top row, a `hairline` rule along its foot; replaces the old painted strip",
+  "sha256": "545ae9c79dbc56250c44f28f2e66b172c05ee383eee1048b6c4ca7c48f80f92f",
+  "status": "signed"
+ },
+ "frame-bottom-line-1024x38": {
+  "size": [
+   1024,
+   38
+  ],
+  "src": "set by hand (source/frame_bars.py)",
+  "made": "the bottom line: flat `bar`, a `hairline` rule along its top, a `bevel` lit row under it; replaces the old painted strip",
+  "sha256": "8788ad07ae353c3d1c2cb83e87c6d6299f8a685fd3d4dd6dcbf5a8d24d5c4b3f",
+  "status": "signed"
  }
 }
