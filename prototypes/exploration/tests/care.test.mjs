@@ -301,7 +301,6 @@ test("migration from `with`: the fixture's Companion part, and a second run chan
   assert.match(source("load"), /migrateCarried\(S\); normalizeCare\(S\);/);
   assert.match(source("save"), /syncStation\(\); normalizeCare\(S\);/, "after every dock read, defaults only");
   assert.ok(!/releasedIds/.test(source("save")), "save never drops released ids: only the dock gate does");
-  assert.match(source("syncStation"), /if \(!S\.exp\) normalizeCare\(S, releasedIds\(\)\);/, "under the dock gate, between expeditions, with the Station's released ids");
 });
 test("ruling 2 on the fixture: Moss at home stays juvenile through 14; carried, one Walk at turn 5 grows it; Dot elder at 8", () => {
   const sv = FIXTURE(), t = world(sv); t.migrateCarried(sv); t.normalizeCare(sv);
@@ -363,10 +362,10 @@ test("T7, the Companion's half: it takes a third mibi while a Station add is que
 });
 
 // ---- syncStation: the dock gate, the bond OR, nothing read but the bond ----
-function dock(S, st, docked) {
+function dock(S, st, docked, log = []) {
   const notes = [];
   const ctx = vm.createContext({ console, S, CARRY_MAX: 3, SPECIES: [{ name: "Loika" }, { name: "Tuikis" }, { name: "Untuva" }], LAND_NAME: [], G: { land: [] },
-    stPart: () => st, isDocked: () => docked, clamp: (v, a, b) => Math.max(a, Math.min(b, v)), reveil: () => {}, logEv: () => {}, fxMsg: t => notes.push(t),
+    stPart: () => st, isDocked: () => docked, clamp: (v, a, b) => Math.max(a, Math.min(b, v)), reveil: () => {}, logEv: t => log.push(t), fxMsg: t => notes.push(t),
     CARE_TEXT: { left: n => n + " stays home", took: n => n + " is with you", fullRefused: n => n + " stays home · full" } });
   const names = ["syncStation", "carryApply", "mibiById", "normalizeCare", "releasedIds"];
   vm.runInContext(names.map(source).join("\n") + "\n;syncStation(); normalizeCare(S);", Object.assign(ctx, { JUVENILE_TURNS: 2 }));
@@ -503,6 +502,27 @@ test("a released mibi stays carried undocked with no new dock and mid-expedition
   st.dockN = 3; dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "mid-expedition, a new dock read after the lift: no drop");
   S.exp = null; dock(S, st, false); assert.deepEqual(plain(S.carried), [1, 2], "between expeditions, undocked, that dock already seen: no drop");
   st.dockN = 4; dock(S, st, true); assert.deepEqual(plain(S.carried), [1], "the next dock between expeditions: dropped");
+  const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
+});
+test("the dock gate, run: mid-expedition or lifted with the dock seen, a released id changes nothing; docked between expeditions it is dropped, marked and the lead clears", () => {
+  const S = save({ carried: [1, 2], lead: 2, exp: { n: 3 }, bay: [], known: [], retSeen: [], pods: [], dockSeen: 1, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], mibis: S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded, released: m.id === 2 })), dock: { docked: true }, dockN: 2, returned: [] };
+  const held = () => [plain(S.carried), S.lead, S.mibis[1].released];
+  dock(S, st, true); assert.deepEqual(held(), [[1, 2], 2, undefined], "docked mid-expedition: carried, lead and the mark unchanged");
+  S.exp = null; assert.ok(st.dockN <= S.dockSeen);
+  dock(S, st, false); assert.deepEqual(held(), [[1, 2], 2, undefined], "lifted, that dock already seen: carried, lead and the mark unchanged");
+  st.dockN = 3; dock(S, st, true);
+  assert.deepEqual(plain(S.carried), [1], "dropped"); assert.equal(S.mibis[1].released, true, "marked"); assert.equal(S.lead, null, "the lead clears");
+});
+test("the dock: a Station mibi already released and new to the Companion is not created or logged", () => {
+  const S = save({ carried: [1], bay: [], known: [], retSeen: [], pods: [], dockSeen: 0, probeSeen: 0 });
+  const st = { wid: "w", accepted: [], known: [], dock: { docked: true }, dockN: 1, returned: [], mibis: [
+    ...S.mibis.map(m => ({ id: m.id, name: m.name, sp: m.sp, born: m.born, bonded: m.bonded, released: false })),
+    { id: 5, name: "Kit", sp: 2, born: 1, bonded: false, released: true },
+    { id: 6, name: "Ash", sp: 0, born: 1, bonded: false, released: false }] };
+  const log = []; dock(S, st, true, log);
+  assert.equal(S.mibis.find(m => m.id === 5), undefined, "not created"); assert.ok(!log.some(t => /Kit/.test(t)), "not logged");
+  assert.ok(S.mibis.find(m => m.id === 6), "a new live mibi still arrives"); assert.ok(log.some(t => /^Ash /.test(t)));
   const once = JSON.stringify(S); dock(S, st, true); assert.equal(JSON.stringify(S), once, "a repeated dock changes nothing");
 });
 

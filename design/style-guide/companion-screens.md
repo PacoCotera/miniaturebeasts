@@ -432,13 +432,14 @@ The list scrolls inside the view, the Lead card with it: the offset is the least
 | --- | --- | --- | --- | --- |
 | Lead card | Two or more grown mibis with you, between expeditions | `✓ Let ‹next› lead · ← menu`, context `joins the Probe` | Makes the next grown mibi with you (carried order, after the partner, wrapping) the lead | A cut: the card's face, name, heart and ability change; the teal ring and `leads` chip move to the new partner's row, which hops once (the Call hop, 600 ms). Message box `‹next› leads the Probe` |
 | Lead card | One grown mibi with you | No ✓ cap, `← menu`, context `the only grown one` | Nothing | |
-| Lead card | None grown, or none with you | No ✓ cap, `← menu`, context `no one grown yet` | Nothing | The card's no-partner state ([07](wireframes/companion-care/07-lead-none-grown.png)) |
+| Lead card | None grown | No ✓ cap, `← menu`, context `no one grown yet` | Nothing | The card's no-partner state ([07](wireframes/companion-care/07-lead-none-grown.png)) |
+| Lead card | Docked, none with you | No ✓ cap, `← menu`, context `no one with you` | Nothing | The card's no-partner state |
 | Lead card | Mid-expedition | No ✓ cap, `← menu`, context `leads this expedition` | Nothing | The card shows this expedition's partner |
 | A mibi with you | Docked | `✓ Leave ‹name› at home · ← menu`, context `comes home now` (with a long name the context drops, as the bottom line's middle always does first; the row moving home says it) | Leaves it at home at once. Never refused. If it was the lead, the lead clears | The row moves to its place in "At home" (a cut); the places close up in carried order and a free place opens at the end; focus follows the mibi. Message box `‹name› stays home`. The Lead card updates if the partner changed |
 | A mibi with you | Undocked or mid-expedition | `✓ Visit ‹name› · ← menu`, context `with you` | Opens its page | |
 | A mibi at home | Docked, a place free | `✓ Take ‹name› · ← menu`, context `goes with you now` | Takes it: it joins the end of the carried order | The row moves into the first free place (a cut); focus follows. Message box `‹name› is with you`. The player stays on Mibis, so several can be arranged in a row |
 | A mibi at home | Docked, three with you | `✓ Take ‹name›` dimmed (the dimmed ✓ cap, `stone` label) `· ← menu`, context `the Companion is full` | Nothing changes | The 3 px shake (as a refused press); message box `‹name› stays home: the Companion is full · leave one at home first` ([03](wireframes/companion-care/03-roster-docked-full.png)) |
-| Nothing focusable | No mibi with you and none to take | `✓ Next expedition · ← menu` (as built) | The expedition choice | |
+| Lead card | Undocked, none with you | `✓ Next expedition · ← menu` | The expedition choice | |
 
 The pad: ▲ ▼ move between cards; ▶ on any mibi's row opens its page (the same as ✓ Visit undocked; docked, it is the way to a page, since ✓ arranges). ← goes back where Mibis was opened from, as built. **Call:** the focused mibi with you answers on its row (the hop and chirp, free); on the Lead card or a mibi at home, the partner answers, or the first mibi with you when there is no partner. With no mibi with you, Call does nothing.
 
@@ -505,7 +506,7 @@ Status lines: `with you · leads the Probe` (the partner), `with you · can lead
 
 Input is held to the end. Under reduced motion the heart stands at (362, 60) for 1.5 s, without the rise. No other screen plays the bond; Mibis, the expedition choice and the Station's Vivarium show the heart as a state from then on.
 
-**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, as for the bond), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event.
+**The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, as for the bond), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event. Timing: one cut per mibi that grew, in carried order, 1200 ms apart, from the end of the action's moment. Bonds play first, 2400 ms each. Input is held until 300 ms after the last cut; reduced motion gets the same cuts.
 
 Lines the world turn writes stay on the Head home screen, as built, worded for the carried set: a juvenile grown on the clock `‹name› is grown · it leads the Probe now` (with you and now the partner), `‹name› is grown · it can lead the Probe` (with you), `‹name› is grown · at home` (at home). The elder line is unchanged.
 
@@ -525,7 +526,7 @@ Lines the world turn writes stay on the Head home screen, as built, worded for t
 | --- | --- | --- |
 | Card | 20, 252, 410, 92 | Paper card, the third focus target (as built) |
 | Face | 28, 264, 64, 64 | The partner's 64 px face on the teal ring (28×11 at 46, 322). No partner: a dashed circle 64×64 |
-| Name | 112, 260 | 3×, clipped at 220 px; heart 16×16 at 8 px after it, y 266, when bonded. No partner: `No partner` |
+| Name | 112, 260 | 3×, clipped at 220 px; heart 16×16 at 8 px after it, y 266, when bonded. No partner: `No partner`, or `No one with you` when none is carried (with the 2× line `dock to take one along`) |
 | Stage chip | 112, 292, h 22 | The partner's stage, as the roster's chips (label at y 295). No partner: none |
 | Line | 112, 320 (no partner: 112, 296) | 2×, clipped at 220 px: the partner's ability; or why there is none, as on the Lead card |
 | With you | 338, 366, 394; y 262; 24×24 each | The mibis with you as their HUD ring faces in carried order, the partner's ring `teal`, the others `stone`; a free place a dashed circle. No words |

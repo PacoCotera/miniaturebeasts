@@ -1045,6 +1045,7 @@ function syncStation() {
   S.dockSeen = Math.max(S.dockSeen || 0, st.dockN || 0);
   for (const sp of st.known || []) if (!S.known.includes(sp)) S.known.push(sp);
   for (const m of st.mibis || []) { let q = S.mibis.find(x => x.id === m.id);
+    if (!q && m.released) continue;   // released before the Companion ever knew it: not created, not logged
     if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); logEv(m.name + ' (' + SPECIES[m.sp].name + ') is home at the Station'); }
     q.name = m.name; q.born = m.born || 0; q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
   if (st.probe && st.probe.seq > (S.probeSeen || 0)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
