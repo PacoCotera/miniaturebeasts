@@ -265,3 +265,13 @@ test("composed pictures take thousands of ops: the ops have a buffer of their ow
   const big = []; for (let i = 0; i < 6000; i++) big.push(["dot", i % 100, 0, "ice"]);
   f.scene([{ id: "wires", kind: "composed", rect: [0, 0, 200, 16], ops: big }], env); frames(f); assert.equal(f.refused(), 0, "6000 ops, 75 KB");
 });
+
+test("a node moved into a removed node's place keeps its picture: a composed ring drawn after an earlier node was dropped is still drawn once new nodes arrive", { skip }, async () => {
+  const f = await boot(); frames(f, 2);
+  const ring = { id: "ring", kind: "composed", rect: [100, 100, 60, 40], ops: [["ring", "round", 0, 0, 60, 40, 2, 6, "focus"]] };
+  const bg = { id: "bg", kind: "rect", rect: [0, 40, 1024, 522], colour: "ground" }, a = { id: "a", kind: "rect", rect: [300, 300, 10, 10], colour: "ice" };
+  f.scene([bg, a, ring], env); frames(f); assert.deepEqual(f.pixel(100, 120), rgbOf("focus"), "the ring is drawn");
+  f.scene([bg, ring], env); frames(f);   // `a` goes; the last node (the ring) takes its place in the table
+  f.scene([bg, { id: "b", kind: "rect", rect: [90, 90, 80, 60], colour: "clay" }, ring, { id: "c", kind: "rect", rect: [420, 400, 10, 10], colour: "ice" }], env); frames(f);   // new nodes reuse the table's end, and one is drawn under the ring so the ring is drawn again
+  assert.deepEqual(f.pixel(100, 120), rgbOf("focus"), "the ring is still drawn");
+});

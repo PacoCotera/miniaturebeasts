@@ -214,7 +214,14 @@ static lv_obj_t *make(node_t *n, int a, lv_obj_t *parent) {
   } else { o = lv_obj_create(parent); plain(o); }   /* a rectangle, or a clip: an object whose bounds cut its children (LVGL's default) */
   return o;
 }
-static void remove_at(int i) { lv_obj_delete(g_o[i].obj); free(g_o[i].composed); g_o[i] = g_o[--g_n]; }
+/* The node moved into a removed node's place keeps its image pointing at its own descriptor: a composed picture's `cdsc` and a cropped sprite's `crop` live in the node, and the node has moved. */
+static void remove_at(int i) {
+  lv_obj_delete(g_o[i].obj); free(g_o[i].composed);
+  int last = --g_n; if (i == last) return;
+  g_o[i] = g_o[last]; node_t *m = &g_o[i];
+  if (m->kind == FN_COMPOSED && m->composed) lv_image_set_src(m->obj, &m->cdsc);
+  else if (m->kind == FN_SPRITE && m->rgb != 0) lv_image_set_src(m->obj, &m->crop);
+}
 /* drop a node; a clip takes its children with it (their records go first, so none is left pointing at a deleted object) */
 static void drop(int i) {
   if (g_o[i].kind == FN_CLIP) { uint32_t cid = g_o[i].id; for (int k = g_n - 1; k >= 0; k--) if (g_o[k].parent == cid) remove_at(k); i = find(cid); if (i < 0) return; }

@@ -109,7 +109,7 @@ void screens_key(int code) {
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (spec_bool("props", "idle", 0)) { say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
-    const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[8];
+    const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[64];
     if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";
     if (v) say("intent", "screen", v);
     return;

@@ -1,4 +1,4 @@
-// Pods in each of its states on the Station page (?face=lvgl&test), as the layer check and the goldens take them: a fresh crate of two S04 pods docked and opened, then the eight states in order, each reached
+// Pods in each of its states on the Station page (?test: the face in test mode), as the layer check and the goldens take them: a fresh crate of two S04 pods docked and opened, then the eight states in order, each reached
 // by the page's own hooks and asserted (screen, view, focus, cmp) before `visit(name, page)` is called. Returns { fails }.
 import { createServer } from "node:http";
 import { readFileSync, existsSync, statSync } from "node:fs";
@@ -22,10 +22,10 @@ export async function podsStates(visit) {
   await new Promise((r) => server.listen(0, "127.0.0.1", r));
   const port = server.address().port, fails = [], fail = (m) => { fails.push(m); console.error("FAIL " + m); };
   const browser = await chromium.launch(), page = await browser.newPage({ viewport: { width: 1360, height: 980 }, deviceScaleFactor: 1 });
-  page.on("pageerror", (e) => fail("pageerror: " + e.message));
+  page.on("pageerror", (e) => fail("pageerror: " + e.message)); page.on("console", (m) => { if (m.type() === "error" && !/Failed to load resource/.test(m.text())) fail("console: " + m.text().split("\n")[0]); });
   const fixture = readFileSync(path.join(root, "station/tests/fixtures/save-v8-schema1.json"), "utf8");
   await page.addInitScript((raw) => { if (!sessionStorage.getItem("fixture-done")) { localStorage.setItem("mb-save-v8", raw); localStorage.removeItem("mb-station-dev"); sessionStorage.setItem("fixture-done", "1"); } }, fixture);
-  await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&face=lvgl&test`, { waitUntil: "load" });
+  await page.goto(`http://127.0.0.1:${port}/sandbox/station/?dev&test`, { waitUntil: "load" });
   await page.evaluate(() => window.__st.ready); await page.waitForTimeout(500);
   await page.evaluate(() => window.__st.seedCrate("S04", 2, 4101)); await page.evaluate(() => window.__st.act("dock")); await page.waitForTimeout(300);
   await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(3300); await page.evaluate(() => window.__st.unlock());
@@ -48,6 +48,7 @@ export async function podsStates(visit) {
     await go(pods[0], "rail.0", "overview"); await at("overview, a rail tab focused", { view: "overview", focus: "rail.0" });
     await go(pods[0], "rail.0", "chapter", 0); await at("chapter page", { view: "chapter", focus: "rail.0" });
     await go(pods[0], "kin.0", "overview"); await page.evaluate(() => window.__st.act("confirm")); await at("compare", { screen: "pods", cmp: true });
+    const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await browser.close(); server.close(); }
   return { fails };
 }
