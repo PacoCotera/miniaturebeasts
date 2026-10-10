@@ -153,7 +153,7 @@ static void build_ring(void) {
 void create_words(void) {
   int grow = strcmp(v_pstr("state"), "grow") == 0;
   build_bench();
-  word_rail("create");
+  word_rail(C);
   { const char *c = v_pstr("regions.cradle.cradle"); picture("cradle", "cradle", "regions.cradle.rect", c); }
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
   { int r[4]; crect("regions.bud.rect", r); v_name("bud"); pic_or("bud", v_pbool("regions.bud.busy", 0), v_pstr("regions.bud.picture"), r[0], r[1], r[2], r[3]); }
