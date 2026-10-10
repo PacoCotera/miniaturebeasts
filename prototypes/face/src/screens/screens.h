@@ -26,6 +26,7 @@ int home_tick(uint32_t now);
 void build_module(const char *key, int dy, const char *lamp);
 void build_nameTag(const char *name, const int box[4], int lift, int out[4]);
 void build_restKnob(int focused);
+const char *home_lamp_pic(const char *state);   /* frame.json regions.marks.lamp12.<state>, the signed 12 × 12 lamp picture of a state */
 void build_waitingLamp(const char *id, int x, int y, int shown);
 /* Cargo (screens/cargo.c): its words by the state the props name, and its keys */
 void cargo_words(void);

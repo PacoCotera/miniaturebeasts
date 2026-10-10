@@ -130,6 +130,8 @@ export function frameIds() {
   for (const id of ["energy", "data", "essence", "cross"]) if (assetEntry(`icon:${id}:16`)) ids.add(`icon:${id}:16`);
   return [...ids];
 }
+// Idle takes none of the frame's marks but the one its waiting lamps are (frame.json regions.marks.lamp12.waiting).
+export const idleMarkIds = () => [SPECS.frame.regions.marks.lamp12.waiting];
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----

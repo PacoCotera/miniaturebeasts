@@ -18,7 +18,7 @@ import { bootFace } from "./face-lvgl.mjs";
 import * as cargo from "./intents/cargo.mjs";
 import * as create from "./intents/create.mjs";
 import * as frameIntents from "./intents/frame.mjs";
-import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, pinned, picture, setEnv } from "./host.mjs";
+import { createHost, onFaceMessage, screenProps, topValues, frameIds as frameMarkIds, idleMarkIds, pinned, picture, setEnv } from "./host.mjs";
 import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "../../ui/assets.mjs";
 
 const $ = (id) => document.getElementById(id);
@@ -54,7 +54,7 @@ function syncProps() {
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   if (key === lastProps) return;
-  { FACE.beginScene(); for (const id of [...(UI.idle ? [] : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
+  { FACE.beginScene(); for (const id of [...(UI.idle ? idleMarkIds() : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
   else { const light = H.light(); if (lastLight && lastLight !== light) for (const id of [`idle-vivarium-${lastLight}:1024x568`, `home-glass-${lastLight}:640x488`, `home-bed-${lastLight}-192x56`]) FACE.drop(id); lastLight = light; }   // one light's pictures in memory, plus one frame of the next
   lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)

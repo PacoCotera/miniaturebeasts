@@ -143,7 +143,7 @@ static void glass_group(const char *cur) {
   if (focused >= 0) it[ni++] = (item_t){ 2, focused };
   /* the nodes inside the clip, counted before they are sent */
   int count = 0, lift = hi("regions.resident.lift", 4);
-  int bedPic = has(v_pstr("regions.bed.picture")), lampN = wire_has_asset(v_pstr("regions.lamps.waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
+  int bedPic = has(v_pstr("regions.bed.picture")), lampN = wire_has_asset(home_lamp_pic("waiting")) ? 1 : 0;   /* a waiting lamp is one node (its picture, or the same node with no size) when the host has sent the picture */
   const char *mk = v_pstr("regions.bed.mark"); int markN = (mk && *mk) ? wire_has_asset(mk) : bedPic;   /* the bed's mark: its picture away, else a node of no size on the bed's own picture */
   for (int k = 0; k < ni; k++) {
     if (it[k].kind != 1) { const ent_t *e = &g_e[it[k].ent]; count += has(e->pic) + lampN + (it[k].kind == 2 ? 1 : 0); }

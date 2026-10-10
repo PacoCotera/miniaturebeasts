@@ -98,8 +98,7 @@ export function homeBuild(m, spec, frame) {
   const found = st.knownIds.length;
   const library = { state: found ? "pages" : "empty", lamp: lampOf("library") ?? (found ? "well" : "off"), journal: slot("home-journal", R.library.journal.slice(2)) };
 
-  const lamps = Object.fromEntries(Object.entries(spec.lamps.pictures).map(([k, id]) => [k, ph(id, [12, 12])]));   // the signed lamps: off, well, waiting, needsYou (home.json lamps.pictures)
-  const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library, lamps };
+  const regions = { glass: { picture: req({ kind: "slot", id: `home-glass-${m.light}:${R.glass.rect[2]}x${R.glass.rect[3]}`, master: `${spec.light.pictures[m.light]}-${R.glass.rect[2]}x${R.glass.rect[3]}`, size: [R.glass.rect[2], R.glass.rect[3]], until: "the Home masters (the glass by the light)" }) }, residents, bed, cargo, pods, incubator, probe, library };
 
   // the focus: the targets present, in the spec's group order; the ring is on `cur` or nowhere ("room")
   const targets = [{ id: "vivarium", group: "vivarium" }];

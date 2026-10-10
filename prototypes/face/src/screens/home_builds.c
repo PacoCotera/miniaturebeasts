@@ -16,16 +16,19 @@ static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", base,
 static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(H, p, o, 24); return o; }
 
-/* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids the props name (regions.lamps); one node whichever state it is. A picture the host has not sent leaves a node of no size. */
+/* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids are one table, frame.json regions.marks.lamp12; one node whichever state it is. A picture the host has not sent leaves a node of no size. */
+const char *home_lamp_pic(const char *state) {
+  static char b[4][96]; static int k; char *o = b[k++ & 3]; spec_str("frame", v_fmt("regions.marks.lamp12.%s", *state ? state : "off"), o, 96); return o;
+}
 static void lamp(const char *id, int x, int y, const char *state) {
-  const char *pic = v_pstr(v_fmt("regions.lamps.%s", *state ? state : "off"));
-  if (pic && *pic) v_sprite(id, pic, x, y, 12, 12); else v_sprite_hidden(id, v_pstr("regions.lamps.off"), x, y);
+  const char *pic = home_lamp_pic(state);
+  if (*pic) v_sprite(id, pic, x, y, 12, 12); else v_sprite_hidden(id, home_lamp_pic("off"), x, y);
 }
 
 /* a waiting lamp on a resident or a sleeper: home-lamp-sky-12x12, steady; not shown, the same node with no size, so the order of the glass never changes kind */
 void build_waitingLamp(const char *id, int x, int y, int shown) {
   if (shown) { lamp(id, x, y, "waiting"); return; }
-  v_sprite_hidden(id, v_pstr("regions.lamps.waiting"), x, y);
+  v_sprite_hidden(id, home_lamp_pic("waiting"), x, y);
 }
 
 /* the module: a panel (fill, bevel top, hairline edge), its engraved word at the spec's offset and its lamp; the objects are the screen's. `dy` is the focused module's lift (negative). Draws region `key`. */

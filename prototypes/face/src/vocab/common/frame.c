@@ -150,7 +150,7 @@ void word_bottomLine(void) {
     v_region("need", LAYER_TYPE); colour("need", c); v_run_t run = v_run("line.need", s, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
     int lamp[4] = { right - run.width - fi("regions.need.lampGap") - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
-    v_name("need"); fs("regions.marks.lamp12", a, sizeof a);
+    v_name("need"); fs("regions.marks.lamp12.needsYou", a, sizeof a);
     mark("line.need.lamp", a, lamp);   /* the signed amber lamp (home-lamp-amber-12x12), 1:1; no code-drawn lamp */
   }
   /* the way back: its cap, then one word, right-aligned to 1008 */
