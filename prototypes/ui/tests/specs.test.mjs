@@ -599,7 +599,7 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
   // the needs: pods waiting for a well light Pods, never Cargo, whose waiting mark is never amber; short of a price, a pod is still a need, worded without figures
   const N = home.strings.needs; assert.equal(N.waitingPods.module, "pods"); assert.equal(R.cargo.states.waiting.lamp, "off"); assert.ok(!/waiting|wait for a well/.test(home.lamps.cargo.needsYou));
   assert.deepEqual([N.couldGrow.short, N.toRead.short], ["{a} {species} pod needs more ⚡", "{a} {species} pod needs more ◆"]); assert.deepEqual(home.strings.stages, { juvenile: "young", adult: "adult", elder: "elder" });
-  assert.deepEqual([home.events.crateIn.kind, home.events.crateIn.target, home.events.crateIn.hold], ["arrival", "cargo", false]); assert.ok(!("newPage" in home.strings.subjects.library));
+  assert.deepEqual([home.events.crateIn.kind, home.events.crateIn.target, home.events.crateIn.hold], ["arrival", "cargo", 0]); assert.ok(!("newPage" in home.strings.subjects.library));
   assert.deepEqual(paletteBad(home.colours), []);
 });
 

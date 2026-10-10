@@ -107,7 +107,11 @@ void screens_say(const char *kind, const char *target, const char *verb) {
   wire_emit(b);
 }
 void screens_key(int code) {
-  if (anim_holding()) return;   /* an event holds input: no key is acted on (§2.1) */
+  if (anim_holding()) {   /* an event holds input: no key is acted on (§2.1); while Home's rest holds, a room key is still said, and the host keeps it until the hold ends (home.json focus.held) */
+    char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+    if (rv && strcmp(sc, "home") == 0 && anim_get(ANIM_REST, "knob", NULL)) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
+    return;
+  }
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */

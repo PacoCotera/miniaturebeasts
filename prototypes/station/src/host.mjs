@@ -111,7 +111,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, say, goto, play, lock, save }. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the bay's own arrivals are Cargo's, and play nothing until it is built.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]);
-export function createHost({ send, nowMs, afterSave = () => {} }) {
+export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
   const holds = new Map();   // the events sent with hold: true that have not said done (an event the face drops, or whose done was lost, expires with its time)
   const holding = () => { const t = nowMs(); for (const [k, until] of holds) if (until < t) holds.delete(k); return holds.size > 0; };
   const play = (e) => {
@@ -121,7 +121,7 @@ export function createHost({ send, nowMs, afterSave = () => {} }) {
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
+    now: () => Date.now(), motion, say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
@@ -134,7 +134,10 @@ export function onFaceMessage(h, m) {
   if (m.t === "done") {
     h.release(m.kind, m.target);
     if (m.kind === "hatch") { UI.hab.id = +m.target; UI.hab.f = "door"; h.goto("habitat"); }   // the hatch is over: meet the mibi, the ring on the door
-    if (m.kind === "rest") UI.idle = true;   // the rest is over: Idle plays the Vivarium alone; Home keeps its state and focus unseen
+    if (m.kind === "rest") {   // the rest is over: Idle plays the Vivarium alone; Home keeps its state and focus unseen; a room key pressed during the hold is dispatched now
+      UI.idle = true; const k = h.pendingRoom; h.pendingRoom = null;
+      if (k) { UI.idle = false; dispatch(h, { screen: "home", target: "room", verb: "room:" + k }); }
+    }
     return;
   }
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }

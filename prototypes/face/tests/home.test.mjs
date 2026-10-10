@@ -45,7 +45,7 @@ async function start(b, { motion = true, frame = {}, t0 = 0 } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["home", homeSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
-  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^crate-/.test(i) ? { policy: "art" } : {}) })));
+  for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => ({ ...standIn(i, sizeOf(r)), ...(/^home-crate-/.test(i) ? { policy: "art" } : {}) })));
   f.t = t0; f.motion = motion; f.build = b;
   assert.equal(f.props({ screen: "home", ...b.props, motion, frame: frameProps({ ...b.line, ...frame }) }), 0, f.errors().join("; ")); frames(f); return f;
 }
@@ -77,7 +77,7 @@ for (const [name, o] of Object.entries(SCENES)) {
 test("the departure check bites: a resident moved out of the glass, a module's word moved out of its zone and a name tag off the glass are each found", { skip }, async () => {
   const b = scene({ adults: 3, focus: "resident.2" }), f = await start(b), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, homeSpec, frameSpec, "resident.2"); };
   assert.deepEqual(departures(lg, homeSpec, frameSpec, "resident.2"), []);
-  assert.match(bad((c) => { c.regions.find((r) => r.id === "resident" && r.layer === "painted").rect[0] = 10; })[0], /leaves the glass/);
+  assert.match(bad((c) => { c.regions.find((r) => r.id === "resident" && r.layer !== "chrome").rect[0] = 10; })[0], /leaves the glass/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "cargo" && r.layer === "type").rect[0] = 900; })[0], /word/);
   assert.match(bad((c) => { c.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect[0] = 26; })[0], /name tag/);
   assert.match(bad((c) => { c.regions = c.regions.filter((r) => r.id !== "nameTag"); })[0], /name tag shows only/);
@@ -99,9 +99,10 @@ test("✓ on the focus says an intent on its target (on the room, on 'room'); th
   [m] = key(f, "research"); assert.deepEqual([m.t, m.verb, m.target], ["intent", "room:research", "cargo"]);
   key(f, "up"); [m] = key(f, "home"); assert.ok(!m || m.verb === "room:home", "the Home key: the ring goes back to the room (the host sets it from the intent)");
 });
-test("while the rest holds, the face moves no focus and sends no intent", { skip }, async () => {
+test("while the rest holds, the face moves no focus and sends no intent but room:<x> (the host keeps it until the hold ends)", { skip }, async () => {
   const f = await start(scene({ adults: 2, focus: "knob" })); f.send({ t: "event", kind: "rest", target: "knob", ms: 380, hold: true }); frames(f, 2);
-  for (const k of ["up", "left", "confirm", "back", "research"]) assert.deepEqual(key(f, k), [], k);
+  for (const k of ["up", "left", "confirm", "back"]) assert.deepEqual(key(f, k), [], k);
+  const [m] = key(f, "research"); assert.deepEqual([m.t, m.verb], ["intent", "room:research"]);
 });
 
 // ---- the events ----
@@ -136,8 +137,8 @@ test("motion off: every event is at its end at once, the walk is at its place, a
 
 // ---- the walk ----
 test("the walk is deterministic: the same props on the same clock give the same hash, a different seed a different place", { skip }, async () => {
-  const run = async (t) => { const f = await start(scene({ adults: 4, carry: [0] }), { t0: 5000 }); f.frame(5000 + t); return f.hash(); };
-  assert.equal(await run(7777), await run(7777)); assert.notEqual(await run(7777), await run(1234));
+  const run = async (t) => { const f = await start(scene({ adults: 4, carry: [0] }), { t0: 5000 }); for (let ms = 40; ms <= t; ms += 40) f.frame(5000 + ms); return f.hash(); };
+  assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200), "idle for the first two seconds, then they walk");
 });
 test("on a frame at most six adult boxes move (the living window staggers the steps) and the dirty area stays within a quarter of the screen, with twelve residents walking", { skip }, async () => {
   const f = await start(scene({ adults: 12, young: 0, carry: [] }), { t0: 5000 }), M = f.M; let area = 0, boxes = 0, moved = 0;
@@ -148,4 +149,22 @@ test("on a frame at most six adult boxes move (the living window staggers the st
   }
   assert.ok(moved > 100, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 1024 * 600 * 0.25, `dirty area ${area} of ${1024 * 600}`); assert.ok(boxes <= 6, `${boxes} adult-sized rectangles in a frame`);
   console.log(`# Home's walk, twelve residents: worst frame ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty, ${boxes} boxes`);
+});
+
+test("a walking resident keeps its box in 32..656−w and its feet in 300..527, never meets the keep-out zone, walks at 2 px a step, and a focused one stands still and resumes where it was", { skip }, async () => {
+  const K = homeSpec.regions.resident.walk.keepOut;
+  for (let seed = 1; seed <= 24; seed++) {
+    const b = scene({ adults: 1, carry: [] }); b.props.regions.residents[0].seed = seed * 7919;
+    const f = await start(b, { t0: 5000 }); let last = null, moved = 0, jump = 0;
+    for (let ms = 40; ms <= 40000; ms += 40) {
+      f.frame(5000 + ms); const lg = logOf(f); const r = lg?.regions.find((x) => x.id === "resident" && x.layer !== "chrome")?.rect; if (!r) continue;
+      const [x, y, w, h] = r, feet = y + h; assert.ok(x >= 32 && x + w <= 656 && feet >= 300 && feet <= 527, `seed ${seed} at ${ms}: ${r}`); assert.ok(!(x + w > K[0] && feet > K[1]), `seed ${seed} at ${ms}: ${r} meets the keep-out zone`);
+      if (last && (last[0] !== x || last[1] !== y)) { moved++; jump = Math.max(jump, Math.abs(last[0] - x), Math.abs(last[1] - y)); } last = [x, y];
+    }
+    assert.ok(jump <= 2, `seed ${seed}: a step is 2 px on an axis, not ${jump}`); if (seed === 1) assert.ok(moved > 20, "it walks: " + moved);
+  }
+  const b = scene({ adults: 1, carry: [] }); b.props.regions.residents[0].seed = 7919; const f = await start(b, { t0: 5000 }); const pos = () => logOf(f).regions.find((x) => x.id === "resident" && x.layer !== "chrome").rect.join();
+  for (let ms = 40; ms <= 6000; ms += 40) f.frame(5000 + ms); logOf(f);
+  withFocus(f, "resident.1"); let t = 6000; const p0 = (f.frame(5000 + (t += 40)), pos()); for (let i = 0; i < 400; i++) f.frame(5000 + (t += 40)); assert.equal(pos(), p0, "focused: it stands on its pixel (lifted 4 px, which the box does not show)");
+  withFocus(f, "room"); let moves = false; for (let i = 0; i < 600; i++) { f.frame(5000 + (t += 40)); if (pos() !== p0) { moves = true; break; } } assert.ok(moves, "and walks on when focus leaves");
 });

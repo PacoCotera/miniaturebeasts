@@ -59,10 +59,10 @@ test("Home's props validate against home.props.json in every scene, name no rect
   }
 });
 
-test("residents at home walk (a seed each), the carried set sleeps on the bed (no seed), the away bed shows the Companion mark", () => {
+test("residents at home walk (a seed each), the carried set sleeps on the bed (no seed), the bed is a PH plate in every state", () => {
   const sc = scenes(), d = build(sc.docked.st, sc.docked.sv).props.regions;
-  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.deepEqual(d.bed.sleepers.map((s) => s.seed), [0, 0]); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "");
-  const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.match(a.bed.mark, /^frame-companion-outline-16x24/); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
+  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.deepEqual(d.bed.sleepers.map((s) => s.seed), [0, 0]); assert.equal(d.bed.state, "docked"); assert.ok(!("mark" in d.bed), "no Companion mark is drawn on the bed"); assert.match(d.bed.picture, /^home-bed-192x56/);
+  const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
   const n = build(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
   const seeds = d.residents.map((r) => r.seed), again = build(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed); assert.deepEqual(again, seeds, "the seed is the mibi's, the same every time");
 });

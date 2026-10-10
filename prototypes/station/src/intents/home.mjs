@@ -34,5 +34,7 @@ export function intent(h, target, verb) {
   else if (target === "incubator") h.goto("incubator");
   else if (target === "probe") { ui.bench.f = 0; h.goto("bench"); }
   else if (target === "library") toLibrary(h);
-  else if (target === "knob") h.play({ kind: "rest", target: "knob", ms: h.specs.home.events.rest.holdMs, hold: true });   // the rest: the knob settles, the screen dithers to Idle; the host takes Idle when the face says done
+  else if (target === "knob") {   // the rest: the knob settles, the screen dithers to Idle over the hold; with reduced motion the event is a cut to its end and Idle comes on the frame of the key
+    if (h.motion ? h.motion() : true) h.play({ kind: "rest", target: "knob", ms: h.specs.home.events.rest.hold, hold: true }); else ui.idle = true;
+  }
 }

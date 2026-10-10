@@ -109,7 +109,7 @@ await press("dock", 300);
 s = await st(); expect(s.dock.docked, "docked");
 { const p = await props(), l = p.frame.line, events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
   expect(events >= 1 && !(await page.evaluate(() => window.__st.holding())), `home-dock-arrival: the crates' slide is an event for the face (${events}) and holds nothing`);
-  expect(p.regions.cargo.state === "crates" && p.regions.cargo.crates === 2 && p.regions.cargo.lamp === "needsYou" && p.regions.bed.state === "docked" && p.regions.bed.sleepers.length === 1 && p.regions.bed.mark === "" && p.regions.probe.state === "docked", "home-dock-arrival: docked, two crates in the Cargo module, the Companion's mibi asleep on the bed: " + JSON.stringify([p.regions.cargo, p.regions.bed.state, p.regions.probe.state]));
+  expect(p.regions.cargo.state === "crates" && p.regions.cargo.crates === 2 && p.regions.cargo.lamp === "needsYou" && p.regions.bed.state === "docked" && p.regions.bed.sleepers.length === 1 && p.regions.probe.state === "docked", "home-dock-arrival: docked, two crates in the Cargo module, the Companion's mibi asleep on the bed: " + JSON.stringify([p.regions.cargo, p.regions.bed.state, p.regions.probe.state]));
   expect(l.need === "two crates wait in the bay" && l.ok === "Open Cargo" && !(await page.evaluate(() => window.__st.msg)), "home-dock-arrival: the notice names the crates, the room's ✓ opens Cargo and no plate is shown: " + JSON.stringify(l)); }
 await page.waitForTimeout(900); await frameShot("home-docked", true);
 await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(200);

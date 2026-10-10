@@ -37,6 +37,9 @@ void word_livingWindow(const char *screen, const char *bezel, const char *glass,
 
 /* a lamp: 12 x 12, a `void` rim and the state's fill (off, well, waiting, needsYou) */
 void word_lamp(const char *id, int x, int y, const char *state) {
+  if (strcmp(state, "needsYou") == 0) {   /* the signed amber lamp (frame.json regions.marks.lamp12); until the host has it, nothing */
+    char a[96]; spec_str("frame", "regions.marks.lamp12", a, sizeof a); if (a[0] && wire_has_asset(a)) v_sprite(id, a, x, y, 12, 12); return;
+  }
   char p[48]; snprintf(p, sizeof p, "colours.lamp.%s", *state ? state : "off");
   char n[64]; snprintf(n, sizeof n, "%s.rim", id); v_rect(n, x, y, 12, 12, colr("colours.lamp.rim"));
   snprintf(n, sizeof n, "%s.fill", id); v_rect(n, x + 1, y + 1, 10, 10, colr(p));
