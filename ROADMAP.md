@@ -173,6 +173,30 @@ The direction for the site:
    with the phase 1 or 3 playable as an embedded demo.
 3. **Later:** builder documentation, devlog and kit sign-up.
 
+## Future vision: a self-contained kit
+
+Not planned work, and it changes nothing in the current design. It is the
+direction for a refined later version of the game, written here so that today's
+choices don't close it off.
+
+- **The Caddy as the kit's compute.** The Caddy is the one device on mains
+  power, so a later Caddy carries real local compute (for example a Raspberry
+  Pi 5-class board with a neural accelerator). It runs the expensive chores:
+  generation, paintings, rendering, storage and sync.
+- **No dependency on model providers.** Play out of the box calls no
+  third-party model API. Generation uses open-weight models whose licences
+  allow commercial use, run on the kit or on rented hardware. Any cloud bill
+  is for hardware, never for per-call model services. A local painter would
+  replace the third-party service the [art pipeline](design/proposals/art-pipeline.md)
+  uses today.
+- **The same rules for generated results.** Each is made once, stored with the
+  model that made it, validated against the genome, and accepted by the
+  Station like any other result.
+
+**What protects it now:** the Station's acceptance and the painting contract
+stay independent of which service produced a result, so a local painter can
+take over without changing the game.
+
 ## Decisions needed next
 
 1. **The Station loop and UI**, the first piece of phase 3: the loop's rules are
