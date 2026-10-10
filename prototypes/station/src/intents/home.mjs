@@ -1,15 +1,7 @@
 // Home's intents (home.json: the keys, the line): the rule calls behind ✓ on the room, the Vivarium, a resident, a module of the column and the rest knob. The pad is the face's (focus.graph); ← does nothing on Home.
 import * as S from "../state.mjs";
 
-export const ARRIVE_MS = 3000;
-// The bay opens, one crate at a time: the rule opens every crate, the host plays an `arrival` per crate and holds input while they play; what came is the report that follows. Cargo's (cargo.json, L2.2's second PR).
-export function openBay(h) {
-  const r = S.openBay(h.st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-  h.ui.report = { plays: r.plays, at: h.now() + r.plays.length * ARRIVE_MS };
-  r.plays.forEach((p, i) => h.play({ kind: "arrival", target: "bay", ms: ARRIVE_MS, from: i * ARRIVE_MS }));
-  h.save(); return r;
-}
-const toPods = (h) => { const p = S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
+export const toPods = (h) => { const p = S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
 const toVivarium = (h, id) => { const ui = h.ui; if (id != null && S.mibiById(h.st, id)) ui.hab.id = id; ui.hab.f = "stage"; if (ui.meet === ui.hab.id) ui.meet = null; h.goto("habitat"); };
 const toLibrary = (h) => { const l = h.ui.lib; if (l.page == null) { l.page = 0; l.i = 0; } l.f = "spread"; h.goto("library"); };
 // The room's ✓: what needs the player (the notice's own action).

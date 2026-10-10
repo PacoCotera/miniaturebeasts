@@ -118,12 +118,30 @@ s = await st(); expect(s.dock.docked, "docked");
   expect(l.need === "two crates wait in the bay" && l.ok === "Open Cargo" && !(await page.evaluate(() => window.__st.msg)), "home-dock-arrival: the notice names the crates, the room's ✓ opens Cargo and no plate is shown: " + JSON.stringify(l)); }
 { const p = await props(); cur.push({ arrival: (await page.evaluate(() => window.__st.face.stats.events)) - events0 >= 1, crates: p.regions.cargo.crates, cargoLamp: p.regions.cargo.lamp, bed: p.regions.bed.state, notice: p.frame.line.need, plate: await page.evaluate(() => window.__st.msg) }); }
 await page.waitForTimeout(900); await frameShot("home-docked", true);
-await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(200);
-s = await st();
-expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1, "both crates accepted once");
-expect(s.tray.length === 4, "four pods in the wells: " + s.tray.length);
-await page.evaluate(() => window.__st.openBay()); s = await st(); expect(s.tray.length === 4, "an accepted crate never reopens");
-expect(!(await page.evaluate(() => window.__st.holding())), "the bay's arrivals are Cargo's: nothing plays and nothing is held until Cargo is built");
+// Cargo (L2.2 H2: home-bay): the room's ✓ opens Cargo with two sealed crates in the bay; ← is Home with the ring on the Cargo module; ✓ Open the bay opens both, one at a time, with input held crates × 3000 + 200 ms (✓ and ← do nothing),
+// the report shows what came home, and its ✓ lands on Pods' collection with the ring on the pod that most needs the player; ← there reads Home. The holds are on the host's clock: the step waits them out.
+{ stepOf("home-bay");
+  let u = await hpress("confirm", 500); expect(u.screen === "cargo", "home-bay: the room's ✓ (Open Cargo) opens Cargo: " + JSON.stringify(u));
+  let p = await props(), l = p.frame.line; expect(p.screen === "cargo" && p.state === "bay" && p.regions.bay.state === "open" && p.regions.crates.places.length === 2 && JSON.stringify(p.focus) === JSON.stringify({ cur: "room", targets: [] }), "home-bay: the bay, open, two sealed crates, the ring on nothing: " + JSON.stringify([p.state, p.regions.bay, p.regions.crates, p.focus]));
+  expect(l.ok === "Open the bay" && l.subject === "two sealed crates" && l.back === "Home", "home-bay: ✓ Open the bay, two sealed crates, ← Home: " + JSON.stringify(l));
+  u = await hpress("down", 200); expect(u.screen === "cargo", "home-bay: the pad does nothing in the bay: " + JSON.stringify(u));
+  u = await hpress("back", 500); expect(u.screen === "home" && u.home === "cargo", "home-bay: ← is Home with the ring on the Cargo module: " + JSON.stringify(u));
+  u = await hpress("confirm", 500); expect(u.screen === "cargo", "home-bay: ✓ on the Cargo module opens Cargo again: " + JSON.stringify(u));
+  await hpress("confirm", 300);
+  expect(await page.evaluate(() => window.__st.holding()), "home-bay: the opening holds input");
+  p = await props(); expect(p.state === "opening" && p.frame.line.subject === "the bay is opening" && p.frame.line.ok == null && p.frame.line.back == null, "home-bay: the line says the bay is opening and offers nothing: " + JSON.stringify([p.state, p.frame.line]));
+  u = await hpress("confirm", 200); u = await hpress("back", 200); expect(u.screen === "cargo" && (await props()).state === "opening", "home-bay: ✓ and ← wait while the crates open: " + JSON.stringify(u));
+  await page.waitForTimeout(6600);
+  p = await props(); l = p.frame.line; s = await st();
+  expect(p.state === "report" && p.regions.report.crates.length === 2 && p.regions.report.crates[0].lead === "First crate" && !(await page.evaluate(() => window.__st.holding())), "home-bay: after both crates the report shows, input free: " + JSON.stringify([p.state, p.regions.report?.crates, p.regions.report?.gathered]));
+  expect(l.ok === "See the new pods" && l.back === "Cargo" && l.subject === "what came home", "home-bay: ✓ See the new pods, ← Cargo, what came home: " + JSON.stringify(l));
+  expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWith("dev-")).length === 1 && s.tray.length === 4, "home-bay: both crates accepted once, four pods in the wells: " + s.tray.length);
+  { const total = p.regions.report.gathered; cur.push({ report: true, rows: p.regions.report.crates.map((r) => [r.lead, r.pods, r.text, r.reach]), gathered: [total.e, total.d, total.s, total.top], probe: p.regions.report.probe, world: p.regions.report.world }); }
+  u = await hpress("confirm", 600); const need = s.tray.find((q) => !q.idd) ?? s.tray[0];
+  expect(u.screen === "pods" && u.view === "collection" && (await page.evaluate(() => window.__st.UI.pods.cur)) === need.id, "home-bay: ✓ on the report lands on Pods' collection with the ring on the pod that most needs the player: " + JSON.stringify(u));
+  u = await hpress("back", 500); expect(u.screen === "home", "home-bay: ← from the collection is Home: " + JSON.stringify(u));
+  await page.evaluate(() => window.__st.openBay()); s = await st(); expect(s.tray.length === 4, "home-bay: an accepted crate never reopens");
+  expect(!(await page.evaluate(() => window.__st.holding())), "home-bay: nothing is held after the report"); }
 // Home's steps on the face (L2.2 H1: home-pad, home-rack, home-lamp; home-dock-arrival is above): the walks are deterministic (reduced motion: the residents stand at their start); the focus the face says and the intents are
 // recorded per step and held to prototypes/face/golden/journey-home.json (lvgl-switch.md §4, gate check 5).
 await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => { window.__st.goto("incubator"); }); await page.waitForTimeout(250); await page.evaluate(() => { window.__st.UI.home.f = "room"; window.__st.goto("home"); }); await page.waitForTimeout(500);
@@ -450,11 +468,11 @@ expect(sib.ok, "two siblings seeded: " + sib.msg);
 expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [sib.mibis[0].id, sib.mibis[1].id])) === 0.25, "siblings: kinship a quarter");
 await press("home", 200);
 
-// 7. every screen but Home and Pods is not built: its room keys, ← and the first press on Idle work, with today's keys
+// 7. every screen but Home, Cargo and Pods is not built: its room keys, ← and the first press on Idle work, with today's keys
 const NAV = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")).navigation.screens;
 const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlace = (pl) => ({ probe: "bench" }[pl.split(".")[0]] || pl.split(".")[0]);
 {
-  const SCREENS = ["cargo", "create", "incubator", "library", "habitat", "bench", "cross"];
+  const SCREENS = ["create", "incubator", "library", "habitat", "bench", "cross"];
   for (const name of SCREENS) {
     await page.evaluate((n) => window.__st.goto(n), name); await page.waitForTimeout(500);
     const p = await props(), c = await page.evaluate(() => window.__st.check()), nav = NAV[placeOf(name)];

@@ -23,6 +23,8 @@ void v_text(const char *id, const char *s, int x, int y, int w, int px, const ch
 /* A name plate of the series the spec names (`<path>.plate.series`), the width the face chose, shown 1:1; the host sends the whole series at boot. A plate that is not on the face is an error and a refused node. */
 void v_plate(const char *id, const char *namePath, int w, int x, int y);
 int v_sprite(const char *id, const char *asset, int x, int y, int w, int h);
+/* The same picture's node with no size: a slot kept for a step that has not come, so showing it later never adds a node and never changes the order of the screen's nodes (§2.2). 1 when the node was sent, 0 when the host has not sent the picture. */
+int v_sprite_hidden(const char *id, const char *asset, int x, int y);
 /* A run: text pieces and the material icons inline (⚡ ◆ ❀ ✕ as 16 px sprites, 2 px either side), laid left to right; align moves the whole run about x. */
 typedef struct { int width, end; } v_run_t;
 int v_run_width(const char *s, int px);

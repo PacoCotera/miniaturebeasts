@@ -11,12 +11,12 @@ export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, read
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 },
-  report: null, meet: null, lastInput: 0, idle: false };
+  cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
 // What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.
 export const SPECS = {}, LAYER = { ctx: null, presenter: createFramePresenter() };
-export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 2000, ARRIVE_MS = 3000;
+export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 2000;
 
 const listeners = new Set();
 export const onChange = (fn) => listeners.add(fn);
@@ -104,4 +104,4 @@ export const projectCarried = () => S.projectCarried(G.st, G.sv);
 export const homeMibis = () => S.homeMibis(G.st, G.sv);
 export const mibiById = (id) => S.mibiById(G.st, id);
 export const podById = (id) => S.podById(G.st, id);
-export const arriving = () => !!(FX.arr && clock.now - FX.arr.at < FX.arr.plays.length * ARRIVE_MS);
+export const arriving = () => UI.cargo.state === "opening";   // the crates open one at a time (cargo.json events.opening): the screen does not go idle meanwhile

@@ -29,10 +29,10 @@ const SCENES = {
   "sleeper-focused":  { f: "resident:2", set: (w) => { w.adults(3); w.carry([2]); } },
 };
 // the helpers the scenes call, in the page
-const WORLD = () => ({
+export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
-  reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.knownIds = []; S.UI.meet = null; this.persist(); },
+  reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.knownIds = []; S.UI.meet = null; Object.assign(S.UI.cargo, { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }); this.persist(); },
   bays(n) { window.__st.settings.bays = n; },
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },
   young(n) { const st = window.__st.ST; const k = st.mibis.length; window.__st.seedAdults("S01", 77, n); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; } },

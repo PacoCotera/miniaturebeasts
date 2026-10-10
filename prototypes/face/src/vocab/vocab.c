@@ -30,6 +30,11 @@ int v_sprite(const char *id, const char *asset, int x, int y, int w, int h) {
   prim_node(v_id(id), FN_SPRITE, x, y, w, h, 0, hd, 0); return 1;
 }
 
+int v_sprite_hidden(const char *id, const char *asset, int x, int y) {
+  int hd = wire_asset_slot(asset); if (hd < 0) return 0;
+  prim_node(v_id(id), FN_SPRITE, x, y, 0, 0, 1u << 16, hd, 0); return 1;   /* a window of no size at source x 1: it draws nothing and counts for nothing, and is the same node as the shown one */
+}
+
 /* the icon a glyph stands for, and the length of its UTF-8 */
 static const char *icon_of(const char *p, int *len) {
   static const struct { const char *g; const char *name; } T[] = { { "\xe2\x9a\xa1", "energy" }, { "\xe2\x97\x86", "data" }, { "\xe2\x9d\x80", "essence" }, { "\xe2\x9c\x95", "cross" } };
