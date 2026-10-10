@@ -9,7 +9,7 @@
       "items": [
         { "title": "Bring pods home and read them", "status": "live", "text": "Dock the Companion, open the bay, identify each pod and read its genome chapter by chapter, then compare two pods of the same species side by side.", "link": "prototypes/station/README.md" },
         { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read, grow the mibi in its bud and open it to meet the juvenile.", "link": "design/proposals/station-loop.md" },
-        { "title": "Habitat and the bays", "status": "live", "text": "Six bays hold your mibis, you choose which one comes along with you, and any pod or mibi can be returned to the wild.", "link": "design/proposals/station-screens.md" },
+        { "title": "Vivarium and the bays", "status": "live", "text": "Six bays hold your mibis, you choose which one comes along with you, and any pod or mibi can be returned to the wild.", "link": "design/proposals/station-screens.md" },
         { "title": "Cross two mibis", "status": "live", "text": "Pick two adults of one species and see what their child could inherit, drawn only from the chapters you have read.", "link": "design/proposals/the-cross.md" },
         { "title": "A new face for every Station screen", "status": "building", "text": "The Station's screens are moving one at a time to the graphics engine the real device will run, starting with Pods and the Library.", "link": "design/proposals/lvgl-switch.md" },
         { "title": "The Library and the field guide", "status": "building", "text": "A tome with a plate for every species you have found and a book per species that fills in as you read more pods.", "link": "design/proposals/collection-display.md" },
@@ -17,7 +17,7 @@
         { "title": "Home, Rest and Idle on the new face", "status": "next", "text": "Home with your residents and its bench, the Rest key, docking and arrivals, and the Idle view that keeps the habitat on show all day.", "link": "design/style-guide/station-layouts.md" },
         { "title": "The Cross on the new face", "status": "next", "text": "Pick two mibis and see what their child could inherit, chapter by chapter, redrawn on the new face.", "link": "design/proposals/the-cross.md" },
         { "title": "Create and the Incubator on the new face", "status": "next", "text": "Shape a mibi's traits, then watch it grow under the dome leaf by leaf until it is ready to open.", "link": "design/proposals/station-screens.md" },
-        { "title": "Habitat and the Probe bench on the new face", "status": "next", "text": "Your resident up close with its card and bays, and the bench where the Probe's Shield is mended and upgraded.", "link": "design/proposals/station-screens.md" },
+        { "title": "Vivarium and the Probe bench on the new face", "status": "next", "text": "Your resident up close with its card and bays, and the bench where the Probe's Shield is mended and upgraded.", "link": "design/proposals/station-screens.md" },
         { "title": "The family tree", "status": "later", "text": "Each mibi's book will show its lineage once there are enough bred families to design it around.", "link": "design/proposals/family-tree.md" }
       ]
     },

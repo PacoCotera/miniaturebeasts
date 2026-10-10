@@ -250,17 +250,17 @@ Expeditions start only when the Companion is **lifted** from its dock. On the St
 
 This section follows the Station page as built. The next Station build reads a pod a **chapter** at a time instead of window by window, and draws its fingerprint as the **genome ring**; this section changes with that build ([research loop](proposals/research-loop.md)).
 
-The lamp on Home's bench rests the screen (the vivarium plays alone); any press wakes it and acts. The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Habitat**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
+The lamp on Home's bench rests the screen (the vivarium plays alone); any press wakes it and acts. The Station's four middle keys switch views and never spend: **Home** (the vivarium and the bench), **Research** (the pods), **Library** and **Vivarium**. The pad moves a warm ring between things in the picture; ✓ does what the bottom line names, with its price; ← goes back.
 1. **Identify** a pod (1 Energy; your very first pod is free). Its shell turns clear and shows the species inside. A new species gets a "New species" stamp. Then its **trait windows** rise, frosted: one for each thing about this kind of mibi (its markings, its ears or crown, its colour, its gait).
 2. **Study** a window (2 Data; the first study of each species is free). The frost wipes away and shows that part of this pod's mibi. If the pod also carries a look that doesn't show, a **misty seed** sits on the sill with a ghost of it ("shows stripes · hides spots"). If it carries nothing else, a small solid base sits there instead ("through and through"). A window with two rings is passed on **only through families**. A window with shutters needs something first (the Untuva's colour opens with a tier 2 Probe). A window you studied stays open for good.
 3. **Glints.** Once you have studied a window on one pod of a species, later pods of that species twinkle with a star on each window where they hold a look you haven't seen yet. No star means nothing new there.
 4. **Compare** (free): from the tray, ✓ on a second pod of the same species puts both side by side; windows studied on both that differ pulse.
 5. **Shape a founder** (Create). The new mibi shows large; frosted windows stay a surprise. On a studied window, ↑ ↓ choose among what **this pod** carries: as it is, the hidden look through and through, or the shown look through and through. A pod that shows a look through and through can't give another. Each change costs 2 Data.
 6. **Grow it** (2 Energy + 4 Essence, plus 2 Data per change; your very first founder costs 2 Energy only). The fingerprint stamps the pod, its **code** appears (like `G7F · CD0 · 3H2`), and the pod goes into the incubator.
-7. **The incubator** grows it in **real minutes**, one leaf per minute: a small body 2, medium 3, large 4, plus 1 for each window beyond three and 1 for each change. Your first mibi ever takes 1 minute. The frosted windows clear one by one while it grows. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in Habitat, where ✓ takes it with you.
+7. **The incubator** grows it in **real minutes**, one leaf per minute: a small body 2, medium 3, large 4, plus 1 for each window beyond three and 1 for each change. Your first mibi ever takes 1 minute. The frosted windows clear one by one while it grows. New cargo arriving doesn't shorten it. When the dome glows, ✓ **Open**: the young mibi steps out with its name and you meet it in the vivarium, up close, where ✓ takes it with you.
 8. **Return to the wild** (the garden gate beside the tray): ✓, then ✓ again, frees the cup and gives +1 Essence. The pod goes back to where it came from the next time you dock.
 
-**The fingerprint** is a round whorl with one petal per window. Its ridges come from the mibi's genome, so no two look alike; a petal lights in its colours when you study that window. It shows on the pod, at Create, on the incubator, in the Library and in Habitat.
+**The fingerprint** is a round whorl with one petal per window. Its ridges come from the mibi's genome, so no two look alike; a petal lights in its colours when you study that window. It shows on the pod, at Create, on the incubator, in the Library and in the vivarium, up close.
 
 | At the Station | Price |
 | --- | --- |
@@ -286,7 +286,7 @@ The vivarium has room for four mibis plus the one with you.
 
 At most one mibi is **with you** in the Companion; the others live in the Station's vivarium. If the mibi with you is grown, it is also your expedition partner. A juvenile with you comes along in the Companion only: "too young for the Probe".
 
-To choose, open **Habitat** on the Station, move to the door and press ✓ **Take Fig with you**. While the Companion is docked it moves at once (the one with you comes home); while it is away it moves at the next dock. While docked you can also swap on the Companion: ✓ "Take Moss" on its Mibis screen. During an expedition you can't change who is with you. A newly opened mibi is never put with you by itself.
+To choose, open the **Vivarium** on the Station, up close on the mibi, move to the door and press ✓ **Take Fig with you**. While the Companion is docked it moves at once (the one with you comes home); while it is away it moves at the next dock. While docked you can also swap on the Companion: ✓ "Take Moss" on its Mibis screen. During an expedition you can't change who is with you. A newly opened mibi is never put with you by itself.
 
 ### The active mibi screen
 
@@ -296,8 +296,8 @@ Between expeditions the Companion shows the mibi with you, large: its name, stag
 
 ### Getting better and bonding
 
-- **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you Head home, three at most. The Library shows them.
-- **Bond**: after a mibi's first expedition or walk with you, its Habitat page offers a **bond**: ✓, then ✓ again. A small heart marks it. Bonding is a choice; nothing else depends on it yet.
+- **Skill**: each expedition where your partner's ability really helped (a Loika's calm let a wary creature eat from your hand, a Tuikis dug the burrow, an Untuva sniffed out a pod) gives it a **skill notch** when you Head home, three at most. A notch is earned only on an expedition that explored something, and a break keeps it. The notches show on the mibi's card in the vivarium, never as a number.
+- **Bond**: after a mibi's first expedition or walk with you, its page in the vivarium, up close, offers a **bond**: ✓, then ✓ again. A small heart marks it. Bonding is a choice; nothing else depends on it yet.
 
 ### Partners and what they do
 

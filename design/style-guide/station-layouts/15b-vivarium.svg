@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
+<title>The Vivarium, the whole: every mibi at home in one full-width window, the bays along the foot, the frame. 1024×600 at 1×, regions only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="439" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<text x="1018" y="52" font-size="7" fill="#777" text-anchor="end">living window 0,40 1024×440, edge to edge, no bezel</text>
+<line x1="0" y1="296.5" x2="1024" y2="296.5" stroke="#e0b880" stroke-dasharray="4 3"/>
+<text x="720" y="290" font-size="9" fill="#a07040">ground 0,296 1024×176 · walk 16,296 992×176</text>
+<text x="24" y="68" font-size="10" fill="#2b6cb0">The whole: the Vivarium, level 1. Reads first: the residents, then the bays.</text>
+<text x="24" y="81" font-size="10" fill="#2b6cb0">Targets: each resident (feet ring) and each housed bay tile; ▼ from a resident</text>
+<text x="24" y="94" font-size="10" fill="#2b6cb0">to its tile, ▲ from a tile to its resident. ✓ on either: one mibi up close.</text>
+<text x="24" y="107" font-size="10" fill="#2b6cb0">← Home, the ring on the vivarium panel. No modules, no card: only the life.</text>
+<rect x="48.5" y="264.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="54" y="278" font-size="9" fill="#7d3a10">adult · Bean</text>
+<ellipse cx="120" cy="416" rx="80" ry="12" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<rect x="96.5" y="440.5" width="47" height="23" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
+<text x="120" y="457" font-size="13" fill="#f1ebdf" text-anchor="middle">Bean</text>
+<rect x="224.5" y="312.5" width="103" height="111" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="230" y="326" font-size="9" fill="#7d3a10">juvenile</text>
+<rect x="360.5" y="296.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="366" y="310" font-size="9" fill="#7d3a10">adult</text>
+<rect x="544.5" y="272.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="550" y="286" font-size="9" fill="#7d3a10">elder</text>
+<rect x="664.5" y="336.5" width="103" height="111" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="670" y="350" font-size="9" fill="#7d3a10">juvenile</text>
+<rect x="792.5" y="416.5" width="191" height="55" fill="#efe0c8" stroke="#8a6a44" stroke-width="1"/>
+<rect x="816.5" y="304.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="822" y="320" font-size="9" fill="#7d3a10">asleep: the carried set</text>
+<text x="796" y="466" font-size="8" fill="#8a6a44">with-you bed 792,416 192×56</text>
+<rect x="16.5" y="488.5" width="991" height="63" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<rect x="32.5" y="496.5" width="71" height="47" fill="#d9dde3" stroke="#555" stroke-width="1"/>
+<rect x="44.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="112.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="124.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="192.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="204.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="272.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="284.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="352.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="364.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="432.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="444.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="512.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="524.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="592.5" y="496.5" width="71" height="47" fill="#f6f7f8" stroke="#555" stroke-width="1"/>
+<rect x="604.5" y="496.5" width="47" height="47" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<rect x="672.5" y="496.5" width="71" height="47" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="752.5" y="496.5" width="71" height="47" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="832.5" y="496.5" width="71" height="47" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="912.5" y="496.5" width="71" height="47" fill="none" stroke="#777" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="485" font-size="7" fill="#777" text-anchor="end">strip of bays 16,488 992×64 · 72×48 tiles on an 80 pitch · one a bay, at most twelve</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
+<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Vivarium</text>
+<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888"/>
+<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
+<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="587" font-size="14" fill="#c4500f">Look at Bean</text>
+<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">an adult Untuva</text>
+<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+</svg>

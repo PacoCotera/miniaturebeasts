@@ -16,6 +16,148 @@ Pods comes first because it sets the pattern the other screens follow.
 
 ---
 
+## Home, the sections and the Vivarium
+
+This section is the Station's structure: which screens exist, their levels from the whole down to one item, and how the keys move between them. Its wireframes are regions only (rectangles, purpose, focus targets) in palette stand-ins, with no art. Where a screen's section below disagrees with it on structure (which screens exist, their parents, the way back, what Home's column holds), this section holds; a screen's measurements below hold until that screen's detailed spec is written from this structure.
+
+**What the Station is, on screen.** The Station is the device, and its screen is the device's own face. At rest it shows the Vivarium, the place where the mibis live, in a big panel, with the device's sections down the right. A section opened takes the whole stage, and comes closer level by level, from the whole to one item. ← goes one level out, and from a section's whole it goes Home. Left alone, the Vivarium fills the whole screen.
+
+### The screen map
+
+<img src="station-layouts/15-vivarium-map.png" width="1024" alt="The Station's screen map: Home, the sections and the Vivarium's levels">
+
+*15. The screen map: Home, each section and its levels, Idle, the Incubator between research and the Vivarium, the jumps, and what the pad, ✓ and ← do. 1×, structure only ([SVG](station-layouts/15-vivarium-map.svg)).*
+
+| Screen | Level | What it is for | ✓ goes to | ← goes to (the way back's word) |
+| --- | --- | --- | --- | --- |
+| **Home** | the hub | The Vivarium alive in its panel, and the device's sections and what needs you | a resident: one mibi up close; the panel: the Vivarium's whole; a module: that section's whole; the room: what needs you | nothing (no ← cap) |
+| **Idle** | (a state over any screen) | The Vivarium full screen, all day, with no frame | the first press only wakes | — |
+| **Vivarium** | the whole | Every mibi at home, at its size, in one full-width window; the bays along the foot | a resident or a bay tile: that mibi up close | Home ("Home"), the ring on the panel |
+| Vivarium | one mibi up close | One mibi: greet it, rename it, read its card (the heart, the skill notches, its chapters), take it along or leave it, its portrait, a cross, the wild | the namer (an overlay); the Sitting; Cross; the meet's first ✓ names it | the whole ("Vivarium"), the ring on this mibi |
+| Sitting | under one mibi | Spend a held sitting: pose, place, look and confirm | a step on | a step back; from the pose, the mibi ("{name}") |
+| Cross | under one mibi | Two adults of one species: the splice | Cross them, a jump to the Incubator | the mibi ("{name}") |
+| **Cargo** | the whole | The dock's cargo: the crates in the bay, sealed, at most three | Open the bay: the crates open one by one | Home ("Home"), the ring on the Cargo module |
+| Cargo | one crate | One crate opening: its pods to the rack, what was gathered, how far the land is explored; then the report card | input held while it plays; the report closes on any press | back to the bay, empty |
+| **Pods** | the collection, a pod's overview, one chapter (with Compare and Create) | As built ([Pods](#pods-collection-pod-overview-chapter-page)) | one level closer | "Home", "Pods", "{pod}" |
+| **Incubator** | one level (it holds one bud) | The bridge between the research and the Vivarium: the bud grows from research and hatches into the Vivarium | Open: the hatch, then a jump to the new mibi up close, in the meet | Home ("Home") |
+| **Probe** (the bench) | one level (it holds one Probe) | Mend and switch the Probe | as built | Home ("Home") |
+| **Library** | the spread, a species' Book (face and guide spreads) | As built | one level closer; Visit {name}: a jump to that mibi up close | "Home", "Library" |
+
+- **"{name}" and "{pod}"** are the mibi's and the pod's own names, as the way back already names a pod. A name wider than the way back's word room (68 px) reads "Back".
+- **Jumps** (a ✓ that lands in another section): Grow it (Create) and Cross them (Cross) to the Incubator; Choose a pod (an empty Incubator) to Pods; Open (the Incubator, after the hatch) to the new mibi up close; Visit (the Book) to that mibi up close; Open the guide (the card's species word) to the Book's guide spread. After a jump, ← follows the tree of the screen you are on: one mibi up close reached by a jump reads "← Vivarium".
+- **The Incubator as the bridge.** Research leads in (Create, Cross, an empty Incubator's pod), and the Vivarium leads out (the hatch ends in the meet, one mibi up close). It is reached from Home's column and by those jumps, and its title keeps the Research mark.
+- **The dock's cargo moment is Cargo.** The Caddy's Dock is never a Station key. Docking brings the crates into the bay: Home's Cargo module lights amber, the notice names the crates, and ✓ on the room or the module opens Cargo. The moment itself keeps its name, the arrival: the ribbon, the beam and the report card of [Dock and arrival](#dock-and-arrival) move from Home's panel into Cargo's whole stage. The crates' pods land in the rack, so Pods' collection shows them after.
+
+### The frame on every screen
+
+- **The top bar and the bottom line stay on every screen but Idle:** Home, each section's whole and every level under it. "Takes the whole screen" means the whole stage (0, 40, 1024, 522): Home's column and panel go, the frame stays. The device is driven by its keys alone, and the bottom line is the only place that says what ✓ and ← do; the top bar is the only place the materials, the Companion and the world turn show. Idle alone drops both.
+- **The title names the section, never the item:** Home, Vivarium, Cargo, Pods, Incubator, Probe, Library; Create, Cross and Sitting keep their own. One mibi up close is titled Vivarium; its name is on its tag.
+- **The title's mark is the icon of the coloured key that leads there** (see [The column and the keys](#the-column-and-the-keys)).
+- **The top bar's Companion zone** holds the carried set: the glyph and its lamp, then three face places in carried order, at (760, 8, 120, 24).
+- **The way back is 88 px wide**, at (920, 570, 88, 24), right-aligned to x 1008, and the notice ends 24 px before it, at (624, 570, 272, 24), right-aligned to x 896. The ← cap's x is 1008 − the word's width − 20: 922 for Vivarium (66 px), 943 for Home (45 px). The longest notice, "dock the Companion for its crates", is 255 px, 271 with its lamp, inside the 272.
+
+### The column and the keys
+
+Home's column is the device's sections, one module each: Cargo, Pods, Incubator, Probe and Library. Every section but the Vivarium is reached from it in one press, and the Vivarium from the panel beside it. Cargo is a whole-stage section like the others, reached from its module or from the room when the crates wait. The Vivarium's whole sits between Home and one mibi up close: ← from one mibi goes to the whole, and ← from the whole goes Home.
+
+The device's coloured keys are shortcuts, one for each family of sections on the map: Home with Cargo; the living (the Vivarium, one mibi, Cross, the Sitting); the research (Pods, Create, the Incubator, the Probe); the reference (the Library, the Book). A key opens its section's whole from anywhere, even from inside that section, and never spends. Every key drops Create's and Cross's unpaid choices and closes the namer, writing nothing; while a moment holds input (the arrival, the hatch), the key waits. The Caddy's Dock is never a Station key.
+
+<img src="station-layouts/16-key-set.png" width="1440" alt="The Station's front with the four coloured keys, each an icon slot, beside Home's screen, and what each key opens">
+
+*16. The coloured keys on the Station's front at 4 px/mm, each cap a marked icon slot, the branding slot on the top bezel, Home (15a) on the screen at 0.6×, and what each key opens. Positions from the [device-family concepts](../../hardware/concepts/device-family/concepts.md) ([SVG](station-layouts/16-key-set.svg)).*
+
+| Position | Key | Colour | Opens | The ring lands | Its icon marks the titles |
+| --- | --- | --- | --- | --- | --- |
+| x 64 mm | Home | ochre `#dba53a` | Home | on the room, where ✓ does what needs you; on Home, back to the room | Home, Cargo |
+| x 88 mm | Vivarium | green `#63a046` | the Vivarium's whole (15b) | on the mibi last seen up close: its resident, or its bay tile while it is out with the Companion; none seen yet, the first resident from the left; none at home, the first bay. From one mibi up close: the whole, the ring on that mibi | Vivarium (the whole and one mibi up close), Cross, Sitting |
+| x 112 mm | Research | teal `#2a9f90` | Pods, the collection | on the pod that most needs the player: a new one, then a glinting one, then the first. From a pod, a chapter, Compare or Create: the collection | Pods, Create, Incubator, Probe |
+| x 136 mm | Library | violet `#8460cd` | the Library, the spread | on the frame it was last on. From the Book: the spread, the ring on that species | Library (the spread and the Book) |
+
+- **The row reads like Home.** The Vivarium key sits at the left as the panel does, the column's sections to its right, the Library at the column's foot.
+- **Cargo, the Incubator and the Probe have no key.** Each is one press from Home's column. Cargo calls the player from the room (its amber module and the notice), and the Incubator is also reached by its jumps (Grow it, Cross them, Choose a pod).
+- **On the device.** The four keys sit on the four workspace positions at x 64, 88, 112 and 136 mm, y 166 mm, on a 24 mm pitch, with 18 mm reserved for each cap. A fifth key does not fit the row: 15 mm is free left of x 64 (to the pad's 30 mm reservation) and 16 mm right of x 136 (to ←'s), against an 18 mm cap.
+- **Icons, never words.** Each cap carries one icon and no word: the Home icon, the Vivarium icon, the Research icon and the Library icon. The icon sits in a 10×10 mm slot centred on the cap, which fits inside a round cap of 15 mm (the slot's diagonal is 14.1 mm). The ✓ and ← caps carry their marks. The only text on the Station's front is the branding on the top bezel.
+- **The title mark is the key's icon.** The mark before each title, 24×24 at (16, 8), is the icon of the key that leads there, drawn for the screen at 24: `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`. The icons on the caps and in the title are art: studio masters, placed 1:1, never drawn by the build.
+- **Colour.** Each colour stays with its family. Home's key is ochre (`#dba53a`), not amber: it stands beside Cargo's amber lamp, whose screen carries Home's mark, without taking amber, the frame's one colour for what needs you. Ochre is the nearest key colour to ✓'s orange (`#f0661a`); the two are checked apart on the shell.
+
+### Home
+
+<img src="station-layouts/15a-home.png" width="1024" alt="Home: the vivarium panel and the section column">
+
+*15a. Home: the vivarium panel with the residents and the with-you bed, the five section modules down the right, the ring on a resident. 1×, regions only ([SVG](station-layouts/15a-home.svg)).*
+
+| Region | Rectangle | For | Focus target |
+| --- | --- | --- | --- |
+| Vivarium panel (bezel, glass) | 16, 48, 656, 504; glass 24, 56, 640, 488 | The mibis at home, alive: what the player reads first | `vivarium`: a round ring 4 px outside the bezel (12, 44, 664, 512); ▲ from the topmost resident; `✓ Open the vivarium` |
+| Residents | 144×152 adult or elder, 104×112 juvenile, feet in the ground band 24, 300, 640, 228 | Each mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`, to that mibi up close |
+| With-you bed | 448, 472, 192, 56 | The carried set: one to three asleep when docked, the Companion mark when away | each sleeper is a `resident` target, without the lift |
+| Name tag | under the focused resident | Which mibi this is | — |
+| Rest knob | 624, 544, 32, 8 | Put the Station on Idle | `knob`; `✓ Rest` |
+| Cargo module | 688, 48, 320, 88 | The crates in the bay; amber while they wait | `cargo`; `✓ Open the bay` |
+| Pods module | 688, 152, 320, 88 | The rack's six wells, the glints | `pods`; ✓ to Pods' collection |
+| Incubator module | 688, 256, 320, 88 | The dome and its leaves | `incubator`; ✓ to the Incubator |
+| Probe module | 688, 360, 320, 88 | The Probe, its Shield plates, the sitting slot | `probe`; ✓ to the Probe bench |
+| Library module | 688, 464, 320, 88 | The field journal; a glint for a new page | `library`; ✓ to the Library's spread |
+
+Each module is one engraved word at (16, 12), its 12×12 lamp at (296, 12) and its objects in (112, 8, 176, 72); the objects' sizes are set in the detailed spec. The pad: ◀ ▶ cross between the residents and the column; ▲ ▼ walk the column in the order Cargo, Pods, Incubator, Probe, Library, then the rest knob.
+
+### The Vivarium: the whole
+
+<img src="station-layouts/15b-vivarium.png" width="1024" alt="The Vivarium's whole: every mibi at home, the bays along the foot">
+
+*15b. The Vivarium's whole: the window edge to edge, the residents, the with-you bed, twelve bays along the foot, the ring on a resident. 1×, regions only ([SVG](station-layouts/15b-vivarium.svg)).*
+
+| Region | Rectangle | For | Focus target |
+| --- | --- | --- | --- |
+| Living window | 0, 40, 1024, 440, edge to edge, no bezel; ground band 0, 296, 1024, 176 | The whole Vivarium, the same painting Idle shows | — |
+| Residents | at their size, walking inside 16, 296, 992, 176 | Every mibi at home | `resident.<id>`: the feet ring; `✓ Look at Bean`; ▼ to its bay tile |
+| With-you bed | 792, 416, 192, 56 | The carried set asleep, or the Companion mark | sleepers are `resident` targets |
+| Name tag | under the focused resident | Which mibi this is | — |
+| Strip of bays | 16, 488, 992, 64; tiles from 32, 496 | Every bay, at most twelve: each mibi, the free bays, the mibis out with the Companion (the outline glyph) | `tile.<id>`: ◀ ▶ along, ▲ to its resident; ✓ to that mibi up close |
+
+Nothing else is on the stage: no card, no modules, no words in the window but the focused name. The way back reads "Home".
+
+### The Vivarium: one mibi up close
+
+<img src="station-layouts/15c-vivarium-mibi.png" width="1024" alt="One mibi up close: the mibi, its card, the four modules, the bays">
+
+*15c. One mibi up close: the mibi greeted from the window, the name tag that renames it, the card with the heart and two skill notches, the Companion's three places, Portrait, Cross and Wild, the bays. 1×, regions only ([SVG](station-layouts/15c-vivarium-mibi.svg)).*
+
+| Region | Rectangle | For | Focus target |
+| --- | --- | --- | --- |
+| Bezel, glass | 16, 48, 560, 424; 24, 56, 544, 408 | The mibi at home, in the Vivarium's light | — |
+| The mibi | 144, 80, 304, 312 | The one this level is about | `resident`: the feet ring; `✓ Greet Burr` (its species moment) |
+| Name tag | in 184, 416, 224, 32 | Its name | `name`: `✓ Rename Burr`, the namer over the right column (592, 48, 416, 424) |
+| Card | 592, 48, 416, 208 | Who it is: species line, heart, story, code, skill notches, stamp, chapter plates | `species` (`✓ Open the guide`), `plate.<i>` |
+| Heart | 832, 64, 24, 24 | Bonded: drawn; unbonded: nothing | — |
+| Skill notches | 768, 160, 88, 24 | Filled notches only, one to three, right-aligned to x 856; nothing at none; never a figure | — |
+| Companion module | 592, 272, 272, 96 | The carried set: three places, Take and Leave | `door` |
+| Portrait module | 872, 272, 136, 96 | A held sitting: the way into the Sitting | `portrait` |
+| Cross module | 592, 376, 272, 96 | A face a partner: the way into Cross | `cross` |
+| Wild module | 872, 376, 136, 96 | Return it to the wild, arm then confirm | `wild` |
+| Strip of bays | 16, 488, 992, 64 | The other mibis; walking it changes the mibi shown | `tile.<id>` |
+
+The way back reads "Vivarium" and lands on the whole with the ring on this mibi (its tile when it is out with the Companion).
+
+### What carries over, and what changes
+
+| Part | Carries over unchanged | Changes |
+| --- | --- | --- |
+| **The namer** ([The namer](#the-namer), `namer.json`) | The overlay over the right column (592, 48, 416, 424), its keys, its states and its limit | Opened from one mibi up close |
+| **The Sitting** ([Sitting](#sitting), `sitting.json`) | Its three steps, its regions, its gilt frame and its events | Its parent is one mibi up close; from the pose step ← reads the mibi's name ("← Burr"), else "Back" |
+| **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Leave against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed: the Companion was full", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | Greet replaces Spend time; the Bond module is gone; the skill notches join the card |
+| **The top bar** | Its zones, rules and marks; the Companion zone at (760, 8, 120, 24) with three face places | One mibi up close is titled "Vivarium"; its mark is the Vivarium key's icon |
+| **The bottom line** | Its four zones and their rules | The way back widens to 88 (920, 570, 88, 24); the notice ends at 896 (624, 570, 272, 24) |
+| **Home** | The vivarium panel, the residents, the bed, the rest knob, the name tag, the room's ✓ | The column holds five section modules of 88 on a 104 pitch (Cargo, Pods, Incubator, Probe, Library); the panel is a focus target; the Bay module is Cargo; the arrival moves to Cargo |
+| **Idle** | Its composition, its line and its keys | It is the Vivarium's whole without the frame: the same painting |
+| **The vivarium, up close** ([up close](#habitat), `habitat.json`) | Its layout is one mibi up close | Its ← goes to the whole, not Home |
+
+### Not designed yet
+
+- The detailed spec of each screen above, its measured objects and its focus as data.
+
+---
+
 ## Shared frame and rules
 
 ### Grid, margins and spacing
@@ -40,7 +182,7 @@ The frame is the same on every Station screen and speaks one language, the Compa
 
 | Zone | Rectangle | What it says | Sentence or mark |
 | --- | --- | --- | --- |
-| **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the same glyph as the device key that leads there (Home, Research, Library, Habitat), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
+| **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the icon of the device key that leads there (Home, Vivarium, Research, Library), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
 | **What you hold** | 384, 8, 256, 24 | Energy, Data and Essence, centred on x 512: each a 16 px icon, a 4 px gap, then 16 px tabular figures in `bone`, 24 px between counters | Marks with figures; the figures are the frame's exception to "no digits" |
 | **Who is out, and with whom** | 816, 8, 64, 24 | The Companion's glyph, 16×24 at (816, 8), with its 8×8 lamp at (836, 16); the mibi with you as a 24 px face on its `teal` ring at (856, 8), the same face as on the Companion's HUD (an empty ring when no mibi is with you) | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face's ring in `stone` ("dimmed" is `stone`, the same role as the lamp off): the mibi is out with it |
 | **When** | 904, 8, 104, 24 | The world turn: a 16 px sun mark, 4 px, then its figure, right-aligned to x 1008 | A mark with a figure, as on the Companion ("☀ 5"), not "T5" |
@@ -58,8 +200,10 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | Probe bench | Research | Probe |
 | Library spread | Library | Library |
 | Book | Library | Library (the species' name is the page's own 28 px name) |
-| Habitat | Habitat | Habitat |
-| Cross | Habitat (the key it opens from; it takes Habitat's mark, `frame-room-habitat-24`) | Cross |
+| Cargo | Home | Cargo |
+| Vivarium (the whole, one mibi up close) | Vivarium | Vivarium |
+| Cross | Vivarium (the key it opens from; it takes the Vivarium's mark, `frame-room-vivarium-24`) | Cross |
+| Sitting | Vivarium | Sitting |
 
 **The bottom line (38 px): the one action, the context, the notice, and the way back at the right edge.** As on the Companion, the way back has one place: the ← cap and its word right-aligned to x 1008. Rules at x 404 and x 620 (y 571 to 591) separate the action, the context and the notice; the notice and the way back are grouped by their 24 px gap, with no rule.
 
@@ -68,13 +212,13 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `bone` | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
 | **The context** | 408, 570, 208, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
 | **The notice** | 624, 570, 280, 24 | What needs you, right-aligned to x 904, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest today, "dock the Companion for its crates", is 256 px, 272 with its lamp); one notice at a time, the most pressing |
-| **The way back** | 928, 570, 80, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008 | One word ("Home", "Pods"; the longest, "Habitat", 54 px). No ← cap when ← does nothing |
+| **The way back** | 928, 570, 80, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008 | One word ("Home", "Pods"; the longest, "Vivarium", 66 px, which needs the 88 px way back of [The frame on every screen](#the-frame-on-every-screen)). No ← cap when ← does nothing |
 
 **The marks are art.** Every mark in the frame is a studio master placed 1:1 at its size, never drawn by the build and never scaled:
 
 | Mark | Slice id | Size |
 | --- | --- | --- |
-| Room marks (the device keys) | `frame-room-home-24`, `frame-room-research-24`, `frame-room-library-24`, `frame-room-habitat-24` | 24×24 |
+| Room marks (the device keys' icons) | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24` | 24×24 |
 | The Companion's glyph | `frame-companion-solid-16x24` (docked), `frame-companion-outline-16x24` (away) | 16×24 |
 | Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `frame-lamp-12-amber` (the notice's): one painted shape per colour | 8×8, 12×12 |
 | The sun (the world turn) | `frame-sun-16` | 16×16 |
@@ -182,7 +326,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Glint.** The same four-point star, 12×12, everywhere: on the collection ring's band, under the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why. Marks never sit on the picture.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
-- **No words in a living window.** The vivarium, the Habitat window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); Habitat's name tag, and its meet ribbon in the tag's place ([Habitat](#habitat)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
+- **No words in a living window.** The vivarium, the up-close window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); the vivarium's name tag, and its meet ribbon in the tag's place ([the vivarium, up close](#habitat)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
 ### Never upscaled
 
@@ -195,11 +339,11 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 
 The LVGL face draws every screen from one closed set of words, one C module a word under the face's `vocab/`, shared with the Companion and the Caddy where they are common ([lvgl-switch.md §2.2](../proposals/lvgl-switch.md), after [technical architecture §5.1](../proposals/technical-architecture.md)): frame, top bar, bottom line, message plate, focus ring, panel, stamp label, chapter rail, chapter page, list, specimen, living window, ribbon, Companion HUD, map viewport, and **leaves** (a Station word, `vocab/station`: the bud's timer, one leaf a minute, as a grid by pitch on Home's Incubator module and Create, or as two arcs by `leafArc` on the Incubator; props `{ total, full, rows }`). The set is closed: a screen that needs a new word lists it under [Not designed yet](#not-designed-yet). What a screen builds from them, bound in the face's `screens/` table:
 
-- **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules, Habitat's five and the Probe bench's two are the modules; on Habitat a module has no lamp.
-- **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the Habitat window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
+- **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's four modules, the vivarium's five and the Probe bench's two are the modules; on the vivarium, up close a module has no lamp.
+- **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the up-close window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
 - **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then the sleeping mibi or the Companion mark) and the **report card** (a panel holding rows of type and 16 px icons). Each is used on Home alone, so none is a word. A second screen that needs one is not designed yet.
 - **Compositions on Create:** the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; it registers the focus target `roll` at the chosen picture's rectangle) and the **trait line** (Create: the text word, with a changed tag built as Home's name tag is). Both are used on Create alone. The bud's leaves are the word `leaves` above.
-- **Compositions on Habitat and the Probe bench:** the **name tag** (Home's, Habitat's and the Sitting's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (Habitat's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (Habitat: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
+- **Compositions on the vivarium up close and the Probe bench:** the **name tag** (Home's, the vivarium's and the Sitting's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (the vivarium's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (the vivarium, up close: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
 - **Compositions on the Sitting:** the **choice cards** (`choiceCards`: a `list` with `listPitch` of `panel` rects, each holding one 96×96 sprite; used by the cards, a 3×2 grid of at most six, and the chosen pair, a 2×1 grid of exactly two; props `{ items: [{ picture: "<96 id>", chosen: bool }] }`; it refuses more items than its grid holds; its focus targets are `card.<i>`) and the **step tiles** (`stepTiles`: a `list` with `listPitch` of exactly three `panel` rects, each with its word as text and, once done, a 48×48 sprite; props `{ items: [{ state: "current" | "done" | "ahead", word, picture: "<48 id>" | null }] }`, the picture only when done). Both are used on the Sitting alone.
 
 **The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. Their JavaScript oracle is `ui/specs/derive.mjs` from L2.0, and `leafArc`'s from L2.4. Until then the spec tests hold them: `prototypes/ui/tests/specs.test.mjs` refuses any rule not in this list, and the JavaScript layout of today is in `ui/layout.mjs`, `ui/components/list.mjs`, `station/src/cross-layout.mjs` and `station/src/guide.mjs`. A rule not in this list is refused when the spec loads; a screen that needs one lists it under [Not designed yet](#not-designed-yet), never improvises it. `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` ([the leaf arcs](#the-leaf-arcs)).
@@ -211,11 +355,11 @@ Two levels, told apart on every screen that shows either, so the player never lo
 | Level | Screens | Word on screen | Marked by |
 | --- | --- | --- | --- |
 | **The species**: the kind, filled in by every pod and mibi the player has read | The Library: the spread, the Book's face spread and its guide spread | **species**, and the species' name ("Belatz"; the plural is the frame's `species.plural`) | "every", "a typical", or the name alone: "Every look a Belatz can carry", "A typical Belatz, not one of yours", "the species" |
-| **The individual**: one living thing with its own stamp | Pods (a pod), Habitat and Cross (a mibi), Create and the Incubator (the founder and the bud become a mibi) | **mibi**; **pod** before it hatches | "this" or "your": "this pod", "your Loika, adult", "found across your Belatz" |
+| **The individual**: one living thing with its own stamp | Pods (a pod), the vivarium, up close, and Cross (a mibi), Create and the Incubator (the founder and the bud become a mibi) | **mibi**; **pod** before it hatches | "this" or "your": "this pod", "your Loika, adult", "found across your Belatz" |
 
 - Never on screen: specimen, type (the type specimen is the pipeline's word), individual, critter, creature. "Specimen" stays the face's word for the spotlit thing (the `specimen` word of the vocabulary), never a label.
 - The house terms hold: Companion, partner, pod, crate, bay, Shield, beacon, outpost, mibi.
-- Each level has a door to the other. From one pod or mibi to its species: the figure on Pods' overview and the species word on Habitat's card open the Book's guide spread (`✓ Open the guide`, a jump). From the species to one mibi: a name in the guide's "Carried by" line (`✓ Visit Fig`, a jump to Habitat). After either jump, ← goes to the parent of the screen you are on (frame.json `navigation.jumps`).
+- Each level has a door to the other. From one pod or mibi to its species: the figure on Pods' overview and the species word on the vivarium's card open the Book's guide spread (`✓ Open the guide`, a jump). From the species to one mibi: a name in the guide's "Carried by" line (`✓ Visit Fig`, a jump to the vivarium, up close). After either jump, ← goes to the parent of the screen you are on (frame.json `navigation.jumps`).
 
 ---
 
@@ -644,7 +788,7 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 | --- | --- |
 | Pad | A fixed order (station-screens.md, Keys and navigation): ◀ ▶ between the residents (feet ellipse) and the instrument column, and ◀ among the residents to the nearest one on the left; ▲ ▼ walk the column, Bay, Rack, Incubator, Probe, Rest (rounded rectangles). From the room, ▶ lands on the Bay and ◀ on the nearest resident. As data, [Home's focus graph](#homes-focus-as-data) below |
 | ✓ on the room (no focus) | Does what needs you: `✓ Open the bay · 2 crates`, `✓ Look at the new pod`, `✓ Open the incubator`, `✓ Meet Moss`. With nothing needed there is no ✓ cap |
-| ✓ on a resident | `✓ Look at Bean` opens Habitat on Bean. The sleeping mibi on the bed is one too |
+| ✓ on a resident | `✓ Look at Bean` opens the vivarium, up close, on Bean. The sleeping mibi on the bed is one too |
 | ✓ on Bay | `✓ Open the bay · 2 crates` when docked with crates; otherwise no ✓ cap, and the subject says why ("closed while the Companion is away") |
 | ✓ on Rack, Incubator or Probe | Opens Pods, the Incubator or the Probe bench |
 | ✓ on the rest knob | `✓ Rest` starts Idle ([the rest knob](#the-rest-knob) below); the first press on Idle only wakes |
@@ -652,7 +796,7 @@ The card closes on the next press, and that press also does what it does: ✓ fo
 | Any press while the report card shows | Closes the card and does what it does (above): ✓ follows the bottom line, the pad moves the ring, ← only closes it |
 | During arrival | Presses are consumed; focus stays on the room ([Dock and arrival](#dock-and-arrival)) |
 | Dock (the Caddy's key) | Never a Station key and never reaches the face. On Home the crates slide into the bay; elsewhere the screen stays and the crates wait in the bay; from Idle it wakes, docks and lands on Home ([Dock and arrival](#dock-and-arrival)) |
-| ← on a child of Home | Home opens with the ring on what leads back to that child: Pods → Rack, the Incubator → Incubator, the Probe bench → Probe, Habitat → that resident if it is at home (else the room), the Library → the room. A room key or a jump into Home lands on the room |
+| ← on a child of Home | Home opens with the ring on what leads back to that child: Pods → Rack, the Incubator → Incubator, the Probe bench → Probe, the vivarium, up close → that resident if it is at home (else the room), the Library → the room. A room key or a jump into Home lands on the room |
 
 ### Home's focus as data
 
@@ -725,7 +869,7 @@ A state of Home, not a screen of its own: the same layout, with the bay leading.
 
 ### 1. Purpose
 
-Cargo arrives when the Companion docks and the player opens the bay (Station screens, Dock and arrival). **Reads first:** how many crates are in the bay, then the ribbon. Docking alone shows crates and accepts nothing; opening the bay is a press.
+Cargo arrives when the Companion docks into the Caddy; the Station receives it, and the player opens the bay (Station screens, Dock and arrival). **Reads first:** how many crates are in the bay, then the ribbon. Cargo arriving alone shows crates and accepts nothing; opening the bay is a press.
 
 ### 2. Elements
 
@@ -1096,7 +1240,7 @@ Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x60
 
 <img src="station-layouts/05b-incubator-hatch.png" width="1024" alt="Incubator, the hatch">
 
-*05b. The hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then Habitat's meet. 1×, measured.*
+*05b. The hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then the vivarium's meet. 1×, measured.*
 
 <img src="station-layouts/05c-incubator-empty.png" width="1024" alt="Incubator, empty">
 
@@ -1185,7 +1329,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | **Stamp label** | 840, 296, 120, 120 | 176 px from the glass |
 | Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446 |
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
-| Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; the box Habitat's meet keeps ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
+| Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; the box the vivarium's meet keeps ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
 
 **Regions and their words.** States: **empty** (no bud, and an invitation), **growing** and **ready** (the bud's two), **hatch** (from `✓ Open` until the screen changes, input held).
 
@@ -1223,7 +1367,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | --- | --- |
 | ✓ when empty | `✓ Choose a pod`: Pods' collection, the ring on the first identified pod (a jump; ← there reads Home). With the rack empty or no bay free: no ✓ cap, nothing |
 | ✓ while growing | `✓ Grow now · ❀ 7`: the `growNow` event (the leaves fill in 400 ms), then ready |
-| ✓ when ready | `✓ Open`: the `hatch` event, then Habitat's meet. No bay free (a guard): the dimmed cap; ✓ shows a plate, nothing opens |
+| ✓ when ready | `✓ Open`: the `hatch` event, then the vivarium's meet. No bay free (a guard): the dimmed cap; ✓ shows a plate, nothing opens |
 | Pad | Nothing: the screen has one subject, and no ring is drawn |
 | ← | Home, with the ring on Home's Incubator module |
 | During Grow now or the hatch | Presses are consumed |
@@ -1247,9 +1391,9 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | no | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the glass lifts 384 px, eased, whole pixels, out of sight under the rail. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to Habitat |
+| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the glass lifts 384 px, eased, whole pixels, out of sight under the rail. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to the vivarium, up close |
 
-**The hand-off.** The hatch ends on Habitat in its meet ([Habitat's states and events](#habitats-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312, the box the juvenile stood in, with the ring on it, and Open as a jump, so ← on Habitat reads Home (stack navigation, `frame.json` `navigation.jumps`). With `motion: false` the hatch jumps to its end, Habitat's meet.
+**The hand-off.** The hatch ends on the vivarium, up close, in its meet ([the vivarium's states and events](#the-vivariums-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312, the box the juvenile stood in, with the ring on it, and Open as a jump, so ← on the vivarium, up close reads Home (stack navigation, `frame.json` `navigation.jumps`). With `motion: false` the hatch jumps to its end, the vivarium's meet.
 
 ### Placeholders on the Incubator
 
@@ -1267,41 +1411,43 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 
 ---
 
-## Habitat
+<a id="habitat"></a>
+
+## The vivarium, up close
 
 One mibi up close, in the vivarium's light. Wireframes, 1×: [06-habitat](station-layouts/06-habitat.svg), [06b-habitat-meet](station-layouts/06b-habitat-meet.svg), [06c-habitat-child](station-layouts/06c-habitat-child.svg), [06d-habitat-armed](station-layouts/06d-habitat-armed.svg), [06e-habitat-empty](station-layouts/06e-habitat-empty.svg), [06f-habitat-away](station-layouts/06f-habitat-away.svg) and the map [06g-habitat-nav](station-layouts/06g-habitat-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/habitat.json`.
 
-<img src="station-layouts/06-habitat.png" width="1024" alt="Habitat at rest">
+<img src="station-layouts/06-habitat.png" width="1024" alt="The vivarium, up close at rest">
 
-*06. Habitat at rest: an adult founder with every chapter read, the ring on the mibi, `✓ Spend time with Burr`. 1×, measured.*
+*06. The vivarium, up close, at rest: an adult founder with every chapter read, the ring on the mibi, `✓ Spend time with Burr`. 1×, measured.*
 
-<img src="station-layouts/06b-habitat-meet.png" width="1024" alt="Habitat, the meet">
+<img src="station-layouts/06b-habitat-meet.png" width="1024" alt="The vivarium, up close, the meet">
 
 *06b. The meet: the new juvenile from the hatch in the same 304×312 box, its placeholder and waiting lamp, the meet ribbon in the name tag's place, the ring on it, `✓ Name Moss`.*
 
-<img src="station-layouts/06c-habitat-child.png" width="1024" alt="Habitat, a bred child">
+<img src="station-layouts/06c-habitat-child.png" width="1024" alt="The vivarium, up close, a bred child">
 
 *06c. A bred child with two chapters still a surprise: the ring on an unread plate, `✓ Read Coat   ◆ 1`.*
 
-<img src="station-layouts/06d-habitat-armed.png" width="1024" alt="Habitat, the bond armed">
+<img src="station-layouts/06d-habitat-armed.png" width="1024" alt="The vivarium, up close, the bond armed">
 
 *06d. Arm, then confirm: the first ✓ on an offered bond half fills the heart and the action reads `Again: bond with Burr`; a sitting held lights the Portrait module's frame.*
 
-<img src="station-layouts/06e-habitat-empty.png" width="1024" alt="Habitat, empty">
+<img src="station-layouts/06e-habitat-empty.png" width="1024" alt="The vivarium, up close, empty">
 
 *06e. Empty: no mibi yet. The glass, the six free bays and the frame; no ring and no ✓ cap.*
 
-<img src="station-layouts/06f-habitat-away.png" width="1024" alt="Habitat, Companion away, twelve bays">
+<img src="station-layouts/06f-habitat-away.png" width="1024" alt="The vivarium, up close, Companion away, twelve bays">
 
 *06f. The Companion away and twelve bays in compact tiles: the ring on the Companion module, `✓ Take Fig with you`, "goes at the next dock"; an elder with nine partners, two rows of faces.*
 
-<img src="station-layouts/06g-habitat-nav.png" width="1024" alt="Habitat's navigation map">
+<img src="station-layouts/06g-habitat-nav.png" width="1024" alt="the vivarium's navigation map">
 
-*06g. Habitat's map: the ways in, the states, the namer, what each key does, where ✓ and ← lead.*
+*06g. the vivarium's map: the ways in, the states, the namer, what each key does, where ✓ and ← lead.*
 
 ### 1. Purpose
 
-Habitat is where the player spends time with one mibi and decides what it does next: names it, takes it along on the Companion, bonds, crosses, has it sit for its portrait, or returns it to the wild. The player comes away knowing who this mibi is (its name, its species and stage, where it came from, what it remembers, which chapters are still a surprise) and having chosen its next step. It is the individual level ([The two levels](#the-two-levels-species-and-mibi)): one living thing with its own stamp, with a door to its species' guide.
+The vivarium, up close, is where the player spends time with one mibi and decides what it does next: names it, takes it along on the Companion, bonds, crosses, has it sit for its portrait, or returns it to the wild. The player comes away knowing who this mibi is (its name, its species and stage, where it came from, what it remembers, which chapters are still a surprise) and having chosen its next step. It is the individual level ([The two levels](#the-two-levels-species-and-mibi)): one living thing with its own stamp, with a door to its species' guide.
 
 ### 2. Elements
 
@@ -1313,10 +1459,10 @@ Habitat is where the player spends time with one mibi and decides what it does n
 | **Five modules**: Companion, Bond, Portrait, Cross, Wild | The five things a mibi can do next, each one engraved word and one object. All five show on every mibi; the Portrait module is where a sitting is spent |
 | **The strip** of bays | The other mibis and the free bays; walking it changes the mibi shown |
 | **The meet ribbon** (the meet only) | A new mibi, met for the first time |
-| **The namer** (an overlay on Habitat, over the right column; not a screen of its own) | Naming at the meet, and renaming any time (its own spec, `namer.json`) |
+| **The namer** (an overlay on the vivarium, up close, over the right column; not a screen of its own) | Naming at the meet, and renaming any time (its own spec, `namer.json`) |
 | **Bottom line** | What ✓ does with the focus, at its price; the context in words |
 
-**Not on the stage:** prices, counts, "again", "+2 ❀", "with you", "placeholder" or any status word: they are the bottom line's. Nothing on Habitat is amber: an offered bond, a partner to cross with or a mibi with you is not a need.
+**Not on the stage:** prices, counts, "again", "+2 ❀", "with you", "placeholder" or any status word: they are the bottom line's. Nothing on the vivarium, up close is amber: an offered bond, a partner to cross with or a mibi with you is not a need.
 
 ### 3. Placement
 
@@ -1343,7 +1489,7 @@ Habitat is where the player spends time with one mibi and decides what it does n
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Bezel, glass | As Home: `metal` bezel lit `enamel`, shade `bevel`, edge `hairline`; glass edge `frostD`. Until the Habitat master: back `forest`, ground band (y 304 to 464) `clay` with a `sand` top row | The vivarium's warm field, the same as Home's |
+| Bezel, glass | As Home: `metal` bezel lit `enamel`, shade `bevel`, edge `hairline`; glass edge `frostD`. Until the up-close master: back `forest`, ground band (y 304 to 464) `clay` with a `sand` top row | The vivarium's warm field, the same as Home's |
 | Name tag | `panel` fill, `hairline` edge, the name `bone` | The kit's small plate, quiet on the warm field |
 | Meet ribbon | `tealD` fill, `aqua` rim, words `bone` | The one ribbon look: an event, cool on the warm field |
 | Waiting lamp | `frame-lamp-12-sky` | The kit's waiting role, never a word in the window |
@@ -1409,21 +1555,21 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | Moves the ring by [Habitat's focus](#habitats-focus-as-data); on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once) |
+| Pad | Moves the ring by [the vivarium's focus](#the-vivariums-focus-as-data); on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once) |
 | ✓ on the mibi or a tile | `✓ Spend time with Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing and shows nothing like a reward. In the meet, `✓ Name Moss` |
 | ✓ on the name tag | `✓ Rename Burr`: the namer opens over the right column; when it closes, the ring is on the name |
 | ✓ on the species line | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads Library |
 | ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
 | ✓ on Companion | `✓ Take Fig with you`, the context "goes with you now" (docked) or "goes at the next dock" (away). On the mibi with you: no ✓ cap, "already with you" |
 | ✓ ✓ on Bond | Before its first expedition: no ✓ cap, "bonds after an expedition". Offered: the first ✓ arms (the heart half fills, `Again: bond with Burr`), the second bonds (the heart full, its moment plays). Bonded: no ✓ cap, "bonded for good" |
-| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under Habitat ([Sitting](#sitting); ← there reads Habitat). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
-| ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads Habitat and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under the vivarium, up close ([Sitting](#sitting); ← there reads the vivarium, up close). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
+| ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads the vivarium, up close, and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
 | ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
-| ← | Home, however Habitat was opened; Home's ring lands on that mibi when it is at home, else on the room. While the namer is open, ← is the namer's |
-| The Habitat key | On Habitat, the ring back on the mibi; from anywhere, Habitat on the mibi last seen |
+| ← | Home, however the vivarium, up close, was opened; Home's ring lands on that mibi when it is at home, else on the room. While the namer is open, ← is the namer's |
+| The Vivarium key | On the vivarium, up close, the ring back on the mibi; from anywhere, the vivarium, up close, on the mibi last seen |
 
-### Habitat's focus as data
+### The vivarium's focus as data
 
 `habitat.json` `focus` replaces `nav.mjs` `habitatRows` and `habitatMove` with the graph primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): edges by name, selector, `nearestIn` with `ahead`, ordered lists, and `axis`. Targets: `resident`; `name` (the tag, rest only); `species`; `plate.<i>` in group `plate`; `door`, `bond` and `portrait` in group `top`; `cross` and `wild` in group `low`; `tile.<mibi id>` in group `tile` (housed mibis only). The selector `tile.shown` is the shown mibi's tile. The name is first in the card's pad order: ▶ from the mibi reaches it before the species line.
 
@@ -1437,14 +1583,14 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | `low` | the nearest of `low` to the left, else `name`, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
 | `tile` | the previous tile (axis; the first stops) | the next tile (the last stops) | `resident` | none |
 
-"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Habitat key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; from the sitting, ← and its begin land on the Portrait module, which is always a target (read-only, the context saying why, unless a sitting is held and the mibi can sit); after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.1, cross ◀ name, wild ▼ the shown tile).
+"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Vivarium key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; from the sitting, ← and its begin land on the Portrait module, which is always a target (read-only, the context saying why, unless a sitting is held and the mibi can sit); after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read, the bond or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.1, cross ◀ name, wild ▼ the shown tile).
 
-### Habitat's states and events
+### The vivarium's states and events
 
 - **Rest:** one housed mibi shown.
-- **Meet:** the first look at a new mibi. The Incubator's hatch ends in its 180 ms dither on Habitat's meet; Home's ✓ Meet opens it too. The ribbon "Meet Moss" stands in the tag's place, the mibi plays its moment once (no hold), and the ring is on it. The first ✓ is `✓ Name Moss` and opens the namer, filled with the default name; any other key ends the meet with that name kept, and does what it does. A new mibi usually shows its placeholder with the waiting lamp and the context "its painting is on its way" ("waiting for the cloud" while the Caddy is unreachable).
-- **Empty:** no housed mibi: the glass, the strip's free bays and the frame. No card, modules or ring; no ✓ cap; the context "no mibis yet". The empty Habitat does not lead toward growing: Home's ✓ leads to what needs the player.
-- **The painting landing:** a painting that lands while its mibi is on screen waits for the next fresh draw (Habitat opened again, the strip bringing the mibi back, a wake); it never swaps in view. Then the mibi shows its painting and the lamp goes.
+- **Meet:** the first look at a new mibi. The Incubator's hatch ends in its 180 ms dither on the vivarium's meet; Home's ✓ Meet opens it too. The ribbon "Meet Moss" stands in the tag's place, the mibi plays its moment once (no hold), and the ring is on it. The first ✓ is `✓ Name Moss` and opens the namer, filled with the default name; any other key ends the meet with that name kept, and does what it does. A new mibi usually shows its placeholder with the waiting lamp and the context "its painting is on its way" ("waiting for the cloud" while the Caddy is unreachable).
+- **Empty:** no housed mibi: the glass, the strip's free bays and the frame. No card, modules or ring; no ✓ cap; the context "no mibis yet". The empty vivarium up close does not lead toward growing: Home's ✓ leads to what needs the player.
+- **The painting landing:** a painting that lands while its mibi is on screen waits for the next fresh draw (the vivarium, up close, opened again, the strip bringing the mibi back, a wake); it never swaps in view. Then the mibi shows its painting and the lamp goes.
 - **The watch:** the mibi shown in rest or the meet, kept on screen for 60 s, once a mibi a day, is watched: the bench's Data trickle (+1 within its daily cap) and the first of its habits not yet seen. It shows only a message plate, "Fig is seen digging", and the counter's tick; nothing is amber.
 
 | Event | Hold | What plays |
@@ -1459,7 +1605,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 
 With `motion: false` every event jumps to its end.
 
-### Placeholders on Habitat
+### Placeholders in the vivarium
 
 | Master | Pixel size |
 | --- | --- |
@@ -1631,11 +1777,11 @@ Where the build departs from this layout is listed in `bench.json` `buildChanges
 
 ## Sitting
 
-The screen where a held sitting is spent on one mibi: its own screen under Habitat, opened from the Portrait module. Wireframes, 1×: [14-sitting-pose](station-layouts/14-sitting-pose.svg), [14b-sitting-place](station-layouts/14b-sitting-place.svg), [14c-sitting-confirm](station-layouts/14c-sitting-confirm.svg) and the map [14d-sitting-nav](station-layouts/14d-sitting-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/sitting.json`; the rules in `prototypes/station/src/sitting.mjs`.
+The screen where a held sitting is spent on one mibi: its own screen under the vivarium, up close, opened from the Portrait module. Wireframes, 1×: [14-sitting-pose](station-layouts/14-sitting-pose.svg), [14b-sitting-place](station-layouts/14b-sitting-place.svg), [14c-sitting-confirm](station-layouts/14c-sitting-confirm.svg) and the map [14d-sitting-nav](station-layouts/14d-sitting-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/sitting.json`; the rules in `prototypes/station/src/sitting.mjs`.
 
 <img src="station-layouts/14-sitting-pose.png" width="1024" alt="Sitting, the pose">
 
-*14. The pose: the deck at the right, a card for each habit Fig has been seen doing, the ring on one, `✓ Pick this pose`, `← Habitat`.*
+*14. The pose: the deck at the right, a card for each habit Fig has been seen doing, the ring on one, `✓ Pick this pose`, `← Vivarium`.*
 
 <img src="station-layouts/14b-sitting-place.png" width="1024" alt="Sitting, the place">
 
@@ -1647,7 +1793,7 @@ The screen where a held sitting is spent on one mibi: its own screen under Habit
 
 <img src="station-layouts/14d-sitting-nav.png" width="1024" alt="The sitting's navigation map">
 
-*14d. The sitting's map: how it opens, its three steps, where ✓ and ← lead, and what Habitat and Home show after begin.*
+*14d. The sitting's map: how it opens, its three steps, where ✓ and ← lead, and what the vivarium, up close, and Home show after begin.*
 
 ### 1. Purpose
 
@@ -1657,9 +1803,9 @@ The sitting is where the player spends a held sitting on one mibi: picks a pose 
 
 | Element | Why it is here |
 | --- | --- |
-| **The mibi** in Habitat's living window, with its name tag | The one being portrayed, where it stood on Habitat |
+| **The mibi** in the vivarium's living window, with its name tag | The one being portrayed, where it stood on the vivarium, up close |
 | **The backdrop** behind it | The stage of the portrait: plain while the pose is chosen, the place's from the place step |
-| **The deck**, the right column's panel | The choices as one instrument, in the frame Habitat's card and modules and the namer stand in |
+| **The deck**, the right column's panel | The choices as one instrument, in the frame the vivarium's card and modules and the namer stand in |
 | **The heading** | Which choice this step asks for, in one line |
 | **The cards**: one a habit seen, or one a place been | The choice, as pictures |
 | **The gilt frame** round the window (look and confirm) | The portrait to be; it lights when the confirm is armed |
@@ -1672,16 +1818,16 @@ The sitting is where the player spends a held sitting on one mibi: picks a pose 
 
 **Reading order:**
 
-1. **The mibi**, warm, in the window at the left, as on Habitat.
+1. **The mibi**, warm, in the window at the left, as on the vivarium, up close.
 2. **The heading**, then **the cards**, in the deck at the right.
 3. **The steps** along the foot.
 4. On look and confirm, **the gilt frame** round the window first, then the chosen cards.
 
-**At the edges:** the deck is the 416 px column at the right (592 to 1008, y 48 to 472), the same rectangle as Habitat's card and modules and the namer's panel, so the screen change keeps both columns where they stood.
+**At the edges:** the deck is the 416 px column at the right (592 to 1008, y 48 to 472), the same rectangle as the vivarium's card and modules and the namer's panel, so the screen change keeps both columns where they stood.
 
 ### 4. Art direction
 
-- **Room:** the vivarium's light on a plain stage: Habitat's warmth with the instrument reduced to the choices. The deck, the cards, the heading and the steps are the instrument's cool chrome.
+- **Room:** the vivarium's light on a plain stage: the vivarium's warmth with the instrument reduced to the choices. The deck, the cards, the heading and the steps are the instrument's cool chrome.
 - **The mibi** is its standard painting; the portrait is never shown before it is painted.
 - **The pose cards** are the species' pose pictures, `pose-{species}-{habit}-96x96`, one a habit of the species frame, never this mibi acting. **The place cards** are `place-{place}-96x96`.
 - **The backdrops** are `sitting-backdrop-plain-544x408` and one a place, `sitting-backdrop-{meadow,pond,rock,wood,cave}-544x408`.
@@ -1691,23 +1837,23 @@ The sitting is where the player spends a held sitting on one mibi: picks a pose 
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Bezel, glass | As Habitat | The same window |
-| Name tag | `panel` fill, `hairline` edge, the name `bone` | As Habitat |
+| Bezel, glass | As the vivarium, up close | The same window |
+| Name tag | `panel` fill, `hairline` edge, the name `bone` | As the vivarium, up close |
 | Deck | `panel` fill, `hairline` edge, `bevel` top | The namer's panel, the instrument's |
 | Heading | `bone`, 20 px medium | A page heading |
 | Cards | `ground` fill, `hairline` edge, on the deck; the card chosen before `hairline` fill | The focus ring is the only highlight |
-| Steps | Strip `ground`; tile `panel`, the current `hairline`; words `bone`, the steps ahead `mist` | As Habitat's strip |
+| Steps | Strip `ground`; tile `panel`, the current `hairline`; words `bone`, the steps ahead `mist` | As the vivarium's strip |
 
 ### 5. Composition
 
-The left half is Habitat's: the window, the mibi and its tag at the same places, so the screen change keeps the mibi where it stood. At the right the deck holds the heading and the cards; along the foot, in Habitat's strip's place, the three steps. Every rectangle is on the 8 px grid.
+The left half is the vivarium's: the window, the mibi and its tag at the same places, so the screen change keeps the mibi where it stood. At the right the deck holds the heading and the cards; along the foot, in the vivarium's strip's place, the three steps. Every rectangle is on the 8 px grid.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Bezel | 16, 48, 560, 424 | As Habitat; the gilt frame covers it on look and confirm |
+| Bezel | 16, 48, 560, 424 | As the vivarium, up close; the gilt frame covers it on look and confirm |
 | **Glass (backdrop)** | 24, 56, 544, 408 | The plain backdrop on the pose step; the focused place's on the place step; the chosen place's on look and confirm, seen through the gilt frame's opening |
-| **The mibi (focal)** | 144, 80, 304, 312 | As Habitat: axis x 296, feet y 392 |
-| Name tag | in 184, 416, 224, 32 | As Habitat; not a target here |
+| **The mibi (focal)** | 144, 80, 304, 312 | As the vivarium, up close: axis x 296, feet y 392 |
+| Name tag | in 184, 416, 224, 32 | As the vivarium, up close; not a target here |
 | Gilt frame | 16, 48, 560, 424 | Look and confirm only. The moulding is 16 px on every side; its opening is 32, 64, 528, 392 (local 16, 16), 8 px inside the glass on every side, the mibi and its tag inside it. Bead local 0 to 3, leaf face 3 to 11, shade lip 11 to 14, sight edge 14 to 16 |
 | **Deck** | 592, 48, 416, 424 | `panel`, every state; 16 px inside it on every side |
 | Heading | 608, 64, 384, 32 | 20 px medium, its line from y 66 |
@@ -1722,7 +1868,7 @@ The left half is Habitat's: the window, the mibi and its tag at the same places,
 
 | Region (`sitting.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
-| `stage` | 0, 40, 1024, 522 | frame, part stage (Habitat's) | | — |
+| `stage` | 0, 40, 1024, 522 | frame, part stage (the vivarium's) | | — |
 | `bezel` | 16, 48, 560, 424 | living window, part frame | | — |
 | `glass` | 24, 56, 544, 408 | living window, part inside | | plain, a place's backdrop; the backdrop dither |
 | `resident` | 144, 80, 304, 312 | specimen (focal) | | the standard painting |
@@ -1741,19 +1887,19 @@ The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Opens | From Habitat's Portrait module, `✓ Portray Fig`, only while a sitting is held and Fig can sit (a habit seen and a place been). Always the pose step, the ring on `card.0`, no choice made |
+| Opens | From the vivarium's Portrait module, `✓ Portray Fig`, only while a sitting is held and Fig can sit (a habit seen and a place been). Always the pose step, the ring on `card.0`, no choice made |
 | Pad | Pose and place: the ring to the nearest card that way; the ends stop. Look and confirm: nothing |
 | ✓ on a pose | `✓ Pick this pose`, the context the habit ("calm"): the place step, the ring on the place chosen before in this visit, else `card.0` |
 | ✓ on a place | `✓ Pick this place`, the context the place ("the rock field"): look and confirm |
 | ✓ ✓ on look and confirm | `✓ Portray Fig`, "one sitting each, ever": the first ✓ arms (the gilt frame lights, `Again: portray Fig`); the second begins the sitting |
-| ← | A step back, the choice made there kept and ringed: look and confirm to the place (`← Place`), the place to the pose (`← Pose`); from the pose, Habitat with the ring on the Portrait module (`← Habitat`). Nothing is spent |
+| ← | A step back, the choice made there kept and ringed: look and confirm to the place (`← Place`), the place to the pose (`← Pose`); from the pose, the vivarium, up close, with the ring on the Portrait module (`← Vivarium`). Nothing is spent |
 | Any key but ✓ | Clears the arm |
 | A room key | Leaves the screen; nothing is spent |
 | During begin | Presses are consumed (480 ms) |
 
 **A visit.** Inside the screen, ← keeps every choice made. Leaving the screen, by ← from the pose step or by a room key, drops every choice; coming back starts on the pose step with the ring on `card.0`.
 
-**The ← cap.** The cap's x is 1008 − the word's width − 20 (16 for the cap, 4 to the word): 934 for Habitat (54 px), 950 for Pose (38 px), 946 for Place (42 px).
+**The ← cap.** The cap's x is 1008 − the word's width − 20 (16 for the cap, 4 to the word): 934 for Vivarium (54 px), 950 for Pose (38 px), 946 for Place (42 px).
 
 ### The sitting's focus as data
 
@@ -1765,13 +1911,13 @@ The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 
 | --- | --- | --- |
 | `backdrop`: `{ kind: dither, target: glass, ms: 200, levels: 16 }` | no | The place step: the backdrop cross-dithers to the focused place's. The place backdrops load on entering the place step and are dropped on leaving the screen |
 | `step` | no | A step forward or back: the heading, the cards, the steps' tiles and the bottom line change at once; the gilt frame shows on look and confirm |
-| `begin`, the host timeline | 480 ms, presses consumed | At 0, `{ kind: dither, target: gilt, from: sitting-gilt-lit-560x424, to: null, ms: 300, levels: 16 }`: the lit gilt frame dithers out (the frame leaves for the bay). At 300, the standard 180 ms screen transition (`{ kind: dither, levels: 16 }`) to Habitat, the ring on `portrait`, the module in its painting state, and the message plate |
+| `begin`, the host timeline | 480 ms, presses consumed | At 0, `{ kind: dither, target: gilt, from: sitting-gilt-lit-560x424, to: null, ms: 300, levels: 16 }`: the lit gilt frame dithers out (the frame leaves for the bay). At 300, the standard 180 ms screen transition (`{ kind: dither, levels: 16 }`) to the vivarium, up close, the ring on `portrait`, the module in its painting state, and the message plate |
 
 With `motion: false` every event jumps to its end.
 
-### After begin: Habitat and Home
+### After begin: the vivarium, up close, and Home
 
-- **The message plate on Habitat:** "Fig's portrait is on its way", one line, 16 + 20 = 36 tall, its bottom at y 550. When a welcome sitting was waiting for the slot, begin gives it at once (`beginSitting`), and the same plate takes a second line, "Another sitting is yours": 16 + 40 = 56 tall, (399, 494, 226, 56) for Fig: the longer line, 193 px, plus 16 each side, rounded up to an even width so it centres on x 512. It covers the strip, not the mibi's box or the Portrait module, so it keeps its bottom edge at y 550.
+- **The message plate on the vivarium, up close:** "Fig's portrait is on its way", one line, 16 + 20 = 36 tall, its bottom at y 550. When a welcome sitting was waiting for the slot, begin gives it at once (`beginSitting`), and the same plate takes a second line, "Another sitting is yours": 16 + 40 = 56 tall, (399, 494, 226, 56) for Fig: the longer line, 193 px, plus 16 each side, rounded up to an even width so it centres on x 512. It covers the strip, not the mibi's box or the Portrait module, so it keeps its bottom edge at y 550.
 - **Home's sitting slot** (the Probe module, 952, 464, 40, 80) shows empty after begin, or held when the welcome sitting was given.
 - **Home's Bay** holds the sitting's crate from begin until it is opened:
 
@@ -1964,7 +2110,7 @@ The build stub has ← only; the rest arrives with M5.
 | Input | What happens, and how it shows |
 | --- | --- |
 | Pad | Spatial: face, places, frame plate, stamp, tree, wish. ▶ from the right-most target turns to the guide spread (300 ms) |
-| ✓ on the face | `✓ Visit Fig` opens Habitat only when `faceOf(st, id)` is a living mibi (a portrait whose mibi is not released). The type face and a released portrait have no ✓ cap |
+| ✓ on the face | `✓ Visit Fig` opens the vivarium, up close, only when `faceOf(st, id)` is a living mibi (a portrait whose mibi is not released). The type face and a released portrait have no ✓ cap |
 | ✓ on the wish | `✓ Find a pair` (M4) |
 | ✓ on "more?", the stamp or the tree | Read-only: no ✓ cap |
 | ← | The spread: the way back reads "← Library" |
@@ -2060,13 +2206,13 @@ The guide shows the species whole: every chapter at once, every trait with how m
 
 | Input | What happens, and how it shows |
 | --- | --- |
-| Arrive | The ring on the first trait cell of the first chapter that is not sealed; the same after a jump from Pods or Habitat |
+| Arrive | The ring on the first trait cell of the first chapter that is not sealed; the same after a jump from Pods or the vivarium, up close |
 | ◀ ▶ in the grid | The same row in the next column that is not sealed, clamped to its last row. ◀ from the first column turns back to the face spread (300 ms) |
 | ▲ ▼ in the grid | Along the column; ▲ from the first row to the detail band's first plate |
 | ◀ ▶ in the band | Along the plates; ◀ from the first plate to the last carrier name; ▼ back to the open cell |
 | ✓ on a cell or "more?" | Read-only: no ✓ cap. The context: "Colour, more to find" or "Colour, every look found" |
 | ✓ on a plate | `✓ Add to the wish` (`wishPin`, when `wishPinBlock` is empty), or `✓ Take it off the wish` (`wishUnpin`) when that look is pinned. The context: "Colour, jade" |
-| ✓ on a carrier name | `✓ Visit Fig`, the context "Fig carries this look": a jump to Habitat on that mibi, where ← reads Home |
+| ✓ on a carrier name | `✓ Visit Fig`, the context "Fig carries this look": a jump to the vivarium, up close, on that mibi, where ← reads Home |
 | The notice | "a pod carries your wish" when `wishCarriers(st, id).pods` is not empty; otherwise none |
 | ← | "← Library", from either spread |
 | The ring | `rust` on the paper (frame.json `focus.ring.onPaper`), the same geometry, on the Library, the face spread and the guide spread |
@@ -2097,7 +2243,7 @@ Placed 1:1 at these sizes, never scaled or recoloured.
 | `guide-pip-unseen-6x6` | 6×6 | A dotted hollow pip in `clay` |
 | `wish-mark-12` | 12×12 | A pinned look, on its cell and its plate |
 | `wish-mark-24` | 24×24 | The pinned wish panel's corner, on the face spread |
-| `mark-guide-16` | 16×16 | In `bone`, for chrome: after the species word on Habitat's card |
+| `mark-guide-16` | 16×16 | In `bone`, for chrome: after the species word on the vivarium's card |
 | `trait-<SNN>-<trait>-<look>-56x56`, `…-40x40` | 56×56, 40×40 | The look plates, rendered at their size |
 | `rail-emblem-<chapter>-sealed-24x24` | 24×24 | Existing; on the sealed panel |
 
@@ -2176,10 +2322,10 @@ The instrument's cool, even light, on the bench's ground. The wires are crisp 2 
 | ▲ | The previous state; from the first chapter, the overview |
 | ◀ ▶ | The previous or next partner (`crossPartners`). The wires re-route at once and the state is kept. The ring stays on the partner's head |
 | ✓ | `✓ Cross them   ⚡ 2 ❀ 4`, exactly as the line says; a jump to the Incubator. A refused pair has no ✓ cap, and the reason is the notice |
-| ← | Habitat |
+| ← | Vivarium |
 | A room key | Drops the unpaid choices; coming back opens fresh on the overview |
 
-**The bottom line.** It reads `✓ Cross them · price` | "Wisp × Rook · Belatz" on the overview, or "Coat · Wisp × Rook" on a chapter | the notice | `← Habitat`.
+**The bottom line.** It reads `✓ Cross them · price` | "Wisp × Rook · Belatz" on the overview, or "Coat · Wisp × Rook" on a chapter | the notice | `← Vivarium`.
 - The notice is the first missing read in ring order, "read Rook's Shape" (or "read both parents' Shape"). Leading with the missing read draws the player back to research.
 - With nothing missing, the notice is the kinship word if the kinship is above 0, and otherwise nothing.
 - The kinship word is always shown on the pill under the child.
@@ -2208,7 +2354,7 @@ Rendered at their size, not masters: the parents' portraits and the ghost (48×4
 
 ## The namer
 
-The namer gives one mibi a name with the Station's six keys. It opens at the meet after a hatch, filled with the mibi's default name, and from Habitat on the mibi shown, any time. It is an overlay: a panel over Habitat's right column, so the mibi being named stays in view in Habitat's living window. Naming happens on the Station only; the Companion shows the name it was given at the last dock. The rules for names (which characters, how long, which are refused) belong to the game's rules; this section lays out the screen that follows them. The numbers live in `prototypes/ui/specs/station/namer.json`. Wireframes, 1×: [12](station-layouts/12-namer-open.svg), [12b](station-layouts/12b-namer-typing.svg), [12c](station-layouts/12c-namer-accents.svg), [12d](station-layouts/12d-namer-refused.svg), [12e](station-layouts/12e-namer-nav.svg), each with its PNG.
+The namer gives one mibi a name with the Station's six keys. It opens at the meet after a hatch, filled with the mibi's default name, and from the vivarium, up close, on the mibi shown, any time. It is an overlay: a panel over the vivarium's right column, so the mibi being named stays in view in the vivarium's living window. Naming happens on the Station only; the Companion shows the name it was given at the last dock. The rules for names (which characters, how long, which are refused) belong to the game's rules; this section lays out the screen that follows them. The numbers live in `prototypes/ui/specs/station/namer.json`. Wireframes, 1×: [12](station-layouts/12-namer-open.svg), [12b](station-layouts/12b-namer-typing.svg), [12c](station-layouts/12c-namer-accents.svg), [12d](station-layouts/12d-namer-refused.svg), [12e](station-layouts/12e-namer-nav.svg), each with its PNG.
 
 <img src="station-layouts/12-namer-open.png" width="1024" alt="The namer, opened at the meet">
 
@@ -2238,7 +2384,7 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 | Element | Why it is here |
 | --- | --- |
-| **The mibi**, in Habitat's living window, uncovered | The subject: the player names what they see |
+| **The mibi**, in the vivarium's living window, uncovered | The subject: the player names what they see |
 | **The field**: the name at 28 px, the name role, with its caret, or selected | The name as it will read, at the name role's size (28 px) |
 | **The say line**, one line under the field | Why the name cannot be saved yet, or why a press was refused, in words |
 | **The keys**: 28 character keys in seven columns, then Aa, space and the page key | Every allowed character, reached with the pad and typed with ✓ |
@@ -2251,19 +2397,19 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 **Reading order:**
 
-1. **The mibi**, warm, in the window at the left, unchanged from Habitat.
+1. **The mibi**, warm, in the window at the left, unchanged from the vivarium, up close.
 2. **The name** in the field, the brightest type in the panel.
 3. **The say line**, when it has something to say.
 4. **The key under the ring.**
 5. **Done**, at the bottom right where reading ends.
 
-**At the edges:** the panel at the right edge, over Habitat's card and modules, from the top of the stage to the foot of Habitat's right column. Habitat's strip stays visible under it and takes no key.
+**At the edges:** the panel at the right edge, over the vivarium's card and modules, from the top of the stage to the foot of the vivarium's right column. the vivarium's strip stays visible under it and takes no key.
 
-**Why an overlay and not a state of Habitat.** The namer opens from two places on Habitat (the meet and the mibi's name) and takes the whole pad while it is open: its 33 keys have their own focus graph, which never mixes with Habitat's. As an overlay it keeps Habitat beneath exactly as it was, the mibi in view and its living window playing, and it closes back to the same Habitat. It needs only one thing of Habitat's layout: the living window left of x 584 (What Habitat gives the namer, below).
+**Why an overlay and not a state of the vivarium, up close.** The namer opens from two places on the vivarium, up close (the meet and the mibi's name) and takes the whole pad while it is open: its 33 keys have their own focus graph, which never mixes with the vivarium's. As an overlay it keeps the vivarium, up close beneath exactly as it was, the mibi in view and its living window playing, and it closes back to the same the vivarium, up close. It needs only one thing of the vivarium's layout: the living window left of x 584 (What the vivarium, up close gives the namer, below).
 
 ### 4. Art direction
 
-- **Room:** Habitat's vivarium stays the warm, living thing on screen; the namer is the overview's cool instrument hardware over its card, the report card's look.
+- **Room:** the vivarium's vivarium stays the warm, living thing on screen; the namer is the overview's cool instrument hardware over its card, the report card's look.
 - **One warm signal:** the focus ring. The selection is cool (`tealD`), the caret `bone`, refusals `amber` and only for a moment.
 - **Never childish:** small square keys in a calm grid, letters in Inter 16, no bounce, no colours per letter.
 - **Calm:** nothing moves but the ring and the lift of the focused key; the caret is steady.
@@ -2285,11 +2431,11 @@ The namer is for giving a mibi its own name, or a new one, while looking at it. 
 
 ### 5. Composition
 
-The panel stands over Habitat's right column, 16 px right of the window's bezel (x 576). Inside it one column is centred, 44 px from each side, so the column's x sits 4 px off the 8 px grid (every y, width and height stays on it): the field, the say line, the keys in seven columns on a 48 px pitch, the bottom row (Aa, space, the page key, each as wide as the columns it stands under), then Suggest and Done.
+The panel stands over the vivarium's right column, 16 px right of the window's bezel (x 576). Inside it one column is centred, 44 px from each side, so the column's x sits 4 px off the 8 px grid (every y, width and height stays on it): the field, the say line, the keys in seven columns on a 48 px pitch, the bottom row (Aa, space, the page key, each as wide as the columns it stands under), then Suggest and Done.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Panel | 592, 48, 416, 424 | Covers Habitat's right column, the card and the modules (x 592 to 1008, y 48 to 472); 16 px from the bezel's edge at x 576 |
+| Panel | 592, 48, 416, 424 | Covers the vivarium's right column, the card and the modules (x 592 to 1008, y 48 to 472); 16 px from the bezel's edge at x 576 |
 | **Field** | 636, 64, 328, 48 | The name at 28 px semibold from x 652, its line box 70 to 106; holds 296 px: the widest name, 290, ends at x 942 and the caret at 946 |
 | Selection | x 648, y 70, the name's width + 8, 36 tall | While the name is as opened, or a suggestion |
 | Caret | 2×28, 2 px after the name, y 74 to 102 | While typing or empty |
@@ -2328,7 +2474,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 | ✓ on Aa | The next letter in the other case; the key shows on; after one letter the grid returns. At the start of a name the grid shows capitals and Aa shows off and does nothing: no ✓ cap, and the context says "a name starts with a capital" |
 | ✓ on the page key | Turns the page, letters or accents; the ring stays on the page key |
 | ✓ on Suggest | The next name from the pool, selected; each press the next, after the last the first. The pool is twelve names in the order births draw them (the curated names, then the compounds), skipping names already used, held at home, refused or over the limit. Nothing is taken from the pool until a name is saved. With no name to give, Suggest has no ✓ cap and the context says "no names left to suggest" |
-| ✓ on Done | Saves the name at once and closes the namer; the new name flashes where it stands on Habitat (240 ms). The mibi's own name exactly as it is (the same characters in the same case) is Keep: it writes and logs nothing. A change of case only is a rename, with its log line ("Renamed Dot to DOT"). While the name cannot be saved: the dimmed cap; a press turns the say line's reason amber, and nothing closes |
+| ✓ on Done | Saves the name at once and closes the namer; the new name flashes where it stands on the vivarium, up close (240 ms). The mibi's own name exactly as it is (the same characters in the same case) is Keep: it writes and logs nothing. A change of case only is a rename, with its log line ("Renamed Dot to DOT"). While the name cannot be saved: the dimmed cap; a press turns the say line's reason amber, and nothing closes |
 | ← | A selection: clears the field. Typed characters: deletes the last one. An empty field: closes the namer, writing nothing |
 | A room key | Closes the namer, writing nothing, and opens the room's top |
 | Idle | The namer closes, writing nothing, before the living view starts |
@@ -2343,7 +2489,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 | --- | --- | --- | --- | --- |
 | Selected (as opened, or a suggestion) | The name on the `tealD` selection, no caret | Replaces the name | Clears it: the field is empty | `← Clear` |
 | Typed | The caret after the last character | Appends | Deletes the last character | `← Delete` |
-| Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← Habitat` |
+| Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← Vivarium` |
 
 **Refusals, in words.** Nothing is refused silently and nothing is refused by a message plate (a plate would cover the mibi). While the name in the field cannot be saved, the say line gives the reason in `mist` and Done's cap dims. A refused press (a key or Done) turns the reason `amber` for 4 s, the message plate's time; then it returns.
 
@@ -2405,17 +2551,17 @@ Measured on the face's own fonts (`prototypes/face/src/fonts`, LVGL's sum: each 
 
 The face's Inter 16, 20 and 28 hold every allowed character in both cases, with the space, the hyphen and ’ (`specs.test.mjs` checks the baked ranges). For comparison, ten-letter names a player might choose: "Strawberry" 83, "Momo-Mumbo" 115 at 16 px; 153 and 206 at 28 px.
 
-**NAME_MAX stays 10.** The rule: every box that sets a mibi's name holds ten of the widest character at its size, 160 at 16 px, 200 at 20 px, 296 at 28 px, and a name is never clipped and never ends in "…". Today these hold it: Home's name tag (176 px for the widest, inside the glass's 624), Habitat's name tag (at most 224 at 20 px, 200 + 2 × 12), Cross's parent names (200 at 20 px), the `plate-name` series (its widest picture, 224, is 200 + 2 × 12), the meet's ribbon ("Meet" and the name, 254 at 20 px, in 304), the hatch ribbon ("{Name}, a young {Species}", 360 at 20 px, in 400), the namer's field, and the Companion's partner screen (180 in its 200 at 3×). The ones that do not are listed under **Not designed yet**.
+**NAME_MAX stays 10.** The rule: every box that sets a mibi's name holds ten of the widest character at its size, 160 at 16 px, 200 at 20 px, 296 at 28 px, and a name is never clipped and never ends in "…". Today these hold it: Home's name tag (176 px for the widest, inside the glass's 624), the vivarium's name tag (at most 224 at 20 px, 200 + 2 × 12), Cross's parent names (200 at 20 px), the `plate-name` series (its widest picture, 224, is 200 + 2 × 12), the meet's ribbon ("Meet" and the name, 254 at 20 px, in 304), the hatch ribbon ("{Name}, a young {Species}", 360 at 20 px, in 400), the namer's field, and the Companion's partner screen (180 in its 200 at 3×). The ones that do not are listed under **Not designed yet**.
 
-### What Habitat gives the namer
+### What the vivarium up close gives the namer
 
-Habitat's own spec carries these; the namer depends on them.
+the vivarium's own spec carries these; the namer depends on them.
 
 - **The living window left of x 584.** The namer covers x 592 to 1008, y 48 to 472.
 - **The meet.** The ring lands on the new mibi (the Incubator's hand-off), and the first ✓ is `✓ Name Fig`, opening the namer. Any other key ends the meet with the default name kept, and does what it does. When the namer closes, the meet is over, and the closing props' `focus.set` puts the ring on the mibi.
-- **Rename.** Habitat's name tag is the focus target `name`, ring round, in Habitat's pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props' `focus.set` puts the ring back on that target.
+- **Rename.** the vivarium's name tag is the focus target `name`, ring round, in the vivarium's pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props' `focus.set` puts the ring back on that target.
 - **The `named` flash.** The regions that show the name (its name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
-- **The name boxes.** Habitat's name boxes follow the name label's rule above.
+- **The name boxes.** the vivarium's name boxes follow the name label's rule above.
 
 ---
 
@@ -2467,7 +2613,7 @@ Cool and quiet, the instrument at rest. The stage is the frame's stage part with
 | The one action | Nothing: no ✓ cap, no verb, no price |
 | The context | Nothing |
 | The notice | The frame's notice, as on every screen, `amber` with its lamp |
-| The way back | The ← cap and the parent's word: Home on the Incubator, the Probe bench, the Library and Habitat; Library on the Book; Habitat on Cross; the pod's label on Create. None on Home |
+| The way back | The ← cap and the parent's word: Home on the Incubator, the Probe bench, the Library and the Vivarium; Library on the Book; Vivarium on Cross; the pod's label on Create. None on Home |
 
 **Idle not built yet** has no frame: no top bar, no bottom line, no message plate, no ring. The frame going away is what tells the player Idle is on. The `ground` fills the screen and the line sits in the same rectangle as on a framed screen.
 
