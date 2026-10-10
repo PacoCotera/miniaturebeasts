@@ -182,11 +182,11 @@ static void cargo_objects(int dy) {
   for (int i = 0; i < n; i++) {
     int r[4]; hrect(v_fmt("regions.cargo.crateRects.%d", i), r); int y = r[1] + dy; shown[i] = 1;
     if (arriving) { int e = t.elapsed - i * stagger; if (e < 0) shown[i] = 0; else { int p = e >= each ? 1000 : e * 1000 / each; y = r[1] + dy + (from * (1000 - ease_out(p)) - (from < 0 ? 500 : -500)) / 1000; if (p == 1000) y = r[1] + dy; } }
-    ys[i] = y; if (shown[i] && has(v_pstr("regions.cargo.crate"))) drawn++;
+    ys[i] = y; if (has(v_pstr("regions.cargo.crate"))) drawn++;
   }
-  if (drawn) {
+  if (drawn) {   /* a crate that has not slid in yet is its node with a window of no size, so the clip's children and the nodes after it never change as the crates arrive */
     prim_node(v_id("cargo.clip"), FN_CLIP, bay[0], bay[1], bay[2], bay[3], 0, drawn, 0);
-    for (int i = 0; i < n; i++) if (shown[i]) { int r[4]; hrect(v_fmt("regions.cargo.crateRects.%d", i), r); v_sprite(v_fmt("cargo.crate.%d", i), v_pstr("regions.cargo.crate"), r[0], ys[i], r[2], r[3]); }
+    for (int i = 0; i < n; i++) { int r[4]; hrect(v_fmt("regions.cargo.crateRects.%d", i), r); if (shown[i]) v_sprite(v_fmt("cargo.crate.%d", i), v_pstr("regions.cargo.crate"), r[0], ys[i], r[2], r[3]); else v_sprite_hidden(v_fmt("cargo.crate.%d", i), v_pstr("regions.cargo.crate"), r[0], ys[i]); }
   }
   if (strcmp(state, "waiting") == 0) put("cargo.waiting", v_pstr("regions.cargo.waiting"), "regions.cargo.waiting.rect", dy);
 }
@@ -203,7 +203,7 @@ static void pods_objects(int dy) {
 static void incubator_objects(int dy) {
   v_name("incubator");
   put("incubator.chamber", v_pstr("regions.incubator.chamber"), "regions.incubator.chamberRect", dy);
-  word_leaves("regions.incubator.leaves", v_pstr("regions.incubator.leaves.emptyPicture"), v_pstr("regions.incubator.leaves.fullPicture"), v_pint("regions.incubator.leaves.total", 0), v_pint("regions.incubator.leaves.rows", 0), v_pint("regions.incubator.leaves.full", 0), dy);
+  word_leaves(H, "regions.incubator.leaves", v_pstr("regions.incubator.leaves.emptyPicture"), v_pstr("regions.incubator.leaves.fullPicture"), v_pint("regions.incubator.leaves.total", 0), v_pint("regions.incubator.leaves.rows", 0), v_pint("regions.incubator.leaves.full", 0), dy, 0);
 }
 static void probe_objects(int dy) {
   v_name("probe");

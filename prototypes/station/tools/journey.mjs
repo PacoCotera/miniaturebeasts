@@ -208,11 +208,11 @@ await press("confirm", 2200);
 s = await st(); const pl = s.tray.find((p) => p.id === loika.id);
 expect(pl.idd === 1 && s.e === e0 - 1, "identified for 1 Energy");
 await frameShot("page-identified");
-// Identify leaves the Library where it was; ✓ on an identified pod opens Create, whatever has been read: the line reads "Shape a founder", dimmed by what stops it; Create is not built, and ← names the pod
+// Identify leaves the Library where it was; ✓ on an identified pod opens Create, whatever has been read: the line reads "Shape a founder", dimmed by what stops it; Create is built (nothing read: the founder frosted), and ← names the pod
 { l = await line(); expect(l.ok === "Shape a founder", "✓ on an identified pod names Create: " + JSON.stringify(l)); await press("confirm", 400);
   const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, create: window.__st.UI.create?.podId }));
   expect(at.screen === "create" && at.create === loika.id, "✓ on an identified pod opens Create on it: " + JSON.stringify(at));
-  { const p = await props(); expect(p.state === "notBuilt" && p.frame.line.back === "Loika", "Create's way back names the pod: " + JSON.stringify(p.frame.line)); }
+  { const p = await props(); expect(p.state === "nothingRead" && p.frame.line.back === "Loika" && p.frame.line.ok === "Grow it", "Create opens on nothing read and its way back names the pod: " + JSON.stringify([p.state, p.frame.line])); }
   await press("back", 400); const to = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
   expect(to.screen === "pods" && to.view === "overview", "← from Create is the pod's overview: " + JSON.stringify(to));
   await page.evaluate((id) => window.__st.podsGo(id, "pod"), loika.id); await page.waitForTimeout(300); }
@@ -350,32 +350,51 @@ await page.evaluate((id) => { window.__st.podsGo(id, "hatch"); }, tuikis.id); aw
 const s0 = s.s;
 await press("confirm", 200); await press("confirm", 400);
 s = await st(); expect(s.s === s0 + 1 && !s.tray.some((p) => p.id === tuikis.id) && s.returned.at(-1).id === tuikis.id, "returned for +1 Essence");
-// M2. Create: ✓ on the read Loika opens Create (a screen the face does not draw yet: it shows that it is not built), whose intents shape eye rings (+1 Data); Grow: a bud of twenty-one minutes (this world grew Dot already)
+// R1. Create (slot R, journey-create.json): ✓ on the read Loika opens Create on the face; ◀ ▶ walk the read traits, ▲ ▼ roll a look (+1 Data), the line reads the price and the leaves; a room key drops the unpaid choices; ✓ Grows: the stamp prints, the
+// code appears, the pod travels, input held 1080 ms, then the Incubator (a jump: ← there reads Home)
 await press("research", 300);
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id); await page.waitForTimeout(400);
 l = await line(); expect(l.ok === "Shape a founder", "a read pod offers Create: " + JSON.stringify(l));
-await press("confirm", 400);
+const cui = () => page.evaluate(() => { const c = window.__st.UI.create; return c ? { f: c.f, choices: Object.keys(c.choices), grown: !!c.grown } : null; });
+const hpressC = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(); cur.push({ key: k, said: m, screen: u.screen, create: await cui(), ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null }); return u; };
+stepOf("create-walk");
+await hpressC("confirm", 500);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "create", "on Create");
-{ const p = await props(), c = await page.evaluate(() => window.__st.check()); expect(p.state === "notBuilt" && p.frame.line.back === "Loika", "Create is not built: its way back names the pod: " + JSON.stringify([p.state, p.frame.line])); expect(c.log.type.some((t) => t.text === "this screen is not built yet"), "Create says so"); await frameShot("page-create-notbuilt", true); }
+{ const p = await props(), c = await page.evaluate(() => window.__st.check()); expect(p.state === "shape" && p.frame.line.back === "Loika" && p.focus.cur === "roll" && JSON.stringify(p.focus.targets) === JSON.stringify([{ id: "roll", group: "roll" }]), "Create is built: the ring on the roll, its way back names the pod: " + JSON.stringify([p.state, p.focus, p.frame.line]));
+  expect(!c.log.type.some((t) => /not built/.test(t.text)) && c.log.regions.some((r) => r.id === "roll") && c.log.regions.some((r) => r.id === "founder"), "Create draws its roll and its founder"); await frameShot("page-create", true); }
 const eyeIndex = await page.evaluate((id) => { const p = window.__st.podById(id), fr = window.__st.frameOf(p.species); return fr.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits).findIndex((t) => t.id === "eye-rings"); }, loika.id);
-for (let i = 0; i < eyeIndex; i++) await intent({ screen: "create", target: "", verb: "step:right" }, 40);
-await intent({ screen: "create", target: "", verb: "step:down" }, 100);
-{ const cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost)); }
+for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
+expect((await cui()).f === eyeIndex, "◀ ▶ walk the read traits: the ring is on Eye rings");
+{ const p = await props(), L = p.frame.line; expect(L.ok === "Grow it" && L.price === "⚡ 2 ❀ 4" && p.regions.leaves.total === 20 && p.regions.roll.chosen === 0, "as the pod is: Grow it at ⚡ 2 ❀ 4, twenty leaves: " + JSON.stringify([L, p.regions.leaves.total])); }
+await hpressC("down", 300);
+{ const p = await props(), cost = await page.evaluate(() => window.__st.growCost(window.__st.UI.create.choices)); expect(cost.e === 2 && cost.s === 4 && cost.d === 1, "Grow costs 2 Energy 4 Essence and 1 Data for the change: " + JSON.stringify(cost));
+  expect(p.regions.roll.chosen === 1 && p.regions.traitLine.changed && p.frame.line.price === "⚡ 2 ❀ 4 ◆ 1" && p.regions.leaves.total === 21, "▼ rolls the look: the tag, the price with ◆ 1, twenty-one leaves: " + JSON.stringify([p.regions.roll.chosen, p.regions.traitLine, p.frame.line.price, p.regions.leaves.total])); }
 { const crPod = await page.evaluate(() => window.__st.UI.create.podId);   // a room key on Create forgets the unpaid choices; coming back starts fresh
   expect((await page.evaluate(() => Object.keys(window.__st.UI.create.choices).length)) === 1, "a choice is made and unpaid");
-  await press("research", 300); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
+  await hpressC("research", 400); const at = await page.evaluate(() => ({ screen: window.__st.UI.screen, view: window.__st.UI.pods.view, create: window.__st.UI.create }));
   expect(at.screen === "pods" && at.view === "collection" && at.create === null, "a room key on Create drops the unpaid choices and opens the room's top: " + JSON.stringify(at));
-  await page.evaluate((id) => window.__st.podsGo(id, "pod"), crPod); await page.waitForTimeout(400); await press("confirm", 400);
+  await page.evaluate((id) => window.__st.podsGo(id, "pod"), crPod); await page.waitForTimeout(400); await hpressC("confirm", 500);
   expect((await page.evaluate(() => window.__st.UI.screen === "create" && Object.keys(window.__st.UI.create.choices).length === 0)), "back on Create it starts fresh");
-  for (let i = 0; i < eyeIndex; i++) await intent({ screen: "create", target: "", verb: "step:right" }, 40);
-  await intent({ screen: "create", target: "", verb: "step:down" }, 100); }
+  for (let i = 0; i < eyeIndex; i++) await hpressC("right", 60);
+  await hpressC("down", 300); }
 s = await st(); const e1 = s.e, d1 = s.d, s1 = s.s;
-await intent({ screen: "create", target: "", verb: "confirm" }, 400);
+stepOf("create-grow");
+await hpressC("confirm", 150);   // ✓ Grow it: the stamp prints (0 to 300 ms), the code appears at 300, the pod travels (300 to 900); input is held 1080 ms
+{ const p = await props(); expect(p.state === "grow" && (await page.evaluate(() => window.__st.holding())) && /^[A-Z0-9]{3} [A-Z0-9]{3} [A-Z0-9]{3}$/.test(p.regions.code), "✓ Grow it: the screen grows and holds input, the code is the screen's: " + JSON.stringify([p.state, p.regions.code])); }
+await frameShot("page-create-grow", true);
+await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 0);   // the held keys, one after the other without waiting: the hold is real time (1080 ms) and the jump is at 900
+{ const u = await ui(), m = await said(); cur.push({ held: ["up", "left", "confirm", "back"], said: m, screen: u.screen }); expect(u.screen === "create" && m.length === 0, "the pad, ✓ and ← do nothing while it grows, and the face says nothing: " + JSON.stringify([u.screen, m])); }
 s = await st();
 expect(s.bud && s.bud.minutes === 21 && s.bud.shaped.join() === "eye-rings", "the bud: 21 minutes, eye rings shaped");
 expect(s.e === e1 - 2 && s.s === s1 - 4 && s.d === d1 - 1, "paid 2 ⚡ 4 ❀ 1 ◆");
+await page.waitForTimeout(900);
 expect((await page.evaluate(() => window.__st.UI.screen)) === "incubator", "on the Incubator (not built)");
 { const p = await props(); expect(p.state === "notBuilt" && p.frame.line.back === "Home", "after Grow (a jump) the Incubator reads ← Home: " + JSON.stringify(p.frame.line)); }
+// Create's journey on the face, held to prototypes/face/golden/journey-create.json (gate check 5): the keys and what the face said, the screen and the choices after each
+{ const file = path.resolve(here, "../../face/golden/journey-create.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("create-"))), json = JSON.stringify({ _note: "Create's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key and what the face said (the focus and the intents), the screen, the ring and the choices after it, the line's ✓ and price. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
+  if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
+  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) fail(`journey-create.json: step ${id} differs from the golden: ${JSON.stringify(steps[id]).slice(0, 300)}`); }
+  console.log(`create steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 // the hand-off: the genome went to the Caddy service and is queued under its hash; the outbox is empty
 // the page flushes at Grow and polls every thirty seconds; a slow runner can miss a short wait, so the journey also asks the client to flush through its test hook, for up to twenty seconds
 for (let i = 0; i < 20 && (await st()).outbox.length; i++) { await page.evaluate(() => window.__st.caddy.flush()).catch(() => {}); await page.waitForTimeout(1000); }
@@ -417,7 +436,7 @@ caddyUp = false;
 await page.evaluate(() => window.__st.addMaterials(10, 10, 10));
 await press("research", 300);
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika2.id); await page.waitForTimeout(300);
-await press("confirm", 400); await intent({ screen: "create", target: "", verb: "confirm" }, 400);
+await press("confirm", 400); await press("confirm", 1300);
 s = await st(); expect(s.bud && s.outbox.length === 1, "offline: the genome waits in the outbox");
 await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(300);
 expect((await page.evaluate(() => window.__st.caddy.state.online)) === false, "the client knows the service is down");
@@ -483,7 +502,7 @@ await press("home", 200);
 const NAV = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")).navigation.screens;
 const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlace = (pl) => ({ probe: "bench" }[pl.split(".")[0]] || pl.split(".")[0]);
 {
-  const SCREENS = ["create", "incubator", "library", "habitat", "bench", "cross"];
+  const SCREENS = ["incubator", "library", "habitat", "bench", "cross"];
   for (const name of SCREENS) {
     await page.evaluate((n) => window.__st.goto(n), name); await page.waitForTimeout(500);
     const p = await props(), c = await page.evaluate(() => window.__st.check()), nav = NAV[placeOf(name)];
