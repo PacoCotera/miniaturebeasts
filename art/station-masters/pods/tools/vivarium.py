@@ -53,9 +53,9 @@ SRC = {"day": "vivarium-day", "dusk": "vivarium-dusk", "night": "vivarium-night-
 for k, s in SRC.items():
     im = fix_seams(cut(s))
     if k == "night":
-        exec(open("tools/nightdist.py").read(), globals()); im, nrep = night_dist(im, 330, 90, 190); rep["night detail"] = nrep
+        exec(open("tools/nightdist.py").read(), globals()); im, nrep = night_dist(im, 330, 90, 190, pool_cap=True, rim_scale=0.5); rep["night detail"] = nrep
     if k == "dawn":
-        exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 700); rep["dawn detail"] = drep
+        exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 700, goal=37); rep["dawn detail"] = drep
     n = f"idle-vivarium-{k}-1024x568"; im.save(f"slices/{n}.png", optimize=True); out[k] = im; rep[k] = {"mean L*": round(float(lstar(np.asarray(im).astype(float)).mean()), 1)}
     man[n] = {"size": [1024, 568], "rect": None, "src": f"source/raw/{s}.jpg (gemini-3-pro-image)", "made": f"Idle's Vivarium by {k}: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos" + (f" (the day picture's edit: dusk is warmer and lower)" if k == "dusk" else f" (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x{rep.get('night gain')} in linear light to a mean L* of {rep[k]['mean L*']})" if k == "night" else "") + " (pass 94)",
                       "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}

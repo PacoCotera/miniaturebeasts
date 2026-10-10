@@ -6,12 +6,27 @@ import os, json, hashlib
 import numpy as np
 from PIL import Image
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
+exec(open("tools/dawntint.py").read(), globals())
 man = json.load(open("slices/manifest.json")); W, H = 192, 56; CX, CY = 848, 480; made = []
 yy, xx = np.mgrid[0:H, 0:W]; u = np.abs((xx + 0.5 - W / 2) / (W / 2)); v = np.abs((yy + 0.5 - H / 2) / (H / 2))
 sq = (u ** 3.0 + v ** 3.0) ** (1 / 3.0); alpha = np.clip((1.0 - sq) / 0.30, 0, 1); alpha = alpha * alpha * (3 - 2 * alpha)
 for k in ("day", "dusk", "night", "dawn"):
     src = Image.open(f"slices/idle-vivarium-{k}-1024x568.png").convert("RGB").crop((CX - W // 2, CY - H // 2, CX + W // 2, CY + H // 2))
-    t = np.dstack([np.asarray(src), (alpha * 255).round().astype(np.uint8)]); n = f"home-bed-{k}-{W}x{H}"; Image.fromarray(t, "RGBA").save(f"slices/{n}.png", optimize=True); made.append(n)
+    arr = np.asarray(src).astype(np.uint8)
+    if k in ("night", "dawn"):
+        # pass 110, the art director's rule for the bed in each light: its key R-B at most its glass's + 40 and its L* at most its glass's + 3 (the day bed is +26): the bed is graded down by the least linear gain and desaturated toward its own luminance until both hold (the signed day and dusk beds are as cut)
+        gm = measures(Image.open(f"slices/home-glass-{k}-640x488.png").convert("RGB")); lin0 = to_lin(arr.astype(float)); Y0 = (lin0 @ np.array([0.2126, 0.7152, 0.0722]))[..., None]
+        for d in np.arange(0.0, 1.0, 0.02):
+            lin1 = lin0 * (1 - d) + Y0 * d
+            lo, hi = 0.05, 1.5
+            for _ in range(24):
+                g = (lo * hi) ** 0.5
+                if measures(to_srgb(lin1 * g))["mean L*"] <= gm["mean L*"] + 2.5: lo = g
+                else: hi = g
+            cand = to_srgb(lin1 * lo); bm = measures(cand)
+            if bm["key R-B"] <= gm["key R-B"] + 36: break
+        arr = cand.astype(np.uint8); print("bed", k, "glass", gm["mean L*"], gm["key R-B"], "bed", bm["mean L*"], bm["key R-B"], "d", round(float(d), 2))
+    t = np.dstack([arr, (alpha * 255).round().astype(np.uint8)]); n = f"home-bed-{k}-{W}x{H}"; Image.fromarray(t, "RGBA").save(f"slices/{n}.png", optimize=True); made.append(n)
     man[n] = {"size": [W, H], "rect": None, "src": f"slices/idle-vivarium-{k}-1024x568.png (signed, gemini-3-pro-image)", "made": f"Home's bed by {k}: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
 # the bowl is withdrawn: home-bed-192x56 is replaced by the day version under its own id
 Image.open("slices/home-bed-day-192x56.png").save("slices/home-bed-192x56.png", optimize=True)

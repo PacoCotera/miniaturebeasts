@@ -16,10 +16,10 @@ def _level(lin, target=40.5):
         if lstar(to_srgb(lin * g)).mean() < target: lo = g
         else: hi = g
     return lin * (lo * hi) ** 0.5
-def dawn_grade(im, radius):
+def dawn_grade(im, radius, goal=35):
     lin = _level(to_lin(np.asarray(im).astype(float))); H, W, _ = lin.shape; yy, xx = np.mgrid[0:H, 0:W]; r = np.hypot(xx, yy); t = np.clip(1 - r / radius, 0, 1); f = (t * t * (3 - 2 * t))[..., None]
     for k in np.arange(1.0, 4.01, 0.25):
         tl = lin * (1 + np.array([0.06 * k, 0.0, -0.10 * k]) * f); c = to_srgb(_level(tl) if False else tl)
         c = to_srgb(_level(tl)); m = measures(c)
-        if m["key R-B"] >= 35: break
+        if m["key R-B"] >= goal: break
     return Image.fromarray(c.astype(np.uint8)), {**m, "k": float(k), "radius": radius}

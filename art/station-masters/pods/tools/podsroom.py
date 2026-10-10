@@ -43,43 +43,29 @@ ch_ = floor.copy(); put_panel(ch_, (424, 72, 584, 440)); put_nest(ch_, 216, 336,
 def gblur(a, sg):
     """Gaussian blur of a float 2D array by FFT (PIL cannot blur float images), edges wrapped"""
     fy = np.fft.fftfreq(a.shape[0])[:, None]; fx = np.fft.rfftfreq(a.shape[1])[None, :]; return np.fft.irfft2(np.fft.rfft2(a) * np.exp(-2 * (np.pi * sg) ** 2 * (fx ** 2 + fy ** 2)), a.shape)
-def coons(img, box, sm=40, lift=None):
-    """fill a rectangle of foam from its four bounding lines (each smoothed along its length): a Coons patch, so the rim's shadow gradient runs through unbroken"""
-    x0, y0, x1, y1 = box; w, h = x1 - x0, y1 - y0
-    def line(a, ax):
-        a = a.mean(ax); return np.stack([gblur(np.stack([a[:, c]] * 8), sm)[0] for c in range(3)], -1) if False else np.stack([np.convolve(np.pad(a[:, c], 3 * sm, mode="edge"), np.exp(-0.5 * (np.arange(-3 * sm, 3 * sm + 1) / sm) ** 2) / (sm * 2.5066), "valid") for c in range(3)], -1)
-    T = line(img[y0 - 3:y0, x0:x1], 0); B = line(img[y1:y1 + 3, x0:x1], 0); L = line(img[y0:y1, x0 - 3:x0], 1); R = line(img[y0:y1, x1:x1 + 3], 1)
-    s_ = np.linspace(0, 1, w)[None, :, None]; t_ = np.linspace(0, 1, h)[:, None, None]
-    c = (1 - t_) * T[None] + t_ * B[None] + (1 - s_) * L[:, None] + s_ * R[:, None] - ((1 - s_) * (1 - t_) * T[0] + s_ * (1 - t_) * T[-1] + (1 - s_) * t_ * B[0] + s_ * t_ * B[-1])
-    if lift is not None: wgt = (np.sin(np.pi * s_) * np.sin(np.pi * t_)) ** 0.5; c = c + wgt * (lift - c[h // 2, w // 2])    # a large patch in the middle of the case: the middle is lifted to the foam beside it, the rim keeps its shadow
-    img[y0:y1, x0:x1] = c; return img
-def clean_floor():
-    """the floor without its hoses, gauge and vent. The foam is modelled in log light as a(x) + b(y) (the rim shadows are steep but run along the edges: a(x) and b(y) are medians over the clean pixels, fitted alternately) plus a smooth residual (a normalised blur, sigma 25, of what is left over on the clean pixels), so the fill continues the rim shadows and the local level without a cut edge; the floor's own grain is added."""
-    fa = np.asarray(floor).astype(float); H, W, _ = fa.shape; hole = np.zeros((H, W), bool)
-    for bx in ((84, 46, 700, 112), (712, 42, 936, 106), (84, 112, 130, 286), (668, 232, 950, 490)): hole[bx[1]:bx[3], bx[0]:bx[2]] = True
-    hole = hole | (np.asarray(Image.fromarray((hole * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))) > 0)
-    lg = np.log(np.maximum(fa, 1.0)); ma = np.where(hole[..., None], np.nan, lg); A = np.zeros((1, W, 3)); B = np.zeros((H, 1, 3))
+def model_fill(fa, hole, exclude=None, resid_sigma=25.0):
+    """the foam rebuilt inside `hole` by a model in log light, a(x) + b(y) (the rim shadows run along the edges; a(x) and b(y) are medians over the clean pixels, fitted alternately, so smudges do not pull them), plus a smooth residual (a normalised blur of what is left on the clean pixels; none when resid_sigma is None, which gives a plain floor), plus the floor's own grain; feathered into the original so no edge shows. `exclude` (default: the hole itself) are pixels the fit must not learn from (the hardware)."""
+    H, W, _ = fa.shape; lg = np.log(np.maximum(fa, 1.0)); bad = hole if exclude is None else exclude
+    ma = np.where(bad[..., None], np.nan, lg); A = np.zeros((1, W, 3)); B = np.zeros((H, 1, 3))
     for _ in range(8):
-        B = np.nanmedian(ma - A, axis=1, keepdims=True); B = np.nan_to_num(B, nan=0.0); A = np.nanmedian(ma - B, axis=0, keepdims=True); A = np.nan_to_num(A, nan=0.0)
-    res = np.where(hole[..., None], 0.0, lg - A - B); wgt = (~hole).astype(float)
-    sm = np.stack([gblur(res[..., c] * wgt, 25.0) / np.maximum(gblur(wgt, 25.0), 1e-3) for c in range(3)], -1)
+        B = np.nan_to_num(np.nanmedian(ma - A, axis=1, keepdims=True), nan=0.0); A = np.nan_to_num(np.nanmedian(ma - B, axis=0, keepdims=True), nan=0.0)
+    sm = 0.0
+    if resid_sigma:
+        res = np.where(bad[..., None], 0.0, lg - A - B); wgt = (~bad).astype(float); sm = np.stack([gblur(res[..., c] * wgt, resid_sigma) / np.maximum(gblur(wgt, resid_sigma), 1e-3) for c in range(3)], -1)
     fill = np.exp(A + B + sm)
-    grain = fa[400:480, 380:500] - np.stack([gblur(fa[400:480, 380:500, c], 3) for c in range(3)], -1)
-    tile = np.tile(grain, (H // 80 + 1, W // 120 + 1, 1))[:H, :W]
-    fm_ = np.clip(gblur(hole.astype(float), 3.0), 0, 1)[..., None]; out = fa * (1 - fm_) + (fill + tile) * fm_
-    return fa, Image.fromarray(out.clip(0, 255).astype(np.uint8))
-fa, clean = clean_floor(); ca = np.asarray(clean).astype(float)
-def hardware(box, dest, fade_bottom=0):
-    """cut a fitting from the original floor (alpha from its difference to the refilled foam) and set it down at dest on the collection floor"""
-    x0, y0, x1, y1 = box; d = np.sqrt(((fa[y0:y1, x0:x1] - ca[y0:y1, x0:x1]) ** 2).sum(2)); al = np.clip((d - 10) / 30.0, 0, 1)
-    al = np.asarray(Image.fromarray((al * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(0.8))).astype(float) / 255.0
-    if fade_bottom: al[-fade_bottom:] *= np.linspace(1, 0, fade_bottom)[:, None]
-    return fa[y0:y1, x0:x1], al, dest
-col = clean.copy()
-for src, al, (dx, dy) in (hardware((296, 48, 692, 108), (66, 238)), hardware((714, 44, 804, 104), (470, 238)), hardware((842, 44, 934, 104), (640, 238)), hardware((890, 232, 960, 300), (890, 232), 16)):
-    h_, w_ = al.shape; reg = np.asarray(col).astype(float); reg[dy:dy + h_, dx:dx + w_] = reg[dy:dy + h_, dx:dx + w_] * (1 - al[..., None]) + src * al[..., None]; col = Image.fromarray(reg.clip(0, 255).astype(np.uint8))
-# pass 109 (the art director, for the Station lead): the collection floor is plain: NOTHING is painted inside the six place rects (16 + 336c, 48 + 240r, 320x224), no nests, moss or tags; the ring wells and the pods are drawn on it by the renderer
-create = floor.copy(); put_panel(create, (584, 80, 424, 432)); put_plate(create); put_nest(create, 256 - 96, 336 + 16, 96)          # pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it
+    grain = fa[400:480, 380:500] - np.stack([gblur(fa[400:480, 380:500, c], 3) for c in range(3)], -1); rng = np.random.default_rng(7); tile = np.stack([gblur(rng.standard_normal((H, W)), 0.7) * grain[..., c].std() / 0.55 for c in range(3)], -1)      # the grain is noise of the floor's own strength (a tiled patch showed its grid)
+    fm_ = np.clip(gblur(hole.astype(float), 6.0), 0, 1)[..., None]; return fa * (1 - fm_) + (fill + tile) * fm_
+fa = np.asarray(floor).astype(float); Hh, Wh, _ = fa.shape
+hw = np.zeros((Hh, Wh), bool)
+for bx in ((84, 46, 700, 112), (712, 42, 936, 106), (84, 112, 130, 286), (668, 232, 950, 490)): hw[bx[1]:bx[3], bx[0]:bx[2]] = True        # the hoses, the gauge, the vent
+hw = hw | (np.asarray(Image.fromarray((hw * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))) > 0)
+# the collection floor (pass 110, the art director's ruling on the strip conflict): plain, NO hardware (the hose, gauge and vent stay on the overview), no ghost cut-outs, no band under the top rim, no seams: the whole inside of the case is the model
+inside = np.zeros((Hh, Wh), bool); inside[40:488, 74:950] = True
+col = Image.fromarray(model_fill(fa, inside, exclude=hw, resid_sigma=None).clip(0, 255).astype(np.uint8))
+# the Create floor: the overview's floor with only the ghost cut-out left of the panel (about x 530 to 600, y 290 to 410) painted out
+ghost = np.zeros((Hh, Wh), bool); ghost[272:430, 508:620] = True
+floor_create = Image.fromarray(model_fill(fa, ghost, exclude=ghost | hw, resid_sigma=25.0).clip(0, 255).astype(np.uint8))
+create = floor_create.copy(); put_panel(create, (584, 80, 424, 432)); put_plate(create); put_nest(create, 256 - 96, 336 + 16, 96)          # pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it
 out = {"room-bench-stage": floor, "room-bench-stage-overview": ov, "room-bench-stage-chapter": ch_, "room-bench-stage-collection": col, "room-bench-stage-create": create}
 cradle = ov.crop((144, 288, 368, 384)); shelf = ov.crop((112, 328, 400, 400)); stamp = ov.crop((856, 344, 1008, 496))
 # the front lip: the lower arc of the egg's rim in the cradle (the egg is centred at (112, 48) in the cradle, 96 tall and about 150 wide)

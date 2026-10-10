@@ -4,9 +4,12 @@ import json, re
 m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 AD_RECORDS = {
- "idle-vivarium-dawn-1024x568": ('new', None, 'returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)'),
- "vivarium-near-dawn-544x408": ('new', None, "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"),
- "home-bed-dawn-192x56": ('new', None, 'returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix'),
+ "idle-vivarium-day-1024x568": ('signed', 'art director, Idle verdict (62bbd883)', "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference)"),
+ "idle-vivarium-dusk-1024x568": ('signed', 'art director, Idle verdict (62bbd883)', "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"),
+ "vivarium-near-night-544x408": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame'),
+ "vivarium-near-dawn-544x408": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 40.5, key R-B 36, sat 36 against the dawn rule (key R-B >= 35, L* 38-42); day 52.4/59/57'),
+ "home-glass-day-640x488": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 38.9, key R-B 75, sat 50 against Idle day 43.1/72/48'),
+ "home-glass-dusk-640x488": ('signed', 'art director, light verdict (eb64c0d6)', 'signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56'),
  "vivarium-near-day-544x408": ('signed', 'art director, near Vivarium verdict (57490118)', 'signed (art director): the Vivarium up close, the same place as Idle at ground level'),
  "vivarium-near-dusk-544x408": ('signed', 'art director, near Vivarium verdict (57490118)', 'signed (art director): the Vivarium up close, the same place as Idle at ground level'),
  "room-bench-stage-compare": ('withdrawn', None, "withdrawn (art director): the old glass-lab compare stage; Compare is not in the current layout, and the room was redrawn in the world brief's look without it"),

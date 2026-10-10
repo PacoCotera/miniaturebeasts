@@ -12,10 +12,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the case's floor, the stage under everything: the housing rim at the edges, warm dark foam, hoses, a vent and a small gauge at the margins, no cut-outs; a Pro painting (pods-floor.jpg), 1024x522; the pods are placed by the renderer, never painted in",
-  "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b"
  },
  "room-cradle": {
   "size": [
@@ -30,10 +27,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the pod's fitted nest (224x96), cut from the composed overview at (144, 288); the pods are placed by the renderer, never painted in",
-  "sha256": "d2d51648c2916128312d500b9b802fa8d3f56af109d9ea4aeacc2f4ccbe05f34",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "d2d51648c2916128312d500b9b802fa8d3f56af109d9ea4aeacc2f4ccbe05f34"
  },
  "room-cradle-front": {
   "size": [
@@ -48,10 +42,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the nest's near rim as a separate layer (RGBA 224x96): the lower arc of the egg's rim, cut from the cradle; the pods are placed by the renderer, never painted in",
-  "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a"
  },
  "room-shelf": {
   "size": [
@@ -66,10 +57,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the case floor under the cradle (288x72), cut from the composed overview at (112, 328); the pods are placed by the renderer, never painted in",
-  "sha256": "ef81494d369d839927e2e17c5fb750d645e887c58498e88a253c58706108c32b",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "ef81494d369d839927e2e17c5fb750d645e887c58498e88a253c58706108c32b"
  },
  "ring-column": {
   "size": [
@@ -3661,10 +3649,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the small dim unlit matte stamp plate set into the housing, painted (pods-plate.jpg), cut at (856, 344); the pods are placed by the renderer, never painted in",
-  "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4"
  },
  "ring-well-empty-80x80": {
   "size": [
@@ -3908,10 +3893,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the plate's rim only (RGBA 152x152, the opening transparent, no glass); the pods are placed by the renderer, never painted in",
-  "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc"
  },
  "trait-picture-frame-144x176": {
   "size": [
@@ -5093,10 +5075,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the overview stage: the floor with ONE fitted egg-shaped nest (about 150x96, uniformly scaled) on the pod axis x 256, the stamp plate at (856, 344) and a plain warm slate panel at the right; composed from three Pro paintings; the pods are placed by the renderer, never painted in",
-  "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5111,10 +5090,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the chapter stage: the floor with the nest on the axis x 216 and a warm matte slate page panel to the right (424, 72, 584, 440); composed; the pods are placed by the renderer, never painted in",
-  "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -6857,10 +6833,7 @@
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the collection stage: the plain case floor, nothing painted inside the six place rects (16 + 336c, 48 + 240r, 320x224); the hose, gauge and vent in the strip between the rows; composed (pass 109); the pods are placed by the renderer, never painted in",
-  "sha256": "f0b6fdbb499e75e71668b0bdef335c41b9be5f7c13a2c50633811ef7674565d3",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 109: the collection's plain floor, nothing inside the six place rects (the art director's ask for the Station lead); the hose, gauge and vent stay in the strip between the rows; awaiting the art director's judgement (not signed)"
+  "sha256": "73e7ceaa0bc18cd61b6385b27aaa4edf4a9569be000067c4dc5140f2826172eb"
  },
  "mark-can-grow-16": {
   "size": [
@@ -10041,10 +10014,7 @@
   "rect": null,
   "src": "source/raw/vivarium-day.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by day: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (pass 94)",
-  "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
-  "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60"
  },
  "idle-vivarium-dusk-1024x568": {
   "size": [
@@ -10054,10 +10024,7 @@
   "rect": null,
   "src": "source/raw/vivarium-dusk.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dusk: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (the day picture's edit: dusk is warmer and lower) (pass 94)",
-  "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
-  "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c"
  },
  "idle-vivarium-night-1024x568": {
   "size": [
@@ -10066,11 +10033,8 @@
   ],
   "rect": null,
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
-  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 30.4) (pass 94)",
-  "sha256": "b0d151ec256fbcd039a021f9447064c0668db5ddf876de10b87a6789ae2083bb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 102: the art director held it for the Station lead's measurement; fixed by hand (moon rim recoloured toward (168, 182, 204) at 70 percent, glow blooms cut 50 percent toward a 31 px median, regraded to mean L* 30.6 with R above B); awaiting the art director's judgement (not signed)"
+  "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 30.5) (pass 94)",
+  "sha256": "03f7e7965d7da7f1cfdb49a938df8d97ce0a585ee391dc4dbcb293d2d365829d"
  },
  "home-bay-shut-176x72": {
   "size": [
@@ -10080,10 +10044,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: bay shut, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "9564c9284b84696cb2cb313964891ff45af23cddb4dccf51c104ea9e1eb2fa22",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "9564c9284b84696cb2cb313964891ff45af23cddb4dccf51c104ea9e1eb2fa22"
  },
  "home-bay-open-176x72": {
   "size": [
@@ -10093,10 +10054,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "b3c0a5d1e26bb80d35e6dbfe83fe3edba061cee178b255ec294c90ce7204c646",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "b3c0a5d1e26bb80d35e6dbfe83fe3edba061cee178b255ec294c90ce7204c646"
  },
  "home-well-32x32": {
   "size": [
@@ -10106,10 +10064,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: well, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 32x32, transparent around it (pass 99, the second sheet)",
-  "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44"
  },
  "home-chamber-empty-72x72": {
   "size": [
@@ -10119,10 +10074,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: chamber empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04"
  },
  "home-chamber-growing-72x72": {
   "size": [
@@ -10132,10 +10084,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: chamber growing, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1"
  },
  "home-chamber-ready-72x72": {
   "size": [
@@ -10145,10 +10094,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet); the inner light graded brighter and creamier by hand (pass 100)",
-  "sha256": "bf245c0c28745e1fd524a4dc04ae588300720295d7812a4e3dddc96d8c0686e0",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "bf245c0c28745e1fd524a4dc04ae588300720295d7812a4e3dddc96d8c0686e0"
  },
  "home-cradle-empty-96x72": {
   "size": [
@@ -10158,10 +10104,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: cradle empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb"
  },
  "home-cradle-full-96x72": {
   "size": [
@@ -10171,10 +10114,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: cradle full, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34"
  },
  "home-journal-104x72": {
   "size": [
@@ -10184,10 +10124,7 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: journal, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 104x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c"
  },
  "home-bed-192x56": {
   "size": [
@@ -10197,10 +10134,7 @@
   "rect": null,
   "src": "slices/idle-vivarium-day-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed, the id the builder already knows: the day version (the same file as home-bed-day-192x56), replacing the bowl of pass 99 (pass 100)",
-  "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7"
  },
  "home-bed-day-192x56": {
   "size": [
@@ -10210,10 +10144,7 @@
   "rect": null,
   "src": "slices/idle-vivarium-day-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by day: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7"
  },
  "home-bed-dusk-192x56": {
   "size": [
@@ -10223,10 +10154,7 @@
   "rect": null,
   "src": "slices/idle-vivarium-dusk-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by dusk: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "61cdc351cdac866a47d488b9b7a6cb1043f8860dfe7aba712324492ba62765a7",
-  "status": "signed",
-  "signed_in": "art director, Home column verdict (1f7d4a83)",
-  "status_note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+  "sha256": "61cdc351cdac866a47d488b9b7a6cb1043f8860dfe7aba712324492ba62765a7"
  },
  "home-bed-night-192x56": {
   "size": [
@@ -10236,10 +10164,7 @@
   "rect": null,
   "src": "slices/idle-vivarium-night-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by night: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "8aef20d267076bcf7583fdb805e704136ae80c5ef0ca726403cb4482672b1f5e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 102: re-cut from the fixed Idle night (the art director held it until the night was fixed); awaiting the art director's judgement (not signed)"
+  "sha256": "7684692a558ecc5345830c8071b93f9e0b268960622fa9fe676966eb0478f863"
  },
  "vivarium-near-day-544x408": {
   "size": [
@@ -10291,9 +10216,9 @@
   "src": "source/raw/vivarium-near-night.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by night ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting (an edit of the near day picture, matched to Idle's night light), cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)",
   "sha256": "cd63a432a9181516b0b8390ddb3498b2499191caa11f86f7bf6439fdfe612584",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "status_note": "signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame"
  },
  "idle-vivarium-dawn-1024x568": {
   "size": [
@@ -10303,10 +10228,7 @@
   "rect": null,
   "src": "source/raw/vivarium-dawn.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded and given a gold tint by hand (tools/dawntint.py: the lit pixels warmed, the level set to a mean L* of 40.5)",
-  "sha256": "523004d9e0d95f4e2366d7e1504b1b95a8016f0137c05cc83aea4d276e1edebb",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)"
+  "sha256": "4f1938a8b44c8143dd05768e7027deeeb505b9a4f08a06af6f3d0aad176749eb"
  },
  "vivarium-near-dawn-544x408": {
   "size": [
@@ -10322,9 +10244,9 @@
   "src": "source/raw/vivarium-near-dawn.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, given a gold tint by hand and set to a mean L* of 40.5 (tools/dawntint.py; passes 105 and 108)",
   "sha256": "0703870e003ccd936a5b44b00504ddffbcb495bf3ccfb656b8be25346568ca1a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "status_note": "signed (art director) at 1x: L* 40.5, key R-B 36, sat 36 against the dawn rule (key R-B >= 35, L* 38-42); day 52.4/59/57"
  },
  "home-bed-dawn-192x56": {
   "size": [
@@ -10334,10 +10256,7 @@
   "rect": null,
   "src": "slices/idle-vivarium-dawn-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by dawn: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "78e5d8f49e5e2c2a9a4c3103d64ac97bdb33be4018c00faa2286e72550dfd69d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix"
+  "sha256": "0f1aeae238eb7bd1902f979176abd4e03fe2aaae18a681235333d671c43e56d9"
  },
  "home-glass-dawn-640x488": {
   "size": [
@@ -10352,10 +10271,7 @@
   ],
   "src": "source/raw/home-glass-dawn.jpg (gemini-3-pro-image)",
   "made": "Home's glass by dawn: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dawn light, cut to 640:488 and reduced with Lanczos, given the dawn's gold tint and set to a mean L* of 40.5 (tools/dawntint.py) (pass 107)",
-  "sha256": "1d7b866bf1d8fe7cec5c26e8a85822c5fe06b37e46980a16aae6ad391ca5b6d2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "sha256": "02db0fe36bf506c245de863f3096b1f4babd37f9968729645699b6cf873f073b"
  },
  "home-glass-day-640x488": {
   "size": [
@@ -10370,10 +10286,7 @@
   ],
   "src": "source/raw/home-glass-day.jpg (gemini-3-pro-image)",
   "made": "Home's glass by day: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro recompose of the signed day picture, cut to 640:488 and reduced with Lanczos (pass 107)",
-  "sha256": "805ace1a75e3533d858faaac9f3781febdad7612d6f516cd210028c97cef8c8f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "sha256": "805ace1a75e3533d858faaac9f3781febdad7612d6f516cd210028c97cef8c8f"
  },
  "home-glass-dusk-640x488": {
   "size": [
@@ -10388,10 +10301,7 @@
   ],
   "src": "source/raw/home-glass-dusk.jpg (gemini-3-pro-image)",
   "made": "Home's glass by dusk: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dusk light, cut to 640:488 and reduced with Lanczos (pass 107)",
-  "sha256": "da687a78a14ae933e6d54ff3d71fc5f75ff6ab67944236bf79d8f796ef71b07e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "sha256": "da687a78a14ae933e6d54ff3d71fc5f75ff6ab67944236bf79d8f796ef71b07e"
  },
  "home-glass-night-640x488": {
   "size": [
@@ -10406,10 +10316,7 @@
   ],
   "src": "source/raw/home-glass-night.jpg (gemini-3-pro-image)",
   "made": "Home's glass by night: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's night light, cut to 640:488 and reduced with Lanczos, regraded by distribution (dark background, warm ground band, small glow pools) (pass 107)",
-  "sha256": "f7b7f1725630c99bf301d998a4b168f2cdba947ffe63c3444220ba24c6ef6cbe",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "sha256": "d9463376fd0ff643424a95d0ff15b4b4f1783dbd1978e473a40d1f3e0ca32853"
  },
  "room-bench-stage-create": {
   "size": [
@@ -10419,9 +10326,6 @@
   "rect": null,
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the Create stage: the overview stage with the nest moved by (-96, +16) to (160, 352), so Create's cradle-front registers on it; the rest as the overview (the panel and the plate); composed; the pods are placed by the renderer, never painted in",
-  "sha256": "68bb9985198d62aaa07e2938c991bc46a84098bbbccf9f5b21c12e1a96dfc171",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it; awaiting the art director's judgement (not signed)"
+  "sha256": "0de5a138c598c69829c9d39db2ccd82e51b52ac1d9716769d7927478f6b4eaae"
  }
 }
