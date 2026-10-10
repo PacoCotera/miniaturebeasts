@@ -1,0 +1,14 @@
+[
+ {
+  "name": "incubator-sheet-a",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   ["art/station-masters/pods/source/work/guides/home-column-chamber-crop.png", "THE CHAMBER (materials, light and mood: a sage powder-coat metal housing with a hooded window and a warm moss-bed chamber; take its materials and warm light, NOT its two windows, NOT its sprout, NOT its dot):"],
+   ["art/station-masters/pods/slices/room-bench-stage-overview.png", "THE DEVICE (the same device's frame: sage and sand housing, matte, rugged; the base must read as part of this device):"],
+   ["art/station-masters/pods/slices/home-glass-day-640x488.png", "THE WARMTH (the soft warm daylight and the moss of the signed Home glass: the chamber's inside is lit this warmly):"]
+  ],
+  "prompt": "Output a NEW image: a sprite sheet of three small matte painted pieces of ONE research device, each isolated on a flat dark slate background (deep desaturated blue-black slate), nothing touching, all seen STRAIGHT-ON from the front (never three-quarter), in soft warm daylight from the upper left. RENDERING: soft painted forms, matte, NO ink outlines, hairline edges only, no highlights, no glass shine, nothing glossy, no chrome, no blue glow, no cool light, NO wood anywhere. MATERIALS: sage powder-coat metal, sand-coloured enamel, dark rubber, moss. NO text, letters, digits or labels. LEFT, large: (1) the SHELTERED CHAMBER: a sage metal housing, taller than wide (about 1.1 to 1), its top an even half-circle arch, with exactly ONE arched window opening centred in it (one window only, never two): the window's top follows the arch, the hood above it a shallow lip, the edge a hairline with no highlight; the opening is CLEAR (no glass, no frame bars across it) and shows the warm interior: a plump moss bed with a hollow at the bottom of the opening, soft forest light, a small warm lamp at the top inside, the interior EMPTY (no creature, no bean, no dot, no sprout, no egg). The housing's body runs straight down below the arch and its feet end square. RIGHT, top: (2) the BASE: a wide low plinth, about 3.5 times wider than tall, in sand-coloured matte enamel lit on its top edge, a blank rectangular plaque plate set into its front a little left of centre (a flat panel with a hairline edge, nothing written on it), and a thin sage light line along its foot, no wood, not machined. RIGHT, bottom: (3) the NEST: a plump moss bed about 4 times wider than tall, a soft cushion of leaf-green moss, lit grass and shaded hollow forest moss with a visible hollow in the middle, NO twigs, NO sticks, NO stones, its rim of fine moss fibres soft; seen from the front, empty. Each piece is its own clear object with generous empty space around it."
+ }
+]

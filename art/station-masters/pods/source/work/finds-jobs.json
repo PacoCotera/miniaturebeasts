@@ -1,0 +1,26 @@
+[
+ {
+  "name": "find-vybronic-crystal",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A VYBRONIC CRYSTAL: a single ethereal crystal, a cluster of two or three translucent pale violet-blue shards with a faint inner glow, as if humming, resting on a little dark earth. A single painted miniature object, centred on a plain deep dark blue-teal ground (hex 162a37) that fills the whole square canvas edge to edge: soft painterly shapes, lit softly from the upper left, muted natural colours (nothing bright), one object only, no hands, no creatures, no text, no frame, no border, simple enough to read when shrunk to 112 pixels. The object fills about the middle three quarters of the canvas width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges.",
+  "refs": [],
+  "model": "gemini-3-pro-image"
+ },
+ {
+  "name": "find-tide-pearl",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A TIDE PEARL: a single large pearl, creamy white with a faint blue-green sheen, resting half in a small open grey-blue shell, a drop of water beside it. A single painted miniature object, centred on a plain deep dark blue-teal ground (hex 162a37) that fills the whole square canvas edge to edge: soft painterly shapes, lit softly from the upper left, muted natural colours (nothing bright), one object only, no hands, no creatures, no text, no frame, no border, simple enough to read when shrunk to 112 pixels. The object fills about the middle three quarters of the canvas width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges.",
+  "refs": [],
+  "model": "gemini-3-pro-image"
+ },
+ {
+  "name": "find-storm-glass-shard",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: A STORM-GLASS SHARD: a single jagged shard of smoked glass, grey-blue and clear, with a thin bright crackle of light inside it, standing on a little dark earth. A single painted miniature object, centred on a plain deep dark blue-teal ground (hex 162a37) that fills the whole square canvas edge to edge: soft painterly shapes, lit softly from the upper left, muted natural colours (nothing bright), one object only, no hands, no creatures, no text, no frame, no border, simple enough to read when shrunk to 112 pixels. The object fills about the middle three quarters of the canvas width and height, with plenty of plain ground all round (about one eighth on every side), nothing touching the edges.",
+  "refs": [],
+  "model": "gemini-3-pro-image"
+ }
+]

@@ -1,0 +1,19 @@
+[
+ {
+  "name": "pods-floor",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE SIGNED CASE (frame 2: a rugged field case in matte sage-green and sand housing with dark rubber corner bumpers and visible screws, the foam a WARM dark brown-charcoal, warm daylight from the upper left, fitted egg-shaped nests with small paper tags and a little moss, short dark rubber hoses, a mister, a vent and a small matte gauge: match its materials, colours and light exactly):"
+   ],
+   [
+    "art/station-masters/pods/concepts/station-board/frame-1-home-v2-1024x600.png",
+    "HOME'S LIGHT AND RENDERING (the warm daylight and the sculpted miniature finish to match; take no content from it):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the FLOOR of the rugged field case of the reference, seen perfectly flat from directly above and filling the canvas edge to edge, in exactly the reference's materials and colours: along all four edges of the picture the case's housing rim is visible as a slim band (about 4 percent of the width at the left and right, about 5 percent at the top and bottom) of matte sage-green and sand powder-coated housing with dark rubber corner bumpers at the four corners and a few visible screws; inside the rim the whole floor is WARM dark brown-charcoal matte foam with fine worn texture, a little scuffing and soft warm light from the upper left (never grey, never cool, never blue). At the margins only, near the rim: two or three short dark matte rubber hoses, a small mister nozzle, a vent grille and one small matte gauge. The whole centre of the floor is quiet, empty, unbroken worn foam: NO cut-outs, no recesses, no nests, no panels, nothing pressed into the foam anywhere. NO pods or objects anywhere; no text, no letters, no digits, no logos; no glass, no chrome, no polished or shiny metal, no gloss, no spotlight cone, no cool blue light, nothing childish. Matte, worn, handled materials; warm soft daylight from the upper left; the same sculpted, softly lit miniature rendering and the same colours as the case reference."
+ }
+]

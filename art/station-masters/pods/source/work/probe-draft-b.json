@@ -1,0 +1,19 @@
+[
+ {
+  "name": "probe-draft-b",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/slices/home-bay-open-176x72.png",
+    "THE DEVICE'S FIELD CASE (the Station's sage moulded field case with sand latches and handle: the Probe is made by the same maker, same materials):"
+   ],
+   [
+    "art/station-masters/pods/slices/crate-closer-sealed-384x256.png",
+    "THE SAME FIELD CASE CLOSER (sage body, sand latches, dark rubber corner guards, matte, warm top-left light):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a design draft of the Companion's field instrument, called the Probe: it goes out on expeditions, reaches into map cells, gathers pods (two at tier one) and comes home to be mended on the Station's tray. DIRECTION B, THE SCOUT: a small rugged rover: a low sage body on chunky dark rubber wheels or tracks, a front gathering scoop or hatch, a pod bay on its top, and ONE small round lamp at the front (a simple lamp, never an eye, not glowing). Both: the Station's materials: sage green powder-coat housing and sand-coloured housing, dark rubber, matte, with small screws and engraved marks (no letters), soft warm daylight from the top left. The Probe carries THREE SHIELD PLATES, white matte plates set on its body (tier 1: three plates), clearly white. It reads as made by the same maker as the Station's field cases (the sage field case with sand latches and dark rubber corners, as in the references). NEVER: a needle, a syringe, a net, a drill, a spike, a weapon; no face, no eyes; no glow, no chrome, no gloss, no glass shine, no blue or cool light, no wood. NO text, letters or digits. COMPOSITION: ONE image, 16:9, on a FLAT neutral mid-grey ground (uniform, no gradient, no floor, no horizon). On the LEFT two thirds, ONE Probe at three-quarter view from the front left, large (about 60 percent of the picture's height), standing as it would stand in its cradle, its three white shield plates on. On the RIGHT, small, the SAME Probe as a single solid flat dark silhouette (one colour, no detail inside), about one sixth of the large one's height, standing on the same ground, so its outline reads at a glance. "
+ }
+]

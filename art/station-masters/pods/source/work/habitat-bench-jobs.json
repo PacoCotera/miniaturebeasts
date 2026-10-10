@@ -1,0 +1,212 @@
+[
+ {
+  "name": "concept-06-habitat",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/06-habitat.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the visual grammar, chrome and finish to match):"
+   ],
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE CREATURE (Burr; keep exactly this individual):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is HABITAT: one creature up close in a vivarium. The large window on the left is the only warm field on the screen: warm daylight from the upper left on a plain stage (a dark green back wall, a clay-tan floor band from about 60 percent down). The creature stands in the middle of the window on the floor band with a soft contact shadow, a small plate-shaped name tag under its feet. The creature is the attached individual (a small grey creature with three dark spikes on its head, cream feet and belly, a blunt snout and cream-ringed eyes: keep it exactly, it is called Burr). The right column holds a card (a text readout with a small square picture and four small square plates) and five small module panels in the instrument's cool chrome, each showing one small object: a companion tab, a heart, a portrait frame, a pair of linked hearts, a gate. Along the bottom a strip of small creature thumbnails, with one highlighted by a cream ring. State: at rest. An adult Burr, the cream focus ring around the creature's feet, the bottom line reads 'Spend time with Burr'."
+ },
+ {
+  "name": "concept-06b-habitat-meet",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/06b-habitat-meet.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the visual grammar, chrome and finish to match):"
+   ],
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE CREATURE (Burr; keep exactly this individual):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is HABITAT: one creature up close in a vivarium. The large window on the left is the only warm field on the screen: warm daylight from the upper left on a plain stage (a dark green back wall, a clay-tan floor band from about 60 percent down). The creature stands in the middle of the window on the floor band with a soft contact shadow, a small plate-shaped name tag under its feet. The creature is the attached individual (a small grey creature with three dark spikes on its head, cream feet and belly, a blunt snout and cream-ringed eyes: keep it exactly, it is called Burr). The right column holds a card (a text readout with a small square picture and four small square plates) and five small module panels in the instrument's cool chrome, each showing one small object: a companion tab, a heart, a portrait frame, a pair of linked hearts, a gate. Along the bottom a strip of small creature thumbnails, with one highlighted by a cream ring. State: the meet. A new juvenile (a smaller, younger-proportioned individual of the same species, plainly younger), a teal ribbon where the name tag was, a small lamp waiting; no name yet."
+ },
+ {
+  "name": "concept-06c-habitat-child",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/06c-habitat-child.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the visual grammar, chrome and finish to match):"
+   ],
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE CREATURE (Burr; keep exactly this individual):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is HABITAT: one creature up close in a vivarium. The large window on the left is the only warm field on the screen: warm daylight from the upper left on a plain stage (a dark green back wall, a clay-tan floor band from about 60 percent down). The creature stands in the middle of the window on the floor band with a soft contact shadow, a small plate-shaped name tag under its feet. The creature is the attached individual (a small grey creature with three dark spikes on its head, cream feet and belly, a blunt snout and cream-ringed eyes: keep it exactly, it is called Burr). The right column holds a card (a text readout with a small square picture and four small square plates) and five small module panels in the instrument's cool chrome, each showing one small object: a companion tab, a heart, a portrait frame, a pair of linked hearts, a gate. Along the bottom a strip of small creature thumbnails, with one highlighted by a cream ring. State: a bred child with two chapter plates still unread (shown as dotted empty squares); the focus ring is on one unread plate."
+ },
+ {
+  "name": "concept-06d-habitat-armed",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/06d-habitat-armed.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the visual grammar, chrome and finish to match):"
+   ],
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE CREATURE (Burr; keep exactly this individual):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is HABITAT: one creature up close in a vivarium. The large window on the left is the only warm field on the screen: warm daylight from the upper left on a plain stage (a dark green back wall, a clay-tan floor band from about 60 percent down). The creature stands in the middle of the window on the floor band with a soft contact shadow, a small plate-shaped name tag under its feet. The creature is the attached individual (a small grey creature with three dark spikes on its head, cream feet and belly, a blunt snout and cream-ringed eyes: keep it exactly, it is called Burr). The right column holds a card (a text readout with a small square picture and four small square plates) and five small module panels in the instrument's cool chrome, each showing one small object: a companion tab, a heart, a portrait frame, a pair of linked hearts, a gate. Along the bottom a strip of small creature thumbnails, with one highlighted by a cream ring. State: the bond armed: the heart in the Bond module is half full, a small framed portrait module is lit."
+ },
+ {
+  "name": "concept-06e-habitat-empty",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/06e-habitat-empty.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the visual grammar, chrome and finish to match):"
+   ],
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE CREATURE (Burr; keep exactly this individual):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is HABITAT: one creature up close in a vivarium. The large window on the left is the only warm field on the screen: warm daylight from the upper left on a plain stage (a dark green back wall, a clay-tan floor band from about 60 percent down). The creature stands in the middle of the window on the floor band with a soft contact shadow, a small plate-shaped name tag under its feet. The creature is the attached individual (a small grey creature with three dark spikes on its head, cream feet and belly, a blunt snout and cream-ringed eyes: keep it exactly, it is called Burr). The right column holds a card (a text readout with a small square picture and four small square plates) and five small module panels in the instrument's cool chrome, each showing one small object: a companion tab, a heart, a portrait frame, a pair of linked hearts, a gate. Along the bottom a strip of small creature thumbnails, with one highlighted by a cream ring. State: empty. No creature at all: the glass window shows only the empty stage, six empty bays in the strip, and the frame."
+ },
+ {
+  "name": "concept-06f-habitat-away",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/06f-habitat-away.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the visual grammar, chrome and finish to match):"
+   ],
+   [
+    "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-portrait-600x620.png",
+    "THE CREATURE (Burr; keep exactly this individual):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is HABITAT: one creature up close in a vivarium. The large window on the left is the only warm field on the screen: warm daylight from the upper left on a plain stage (a dark green back wall, a clay-tan floor band from about 60 percent down). The creature stands in the middle of the window on the floor band with a soft contact shadow, a small plate-shaped name tag under its feet. The creature is the attached individual (a small grey creature with three dark spikes on its head, cream feet and belly, a blunt snout and cream-ringed eyes: keep it exactly, it is called Burr). The right column holds a card (a text readout with a small square picture and four small square plates) and five small module panels in the instrument's cool chrome, each showing one small object: a companion tab, a heart, a portrait frame, a pair of linked hearts, a gate. Along the bottom a strip of small creature thumbnails, with one highlighted by a cream ring. State: the Companion is away: the Companion module is lit with the focus ring, the strip holds two rows of small faces, an elder creature in the window."
+ },
+ {
+  "name": "concept-11-bench",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/11-bench.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the chrome and finish to match; its Probe dock shows the device):"
+   ],
+   [
+    "art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png",
+    "THE INCUBATOR CONCEPT (the cool lab key light and finish for a bench):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is the PROBE BENCH: a research bench in a modern digital lab. A cool key light from the upper left; NO warm field anywhere, no cream, no amber. The Probe (a small research drone device with a rounded white and pale-grey shell, a lens, small arms and a row of white Shield plates) is the brightest object on the screen, sitting large in its service cradle in the left panel (a pale instrument glass). Under it stand small tall Shield plates in a gold-rimmed tray. The right column has two cool module panels: Mend (a large switch with a track and a knob, a small picture of a dock) and Upgrade (a square socket holding a part, small pictures of pods and plates, a lamp). Lamps are green (sprout) or dark; never amber. State: docked, tier 1, three plates with one gone (an outline only), the switch off; the bottom line reads 'Mend a plate'."
+ },
+ {
+  "name": "concept-11b-bench-armed",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/11b-bench-armed.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the chrome and finish to match; its Probe dock shows the device):"
+   ],
+   [
+    "art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png",
+    "THE INCUBATOR CONCEPT (the cool lab key light and finish for a bench):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is the PROBE BENCH: a research bench in a modern digital lab. A cool key light from the upper left; NO warm field anywhere, no cream, no amber. The Probe (a small research drone device with a rounded white and pale-grey shell, a lens, small arms and a row of white Shield plates) is the brightest object on the screen, sitting large in its service cradle in the left panel (a pale instrument glass). Under it stand small tall Shield plates in a gold-rimmed tray. The right column has two cool module panels: Mend (a large switch with a track and a knob, a small picture of a dock) and Upgrade (a square socket holding a part, small pictures of pods and plates, a lamp). Lamps are green (sprout) or dark; never amber. State: the upgrade armed: the part lifted a little out of its socket, the bottom line reads 'Again: fit the upgrade'."
+ },
+ {
+  "name": "concept-11c-bench-away",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/11c-bench-away.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the chrome and finish to match; its Probe dock shows the device):"
+   ],
+   [
+    "art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png",
+    "THE INCUBATOR CONCEPT (the cool lab key light and finish for a bench):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is the PROBE BENCH: a research bench in a modern digital lab. A cool key light from the upper left; NO warm field anywhere, no cream, no amber. The Probe (a small research drone device with a rounded white and pale-grey shell, a lens, small arms and a row of white Shield plates) is the brightest object on the screen, sitting large in its service cradle in the left panel (a pale instrument glass). Under it stand small tall Shield plates in a gold-rimmed tray. The right column has two cool module panels: Mend (a large switch with a track and a knob, a small picture of a dock) and Upgrade (a square socket holding a part, small pictures of pods and plates, a lamp). Lamps are green (sprout) or dark; never amber. State: away: the cradle is empty (the Probe is out), no plates, the socket dim."
+ },
+ {
+  "name": "concept-11d-bench-tier2",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/l25/11d-bench-tier2.png",
+    "LAYOUT TEMPLATE (follow its rectangles exactly):"
+   ],
+   [
+    "art/concept-station/round3/A-r3-a1-1024x600.png",
+    "HOME CONCEPT (the chrome and finish to match; its Probe dock shows the device):"
+   ],
+   [
+    "art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png",
+    "THE INCUBATOR CONCEPT (the cool lab key light and finish for a bench):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting of one screen of a small handheld research-station game, 16:9, 1024 by 600 proportions, painted as a finished screen (not a wireframe). Follow the attached LAYOUT TEMPLATE exactly: every rectangle in it is a region, keep each region where the template puts it and at its size; do not copy the template's grey fills, dashed boxes, annotations, coordinates or its small grey labels; paint real objects in the regions instead. Match the VISUAL GRAMMAR of the attached Home concept: the same cool instrument chrome (deep blue-teal slate bars and panels, enamel and bevel edges, small enamel lamps), the same finish: sculpted, lit, real material, matte, fine soft grain, calm, never childish, never cartoon, no stickers, no big smiles. Text: use only short words in a clean sans-serif, spelled exactly as in the layout template where it shows a word (a title, a bottom line); no other text, no digits except those shown, no logos. The screen is the PROBE BENCH: a research bench in a modern digital lab. A cool key light from the upper left; NO warm field anywhere, no cream, no amber. The Probe (a small research drone device with a rounded white and pale-grey shell, a lens, small arms and a row of white Shield plates) is the brightest object on the screen, sitting large in its service cradle in the left panel (a pale instrument glass). Under it stand small tall Shield plates in a gold-rimmed tray. The right column has two cool module panels: Mend (a large switch with a track and a knob, a small picture of a dock) and Upgrade (a square socket holding a part, small pictures of pods and plates, a lamp). Lamps are green (sprout) or dark; never amber. State: the upgrade fitted: four whole plates, the part seated in its socket, a larger tier-two Probe in the cradle."
+ }
+]

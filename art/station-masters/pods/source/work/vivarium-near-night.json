@@ -1,0 +1,19 @@
+[
+ {
+  "name": "vivarium-near-night",
+  "aspect": "4:3",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/vivarium-near-day.jpg",
+    "THE PICTURE TO EDIT (the vivarium up close by day: keep everything, change only the light):"
+   ],
+   [
+    "art/station-masters/pods/slices/idle-vivarium-night-1024x568.png",
+    "THE LIGHT TO MATCH (the signed night painting of the same place from afar: take its colour and mood of light, its glow-moss and mushrooms, not its composition):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same close-up vivarium picture at NIGHT: warm and low: small warm glowing patches of glow-moss and a few tiny glowing mushrooms on the moss, stones and roots, a low amber lamp-like glow from the upper left, soft warm brown-olive shadows that stay visible; the moon only a thin pale cool rim on a few upper edges; nothing blue anywhere else; the whole picture clearly readable, a warm mid-dark tone (average brightness about 35 percent), never black. Keep the picture EXACTLY the same in composition and content: the same burrow, stones, roots, moss, feed line, mist and plants in the same places and sizes, the same clear open moss across the centre of the lower part, the same matte sculpted miniature rendering; change ONLY the lighting and its colour. Still NO creatures, no text, no letters, no digits, no frame, no glossy surfaces, no neon."
+ }
+]

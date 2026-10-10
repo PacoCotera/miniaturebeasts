@@ -1,0 +1,27 @@
+[
+ {
+  "name": "incubator-sheet-a2",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/work/guides/home-column-chamber-crop.png",
+    "THE CHAMBER (materials, light and mood: a sage powder-coat metal housing with a hooded window and a warm moss-bed chamber; take its materials and warm light, NOT its two windows, NOT its sprout, NOT its dot):"
+   ],
+   [
+    "art/station-masters/pods/slices/room-bench-stage-overview.png",
+    "THE DEVICE (the same device's frame: sage and sand housing, matte, rugged; the base must read as part of this device):"
+   ],
+   [
+    "art/station-masters/pods/slices/home-glass-day-640x488.png",
+    "THE WARMTH (the soft warm daylight and the moss of the signed Home glass: the chamber's inside is lit this warmly):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/incubator-sheet-a.jpg",
+    "THE FIRST ATTEMPT (its colours, soft painting and moss are right; its VIEW is wrong: it shows the right side of the housing, the top of the base and the top of the nest. Redo all three in a FLAT FRONT ELEVATION):"
+   ]
+  ],
+  "prompt": "Output a NEW image: the same three pieces as the first attempt (the sage arched chamber with its one arched window and its empty moss bed and small warm lamp, the sand base with its blank plaque and sage foot line, the plump moss nest), in the same soft matte painted rendering and warm light, but each drawn in a strictly FLAT FRONT ELEVATION: the camera is exactly in front of each object at its own mid-height, looking straight at it, so that NO side face and NO top face of any piece is visible at all (a flat-fronted slab: the housing's front face fills its whole silhouette, symmetric left to right; the base is a flat front band with a straight horizontal top and bottom edge; the nest is a low cushion seen exactly from the side, its hollow shown as a soft dip along its top line). Sprite sheet on a flat dark slate background, nothing touching, generous empty space. (1) LEFT, large: the sheltered chamber: a sage powder-coat metal housing, front view only, taller than wide (about 1.1 to 1), its top an even half-circle arch, ONE arched window opening centred in it (never two), the hood above it a shallow lip, hairline edges, no highlights, no glass shine; the opening is CLEAR and shows the warm interior: a plump moss bed with a hollow at the bottom, soft forest light, a small warm lamp at the top inside; the interior EMPTY (no creature, no bean, no dot, no sprout, no egg); the body runs straight down below the arch with square feet. (2) RIGHT, top: the base: a wide low plinth front band about 3.5 times wider than tall, sand-coloured matte enamel, a blank rectangular plaque plate on its front a little left of centre (flat panel, hairline edge, nothing written), a thin sage light line along its foot; no wood. (3) RIGHT, bottom: the nest: a plump low moss cushion about 4 times wider than tall, leaf-green and lit-grass and shaded hollow forest moss, a visible soft hollow dipping along its top edge, NO twigs, sticks or stones, its rim of fine moss fibres soft. No ink outlines, nothing glossy, no chrome, no blue or cool light, no wood, no text, letters or digits."
+ }
+]

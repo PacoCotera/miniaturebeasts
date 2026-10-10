@@ -1,0 +1,3487 @@
+{
+ "room-bench-stage": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "room-cradle": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "room-cradle-front": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "room-shelf": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-column": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the 160 px column of the earlier layout; replaced by ring-column-112x522"
+ },
+ "ring-well-empty": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the 64x64 slice; re-exported as ring-well-empty-80x80 (the art director: pad to 80x80 centred on (40,40))"
+ },
+ "ring-hatch": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the 112x56 slice of the earlier layout; replaced by ring-hatch-80x56"
+ },
+ "page-pane-408x440": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 1, withdrawn with the page's re-layout (the Read page is 256 wide); Compare still uses 408"
+ },
+ "trait-picture-frame-376x264": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-376x264-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-376x264-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x256": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x256-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x256-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x104": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x104-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x104-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-120x96": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-120x96-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-120x96-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "plate-message-640x36": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": ""
+ },
+ "plate-message-640x56": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": ""
+ },
+ "plate-message-640x76": {
+  "status": "signed",
+  "signed_in": "pass 2",
+  "note": ""
+ },
+ "stamp-label-120x120": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": ""
+ },
+ "frame-top-bar-1024x40": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": "excluded from placing (the frame redesign)"
+ },
+ "frame-bottom-line-1024x38": {
+  "status": "signed",
+  "signed_in": "pass 1",
+  "note": "excluded from placing (the frame redesign)"
+ },
+ "pod-large-identified": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-band": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-identified": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-band": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-identified": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-sealed": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-band": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-well-identified": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-sealed": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-band": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-large-shade": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-large-shadow": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-shade": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-shadow": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-shade": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-shadow": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-well-shade": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-mask-body": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-mask-accent": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-pattern-dots": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-pattern-bands": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-well-shadow": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "pod-large-crack": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-medium-crack": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-small-crack": {
+  "status": "signed",
+  "signed_in": "pass 6",
+  "note": "layers signed across passes 4 to 7b; the 33 are standing"
+ },
+ "pod-well-crack": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "the 40x48 well pod class, centred; signed with the layer set"
+ },
+ "trait-picture-frame-184x304": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x304-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x304-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x112": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x112-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-184x112-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-120x112": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-120x112-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-120x112-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "rail-tab-unread-full-152x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-unread-compact-72x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-read-full-152x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-read-compact-72x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-focused-full-152x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-focused-compact-72x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-sealed-full-152x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "rail-tab-sealed-compact-72x40": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "signed in pass 4; superseded by rail-tab-fill-* (the rail rule of 29b6dc9 takes the lit rim and the teal away)"
+ },
+ "trait-picture-frame-232x312": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-232x312-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-232x312-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "plate-name-80x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-96x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-112x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-128x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-144x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-160x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-176x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-192x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-208x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "plate-name-224x24": {
+  "status": "signed",
+  "signed_in": "pass 7b",
+  "note": "the 20 px name on its plate (the 0.6 tone signed in pass 6)"
+ },
+ "room-stamp-case": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "the old 176x328 size; the case is now 152x152"
+ },
+ "rail-emblem-coat-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-coat-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-coat-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-face-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-face-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-face-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-shape-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-shape-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-shape-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-legs-tail-unread-24x24": {
+  "status": "signed",
+  "signed_in": "pass 20 (the pass 17 tail)",
+  "note": "Legs & tail: tail-a cropped, prongs hanging; the splayed tuft rejected; the rounds end here"
+ },
+ "rail-emblem-legs-tail-read-24x24": {
+  "status": "signed",
+  "signed_in": "pass 20 (the pass 17 tail)",
+  "note": "Legs & tail: tail-a cropped, prongs hanging; the splayed tuft rejected; the rounds end here"
+ },
+ "rail-emblem-legs-tail-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "pass 20 (the pass 17 tail)",
+  "note": "Legs & tail: tail-a cropped, prongs hanging; the splayed tuft rejected; the rounds end here"
+ },
+ "rail-emblem-movement-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-movement-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-movement-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-stamina-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-stamina-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-stamina-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-character-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-character-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-character-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-glow-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-glow-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-glow-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 3",
+  "note": ""
+ },
+ "rail-emblem-charge-unread-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-charge-read-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "rail-emblem-charge-sealed-24x24": {
+  "status": "signed",
+  "signed_in": "emblems round 4",
+  "note": ""
+ },
+ "ring-well-selected-80x80": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-well-idle-80x80": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-arc-selected-n4-track": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n4-s0": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n4-s1": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n4-s2": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n4-s3": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n5-track": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n5-s0": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n5-s1": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n5-s2": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n5-s3": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n5-s4": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-track": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-s0": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-s1": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-s2": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-s3": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-s4": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n6-s5": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-track": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s0": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s1": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s2": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s3": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s4": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s5": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n7-s6": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-track": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s0": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s1": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s2": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s3": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s4": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s5": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s6": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-selected-n8-s7": {
+  "status": "signed",
+  "signed_in": "pass 17 (the painted gauge, verdict)",
+  "note": "the painted gauge: no jaggies at 1x or 2x, no deeper groove needed"
+ },
+ "ring-arc-idle-n4-track": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n4-s0": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n4-s1": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n4-s2": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n4-s3": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n5-track": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n5-s0": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n5-s1": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n5-s2": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n5-s3": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n5-s4": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-track": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-s0": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-s1": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-s2": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-s3": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-s4": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n6-s5": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-track": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s0": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s1": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s2": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s3": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s4": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s5": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n7-s6": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-track": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s0": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s1": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s2": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s3": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s4": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s5": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s6": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-arc-idle-n8-s7": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "glint-star-12x12": {
+  "status": "signed",
+  "signed_in": "well rings verdict",
+  "note": ""
+ },
+ "ring-column-112x522": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (ac57c715)",
+  "note": "a strip of the housing: two rows of screws, a hose clip and a small vent; signed by the art director"
+ },
+ "ring-hatch-80x56": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "page-pane-256x440": {
+  "status": "signed",
+  "signed_in": "pass 30 (signed on delivery)",
+  "note": "the nine-slice with the radial top-left falloff (radius 56), both widths"
+ },
+ "trait-picture-frame-224x352": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-224x352-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-224x352-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-224x160": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-224x160-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-224x160-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x160": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x160-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x160-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x96": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x96-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x96-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x64": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x64-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-104x64-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "room-stamp-case-152x152": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-well-empty-80x80": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "rail-tab-fill-unread-full-152x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-read-full-152x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-open-full-152x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-sealed-full-152x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-unread-compact-72x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-read-compact-72x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-open-compact-72x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "rail-tab-fill-sealed-compact-72x40": {
+  "status": "signed",
+  "signed_in": "art director, pass 83 re-sign",
+  "note": "the right end's outer edge pixels set to alpha 255 bevel so a shared slant composites opaque (48 px per piece; the left ends unchanged); re-signed by the art director (6f751b7d), relayed by the programme lead 16:16"
+ },
+ "trait-picture-frame-112x112": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "page-new-mark-12x12": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "superseded by page-mark-new-10 (now a 6x6 flat bone dot)"
+ },
+ "frame-companion-solid-16x24": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-companion-outline-16x24": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "room-stamp-case-152x152-front": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "trait-picture-frame-144x176": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-144x176-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-144x176-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-176x144": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-176x144-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-176x144-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "frame-cap-confirm-16": {
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
+ },
+ "frame-cap-confirm-16-dim": {
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
+ },
+ "frame-cap-back-16": {
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the three key caps, 16 px discs"
+ },
+ "frame-room-home-24": {
+  "status": "signed",
+  "signed_in": "pass 12 (verdict)",
+  "note": "the living window"
+ },
+ "frame-room-research-24": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-room-library-24": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-room-habitat-24": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-sun-16": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-lamp-8-mint": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-lamp-8-stone": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "frame-lamp-12-amber": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "face-loika-24": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "face-loika-24-away": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "face-24-empty": {
+  "status": "signed",
+  "signed_in": "passes 8 and 9 (verdict)",
+  "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
+ },
+ "face-belatz-24": {
+  "status": "signed",
+  "signed_in": "pass 11 (verdict)",
+  "note": "Belatz's face, re-cropped tighter"
+ },
+ "face-belatz-24-away": {
+  "status": "signed",
+  "signed_in": "pass 11 (verdict)",
+  "note": "Belatz's face, re-cropped tighter"
+ },
+ "page-mark-new-10": {
+  "status": "signed",
+  "signed_in": "pass 10 (verdict)",
+  "note": "the new-to-the-field-guide dot: a flat bone dot 6x6, 1 px white lit edge, no keyline"
+ },
+ "place-meadow-48x48": {
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
+ },
+ "place-pond-48x48": {
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
+ },
+ "place-rock-48x48": {
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
+ },
+ "place-wood-48x48": {
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
+ },
+ "place-cave-48x48": {
+  "status": "signed",
+  "signed_in": "places round 1 (meadow, pond) and round 2 (rock, wood, cave)",
+  "note": "the five hold as a set"
+ },
+ "mibi-halo-S01-128x160-clear": {
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
+ },
+ "mibi-halo-S01-128x160-mist": {
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
+ },
+ "mibi-halo-S09-128x160-clear": {
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
+ },
+ "mibi-halo-S09-128x160-mist": {
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
+ },
+ "mibi-halo-S12-128x160-clear": {
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
+ },
+ "mibi-halo-S12-128x160-mist": {
+  "status": "signed",
+  "signed_in": "pass 23 verdict",
+  "note": "master: cut from the species' standard painting"
+ },
+ "mibi-halo-S02-128x160-clear": {
+  "status": "held",
+  "signed_in": null,
+  "note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states"
+ },
+ "mibi-halo-S02-128x160-mist": {
+  "status": "held",
+  "signed_in": null,
+  "note": "held: its placeholder is a featureless oval; until its painting exists the build shows mibi-halo-S02-128x160-mist in both states"
+ },
+ "mibi-halo-S03-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S03-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 41 (the low mists signed)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S05-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S05-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S06-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S06-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S08-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S08-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S10-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S10-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 41 (the low mists signed)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S11-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S11-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 41 (the low mists signed)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S13-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S13-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 42 (S13 mist at a 10 percent cap, signed on delivery)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S14-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S14-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 41 (the low mists signed)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S15-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S15-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S16-128x160-clear": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "mibi-halo-S16-128x160-mist": {
+  "status": "placeholder",
+  "signed_in": "pass 37 (re-fit verdict)",
+  "note": "placeholder, re-cut from the standard painting when it lands"
+ },
+ "pod-large-unknown": {
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
+ },
+ "pod-medium-unknown": {
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
+ },
+ "pod-small-unknown": {
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
+ },
+ "pod-well-unknown": {
+  "status": "signed",
+  "signed_in": "pass 24 (signed on delivery)",
+  "note": "the unknown pod: body #6e6e72, cap and ribs #bcb6aa, no pattern, the sealing band on, its own shade layer; no glow core (the painted set has none)"
+ },
+ "pod-collection-crack": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-shade": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-mask-body": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-mask-accent": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-pattern-dots": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-pattern-stripes": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-pattern-bands": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-identified": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-sealed": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-band": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-shadow": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "pod-collection-unknown": {
+  "status": "signed",
+  "signed_in": "pass 25 verdict",
+  "note": "the collection pod class 88x112, every layer and -unknown"
+ },
+ "trait-picture-frame-128x160": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-128x160-unread": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-frame-128x160-sealed": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "room-bench-stage-overview": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "room-bench-stage-chapter": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-collection-idle-176x176": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-collection-closed-176x176": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "mark-species-S01-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S02-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S03-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S04-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S05-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S06-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S07-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S08-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S09-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S10-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S11-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S12-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S13-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S14-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S15-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-S16-24x24": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "geometry from the signed glyph data accepted"
+ },
+ "mark-species-frost-24x24": {
+  "status": "signed",
+  "signed_in": "art director, pass 88 remap",
+  "note": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
+ },
+ "mark-clan-C01-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C02-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C03-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C04-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C05-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C06-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C07-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C08-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C09-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C10-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C11-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C12-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C13-24x24": {
+  "status": "signed",
+  "signed_in": "pass 35 (signed on delivery)",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides; C13: the dot is sand, the mark's ink and not a change to the clan's pigment"
+ },
+ "mark-clan-C14-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C15-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-clan-C16-24x24": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the roundel by plan; the centre dot assigned where its shape family collides"
+ },
+ "mark-first-16x16": {
+  "status": "signed",
+  "signed_in": "pass 27 verdict",
+  "note": "the gilt corner"
+ },
+ "pod-large-pattern-ribs": {
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
+ },
+ "pod-large-pattern-segments": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-large-pattern-plates": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-medium-pattern-ribs": {
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
+ },
+ "pod-medium-pattern-segments": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-medium-pattern-plates": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-small-pattern-ribs": {
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
+ },
+ "pod-small-pattern-segments": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-small-pattern-plates": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-collection-pattern-ribs": {
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
+ },
+ "pod-collection-pattern-segments": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-collection-pattern-plates": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-well-pattern-ribs": {
+  "status": "signed",
+  "signed_in": "pass 28 verdict",
+  "note": "the ribs pattern layer, five classes"
+ },
+ "pod-well-pattern-segments": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-well-pattern-plates": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "ring-kin-56x56": {
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+ },
+ "ring-arc-collection-n1-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n1-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n2-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n3-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n4-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n5-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n6-s6-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s6-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n7-s7-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-track-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s1-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s2-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s3-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s4-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s5-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s6-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s7-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "ring-arc-collection-n8-s8-176x176": {
+  "status": "signed",
+  "signed_in": "e97d2b8 verdict",
+  "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
+ },
+ "room-bench-stage-collection": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 31.8, key R-B 35, sat 25 against the overview 36.8/35/22; a plain floor, no hardware, no ghost cut-outs; its faint residual banding sits under the place rects"
+ },
+ "mark-can-grow-16": {
+  "status": "signed",
+  "signed_in": "pass 34 (signed on delivery)",
+  "note": "the seedling: a 1 px stem, two almond leaves in a V"
+ },
+ "mark-waiting-24": {
+  "status": "signed",
+  "signed_in": "pass 32 verdict",
+  "note": "the waiting mark: three pod silhouettes"
+ },
+ "place-meadow-64x64": {
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
+ },
+ "place-pond-64x64": {
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
+ },
+ "place-rock-64x64": {
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
+ },
+ "place-wood-64x64": {
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
+ },
+ "place-cave-64x64": {
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the pod overview's origin picture, painted from the same painting at 64, never scaled"
+ },
+ "panel-place-320x224": {
+  "status": "signed",
+  "signed_in": "pass 30 verdict (69ade33)",
+  "note": "the collection place's glass card, a fixed master placed 1:1 at every place"
+ },
+ "pod-large-pattern-segments-relief": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-large-pattern-plates-relief": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-medium-pattern-segments-relief": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-medium-pattern-plates-relief": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-small-pattern-segments-relief": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-small-pattern-plates-relief": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-collection-pattern-segments-relief": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-collection-pattern-plates-relief": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "pod-well-pattern-segments-relief": {
+  "status": "signed",
+  "signed_in": "pass 31 verdict",
+  "note": "the segments layer and its relief"
+ },
+ "pod-well-pattern-plates-relief": {
+  "status": "signed",
+  "signed_in": "pass 33 verdict",
+  "note": "the plates layer (scutes) and its relief"
+ },
+ "mark-seed-40x52": {
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
+ },
+ "mark-seed-40x52-mask": {
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
+ },
+ "mark-seed-32x40": {
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
+ },
+ "mark-seed-32x40-mask": {
+  "status": "signed",
+  "signed_in": "pass 43 (signed on delivery)",
+  "note": "the seed: almond tilted 30 degrees, a 3 px bone stem stub with its keyline, a fog seam along the long axis, frostS at about 0.35"
+ },
+ "mark-only-72x8": {
+  "status": "signed",
+  "signed_in": "pass 41 verdict",
+  "note": "the quiet engraved line"
+ },
+ "mark-asleep-24x16": {
+  "status": "signed",
+  "signed_in": "pass 38 verdict",
+  "note": ""
+ },
+ "mark-breed-28x16": {
+  "status": "signed",
+  "signed_in": "pass 38 verdict",
+  "note": ""
+ },
+ "trait-S01-markings-plain-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+ },
+ "trait-S01-markings-plain-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-plain-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-plain-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-markings-plain-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-leaf-crest-128x160": {
+  "status": "signed",
+  "signed_in": "pass 60 verdict",
+  "note": "the 128x160 crop at 75 percent with the keyed fade on its cut edges"
+ },
+ "trait-S01-crown-leaf-crest-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-leaf-crest-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-leaf-crest-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-crown-leaf-crest-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-small-and-large-128x160": {
+  "status": "signed",
+  "signed_in": "pass 62 verdict",
+  "note": "the eye white restored, the polygon silhouette faded, and three matte fringe pixels fixed (the step at the nose is the painting's own outline)"
+ },
+ "trait-S01-eyes-between-small-and-large-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-small-and-large-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-small-and-large-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S01-eyes-between-small-and-large-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-colour-marigold-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+ },
+ "trait-S12-colour-marigold-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-colour-marigold-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-colour-marigold-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-colour-marigold-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-translucency-between-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+ },
+ "trait-S12-translucency-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-translucency-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-translucency-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-translucency-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-pattern-plain-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+ },
+ "trait-S12-pattern-plain-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-pattern-plain-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-pattern-plain-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-pattern-plain-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-trim-butter-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+ },
+ "trait-S12-trim-butter-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-trim-butter-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-trim-butter-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-trim-butter-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-haunch-between-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+ },
+ "trait-S12-haunch-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-haunch-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-haunch-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S12-haunch-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-picture-standin-128x160": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-144x176": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-104x160": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-104x96": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-104x64": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-112x112": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-376x264": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-184x256": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-184x104": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "trait-picture-standin-120x96": {
+  "status": "withdrawn",
+  "signed_in": "pass 59 verdict",
+  "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
+ },
+ "room-bench-stage-compare": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "withdrawn (art director): the old glass-lab compare stage; Compare is not in the current layout, and the room was redrawn in the world brief's look without it"
+ },
+ "compare-mark-differs-12x12": {
+  "status": "withdrawn",
+  "signed_in": "pass 57 verdict",
+  "note": "signed in pass 52; withdrawn in pass 57: Compare's difference mark is the signed lamp frame-lamp-12-amber (the UI designer, after the art director's sixth look), so there is nothing to paint"
+ },
+ "trait-S09-head-between-small-and-large-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-head-between-small-and-large-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-head-between-small-and-large-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-head-between-small-and-large-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-head-between-small-and-large-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-beak-between-128x160": {
+  "status": "signed",
+  "signed_in": "pass 60 verdict",
+  "note": "the 128x160 crop at 75 percent with the keyed fade on its cut edges"
+ },
+ "trait-S09-beak-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-beak-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-beak-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-beak-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-crown-tall-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-crown-tall-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-crown-tall-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-crown-tall-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-crown-tall-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-tail-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-tail-between-144x176": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-tail-between-104x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-tail-between-104x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "trait-S09-tail-between-104x64": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+ },
+ "mark-line-seed-12x16": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+ },
+ "mark-line-seed-pair-20x16": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+ },
+ "mark-line-only-16x8": {
+  "status": "signed",
+  "signed_in": "pass 60 verdict",
+  "note": "the stepped plinth: a 2 px fog face, a 3 px mist front, a 1 px stone foot"
+ },
+ "cell-outline-unread-24x24": {
+  "status": "withdrawn",
+  "signed_in": null,
+  "note": "pass 60: off spec (mist, 1 on 1 off, a nine-slice); replaced by cell-outline-unread-128x160"
+ },
+ "cell-outline-unread-128x160": {
+  "status": "signed",
+  "signed_in": "pass 61 verdict",
+  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+ },
+ "mibi-halo-S04-128x160-clear": {
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
+ },
+ "mibi-halo-S04-128x160-mist": {
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
+ },
+ "mibi-halo-S07-128x160-clear": {
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
+ },
+ "mibi-halo-S07-128x160-mist": {
+  "status": "signed",
+  "signed_in": "pass 63 verdict",
+  "note": "the halo figure painted by the image tool (Pro) over the species silhouette, mist and clear"
+ },
+ "find-crystal-112x112": {
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
+ },
+ "find-pearl-112x112": {
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
+ },
+ "find-shard-112x112": {
+  "status": "signed",
+  "signed_in": "pass 64 verdict",
+  "note": "the sealed page's find picture: a Pro painting in the centred 84x84 on the cell tone ground, muted, no frame"
+ },
+ "trait-S09-colour-cobalt-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
+ },
+ "trait-S09-fluff-between-128x160": {
+  "status": "signed",
+  "signed_in": "pass 66 verdict",
+  "note": "the Fluff plate with the elliptical fade along the back contour and the stray wisp removed"
+ },
+ "trait-S09-sheen-between-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
+ },
+ "trait-S09-feathers-between-128x160": {
+  "status": "signed",
+  "signed_in": "pass 65 verdict",
+  "note": "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame"
+ },
+ "trait-S09-tufts-body-only-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
+ },
+ "trait-S09-crest-between-128x160": {
+  "status": "signed",
+  "signed_in": "pass 65 verdict",
+  "note": "a per-look plate painted by the image tool (Pro), content in the centred 96x120 on the cell tone ground, no frame"
+ },
+ "trait-S09-eyes-small-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
+ },
+ "trait-S09-carriage-straight-128x160": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 80: repainted by the image tool (Pro, one request each, five in all, approved by the owner) and cut like pass 65: content in the centred 96x120 on the cell tone ground, no frame (sheen: the dish the painting set the wing on is keyed away); awaiting verdict"
+ },
+ "cross-gate-switch-16x16": {
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+ },
+ "cross-gate-switch-16x16-settled": {
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+ },
+ "cross-gate-blend-16x16": {
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+ },
+ "cross-gate-blend-16x16-settled": {
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+ },
+ "cross-gate-switch-8x8": {
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+ },
+ "cross-gate-blend-8x8": {
+  "status": "signed",
+  "signed_in": "pass 70 verdict",
+  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+ },
+ "cross-tick-a-12x8": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-tick-b-12x8": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-tick-a-6x4": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-tick-b-6x4": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-wish-lit-12x12": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-wish-hollow-12x12": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-wish-lit-8x8": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-wish-hollow-8x8": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "cross-kin-surface-10x10": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "find-crystal-16x16": {
+  "status": "signed",
+  "signed_in": "pass 69 verdict",
+  "note": "a hand-drawn master of the Cross splice view, typed pixel by pixel at its size"
+ },
+ "find-pearl-16x16": {
+  "status": "signed",
+  "signed_in": "pass 72 verdict",
+  "note": "a hand-drawn small find at 16 px (the shard with its right spike trimmed so row 6 ends in line with row 7)"
+ },
+ "find-shard-16x16": {
+  "status": "signed",
+  "signed_in": "pass 72 verdict",
+  "note": "a hand-drawn small find at 16 px (the shard with its right spike trimmed so row 6 ends in line with row 7)"
+ },
+ "trait-S01-crown-leaf-crest-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S01-crown-leaf-crest-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S01-eyes-between-small-and-large-56x56": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 79: redrawn at its size after the art director's verdict: the edge repainted as a 3 px (56) or 2 px (40) fade of an elliptical mask into ground, no straight cut edge; markings-plain recut from the painting to show the pale flank as a patch of coat; awaiting verdict"
+ },
+ "trait-S01-eyes-between-small-and-large-40x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 79: redrawn at its size after the art director's verdict: the edge repainted as a 3 px (56) or 2 px (40) fade of an elliptical mask into ground, no straight cut edge; markings-plain recut from the painting to show the pale flank as a patch of coat; awaiting verdict"
+ },
+ "trait-S01-markings-plain-56x56": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 79: redrawn at its size after the art director's verdict: the edge repainted as a 3 px (56) or 2 px (40) fade of an elliptical mask into ground, no straight cut edge; markings-plain recut from the painting to show the pale flank as a patch of coat; awaiting verdict"
+ },
+ "trait-S01-markings-plain-40x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 79: redrawn at its size after the art director's verdict: the edge repainted as a 3 px (56) or 2 px (40) fade of an elliptical mask into ground, no straight cut edge; markings-plain recut from the painting to show the pale flank as a patch of coat; awaiting verdict"
+ },
+ "trait-S09-beak-between-56x56": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 79: redrawn at its size after the art director's verdict: the edge repainted as a 3 px (56) or 2 px (40) fade of an elliptical mask into ground, no straight cut edge; markings-plain recut from the painting to show the pale flank as a patch of coat; awaiting verdict"
+ },
+ "trait-S09-beak-between-40x40": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 79: redrawn at its size after the art director's verdict: the edge repainted as a 3 px (56) or 2 px (40) fade of an elliptical mask into ground, no straight cut edge; markings-plain recut from the painting to show the pale flank as a patch of coat; awaiting verdict"
+ },
+ "trait-S09-crest-between-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S09-crest-between-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S09-feathers-between-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S09-feathers-between-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S09-fluff-between-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S09-fluff-between-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-colour-marigold-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-colour-marigold-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-haunch-between-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-haunch-between-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-pattern-plain-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-pattern-plain-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-translucency-between-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-translucency-between-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-trim-butter-56x56": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "trait-S12-trim-butter-40x40": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a Library look plate reduced from the signed 128x160 trait picture, never enlarged"
+ },
+ "guide-pip-unseen-6x6": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "wish-mark-12": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
+ },
+ "wish-mark-24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
+ },
+ "mark-guide-16": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
+ },
+ "guide-seal-32": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 81: redrawn after the art director's verdict on pass 75; awaiting verdict"
+ },
+ "guide-panel-coat-128x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-face-128x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-shape-128x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-legs-tail-128x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-movement-128x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-stamina-128x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-character-128x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-glow-128x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-charge-128x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-sealed-128x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-coat-112x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-face-112x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-shape-112x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-legs-tail-112x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-movement-112x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-stamina-112x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-character-112x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-glow-112x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-panel-charge-112x80": {
+  "status": "signed",
+  "signed_in": "art director, field guide",
+  "note": "a hand-drawn Library field guide master"
+ },
+ "guide-panel-sealed-112x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 76: a Library chapter panel master, hand-drawn at its width: bark edge, faint clay grain, the ink emblem 40x40 (sealed: slats and the 8x4 notch), open ground for the tint; awaiting verdict"
+ },
+ "guide-face-S01-128x112": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict"
+ },
+ "guide-face-S09-128x112": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict"
+ },
+ "guide-face-S12-128x112": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face: the type specimen's head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; awaiting verdict"
+ },
+ "guide-face-S02-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S03-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S04-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S05-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S06-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S07-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S08-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S10-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S11-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S13-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S14-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S15-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "guide-face-S16-128x112": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "pass 77: a Library guide face cut from the species' placeholder render (its painting does not exist yet): head and shoulders in the centred 96x84, the paper keyed to ground, the keyed fade on the cut edges; replace when the painting exists"
+ },
+ "library-foldout-1008x504": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 78: DERIVED FROM THE CONCEPT (BK-D-r2-a1; no signed Book master exists): boards 16 px at the sides, 8 px top and bottom, one aged page 976x488 at (16, 8), no gutter, no marker, no ornament; palette colours only; awaiting verdict"
+ },
+ "sitting-gilt-560x424": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "sitting-gilt-lit-560x424": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "crate-sitting-80x56": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 48.7, mean R-B 27.0, over the +-8 band only because the brass plate (the mark) is a tenth of so small a crate; the case is the signed 256 reduced"
+ },
+ "place-meadow-96x96": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "place-pond-96x96": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "place-rock-96x96": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "place-wood-96x96": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "place-cave-96x96": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "sitting-backdrop-plain-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-meadow-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-pond-544x408": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "sitting-backdrop-rock-544x408": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "sitting-backdrop-wood-544x408": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 85: a Pro painting (a soft wash, no creatures, no text) cropped to the 4:3 window whose horizon falls at the spec's local y 248 and reduced to 544x408; awaiting the art director's 1x composite sign-off"
+ },
+ "sitting-backdrop-cave-544x408": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "pose-S01-shake-dry-96x96": {
+  "status": "signed",
+  "signed_in": "art director, sitting verdict (a079009f)",
+  "note": "a Sitting master signed by the art director after the 1x composite"
+ },
+ "pose-S01-shake-dry-48x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-calm-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-calm-48x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-sleep-curled-96x96": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S01-sleep-curled-48x48": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 86: a Sitting pose picture, a Pro painting of the S01 individual doing the habit (identity from its accepted type specimen), keyed to ground, 8 px clear; the 48 is downsampled from the 96; awaiting the art director's 1x composite sign-off"
+ },
+ "pose-S02-sniff-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S02-sniff-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S02-puff-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S02-puff-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S02-sleep-curled-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S02-sleep-curled-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S03-dig-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S03-dig-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S03-glow-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S03-glow-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S03-sleep-curled-96x96": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "pose-S03-sleep-curled-48x48": {
+  "status": "placeholder",
+  "signed_in": null,
+  "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
+ },
+ "idle-vivarium-day-1024x568": {
+  "status": "signed",
+  "signed_in": "art director, Idle verdict (62bbd883)",
+  "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference)"
+ },
+ "idle-vivarium-dusk-1024x568": {
+  "status": "signed",
+  "signed_in": "art director, Idle verdict (62bbd883)",
+  "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
+ },
+ "idle-vivarium-night-1024x568": {
+  "status": "signed",
+  "signed_in": "art director, verdict (528b73d5)",
+  "note": "signed (art director) at 1x: L* 25.0, key R-B 45, sat 58, 0.0 percent above L* 70, R above B, against the revised night rule; the grow-lamp hood painted out, its light kept; placed as the night set with Idle night, glass night and night bed (the pair rule)"
+ },
+ "home-bay-shut-176x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-bay-open-176x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-well-32x32": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-chamber-empty-72x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-chamber-growing-72x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-chamber-ready-72x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-cradle-empty-96x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-cradle-full-96x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-journal-104x72": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-bed-192x56": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-bed-day-192x56": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-bed-dusk-192x56": {
+  "status": "signed",
+  "signed_in": "art director, Home column verdict (1f7d4a83)",
+  "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
+ },
+ "home-bed-night-192x56": {
+  "status": "signed",
+  "signed_in": "art director, verdict (2cc0e62f)",
+  "note": "signed (art director): at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40); placed as the night set with Idle night, glass night and night bed (the pair rule)"
+ },
+ "vivarium-near-day-544x408": {
+  "status": "signed",
+  "signed_in": "art director, near Vivarium verdict (57490118)",
+  "note": "signed (art director): the Vivarium up close, the same place as Idle at ground level"
+ },
+ "vivarium-near-dusk-544x408": {
+  "status": "signed",
+  "signed_in": "art director, near Vivarium verdict (57490118)",
+  "note": "signed (art director): the Vivarium up close, the same place as Idle at ground level"
+ },
+ "vivarium-near-night-544x408": {
+  "status": "signed",
+  "signed_in": "art director, verdict (night pair grade)",
+  "note": "signed (art director) at 1x: L* 26.0, key R-B 38, sat 64, 0.9 percent above L* 70, R above B; graded down by hand from 30.5 by one linear-light gain of 0.73 so the near view pairs with Idle night 25.0/45/58 and glass night 25.6/46/51 (the pair rule)"
+ },
+ "idle-vivarium-dawn-1024x568": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 40.5, key R-B 37, sat 33 against the dawn rule (key R-B >= 35, L* 38-42); day 43.1/72/48"
+ },
+ "vivarium-near-dawn-544x408": {
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "note": "signed (art director) at 1x: L* 40.5, key R-B 36, sat 36 against the dawn rule (key R-B >= 35, L* 38-42); day 52.4/59/57"
+ },
+ "home-bed-dawn-192x56": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 43.0, key R-B 72, sat 50 against its glass dawn 40.5/36 (limits: L* +3, R-B +40)"
+ },
+ "home-glass-dawn-640x488": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 40.5, key R-B 36, sat 42 against the dawn rule; Idle dawn 40.5/37/33"
+ },
+ "home-glass-day-640x488": {
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "note": "signed (art director) at 1x: L* 38.9, key R-B 75, sat 50 against Idle day 43.1/72/48"
+ },
+ "home-glass-dusk-640x488": {
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
+ },
+ "home-glass-night-640x488": {
+  "status": "signed",
+  "signed_in": "art director, verdict (2cc0e62f)",
+  "note": "signed (art director): at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept; placed as the night set with Idle night, glass night and night bed (the pair rule)"
+ },
+ "room-bench-stage-create": {
+  "status": "signed",
+  "signed_in": "art director, verdict (528b73d5)",
+  "note": "signed (art director) at 1x: L* 35.5, key R-B 37, sat 25 against the Pods overview 36.8/35/22; the signed Incubator stage's frame with its hardware painted out, plain in every keep-clear zone"
+ },
+ "dome-front-304x272": {
+  "status": "signed",
+  "signed_in": "art director, verdict (Station lead's hand fixes)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 53.8, key R-B 12, sat 17; trimmed to the radius-152 arch on (152, 154) with coverage edges (1020 px cleared), ink from row 2 (inkTop 2)"
+ },
+ "dome-back-304x272": {
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 65.7, key R-B 101, sat 48 against the chamber rule (key R-B >= 70, sat 45-60); a plain warm matte inner wall with the lamp; the one window 226 wide"
+ },
+ "dome-inside-standby-304x272": {
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 60.3, key R-B 94, sat 48, a step below growing"
+ },
+ "dome-inside-ready-304x272": {
+  "status": "signed",
+  "signed_in": "art director, verdict (Station lead's hand fixes)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 68.6, sat 45, against growing (dome-back) 65.8 and standby 60.3, so ready is the brightest; rebuilt from dome-back with cream #fff4a6 screened on (t 0.07), the lamp's 582 pixels untouched; 30 percent above L* 70 by design: the ready light the spec asks for, exempt from the glow rule"
+ },
+ "base-336x96": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 60.0, key R-B 35, sat 24; the 1 px tick at (219-220, 72-78) filled from its neighbours; the sand housing, matte, plaque plate and foot line at the spec's rects"
+ },
+ "nest-208x48": {
+  "status": "signed",
+  "signed_in": "art director, verdict (38affaae)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 30.1, sat 59; the moss bed, plump, its hollow visible, defringed (no pixel above R+G+B 480)"
+ },
+ "nest-front-208x48": {
+  "status": "signed",
+  "signed_in": "art director, verdict (38affaae)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 25.5, sat 61; the bed's front rim fibres, defringed"
+ },
+ "bud-early-128x160": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 63.3, key R-B 73, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
+ },
+ "bud-late-128x160": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 61.7, key R-B 84, sat 56, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist; late warms toward blush, ready brightest"
+ },
+ "bud-ready-128x160": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 65.9, key R-B 72, sat 52, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist; late warms toward blush, ready brightest"
+ },
+ "bud-ready-front-128x160": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
+ },
+ "bud-crack-1-128x160": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
+ },
+ "bud-crack-2-128x160": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
+ },
+ "leaf-empty-16x20": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "note": "signed (art director): the leaf's outline recoloured to metal #8a947b (the Incubator spec's empty leaf), palette-exact, 75 px"
+ },
+ "leaf-full-16x20": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director): hand-pixelled, palette-exact, the spec's leaf (sage, sageD vein)"
+ },
+ "leaf-empty-8x12": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12; palette and tick fixes)",
+  "note": "signed (art director): the small leaf's outline recoloured to bevel #565c63 (the Create spec's empty small leaf), palette-exact, 36 px"
+ },
+ "leaf-full-8x12": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director): the same leaf at 8x12, hand-pixelled, palette-exact"
+ },
+ "room-bench-stage-incubator": {
+  "status": "signed",
+  "signed_in": "art director, verdict (d09acb12)",
+  "note": "signed (art director) at 1x: L* 36.0, key R-B 38, sat 24 against the Pods overview 36.8/35/22; floor 0.5 percent above L* 70 (the lit sand rim brings the whole to 4.7, as the overview's 3.3: housing, not glow); hoses clear of the gauges"
+ },
+ "chamber-back-400x320": {
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "note": "signed (art director) at 1x: L* 38.1, key R-B 36, sat 29 against the stage 36.0/38/24; the work tray in the stage's rendering (rim lit top-left, shaded lower-right, inner shadow, four screws); the founder fills most of it"
+ },
+ "chamber-front-400x320": {
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 55.6, key R-B 38, sat 25; the tray's front lip over the founder's feet"
+ },
+ "plate-name-88x24": {
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from"
+ },
+ "dome-small-back-176x224": {
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192"
+ },
+ "dome-small-front-176x224": {
+  "status": "signed",
+  "signed_in": "art director, verdict (72561d74)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"
+ },
+ "bud-small-64x80": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 61.5, key R-B 71, sat 58, 0 percent above L* 70; the bean a clean 112x140 oval, peach lit cream from the top left, a 1 px rust edge, no dot, sprout or waist"
+ },
+ "crate-closer-open-384x256": {
+  "status": "held",
+  "signed_in": null,
+  "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered"
+ },
+ "crate-closer-sealed-384x256": {
+  "status": "held",
+  "signed_in": null,
+  "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered"
+ },
+ "crate-closer-opening-384x256": {
+  "status": "held",
+  "signed_in": null,
+  "note": "held (art director): the crate design is right (the Home bay's sage field case, sand latches, rubber corners, orange tag; L* and mean R-B within the band), but at the scale that fits 88x112 pods in its cut-outs the case overflows the 384x256 region and is cut on the sides and the bottom, which reads broken over the bay. A layout conflict (the region against the pods' size): a region change is proposed to the programme lead; held until it is answered; also, by hand: the torn gap reads as a flat dark line: give the lifted lid a lit lower lip and the gap a soft shadow"
+ },
+ "crate-sealed-256x176": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 49.1, mean R-B 21.0, sat 22 against home-bay-shut 48.0/13.5/18.5 (band L* +-4, mean R-B +-8); the whole sealed case, 8 px clear"
+ },
+ "crate-sitting-256x176": {
+  "status": "signed",
+  "signed_in": "art director, verdict (963f4eab)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 48.0, mean R-B 19.8, sat 27; the whole case with a matte brass plate on the lid, the tag smear gone"
+ }
+}

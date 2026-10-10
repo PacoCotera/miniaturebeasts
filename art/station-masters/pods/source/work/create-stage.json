@@ -1,0 +1,12 @@
+[
+ {
+  "name": "create-stage",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   ["art/station-masters/pods/slices/room-bench-stage-incubator.png", "THE DEVICE FRAME AND FLOOR (the same device's case floor, signed: the sage and sand housing rim with its screws and side plates, the dark warm foam floor, the small gauges and the hoses; paint the same frame, floor, materials and light, but with the arrangement described, not this one):"]
+  ],
+  "prompt": "Output a NEW image, 16:9: the case floor of a research device seen straight from above, the SAME frame and floor as the reference: the sage-and-sand housing rim all round with its screws and its two side plates, and inside it the dark warm foam floor, matte, in the same soft warm light from the upper left, the same grain. Nothing glossy, no chrome, no blue light, no wood, no text, letters or digits. The floor is almost entirely EMPTY, plain and quiet: a large plain dark floor with nothing on it. DETAILS (only these, small and few): (a) ONE small round gauge (matte sage-green body, cream dial, thin dark needle, no glass shine, about a twelfth of the floor's width across) set in the upper LEFT corner area of the floor, close to the top-left corner; a short matte rubber hose with a metal ferrule runs in from the LEFT rim and ends near it, but clear of the gauge (a gap of at least one gauge-width); (b) ONE small round gauge of the same kind set low on the floor just RIGHT of the middle, close to the bottom edge of the floor (about 70 percent across the width, 85 percent down); (c) one more small gauge in the lower RIGHT corner area, and a short matte rubber hose with a metal ferrule running in from the RIGHT rim near the bottom edge and ending near it, clear of every gauge. Every hose is routed CLEAR of every gauge: a hose never passes over, under or touching a gauge, with a clear gap between any hose and any gauge. EVERYTHING ELSE on the floor is plain foam: the whole centre of the floor and all the middle band of the picture are plain, the left side below the top-left corner is plain, the right side above the lower right corner is plain. No nest, no tray, no chamber, no egg, no bean, no pod, no window, no creature, no panel anywhere."
+ }
+]

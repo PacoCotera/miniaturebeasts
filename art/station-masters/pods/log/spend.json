@@ -1,0 +1,2699 @@
+[
+ {
+  "tag": "legs-tail pictogram tail-a (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 8c151f36-169b-4d2b-a65c-2f9ea08c93ba"
+ },
+ {
+  "tag": "legs-tail pictogram tail-b (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 7a3779d1-c82c-4023-8dd0-9712889e250d"
+ },
+ {
+  "tag": "legs-tail pictogram tail-c (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task c0ad34ec-ab8f-4e60-9d3b-2a036bffdd78"
+ },
+ {
+  "tag": "legs-tail pictogram tail-d (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 531112f0-44fa-456b-89ca-500b6a22c305"
+ },
+ {
+  "tag": "legs-tail pictogram leg-a (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 73dfec5a-3096-43bc-9d96-330d3bc02c40"
+ },
+ {
+  "tag": "legs-tail pictogram leg-b (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 84c61716-5d6e-46e9-955a-ea1b01b9866f"
+ },
+ {
+  "tag": "legs-tail pictogram leg-c (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task b28124ee-b0e1-49ce-a6bc-083300fbf4db"
+ },
+ {
+  "tag": "legs-tail pictogram leg-d (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task d8bd5484-0c4c-424f-b54e-39890b7e7797"
+ },
+ {
+  "tag": "legs-tail pictogram tail-a2 (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 28997306-7e12-4e10-9ff9-afe1d74dcef9"
+ },
+ {
+  "tag": "legs-tail pictogram tail-a2 (pass 15)",
+  "tool": "retro-diffusion rd_pro__pixelate",
+  "usd": 0.18,
+  "evidence": "task 21f337ab-f904-4610-a0d1-eb6254a2e946"
+ },
+ {
+  "tag": "page-pane",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:24Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frame-sheet",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:25Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "pod-loika",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:25Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "cradle",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:25Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:26Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "tab-sheet",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:26Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "hatch",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:49Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "well",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:50:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "label-plate",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:51:48Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bar-top",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:51:49Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "cradle2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:51:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frame-thin",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:51:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "name-plate",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:51:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "pod-identified",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:51:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "pod-band",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:52:06Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "glyph",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:17Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frost",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:18Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "list-column",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:19Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "name-plate2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:20Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:21Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:23Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slats",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:53:37Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "cradle3",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:54:55Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "cradle-shelf",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:54:56Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-c",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:56:00Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-d1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:56:32Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-d2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T21:56:32Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "well-rings",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:21Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frame-lip",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:22Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "hatch-leaf",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:22Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "plate-thin",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:22Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "tabs2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:22Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frost-dark",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:22Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slats-light",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:12:42Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "plate-thin2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:13:18Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "well-rings2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:13:19Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-e2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:22:00Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-moss1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:22:01Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-moss2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:22:01Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-e3",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:22:01Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "bench-e1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:22:02Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:30:55Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-deep1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:30:56Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-deep2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:30:56Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slats-frost",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:30:57Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-deep3b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:31:31Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-deep3a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:31:31Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-deep3c",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:31:33Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-lowb",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:32:36Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "dish-lowa",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:32:36Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab2b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:33:20Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab2a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:33:20Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab3c",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:50:30Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab3a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:50:31Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab3b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:50:31Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frame-deep2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:59:10Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "frame-deep1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T22:59:11Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab4b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:09:30Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab4a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:09:31Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "slab4c",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:09:32Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "case1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:13:15Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "case2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:13:15Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "spark",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:36:32Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "ring-selected",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:36:37Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "ring-idle",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:36:37Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "ring-channel2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:45:58Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "ring-channel1",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:45:59Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "marks-rooms",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:50:25Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "marks-device",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:50:27Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "mibi-face",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:50:27Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "marks-device2",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-08T23:51:04Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-leg-a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:43Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-tail-d",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:43Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-tail-a",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:44Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-leg-b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:44Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-tail-b",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:45Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-tail-c",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:45Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-leg-c",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:17:58Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "legstail-pict-leg-d",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:18:00Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place-wood",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:35:37Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place-rock",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:35:38Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place-meadow",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:35:38Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place-cave",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:35:39Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place-pond",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:35:41Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place2-cave",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:39:48Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place2-wood",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:39:49Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "place2-rock",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:39:49Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S09-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:39:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S12-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:39:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S01-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:39:50Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S03-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:09Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S05-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:09Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S02-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:10Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S06-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:11Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S10-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:24Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S13-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:29Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S11-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:32Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S14-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:33Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S15-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:46:34Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S16-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:47:40Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S08-clear",
+  "tool": "gemini (backfilled from log/calls.jsonl, before the cap rule)",
+  "usd": 0.134,
+  "mxn": 2.68,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-08",
+  "time": "2026-10-09T00:47:45Z",
+  "evidence": "estimated at list price for one successful call; failed (429) calls assumed unbilled"
+ },
+ {
+  "tag": "halo-S04-clear try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180176,
+  "mxn": 3.6035,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:07:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 508,
+   "candidatesTokenCount": 1305,
+   "thoughtsTokenCount": 188,
+   "totalTokenCount": 2001
+  }
+ },
+ {
+  "tag": "halo-S07-clear try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182576,
+  "mxn": 3.6515,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:07:18Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 508,
+   "candidatesTokenCount": 1284,
+   "thoughtsTokenCount": 229,
+   "totalTokenCount": 2021
+  }
+ },
+ {
+  "tag": "find-vybronic-crystal try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.177722,
+  "mxn": 3.5544,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:08:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 181,
+   "candidatesTokenCount": 1291,
+   "thoughtsTokenCount": 187,
+   "totalTokenCount": 1659
+  }
+ },
+ {
+  "tag": "find-tide-pearl try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180116,
+  "mxn": 3.6023,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:08:52Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 178,
+   "candidatesTokenCount": 1277,
+   "thoughtsTokenCount": 221,
+   "totalTokenCount": 1676
+  }
+ },
+ {
+  "tag": "find-storm-glass-shard try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.176156,
+  "mxn": 3.5231,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:09:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 178,
+   "candidatesTokenCount": 1305,
+   "thoughtsTokenCount": 160,
+   "totalTokenCount": 1643
+  }
+ },
+ {
+  "tag": "plate-S09-colour try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.179524,
+  "mxn": 3.5905,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:10:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 482,
+   "candidatesTokenCount": 1303,
+   "thoughtsTokenCount": 185,
+   "totalTokenCount": 1970
+  }
+ },
+ {
+  "tag": "plate-S09-fluff try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.184072,
+  "mxn": 3.6814,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:10:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 476,
+   "candidatesTokenCount": 1306,
+   "thoughtsTokenCount": 220,
+   "totalTokenCount": 2002
+  }
+ },
+ {
+  "tag": "plate-S09-sheen try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.17627,
+  "mxn": 3.5254,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:11:04Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 475,
+   "candidatesTokenCount": 1286,
+   "thoughtsTokenCount": 175,
+   "totalTokenCount": 1936
+  }
+ },
+ {
+  "tag": "plate-S09-feathers try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.17903,
+  "mxn": 3.5806,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:11:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 475,
+   "candidatesTokenCount": 1289,
+   "thoughtsTokenCount": 195,
+   "totalTokenCount": 1959
+  }
+ },
+ {
+  "tag": "plate-S09-tufts try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.177352,
+  "mxn": 3.547,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:11:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 476,
+   "candidatesTokenCount": 1273,
+   "thoughtsTokenCount": 197,
+   "totalTokenCount": 1946
+  }
+ },
+ {
+  "tag": "plate-S09-crest try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.177442,
+  "mxn": 3.5488,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:11:56Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 461,
+   "candidatesTokenCount": 1299,
+   "thoughtsTokenCount": 172,
+   "totalTokenCount": 1932
+  }
+ },
+ {
+  "tag": "plate-S09-eyes try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.176832,
+  "mxn": 3.5366,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:12:14Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 456,
+   "candidatesTokenCount": 1282,
+   "thoughtsTokenCount": 184,
+   "totalTokenCount": 1922
+  }
+ },
+ {
+  "tag": "plate-S09-carriage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.176494,
+  "mxn": 3.5299,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T07:12:30Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 467,
+   "candidatesTokenCount": 1286,
+   "thoughtsTokenCount": 177,
+   "totalTokenCount": 1930
+  }
+ },
+ {
+  "tag": "plate66-S09-sheen try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.175424,
+  "mxn": 3.5085,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T16:33:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 532,
+   "candidatesTokenCount": 1290,
+   "thoughtsTokenCount": 163,
+   "totalTokenCount": 1985
+  }
+ },
+ {
+  "tag": "plate66-S09-tufts try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19488,
+  "mxn": 3.8976,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T16:33:34Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 540,
+   "candidatesTokenCount": 1340,
+   "thoughtsTokenCount": 275,
+   "totalTokenCount": 2155
+  }
+ },
+ {
+  "tag": "plate66-S09-carriage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189318,
+  "mxn": 3.7864,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T16:33:51Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 519,
+   "candidatesTokenCount": 1327,
+   "thoughtsTokenCount": 242,
+   "totalTokenCount": 2088
+  }
+ },
+ {
+  "tag": "plate66-S09-eyes try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.184792,
+  "mxn": 3.6958,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T16:34:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 536,
+   "candidatesTokenCount": 1319,
+   "thoughtsTokenCount": 212,
+   "totalTokenCount": 2067
+  }
+ },
+ {
+  "tag": "plate66-S09-colour try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183626,
+  "mxn": 3.6725,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T16:34:23Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 553,
+   "candidatesTokenCount": 1337,
+   "thoughtsTokenCount": 184,
+   "totalTokenCount": 2074
+  }
+ },
+ {
+  "tag": "sitting-backdrop-plain try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189418,
+  "mxn": 3.7884,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:13:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 389,
+   "candidatesTokenCount": 1366,
+   "thoughtsTokenCount": 206,
+   "totalTokenCount": 1961
+  }
+ },
+ {
+  "tag": "sitting-backdrop-meadow try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.208164,
+  "mxn": 4.1633,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:13:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 642,
+   "candidatesTokenCount": 1429,
+   "thoughtsTokenCount": 295,
+   "totalTokenCount": 2366
+  }
+ },
+ {
+  "tag": "sitting-backdrop-pond try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191844,
+  "mxn": 3.8369,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:10Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 642,
+   "candidatesTokenCount": 1415,
+   "thoughtsTokenCount": 173,
+   "totalTokenCount": 2230
+  }
+ },
+ {
+  "tag": "sitting-backdrop-rock try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.203112,
+  "mxn": 4.0622,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 636,
+   "candidatesTokenCount": 1417,
+   "thoughtsTokenCount": 265,
+   "totalTokenCount": 2318
+  }
+ },
+ {
+  "tag": "sitting-backdrop-wood try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.0,
+  "mxn": 0.0,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 500,
+  "usage": null
+ },
+ {
+  "tag": "sitting-backdrop-wood try 2",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.202648,
+  "mxn": 4.053,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:14:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 644,
+   "candidatesTokenCount": 1430,
+   "thoughtsTokenCount": 248,
+   "totalTokenCount": 2322
+  }
+ },
+ {
+  "tag": "sitting-backdrop-cave try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.207558,
+  "mxn": 4.1512,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:15:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 639,
+   "candidatesTokenCount": 1437,
+   "thoughtsTokenCount": 282,
+   "totalTokenCount": 2358
+  }
+ },
+ {
+  "tag": "pose-S01-shake-dry try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186132,
+  "mxn": 3.7226,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:17:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 546,
+   "candidatesTokenCount": 1304,
+   "thoughtsTokenCount": 238,
+   "totalTokenCount": 2088
+  }
+ },
+ {
+  "tag": "pose-S01-calm try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19344,
+  "mxn": 3.8688,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:03Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 540,
+   "candidatesTokenCount": 1305,
+   "thoughtsTokenCount": 298,
+   "totalTokenCount": 2143
+  }
+ },
+ {
+  "tag": "pose-S01-sleep-curled try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182162,
+  "mxn": 3.6432,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 541,
+   "candidatesTokenCount": 1312,
+   "thoughtsTokenCount": 197,
+   "totalTokenCount": 2050
+  }
+ },
+ {
+  "tag": "pose-S02-sniff try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.184198,
+  "mxn": 3.684,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 539,
+   "candidatesTokenCount": 1299,
+   "thoughtsTokenCount": 227,
+   "totalTokenCount": 2065
+  }
+ },
+ {
+  "tag": "pose-S02-puff try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185522,
+  "mxn": 3.7104,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:18:49Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 541,
+   "candidatesTokenCount": 1328,
+   "thoughtsTokenCount": 209,
+   "totalTokenCount": 2078
+  }
+ },
+ {
+  "tag": "pose-S02-sleep-curled try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182996,
+  "mxn": 3.6599,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:04Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 538,
+   "candidatesTokenCount": 1282,
+   "thoughtsTokenCount": 234,
+   "totalTokenCount": 2054
+  }
+ },
+ {
+  "tag": "pose-S03-dig try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181574,
+  "mxn": 3.6315,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:20Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 547,
+   "candidatesTokenCount": 1302,
+   "thoughtsTokenCount": 202,
+   "totalTokenCount": 2051
+  }
+ },
+ {
+  "tag": "pose-S03-glow try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.18037,
+  "mxn": 3.6074,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 545,
+   "candidatesTokenCount": 1272,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2039
+  }
+ },
+ {
+  "tag": "pose-S03-sleep-curled try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181202,
+  "mxn": 3.624,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:19:51Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 541,
+   "candidatesTokenCount": 1278,
+   "thoughtsTokenCount": 223,
+   "totalTokenCount": 2042
+  }
+ },
+ {
+  "tag": "concept-06-habitat try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.225652,
+  "mxn": 4.513,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:21:54Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1286,
+   "candidatesTokenCount": 1563,
+   "thoughtsTokenCount": 296,
+   "totalTokenCount": 3145
+  }
+ },
+ {
+  "tag": "concept-11-bench try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.224986,
+  "mxn": 4.4997,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:22:13Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1253,
+   "candidatesTokenCount": 1508,
+   "thoughtsTokenCount": 346,
+   "totalTokenCount": 3107
+  }
+ },
+ {
+  "tag": "concept-06b-habitat-meet try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.2192,
+  "mxn": 4.384,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:22:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1300,
+   "candidatesTokenCount": 1477,
+   "thoughtsTokenCount": 328,
+   "totalTokenCount": 3105
+  }
+ },
+ {
+  "tag": "concept-06c-habitat-child try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.24221,
+  "mxn": 4.8442,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:23:00Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1285,
+   "candidatesTokenCount": 1601,
+   "thoughtsTokenCount": 396,
+   "totalTokenCount": 3282
+  }
+ },
+ {
+  "tag": "concept-06d-habitat-armed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.2206,
+  "mxn": 4.412,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:23:19Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1280,
+   "candidatesTokenCount": 1507,
+   "thoughtsTokenCount": 310,
+   "totalTokenCount": 3097
+  }
+ },
+ {
+  "tag": "concept-06e-habitat-empty try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22469,
+  "mxn": 4.4938,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:23:38Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1285,
+   "candidatesTokenCount": 1456,
+   "thoughtsTokenCount": 395,
+   "totalTokenCount": 3136
+  }
+ },
+ {
+  "tag": "concept-06f-habitat-away try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.265378,
+  "mxn": 5.3076,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:24:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1289,
+   "candidatesTokenCount": 1639,
+   "thoughtsTokenCount": 551,
+   "totalTokenCount": 3479
+  }
+ },
+ {
+  "tag": "concept-11b-bench-armed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.231696,
+  "mxn": 4.6339,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:24:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1248,
+   "candidatesTokenCount": 1514,
+   "thoughtsTokenCount": 396,
+   "totalTokenCount": 3158
+  }
+ },
+ {
+  "tag": "concept-11c-bench-away try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.248724,
+  "mxn": 4.9745,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:24:47Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1242,
+   "candidatesTokenCount": 1595,
+   "thoughtsTokenCount": 457,
+   "totalTokenCount": 3294
+  }
+ },
+ {
+  "tag": "concept-11d-bench-tier2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.236976,
+  "mxn": 4.7395,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:25:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1248,
+   "candidatesTokenCount": 1599,
+   "thoughtsTokenCount": 355,
+   "totalTokenCount": 3202
+  }
+ },
+ {
+  "tag": "sitting-backdrop-wood-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.200132,
+  "mxn": 4.0026,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:36:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 946,
+   "candidatesTokenCount": 1446,
+   "thoughtsTokenCount": 206,
+   "totalTokenCount": 2598
+  }
+ },
+ {
+  "tag": "pose-S01-calm-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183234,
+  "mxn": 3.6647,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T22:36:44Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 717,
+   "candidatesTokenCount": 1279,
+   "thoughtsTokenCount": 236,
+   "totalTokenCount": 2232
+  }
+ },
+ {
+  "tag": "board-home-draft try 1",
+  "tool": "gemini gemini-3.1-flash-image",
+  "usd": 0.216604,
+  "mxn": 4.3321,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:15:31Z",
+  "model": "gemini-3.1-flash-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2102,
+   "candidatesTokenCount": 1770,
+   "thoughtsTokenCount": null,
+   "totalTokenCount": 3872
+  }
+ },
+ {
+  "tag": "board-pods-draft try 1",
+  "tool": "gemini gemini-3.1-flash-image",
+  "usd": 0.194026,
+  "mxn": 3.8805,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:15:40Z",
+  "model": "gemini-3.1-flash-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1133,
+   "candidatesTokenCount": 1598,
+   "thoughtsTokenCount": null,
+   "totalTokenCount": 2731
+  }
+ },
+ {
+  "tag": "board-incubator-draft try 1",
+  "tool": "gemini gemini-3.1-flash-image",
+  "usd": 0.203898,
+  "mxn": 4.078,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:15:49Z",
+  "model": "gemini-3.1-flash-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1149,
+   "candidatesTokenCount": 1680,
+   "thoughtsTokenCount": null,
+   "totalTokenCount": 2829
+  }
+ },
+ {
+  "tag": "board-home-pro try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.224676,
+  "mxn": 4.4935,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:16:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 2178,
+   "candidatesTokenCount": 1518,
+   "thoughtsTokenCount": 318,
+   "totalTokenCount": 4014
+  }
+ },
+ {
+  "tag": "board-pods-pro try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.220218,
+  "mxn": 4.4044,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:16:41Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1209,
+   "candidatesTokenCount": 1503,
+   "thoughtsTokenCount": 312,
+   "totalTokenCount": 3024
+  }
+ },
+ {
+  "tag": "board-incubator-pro try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22157,
+  "mxn": 4.4314,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:17:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1225,
+   "candidatesTokenCount": 1510,
+   "thoughtsTokenCount": 316,
+   "totalTokenCount": 3051
+  }
+ },
+ {
+  "tag": "board-pods-pro-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.212824,
+  "mxn": 4.2565,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:17:36Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1292,
+   "candidatesTokenCount": 1471,
+   "thoughtsTokenCount": 281,
+   "totalTokenCount": 3044
+  }
+ },
+ {
+  "tag": "board-home-pro-notext try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.197018,
+  "mxn": 3.9404,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:18:09Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 409,
+   "candidatesTokenCount": 1443,
+   "thoughtsTokenCount": 192,
+   "totalTokenCount": 2044
+  }
+ },
+ {
+  "tag": "board-home-pro-r3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189548,
+  "mxn": 3.791,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:20:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 874,
+   "candidatesTokenCount": 1311,
+   "thoughtsTokenCount": 254,
+   "totalTokenCount": 2439
+  }
+ },
+ {
+  "tag": "board-pods-pro-r3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.210434,
+  "mxn": 4.2087,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:21:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1057,
+   "candidatesTokenCount": 1417,
+   "thoughtsTokenCount": 319,
+   "totalTokenCount": 2793
+  }
+ },
+ {
+  "tag": "board-incubator-pro-r3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.206608,
+  "mxn": 4.1322,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-09",
+  "time": "2026-10-09T23:21:22Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1064,
+   "candidatesTokenCount": 1478,
+   "thoughtsTokenCount": 226,
+   "totalTokenCount": 2768
+  }
+ },
+ {
+  "tag": "room-stage-base try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.206476,
+  "mxn": 4.1295,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:08:47Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 938,
+   "candidatesTokenCount": 1460,
+   "thoughtsTokenCount": 245,
+   "totalTokenCount": 2643
+  }
+ },
+ {
+  "tag": "room-stage-overview try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.199944,
+  "mxn": 3.9989,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:09:26Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 852,
+   "candidatesTokenCount": 1370,
+   "thoughtsTokenCount": 282,
+   "totalTokenCount": 2504
+  }
+ },
+ {
+  "tag": "room-stage-chapter try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.211814,
+  "mxn": 4.2363,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:09:45Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 847,
+   "candidatesTokenCount": 1418,
+   "thoughtsTokenCount": 333,
+   "totalTokenCount": 2598
+  }
+ },
+ {
+  "tag": "room-stage-collection try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191802,
+  "mxn": 3.836,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:10:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 801,
+   "candidatesTokenCount": 1386,
+   "thoughtsTokenCount": 199,
+   "totalTokenCount": 2386
+  }
+ },
+ {
+  "tag": "room-stage-overview-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186312,
+  "mxn": 3.7262,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:11:03Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 816,
+   "candidatesTokenCount": 1345,
+   "thoughtsTokenCount": 194,
+   "totalTokenCount": 2355
+  }
+ },
+ {
+  "tag": "room-stage-chapter-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.213554,
+  "mxn": 4.2711,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:11:24Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 817,
+   "candidatesTokenCount": 1371,
+   "thoughtsTokenCount": 395,
+   "totalTokenCount": 2583
+  }
+ },
+ {
+  "tag": "pods-room-sheet try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22383,
+  "mxn": 4.4766,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:15:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1275,
+   "candidatesTokenCount": 1477,
+   "thoughtsTokenCount": 367,
+   "totalTokenCount": 3119
+  }
+ },
+ {
+  "tag": "vivarium-day try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.206148,
+  "mxn": 4.123,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:17:32Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1014,
+   "candidatesTokenCount": 1437,
+   "thoughtsTokenCount": 264,
+   "totalTokenCount": 2715
+  }
+ },
+ {
+  "tag": "vivarium-dusk try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182632,
+  "mxn": 3.6526,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:18:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 476,
+   "candidatesTokenCount": 1290,
+   "thoughtsTokenCount": 224,
+   "totalTokenCount": 1990
+  }
+ },
+ {
+  "tag": "vivarium-night try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189462,
+  "mxn": 3.7892,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:18:19Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 531,
+   "candidatesTokenCount": 1321,
+   "thoughtsTokenCount": 249,
+   "totalTokenCount": 2101
+  }
+ },
+ {
+  "tag": "vivarium-night-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.187248,
+  "mxn": 3.745,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:18:55Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 864,
+   "candidatesTokenCount": 1310,
+   "thoughtsTokenCount": 236,
+   "totalTokenCount": 2410
+  }
+ },
+ {
+  "tag": "pods-floor try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.201316,
+  "mxn": 4.0263,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:20:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 938,
+   "candidatesTokenCount": 1425,
+   "thoughtsTokenCount": 237,
+   "totalTokenCount": 2600
+  }
+ },
+ {
+  "tag": "pods-nest try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.190136,
+  "mxn": 3.8027,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:21:17Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 868,
+   "candidatesTokenCount": 1340,
+   "thoughtsTokenCount": 230,
+   "totalTokenCount": 2438
+  }
+ },
+ {
+  "tag": "pods-plate try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.196416,
+  "mxn": 3.9283,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:22:04Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 888,
+   "candidatesTokenCount": 1330,
+   "thoughtsTokenCount": 292,
+   "totalTokenCount": 2510
+  }
+ },
+ {
+  "tag": "home-column-sheet try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.23157,
+  "mxn": 4.6314,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:27:59Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1065,
+   "candidatesTokenCount": 1486,
+   "thoughtsTokenCount": 426,
+   "totalTokenCount": 2977
+  }
+ },
+ {
+  "tag": "home-column-sheet-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.277302,
+  "mxn": 5.546,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:33:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1731,
+   "candidatesTokenCount": 1901,
+   "thoughtsTokenCount": 381,
+   "totalTokenCount": 4013
+  }
+ },
+ {
+  "tag": "vivarium-near-day try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189188,
+  "mxn": 3.7838,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:37:05Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 934,
+   "candidatesTokenCount": 1333,
+   "thoughtsTokenCount": 228,
+   "totalTokenCount": 2495
+  }
+ },
+ {
+  "tag": "vivarium-near-dusk try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180172,
+  "mxn": 3.6034,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:37:34Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 746,
+   "candidatesTokenCount": 1295,
+   "thoughtsTokenCount": 194,
+   "totalTokenCount": 2235
+  }
+ },
+ {
+  "tag": "vivarium-near-night try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189234,
+  "mxn": 3.7847,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:37:56Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 777,
+   "candidatesTokenCount": 1309,
+   "thoughtsTokenCount": 255,
+   "totalTokenCount": 2341
+  }
+ },
+ {
+  "tag": "vivarium-dawn try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185232,
+  "mxn": 3.7046,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:41:48Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 876,
+   "candidatesTokenCount": 1334,
+   "thoughtsTokenCount": 195,
+   "totalTokenCount": 2405
+  }
+ },
+ {
+  "tag": "vivarium-near-dawn try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.1831,
+  "mxn": 3.662,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:43:16Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 830,
+   "candidatesTokenCount": 1315,
+   "thoughtsTokenCount": 197,
+   "totalTokenCount": 2342
+  }
+ },
+ {
+  "tag": "home-glass-day try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.195626,
+  "mxn": 3.9125,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:44:24Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 613,
+   "candidatesTokenCount": 1377,
+   "thoughtsTokenCount": 243,
+   "totalTokenCount": 2233
+  }
+ },
+ {
+  "tag": "home-glass-dawn try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.192142,
+  "mxn": 3.8428,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:51:21Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 791,
+   "candidatesTokenCount": 1308,
+   "thoughtsTokenCount": 280,
+   "totalTokenCount": 2379
+  }
+ },
+ {
+  "tag": "home-glass-dusk try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181274,
+  "mxn": 3.6255,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:51:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 757,
+   "candidatesTokenCount": 1288,
+   "thoughtsTokenCount": 210,
+   "totalTokenCount": 2255
+  }
+ },
+ {
+  "tag": "home-glass-night try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.196436,
+  "mxn": 3.9287,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:52:01Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 838,
+   "candidatesTokenCount": 1349,
+   "thoughtsTokenCount": 274,
+   "totalTokenCount": 2461
+  }
+ },
+ {
+  "tag": "incubator-sheet-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.209594,
+  "mxn": 4.1919,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:13:43Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1357,
+   "candidatesTokenCount": 1453,
+   "thoughtsTokenCount": 271,
+   "totalTokenCount": 3081
+  }
+ },
+ {
+  "tag": "incubator-sheet-a2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.204136,
+  "mxn": 4.0827,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:14:16Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1688,
+   "candidatesTokenCount": 1382,
+   "thoughtsTokenCount": 291,
+   "totalTokenCount": 3361
+  }
+ },
+ {
+  "tag": "incubator-sheet-a3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189918,
+  "mxn": 3.7984,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:14:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 939,
+   "candidatesTokenCount": 1303,
+   "thoughtsTokenCount": 264,
+   "totalTokenCount": 2506
+  }
+ },
+ {
+  "tag": "incubator-bud-early try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185012,
+  "mxn": 3.7002,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:17:28Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 826,
+   "candidatesTokenCount": 1306,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2354
+  }
+ },
+ {
+  "tag": "incubator-stage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.202418,
+  "mxn": 4.0484,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:18:14Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1009,
+   "candidatesTokenCount": 1402,
+   "thoughtsTokenCount": 268,
+   "totalTokenCount": 2679
+  }
+ },
+ {
+  "tag": "incubator-bud-early2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.190584,
+  "mxn": 3.8117,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:18:45Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1152,
+   "candidatesTokenCount": 1347,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2721
+  }
+ },
+ {
+  "tag": "incubator-bud-early3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193864,
+  "mxn": 3.8773,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:47:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 872,
+   "candidatesTokenCount": 1353,
+   "thoughtsTokenCount": 248,
+   "totalTokenCount": 2473
+  }
+ },
+ {
+  "tag": "create-stage try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.197824,
+  "mxn": 3.9565,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:49:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 752,
+   "candidatesTokenCount": 1386,
+   "thoughtsTokenCount": 250,
+   "totalTokenCount": 2388
+  }
+ },
+ {
+  "tag": "idle-night-repaint try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193438,
+  "mxn": 3.8688,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:52:09Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 599,
+   "candidatesTokenCount": 1336,
+   "thoughtsTokenCount": 266,
+   "totalTokenCount": 2201
+  }
+ },
+ {
+  "tag": "glass-night-repaint try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.18372,
+  "mxn": 3.6744,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:52:35Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 600,
+   "candidatesTokenCount": 1312,
+   "thoughtsTokenCount": 209,
+   "totalTokenCount": 2121
+  }
+ },
+ {
+  "tag": "cargo-crate-open try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185434,
+  "mxn": 3.7087,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:59:33Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1217,
+   "candidatesTokenCount": 1348,
+   "thoughtsTokenCount": 177,
+   "totalTokenCount": 2742
+  }
+ },
+ {
+  "tag": "cargo-crate-sealed try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.186238,
+  "mxn": 3.7248,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:59:57Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 539,
+   "candidatesTokenCount": 1330,
+   "thoughtsTokenCount": 213,
+   "totalTokenCount": 2082
+  }
+ },
+ {
+  "tag": "probe-draft-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.227852,
+  "mxn": 4.557,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:10:15Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1006,
+   "candidatesTokenCount": 1384,
+   "thoughtsTokenCount": 498,
+   "totalTokenCount": 2888
+  }
+ },
+ {
+  "tag": "probe-draft-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.203458,
+  "mxn": 4.0692,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:10:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 989,
+   "candidatesTokenCount": 1437,
+   "thoughtsTokenCount": 242,
+   "totalTokenCount": 2668
+  }
+ }
+]

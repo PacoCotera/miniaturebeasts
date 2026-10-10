@@ -1,0 +1,58 @@
+[
+ {
+  "name": "legstail-pict-tail-a",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a bushy tail seen from the side, fat at its root and curling up and over to the right like a squirrel's, ending in a brush of five short points at the tip; it must not close into a ring. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-tail-b",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a long tail seen from the side, rising from the lower left in a graceful S sweep, thick at the root and tapering toward the end, ending in a small brush tuft of several points. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-tail-c",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a short thick tail seen from the side, rising from the lower left and curving up to the right, with a broad rounded tip split into three short points; it must not close into a ring. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-tail-d",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a tail seen from the side that hangs down from the lower left and then lifts in a hook at its end, the end a fuller tuft of several points; it must not close into a ring. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-leg-a",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a hind leg of a small four-legged burrowing animal seen from the side: a rounded teardrop thigh at the top, a sharp bend at the hock pointing backward, a short shin angled forward and down, ending in a filled oval paw. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-leg-b",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a hind leg seen from the side: heavy rounded thigh, the hock bent backward, a slim shin, and a flat paw with three short claws pointing forward. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-leg-c",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a hind leg seen from the side, standing: a compact thigh mass, a short straight shin and a big round paw at the bottom, the whole leg leaning slightly forward. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ },
+ {
+  "name": "legstail-pict-leg-d",
+  "aspect": "1:1",
+  "size": "1K",
+  "prompt": "Output a NEW image: a hind leg seen from the side in a crouch: a large haunch, a deeply bent hock, the lower leg lying forward along the ground and ending in a broad paw. A single flat FILLED pictogram, one solid silhouette shape (no outline, no keyline, no gradient, no texture, no fur lines, no shadow, no glow), drawn as a chunky icon for a 24 px game interface: bold simple shape, the edge on the upper left slightly lighter than the body as if lit from the upper left, nothing else in the picture. Colour: one soft bone-white tone. Centred, generous empty margin all round, on a perfectly flat uniform dark blue-teal ground (hex 16222C). Do not draw an animal, only this part.",
+  "refs": []
+ }
+]

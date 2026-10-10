@@ -1,0 +1,329 @@
+{
+ "species": "S01",
+ "painting": "prototypes/workbench/grow/out/S01/07bef58c9d38d564/station-side-600x620.png",
+ "size": [
+  600,
+  620
+ ],
+ "note": "hand-placed rectangles on the standard painting for round 1; the rig's index pass would place them exactly",
+ "traits": {
+  "coat/Markings": {
+   "chapter": "coat",
+   "trait": "Markings",
+   "look": "plain",
+   "rect": [
+    100,
+    300,
+    370,
+    480
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      100,
+      221,
+      370,
+      559
+     ],
+     "source_px": [
+      270,
+      338
+     ],
+     "slice": "trait-S01-markings-plain-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 30
+      },
+      {
+       "edge": "bottom",
+       "run_px": 71
+      },
+      {
+       "edge": "left",
+       "run_px": 76
+      },
+      {
+       "edge": "right",
+       "run_px": 70
+      }
+     ],
+     "pass_61": [
+      "the same 12 px smoothstep along the hard polygon silhouette segments [[(19, 51), (31, 41), (84, 37)]]"
+     ]
+    },
+    "144x176": {
+     "window": [
+      100,
+      225,
+      370,
+      555
+     ],
+     "source_px": [
+      270,
+      330
+     ],
+     "slice": "trait-S01-markings-plain-144x176",
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      100,
+      182,
+      370,
+      598
+     ],
+     "source_px": [
+      270,
+      416
+     ],
+     "slice": "trait-S01-markings-plain-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      100,
+      265,
+      370,
+      515
+     ],
+     "source_px": [
+      270,
+      250
+     ],
+     "slice": "trait-S01-markings-plain-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      89,
+      300,
+      381,
+      480
+     ],
+     "source_px": [
+      292,
+      180
+     ],
+     "slice": "trait-S01-markings-plain-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  },
+  "face/Crown": {
+   "chapter": "face",
+   "trait": "Crown",
+   "look": "leaf crest",
+   "rect": [
+    275,
+    50,
+    445,
+    170
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      275,
+      4,
+      445,
+      216
+     ],
+     "source_px": [
+      170,
+      212
+     ],
+     "slice": "trait-S01-crown-leaf-crest-128x160",
+     "flag": null,
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "bottom",
+       "run_px": 90
+      },
+      {
+       "edge": "right",
+       "run_px": 22
+      }
+     ],
+     "pass_61": []
+    },
+    "144x176": {
+     "window": [
+      275,
+      6,
+      445,
+      214
+     ],
+     "source_px": [
+      170,
+      208
+     ],
+     "slice": "trait-S01-crown-leaf-crest-144x176",
+     "flag": null,
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      275,
+      0,
+      445,
+      262
+     ],
+     "source_px": [
+      170,
+      262
+     ],
+     "slice": "trait-S01-crown-leaf-crest-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      275,
+      32,
+      445,
+      188
+     ],
+     "source_px": [
+      170,
+      156
+     ],
+     "slice": "trait-S01-crown-leaf-crest-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      262,
+      50,
+      458,
+      170
+     ],
+     "source_px": [
+      196,
+      120
+     ],
+     "slice": "trait-S01-crown-leaf-crest-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  },
+  "face/Eyes": {
+   "chapter": "face",
+   "trait": "Eyes",
+   "look": "between small and large",
+   "rect": [
+    385,
+    180,
+    470,
+    260
+   ],
+   "crops": {
+    "128x160": {
+     "window": [
+      380,
+      160,
+      476,
+      280
+     ],
+     "source_px": [
+      96,
+      120
+     ],
+     "slice": "trait-S01-eyes-between-small-and-large-128x160",
+     "flag": "the part is 85x80 px, smaller than the 96x120 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_59": "content 96x120 centred in the cell",
+     "keyed_edges": [
+      {
+       "edge": "top",
+       "run_px": 45
+      },
+      {
+       "edge": "bottom",
+       "run_px": 96
+      },
+      {
+       "edge": "left",
+       "run_px": 120
+      },
+      {
+       "edge": "right",
+       "run_px": 44
+      }
+     ],
+     "pass_61": [
+      "the same 12 px smoothstep along the hard polygon silhouette segments [[(70, 30), (93, 80)]]",
+      "pass 62: pixels (98, 96) set to the ground and (98, 97), (99, 97) to (104, 115, 115) (matte fringe)"
+     ]
+    },
+    "144x176": {
+     "window": [
+      374,
+      154,
+      482,
+      286
+     ],
+     "source_px": [
+      108,
+      132
+     ],
+     "slice": "trait-S01-eyes-between-small-and-large-144x176",
+     "flag": "the part is 85x80 px, smaller than the 108x132 cell: shown with its surroundings at 1:1, not enlarged",
+     "pass_59": "content 108x132 centred in the cell"
+    },
+    "104x160": {
+     "window": [
+      385,
+      155,
+      470,
+      285
+     ],
+     "source_px": [
+      85,
+      130
+     ],
+     "slice": "trait-S01-eyes-between-small-and-large-104x160",
+     "flag": null,
+     "pass_59": "content 78x120 centred in the cell"
+    },
+    "104x96": {
+     "window": [
+      384,
+      180,
+      471,
+      260
+     ],
+     "source_px": [
+      87,
+      80
+     ],
+     "slice": "trait-S01-eyes-between-small-and-large-104x96",
+     "flag": null,
+     "pass_59": "content 78x72 centred in the cell"
+    },
+    "104x64": {
+     "window": [
+      362,
+      180,
+      492,
+      260
+     ],
+     "source_px": [
+      130,
+      80
+     ],
+     "slice": "trait-S01-eyes-between-small-and-large-104x64",
+     "flag": null,
+     "pass_59": "content 78x48 centred in the cell"
+    }
+   }
+  }
+ }
+}

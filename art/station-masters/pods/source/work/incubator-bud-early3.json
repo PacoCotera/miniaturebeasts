@@ -1,0 +1,19 @@
+[
+ {
+  "name": "incubator-bud-early3",
+  "aspect": "3:4",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/incubator-bud-early2.jpg",
+    "THE LAST ATTEMPT (its smooth peach skin, cream light, rust edge and matte painting are right; its SHAPE is wrong: it has a waist and a notch on one side like a kidney, and it has a mound of moss under it; redraw it as a plump upright OVAL with no waist and no moss):"
+   ],
+   [
+    "art/station-masters/pods/slices/home-chamber-growing-72x72.png",
+    "THE BEAN IN HOME (the signed Home chamber's bean: a plump, smooth, warm bean; the same character, larger):"
+   ]
+  ],
+  "prompt": "Output a NEW image, portrait 3:4: ONE plump, smooth, warm bean standing upright, isolated on a FLAT dark slate background (deep desaturated blue-black slate, uniform, no gradient, nothing spilling onto it), centred. SHAPE: a perfectly plump UPRIGHT OVAL, like a fat egg-shaped seed, about 1.25 times taller than wide, widest in its lower middle, softly rounded at the top and bottom, SYMMETRIC left to right: NO waist, NO notch, NO indent, NO kidney shape, NO crease on either side. It fills about 70 percent of the picture's height and stands alone: NO moss, NO ground, NO mound, NO shadow on the background. SURFACE: smooth matte skin, peach to lit cream in the middle with a rust-brown edge, glowing softly from within, soft warm daylight from the upper left. The bean has NO dot, NO eye, NO spot, NO mark, NO sprout, NO leaf, NOTHING embryo-like or creature-like. Soft painted forms, matte, no ink outlines, no hard highlights, nothing glossy, no chrome, no cool or blue light. No text, letters or digits."
+ }
+]

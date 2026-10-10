@@ -1,0 +1,32 @@
+[
+ {
+  "name": "board-pods-pro-r2",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/companion-concept/field-partner-concept.png",
+    "HOUSING AND MATERIALS REFERENCE (the Companion, the Station's sibling: its matte sage-and-sand housing, dark rubber bumpers, screws, and its calm dark slate screen panels with cream text areas and orange for the one thing to do; take the materials and the calm, not its layout or its pixel-art creature):"
+   ],
+   [
+    "art/concept-homepage/hero-kit.png",
+    "THE KIT TEST (the Station's housing only: its sage-green matte shell, rubber corners, screws, braided strap and desk light; its blue glowing screen is a drift and must NOT be copied):"
+   ]
+  ],
+  "prompt": "Output a NEW image: a concept painting, 16:9, of the SCREEN of a rugged handheld field instrument, seen perfectly flat on to the viewer and filling the whole canvas edge to edge: the screen content, with only a slim strip of the device's own housing along the canvas edges (matte sage-green and sand powder-coat, dark rubber corner bumpers, a few visible screws, engraved blank plates). No photograph of a device in a room, no table, no hands, no perspective on the housing. Same maker, same materials and the same light as the references: matte textured sage and sand housing, dark rubber, moulded polymer, canvas, braided hose, worn paper; MATTE, never glossy; one soft warm daylight key light from the top left. On screen: calm dark matte slate panels with crisp cream-coloured blank text areas (leave clear empty slots where type will go); a single small orange mark for the one thing to do; lamps and gauges small. ABSOLUTELY NO text, no letters, no digits, no logos, no readable symbols anywhere in the picture. NO glowing blue HUDs, no holograms, no neon, no scan lines, no chrome, no polished glass, no gloss, no brushed metal cabinetry, no sterile white lab, nothing childish or toy-like. It must feel supportive of life and cozy, but visibly tethered to the working equipment that keeps the life going: feed lines, water and air lines, vents, small gauges and lamps that tend; worn, practical, carried and looked after. FRAME: PODS, the whole level, full screen: the collection as the device's SAMPLE CASE. A field case seen flat on, lined with dark matte foam and canvas, rubber-edged, with rows of fitted worn cut-outs, each cradling one pod (a rounded capsule-shaped sample pod in a different place colour: moss green, pond teal, rock grey, wood brown, cave violet); the cut-outs are scuffed and handled; each pod has a small blank paper label tag tied to it and a few of the cut-outs are empty; one pod is lifted slightly out of its cut-out with an orange tag. A narrow slate strip along the bottom and a narrow one at the top for type, both blank. Lit by the soft daylight from the top left. Hoses and a small gauge tuck in at the case's edges. Every engraved plate and every label is BLANK: no letters at all, not even on the housing. Render the creatures and the living world as sculpted, tactile, softly lit miniature figures and landscape (felted, moulded and painted materials, real depth and soft focus behind), a rich painted finish like the Miniature Lives reference, not a flat cartoon illustration and not a vector drawing. IMPORTANT: the sample case is seen from DIRECTLY ABOVE, perfectly orthogonal, like a flat game screen filling the whole panel: no perspective, no tilt, no foreshortening, no depth-of-field blur; the rows of cut-outs are straight, level and aligned to the screen's edges, in two neat rows of eight; the case fills the screen right up to the slim housing strip."
+ },
+ {
+  "name": "board-home-pro-notext",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/board-home-pro.jpg",
+    "THE PICTURE TO EDIT (keep it exactly: the same composition, creatures, world, housing, colours and light):"
+   ]
+  ],
+  "prompt": "Output a NEW image that is exactly the attached picture, unchanged in every respect (the same housing, the same vivarium world and creatures, the same four right-hand modules, the same colours, light and framing), with ONE change: every word and letter in the picture (the headings VIVARIUM, BAY, RACK, INCUBATOR, PROBE and any other lettering) is replaced by a blank cream-coloured text plate of the same size and place, so that there is no text, no letter and no digit anywhere. Do not add anything else."
+ }
+]
