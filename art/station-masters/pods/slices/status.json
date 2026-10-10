@@ -3215,9 +3215,9 @@
   "note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 121: the grow-lamp hood and its lit rim painted out into the background by hand (the rows below mirrored up, matched at the seam, feathered), the light kept; the glass night and the bed (signed) untouched; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (528b73d5)",
+  "note": "signed (art director) at 1x: L* 25.0, key R-B 45, sat 58, 0.0 percent above L* 70, R above B, against the revised night rule; the grow-lamp hood painted out, its light kept; placed as the night set with Idle night, glass night and night bed (the pair rule)"
  },
  "home-bay-shut-176x72": {
   "status": "signed",
@@ -3280,9 +3280,9 @@
   "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-night-192x56": {
-  "status": "held",
-  "signed_in": null,
-  "note": "held for placing (the pair rule: night shows dusk on Home and Idle until Idle's night is signed; placed together with it); signed (art director, verdict 2cc0e62f): at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40)"
+  "status": "signed",
+  "signed_in": "art director, verdict (2cc0e62f)",
+  "note": "signed (art director): at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40); placed as the night set with Idle night, glass night and night bed (the pair rule)"
  },
  "vivarium-near-day-544x408": {
   "status": "signed",
@@ -3296,8 +3296,8 @@
  },
  "vivarium-near-night-544x408": {
   "status": "signed",
-  "signed_in": "art director, light verdict (eb64c0d6)",
-  "note": "signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame"
+  "signed_in": "art director, verdict (night pair grade)",
+  "note": "signed (art director) at 1x: L* 26.0, key R-B 38, sat 64, 0.9 percent above L* 70, R above B; graded down by hand from 30.5 by one linear-light gain of 0.73 so the near view pairs with Idle night 25.0/45/58 and glass night 25.6/46/51 (the pair rule)"
  },
  "idle-vivarium-dawn-1024x568": {
   "status": "signed",
@@ -3330,14 +3330,14 @@
   "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
-  "status": "held",
-  "signed_in": null,
-  "note": "held for placing (the pair rule: night shows dusk on Home and Idle until Idle's night is signed; placed together with it); signed (art director, verdict 2cc0e62f): at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept"
+  "status": "signed",
+  "signed_in": "art director, verdict (2cc0e62f)",
+  "note": "signed (art director): at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept; placed as the night set with Idle night, glass night and night bed (the pair rule)"
  },
  "room-bench-stage-create": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 120: Create's stage by hand from the signed Incubator stage in the same frame, its hoses and gauges painted out by the floor model, a plain floor with nothing in the keep-clear zones (L* 35.5, key R-B 37, sat 25); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (528b73d5)",
+  "note": "signed (art director) at 1x: L* 35.5, key R-B 37, sat 25 against the Pods overview 36.8/35/22; the signed Incubator stage's frame with its hardware painted out, plain in every keep-clear zone"
  },
  "dome-front-304x272": {
   "status": "signed",
@@ -3377,32 +3377,32 @@
  "bud-early-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "bud-late-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "bud-ready-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "bud-ready-front-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "bud-crack-1-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "bud-crack-2-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "leaf-empty-16x20": {
   "status": "signed",
@@ -3457,7 +3457,7 @@
  "bud-small-64x80": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the oval is right (111x138, no waist); two hand fixes: the right edge is ragged from the row remap (a jagged dark rim at 1x): redraw the outline as a clean ellipse with a 1 px soft edge in rust; and the light is the painting's peach-orange (sat 61): add the brief's cream light, a soft cream #fff4a6 highlight from the top left over about a third of the bean, so it reads peach lit cream with a rust edge; then re-cut late, ready, ready-front, the cracks and bud-small"
  },
  "crate-closer-open-384x256": {
   "status": "new",
