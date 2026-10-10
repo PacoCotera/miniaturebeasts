@@ -10041,7 +10041,10 @@
   "rect": null,
   "src": "source/raw/vivarium-day.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by day: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (pass 94)",
-  "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60"
+  "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
  },
  "idle-vivarium-dusk-1024x568": {
   "size": [
@@ -10051,7 +10054,10 @@
   "rect": null,
   "src": "source/raw/vivarium-dusk.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dusk: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (the day picture's edit: dusk is warmer and lower) (pass 94)",
-  "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c"
+  "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
  },
  "idle-vivarium-night-1024x568": {
   "size": [
@@ -10061,6 +10067,139 @@
   "rect": null,
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x1.48 in linear light to a mean L* of 30.6) (pass 94)",
-  "sha256": "de75e05559ba33f2209395ffb8491366e58cc8dd4ee6bb7d4ca8dbc0e734ce14"
+  "sha256": "de75e05559ba33f2209395ffb8491366e58cc8dd4ee6bb7d4ca8dbc0e734ce14",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+ },
+ "home-bay-shut-176x72": {
+  "size": [
+   176,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: bay shut, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 97)",
+  "sha256": "00b368bdd6426206fb8b11666b226874fb51cdf038ec9b7a9fa912d337cefe8b",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-bay-open-176x72": {
+  "size": [
+   176,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 97)",
+  "sha256": "9023eccafb48d2e309e0889e2a09eb0b0b51b2b40f7de68bf53e03455eb290c5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-well-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: well, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 32x32, transparent around it (pass 97)",
+  "sha256": "5f63ead545d5e91852702ccef2909eb193460b22a23986e5354a5b81cd15c17d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-chamber-empty-72x72": {
+  "size": [
+   72,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: chamber empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 97)",
+  "sha256": "b467fa0e90a233a7fea0009908fd534a4080959f94e7f44dd28e0ae02e4cc18e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-chamber-growing-72x72": {
+  "size": [
+   72,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: chamber growing, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 97)",
+  "sha256": "df6c13d7b25042f6a176d549d9f188c22d5a878bd3ae4bd58279f1dfb16338bc",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-chamber-ready-72x72": {
+  "size": [
+   72,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 97)",
+  "sha256": "b30eb750929c65ffe4862f87912fe0c5e6ee1cec41fcb2de6055b698b170cd36",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-cradle-empty-96x72": {
+  "size": [
+   96,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: cradle empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 97)",
+  "sha256": "bcbd8847064d186cc4cd95af55e1295aea35c2a9b951ac31bcaff0037f6a2d65",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-cradle-full-96x72": {
+  "size": [
+   96,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: cradle full, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 97)",
+  "sha256": "803f3e86270a5609ce868b271de4670f11164f2f49d31653fcbdbdffe7f0b7d5",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-journal-104x72": {
+  "size": [
+   104,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: journal, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 104x72, transparent around it (pass 97)",
+  "sha256": "79dac4b03bd1d0081e0694392ce3411fc7d770366eeed26acb3679930b489c70",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+ },
+ "home-bed-192x56": {
+  "size": [
+   192,
+   56
+  ],
+  "rect": null,
+  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: bed, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 192x56, transparent around it (pass 97)",
+  "sha256": "a61b3e1f36418cae2d7f4fc41651d4181f59d0b83b93895471fc63088e566bdf",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
  }
 }

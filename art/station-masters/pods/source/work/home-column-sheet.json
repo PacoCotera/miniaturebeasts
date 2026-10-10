@@ -1,0 +1,13 @@
+[
+ {
+  "name": "home-column-sheet",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   ["art/station-masters/pods/concepts/station-board/frame-1-home-v2-1024x600.png", "STYLE AND LIGHT REFERENCE (use only the right-hand column of small dark slate bays: their rendering, warm light, matte rugged field-gear materials, olive, tan, brass, wood and slate palette; do not copy the layout):"],
+   ["art/companion-concept/probe-study.png", "THE PROBE (a handheld net-hoop probe with a DNA helix in its hoop; draw the same object as a small matte field tool, NEVER a needle or syringe):"]
+  ],
+  "prompt": "Output a NEW image: a sprite sheet of ten small matte miniature field-station fittings, each isolated on a flat dark slate background (a deep desaturated blue-black slate like the reference bays), arranged in a clean grid of two rows with generous empty space around each, nothing touching, all seen straight-on from the front in the same warm soft light from the upper left. Same rendering as the reference column: matte sculpted miniature, rugged field gear, olive green, tan canvas, brass, aged wood, slate; nothing glossy, no glass, no chrome, no blue glow, no cool light. NO text, letters, digits, labels or frames anywhere. Row 1, left to right: (1) a wide low storage bay with a rugged olive field-case hatch, SHUT: a closed olive lid with two tan latches; (2) the same bay OPEN: the lid raised showing a dark inside with a small warm lamp; (3) a tiny round warm amber indicator well, empty and dark (a small recessed round socket, no glass); (4) a small square incubation chamber, EMPTY: an open-front brown cradle with nothing in it; (5) the same chamber GROWING: a soft warm glow and a small seed-like egg shape sitting in it. Row 2, left to right: (6) the same chamber READY: a bright warm glow and a small egg-like shell, slightly open, with a leaf sprout; (7) a small cradle for the probe, EMPTY: an olive and wood holder shaped for a net-hoop tool, nothing in it; (8) the same cradle FULL: the net-hoop probe resting in it (the probe from the second reference, a hoop net on a handle with a small helix in the hoop, never a needle); (9) a small journal: a worn tan canvas field notebook lying slightly open with a brass clasp and a ribbon, no writing; (10) a long low wooden bed or tray, a wide shallow planter of dark soil with a few small green leaf sprouts in a row. Each item is its own clear object, readable at small size, the same scale logic and the same warm light."
+ }
+]
