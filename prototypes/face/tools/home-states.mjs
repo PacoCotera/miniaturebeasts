@@ -29,7 +29,7 @@ const SCENES = {
   "sleeper-focused":  { f: "resident:2", set: (w) => { w.adults(3); w.carry([2]); } },
 };
 // the helpers the scenes call, in the page
-const WORLD = () => ({
+export const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
   reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.knownIds = []; S.UI.meet = null; this.persist(); },

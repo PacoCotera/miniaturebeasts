@@ -25,6 +25,7 @@ export const PLACEHOLDERS = [
   { id: "home-leaf-8x12", what: "the Incubator module's leaves: a full leaf a PH plate, an empty one a PH hollow (home-leaf-empty-8x12), only while a bud is in the chamber; the chamber is left empty", until: "the leaf masters and the chamber master" },
   { id: "home-shield-12x24", what: "the Probe module's Shield plates: a whole plate a PH plate, a lost one a PH hollow (home-shield-gone-12x24); a held sitting a PH plate (home-sitting-24x32); the cradle is left empty", until: "the Probe module masters" },
   { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
+  { id: "idle-vivarium", what: "Idle's Vivarium, 1024×568, one painting a light: no master, so the flat plates of frame.json idle.colours show (back forest, ground clay with a sand top row, foot soil) and the slot idle-vivarium-day stays empty; the bed is Home's PH plate (home-bed-192x56) and the Companion mark is drawn as nothing", until: "Idle's Vivarium master (day, dusk and night)" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
   { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];

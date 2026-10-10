@@ -3,5 +3,4 @@
 export const milestone = "L2.2 Cargo and Idle (cargo.json; frame.json idle)";
 export const steps = [
   { id: "home-bay", what: "✓ on the Cargo module (or on the room with crates waiting) opens Cargo, whose bay shows up to three sealed crates; ✓ Open the bay opens them one at a time, an arrival each with input held for crates × 3000 + 200 ms, the ribbon, the counters and the turn counting up, the pods travelling to the rack; the report card's ✓ lands on Pods' collection (cargo.json `handoff`); an empty bay (cargo-bay-empty) and a shut bay away (cargo-bay-away) say why in the line" },
-  { id: "idle-vivarium", what: "Idle is the whole 1024×600 with the idle line (frame.json idle): the Vivarium's whole without the frame, its residents walking and the bed's sleepers (idle-docked, idle-away, idle-none); the rest knob and the 60 s timer enter it; the first press only wakes (`wake`); the Dock key on Idle wakes, docks and lands on Home with the ring on the room, the crates sliding into the Cargo module" },
 ]

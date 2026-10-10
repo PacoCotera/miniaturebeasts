@@ -52,7 +52,7 @@ function syncProps() {
   for (const e of LAYER.presenter.events({ e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn })) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   if (key === lastProps) return;
-  if (!UI.idle) { FACE.beginScene(); for (const id of [...frameMarkIds(), ...p.ids]) FACE.handleOf(id, picture); }
+  { FACE.beginScene(); for (const id of [...(UI.idle ? [] : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
   lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
 }
@@ -64,7 +64,7 @@ function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
   if (G.ready && FACE) {
     const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
-    if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && !H.holding()) UI.idle = true;   // the screen goes idle after a minute without a press
+    if (!UI.idle && !UI.resting && !UI.entering && t - UI.lastInput > IDLE_MS && !arriving() && !H.holding() && UI.cargo?.state !== "report") frameIntents.enterIdle(H);   // the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card (frame.json idle.enter)
     try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
   }
@@ -78,7 +78,7 @@ export function act(k) {
   clock.now = performance.now(); UI.lastInput = clock.now;
   if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } return; }   // an event holds input: the Dock key does not act; the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs)
   syncProps();
-  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); } frameIntents.dock(H, wasIdle); return; }
+  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: motion() ? 180 : 0 }); } frameIntents.dock(H, wasIdle); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "confirm") H.disarm();
   FACE.key(k); pump();

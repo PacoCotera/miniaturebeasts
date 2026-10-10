@@ -11,13 +11,14 @@ import * as S from "../src/state.mjs";
 import { G, UI, SPECS } from "../src/game.mjs";
 import { createHost, onFaceMessage } from "../src/host.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
+import { enterIdle } from "../src/intents/frame.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
 for (const k of ["frame", "pods", "home"]) SPECS[k] = JSON.parse(readFileSync(path.join(specs, k + ".json"), "utf8"));
-const rig = () => {
+const rig = (motion = true) => {
   G.st = S.freshSt("w1", 1, 1000); S.normalize(G.st); G.sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, st: G.st }; UI.screen = "home"; UI.idle = false; UI.resting = false; UI.home.f = "room";
-  const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, motion: () => true }); h.save = () => {};
+  const sent = []; let t = 0; const h = createHost({ send: (m) => sent.push(m), nowMs: () => t, motion: () => motion }); h.save = () => {};
   return { h, sent, at: (ms) => { t = ms; h.frame(); } };
 };
 const room = (verb) => ({ t: "intent", seq: 1, screen: "home", target: "room", verb });
@@ -49,4 +50,22 @@ test("Home's rest: a room key during the hold is dropped, the rest ends on Idle 
   at(1379); assert.equal(UI.idle, false); at(1380); assert.equal(UI.idle, true); assert.equal(UI.resting, false); assert.equal(UI.screen, "home"); assert.equal(UI.home.f, "knob"); assert.equal(h.pendingRoom ?? null, null);
   at(1400); assert.equal(UI.screen, "home", "nothing was dispatched after the hold");
   onFaceMessage(h, { t: "intent", seq: 2, screen: "idle", target: "idle", verb: "wake" }); assert.equal(UI.idle, false, "the next key only wakes"); assert.equal(UI.screen, "home"); assert.deepEqual([sent.at(-1).kind, sent.at(-1).ms, sent.at(-1).hold], ["dither", 180, 180]);
+});
+
+test("the idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held and Idle shows at its end; with reduced motion Idle is on this frame and nothing is held", () => {
+  const { h, sent, at } = rig(); at(1000); enterIdle(h);
+  assert.deepEqual(sent.find((m) => m.kind === "dither"), { t: "event", kind: "dither", target: "stage", ms: 180, from: 0, to: 16, hold: 180 }); assert.equal(UI.idle, false); assert.equal(h.holding(), true); assert.equal(UI.entering, true);
+  at(1179); assert.equal(UI.idle, false); at(1180); assert.equal(UI.idle, true); assert.equal(UI.entering, false); assert.equal(h.holding(), false);
+  UI.idle = false; const r = rig(false); r.at(1000); enterIdle(r.h); assert.equal(UI.idle, true, "a cut"); assert.equal(r.sent.length, 0); assert.equal(r.h.holding(), false);
+});
+test("the wake: the first press on Idle sends the dither back with hold 180, and 0 with reduced motion; it does nothing else", () => {
+  for (const [motion, hold] of [[true, 180], [false, 0]]) {
+    const { h, sent, at } = rig(motion); UI.idle = true; at(0); onFaceMessage(h, { t: "intent", seq: 1, screen: "home", target: "idle", verb: "wake" });
+    assert.equal(UI.idle, false); assert.equal(UI.screen, "home"); assert.deepEqual(sent.find((m) => m.kind === "dither"), { t: "event", kind: "dither", target: "stage", ms: 180, hold }); assert.equal(h.holding(), motion);
+  }
+});
+test("the Dock key from Idle docks and lands on Home with the ring on the room; lifted from Idle it lifts and the screen under Idle shows", () => {
+  const { h } = rig(); G.sv.mibis = []; UI.screen = "pods"; UI.home.f = "pods"; UI.idle = true; G.st.dock = { docked: false, at: 0 };
+  INTENTS.frame.dock(h, true); assert.equal(G.st.dock.docked, true); assert.equal(UI.screen, "home"); assert.equal(UI.home.f, "room");
+  UI.screen = "pods"; UI.idle = true; INTENTS.frame.dock(h, true); assert.equal(G.st.dock.docked, false); assert.equal(UI.screen, "pods", "lifted: the screen under Idle");
 });

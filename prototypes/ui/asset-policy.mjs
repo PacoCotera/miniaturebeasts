@@ -7,7 +7,7 @@ const ART = [/^emblem:/, /^page-mark-/, /^icon:/, /^grow:/, /^waiting:/, /^beam:
 const PAINTED = [
   /^pod[:-]/, /^figure:/, /^mibi-halo/, /^crop:/, /^trait[:-]/, /^plate-/, /^rail-tab-fill-/, /^mark-clan-/, /^mark-seed/, /^place:[a-z]+:(64|112|48)$/, /^room-/, /^ring-(arc-)?collection-/, /^placepanel:/, /^panel-/, /^well/, /^pane/, /^page-pane/,
   /^stamp:/, /^frame-(room|companion|sun|lamp|top-bar|bottom-line)/, /^face-/, /^find-/, /^ring-kin-/, /^ring-hatch-/,
-  /^home-(glass|bay|well|chamber|cradle|journal)/,
+  /^home-(glass|bay|well|chamber|cradle|journal)/, /^idle-vivarium/,
 ];
 const MOVES_WITH_MASTER = [/^kinring:/, /^hatch:/, /^mibi:/, /^home-bed-\d/];   // a resident's stand-in is art until its painting lands; Home's bed is a PH plate until its master
 export function policyOf(id, status = "placeholder") {

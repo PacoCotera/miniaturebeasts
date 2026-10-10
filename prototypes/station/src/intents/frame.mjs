@@ -20,7 +20,7 @@ export function roomKey(h, key) {
 export function dock(h, fromIdle = false) {
   const r = T.dock(h.st, h.sv, h.settings, h.now());
   if (!r.ok) { h.say(r.msg); return r; }
-  if (r.docked && fromIdle && h.ui.screen !== "home") h.goto("home");
+  if (r.docked && fromIdle) { h.ui.home.f = "room"; if (h.ui.screen !== "home") h.goto("home"); }   // the Dock from Idle docks and lands on Home with the ring on the room (frame.json idle.keys.dock)
   if (r.docked) {
     h.play({ kind: "tick", target: "dock", ms: 0 });
     // the crates slide into the Cargo module (home.json events.crateIn), one after another, while Home shows; docked on another screen they are in the bay when Home next shows
@@ -29,6 +29,12 @@ export function dock(h, fromIdle = false) {
   }
   if (h.ui.screen !== "home") h.say(r.msg);   // on Home the Dock key leaves no plate (home.json keys.dock): the top bar, the bed, the column and the notice say it
   h.save(); return r;
+}
+// The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
+export function enterIdle(h) {
+  const ev = h.specs.frame.idle.enter.transition;
+  if (h.motion ? h.motion() : true) { h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold: h.specs.frame.idle.enter.hold }); h.ui.entering = true; h.at(ev.ms, () => { h.ui.entering = false; h.ui.idle = true; }); }
+  else h.ui.idle = true;
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.
 export function wake(h, verb) { h.ui.idle = false; return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }

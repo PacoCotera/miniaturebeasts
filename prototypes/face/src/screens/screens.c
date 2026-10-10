@@ -82,10 +82,11 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
-    if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
+    if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
+    else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
-  if (spec_bool("props", "idle", 0)) not_built(1);          /* Idle has no binding table yet */
+  if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") < 0) not_built(1); }   /* Idle draws its own words when the props carry its regions */
   else if (is_not_built()) not_built(0);
   frame_words();
   stage_dither();

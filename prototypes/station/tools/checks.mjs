@@ -15,6 +15,7 @@ import { fileURLToPath } from "node:url";
 import { pageSize } from "../../ui/specs/derive.mjs";
 import { decodePNG } from "../../ui/png.mjs";
 import { departures } from "../../face/tools/home-regions.mjs";
+import { departures as idleDepartures } from "../../face/tools/idle-regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
@@ -56,7 +57,7 @@ for (const s of rec.shots) {
   const must = (ok, m) => { regionsChecked++; if (!ok) fail(`${s.name}: ${m}`); };
   const one = (layer, id, want, what) => { for (const r of got(layer, id)) must(eq(r.rect, want), `${what ?? id} ${r.rect} is not ${want}`); };
   const inside = (layer, id, box) => { for (const r of got(layer, id)) must(within(r.rect, box), `${id} ${r.rect} is not inside ${box}`); };
-  if (c.idle) { must(eq(c.log.regions.find((r) => r.id === "notBuilt.ground")?.rect ?? [], N.regions.ground.rect), `Idle's ground is the whole screen ${N.regions.ground.rect}`); must(!c.log.regions.some((r) => r.id === "top" || r.id === "line"), "Idle draws no frame"); continue; }
+  if (c.idle) { for (const m of idleDepartures(lg, frame)) must(false, m); regionsChecked += lg.regions.length; must(got("chrome", "idle.strip").length === 1 && got("chrome", "vivarium").length >= 1, "Idle draws the Vivarium's plates and the strip"); continue; }   // Idle: every region of the face's log against frame.json idle (face/tools/idle-regions.mjs)
   one("chrome", "top", F.top.rect, "top bar"); one("chrome", "line", F.line.rect, "bottom line");
   for (const r of got("chrome", "plate")) { const w = r.rect[2], cx = r.rect[0] + w / 2; must(Math.abs(cx - F.plate.centre) <= 1 && w <= F.plate.maxWidth && (r.rect[1] + r.rect[3] - 3 === F.plate.bottom || r.rect[1] === F.plate.topOverFocal), `message plate ${r.rect}`); }
   if (c.screen === "home" && c.props?.state === "home") {   // Home: every region of the face's log against home.json (face/tools/home-regions.mjs): zero departures; the strings are Inter at their sizes
@@ -89,7 +90,7 @@ for (const s of rec.shots) {
   regionsChecked++; }
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
 for (const screen of ["cargo", "create", "incubator", "library", "habitat", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
-if (!rec.shots.some((x) => x.name === "notbuilt-idle" && x.check.idle)) fail("no screenshot point records Idle");
+if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
 
 // ---- 5. ink: where each frame region's ink lies in the frame's pixels, against the spec
