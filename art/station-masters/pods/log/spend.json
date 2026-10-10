@@ -2729,5 +2729,39 @@
    "thoughtsTokenCount": 210,
    "totalTokenCount": 2676
   }
+ },
+ {
+  "tag": "cargo-haul-sheet-1-rugged try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.229416,
+  "mxn": 4.5883,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:37:02Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1548,
+   "candidatesTokenCount": 1624,
+   "thoughtsTokenCount": 262,
+   "totalTokenCount": 3434
+  }
+ },
+ {
+  "tag": "cargo-haul-sheet-2-soft try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.209008,
+  "mxn": 4.1802,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:37:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1604,
+   "candidatesTokenCount": 1489,
+   "thoughtsTokenCount": 226,
+   "totalTokenCount": 3319
+  }
  }
 ]
