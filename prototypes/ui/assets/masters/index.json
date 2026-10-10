@@ -229,8 +229,8 @@
    "file": "pods/frame-bottom-line-1024x38.png",
    "w": 1024,
    "h": 38,
-   "sha256": "1322d4e5234ce0ce4999bf7e6bf37bd97615b7e7969a3987065cacadfbd644c2",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "8788ad07ae353c3d1c2cb83e87c6d6299f8a685fd3d4dd6dcbf5a8d24d5c4b3f",
+   "signed": "art director (frame bars, #112 78b6bfbc)"
   },
   "frame-cap-back-16": {
    "file": "pods/frame-cap-back-16.png",
@@ -334,8 +334,8 @@
    "file": "pods/frame-top-bar-1024x40.png",
    "w": 1024,
    "h": 40,
-   "sha256": "9d40520a555e4f43bf79a87e949a0856da79d0539468a11b75e0773dfa6de65a",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "545ae9c79dbc56250c44f28f2e66b172c05ee383eee1048b6c4ca7c48f80f92f",
+   "signed": "art director (frame bars, #112 78b6bfbc)"
   },
   "glint-star-12x12": {
    "file": "pods/glint-star-12x12.png",
@@ -356,6 +356,174 @@
    "w": 16,
    "h": 20,
    "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "heart-full-24": {
+   "file": "pods/heart-full-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-bed-dawn-192x56": {
+   "file": "home/home-bed-dawn-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "0f1aeae238eb7bd1902f979176abd4e03fe2aaae18a681235333d671c43e56d9",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "home-bed-day-192x56": {
+   "file": "home/home-bed-day-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "ce8024889e874f96b37f975d2dd7ae6523f128c79f8256da1d9d443b302caae7",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "home-bed-dusk-192x56": {
+   "file": "home/home-bed-dusk-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "61cdc351cdac866a47d488b9b7a6cb1043f8860dfe7aba712324492ba62765a7",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "home-bed-mark-16x24": {
+   "file": "pods/home-bed-mark-16x24.png",
+   "w": 16,
+   "h": 24,
+   "sha256": "7a24eb5c34293974ea3b07ba29b422b3ec11cf424e15018e24ec54a93932fb18",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-bed-night-192x56": {
+   "file": "home/home-bed-night-192x56.png",
+   "w": 192,
+   "h": 56,
+   "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "home-crate-48x40": {
+   "file": "pods/home-crate-48x40.png",
+   "w": 48,
+   "h": 40,
+   "sha256": "87d9a930ffd62bfcbb1a9fb522e12aefb8f29595dcd0e4d90346c867a4bb7d0d",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-glass-dawn-640x488": {
+   "file": "home/home-glass-dawn-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "02db0fe36bf506c245de863f3096b1f4babd37f9968729645699b6cf873f073b",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-glass-day-640x488": {
+   "file": "home/home-glass-day-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "805ace1a75e3533d858faaac9f3781febdad7612d6f516cd210028c97cef8c8f",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-glass-dusk-640x488": {
+   "file": "home/home-glass-dusk-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "da687a78a14ae933e6d54ff3d71fc5f75ff6ab67944236bf79d8f796ef71b07e",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-glass-night-640x488": {
+   "file": "home/home-glass-night-640x488.png",
+   "w": 640,
+   "h": 488,
+   "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "home-lamp-amber-12x12": {
+   "file": "pods/home-lamp-amber-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "1ae7134a8be71e91e83f6c5d9c8248103cfbef47ec835e399842709228ce6304",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-hairline-12x12": {
+   "file": "pods/home-lamp-hairline-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "52d364d03a7254830de666f77cce3ce06e4573053b2fd89ec291f35aa807bd6e",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-sky-12x12": {
+   "file": "pods/home-lamp-sky-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "1db1946ae38a4ed2c56fefa6e3b62ba1e9727f9fb600a86221875d2a34820fcf",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-lamp-sprout-12x12": {
+   "file": "pods/home-lamp-sprout-12x12.png",
+   "w": 12,
+   "h": 12,
+   "sha256": "96321b87d0283a57d0543a22bd46b398b4d2acea4af77304a01cfc8251326ee7",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-shield-lost-12x24": {
+   "file": "pods/home-shield-lost-12x24.png",
+   "w": 12,
+   "h": 24,
+   "sha256": "8e65ee2f3a5f05582c2b5c33a0ed4910cea9d102f4b2886f24053911d2c177a2",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-shield-whole-12x24": {
+   "file": "pods/home-shield-whole-12x24.png",
+   "w": 12,
+   "h": 24,
+   "sha256": "7ee2c9c9237a32278cbd14034e3e9d7f840637e9629f832fa1788e19b2eca3a9",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "home-sitting-24x32": {
+   "file": "pods/home-sitting-24x32.png",
+   "w": 24,
+   "h": 32,
+   "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "idle-vivarium-dawn-1024x568": {
+   "file": "vivarium/idle-vivarium-dawn-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "4f1938a8b44c8143dd05768e7027deeeb505b9a4f08a06af6f3d0aad176749eb",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "idle-vivarium-day-1024x568": {
+   "file": "vivarium/idle-vivarium-day-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "idle-vivarium-dusk-1024x568": {
+   "file": "vivarium/idle-vivarium-dusk-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "idle-vivarium-night-1024x568": {
+   "file": "vivarium/idle-vivarium-night-1024x568.png",
+   "w": 1024,
+   "h": 568,
+   "sha256": "3dd1077137c080904691b283088b6def18be9f3b71876ec8ab49a46532dde9ab",
+   "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
+  },
+  "leaf-empty-8x12": {
+   "file": "pods/leaf-empty-8x12.png",
+   "w": 8,
+   "h": 12,
+   "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "leaf-full-8x12": {
+   "file": "pods/leaf-full-8x12.png",
+   "w": 8,
+   "h": 12,
+   "sha256": "4518bc8bafdf4b6349240d15817d4774012d30d4091823d8138a0cb4fda35c3a",
    "signed": "art director, verdict (d09acb12)"
   },
   "mark-asleep-24x16": {
@@ -525,6 +693,13 @@
    "h": 8,
    "sha256": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "mark-out-with-companion-64x96": {
+   "file": "pods/mark-out-with-companion-64x96.png",
+   "w": 64,
+   "h": 96,
+   "sha256": "ddb00522eb6431035437331c043ae83c2ec69fd4d6af9c9b3afb0b53e2222d64",
+   "signed": "art director (home hand masters, #112 and #116)"
   },
   "mark-seed-32x40": {
    "file": "pods/mark-seed-32x40.png",
@@ -940,6 +1115,13 @@
    "sha256": "950f0b35f5ab770db84162547d48cdc9e31d099b7ce54d9b01360d8252c4c007",
    "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
   },
+  "notch-skill-16x24": {
+   "file": "pods/notch-skill-16x24.png",
+   "w": 16,
+   "h": 24,
+   "sha256": "2aaf738413d1a649c5947ed2d29b09bae6aa9fc82af722edbfe3cc4e387d2ec4",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
   "page-mark-new-10": {
    "file": "pods/page-mark-new-10.png",
    "w": 6,
@@ -960,13 +1142,6 @@
     16
    ],
    "tile": 32
-  },
-  "panel-place-320x224": {
-   "file": "pods/panel-place-320x224.png",
-   "w": 320,
-   "h": 224,
-   "sha256": "f7c11d6e4958160cefe39c7686c60b57f6a3828f62a5c456fa039829f29d47f7",
-   "signed": "signed (masters-pods b3b7e04)"
   },
   "place-cave-48x48": {
    "file": "pods/place-cave-48x48.png",
@@ -2771,78 +2946,50 @@
    "file": "pods/ring-collection-closed-176x176.png",
    "w": 176,
    "h": 176,
-   "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "f4e06d9a394f99664161dd3d5808d38093b66ec90d56f4a8d5881db4f47bdf8f",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "ring-collection-idle-176x176": {
    "file": "pods/ring-collection-idle-176x176.png",
    "w": 176,
    "h": 176,
-   "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-column-112x522": {
-   "file": "pods/ring-column-112x522.png",
-   "w": 112,
-   "h": 522,
-   "sha256": "d196eb9b72a86516f0280103f66e89e460cfc8dc2501f3a25da44b4382494314",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "30c32aff28484c8c065a61f75c7177ae919d2cb6362d48c7790440ff67dc7cd5",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "ring-hatch-80x56": {
    "file": "pods/ring-hatch-80x56.png",
    "w": 80,
    "h": 56,
-   "sha256": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "ring-kin-56x56": {
    "file": "pods/ring-kin-56x56.png",
    "w": 56,
    "h": 56,
-   "sha256": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-well-empty-80x80": {
-   "file": "pods/ring-well-empty-80x80.png",
-   "w": 80,
-   "h": 80,
-   "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-well-idle-80x80": {
-   "file": "pods/ring-well-idle-80x80.png",
-   "w": 80,
-   "h": 80,
-   "sha256": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-well-selected-80x80": {
-   "file": "pods/ring-well-selected-80x80.png",
-   "w": 80,
-   "h": 80,
-   "sha256": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage": {
    "file": "pods/room-bench-stage.png",
    "w": 1024,
    "h": 522,
-   "sha256": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage-chapter": {
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
-   "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
    "w": 1024,
    "h": 522,
-   "sha256": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "73e7ceaa0bc18cd61b6385b27aaa4edf4a9569be000067c4dc5140f2826172eb",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage-compare": {
    "file": "pods/room-bench-stage-compare.png",
@@ -2862,43 +3009,43 @@
    "file": "pods/room-bench-stage-overview.png",
    "w": 1024,
    "h": 522,
-   "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "room-cradle": {
-   "file": "pods/room-cradle.png",
-   "w": 224,
-   "h": 96,
-   "sha256": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",
    "w": 224,
    "h": 96,
-   "sha256": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "room-shelf": {
-   "file": "pods/room-shelf.png",
-   "w": 288,
-   "h": 72,
-   "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",
    "w": 152,
    "h": 152,
-   "sha256": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-stamp-case-152x152-front": {
    "file": "pods/room-stamp-case-152x152-front.png",
    "w": 152,
    "h": 152,
-   "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
+   "signed": "art director, Pods room verdict (README fa105365)"
+  },
+  "spread-progress-empty-8x8": {
+   "file": "pods/spread-progress-empty-8x8.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "f6eeb286a2828a9336c469b78335c3c44b3100b5d3e6c428710c7efb27184d83",
+   "signed": "art director (home hand masters, #112 and #116)"
+  },
+  "spread-progress-full-8x8": {
+   "file": "pods/spread-progress-full-8x8.png",
+   "w": 8,
+   "h": 8,
+   "sha256": "71beb5ba2d7b7619bf9fb33bf1d46e5fb1fca2d8745be3d55336560f6e80d98f",
+   "signed": "art director (home hand masters, #112 and #116)"
   },
   "stamp-label-120x120": {
    "file": "pods/stamp-label-120x120.png",

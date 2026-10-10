@@ -82,7 +82,7 @@
    "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile at its own proportions inside the same box",
    "lamp": {
     "rect": [436, 80, 12, 12],
-    "slice": "frame-lamp-12-sky",
+    "slice": "home-lamp-sky-12x12",
     "at": "the box's top right",
     "when": "while the placeholder is drawn: the painting on its way, or waiting for the cloud",
     "rides": "the 4 px lift"
@@ -642,7 +642,7 @@
    "chapter-plate-sealed-40x40",
    "rail-emblem-{chapter}-{read,unread,sealed}-24x24 (existing)",
    "mark-guide-16",
-   "frame-lamp-12-sky",
+   "home-lamp-sky-12x12",
    "face-{species}-24, one a species",
    "frame-companion-solid-16x24 and -outline-16x24 (existing)"
   ]

@@ -6,10 +6,10 @@
  "type": "object", "required": ["idle", "regions", "frame"], "additionalProperties": false,
  "properties": {
   "idle": { "enum": [true] },
-  "regions": { "type": "object", "required": ["vivarium", "residents", "bed"], "additionalProperties": false, "properties": {
+  "regions": { "type": "object", "required": ["vivarium", "residents", "bed"], "additionalProperties": false, "properties": { 
    "vivarium": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
    "residents": { "type": "array", "items": { "$ref": "person" } },
-   "bed": { "type": "object", "required": ["state", "picture", "sleepers"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away", "none"] }, "picture": { "type": "string" }, "sleepers": { "type": "array", "items": { "$ref": "person" } } } }
+   "bed": { "type": "object", "required": ["state", "picture", "mark", "sleepers"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away", "none"] }, "picture": { "type": "string" }, "mark": { "type": "string" }, "sleepers": { "type": "array", "items": { "$ref": "person" } } } }
   } },
   "frame": { "type": "object", "required": ["idle"], "additionalProperties": false, "properties": { "idle": { "type": "object", "required": ["line"], "additionalProperties": false, "properties": { "line": { "type": "string" } } } } }
  }

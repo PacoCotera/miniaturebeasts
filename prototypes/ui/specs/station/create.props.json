@@ -14,7 +14,7 @@
    "chamber": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
    "founder": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
    "pod": { "type": "object", "required": ["sizeClass", "picture"], "additionalProperties": false, "properties": { "sizeClass": { "enum": ["large", "medium", "small"] }, "picture": { "type": "string" } } },
-   "cradle": { "type": "object", "required": ["cradle", "front"], "additionalProperties": false, "properties": { "cradle": { "type": "string" }, "front": { "type": "string" } } },
+   "cradle": { "type": "object", "required": ["front"], "additionalProperties": false, "properties": { "front": { "type": "string" } } },
    "origin": { "type": "array", "items": { "type": "string" } },
    "dome": { "type": "object", "required": ["back"], "additionalProperties": false, "properties": { "back": { "type": "string" } } },
    "bud": { "type": "object", "required": ["picture", "busy"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "busy": { "type": "boolean" } } },

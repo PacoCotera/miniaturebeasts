@@ -1,5 +1,5 @@
 /* Create's binding table (lvgl-switch.md §2.2, §4 R; create.json): the words that draw each of its states (nothingRead, shape, grow) in draw order, from the `create` spec and the props' regions, the frame's words after (screens.c).
-   bench, rail, the dish, the small chamber and its bud, the pod, the dish's front, the origin, the work tray with the founder, the roll (a stepper: the ring stays on the chosen picture), the trait line, the small chamber's front, the
+   bench, rail, the small chamber and its bud, the pod, the origin, the work tray with the founder, the roll (a stepper: the ring stays on the chosen picture), the trait line, the small chamber's front, the
    leaves it will take, the stamp label and the code, then the ring. The compositions are the spec's: `roll` and `traitLine`.
    The events: `dither` on the founder (the old picture to the new in 16 Bayer levels over 200 ms; the props carry the new one), and `grow` (the stamp prints row by row for 300 ms, the code appears at 300, the pod travels from 300 to 900).
    A picture the host has not sent is a slot not yet filled: nothing is drawn and the layout does not move. The work tray, the small chamber, the notches and the roll's pictures are labelled placeholders until their masters (create.json placeholders). */
@@ -154,11 +154,10 @@ void create_words(void) {
   int grow = strcmp(v_pstr("state"), "grow") == 0;
   build_bench();
   word_rail(C);
-  { const char *c = v_pstr("regions.cradle.cradle"); picture("cradle", "cradle", "regions.cradle.rect", c); }
   picture("dome", "dome", "regions.dome.rect", v_pstr("regions.dome.back"));
   { int r[4]; crect("regions.bud.rect", r); v_name("bud"); pic_or("bud", v_pbool("regions.bud.busy", 0), v_pstr("regions.bud.picture"), r[0], r[1], r[2], r[3]); }
   build_pod(grow);
-  picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front"));
+  { char u[8]; if (spec_str(C, "regions.cradleFront.until", u, sizeof u) <= 0) picture("cradleFront", "cradleFront", "regions.cradleFront.rect", v_pstr("regions.cradle.front")); }   /* the dish's near lip over the pod, drawn once Create's own stage lands (the spec drops `until`) */
   build_origin();
   picture("chamber", "chamber", "regions.chamber.rect", v_pstr("regions.chamber.back"));
   build_founder();

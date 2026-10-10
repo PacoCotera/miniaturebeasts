@@ -28,7 +28,7 @@ function validate(v, sc, at = "$", out = []) {
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
 const crate = (n) => ({ id: "c" + n, n, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] });
 const sv0 = (over = {}) => ({ v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, ...over });
-const build = (st, sv) => idleBuild({ st, sv, settings, docked: S.docked(st) }, frame);
+const build = (st, sv, light = "day") => idleBuild({ st, sv, settings, docked: S.docked(st), light }, frame);
 const adults = (st, n) => { S.seedAdults(st, "S01", 5, n, settings); for (const m of st.mibis) m.paint = { state: "landed" }; };
 
 test("Idle's props validate against idle.props.json, name no rectangle, carry the line as props.frame.idle.line and nothing of the frame", () => {
@@ -43,7 +43,7 @@ test("Idle's props validate against idle.props.json, name no rectangle, carry th
   }
 });
 test("the living window is Home's: the same residents with the same seeds, the same bed and sleepers", () => {
-  const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), h = homeBuild({ st, sv, settings, docked: true, ui: {}, focus: null }, home, frame).props.regions, i = build(st, sv).props.regions;
+  const st = world(); adults(st, 5); const sv = sv0({ carried: [st.mibis[0].id, st.mibis[1].id] }), h = homeBuild({ st, sv, settings, docked: true, ui: {}, focus: null, light: "day" }, home, frame).props.regions, i = build(st, sv).props.regions;
   assert.deepEqual(i.residents, h.residents); assert.deepEqual(i.bed, h.bed); assert.equal(i.bed.state, "docked"); assert.equal(i.bed.sleepers.length, 2);
   assert.equal(i.vivarium.picture, "idle-vivarium-day:1024x568");
 });

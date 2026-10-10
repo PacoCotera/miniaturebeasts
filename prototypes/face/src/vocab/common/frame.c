@@ -6,6 +6,7 @@
 #include "../../prim/prim.h"
 #include "../../spec/spec.h"
 #include "../../layout/layout.h"
+#include "../../bridge/wire.h"
 #include "../../anim/anim.h"
 #include <stdio.h>
 #include <string.h>
@@ -34,9 +35,11 @@ void word_hairline(const char *id, int x, int y, int len, const char *c, int ver
 void word_topBar(void) {
   char c[24], a[96], b[96], s[V_STR]; int r[4], rr[4];
   rect_of("regions.top.rect", r);
+  fs("regions.top.slice", a, sizeof a); int bar = a[0] && wire_asset_slot(a) >= 0;   /* the bar is on the face: its own picture carries the panel and its edge rows; the code panel and rule stay as the same nodes of no size */
+  if (bar) { v_region("top", LAYER_PAINTED); v_sprite("top.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("top", LAYER_CHROME);
-  colour("chrome", c); word_panel("top", r[0], r[1], r[2], r[3], c, NULL);
-  colour("rule", c); v_rect("top.rule", r[0], r[1] + r[3] - 1, r[2], 1, c);
+  colour("chrome", c); word_panel("top", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
+  colour("rule", c); v_rect("top.rule", r[0], r[1] + r[3] - 1, bar ? 0 : r[2], bar ? 0 : 1, c);
   colour("topRule", c);
   for (int i = 0; i < spec_len(F, "regions.topRules.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.topRules.x.%d", i); snprintf(id, sizeof id, "top.sep.%d", i); int y0 = fi("regions.topRules.y0"), y1 = fi("regions.topRules.y1"); v_rect(id, fi(p), y0, 1, y1 - y0, c); }
   /* where you are: the room's mark, then the one word */
@@ -108,9 +111,11 @@ void word_topBar(void) {
 void word_bottomLine(void) {
   char c[24], a[96], b[96], s[V_STR], t[V_STR]; int r[4], r2[4];
   rect_of("regions.line.rect", r);
+  fs("regions.line.slice", a, sizeof a); int bar = a[0] && wire_asset_slot(a) >= 0;   /* as the top bar's */
+  if (bar) { v_region("line", LAYER_PAINTED); v_sprite("line.bar", a, r[0], r[1], r[2], r[3]); }
   v_region("line", LAYER_CHROME);
-  colour("chrome", c); word_panel("line", r[0], r[1], r[2], r[3], c, NULL);
-  colour("rule", c); v_rect("line.rule", r[0], r[1], r[2], 1, c);
+  colour("chrome", c); word_panel("line", r[0], r[1], bar ? 0 : r[2], bar ? 0 : r[3], c, NULL);
+  colour("rule", c); v_rect("line.rule", r[0], r[1], bar ? 0 : r[2], bar ? 0 : 1, c);
   colour("dot", c);
   for (int i = 0; i < spec_len(F, "regions.separators.x"); i++) { char p[64], id[32]; snprintf(p, sizeof p, "regions.separators.x.%d", i); snprintf(id, sizeof id, "line.sep.%d", i); int y0 = fi("regions.separators.y0"); v_rect(id, fi(p), y0, 1, fi("regions.separators.y1") - y0, c); }
   int ok = spec_str(P, "frame.line.ok", s, sizeof s) > 0, dim = spec_bool(P, "frame.line.dim", 0);
@@ -150,8 +155,8 @@ void word_bottomLine(void) {
     v_region("need", LAYER_TYPE); colour("need", c); v_run_t run = v_run("line.need", s, right, nr[1] + 2, px, c, V_ALIGN_RIGHT);
     int lw = spec_int(F, "regions.need.lamp.0", 12), lh = spec_int(F, "regions.need.lamp.1", 12);
     int lamp[4] = { right - run.width - fi("regions.need.lampGap") - lw, nr[1] + (nr[3] - lh + 1) / 2, lw, lh };
-    v_name("need"); fs("regions.marks.lamp12", a, sizeof a);
-    if (!mark("line.need.lamp", a, lamp)) { v_region("need", LAYER_CHROME); colour("needLamp", c); v_rect("line.need.lamp", lamp[0], lamp[1], lamp[2], lamp[3], c); }
+    v_name("need"); fs("regions.marks.lamp12.needsYou", a, sizeof a);
+    mark("line.need.lamp", a, lamp);   /* the signed amber lamp (home-lamp-amber-12x12), 1:1; no code-drawn lamp */
   }
   /* the way back: its cap, then one word, right-aligned to 1008 */
   if (spec_str(P, "frame.line.back", s, sizeof s) > 0) {

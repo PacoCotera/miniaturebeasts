@@ -27,17 +27,18 @@ void word_livingWindow(const char *spec, const char *region, const char *bezel, 
     v_rect("bezel.light.t", b[0] + 1, b[1] + 1, b[2] - 2, 1, colr("colours.bezel.light")); v_rect("bezel.light.l", b[0] + 1, b[1] + 1, 1, b[3] - 2, colr("colours.bezel.light"));
     v_rect("bezel.shade.b", b[0] + 1, b[1] + b[3] - 2, b[2] - 2, 1, colr("colours.bezel.shade")); v_rect("bezel.shade.r", b[0] + b[2] - 2, b[1] + 1, 1, b[3] - 2, colr("colours.bezel.shade"));
   }
+  int painted = glassPicture && *glassPicture && wire_asset_slot(glassPicture) >= 0;   /* the light's painting is on the face: the flat plates stand only while its slot is empty; painted, they are the same nodes with no size, so the node ids never change */
   v_region(region, LAYER_CHROME);
 #define NAME(s) (snprintf(id, sizeof id, "%s.%s", region, s), id)
 #define COL(s) (snprintf(p, sizeof p, "%s.%s", colours, s), colr(p))
-  v_rect(NAME("back"), g[0], g[1], g[2], g[3], COL("back"));
-  v_rect(NAME("ground"), ground[0], ground[1], ground[2], ground[3], COL("ground")); v_rect(NAME("groundTop"), ground[0], ground[1], ground[2], 1, COL("groundTop"));
-  v_rect(NAME("foot"), foot[0], foot[1], foot[2], foot[3], COL("foot"));
+  v_rect(NAME("back"), g[0], g[1], painted ? 0 : g[2], painted ? 0 : g[3], COL("back"));
+  v_rect(NAME("ground"), ground[0], ground[1], painted ? 0 : ground[2], painted ? 0 : ground[3], COL("ground")); v_rect(NAME("groundTop"), ground[0], ground[1], painted ? 0 : ground[2], painted ? 0 : 1, COL("groundTop"));
+  v_rect(NAME("foot"), foot[0], foot[1], painted ? 0 : foot[2], painted ? 0 : foot[3], COL("foot"));
   if (bezel) {
-    v_rect(NAME("edge.t"), g[0], g[1], g[2], 1, COL("edge")); v_rect(NAME("edge.b"), g[0], g[1] + g[3] - 1, g[2], 1, COL("edge"));
-    v_rect(NAME("edge.l"), g[0], g[1], 1, g[3], COL("edge")); v_rect(NAME("edge.r"), g[0] + g[2] - 1, g[1], 1, g[3], COL("edge"));
+    v_rect(NAME("edge.t"), g[0], g[1], painted ? 0 : g[2], painted ? 0 : 1, COL("edge")); v_rect(NAME("edge.b"), g[0], g[1] + g[3] - 1, painted ? 0 : g[2], painted ? 0 : 1, COL("edge"));
+    v_rect(NAME("edge.l"), g[0], g[1], painted ? 0 : 1, painted ? 0 : g[3], COL("edge")); v_rect(NAME("edge.r"), g[0] + g[2] - 1, g[1], painted ? 0 : 1, painted ? 0 : g[3], COL("edge"));
   }
-  if (glassPicture && *glassPicture) { v_name(region); v_sprite(NAME("master"), glassPicture, g[0], g[1], g[2], g[3]); }
+  if (painted) { v_name(region); v_sprite(NAME("master"), glassPicture, g[0], g[1], g[2], g[3]); }
 #undef NAME
 #undef COL
 }

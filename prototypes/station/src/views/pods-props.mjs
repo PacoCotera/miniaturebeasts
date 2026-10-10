@@ -78,8 +78,8 @@ function specimenOf(m, spec, cur, R, req, mode) {
   const out = {
     beam: req({ kind: "beam", id: `beam:${R.beam.rect.slice(2).join("x")}`, size: R.beam.rect.slice(2) }),
     room: {
-      bench: slot(req, `room-bench-stage-${mode}`, spec.regions.bench.rect, "the state's room master"), benchAny: slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master"), shelf: slot(req, "room-shelf", R.shelf.rect, "the shelf master, cut to the spec's size"),
-      cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), cradleFront: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer"),
+      bench: slot(req, `room-bench-stage-${mode}`, spec.regions.bench.rect, "the state's room master"), benchAny: slot(req, "room-bench-stage", spec.regions.bench.rect, "the room master"),
+      cradleFront: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer"),
       shadow: slot(req, `pod-${sizeClass}-shadow`, [0, 0, box[0] + spec.shadow.widen, spec.shadow.h], "the contact shadow"),
     },
     pod: {
@@ -112,18 +112,18 @@ const whoOf = (p, fr, W, req) => [slot(req, `mark-species-${S.speciesOf(p)}-24x2
 function collectionView(view, m, spec, req) {
   const { st, settings, ui } = m, R = spec.regions.collection, L = R.places, N = R.name;
   view.mode = "collection";
-  const rack = Math.min(S.rackSize(settings), L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2), radius: L.radius });
+  const rack = Math.min(S.rackSize(settings), L.slots);
   const places = [];
   const RM = R.ring.masters, RS = R.ring.slice, rs = (id) => slot(req, id, [0, 0, RS[2], RS[3]], "the collection ring master"), from = RM.segmentFrom ?? 0;
   for (let i = 0; i < rack; i++) {
     const q = st.tray[i], idle = rs(RM.idle);
-    if (!q) { places.push({ empty: true, panel, ringLayers: [idle] }); continue; }
+    if (!q) { places.push({ empty: true, ringLayers: [idle] }); continue; }
     const f = q.idd ? podFrame(q) : null, flags = f ? f.chapters.map((c) => q.read.includes(c.id)) : null, n = flags ? flags.length : 0, closed = n > 0 && flags.every(Boolean);
     const name = q.idd ? S.cap(S.spName(q)) : spec.strings.unknownPod;
     const sp = shellFrame(st, q) ? S.speciesOf(q) : null, size = R.pod.size;
     const layer = (tpl, k) => rs(tpl.replace("{N}", n).replace("{i}", k));
     places.push({
-      panel, ringLayers: [idle, ...(!n || n < RM.chapters[0] || n > RM.chapters[1] ? [] : closed ? [rs(RM.closed)] : [layer(RM.track), ...flags.flatMap((r, k) => (r ? [layer(RM.segment, k + from)] : []))])],   // the idle base, then the track and the read segments, or the closed band when every chapter is read
+      ringLayers: [idle, ...(!n || n < RM.chapters[0] || n > RM.chapters[1] ? [] : closed ? [rs(RM.closed)] : [layer(RM.track), ...flags.flatMap((r, k) => (r ? [layer(RM.segment, k + from)] : []))])],   // the idle base, then the track and the read segments, or the closed band when every chapter is read
       pod: req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${size.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size }),
       name,
       find: PLACE_KEYS.includes(q.g) ? req({ kind: "place", id: `place:${q.g}:${R.place.at[2]}`, place: q.g, size: R.place.at[2] }) : null,

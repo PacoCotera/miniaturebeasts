@@ -225,7 +225,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | --- | --- | --- |
 | Room marks (the device keys' icons) | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24` | 24×24 |
 | The Companion's glyph | `frame-companion-solid-16x24` (docked), `frame-companion-outline-16x24` (away) | 16×24 |
-| Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `frame-lamp-12-amber` (the notice's): one painted shape per colour | 8×8, 12×12 |
+| Lamps | `frame-lamp-8-mint` (the Companion docked), `frame-lamp-8-stone` (away), `home-lamp-amber-12x12` (the notice's, frame.json `lamp12.needsYou`): one painted shape per colour | 8×8, 12×12 |
 | The sun (the world turn) | `frame-sun-16` | 16×16 |
 | Key caps | `frame-cap-confirm-16` (✓, `orange`), `frame-cap-confirm-16-dim` (✓ when the action cannot be paid, `mist`), `frame-cap-back-16` (←, `stone`) | 16×16 discs, as on the Companion: the frame shares one language, and the Station's own keys have no set shape (`design/devices.md` gives no key shape; the device-family renders are appearance references only). If the Station's keys are square, the caps follow them. The dimmed ✓ is a state of the cap drawn as its own slice, not a tint of the orange one: the build never recolours art |
 | The mibi's face | `face-<mibi>-24` (docked), `face-<mibi>-24-away` (on its `stone` ring), `face-24-empty` (no mibi with you): Station masters painted at 24, never the Companion's face scaled | 24×24, on its `teal` ring |
@@ -248,14 +248,14 @@ The material icons are the kit's 16 px icons, as on the Companion.
 
 | Region | Rectangle | Holds |
 | --- | --- | --- |
-| Top bar | 0, 0, 1024, 40 | Chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
+| Top bar | 0, 0, 1024, 40 | The signed bar `frame-top-bar-1024x40` (frame.json `regions.top.slice`), 1:1, with its own edge rows; the zones, the top rules and the marks over it. While the bar is not on the face: chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
 | Title | 16, 8, 232, 24 | The room's mark 24×24, then the title, 20 px medium |
 | Materials | 384, 8, 256, 24 | As above |
 | Companion | 760, 8, 120, 24 | The glyph 760, 8, 16, 24; its lamp 780, 16, 8, 8; three faces at 800, 8, 24, 24, at 828, 8, 24, 24 and at 856, 8, 24, 24; right edge x 880 |
 | When (the world turn) | 904, 8, 104, 24 | The sun mark and the figure, right-aligned to x 1008 |
 | Top rules | x 256 and x 888, y 8 to 32 | 1 px hairlines |
 | Stage | 0, 40, 1024, 522 | The screen's own layout, on its painted slice; with no slice, flat `ground` |
-| Bottom line | 0, 562, 1024, 38 | Chrome ground (`ground`), with a 1 px `void` rule on its top edge |
+| Bottom line | 0, 562, 1024, 38 | The signed bar `frame-bottom-line-1024x38` (frame.json `regions.line.slice`), 1:1, with its own edge rows; the zones, the separators and the marks over it. While the bar is not on the face: chrome ground (`ground`), with a 1 px `void` rule on its top edge |
 | Action | 16, 570, 376, 24 | ✓ cap, verb, then the price, 24 px apart |
 | Context (subject) | 408, 570, 208, 24 | Centred on x 512, 16 px, `mist`. May end in "…" |
 | Notice (what needs you) | 624, 570, 272, 24 | Right-aligned to x 896, 16 px, `amber`, with its 12×12 lamp |
@@ -453,13 +453,13 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| Place c, r (c 0–2, r 0–1) | 16 + 336c, 48 + 240r, 320, 224 | A recessed glass place on the bench `room-bench-stage-collection`: its own panel, the slice `panel-place-320x224`, one fixed master placed 1:1 at every place (all six are one size, so it is not a nine-slice), painted in the `panel` and `hairline` roles with 6 px corners; an empty place is the same panel with the idle ring; the focus target. Its focus ring is a circle 4 px outside the ring: 2 px in the `focus` role, radius 84 round the ring's centre. Every place drawn; an empty place is the empty ring |
-| Ring | slice place + (8, 24, 176, 176), centred on place + (96, 112); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: `ring-collection-idle-176x176`, an empty place's ring and the base under the arcs; for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin; and when every chapter is read, the continuous band `ring-collection-closed-176x176` in place of the track and segments. There is no selected ring: the focus ring marks the focused place. The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline`; the build draws no arc |
+| Place c, r (c 0–2, r 0–1) | 64 + 300c, 72 + 240r, 288, 224 | A place on the plain bench `room-bench-stage-collection` (the signed plain recut): no panel, nothing drawn behind the ring; an empty place is the idle ring alone; the focus target. Its focus ring is a circle 4 px outside the ring: 2 px in the `focus` role, radius 84 round the ring's centre. Every place drawn; an empty place is the empty ring |
+| Ring | slice place + (8, 0, 176, 176), centred on place + (96, 88); the ring radius 80 with an 8 px band | Painted masters placed 1:1 on one 176×176 origin, as the signed gauge is, never arcs drawn by the build: `ring-collection-idle-176x176`, an empty place's ring and the base under the arcs; for a species of N chapters (1 to 8), the track `ring-arc-collection-n<N>-track-176x176` and one segment per read chapter, `ring-arc-collection-n<N>-s<i>-176x176` (i = 1 to N, in ring order, 2 px apart), each on the same origin; and when every chapter is read, the continuous band `ring-collection-closed-176x176` in place of the track and segments. There is no selected ring: the focus ring marks the focused place. The colour roles are the paint reference only: read `bone`, unread `bevel`, the band's edges `hairline`; the build draws no arc |
 | Pod | 88×112, centred on the ring's centre | The collection class; the sealed cap or the lit glyph |
-| Name label | place + (184, 64), hugging, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
-| Place picture | place + (184, 104, 48, 48) | The origin as a picture: `place-<place>-48x48` |
-| Can-grow mark | place + (184, 168, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it |
-| Glint star | place + (148, 40, 12, 12) | `glint-star-12x12`, on the ring's band at its top right |
+| Name label | centred on place + (96, 184), hugging, kept inside the place, 24 tall | 20 px medium on its plate, as under the pod: "Loika"; "Unknown" before Identify. Its plate is from the `plate-name` series, as under the pod: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
+| Place picture | place + (200, 40, 48, 48) | The origin as a picture: `place-<place>-48x48` |
+| Can-grow mark | place + (216, 104, 16, 16) | `mark-can-grow-16`. Only where the ring and the seal do not say it |
+| Glint star | place + (148, 16, 12, 12) | `glint-star-12x12`, on the ring's band at its top right |
 | Waiting beyond the rack | 16, 528, 24, 24 | `mark-waiting-24`. One quiet mark, never a number |
 
 **B · Pod overview**
@@ -469,8 +469,8 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Rail | 96, 40, 832, 40 | Hanging, centred on x 512 as on Create and Incubator; no tab open. A price shows only on the bottom line, when a tab has focus |
 | Bench and cone of light | bench 0, 40, 1024, 522; the cone 136, 104, 240, 320 | The bench is painted with its cone and pool for this state's axis: `room-bench-stage-overview` at (0, 40, 1024, 522), the cone centred on x 256, the pool on the dish at (256, 424). The collection uses `room-bench-stage-collection` (0, 40, 1024, 522), with no cone |
 | **Pod (focal)** | 184, 216, 144, 176 | Bottom-centred on (256, 392); medium 120×152 at (196, 240), small 104×128 at (204, 264). The foot in the bowl's dip |
-| Dish and near lip | 144, 328, 224, 96 | |
-| Shelf slab | 112, 368, 288, 72 | |
+| Dish and near lip | 144, 328, 224, 96 | Painted in the stage; only `room-cradle-front` is drawn, over the pod's foot |
+| Shelf slab | 112, 368, 288, 72 | Painted in the stage; nothing drawn |
 | Name label | centred on x 256, at y 456, hugging, 24 tall | 20 px medium; the name alone ("Loika"); "Unknown" before Identify. On its plate from the `plate-name` series: one signed picture per width, `plate-name-80x24` to `plate-name-224x24` in steps of 16, the word's width plus 2 × 12 rounded up to the step; never a nine-slice |
 | Who it is: marks | glyph (200, 488, 24, 24), clan (232, 488, 24, 24), first of its kind (268, 492, 16, 16) | Marks, no words |
 | **The figure** | 432, 232, 128, 160 | The species' silhouette in a soft halo, its feet on y 392, in two painted slices per species on the same 128×160 origin: `mibi-halo-<SNN>-128x160-mist` (everything unread, diffused) and `mibi-halo-<SNN>-128x160-clear` (the crisp glow figure). The build cross-fades them by the share of chapters read: the clear layer's alpha is chapters read ÷ chapters, over the mist; nothing is blurred by the build. It suggests the type; it never shows the individual's colours or marks. Before Identify, the empty halo. Once identified it is a focus target, the way to the species' guide, from the slot that builds the Book and the field guide (lvgl-switch.md §4, slot 8); before then it is drawn but is not a target |
@@ -488,7 +488,7 @@ The player leaves knowing what each pod is, how far it is read, and where someth
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Rail | 96, 40, 832, 40 | The open tab lighter; the focus on the rail |
-| Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The bench `room-bench-stage-chapter` at (0, 40, 1024, 522), its cone centred on x 216 and its pool at (216, 424). The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
+| Pod, dish, slab, cone | pod 144, 216, 144, 176; dish 104, 328, 224, 96; slab 72, 368, 288, 72; cone 96, 104, 240, 320 | The bench `room-bench-stage-chapter` at (0, 40, 1024, 522), which paints the dish and the slab (only `room-cradle-front` is drawn), its cone centred on x 216 and its pool at (216, 424). The pod's room shrunk to what the pod and the dish need: the axis at x 216, the foot on y 392. The name label under it; no figure, no stamp, no hatch |
 | Open page | 424, 112, w, h by the trait count (the size table below); at most 584×440 | **No pane.** The page is its heading, one 1 px `hairline` rule and the grid, standing on the bench; spacing does the grouping, no container. Left-aligned: the heading and the first cell at x 448, the top at y 112, fixed as the rail steps |
 | Page heading | 448, 118, w − 24, 24; the rule 448, 148, the grid's width, 1 | Emblem 24×24, then the chapter's word in 20 px `bone`, 8 px after it. Under it one 1 px `hairline` rule from the first column's left edge to the last column's right edge (12 px under the heading, 12 px over the cells). "Legs & Tail", the longest word, makes the heading 24 + 8 + 103 = 135 px; on a one-trait page that runs 7 px past the 128 px rule, which is fine with no pane to hold it |
 | Trait cells | the grid below | In the chapter's order, row by row: the picture P (128×160, one flat rectangle of `ground`, no frame, no card, no word), 4 px, the name line (20 px): the one-word name in 16 px `bone`, then its glyphs (Marks after the name), the name and the glyphs centred together on the cell. A picture's content sits inside P's centred 75%, 96×120 at (16, 20), the tone as its margin |
@@ -693,13 +693,13 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | Region | Roles | Why |
 | --- | --- | --- |
 | Bezel | The sage housing `metal`, lit edge `enamel`, shade `bevel`, edge `hairline` | The window set in the device's housing |
-| Glass | A `hairline` edge, no highlight; until the master, a flat plate: back `forest`, ground band `clay` with a `sand` top row, foot `soil` | A window into the housing, never a showcase |
+| Glass | A `hairline` edge, no highlight; the master of the light (`home-glass-dawn|day|dusk|night-640x488`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20); a flat plate (back `forest`, ground band `clay` with a `sand` top row, foot `soil`) only while a light's slot is empty | A window into the housing, never a showcase |
 | Modules | `panel` fill, `bevel` top, `hairline` edge; the word engraved in `metal`, 16 px | The objects and the lamp lead; the word is never the brightest thing |
-| Lamps | 12×12, `void` rim; off `hairline`, well `sprout`, waiting `sky`, needs you `amber` | The kit's lamp roles |
+| Lamps | 12×12, the signed picture of the state, frame.json `regions.marks.lamp12`: off `home-lamp-hairline-12x12`, well `home-lamp-sprout-12x12`, waiting `home-lamp-sky-12x12`, needs you `home-lamp-amber-12x12` | The kit's lamp roles |
 | Cargo | Inside `ground`; shut, a field-case lid in `enamel` with `deepTeal` rubber seals; crates rugged field cases, sage housing (`metal`) body, `deepTeal` corners, an `orange` seal tag | The housing's materials; less rustic than wooden crates |
 | Pods | Wells `ground` with a `void` inner shade and a `bevel` lip; the glint `yellow` | A fitted case; the pods keep their own colours |
 | Incubator | A sheltered chamber in the sand housing `enamel` with one hooded window (`hairline` edge, `ground` inside); leaves `sage` with a `sageD` vein, empty in `bevel` | The bridge from research to the Vivarium |
-| Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting a gilt frame `gold` lit `yellow` | The Probe as the project's Probe art draws it, never a needle |
+| Probe | The cradle in `enamel`; plates whole `white`, gone a `bevel` outline; a held sitting the matte sitting frame, `home-sitting-24x32` | The Probe as the project's Probe art draws it, never a needle |
 | Library | The field journal: cover `bark`, page edge `sand`; the glint `yellow` | The worn expedition volume |
 | Bed | A low nest: rim `bark`, hollow `soil`, lit rim `sand` | Inside the warm field |
 | Rest knob | `enamel`, lit `sand`, shade `bevel` | One step lighter than the bezel it sits on |
@@ -714,7 +714,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
-| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, with no mark until the hand-drawn mark lands (`home-bed-mark-16x24` at (536, 488, 16, 24), registered, not drawn). Docked with nobody carried: the nest alone |
+| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`), 1:1. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (536, 488, 16, 24) over it; docked, no mark. Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
 | `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
 
@@ -729,7 +729,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (800 + 64i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 928, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
 | `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
 | `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber. The hatched mibi's painting on its way: lamp waiting |
-| `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the gilt frame, docked or away |
+| `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the sitting frame, docked or away |
 | `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72 | No species found: the journal shut, lamp off. Otherwise the journal, lamp well |
 
 **The lamps.** Amber marks the module the room's ✓ acts on, and only it. The notice and the room's ✓ take the first of these that holds:
@@ -809,20 +809,14 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Vivarium (Home's glass) | 640×488 |
 | Residents, sleepers | 144×152 adult or elder, 104×112 juvenile; a sleeper in its nap pose |
 | Bed | 192×56 |
-| Bed mark | 16×24, registered, not drawn until the hand-drawn mark lands |
 | Cargo's bay, open and shut | 176×72 |
-| Crate in the module | 48×40 |
 | Waiting mark | 24×24, `mark-waiting-24` |
 | Rack pod | 24×32, the rack class, rendered at its size |
 | Well | 32×32 |
 | Chamber | 72×72 |
-| Leaves | 8×12, `leaf-small-empty-8x12`, `leaf-small-full-8x12` |
 | Probe in its cradle | 96×72 |
-| Shield plate | 12×24 |
-| Sitting frame | 24×32 |
 | Journal | 104×72 |
 | Glint | 12×12 |
-| Lamps | 12×12 |
 | Rest knob | 32×6 |
 
 ---
@@ -984,15 +978,15 @@ A living view the Station can show permanently: the Vivarium, alive and worth lo
 
 ### 4. Art direction
 
-The Vivarium only, one painting a light (day, dusk, night), the warm key light from the top left in every light; at night warm and low, the moon only a cool rim; the glass's mean L* 30 or more at night, its mean red at least its mean blue. The strip is the device's slate, `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Until the master: back `forest`, ground band `clay` with a `sand` top row, foot `soil`.
+The Vivarium only, one painting a light (dawn, day, dusk, night), the warm key light from the top left in every light; at night warm and low, the moon only a cool rim; the glass's mean L* 30 or more at night, its mean red at least its mean blue. The strip is the device's slate, `ground` with a 1 px `void` rule on its top edge, the line in `mist`. Until the master: back `forest`, ground band `clay` with a `sand` top row, foot `soil`.
 
 ### 5. Composition
 
 | Region (`frame.json` `idle`) | Rectangle | Notes |
 | --- | --- | --- |
-| `vivarium` | 0, 0, 1024, 568 | One painting. Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
+| `vivarium` | 0, 0, 1024, 568 | One painting, the master of the light (`idle-vivarium-dawn|day|dusk|night-1024x568`, by the Station's local hour: dawn 6, day 7, dusk 18, night 20; frame.json `light`). Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag; the waiting lamp steady at its box's top right. Drawn by the feet's y |
-| `bed` | 792, 496, 192, 56 | Living window, build `withYouBed`, coloured as the whole's: rim `bark`, hollow `soil`, lit rim `sand`. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the bed empty, with no mark until the hand-drawn mark lands (`home-bed-mark-16x24` at (880, 512, 16, 24), registered, not drawn) |
+| `bed` | 792, 496, 192, 56 | The bed of the light, `home-bed-dawn|day|dusk|night-192x56` (frame.json `light.bed`; the same picture as Home's), 1:1. The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the bed empty, its mark `home-bed-mark-16x24` 1:1 at (880, 512, 16, 24) over it; docked, no mark |
 | `strip` | 0, 568, 1024, 32 | Build `idleLine`; a 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | 16 px `mist`, centred on x 512 and y 584; one sentence, six words or fewer, no digits |
 
@@ -1024,7 +1018,6 @@ The Vivarium only, one painting a light (day, dusk, night), the warm key light f
 | Vivarium | 1024×568, a painting per light |
 | Residents, sleepers | 144×152 adult, 104×112 juvenile |
 | Bed | 192×56 |
-| Bed mark | 16×24, registered, not drawn until the hand-drawn mark lands |
 
 ---
 
@@ -1173,7 +1166,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | Work tray (`chamber`) | 312, 232, 400, 320 | The tray in the housing; floor 312, 536, 400, 16 (the concept's 316, 232, 392, 320 on the grid) |
 | **Founder (focal)** | 360, 240, 304, 312 | At least 300×310, feet at y 536 |
 | Pod | 88, 232, 144, 176 | The pod by its species' size class, bottom-centred on (160, 408), as on Pods |
-| Dish | 48, 344, 224, 96 | The signed `room-cradle`, and `room-cradle-front` over the pod's foot, as on Pods' overview |
+| Dish | 48, 344, 224, 96 | Painted in Create's own stage, `room-cradle-front` registering at (48, 344); until it lands, nothing is drawn |
 | Origin | 40, 456, 240, 40 | 16 px `mist`, at most two lines, centred on x 160 |
 | Small chamber (`dome`) | 776, 104, 176, 224 | The Incubator's chamber, small and empty; its floor at y 296. While a bud grows its glow shows here (a 64×80 bud at 832, 216) and Grow is refused |
 | Leaves to grow | 768, 336, 192, 48 | The word `leaves`, form grid: 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48), all empty: one per minute it will take, 20 plus one a change, the first founder 5 whatever is shaped |
@@ -1256,11 +1249,11 @@ With `motion: false` both jump to their ends.
 | Founder | 304×312 (the placeholder: the stylised rig pass) | Carried |
 | Roll close-ups | 128×72, `roll-{species}-{trait}-{look}-128x72` | Carried |
 | Pod | the species' size class: 144×176, 120×152 or 104×128 (the signed pod sprites) | Carried; checked with Pods |
-| Dish | 224×96 (the signed `room-cradle` and `room-cradle-front`) | Stale: the clinical glass dish; the room set's repaint replaces it |
+| Dish | 224×96 (`room-cradle-front`, Pods' signed lip; the nest is the stage's) | Painted in Create's own stage |
 | Work tray (`chamber`) | 400×320, its floor 400×16 | Stale: specified as glass; becomes a tray in the housing |
 | Small chamber (`dome`) | 176×224; a busy bud 64×80, `bud-small-64x80` | Stale: a small bell jar; becomes the Incubator's chamber, small. The bud is re-judged with the Incubator's |
 | Notches | 12×6 | Carried |
-| Leaves | 8×12, `leaf-small-empty-8x12` and `leaf-small-full-8x12`: the Incubator's leaf at the small size | Re-judged with the Incubator's leaf |
+| Leaves | 8×12, `leaf-empty-8x12` and `leaf-full-8x12`: the Incubator's leaf at the small size | Re-judged with the Incubator's leaf |
 | Changed pip, clash pip | 6×6, `pip-changed-6x6` (a diamond), `pip-clash-6x6` | Carried |
 | Changed tag | 88×24, `plate-name-88x24`, to be cut | Carried |
 | Stage | 1024×522, `room-bench-stage-create`, to be commissioned (until then `room-bench-stage-collection`) | Stale: the dark glass bench; becomes the work tray's stage |
@@ -1726,7 +1719,7 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 
 | Master | Size | Region | Shows | New |
 | --- | --- | --- | --- | --- |
-| Idle's painting | 1024×568, day, dusk, night | the whole's `window` (rows 120 to 560) | The Vivarium | — |
+| Idle's painting | 1024×568, dawn, day, dusk, night | the whole's `window` (rows 120 to 560) | The Vivarium | — |
 | `vivarium-near-{day,dusk,night}-544x408` | 544×408 | up close's `glass` | The Vivarium close by, its ground band at y 304 to 464 of the glass, no mibi in it | yes |
 | `notch-skill-16x24` | 16×24 | the card's notches | One filled skill notch cut into the card's plate | yes |
 | `mark-out-with-companion-64x96` | 64×96 | `resident.out` | The mibi's place, kept: the Companion's outline standing on the ground | yes |
@@ -1738,7 +1731,7 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 | `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
 | `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
 | `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
-| `mark-guide-16`, `frame-lamp-12-sky`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
+| `mark-guide-16`, `home-lamp-sky-12x12`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
 
 ### What changed from the old up-close layout
 

@@ -34,7 +34,7 @@ test("the page: its size and grid by trait count; a count the table lacks is the
   assert.equal(pageGrid(P, 4).cells.length, 4); assert.deepEqual(pageGrid(P, 6).cells[3], [P.rect[0] + 24, P.rect[1] + 256, 128, 184]); assert.equal(pageGrid(P, 9).overflow, true); assert.equal(pageGrid(P, 0).overflow, false);
 });
 test("the rack, the kin, the name plate, the message plate and the stamp", () => {
-  assert.deepEqual(placeRect(pods.regions.collection, 4), [352, 288, 320, 224]); assert.deepEqual(kinRect(pods.regions.overview.kin, 2), [728, 224, 56, 56]);
+  assert.deepEqual(placeRect(pods.regions.collection, 4), [364, 312, 288, 224]); assert.deepEqual(kinRect(pods.regions.overview.kin, 2), [728, 224, 56, 56]);
   const N = pods.regions.overview.name; assert.equal(plateWidth(N, 0), N.plate.min); assert.equal(plateWidth(N, 10000), N.plate.max); assert.equal(plateWidth(N, 100) % N.plate.round, 0);
   assert.deepEqual(platePosition(frame.regions.plate, 1, 100, null), [512 - 66, 550 - 36, 132, 36]); assert.equal(platePosition(frame.regions.plate, 1, 100, [400, 500, 200, 50])[1], 112);
   assert.equal(stampCell(5), 14); assert.equal(stampCell(60), 2);

@@ -68,6 +68,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     handles.set(id, { h, used: sceneNo }); return h;
   }
   // The pictures the host sends at boot, after the specs and before the first props, and never drops: the name plates and the rail tab grounds (lvgl-switch.md §2.4). `pictures`: [{ id, w, h }]; `picture(id)` gives its pixels.
+  // A picture the host has done with (the light's three others: the old light's paintings once the new light's props are in): released by name; an id the face does not hold is ignored.
+  function drop(id) { if (handles.has(id)) { send({ t: "asset", id, drop: true }); handles.delete(id); } }
   function pin(pictures, picture) { for (const p of pictures) { handleOf(p.id, picture); handles.get(p.id).pinned = true; } }
   // The props of a screen (lvgl-switch.md §2.1): hashed without their seq, so an unchanged screen is not sent again; seq is the transport's, one more than the last sent, never the caller's.
   let seq = 0, lastProps = null;
@@ -77,7 +79,7 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
   }
   return {
     M, version, ready, objects: () => M._face_object_count(), refused: () => M._face_node_refused(), beginScene: () => ++sceneNo,
-    size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin,
+    size: [W, H], loadMs, send, props, poll, drain, errors, handleOf, pin, drop,
     frame: (ms) => { frames++; M._face_frame(Math.floor(ms)); drain(); },
     display, present, forceFull: () => { first = true; },
     key: (name) => { const code = LV_KEYS[name]; if (code == null) return; M._face_key(code, 1); M._face_key(code, 0); },

@@ -18,7 +18,6 @@
      "list": {
       "places": [
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n4-track-176x176:176x176",
@@ -32,7 +31,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n4-track-176x176:176x176",
@@ -47,7 +45,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n8-track-176x176:176x176",
@@ -60,7 +57,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n5-track-176x176:176x176"
@@ -72,7 +68,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n6-track-176x176:176x176"
@@ -84,7 +79,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n5-track-176x176:176x176"
@@ -173,18 +167,6 @@
      "id": "room-bench-stage-collection:1024x522",
      "w": 1024,
      "h": 522
-    },
-    {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
     },
     {
      "id": "ring-collection-idle-176x176:176x176",
@@ -307,7 +289,7 @@
      "h": 16
     }
    ],
-   "hash": "32d78d1c"
+   "hash": "eb84c6f4"
   },
   {
    "state": "overview",
@@ -326,8 +308,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -486,8 +466,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -645,8 +623,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -814,8 +790,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -1097,8 +1071,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-large-shadow:160x14"
       },
@@ -1375,8 +1347,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -1679,8 +1649,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -1957,8 +1925,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -2254,8 +2220,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-large-shadow:160x14"
       },
@@ -2565,8 +2529,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-large-shadow:160x14"
       },
@@ -2864,8 +2826,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -3186,8 +3146,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -3464,8 +3422,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -3709,8 +3665,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -3997,8 +3951,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -4274,8 +4226,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-large-shadow:160x14"
       },
@@ -4617,8 +4567,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-large-shadow:160x14"
       },
@@ -4950,8 +4898,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -5219,8 +5165,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -6224,8 +6168,6 @@
      "specimen": {
       "beam": "beam:240x320",
       "room": {
-       "shelf": "room-shelf:288x72",
-       "cradle": "room-cradle:224x96",
        "cradleFront": "room-cradle-front:224x96",
        "shadow": "pod-medium-shadow:136x14"
       },
@@ -6527,7 +6469,6 @@
      "list": {
       "places": [
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ],
@@ -6538,7 +6479,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ],
@@ -6550,28 +6490,24 @@
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
@@ -6637,18 +6573,6 @@
      "h": 522
     },
     {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
      "id": "ring-collection-idle-176x176:176x176",
      "w": 176,
      "h": 176
@@ -6684,7 +6608,7 @@
      "h": 16
     }
    ],
-   "hash": "ad46a55a"
+   "hash": "5730b7ce"
   },
   {
    "state": "collection",
@@ -6704,42 +6628,36 @@
       "places": [
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
@@ -6792,18 +6710,6 @@
      "h": 522
     },
     {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
      "id": "ring-collection-idle-176x176:176x176",
      "w": 176,
      "h": 176
@@ -6824,7 +6730,7 @@
      "h": 16
     }
    ],
-   "hash": "f7784130"
+   "hash": "5a76b910"
   },
   {
    "state": "collection",
@@ -6843,7 +6749,6 @@
      "list": {
       "places": [
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ],
@@ -6854,7 +6759,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ],
@@ -6866,28 +6770,24 @@
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
@@ -6952,18 +6852,6 @@
      "h": 522
     },
     {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
      "id": "ring-collection-idle-176x176:176x176",
      "w": 176,
      "h": 176
@@ -6999,7 +6887,7 @@
      "h": 16
     }
    ],
-   "hash": "22ecbd62"
+   "hash": "96bf8102"
   },
   {
    "state": "collection",
@@ -7018,7 +6906,6 @@
      "list": {
       "places": [
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n4-track-176x176:176x176"
@@ -7030,7 +6917,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n4-track-176x176:176x176"
@@ -7042,7 +6928,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n8-track-176x176:176x176"
@@ -7054,7 +6939,6 @@
         "glint": null
        },
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n5-track-176x176:176x176"
@@ -7067,14 +6951,12 @@
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
@@ -7149,18 +7031,6 @@
      "h": 522
     },
     {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
      "id": "ring-collection-idle-176x176:176x176",
      "w": 176,
      "h": 176
@@ -7226,7 +7096,7 @@
      "h": 16
     }
    ],
-   "hash": "b20273aa"
+   "hash": "842c62ba"
   },
   {
    "state": "collection",
@@ -7245,7 +7115,6 @@
      "list": {
       "places": [
        {
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176",
          "ring-arc-collection-n4-track-176x176:176x176"
@@ -7258,35 +7127,30 @@
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
        },
        {
         "empty": true,
-        "panel": "placepanel:320x224",
         "ringLayers": [
          "ring-collection-idle-176x176:176x176"
         ]
@@ -7346,18 +7210,6 @@
      "h": 522
     },
     {
-     "id": "placepanel:320x224",
-     "w": 320,
-     "h": 224,
-     "slice": [
-      16,
-      16,
-      16,
-      16
-     ],
-     "tile": 0
-    },
-    {
      "id": "ring-collection-idle-176x176:176x176",
      "w": 176,
      "h": 176
@@ -7403,7 +7255,7 @@
      "h": 16
     }
    ],
-   "hash": "b0ee2b2b"
+   "hash": "bdeb8e1b"
   }
  ]
 }

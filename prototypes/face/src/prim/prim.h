@@ -33,6 +33,7 @@ int prim_asset_limit(void);
 int prim_source(const char *ops, int w, int h);   /* a face-owned source picture composed from ops, cached by their hash and counted once in prim_pictures(); a handle for a nine-slice or sprite, or -1 */
 int prim_count(void);           /* objects alive */
 int prim_pictures(void);        /* pictures resident (assets with pixels, composed pictures) */
+int prim_painted_at(int x, int y);   /* a painted picture of the scene covers the pixel (the off-palette check skips it) */
 void prim_refuse(void);         /* count a node a word could not draw (a picture the host has not sent) as refused */
 int prim_unknown(void);         /* nodes refused this frame (an unknown kind, a missing asset, a size that is not the asset's, a full table) */
 int prim_object_limit(void);
