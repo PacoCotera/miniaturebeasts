@@ -89,6 +89,15 @@ test("Cargo's bay and report: ✓ opens the crates, ← goes Home with the ring 
   const st2 = world(); st2.dock = { docked: true, at: T0 }; const h2 = host(st2); h2.ui.screen = "cargo"; INTENTS.cargo.intent(h2, "room", "confirm"); assert.equal(h2.ui.cargo.state, "bay", "an empty bay opens nothing");
 });
 
+test("Cargo's opening with reduced motion (the host stages each step as props at its time): per crate k from k × 3000: open at 200, the ribbon 500, the counters 800, pod i at 1200 + 150 · i, the turn 1650; the arrival and its hold are the same as with motion", () => {
+  const st = world(); S.seedCrate(st, "S01", 3, 4101, T0); S.seedCrate(st, "S01", 2, 4102, T0); st.dock = { docked: true, at: T0 };
+  const h = host(st); h.ui.screen = "cargo"; h.motion = () => false; INTENTS.cargo.intent(h, "room", "confirm");
+  assert.deepEqual(h.played.find((e) => e.kind === "arrival"), { kind: "arrival", target: "crate", ms: 6180, hold: 6200 }, "ms and hold unchanged");
+  const seen = []; for (const t of h.timers.slice().sort((a, b) => a.ms - b.ms)) { const before = [h.ui.cargo.crate, h.ui.cargo.at, h.ui.cargo.state]; t.fn(); const c = h.ui.cargo; if (c.crate !== before[0] || c.at !== before[1] || c.state !== before[2]) seen.push([t.ms, c.crate, c.at, c.state]); }
+  const steps = (k, pods) => [200, 500, 800, ...Array.from({ length: pods }, (_, i) => 1200 + 150 * i), 1650].map((at) => [k * 3000 + at, k, at, "opening"]);
+  assert.deepEqual(seen.filter((x) => x[3] === "opening"), [...steps(0, 3), [3000, 1, 0, "opening"], ...steps(1, 2)].filter((x, i, a) => a.findIndex((y) => y[0] === x[0]) === i), "the host's stage by time");
+  assert.deepEqual(seen.at(-1), [6000, 0, 0, "report"], "the report at crates × 3000");
+});
 test("the incubator: ✓ on a ready bud opens it (the hatch event, the new mibi to meet), on a growing one grows it now; ← goes Home", () => {
   const st = world(), p = pod(st, "S01", chapters("S01")); assert.ok(S.grow(st, p, {}, settings, T0).ok);
   const h = host(st); h.t = T0;

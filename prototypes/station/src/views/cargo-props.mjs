@@ -12,11 +12,7 @@ const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
 // The reach of a crate's walk in the words of the spec (strings.report.reach): thirds of the land, "all" when the whole of it; a crate with no map says nothing.
-export const reachWord = (spec, c) => {
-  const of = c.of | 0, x = c.explored | 0; if (of <= 0) return "";
-  const W = spec.strings.report.reach;
-  return x * 3 < of ? W.underThird : x * 3 < 2 * of ? W.underTwoThirds : x < of ? W.underAll : W.all;
-};
+export const reachWord = (spec, c) => { const band = S.reachBand(c); return band ? spec.strings.report.reach[band] : ""; };
 // A crate's ribbon: every dev crate reads dev; the ordinal counts walk crates only (first, second, third; a walk crate past the third, never from play, reads later). `walk`: the crate's place among the walk crates opened, from 0.
 export const ribbonOf = (spec, c, walk) => (c.dev ? spec.strings.ribbon.dev : [spec.strings.ribbon.first, spec.strings.ribbon.second, spec.strings.ribbon.third][walk] ?? spec.strings.ribbon.later);
 // A report row's lead, by the same ordinal: Developer crate, First, Second, Third crate, Another crate.
@@ -32,7 +28,7 @@ export function cargoBuild(m, spec, home, frame) {
   const podPic = (q) => { const sp = shellSpecies(st, q); return req({ kind: "pod", id: `pod:${sp ?? "-"}:${q.idd ? "i" : "s"}:${podSize.join("x")}`, species: sp, state: q.idd ? "identified" : "sealed", size: podSize }); };
 
   // the rack: the six wells, as Pods' collection: its pod or an empty well; `from` names the crate and the place in its order that brought a pod this opening, so the face lands it at its time
-  const slots = R.rack.wells.slots, rack = Math.min(settings.rack || S.RACK, slots), run = c.run;
+  const slots = R.rack.wells.slots, rack = Math.min(S.rackSize(settings), slots), run = c.run;
   const wellPic = ph(`cargo-well-${R.rack.wells.first[2]}x${R.rack.wells.first[3]}`, R.rack.wells.first.slice(2), true);
   const fromOf = (q) => { if (!run) return null; for (let k = 0; k < run.crates.length; k++) { const j = run.crates[k].pods.findIndex((p) => p.id === q.id); if (j >= 0) return { crate: k, order: j }; } return null; };
   const wells = Array.from({ length: slots }, (_, i) => {

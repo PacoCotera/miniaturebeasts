@@ -10,10 +10,12 @@ const CARGO = () => ({
   LINES: ["The meadow's mist burned off by noon", "A pond filled behind the rocks", "Something stirred in the wood"],
   // n crates of `pods` pods each (the species alternate), each with the reach of its walk and the world lines it brings
   crates(n, pods = 2, { lines = [], explored = 5, of = 20 } = {}) {
-    const S = window.__st; S.SV.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: 3 + 2 * i, at: 1, e: 3, d: 3, s: 4, met: [], explored: explored * (i + 1), of,
+    const S = window.__st; S.SV.bay = Array.from({ length: n }, (_, i) => ({ id: "c" + i, n: i + 1, turn: S.ST.turn + 3 + 2 * i, at: 1, e: 3, d: 3, s: 4, met: [], explored: explored * (i + 1), of,
       lines: i === n - 1 ? lines : [], pods: Array.from({ length: pods }, (_, j) => ({ id: "p" + j, species: "S01", sp: 0, g: ["meadow", "pond", "rock", "wood", "cave"][(i + j) % 5], how: "calm", gs: 11 + 7 * i + j, k: null })) }));
     this.persist();
   },
+  // the counters and the turn as a fresh scene has them: the goldens do not carry the last scene's gains
+  fresh() { const st = window.__st.ST; st.e = 4; st.d = 3; st.s = 6; this.persist(); },
   mend(m) { window.__st.UI.cargo.mend = m; },
   waitingPods(n) { const st = window.__st.ST; for (let i = 0; i < n; i++) st.waiting.push({ ...st.tray[i % st.tray.length], id: "wait" + i }); },
 });
@@ -25,16 +27,16 @@ const SCENES = {
   "bay-empty":  { set: (w) => { w.adults(2); w.pods(2); } },
   "bay-away":   { set: (w) => { w.adults(2); w.away(); } },
   "bay-waiting":{ set: (w) => { w.adults(2); w.pods(6); w.waitingPods(2); } },
-  "report":         { open: 3, set: (w) => { w.adults(2); w.pods(1); w.crates(3, 3, { lines: w.LINES }); w.mend({ free: 0, paid: 2, broke: false }); } },
+  "report":         { open: 3, set: (w) => { w.adults(2); w.pods(1); w.crates(3, 3, { lines: w.LINES }); w.mend({ free: 0, paid: 2, broke: false, spent: 2 }); } },
   "report-small":   { open: 1, set: (w) => { w.adults(2); w.crates(1, 1); } },
-  "report-waiting": { open: 2, set: (w) => { w.adults(2); w.pods(5); w.crates(2, 2, { lines: w.LINES.slice(0, 1) }); w.mend({ free: 2, paid: 0, broke: true }); } },
+  "report-waiting": { open: 2, set: (w) => { w.adults(2); w.pods(5); w.crates(2, 2, { lines: w.LINES.slice(0, 1) }); w.mend({ free: 2, paid: 0, broke: true, spent: 0 }); } },
 };
 // the opening, one crate of three pods, at the instants of its steps (events.opening.crate) and at its end: motion on, the face's own clock ("at 0" is the first frame, 1 ms in, with the dither still fully over the stage; `opening-90` is the dither half cleared)
 const STEPS = { "opening-0": 1, "opening-90": 90, "opening-200": 200, "opening-500": 500, "opening-800": 800, "opening-1200": 1200, "opening-1650": 1650, "opening-end": 3090 };
 const TIMED = { "crates-arriving": { set: (w) => { w.adults(2); w.away(); w.crates(3, 2); }, at: 375, go: () => window.__st.dockKey() } };
 
 async function apply(page, sc, name, motion) {
-  await page.evaluate(([setSrc, open]) => { const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.goto("cargo"); }, [sc.set.toString(), sc.open ?? 0]);
+  await page.evaluate(([setSrc, open]) => { const w = window.__world; w.reset(); w.fresh(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.idle = false; S.goto("cargo"); }, [sc.set.toString(), sc.open ?? 0]);
 }
 export async function cargoStates(visit, { motion = false, timed = true } = {}) {
   const r = await still(visit); if (motion || !timed) return r;

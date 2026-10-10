@@ -27,12 +27,12 @@ function reportOf(spec, plays, settings, mend, st) {
     const n = (p.c.pods || []).length;
     return { lead: leadOf(spec, p.c, walk[k]), pods: n && n <= podMax ? n : 0, text: n === 0 ? T.noPods : n > podMax ? T.manyPods : "", reach: reachWord(spec, p.c) };
   });
-  const sum = (key) => plays.reduce((a, p) => a + (p.c[key] | 0) + (p.top[key] | 0), 0);
+  const sum = (key) => plays.reduce((a, p) => a + p.gained[key], 0);
   const gathered = { lead: T.gathered, e: "+" + sum("e"), d: "+" + sum("d"), s: "+" + sum("s"), top: plays.some((p) => p.top.e || p.top.d || p.top.s) ? T.topUp : "" };
   let probe = null;
   if (mend && (mend.free || mend.paid || mend.broke)) {
     const plates = (mend.free | 0) + (mend.paid | 0);
-    const spent = (mend.paid | 0) * S.price(S.PRICE.mend, settings);   // the Energy the plates cost: none when the economy is free
+    const spent = mend.spent | 0;   // the Energy the plates cost, as the dock rule paid it: none when the economy is free
     probe = { lead: T.probe, plates, text: spent ? fill(T.mendedPaid, { price: "⚡ " + spent }) : T.mendedFree };
   }
   const lastWalk = plays.findLast((p) => !p.c.dev), lines = (lastWalk?.c.lines || []).slice(0, R.world.max);
@@ -46,7 +46,7 @@ export function openBay(h) {
   const c = h.ui.cargo, spec = h.specs.cargo, st = h.st, T = stepsOf(spec);
   const before = { e: st.e, d: st.d, s: st.s, turn: st.turn };
   const r = S.openBay(st, h.sv, h.settings, h.now()); if (!r.ok) { if (r.msg) h.say(r.msg); return r; }
-  const motion = h.motion ? h.motion() : true, cost = S.price(S.PRICE.mend, h.settings);
+  const motion = h.motion ? h.motion() : true;
   // what plays: at most nine crates (the hold stays under 30000 ms); the rest are taken in by the rule and the counters and the turn reach their final values at the end
   const plays = r.plays.slice(0, OPENING_MAX), n = plays.length, walk = walkOrdinals(plays);
   // the well each pod went to: its place in the rack, or -1 when it waits in the bay
@@ -58,7 +58,7 @@ export function openBay(h) {
   plays.forEach((p, k) => {
     const t0 = k * T.perCrate;
     if (k) h.at(t0, () => { c.crate = k; c.at = 0; h.play({ kind: "dither", target: "stage", ms: T.dither }); });
-    const gain = (key) => (p.c[key] | 0) + (p.top[key] | 0) - (key === "e" ? p.paid * cost : 0);
+    const gain = (key) => p.gained[key] - (key === "e" ? p.spent : 0);
     h.at(t0 + T.counters, () => { for (const key of ["e", "d", "s"]) c.shown[key] += gain(key); });
     h.at(t0 + T.turn, () => { c.shown.turn = p.turnTo; });
     if (!motion) {   // each step as a cut at its time: open at 200, the ribbon, the counters, each pod to its well, the turn

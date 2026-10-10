@@ -33,7 +33,7 @@ export function dock(h, fromIdle = false) {
     const bay = Math.min(S.bayCrates(h.st, h.sv).length, h.specs.cargo.regions.crates.max), ci = h.specs.cargo.events.crateIn.each;
     if (bay && h.ui.screen === "cargo" && h.ui.cargo.state === "bay") h.play({ kind: "arrival", target: "crates", ms: ci.ms + ci.stagger * (bay - 1), hold: 0 });
   }
-  if (h.ui.screen !== "home") h.say(r.msg);   // on Home the Dock key leaves no plate (home.json keys.dock): the top bar, the bed, the column and the notice say it
+  if (h.ui.screen !== "home" && h.ui.screen !== "cargo") h.say(r.msg);   // on Home and Cargo the Dock key leaves no plate (home.json keys.dock, cargo.json keys.dock): the top bar, the bed, the bay and the line say it; a refusal (above) shows its plate
   h.save(); return r;
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.

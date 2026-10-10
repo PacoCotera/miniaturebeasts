@@ -73,12 +73,14 @@ function frame(t) {
 
 // --- the Station's keys: pad, Home/Research/Library/Vivarium, ← and ✓, plus the Caddy's Dock/Lift key ---
 // A key goes to the face, which moves the ring or says an intent; the intent is the rule call (intents/*). The Dock key is the Caddy's, a world event and not a Station key: the host calls the frame's dock.
+// The Caddy's Dock key, a world event and never a Station key: it wakes Idle (the dither back, held) and docks or lifts. A Dock pressed in a hold is kept by the host and acts when the hold ends (host.mjs).
+function dockKey() { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); } frameIntents.dock(H, wasIdle); }
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } else if (UI.screen === "cargo" && UI.cargo.state === "opening") H.pendingDock = true; return; }   // an event holds input: the Dock key does not act (but during Cargo's opening it waits for the report, cargo.json keys.dock); the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs)
+  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } else H.pendingDock = !H.pendingDock; return; }   // an event holds input: the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs); a Dock key is kept too (two presses cancel) and acts when the hold ends
   syncProps();
-  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); } frameIntents.dock(H, wasIdle); return; }
+  if (k === "dock") { dockKey(); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "confirm") H.disarm();
   FACE.key(k); pump();
@@ -159,7 +161,7 @@ const faceBoot = async () => {
   f.send({ t: "palette", name: "station", colours: PALETTE.map(([n, hexv]) => [n, hexv]) });
   for (const [screen, json] of Object.entries(SPECS)) f.send({ t: "spec", screen, json });
   f.pin(pinned(), picture);
-  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), motion, afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
+  vctx = f.display(vis); FACE = f; H = createHost({ send: sendEvent, nowMs: () => performance.now(), motion, onDock: dockKey, afterSave: () => { if (G.st.outbox?.length) caddy.flush().catch(() => {}); } });   // a Grow hands its genome to the Caddy at once
 };
 const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();

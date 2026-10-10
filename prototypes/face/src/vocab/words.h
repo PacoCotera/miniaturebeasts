@@ -24,7 +24,7 @@ void word_rail(void);    /* the chapter rail (frame spec) with the ring on its f
 void word_livingWindow(const char *screen, const char *bezel, const char *glass, const char *glassPicture);   /* the bezel and the glass (a flat plate until the glass master), the master over it */
 void word_leaves(const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy);   /* the leaves word, grid form */
 /* common/ */
-void word_ribbon(const char *id, const int rect[4], const char *text, int px, const char *fill, const char *edge, const char *textColour);   /* the ribbon: a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
+void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);
 void word_bottomLine(void);
 void word_messagePlate(void);

@@ -69,7 +69,7 @@ const pixelIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id
 const SCENES = {
   "bay, one crate": { crates: 1 }, "bay, two crates": { crates: 2, pods: 1 }, "bay, three crates": { crates: 3 }, "bay, empty": { pods: 2 }, "bay, shut (away)": { away: true, crates: 1 }, "bay, pods waiting": { pods: 6, waiting: 2 },
   "opening, the first crate": { crates: 1, open: true, podsEach: 3 }, "report, one crate": { crates: 1, open: true, state: "report" },
-  "report, the full card": { crates: 3, podsEach: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false }, lines: ["The mist burned off", "A pond filled", "The wood stirred"] },
+  "report, the full card": { crates: 3, podsEach: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["The mist burned off", "A pond filled", "The wood stirred"] },
 };
 for (const [name, o] of Object.entries(SCENES)) {
   test(`Cargo, ${name}: draws without an error or a refusal inside the budgets, with no region leaving cargo.json's rectangle`, { skip }, async () => {
@@ -87,6 +87,7 @@ test("the departure check bites: a crate off its place, the rack moved, a ribbon
   assert.match(bad((c) => { c.regions.push({ id: "ribbon", layer: "chrome", rect: [208, 56, 600, 40] }); })[0], /ribbon/);
   assert.match(bad((c) => { c.regions.push({ id: "travel", layer: "art", rect: [100, 104, 88, 112] }); }, "opening").join("; "), /travel rectangle/);
   assert.match(bad((c) => { c.regions.push({ id: "report", layer: "chrome", rect: [232, 72, 562, 131] }); })[0], /report card shows only in the report/);
+  assert.match(bad((c) => { c.regions = c.regions.filter((r) => r.id !== "rack"); })[0], /the rack is drawn/, "every rack node at 0 size leaves no rack in the log, and that is a departure");
 });
 
 // ---- the keys ----
@@ -187,7 +188,7 @@ test("a pod with no free well stays in the crate: it is never drawn travelling, 
 });
 
 // ---- reduced motion: every step a cut at its time, staged by the host's props ----
-test("reduced motion: the arrival is at its end at once, so the host stages the steps in the props: sealed at 0, the tag torn at 200, open and the ribbon at 500, each pod in its well from its start, nothing in between", { skip }, async () => {
+test("reduced motion: the arrival is at its end at once, so the host stages the steps in the props: sealed at 0, open at 200 (no opening slice) with its pods in their places, the ribbon at 500, each pod in its well from its start, nothing in between", { skip }, async () => {
   const b0 = scene({ ...OPEN, motion: false }), f = await start(b0, { motion: false }), cs = b0.props.regions.opening.crates[0];
   f.send({ t: "event", kind: "arrival", target: "crate", ms: 3180, hold: 3200 }); frames(f, 2); assert.equal(f.poll("done")?.kind, "arrival", "the event ends at once");
   const stage = (at) => { b0.props.regions.opening.at = at; assert.equal(f.props({ screen: "cargo", ...b0.props, motion: false, frame: frameProps(b0.line) }), 0); frames(f); return logOf(f); };
@@ -204,7 +205,7 @@ test("reduced motion: the arrival is at its end at once, so the host stages the 
 
 // ---- the report card's height rule ----
 test("the report card is 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) tall at (232, 72), 560 wide, at most 312: the rule at every combination, its bottom 16 px above the rack at the fullest", { skip }, async () => {
-  for (const [crates, mend, lines] of [[1, null, 0], [1, { free: 0, paid: 1, broke: false }, 0], [2, null, 1], [2, { free: 1, paid: 0, broke: false }, 2], [3, null, 3], [3, { free: 0, paid: 2, broke: false }, 3]]) {
+  for (const [crates, mend, lines] of [[1, null, 0], [1, { free: 0, paid: 1, broke: false, spent: 1 }, 0], [2, null, 1], [2, { free: 1, paid: 0, broke: false, spent: 0 }, 2], [3, null, 3], [3, { free: 0, paid: 2, broke: false, spent: 2 }, 3]]) {
     const b = scene({ crates, open: true, state: "report", mend, lines: ["a", "b", "c"].slice(0, lines), podsEach: 2 }), f = await start(b), lg = logOf(f), card = region(lg, "report", "chrome");
     const h = 104 + 24 * (crates + (mend ? 1 : 0)) + (lines ? 40 + 24 * lines : 0);
     assert.deepEqual(card.rect, [232, 72, 560 + SHADOW[0], h + SHADOW[1]], `${crates} crates, ${mend ? "a Probe row" : "no Probe row"}, ${lines} lines`); assert.ok(card.rect[1] + h <= 384, "its bottom is at 384 at most");
@@ -212,7 +213,7 @@ test("the report card is 104 + 24 × (crates + Probe row) + (world lines ? 40 + 
   }
 });
 test("the report card rows sit on the spec's y: the crates' pod icons at 128, 152, 176 (+ 4), Gathered's icons at 208, the Probe's plates at 232, the world's bullets at 296, 320, 344 (+ 10)", { skip }, async () => {
-  const b = scene({ crates: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false }, lines: ["a", "b", "c"], podsEach: 2 }), f = await start(b), lg = logOf(f), I = R.report.rows.iconAt, B = R.report.world.bullet;
+  const b = scene({ crates: 3, open: true, state: "report", mend: { free: 0, paid: 2, broke: false, spent: 2 }, lines: ["a", "b", "c"], podsEach: 2 }), f = await start(b), lg = logOf(f), I = R.report.rows.iconAt, B = R.report.world.bullet;
   assert.deepEqual(region(lg, "report.pods").rect, [232 + 152, 128 + I, 2 * 20 - 4, 24 * 2 + 16], "two pod icons a row on a 20 px pitch from x 384, three rows from y 128 on a 24 px pitch");
   assert.deepEqual(region(lg, "report.gathered", "art").rect.slice(1, 2), [208 + I], "Gathered at 208"); assert.equal(region(lg, "report.gathered", "art").rect[3], 16);
   assert.deepEqual(region(lg, "report.probe", "art").rect.slice(0, 2), [232 + 152, 232 + I], "the Probe's plates (and the ⚡ of its words) at 232");

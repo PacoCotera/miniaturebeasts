@@ -115,15 +115,15 @@ function reported(st, sv, mend = null) {
 }
 test("the report: a row a crate with its pods and its reach in words, what was gathered, the Probe from the dock's mend, the world's lines (the last crate's, at most three)", () => {
   const st = world(), sv = sv0([crate(1, 3, { explored: 4, of: 20 }), crate(2, 0, { explored: 20, of: 20 }), crate(3, 12, { of: 0, lines: ["The mist burned off", "A pond filled", "The wood stirred", "A fourth"] })]);
-  const b = reported(st, sv, { free: 1, paid: 2, broke: false }), r = b.props.regions.report;
+  const b = reported(st, sv, { free: 1, paid: 2, broke: false, spent: 2 }), r = b.props.regions.report;
   assert.equal(r.heading, "Home from the field");
   assert.deepEqual(r.crates.map((c) => [c.lead, c.pods, c.text, c.reach]), [["First crate", 3, "", "a first look around"], ["Second crate", 0, "no pods", "all the land explored"], ["Third crate", 0, "many pods", ""]]);
   assert.deepEqual([r.gathered.lead, r.gathered.e, r.gathered.d, r.gathered.s, r.gathered.top], ["Gathered", "+9", "+9", "+12", ""], "economy decided: no top-up");
   assert.deepEqual(r.probe, { lead: "Probe", plates: 3, text: "mended for ⚡ 2" }); assert.deepEqual(r.world, { lead: "Meanwhile, the world turned", lines: ["The mist burned off", "A pond filled", "The wood stirred"] });
   assert.ok(["See the new pods", "See the new pod", "Done"].includes(b.line.ok)); assert.equal(b.line.back, "Cargo"); assert.equal(b.line.subject, "what came home");
   assert.deepEqual(b.props.regions.crates, undefined, "the bay is emptied under the card");
-  assert.equal(reported(world(), sv0([crate(1, 1)]), { free: 0, paid: 0, broke: false }).props.regions.report.probe, null, "no mend, no row");
-  assert.deepEqual(reported(world(), sv0([crate(1, 1)]), { free: 2, paid: 0, broke: true }).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });
+  assert.equal(reported(world(), sv0([crate(1, 1)]), { free: 0, paid: 0, broke: false, spent: 0 }).props.regions.report.probe, null, "no mend, no row");
+  assert.deepEqual(reported(world(), sv0([crate(1, 1)]), { free: 2, paid: 0, broke: true, spent: 0 }).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });
   assert.equal(reported(world(), sv0([crate(1, 1)])).props.regions.report.probe, null, "after a reload the report has no Probe row");
   const one = reported(world(), sv0([crate(1, 1)])); assert.equal(one.line.ok, "See the new pod"); assert.equal(reported(world(), sv0([crate(1, 0)])).line.ok, "Done", "no new pod: Done closes the card");
   const loose = { ...settings, economy: "loose" }; const st3 = world(), h3 = { st: st3, sv: sv0([crate(1, 1)]), settings: loose, ui: { screen: "cargo", home: {}, ...cargoUI() }, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
@@ -161,7 +161,7 @@ test("the report: the lead counts walk crates only; the world's lines are the la
 });
 test("the Probe row's price is the Energy the plates cost: free when the economy is free", () => {
   const st = world(), sv = sv0([crate(1, 1)]); st.probe = { shield: 0, smax: 3, tier: 1, seq: 1 };
-  const free = { ...settings, economy: "free" }, ui = { screen: "cargo", home: { f: "room" }, ...cargoUI({ mend: { free: 0, paid: 2, broke: false } }) };
+  const free = { ...settings, economy: "free" }, ui = { screen: "cargo", home: { f: "room" }, ...cargoUI({ mend: { free: 0, paid: 2, broke: false, spent: 0 } }) };
   const h = { st, sv, settings: free, ui, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
   INTENTS.cargo.intent(h, "room", "confirm"); h.timers.forEach((t) => t.fn());
   assert.deepEqual(cargoBuild({ st, sv, settings: free, docked: true, ui }, spec, home, frameSpec).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });

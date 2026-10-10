@@ -25,6 +25,10 @@ export function departures(log, spec, frame, state = "bay") {
   must(state === "opening" || (got("ribbon").length === 0 && got("crate").length === 0 && got("travel").length === 0), "the ribbon, the crate and the travelling pods show only in the opening");
   must(state === "bay" || got("crates").length === 0, "the bay's crates show only in the bay");
   must(state === "opening" ? got("bay").length === 0 : got("bay", "chrome").length === 1, state === "opening" ? "the bay is not drawn in the opening" : "the bay is drawn once");
+  // what each state must draw (a node with no size is not in the log, so a region that vanished is found here)
+  must(got("rack", "chrome").length === 1, "the rack is drawn");
+  if (state === "opening") must(got("crate").length >= 1, "the crate closer is drawn");
+  if (state === "report") must(got("report", "chrome").length === 1 && got("report.heading", "type").length === 1, "the report card is drawn");
   for (const t of type) if (![16, 20, 28].includes(t.px)) out.push(`"${t.text}" is set at ${t.px} px`);
   return out;
 }

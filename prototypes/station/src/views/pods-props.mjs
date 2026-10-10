@@ -112,7 +112,7 @@ const whoOf = (p, fr, W, req) => [slot(req, `mark-species-${S.speciesOf(p)}-24x2
 function collectionView(view, m, spec, req) {
   const { st, settings, ui } = m, R = spec.regions.collection, L = R.places, N = R.name;
   view.mode = "collection";
-  const rack = Math.min(settings.rack || S.RACK, L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2), radius: L.radius });
+  const rack = Math.min(S.rackSize(settings), L.slots), panel = req({ kind: "placepanel", id: `placepanel:${L.first[2]}x${L.first[3]}`, size: L.first.slice(2), radius: L.radius });
   const places = [];
   const RM = R.ring.masters, RS = R.ring.slice, rs = (id) => slot(req, id, [0, 0, RS[2], RS[3]], "the collection ring master"), from = RM.segmentFrom ?? 0;
   for (let i = 0; i < rack; i++) {

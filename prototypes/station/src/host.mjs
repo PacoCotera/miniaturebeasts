@@ -118,11 +118,11 @@ export function frameIds() {
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----
-// h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
+// h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
-export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
+export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
   let holdUntil = 0; const timers = [];
   const holding = () => nowMs() < holdUntil;
   const play = (e) => {
@@ -139,7 +139,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
       while (timers.length && timers[0].t <= t) timers.shift().fn();
-      if (!holding() && h.pendingDock) { h.pendingDock = false; INTENTS.frame.dock(h); }   // a Dock key pressed while the crates opened waits for the report (cargo.json keys.dock)
+      if (!holding() && h.pendingDock) { h.pendingDock = false; onDock(h); }   // a Dock key pressed in a hold is kept (two presses cancel) and acts when the hold ends, before a kept room key: the Dock is a world event (cargo.json keys.dock, frame.json idle.keys.dock)
       if (!holding() && h.pendingRoom) { const k = h.pendingRoom; h.pendingRoom = null; dispatch(h, { screen: UI.screen, target: "room", verb: "room:" + k }); }
     },
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
@@ -150,7 +150,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
 }
 
 // What the face said, as the rules: the ring moved (Pods keeps the focus of its state), or a key on a focused target (an intent). A not-built screen has no targets; its ← goes to the parent in the navigation tree.
-// While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends; Home's rest drops it too (home.json events.rest.keys).
+// While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") return;   // informative only: nothing waits for it
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }

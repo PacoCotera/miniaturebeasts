@@ -101,7 +101,7 @@ static void build_opening(int k, int lt) {
   char P[64]; snprintf(P, sizeof P, "regions.opening.crates.%d", k);
   int motion = v_pbool("motion", 1), lid = ci("events.opening.crate.1.at", 200), tag = lid + ci("events.opening.crate.1.ms", 300), rib = ci("events.opening.crate.2.at", 500);
   /* the ribbon shows this crate's words from its step (a cut, no fade) */
-  { int r[4]; crect("regions.ribbon.rect", r); const char *words = v_pstr(v_fmt("%s.ribbon", P)); v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, lt >= rib ? words : "", ci("regions.ribbon.px", 20), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text")); }
+  { int r[4]; crect("regions.ribbon.rect", r); const char *words = v_pstr(v_fmt("%s.ribbon", P)); v_region("ribbon", LAYER_CHROME); word_ribbon("ribbon", r, lt >= rib ? words : "", ci("regions.ribbon.px", 20), ci("regions.ribbon.pad", 16), colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), colr("colours.ribbon.text")); }
   /* the crate closer: sealed, the tag torn and the lid lifting, open */
   int cr[4]; crect("regions.crate.rect", cr);
   const char *slice = v_pstr(v_fmt("%s.%s", P, lt < lid ? "sealed" : (motion && lt < tag) ? "opening" : "open"));   /* with reduced motion the opening slice is skipped: open at 200 */
@@ -137,18 +137,19 @@ static void build_reportCard(void) {
   int nc = v_plen("regions.report.crates"), hasProbe = *v_pstr("regions.report.probe.lead") != 0, nl = v_plen("regions.report.world.lines"), hasWorld = nl > 0;
   if (nl > ci("regions.report.world.max", 3)) nl = ci("regions.report.world.max", 3);
   int gapG = ci("regions.report.gathered.gapAbove", 8), gapW = ci("regions.report.world.gapAbove", 16);
-  int h = 104 + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? 40 + rowH * nl : 0);   /* cargo.json regions.report.height */
+  int base = ci("regions.report.rows.first", 56) + gapG + rowH + pad, worldExtra = gapW + rowH;   /* the card: its first row, the gap above Gathered, Gathered, the pad = 104; the world: its gap and its heading = 40 (cargo.json regions.report.height) */
+  int h = base + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? worldExtra + rowH * nl : 0);
   if (h > ci("regions.report.maxHeight", 320)) h = ci("regions.report.maxHeight", 320);
   int x0 = r[0], y0 = r[1], cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
   v_region("report", LAYER_CHROME);
-  v_rect("report.shadow", x0 + spec_int(C, "regions.report.shadow.0", 2), y0 + spec_int(C, "regions.report.shadow.1", 3), r[2], h, colr("colours.report.shadow"));
+  v_rect("report.shadow", x0 + spec_int(C, "regions.report.shadow.0", 0), y0 + spec_int(C, "regions.report.shadow.1", 0), r[2], h, colr("colours.report.shadow"));
   word_panel("report", x0, y0, r[2], h, colr("colours.report.fill"), colr("colours.report.edge"));
   v_rect("report.top", x0 + 1, y0 + 1, r[2] - 2, 1, colr("colours.report.top"));
   int hy = y0 + ck("regions.report.heading.at", 1), hpx = ci("regions.report.heading.px", 20), hh = ci("regions.report.heading.h", 32), leadW = ck("regions.report.rows.lead", 1);
   const char *lead = colr("colours.report.lead"), *line = colr("colours.report.line"), *fig = colr("colours.report.figure"), *heading = colr("colours.report.heading");
   v_region("report.heading", LAYER_TYPE); { const char *hd = v_pstr("regions.report.heading"); v_text("report.heading", hd, x0 + pad, hy + v_fdiv(hh - v_cap(hpx), 2), v_measure(hd, hpx), hpx, heading); }
   int y, podPitch = ci("regions.report.crates.podPitch", 20), podIcon = ci("regions.report.crates.podIcon", 16), iconAt = ci("regions.report.rows.iconAt", 4);
-  y = y0 + ci("regions.report.rows.first", 56) + 0 * pad;   /* the first row: 56 under the card's top (the pad, the heading's 32 and 8 more) */
+  y = y0 + ci("regions.report.rows.first", 56);   /* the first row: 56 under the card's top (the pad, the heading's 32 and 8 more) */
   for (int i = 0; i < nc; i++, y += rowH) {
     char P[56]; snprintf(P, sizeof P, "regions.report.crates.%d", i);
     v_region("report.crate", LAYER_TYPE); text_row(v_fmt("report.c%d.lead", i), v_pstr(v_fmt("%s.lead", P)), x0 + pad, y, lead, px, leadW);

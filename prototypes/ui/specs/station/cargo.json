@@ -28,7 +28,7 @@
    "pod": { "class": "collection", "size": [88, 112], "at": [4, 8], "note": "the collection class, as Pods' collection draws it, rendered at 88×112" },
    "rule": "the six places of the rack, the same pods in the same order as Pods' collection: an empty well, or its pod; a pod still travelling leaves its well empty until it lands"
   },
-  "ribbon": { "rect": [208, 56, 608, 40], "component": "ribbon", "inStates": ["opening"], "px": 20, "align": "centre", "lines": 1, "words": "strings.ribbon" },
+  "ribbon": { "rect": [208, 56, 608, 40], "component": "ribbon", "inStates": ["opening"], "px": 20, "pad": 16, "capTop": 13, "baseline": 27, "align": "centre", "lines": 1, "words": "strings.ribbon" },
   "crate": {
    "rect": [320, 104, 384, 256], "build": "crates", "part": "open", "inStates": ["opening"],
    "slices": { "sealed": "crate-sealed-384x256", "opening": "crate-opening-384x256", "open": "crate-open-384x256" },
@@ -36,9 +36,9 @@
   },
   "travel": { "rect": [176, 104, 672, 440], "build": "crates", "part": "travel", "inStates": ["opening"], "pod": { "class": "collection", "size": [88, 112] }, "from": "its place in the open crate", "to": "its well's pod place: well + (4, 8)", "path": "a straight line, whole pixels, eased in and out; nothing is scaled; a pod never leaves this rectangle", "ease": "in-out: p = min(1000, t·1000/600); e = p·p·(3000 − 2p)/1000000 (64-bit); pos = from + (to − from)·e/1000, integer division truncating toward zero; at p = 1000 exactly to" },
   "report": {
-   "rect": [232, 72, 560, 312], "maxHeight": 320, "component": "panel", "build": "reportCard", "inStates": ["report"], "pad": 16, "noDigits": "but beside a material icon",
-   "heading": { "at": [16, 16], "h": 32, "px": 20 },
-   "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "lineAt": 2, "lead": [16, 128], "content": 152, "px": 16 },
+   "rect": [232, 72, 560, 312], "maxHeight": 320, "component": "panel", "build": "reportCard", "inStates": ["report"], "pad": 16, "shadow": [2, 3], "noDigits": "but beside a material icon",
+   "heading": { "at": [16, 16], "h": 32, "px": 20, "capTop": 9, "baseline": 23 },
+   "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "capTop": 6, "baseline": 18, "lead": [16, 128], "content": 152, "px": 16 },
    "crates": { "max": 3, "podIcon": 16, "podPitch": 20, "podMax": 8, "reachAt": 328, "rows": "the first three crates opened, one row each; later crates get no row; Gathered adds up every crate" },
    "gathered": { "gapAbove": 8, "icon": 16, "gap": 4, "between": 24 },
    "probe": { "plateIcon": 16, "platePitch": 20, "from": "the dock's mend { free, paid, broke } (state.mjs dockKey), kept in Cargo's UI state from the dock until the report: free or broke (a break is mended free) reads strings.report.mendedFree, paid reads strings.report.mendedPaid with ⚡ and the plates paid for; no mend, no row. It is not in the save: a reload loses it, and the report then has no Probe row" },
@@ -73,13 +73,13 @@
   "room": "the ring on nothing: Cargo has no targets; ✓ does the bottom line's action, the pad does nothing",
   "fallback": "none",
   "graph": { "room": { "up": "none", "down": "none", "left": "none", "right": "none" } },
-  "held": "while events.opening holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends), when the report shows",
+  "held": "while events.opening holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends), when the report shows. A Dock during the opening is kept by the host (by parity: two presses cancel) and acts when the hold ends, before a kept room key; it does not close the report card.",
   "report": "while the report card shows, any key closes it and also does what it does: ✓ follows the bottom line, ← only closes it, the pad only closes it, a room key closes it and opens its section"
  },
  "keys": {
   "confirm": { "bay": "a crate ready to open (walk crates while docked, a ready sitting crate): the opening (events.opening); else nothing, no ✓ cap", "report": "See the new pod or See the new pods (strings.newPods): the jump to Pods (frame.json navigation.jumps); with no new pod, Done: the card closes" },
   "back": { "bay": "Home, the ring on the Cargo module", "opening": "waits", "report": "closes the card: the bay, empty" },
-  "dock": "the Caddy's Dock, a world event. Docked while the bay shows: the lid opens (a cut) and the crates slide in (events.crateIn). Lifted while the bay shows: the lid shuts (a cut). During the opening it waits until the report shows"
+  "dock": "the Caddy's Dock, a world event, never a Station key. Docked while the bay shows: the lid opens (a cut) and the crates slide in (events.crateIn). Lifted while the bay shows: the lid shuts (a cut). During the opening it waits until the report shows. No message plate: the bay, the top bar's Companion mark and the context line say it. A refused Dock shows its plate."
  },
  "line": {
   "bay": { "crates": { "when": "a crate is ready to open: walk crates while docked, a ready sitting crate docked or away", "action": "strings.open", "subject": "strings.subjects.crates", "need": "the most pressing notice after the crates (home.json strings.needs)", "back": "Home" }, "empty": { "action": null, "subject": "strings.subjects.empty", "need": "the notice", "back": "Home" }, "away": { "action": null, "subject": "strings.subjects.away", "need": "the notice", "back": "Home" }, "waiting": { "action": null, "subject": "strings.subjects.waiting", "need": "the notice", "back": "Home" } },
