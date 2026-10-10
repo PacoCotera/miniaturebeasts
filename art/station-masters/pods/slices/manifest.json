@@ -10237,9 +10237,9 @@
   "src": "slices/idle-vivarium-night-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by night: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
   "sha256": "f859bf0b5a0764e7f18a45e2ca62e501cc7e6e3ca333949fcd7f94e5cd314905",
-  "status": "signed",
-  "signed_in": "art director, verdict (2cc0e62f)",
-  "status_note": "signed (art director) at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40)"
+  "status": "held",
+  "signed_in": null,
+  "status_note": "held for placing (the pair rule: night shows dusk on Home and Idle until Idle's night is signed; placed together with it); signed (art director, verdict 2cc0e62f): at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40)"
  },
  "vivarium-near-day-544x408": {
   "size": [
@@ -10402,9 +10402,9 @@
   "src": "source/raw/glass-night-repaint.jpg (gemini-3-pro-image)",
   "made": "Home's glass by night: a Pro repaint of the signed glass day under the dimmed grow lamp (the owner-approved repaint of Oct 10), centre-cut and reduced with Lanczos, then regraded by hand within the night targets (background about 17, ground 35, at most 3 percent above L* 70) (pass 119)",
   "sha256": "cf93ad49ebb8addb34b5063e555fcef3d298e3628652cdee25f009ab9967d09e",
-  "status": "signed",
-  "signed_in": "art director, verdict (2cc0e62f)",
-  "status_note": "signed (art director) at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept"
+  "status": "held",
+  "signed_in": null,
+  "status_note": "held for placing (the pair rule: night shows dusk on Home and Idle until Idle's night is signed; placed together with it); signed (art director, verdict 2cc0e62f): at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept"
  },
  "room-bench-stage-create": {
   "size": [

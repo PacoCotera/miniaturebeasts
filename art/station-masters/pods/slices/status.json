@@ -3280,9 +3280,9 @@
   "note": "signed (art director): Home's section column in the world brief's look (passes 97, 99, 100)"
  },
  "home-bed-night-192x56": {
-  "status": "signed",
-  "signed_in": "art director, verdict (2cc0e62f)",
-  "note": "signed (art director) at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40)"
+  "status": "held",
+  "signed_in": null,
+  "note": "held for placing (the pair rule: night shows dusk on Home and Idle until Idle's night is signed; placed together with it); signed (art director, verdict 2cc0e62f): at 1x: L* 28.1, key R-B 80, sat 78 against its glass night 25.6/46 (limits: L* +3, R-B +40)"
  },
  "vivarium-near-day-544x408": {
   "status": "signed",
@@ -3330,9 +3330,9 @@
   "note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
-  "status": "signed",
-  "signed_in": "art director, verdict (2cc0e62f)",
-  "note": "signed (art director) at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept"
+  "status": "held",
+  "signed_in": null,
+  "note": "held for placing (the pair rule: night shows dusk on Home and Idle until Idle's night is signed; placed together with it); signed (art director, verdict 2cc0e62f): at 1x: L* 25.6, key R-B 46, sat 51, 0.0 percent above L* 70, R above B, background 17.9, ground 35.0, against the revised night rule (mean 24-28, bg 12-18, ground 30-36); the Pro night repaint of the signed glass day, the composition kept"
  },
  "room-bench-stage-create": {
   "status": "new",
