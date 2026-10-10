@@ -209,8 +209,8 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
         <li>Walk off a place's edge to step onto the next map cell; ✓ goes down into it.</li>
-        <li>One mibi is <b>with you</b> in the Companion. Grown, it is your Probe partner; a juvenile comes along in the Companion but is too young for the Probe. The others live at the Station: choose who goes with you in its Habitat (or, while docked, ✓ on Mibis here).</li>
-        <li>Between expeditions the Companion shows the mibi with you, large. ))) and it answers; ✓ <b>Walk</b> with it once per world turn (a moment together, undocked; its Data is part of the expedition's field yield), then ✓ spends time with it; the pad looks at the others; ← goes up to Mibis.</li>
+        <li>Up to three mibis are <b>with you</b> in the Companion; the others are at home at the Station. The partner joins the Probe: the lead if it is grown, otherwise the first grown mibi with you. While docked, ✓ <b>Take</b> a mibi at home or <b>Leave</b> one at home on Mibis (the Companion is full at three); the Station's Vivarium can ask for a mibi too, applied at the dock.</li>
+        <li>Between expeditions the Companion shows a mibi with you, large. ))) and it answers; ✓ <b>Walk together</b> once per world turn, undocked, with all of them (a moment together; its Data is part of the expedition's field yield), then ✓ <b>Tend</b> each one once a day. Three Tends earn the bond; a bonded juvenile grows up with care. The pad looks at the others; ← goes up to Mibis.</li>
         <li>Bubbles: <b>!</b> startled, stop or it runs · <b>?</b> curious, it comes closer · <b>fruit</b> it eats what you carry · <b>…</b> settling, keep still.</li>
       </ul>
     </details>
@@ -250,6 +250,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
           <dt>Seed</dt><dd id="oSeed">–</dd>
         </dl>
         <div class="dev-row"><label for="devStep">Developer · Data per tier step</label><input id="devStep" type="number" min="0.5" max="20" step="0.5" inputmode="decimal"><span id="devLadder" role="status"></span><button class="btn" id="devStepReset" type="button">Decided (2)</button></div>
+        <div class="dev-row"><label for="devCareDay">Developer · care</label><button class="btn" id="devCareDay" type="button">New care day</button></div>
         <h2>Events</h2>
         <ol class="log" id="oLog"></ol>
         <h2 id="palHead">Palette</h2>
@@ -829,23 +830,161 @@ function logEv(text) {
   S.log.push(tag + ' · ' + text); if (S.log.length > 40) S.log.splice(0, S.log.length - 40);
 }
 function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
-// One slot: exactly one mibi is with you in the Companion. Grown (adult or elder), it is also your Probe partner;
-// a juvenile comes along in the Companion but is too young for the Probe. Everyone else is at home.
-function withMibi() { return S.with == null ? null : mibiById(S.with); }
-function partnerMibi() { const m = withMibi(); return isAdult(m) ? m : null; }
-function turnsToGrow(m) { return Math.max(0, JUVENILE_TURNS - (S.turn - (m.born || 0))); }
-function grownNow(m) { return S.turn - (m.born || 0) === JUVENILE_TURNS; }
-// The roster's order: the mibi with you first, then the others as they hatched.
-function rosterList() { const w = withMibi(); return w ? [w].concat(S.mibis.filter(m => m !== w)) : S.mibis.slice(); }
-// Choosing who comes along is one press: the previous one goes home.
-function takeMibi(m) {
-  const prev = withMibi(); if (!m || prev === m) return; S.with = m.id;
-  logEv(m.name + ' is with you' + (prev ? ' · ' + prev.name + ' stays home' : ''));
-  fxMsg((prev ? prev.name + ' stays home · ' : '') + m.name + ' is with you');
+// ---- Care and the carried set (the care save shape, C0) ----
+// The Companion carries up to three mibis (S.carried, in the order they were taken). Care happens here and nowhere else:
+// Tend, once a Companion day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends
+// earn the bond; a bonded juvenile grows up through care, never on the clock. The Companion owns care,
+// tends, tendDay, bonded, bondCare, grownTurn, notches and outings; the Station only mirrors them at the dock.
+// The words: one table, the final strings of companion-screens.md "Care and the carried set" (the copywriter's). A function
+// takes the mibi's name (or the mibi, or the names).
+const TEND_MOMENT = ['leans on the glass', 'glows softly', 'puffs'];   // the species moment's words, as built (Loika, Tuikis, Untuva)
+const CARE_TEXT = {
+  tendLabel: n => 'Tend ' + n, tendOnce: 'once a day', tendedToday: 'tended today', tendAfter: 'after the expedition',
+  tended: m => m.name + ' ' + TEND_MOMENT[m.sp] + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
+  tendedRefused: n => n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
+  walkLabel: names => names.length === 1 ? 'Walk with ' + names[0] : 'Walk together', walkOnce: 'once a turn',
+  walked: names => listWords(names) + ' walk together',
+  bonded: n => n + ' is bonded with you',
+  grownLeads: n => n + ' is grown · it leads the Probe now', grownCanLead: n => n + ' is grown · it can lead the Probe',
+  clockGrownHome: n => n + ' is grown · at home',
+  notch: n => n + ' gains a skill notch',
+  takeLabel: n => 'Take ' + n, takeCtx: 'goes with you now', took: n => n + ' is with you',
+  full: 'the Companion is full', fullRefused: n => n + ' stays home: the Companion is full · leave one at home first',
+  leaveLabel: n => 'Leave ' + n + ' at home', leaveCtx: 'comes home now', left: n => n + ' stays home',
+  visitLabel: n => 'Visit ' + n, visitCtx: 'with you', withYouThisExp: 'with you for this expedition',
+  stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows with care',
+  stHome: 'at home', stHomeBonded: 'at home · grows on the Companion',
+  noOneWith: 'no one with you', noOneGrown: 'no one grown yet',
+  // the care screens (companion-screens.md: Mibis, the Lead card, the active mibi screen, the partner card)
+  leadLabel: n => 'Let ' + n + ' lead', leads: n => n + ' leads the Probe', leadCtx: 'joins the Probe', onlyGrown: 'the only grown one', leadsThisExp: 'leads this expedition',
+  partnerCap: 'Partner', noPartner: 'No partner', noOneWithT: 'No one with you', takeOne: 'dock to take one along',
+  youngCare: 'young · grows with care', youngTime: 'young · grows in time', leadsChip: 'leads',
+  withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
+  takeAlong: 'take mibis along', whenDocked: 'when docked',
+};
+// Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
+// plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
+const CARE_ASSETS = [
+  { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
+  { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'placeholder' },
+  { id: 'c-face-24', what: 'the mibi’s HUD ring face: the partner card’s faces, the notch row on Head home (its ring is drawn as the partner’s marker)', until: 'the derived face from the Station', w: 24, h: 24, status: 'placeholder' },
+  { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
+  { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+];
+const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f']], 'c-token-48': ['stone', ['token', 't']] };   // each placeholder's plate colour and labels, longest first
+const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
+function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
+// The Companion's local date, Y-M-D on its own clock (never toISOString: that is UTC).
+function localDay(d) { d = d || new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+// One definition of a mibi's stage on both pages (the Station's copy is the same text; a parity test proves it).
+function stageAt(m, turn, j, e) {
+  if (m.grownTurn != null) return turn >= m.grownTurn + e ? 'elder' : 'adult';
+  if (m.bonded) return 'juvenile';                       // a bonded juvenile waits (14)
+  const age = turn - (m.born || 0); return age < j ? 'juvenile' : age >= j + e ? 'elder' : 'adult';
 }
-function mibiStage(m) { const age = S.turn - (m.born || 0); return age < JUVENILE_TURNS ? 'juvenile' : age >= JUVENILE_TURNS + ELDER_TURNS ? 'elder' : 'adult'; }
+function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); }
 function isAdult(m) { return !!m && mibiStage(m) !== 'juvenile'; }
-function mibiWith(ab) { return S.mibis.find(m => SPECIES[m.sp].ab === ab && isAdult(m)) || null; }
+const isCarried = m => !!m && S.carried.includes(m.id);
+function carriedMibis() { return S.carried.map(mibiById).filter(Boolean); }
+// A mibi the Station has released (read at the dock, between expeditions: `released` on the Companion's copy) is never
+// shown, named or counted: not a row, a page, a dot, a face or a line.
+function liveMibis() { return S.mibis.filter(m => !m.released); }
+function homeMibis() { return S.mibis.filter(m => !m.released && !S.carried.includes(m.id)); }
+// The partner: the lead if carried and grown; else the first grown mibi with you; else none.
+function partnerMibi() { const c = carriedMibis(), l = c.find(m => m.id === S.lead); return isAdult(l) ? l : c.find(isAdult) || null; }
+// The lead, set on the Lead card: a grown mibi with you, between expeditions only.
+function setLead(m) { if (!m || S.exp || !isCarried(m) || !isAdult(m)) return false; S.lead = m.id; logEv(m.name + ' leads the Probe'); return true; }
+// Who would lead next: the next grown mibi with you after the partner, in carried order, wrapping; none with fewer than two grown.
+function nextLead() { const g = carriedMibis().filter(isAdult), pm = partnerMibi(); return g.length < 2 || !pm ? null : g[(g.indexOf(pm) + 1) % g.length]; }
+// A juvenile grown on the clock this turn: never one with grownTurn and never a bonded juvenile (they grow through care).
+function grownNow(m) { return m.grownTurn == null && !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS; }
+function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDER_TURNS : !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS; }
+// The roster's order: the mibis with you in carried order, then (docked, between expeditions) the others as they hatched.
+// Undocked or mid-expedition, a mibi at home is never shown.
+function rosterList() { const c = carriedMibis(); return S.exp || !isDocked() ? c : c.concat(homeMibis()); }
+// Take and Leave, docked and between expeditions only. Take is refused when three are with you.
+function canSwap() { return !S.exp && isDocked(); }
+// A mibi the Station has released (its copy in the Station's part) is never taken.
+function releasedIds() { const st = stPart(); return new Set(((st && st.mibis) || []).filter(q => q.released).map(q => q.id)); }
+function takeMibi(m) {
+  if (!m || !canSwap()) return { ok: false, why: 'swap' };
+  if (isCarried(m)) return { ok: false, why: 'carried' };
+  if (m.released || releasedIds().has(m.id)) return { ok: false, why: 'released' };
+  if (S.carried.length >= CARRY_MAX) return { ok: false, why: 'full' };
+  S.carried.push(m.id); logEv(m.name + ' is with you'); return { ok: true };
+}
+function leaveMibi(m) {
+  if (!m || !canSwap() || !isCarried(m)) return { ok: false };
+  S.carried = S.carried.filter(id => id !== m.id); if (S.lead === m.id) S.lead = null; logEv(m.name + ' stays home'); return { ok: true };
+}
+// Tend: a carried mibi, between expeditions, once per Companion day. A clock moved back is refused and resets nothing.
+function canTend(m) { return !S.exp && isCarried(m) && (m.tendDay == null || localDay() > m.tendDay); }
+// One Tend: +1 care, +1 tends, then the bond, then growth. Returns what happened, for the lines.
+function tend(m) {
+  if (!canTend(m)) return null;
+  m.care = (m.care || 0) + 1; m.tends = (m.tends || 0) + 1; m.tendDay = localDay(); logEv('Tended ' + m.name);
+  return { bonded: bondCheck(m), grown: growCheck(m) };
+}
+// The bond, after a Tend only: three Tends. A mibi already adult by the clock keeps its adulthood:
+// grownTurn = born + JUVENILE_TURNS (the constant, never a developer setting).
+function bondCheck(m) {
+  if (!m || m.bonded || (m.tends || 0) < BOND_TENDS) return false;
+  m.bonded = true; m.bondCare = m.care || 0;
+  if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS;
+  logEv(m.name + ' is bonded with you'); return true;
+}
+// Growing up through care: a carried bonded juvenile grows at the first care after its bond (care > bondCare).
+function growCheck(m) {
+  if (!m || !isCarried(m) || !m.bonded || m.grownTurn != null || m.bondCare == null || !((m.care || 0) > m.bondCare)) return false;
+  m.grownTurn = S.turn; logEv(m.name + ' is grown (through care)'); return true;
+}
+// The save: S.with (one slot) becomes S.carried, once. withSeen stays, frozen: the Station's care step reads it.
+function migrateCarried(S) {
+  if (Array.isArray(S.carried)) return S;
+  S.carried = S.with != null && S.mibis.some(m => m.id === S.with) ? [S.with] : []; S.lead = S.with ?? null;
+  S.carrySeen = 0; delete S.with; return S;
+}
+// Every load and after every dock read: defaults for the additive fields, idempotent; old Vivarium bonds back-filled once.
+// A carried id the Companion does not know is dropped; one the Station has released (`released`, the ids released in st)
+// only when passed, which syncStation does under the dock gate, between expeditions.
+function normalizeCare(S, released) {
+  if (!Array.isArray(S.carried)) S.carried = [];
+  const ids = new Set(S.mibis.map(m => m.id)), gone = released || new Set();
+  S.carried = [...new Set(S.carried)].filter(id => ids.has(id) && !gone.has(id)).slice(0, CARRY_MAX);
+  for (const m of S.mibis) if (gone.has(m.id)) m.released = true;   // from this read on the Companion treats it as gone
+  if (S.lead != null && gone.has(S.lead)) S.lead = null;            // the lead clears; the partner is found again
+  if (S.lead === undefined) S.lead = null; if (typeof S.carrySeen !== 'number') S.carrySeen = 0; if (!Array.isArray(S.carryRefused)) S.carryRefused = [];
+  for (const m of S.mibis) {
+    for (const k of ['care', 'tends', 'outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
+    for (const k of ['tendDay', 'grownTurn']) if (m[k] === undefined) m[k] = null;
+    if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && S.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; }
+  }
+  return S;
+}
+// The Station's carry requests (st.carryReqs), at the dock and between expeditions only, in seq order, each once.
+// An add is refused when the mibi is unknown, released, already carried or the Companion is full; a refusal is kept
+// (the last three) so the Station can say "stayed home". A home is a no-op when the mibi is not carried.
+function carryApply(S, st) {
+  const done = []; if (!st || S.exp) return done;
+  const reqs = (Array.isArray(st.carryReqs) ? st.carryReqs : []).filter(r => r && r.seq > (S.carrySeen || 0)).sort((a, b) => a.seq - b.seq);
+  for (const r of reqs) {
+    S.carrySeen = r.seq;
+    const m = S.mibis.find(x => x.id === r.id), q = (st.mibis || []).find(x => x.id === r.id);
+    if (r.op === 'add') {
+      const why = !m ? 'unknown' : q && q.released ? 'released' : S.carried.includes(r.id) ? 'carried' : S.carried.length >= CARRY_MAX ? 'full' : null;
+      if (why) { S.carryRefused = (Array.isArray(S.carryRefused) ? S.carryRefused : []).concat([{ seq: r.seq, id: r.id, why }]).slice(-3); done.push({ op: 'add', id: r.id, ok: false, why }); }
+      else { S.carried.push(r.id); done.push({ op: 'add', id: r.id, ok: true }); }
+    } else if (r.op === 'home' && S.carried.includes(r.id)) {
+      S.carried = S.carried.filter(id => id !== r.id); if (S.lead === r.id) S.lead = null; done.push({ op: 'home', id: r.id, ok: true });
+    }
+  }
+  return done;
+}
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
@@ -854,8 +993,8 @@ function newWorld(seed) {
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
   genWorld(seed);
   S = { v: SAVE_V, seed, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
-    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], with: null, opened: {}, tier: 1, deepRead: 0,
-    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, withSeen: 0, probeSeen: 0, retSeen: [],
+    veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
+    bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
     exp: null, report: null, totalActions: 0, nextId: 1, log: [], lastStorm: null, hist: [] };
   const life = genLife(seed); S.cr = life.cr; S.pods = life.pods;
@@ -867,7 +1006,7 @@ function save() {
   if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
-  if (S.st) syncStation();
+  if (S.st) { syncStation(); normalizeCare(S); }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
@@ -893,6 +1032,7 @@ function load() {
     if (!s || s.v !== SAVE_V) { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } }
     if (!s || s.v !== SAVE_V || typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return false;   // a Station-only save: a new world starts (and a fresh Station with it)
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
+    migrateCarried(S); normalizeCare(S);
     layoutCache.clear(); genWorld(S.seed); indexCreatures(); return true;
   } catch (e) { return false; }
 }
@@ -900,7 +1040,7 @@ function load() {
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
 function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.docked); }
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
-// upgraded; the mibi chosen to go with you; the mibis raised; species identified; pods returned to the wild.
+// upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
   const st = stPart(); if (!st) return;
   const acc = st.accepted || [], gone = S.bay.filter(c => acc.includes(c.id));
@@ -911,13 +1051,17 @@ function syncStation() {
   S.dockSeen = Math.max(S.dockSeen || 0, st.dockN || 0);
   for (const sp of st.known || []) if (!S.known.includes(sp)) S.known.push(sp);
   for (const m of st.mibis || []) { let q = S.mibis.find(x => x.id === m.id);
+    if (!q && m.released) continue;   // released before the Companion ever knew it: not created, not logged
     if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); logEv(m.name + ' (' + SPECIES[m.sp].name + ') is home at the Station'); }
-    q.name = m.name; q.born = m.born || 0; q.bonded = !!m.bonded; }
+    q.name = m.name; q.born = m.born || 0; q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
   if (st.probe && st.probe.seq > (S.probeSeen || 0)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
     if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; the expedition continues after Lift
     if (S.tier > was) fxMsg('Probe tier 2 · reaches further, carries 3 pods', 3); }
-  if (st.withReq && st.withReq.seq > (S.withSeen || 0) && !S.exp) { S.withSeen = st.withReq.seq; const m = mibiById(st.withReq.id);   // mid-expedition the request waits
-    if (m && S.with !== m.id) { const prev = withMibi(); S.with = m.id; fxMsg((prev ? prev.name + ' goes home · ' : '') + m.name + ' is with you', 3); logEv(m.name + ' is with you (from the Station)'); } }
+  if (!S.exp) for (const r of carryApply(S, st)) { const m = mibiById(r.id), n = m ? m.name : 'a mibi';   // mid-expedition the requests wait
+    if (r.op === 'home') { fxMsg(CARE_TEXT.left(n), 3); logEv(n + ' stays home (from the Station)'); }
+    else if (r.ok) { fxMsg(CARE_TEXT.took(n), 3); logEv(n + ' is with you (from the Station)'); }
+    else { if (r.why === 'full') fxMsg(CARE_TEXT.fullRefused(n), 3); logEv(n + ' stays home · the Station’s request refused (' + r.why + ')'); } }
+  if (!S.exp) normalizeCare(S, releasedIds());   // a released mibi leaves the carried set at the dock, between expeditions; mid-expedition it waits
   for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
@@ -2111,22 +2255,23 @@ const holdEmpty = h => !h || (!h.e && !h.d && !h.s && !(h.pods && h.pods.length)
 const exploredAny = ex => (ex.stats.calls || 0) > 0;   // explored this expedition = a Call in some place (earlier trips don't count)
 // The trips the Station reads at the dock (top-level `trips` in the save): one record per expedition that turned the world,
 // oldest first, the last 40 kept. The expedition gathers its kinds of place (ex.tripPlaces) and whether a storm was over
-// the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly.
+// the Probe (ex.tripStorm) as it goes; both are optional, so an expedition saved before them still ends cleanly. `carried` is
+// a copy of S.carried at the expedition's end (`[]` allowed); a reader of an older record takes [partner].
 const TRIP_KINDS = ['meadow', 'pond', 'rock', 'wood', 'cave'], TRIPS_KEPT = 40;
 function tripPlace(ex, kind) { if (!TRIP_KINDS.includes(kind)) return; if (!Array.isArray(ex.tripPlaces)) ex.tripPlaces = []; if (!ex.tripPlaces.includes(kind)) ex.tripPlaces.push(kind); }
-function tripRecord(ex) { const places = Array.isArray(ex.tripPlaces) ? [...new Set(ex.tripPlaces.filter(k => TRIP_KINDS.includes(k)))] : [];
-  return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm }; }
+function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ? [...new Set(ex.tripPlaces.filter(k => TRIP_KINDS.includes(k)))] : [];
+  return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
 function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
-function bayLine() { const n = S.bay.length; return n ? n + ' consignment' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
+function bayLine() { const n = S.bay.length; return n ? n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
 // The Cargo screen's preview of what Head home will do.
 function sealPreview() {
   const ex = S.exp, out = [];
   if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
   if (holdEmpty(ex.cargo)) out.push('An empty hold · nothing to seal');
-  else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock at the Station to free it'); }
+  else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
   else { const n = ex.cargo.pods.length; out.push('Seals ' + (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + supplies' : 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
     out.push('The Station opens it when you dock'); }
-  if (ex.shield < ex.smax) out.push('The Station mends the Shield at the dock');
+  if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
 }
 function dropPods(ex, rep) {
@@ -2146,11 +2291,13 @@ function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
   const broke = reason === 'break'; S.ui.lastPos = ex.pos;
   const explored = exploredAny(ex), rc = reachCounts();
-  { const w = withMibi(); if (w) { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // the mibi with you remembers where you went most
-    const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0]; if (best != null) w.mem = LAND_NAME[best];
-    if (explored) w.outings = (w.outings || 0) + 1;
-    if (ex.abUsed && ex.pt && ex.pt.id === w.id) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) logEv(w.name + ' gains a skill notch (' + w.notches + ' of 3)'); } } }
-  const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], explored: rc.surveyed, of: rc.total };
+  let notch = null;   // a notch earned is named on Head home as its own row of the outcome block (and logged), never with a count, never a world line
+  { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // every mibi with you remembers where you went most
+    const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
+    for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
+      if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
+      if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
+  const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
     rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
@@ -2168,26 +2315,54 @@ function endExpedition(reason) {
     rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Headed home · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
-  S.trips = tripsWith(S.trips, tripRecord(ex));   // the world turns: this expedition is a trip for the Station
-  rep.lines = worldTurn(pending);   // the world turns once per Head home, on the Companion
+  S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
+  const worldLines = worldTurn(pending); rep.lines = worldLines.slice();   // the world turns once per Head home, on the Companion
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: rep.lines.slice() };
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice() };   // the crate carries the world's lines only
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Headed home · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
   S.phase = 'sealed'; transition(); save();
 }
-// The walk with the mibi: once per world turn, undocked, with the mibi with you. A species moment and an outing; its
-// Data folds into the expedition's field yield (research-economy §2), so it brings none of its own.
-const canWalk = () => !S.exp && !!withMibi() && !isDocked() && S.walkTurn !== S.turn;
+// The Walk: once per world turn, undocked, between expeditions, with every mibi with you together.
+const canWalk = () => !S.exp && S.carried.length > 0 && !isDocked() && S.walkTurn !== S.turn;
+// The group Walk, state only: every mibi with you, in carried order, +1 outing and +1 care, then growth (a Walk never bonds).
+function walkAll() {
+  if (!canWalk()) return null; S.walkTurn = S.turn; const out = [];
+  for (const q of carriedMibis()) { q.outings = (q.outings || 0) + 1; q.care = (q.care || 0) + 1; out.push({ m: q, bonded: false, grown: growCheck(q) }); }
+  logEv('Walked with ' + listWords(out.map(o => o.m.name))); return out;
+}
+// The lines after a Tend or a Walk: the action's own, then bond lines, then grow-up lines, in carried order. After the
+// action's moment (dur ms) the bond plays on its mibi's page (input held to its end); a grown mibi's page takes the view.
+function careLines(first, evs, dur) {
+  fxMsg(first, 3);
+  for (const e of evs) if (e.bonded) fxMsg(CARE_TEXT.bonded(e.m.name), 3);
+  for (const e of evs) if (e.grown) fxMsg((partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(e.m.name), 3);
+  const q = careQueue(evs, dur);
+  FX.cuts = q.cuts.map(c => Object.assign({}, c, { at: NOW + c.at, done: 0 })); lockInput(q.lock);
+}
+// The events after a Tend or a Walk, in ms from the press: the bonds first, in carried order, one every BOND_MS from the end of
+// the action's moment; then one grow-up cut per mibi, in carried order, every GROW_MS. Each moves the view to its mibi's page.
+// Input is held to the end of the last bond, or 300 ms after the last cut (and at least 300 ms).
+const GROW_MS = 1200;
+function careQueue(evs, dur) {
+  const bonds = evs.filter(e => e.bonded), grows = evs.filter(e => e.grown), cuts = [];
+  bonds.forEach((e, i) => cuts.push({ kind: 'bond', id: e.m.id, at: dur + i * BOND_MS }));
+  const g0 = dur + bonds.length * BOND_MS;
+  grows.forEach((e, j) => cuts.push({ kind: 'grow', id: e.m.id, at: g0 + j * GROW_MS }));
+  const lock = Math.max(300, bonds.length ? g0 : 0, grows.length ? g0 + (grows.length - 1) * GROW_MS + 300 : 0);
+  return { cuts, lock };
+}
+// The Walk as pressed on the shown mibi m: its walk moment; the line names them all. Its Data folds into the expedition's
+// field yield (research-economy §2), so it brings none of its own.
 function walk(m) {
-  if (!canWalk()) return; S.walkTurn = S.turn; m.outings = (m.outings || 0) + 1;
-  FX.moment = { id: m.id, at: NOW }; lockInput(400);
-  const did = [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
-  fxMsg(did, 3); logEv('Walked with ' + m.name);
+  const evs = walkAll(); if (!evs) return;
+  FX.moment = { id: m.id, at: NOW }; FX.walk = { id: m.id, at: NOW, others: carriedMibis().filter(q => q !== m).map(q => q.id) }; lockInput(400);
+  const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
+  careLines(did, evs, WALK_MS);
 }
 function dirWord(dx, dy, n) {
   const ax = dx / n, ay = dy / n, ns = ay < -.15 ? 'north' : ay > .15 ? 'south' : '', ew = ax > .15 ? 'east' : ax < -.15 ? 'west' : '';
@@ -2257,11 +2432,11 @@ function worldTurn(pending) {
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
   S.turn++; S.expN++;
   indexCreatures();
-  const grown = S.mibis.filter(m => S.turn - (m.born || 0) === JUVENILE_TURNS), aged = S.mibis.filter(m => S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS);
+  const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
   for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about.
   const lines = [];
-  for (const m of grown) lines.push(S.with === m.id ? m.name + ' is grown · your Probe partner now.' : m.name + ' is grown · take ' + m.name + ' to bring it on expeditions.');
+  for (const m of grown) lines.push((!isCarried(m) ? CARE_TEXT.clockGrownHome : partnerMibi() === m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(m.name));
   for (const m of aged) lines.push(m.name + ' is an elder now · slower, with keener senses.');
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (!f || !fs(String(c), f.id).lightT) continue; const left = outpostLeft(String(c), f), where = LAND_NAME[G.land[c]];
     if (left === 1) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' burns low.'); else if (left === 0 && fs(String(c), f.id).lightT === S.turn) lines.push('The ' + DEPOT_NAME + ' in the ' + where + ' has gone out.'); }
@@ -2639,9 +2814,9 @@ function roofArt(chk) { return art('roof' + chk, () => { const pb = new PB(104, 
   return pb; }); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
 // The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
-const ringArt = (key, w, h) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2;
+const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2; lit = lit ?? C.aqua; dark = dark ?? C.tealD;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const d = Math.hypot((x + .5 - cx) / (w / 2 - .5), (y + .5 - cy) / (h / 2 - .5)), t = (w / 2 - .5) * (1 - d);
-    if (t >= -0.01 && t < 1) pb.set(x, y, C.tealD); else if (t >= 1 && t < 3) pb.set(x, y, C.aqua); else if (t >= 3 && t < 4) pb.set(x, y, C.tealD); }
+    if (t >= -0.01 && t < 1) pb.set(x, y, dark); else if (t >= 1 && t < 3) pb.set(x, y, lit); else if (t >= 3 && t < 4) pb.set(x, y, dark); }
   return pb; });
 const RING = () => ringArt('ptring2', 28, 11);
 const RING_S = () => ringArt('ptrings2', 14, 6);
@@ -3450,7 +3625,7 @@ function callSlot() {
   const ex = S.exp;
   if (S.phase === 'patch' && ex && ex.patch) return S.ui.swap ? null : { label: 'Pulse' };
   if (S.phase === 'map' && ex) return ownPin(ex.pos) ? { label: 'Unpin' } : { label: 'Pin 1', energy: true, dim: ex.cargo.e < PRICE.pin };
-  if (S.phase === 'mibis' || S.phase === 'active') { const m = withMibi(); return m ? { label: 'Call ' + m.name } : null; }
+  if (S.phase === 'mibis' || S.phase === 'active') { const m = callTarget(); return m ? { label: 'Call ' + m.name } : null; }
   return null;
 }
 // The Call slot is gone from the top bar (the one-time lines explain Call); this keeps the layout code in one place.
@@ -3591,19 +3766,20 @@ function drawMessage() {
   if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
   const lines = wrapText(FX.msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
-  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = pl && pl.y + 20 > low ? VIEW_Y + 8 : low;
+  // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
+  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) ? VIEW_Y + 8 : low;
   panel(x, y, w, h, C.ink, C.amber);
   lines.forEach((l, i) => text(l, SCR_W / 2, y + 8 + i * 20, C.bone, 2, 'center'));
 }
 function disc(x, y, r, fill, ring) { blit(art('disc' + r + fill + ring, () => { const pb = new PB(r * 2, r * 2); pb.ell(r, r, r - .2, r - .2, C[ring]); pb.ell(r, r, r - 2.2, r - 2.2, C[fill]); return pb; }), x, y); }
-function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 4, C[col]); return w; }
+// A chip: 22 high, the 2× label at top + 3 and 8 px in from each side (a descender ends on top + 20, one row of fill under it).
+function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }
 function card(x, y, w, h, sel, enabled) {
   panel(x, y + 3, w, h, C.void); panel(x, y, w, h, enabled ? C.paper : C.slate, sel ? C.orange : C.ink);
   if (sel) { panel(x + 1, y + 1, w - 2, h - 2, enabled ? C.paper : C.slate, C.orange); brackets(x - 6, y - 6, w + 12, h + 12, C.amber); }
 }
 function weatherIcon(x, y, lit) { blit(ICON.cloud(lit ? 1 : 0), x - 15, y - 14); blit(ICON.bolt(lit ? 'yellow' : 'mist'), x - 2, y); }
 const silhouette = sp => art('sil' + sp, () => { const a = creatureArt(sp, 'idle', 0), pb = new PB(a.w, a.h); for (let i = 0; i < a.p.length; i++) if (a.p[i] >= 0) pb.p[i] = C.slate; return pb; });
-function adults() { return S.mibis.filter(isAdult); }
 // The expedition choice: a status strip, two expedition cards with living icons, the partner as a card, and a
 // world preview (the whole-map inset with the last start flagged).
 function drawSetup(t) {
@@ -3613,9 +3789,9 @@ function drawSetup(t) {
   const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier + ' · Shield ' + Math.max(0, shN) + '/' + tierOf().shield + (S.bay.length ? ' · ' + S.bay.length + ' sealed' : '');
   text(clipText(strip, 420, 2), SCR_W / 2, 40, hurt ? C.amber : C.mist, 2, 'center');
   // while a message shows, the message box takes the view's foot and neither panel is drawn
-  if (!FX.msg && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift at the Station', SCR_W / 2, 517, C.mint, 2, 'center'); }
-  else if (!FX.msg && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' consignment' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
-  const sel = S.ui.sel, dig = digPartner(), digHome = !dig && mibiWith('dig'), deepOk = !!dig;
+  if (!FX.msg && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 517, C.mint, 2, 'center'); }
+  else if (!FX.msg && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' crate' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
+  const sel = S.ui.sel, dig = digPartner(), deepOk = !!dig;
   // Weather: a storm cloud with a flickering bolt
   card(20, 64, 410, 84, sel === 0, true);
   disc(32, 74, 32, 'sand', 'clay'); blit(ICON.cloud(1), 49, 88); blit(ICON.bolt(fr ? 'cream' : 'yellow'), 62 + fr, 102);
@@ -3625,24 +3801,24 @@ function drawSetup(t) {
   disc(32, 168, 32, deepOk ? 'sand' : 'stone', deepOk ? 'clay' : 'slate'); blit(ICON.burrow(deepOk ? 1 : 0), 56, 192);
   if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
   text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
-  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : digHome ? 'Caves · take ' + digHome.name + ' at the Station' : 'Caves · needs a digging partner', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
-  // the partner, as a card
-  const w = withMibi(), pm = partnerMibi();
+  text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : 'Caves · needs a digging partner', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
+  // the partner card: the partner's face on the teal ring, its name, stage and ability; or why there is none. The mibis with
+  // you as 24 px ring faces in carried order, a free place a dashed circle.
+  const pm = partnerMibi(), cm = carriedMibis();
   card(20, 252, 410, 92, sel === 2, true);
-  if (w) { const st = mibiStage(w);
-    if (pm) blit(RING(), 46, 322); blit(creatureArt(w.sp, 'idle', fr, 2), 28, 264);
-    text(clipText(w.name, 200, 3), 112, 260, C.ink, 3);
-    let cx = 112; cx += chip(cx, 292, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 292, 'with you', 'orange', 'bone');
-    text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 320, pm ? C.stone : C.rust); }
-  else if (S.mibis.length) { emptyPodSmall(52, 298); text('No one with you', 112, 264, C.ink, 3); text(clipText('take one at the Station · ' + S.mibis.length + ' at home', 306, 2), 112, 306, C.stone); }
+  if (pm) { const st = mibiStage(pm), nm = clipText(pm.name, 220, 3);
+    blit(RING(), 46, 322); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, 264);
+    text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
+    chip(112, 292, st, stageFill(st), 'bone');
+    text(clipText(SPECIES[pm.sp].abText, 220, 2), 112, 320, C.stone); }
+  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(carriedMibis().length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
+  if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm); else blit(dashedCircleArt(24), fx, 262); }
   // the world preview: the whole map small, the last start flagged, and the count
   const iy = 360, u = 6; drawWorldInset(24, iy, t, u);
   const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
   text('Your world', 136, iy + 2, C.mist); text('Explored ' + done + ' of ' + all + ' cells', 136, iy + 26, C.bone); text('Seen ' + seen + ' · fog ' + (all - seen), 136, iy + 50, C.fog);
   if (S.ui.lastPos != null) { blit(ICON.flag(), 136, iy + 76); text('last start', 154, iy + 78, C.fog); }
-  const home = S.mibis.filter(q => q !== w).map(q => q.name);
-  if (home.length) text(clipText(home.join(', ') + ' at home', 290, 2), 136, iy + 104, C.mist);
 }
 function emptyPodSmall(cx, cy) { for (let a = 0; a < 6.28; a += .2) R(cx + Math.round(Math.cos(a) * 18), cy + Math.round(Math.sin(a) * 24), 2, 2, C.stone); }
 // The whole world small, between expeditions: fog, seen land faded, visited land in colour, pins, outposts, skulls, the last start.
@@ -3657,16 +3833,14 @@ function drawWorldInset(x, y, t, u) {
   for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
   if (S.ui.lastPos != null && (!motion() || Math.floor(t * 2) % 2 === 0)) { const c = S.ui.lastPos; R(x + (c % MW) * u, y + ((c / MW) | 0) * u, u, u, C.orange); }
 }
-// The partner row reads from the one slot: "Partner: Pip · calms wary creatures", or why there is none.
+// The partner row: "Partner: Pip · calms wary creatures", or why there is none.
 function partnerRow() {
-  const w = withMibi(), pm = partnerMibi();
+  const pm = partnerMibi(), w = carriedMibis()[0];
   if (pm) return 'Partner: ' + pm.name + ' · ' + SPECIES[pm.sp].abText + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
-  if (w) return w.name + ' is with you · too young for the Probe';
-  return S.mibis.length ? 'No one with you' : 'No partner yet';
+  if (w) return CARE_TEXT.noOneGrown;
+  return liveMibis().length ? CARE_TEXT.noOneWith : 'No partner yet';
 }
 function digPartner() { const pm = partnerMibi(); return pm && SPECIES[pm.sp].ab === 'dig' ? pm : null; }
-// The next grown mibi at home, for the partner row's "Take Moss instead" (cycles through them).
-function nextHomeAdult() { const w = withMibi(), a = adults().filter(m => m !== w); if (!a.length) return null; const after = a.find(m => w && m.id > w.id); return after || a[0]; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
@@ -3772,7 +3946,8 @@ function drawCargo(t) {
     ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 182, 42, 42, C.ink, C.slate);
       if (S.known.includes(sp)) blit(creatureArt(sp, 'idle', 0), x + 5, 186); else { blit(silhouette(sp), x + 5, 186); text('?', x + 16, 196, C.bone); }
       if (ex.newMet.includes(sp)) R(x + 33, 186, 5, 5, C.amber); });
-    text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', 180, 196, C.fog);
+    // beside the tiles; with no creature met, under "No creatures met yet" (they would overlap on x 180–219)
+    text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', ex.met.length ? 180 : 24, ex.met.length ? 196 : 208, C.fog);
     // how much of the reach is done, in the same picture as the HUD corner
     text(cargoLine(), 24, 238, C.fog);
     { const r = S.exp.range, n = r * 2 + 1, pitch = n <= 5 ? 7 : 4, s0 = cxy(ex.start), reach = new Set(ex.reach), gx = 24 + textW(cargoLine(), 2) + 14, gy = 245 - Math.floor(n * pitch / 2);
@@ -3792,7 +3967,7 @@ function drawCargo(t) {
     text('The sealed bay', 24, 166, C.mist); drawBay(24, 190);
     text(S.bay.length ? bayLine() : 'Nothing sealed · Head home seals the hold', 24, 272, S.bay.length ? C.amber : C.stone);
     text('Probe tier ' + S.tier + ' · Shield ' + (S.shield == null ? tierOf().shield : Math.max(0, S.shield)) + '/' + tierOf().shield, 24, 316, C.fog);
-    text(isDocked() ? 'Docked at the Station' : 'Away from the Station', 24, 342, isDocked() ? C.mint : C.fog);
+    text(isDocked() ? 'Docked' : 'Away', 24, 342, isDocked() ? C.mint : C.fog);
     wrapText('The Station accepts each crate once, when you dock. It cannot see what the Companion carries until then.', 400, 2).forEach((l, i) => text(l, 24, 386 + i * 22, C.stone));
     text(clipText(turnLine(), 400, 2), 24, 476, C.mist);
   }
@@ -3817,26 +3992,79 @@ function drawNoMibi() {
 }
 // A juvenile answering Call is still learning: it looks the wrong way first, on two calls in three.
 function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a < 1500 ? Object.assign({ a }, h) : null; }
-// Mibis: the roster. One row per mibi, the one with you first and tagged; everyone else is at home.
+// ---- The care screens' composed pieces: dashed outlines, rings, chips, and the placeholders of missing assets ----
+const stageFill = st => st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone';
+// A free place: a 1 px dashed outline, dash 2 and 2.
+function dashedRect(x, y, w, h, c) {
+  for (let i = 0; i < w; i += 4) { R(x + i, y, Math.min(2, w - i), 1, c); R(x + i, y + h - 1, Math.min(2, w - i), 1, c); }
+  for (let j = 0; j < h; j += 4) { R(x, y + j, 1, Math.min(2, h - j), c); R(x + w - 1, y + j, 1, Math.min(2, h - j), c); }
+}
+// A free face: a dashed circle d×d, 1 px `stone`, dash 2 and 2 along its perimeter.
+const dashedCircleArt = d => art('dcirc' + d, () => { const pb = new PB(d, d), c = d / 2, r = d / 2 - .5, pts = [];
+  for (let y = 0; y < d; y++) for (let x = 0; x < d; x++) { const q = Math.hypot(x + .5 - c, y + .5 - c); if (Math.abs(q - r) < .5) pts.push([x, y, Math.atan2(y + .5 - c, x + .5 - c)]); }
+  pts.sort((a, b) => a[2] - b[2]); pts.forEach(([x, y], i) => { if ((i >> 1) % 2 === 0) pb.set(x, y, C.stone); }); return pb; });
+// The 24 px HUD ring face: the face is the missing asset c-face-24, drawn as its labelled placeholder; the ring at its foot is
+// the partner's marker (`teal` for the partner, `stone` for the others), a plain outline.
+function ringFace(x, y, sp, partner) {
+  const ring = partner ? ringArt('rf24t', 24, 8) : ringArt('rf24s', 24, 8, C.stone, C.slate);
+  blit(ring, x, y + 16); placeholderPlate('c-face-24', x, y);
+  g.save(); g.beginPath(); g.rect(x, y + 20, 24, 4); g.clip(); blit(ring, x, y + 16); g.restore();   // the ring's front arc in front of the face: it stands on it
+}
+// A missing asset of the register (CARE_ASSETS), drawn as its labelled placeholder at its exact size (k: pixel for pixel at k×):
+// a flat plate, outlined, with its label where it fits. Never drawn art; the master replaces it by id.
+function placeholderPlate(id, x, y, k) {
+  const a = CARE_ASSETS.find(e => e.id === id), [fill, labels] = PLATE[id]; k = k || 1; const w = a.w * k, h = a.h * k;
+  R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C[fill]);
+  const lbl = labels.find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
+}
+// Why there is no partner, on the Lead card and the partner card.
+function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; const j = cm.find(m => !isAdult(m)); return j && j.bonded ? CARE_TEXT.youngCare : CARE_TEXT.youngTime; }
+// Mibis: the roster. The Lead card; "With you" and three places (a free place dashed, never focused); docked, "At home".
+// Focus order (S.ui.rSel): the Lead card (0), the mibis with you, then (docked) the mibis at home.
+const LEAD_Y = 44, PLACE_Y = 172, HOME_Y = 416, ROW_P = 72, ROSTER_FOOT = 526;
+function rosterAt(i) { return i > 0 ? rosterList()[i - 1] || null : null; }
+function rosterCount() { return 1 + rosterList().length; }
+// A focus index's card, [y, h], before the scroll.
+function rosterRect(i) { if (i <= 0) return [LEAD_Y, 92]; const k = i - 1, nc = carriedMibis().length; return k < nc ? [PLACE_Y + k * ROW_P, 64] : [HOME_Y + (k - nc) * ROW_P, 64]; }
+// The scroll: the least offset that keeps the focused card's foot (its last row) on or above row 526.
+function rosterOff(i) { const [y, h] = rosterRect(i); return Math.max(0, y + h - 1 - ROSTER_FOOT); }
+// Nothing to arrange: no mibi with you and none to take.
+const rosterIdle = () => !carriedMibis().length && !(canSwap() && homeMibis().length);
+// A paper card; focused, it lifts 2 px (its shadow stays) inside orange corner brackets 6 px outside it.
+function rosterCard(x, y, w, h, sel) {
+  panel(x, y + 3, w, h, C.void); const ly = sel ? y - 2 : y;
+  panel(x, ly, w, h, C.paper, sel ? C.orange : C.ink);
+  if (sel) { panel(x + 1, ly + 1, w - 2, h - 2, C.paper, C.orange); brackets(x - 6, ly - 6, w + 12, h + 12, C.amber); }
+}
+function rosterRow(m, y0, sel, isP, fr) {
+  rosterCard(16, y0, 418, 64, sel); const y = sel ? y0 - 2 : y0, st = mibiStage(m);
+  const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
+  if (isP) blit(RING(), 38, y + 48);
+  placeholderPlate('c-token-48', 28, y + 8 - hy);   // the 48 px field token is a missing asset
+  const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) placeholderPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
+  let cx = 88; cx += chip(cx, y + 38, st, stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+  if (sel) text('▶', 422, y + 22, C.mist, 2, 'right');   // the open mark: ▶ opens this mibi's page
+}
 function drawMibis(t) {
-  viewBg(); drawTop('Mibis', S.mibis.length ? S.mibis.length + ' raised' : '', callSlot());
-  const list = rosterList(), w = withMibi();
-  if (!list.length) { drawNoMibi(); return; }
-  const fr = motion() ? Math.floor(t * 1.2) % 2 : 0, PITCH = 72, top = 42, sel = clamp(S.ui.rSel, 0, list.length - 1);
-  const off = Math.max(0, (sel + 1) * PITCH - (VIEW_H - 40));
-  const tag = (x, y, label, fill) => { const tw = textW(label, 2) + 10; panel(x, y, tw, 20, C[fill]); text(label, x + 5, y + 3, C.bone); return tw + 4; };
-  g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip();
-  list.forEach((m, i) => { const y = top + i * PITCH - off, st = mibiStage(m), isW = m === w; if (y < VIEW_Y - PITCH || y > SCR_H) return;
-    card(20, y, 410, 64, sel === i, true);
-    const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
-    blit(creatureArt(m.sp, h ? 'alert' : 'idle', h ? 0 : fr, 2), 28, y - hy);
-    text(clipText(m.name, 200, 3), 104, y + 8, C.ink, 3);
-    let cx = 104; cx += tag(cx, y + 38, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone');
-    cx += tag(cx, y + 38, isW ? 'with you' : 'at home', isW ? 'orange' : 'slate');
-    if (isW) text(isAdult(m) ? 'partner' : 'too young', 420, y + 12, C.bark, 2, 'right');
-  });
+  viewBg(); drawTop('Mibis', '', callSlot());
+  if (!liveMibis().length) { drawNoMibi(); return; }
+  const list = rosterList(), cm = carriedMibis(), home = list.slice(cm.length), ex = S.exp;
+  const pm = ex ? (ex.pt ? mibiById(ex.pt.id) : null) : partnerMibi();   // mid-expedition: this expedition's partner
+  const sel = clamp(S.ui.rSel | 0, 0, rosterCount() - 1); S.ui.rSel = sel;
+  const off = rosterOff(sel), fr = motion() ? Math.floor(t * 1.2) % 2 : 0;
+  { const [ry, rh] = rosterRect(sel); RT.focusFoot = ry + rh - 1 - off - 2; }
+  clipView();
+  { const y = LEAD_Y - off - (sel === 0 ? 2 : 0); rosterCard(16, LEAD_Y - off, 418, 92, sel === 0);
+    text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
+    if (pm) { blit(RING(), 46, y + 70); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, y + 12);
+      const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
+      text(clipText(SPECIES[pm.sp].abText, 314, 2), 104, y + 64, C.stone); }
+    else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
+  text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
+  for (let k = 0; k < CARRY_MAX; k++) { const y0 = PLACE_Y + k * ROW_P - off, m = cm[k]; if (m) rosterRow(m, y0, sel === k + 1, m === pm, fr); else dashedRect(16, y0, 418, 64, C.stone); }
+  if (home.length) { text(CARE_TEXT.atHomeCap, 20, 392 - off, C.mist); home.forEach((m, j) => rosterRow(m, HOME_Y + j * ROW_P - off, sel === cm.length + 1 + j, false, fr)); }
   g.restore();
-  if (S.exp && w && list.length * PITCH + top + 30 < SCR_H - LINE_H) text(w.name + ' is with you until you’re home', SCR_W / 2, top + list.length * PITCH + 8, C.mist, 2, 'center');
+  if (ex || !isDocked()) { const l = ex ? CARE_TEXT.withYouThisExp : homeMibis().length ? CARE_TEXT.othersHome : ''; if (l) text(l, SCR_W / 2, 400, C.mist, 2, 'center'); }
 }
 // Upscale a sprite by an integer factor, pixel for pixel (the token art, as the device would blit it).
 function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb = new PB(src.w * k, src.h * k);
@@ -3846,18 +4074,38 @@ const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
 const bigArt = (sp, pose, fr) => upArt('cr' + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr), BIG);
 const haloArt = () => art('halo', () => { const pb = new PB(300, 220); pb.ell(150, 110, 148, 108, C.cream, { chk: 1 }); return pb; });
 // The active mibi screen: the Companion's home view. The mibi large, its name, stage, ability and status.
-// Call: it answers. Confirm: spend time (or take a mibi at home). Pad: the others. ←: up to Mibis.
-function shownMibi() { const list = rosterList(); return list.find(m => m.id === S.ui.aId) || list[0] || null; }
+// Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
+// A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
+function shownMibi() { const list = rosterList(); let i = list.findIndex(m => m.id === S.ui.aId);
+  if (i < 0 && list.length) { i = Math.min(S.ui.aIdx | 0, list.length - 1); S.ui.aId = list[i].id; }
+  if (i >= 0) S.ui.aIdx = i; return i >= 0 ? list[i] : null; }
 function activeStatus(m) {
-  if (m === withMibi()) return (isAdult(m) ? 'with you · joins the Probe' : 'with you · too young for the Probe (' + turnsToGrow(m) + ' world turn' + (turnsToGrow(m) === 1 ? '' : 's') + ')') + (m.notches ? ' · skill ' + m.notches + ' of 3' : '') + (isDocked() ? ' · docked' : S.walkTurn === S.turn ? ' · walked this turn' : '');
-  return 'at home' + (grownNow(m) ? ' · grown this turn' : '');
+  if (!isCarried(m)) return m.bonded && !isAdult(m) ? CARE_TEXT.stHomeBonded : CARE_TEXT.stHome;
+  if (m === partnerMibi()) return CARE_TEXT.stLeads;
+  if (isAdult(m)) return CARE_TEXT.stCanLead;
+  if (m.bonded) return CARE_TEXT.stGrowsWithCare;
+  return CARE_TEXT.stTooYoung;   // exactly one listed line, nothing appended: no count of any kind
 }
+// No one with you, undocked: three free places and why.
+function drawNoOneWith() {
+  for (const x of [93, 189, 285]) blit(dashedCircleArt(72), x, 150);
+  text(CARE_TEXT.noOneWithT, SCR_W / 2, 250, C.bone, 3, 'center');
+  text(CARE_TEXT.takeAlong, SCR_W / 2, 294, C.mist, 2, 'center'); text(CARE_TEXT.whenDocked, SCR_W / 2, 316, C.mist, 2, 'center');
+  if (S.bay.length) text(bayLine(), SCR_W / 2, 352, C.amber, 2, 'center');
+}
+const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
 function drawActive(t) {
   viewBg(); drawHomeTop();
-  const m = shownMibi(); if (!m) { drawNoMibi(); return; }
-  const list = rosterList(), isW = m === withMibi(), st = mibiStage(m), mo = motion();
+  for (const c of FX.cuts || []) if (!c.done && NOW >= c.at) { c.done = 1; S.ui.aId = c.id; }   // each bond and grow-up takes the view to its mibi, in turn
+  const m = shownMibi(); if (!m) { if (liveMibis().length) drawNoOneWith(); else drawNoMibi(); return; }
+  const list = rosterList(), isW = isCarried(m), mo = motion();
+  const cuts = FX.cuts || [], growing = cuts.some(c => c.kind === 'grow' && c.id === m.id && NOW < c.at), st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes at its turn
+  const bc = cuts.find(c => c.kind === 'bond' && c.id === m.id), bond = bc ? NOW - bc.at : null;   // ms into the bond event (negative before its turn)
   panel(24, 40, 402, 280, C.ink, C.slate);
-  const h = callAnim(m), sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < 1800 ? FX.moment : null, sa = sp ? (mo ? NOW - sp.at : 900) : 0;
+  const h = callAnim(m);
+  let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
+  if (bond != null && bond >= 0 && bond < 900) sp = { at: bc.at };   // the bond: the species moment again, short
+  const sa = sp ? (mo ? NOW - sp.at : 900) : 0;
   let x = 97, y = 52, pose = 'idle', fr = mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
     if (a < d) flip = true;   // looking the wrong way first
@@ -3871,29 +4119,49 @@ function drawActive(t) {
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 78);
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
+  // the Walk: every other mibi with you at the stage’s foot as its 48 px field token (its placeholder until the token lands; its 2 idle frames come with it), for 2.4 s
+  const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
+  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) placeholderPlate('c-token-48', i ? 366 : 36, 260); });   // the 48 px field token is a missing asset
+  // the bond's heart: c-heart-24 at 2×, rising beside the head from y 140 to 60 in four 20 px steps of 150 ms, held 900 ms;
+  // under reduced motion it stands at y 60 for 1.5 s
+  if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; placeholderPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
   if (list.length > 1) { text('◀', 10, 172, C.mist); text('▶', 440, 172, C.mist, 2, 'right'); }
-  text(clipText(m.name, 260, 3), 30, 332, C.bone, 3);
-  chip(30 + textW(clipText(m.name, 260, 3), 3) + 14, 331, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone');
+  const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
+  const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, st, stageFill(st), 'bone');
+  if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
   text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
-  wrapText(activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
-  // the mood slot stays empty until bonding and care exist
-  const n = list.length, dx = 16, x0 = Math.round(SCR_W / 2 - (n - 1) * dx / 2);
-  if (n > 1) list.forEach((q, i) => { const px = x0 + i * dx; if (q === withMibi()) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
+  wrapText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
+  // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
+  const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
+  if (n > 1) list.forEach((q, i) => { const px = x0 + i * 16 + (i >= nc ? gap : 0); if (isCarried(q)) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
 }
-// Call at home: the mibi with you answers. On another mibi's screen it brings the view back first. Free.
+// Call at home: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
+// the view comes to it. Free.
+function callTarget() {
+  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : null;
+  return isCarried(f) ? f : partnerMibi() || carriedMibis()[0] || null;
+}
 function callWith() {
-  const m = withMibi(); if (!m) { fxMsg('No mibi with you'); return; }
+  const m = callTarget(); if (!m) { fxMsg('No mibi with you'); return; }
   if (S.phase === 'active') S.ui.aId = m.id;
   const n = (S.ui.calls = (S.ui.calls || 0) + 1), wrong = !isAdult(m) && n % 3 !== 0;
   FX.callMibi = { id: m.id, at: NOW, wrong }; lockInput(300);
   fxMsg(m.name + ' hops to the front and chirps' + (wrong ? ', looking the wrong way first' : ''));
 }
-// Spend time: a short species moment and one line from its last expedition. No reward, no meters.
-function spendTime(m) {
+// Tend as pressed: the species moment (the built one stands in for the Tend moment) and the Tend line; then any bond or
+// grow-up line. Refused the same day, or mid-expedition: the shake and a plain line, nothing changes.
+function tendPress(m) {
+  if (S.exp) { fxMsg(CARE_TEXT.tendMidExp(m.name)); FX.bumpAt = NOW; return; }
+  const r = tend(m); if (!r) { fxMsg(CARE_TEXT.tendedRefused(m.name)); FX.bumpAt = NOW; return; }
   FX.moment = { id: m.id, at: NOW }; lockInput(300);
-  const act = [m.name + ' leans on the glass', m.name + ' glows softly', m.name + ' puffs'][m.sp];
-  fxMsg(act + ' · ' + (m.mem ? m.name + ' remembers the ' + m.mem : m.name + ' hasn’t been out yet'));
+  careLines(CARE_TEXT.tended(m), [Object.assign({ m }, r)], TEND_MS);
 }
+// Take and Leave as pressed (docked, between expeditions). Take at three: the shake and why.
+function takePress(m) {
+  const r = takeMibi(m); if (r.ok) fxMsg(CARE_TEXT.took(m.name)); else if (r.why === 'full') { fxMsg(CARE_TEXT.fullRefused(m.name), 3); FX.bumpAt = NOW; } else FX.bumpAt = NOW;   // released: the shake only (no words in the copy yet)
+  return r.ok;
+}
+function leavePress(m) { const r = leaveMibi(m); if (r.ok) fxMsg(CARE_TEXT.left(m.name)); else FX.bumpAt = NOW; return r.ok; }
 function drawNewWorld() {
   viewBg(); drawTop('New world');
   text('Start a new world?', SCR_W / 2, 136, C.bone, 3, 'center');
@@ -3907,27 +4175,40 @@ function drawNewWorld() {
 function drawSealed(t) {
   const r = S.report; viewBg(); drawTop('Head home', r ? 'expedition ' + r.n : '');
   if (!r) return;
-  let y = 46;   // every line below is clipped at 410 px, so nothing passes x 432
+  // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
+  let y = 46, last = 46;
+  const L = (s, col) => { text(clipText(s, 410, 2), 22, y, col); last = y; y += 24; };
   if (r.reason === 'break') { text(clipText('The Probe broke', 410, 3), 22, y, C.coral, 3); y += 34;
-    text(clipText(r.dropped ? 'Your ' + numWord(r.dropped) + ' pod' + (r.dropped === 1 ? '' : 's') + ' fell where it broke (skull on the map).' : 'Nothing was in the hold.', 410, 2), 22, y, C.bone); y += 24;
-    text(clipText('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), 410, 2), 22, y, C.peach); y += 24;
-    text(clipText('Docking mends the Probe free.', 410, 2), 22, y, C.amber); y += 34; }
-  else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('The world waits · nothing is sealed.', 410, 2), 22, y, C.fog); y += 24; text(clipText('Your finds stay in the hold.', 410, 2), 22, y, C.fog); y += 34; }
-  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
-  else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; text(clipText('Your finds stay in the hold, unsealed.', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text(clipText('A break would lose them.', 410, 2), 22, y, C.fog); y += 34; }
-  else { text(clipText('Home, hold empty', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Nothing to seal this time.', 410, 2), 22, y, C.fog); y += 34; }
+    L(r.dropped ? numWord(r.dropped).replace(/^./, c => c.toUpperCase()) + ' pod' + (r.dropped === 1 ? ' lies' : 's lie') + ' where it broke.' : 'Nothing was in the hold.', C.bone);
+    L('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), C.peach);
+    L('Docking mends the Probe free.', C.amber); y += 10; }
+  else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; L('The world waits · nothing is sealed.', C.fog); L('Your finds stay in the hold.', C.fog); y += 10; }
+  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
+  else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
+  else { text(clipText('Home, hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
+  // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
+  if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
   for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
   y += 84;
   text(clipText(S.bay.length ? bayLine() : 'The bay is empty', 410, 2), 22, y, S.bay.length ? C.amber : C.stone); y += 24;
-  text(clipText(isDocked() ? 'Docked · open the bay at the Station' : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
+  text(clipText(isDocked() ? 'Docked · open Cargo on the Station' : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
   if (!r.waited) drawTurnLines(r, y);
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
+// The world lines under Head home: worldTurn's order, three at most, each wrapped at 390 px (20 px a wrapped line, 6 between
+// lines). A line draws only while its foot, y + 20 × (wrapped lines − 1) + 17, stays on or above row 476 (8 px over 484, the
+// message box's highest top); the first that fails ends the list, silently. `wrap` splits one line into its wrapped parts.
+const WORLD_FOOT = 476;
+function worldLineRows(lines, y, wrap) {
+  const out = [];
+  for (const l of lines.slice(0, 3)) { const parts = wrap(l), foot = y + 20 * (parts.length - 1) + 17; if (foot > WORLD_FOOT) break; out.push({ y, parts, foot }); y += 20 * parts.length + 6; }
+  return out;
+}
 function drawTurnLines(r, y) {
   text(clipText('Meanwhile, the world turned', 410, 2), 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
-  for (const l of r.lines.slice(0, 3)) { if (y > 506) break; R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s2, i) => text(clipText(s2, 410 - 18, 2), 40, y + i * 20, C.bone)); y += 20 * wrapText(l, 390, 2).length + 6; }
+  for (const row of worldLineRows(r.lines, y, l => wrapText(l, 390, 2))) { R(26, row.y + 6, 4, 4, C.orange); row.parts.forEach((s2, i) => text(clipText(s2, 392, 2), 40, row.y + i * 20, C.bone)); }
 }
 function outpostLights() { const out = []; for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && fs(String(c), f.id).lightT) out.push(outpostLeft(String(c), f)); } return out; }
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
@@ -3990,9 +4271,9 @@ function lineFor() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) return S.mibis.length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
-      if (S.ui.sel === 1 && !digPartner()) { const d = mibiWith('dig'); return d ? L1('Needs a digger', 'take ' + d.name + ' at the Station', 'menu', true) : L1('Needs a digger', 'Deep ground', 'menu', true); }
-      { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked at the Station' : 'dock: mended free', 'menu', true); }
+    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
+      if (S.ui.sel === 1 && !digPartner()) return L1('Needs a digger', 'Deep ground', 'menu', true);   // a mibi at home is never named
+      { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
     case 'place': { const c = S.ui.cur, first = firstPlacement();
       const wx = S.ui.type !== 'deep' ? ' · dotted band: where the storm starts' : '';   // the dotted band is a preview, not the live storm
@@ -4017,17 +4298,18 @@ function lineFor() {
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close') : L1('', '', 'close');   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('Head home', 'ends the expedition · seals the hold', 'close') : L1('', 'Head home: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
-    case 'mibis': { const m = rosterList()[S.ui.rSel], w = withMibi(), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu'; if (!m) return L1(S.exp ? '' : 'Next expedition', '', bk);
-      if (m === w) return L1('Visit ' + m.name, 'with you', bk);
-      if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', bk, true);
-      if (!isDocked()) return L1('At the Station', 'swap while docked', bk, true);
-      return L1('Take ' + m.name, mibiStage(m) + ' · at home', bk); }
-    case 'active': { const m = shownMibi(), w = withMibi(), list = rosterList(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
-      const ctx = list.length > 1 ? (list.indexOf(m) + 1) + ' of ' + list.length : '';
-      if (m === w) return canWalk() ? L1('Walk with ' + m.name, 'a moment · once a turn', 'Mibis') : L1('Spend time with ' + m.name, bayLine() || ctx, 'Mibis');
-      if (S.exp) return L1('Stays home', w ? w.name + ' is with you till home' : '', 'Mibis', true);
-      if (!isDocked()) return L1('At the Station', bayLine() || 'swap while docked', 'Mibis', true);
-      return L1('Take ' + m.name, ctx, 'Mibis'); }
+    case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
+      if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
+      if (!m) { if (S.exp) return L1('', CARE_TEXT.leadsThisExp, bk);   // the Lead card: read-only mid-expedition
+        const nx = nextLead(), g = carriedMibis().filter(isAdult).length;
+        return nx ? L1(CARE_TEXT.leadLabel(nx.name), CARE_TEXT.leadCtx, bk) : L1('', !carriedMibis().length ? CARE_TEXT.noOneWith : g === 1 ? CARE_TEXT.onlyGrown : CARE_TEXT.noOneGrown, bk); }
+      if (isCarried(m)) return canSwap() ? L1(CARE_TEXT.leaveLabel(m.name), CARE_TEXT.leaveCtx, bk) : L1(CARE_TEXT.visitLabel(m.name), CARE_TEXT.visitCtx, bk);
+      return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, bk, !canSwap() || S.carried.length >= CARRY_MAX); }   // a mibi at home shows only docked
+    case 'active': { const m = shownMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
+      if (isCarried(m)) { if (S.exp) return L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendAfter, 'Mibis', true);
+        if (canWalk()) return L1(CARE_TEXT.walkLabel(carriedMibis().map(q => q.name)), CARE_TEXT.walkOnce, 'Mibis');
+        return canTend(m) ? L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendOnce, 'Mibis') : L1(CARE_TEXT.tendLabel(m.name), CARE_TEXT.tendedToday, 'Mibis', true); }
+      return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, 'Mibis', !canSwap() || S.carried.length >= CARRY_MAX); }
     case 'newworld': return L1(S.ui.nw ? 'Start a new world' : 'Keep this world', '', 'close');
     case 'worldmap': return L1('', 'the whole map', 'close');
     case 'sealed': { const r = S.report, blk = startBlock(); return L1('Next expedition', blk ? (isDocked() ? 'docked · lift to explore' : 'the Probe is broken') : bayLine() || (r && r.kept ? 'finds in the hold' : ''), 'menu', !!blk); }
@@ -4035,7 +4317,7 @@ function lineFor() {
   return L1('', '', '');
 }
 function render(t) {
-  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null; RT.msgInBand = false;
+  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
@@ -4074,13 +4356,13 @@ function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.u
   if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send')); }   // focus on Head home once the reach is done
 // Expeditions start only undocked (lift the Companion at the Station page), and not with a broken Probe.
 function startBlock() {
-  if (isDocked()) return 'Docked · lift the Companion at the Station to explore';
-  if (S.shield != null && S.shield <= 0) return 'The Probe is broken · dock at the Station: it mends it free';
+  if (isDocked()) return 'Docked · lift the Companion to explore';
+  if (S.shield != null && S.shield <= 0) return 'The Probe is broken · docking mends it free';
   return '';
 }
 function chooseType() {
   { const b = startBlock(); if (b) { fxMsg(b, 3); FX.bumpAt = NOW; return; } }
-  if (S.ui.sel === 1 && !digPartner()) { const d = mibiWith('dig'); fxMsg(d ? 'Deep ground needs a digging partner · take ' + d.name + ' with you at the Station' : 'Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
+  if (S.ui.sel === 1 && !digPartner()) { fxMsg('Deep ground needs a digging partner'); FX.bumpAt = NOW; return; }
   S.ui.type = S.ui.sel === 1 ? 'deep' : 'weather';
   const first = firstPlacement();
   let cur = S.ui.lastPos != null ? S.ui.lastPos : null;
@@ -4145,7 +4427,7 @@ function act(k, mode) {
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
-        else { S.phase = id; S.ui.nw = 0; S.ui.rSel = 0; S.ui.rFrom = 'menu'; } }
+        else { S.phase = id; S.ui.nw = 0; S.ui.rSel = carriedMibis().length ? 1 : 0; S.ui.rFrom = 'menu'; } }   // Mibis from the menu: the first mibi with you
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
     case 'probe':   // patching spends Energy: two presses, the first only arms it
@@ -4157,27 +4439,26 @@ function act(k, mode) {
       else if (k === 'confirm' && S.exp && canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }
       else if (k === 'confirm' && S.exp) { fxMsg('Head home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; }
       break;
-    case 'mibis': { const list = rosterList(), w = withMibi();
-      if ((k === 'up' || k === 'down') && list.length) S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, list.length - 1);
+    case 'mibis': { const m = rosterAt(S.ui.rSel);
+      if (k === 'up' || k === 'down') S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, rosterCount() - 1);
       else if (k === 'back') { if (!S.exp && S.ui.rFrom === 'active') { S.phase = 'active'; openMenu(); } else if (!S.exp && S.ui.rFrom === 'setup') S.phase = 'setup'; else S.phase = 'menu'; }
       else if (k === 'call') callWith();
-      else if (k === 'confirm') { const m = list[S.ui.rSel];
-        if (!m) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
-        else if (m === w) { S.phase = 'active'; S.ui.aId = m.id; transition(); }
-        else if (S.exp) { fxMsg(w ? w.name + ' is with you until you’re home' : 'Partners are chosen before you set out'); FX.bumpAt = NOW; }
-        else if (!isDocked()) { fxMsg(m.name + ' is at the Station · dock to swap, or choose it in Habitat there', 3); FX.bumpAt = NOW; }
-        else { takeMibi(m); S.phase = 'active'; S.ui.aId = m.id; transition(); } }
+      else if (k === 'right' && m) { S.phase = 'active'; S.ui.aId = m.id; transition(); }   // ▶ opens the focused mibi's page
+      else if (k === 'confirm') {
+        if (rosterIdle()) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
+        else if (!m) { const nx = !S.exp && nextLead(); if (nx && setLead(nx)) { fxMsg(CARE_TEXT.leads(nx.name)); FX.callMibi = { id: nx.id, at: NOW, wrong: false }; } }   // the new partner's row hops once
+        else if (isCarried(m) && canSwap()) { if (leavePress(m)) S.ui.rSel = rosterList().indexOf(m) + 1; }   // focus follows the mibi
+        else if (isCarried(m)) { S.phase = 'active'; S.ui.aId = m.id; transition(); }
+        else if (takePress(m)) S.ui.rSel = rosterList().indexOf(m) + 1; }   // the player stays on Mibis
       break; }
     case 'active': { const list = rosterList(), m = shownMibi();
       if ((k === 'left' || k === 'right') && list.length > 1) { const i = list.indexOf(m), n = list.length; S.ui.aId = list[(i + (k === 'right' ? 1 : n - 1)) % n].id; }
-      else if (k === 'back') { if (!m) openMenu(); else { S.phase = 'mibis'; S.ui.rSel = Math.max(0, list.indexOf(m)); S.ui.rFrom = 'active'; } }
+      else if (k === 'back') { if (!m) openMenu(); else { S.phase = 'mibis'; S.ui.rSel = list.indexOf(m) + 1; S.ui.rFrom = 'active'; } }
       else if (k === 'call') callWith();
       else if (k === 'confirm') {
         if (!m) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
-        else if (m === withMibi()) { if (canWalk()) walk(m); else spendTime(m); }
-        else if (S.exp) { const w = withMibi(); fxMsg(w ? w.name + ' is with you until you’re home' : 'Partners are chosen before you set out'); FX.bumpAt = NOW; }
-        else if (!isDocked()) { fxMsg(m.name + ' is at the Station · dock to swap, or choose it in Habitat there', 3); FX.bumpAt = NOW; }
-        else takeMibi(m); }
+        else if (isCarried(m)) { if (canWalk()) walk(m); else tendPress(m); }
+        else takePress(m); }   // a mibi at home shows only docked; Take stays on its page
       break; }
     case 'worldmap': if (k === 'back') { S.phase = 'menu'; transition(); } break;
     case 'newworld':
@@ -4277,6 +4558,9 @@ function showDevStep() { devStepEl.value = String(dataStep); devLadderEl.textCon
 devStepEl.addEventListener('change', () => { setDataStep(devStepEl.value); showDevStep(); });
 devStepEl.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === 'Escape') devStepEl.blur(); e.stopPropagation(); });
 document.getElementById('devStepReset').addEventListener('click', e => { setDataStep(DATA_STEP); showDevStep(); if (e.detail) e.currentTarget.blur(); });
+// Developer: a new care day for the mibis with you (tendDay cleared), logged; never on the device.
+function newCareDay() { const c = carriedMibis(); for (const m of c) m.tendDay = null; logEv('Developer · new care day' + (c.length ? ' for ' + listWords(c.map(m => m.name)) : '')); save(); }
+document.getElementById('devCareDay').addEventListener('click', e => { if (S) newCareDay(); if (e.detail) e.currentTarget.blur(); });
 showDevStep();
 // What this walk yields: its tier, the Data it brings home, how much the moments have brought in so far.
 function yieldText() {
@@ -4324,8 +4608,9 @@ function onStateChanged() {
   document.getElementById('oYield').textContent = yieldText();
   document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
   document.getElementById('oWhere').textContent = whereText();
-  const wm = withMibi(), pm = ex ? ex.pt : partnerMibi(), home = S.mibis.filter(m => m !== wm);
-  document.getElementById('oPartner').textContent = (wm ? 'with you: ' + wm.name + ' · ' + SPECIES[wm.sp].name + ' ' + mibiStage(wm) + (pm ? ' (partner)' : ' (too young for the Probe)') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m)).join(', ') : '');
+  const cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
+  const careOf = m => ' (care ' + (m.care || 0) + ', tends ' + (m.tends || 0) + (m.tendDay ? ', tended ' + m.tendDay : '') + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
+  document.getElementById('oPartner').textContent = (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + SPECIES[m.sp].name + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : '');
   document.getElementById('oSeed').textContent = S.seed;
   const t = tierOf();
   document.getElementById('oProbe').textContent = 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : '');
@@ -4398,7 +4683,7 @@ requestAnimationFrame(frame);
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
-  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, withMibi, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
