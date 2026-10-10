@@ -10,7 +10,7 @@
    "png": "create-shape.png"
   },
   "create-shape-changed": {
-   "hash": "5cb10345",
+   "hash": "702b8e9c",
    "png": "create-shape-changed.png"
   },
   "create-shape-clash": {
@@ -38,20 +38,24 @@
    "png": "create-shape-first.png"
   },
   "create-roll-100": {
-   "hash": "5a57d5f7",
+   "hash": "4702b22a",
    "png": "create-roll-100.png"
   },
   "create-grow-150": {
-   "hash": "22dd927d",
+   "hash": "5ede19dc",
    "png": "create-grow-150.png"
   },
   "create-grow": {
-   "hash": "05734d56",
+   "hash": "287a952b",
    "png": "create-grow.png"
   },
   "create-grow-end": {
-   "hash": "4f38c869",
+   "hash": "49273ad0",
    "png": "create-grow-end.png"
+  },
+  "create-grow-nothing": {
+   "hash": "fef6907d",
+   "png": "create-grow-nothing.png"
   }
  }
 }

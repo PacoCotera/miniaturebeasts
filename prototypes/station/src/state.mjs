@@ -619,11 +619,11 @@ export function growBlockKey(st, p, choices = {}, settings = DEFAULT_SETTINGS, c
   return null;
 }
 export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clash = null) {
-  const c = clash ?? (p && p.idd && !st.bud && !bayFull(st, settings) ? clashTraits(p, choices) : []), k = growBlockKey(st, p, choices, settings, c); if (!k) return "";
+  const k = growBlockKey(st, p, choices, settings, clash); if (!k) return "";
   if (k.key === "unidentified") return "identify it first";
   if (k.key === "busy") return "the incubator is busy";
   if (k.key === "noBay") return "no bay free · return one";
-  if (k.key === "clash") return "this shape won't grow · " + c.map((id) => traitOf(frameFor(p), id)?.name ?? id).join(", ");
+  if (k.key === "clash") { const c = clash ?? clashTraits(p, choices); return "this shape won't grow · " + c.map((id) => traitOf(frameFor(p), id)?.name ?? id).join(", "); }
   const cost = growCost(st, choices, settings); return shortText(st, cost.e, cost.d, cost.s);
 }
 // Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the

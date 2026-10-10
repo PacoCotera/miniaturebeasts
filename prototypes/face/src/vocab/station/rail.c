@@ -25,9 +25,9 @@ static void cut_outline(const char *id, int x, int y, int w, int h, const char *
 
 /* A marked pip (Create): one composed picture, 6 × 6, in chrome rects of palette colours (create.json: the kit's chrome): filled, hollow (its corners cut), a changed diamond (`bone`, rows x 2/1/0/0/1/2 wide 2/4/6/6/4/2) or a clash cross (`red`, the pixels
    (k, k) and (5 − k, k)). Every pip is one node whichever it is, so a trait's look changing changes a node and never adds or removes one (§2.2). */
-static void marked_pip(const char *id, int x, int y, const char *mark, const char *pipc) {
+static void marked_pip(const char *spec, const char *id, int x, int y, const char *mark, const char *pipc) {
   char ops[640]; int n = 0; static const int CX[6] = { 2, 1, 0, 0, 1, 2 }, CW[6] = { 2, 4, 6, 6, 4, 2 }; char bone[24] = "bone", red[24] = "red";
-  spec_str("create", "colours.rail.changed", bone, sizeof bone); spec_str("create", "colours.rail.clash", red, sizeof red);
+  spec_str(spec, "colours.rail.changed", bone, sizeof bone); spec_str(spec, "colours.rail.clash", red, sizeof red);
   n += snprintf(ops + n, sizeof ops - (size_t)n, "[");
   if (strcmp(mark, "filled") == 0) for (int r = 0; r < 6; r++) n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[\"h\",0,%d,6,\"%s\"]", r ? "," : "", r, pipc);
   else if (strcmp(mark, "hollow") == 0) n += snprintf(ops + n, sizeof ops - (size_t)n, "[\"h\",1,0,4,\"%s\"],[\"h\",1,5,4,\"%s\"],[\"v\",0,1,4,\"%s\"],[\"v\",5,1,4,\"%s\"]", pipc, pipc, pipc, pipc);
@@ -36,7 +36,7 @@ static void marked_pip(const char *id, int x, int y, const char *mark, const cha
   snprintf(ops + n, sizeof ops - (size_t)n, "]"); snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, 6, 6, 0, 0, 0);
 }
 
-void word_rail(void) {
+void word_rail(const char *marksSpec) {
   int n = v_plen("regions.rail.tabs"); if (n <= 0) return;
   int open = v_pint("regions.rail.open", 0); layout_tab_t tabs[LAYOUT_TABS];
   int placed = layout_slant_tabs(F, R, n, open, 0, tabs, NULL, NULL); if (placed <= 0) return;
@@ -73,10 +73,10 @@ void word_rail(void) {
       v_region("rail.tab", LAYER_CHROME);
       int px0 = pipCx - v_half((tpips - 1) * pitch + psz);
       /* a tab with `marks` (Create): each pip a marked pip; the focused trait's pip (`lift`) stands focus.lift.chrome px higher (no ring) */
-      int marks = v_plen(v_fmt("regions.rail.tabs.%d.marks", i)) == tpips, lift = v_pint(v_fmt("regions.rail.tabs.%d.lift", i), -1), liftPx = spec_int(F, "focus.lift.chrome", 2);
+      int marks = marksSpec && v_plen(v_fmt("regions.rail.tabs.%d.marks", i)) == tpips, lift = v_pint(v_fmt("regions.rail.tabs.%d.lift", i), -1), liftPx = spec_int(F, "focus.lift.chrome", 2);
       for (int k = 0; k < tpips; k++) {
         int px = px0 + k * pitch, py = pipY - (marks && k == lift ? liftPx : 0); const char *id = v_fmt("%s.pip.%d", tid, k);
-        if (marks) marked_pip(id, px, py, v_pstr(v_fmt("regions.rail.tabs.%d.marks.%d", i, k)), pipc);
+        if (marks) marked_pip(marksSpec, id, px, py, v_pstr(v_fmt("regions.rail.tabs.%d.marks.%d", i, k)), pipc);
         else if (k < filled) v_rect(id, px, py, psz, psz, pipc); else cut_outline(id, px, py, psz, psz, pipc);
       }
     }

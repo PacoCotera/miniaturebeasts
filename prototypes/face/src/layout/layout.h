@@ -33,5 +33,8 @@ int layout_stamp_cell(int n, int inner, int least);
    2 perArc - 1 places, so every run is centred on the top. out: the boxes x, y, w, h in fill order. Returns n, or -1 when n is below 0 or over 2 perArc. */
 int layout_leaf_arc(const char *spec, const char *region, int n, int out[LAYOUT_LEAVES][4]);
 /* The vectors' interface: a rule by name with integer arguments, its answer flattened to integers (see tests/vectors/layout.json). Returns the count, or -1 for an unknown rule. */
+/* the Cargo travel's easing (cargo.json regions.travel.ease): p in 0..1000, e = p·p·(3000 − 2p)/1000000 in 64 bits, truncating; and from + (to − from)·e/1000, truncating toward zero */
+int layout_ease_io(int p);
+int layout_lerp(int a, int b, int e);
 int layout_eval(const char *rule, const char *spec, const char *path, const int *args, int nargs, int *out, int cap);
 #endif

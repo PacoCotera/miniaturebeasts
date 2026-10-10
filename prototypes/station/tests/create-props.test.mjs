@@ -33,7 +33,7 @@ function validate(v, sc, at = "$", out = []) {
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; return st; };
 function make(species, gs, read, over = {}) {
   const st = world(); S.seedPodFromGenome(st, podGenome(frameOf(species), gs), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); frameOf(species).chapters.slice(0, read).forEach((c) => S.read(st, p, c.id, settings));
-  const cr = { podId: p.id, pod: p, choices: {}, f: 0, clash: [], grown: null, ...over }; return { st, p, cr, build: (x = cr) => createBuild({ st, settings, ui: { create: x } }, spec, pods) };
+  const cr = { podId: p.id, choices: {}, f: 0, clash: [], grown: null, ...over }; return { st, p, cr, build: (x = cr) => createBuild({ st, settings, ui: { create: x } }, spec, pods) };
 }
 
 test("Create's props validate against create.props.json for every species in every state, name no rectangle, and fit the budget", () => {
@@ -47,7 +47,7 @@ test("Create's props validate against create.props.json for every species in eve
     }
   }
   { const m = make("S01", 3, 2); m.st.bud = { kind: "founder" }; all.push(["busy", m.build()]); }
-  { const m = make("S01", 3, 2); const r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost }; all.push(["grown", m.build()]); }
+  { const m = make("S01", 3, 2); const r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p }; all.push(["grown", m.build()]); }
   for (const [name, b] of all) {
     const bad = validate(b.props, schema); assert.deepEqual(bad, [], `${name}: ${bad.slice(0, 3).join("; ")}`);
     const json = JSON.stringify(b.props); assert.ok(!/"(x|y|w|h|rect|size|box|pitch)"\s*:/.test(json.replace(/"size":\d+/, "")), `${name}: props name what, never where`);
@@ -59,7 +59,7 @@ test("Create's props validate against create.props.json for every species in eve
 test("the state: nothing read with no chapter read (no roll, the ring on the room), shape with one read, grow once ✓ has paid", () => {
   const a = make("S01", 3, 0).build(); assert.equal(a.props.state, "nothingRead"); assert.equal(a.props.regions.roll, undefined); assert.deepEqual(a.props.focus, { cur: "room", targets: [] }); assert.equal(a.props.regions.rail.open, -1);
   const b = make("S01", 3, 1).build(); assert.equal(b.props.state, "shape"); assert.deepEqual(b.props.focus, { cur: "roll", targets: [{ id: "roll", group: "roll" }] });
-  const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
+  const m = make("S01", 3, 1), r = S.grow(m.st, m.p, {}, settings, T0); m.cr.grown = { code: r.bud.code, cost: r.cost, pod: m.p }; const g = m.build(); assert.equal(g.props.state, "grow"); assert.equal(g.props.regions.code, `${r.bud.code.slice(0, 3)} ${r.bud.code.slice(3, 6)} ${r.bud.code.slice(6, 9)}`);
   assert.equal(g.props.regions.bud.busy, false, "the bud that just grew is not 'another bud'"); assert.equal(g.line.price, S.priceText(r.cost.e, r.cost.d, r.cost.s), "the price as it was paid");
   assert.equal(createPod(m.st, m.cr).id, m.p.id, "the pod is the screen's own once it has left the rack");
 });

@@ -189,7 +189,7 @@ function compareView(view, m, spec, req) {
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => o[k]);
 const iconsOf = (b) => [...new Set((b.match(/[⚡◆❀]/g) || []))].join(" ");
 // What a blocked action says on the right: a shortage as "needs more <icons>", any other reason as its own short words (no "·").
-export const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
+const blockNeed = (b, strings) => (!b ? null : /^needs/.test(b) ? fill(strings.needMore, { icons: iconsOf(b) }) : b.replace(/ · /g, ", "));
 const priceOf = (cost, icon) => (cost ? icon + " " + cost : "");   // the icon before its figure
 function lineOf(m, spec, p, chapters, ci, view) {
   const { st, settings, ui, docked } = m, f = m.focus ?? (view.mode === "collection" ? null : "pod"), Sg = spec.strings, glintOf = (q) => (q && S.podGlints(st, q) ? Sg.glintPod : null);

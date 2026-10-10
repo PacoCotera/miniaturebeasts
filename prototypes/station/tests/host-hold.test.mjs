@@ -119,7 +119,7 @@ test("the Dock key from Idle with crates in the bay lands on Home and the crates
 test("Create's Grow on the host: the grow event holds 1080 ms and sends no hold of its own on a cut, the jump to the Incubator is the timer's at 900 ms, a room key pressed in the hold is kept and acts at 1080; with reduced motion the jump is on ✓'s frame and nothing is held", () => {
   const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, mk = (motion) => {
     const r = rig({ motion }); G.st.e = 99; G.st.d = 99; G.st.s = 99; G.st.firstMibi = false; S.seedPodFromGenome(G.st, podGenome(frameOf("S01"), 3), settings, 1000); const p = G.st.tray[0]; S.skipIdentify(G.st, p);
-    UI.screen = "create"; UI.create = { podId: p.id, pod: p, choices: {}, f: 0, clash: [], grown: null }; return r;
+    UI.screen = "create"; UI.create = { podId: p.id, choices: {}, f: 0, clash: [], grown: null }; return r;
   };
   { const { h, sent, at } = mk(true); at(0); INTENTS.create.intent(h, "roll", "confirm");
     assert.deepEqual(sent.filter((m) => m.t === "event").map((m) => [m.kind, m.target, m.ms, m.hold]), [["grow", "pod", 900, 1080]]); assert.equal(h.holding(), true);

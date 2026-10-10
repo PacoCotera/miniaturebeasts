@@ -3,7 +3,7 @@
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 
-export function departures(log, spec, frame, state = "shape", pod = null) {
+export function departures(log, spec, frame, state = "shape", pod = null, rolled = state !== "nothingRead") {   // rolled: the props carry a roll (Grow from nothing read has none)
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer));
   const must = (ok, m) => { if (!ok) out.push(m); };
   for (const r of regions) must(within(r.rect, [0, 0, 1024, 600]), `${r.id} (${r.layer}) ${r.rect} leaves the screen`);
@@ -22,8 +22,8 @@ export function departures(log, spec, frame, state = "shape", pod = null) {
   for (const r of got("code")) must(within(r.rect, R.code.rect), `the code ${r.rect} leaves ${R.code.rect}`);
   { const roll = got("roll", "chrome"), ring = got("focus"); for (const r of ring) must(within(r.rect, [R.roll.rect[0] - 8, R.roll.rect[1], R.roll.rect[2] + 16, R.roll.rect[3]]), `the ring ${r.rect} is not on the roll ${R.roll.rect}`); void roll; }
   // what each state draws, and what it does not
-  must(state !== "nothingRead" || (got("roll").length === 0 && got("focus").length === 0), "nothing read: no roll and no ring");
-  must(state === "nothingRead" || got("roll").length > 0, "the roll is drawn");
+  must(rolled || (got("roll").length === 0 && got("focus").length === 0), "nothing read: no roll and no ring");
+  must(!rolled || got("roll").length > 0, "the roll is drawn");
   must(state === "grow" ? got("pod").length === 0 && got("travel").length === 1 : got("travel").length === 0, state === "grow" ? "the pod travels in grow" : "nothing travels outside grow");
   must(state === "grow" || got("code", "type").length === 0, "the code is printed at Grow");
   must(got("stamp", "chrome").length === 1, "the stamp label is drawn once");

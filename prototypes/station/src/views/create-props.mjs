@@ -16,8 +16,8 @@ const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 
 // The traits a pod can be shaped on: the read ones, in chapter order, with their chapter (the ring order of ◀ ▶).
 export const reviewTraits = (p, frame) => frame.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => ({ c, t })));
-// The pod Create is on: the screen's own copy while it grows (the rack no longer holds it), else the rack's.
-export const createPod = (st, cr) => cr.pod ?? st.tray.find((q) => q.id === cr.podId) ?? null;
+// The pod Create is on: held by id; while it grows, the one ✓ Grow it made (the rack no longer holds it), else the rack's.
+export const createPod = (st, cr) => cr.grown?.pod ?? st.tray.find((q) => q.id === cr.podId) ?? null;
 // The founder's picture id for the choices made (the picture the roll's dither starts from and ends on): the unread parts frosted; nothing read, every part (frost on the founder's own outline).
 const mistyOf = (fr, p) => fr.chapters.filter((c) => !p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => t.id));
 export function founderPicture(p, choices, size) {
@@ -56,9 +56,9 @@ export function createBuild(m, spec, pods) {
     regions.roll = { form: rolls ? "roll" : "single", chosen, clash, pictures, notches: rolls };   // the notches are the words' chrome, drawn only while the trait rolls
   }
 
-  // the trait line: the focused trait and its chosen look; the changed tag, the clash cross or the breed mark (the tag's plate and the mark are named in every state: the face keeps their nodes)
-  const T = spec.strings.traitLine, tagPic = ph("plate-name-88x24", [88, 24], false, "the changed tag plate (to be cut)"), breedPic = slot(req, "mark-breed-28x16", [0, 0, 28, 16], "the breed mark master");
-  let line = { text: T.none, tag: tagPic, changed: false, breed: breedPic, doing: false, clash: false };
+  // the trait line: the focused trait and its chosen look; the changed tag (chrome), the clash cross or the breed mark (the mark is named in every state: the face keeps its node)
+  const T = spec.strings.traitLine, breedPic = slot(req, "mark-breed-28x16", [0, 0, ...R.traitLine.breedMark.size], "the breed mark master");
+  let line = { text: T.none, changed: false, breed: breedPic, doing: false, clash: false };
   if (cur) {
     const opts = S.rollOptions(p, cur.t.id), choice = cr.choices[cur.t.id] || 0, own = traitState(fr, cur.t, genome), name = cur.t.name;
     if (cr.clash.includes(cur.t.id)) line = { ...line, text: fill(T.clash, { Trait: name }), clash: true };
@@ -71,7 +71,6 @@ export function createBuild(m, spec, pods) {
   regions.traitLine = line;
 
   // the work tray, the founder, the pod and its dish, the origin, the small chamber
-  ph("create-chamber-front-400x320", R.chamber.rect.slice(2), true, stale);   // registered, nothing drawn: a front plate would cover the founder, the bud and the arriving pod (art director, 2026-10-10)
   regions.chamber = { back: ph("create-chamber-400x320", R.chamber.rect.slice(2), false, stale) };
   const fp = founderPicture(p, cr.choices, R.founder.rect.slice(2));
   regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
@@ -79,7 +78,6 @@ export function createBuild(m, spec, pods) {
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }) };
   regions.cradle = { cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };
   regions.origin = S.podOriginLines(p);
-  ph("create-dome-front-176x224", R.dome.rect.slice(2), true, stale);   // registered, nothing drawn
   regions.dome = { back: ph("create-dome-176x224", R.dome.rect.slice(2), false, stale) };
   regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2), false, stale), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber
 
