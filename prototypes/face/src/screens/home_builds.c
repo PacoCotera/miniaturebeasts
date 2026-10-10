@@ -7,13 +7,18 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <string.h>
 
-#define H "home"
-static int hi(const char *p, int d) { return spec_int(H, p, d); }
-static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", base, k), 0); }
-static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
+/* The compositions read the `home` spec, or the `vivarium` spec when the whole sets the context (builds_context(1)): there `regions.glass` is `regions.window`, and the name tag's text colour is `colours.nameTag.name`. */
+static int g_win;
+#define H (g_win ? "vivarium" : "home")
+void builds_context(int vivarium) { g_win = vivarium; }
+static const char *bp(const char *p) { return g_win && strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; }
+static int hi(const char *p, int d) { return spec_int(H, bp(p), d); }
+static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", bp(base), k), 0); }
+static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, bp(p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static const char *colr(const char *p) { static char b[8][24]; static int k; char *o = b[k++ & 7]; spec_str(H, p, o, 24); return o; }
 
 /* a lamp: the signed 12 × 12 picture of the state (off, well, waiting, needsYou), the ids are one table, frame.json regions.marks.lamp12; one node whichever state it is. A picture the host has not sent leaves a node of no size. */
@@ -39,7 +44,7 @@ void build_module(const char *key, int dy, const char *lampState) {
   v_region(key, LAYER_CHROME);
   word_panel(v_fmt("%s", key), x, y, r[2], r[3], colr("colours.module.fill"), colr("colours.module.edge"));
   v_rect(v_fmt("%s.top", key), x + 1, y + 1, r[2] - 2, 1, colr("colours.module.top"));
-  v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState);   /* the lamp logs as its own region, with the module's lift */
+  if (lampState) { v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState); }   /* the lamp logs as its own region, with the module's lift; the Vivarium's modules pass none: no lamp node */
   char w[40]; spec_str(H, v_fmt("strings.modules.%s", key), w, sizeof w);
   v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, colr("colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }
@@ -56,7 +61,7 @@ void build_nameTag(const char *name, const int box[4], int lift, int out[4]) {
   if (x < gl) x = gl; if (x + w > gr) x = gr - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, colr("colours.nameTag.fill"), colr("colours.nameTag.edge"));
-  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, colr("colours.nameTag.text"));
+  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, colr(g_win ? "colours.nameTag.name" : "colours.nameTag.text"));
 }
 
 /* the rest knob on the bezel's bottom rail: 32 x 6, at rest at y 546, lifted to 544 while focused; settling from the lift while the `rest` event plays. A flat plate in the knob's three roles. */
@@ -71,3 +76,36 @@ void build_restKnob(int focused) {
   v_rect("knob.light", r[0], y, drawn_w, 1, colr("colours.knob.light")); v_rect("knob.body", r[0], y + 1, drawn_w, drawn_h - 2, colr("colours.knob.fill")); v_rect("knob.shade", r[0], y + drawn_h - 1, drawn_w, 1, colr("colours.knob.shade"));
 }
 
+
+/* The bay strip (vivarium.json regions.strip and tiles; the composition `bayStrip`, rule `listPitch`): the strip's panel and a tile a bay, the housed mibis in bay order then the free bays, the tiles by the rule's form for the count. Every tile is the same
+   four nodes whichever it is, so a mibi going out or a bay filling never changes the order of the screen's nodes: a panel rect (none for a free bay), the thumbnail (a housed mibi's 48 x 48), the outline glyph (a mibi out with the Companion, centred where the
+   thumbnail stands) and the dash outline (a free bay: 1 px `hairline`, 2 on 2 off, a composed picture with no ops while the bay is not free). A hidden node is the glyph's picture with a window of no size. `focus` is the tile the ring is on, lifted by the spec's
+   tile lift. Writes the focused tile's box to box. */
+void build_bayStrip(const char *cur, int box[4]) {
+  int r[4], n = v_plen("regions.tiles.items"), form = 0, b[LAYOUT_ITEMS][4]; hrect("regions.strip.rect", r); if (box) box[0] = box[1] = box[2] = box[3] = 0;
+  v_region("strip", LAYER_CHROME); word_panel("strip", r[0], r[1], r[2], r[3], colr("colours.strip.fill"), colr("colours.strip.edge"));
+  if (n > LAYOUT_ITEMS) n = LAYOUT_ITEMS;
+  if (layout_list_pitch(H, "regions.tiles", n, b, &form) < 0) { v_error("word: the bay strip's forms hold no form for this many bays"); return; }
+  char fk[48], dummy[2]; spec_member(H, "regions.tiles.forms", form, fk, sizeof fk, dummy, sizeof dummy);
+  int tx = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = hk(v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
+  int gw = hk("regions.tiles.tile.outGlyph", 0), gh = hk("regions.tiles.tile.outGlyph", 1), lift = hi("focus.targets.tile.lift", 2);
+  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = colr("colours.tile.fill"), *dash = colr("colours.tile.free");
+  for (int i = 0; i < n; i++) {
+    char P[64]; snprintf(P, sizeof P, "regions.tiles.items.%d", i);
+    const char *id = v_pstr(v_fmt("%s.id", P)), *state = v_pstr(v_fmt("%s.state", P)), *pic = v_pstr(v_fmt("%s.picture", P));
+    int housed = strcmp(state, "housed") == 0, out = strcmp(state, "out") == 0, free_ = !housed && !out;
+    int focused = strncmp(cur, "tile.", 5) == 0 && *id && strcmp(cur + 5, id) == 0, x = b[i][0], y = b[i][1] - (focused ? lift : 0), w = b[i][2], h = b[i][3];
+    if (focused && box) { box[0] = x; box[1] = y; box[2] = w; box[3] = h; }
+    char nm[40]; v_region("tiles", LAYER_CHROME);
+    snprintf(nm, sizeof nm, "tile.%d", i); v_rect(nm, x, y, free_ ? 0 : w, free_ ? 0 : h, fill);
+    v_name("tiles"); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
+    if (housed && *pic) v_sprite(nm, pic, x + tx, y + ty, tw, th); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
+    snprintf(nm, sizeof nm, "tile.%d.glyph", i);
+    if (out) v_sprite(nm, glyph, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
+    snprintf(nm, sizeof nm, "tile.%d.free", i);
+    { char ops[256]; int k = 0;
+      if (free_) k = snprintf(ops, sizeof ops, "[[\"dash\",0,0,%d,\"h\",2,2,\"%s\"],[\"dash\",0,%d,%d,\"h\",2,2,\"%s\"],[\"dash\",0,0,%d,\"v\",2,2,\"%s\"],[\"dash\",%d,0,%d,\"v\",2,2,\"%s\"]]", w, dash, h - 1, w, dash, h, dash, w - 1, h, dash);
+      else k = snprintf(ops, sizeof ops, "[]");
+      (void)k; snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(nm), FN_COMPOSED, x, y, w, h, 0, 0, 0); }
+  }
+}

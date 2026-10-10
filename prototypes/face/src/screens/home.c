@@ -8,6 +8,7 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,9 +18,9 @@
 #define MAXS 3
 /* The living window is Home's glass and Idle's painting (frame.json idle): the same code reads the regions of the spec it is drawing for. On Idle (g_idle) `regions.glass` is `idle.regions.vivarium` and every other `regions.` is
    `idle.regions.`, in the frame spec: the residents, the bed and the walk are the same rules on the other rectangles. */
-static int g_idle;
-static const char *hp(const char *p) { if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
-static const char *sp(void) { return g_idle ? "frame" : H; }
+static int g_idle, g_viv;   /* g_viv: the Vivarium's whole (vivarium.json): `regions.glass` is `regions.window`; every other region keeps its name */
+static const char *hp(const char *p) { if (g_viv) return strncmp(p, "regions.glass", 13) == 0 ? v_fmt("regions.window%s", p + 13) : p; if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
+static const char *sp(void) { return g_viv ? "vivarium" : g_idle ? "frame" : H; }
 static int hi(const char *p, int d) { return spec_int(sp(), hp(p), d); }
 static int hk(const char *base, int k) { return spec_int(sp(), v_fmt("%s.%d", hp(base), k), 0); }
 static void hrect(const char *p, int r[4]) { if (!v_spec_rect(sp(), hp(p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
@@ -33,7 +34,10 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
 static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the ground band */
 static void walk_load(void) {
   int glass[4]; hrect("regions.glass.rect", glass);
-  if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, never derived from the window's rectangle */
+  if (g_viv) {   /* the whole (vivarium.json regions.resident.walk): the box.x range is the walk ground's, 16..1008, and nothing keeps a resident out */
+    g_kx = g_ky = 1 << 20;
+    g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
+  } else if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, never derived from the window's rectangle */
     g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
     g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
   } else { g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1); g_xlo = glass[0] + 8; g_xhi = glass[0] + glass[2] - 8; }
@@ -89,7 +93,7 @@ static int ent_focused(const ent_t *e, const char *cur);
 static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(), frozen_to = 0; (void)frozen_to;
-  if (g_ctx != g_idle) { g_have_t0 = 0; g_ctx = g_idle; }
+  { int ctx = g_viv ? 2 : g_idle; if (g_ctx != ctx) { g_have_t0 = 0; g_ctx = ctx; } }
   if (!g_have_t0) { g_nw = 0; g_t0 = now; g_have_t0 = 1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR;
   uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0;   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
@@ -157,7 +161,7 @@ static void glass_group(const char *cur) {
   for (int k = 0; k < ni; k++) {
     if (it[k].kind != 1) {
       const ent_t *e = &g_e[it[k].ent]; int y = e->draw[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0), ly = e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0);
-      if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, "home", "focus.targets.resident.ring", frame_ring()); }
+      if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, sp(), "focus.targets.resident.ring", frame_ring()); }
       v_name(e->sleeper ? "bed" : "resident"); v_sprite(v_fmt("g.%d", n), e->pic, e->draw[0], y, e->draw[2], e->draw[3]);   /* a slot is a picture and its waiting lamp, the same two nodes every draw */
       v_name(e->sleeper ? "bed.lamp" : "resident.lamp"); build_waitingLamp(v_fmt("g.%d", n + 1), e->box[0] + e->box[2] - 12, ly, e->waiting); n += 2;
     } else {
@@ -287,7 +291,7 @@ void home_key(int code) {
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
   int idle = v_pbool("idle", 0);
-  if ((strcmp(v_pstr("screen"), "home") != 0 && !idle) || !spec_has(idle ? "frame" : H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
+  if ((strcmp(v_pstr("screen"), "home") != 0 && strcmp(v_pstr("screen"), "vivarium") != 0 && !idle) || !spec_has(idle ? "frame" : strcmp(v_pstr("screen"), "vivarium") == 0 ? "vivarium" : H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
   int t = (int)((now - g_t0) / STEP_MS); if (t == g_last_tick) return 0; g_last_tick = t; return 1;
 }
 
@@ -298,4 +302,56 @@ void idle_words(void) {
   word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"));
   glass_group("");
   g_idle = 0;
+}
+
+/* ---- The Vivarium's whole (vivarium.json, station-layouts.md "The Vivarium: the whole"): the living window edge to edge (its flat plates only while the whole's painting is not placed), every mibi at home walking in it, the with-you bed and its
+   sleepers, the focused one's name tag, and the strip of bays along the foot (build_bayStrip); no card, no module, no word in the window but the name tag. The same code as Home's glass and Idle's painting on the spec's own rectangles. The empty state
+   (no housed mibi) is the window, the strip's free bays and the frame. ---- */
+void vivarium_words(void) {
+  g_viv = 1; builds_context(1);
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
+  ent_load(cur);
+  { int st[4]; char ground[24]; spec_str("vivarium", "colours.stageGround", ground, sizeof ground);
+    if (v_spec_rect("vivarium", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
+  word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"));
+  if (strcmp(v_pstr("state"), "rest") == 0) {
+    glass_group(cur);
+    for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
+  }
+  { int box[4]; build_bayStrip(cur, box);
+    if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding()) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, "vivarium", "focus.targets.tile.ring", frame_ring()); } }
+  g_viv = 0; builds_context(0);
+}
+
+/* the targets as the words drew them, in the props' order: a resident's box where the face stepped it, a tile's rectangle in its form (not lifted) */
+int vivarium_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
+  snprintf(graph_key, (size_t)gcap, "graph"); g_viv = 1;
+  int n = v_plen("focus.targets"); if (n > cap) n = cap; int nt = v_plen("regions.tiles.items"), b[LAYOUT_ITEMS][4]; if (nt > LAYOUT_ITEMS) nt = LAYOUT_ITEMS;
+  int have = nt > 0 && layout_list_pitch("vivarium", "regions.tiles", nt, b, NULL) >= 0;
+  for (int i = 0; i < n; i++) {
+    focus_target_t *t = &out[i]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
+    t->enabled = v_pbool(v_fmt("focus.targets.%d.enabled", i), 1); t->index = i;
+    int r[4] = { 0, 0, 0, 0 };
+    if (strncmp(t->id, "resident.", 9) == 0) { for (int e = 0; e < g_ne; e++) if (strcmp(g_e[e].id, t->id + 9) == 0) memcpy(r, g_e[e].box, sizeof r); }
+    else if (strncmp(t->id, "tile.", 5) == 0 && have) { for (int k = 0; k < nt; k++) if (strcmp(v_pstr(v_fmt("regions.tiles.items.%d.id", k)), t->id + 5) == 0) memcpy(r, b[k], sizeof r); t->index = 0; for (int k = 0; k < i; k++) if (strncmp(out[k].id, "tile.", 5) == 0) t->index++; }
+    t->x = r[0]; t->y = r[1]; t->w = r[2]; t->h = r[3];
+  }
+  g_viv = 0; return n;
+}
+
+/* a key on the whole: ✓ says look on the focused resident or tile (nothing on the room), ← goes Home, the room keys; the pad moves the ring by vivarium.json focus.graph (the host's selectors in focus.resolve) */
+void vivarium_key(int code) {
+  char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); if (!cur[0]) snprintf(cur, sizeof cur, "room");
+  const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
+  if (verb) { screens_say("intent", cur, verb); return; }
+  int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
+  focus_target_t t[40]; char gkey[24]; int n = vivarium_focus(t, 40, gkey, sizeof gkey);
+  int glen; const char *graph = spec_raw("vivarium", "focus.graph", &glen); char err[200];
+  focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
+  focus_resolve_t r[8]; int nr = 0;
+  for (int i = 0, m = spec_len("props", "focus.resolve"); i < m && nr < 8; i++) { if (spec_member("props", "focus.resolve", i, r[nr].sel, sizeof r[nr].sel, r[nr].id, sizeof r[nr].id)) nr++; }
+  int roomAt[4]; g_viv = 1; hrect("focus.roomAt", roomAt); g_viv = 0;
+  char to[48]; int step = focus_move(g, t, n, cur, dir, r, nr, roomAt, to, sizeof to); focus_graph_free(g);
+  if (step || strcmp(to, cur) == 0) return;
+  v_focus_set(to); screens_redraw(); screens_say("focus", to, NULL);
 }

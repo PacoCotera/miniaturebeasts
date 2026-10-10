@@ -3,6 +3,7 @@
 #include "../focus/focus.h"
 #include "../spec/spec.h"
 #include "../layout/layout.h"
+#include "../screens/screens.h"
 #include "../prim/ring.h"
 #include "../prim/prim.h"
 #include <stdint.h>
@@ -157,8 +158,8 @@ static void metrics_vectors(const char *dir) {
 /* the derived rules (layout.json, made from ui/specs/derive.mjs): the C rules give the same integers for every case */
 static void layout_vectors(const char *dir, const char *specs) {
   char path[512]; long len; char *js;
-  static const char *FILES[] = { "frame", "pods", "incubator" };
-  for (int i = 0; i < 3; i++) {
+  static const char *FILES[] = { "frame", "pods", "incubator", "vivarium" };
+  for (int i = 0; i < 4; i++) {
     snprintf(path, sizeof path, "%s/%s.json", specs, FILES[i]); js = slurp(path, &len);
     if (!js || spec_load(FILES[i], js, (size_t)len) < 0) { check(0, path, js ? spec_error() : "cannot read"); free(js); return; }
     free(js);
@@ -189,6 +190,15 @@ static void layout_vectors(const char *dir, const char *specs) {
     static const char SHORT[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0]],\"outer\":[[0,1],[1,1]]}}}";
     static const char LONG[] = "{\"r\":{\"leaf\":[16,20],\"leafArc\":{\"perArc\":2,\"inner\":[[0,0],[1,0],[2,0],[3,0]],\"outer\":[[0,1],[1,1],[2,1]]}}}";
     int box[LAYOUT_LEAVES][4];
+    static const char TGOOD[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":4,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}}}}";
+    static const char TTWO[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":2,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]},\"b\":{\"upTo\":2,\"first\":[0,0,4,8],\"pitch\":[5,0],\"grid\":[4,1]}}}}}";
+    static const char TNONE[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]}}}}}";
+    static const char TSHORT[] = "{\"regions\":{\"t\":{\"layout\":[\"listPitch\"],\"forms\":{\"a\":{\"upTo\":3,\"first\":[0,0,8,8],\"pitch\":[10,0],\"grid\":[2,1]}}}}}";
+    char verr[200]; int lb[LAYOUT_ITEMS][4], lf = -1;
+    spec_load("tgood", TGOOD, sizeof TGOOD - 1); check(screens_vet_spec("tgood", verr, sizeof verr) == 0 && layout_list_pitch("tgood", "regions.t", 3, lb, &lf) == 3 && lf == 1 && lb[2][0] == 10 && layout_list_pitch("tgood", "regions.t", 5, lb, NULL) == -1, "listPitch: n takes the smallest form that holds it, and no form holds 5", "wrong");
+    spec_load("ttwo", TTWO, sizeof TTWO - 1); check(screens_vet_spec("ttwo", verr, sizeof verr) == -1, "listPitch: two forms with one upTo are refused at load", "accepted");
+    spec_load("tnone", TNONE, sizeof TNONE - 1); check(screens_vet_spec("tnone", verr, sizeof verr) == -1, "listPitch: a form with no upTo is refused at load", "accepted");
+    spec_load("tshort", TSHORT, sizeof TSHORT - 1); check(screens_vet_spec("tshort", verr, sizeof verr) == -1, "listPitch: a grid shorter than its upTo is refused at load", "accepted");
     spec_load("arcgood", GOOD, sizeof GOOD - 1); check(layout_leaf_arc("arcgood", "r", 3, box) == 3, "leafArc: a table of 2·perArc − 1 slots", "refused");
     spec_load("arcshort", SHORT, sizeof SHORT - 1); check(layout_leaf_arc("arcshort", "r", 3, box) == -1, "leafArc: a short outer table is refused", "accepted");
     spec_load("arclong", LONG, sizeof LONG - 1); check(layout_leaf_arc("arclong", "r", 3, box) == -1, "leafArc: a long inner table is refused", "accepted");

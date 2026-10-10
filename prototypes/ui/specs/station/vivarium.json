@@ -81,6 +81,7 @@
    "build": "withYouBed",
    "clip": "window",
    "mark": [16, 24],
+   "markPicture": "frame-companion-outline-16x24",
    "markAt": [88, 16],
    "markRect": [880, 432, 16, 24],
    "sleepers": {

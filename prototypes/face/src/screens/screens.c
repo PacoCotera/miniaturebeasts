@@ -5,6 +5,7 @@
 #include "../spec/spec.h"
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
+#include "../layout/layout.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -81,6 +82,9 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
       } }
   for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
     char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
+    snprintf(base, sizeof base, "regions.%s.forms", key);   /* a list's forms (listPitch): a form with no upTo, two with one upTo or a grid shorter than its upTo is refused at load */
+    snprintf(p, sizeof p, "regions.%s.layout", key); int lp = 0; for (int j = 0, nl = spec_len(screen, p); j < nl; j++) { char q[200], w[24]; snprintf(q, sizeof q, "%s.%d", p, j); if (spec_str(screen, q, w, sizeof w) > 0 && strcmp(w, "listPitch") == 0) lp = 1; }
+    if (lp && spec_len(screen, base) > 0) { int out[LAYOUT_ITEMS][4]; snprintf(p, sizeof p, "regions.%s", key); if (layout_list_pitch(screen, p, 0, out, NULL) < 0) { snprintf(err, (size_t)cap, "spec %s: %s.forms: a form with no upTo, two forms with one upTo or a grid shorter than its upTo", screen, p); return -1; } }
     snprintf(base, sizeof base, "regions.%s.name.plate", key); if (spec_len(screen, base) < 0) continue;
     char series[48]; snprintf(p, sizeof p, "%s.series", base);
     if (spec_str(screen, p, series, sizeof series) <= 0) { snprintf(err, (size_t)cap, "spec %s: the name plate of %s has no series", screen, key); return -1; }
@@ -95,6 +99,7 @@ static void draw(void) {
     if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
+    else if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) vivarium_words();
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); create_words(); }
     else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); incubator_words(); }
@@ -138,6 +143,7 @@ void screens_key(int code) {
     return;
   }
   if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) { home_key(code); return; }
+  if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) { vivarium_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
   if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }
   if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { incubator_key(code); return; }

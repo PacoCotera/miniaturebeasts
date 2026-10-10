@@ -81,6 +81,7 @@ export function evaluate(rule, node, args) {
     case "platePosition": out.push(...platePosition(node, args[0], args[1], args[2] ? args.slice(3, 7) : null)); break;
     case "stampCell": out.push(stampCell(args[0], args[1], args[2])); break;
     case "leafArc": { let boxes = null; try { boxes = leafArc(node, args[0]); } catch { /* refused */ } out.push(+!boxes, boxes ? boxes.length : 0); for (const b of boxes ?? []) out.push(...b); break; }
+    case "listPitch": { let r = null; try { r = listPitch(node, args[0]); } catch { /* refused */ } out.push(+!r, r ? r.form : 0, r ? r.items.length : 0); for (const b of r?.items ?? []) out.push(...b); break; }
     case "plateIndex": out.push(plateSeries(node).indexOf(`${node.plate.series}-${plateWidth(node, args[0])}x${node.plate.h}`), plateSeries(node).length); break;
     default: throw new Error("unknown rule " + rule);
   }
@@ -89,6 +90,25 @@ export function evaluate(rule, node, args) {
 
 // The Incubator's leaves on their arcs (incubator.json regions.leaves; lvgl-switch.md §2.3): n leaves fill the inner arc first, left to right, then the outer, each run centred on its arc's table:
 // the k leaves of a run take the slots perArc − k + 2j, j = 0 … k − 1, of the arc's table of 2·perArc − 1 positions. Returns the boxes [x, y, w, h]; more than 2 × perArc is refused.
+// The list's pitch with forms ({ <name>: { upTo, first, pitch, grid } }): n items take the form with the smallest upTo at least n; item i stands at first + pitch · (column, row) of the form's grid, row-major. A form with no upTo, two forms with one upTo, or a
+// grid shorter than its upTo is refused (at load); an n no form holds is refused.
+export function listPitchForms(R) {
+  const forms = Object.entries(R.forms ?? {}).map(([name, f]) => ({ name, ...f }));
+  if (!forms.length) throw new Error("listPitch: no forms");
+  const seen = new Set();
+  for (const f of forms) {
+    if (!Number.isInteger(f.upTo) || f.upTo < 1) throw new Error(`listPitch: form ${f.name} has no upTo`);
+    if (seen.has(f.upTo)) throw new Error(`listPitch: two forms with upTo ${f.upTo}`); seen.add(f.upTo);
+    if (!Array.isArray(f.grid) || f.grid[0] * f.grid[1] < f.upTo) throw new Error(`listPitch: form ${f.name} has a grid shorter than its upTo`);
+  }
+  return forms.sort((a, b) => a.upTo - b.upTo);
+}
+export function listPitch(R, n) {
+  const forms = listPitchForms(R), f = forms.find((x) => x.upTo >= n);
+  if (!Number.isInteger(n) || n < 0 || !f) throw new Error(`listPitch: ${n} items; no form holds them`);
+  const items = Array.from({ length: n }, (_, i) => [f.first[0] + (i % f.grid[0]) * f.pitch[0], f.first[1] + Math.floor(i / f.grid[0]) * f.pitch[1], f.first[2], f.first[3]]);
+  return { form: Object.keys(R.forms).indexOf(f.name), items };
+}
 export function leafArc(R, n) {
   const L = R.leafArc, [lw, lh] = R.leaf;
   if (!Number.isInteger(n) || n < 0 || n > 2 * L.perArc) throw new Error(`leafArc: ${n} leaves; the arcs hold ${2 * L.perArc}`);

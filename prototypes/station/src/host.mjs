@@ -9,6 +9,7 @@ import * as S from "./state.mjs";
 import { frameOf } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild } from "./views/home-props.mjs";
+import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
@@ -23,7 +24,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "cargo", "pods", "create", "incubator"];
+export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -56,7 +57,7 @@ export function topFor(screen) {
 export const topValues = () => UI.cargo.shown ?? { e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn };
 // A screen the face has no words for: no action, no subject, the way back from navigation and the default notice.
 export function notBuiltLine(screen) {
-  const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, pod = podById(UI.create?.podId ?? UI.pods.cur), back = backWord(nav, place, pod ? S.cap(S.spName(pod)) : "");   // a way back that names the pod ("{pod}") names the pod Create was opened on; the face reads "Back" when the name does not fit
+  const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, pod = podById(UI.create?.podId ?? UI.pods.cur), mibi = mibiById(UI.hab.id), back = backWord(nav, place, nav.screens[place]?.back === "{name}" ? mibi?.name ?? "" : pod ? S.cap(S.spName(pod)) : "");   // a way back that names the pod ("{pod}") names the pod Create was opened on, one that names the mibi ("{name}") the mibi shown up close; the face reads "Back" when the name does not fit
   return { ok: null, back, subject: "", need: need().text };
 }
 // The place a screen's way back lands on: the parent in the navigation tree, as a screen id (and the state of Pods it opens on).
@@ -95,6 +96,14 @@ export function homeBody() {
   return body;
 }
 
+// ---- The Vivarium's whole ----
+// Every mibi at home in one window and the bays along the foot. The ring is the face's (focus.graph); the host keeps what the face says in UI.viv.f, and a way in (null) takes the ring to the mibi last seen up close (vivarium.json focus.entry).
+export function vivariumBody() {
+  const body = vivariumBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light: lightNow(), focus: UI.viv.f, seen: UI.hab.id }, SPECS.vivarium, SPECS.frame, SPECS.home);
+  UI.viv.f = body.props.focus.cur;
+  return body;
+}
+
 // ---- Cargo ----
 // The bay, the crate opening and the report: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
@@ -127,7 +136,7 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
-  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
@@ -178,7 +187,7 @@ export function createHost({ send, nowMs, light, afterSave = () => {}, motion = 
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; },
     light: () => lightNow(),
-    goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
+    goto: (name, hold = 0) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180, hold }); },   // hold: whole ms of held input (the Vivarium's look holds 180)
   };
   return h;
 }
@@ -187,7 +196,7 @@ export function createHost({ send, nowMs, light, afterSave = () => {}, motion = 
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") return;   // informative only: nothing waits for it
-  if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }
+  if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return; }
   if (m.t !== "intent") return;
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
