@@ -529,6 +529,15 @@ export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrate
   if (st.bud) return { key: "budGrowing", act: "incubator" };
   return null;
 }
+// The one fact Idle's line says (frame.json idle.strings.order: crates, budReady, budGrowing, out; the first that holds), as a key for the view to put in words; null: none. Never a demand, and it is not needKey's order (which would hide a growing bud behind a new pod).
+export function idleKey(st, sv, settings = DEFAULT_SETTINGS) {
+  const cs = bayCrates(st, sv);
+  if (docked(st) && cs.length) return { key: "crates", n: cs.length };
+  if (budReady(st, settings)) return { key: "budReady" };
+  if (st.bud) return { key: "budGrowing" };
+  if (!docked(st)) { const ms = carriedIds(st, sv).map((id) => mibiById(st, id)).filter(Boolean); if (ms.length) return { key: "out", n: ms.length, name: ms[0].name }; }
+  return null;
+}
 
 // --- developer seeds and skips (dev.mjs calls these; they go through the same rules) ------------------
 // A crate of pods of one species in the Station's own dev bay: it arrives like any crate, at the dock.

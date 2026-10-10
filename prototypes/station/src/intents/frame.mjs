@@ -22,7 +22,7 @@ export function roomKey(h, key) {
 export function dock(h, fromIdle = false) {
   const r = T.dock(h.st, h.sv, h.settings, h.now());
   if (!r.ok) { h.say(r.msg); return r; }
-  if (r.docked && fromIdle && h.ui.screen !== "home") h.goto("home");
+  if (r.docked && fromIdle) { h.ui.home.f = "room"; if (h.ui.screen !== "home") h.goto("home"); }   // the Dock from Idle docks and lands on Home with the ring on the room (frame.json idle.keys.dock)
   if (r.docked) {
     h.ui.cargo.mend = r.mend;   // Cargo keeps the dock's mend until the report names it (cargo.json regions.report.probe)
     h.play({ kind: "tick", target: "dock", ms: 0 });
@@ -35,6 +35,21 @@ export function dock(h, fromIdle = false) {
   }
   if (h.ui.screen !== "home" && h.ui.screen !== "cargo") h.say(r.msg);   // on Home and Cargo the Dock key leaves no plate (home.json keys.dock, cargo.json keys.dock): the top bar, the bed, the bay and the line say it; a refusal (above) shows its plate
   h.save(); return r;
+}
+// The idle timer, once a frame: the 60 s count from the later of the last press and the end of a hold, an arrival or Cargo's report card; the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card.
+export function idleTick(h, t, idleMs) {
+  const ui = h.ui; if (ui.idle) return;
+  if (ui.resting || ui.entering || h.arriving() || h.holding() || ui.cargo?.state === "report") ui.lastInput = Math.max(ui.lastInput, t);
+  else if (t - ui.lastInput > idleMs) enterIdle(h);
+}
+// The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
+export function enterIdle(h) {
+  const ev = h.specs.frame.idle.enter.transition;
+  const motion = h.motion ? h.motion() : true, hold = motion ? h.specs.frame.idle.enter.hold : 0;
+  h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold });
+  if (!motion) { h.ui.idle = true; return; }   // a cut: Idle on the frame the timer fires, nothing held
+  h.pendingRoom = null; h.ui.entering = true; h.ui.resting = true;   // a room key in the hold is dropped, as in the rest: the next press wakes
+  h.at(ev.ms, () => { h.ui.entering = false; h.ui.resting = false; h.pendingRoom = null; h.ui.idle = true; });
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.
 export function wake(h, verb) { h.ui.idle = false; return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }

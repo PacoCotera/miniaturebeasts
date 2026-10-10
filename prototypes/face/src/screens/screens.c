@@ -9,14 +9,23 @@
 #include <string.h>
 
 /* The composition of a screen the face has no binding table for (frame.json notBuilt): the stage in colours.stageGround (Idle: the whole 1024x600 in notBuilt.colours.ground) and one line, centred. No picture, no target, no ring. */
-static void not_built(int idle) {
+static void not_built(void) {
   char c[24], s[V_STR]; int r[4];
-  if (idle) { spec_str("frame", "notBuilt.colours.ground", c, sizeof c); if (v_spec_rect("frame", "notBuilt.regions.ground.rect", r)) { v_region("notBuilt.ground", LAYER_CHROME); v_rect("notBuilt.ground", r[0], r[1], r[2], r[3], c); } }
-  else { spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("notBuilt.stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); } }
-  spec_str("frame", idle ? "notBuilt.strings.idle" : "notBuilt.strings.line", s, sizeof s);
+  spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("notBuilt.stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); }
+  spec_str("frame", "notBuilt.strings.line", s, sizeof s);
   int px = spec_int("frame", "notBuilt.regions.line.px", 20), w = v_measure(s, px), x = spec_int("frame", "notBuilt.regions.line.centre", 512) - v_half(w);
   spec_str("frame", "notBuilt.colours.line", c, sizeof c);
   v_region("notBuilt.line", LAYER_TYPE); v_text("notBuilt.line", s, x, spec_int("frame", "notBuilt.regions.line.capTop", 288), w, px, c);
+}
+/* Idle's line (frame.json idle, the frame's binding table: a composition, not a word): the strip (`ground`, a 1 px `void` rule on its top row) and the one line in `mist`, centred on x 512 with its middle on y 584, 16 px; the line is props.frame.idle.line,
+   and none (an empty string) sets no type: the strip and its rule stay. */
+static void build_idleLine(void) {
+  char ground[24], rule[24], line[24]; int s[4], l[4];
+  spec_str("frame", "idle.colours.strip", ground, sizeof ground); spec_str("frame", "idle.colours.rule", rule, sizeof rule); spec_str("frame", "idle.colours.line", line, sizeof line);
+  if (!v_spec_rect("frame", "idle.regions.strip.rect", s) || !v_spec_rect("frame", "idle.regions.line.rect", l)) return;
+  v_region("idle.strip", LAYER_CHROME); v_rect("idle.strip", s[0], s[1], s[2], s[3], ground); v_rect("idle.strip.rule", s[0], s[1], s[2], 1, rule);
+  const char *text = v_pstr("frame.idle.line"); int px = spec_int("frame", "idle.regions.line.px", 16);
+  if (*text) { int w = v_measure(text, px), mid = spec_int("frame", "idle.regions.line.middle", 584), cx = spec_int("frame", "idle.regions.line.centre", 512); v_region("idle.line", LAYER_TYPE); v_text("idle.line", text, cx - v_half(w), mid - v_half(v_cap(px)), w, px, line); }
 }
 static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
 /* Which screens the face draws with words. */
@@ -82,12 +91,13 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
-    if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
+    if (spec_bool("props", "idle", 0) && spec_len("props", "regions") >= 0) idle_words();
+    else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
-  if (spec_bool("props", "idle", 0)) not_built(1);          /* Idle has no binding table yet */
-  else if (is_not_built()) not_built(0);
+  if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") >= 0) build_idleLine(); }   /* Idle: the living window above, its line last */
+  else if (is_not_built()) not_built();
   frame_words();
   stage_dither();
   prim_end();
