@@ -264,22 +264,29 @@
    "file": "pods/frame-room-home-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "de9371c0b273375c856335554ca9741221698a349a6f135ce09f808d828c2dc0",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8",
+   "signed": "art director (device-button marks, #75 122a75ad)"
   },
   "frame-room-library-24": {
    "file": "pods/frame-room-library-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "42512e0c14391bbf4752b977a499acaf31466209f54f724a263e9ac471a3e680",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4",
+   "signed": "art director (device-button marks, #75 122a75ad)"
   },
   "frame-room-research-24": {
    "file": "pods/frame-room-research-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "14916cda830a5702bd2b145b94a6ae18dae68d3b916eccf99db91260bfc5d6ee",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3",
+   "signed": "art director (device-button marks, #75 122a75ad)"
+  },
+  "frame-room-vivarium-24": {
+   "file": "pods/frame-room-vivarium-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b",
+   "signed": "art director (device-button marks, #75 122a75ad)"
   },
   "frame-sun-16": {
    "file": "pods/frame-sun-16.png",

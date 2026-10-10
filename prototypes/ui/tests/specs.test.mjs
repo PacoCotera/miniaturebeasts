@@ -135,7 +135,7 @@ test("the Station frame's language: the zones of the top bar and the bottom line
   const bot = ["action", "subject", "need", "back"].map((k) => F[k].rect); assert.deepEqual(F.separators.x, [404, 620]);
   assert.ok(bot[0][0] + bot[0][2] < 404 && 404 < bot[1][0] && bot[1][0] + bot[1][2] < 620 && 620 < bot[2][0], "rules between action, context and notice");
   assert.equal(F.need.right + F.back.gapBefore, F.back.rect[0], "the notice 24 px before the way back"); assert.equal(F.back.right, 1008); assert.equal(F.subject.rect[0] + F.subject.rect[2] / 2, 512);
-  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-habitat-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "frame-lamp-12-amber", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
+  for (const id of ["frame-room-home-24", "frame-room-research-24", "frame-room-library-24", "frame-room-vivarium-24", "frame-companion-solid-16x24", "frame-companion-outline-16x24", "frame-lamp-8-mint", "frame-lamp-8-stone", "frame-lamp-12-amber", "face-{mibi}-24-away", "face-24-empty", "frame-sun-16"]) assert.ok(JSON.stringify(F.marks).includes(id), "slice " + id);
   assert.equal(F.marks.scale, "never");
   const top = ["title", "materials", "companion", "time"].map((k) => F[k].rect);
   for (let i = 1; i < top.length; i++) assert.ok(top[i - 1][0] + top[i - 1][2] + 16 <= top[i][0], "top bar zones apart, left to right");
@@ -456,7 +456,7 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   const S = R.steps.places, steps = Array.from({ length: 3 }, (_, i) => [S.first[0] + S.pitch[0] * i, S.first[1], S.first[2], S.first[3]]);
   for (const s of steps) { is(s, "step tile"); assert.ok(inside(s, R.strip.rect)); } assert.deepEqual([steps[0][0], steps[2][0] + steps[2][2]], [32, 984], "the steps span Habitat's strip");
   assert.ok(R.steps.tile.thumb.at[0] + R.steps.tile.thumb.size[0] <= S.first[2] - 8, "the chosen picture inside its tile");
-  // frame.json: the sitting under Habitat, ← Habitat, the Habitat mark
+  // frame.json: the sitting under Habitat, ← Habitat, the Vivarium mark
   assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Vivarium", "Vivarium", si.strings.title]);
   assert.match(hab.bottomLine.portrait.held.opens, /sitting/, "Habitat's Portrait module opens the sitting");
   // focus: well formed; the vectors played on five cards (pose and place) and on the room (confirm)
@@ -612,7 +612,7 @@ test("Idle is the Vivarium's whole without the frame: one painting, the bed and 
 test("every title mark, lower-cased, has a room mark picture: the face looks the mark up by the title's word (frame.c), so a word without one draws an empty mark", () => {
   const frame = JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")), rooms = frame.regions.marks.room;
   for (const [screen, word] of Object.entries(frame.regions.title.marks)) assert.ok(typeof rooms[word.toLowerCase()] === "string", `the title mark of ${screen} is "${word}": marks.room has no "${word.toLowerCase()}"`);
-  assert.equal(rooms.vivarium, "frame-room-habitat-24", "the Vivarium's mark is the habitat's picture (the identifiers stay)");
+  assert.equal(rooms.vivarium, "frame-room-vivarium-24", "the Vivarium's mark is the key's icon, the device button's drawing (station-layouts.md, The frame)");
   const masters = JSON.parse(readFileSync(new URL("../assets/masters/index.json", import.meta.url), "utf8"));
   for (const id of Object.values(rooms).filter((v) => typeof v === "string")) assert.ok(JSON.stringify(masters).includes(`"${id}"`), `${id} is a registered master`);
 });
