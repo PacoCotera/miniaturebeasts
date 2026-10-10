@@ -334,9 +334,8 @@ const atRect = (r, o) => [r[0] + o[0], r[1] + o[1], o[2], o[3]];
 test("the Habitat spec file agrees with the Habitat wireframes, region by region; its focus graph plays its vectors", () => {
   const hab = rd("../specs/station/habitat.json"), R = hab.regions, B = boxesOf("06-habitat.svg"), M = boxesOf("06b-habitat-meet.svg"), A = boxesOf("06f-habitat-away.svg"), E = boxesOf("06e-habitat-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "story", "code", "stamp", "portrait", "cross", "wild", "strip"]) is(R[k].rect, k);
-  // pinned until wireframes 06 and 06b/06d are redrawn (UI/UX, 2026-10-09): the species line shortened to clear the heart, the door widened to the carried set's three places; the wireframes still show the old rectangles
-  assert.deepEqual(R.speciesLine.rect, [608, 64, 216, 24]); assert.deepEqual(R.door.rect, [592, 272, 272, 96]);
+  for (const k of ["bezel", "glass", "resident", "nameTag", "card", "speciesLine", "story", "code", "stamp", "door", "portrait", "cross", "wild", "strip"]) is(R[k].rect, k);
+  for (const [set, w] of [[B, "06"], [M, "06b"]]) is(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), "heart (" + w + ")", set);
   assert.equal(R.bond, undefined, "the bond is not a region"); assert.equal(R.heart, undefined, "the heart is a state on the card, not a region"); assert.equal("target" in R.card.heart, false, "the heart is no focus target");
   assert.deepEqual(atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]), [832, 64, 24, 24]); { const hr = atRect(R.card.rect, [...R.card.heart.at, ...R.card.heart.size]); assert.ok(inside(hr, R.card.rect) && apart(hr, R.speciesLine.rect) && apart(hr, R.stamp.rect), "the heart inside the card, clear of the species line and the stamp"); }
   for (const k of ["bezel", "glass", "strip"]) is(R[k].rect, k + " (empty)", E);
