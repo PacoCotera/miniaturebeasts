@@ -2076,7 +2076,7 @@ The Library's whole, its overview level ([The screen map](#the-screen-map)): Hom
 
 <img src="station-layouts/20-library-spread.png" width="1024" alt="The Library spread: sixteen frames, four found, one met, eleven empty, the ring on Tuikis">
 
-*20. The spread: Loika found and portrayed (the gilt corner), Untuva and Tuikis found, Hiljan met (the study, the name in pencil grey), Belatz found with its guide complete (the seal), eleven empty frames; the ring on Tuikis, `✓ Open`. 1×, measured ([SVG](station-layouts/20-library-spread.svg)).*
+*20. The spread: Loika found and portrayed (the gilt corner, two seeds of four), Untuva found (one seed), Tuikis found (three seeds), Hiljan met (the study, the name in pencil grey, no seeds), Belatz found with its guide complete (four seeds and the seal), eleven empty frames; each known frame's clan rule and roundel in its clan's colour; the ring on Tuikis, `✓ Open its Book`. 1×, measured ([SVG](station-layouts/20-library-spread.svg)).*
 
 <img src="station-layouts/20a-library-spread-empty.png" width="1024" alt="The Library spread with the journal empty: sixteen empty frames, the ring on the first">
 
@@ -2102,6 +2102,7 @@ The spread shows the whole collection at a glance, as plates in the field journa
 | **Name** on the caption rule, 16 px | Found in `ink`, met in `stone` (pencil grey) |
 | **Clan rule** (a flat 4 px ink line) and the clan's **roundel** beside it, over a found or met frame | The clan, by the art director's colour for its id (C01 to C16), and by its roundel, so colour never carries the clan alone |
 | **Gilt corner** on a found frame | A mibi of this species sat for the Book's face |
+| **Progress**, four seeds under a found frame's caption | How much of the species' guide is found, in four coarse steps, as a picture, never a figure |
 | **Seal** on a found frame | Every look of the species found |
 
 **Not drawn:** a count or "1 of 2"; diagonal hatching for met (the study says it); a cue on an unmet frame; a clan's name; rules thicker than 1 px but the clan rule; the old "plate lifts and becomes the Book's face" (it would enlarge an 80×96 plate, [Never upscaled](#never-upscaled)).
@@ -2116,7 +2117,7 @@ The spread shows the whole collection at a glance, as plates in the field journa
 2. **Their names.**
 3. **The met studies** and their pencil names.
 4. **The empty frames**, a quiet grid.
-5. **The gilt corners and the seals**, small marks at the frames' corners.
+5. **The gilt corners, the progress seeds and the seals**, small marks at the frames' corners and under their captions.
 6. **The margins.**
 
 **At the edges:** the cloth marker over the gutter; the margin life under the second rows; the page-turn corner at the bottom right, its own sprite, only when a second spread exists (more than sixteen species), so never in slot L.
@@ -2150,12 +2151,13 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Clan rule | frame + (16, −12), 80×4 | rect in the clan's colour | y 100 and 284, 4 px after the roundel; found and met only |
 | Name | frame + (0, 120), 96×20 | text, 16 px, centred | y 232 and 416, on the caption rule at y 256 and 440 (the slice's). Widest today: Untuva, 53 px |
 | Gilt corner | frame + (88, −8), 16×16 | sprite `spread-gilt-corner-16x16` | Centred on the frame's top right corner; found and portrayed |
+| Progress | frame + (26, 152), 44×8 | four sprites, `spread-progress-full-8x8` or `spread-progress-empty-8x8`, 8×8 on a 12 pitch | y 264 and 448, centred on the frame, 8 px under the caption rule, 8 px over the next row's roundel and the margin life; found only |
 | Seal | frame + (88, 104), 16×16 | sprite `spread-seal-16x16` | Centred on the frame's bottom right corner; found and complete |
 | Focus | frame outset 4, radius 6: 104×120 | the ring | `rust` on paper; nothing lifts |
 | Page-turn corner | 968, 512, 24, 24 | sprite `book-corner-turn-24x24`, part of `spreadPage` | Its own region, never in the stage slice; only with a second spread |
-| Message plate | centred on x 512, bottom at y 550 | the frame's | 286×36 for "Nothing is known of this frame yet" |
+| Message plate | centred on x 512, bottom at y 550 | the frame's | 225×36 for "Nothing is known here yet" (193 px of text and 2 × 16 padding); 271×36 for "Its Book needs its pod identified" (239 px) |
 
-`spreadPage` is a composition, not a word: a `list` by `listPitch` whose items are the frame's parts above (three sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. C01's colour is `rust`, the ring's colour on paper: reported to the art director, not changed here.
+`spreadPage` is a composition, not a word: a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is the ring's `rust` (C01 is `tealD`).
 
 ### 6. Interactions
 
@@ -2164,9 +2166,9 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Arrive | From Home's Library module or the Library key, the ring on the frame it was last on; a fresh world, on the first frame. From the Book's ←, the ring on that species |
 | ◀ ▶ | Along a row, across the gutter to the other page's same row; the outer edges stop, never a wrap |
 | ▲ ▼ | Between the page's two rows; the edges stop |
-| ✓ on a found frame | `✓ Open`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library). The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
-| ✓ on a met frame | No ✓ cap; the context names it met; a press shows the met message plate and nothing opens |
-| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press shows the message plate "Nothing is known of this frame yet" and nothing opens |
+| ✓ on a found frame | `✓ Open its Book`, the context the species' name: a cut to its Book's face spread ("not built yet" until slot 8, with ← Library). The plate lifting into the Book's face is withdrawn: it would enlarge an 80×96 plate |
+| ✓ on a met frame | No ✓ cap; the context "{species}, only seen"; a press shows the message plate "Its Book needs its pod identified" and nothing opens |
+| ✓ on an unmet frame | No ✓ cap; the context "an empty frame"; a press shows the message plate "Nothing is known here yet" and nothing opens |
 | The notice | The frame's notice, as on every screen |
 | ← | Home, the ring on the Library module |
 
@@ -2174,23 +2176,23 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 
 **Events:** none of its own (`spread.events` is empty). ✓ on a found frame is a cut to the Book (`spread.keys.confirm`); ← from the Book is a cut back with the ring on that species (`spread.keys.library`); the screen change is the host's, as everywhere.
 
-**Bound to the rules:** the frames are `spread(st, ids)` over `frameIds()`, sixteen to a spread; the status is `speciesStatus`; the gilt corner is any delivered portrait of a mibi of the species, released or not (`book(st, id).faceChoices` not empty), whether or not it was made the face; the seal is `fieldGuide(st, id).complete`; the ring's frame is the Library's UI state (`ui.lib.i`, `intents/library.mjs`). Nothing is new state.
+**Bound to the rules:** the frames are `spread(st, ids)` over `frameIds()`, sixteen to a spread; the status is `speciesStatus`; the gilt corner is any delivered portrait of a mibi of the species, released or not (`book(st, id).faceChoices` not empty), whether or not it was made the face; the seal is `fieldGuide(st, id).complete`; the progress is `min(4, floor(4 × found / (found + unseen)) + 1)` of `fieldGuide(st, id)`: under a quarter one seed, then two, three, and four from three quarters (complete shows four and the seal); the item's props are `{ id, status, name, clan, portrayed, complete, progress }`; the ring's frame is the Library's UI state (`ui.lib.i`, `intents/library.mjs`). Nothing is new state.
 
 Where the build changes what the sandbox reads today (`frame.json` `navigation.screens.library` gains its states and spec) is listed in `library.json` `spread.buildChanges`, and lands with slot 5's build.
 
 ### Words on the spread
 
-The copywriter's slots (`spread.strings`); today's words come from this section's earlier version and from `intents/library.mjs`; the two met slots are stand-ins until the copywriter words them.
+The copywriter's slots (`spread.strings`), signed by the copywriter.
 
 | Slot | Rule | Today |
 | --- | --- | --- |
 | Title | One word | "Library" |
-| Action on a found frame | A verb phrase, four words or fewer | "Open" |
+| Action on a found frame | A verb phrase, four words or fewer | "Open its Book" |
 | Context, found | Six words or fewer, no digits | "{species}" |
-| Context, met | Six words or fewer, no digits; tells met from found in words | "{species}, met" (stand-in) |
+| Context, met | Six words or fewer, no digits; tells met from found in words | "{species}, only seen" (the widest, "Untuva, only seen", 132 px) |
 | Context, unmet | Six words or fewer, no digits | "an empty frame" |
-| Plate on a met frame | One sentence, at most 640 px | "Not found yet, only met" (stand-in) |
-| Plate on an unmet frame | One sentence | "Nothing is known of this frame yet" |
+| Plate on a met frame | One sentence, at most 608 px of text | "Its Book needs its pod identified" |
+| Plate on an unmet frame | One sentence | "Nothing is known here yet" |
 | Way back | One word | "Home" |
 
 ### Masters for the spread
@@ -2204,13 +2206,13 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
 | `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `gold` L, 4 px |
 | `clan-roundel-<Cnn>-12x12` | 12×12 | Sixteen: the clan's roundel beside its rule, in the clan's colour | A disc in the clan's colour, edged `bark` |
+| `spread-progress-full-8x8`, `spread-progress-empty-8x8` | 8×8 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it | An 8×8 `bark` disc; an 8×8 `clay` outline |
 | `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `rust` disc edged `bark` |
 
 ### Not designed yet
 
 - **A second spread** (more than sixteen species): the page-turn corner's region is set (968, 512, 24, 24); ▶ past the right page's last column and ◀ past the left page's first are not. `frameIds()` holds sixteen today.
 - **A name wider than 96 px** at 16: none today (Untuva, 53, is the widest).
-- **The words for met**: the context and the plate are stand-ins for the copywriter.
 - **The Book's entry from a frame**: a cut until slot 8 designs it.
 - **What a newly found species shows** on the spread the first time (a mark, a moment): the save holds no unopened page, as on Home's Library module.
 

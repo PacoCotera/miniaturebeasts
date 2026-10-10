@@ -13,7 +13,7 @@
   "spec": "design/style-guide/station-layouts.md#library-spread",
   "wireframes": ["design/style-guide/station-layouts/20-library-spread.svg", "design/style-guide/station-layouts/20a-library-spread-empty.svg", "design/style-guide/station-layouts/20b-library-spread-nav.svg"],
   "note": "The Library's whole, its overview level (station-layouts.md, The screen map): one frame a species, every species at once. Written by the UI designer, 2026-10-10 01:50, from the decided spread (SP-P-r4-a1, decisions.md 2026-10-08), the Station's structure (2026-10-09 17:29), the world brief (Library: the field journal the device keeps, paper and ink held in the same frame) and the rules on main (library.mjs spread, speciesStatus, faceOf, fieldGuide; intents/library.mjs). Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the frame's own place.",
-  "purpose": "the whole collection at a glance: which species the player has found (a painted plate), which they have only met (a pencil study), and that empty frames remain (no cue of what waits); each found or met species' clan by its inked rule and roundel, a portrait by the gilt corner, a full guide by the seal; ✓ opens a found species' Book",
+  "purpose": "the whole collection at a glance: which species the player has found (a painted plate), which they have only met (a pencil study), and that empty frames remain (no cue of what waits); each found or met species' clan by its inked rule and roundel, a portrait by the gilt corner, how far its guide is by four seeds, a full guide by the seal; ✓ opens a found species' Book",
   "title": { "word": "Library", "mark": "Library" },
   "states": ["spread"],
   "initial": "spread",
@@ -25,6 +25,7 @@
    "clan": "the frame's own clan, frameOf(id).taxonomy.clan (C01 to C16), through spread.clanColours to a palette role; never the pod pigment, which clans share and which would show a false kinship (game designer, 2026-10-10). Found and met only",
    "portrayed": "st.mibis.some((m) => speciesOf(m) === id && m.portrait?.state === \"delivered\"), released mibis included: the same as book(st, id).faceChoices.length > 0 (game designer, 2026-10-10). Not faceOf: a portrait counts whether or not it was made the face. Found only (a portrayed mibi makes the species found)",
    "complete": "fieldGuide(st, id).complete: every look of the species found. Found only",
+   "progress": "found only: the share of the species' looks found, g = fieldGuide(st, id), in four steps, integers only: progress = min(4, floor(4 × g.found / (g.found + g.unseen)) + 1). Under a quarter: 1; a quarter to under a half: 2; a half to under three quarters: 3; three quarters and more: 4. Complete shows 4 and the seal (game designer's fact, owner 2026-10-10 02:14). Met and unmet: null",
    "lastOn": "the ring's frame is kept in the Library's UI state (ui.lib.i, intents/library.mjs), so the Library key and Home's Library module land where the player left it, and ← from the Book lands on that species (openBook sets it)"
   },
   "regions": {
@@ -58,10 +59,9 @@
    }
   },
   "clanColours": {
-   "_note": "the art director's clan colour table (2026-10-10 02:08), keyed by the frame's clan id: a Station palette role each, all distinct, each at least 3:1 on `paper`. The rule is a flat ink line with the clan's roundel beside it",
-   "C01": "rust", "C02": "sea", "C03": "leaf", "C04": "plum", "C05": "bark", "C06": "river", "C07": "pine", "C08": "magenta",
-   "C09": "soil", "C10": "deep", "C11": "forest", "C12": "plumD", "C13": "wine", "C14": "rock", "C15": "sageD", "C16": "stone",
-   "ringClash": "C01 is `rust`, the colour of the focus ring on paper (frame.json focus.ring.onPaper): reported to the Station lead and the art director, 2026-10-10, not changed here"
+   "_note": "the art director's clan colour table (2026-10-10 02:08; C01 moved from rust, the ring's colour on paper, to tealD at 02:13), keyed by the frame's clan id: a Station palette role each, all distinct, each at least 3:1 on `paper`. The rule is a flat ink line with the clan's roundel beside it",
+   "C01": "tealD", "C02": "sea", "C03": "leaf", "C04": "plum", "C05": "bark", "C06": "river", "C07": "pine", "C08": "magenta",
+   "C09": "soil", "C10": "deep", "C11": "forest", "C12": "plumD", "C13": "wine", "C14": "rock", "C15": "sageD", "C16": "stone"
   },
   "item": {
    "_note": "one frame of spreadPage, offsets from its place (x, y, 96, 112). The ruled frame and its mat are the stage's; the build adds only what the status gives, in this order",
@@ -71,8 +71,11 @@
    "roundel": { "at": [0, -16, 12, 12], "when": "found or met", "slice": "clan-roundel-{Cnn}-12x12", "note": "the clan's roundel mark beside the rule, so colour never carries the clan alone (the art director's table): its centre on the rule's centre line (y 102 and 286), 4 px of paper before the rule; 2 px clear of the ring's top edge; never on an unmet frame" },
    "name": { "at": [0, 120, 96, 20], "when": "found or met", "px": 16, "weight": 400, "align": "centre", "lines": 1, "colour": { "found": "ink", "met": "stone" }, "text": "derived.name", "fit": "the widest of the sixteen, Untuva, is 53 px at 16: 21 px clear a side. A wider name comes back to the UI designer; never clipped, never shrunk", "note": "on the caption rule: y 232 to 252 on row 1, 416 to 436 on row 2; the rule at y 256 and 440 is the stage's" },
    "gilt": { "at": [88, -8, 16, 16], "when": "found and derived.portrayed", "slice": "spread-gilt-corner-16x16", "note": "centred on the frame's top right corner; it meets the clan rule's end and the plate's corner, overlapping neither" },
+   "progress": { "at": [26, 152, 44, 8], "when": "found", "count": 4, "pitch": 12, "seed": [8, 8], "places": [[26, 152], [38, 152], [50, 152], [62, 152]], "slices": { "full": "spread-progress-full-8x8", "empty": "spread-progress-empty-8x8" }, "rule": "four seeds in a row, left to right: the first `derived.progress` full, the rest empty; a picture, never a figure or a word", "note": "under the caption rule, centred on the frame's axis (x + 48): y 264 to 272 on row 1 and 448 to 456 on row 2, 8 px under the caption rule, 8 px over the next row's roundel and 8 px over the margin life; clear of the gilt corner, the seal, the name, the rule and the roundel. The form is the UI designer's; the art director confirms it" },
    "seal": { "at": [88, 104, 16, 16], "when": "found and derived.complete", "slice": "spread-seal-16x16", "note": "centred on the frame's bottom right corner; clear of the plate and of the name's box, 8 px from the next frame" },
-   "unmet": "nothing: the stage's empty frame alone, no name, no rule, no roundel, no mark, no cue of what waits (decisions.md 2026-10-08)",
+   "props": "per item { id, status, name, clan, portrayed, complete, progress }: status found | met | unmet; clan the clan id (C01 to C16) or null; portrayed and complete booleans, false unless found; progress 1 to 4 when found, else null (derived)",
+   "met": "the study, its clan rule and roundel, its name in stone; no gilt corner, no seal, no progress",
+   "unmet": "nothing: the stage's empty frame alone, no name, no rule, no roundel, no mark, no progress, no cue of what waits (decisions.md 2026-10-08)",
    "lift": 0,
    "liftNote": "on paper nothing lifts: the plates are tipped into the page and the frames are printed; the ring alone marks the focus"
   },
@@ -117,14 +120,14 @@
   },
   "colours": { "nameFound": "ink", "nameMet": "stone", "ring": "rust", "placeholderPaper": "paper", "placeholderEdge": "clay", "placeholderFrame": "bark", "placeholderMat": "sand", "placeholderBoards": "bark", "placeholderGilt": "gold", "placeholderSeal": "rust", "placeholderStudy": "stone" },
   "strings": {
-   "_note": "the copywriter's slots. Today's words come from the old spread section (Open, an empty frame) and from intents/library.mjs (the plate); the two met slots (subjects.met, met) are stand-ins until the copywriter words them. Slot rules: the action a verb phrase of four words or fewer, the subject six words or fewer with no digits, the plate one sentence",
+   "_note": "the copywriter's slots. Today's words come from the old spread section (Open, an empty frame) and from intents/library.mjs (the plate); the copywriter signed open, subjects.met, met and unmet on 2026-10-10 02:16; found, the unmet subject and back are unchanged. Slot rules: the action a verb phrase of four words or fewer, the subject six words or fewer with no digits, the plate one sentence",
    "title": "Library",
-   "open": "Open",
-   "subjects": { "found": "{species}", "met": "{species}, met", "unmet": "an empty frame" },
-   "subjectsNote": "found and met are separate slots: the context tells them apart in words (the picture already does, plate against study; no hatching). Measured room: the context zone, 208 px at 16, six words or fewer; the met stand-in \"Lehten, met\" is the widest of the sixteen. Copywriter to word both",
-   "met": "Not found yet, only met",
-   "metNote": "stand-in for the copywriter: the message plate on ✓ on a met frame, one sentence, at most 640 px at 16 (the frame's plate)",
-   "unmet": "Nothing is known of this frame yet",
+   "open": "Open its Book",
+   "subjects": { "found": "{species}", "met": "{species}, only seen", "unmet": "an empty frame" },
+   "subjectsNote": "found and met are separate slots: the context tells them apart in words (the picture already does, plate against study; no hatching). Measured room: the context zone, 208 px at 16, six words or fewer; the widest found line is Untuva, the widest met line \"Untuva, only seen\", 132 px. The copywriter's signed words (2026-10-10 02:16)",
+   "met": "Its Book needs its pod identified",
+   "metNote": "the message plate on ✓ on a met frame, one sentence: at most 608 px of text at 16 (the frame's plate is 640 with its 2 × 16 padding). The copywriter's signed words",
+   "unmet": "Nothing is known here yet",
    "back": "Home"
   },
   "never": ["a digit or a count on the spread (no \"4 of 16\", no \"1 of 2\")", "a cue on an unmet frame: no silhouette, no shape, no name, no rule", "hatching for met: the pencil study says it", "a rule thicker than 1 px but the clan rule", "a plate or study enlarged: rendered at 80×96 or downsampled", "a word in the stage slice"],
@@ -135,6 +138,8 @@
    "spread-plate-{SNN}-80x96": "new, sixteen (S01 to S16). The found plate: the species' type, tipped in, painted at Pip's craft, rendered at 80×96 or downsampled, never enlarged",
    "spread-study-{SNN}-80x96": "new, sixteen. The met study: a pencil field study of the species, grey line on the paper",
    "spread-gilt-corner-16x16": "new. The gilt corner of a portrayed species, centred on the frame's top right corner",
+   "spread-progress-full-8x8": "new. One step of a found species' guide progress: a pressed seed, inked full",
+   "spread-progress-empty-8x8": "new. A step not yet reached: the same seed in outline on the paper",
    "clan-roundel-{Cnn}-12x12": "new, sixteen (C01 to C16). The clan's roundel mark beside its rule, in the clan's colour (clanColours), at 12×12",
    "spread-seal-16x16": "new. The seal of a complete guide at the spread's size, kin to guide-seal-32 (painted at 16 or downsampled from it, never enlarged)"
   },
@@ -144,11 +149,14 @@
    "spread-plate-{SNN}-80x96": "the species' placeholder render (the type specimen), downsampled to 80×96; the accepted Pip for S01",
    "spread-study-{SNN}-80x96": "the index pass in `stone` line on `paper`",
    "spread-gilt-corner-16x16": "a 16×16 `gold` L, 4 px thick, along the top and right edges",
+   "spread-progress-full-8x8": "an 8×8 `bark` disc",
+   "spread-progress-empty-8x8": "an 8×8 disc outline, 1 px `clay`, paper inside",
    "clan-roundel-{Cnn}-12x12": "a 12×12 disc in the clan's colour (clanColours) with a 1 px `bark` edge",
    "spread-seal-16x16": "a 16×16 `rust` disc with a 1 px `bark` edge"
   },
   "buildChanges": [
-   { "file": "prototypes/ui/specs/station/frame.json", "key": "navigation.screens.library", "now": {"parent": "home", "back": "Home"}, "becomes": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"}, "when": "slot 5, L: the Library spread, in the build's own change: the sandbox reads frame.json navigation (nav.mjs parentOf and backWord, host.mjs), so the spec PR leaves it as it is" }
+   { "file": "prototypes/ui/specs/station/frame.json", "key": "navigation.screens.library", "now": {"parent": "home", "back": "Home"}, "becomes": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"}, "when": "slot 5, L: the Library spread, in the build's own change: the sandbox reads frame.json navigation (nav.mjs parentOf and backWord, host.mjs), so the spec PR leaves it as it is" },
+   { "file": "prototypes/station/src/intents/library.mjs", "line": 20, "now": "✓ on a frame opens the Book when the species is known or met (st.knownIds or st.metIds), else the plate \"Nothing is known of this frame yet\"", "becomes": "✓ opens the Book only for a found species (speciesStatus found); a met frame shows the plate strings.met; an unmet frame shows the plate strings.unmet", "when": "slot 5, L: the Library spread, in the build's own change; main opens the Book for a met species today" }
   ],
  "journey": "library-spread (lvgl-switch.md §3, slot 5): Home's Library module and the Library key open the spread; the pad walks the frames by focus.vectors; a met frame has no ✓ cap and its press shows strings.met; an unmet frame has no ✓ cap and its press shows strings.unmet; ✓ on a found frame reaches the Book (\"not built yet\" until slot 8), whose ← lands on that frame; ← on the spread is Home"
  },

@@ -63,14 +63,19 @@
 <rect x="880.5" y="296.5" width="95" height="111" fill="#fbf6ea" stroke="#7d5435" stroke-width="1"/>
 <path d="M888.5 304.5h79v95h-79z" fill="none" stroke="#e6c98c" stroke-width="1"/>
 <path d="M880 440h96v1h-96z" fill="#bf9157"/>
-<rect x="64.5" y="100.5" width="79" height="3" fill="#a6420c" stroke="none" stroke-width="0"/>
+<rect x="64.5" y="100.5" width="79" height="3" fill="#0f4c50" stroke="none" stroke-width="0"/>
 <rect x="48.5" y="96.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
-<circle cx="54" cy="102" r="5.5" fill="#a6420c" stroke="#7d5435" stroke-width="1"/>
+<circle cx="54" cy="102" r="5.5" fill="#0f4c50" stroke="#7d5435" stroke-width="1"/>
 <rect x="56.5" y="120.5" width="79" height="95" fill="#ffe2bf" stroke="#c45f12" stroke-width="1.5"/>
 <text x="96" y="168" font-size="8" fill="#7d5435" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">plate</text>
 <text x="96" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
 <rect x="48.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="96" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Loika</text>
+<rect x="74.5" y="264.5" width="43" height="7" fill="none" stroke="none" stroke-width="0"/>
+<circle cx="78" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="90" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="102" cy="268" r="3.5" fill="none" stroke="#bf9157" stroke-width="1"/>
+<circle cx="114" cy="268" r="3.5" fill="none" stroke="#bf9157" stroke-width="1"/>
 <rect x="136.5" y="104.5" width="15" height="15" fill="#d89b14" stroke="#7d5435" stroke-width="1"/>
 <rect x="176.5" y="100.5" width="79" height="3" fill="#1e5196" stroke="none" stroke-width="0"/>
 <rect x="160.5" y="96.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
@@ -80,6 +85,11 @@
 <text x="208" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
 <rect x="160.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="208" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Untuva</text>
+<rect x="186.5" y="264.5" width="43" height="7" fill="none" stroke="none" stroke-width="0"/>
+<circle cx="190" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="202" cy="268" r="3.5" fill="none" stroke="#bf9157" stroke-width="1"/>
+<circle cx="214" cy="268" r="3.5" fill="none" stroke="#bf9157" stroke-width="1"/>
+<circle cx="226" cy="268" r="3.5" fill="none" stroke="#bf9157" stroke-width="1"/>
 <rect x="288.5" y="100.5" width="79" height="3" fill="#329245" stroke="none" stroke-width="0"/>
 <rect x="272.5" y="96.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
 <circle cx="278" cy="102" r="5.5" fill="#329245" stroke="#7d5435" stroke-width="1"/>
@@ -88,6 +98,11 @@
 <text x="320" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
 <rect x="272.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="320" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Tuikis</text>
+<rect x="298.5" y="264.5" width="43" height="7" fill="none" stroke="none" stroke-width="0"/>
+<circle cx="302" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="314" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="326" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="338" cy="268" r="3.5" fill="none" stroke="#bf9157" stroke-width="1"/>
 <rect x="400.5" y="100.5" width="79" height="3" fill="#6f41c6" stroke="none" stroke-width="0"/>
 <rect x="384.5" y="96.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
 <circle cx="390" cy="102" r="5.5" fill="#6f41c6" stroke="#7d5435" stroke-width="1"/>
@@ -104,6 +119,11 @@
 <text x="592" y="178" font-size="7" fill="#a06a3a" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">80×96</text>
 <rect x="544.5" y="232.5" width="95" height="19" fill="none" stroke="#cfc6b4" stroke-width="1" stroke-dasharray="1 2"/>
 <text x="592" y="247" font-size="16" fill="#1a1725" text-anchor="middle">Belatz</text>
+<rect x="570.5" y="264.5" width="43" height="7" fill="none" stroke="none" stroke-width="0"/>
+<circle cx="574" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="586" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="598" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
+<circle cx="610" cy="268" r="4" fill="#7d5435" stroke="#bf9157" stroke-width="0"/>
 <rect x="632.5" y="216.5" width="15" height="15" fill="#a6420c" stroke="#7d5435" stroke-width="1"/>
 <rect rx="6" x="381" y="109" width="102" height="118" fill="none" stroke="#a6420c" stroke-width="2"/>
 <path d="M480 150L544 150" stroke="#2b6cb0" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
@@ -140,7 +160,7 @@
 <path d="M404 571h1v20h-1z" fill="#888"/>
 <path d="M620 571h1v20h-1z" fill="#888"/>
 <text x="16" y="586" font-size="9" fill="#999" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">no ✓ cap</text>
-<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">Hiljan, met</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">Hiljan, only seen</text>
 <circle cx="951" cy="582" r="8" fill="#9a9a9a"/>
 <text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1008" y="588" font-size="16" fill="#555" text-anchor="end">Home</text>
