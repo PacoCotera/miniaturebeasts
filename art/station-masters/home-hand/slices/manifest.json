@@ -1,0 +1,112 @@
+{
+ "home-lamp-sprout-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the well-ready lamp: a sprout disc, void rim, lit upper left",
+  "sha256": "96321b87d0283a57d0543a22bd46b398b4d2acea4af77304a01cfc8251326ee7",
+  "status": "signed"
+ },
+ "home-lamp-sky-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the waiting lamp: a sky disc, void rim, lit upper left",
+  "sha256": "1db1946ae38a4ed2c56fefa6e3b62ba1e9727f9fb600a86221875d2a34820fcf",
+  "status": "signed"
+ },
+ "home-lamp-hairline-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the lamp off: a hairline disc, void rim, lit upper left",
+  "sha256": "52d364d03a7254830de666f77cce3ce06e4573053b2fd89ec291f35aa807bd6e",
+  "status": "signed"
+ },
+ "home-leaf-full-8x12": {
+  "size": [
+   8,
+   12
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "a full Incubator leaf: sage, sageD vein and shade, a sprout lit edge",
+  "sha256": "da890b34e71d4ea8f6851508fc289985bcf0394f8a7ba0a6a3d1e0e4fc3c7455",
+  "status": "signed"
+ },
+ "home-leaf-empty-8x12": {
+  "size": [
+   8,
+   12
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "an empty Incubator leaf: a bevel outline",
+  "sha256": "73952298879d3f7cc13fe4df9e2a1aa0222eab370ddf5dc72faa861897978192",
+  "status": "signed"
+ },
+ "home-shield-whole-12x24": {
+  "size": [
+   12,
+   24
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "a whole Shield plate: white, fog shade, bevel edge, a centre seam",
+  "sha256": "7ee2c9c9237a32278cbd14034e3e9d7f840637e9629f832fa1788e19b2eca3a9",
+  "status": "signed"
+ },
+ "home-shield-lost-12x24": {
+  "size": [
+   12,
+   24
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "a lost Shield plate: a stone outline",
+  "sha256": "8e65ee2f3a5f05582c2b5c33a0ed4910cea9d102f4b2886f24053911d2c177a2",
+  "status": "signed"
+ },
+ "home-bed-mark-16x24": {
+  "size": [
+   16,
+   24
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the bed's Companion mark: the handheld's silhouette with its strap loop, a 1 px mist outline",
+  "sha256": "7a24eb5c34293974ea3b07ba29b422b3ec11cf424e15018e24ec54a93932fb18",
+  "status": "signed"
+ },
+ "home-sitting-24x32": {
+  "size": [
+   24,
+   32
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the held sitting: a matte card frame in the sand housing, the portrait window dark",
+  "sha256": "7eba0d97956890efdfda552feef15f8d5691a70268024fc8ef25069e653a53ab",
+  "status": "signed"
+ },
+ "home-crate-48x40": {
+  "size": [
+   48,
+   40
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "a walk crate: a rugged field case, sand body, rubber corners, a sage lid band, an orange seal tag",
+  "sha256": "f443871a15251fbff38276d298d5a591bae95624b00c6ceb8a63d96faa44b38f",
+  "status": "signed"
+ },
+ "heart-full-24": {
+  "size": [
+   24,
+   24
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the bonded heart on the Vivarium card: an enamel heart in the house light, no face, no sparkle",
+  "sha256": "2a52e4bc533f3f943be9b85f0aaee66380fbd21b530cfdaef147366178c7dfed",
+  "status": "signed"
+ }
+}
