@@ -10304,9 +10304,9 @@
   "src": "source/raw/vivarium-dawn.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded by the least linear gain that brings the mean L* to 41 or less (the brief asks 38 to 42)",
   "sha256": "a11ef57b656f6d8ef84a001ec9f51c561caaaf1b7567690d1e43417ee8c73305",
-  "status": "signed",
-  "signed_in": "art director, dawn verdict (793e47f2)",
-  "status_note": "signed (art director): Idle's Vivarium at dawn: low light, mist and dew, cooler and paler than dusk"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)"
  },
  "vivarium-near-dawn-544x408": {
   "size": [
@@ -10322,9 +10322,9 @@
   "src": "source/raw/vivarium-near-dawn.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, graded by the least linear gain that brings the mean L* to 41 or less (pass 105)",
   "sha256": "fd08527e36d530a7db622ece5e98f38a6f6bc60ab891f32eb0cf50c111622b68",
-  "status": "signed",
-  "signed_in": "art director, dawn verdict (793e47f2)",
-  "status_note": "signed (art director): the Vivarium up close at dawn"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"
  },
  "home-bed-dawn-192x56": {
   "size": [
@@ -10335,9 +10335,9 @@
   "src": "slices/idle-vivarium-dawn-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by dawn: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
   "sha256": "33fff95e9444c09a2ef811b2b9950e791472137de7b7607a7c5492ab77bd8c46",
-  "status": "signed",
-  "signed_in": "art director, dawn verdict (793e47f2)",
-  "status_note": "signed (art director): the with-you bed at dawn, cut from the dawn painting"
+  "status": "new",
+  "signed_in": null,
+  "status_note": "returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix"
  },
  "home-glass-dawn-640x488": {
   "size": [

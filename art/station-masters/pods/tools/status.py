@@ -4,9 +4,9 @@ import json, re
 m = json.load(open("slices/manifest.json")); S = {}
 FR = {"120x112", "120x96", "184x104", "184x112", "184x256", "184x304", "376x264"}
 AD_RECORDS = {
- "idle-vivarium-dawn-1024x568": ('signed', 'art director, dawn verdict (793e47f2)', "signed (art director): Idle's Vivarium at dawn: low light, mist and dew, cooler and paler than dusk"),
- "vivarium-near-dawn-544x408": ('signed', 'art director, dawn verdict (793e47f2)', 'signed (art director): the Vivarium up close at dawn'),
- "home-bed-dawn-192x56": ('signed', 'art director, dawn verdict (793e47f2)', 'signed (art director): the with-you bed at dawn, cut from the dawn painting'),
+ "idle-vivarium-dawn-1024x568": ('new', None, 'returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)'),
+ "vivarium-near-dawn-544x408": ('new', None, "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"),
+ "home-bed-dawn-192x56": ('new', None, 'returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix'),
  "vivarium-near-day-544x408": ('signed', 'art director, near Vivarium verdict (57490118)', 'signed (art director): the Vivarium up close, the same place as Idle at ground level'),
  "vivarium-near-dusk-544x408": ('signed', 'art director, near Vivarium verdict (57490118)', 'signed (art director): the Vivarium up close, the same place as Idle at ground level'),
  "room-bench-stage-compare": ('withdrawn', None, "withdrawn (art director): the old glass-lab compare stage; Compare is not in the current layout, and the room was redrawn in the world brief's look without it"),
