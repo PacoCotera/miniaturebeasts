@@ -4,6 +4,7 @@ import { listPitch } from "../../ui/specs/derive.mjs";
 const within = (b, r) => b[0] >= r[0] && b[1] >= r[1] && b[0] + b[2] <= r[0] + r[2] && b[1] + b[3] <= r[1] + r[3];
 const eq = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
 
+const parts1 = (regions, n) => Math.min(1, n);
 export function departures(log, spec, state = "rest", cur = "room", n = 0) {
   const out = [], R = spec.regions, regions = log.regions ?? [], type = log.type ?? [], got = (id, layer) => regions.filter((r) => r.id === id && (!layer || r.layer === layer)), win = R.window.rect;
   const must = (ok, m) => { if (!ok) out.push(m); };
@@ -21,14 +22,20 @@ export function departures(log, spec, state = "rest", cur = "room", n = 0) {
     if (tag) { must(within(tag.rect, [win[0] + 8, win[1], win[2] - 16, win[3]]), `the name tag ${tag.rect} is not 8 px inside the window ${win}`); must(tag.rect[3] === R.nameTag.h, `the name tag is ${tag.rect[3]} tall, not ${R.nameTag.h}`); must(tag.rect[2] % R.nameTag.round === 0 && tag.rect[2] >= R.nameTag.min && tag.rect[2] <= R.nameTag.max, `the name tag's width ${tag.rect[2]} is not a multiple of ${R.nameTag.round} in ${R.nameTag.min} to ${R.nameTag.max}`); }
     if (tag && txt) must(within(txt.rect, tag.rect), `the name ${txt.rect} leaves its tag ${tag.rect}`); }
   for (const r of got("strip", "chrome")) must(eq(r.rect, R.strip.rect), `the strip ${r.rect} is not ${R.strip.rect}`);
-  if (n > 0) {
-    const items = listPitch(R.tiles, n).items, tiles = got("tiles");
-    for (const r of tiles) must(within(r.rect, [R.tiles.rect[0], R.tiles.rect[1] - R.focus.targets.tile.lift, R.tiles.rect[2], R.tiles.rect[3] + R.focus.targets.tile.lift]), `a tile's part ${r.rect} leaves ${R.tiles.rect}`);
-    for (const t of tiles.filter((r) => r.layer === "chrome" && r.rect[3] === items[0][3] && r.rect[2] === items[0][2])) must(items.some((b) => b[0] === t.rect[0] && (b[1] === t.rect[1] || b[1] - R.focus.targets.tile.lift === t.rect[1])), `a tile at ${t.rect} is not on the list's pitch`);
-    must(tiles.filter((r) => r.rect[2] === items[0][2] && r.rect[3] === items[0][3]).length >= 1, "no tile is drawn at the form's size");
+  if (n > 0) {   // a region a tile (tile.<i>): its box is the list's pitch at its place, lifted by the spec's lift while the ring is on it (one tile at most)
+    const items = listPitch(R.tiles, n).items, lift = spec.focus.targets.tile.lift; let lifted = 0;
+    for (let i = 0; i < n; i++) {
+      const parts = regions.filter((r) => r.id === `tile.${i}`); if (!parts.length) { out.push(`tile ${i} is not drawn`); continue; }
+      for (const r of parts) {
+        const base = items[i], up = r.layer === "chrome" ? r.rect[1] === base[1] - lift : parts.some((x) => x.layer === "chrome" && x.rect[1] === base[1] - lift), box = up ? [base[0], base[1] - lift, base[2], base[3]] : base;
+        if (r.layer === "chrome") { if (up) lifted++; must(eq(r.rect, box), `tile ${i} ${r.rect} is not its place on the pitch ${base}`); } else must(within(r.rect, box), `tile ${i}'s ${r.layer} ${r.rect} leaves the tile ${box}`);
+      }
+    }
+    must(lifted <= parts1(regions, n), "more than one tile is lifted");
+    must(!regions.some((r) => r.id.startsWith("tile.") && Number(r.id.slice(5)) >= n), "a tile past the bays is drawn");
   }
   for (const r of got("focus")) must(within(r.rect, [0, 0, 1024, 600]), `the ring ${r.rect} leaves the screen`);
   for (const t of type) must([16, 20, 28].includes(t.px), `"${t.text}" is set at ${t.px} px`);
-  for (const t of type) if (t.region !== "nameTag" && !/^(frame|top|line|title|materials|turn|back|need|bottom|plate|companion)/.test(t.region ?? "") && t.region) out.push(`the whole sets "${t.text}" (${t.region}): no word in the window but the name tag`);
+  for (const r of regions.filter((x) => x.layer === "type" && x.id !== "nameTag" && within(x.rect, [0, 40, 1024, 520]))) out.push(`the whole sets a word (${r.id}) in the window or the strip: no word there but the name tag`);
   return out;
 }

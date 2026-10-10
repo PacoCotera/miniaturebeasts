@@ -96,9 +96,9 @@ void build_bayStrip(const char *cur, int box[4]) {
     int housed = strcmp(state, "housed") == 0, out = strcmp(state, "out") == 0, free_ = !housed && !out;
     int focused = strncmp(cur, "tile.", 5) == 0 && *id && strcmp(cur + 5, id) == 0, x = b[i][0], y = b[i][1] - (focused ? lift : 0), w = b[i][2], h = b[i][3];
     if (focused && box) { box[0] = x; box[1] = y; box[2] = w; box[3] = h; }
-    char nm[40]; v_region("tiles", LAYER_CHROME);
+    char nm[40], reg[24]; snprintf(reg, sizeof reg, "tile.%d", i); v_region(reg, LAYER_CHROME);   /* a region a tile: the log holds each tile's box */
     snprintf(nm, sizeof nm, "tile.%d", i); v_rect(nm, x, y, free_ ? 0 : w, free_ ? 0 : h, fill);
-    v_name("tiles"); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
+    v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
     if (housed && *pic) v_sprite(nm, pic, x + tx, y + ty, tw, th); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
     snprintf(nm, sizeof nm, "tile.%d.glyph", i);
     if (out) v_sprite(nm, glyph, x + tx + (tw - gw) / 2, y + ty + (th - gh) / 2, gw, gh); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
