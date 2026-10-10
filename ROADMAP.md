@@ -173,6 +173,17 @@ The direction for the site:
    with the phase 1 or 3 playable as an embedded demo.
 3. **Later:** builder documentation, devlog and kit sign-up.
 
+## Future vision: a self-contained kit
+
+A long-term direction, not planned work; it changes nothing in the current
+design. Later versions of the platform depend on third parties as little as
+possible, so the kit is a complete, premium experience out of the box: no
+subscriptions and no services to keep it working.
+
+**What keeps it open now:** the Station's acceptance and the painting contract
+stay independent of which service produced a result, so a result made another
+way can take a service's place without changing the game.
+
 ## Decisions needed next
 
 1. **The Station loop and UI**, the first piece of phase 3: the loop's rules are
