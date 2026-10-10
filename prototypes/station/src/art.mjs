@@ -252,7 +252,7 @@ export function mistyArt(frame, genome, mistyTraitIds, w, h) {
 export const crackArt = () => art("crack", () => { const pb = new PB(70, 70); pb.ell(35, 40, 22, 24, C.cream, { dith: [C.focus, 6] }); pb.line(20, 30, 35, 44, C.gold, 2); pb.line(35, 44, 50, 28, C.gold, 2); pb.line(35, 44, 38, 62, C.gold, 2); pb.outline(() => C.gold); return pb; });
 
 // ---------- A landed painting: drawn as it came (the Station may be anti-aliased), its flat ground cleared for a sprite ----------
-class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } }
+class Painted { layer = "painted"; constructor(cv) { this.cv = cv; this.w = cv.width; this.h = cv.height; } canvas() { return this.cv; } rgba() { return this.cv.getContext("2d", { willReadFrequently: true }).getImageData(0, 0, this.w, this.h).data; } }
 const PAINTED = new Map();
 // The ground of a painting cleared by a flood from its corners (the painter's plain ground, the derived sizes' white), so the mibi stands free in the vivarium.
 function clearGround(img, w, h) {
@@ -282,3 +282,8 @@ export const waitLamp = () => art("waitlamp", () => { const pb = new PB(10, 10);
 
 // A whole body under frost: the child to be on the Cross screen, never a promise.
 export function ghostArt(frame, genome, w, h) { return art("ghost" + genomeDigest(genome) + ":" + w + "x" + h, () => { const base = mibiArt(frame, genome, w, h, "portrait"), pb = new PB(w, h); pb.p.set(base.p); return pb.frost(); }); }
+
+// A cool beam from above on the specimen stage: a flat cone of one colour, no grain (chrome is crisp). (Moved here from screens/frame.mjs, which keeps its own copy until the JavaScript drawing layer is deleted.)
+export function beamArt(w, h) { return art("beam" + w + "x" + h, () => { const pb = new PB(w, h);
+  for (let y = 0; y < h; y++) { const hw = w * 0.12 + (w * 0.38 * y) / h, x0 = Math.ceil(w / 2 - hw), x1 = Math.floor(w / 2 + hw); pb.rect(x0, y, x1 - x0, 1, C.tealD); }
+  return pb; }); }

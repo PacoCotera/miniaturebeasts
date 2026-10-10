@@ -1,6 +1,6 @@
 // The spec files against the layout document's wireframes and the palette: the one home of the numbers must agree
 // with the measured wireframe (station-layouts/*.svg) and name only palette colours.
-import { pageSize } from "../layout.mjs";
+import { pageSize } from "../specs/derive.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
