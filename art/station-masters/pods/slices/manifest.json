@@ -6860,7 +6860,7 @@
   "sha256": "f0b6fdbb499e75e71668b0bdef335c41b9be5f7c13a2c50633811ef7674565d3",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 109: the collection's plain floor, nothing inside the six place rects (the art director's ask for the Station lead); the hose, gauge and vent stay in the strip between the rows; awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 31.8, key R-B 37, sat 24; ghost cut-outs (four), a tone band under the top rim and seams remain; ruling on the strip conflict: the collection floor carries no hardware (hose, gauge and vent stay on the overview); rebuild the floor plain from the overview's clean floor, by hand"
  },
  "mark-can-grow-16": {
   "size": [
@@ -10043,8 +10043,8 @@
   "made": "Idle's Vivarium by day: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (pass 94)",
   "sha256": "a41cd5a51668f5bdb667a6ee9b2aa859bfae91e23525bbc5d1936a587e54ae60",
   "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "signed_in": "art director, Idle verdict (62bbd883)",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 43.1, key R-B 72, sat 48 (the day reference)"
  },
  "idle-vivarium-dusk-1024x568": {
   "size": [
@@ -10056,8 +10056,8 @@
   "made": "Idle's Vivarium by dusk: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (the day picture's edit: dusk is warmer and lower) (pass 94)",
   "sha256": "8ff860ffa60ae376f99bcc15daa8d46829a47a072cd8f361126e6670f9919b0c",
   "status": "signed",
-  "signed_in": "art director, 10-10 09:27",
-  "status_note": "Idle's Vivarium by light, seams softened in pass 96 (hashes a41cd5a51668 / 8ff860ffa60a / de75e05559ba); the night's cooler canopy accepted"
+  "signed_in": "art director, Idle verdict (62bbd883)",
+  "status_note": "Idle's Vivarium by light, seams softened in pass 96; signed at 1x: L* 40.1, key R-B 74, sat 56 (the dusk reference)"
  },
  "idle-vivarium-night-1024x568": {
   "size": [
@@ -10068,9 +10068,9 @@
   "src": "source/raw/vivarium-night-r2.jpg (gemini-3-pro-image)",
   "made": "Idle's Vivarium by night: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded xNone in linear light to a mean L* of 30.4) (pass 94)",
   "sha256": "b0d151ec256fbcd039a021f9447064c0668db5ddf876de10b87a6789ae2083bb",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 102: the art director held it for the Station lead's measurement; fixed by hand (moon rim recoloured toward (168, 182, 204) at 70 percent, glow blooms cut 50 percent toward a 31 px median, regraded to mean L* 30.6 with R above B); awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director) at 1x: L* 30.4, key R-B 57, sat 66 pass, but 8.1 percent of pixels sit above L* 70 (day 9.7): the glow pools shine for show at night (rule: at most 3 percent); pale crescent rims on the top canopy leaves read as outlines; pools back down and rims into the background band, by hand"
  },
  "home-bay-shut-176x72": {
   "size": [
@@ -10239,7 +10239,7 @@
   "sha256": "8aef20d267076bcf7583fdb805e704136ae80c5ef0ca726403cb4482672b1f5e",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 102: re-cut from the fixed Idle night (the art director held it until the night was fixed); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 43.6, key R-B 167 against its glass night 30.6/53: the bed is brighter at night than by day and glows; rule as bed dawn"
  },
  "vivarium-near-day-544x408": {
   "size": [
@@ -10291,9 +10291,9 @@
   "src": "source/raw/vivarium-near-night.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by night ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting (an edit of the near day picture, matched to Idle's night light), cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)",
   "sha256": "cd63a432a9181516b0b8390ddb3498b2499191caa11f86f7bf6439fdfe612584",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "status_note": "signed (art director) at 1x: L* 30.5, key R-B 44, sat 62, R above B, 2.8 percent of pixels above L* 70; background rows L* 14-22; ground band 45-52 accepted for the near view, whose ground fills more of the frame"
  },
  "idle-vivarium-dawn-1024x568": {
   "size": [
@@ -10306,7 +10306,7 @@
   "sha256": "523004d9e0d95f4e2366d7e1504b1b95a8016f0137c05cc83aea4d276e1edebb",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)"
+  "status_note": "returned (art director) at 1x: L* 40.5, sat 33, key R-B 34 on the art director's tool (rule >= 35); nudge the gold tint to >= 36, by hand"
  },
  "vivarium-near-dawn-544x408": {
   "size": [
@@ -10322,9 +10322,9 @@
   "src": "source/raw/vivarium-near-dawn.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, given a gold tint by hand and set to a mean L* of 40.5 (tools/dawntint.py; passes 105 and 108)",
   "sha256": "0703870e003ccd936a5b44b00504ddffbcb495bf3ccfb656b8be25346568ca1a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "status_note": "signed (art director) at 1x: L* 40.5, key R-B 36, sat 36 against the dawn rule (key R-B >= 35, L* 38-42); day 52.4/59/57"
  },
  "home-bed-dawn-192x56": {
   "size": [
@@ -10337,7 +10337,7 @@
   "sha256": "78e5d8f49e5e2c2a9a4c3103d64ac97bdb33be4018c00faa2286e72550dfd69d",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix"
+  "status_note": "returned (art director) at 1x: L* 38.1, key R-B 87 against its glass dawn 40.5/34; rule: the bed's R-B at most its glass's + 40 (day bed +26) and L* at most its glass's + 3"
  },
  "home-glass-dawn-640x488": {
   "size": [
@@ -10355,7 +10355,7 @@
   "sha256": "1d7b866bf1d8fe7cec5c26e8a85822c5fe06b37e46980a16aae6ad391ca5b6d2",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 40.5, sat 42, key R-B 34 on the art director's tool (rule >= 35); nudge the gold tint to >= 36, by hand"
  },
  "home-glass-day-640x488": {
   "size": [
@@ -10371,9 +10371,9 @@
   "src": "source/raw/home-glass-day.jpg (gemini-3-pro-image)",
   "made": "Home's glass by day: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro recompose of the signed day picture, cut to 640:488 and reduced with Lanczos (pass 107)",
   "sha256": "805ace1a75e3533d858faaac9f3781febdad7612d6f516cd210028c97cef8c8f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "status_note": "signed (art director) at 1x: L* 38.9, key R-B 75, sat 50 against Idle day 43.1/72/48"
  },
  "home-glass-dusk-640x488": {
   "size": [
@@ -10389,9 +10389,9 @@
   "src": "source/raw/home-glass-dusk.jpg (gemini-3-pro-image)",
   "made": "Home's glass by dusk: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dusk light, cut to 640:488 and reduced with Lanczos (pass 107)",
   "sha256": "da687a78a14ae933e6d54ff3d71fc5f75ff6ab67944236bf79d8f796ef71b07e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, light verdict (eb64c0d6)",
+  "status_note": "signed (art director) at 1x: L* 33.7, key R-B 108, sat 62 against near dusk 36.9/102/62 and Idle dusk 40.1/74/56"
  },
  "home-glass-night-640x488": {
   "size": [
@@ -10407,9 +10407,9 @@
   "src": "source/raw/home-glass-night.jpg (gemini-3-pro-image)",
   "made": "Home's glass by night: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's night light, cut to 640:488 and reduced with Lanczos, regraded by distribution (dark background, warm ground band, small glow pools) (pass 107)",
   "sha256": "f7b7f1725630c99bf301d998a4b168f2cdba947ffe63c3444220ba24c6ef6cbe",
-  "status": "new",
+  "status": "held",
   "signed_in": null,
-  "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+  "status_note": "held (art director) at 1x: L* 30.6, key R-B 53, sat 53 pass, but 10.9 percent of pixels above L* 70 (rule: at most 3) and the pale crescent rims on the top leaves; as Idle night, by hand"
  },
  "room-bench-stage-create": {
   "size": [
@@ -10422,6 +10422,6 @@
   "sha256": "68bb9985198d62aaa07e2938c991bc46a84098bbbccf9f5b21c12e1a96dfc171",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it; awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 36.8, key R-B 35, sat 22, the same as the overview; a ghost cut-out shows left of the panel (about x 530-600, y 290-410); paint it out by hand"
  }
 }
