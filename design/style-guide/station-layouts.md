@@ -98,7 +98,7 @@ The device's coloured keys are shortcuts, one for each family of sections on the
 | Pods module | 688, 152, 320, 88 | The rack's six wells, the glints | `pods`; ✓ to Pods' collection |
 | Incubator module | 688, 256, 320, 88 | The dome and its leaves | `incubator`; ✓ to the Incubator |
 | Probe module | 688, 360, 320, 88 | The Probe, its Shield plates, the sitting slot | `probe`; ✓ to the Probe bench |
-| Library module | 688, 464, 320, 88 | The field journal; a glint for a new page | `library`; ✓ to the Library's spread |
+| Library module | 688, 464, 320, 88 | The field journal | `library`; ✓ to the Library's spread |
 
 Each module is one engraved word at (16, 12), its 12×12 lamp at (296, 12) and its objects in (112, 8, 176, 72); the objects' sizes are set in the detailed spec. The pad: ◀ ▶ cross between the residents and the column; ▲ ▼ walk the column in the order Cargo, Pods, Incubator, Probe, Library, then the rest knob.
 
@@ -156,8 +156,9 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 ### Not designed yet
 
 - The detailed spec of the Vivarium's levels (the whole and one mibi up close), their measured objects and their focus as data. Home, Cargo and Idle have theirs: [Home](#home-the-panel-and-the-column), [Cargo](#cargo), [Idle](#idle).
-- What a sitting crate shows when it opens in Cargo (its portrait), beyond its ribbon.
-- The Companion zone's three face places, measured: the glyph, its lamp and each face inside (760, 8, 120, 24), for the frame's table and `frame.json`, which give the one-face zone (816, 8, 64, 24).
+- What a sitting crate shows when it opens in Cargo: its portrait's reveal, beyond its ribbon. Until the reveal is designed, a build leaves sitting crates out of Cargo and out of Home's Cargo module.
+- A new page in the Library's journal on Home's Library module (a mark, a context): the save holds no unopened page, so the module has no new-page state.
+- The could-grow notice for a pod short of ❀ but not ⚡.
 
 ---
 
@@ -187,7 +188,7 @@ The frame is the same on every Station screen and speaks one language, the Compa
 | --- | --- | --- | --- |
 | **Title: where you are** | 16, 8, 232, 24 | The room's mark, 24×24 at (16, 8), the icon of the device key that leads there (Home, Vivarium, Research, Library), then the screen's title from x 48, 20 px medium, `bone` | One word, the title; title case. The first thing in the bar, and the only word in it |
 | **What you hold** | 384, 8, 256, 24 | Energy, Data and Essence, centred on x 512: each a 16 px icon, a 4 px gap, then 16 px tabular figures in `bone`, 24 px between counters | Marks with figures; the figures are the frame's exception to "no digits" |
-| **Who is out, and with whom** | 816, 8, 64, 24 | The Companion's glyph, 16×24 at (816, 8), with its 8×8 lamp at (836, 16); the mibi with you as a 24 px face on its `teal` ring at (856, 8), the same face as on the Companion's HUD (an empty ring when no mibi is with you) | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face's ring in `stone` ("dimmed" is `stone`, the same role as the lamp off): the mibi is out with it |
+| **Who is out, and with whom** | 760, 8, 120, 24 | The Companion's glyph, 16×24 at (760, 8, 16, 24), with its 8×8 lamp at (780, 16, 8, 8); the carried set as three 24 px faces on their `teal` rings at (800, 8, 24, 24), (828, 8, 24, 24) and (856, 8, 24, 24), in carried order, the same faces as on the Companion's HUD (an empty ring for a place with no mibi); the zone's right edge is x 880 | Marks only, no words. Docked: the glyph solid, its lamp `mint`, the face full. Away: the glyph in outline, its lamp `stone`, the face's ring in `stone` ("dimmed" is `stone`, the same role as the lamp off): the mibi is out with it |
 | **When** | 904, 8, 104, 24 | The world turn: a 16 px sun mark, 4 px, then its figure, right-aligned to x 1008 | A mark with a figure, as on the Companion ("☀ 5"), not "T5" |
 
 The Probe's tier is not in the top bar: Home's Probe module shows it by its Shield plates (three or four), as the Companion shows it on its own Shield plates.
@@ -214,7 +215,7 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | --- | --- | --- | --- |
 | **The one action** | 16, 570, 376, 24 | The ✓ key cap, 16×16 at (16, 574), `orange`, 4 px, the verb in `orange`, 16 px; 24 px; the price, a material's icon and its figures in `bone` | A verb phrase of four words or fewer; the price is marks with figures. No ✓ cap when ✓ does nothing |
 | **The context** | 408, 570, 208, 24 | What the focus is on, centred on x 512, 16 px `mist` | A label of six words or fewer. The only zone that may shrink, ending in "…" |
-| **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod waits unread", is 212 px, 228 with its lamp); one notice at a time, the most pressing |
+| **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
 
 **The marks are art.** Every mark in the frame is a studio master placed 1:1 at its size, never drawn by the build and never scaled:
@@ -249,7 +250,7 @@ The material icons are the kit's 16 px icons, as on the Companion.
 | Top bar | 0, 0, 1024, 40 | Chrome ground (`ground`), with a 1 px `void` rule on its bottom edge |
 | Title | 16, 8, 232, 24 | The room's mark 24×24, then the title, 20 px medium |
 | Materials | 384, 8, 256, 24 | As above |
-| Companion | 816, 8, 64, 24 | The glyph, its lamp and the face |
+| Companion | 760, 8, 120, 24 | The glyph 760, 8, 16, 24; its lamp 780, 16, 8, 8; three faces at 800, 8, 24, 24, at 828, 8, 24, 24 and at 856, 8, 24, 24; right edge x 880 |
 | When (the world turn) | 904, 8, 104, 24 | The sun mark and the figure, right-aligned to x 1008 |
 | Top rules | x 256 and x 888, y 8 to 32 | 1 px hairlines |
 | Stage | 0, 40, 1024, 522 | The screen's own layout, on its painted slice; with no slice, flat `ground` |
@@ -712,7 +713,7 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 | `bezel` | 16, 48, 656, 504 | 8 px of housing round the glass |
 | `glass` | 24, 56, 640, 488 | Ground band 24, 300, 640, 228; foot 24, 528, 640, 16 |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in the ground band, clipped to the glass; drawn by the feet's y, lower in front. Focused: the feet ring, a 4 px lift, the name tag. The waiting lamp 12×12 at the box's top right until its painting lands |
-| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The first carried is drawn last, in front. Each sleeper is a resident target with no lift; its 24×16 asleep mark at its box's top right. Away: the Companion mark 16×24 at (536, 488). Docked with nobody carried: the nest alone |
+| `bed` | 448, 472, 192, 56 | The carried set asleep, one to three, in carried order: sleeper i of n has its feet at x 544 + 48 × (i − (n − 1) / 2), y 512 (one: 544; two: 520, 568; three: 496, 544, 592). An adult's box is (footX − 72, 360, 144, 152), a juvenile's (footX − 52, 400, 104, 112): three adults at 424, 472 and 520 fill the glass to its right edge. The nap pose's ink is at most 96 wide and 88 tall, centred on the feet and bottom-aligned on them, at most (footX − 48, 424, 96, 88): three sit on the 192 px bed (448 to 640), 24 px inside the glass. No mark on a sleeper: the pose and the context ("…, asleep") say it. The first carried is drawn last, in front. Each sleeper is a resident target with no lift. Away: the Companion mark 16×24 at (536, 488). Docked with nobody carried: the nest alone |
 | `nameTag` | 24 tall; the name's width + 16, up to the 8 px grid, at least 48 | Centred under the resident, its top at feet + 24; if its bottom would pass y 536, it sits over the resident, top = box.y − 4 − 32. A sleeper's tag is always above it (y 328 for an adult). Slid to stay 8 px inside the glass |
 | `knob` | 624, 544, 32, 8 | Drawn 32×6 at (624, 546), lifted to (624, 544); its target box 40×16 at (620, 540); its ring (616, 534, 48, 24) |
 
@@ -724,27 +725,27 @@ One device in one look ([art direction](../art-direction.md)): rugged, matte fie
 
 | Module (`home.json`) | Rectangle | Objects, measured | States |
 | --- | --- | --- | --- |
-| `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (800 + 64i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 928, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, amber when that is the notice. Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
-| `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when a pod is the notice (new, glinting, could grow, to read) |
+| `cargo` | 688, 48, 320, 88 | The bay 800, 56, 176, 72; crates 48×40 at (800 + 64i, 72), i = 0 to 2; the waiting mark 24×24 at (876, 80) | Away: the lid shut, lamp off. Docked: the bay open; one sealed crate per walk crate, left to right in the order they open, lamp amber; empty, lamp off. A sitting crate (a portrait on its way) sits from the right, the first at 928, a second at 864, walk crates first and at most three shown; it keeps the bay open, docked or away; its 12×12 fill lamp under it at (crate x + 18, 116), the rows lit from the bottom in `sky` as it fills; amber when it is ready. Pods waiting for a well and no crate: the waiting mark, never amber, the lamp off (the need lights Pods). Crates slide in from 40 px above, clipped by the bay, 500 ms each, 250 ms apart, eased out (`events.crateIn`) |
+| `pods` | 688, 152, 320, 88 | Six wells 32×32, two rows of three, at (824 + 48c, 160 + 40r), in rack order; in each, its pod at the rack class 24×32 at well + (4, 0); a glint 12×12 at well + (34, 10), in the gap beside its well | The rack's pods; a well empty until its pod lands. Lamp off when empty, well with pods, amber when pods are the notice (new, glinting, waiting for a well, could grow, to read) |
 | `incubator` | 688, 256, 320, 88 | The chamber 800, 264, 72, 72; the leaves 888, 264, 88, 72: the `leaves` word, grid form, the 8×12 small leaf on an 11 px pitch, eight a row, five rows 14 apart, at most 40 | Empty: the chamber dark, no leaves, lamp off. Growing: the bud, its leaves filling, lamp well. Ready: every leaf full, amber. The hatched mibi's painting on its way: lamp waiting |
 | `probe` | 688, 360, 320, 88 | The cradle 800, 368, 96, 72; Shield plates 12×24 at (912 + 16i, 368), three on tier 1, four on tier 2; the sitting frame 24×32 at (912, 408) | Docked: the Probe in its cradle, its plates whole or gone, lamp well. Away: the cradle empty, no plates, lamp off. A held sitting: the gilt frame, docked or away |
-| `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72; the glint 12×12 at (912, 476) | No species found: the journal shut, lamp off. Otherwise lamp well; the glint while a page waits unopened |
+| `library` | 688, 464, 320, 88 | The journal 800, 472, 104, 72 | No species found: the journal shut, lamp off. Otherwise the journal, lamp well |
 
 **The lamps.** Amber marks the module the room's ✓ acts on, and only it. The notice and the room's ✓ take the first of these that holds:
 
 | Need | Lights | Notice | ✓ on the room |
 | --- | --- | --- | --- |
-| Crates ready to open: walk crates while docked, a ready sitting crate | Cargo | "two crates wait in the bay" ("a crate waits in the bay") | `✓ Open Cargo` |
+| Crates ready to open: walk crates while docked, ready sitting crates docked or away, counted together | Cargo | "two crates wait in the bay" ("a crate waits in the bay") | `✓ Open Cargo` |
 | The bud ready | Incubator | "the bud is ready" | `✓ Open the Incubator` |
 | A mibi to meet | none | "meet Moss" | `✓ Meet Moss` |
 | New pods | Pods | "two new pods wait" ("a new pod waits") | `✓ Look at the pods` |
 | Glinting pods | Pods | "two pods glint" | `✓ Look at the pods` |
-| Pods waiting for a well | Cargo | "two pods wait for a well" | `✓ Look at the pods` |
-| A pod that could grow | Pods | "an Untuva pod could grow" | `✓ Look at the pods` |
-| A pod to read | Pods | "an Untuva pod waits unread" | `✓ Look at the pods` |
+| Pods waiting for a well | Pods (Cargo shows its waiting mark, its lamp off) | "two pods wait for a well" | `✓ Look at the pods` |
+| A pod that could grow | Pods | "an Untuva pod could grow"; short of what growing costs, "an Untuva pod needs more ⚡" | `✓ Look at the pods` |
+| A pod to read | Pods | "an Untuva pod waits unread"; short of what reading costs, "an Untuva pod needs more ◆" | `✓ Look at the pods` |
 | A bud growing | none (the Incubator's lamp is well) | "a bud is growing" | `✓ Look at the Incubator` |
 
-Counts are spelled, "a" and two to six; above six the count is dropped.
+Counts are spelled, "a" and two to six; above six the count is dropped. A material in a notice is its 16 px icon after the words, 4 px apart, never a figure. The crates' count is the walk crates and the ready sitting crates together, so the Cargo lamp, the notice and ✓ agree.
 
 **The top bar.** The title "Home" after the Home key's icon, `frame-room-home-24`; the counters; the carried set (the glyph, its lamp, three face places); the turn.
 
@@ -764,12 +765,12 @@ Counts are spelled, "a" and two to six; above six the count is dropped.
 | --- | --- | --- |
 | The room (no ring) | The need's action, or no ✓ cap when nothing needs you | empty |
 | The panel | `✓ Open the Vivarium`, to its whole | "three mibis at home"; "one mibi at home"; seven or more "the mibis at home"; none "nobody lives here yet" |
-| A resident | `✓ Look at Bean`, to that mibi up close | "an adult Untuva"; a sleeper "an adult Untuva, asleep" |
+| A resident | `✓ Look at Bean`, to that mibi up close | "an adult Untuva", "a young Loika"; a sleeper "an adult Untuva, asleep". The stage reads young, adult or elder (`strings.stages`) |
 | Cargo | `✓ Open Cargo`, to its bay | "two sealed crates", "a sealed crate", "the bay is empty", "the bay is shut", "two pods wait for a well" |
 | Pods | `✓ Look at the pods`, to the collection, the ring on the pod that most needs you | "four pods in the rack", "a pod in the rack", "the rack is empty" |
 | Incubator | `✓ Open the Incubator` | "a Loika bud, growing", "a Loika bud, ready", "the Incubator is empty" |
 | Probe | `✓ Open the Probe bench` | "the Probe in its cradle", "the Probe is away" |
-| Library | `✓ Open the Library`, to the spread | "the field journal", "a new page in the journal", "the journal is empty" |
+| Library | `✓ Open the Library`, to the spread | "the field journal", "the journal is empty" |
 | Rest knob | `✓ Rest`, to Idle | "the Vivarium plays alone" |
 
 **The keys on Home.**
@@ -789,7 +790,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped.
 
 ### Home's focus as data
 
-`home.json` `focus` writes the pad with the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): an edge is a target id, a group's `nearestIn` (the row nearest the ring for ◀ ▶, the column nearest for ▲ ▼; with `ahead`, only targets more than 6 px ahead) or an ordered list whose first present entry wins. The room is the ring on nothing, its point the centre of `roomAt` (512, 300).
+`home.json` `focus` writes the pad with the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): an edge is a target id, a group's `nearestIn` (the row nearest the ring for ◀ ▶, the column nearest for ▲ ▼; with `ahead`, only targets more than 6 px ahead) or an ordered list whose first present entry wins. The room is the ring on nothing, its point the centre of `roomAt` (512, 300). The graph carries its `roomKey` ("room") and its `fallback` ("none") inside `focus.graph`, as Pods' graphs do.
 
 | From | ▲ | ▼ | ◀ | ▶ |
 | --- | --- | --- | --- | --- |
@@ -798,7 +799,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped.
 | `column` (`order`: cargo, pods, incubator, probe, library, knob; round rings, 2 px lift) | the one before; the end stops | the one after; the end stops | the nearest resident by row, else `vivarium` | none |
 | `resident` (the feet ring; sleepers too, without the lift) | the nearest resident ahead, else `vivarium` | the nearest resident ahead | the nearest resident ahead | the module nearest by row (the knob is one) |
 
-**Vectors** (`home.json` `focus.vectors`, played on 15a's residents: Bean 40, 264; Dot 200, 320; Fig 296, 336; Moss and Pip asleep at 448 and 496, 360): room ▶ cargo; room ▲ vivarium; room ◀ Bean; with no residents, room ◀ vivarium; vivarium ▼ Fig; vivarium ▶ cargo; cargo ▲ cargo; library ▼ knob; knob ▼ knob; knob ▲ library; cargo ◀ Bean; library ◀ Pip; Bean ▲ vivarium; Bean ◀ Bean; Fig ◀ Dot; Pip ◀ Moss; Moss ▶ probe; Bean ▶ incubator.
+**Vectors** (`home.json` `focus.vectors`, 31, played on 15a's residents: Bean 40, 264; Dot 200, 320; Fig 296, 336; Moss and Pip asleep at 448 and 496, 360; the same 31 are the Home cases of `prototypes/face/tests/vectors/focus.json`, which `ui/focus.mjs` and the face's C port both play). Among them: room ▶ cargo; room ▲ vivarium; room ◀ Bean; with no residents, room ◀ vivarium; vivarium ▼ Fig; vivarium ▶ cargo; cargo ▲ cargo; library ▼ knob; knob ▼ knob; knob ▲ library; cargo ◀ Bean; library ◀ Pip; Bean ▲ vivarium; Bean ◀ Bean; Fig ◀ Dot; Pip ◀ Moss; Moss ▶ probe; Bean ▶ incubator.
 
 ### Placeholders on Home
 
@@ -882,7 +883,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens after the walk crates, in the same sequence |
+| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
 | `crate` | 320, 104, 384, 256 | The crate closer, centred on 512, 8 px under the ribbon: sealed, opening (the tag torn, the lid lifting), open (its fitted cut-outs) |
 | Its pods | 88×112, 104 apart on y 184 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
 | `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
@@ -894,9 +895,11 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | --- | --- | --- | --- |
 | Heading | 88, 32 tall | — | "Home from the field", 20 px medium |
 | A crate, one row each, in the order they opened | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Developer crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "a first look around", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
-| Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "· with the top-up" in `mist` |
-| Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended · ⚡ 2" |
+| Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
+| Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
 | The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the last crate's world lines behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
+
+**The Probe row's source.** The row comes from the dock's mend, `{ free, paid, broke }`: free plates or a break (a break is mended free) read "mended free"; plates paid for read "mended for" and their price; no mend, no row. Cargo keeps the mend in its UI state from the dock until the report. It is not in the save: after a reload the report has no Probe row.
 
 **One crate's timeline** (3000 ms; `cargo.json` `events.opening`):
 
@@ -923,25 +926,25 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 
 | State | ✓ | Context | Notice | ← |
 | --- | --- | --- | --- | --- |
-| The bay, crates ready to open | `✓ Open the bay`: the opening | "two sealed crates", "a sealed crate" | The most pressing need after the crates | "Home", the ring on the Cargo module |
+| The bay, crates ready to open (walk crates while docked; a ready sitting crate, docked or away) | `✓ Open the bay`: the opening | "two sealed crates", "a sealed crate" | The most pressing need after the crates | "Home", the ring on the Cargo module |
 | The bay, empty | none | "the bay is empty"; pods waiting "two pods wait for a well" | The notice | "Home" |
 | The bay, away | none | "the bay is shut" | The notice | "Home" |
 | Opening | none (input held) | "the bay is opening" | none | none (it waits) |
-| Report | `✓ See the new pods`, a jump to Pods' collection with the ring on the pod that most needs you; with no new pod, `✓ Done`, the card closes | "what came home" | none | "Cargo": the card closes, the bay shows, empty |
+| Report | `✓ See the new pods` (one pod: `✓ See the new pod`), a jump to Pods' collection with the ring on the pod that most needs you; with no new pod, `✓ Done`, the card closes | "what came home" | none | "Cargo": the card closes, the bay shows, empty |
 
 - **Any key on the report** closes the card and does what it does: ✓ above, ← and the pad only close it, a coloured key closes it and opens its section. No press is swallowed.
 - **A coloured key during the opening** waits until the report shows.
 - **Dock while the bay shows:** the lid opens (a cut) and the crates slide in from 64 px above, 500 ms each, 250 ms apart. Lifted: the lid shuts (a cut). During the opening a lift waits for the report.
 - **The hand-off to Pods.** Each pod lands in a rack well, the Station's six; Pods' collection shows the same pods in the same wells, new until identified. A pod with no free well waits in the bay (the waiting mark here and on Home's Cargo module) and lands, oldest first, as a well frees.
 
-**Home's Cargo module, before and after.** Before: the bay open, one small sealed crate per crate, the lamp amber, the notice "two crates wait in the bay". After: the bay open and empty, the lamp off, or the waiting mark while pods wait for a well.
+**Home's Cargo module, before and after.** Before: the bay open, one small sealed crate per crate, the lamp amber, the notice "two crates wait in the bay". After: the bay open and empty, the lamp off; the waiting mark while pods wait for a well, the lamp still off (the need lights Pods).
 
 ### Placeholders in Cargo
 
 | Thing | Pixel size |
 | --- | --- |
 | Bay, open and shut | 992×320 |
-| Crate in the bay | 256×176, `crate-sealed-256x176` |
+| Crate in the bay | 256×176, `crate-sealed-256x176`, `crate-sitting-256x176` |
 | Crate closer | 384×256, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
 | Well | 96×128 |
@@ -989,7 +992,7 @@ The Vivarium only, one painting a light (day, dusk, night), the warm key light f
 | --- | --- | --- |
 | `vivarium` | 0, 0, 1024, 568 | One painting. Ground band 0, 376, 1024, 176; foot 0, 552, 1024, 16. The Vivarium's whole shows its rows 120 to 560 in its window (0, 40, 1024, 440), 1:1: its ground band (0, 296, 1024, 176) is this band, and a resident at y here stands at y − 80 there. Never cropped and enlarged |
 | `resident` | 144×152 adult or elder, 104×112 juvenile | Walking with its feet in 16, 376, 992, 176; no lift, no ring, no tag; the waiting lamp steady at its box's top right. Drawn by the feet's y |
-| `bed` | 792, 496, 192, 56 | The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). Away: the Companion mark 16×24 at (880, 512) |
+| `bed` | 792, 496, 192, 56 | The whole's bed, 80 px lower. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 536 (one: 888; two: 864, 912; three: 840, 888, 936); an adult's box (footX − 72, 384, 144, 152), a juvenile's (footX − 52, 424, 104, 112). The nap pose's ink at most (footX − 48, 448, 96, 88), as on Home: three sit on the bed (792 to 984); no mark on a sleeper. Away: the Companion mark 16×24 at (880, 512) |
 | `strip` | 0, 568, 1024, 32 | Build `idleLine`; a 1 px `void` rule on its top edge |
 | `line` | 16, 568, 992, 32 | 16 px `mist`, centred on x 512 and y 584; one sentence, six words or fewer, no digits |
 
@@ -1002,7 +1005,7 @@ The Vivarium only, one painting a light (day, dusk, night), the warm key light f
 | Crates in the bay | "a crate waits in the bay", "two crates wait in the bay", "three crates wait in the bay" (204 px) |
 | The bud ready | "the bud is ready" |
 | A bud growing | "a bud is growing" |
-| Away, with mibis carried | "Bean is out with the Companion" (a ten-letter name: 358 px); "two are out with the Companion"; "three are out with the Companion" (252 px) |
+| Away, with mibis carried | "Bean is out with the Companion" (a ten-letter name: 362 px); "two mibis are with the Companion"; "three mibis are with the Companion" (267 px) |
 
 ### 6. Interactions
 
@@ -1032,14 +1035,39 @@ Every string on these screens, its zone and its longest case, measured in the re
 | Zone (room) | Strings | Longest |
 | --- | --- | --- |
 | Module word (16 px, 80 px to the objects) | Cargo, Pods, Incubator, Probe, Library | Incubator 72 |
-| Action (16 px, 356 after the cap) | Open the Vivarium · Look at {name} · Open Cargo · Look at the pods · Open the Incubator · Look at the Incubator · Open the Probe bench · Open the Library · Rest · Meet {name} · Open the bay · See the new pods · Done | Look at {name} 218 |
-| Context (16 px, 208) | Home's and Cargo's contexts above | the Incubator is empty 169; an elder Untuva, asleep 178 |
-| Notice (16 px, 256 after the lamp) | The needs above | an Untuva pod waits unread 212; three crates wait in the bay 204; meet {name} 200 |
+| Action (16 px, 356 after the cap) | Open the Vivarium · Look at {name} · Open Cargo · Look at the pods · Open the Incubator · Look at the Incubator · Open the Probe bench · Open the Library · Rest · Meet {name} · Open the bay · See the new pod · See the new pods · Done | Look at {name} 221 |
+| Context (16 px, 208) | Home's and Cargo's contexts above; the stages young, adult, elder | the Incubator is empty 169; an elder Untuva, asleep 178 |
+| Notice (16 px, 256 after the lamp) | The needs above | an Untuva pod needs more ◆ 224 (the words 204, 4, the 16 px icon); an Untuva pod waits unread 212; three crates wait in the bay 204; meet {name} 204 |
 | Way back (16 px, 68) | Home, Cargo | Cargo 46 |
 | Title (20 px medium, 200) | Home, Cargo | Cargo 58 |
 | Ribbon (20 px medium, 576 inside its pads) | First, Second, Third, Developer crate home | Developer crate home 212 |
 | Report heading (20 px medium, 528) | Home from the field | 190 |
-| Idle line (16 px, 992) | Idle's lines | {name} is out with the Companion 358 |
+| Idle line (16 px, 992) | Idle's lines | {name} is out with the Companion 362 |
+
+## Home, Cargo and Idle: the masters
+
+The studio masters these screens place 1:1, each at its listed size; until a master lands, its placeholder above stands in.
+
+| Master | Size | Versions |
+| --- | --- | --- |
+| Home's glass | 640×488 | Day, dusk and night. Its own composition of the same place as Idle's: the life support at the edges, the feed line at the left, the mister and the vent at the top right, the grow lamp's warmth from the top |
+| Idle's Vivarium | 1024×568 | Day, dusk and night. Its rows 120 to 560 are the Vivarium's whole |
+| The bed | 192×56 | One |
+| The nap poses | ink at most 96×88, centred on the feet in the sleeper's box | — |
+| Cargo module: the bay | 176×72 | Open and shut |
+| Cargo module: a crate | 48×40 | Walk and sitting |
+| Pods module: a well | 32×32 | One |
+| Incubator module: the chamber | 72×72 | Empty, growing and ready |
+| Probe module: the cradle | 96×72 | Full and empty |
+| Probe module: a Shield plate | 12×24 | One |
+| Probe module: the sitting frame | 24×32 | One |
+| Library module: the journal | 104×72 | One |
+| Module lamps | 12×12 | `sprout`, `sky` and `hairline` |
+| Cargo: the bay | 992×320 | Open and shut |
+| Cargo: a crate in the bay | 256×176 | Sealed and sitting |
+| Cargo: the crate closer | 384×256 | Sealed, opening and open |
+| Cargo: a rack well | 96×128 | One |
+| The room marks | 24×24 | `frame-room-home-24`, `frame-room-vivarium-24`, `frame-room-research-24`, `frame-room-library-24`, in [`art/device-buttons/marks/`](../../art/device-buttons/marks/) |
 
 ---
 

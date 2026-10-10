@@ -25,7 +25,7 @@ test("the tree: every screen's parent is in the tree, Home alone has none, and â
 
 test("the back words: Home none, the titles, the pod's label under the overview, and Back when the name will not fit", () => {
   assert.equal(N.backWord(nav, "home"), null, "no â† cap on Home");
-  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["habitat", "Home"], ["cross", "Habitat"]]) assert.equal(N.backWord(nav, p), w, p);
+  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["habitat", "Home"], ["cross", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
   for (const p of ["pods.chapter", "pods.compare", "create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
 });
 

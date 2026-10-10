@@ -20,7 +20,10 @@
 <text x="796" y="546" font-size="8" fill="#222" font-family="DejaVu Sans Mono, ui-monospace, monospace">bed 792,496 192×56</text>
 <rect x="792.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
 <rect x="840.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="864.5" y="448.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
+<rect x="816.5" y="448.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
 <text x="796" y="366" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">asleep: feet at 864 and 912 on y 536</text>
+<text x="796" y="377" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">nap ink ≤ 96×88 on the feet, no mark</text>
 <rect x="0.5" y="568.5" width="1023" height="31" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="568.5" width="991" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="589" font-size="16" fill="#6b6880" text-anchor="middle">a bud is growing</text>

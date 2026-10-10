@@ -17,11 +17,12 @@
 <rect x="448.5" y="472.5" width="191" height="55" fill="#efe0c8" stroke="#8a6a44" stroke-width="1"/>
 <text x="452" y="522" font-size="8" fill="#8a6a44" font-family="DejaVu Sans Mono, ui-monospace, monospace">with-you bed 448,472 192×56</text>
 <rect x="496.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
-<path d="M616 360h24v16h-24z" fill="#c9c2e6"/>
+<rect x="520.5" y="424.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
 <rect x="448.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
-<path d="M568 360h24v16h-24z" fill="#c9c2e6"/>
+<rect x="472.5" y="424.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
 <text x="454" y="376" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">asleep: 2 carried,</text>
 <text x="454" y="388" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">feet 48 apart on y 512</text>
+<text x="454" y="400" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">nap ink ≤ 96×88, no mark</text>
 <rect x="624.5" y="546.5" width="31" height="5" fill="#d8d8d8" stroke="#666" stroke-width="1"/>
 <text x="616" y="541" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">rest knob 624,544</text>
 <rect x="688.5" y="48.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>

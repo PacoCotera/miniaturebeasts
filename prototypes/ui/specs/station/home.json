@@ -21,8 +21,9 @@
     "adult": { "size": [144, 152], "box": "[footX − 72, 360, 144, 152]" },
     "juvenile": { "size": [104, 112], "box": "[footX − 52, 400, 104, 112]" },
     "rects": { "3 adults": [[424, 360, 144, 152], [472, 360, 144, 152], [520, 360, 144, 152]] },
+    "ink": { "max": [96, 88], "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY in its box: at most [footX − 48, 424, 96, 88]. Three sit on the 192 px bed, 16 px or more inside the glass", "rects": { "3": [[448, 424, 96, 88], [496, 424, 96, 88], [544, 424, 96, 88]] } },
     "order": "the bed first, then the sleepers right to left: the first carried is drawn last, in front",
-    "asleepMark": [24, 16], "markAt": "its box's top right", "lampGap": 8, "lift": 0,
+    "mark": null, "markNote": "no mark on a sleeper: the nap pose and the context (strings.subjects.sleeper, \"…, asleep\") say it; its waiting lamp at its box's top right, as a resident's", "lift": 0,
     "focus": "each sleeper is a resident target (focus.targets.resident), with the feet ring and no lift"
    },
    "states": { "docked": "the nest, then one to three sleepers, the carried set (carriedIds) in carried order", "away": "the nest, then the Companion mark 16×24 at markRect", "none": "docked with nobody carried: the nest alone" },
@@ -41,13 +42,13 @@
    "rect": [688, 48, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "bay": [112, 8, 176, 72], "crate": [48, 40], "crateAt": [0, 16], "pitch": 64, "max": 3,
    "crateRects": [[800, 72, 48, 40], [864, 72, 48, 40], [928, 72, 48, 40]],
-   "waiting": { "rect": [876, 80, 24, 24], "asset": "mark-waiting-24", "when": "pods wait in the bay for a free well and no crate waits" },
+   "waiting": { "rect": [876, 80, 24, 24], "asset": "mark-waiting-24", "when": "pods wait in the bay for a free well and no crate waits", "lamp": "off: the waiting mark is never amber; the need lights pods (strings.needs.waitingPods)" },
    "sittingCrates": { "places": "from the right: the first at 928, a second at 864; walk crates fill from the left; at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "lamp": { "at": [18, 44], "size": [12, 12], "rows": 10, "rule": "under its crate, inside the bay: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when the crate is ready" } },
    "states": {
     "away": { "bay": "shut: the lid, unless a sitting crate is in the bay, which keeps it open", "crates": "sitting crates only", "lamp": "off, or needsYou for a ready sitting crate" },
     "empty": { "bay": "open", "crates": "none", "lamp": "off" },
     "crates": { "bay": "open", "crates": "one sealed crate per crate in the bay, at most three, left to right in the order they open", "lamp": "needsYou" },
-    "waiting": { "bay": "open", "crates": "none", "mark": "regions.cargo.waiting", "lamp": "needsYou when it is the most pressing notice" }
+    "waiting": { "bay": "open", "crates": "none", "mark": "regions.cargo.waiting", "lamp": "off" }
    }
   },
   "pods": {
@@ -72,29 +73,28 @@
   "library": {
    "rect": [688, 464, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
    "journal": [112, 8, 104, 72], "journalRect": [800, 472, 104, 72],
-   "star": [12, 12], "starRect": [912, 476, 12, 12],
-   "states": { "empty": "no species found yet: the journal shut, lamp off", "pages": "the journal, lamp well", "newPage": "a page not yet opened: the glint star, lamp well" }
+   "states": { "empty": "no species found yet: the journal shut, lamp off", "pages": "the journal, lamp well" }
   }
  },
  "lamps": {
   "rule": "one 12×12 lamp per module at (984, module.y + 12); amber (needsYou) on one module at most: the module the room's ✓ acts on (strings.needs). The meet lights no module: the notice and the room's ✓ say it",
-  "cargo": { "off": "nothing in the bay ready to open", "needsYou": "a crate is ready to open (walk crates while docked, a ready sitting crate), or pods wait for a well and that is the most pressing notice" },
-  "pods": { "off": "the rack is empty", "well": "pods in the rack", "needsYou": "a new pod, a glinting pod, a pod that could grow or one waiting to be read is the most pressing notice" },
+  "cargo": { "off": "nothing in the bay ready to open; pods waiting for a well show the waiting mark, and the lamp stays off", "needsYou": "a crate is ready to open (walk crates while docked, a ready sitting crate) and that is the most pressing notice" },
+  "pods": { "off": "the rack is empty and no pod waits for a well", "well": "pods in the rack", "needsYou": "a new pod, a glinting pod, pods waiting for a well, a pod that could grow or one waiting to be read is the most pressing notice" },
   "incubator": { "off": "empty", "well": "a bud growing", "waiting": "the hatched mibi's painting is on its way", "needsYou": "the bud is ready" },
   "probe": { "off": "away", "well": "docked" },
   "library": { "off": "no species found", "well": "species in the journal" }
  },
  "events": {
-  "crateIn": { "kind": "crateIn", "target": "cargo", "hold": false, "when": "the Companion docks with crates while Home shows, or Home is landed on from Idle by Dock; docked on another screen, the crates are in the bay when Home next shows", "each": { "from": [0, -40], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay (800, 56, 176, 72)" } },
+  "crateIn": { "kind": "arrival", "target": "cargo", "hold": false, "when": "the Companion docks with crates while Home shows, or Home is landed on from Idle by Dock; docked on another screen, the crates are in the bay when Home next shows", "each": { "from": [0, -40], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay (800, 56, 176, 72)" } },
   "rest": { "kind": "rest", "target": "knob", "hold": true, "holdMs": 380, "steps": [{ "at": 0, "ms": 200, "do": "the knob settles from its lift; the ring goes" }, { "at": 200, "ms": 180, "do": "the screen transition (16-level Bayer dither) to Idle" }] }
  },
  "focus": {
   "initial": "room",
-  "roomKey": "room",
   "roomAt": [496, 288, 32, 24],
   "room": "the ring on nothing: no ring is drawn, ✓ does what needs the player (strings.needs), the room's point is roomAt's centre (512, 300)",
-  "fallback": "none",
   "graph": {
+   "roomKey": "room",
+   "fallback": "none",
    "room": { "up": "vivarium", "right": "cargo", "left": [{ "nearestIn": "resident" }, "vivarium"], "down": "none" },
    "vivarium": { "up": "none", "left": "none", "right": "cargo", "down": [{ "nearestIn": "resident" }, "none"] },
    "column": { "order": ["cargo", "pods", "incubator", "probe", "library", "knob"], "left": [{ "nearestIn": "resident" }, "vivarium"], "right": "none" },
@@ -198,6 +198,7 @@
   "nameTag": { "fill": "panel", "edge": "hairline", "text": "bone" }
  },
  "strings": {
+  "stages": { "juvenile": "young", "adult": "adult", "elder": "elder" },
   "modules": { "cargo": "Cargo", "pods": "Pods", "incubator": "Incubator", "probe": "Probe", "library": "Library" },
   "actions": {
    "vivarium": "Open the Vivarium",
@@ -218,20 +219,20 @@
    "pods": { "empty": "the rack is empty", "one": "a pod in the rack", "few": "{count} pods in the rack" },
    "incubator": { "empty": "the Incubator is empty", "growing": "a {species} bud, growing", "ready": "a {species} bud, ready" },
    "probe": { "docked": "the Probe in its cradle", "away": "the Probe is away" },
-   "library": { "pages": "the field journal", "newPage": "a new page in the journal", "empty": "the journal is empty" },
+   "library": { "pages": "the field journal", "empty": "the journal is empty" },
    "knob": "the Vivarium plays alone"
   },
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
    "order": ["crates", "budReady", "meet", "newPods", "glints", "waitingPods", "couldGrow", "toRead", "budGrowing"],
-   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the crates ready to open: walk crates while docked, and ready sitting crates" },
+   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the crates ready to open: walk crates while docked, and ready sitting crates, docked or away; the count is both, so the Cargo lamp, the notice and the room's ✓ agree: need() counts readyCrates (the ready sitting crates) with the bay's walk crates" },
    "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the Incubator" },
    "meet": { "module": null, "notice": "meet {name}", "action": "Meet {name}" },
    "newPods": { "module": "pods", "notice": "{count} new pods wait", "noticeOne": "a new pod waits", "action": "Look at the pods" },
    "glints": { "module": "pods", "notice": "{count} pods glint", "noticeOne": "a pod glints", "action": "Look at the pods" },
-   "waitingPods": { "module": "cargo", "notice": "{count} pods wait for a well", "noticeOne": "a pod waits for a well", "action": "Look at the pods" },
-   "couldGrow": { "module": "pods", "notice": "{a} {species} pod could grow", "action": "Look at the pods" },
-   "toRead": { "module": "pods", "notice": "{a} {species} pod waits unread", "action": "Look at the pods" },
+   "waitingPods": { "module": "pods", "notice": "{count} pods wait for a well", "noticeOne": "a pod waits for a well", "action": "Look at the pods" },
+   "couldGrow": { "module": "pods", "notice": "{a} {species} pod could grow", "short": "{a} {species} pod needs more ⚡", "action": "Look at the pods", "rule": "short of what growing it costs, it stays a need: the short notice, ⚡ as its 16 px icon after the words, no figure" },
+   "toRead": { "module": "pods", "notice": "{a} {species} pod waits unread", "short": "{a} {species} pod needs more ◆", "action": "Look at the pods", "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure" },
    "budGrowing": { "module": null, "notice": "a bud is growing", "action": "Look at the Incubator" }
   }
  }

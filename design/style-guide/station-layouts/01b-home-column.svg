@@ -95,8 +95,6 @@
 <rect x="984.5" y="476.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
 <rect x="800.5" y="472.5" width="103" height="71" fill="#8a6a44" stroke="#444" stroke-width="1"/>
 <path d="M852 476h1v64h-1z" fill="#e8dcc0"/>
-<path transform="translate(918,482)" d="M0 -6L1.5 -1.5L6 0L1.5 1.5L0 6L-1.5 1.5L-6 0L-1.5 -1.5z" fill="#f2c94c"/>
-<rect x="912.5" y="476.5" width="11" height="11" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1006" y="46" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">section column 688,48 · five modules 320×88 on a 104 pitch</text>
 <rect x="16.5" y="48.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="32" y="77" font-size="16" fill="#6f7a5e">Cargo</text>
@@ -108,11 +106,12 @@
 <text x="32" y="115" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">lid shut</text>
 <rect x="352.5" y="48.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="368" y="77" font-size="16" fill="#6f7a5e">Cargo</text>
-<rect x="648.5" y="60.5" width="11" height="11" fill="#e8a33d" stroke="#444" stroke-width="1"/>
+<rect x="648.5" y="60.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
 <path d="M464 56h176v72h-176z" fill="#3a414b"/>
 <rect x="540.5" y="80.5" width="23" height="23" fill="#c9c2e6" stroke="#222" stroke-width="1"/>
 <text x="368" y="104" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">pods wait</text>
-<text x="368" y="115" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">for a well</text>
+<text x="368" y="115" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">for a well:</text>
+<text x="368" y="126" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">lamp off</text>
 <rect x="16.5" y="152.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="32" y="181" font-size="16" fill="#6f7a5e">Pods</text>
 <rect x="312.5" y="164.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
@@ -214,7 +213,7 @@
 <rect x="648.5" y="476.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
 <rect x="464.5" y="472.5" width="103" height="71" fill="#8a6a44" stroke="#444" stroke-width="1"/>
 <path d="M516 476h1v64h-1z" fill="#e8dcc0"/>
-<text x="368" y="520" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">no new page</text>
+<text x="368" y="520" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">species found</text>
 <text x="704" y="104" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">every slot</text>
 <text x="704" y="115" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">at its place</text>
 <text x="704" y="208" font-size="9" fill="#555" font-family="DejaVu Sans Mono, ui-monospace, monospace">every slot</text>
