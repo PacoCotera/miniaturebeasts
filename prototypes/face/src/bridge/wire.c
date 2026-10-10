@@ -169,12 +169,14 @@ static int on_props(const msg_t *m, int len) {
   int seq; char screen[32];
   if (!num(m, key(m, "seq"), &seq) || seq < 0) return fail("props: seq is required");
   if (!str(m, key(m, "screen"), screen, sizeof screen)) return fail("props: screen is required");
-  if (!spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
+  char state[16] = ""; str(m, key(m, "state"), state, sizeof state);
+  int unbuilt = flag(m, key(m, "idle")) || strcmp(state, "notBuilt") == 0;   /* a screen with no binding table needs no spec: the frame's notBuilt composition draws it */
+  if (!unbuilt && !spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
   int r = key(m, "regions"); if (r >= 0 && m->tok[r].type != JSMN_OBJECT) return fail("props: regions must be an object");
   free(g_props); g_props = (char *)malloc((size_t)len + 1); if (!g_props) return -1; memcpy(g_props, m->js, (size_t)len); g_props[len] = 0;
   strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1;
-  if (key(m, "frame") >= 0) return screens_props(g_props, len);   /* props that carry the frame are drawn by the words */
+  if (key(m, "frame") >= 0 || unbuilt) return screens_props(g_props, len);   /* props that carry the frame are drawn by the words */
   return 0;
 }
 int wire_send(const char *json, int len) {

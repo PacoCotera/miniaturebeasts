@@ -8,7 +8,18 @@
 #include <stdio.h>
 #include <string.h>
 
-/* Which screens the face draws with words. A screen not in the list is still drawn by the page's scene nodes (face-lvgl.mjs). */
+/* The composition of a screen the face has no binding table for (frame.json notBuilt): the stage in colours.stageGround (Idle: the whole 1024x600 in notBuilt.colours.ground) and one line, centred. No picture, no target, no ring. */
+static void not_built(int idle) {
+  char c[24], s[V_STR]; int r[4];
+  if (idle) { spec_str("frame", "notBuilt.colours.ground", c, sizeof c); if (v_spec_rect("frame", "notBuilt.regions.ground.rect", r)) { v_region("ground", LAYER_CHROME); v_rect("notBuilt.ground", r[0], r[1], r[2], r[3], c); } }
+  else { spec_str("frame", "colours.stageGround", c, sizeof c); if (v_spec_rect("frame", "regions.stage.rect", r)) { v_region("stage", LAYER_CHROME); v_rect("notBuilt.stage", r[0], r[1], r[2], r[3], c); } }
+  spec_str("frame", idle ? "notBuilt.strings.idle" : "notBuilt.strings.line", s, sizeof s);
+  int px = spec_int("frame", "notBuilt.regions.line.px", 20), w = v_measure(s, px), x = spec_int("frame", "notBuilt.regions.line.centre", 512) - v_half(w);
+  spec_str("frame", "notBuilt.colours.line", c, sizeof c);
+  v_region("line", LAYER_TYPE); v_text("notBuilt.line", s, x, spec_int("frame", "notBuilt.regions.line.capTop", 288), w, px, c);
+}
+static int is_not_built(void) { char st[24]; spec_str("props", "state", st, sizeof st); return strcmp(st, "notBuilt") == 0; }
+/* Which screens the face draws with words. */
 static void frame_words(void) {
   if (spec_bool("props", "idle", 0)) return;                 /* Idle is the whole 1024x600: no top bar, no bottom line, no plate */
   if (spec_len("props", "frame.top") >= 0) word_topBar();
@@ -70,6 +81,8 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
 static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();   /* a screen draws its words when the props carry its regions */ }
+  if (spec_bool("props", "idle", 0)) not_built(1);          /* Idle has no binding table yet */
+  else if (is_not_built()) not_built(0);
   frame_words();
   stage_dither();
   prim_end();
@@ -94,6 +107,13 @@ static void say(const char *kind, const char *target, const char *verb) {
 void screens_key(int code) {
   if (anim_holding()) return;   /* an event holds input: no key is acted on (§2.1) */
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
+  if (spec_bool("props", "idle", 0)) { say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
+  if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
+    const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[8];
+    if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";
+    if (v) say("intent", "screen", v);
+    return;
+  }
   if (strcmp(screen, "pods") != 0 || spec_len("props", "regions") < 0 || !spec_has("pods")) return;
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
