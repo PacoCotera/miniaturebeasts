@@ -33,8 +33,11 @@ export function dock(h, fromIdle = false) {
 // The idle timer's enter (frame.json idle.enter): the dither closes over the stage for 180 ms with input held, and Idle shows at its end; with reduced motion it is a cut, Idle on this frame, hold 0.
 export function enterIdle(h) {
   const ev = h.specs.frame.idle.enter.transition;
-  if (h.motion ? h.motion() : true) { h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold: h.specs.frame.idle.enter.hold }); h.ui.entering = true; h.at(ev.ms, () => { h.ui.entering = false; h.ui.idle = true; }); }
-  else h.ui.idle = true;
+  const motion = h.motion ? h.motion() : true, hold = motion ? h.specs.frame.idle.enter.hold : 0;
+  h.play({ kind: "dither", target: "stage", ms: ev.ms, from: 0, to: ev.levels, hold });
+  if (!motion) { h.ui.idle = true; return; }   // a cut: Idle on the frame the timer fires, nothing held
+  h.pendingRoom = null; h.ui.entering = true; h.ui.resting = true;   // a room key in the hold is dropped, as in the rest: the next press wakes
+  h.at(ev.ms, () => { h.ui.entering = false; h.ui.resting = false; h.pendingRoom = null; h.ui.idle = true; });
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.
 export function wake(h, verb) { h.ui.idle = false; return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }

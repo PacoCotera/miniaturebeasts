@@ -7,11 +7,11 @@ import { livingOf } from "./home-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
-// The line (frame.json idle.strings): the first of the order that holds, none (empty) otherwise. Crates only while docked (the walk crates, one to three: more reads three); `out` only while the Companion is away with mibis carried.
+// The line (frame.json idle.strings): the first of the order that holds, none (empty) otherwise. Crates only while docked (the walk crates, one to three; more, the count dropped); `out` only while the Companion is away with mibis carried.
 export function idleLine(m, I) {
   const { st, sv, settings } = m, T = I.strings, docked = !!m.docked;
   for (const key of T.order) {
-    if (key === "crates") { const n = docked ? S.bayCrates(st, sv).length : 0; if (n) return T.crates[Math.min(n, 3)]; }
+    if (key === "crates") { const n = docked ? S.bayCrates(st, sv).length : 0; if (n) return n > 3 ? T.crates.many : T.crates[n]; }
     else if (key === "budReady") { if (S.budReady(st, settings)) return T.budReady; }
     else if (key === "budGrowing") { if (st.bud) return T.budGrowing; }
     else if (key === "out") {

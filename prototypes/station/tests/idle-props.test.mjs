@@ -49,7 +49,7 @@ test("the living window is Home's: the same residents with the same seeds, the s
 });
 test("the line: the first that holds of crates (docked), the bud ready, the bud growing, out with the Companion (away, mibis carried); none, empty; six words or fewer and no digits", () => {
   const L = (st, sv) => idleLine({ st, sv, settings, docked: S.docked(st) }, frame.idle);
-  { const st = world(); assert.equal(L(st, sv0()), "", "nothing: empty"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "a crate waits in the bay"); assert.equal(L(st, sv0({ bay: [crate(1), crate(2)] })), "two crates wait in the bay"); assert.equal(L(st, sv0({ bay: [1, 2, 3, 4].map(crate) })), "three crates wait in the bay", "more reads three"); }
+  { const st = world(); assert.equal(L(st, sv0()), "", "nothing: empty"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "a crate waits in the bay"); assert.equal(L(st, sv0({ bay: [crate(1), crate(2)] })), "two crates wait in the bay"); assert.equal(L(st, sv0({ bay: [1, 2, 3, 4].map(crate) })), "crates wait in the bay", "more than three: the count is dropped"); }
   { const st = world(); st.dock = { docked: false, at: T0 }; assert.equal(L(st, sv0({ bay: [crate(1)] })), "", "crates only while docked"); }
   { const st = world(); st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; assert.equal(L(st, sv0()), "a bud is growing"); st.bud.start = Date.now() - 1e9; assert.equal(L(st, sv0()), "the bud is ready"); assert.equal(L(st, sv0({ bay: [crate(1)] })), "a crate waits in the bay", "the crates come first"); }
   { const st = world(); adults(st, 3); st.dock = { docked: false, at: T0 }; const one = L(st, sv0({ carried: [st.mibis[0].id] })); assert.equal(one, `${st.mibis[0].name} is out with the Companion`);

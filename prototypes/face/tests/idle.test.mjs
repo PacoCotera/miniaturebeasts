@@ -20,11 +20,11 @@ const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.pars
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
 const framesDir = path.resolve(here, "../../workbench/frames");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
+const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 20 }, T0 = 1_000_000;
 
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
 function scene(o = {}) {
-  const st = world(); S.seedAdults(st, "S01", 5, o.adults ?? 4, settings); for (const m of st.mibis) m.paint = { state: "landed" };
+  const st = world(); for (let left = o.adults ?? 4, seed = 5; left > 0; left -= 6, seed += 100) S.seedAdults(st, "S01", seed, Math.min(6, left), settings);   // at most six a call for (const m of st.mibis) m.paint = { state: "landed" };
   if (o.young) { S.seedAdults(st, "S01", 77, o.young, settings); for (const m of st.mibis.slice(-o.young)) { m.born = st.turn; m.paint = { state: "landed" }; } }
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };
   if (o.away) st.dock = { docked: false, at: T0 }; if (o.bud) st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 };
@@ -95,7 +95,8 @@ test("the same props on the same clock give the same hash; with motion off the r
   const run = async (t, motion = true) => { const f = await start(scene({ adults: 4, carry: [0] }), { t0: 5000, motion }); for (let ms = 40; ms <= t; ms += 40) f.frame(5000 + ms); return f.hash(); };
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200)); assert.equal(await run(8000, false), await run(40, false), "motion off: nothing moves");
 });
-const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "twelve, three waiting": { adults: 12, waiting: 3 } };
+// the bays hold twelve in all, so with three asleep on the bed at most nine walk
+const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "twelve, three waiting": { adults: 12, waiting: 3 }, "nine adults, three asleep": { adults: 12, carry: [9, 10, 11] }, "three adults and six juveniles, three asleep": { adults: 6, young: 6, carry: [3, 4, 5] }, "nine, three waiting, three asleep": { adults: 12, waiting: 3, carry: [9, 10, 11] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) test(`the walk on Idle, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen`, { skip }, async () => {
   const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0;
   for (let t = step + off; t < 120000; t += step) {

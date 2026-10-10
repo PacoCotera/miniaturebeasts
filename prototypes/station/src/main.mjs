@@ -64,7 +64,8 @@ function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
   if (G.ready && FACE) {
     const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
-    if (!UI.idle && !UI.resting && !UI.entering && t - UI.lastInput > IDLE_MS && !arriving() && !H.holding() && UI.cargo?.state !== "report") frameIntents.enterIdle(H);   // the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card (frame.json idle.enter)
+    if (!UI.idle && (UI.resting || UI.entering || H.arriving() || H.holding() || UI.cargo?.state === "report")) UI.lastInput = Math.max(UI.lastInput, t);   // the 60 s counts from the later of the last press and the end of a hold, an arrival or Cargo's report card
+    else if (!UI.idle && t - UI.lastInput > IDLE_MS) frameIntents.enterIdle(H);   // the screen goes idle after a minute without a press, never in a hold, Cargo's opening or its report card (frame.json idle.enter)
     try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
   }

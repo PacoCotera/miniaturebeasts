@@ -56,7 +56,8 @@ test("the idle timer's enter (frame.json idle.enter): the dither closes over the
   const { h, sent, at } = rig(); at(1000); enterIdle(h);
   assert.deepEqual(sent.find((m) => m.kind === "dither"), { t: "event", kind: "dither", target: "stage", ms: 180, from: 0, to: 16, hold: 180 }); assert.equal(UI.idle, false); assert.equal(h.holding(), true); assert.equal(UI.entering, true);
   at(1179); assert.equal(UI.idle, false); at(1180); assert.equal(UI.idle, true); assert.equal(UI.entering, false); assert.equal(h.holding(), false);
-  UI.idle = false; const r = rig(false); r.at(1000); enterIdle(r.h); assert.equal(UI.idle, true, "a cut"); assert.equal(r.sent.length, 0); assert.equal(r.h.holding(), false);
+  UI.idle = false; const r = rig(false); r.at(1000); enterIdle(r.h); assert.equal(UI.idle, true, "a cut"); assert.deepEqual(r.sent.map((m) => [m.kind, m.hold]), [["dither", 0]]); assert.equal(r.h.holding(), false);
+  UI.idle = false; const k = rig(); k.at(0); enterIdle(k.h); onFaceMessage(k.h, { t: "intent", seq: 1, screen: "home", target: "room", verb: "room:research" }); assert.equal(k.h.pendingRoom, null, "a room key in the enter's hold is dropped, as in the rest"); k.at(180); assert.equal(UI.idle, true); assert.equal(UI.resting, false); assert.equal(k.h.pendingRoom, null); assert.equal(UI.screen, "home");
 });
 test("the wake: the first press on Idle sends the dither back with hold 180, and 0 with reduced motion; it does nothing else", () => {
   for (const [motion, hold] of [[true, 180], [false, 0]]) {
@@ -68,4 +69,7 @@ test("the Dock key from Idle docks and lands on Home with the ring on the room; 
   const { h } = rig(); G.sv.mibis = []; UI.screen = "pods"; UI.home.f = "pods"; UI.idle = true; G.st.dock = { docked: false, at: 0 };
   INTENTS.frame.dock(h, true); assert.equal(G.st.dock.docked, true); assert.equal(UI.screen, "home"); assert.equal(UI.home.f, "room");
   UI.screen = "pods"; UI.idle = true; INTENTS.frame.dock(h, true); assert.equal(G.st.dock.docked, false); assert.equal(UI.screen, "pods", "lifted: the screen under Idle");
+});
+test("an arrival is tracked by the host (the idle timer waits for the end of Home's crates sliding in, which hold nothing)", () => {
+  const { h, at } = rig(); at(0); assert.equal(h.arriving(), false); h.play({ kind: "arrival", target: "cargo", ms: 750 }); assert.equal(h.holding(), false); assert.equal(h.arriving(), true); at(749); assert.equal(h.arriving(), true); at(750); assert.equal(h.arriving(), false);
 });

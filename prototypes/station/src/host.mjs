@@ -119,18 +119,20 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]);
 export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
-  let holdUntil = 0; const timers = [];
+  let holdUntil = 0, arrivalUntil = 0; const timers = [];
   const holding = () => nowMs() < holdUntil;
+  const arriving = () => nowMs() < arrivalUntil;   // an arrival plays (Home's crates sliding in holds nothing, and the idle timer waits for its end)
   const play = (e) => {
     if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && e.target === "cargo") || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
     const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
     if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
+    if (e.kind === "arrival") arrivalUntil = Math.max(arrivalUntil, nowMs() + (e.ms || 0));
     send({ t: "event", ...e, hold });
   };
   const at = (ms, fn) => { timers.push({ t: nowMs() + ms, fn }); };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, save: () => { save(); afterSave(); }, holding,
+    now: () => Date.now(), motion, say: msg, play, at, save: () => { save(); afterSave(); }, holding, arriving,
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
