@@ -100,3 +100,32 @@ test("a screen change: a Bayer dither of void over the stage clears in 16 levels
   }
   at(f, 180); assert.deepEqual(snap().every((v, i) => v === base[i]), true, "clear when the event ends"); assert.equal(msgs(f, "done").length, 1);
 });
+
+// ---- the hold in whole ms, the cut, and room keys during a hold (lvgl-switch.md §2.1) ----
+test("hold is whole ms: a boolean, a negative, a fraction and a number over 30000 are refused; `cut` is true or false", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c), ev = { t: "event", kind: "plate", target: "msg", ms: 400 };
+  for (const bad of [true, false, -1, 1.5, 30001, "100"]) { assert.equal(f.send({ ...ev, hold: bad }), -1, String(bad)); assert.match(f.errors()[0], /hold is a whole number of ms \(0 = none\)/); }
+  assert.equal(f.send({ ...ev, hold: 0 }), 0); assert.equal(f.send({ ...ev }), 0); assert.equal(f.send({ ...ev, hold: 30000 }), 0);
+  for (const bad of [1, "true", null]) { assert.equal(f.send({ ...ev, cut: bad }), -1, String(bad)); assert.match(f.errors()[0], /cut is true or false/); }
+  assert.equal(f.send({ ...ev, cut: true }), 0); assert.equal(f.send({ ...ev, cut: false }), 0);
+});
+test("the hold is independent of ms: a hold shorter than the event frees input while it plays; a hold longer holds past its end", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c), pod = c.props.regions.specimen.pod.id, keyed = () => { f.send({ t: "key", k: "right" }); return msgs(f).filter((m) => m.t === "focus").length; };
+  send(f, { kind: "seal", target: pod, ms: 2000, hold: 500 }); at(f, 300); assert.equal(keyed(), 0, "held at 300"); at(f, 600); assert.equal(keyed(), 1, "free at 600 while the seal still plays"); assert.equal(msgs(f, "done").length, 0);
+  const f2 = await start(c); send(f2, { kind: "plate", target: "msg", ms: 400, hold: 1000 }); at(f2, 600); assert.equal(msgs(f2, "done").length, 1, "the event is over");
+  f2.send({ t: "key", k: "right" }); assert.equal(msgs(f2).filter((m) => m.t === "focus").length, 0, "the hold goes on at 600"); at(f2, 1100); f2.send({ t: "key", k: "right" }); assert.equal(msgs(f2).filter((m) => m.t === "focus").length, 1, "free at 1100");
+});
+test("a cut event ends at the next key the face acts on (done on that frame) and the key acts; an event with no cut does not", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c), pod = c.props.regions.specimen.pod.id;
+  send(f, { kind: "plate", target: "msg", ms: 4000, cut: true }); at(f, 100); assert.deepEqual(msgs(f, "done"), []);
+  f.send({ t: "key", k: "right" }); const out = msgs(f); assert.deepEqual(out.filter((m) => m.t === "done"), [{ t: "done", kind: "plate", target: "msg" }], "ended by the key"); assert.equal(out.filter((m) => m.t === "focus").length, 1, "and the key acted");
+  send(f, { kind: "wipe", target: pod, ms: 4000 }); at(f, 100); f.send({ t: "key", k: "left" }); assert.deepEqual(msgs(f, "done"), [], "no cut: it plays on");
+  const f2 = await start(c); send(f2, { kind: "plate", target: "msg", ms: 4000, cut: true, hold: 1000 }); at(f2, 100); f2.send({ t: "key", k: "right" }); assert.deepEqual(msgs(f2, "done"), [], "a hold comes first: the key does not cut");
+});
+test("during a hold the pad, ✓ and ← do nothing and a room key says room:<x> on the focus; when it ends the keys act again", { skip }, async () => {
+  const c = find("overview", /unidentified pod, the pod focused/), f = await start(c);
+  send(f, { kind: "seal", target: c.props.regions.specimen.pod.id, ms: 2000, hold: 2000 }); at(f, 100);
+  for (const k of ["right", "left", "up", "down", "confirm", "back"]) f.send({ t: "key", k }); assert.deepEqual(msgs(f).filter((m) => m.t === "focus" || m.t === "intent"), []);
+  f.send({ t: "key", k: "research" }); const [m] = msgs(f).filter((x) => x.t === "intent"); assert.deepEqual([m.verb, m.screen, m.target], ["room:research", "pods", "pod"]);
+  at(f, 2000); f.send({ t: "key", k: "right" }); assert.equal(msgs(f).filter((x) => x.t === "focus").length, 1, "free at the end of the hold");
+});

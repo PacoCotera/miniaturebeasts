@@ -2,7 +2,6 @@
 import * as S from "../state.mjs";
 import { codeText, frameOf } from "../genome.mjs";
 
-export const STAMP_MS = 900;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // The traits a pod can be shaped on: the read ones, in chapter order, with their chapter.
 export const reviewTraits = (p, frame) => frame.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => ({ c, t })));
@@ -19,7 +18,7 @@ export function intent(h, target, verb) {
   }
   else if (verb === "confirm") {
     const r = S.grow(h.st, p, cr.choices, h.settings, h.now()); if (!r.ok) { h.say(r.msg); return r; }
-    h.lock(STAMP_MS); h.play({ kind: "stamp", target: r.bud.code, ms: 1500 }); h.ui.create = null; h.ui.pods.cur = null; h.save(); h.goto("incubator");
+    h.play({ kind: "stamp", target: r.bud.code, ms: 1500 }); h.ui.create = null; h.ui.pods.cur = null; h.save(); h.goto("incubator");
     h.say("Grown · " + codeText(r.bud.code) + " · the pod is in the incubator"); return r;
   }
   else if (verb === "back") { h.ui.create = null; h.ui.pods.cur = p.id; h.ui.pods.view = "overview"; h.ui.pods.focus.set("pod"); h.goto("pods"); }

@@ -11,6 +11,7 @@ import * as S from "../src/state.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 import { INTENTS, dispatch } from "../src/intents/index.mjs";
 import { openBay } from "../src/intents/home.mjs";
+import { HATCH_MS } from "../src/intents/incubator.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
@@ -20,8 +21,8 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1
 const newUI = () => ({ screen: "home", home: { f: "room" }, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null) }, create: null, cross: null, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 }, meet: null, idle: false, report: null });
 // A recording host: the effects are lists to read afterwards.
 function host(st, sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, ui = newUI()) {
-  const h = { st, sv, settings, ui, specs: { pods: podsSpec, frame: frameSpec, home: homeSpec }, said: [], went: [], played: [], locked: [], saved: 0, t: T0, now: () => h.t };
-  Object.assign(h, { say: (t) => h.said.push(t), goto: (s) => { h.went.push(s); ui.screen = s; }, play: (e) => h.played.push(e), lock: (ms) => h.locked.push(ms), save: () => { h.saved++; } });
+  const h = { st, sv, settings, ui, specs: { pods: podsSpec, frame: frameSpec, home: homeSpec }, said: [], went: [], played: [], timers: [], saved: 0, t: T0, now: () => h.t };
+  Object.assign(h, { say: (t) => h.said.push(t), goto: (s) => { h.went.push(s); ui.screen = s; }, play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms, fn }), save: () => { h.saved++; } });
   return h;
 }
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; return st; };
@@ -51,7 +52,7 @@ test("Home: ✓ goes to the target's screen (Cargo, Pods on the pod that most ne
   go("resident." + m.id); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "stage", "habitat"]);
   h.ui.hab.id = st.mibis[1].id; go("vivarium"); assert.deepEqual([h.ui.hab.id, h.went.at(-1)], [st.mibis[1].id, "habitat"], "the Vivarium opens on the mibi last seen up close");
   go("room"); assert.equal(h.went.at(-1), "pods", "the room's ✓ does what needs the player: a new pod");
-  const ev = h.specs.home.events.rest; go("knob"); assert.deepEqual(h.played.at(-1), { kind: "rest", target: "knob", ms: ev.ms, hold: ev.hold }); assert.equal(h.ui.idle, false, "Idle comes when the face says done"); h.motion = () => false; go("knob"); assert.equal(h.ui.idle, true, "reduced motion: a cut, Idle at once");
+  const ev = h.specs.home.events.rest; go("knob"); assert.deepEqual(h.played.at(-1), { kind: "rest", target: "knob", ms: ev.ms, hold: ev.hold }); assert.equal(h.ui.idle, false, "Idle comes at the end of the hold, on the host's own clock"); assert.deepEqual(h.timers.map((t) => t.ms), [ev.steps[1].at, ev.hold], "the dither at 200 and Idle at 380 are scheduled, not waited for"); h.timers.at(-1).fn(); assert.equal(h.ui.idle, true); assert.equal(h.ui.resting, false); h.ui.idle = false; h.motion = () => false; go("knob"); assert.equal(h.ui.idle, true, "reduced motion: a cut, Idle at once");
   const n = h.went.length; INTENTS.home.intent(h, "room", "back"); INTENTS.home.intent(h, "cargo", "back"); assert.equal(h.went.length, n, "Home is the top: ← does nothing");
 });
 test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key plays the crates in while Home shows (events.crateIn: one arrival, the stagger's length)", () => {
@@ -61,17 +62,17 @@ test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key pl
   INTENTS.home.intent(h, "room", "confirm"); assert.equal(h.went.at(-1), "cargo");
   const h2 = host(world(), sv); h2.ui.screen = "pods"; h2.st.dock = { docked: false, at: T0 }; INTENTS.frame.dock(h2); assert.equal(h2.played.filter((e) => e.kind === "arrival").length, 0, "docked on another screen: no arrival, the crates are in the bay when Home next shows");
 });
-test("Cargo's bay opening is the rule, kept for the developer panel until Cargo is built: it opens every crate, an arrival each, input held, and says why when the bay is empty or shut", () => {
+test("Cargo's bay opening is the rule, kept for the developer panel until Cargo is built: it opens every crate, an arrival each, and says why when the bay is empty or shut", () => {
   const st = world(); S.seedCrate(st, "S01", 2, 4101, T0); st.dock = { docked: true, at: T0 };
   const h = host(st); openBay(h);
-  assert.equal(h.played.filter((e) => e.kind === "arrival").length, 1, "one crate, one arrival"); assert.ok(h.locked[0] > 3000); assert.ok(h.ui.report && h.saved === 1); assert.equal(st.tray.length, 2);
+  assert.equal(h.played.filter((e) => e.kind === "arrival").length, 1, "one crate, one arrival"); assert.ok(h.ui.report && h.saved === 1); assert.equal(st.tray.length, 2);
 });
 
 test("the incubator: ✓ on a ready bud opens it (the hatch event, the new mibi to meet), on a growing one grows it now; ← goes Home", () => {
   const st = world(), p = pod(st, "S01", chapters("S01")); assert.ok(S.grow(st, p, {}, settings, T0).ok);
   const h = host(st); h.t = T0;
   INTENTS.incubator.intent(h, "bud", "confirm"); assert.equal(h.said.at(-1), "The bud grows now"); assert.ok(S.budReady(st, settings, T0));
-  INTENTS.incubator.intent(h, "bud", "confirm"); const hatch = h.played.find((e) => e.kind === "hatch"); assert.ok(hatch && hatch.hold); assert.equal(h.ui.meet, st.mibis.at(-1).id); assert.equal(st.bud, null);
+  INTENTS.incubator.intent(h, "bud", "confirm"); const hatch = h.played.find((e) => e.kind === "hatch"); assert.ok(hatch && hatch.hold === HATCH_MS && Number.isInteger(hatch.hold)); const meet = h.timers.at(-1); assert.equal(meet.ms, HATCH_MS, "the hand-off to the meet is scheduled at the hatch's end"); meet.fn(); assert.deepEqual([h.went.at(-1), h.ui.hab.f], ["habitat", "door"]); assert.equal(h.ui.meet, st.mibis.at(-1).id); assert.equal(st.bud, null);
   INTENTS.incubator.intent(h, "bud", "back"); assert.equal(h.went.at(-1), "home");
 });
 
@@ -114,7 +115,7 @@ test("Create: ◀ ▶ walk the read traits, ✓ grows the founder (a stamp event
 
 test("Pods ✓: Identify plays the seal (and a ribbon for a new species), an identified pod opens Create whatever has been read, a tab opens its page free and on the page reads, ← climbs one level", () => {
   const st = world(), a = pod(st, "S01", [], 5, false), h = host(st); h.ui.pods.cur = a.id; h.ui.pods.view = "overview";
-  INTENTS.pods.intent(h, "pod", "confirm"); assert.equal(a.idd, 1); assert.ok(h.played.some((e) => e.kind === "seal" && e.hold)); assert.ok(h.played.some((e) => e.kind === "ribbon"), "a new species"); assert.equal(h.saved, 1);
+  INTENTS.pods.intent(h, "pod", "confirm"); assert.equal(a.idd, 1); assert.ok(h.played.some((e) => e.kind === "seal" && e.hold === 2000)); assert.ok(h.played.some((e) => e.kind === "ribbon"), "a new species"); assert.equal(h.saved, 1);
   assert.equal(a.read.length, 0); INTENTS.pods.intent(h, "pod", "confirm"); assert.equal(h.went.at(-1), "create", "identified with nothing read opens Create"); assert.equal(h.ui.create.podId, a.id);
   h.went.length = 0; h.ui.create = null;
   INTENTS.pods.intent(h, "rail.1", "confirm"); assert.deepEqual([h.ui.pods.view, h.ui.pods.ci, h.ui.pods.focus.cur], ["chapter", 1, "rail.1"]); assert.equal(a.read.length, 0, "opening a page is free");

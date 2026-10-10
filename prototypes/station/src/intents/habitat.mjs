@@ -15,7 +15,7 @@ export function intent(h, target, verb) {
   if (verb === "back") { h.goto("home"); return; }
   if (verb !== "confirm" || !m) return;
   a.f = target;
-  if (target === "stage" || (target[0] === "s" && target !== "stage")) { h.lock(MOMENT_MS); h.play({ kind: "moment", target: String(m.id), ms: MOMENT_MS }); h.say(m.name + " leans on the glass · " + (m.mem ? "it remembers the " + m.mem : m.from.g ? "it came from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "it hasn’t been out yet")); }
+  if (target === "stage" || (target[0] === "s" && target !== "stage")) { h.play({ kind: "moment", target: String(m.id), ms: MOMENT_MS }); h.say(m.name + " leans on the glass · " + (m.mem ? "it remembers the " + m.mem : m.from.g ? "it came from the " + (S.PLACE_WORD[m.from.g] || m.from.g) : "it hasn’t been out yet")); }
   else if (target === "door") {   // ✓ takes the resident with you or brings it home, whichever the set as it will be offers; a request for it already waits: nothing
     if (S.pendingCarry(h.st, h.sv).some((r) => r.id === m.id)) return;
     const bring = S.projectCarried(h.st, h.sv).includes(m.id), r = bring ? S.carryHome(h.st, h.sv, m) : S.carryAdd(h.st, h.sv, m), dk = S.docked(h.st);

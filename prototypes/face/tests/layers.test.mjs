@@ -48,7 +48,7 @@ for (const c of cases) {
   test(`layers, Pods ${c.state}: ${c.name}`, { skip }, async () => {
     const f = await setup(c);
     assert.equal(f.props(c.props), 0, f.errors().join("; ")); frames(f);
-    if (c.events) { const t0 = f.t; for (const e of c.events) assert.equal(f.send({ t: "event", ...e, hold: e.hold === true ? e.ms : e.hold }), 0); f.frame(t0 + c.at); }
+    if (c.events) { const t0 = f.t; for (const e of c.events) assert.equal(f.send({ t: "event", ...e }), 0); f.frame(t0 + c.at); }
     f.pass(1); assert.equal(f.offPalette(), 0, "chrome reads pixels outside the palette");
     f.pass(2); assert.equal(f.offPalette(), 0, "chrome and art read pixels outside the palette");
     f.pass(3); painted += f.offPalette();
@@ -59,7 +59,7 @@ test("the check bites: the painted layer shows pictures outside the palette in s
 // An art piece wrongly put on the painted layer would escape the palette check (it would simply not show on pass 2). So each art id the cases draw is also checked to be visible: its stand-in
 // recoloured, the pass-2 frame must change.
 const artSeen = new Map(); for (const c of cases) for (const p of c.pictures) if (isArt(p.id) && !artSeen.has(p.id)) artSeen.set(p.id, c);
-const pass2 = async (c, salted) => { const f = await setup(c, salted); assert.equal(f.props(c.props), 0); frames(f); if (c.events) { const t0 = f.t; for (const e of c.events) f.send({ t: "event", ...e, hold: e.hold === true ? e.ms : e.hold }); f.frame(t0 + c.at); } f.pass(2); return f.hash(); };
+const pass2 = async (c, salted) => { const f = await setup(c, salted); assert.equal(f.props(c.props), 0); frames(f); if (c.events) { const t0 = f.t; for (const e of c.events) f.send({ t: "event", ...e }); f.frame(t0 + c.at); } f.pass(2); return f.hash(); };
 for (const [id, c] of artSeen) {
   test(`layers, the art id ${id} shows on pass 2`, { skip }, async () => {
     const same = await pass2(c, null), changed = await pass2(c, id);

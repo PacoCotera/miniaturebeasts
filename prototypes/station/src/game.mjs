@@ -8,7 +8,7 @@ import { createFramePresenter } from "./present.mjs";
 import { createFocus } from "../../ui/focus.mjs";
 
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
-export const FX = { msg: "", msgAt: -1e9, lockUntil: 0, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
+export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
   create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 },
   report: null, meet: null, lastInput: 0, idle: false };
@@ -22,7 +22,6 @@ const listeners = new Set();
 export const onChange = (fn) => listeners.add(fn);
 const changed = () => { for (const fn of listeners) fn(); };
 export function msg(t) { FX.msg = t; FX.msgAt = clock.now; TL.play({ kind: "plate", target: "msg", ms: 4000 }); }   // the screens on the layer read the plate's time from the timeline
-export function lockInput(ms) { FX.lockUntil = Math.max(FX.lockUntil, clock.now + ms); }
 export const now = () => clock.now;
 export const st = () => G.st;
 export const sv = () => G.sv;

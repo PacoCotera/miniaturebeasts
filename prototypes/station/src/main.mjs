@@ -65,7 +65,7 @@ function frame(t) {
   if (G.ready && FACE) {
     const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
     if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && !H.holding()) UI.idle = true;   // the screen goes idle after a minute without a press
-    try { render(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
+    try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
   }
   requestAnimationFrame(frame);
@@ -76,9 +76,9 @@ function frame(t) {
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (H.holding()) { if (k !== "dock") { syncProps(); FACE.key(k); pump(); } return; }   // an event holds input: the Dock key does not act, and the face acts on no key but a room key while Home rests; the host keeps that intent until the hold ends (host.mjs)
+  if (H.holding()) { if (k !== "dock") { FACE.key(k); pump(); } return; }   // an event holds input: the Dock key does not act; the face says only a room key, which the host keeps (the last one) and dispatches when the hold ends, and drops during Home's rest (host.mjs)
   syncProps();
-  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: true }); } frameIntents.dock(H, wasIdle); return; }
+  if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); } frameIntents.dock(H, wasIdle); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
   if (k !== "confirm") H.disarm();
   FACE.key(k); pump();
@@ -175,7 +175,7 @@ const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
 // Test hooks (not part of play).
 const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") H.goto("pods"); };
 window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pendingRoom: () => H.pendingRoom ?? null, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
-  say: (t) => msg(t), act: (k) => { FX.lockUntil = 0; act(k); }, press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => home.openBay(H), unlock: () => { FX.lockUntil = 0; }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
+  say: (t) => msg(t), act: (k) => act(k), press: act, need, dockKey: (fromIdle = false) => frameIntents.dock(H, fromIdle), openBay: () => home.openBay(H), wake: () => { UI.idle = false; UI.lastInput = performance.now(); }, goto: (s) => H.goto(s),
   get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, pass: FACE.pass, offPalette: FACE.offPalette, forceFull: FACE.forceFull, errors: faceErrors.slice(), log: () => lastLog } : null; },
   // The face's frame as the tools take it: the framebuffer hash, the pixels outside the palette on pass 1 (chrome) and pass 2 (chrome and art, test mode), the errors, and with `capture` the PNG.
   snapshot: ({ capture = false } = {}) => { const f = FACE, out = { hash: f.hash(), errors: faceErrors.slice(), refused: f.refused() }; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); if (capture) { f.forceFull(); f.present(vctx); out.png = vis.toDataURL("image/png"); } return out; },
