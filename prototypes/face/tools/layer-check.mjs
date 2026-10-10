@@ -9,6 +9,8 @@ import { fileURLToPath } from "node:url";
 import { podsStates } from "./pods-states.mjs";
 import { homeStates } from "./home-states.mjs";
 import { departures } from "./home-regions.mjs";
+import { idleStates } from "./idle-states.mjs";
+import { departures as idleDepartures } from "./idle-regions.mjs";
 import { cargoStates } from "./cargo-states.mjs";
 import { departures as cargoDepartures } from "./cargo-regions.mjs";
 
@@ -22,6 +24,11 @@ const reading = (screen) => async (name, page, fail) => {
     const d = departures(c.log, home, frame, c.cur); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
     for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
   }
+  if (screen === "idle") {
+    const c = await page.evaluate(() => ({ log: window.__st.check().log, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
+    const d = idleDepartures(c.log, frame); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
+    for (const m of d.slice(0, 3)) fail(`${name}: ${m}`); if (c.objects > 400) fail(`${name}: ${c.objects} objects (budget 400)`); if (c.pictures > 200) fail(`${name}: ${c.pictures} pictures (budget 200)`); if (c.size > 32 * 1024) fail(`${name}: props ${c.size} B (budget 32 KiB)`);
+  }
   if (screen === "cargo") {
     const c = await page.evaluate(() => ({ log: window.__st.check().log, state: window.__st.props?.state, size: JSON.stringify(window.__st.props ?? {}).length, objects: window.__st.face.objects(), pictures: window.__st.face.stats.pictures }));
     const d = cargoDepartures(c.log, cargo, frame, c.state); extra = ` · departures ${d.length} · objects ${c.objects} · pictures ${c.pictures} · props ${c.size} B`;
@@ -31,5 +38,5 @@ const reading = (screen) => async (name, page, fail) => {
   if (r.errors.length || r.refused) fail(name + ": " + r.errors.join("; ") + " refused " + r.refused);
   if (r.pass1 !== 0) fail(name + ": chrome reads " + r.pass1 + " off-palette pixels"); if (r.pass2 !== 0) fail(name + ": art reads " + r.pass2 + " off-palette pixels");
 };
-for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates]]) { const { fails } = await states(reading(screen)); failed += fails.length; }
+for (const [screen, states] of [["pods", podsStates], ["home", homeStates], ["cargo", cargoStates], ["idle", idleStates]]) { const { fails } = await states(reading(screen)); failed += fails.length; }
 console.log(failed ? failed + " failure(s)" : "layer check ok"); process.exit(failed ? 1 : 0);

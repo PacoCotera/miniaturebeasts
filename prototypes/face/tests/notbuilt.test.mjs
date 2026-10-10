@@ -1,4 +1,4 @@
-// The not-built composition (frame.json notBuilt): a screen with no binding table shows the frame, the stage in colours.stageGround and one line centred on 512 with its cap top on 288; Idle with no binding
+// The not-built composition (frame.json notBuilt): a screen with no binding table shows the frame, the stage in colours.stageGround and one line centred on 512 with its cap top on 288.
 // shows the whole screen in the ground and its own line, no frame. Keys: a room key and ← (when the bottom line has a back word) are intents, everything else nothing; the first key on Idle is `wake`.
 // Skipped when the face has not been built.
 //   node --test prototypes/face/tests/notbuilt.test.mjs
@@ -30,12 +30,6 @@ test("a framed screen: the stage in the ground, the line centred on 512 with its
   assert.ok(Math.abs(r.rect[0] + r.rect[2] / 2 - N.regions.line.centre) <= 1, `centred: ${r.rect}`);
   assert.deepEqual(f.pixel(20, 100), rgbOf(frameSpec.colours.stageGround), "the stage ground");
   assert.ok(lg.type.some((x) => x.text === "Library"), "the title"); assert.ok(lg.type.some((x) => x.text === "Home"), "the back word");
-});
-
-test("Idle with no binding: the whole screen in the ground, the Idle line, no frame", { skip }, async () => {
-  const f = await setup(); assert.equal(f.props({ screen: "idle", idle: true }), 0, f.errors().join("; ")); frames(f);
-  assert.deepEqual(f.errors(), []); const lg = logOf(f);
-  assert.deepEqual(lg.type.map((x) => x.text), [N.strings.idle]); assert.deepEqual(f.pixel(2, 2), rgbOf(N.colours.ground)); assert.deepEqual(f.pixel(1020, 596), rgbOf(N.colours.ground));
 });
 
 test("keys: a room key is an intent, ← only with a back word, confirm and the pad nothing; any key on Idle is wake", { skip }, async () => {

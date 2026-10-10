@@ -26,15 +26,10 @@ export function wordsOf(need, spec) {
   return { notice, action: fill(N.action, vals) };
 }
 
-export function homeBuild(m, spec, frame) {
-  const { st, sv, settings } = m, requests = [], req = (r) => { requests.push(r); return r.id; };
-  const R = spec.regions, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
-  const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
-  // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
-  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
-  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
-
-  // the living window: the glass's master (day), the residents at home walking, the bed with the carried set asleep
+// The living window's people, shared by Home's glass, Idle's painting and (later) the Vivarium's whole: the residents at home (a seed each, the face steps the walk), the carried set asleep on the bed when docked, and the bed's state and
+// PH plate. R: the spec's regions (resident sizes, bed rect and sleepers); req/ph: the view's request makers.
+export function livingOf(m, R, req, ph) {
+  const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
   const pic = (mb, size) => req({ kind: "mibi", id: `mibi:${mb.id}:${size.join("x")}`, mibi: mb.id, species: S.speciesOf(mb), size });
@@ -46,7 +41,20 @@ export function homeBuild(m, spec, frame) {
     picture: ph(`home-bed-${R.bed.rect[2]}x${R.bed.rect[3]}`, R.bed.rect.slice(2)),   // the bed's PH plate in every state; no Companion mark is drawn until the art director's hand-drawn mark (home-bed-mark-16x24) lands
     sleepers,
   };
+  return { residents, sleepers, bed };
+}
 
+export function homeBuild(m, spec, frame) {
+  const { st, sv, settings } = m, requests = [], req = (r) => { requests.push(r); return r.id; };
+  const R = spec.regions, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
+  const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
+  // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
+  const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
+  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
+
+  // the living window: the glass's master (day), the residents at home walking, the bed with the carried set asleep
+  const lw = livingOf({ st, sv, settings, docked }, R, req, ph);
+  const { residents, sleepers, bed } = lw;
   // the modules
   const crates = docked ? S.bayCrates(st, sv).length : 0;
   const cargoState = !docked ? "away" : crates ? "crates" : st.waiting.length ? "waiting" : "empty";

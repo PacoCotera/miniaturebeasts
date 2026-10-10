@@ -18,6 +18,7 @@ void screens_redraw(void);
 void screens_key(int code);
 /* Home (screens/home.c): its words, the targets as they drew them, its keys, and whether a step of the residents' walk is due at `now` */
 void home_words(void);
+void idle_words(void);   /* Idle: the living window's code on frame.json idle, and its line (screens/home.c) */
 int home_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void home_key(int code);
 int home_tick(uint32_t now);

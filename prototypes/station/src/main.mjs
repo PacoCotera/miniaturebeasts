@@ -4,7 +4,7 @@
 // props in host.mjs.
 import { PALETTE, clock, motion } from "./pixels.mjs";
 import { ICON } from "./art.mjs";
-import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, arriving, onChange, podById, mibiById, LAYER } from "./game.mjs";
+import { G, FX, UI, SPECS, IDLE_MS, msg, save, load, loadSettings, storageChanged, need, docked, hasWorld, bayCrates, onChange, podById, mibiById, LAYER } from "./game.mjs";
 import * as S from "./state.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
@@ -52,7 +52,7 @@ function syncProps() {
   for (const e of LAYER.presenter.events(topValues())) H.play(e);
   const p = screenProps(FX.msg), key = JSON.stringify(p.msg);
   if (key === lastProps) return;
-  if (!UI.idle) { FACE.beginScene(); for (const id of [...frameMarkIds(), ...p.ids]) FACE.handleOf(id, picture); }
+  { FACE.beginScene(); for (const id of [...(UI.idle ? [] : frameMarkIds()), ...p.ids]) FACE.handleOf(id, picture); }   // Idle needs only its own pictures
   if (FACE.props({ ...p.msg, motion: motion() }) < 0) faceErrors.push(...FACE.errors());
   lastProps = key;   // set once the props are sent: a throw above leaves it unset, so the next frame tries again (and the error is kept)
 }
@@ -64,7 +64,7 @@ function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
   if (G.ready && FACE) {
     const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
-    if (!UI.idle && t - UI.lastInput > IDLE_MS && !arriving() && !H.holding()) UI.idle = true;   // the screen goes idle after a minute without a press
+    frameIntents.idleTick(H, t, IDLE_MS);   // frame.json idle.enter: a minute without a press, never in a hold, an arrival or Cargo's report card
     try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
   }
@@ -74,7 +74,7 @@ function frame(t) {
 // --- the Station's keys: pad, Home/Research/Library/Vivarium, ← and ✓, plus the Caddy's Dock/Lift key ---
 // A key goes to the face, which moves the ring or says an intent; the intent is the rule call (intents/*). The Dock key is the Caddy's, a world event and not a Station key: the host calls the frame's dock.
 // The Caddy's Dock key, a world event and never a Station key: it wakes Idle (the dither back, held) and docks or lifts. A Dock pressed in a hold is kept by the host and acts when the hold ends (host.mjs).
-function dockKey() { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); } frameIntents.dock(H, wasIdle); }
+function dockKey() { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); const w = SPECS.frame.idle.wake; H.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: motion() ? w.hold : 0 }); } frameIntents.dock(H, wasIdle); }
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;

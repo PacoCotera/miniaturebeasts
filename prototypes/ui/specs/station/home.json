@@ -227,7 +227,7 @@
   "needs": {
    "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
    "order": ["crates", "budReady", "meet", "newPods", "glints", "waitingPods", "couldGrow", "toRead", "budGrowing"],
-   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the crates ready to open: walk crates while docked, and ready sitting crates, docked or away; the count is both, so the Cargo lamp, the notice and the room's ✓ agree: need() counts readyCrates (the ready sitting crates) with the bay's walk crates" },
+   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the walk crates in the bay, while docked; the count is theirs, so the Cargo lamp, the notice and the room's ✓ agree (state.need()). Sitting crates are not counted until the portrait's reveal is designed (station-layouts, Not designed yet)" },
    "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the Incubator" },
    "meet": { "module": null, "notice": "meet {name}", "action": "Meet {name}" },
    "newPods": { "module": "pods", "notice": "{count} new pods wait", "noticeOne": "a new pod waits", "action": "Look at the pods" },

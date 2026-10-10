@@ -643,6 +643,42 @@
     "subject": "sealed until identified",
     "idle": false
    }
+  ],
+  "idle-vivarium": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "idle",
+      "verb": "wake"
+     }
+    ],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Look at the pods",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "pods",
+    "focus": "pods",
+    "ok": "Open",
+    "subject": "sealed until identified",
+    "idle": false
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Look at the pods",
+    "subject": "",
+    "idle": false
+   }
   ]
  }
 }

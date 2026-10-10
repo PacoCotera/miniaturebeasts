@@ -9,6 +9,7 @@ import * as S from "./state.mjs";
 import { frameOf } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild } from "./views/home-props.mjs";
+import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
@@ -100,7 +101,12 @@ export function cargoBody() {
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
   const screen = UI.screen;
-  if (UI.idle) return { msg: { screen, idle: true }, ids: [] };
+  if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
+    const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked() }, SPECS.frame);
+    registerPictures(body.requests, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
+    const ids = new Set(body.requests.map((r) => r.id)); walk(body.props, ids);
+    return { msg: { screen, ...body.props }, ids: [...ids] };
+  }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
   const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
@@ -123,18 +129,20 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
 export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
-  let holdUntil = 0; const timers = [];
+  let holdUntil = 0, arrivalUntil = 0; const timers = [];
   const holding = () => nowMs() < holdUntil;
+  const arriving = () => nowMs() < arrivalUntil;   // an arrival plays (Home's crates sliding in holds nothing, and the idle timer waits for its end)
   const play = (e) => {
     if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
     const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
     if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
+    if (e.kind === "arrival") arrivalUntil = Math.max(arrivalUntil, nowMs() + (e.ms || 0));
     send({ t: "event", ...e, hold });
   };
   const at = (ms, fn) => { timers.push({ t: nowMs() + ms, fn }); };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
-    now: () => Date.now(), motion, say: msg, play, at, save: () => { save(); afterSave(); }, holding,
+    now: () => Date.now(), motion, say: msg, play, at, save: () => { save(); afterSave(); }, holding, arriving,
     // The frame loop's call: what was scheduled and is due runs, in order; then the room key kept through a hold is dispatched once the hold is over.
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
@@ -157,7 +165,7 @@ export function onFaceMessage(h, m) {
   if (m.t !== "intent") return;
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
-  if (m.verb === "wake") { dispatch(h, m); h.play({ kind: "dither", target: "stage", ms: 180, hold: 180 }); return; }
+  if (m.verb === "wake") { dispatch(h, m); const w = SPECS.frame.idle.wake, cut = !(h.motion ? h.motion() : true); h.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: cut ? 0 : w.hold }); return; }
   dispatch(h, m);
 }
 export { INTENTS };

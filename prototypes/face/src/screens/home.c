@@ -15,9 +15,14 @@
 #define H "home"
 #define MAXR 12
 #define MAXS 3
-static int hi(const char *p, int d) { return spec_int(H, p, d); }
-static int hk(const char *base, int k) { return spec_int(H, v_fmt("%s.%d", base, k), 0); }
-static void hrect(const char *p, int r[4]) { if (!v_spec_rect(H, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
+/* The living window is Home's glass and Idle's painting (frame.json idle): the same code reads the regions of the spec it is drawing for. On Idle (g_idle) `regions.glass` is `idle.regions.vivarium` and every other `regions.` is
+   `idle.regions.`, in the frame spec: the residents, the bed and the walk are the same rules on the other rectangles. */
+static int g_idle;
+static const char *hp(const char *p) { if (!g_idle) return p; if (strncmp(p, "regions.glass", 13) == 0) return v_fmt("idle.regions.vivarium%s", p + 13); if (strncmp(p, "regions.", 8) == 0) return v_fmt("idle.regions.%s", p + 8); return p; }
+static const char *sp(void) { return g_idle ? "frame" : H; }
+static int hi(const char *p, int d) { return spec_int(sp(), hp(p), d); }
+static int hk(const char *base, int k) { return spec_int(sp(), v_fmt("%s.%d", hp(base), k), 0); }
+static void hrect(const char *p, int r[4]) { if (!v_spec_rect(sp(), hp(p), r)) r[0] = r[1] = r[2] = r[3] = 0; }
 static int has(const char *asset) { return asset && *asset && wire_has_asset(asset); }
 
 #define STEP_MS 40
@@ -27,12 +32,17 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
    at its start. The walk state lives while the screen shows and starts again from the seeds when Home is shown again; a new id starts from its own seed, a props change with the same seed keeps the state. */
 static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the ground band */
 static void walk_load(void) {
-  int glass[4]; hrect("regions.glass.rect", glass); g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
-  g_xlo = glass[0] + 8; g_xhi = glass[0] + glass[2] - 8; g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
+  int glass[4]; hrect("regions.glass.rect", glass);
+  if (g_idle) {   /* Idle (frame.json idle.regions.resident.walk): the box.x range is the walk ground's own, 16..1008, and the keep-out is the spec's, never derived from the window's rectangle */
+    g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
+    g_xlo = hk("regions.resident.walk.ground", 0); g_xhi = g_xlo + hk("regions.resident.walk.ground", 2);
+  } else { g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1); g_xlo = glass[0] + 8; g_xhi = glass[0] + glass[2] - 8; }
+  g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
 }
 typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, nstep, step; long done; int live; } wk_t;
 static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
-void home_hidden(void) { g_have_t0 = 0; }
+static int g_ctx = -1;   /* the walk's last context (0 Home, 1 Idle): it starts again from the seeds when the other shows */
+void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; }
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
 static int meets_k(int x, int feet, int w) { return x + w > g_kx && feet > g_ky; }
 static void draw_point(wk_t *k, int *x, int *feet) { *x = g_xlo + (int)(wr(k) % (unsigned)(g_xhi - k->w - g_xlo + 1)); *feet = g_flo + (int)(wr(k) % (unsigned)g_fn); }
@@ -79,6 +89,7 @@ static int ent_focused(const ent_t *e, const char *cur);
 static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(), frozen_to = 0; (void)frozen_to;
+  if (g_ctx != g_idle) { g_have_t0 = 0; g_ctx = g_idle; }
   if (!g_have_t0) { g_nw = 0; g_t0 = now; g_have_t0 = 1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR;
   uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0;   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
@@ -226,7 +237,7 @@ void home_words(void) {
   ent_load(cur);
   { int st[4]; char ground[24]; spec_str("frame", "colours.stageGround", ground, sizeof ground);   /* the stage's ground under the bezel and the column, the frame's (as every screen's stage) */
     if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
-  word_livingWindow("home", "bezel", "glass", v_pstr("regions.glass.picture"));
+  word_livingWindow("home", "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"));
   glass_group(cur);
   for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
   build_restKnob(strcmp(cur, "knob") == 0);
@@ -272,6 +283,16 @@ void home_key(int code) {
 
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
-  if (strcmp(v_pstr("screen"), "home") != 0 || !spec_has(H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
+  int idle = v_pbool("idle", 0);
+  if ((strcmp(v_pstr("screen"), "home") != 0 && !idle) || !spec_has(idle ? "frame" : H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
   int t = (int)((now - g_t0) / STEP_MS); if (t == g_last_tick) return 0; g_last_tick = t; return 1;
+}
+
+/* ---- Idle (frame.json idle, station-layouts.md Idle): the whole 1024 x 600 with no frame: the Vivarium's painting (until its master the flat plates of idle.colours), the residents walking, the bed and the carried set asleep,
+   and the one line on its strip. The same living-window code as Home's glass, on the frame spec's rectangles. ---- */
+void idle_words(void) {
+  g_idle = 1; ent_load("");
+  word_livingWindow("frame", "vivarium", NULL, "idle.regions.vivarium", "idle.colours", v_pstr("regions.vivarium.picture"));
+  glass_group("");
+  g_idle = 0;
 }
