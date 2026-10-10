@@ -800,6 +800,10 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 130 - the Probe drafts, round 3 (owner-approved Pro requests)
+
+The Station art director's third Probe brief (the owner: a handheld detector), 2 Pro requests, one per direction, no retry, cap 9 MXN: E, the wand **4.43 MXN** and F, the palm detector **4.11 MXN**: 8.54; today's total **180.05 MXN of 250**. Concept drafts for the art director to pick from (not slices): `concepts/station-probe-drafts-3/` (its README has the table and honest notes: F drew a human hand holding the unit, and its filled silhouette is an unreadable blob). References project-owned only. The haul brief's correction (three containers, not four: drop the find tube) arrived after the sheets had run with four; they are delivered as they are (pass 129).
+
 ## Pass 129 - the Cargo haul container drafts (owner-approved Pro requests)
 
 The Station art director's cargo haul brief, 2 Pro requests, one per family, no retry, cap 9 MXN: Sheet 1, rugged **4.59 MXN** and Sheet 2, soft **4.18 MXN**: 8.77; today's total **171.51 MXN of 250**. Concept drafts for the art director to pick from (not slices, not in the manifest or status): `concepts/cargo-haul-drafts/` (its README has the table and the honest notes; sheet 1 carries the model's own caption text, which my prompt invited; sheet 2 has none). The Probe drafts C and D (pass 128) are kept as they are; the Probe is a handheld detector and a new Probe brief follows.
