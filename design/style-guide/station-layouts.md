@@ -770,7 +770,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Cargo | `✓ Open Cargo`, to its bay | "two sealed crates", "a sealed crate", "the bay is empty", "the bay is shut", "two pods wait for a well" |
 | Pods | `✓ Look at the pods`, to the collection, the ring on the pod that most needs you | "four pods in the rack", "a pod in the rack", "the rack is empty" |
 | Incubator | `✓ Open the Incubator` | "a Loika bud, growing", "a Loika bud, ready", "the Incubator is empty" |
-| Probe | `✓ Open the Probe bench` | "the Probe in its cradle", "the Probe is away" |
+| Probe | `✓ Open the Probe` | "the Probe in its cradle", "the Probe is away" |
 | Library | `✓ Open the Library`, to the spread | "the field journal", "the journal is empty" |
 | Rest knob | `✓ Rest`, to Idle | "the Vivarium plays alone" |
 
@@ -1036,7 +1036,7 @@ Every string on these screens, its zone and its longest case, measured in the re
 | Zone (room) | Strings | Longest |
 | --- | --- | --- |
 | Module word (16 px, 80 px to the objects) | Cargo, Pods, Incubator, Probe, Library | Incubator 72 |
-| Action (16 px, 356 after the cap) | Open the Vivarium · Look at {name} · Open Cargo · Look at the pods · Open the Incubator · Look at the Incubator · Open the Probe bench · Open the Library · Rest · Meet {name} · Open the bay · See the new pod · See the new pods · Done | Look at {name} 221 |
+| Action (16 px, 356 after the cap) | Open the Vivarium · Look at {name} · Open Cargo · Look at the pods · Open the Incubator · Look at the Incubator · Open the Probe · Open the Library · Rest · Meet {name} · Open the bay · See the new pod · See the new pods · Done | Look at {name} 221 |
 | Context (16 px, 208) | Home's and Cargo's contexts above; the stages young, adult, elder | the Incubator is empty 169; an elder Untuva, asleep 178 |
 | Notice (16 px, 256 after the lamp) | The needs above | an Untuva pod needs more ◆ 224 (the words 204, 4, the 16 px icon); an Untuva pod waits unread 212; three crates wait in the bay 204; meet {name} 204 |
 | Way back (16 px, 68) | Home, Cargo | Cargo 46 |

@@ -382,7 +382,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 - **Scope.** `create.json` and `incubator.json`. Create's roll among three pictures (a ▲▼ stepper), changed tags, the clash marks, the total on the bottom line. The Incubator's dome, bud, leaves (stepped per minute from props), tabs clearing, stamp and code, Grow now, the hatch event and the hand-off to the Vivarium's meet.
 - **Scope rulings.** R builds the `leafArc` layout rule (with its oracle in `derive.mjs` and its `layout.json` vectors), the `leaves` word's arc form with the `growNow` fill, the frame word's `stage` part, and the `dither` event with `bayerPick` and its string `from` (§2.2, §2.7), unless an earlier slot needs one of them first, in which case that slot builds it.
 - **Acceptance.** The gate. `page-create`, `page-incubator` and `page-hatch` captured on the face, and a `<screen>-<state>` capture for each state the specs list: `create-nothingRead`, `create-shape`, `create-grow`, `incubator-empty`, `incubator-growing`, `incubator-ready` and `incubator-hatch`. Grow it jumps to the Incubator; Choose a pod (an empty Incubator) jumps to Pods' collection; the hatch holds input, and Open after it sends the jump to the new mibi up close in the meet, which draws "not built yet", titled Vivarium, until V.
-- **Journey steps.** All four of `journey-pending/L2.4.mjs` (`create-walk`, `create-grow`, `incubator-states`, `incubator-empty`).
+- **Journey steps.** All four of `journey-pending/R.mjs` (`create-walk`, `create-grow`, `incubator-states`, `incubator-empty`).
 - **Later.** None: Create and the Incubator have one level each.
 - **Tests.** `leafArc`'s `layout.json` vectors in `face_test`, equal to `derive.mjs`; `create.json` and `incubator.json` `focus` as focus vectors (`focus.json`); Create's founder dither and the Incubator's events, the hatch held, as timeline tests.
 - **CI gates.** The gate for `create` and `incubator`.
@@ -391,7 +391,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 - **Scope.** The Vivarium's whole, the `vivarium` screen, from its spec: every mibi at home at its size in one full-width window, the bays along the foot, ✓ on a resident or a bay tile to that mibi up close, ← to Home with the ring on the panel. One mibi up close (`habitat.json`) in rest and meet: the resident large, card, stamp, the carried set's door, the card's heart (a state, never a target), the bays strip, the meet with its placeholder, and the targets that lead to Cross, the Sitting and the guide, which draw "not built yet" until their slots. The compositions `module` (with `lamp: null` on the Vivarium's modules), `nameTag`, `chapterPlates` and `bayStrip`, and `listPitch`'s forms (§2.2, §2.3). The Vivarium's graph as data: named edges, `nearestIn` with `ahead`, ordered lists, the strip's `axis`, in place of `nav.mjs` `habitatMove`. The namer (`namer.json`) as an overlay on the top layer (§2.2, §2.6); the meet's first ✓ opens it.
 - **Acceptance.** The gate. `page-vivarium`, `page-vivarium-away`, `page-vivarium-empty` (a fresh world's), `page-mibi-out`, `page-habitat`, `page-meet`, `page-meet-placeholder` and `page-namer` captured on the face. `page-meet` and `page-meet-placeholder` differ from one another. From a fresh world the loop plays end to end on the face (§4).
-- **Journey steps.** From `journey-pending/L2.5.mjs`: `vivarium-pad`, `vivarium-card`, `vivarium-meet` and `vivarium-trickle`. New: `vivarium-whole` (Home's panel opens the whole; a resident opens that mibi up close; ← from up close is the whole, ← from the whole is Home) and `vivarium-namer` (the meet's first ✓ opens the namer; Done names the mibi and hands the ring back).
+- **Journey steps.** From `journey-pending/V.mjs`: `vivarium-pad`, `vivarium-card`, `vivarium-meet` and `vivarium-trickle`. New: `vivarium-whole` (Home's panel opens the whole; a resident opens that mibi up close; ← from up close is the whole, ← from the whole is Home) and `vivarium-namer` (the meet's first ✓ opens the namer; Done names the mibi and hands the ring back).
 - **Later.** `page-habitat-compact`, `page-painted` and `page-offline` (slot 10); Cross (slot 7); the guide from the card's species word (slot 8); the Sitting (slot 9).
 - **Tests.** The whole's, `habitat.json`'s and `namer.json`'s `focus` as focus vectors (`focus.json`); the hatch's landing in the meet and the namer's open and close as timeline tests.
 - **CI gates.** The gate for `vivarium`, `habitat` and `namer`.
@@ -409,7 +409,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 - **Scope.** `bench.json` in the states `docked` and `away`: the bench's plates, switch and slot, the composition `shieldPlates`, the bench's focus as data, its events and bottom line. Its intent table (`intents/bench.mjs`). ✓ on Home's Probe module opens it; ← is Home.
 - **Acceptance.** The gate. `page-bench`, `page-bench-away`, `page-bench-armed` and `page-bench-tier2` captured on the face.
-- **Journey steps.** From `journey-pending/L2.5.mjs`: `probe-bench`.
+- **Journey steps.** All of `journey-pending/P.mjs`: `probe-bench`.
 - **Later.** None: the Probe has one level.
 - **Tests.** `bench.json` `focus` as focus vectors (`focus.json`); the bench's events as timeline tests.
 - **CI gates.** The gate for `bench`.
@@ -418,7 +418,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 - **Scope.** `views/cross.mjs` as props: the forecast's chapters, loci, gates, seeds, ranges, kinship and the wish, as data. The splice's row plan is `layout/splicePlan` (C), with its oracle in `derive.mjs`. Wires, ticks, dashed edges and gates are composed pictures per chapter block. Portraits, the ghost and seeds are generated pictures by id. Partner ◀▶ and the chapter walk ▲▼ are steppers. Cross them jumps to the Incubator.
 - **Acceptance.** The gate. The S09 chapter view with everything read (1,772 nodes in the JavaScript layer) draws in at most 400 objects. The splice's row plan equals `derive.mjs` for all sixteen frames (the test of `cross-splice.test.mjs` on the C side). `cross-overview`, `cross-chapter`, `page-cross`, `page-child` and `page-cross-siblings` are captured on the face.
-- **Journey steps.** All four of `journey-pending/L2.3.mjs` (`cross-open`, `cross-splice`, `cross-siblings`, `cross-room-key`).
+- **Journey steps.** All four of `journey-pending/slot-7-cross.mjs` (`cross-open`, `cross-splice`, `cross-siblings`, `cross-room-key`).
 - **Tests.** `cross-splice.test.mjs` and `cross-read.test.mjs` re-pointed at props; nothing of an unread chapter is in the props (the read-only rule, enforced at the contract).
 - **CI gates.** The gate for `cross`.
 
@@ -426,7 +426,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 - **Scope.** `library.json` and the guide's rules and model (`library.mjs`, `guide.mjs`, on `main` without drawing). Views as props: the Book face, the guide spread with columns by chapter, tinted panels as composed lattices, pips in fives, the detail band with plates and carriers, the page turn. The intent table `intents/library.mjs` and the guide's moves (`guideMove`). The Book's focus from the spec. Masters by id; the fold-out and page-turn stand-ins registered. Pods' figure becomes a target (§4, L2.0, Focus).
 - **Acceptance.** The gate. The Book face and the guide are held to `library.json`, the nine rulings and the signed wireframes (`10a`, `10b`). The guide journey's captures (`guide-*`, `book-*`, the no-carrier case) are produced from the LVGL face.
-- **Journey steps.** All five of `journey-pending/L2.1.mjs` (`pods-figure-guide`, `book-visit`, `habitat-species-row`, `book-guide-turn`, `guide-captures`).
+- **Journey steps.** All five of `journey-pending/slot-8-book-and-guide.mjs` (`pods-figure-guide`, `book-visit`, `habitat-species-row`, `book-guide-turn`, `guide-captures`).
 - **Tests.** `guide.test.mjs`, re-pointed at props. `library.test.mjs` unchanged.
 - **CI gates.** The gate for `library`, the Book and the guide.
 
@@ -434,7 +434,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 - **Scope.** `sitting.json` in the states pose, place, confirm and begin: choice cards, step tiles, the gilt part, the backdrop dither and the gilt's dither out. It is built when its art is placed.
 - **Acceptance.** The gate. `page-sitting-pose`, `page-sitting-place` and `page-sitting-armed` captured on the face. The Sitting has no JavaScript twin: it is held to checks 1, 3 and 4 and to the designer's signed wireframe, as the field guide is.
-- **Journey steps.** From `journey-pending/L2.5.mjs`: `sitting-first-screen`.
+- **Journey steps.** All of `journey-pending/slot-9-sitting.mjs`: `sitting-first-screen`.
 - **CI gates.** The gate for `sitting`.
 
 ### 10. The Vivarium's remaining states (size: about 0.25 × L2)
