@@ -29,9 +29,9 @@
 <text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
 <text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
 <line x1="668" y1="300" x2="668" y2="96" stroke="#2b6cb0" stroke-width="1.5" marker-end="url(#ah)"/>
-<text x="674" y="200" font-size="9" fill="#2b6cb0">window lifts 384 px</text>
-<text x="674" y="211" font-size="9" fill="#2b6cb0">0–600 ms, clipped</text>
-<text x="674" y="222" font-size="9" fill="#2b6cb0">at y 88: out of sight</text>
+<text x="674" y="200" font-size="9" fill="#2b6cb0">window swings up on its hinge,</text>
+<text x="674" y="211" font-size="9" fill="#2b6cb0">3 slices in 0–600 ms (placeholder:</text>
+<text x="674" y="222" font-size="9" fill="#2b6cb0">lifts 384 px), clipped at y 88</text>
 <rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
 <text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
 <rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
@@ -56,7 +56,7 @@
 <text x="24" y="96" font-size="10" fill="#2b6cb0">✓ Open (held 2780 ms,</text>
 <text x="24" y="109" font-size="10" fill="#2b6cb0">a held state):</text>
 <text x="24" y="122" font-size="10" fill="#2b6cb0">0 leaves and plaque word go;</text>
-<text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the window lifts;</text>
+<text x="24" y="135" font-size="10" fill="#2b6cb0">0–600 the window opens;</text>
 <text x="24" y="148" font-size="10" fill="#2b6cb0">600, 800 the bud cracks;</text>
 <text x="24" y="161" font-size="10" fill="#2b6cb0">1000 the juvenile stands</text>
 <text x="24" y="174" font-size="10" fill="#2b6cb0">  (painting or placeholder);</text>

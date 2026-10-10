@@ -1139,7 +1139,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 
 - **Room:** the work tray: what is under study sits in the device's warm daylight among field tools and small gauges, in the same housing as Home.
 - **The founder is warm**, with its own colours and the device's key light from the top left. Where a chapter is unread, it is frosted in cool pale blue-white, never a guess; with nothing read, all of it. Frost means unread, and only that.
-- **Around it, the device:** the work tray (`panel` back, `enamel` rim), the slate, and the Incubator's chamber, small, with its one hooded window in the sand housing. Matte throughout: no glass highlight, no beam, nothing glows for show.
+- **Around it, the device:** the work tray (`panel` back, `enamel` rim), the slate, and the Incubator's chamber, small, with its one hooded window in the sage housing. Matte throughout: no glass highlight, no beam, nothing glows for show.
 - **The founder is the placeholder** (nothing is painted before Grow).
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on Create](#placeholders-on-create)). The geometry does not change.
 - **The roll pictures** are re-cut from the chapter page's source (the painting's crop by the rig's region, or the per-look plate), never from its 128×160 picture, and only ever reduced. A surface or quality trait (Colour, Markings, Fluff, Sheen, Scales, Feathers, Tufts) is a bleed crop filling all 128×72, with no ground; a part or posture (Beak, Crown, Crest, Tail, Head, Eyes, Carriage) stands whole inside the centred 75%, 96×54 at (16, 9), its ground keyed.
@@ -1155,7 +1155,7 @@ Create is where the player shapes a founder from an identified pod and sees what
 | Work tray (`chamber`) | Back `panel`, rim `enamel`, floor `enamel` with a `bevel` edge; no glass edge, no highlight | A tray in the housing around the one warm thing |
 | Founder | Its own colours; unread parts `frostS` with a `frostD` texture | As Pods' unread frost |
 | Origin | `mist` | Context, quiet |
-| Small chamber (`dome`) | Back `ground`; set in the sand housing `enamel`; its window's edge `hairline`, no highlight; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's chamber, small and empty |
+| Small chamber (`dome`) | Back `ground`; set in the sage housing `metal`, as the Incubator's; its window's edge `hairline`, no highlight; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's chamber, small and empty |
 | Leaves | Empty, the small leaf's outline in `bevel` | The Incubator's leaf drawn at 8×12 |
 | Stamp label, code | `bone` label with a `slate` edge; the code `bone` on a `hairline` rule | The stamp label rule; a readout |
 
@@ -1334,8 +1334,8 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 
 ### 4. Art direction
 
-- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm in a sheltered chamber with one hooded window, set in the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing.
-- **The sand housing, matte;** the window set in it with a `hairline` edge and no highlight; leaf greens for the timer. Home's Incubator module draws the same chamber.
+- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing.
+- **The sage housing for the chamber, the sand housing for the base and the outer frame, matte;** the window set in the chamber with a `hairline` edge and no highlight; the hood a shallow lip, not a canopy; leaf greens for the timer.
 - **The chamber's ink** (window and hood) stays inside the arch outline (the chamber window row below), so the leaf arcs keep their clearance.
 - **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
 - **The bud** grows in two pictures, the first half of the wait and the second (one generic `bud-late-128x160`, with no drift toward the species' hue).
@@ -1348,10 +1348,10 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Chamber (`dome`) | Back `ground`; set in the sand housing `enamel`; the window's edge `hairline`, no highlight; the standby pool and the ready light `sand` (placeholder) | A window set in the housing; ready brightens the light inside, it never rings the window |
-| Nest | `sand`, shade `clay`, twigs `bark` (placeholder: the bud lies on moss; the art director sets the roles) | Warm, inside the living window |
+| Chamber (`dome`) | Back `ground`; set in the sage housing `metal`; the window's edge `hairline`, no highlight; the standby pool `sand`, the ready light `cream` | A window set in the housing; ready brightens the light inside, it never rings the window |
+| Bed (`nest`) | Moss: `leaf`, lit `grass`, shade and hollow `forest`; no twigs | Warm, alive, inside the living window |
 | Bud (placeholder) | Bean `peach`, lit `cream`, edge `rust`; late `blush`; the ready shape `bark` | The one warm thing; the shape a dark warm silhouette, never amber |
-| Base | `enamel`, matte, lit `sand`, shade `bevel`, edge `hairline`; the foot light `frost`; the plaque's plate `panel` with a `hairline` edge | The sand housing |
+| Base | `enamel`, matte, lit `sand`, shade `bevel`, edge `hairline`; the foot light `sage`, a quiet line that says it is alive and working; the plaque's plate `panel` with a `hairline` edge | The sand housing |
 | Plaque | growing `fog`, ready `bone`, empty `fog` | Ready is the brightest word, for across a table; empty never recedes to `mist` |
 | Leaves | Full `sage` with a `sageD` vein; empty an outline in `metal`; the current leaf `sage` rows from its foot | The palette's leaf timer |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role |
@@ -1440,7 +1440,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | no | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the chamber's window lifts 384 px, eased, whole pixels, out of sight under the rail (the motion stands until the chamber's master opens another way). 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
+| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the chamber's window opens on its hood's hinge, swinging up and back in three slices (at 0, 200 and 400 ms). Until the chamber master lands, the placeholder's window lifts 384 px instead, eased, whole pixels, out of sight under the rail, in the same 600 ms. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
 **The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the vivarium's states and events](#the-vivariums-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). With `motion: false` the hatch jumps to its end, the meet.
 
@@ -1449,11 +1449,11 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Thing | Pixel size | After the art reset |
 | --- | --- | --- |
 | Chamber (`dome`, `domeFront`) | 304×272 region (the old glass 304×270), back and front; empty, `dome-inside-standby-304x272` (the standby light at the region's size) | Stale: a bell jar; becomes the sheltered chamber with one hooded window, its ink inside the arch |
-| Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte |
+| Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte, its foot light `sage` |
 | Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Re-judged against the concept board's bean on moss; the box stays |
 | Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 | Carried |
 | Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
-| Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; the bud lies warm on moss |
+| Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |
 | Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
 | Juvenile | 304×312: the new mibi's painting, or its placeholder | Carried |
