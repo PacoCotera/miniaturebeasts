@@ -35,19 +35,6 @@ test("the room keys open the top of their room, Create and Cross are the places 
   assert.deepEqual(N.DROPS_ON_ROOM_KEY, ["create", "cross"]);
 });
 
-const T = (id, x, y, w = 60, h = 60) => ({ id, x, y, w, h });
-const HOME = [T("r:1", 100, 100), T("r:2", 100, 300), T("r:3", 300, 220), T("bay", 664, 50, 346, 118), T("tray", 664, 178, 346, 92), T("inc", 664, 280, 168, 170), T("cradle", 842, 280, 168, 170), T("lamp", 956, 460, 54, 84)];
-test("Home's pad: ▲▼ walk the column Bay, Rack, Incubator, Probe, Rest; ◀▶ cross to the residents and back on the nearest row; from the room ▶ is the bay and ◀ the nearest resident", () => {
-  const m = (c, d) => N.homeMove(HOME, c, d);
-  assert.deepEqual(["bay", "tray", "inc", "cradle", "lamp"].map((c, i, a) => m(c, "down")), ["tray", "inc", "cradle", "lamp", "lamp"], "▼ down the column, still at the end");
-  assert.deepEqual(["lamp", "cradle", "inc", "tray", "bay"].map((c) => m(c, "up")), ["cradle", "inc", "tray", "bay", "bay"]);
-  assert.equal(m("inc", "left"), "r:2", "from the Incubator the resident on the nearest row"); assert.equal(m("bay", "left"), "r:1"); assert.equal(m("lamp", "left"), "r:2");
-  assert.equal(m("r:3", "right"), "tray", "back to the column on the nearest row"); assert.equal(m("r:1", "right"), "bay"); assert.equal(m("r:2", "right"), "inc");
-  assert.equal(m("r:1", "down"), "r:2", "among the residents the nearest one that way"); assert.equal(m("r:3", "up"), "r:1"); assert.equal(m("r:1", "up"), "r:1");
-  assert.equal(m("room", "right"), "bay"); assert.equal(m("room", "left"), "r:3", "the nearest to the room"); assert.equal(m("room", "up"), "room"); assert.equal(m("bay", "right"), "bay");
-  assert.equal(N.homeMove(HOME.filter((t) => !t.id.startsWith("r:")), "room", "left"), "room", "no residents, nowhere to go");
-});
-
 test("Habitat's pad is a fixed order: the stage, the chapter plates, Cross, the door row, then the strip; Cross is reached directly", () => {
   const rows = N.habitatRows({ chapters: 5, adult: true, bays: [7, 9] }), m = (c, d, shown = 7) => N.habitatMove(rows, c, d, shown);
   assert.deepEqual(rows, [["stage"], ["ch0", "ch1", "ch2", "ch3"], ["ch4"], ["cross"], ["door", "wild"], ["s7", "s9"]]);

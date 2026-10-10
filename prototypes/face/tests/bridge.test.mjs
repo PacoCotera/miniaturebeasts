@@ -109,7 +109,7 @@ test("props: the screen's spec must be loaded, seq may not go back, the budget i
   assert.equal(f.send({ t: "props", seq: 6, screen: "pods", regions: [] }), -1); assert.match(f.errors()[0], /regions must be an object/);
   assert.equal(f.send({ t: "props", seq: 7, screen: "pods", regions: { pad: "x".repeat(33000) } }), -1); assert.match(f.errors()[0], /exceeds the 32768 byte budget/);
   assert.equal(f.send({ t: "props", screen: "pods" }), -1); assert.match(f.errors()[0], /seq is required/);
-  assert.equal(f.send({ t: "event", kind: "seal", target: "pod", ms: 2000, hold: true }), 0); assert.equal(f.send({ t: "event", kind: "dither", ms: 180 }), 0); assert.equal(M._face_event_count(), 2);
+  assert.equal(f.send({ t: "event", kind: "seal", target: "pod", ms: 2000, hold: 2000 }), 0); assert.equal(f.send({ t: "event", kind: "dither", ms: 180 }), 0); assert.equal(M._face_event_count(), 2);
   assert.equal(f.send({ t: "event", kind: "teleport" }), -1); assert.match(f.errors()[0], /unknown kind teleport/);
   assert.equal(f.send({ t: "key", k: "confirm" }), 0); assert.equal(M._face_key_count() >= 1, true); assert.equal(f.send({ t: "key", k: "x" }), -1); assert.match(f.errors()[0], /unknown key x/);
 });

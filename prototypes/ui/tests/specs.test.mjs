@@ -158,7 +158,7 @@ const paletteBad = (colours) => { const names = new Set(palette.colours.map(([n]
 // the closed vocabulary and the closed list of derived rules (station-layouts.md, The vocabulary (closed); leaves and leafArc: architect, 2026-10-09 13:24)
 const WORDS = new Set(["frame", "topBar", "bottomLine", "messagePlate", "focusRing", "panel", "stampLabel", "chapterRail", "chapterPage", "list", "specimen", "livingWindow", "ribbon", "text", "leaves"]);
 const LAYOUT_RULES = new Set(["railCompaction", "slantTabs", "pageGrid", "platePosition", "listPitch", "splicePlan", "guideColumns", "pipGroups", "leafArc"]);
-const lintRegions = (spec) => { for (const [id, r] of Object.entries(spec.regions)) { assert.ok(r.component || r.build, `${spec.screen}.${id} names its word or composition`); if (r.component) assert.ok(WORDS.has(r.component), `${spec.screen}.${id}: ${r.component} is a word of the closed vocabulary`); for (const k of r.layout ?? []) assert.ok(LAYOUT_RULES.has(k), `${spec.screen}.${id}: ${k} is a closed rule`); if (id !== "bench" && !r.offGrid) assert.ok(r.rect.every((n) => n % 8 === 0), `${spec.screen}.${id} on the 8 px grid`); } };   // the bench is the frame's stage (40, 522)
+const lintRegions = (spec) => { for (const [id, r] of Object.entries(spec.regions)) { assert.ok(r.component || r.build, `${spec.screen}.${id} names its word or composition`); if (r.component) assert.ok(WORDS.has(r.component), `${spec.screen}.${id}: ${r.component} is a word of the closed vocabulary`); for (const k of r.layout ?? []) assert.ok(LAYOUT_RULES.has(k), `${spec.screen}.${id}: ${k} is a closed rule`); if (id !== "bench" && id !== "stage" && !r.offGrid) assert.ok(r.rect.every((n) => n % 8 === 0), `${spec.screen}.${id} on the 8 px grid`); } };   // the bench and Home's stage are the frame's stage (40, 522)
 const STEP_KEYS = ["up", "down", "left", "right"];
 
 test("the Create spec file agrees with the Create wireframes, region by region, and names a word for every region", () => {
@@ -598,8 +598,8 @@ test("the Home spec file agrees with the Home wireframes, region by region; the 
   assert.ok(!/outing|pocket/.test(JSON.stringify(home.strings)));
   // the needs: pods waiting for a well light Pods, never Cargo, whose waiting mark is never amber; short of a price, a pod is still a need, worded without figures
   const N = home.strings.needs; assert.equal(N.waitingPods.module, "pods"); assert.equal(R.cargo.states.waiting.lamp, "off"); assert.ok(!/waiting|wait for a well/.test(home.lamps.cargo.needsYou));
-  assert.deepEqual([N.couldGrow.short, N.toRead.short], ["{a} {species} pod needs more ⚡", "{a} {species} pod needs more ◆"]); assert.deepEqual(home.strings.stages, { juvenile: "young", adult: "adult", elder: "elder" });
-  assert.deepEqual([home.events.crateIn.kind, home.events.crateIn.target, home.events.crateIn.hold], ["arrival", "cargo", false]); assert.ok(!("newPage" in home.strings.subjects.library));
+  assert.deepEqual([N.couldGrow.short, N.toRead.short], ["{a} {species} pod needs more", "{a} {species} pod needs more"]); assert.deepEqual(home.strings.stages, { juvenile: "young", adult: "adult", elder: "elder" });
+  assert.deepEqual([home.events.crateIn.kind, home.events.crateIn.target, home.events.crateIn.hold], ["arrival", "cargo", 0]); assert.ok(!("newPage" in home.strings.subjects.library));
   assert.deepEqual(paletteBad(home.colours), []);
 });
 

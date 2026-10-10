@@ -1,6 +1,6 @@
 // The Station's navigation, as plain data and pure functions (design/style-guide/station-screens.md "Keys and navigation"; the numbers are frame.json `navigation`).
-// Nothing here draws or reads the live game: the screens ask it where ← goes and what it is called, what each room key opens, and where the pad moves the ring on Home
-// and on Habitat, whose order is fixed (not the nearest thing).
+// Nothing here draws or reads the live game: the screens ask it where ← goes and what it is called, what each room key opens, and where the pad moves the ring on Habitat, whose
+// order is fixed (not the nearest thing).
 
 // --- the tree -------------------------------------------------------------------------------------------------------------------
 // A place is a screen or a state of one: home, pods.collection, pods.overview, pods.chapter, pods.compare, create, incubator, probe, library, book, habitat, cross.
@@ -27,40 +27,7 @@ export const ROOM_KEYS = { home: "home", research: "pods.collection", library: "
 export const DROPS_ON_ROOM_KEY = ["create", "cross"];
 export const roomTop = (key) => ROOM_KEYS[key] || null;
 
-// --- Home's pad: a fixed order ----------------------------------------------------------------------------------------------------
-// The instrument column from the top; ▲▼ walk it. Among the residents ▲▼ go to the nearest one that way. ◀▶ cross between the two, landing on the row nearest the ring.
-// The ring on the room: ▶ to the bay, ◀ to the nearest resident. `targets` are { id, x, y, w, h }; the residents' ids start "r:".
-export const HOME_COLUMN = ["bay", "tray", "inc", "cradle", "lamp"];
-const mid = (t) => [t.x + t.w / 2, t.y + t.h / 2];
-const isResident = (id) => typeof id === "string" && id.startsWith("r:");
-function nearestTo(targets, [cx, cy], axisY) {
-  let best = null, bd = Infinity;
-  for (const t of targets) { const [x, y] = mid(t), d = axisY ? Math.abs(y - cy) * 4 + Math.abs(x - cx) * 0.01 : Math.hypot(x - cx, y - cy); if (d < bd) { bd = d; best = t; } }
-  return best ? best.id : null;
-}
-export function homeMove(targets, cur, dir, room = [480, 280]) {
-  const residents = targets.filter((t) => isResident(t.id)), column = HOME_COLUMN.filter((id) => targets.some((t) => t.id === id));
-  if (cur === "room") {
-    if (dir === "right") return column[0] ?? cur;
-    if (dir === "left") return nearestTo(residents, room, false) ?? cur;
-    return cur;
-  }
-  if (column.includes(cur)) {
-    const i = column.indexOf(cur);
-    if (dir === "up") return column[Math.max(0, i - 1)];
-    if (dir === "down") return column[Math.min(column.length - 1, i + 1)];
-    if (dir === "left") return nearestTo(residents, mid(targets.find((t) => t.id === cur)), true) ?? cur;
-    return cur;
-  }
-  const here = targets.find((t) => t.id === cur); if (!here) return cur;
-  if (dir === "right") return nearestTo(targets.filter((t) => column.includes(t.id)), mid(here), true) ?? cur;
-  if (dir === "up" || dir === "down") {
-    const [cx, cy] = mid(here), sign = dir === "down" ? 1 : -1; let best = null, bd = Infinity;
-    for (const t of residents) { if (t.id === cur) continue; const [x, y] = mid(t), along = (y - cy) * sign; if (along <= 6) continue; const d = along + Math.abs(x - cx) * 2.2; if (d < bd) { bd = d; best = t.id; } }
-    return best ?? cur;
-  }
-  return cur;
-}
+// Home's pad is the face's: focus.graph in home.json (order, nearestIn, ahead), walked by the face's focus port; the vectors are in face/tests (focus.json).
 
 // --- Habitat's pad: a fixed order -----------------------------------------------------------------------------------------------------
 // Rows, top to bottom: the stage (the resident), the card's chapter plates four to a row, Cross (an adult only), the door and the gate, and the strip of residents.

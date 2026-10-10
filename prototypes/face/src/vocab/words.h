@@ -20,6 +20,9 @@ void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, 
 /* the ring in the form the screen spec names for the target group (targets.<name>.ring of the target whose `group` this is), colour a palette name; a group the spec does not list gets the default round ring */
 void word_focusRingFor(const char *id, const int box[4], const char *group, const char *colour);
 void word_rail(void);    /* the chapter rail (frame spec) with the ring on its focused tab */
+/* station/ (Home) */
+void word_livingWindow(const char *screen, const char *bezel, const char *glass, const char *glassPicture);   /* the bezel and the glass (a flat plate until the glass master), the master over it */
+void word_leaves(const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy);   /* the leaves word, grid form */
 void word_topBar(void);
 void word_bottomLine(void);
 void word_messagePlate(void);

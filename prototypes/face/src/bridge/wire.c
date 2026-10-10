@@ -154,7 +154,8 @@ static int on_event(const msg_t *m) {
   if (key(m, "from") >= 0 && !num(m, key(m, "from"), &from)) return fail("event: from must be a number");
   if (key(m, "to") >= 0 && !num(m, key(m, "to"), &to)) return fail("event: to must be a number");
   if (key(m, "target") >= 0 && !str(m, key(m, "target"), target, sizeof target)) return fail("event: target must be a string of at most 47 bytes");
-  int hold = flag(m, key(m, "hold"));
+  int hold = 0;
+  if (key(m, "hold") >= 0 && (!num(m, key(m, "hold"), &hold) || hold < 0 || hold > 30000)) return fail("event: hold is whole ms from 0 to 30000 (a boolean is refused)");
   if (anim_add(kind, target, ms, hold, from, to, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
   g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
 }
