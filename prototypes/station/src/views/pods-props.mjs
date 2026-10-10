@@ -57,7 +57,7 @@ export function podsBuild(m, spec) {
   return view;
 }
 // The most traits a page holds: the upper end of its grid table.
-const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
+export const maxTraits = (page) => Math.max(...Object.keys(page.grid).map((k) => Number(k.split("-").at(-1))));
 
 // the rail of the pod: one tab a chapter; `open` is the chapter page's open tab (-1 on the overview, where none is open)
 export function railOf(m, spec, cur, chapters, req, open, focused) {

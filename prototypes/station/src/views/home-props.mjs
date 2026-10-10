@@ -78,14 +78,14 @@ export function homeBuild(m, spec, frame) {
     return { pod: ph(`home-rack-pod-${podSize.join("x")}`, podSize), glint: q.idd && S.podGlints(st, q) ? req({ kind: "star", id: "star:12" }) : "" };
   });
   const pods = { lamp: lampOf("pods") ?? (st.tray.length ? "well" : "off"), well: slot("home-well", R.pods.wells.size), wells };
-  const bud = st.bud, ready = S.budReady(st, settings), progress = bud ? S.budProgress(st, settings) : 0;
+  const bud = st.bud, ready = S.budReady(st, settings);
   const painting = !bud && st.mibis.length > 0 && paintWaiting(st.mibis[st.mibis.length - 1]) && !st.mibis[st.mibis.length - 1].released;
   const incState = !bud ? (painting ? "painting" : "empty") : ready ? "ready" : "growing";
-  const total = bud ? Math.min(bud.minutes || 0, R.incubator.leaves.max) : 0;
+  const L = S.budLeaves(st, settings, m.now, R.incubator.leaves.max, 20), total = L.total;
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : incState === "painting" ? "waiting" : "off"),
     chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}`, R.incubator.chamber.slice(2)),
-    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
+    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: L.full, filling: L.rows, emptyPicture: ph(R.incubator.leaves.pictures.empty, R.incubator.leaves.leaf, true), fullPicture: ph(R.incubator.leaves.pictures.full, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;

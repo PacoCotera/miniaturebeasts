@@ -22,7 +22,9 @@ void word_focusRingFor(const char *id, const int box[4], const char *group, cons
 void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
 /* station/ (Home) */
 void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture);   /* the living window: the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
-void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots);   /* the leaves word, grid form: the screen spec and the region's path in it */
+void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots, int filling);   /* the leaves word, grid form: the screen spec and the region's path in it; `filling`: rows 0 to 19 of the filling leaf, -1 for a screen whose leaves never fill */
+/* station/ (the Incubator) */
+void word_leavesArc(const char *spec, const char *region, const char *emptyPic, const char *fullPic, int total, int full, int rows);   /* the leaves word, arc form (leafArc): the filling leaf and growNow */
 /* common/ */
 void word_ribbon(const char *id, const int rect[4], const char *text, int px, int pad, const char *fill, const char *edge, const char *textColour);   /* the ribbon (pad: the room each side of the words): a panel with an edge and one line, centred (Cargo's: cargo.json regions.ribbon) */
 void word_topBar(void);

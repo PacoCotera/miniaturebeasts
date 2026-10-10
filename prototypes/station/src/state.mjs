@@ -481,6 +481,12 @@ export function installTier2(st, settings = DEFAULT_SETTINGS) {
 // The bud: M2 grows it; for now a migrated bud only reports ready when its minutes have passed.
 export const budProgress = (st, settings = DEFAULT_SETTINGS, now = Date.now()) => { const B = st.bud; if (!B) return 0; if (B.early) return 1; const scale = settings.budScale === "instant" ? 1e9 : settings.budScale || 1; return clamp(((now - B.start) * scale) / (B.minutes * 60000), 0, 1); };
 export const budReady = (st, settings, now) => !!st.bud && budProgress(st, settings, now) >= 1;
+// The leaves of the wait, one rule for the Incubator, its intents and Home's chamber: total the bud's minutes (at most max), full the whole minutes passed, rows 0 to rowsOf - 1 of the current leaf (rowsOf whole rows a minute: a row every 3 s at the real pace); rows is 0 once full reaches total.
+export function budLeaves(st, settings, now, max, rowsOf = 20) {
+  const B = st.bud; if (!B) return { total: 0, full: 0, rows: 0 };
+  const total = Math.min(B.minutes || 0, max), done = budProgress(st, settings, now) * total, full = budReady(st, settings, now) ? total : Math.min(total, Math.floor(done));
+  return { total, full, rows: full >= total ? 0 : Math.min(rowsOf - 1, Math.floor((done - full) * rowsOf)) };
+}
 
 // --- what most needs the player (the bottom line's right part; ✓ on the room does it) -----------------
 // A count in a sentence is spelled out (a, two to six); above what the picture holds the count is dropped, never digits, never "many".

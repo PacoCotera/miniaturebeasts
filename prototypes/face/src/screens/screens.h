@@ -35,6 +35,10 @@ void cargo_key(int code);
 void create_words(void);
 void create_key(int code);
 int create_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
+
+/* The Incubator (screens/incubator.c): its words by the state the props name, and its keys (one subject: the room, no ring, no pad) */
+void incubator_words(void);
+void incubator_key(int code);
 /* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */
 void home_hidden(void);
 /* An intent or a focus message for the screen of the props (kind "intent" with a verb, or "focus"). */

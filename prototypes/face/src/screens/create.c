@@ -162,7 +162,7 @@ void create_words(void) {
   build_founder();
   build_roll();
   build_traitLine();
-  { v_name("leaves"); word_leaves(C, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), 0, v_pint("regions.leaves.full", 0), 0, ci("regions.leaves.max", 48));   /* a leaf the bud will not take is a node with no size */ }
+  { v_name("leaves"); word_leaves(C, "regions.leaves", v_pstr("regions.leaves.empty"), v_pstr("regions.leaves.filled"), v_pint("regions.leaves.total", 0), 0, v_pint("regions.leaves.full", 0), 0, ci("regions.leaves.max", 48), -1);   /* a leaf the bud will not take is a node with no size */ }
   build_stamp();
   build_code();
   build_ring();

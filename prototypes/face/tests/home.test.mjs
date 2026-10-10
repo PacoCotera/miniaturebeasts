@@ -32,6 +32,7 @@ function scene(o = {}) {
   for (let i = 0; i < (o.pods ?? 0); i++) { S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3 + i), settings, T0); S.skipIdentify(st, st.tray.at(-1)); }
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
   if (o.away) st.dock = { docked: false, at: T0 };
+  if (o.bud) st.bud = { kind: "founder", species: "S01", sp: 0, gs: 5, genome: st.mibis[0].genome, sha: "bud", code: "BUD", start: Date.now() - o.bud * 60000, minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: [], early: false };
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: Array.from({ length: o.crates ?? 0 }, (_, i) => crate(i + 1)), mibis: [], carried: (o.carry ?? [0, 1]).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   return homeBuild({ st, sv, settings, docked: S.docked(st), ui: {}, focus: o.focus ?? null, light: o.light ?? "day" }, homeSpec, frameSpec);
 }
@@ -173,4 +174,13 @@ test("a walking resident keeps its box in 32..656−w and its feet in 300..527, 
   for (let ms = 40; ms <= 6000; ms += 40) f.frame(5000 + ms); logOf(f);
   withFocus(f, "resident.1"); let t = 6000; const p0 = (f.frame(5000 + (t += 40)), pos()); for (let i = 0; i < 400; i++) f.frame(5000 + (t += 40)); assert.equal(pos(), p0, "focused: it stands on its pixel (lifted 4 px, which the box does not show)");
   withFocus(f, "room"); let moves = false; for (let i = 0; i < 600; i++) { f.frame(5000 + (t += 40)); if (pos() !== p0) { moves = true; break; } } assert.ok(moves, "and walks on when focus leaves");
+});
+
+test("Home's filling leaf: the empty leaf whole, over it the full picture clipped from the bottom to p = floor(rows × 12 / 20) rows (the leaf after the full ones); the other leaves whole or empty", { skip }, async () => {
+  const b = scene({ bud: 8.5 }), L = b.props.regions.incubator.leaves, R = homeSpec.regions.incubator.leaves, f = await start(b);
+  assert.ok(L.total === 20 && L.full === 8 && L.filling >= 5 && L.filling <= 12, JSON.stringify(L)); const p = Math.floor(L.filling * 12 / 20), i = L.full, x = R.rect[0] + R.pitch * (i % R.perRow), y = R.rect[1] + R.rowPitch * Math.floor(i / R.perRow);
+  const col = (id) => { const k = hash(id); return [70 + (k & 127), 70 + ((k >> 7) & 127), 70 + ((k >> 14) & 127)].join(); }, at = (px, py) => f.pixel(px, py).join();
+  for (let r = 0; r < 12; r++) assert.equal(at(x + 4, y + r), r >= 12 - p ? col(L.fullPicture) : col(L.emptyPicture), `the filling leaf, row ${r} of 12 (p = ${p})`);
+  for (let k = 0; k < L.total; k++) if (k !== i) { const kx = R.rect[0] + R.pitch * (k % R.perRow), ky = R.rect[1] + R.rowPitch * Math.floor(k / R.perRow); assert.equal(at(kx + 4, ky + 6), k < L.full ? col(L.fullPicture) : col(L.emptyPicture), `leaf ${k}`); }
+  assert.deepEqual(f.errors(), []);
 });
