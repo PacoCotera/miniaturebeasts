@@ -43,7 +43,7 @@
 <line x1="400" y1="536.5" x2="624" y2="536.5" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
 <text x="628" y="532" font-size="9" fill="#c45f12">feet 536</text>
 <rect x="312.5" y="536.5" width="399" height="15" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
-<text x="512" y="548" font-size="9" fill="#555" text-anchor="middle">chamber 312,232 400×320 · floor 16</text>
+<text x="512" y="548" font-size="9" fill="#555" text-anchor="middle">work tray (chamber) 312,232 400×320 · floor 16 · placeholder</text>
 <rect x="296.5" y="88.5" width="431" height="103" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="4 3"/>
 <rect x="304.5" y="104.5" width="127" height="71" fill="#e9edf0" stroke="#666" stroke-width="1"/>
 <text x="308" y="117" font-size="9" fill="#222">1 · as the pod is</text>
@@ -63,7 +63,7 @@
 <text x="487" y="216" font-size="13" fill="#222">Markings: only pale</text>
 <rect x="776.5" y="104.5" width="175" height="223" fill="#f4f7f9" stroke="#8ca0ab" stroke-width="1"/>
 <rect x="776.5" y="296.5" width="175" height="31" fill="#d6dde2" stroke="#8ca0ab" stroke-width="1"/>
-<text x="780" y="118" font-size="10" fill="#222">incubation dome 176×224</text>
+<text x="780" y="118" font-size="10" fill="#222">small chamber (placeholder)</text>
 <text x="780" y="129" font-size="9" fill="#777">776,104 176×224</text>
 <text x="780" y="141" font-size="9" fill="#777">floor 296 · busy: bud 64×80</text>
 <rect x="832.5" y="216.5" width="63" height="79" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="2 2"/>
@@ -96,7 +96,7 @@
 <text x="808" y="438" font-size="9" fill="#777">140 from the founder</text>
 <rect x="776.5" y="525.5" width="175" height="24" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <line x1="776" y1="549.5" x2="952" y2="549.5" stroke="#3c4b57" stroke-width="1"/>
-<text x="864" y="541" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
+<text x="864" y="541" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
 <rect x="88.5" y="120.5" width="847" height="287" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="6 3"/>
 <rect x="792.5" y="120.5" width="143" height="175" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
 <text x="796" y="100" font-size="9" fill="#c45f12">to 792,120 (feet 864,296)</text>
@@ -108,7 +108,7 @@
 <text x="24" y="122" font-size="10" fill="#2b6cb0">  to bottom; 300 the code appears;</text>
 <text x="24" y="135" font-size="10" fill="#2b6cb0">300–900 the pod travels, behind</text>
 <text x="24" y="148" font-size="10" fill="#2b6cb0">  the chamber and the roll, into</text>
-<text x="24" y="161" font-size="10" fill="#2b6cb0">  the dome; 900 the dither (180 ms)</text>
+<text x="24" y="161" font-size="10" fill="#2b6cb0">  the small chamber; 900 the dither (180 ms)</text>
 <text x="24" y="174" font-size="10" fill="#2b6cb0">  to the Incubator, growing.</text>
 <text x="24" y="187" font-size="10" fill="#2b6cb0">Travel bounds (orange, dashed):</text>
 <text x="24" y="200" font-size="10" fill="#2b6cb0">  88,120 848×288.</text>
@@ -121,18 +121,20 @@
 <line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
-<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
 <line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
 <line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
 <circle cx="24" cy="582" r="8" fill="#f2671b"/>
@@ -140,7 +142,7 @@
 <text x="36" y="587" font-size="14" fill="#c4500f">Grow it</text>
 <text x="118.80000000000001" y="587" font-size="13" fill="#222">⚡ 2  ❀ 4  ◆ 1</text>
 <text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">two surprises to come</text>
-<circle cx="954" cy="582" r="8" fill="#5d5974"/>
-<text x="954" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<circle cx="955" cy="582" r="8" fill="#5d5974"/>
+<text x="955" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Loika</text>
 </svg>

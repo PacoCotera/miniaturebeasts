@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>The Vivarium's whole, empty: no mibi yet, six free bays, no ring and no ✓ cap. 1024×600 at 1×, measured; no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="0.5" y="40.5" width="1023" height="439" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<path d="M0 296.5L1024 296.5" fill="none" stroke="#e0b880" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="1018" y="291" font-size="8" fill="#a07040" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">ground 0,296 1024×176 · walk 16,296 992×176</text>
+<text x="1018" y="51" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">living window 0,40 1024×440 · edge to edge, no bezel · Idle's rows 120 to 560 at 1:1</text>
+<rect x="16.5" y="488.5" width="991" height="63" fill="#e6e7e3" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="32.5" y="496.5" width="151" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="192.5" y="496.5" width="151" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="352.5" y="496.5" width="151" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="512.5" y="496.5" width="151" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="672.5" y="496.5" width="151" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="832.5" y="496.5" width="151" height="47" fill="none" stroke="#9aa0a6" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1006" y="484" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">strip of bays 16,488 992×64 · 152×48 tiles on a 160 pitch · one a bay, at most twelve</text>
+<text x="24" y="64" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Empty: no mibi yet. The window, six free bays and the frame.</text>
+<text x="24" y="77" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">No ring, no ✓ cap; the context says it. The empty Vivarium</text>
+<text x="24" y="90" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">does not lead toward growing: Home's ✓ leads to what needs you.</text>
+<rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#222" font-weight="500">Vivarium</text>
+<path d="M256 8h1v24h-1z" fill="#888"/>
+<path d="M888 8h1v24h-1z" fill="#888"/>
+<text x="512" y="26" font-size="16" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<path d="M760 8h16v24h-16z" fill="#9a96ae"/>
+<path d="M780 16h8v8h-8z" fill="#7fd8a6"/>
+<circle cx="812" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="840" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
+<text x="1008" y="26" font-size="16" fill="#222" text-anchor="end">☀ 6</text>
+<rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
+<path d="M404 571h1v20h-1z" fill="#888"/>
+<path d="M620 571h1v20h-1z" fill="#888"/>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">nobody lives here yet</text>
+<circle cx="951" cy="582" r="8" fill="#9a9a9a"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1008" y="588" font-size="16" fill="#555" text-anchor="end">Home</text>
+</svg>

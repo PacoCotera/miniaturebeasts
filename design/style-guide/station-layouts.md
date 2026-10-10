@@ -151,11 +151,10 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 | **The bottom line** | Its four zones and their rules | The way back widens to 88 (920, 570, 88, 24); the notice ends at 896 (624, 570, 272, 24) |
 | **Home** | The vivarium panel, the residents, the bed, the rest knob, the name tag, the room's ✓ | The column holds five section modules of 88 on a 104 pitch (Cargo, Pods, Incubator, Probe, Library); the panel is a focus target; the Bay module is Cargo; the arrival moves to Cargo |
 | **Idle** | Its composition, its line and its keys | It is the Vivarium's whole without the frame: the same painting |
-| **The vivarium, up close** ([up close](#habitat), `habitat.json`) | Its layout is one mibi up close | Its ← goes to the whole, not Home |
+| **The vivarium, up close** ([one mibi up close](#the-vivarium-the-whole-and-one-mibi-up-close), `habitat.json`) | Its layout is one mibi up close | Its ← goes to the whole, not Home; its empty state moves to the whole; it gains the state out and the skill notches ([what changed](#what-changed-from-the-old-up-close-layout)) |
 
 ### Not designed yet
 
-- The detailed spec of the Vivarium's levels (the whole and one mibi up close), their measured objects and their focus as data. Home, Cargo and Idle have theirs: [Home](#home-the-panel-and-the-column), [Cargo](#cargo), [Idle](#idle).
 - What a sitting crate shows when it opens in Cargo: its portrait's reveal, beyond its ribbon. Until the reveal is designed, a build leaves sitting crates out of Cargo and out of Home's Cargo module.
 - A new page in the Library's journal on Home's Library module (a mark, a context): the save holds no unopened page, so the module has no new-page state.
 - The could-grow notice for a pod short of ❀ but not ⚡.
@@ -330,7 +329,7 @@ The focused tab adds the focus ring in the `focus` role, in its tab shape (State
 - **Glint.** The same four-point star, 12×12, everywhere: on the collection ring's band, under the rail tab and above the Home rack's well. It twinkles at 2 Hz, but a still frame still shows the star.
 - **Clash** (Create): a 2 px `red` edge on the clashing roll picture's own rectangle, never a second ring; the trait line turns `red`, starts with the inline ✕ and says "Clash"; the trait's pip becomes a ✕. The ✓ cap is withheld and the notice says why. Marks never sit on the picture.
 - **Waiting lamp:** a 12×12 cool lamp on a mibi whose painting has not landed. The words "its painting is on its way" appear only on the bottom line, never in the living window.
-- **No words in a living window.** The vivarium, the up-close window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); the vivarium's name tag, and its meet ribbon in the tag's place ([the vivarium, up close](#habitat)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
+- **No words in a living window.** The vivarium, the up-close window, the specimen chamber and the dome carry no text. Three exceptions: an event ribbon, which shows for a moment (an arrival, a hatch, a first meeting); the vivarium's name tag, and its meet ribbon in the tag's place ([the vivarium, up close](#the-vivarium-the-whole-and-one-mibi-up-close)); and on Home the focused resident's name tag, under the creature, only while it is focused (the name is contextual, on a tag inside the living window so it does not float; the chrome carries system information only).
 
 ### Never upscaled
 
@@ -345,9 +344,9 @@ The LVGL face draws every screen from one closed set of words, one C module a wo
 
 - **Module** is a build of **panel**, not a new word: the instrument panel (`panel` fill, `hairline` edge, `bevel` top) holding one engraved word, one 12×12 lamp and its objects as sprites. Home's five modules, the vivarium's five and the Probe bench's two are the modules; on the vivarium, up close a module has no lamp.
 - **Living window** is the existing word: a painted inside with no words in a `metal` frame. Home's vivarium is one, as are the up-close window, the specimen chamber and the dome. Its parts are `frame`, `inside` and an optional third, `gilt`: a painted sprite placed 1:1 over the frame, slices `{ rest, armed }`, region props `{ lit: bool }`. The Sitting's gilt frame is its one user.
-- **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then one to three sleepers or the Companion mark; on Home and Idle) and the **report card** (a panel holding rows of type and 16 px icons; on Cargo). None is a word. A second screen that needs one is not designed yet.
+- **Compositions, not words:** the **rest knob** (a chrome sprite on the living window's frame, with its focus target), the **with-you bed** (sprites inside the living window: the bed, then one to three sleepers or the Companion mark; on Home, Idle and the Vivarium's whole) and the **report card** (a panel holding rows of type and 16 px icons; on Cargo). None is a word. A second screen that needs one is not designed yet.
 - **Compositions on Create:** the **roll** (Create: the focused trait's pictures, one or three, with the ▲ ▼ notches; it registers the focus target `roll` at the chosen picture's rectangle) and the **trait line** (Create: the text word, with a changed tag built as Home's name tag is). Both are used on Create alone. The bud's leaves are the word `leaves` above.
-- **Compositions on the vivarium up close and the Probe bench:** the **name tag** (Home's, the vivarium's and the Sitting's: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (the vivarium's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (the vivarium, up close: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
+- **Compositions on the vivarium up close and the Probe bench:** the **name tag** (Home's and the Vivarium's whole's at 16 px, one mibi up close's and the Sitting's at 20 px: a `panel` and the text, its h, px, weight, pad, round and min from each spec); the **chapter plates** (the vivarium's card: a `list` with `listPitch`, each plate its signed ground `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblem 24×24 at (8, 8)); the **bay strip** (the Vivarium's whole and one mibi up close, one strip at one rectangle: a `list` with `listPitch` forms, each tile a `panel` rect and its thumbnail, a free bay a composed `dash` outline, 1 px `hairline`, dash 2 and 2); the **Shield plates** (the Probe bench: one sprite a place, the places a table by tier); and the **module** with its lamp rect, or null. A further screen using one of them is not designed yet.
 - **Compositions on the Sitting:** the **choice cards** (`choiceCards`: a `list` with `listPitch` of `panel` rects, each holding one 96×96 sprite; used by the cards, a 3×2 grid of at most six, and the chosen pair, a 2×1 grid of exactly two; props `{ items: [{ picture: "<96 id>", chosen: bool }] }`; it refuses more items than its grid holds; its focus targets are `card.<i>`) and the **step tiles** (`stepTiles`: a `list` with `listPitch` of exactly three `panel` rects, each with its word as text and, once done, a 48×48 sprite; props `{ items: [{ state: "current" | "done" | "ahead", word, picture: "<48 id>" | null }] }`, the picture only when done). Both are used on the Sitting alone.
 
 **The derived rules (closed).** Where a spec names a rule instead of a rectangle, the face calls the C function of that name ([lvgl-switch.md §2.2 and §2.3](../proposals/lvgl-switch.md)): `railCompaction`, `slantTabs`, `pageGrid`, `platePosition`, `listPitch`, `splicePlan`, `guideColumns`, `pipGroups`, `leafArc`. Their JavaScript oracle is `ui/specs/derive.mjs` from L2.0, and `leafArc`'s from R (Create and the Incubator, lvgl-switch.md §4). Until then the spec tests hold them: `prototypes/ui/tests/specs.test.mjs` refuses any rule not in this list. A rule not in this list is refused when the spec loads; a screen that needs one lists it under [Not designed yet](#not-designed-yet), never improvises it. `leafArc`, the ninth, places the Incubator's leaves on two arcs from the slot tables in `incubator.json` ([the leaf arcs](#the-leaf-arcs)).
@@ -1073,7 +1072,7 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 
 ## Create
 
-Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`. Wireframes, 1×: [03-create](station-layouts/03-create.svg), [03b-create-clash](station-layouts/03b-create-clash.svg), [03c-create-grow](station-layouts/03c-create-grow.svg), [03d-create-nav](station-layouts/03d-create-nav.svg), [03e-create-nothing-read](station-layouts/03e-create-nothing-read.svg), each with its PNG.
+Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`, for layout and content only; its look is replaced by the Station concept board and the art direction below. Wireframes, 1×: [03-create](station-layouts/03-create.svg), [03b-create-clash](station-layouts/03b-create-clash.svg), [03c-create-grow](station-layouts/03c-create-grow.svg), [03d-create-nav](station-layouts/03d-create-nav.svg), [03e-create-nothing-read](station-layouts/03e-create-nothing-read.svg), each with its PNG.
 
 **The spec for R** ([lvgl-switch.md](../proposals/lvgl-switch.md) §3, §4, R: Create and the Incubator): the states nothing read, shape and grow, and the navigation. Identifying the species is enough to grow an unedited founder, so a pod with no chapter read opens on the nothing-read state. The numbers live in `prototypes/ui/specs/station/create.json`.
 
@@ -1087,7 +1086,7 @@ Concept plate: `art/concept-station/create/placed/CR-C2-stamped-1024x600.png`. W
 
 <img src="station-layouts/03c-create-grow.png" width="1024" alt="Create, the grow event">
 
-*03c. Create, the grow event at 600 ms: the stamp printed, the code on the rule, the pod travelling behind the chamber into the dome; input held 1080 ms. 1×, measured.*
+*03c. Create, the grow event at 600 ms: the stamp printed, the code on the rule, the pod travelling behind the work tray into the small chamber; input held 1080 ms, then the Incubator (a jump). 1×, measured.*
 
 <img src="station-layouts/03e-create-nothing-read.png" width="1024" alt="Create, nothing read">
 
@@ -1105,12 +1104,12 @@ Create is where the player shapes a founder from an identified pod and sees what
 
 | Element | Why it is here |
 | --- | --- |
-| **The founder** in the specimen chamber, 304×312, frosted where unread | The subject: what will grow |
+| **The founder** on its work tray, 304×312, frosted where unread | The subject: what will grow |
 | **The roll** of the focused trait: its looks as close-ups of the part (as the pod is, only the first copy, only the second copy), the chosen one ringed, with ▲ ▼ notches | The choice itself, never whole founders. Not shown when nothing is read |
 | **The trait line** (16 px): the trait and its chosen look; a "changed" tag, or the clash | One line naming the choice |
 | **The chapter rail** with trait pips | Where the focused trait sits; what is read, changed, clashing or still a surprise, with no digits |
 | **The pod** on its dish, with its origin | Where the founder comes from |
-| **The incubation dome** with the leaves the bud will take, drawn empty | Where it goes, and how long it will grow, as a picture |
+| **The Incubator's chamber**, small, with the leaves the bud will take, drawn empty | Where it goes, and how long it will grow, as a picture |
 | **Stamp label** (120) and a **blank code rule** | The stamp fills with the read and changed chapters; the code prints on the rule at Grow |
 | **Bottom line** | `✓ Grow it` and the total; what stays a surprise; what blocks Grow; `← Loika` |
 
@@ -1126,21 +1125,22 @@ Create is where the player shapes a founder from an identified pod and sees what
 
 **Reading order:**
 
-1. **The founder**, centred and lowest-set, the one warm thing in its glass chamber.
+1. **The founder**, centred and lowest-set, the one warm thing on its work tray.
 2. **The roll** directly above it, the chosen picture ringed, and the trait line under it.
 3. **The rail**: where this trait sits and what else is changed.
-4. **The pod at the left and the dome at the right**, balancing the founder.
+4. **The pod at the left and the small chamber at the right**, balancing the founder.
 5. **The stamp label**, low right, with the code rule under it.
 6. **The bottom line** for the total.
 
-**At the edges:** pod (left), dome, leaves and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
+**At the edges:** pod (left), the small chamber, leaves and stamp (right), rail (top). The left and right columns are centred on x 160 and x 864, the same 352 px either side of the founder's axis.
 
 ### 4. Art direction
 
-- **Room:** the research bench.
-- **The founder is warm**, with its own colours and a warm key light from the top left. Where a chapter is unread, it is frosted in cool pale blue-white, never a guess; with nothing read, all of it.
-- **Everything else is cool:** the glass, the slate and the empty dome.
+- **Room:** the work tray: what is under study sits in the device's warm daylight among field tools and small gauges, in the same housing as Home.
+- **The founder is warm**, with its own colours and the device's key light from the top left. Where a chapter is unread, it is frosted in cool pale blue-white, never a guess; with nothing read, all of it. Frost means unread, and only that.
+- **Around it, the device:** the work tray (`panel` back, `enamel` rim), the slate, and the Incubator's chamber, small, with its one hooded window in the sage housing. Matte throughout: no glass highlight, no beam, nothing glows for show.
 - **The founder is the placeholder** (nothing is painted before Grow).
+- **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on Create](#placeholders-on-create)). The geometry does not change.
 - **The roll pictures** are re-cut from the chapter page's source (the painting's crop by the rig's region, or the per-look plate), never from its 128×160 picture, and only ever reduced. A surface or quality trait (Colour, Markings, Fluff, Sheen, Scales, Feathers, Tufts) is a bleed crop filling all 128×72, with no ground; a part or posture (Beak, Crown, Crest, Tail, Head, Eyes, Carriage) stands whole inside the centred 75%, 96×54 at (16, 9), its ground keyed.
 - **Clash marks** are red with a ✕, so they read without colour. **No mark on a picture:** the changed tag and the ✕ sit in the trait line, and a clash is an edge on the picture's own rectangle. **A change is not a need:** its tag and pip are `bone`, never amber.
 
@@ -1151,16 +1151,16 @@ Create is where the player shapes a founder from an identified pod and sees what
 | Rail | The frame's rail states; a changed pip a `bone` diamond, a clash ✕ `red` | The kit's states; amber is for needs only |
 | Roll | Picture ground `ground`; notches `bone`; a clash's 2 px edge `red`; the ring `focus` | As the chapter page's cells; the ring is the focus's alone |
 | Trait line | Line `bone`; a clash `red`; the tag `plate-name-88x24` (to be cut) with its word `bone` | A readout; the tag is the kit's small plate |
-| Specimen chamber | Back `ground`, glass edge `frostD`, highlight `frost`, floor `enamel` with a `bevel` edge | Cool glass around the one warm thing |
+| Work tray (`chamber`) | Back `panel`, rim `enamel`, floor `enamel` with a `bevel` edge; no glass edge, no highlight | A tray in the housing around the one warm thing |
 | Founder | Its own colours; unread parts `frostS` with a `frostD` texture | As Pods' unread frost |
 | Origin | `mist` | Context, quiet |
-| Dome | Back `ground`, base `enamel`, glass edge `frostD`, highlight `frost`; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's dome, small and empty |
+| Small chamber (`dome`) | Back `ground`; set in the sage housing `metal`, as the Incubator's; its window's edge `hairline`, no highlight; a busy bud `peach` lit `cream`, edge `rust` | The Incubator's chamber, small and empty |
 | Leaves | Empty, the small leaf's outline in `bevel` | The Incubator's leaf drawn at 8×12 |
 | Stamp label, code | `bone` label with a `slate` edge; the code `bone` on a `hairline` rule | The stamp label rule; a readout |
 
 ### 5. Composition
 
-The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder fills a glass chamber in the lower centre. The pod stands on its dish to the left and the empty dome to the right, its leaves and the stamp label under it.
+The rail is centred across the top. The roll sits under it, the trait line under the roll. The founder stands on its work tray in the lower centre. The pod stands on its dish to the left and the Incubator's small chamber to the right, its leaves and the stamp label under it.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
@@ -1169,15 +1169,15 @@ The rail is centred across the top. The roll sits under it, the trait line under
 | ▲ and ▼ notches | 12×6 at (chosen.x + 58, 90) and (chosen.x + 58, 184) | 4 px outside the ring, only when the trait rolls |
 | Ring | 4 px outside the chosen picture: (x − 4, 100, 136, 80) | The screen's one focus ring; none when nothing is read |
 | Trait line | 296, 200, 432, 24 | 16 px, its line box 202 to 222, centred on x 512; with the changed tag (24 tall, 88 wide), 8 px before the words, the group centred |
-| Specimen chamber | 312, 232, 400, 320 | Glass; floor 312, 536, 400, 16 (the concept's 316, 232, 392, 320 on the grid) |
+| Work tray (`chamber`) | 312, 232, 400, 320 | The tray in the housing; floor 312, 536, 400, 16 (the concept's 316, 232, 392, 320 on the grid) |
 | **Founder (focal)** | 360, 240, 304, 312 | At least 300×310, feet at y 536 |
 | Pod | 88, 232, 144, 176 | The pod by its species' size class, bottom-centred on (160, 408), as on Pods |
 | Dish | 48, 344, 224, 96 | The signed `room-cradle`, and `room-cradle-front` over the pod's foot, as on Pods' overview |
 | Origin | 40, 456, 240, 40 | 16 px `mist`, at most two lines, centred on x 160 |
-| Dome | 776, 104, 176, 224 | The incubation chamber, empty; its floor at y 296. While a bud grows its glow shows here (a 64×80 bud at 832, 216) and Grow is refused |
+| Small chamber (`dome`) | 776, 104, 176, 224 | The Incubator's chamber, small and empty; its floor at y 296. While a bud grows its glow shows here (a 64×80 bud at 832, 216) and Grow is refused |
 | Leaves to grow | 768, 336, 192, 48 | The word `leaves`, form grid: 8×12 on a 12 px pitch, rows of 16 on a 16 px row pitch, up to three rows (48), all empty: one per minute it will take, 20 plus one a change, the first founder 5 whatever is shaped |
 | **Stamp label** | 804, 400, 120, 120 | 140 px from the founder's box; x 804 centres it on the column's axis, 4 px off the grid, as Home's juvenile and the medium pod are |
-| Code | 776, 525, 176, 25 | The line box 525 to 545, baseline 541, a 1 px `hairline` rule at y 549, 8 px from the baseline to the rule (off the grid for that clearance); at Grow the code prints here, centred on x 864. 176 wide: the widest code is 168 to 171 px |
+| Code | 776, 525, 176, 25 | The line box 525 to 545, baseline 541, a 1 px `hairline` rule at y 549, 8 px from the baseline to the rule (off the grid for that clearance); at Grow the code prints here, centred on x 864, in three groups with spaces ("K7Q 4MX P2D"). 176 wide: the widest code, "WWW WWW WWW", is 152 px |
 | Travel (grow only) | 88, 120, 848, 288 | The pod's path from its box to (792, 120), feet (864, 296), behind the chamber and the roll |
 
 **Regions and their words.** Every drawn region names its word from the closed vocabulary (`component`) or its composition (`build`), so the face's spec loader can refuse anything else ([lvgl-switch.md](../proposals/lvgl-switch.md) §2.3, lint). States: **nothingRead** (an identified pod with no chapter read), **shape** (a chapter read; at rest and while rolling) and **grow** (from `✓ Grow it` until the screen changes, input held).
@@ -1203,7 +1203,7 @@ The rail is centred across the top. The roll sits under it, the trait line under
 
 The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** bench, rail, dish, dome, its bud, pod, the dish's front, origin, chamber, founder, the chamber's front, roll, trait line, the dome's front, leaves, stamp, code, ring, frame, message plate. The travelling pod passes behind the chamber and the roll and ends inside the dome, with no change of order during the event.
 
-**Clearance** (8 px from a word's baseline to an object's first ink): the trait line's baseline at y 218, the founder's box at 240 (22 px), the chamber's glass at 232; the tab words' baselines at about y 62, the notch at 90; the code's baseline at 541, its rule at 549. Nothing in the roll touches the ring: the notches sit 4 px outside it, the neighbours 8 px.
+**Clearance** (8 px from a word's baseline to an object's first ink): the trait line's baseline at y 218, the founder's box at 240 (22 px), the work tray at 232; the tab words' baselines at about y 62, the notch at 90; the code's baseline at 541, its rule at 549. Nothing in the roll touches the ring: the notches sit 4 px outside it, the neighbours 8 px.
 
 **States and conditions** (`create.json` `states`, `bottomLine.conditions`):
 
@@ -1212,7 +1212,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 - **Changed:** the tag in the line, the pip a `bone` diamond, the founder's part and the stamp's cells redrawn, ◆ 1 and one minute a change (choosing the shown look too); the first founder's leaves stay 5.
 - **Blocked:** the notice names the first block in the rules' order: busy ("a bud is already growing"), no bay ("no bay free"), clash ("these looks clash"), short. Busy, no bay and clash: no ✓ cap; the verb and the total in `mist` so the total still reads; while busy the bud glows in the dome. A clash also wears its marks: the chosen picture's red edge, the line red with the ✕, the pip a ✕.
 - **Short:** the frame's dimmed ✓; the short material's figure `amber`; the notice "needs more ‹icons›"; ✓ shows a message plate naming what is short.
-- **Grow:** the event below, then the Incubator, growing.
+- **Grow:** the event below, then the Incubator, growing. Grow it is a jump: ← on the Incubator reads "Home", with the ring on Home's Incubator module.
 
 **Prices** read icon before figure, the frame's rule ([The frame](#the-frame)): `⚡ 2 ❀ 4 ◆ 1` here, `❀ 7` on the Incubator.
 
@@ -1225,8 +1225,8 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | ▲ ▼ on a doing, or a trait the pod carries one look of | Nothing: one picture, no notches, and the line already says why ("Claws: breed to change" with the two joined rings after the name; "Crown: one look in this pod"). No message plate |
 | ✓ | `✓ Grow it · ⚡ 2 ❀ 4 ◆ 1`, checked whole and then paid: the `grow` event, then the Incubator. Blocked: no ✓ cap and nothing happens. Short: the dimmed cap and a plate |
 | ← | Back to the pod's overview with the ring on the pod, nothing spent and the choices dropped: the way back reads the pod's name, "← Loika" |
-| A room key | Drops the unpaid choices; coming back starts fresh |
-| During the grow event | Presses are consumed (1080 ms) |
+| A coloured key | Drops the unpaid choices and opens its section; coming back starts fresh |
+| During the grow event | The pad, ✓ and ← do nothing (1080 ms); a coloured key waits until the Incubator shows, then opens its section |
 
 **The way in:** on Pods' overview, ✓ on an identified pod is always `✓ Shape a founder` and opens Create, in its nothing-read state when no chapter is read; a chapter opens from the rail (▲, then `✓ Open ‹Chapter›`).
 
@@ -1244,32 +1244,32 @@ Vectors: from `roll`, each of ◀ ▶ ▲ ▼ sends its step and the ring stays 
 | Event | Hold | What plays |
 | --- | --- | --- |
 | `roll`: `{ kind: dither, target: founder, ms: 200, levels: 16 }` | no | The founder's old picture cross-dithers to the new one in its own box, 16-level Bayer, as a composed picture; the roll, the ring, the line, the pip, the stamp and the price are cuts |
-| `grow` (1080 ms) | yes | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing. The counters tick the price at 0 |
+| `grow` (1080 ms) | yes | 0 to 300 ms: the stamp prints, its cells drawn row by row from the top, whole rows. 300: the code appears on the rule. 300 to 900: the pod travels in a straight line, whole pixels, eased, from its box to the dome (feet 160, 408 → 864, 296), behind the chamber and the roll; the dish stays, empty. 900 to 1080: the screen transition (16-level Bayer dither) to the Incubator, growing (a jump). The counters tick the price at 0 |
 
 With `motion: false` both jump to their ends.
 
 ### Placeholders on Create
 
-| Thing | Pixel size |
-| --- | --- |
-| Founder | 304×312 (the placeholder: the stylised rig pass) |
-| Roll close-ups | 128×72, `roll-{species}-{trait}-{look}-128x72` |
-| Pod | the species' size class: 144×176, 120×152 or 104×128 (the signed pod sprites) |
-| Dish | 224×96 (the signed `room-cradle` and `room-cradle-front`) |
-| Specimen chamber | 400×320, its floor 400×16 |
-| Dome | 176×224; a busy bud 64×80, `bud-small-64x80` |
-| Notches | 12×6 |
-| Leaves | 8×12, `leaf-small-empty-8x12` and `leaf-small-full-8x12`: the Incubator's leaf at the small size |
-| Changed pip, clash pip | 6×6, `pip-changed-6x6` (a diamond), `pip-clash-6x6` |
-| Changed tag | 88×24, `plate-name-88x24`, to be cut |
-| Stage | 1024×522, `room-bench-stage-create`, to be commissioned (until then `room-bench-stage-collection`) |
-| Stamp | on the 120 label |
+| Thing | Pixel size | After the art reset |
+| --- | --- | --- |
+| Founder | 304×312 (the placeholder: the stylised rig pass) | Carried |
+| Roll close-ups | 128×72, `roll-{species}-{trait}-{look}-128x72` | Carried |
+| Pod | the species' size class: 144×176, 120×152 or 104×128 (the signed pod sprites) | Carried; checked with Pods |
+| Dish | 224×96 (the signed `room-cradle` and `room-cradle-front`) | Stale: the clinical glass dish; the room set's repaint replaces it |
+| Work tray (`chamber`) | 400×320, its floor 400×16 | Stale: specified as glass; becomes a tray in the housing |
+| Small chamber (`dome`) | 176×224; a busy bud 64×80, `bud-small-64x80` | Stale: a small bell jar; becomes the Incubator's chamber, small. The bud is re-judged with the Incubator's |
+| Notches | 12×6 | Carried |
+| Leaves | 8×12, `leaf-small-empty-8x12` and `leaf-small-full-8x12`: the Incubator's leaf at the small size | Re-judged with the Incubator's leaf |
+| Changed pip, clash pip | 6×6, `pip-changed-6x6` (a diamond), `pip-clash-6x6` | Carried |
+| Changed tag | 88×24, `plate-name-88x24`, to be cut | Carried |
+| Stage | 1024×522, `room-bench-stage-create`, to be commissioned (until then `room-bench-stage-collection`) | Stale: the dark glass bench; becomes the work tray's stage |
+| Stamp | on the 120 label | Carried |
 
 ---
 
 ## Incubator: growing and ready
 
-Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png` (growing) and `IN-C1-stamped-1024x600.png` (ready). Wireframes, 1×: [04-incubator-growing](station-layouts/04-incubator-growing.svg), [05-incubator-ready](station-layouts/05-incubator-ready.svg), [05b-incubator-hatch](station-layouts/05b-incubator-hatch.svg), [05c-incubator-empty](station-layouts/05c-incubator-empty.svg), [05d-incubator-nav](station-layouts/05d-incubator-nav.svg), each with its PNG.
+Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x600.png` (growing) and `IN-C1-stamped-1024x600.png` (ready), for layout and content only; their look is replaced by the Station concept board (frame 3, the Incubator) and the art direction below. Wireframes, 1×: [04-incubator-growing](station-layouts/04-incubator-growing.svg), [05-incubator-ready](station-layouts/05-incubator-ready.svg), [05b-incubator-hatch](station-layouts/05b-incubator-hatch.svg), [05c-incubator-empty](station-layouts/05c-incubator-empty.svg), [05d-incubator-nav](station-layouts/05d-incubator-nav.svg), each with its PNG.
 
 **The spec for R.** The **empty** Incubator is an invitation to incubate and see it in action; the **hatch** is a held state. The bud's own states are growing and ready; a portrait arrives as a crate, never as a state of the bud. The numbers live in `prototypes/ui/specs/station/incubator.json`.
 
@@ -1279,31 +1279,31 @@ Concept plates: `art/concept-station/incubator/placed/IN-D-r1-a3-stamped-1024x60
 
 <img src="station-layouts/05-incubator-ready.png" width="1024" alt="Incubator, ready">
 
-*05. Incubator, ready: every leaf full, every chapter known, the dome glowing, the species' shape in the bud, the plaque says ready, `✓ Open`; the waiting lamp while the painting is on its way. 1×, measured.*
+*05. Incubator, ready: every leaf full, every chapter known, the chamber lit, the species' shape in the bud, the plaque says ready, `✓ Open`; the waiting lamp while the painting is on its way. 1×, measured.*
 
 <img src="station-layouts/05b-incubator-hatch.png" width="1024" alt="Incubator, the hatch">
 
-*05b. The hatch at 1500 ms: the glass lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then the vivarium's meet. 1×, measured.*
+*05b. The hatch at 1500 ms: the chamber's window lifted out of sight, the bud gone, the juvenile on the base, the ribbon; input held 2780 ms, then one mibi up close, in the meet (← Vivarium). 1×, measured.*
 
 <img src="station-layouts/05c-incubator-empty.png" width="1024" alt="Incubator, empty">
 
-*05c. Incubator, empty: an invitation to grow a bud. The standby light on the lit, plump nest, the clean glass, the base's foot light, `✓ Choose a pod`. 1×, measured.*
+*05c. Incubator, empty: an invitation to grow a bud. The standby light on the lit, plump nest, the clean window, the base's foot light, `✓ Choose a pod`. 1×, measured.*
 
 <img src="station-layouts/05d-incubator-nav.png" width="1024" alt="Incubator's navigation map">
 
-*05d. Incubator: how it opens, how its states follow each other, where Open and Choose a pod lead. 1×.*
+*05d. Incubator: how it opens, how its states follow each other, where Open and Choose a pod lead, and the keys during a hold. 1×.*
 
 ### 1. Purpose
 
-The Incubator is where the player watches the bud grow and opens it when it is ready. The player comes away knowing how much of the wait is left (in leaves), which chapters are still surprises, and, when it is ready, that one ✓ opens it. Empty, it invites the player to grow a bud and shows the way to a pod.
+The Incubator is the bridge between the research and the Vivarium: a bud grown from the research (Create's founder, Cross's child) lies warm in its chamber until it hatches into the Vivarium. The player watches it grow and opens it when it is ready, and comes away knowing how much of the wait is left (in leaves), which chapters are still surprises, and, when it is ready, that one ✓ opens it and the new mibi comes home. Empty, it invites the player to grow a bud and shows the way to a pod.
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **The bud** in its nest inside the dome | The subject. A glowing bean, never an embryo; when ready, the species' shape glows inside it |
-| **The leaves** in two arcs over the dome, one a minute | Time as leaves, the current one filling. Never digits |
-| **The rail** with tabs clearing | The surprises clearing one by one across the wait |
+| **The bud** on its bed inside the sheltered chamber | The subject, the life side of the bridge. A glowing bean, never an embryo; when ready, the species' shape glows inside it |
+| **The leaves** in two arcs over the chamber, one a minute | Time as leaves, the current one filling. Never digits |
+| **The rail** with tabs clearing | The research side: the surprises clearing one by one across the wait |
 | **The plaque** on the base, one word ("growing", "ready", "empty") | The state, for across a table |
 | **Stamp label** (120) and the **code** as live text | The bud's stamp, filling with the rail, and its shareable code |
 | **The standby light** (empty) | A warm pool on the nest: the chamber waiting for a bud |
@@ -1316,39 +1316,41 @@ The Incubator is where the player watches the bud grow and opens it when it is r
 - "Loika founder" or "child of …" under the code: the context says it.
 - A wooden base; an embryo inside the ready bud (never an embryo).
 - A code plate on arrival from Create: the code already printed on Create's rule.
-- A ready ring: the screen has one subject and nothing to choose, so ✓ acts on the room, and a ring round the dome and its base would cross the leaf arcs.
+- A ready ring: the screen has one subject and nothing to choose, so ✓ acts on the room, and a ring round the chamber and its base would cross the leaf arcs.
 - Text lines on the empty screen ("The incubator is empty", "Shape a founder from a read pod at Research"): the plaque, the context and `✓ Choose a pod` say it.
 
 ### 3. Placement
 
 **Reading order:**
 
-1. **The bud's glow**, centred, inside the dome (about 340 across with its base).
+1. **The bud's glow**, centred, inside the chamber (about 340 across with its base).
 2. **The leaves** arched over it: how many are full.
 3. **The plaque word.**
 4. **The rail**: which surprises remain.
 5. **The stamp label** at the right, then the code under it.
 
-Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The left of the stage stays empty and dark, so the dome reads alone.
+Empty: the standby light on the nest, then the plaque, then the bottom line's `✓ Choose a pod`. The left of the stage stays empty and dark, so the chamber reads alone.
 
 ### 4. Art direction
 
-- **Room:** the research bench, with the chamber's glow as the one warm thing.
-- **Pale glass, a machined enamel base,** and leaf greens for the timer.
+- **Room:** the bridge between the research and the Vivarium, carrying both: the research side (the rail, the stamp, the code) on the device's slate; the life side, the bud warm on moss in a sheltered chamber with one hooded window, set in the sage housing over a base of the sand housing, with lines and small gauges in service of it. Never a lab jar, never a small vivarium. The chamber's glow is the one warm thing.
+- **The sage housing for the chamber, the sand housing for the base and the outer frame, matte;** the window set in the chamber with a `hairline` edge and no highlight; the hood a shallow lip, not a canopy; leaf greens for the timer.
+- **The chamber's ink** (window and hood) stays inside the arch outline (the chamber window row below), so the leaf arcs keep their clearance.
+- **Placeholders.** Every master here made for the old look stays its region's labelled placeholder, at its size, until the art director's master lands ([Placeholders on the Incubator](#placeholders-on-the-incubator)). The geometry does not change.
 - **The bud** grows in two pictures, the first half of the wait and the second (one generic `bud-late-128x160`, with no drift toward the species' hue).
-- **Ready:** the dome glows and the species' shape is visible inside the bud. Nothing steps out until the player opens it. The shape is the species' juvenile-proportion silhouette from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat, soft-edged, dark warm shape with no eye and no detail; its ink at most 96×96, centred in its 112×112 box. `bud-ready-128x160` is drawn behind it and `bud-ready-front-128x160` over it.
+- **Ready:** the chamber's light comes up full and the species' shape is visible inside the bud. Nothing steps out until the player opens it. The shape is the species' juvenile-proportion silhouette from the hatch juvenile's source: a compact sitting side pose, never curled or foetal; one flat, soft-edged, dark warm shape with no eye and no detail; its ink at most 96×96, centred in its 112×112 box. `bud-ready-128x160` is drawn behind it and `bud-ready-front-128x160` over it.
 - **The leaf:** one ovate pointed leaf leaning about 40° clockwise (tip upper right), a centre vein, a short curved stem lower left, in a 16×20 box centred on its slot; filling, the full leaf clipped from the bottom in whole rows; empty, an outline in `metal`. The same drawing at 8×12 is the small leaf of Create and Home.
-- **Empty invites:** a standby light inside (a soft warm pool on the nest, about half the growing glow); the glass with the clean growing highlight; the base's foot light on, as in every state; the nest lit and plump with its hollow visible; the plaque word in `fog`.
+- **Empty invites:** a standby light inside (a soft warm pool on the bed, about half the growing glow); the clean window; the base's foot light on, as in every state; the nest lit and plump with its hollow visible; the plaque word in `fog`.
 - **Calm:** only the glow and the filling leaf move.
 
 **Colour roles** (the one home is `incubator.json` `colours`):
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Dome | Back `ground`; glass edge `frostD`, highlight `frost`; ready: edge `frost`, highlight `white`; the standby pool `sand` (placeholder) | The palette's dome roles; ready brightens the glass, it does not ring it |
-| Nest | `sand`, shade `clay`, twigs `bark` | Warm, inside the living window |
+| Chamber (`dome`) | Back `ground`; set in the sage housing `metal`; the window's edge `hairline`, no highlight; the standby pool `sand`, the ready light `cream` | A window set in the housing; ready brightens the light inside, it never rings the window |
+| Bed (`nest`) | Moss: `leaf`, lit `grass`, shade and hollow `forest`; no twigs | Warm, alive, inside the living window |
 | Bud (placeholder) | Bean `peach`, lit `cream`, edge `rust`; late `blush`; the ready shape `bark` | The one warm thing; the shape a dark warm silhouette, never amber |
-| Base | `enamel`, lit top `frost`, shade `bevel`, edge `hairline`; the foot light `frost`; the plaque's plate `panel` with a `hairline` edge | Machined enamel |
+| Base | `enamel`, matte, lit `sand`, shade `bevel`, edge `hairline`; the foot light `sage`, a quiet line that says it is alive and working; the plaque's plate `panel` with a `hairline` edge | The sand housing |
 | Plaque | growing `fog`, ready `bone`, empty `fog` | Ready is the brightest word, for across a table; empty never recedes to `mist` |
 | Leaves | Full `sage` with a `sageD` vein; empty an outline in `metal`; the current leaf `sage` rows from its foot | The palette's leaf timer |
 | Waiting lamp | `sky`, 1 px `void` rim | The kit's waiting role |
@@ -1357,22 +1359,22 @@ Empty: the standby light on the nest, then the plaque, then the bottom line's `�
 
 ### 5. Composition
 
-The dome stands centred and large. The leaves arc over it in two arcs centred on the bud. The rail is centred across the top. The stamp label sits at the right, level with the bud.
+The chamber stands centred and large. The leaves arc over it in two arcs centred on the bud. The rail is centred across the top. The stamp label sits at the right, level with the bud.
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | Rail | 96, 40, 832, 40 | Hanging, its run centred on x 512; not a focus target; no glint |
 | Leaves | 256, 88, 512, 216 | The word `leaves`, form arc, rule `leafArc`: two arcs centred on the bud's centre (512, 344), inner radius 216, outer 244, each up to 20 leaves of 16×20 on an 8° pitch across ±76°, the run centred on the top; the inner fills first; up to 40 ([the leaf arcs](#the-leaf-arcs)) |
-| Dome glass | 360, 200, 304, 272 | A bell jar 304×270: a half circle of radius 152 on (512, 354), its top at y 202 (its ink 2 px into the region), over a body to y 472 (the concept's measurement) |
+| Chamber window (`dome`) | 360, 200, 304, 272 | The window and its hood keep their ink inside an arch: a half circle of radius 152 on (512, 354), its top at y 202 (2 px into the region), over a body to y 472 (the old bell jar's outline, kept as the limit) |
 | **Bud (focal)** | 448, 264, 128, 160 | Rendered at size, centred on (512, 344). Ready: the species' shape at 456, 288, 112×112, its ink at most 96×96 |
 | Nest | 408, 400, 208, 48 | Empty: lit and plump, its hollow visible |
-| Base | 344, 456, 336, 96 | Enamel, not wood; the glass stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
+| Base | 344, 456, 336, 96 | The sand housing, not wood; the chamber stands in it to y 472; the foot light 352, 548, 320, 2; the plaque's plate 448, 496, 128, 32 (the concept's about 328×96 on the grid) |
 | Plaque | 448, 496, 128, 32 | One word, 16 px, centred on x 512, its line box 502 to 522 |
 | Waiting lamp | 652, 506, 12, 12 | On the base, ready and hatch only, while the new mibi's painting has not landed |
-| **Stamp label** | 840, 296, 120, 120 | 176 px from the glass |
-| Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446 |
+| **Stamp label** | 840, 296, 120, 120 | 176 px from the chamber window |
+| Code | 808, 424, 184, 24 | 16 px, centred on x 900, line box 426 to 446; three groups with spaces ("K7Q 4MX P2D"), the widest 152 px |
 | Hatch ribbon | 312, 104, 400, 40 | The new mibi's words, 20 px, hatch only |
-| Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; the box the vivarium's meet keeps ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
+| Juvenile, after Open | 360, 160, 304, 312 | Its feet on the base's top at y 472, reading young by proportion inside the box; 304×312 is the size of one mibi up close's mibi, where the hand-off lands it ([the hand-off](#the-incubators-events-the-hatch-and-the-hand-off)), so it reads as the same creature |
 
 **Regions and their words.** States: **empty** (no bud, and an invitation), **growing** and **ready** (the bud's two), **hatch** (from `✓ Open` until the screen changes, input held).
 
@@ -1385,7 +1387,7 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | `nest` | 408, 400, 208, 48 | living window, part inside | | lit and plump when empty |
 | `nestFront` | 408, 400, 208, 48 | living window, part inside (`nest-front-208x48`, a placeholder to be painted) | | the nest's front rim fibres only, drawn over the bud as `room-cradle-front` is over the pod |
 | `bud` | 448, 264, 128, 160 | specimen (focal) | growing, ready, hatch | early, late, ready (with the shape and the front); cracking |
-| `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean highlight; glowing (ready); lifting |
+| `domeFront` | 360, 200, 304, 272 | living window, part frame | | the clean window, no highlight; lit (ready); lifting |
 | `base` | 344, 456, 336, 96 | living window, part frame | | the foot light, always on; the waiting lamp |
 | `plaque` | 448, 496, 128, 32 | text | | empty, growing, ready; blank in the hatch |
 | `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
@@ -1393,15 +1395,15 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
 | `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting or its placeholder; the step lift |
 
-**Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, its foot light, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top; the lifting glass is clipped to (0, 88, 1024, 474), under the rail.
+**Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, its foot light, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top; the lifting window is clipped to (0, 88, 1024, 474), under the rail.
 
-**Clearance:** every leaf lies 10 px or more under the rail (the outer arc's top leaf at y 90; with the 16×20 leaf an outer radius of 248 would put it at 86, 6 px under) and 56 px or more outside the glass, measured on the slot tables; no two leaves of any run overlap, their boxes 2 px apart at the closest, where the leaf's empty corners keep its ink clear. The code's line box starts 10 px under the stamp label; the ribbon ends 16 px above the juvenile's box.
+**Clearance:** every leaf lies 10 px or more under the rail (the outer arc's top leaf at y 90; with the 16×20 leaf an outer radius of 248 would put it at 86, 6 px under) and 56 px or more outside the chamber's arch, measured on the slot tables; no two leaves of any run overlap, their boxes 2 px apart at the closest, where the leaf's empty corners keep its ink clear. The code's line box starts 10 px under the stamp label; the ribbon ends 16 px above the juvenile's box.
 
 **States:**
 
-- **Empty** (an invitation): the standby light on the lit, plump nest, the clean glass, the foot light, the plaque "empty" in `fog`; no rail, leaves, stamp or code; the context "ready for a new bud". `✓ Choose a pod` when the rack holds a pod and a bay is free: a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod. Otherwise no ✓ cap. No notice, but "no bay free" when no bay is free, the one need that stops a bud.
+- **Empty** (an invitation): the standby light on the lit, plump nest, the clean window, the foot light, the plaque "empty" in `fog`; no rail, leaves, stamp or code; the context "ready for a new bud". `✓ Choose a pod` when the rack holds a pod and a bay is free: a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod. Otherwise no ✓ cap. No notice, but "no bay free" when no bay is free, the one need that stops a bud.
 - **Growing:** no ring; the leaves filling; the plaque "growing"; `✓ Grow now · ❀ 7` (❀ 1 for every 2 minutes left, rounded up: at most 19, the first bud 3), the frame's dimmed cap when short; the context "a Loika bud" (a cross: "Fig and Moss's bud", falling back to "a Loika bud" past 208 px). A founder's tabs clear across the wait, except a sealed chapter that is still shut; a cross bud's chapters outside its known reads stay unread through the wait, Grow now and ready.
-- **Ready:** every leaf full, the dome glowing, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known except a sealed chapter that is still shut; a cross bud keeps its unread chapters. No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice. While the painting is on its way, the waiting lamp on the base.
+- **Ready:** every leaf full, the chamber lit, the shape in the bud, the plaque "ready", `✓ Open`; a founder's bud has every chapter known except a sealed chapter that is still shut; a cross bud keeps its unread chapters. No bay free is a guard only (Grow already checked it): the dimmed cap, the plate "No bay free. Return a mibi to the wild first." and the notice. While the painting is on its way, the waiting lamp on the base.
 - **Hatch** (a held state): the event below; the context "its painting is on its way" (offline "waiting for the cloud") while it has not landed. Afterwards the Incubator is empty.
 
 ### 6. Interactions
@@ -1410,10 +1412,13 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | --- | --- |
 | ✓ when empty | `✓ Choose a pod`: Pods' collection, the ring on the first identified pod (a jump; ← there reads Home). With the rack empty or no bay free: no ✓ cap, nothing |
 | ✓ while growing | `✓ Grow now · ❀ 7`: the `growNow` event (the leaves fill in 400 ms), then ready |
-| ✓ when ready | `✓ Open`: the `hatch` event, then the vivarium's meet. No bay free (a guard): the dimmed cap; ✓ shows a plate, nothing opens |
+| ✓ when ready | `✓ Open`: the `hatch` event, then one mibi up close, in the meet (a jump; ← there reads Vivarium). No bay free (a guard): the dimmed cap; ✓ shows a plate, nothing opens |
 | Pad | Nothing: the screen has one subject, and no ring is drawn |
-| ← | Home, with the ring on Home's Incubator module |
-| During Grow now or the hatch | Presses are consumed |
+| ← | Home, with the ring on Home's Incubator module, in every state and after a jump |
+| A coloured key | Opens its section, as everywhere |
+| During Grow now or the hatch | The pad, ✓ and ← do nothing; a coloured key waits until the hold ends, then opens its section. After the hatch the meet stays Home's need ("meet Fig") |
+
+**The way in:** from Home's Incubator module (`✓ Open the Incubator`), and from Home's room when the bud needs the player (`✓ Open the Incubator` when it is ready, `✓ Look at the Incubator` while it grows); and by the jumps Grow it (Create) and Cross them (Cross), which land on growing. No coloured key leads here; the title keeps the Research mark. The way out is ← to Home, `✓ Choose a pod` to Pods, or `✓ Open` to the new mibi up close.
 
 ### The Incubator's focus as data
 
@@ -1434,232 +1439,316 @@ The dome stands centred and large. The leaves arc over it in two arcs centred on
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | no | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | yes | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the glass lifts 384 px, eased, whole pixels, out of sight under the rail. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to the vivarium, up close |
+| `hatch` (2600 ms, held 2780) | yes | 0: the leaves and the plaque's word go. 0 to 600: the chamber's window opens on its hood's hinge, swinging up and back in three slices (at 0, 200 and 400 ms). Until the chamber master lands, the placeholder's window lifts 384 px instead, eased, whole pixels, out of sight under the rail, in the same 600 ms. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the creature lift 4 px up and back in 200 ms. 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
-**The hand-off.** The hatch ends on the vivarium, up close, in its meet ([the vivarium's states and events](#the-vivariums-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312, the box the juvenile stood in, with the ring on it, and Open as a jump, so ← on the vivarium, up close reads Home (stack navigation, `frame.json` `navigation.jumps`). With `motion: false` the hatch jumps to its end, the vivarium's meet.
+**The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the Vivarium: states and events](#the-vivarium-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). This is the target: `frame.json` keeps main's navigation until the build, which makes the change `habitat.json` `buildChanges` names. With `motion: false` the hatch jumps to its end, the meet.
 
 ### Placeholders on the Incubator
 
-| Thing | Pixel size |
-| --- | --- |
-| Dome glass | 304×272 region (the glass 304×270), back and front; empty, `dome-inside-standby-304x272` (the standby light at the glass's size) |
-| Base | 336×96, with its plaque plate 128×32 and the foot light |
-| Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps |
-| Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 |
-| Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) |
-| Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted |
-| Waiting lamp | 12×12 |
-| Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) |
-| Juvenile | 304×312: the new mibi's painting, or its placeholder |
+| Thing | Pixel size | After the art reset |
+| --- | --- | --- |
+| Chamber (`dome`, `domeFront`) | 304×272 region (the old glass 304×270), back and front; empty, `dome-inside-standby-304x272` (the standby light at the region's size) | Stale: a bell jar; becomes the sheltered chamber with one hooded window, its ink inside the arch |
+| Base | 336×96, with its plaque plate 128×32 and the foot light | Stale: machined enamel; becomes the sand housing, matte, its foot light `sage` |
+| Bud | 128×160: `bud-early-128x160`, `bud-late-128x160` (one generic), `bud-ready-128x160` and `bud-ready-front-128x160`; two crack steps | Re-judged against the concept board's bean on moss; the box stays |
+| Shape inside the bud | 112×112, `bud-shape-S01-112x112` to `bud-shape-S16-112x112`, ink at most 96×96 | Carried |
+| Leaves | 16×20, `leaf-empty-16x20` and `leaf-full-16x20` (filling is the full leaf clipped by rows) | Re-judged against the concept board's leaf timer; the arcs stay |
+| Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
+| Waiting lamp | 12×12 | Carried |
+| Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
+| Juvenile | 304×312: the new mibi's painting, or its placeholder | Carried |
 
 ---
 
 <a id="habitat"></a>
 
-## The vivarium, up close
+## The Vivarium: the whole and one mibi up close
 
-One mibi up close, in the vivarium's light. Wireframes, 1×: [06-habitat](station-layouts/06-habitat.svg), [06b-habitat-meet](station-layouts/06b-habitat-meet.svg), [06c-habitat-child](station-layouts/06c-habitat-child.svg), [06d-habitat-armed](station-layouts/06d-habitat-armed.svg), [06e-habitat-empty](station-layouts/06e-habitat-empty.svg), [06f-habitat-away](station-layouts/06f-habitat-away.svg) and the map [06g-habitat-nav](station-layouts/06g-habitat-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/habitat.json`.
+The Vivarium is the place the mibis live, opened as a section in two levels: **the whole**, every mibi at home in one full-width window, and **one mibi up close**, the closest level. This section is their detail spec, written from the structure in [Home, the sections and the Vivarium](#home-the-sections-and-the-vivarium) (map 15, wireframes 15b and 15c). The numbers live in `prototypes/ui/specs/station/vivarium.json` (the whole) and `prototypes/ui/specs/station/habitat.json` (one mibi up close; the screen id `habitat` stays until its build renames it). Both levels are titled Vivarium, after the Vivarium key's icon.
 
-<img src="station-layouts/06-habitat.png" width="1024" alt="The vivarium, up close at rest">
+| Level | Wireframes, 1× (each with its SVG) |
+| --- | --- |
+| The whole | [18](station-layouts/18-vivarium-whole.svg) docked, [18a](station-layouts/18a-vivarium-whole-away.svg) away, [18b](station-layouts/18b-vivarium-whole-empty.svg) empty |
+| One mibi up close | [19](station-layouts/19-vivarium-mibi.svg) rest, [19a](station-layouts/19a-vivarium-mibi-meet.svg) the meet, [19b](station-layouts/19b-vivarium-mibi-child.svg) a bred child, [19c](station-layouts/19c-vivarium-mibi-out.svg) out with the Companion, [19d](station-layouts/19d-vivarium-mibi-carried.svg) the carried set, [19e](station-layouts/19e-vivarium-mibi-wild.svg) Wild armed |
 
-*06. The vivarium, up close, at rest: an adult founder with every chapter read, the ring on the mibi, `✓ Greet Burr`. 1×, measured.*
+<img src="station-layouts/18-vivarium-whole.png" width="1024" alt="The Vivarium's whole, docked: seven mibis in eight bays, two asleep on the bed, the ring on Bean">
 
-<img src="station-layouts/06b-habitat-meet.png" width="1024" alt="The vivarium, up close, the meet">
+*18. The whole, docked: five residents walking, Pip and Sorrel asleep on the bed, eight bays (one free) in compact tiles, the ring on Bean with its name tag, `✓ Look at Bean`, `← Home`. 1×, measured.*
 
-*06b. The meet: the new juvenile from the hatch in the same 304×312 box, its placeholder and waiting lamp, the meet ribbon in the name tag's place, the ring on it, `✓ Name Moss`.*
+<img src="station-layouts/19-vivarium-mibi.png" width="1024" alt="One mibi up close: Burr, bonded, two skill notches, the Companion carrying Pip and Sorrel">
 
-<img src="station-layouts/06c-habitat-child.png" width="1024" alt="The vivarium, up close, a bred child">
-
-*06c. A bred child with two chapters still a surprise: the ring on an unread plate, `✓ Read Coat   ◆ 1`.*
-
-<img src="station-layouts/06d-habitat-armed.png" width="1024" alt="The vivarium, up close, a sitting held">
-
-*06d. A sitting held lights the Portrait module's frame.*
-
-<img src="station-layouts/06e-habitat-empty.png" width="1024" alt="The vivarium, up close, empty">
-
-*06e. Empty: no mibi yet. The glass, the six free bays and the frame; no ring and no ✓ cap.*
-
-<img src="station-layouts/06f-habitat-away.png" width="1024" alt="The vivarium, up close, Companion away, twelve bays">
-
-*06f. The Companion away and twelve bays in compact tiles: the ring on the Companion module, `✓ Take Fig with you`, "goes at the next dock"; an elder with nine partners, two rows of faces.*
-
-<img src="station-layouts/06g-habitat-nav.png" width="1024" alt="the vivarium's navigation map">
-
-*06g. the vivarium's map: the ways in, the states, the namer, what each key does, where ✓ and ← lead.*
+*19. One mibi up close, at rest: Burr, bonded (the heart), two skill notches, every chapter read; the Companion carrying Pip and Sorrel, its third place free; three partners on Cross; the ring on Burr, `✓ Greet Burr`, `← Vivarium`. 1×, measured.*
 
 ### 1. Purpose
 
-The vivarium, up close, is where the player spends time with one mibi and decides what it does next: names it, takes it along on the Companion, crosses, has it sit for its portrait, or returns it to the wild. The player comes away knowing who this mibi is (its name, its species and stage, where it came from, what it remembers, which chapters are still a surprise) and having chosen its next step. It is the individual level ([The two levels](#the-two-levels-species-and-mibi)): one living thing with its own stamp, with a door to its species' guide.
+**The whole.** The player sees the whole household and chooses one mibi to come closer to: who is home, who is out with the Companion, how many bays are free, and one press to any mibi. Home's panel is the same place at a glance among the device's sections; Idle is the same painting with no frame and nothing to choose; the whole is the place with the keys in hand. **Reads first:** the residents, then the bays.
+
+**One mibi up close.** The player spends time with one mibi and chooses its next step: greets it, names it, reads who it is (its species and stage, where it came from, what it remembers, its code, the heart when it is bonded, its skill notches, its chapters and its stamp), reads a bred child's chapter still unread, takes it along or brings it home, has it sit for its portrait, crosses it or returns it to the wild. It is the individual level ([The two levels](#the-two-levels-species-and-mibi)), with a door to its species' guide. **Reads first:** the mibi, then its name, then the card.
 
 ### 2. Elements
+
+**The whole.**
+
+| Element | Why it is here |
+| --- | --- |
+| **The living window**, edge to edge: Idle's painting, its rows 120 to 560 at 1:1 | The Vivarium itself, the same place Home and Idle show |
+| **The residents**, at their size, walking | Every mibi at home, alive |
+| **The with-you bed**: the carried set asleep, the Companion mark away, or the empty nest when nobody is carried | Where the carried mibis are |
+| **The name tag** under the focused resident | Which mibi this is, only while focused |
+| **The strip of bays**, one tile a bay | Every mibi in bay order, the ones out with the Companion (the outline glyph) and the free bays: the household's order and size, and a way to reach a mibi that is not in the window |
+| **Bottom line** | `✓ Look at Bean`; the context; `← Home` |
+
+**Not on the whole:** a card, modules, the stamp, a count, any word in the window but the focused name, anything amber.
+
+**One mibi up close.**
 
 | Element | Why it is here |
 | --- | --- |
 | **The mibi**, 304×312, in the living window | The subject, at the size it stood at when it hatched |
-| **The name tag** under it, inside the window | Which mibi this is, in context under the creature; the way to rename it |
-| **The card**: "your Loika, adult" (the species word is the door to the guide), where it came from and what it remembers, its code, the stamp label and one plate a chapter | Who it is, as a readout, without a text page |
-| **Four modules**: Companion, Portrait, Cross, Wild | The four things a mibi can do next, each one engraved word and one object. All four show on every mibi; the Portrait module is where a sitting is spent. The Companion module is where a mibi is taken along or brought home; the bond is made by Tends on the Companion, and the card's heart shows it |
-| **The strip** of bays | The other mibis and the free bays; walking it changes the mibi shown |
+| **The out mark** in its place (state out) | The mibi is out with the Companion: its place is kept, never shown as missing |
+| **The name tag** under it | Which mibi this is; the way to rename it |
+| **The card**: "your Loika, adult" (the species word is the door to the guide), where it came from and what it remembers, its code, the heart, the skill notches, the stamp label and one plate a chapter | Who it is, as a readout, without a text page |
+| **The heart** on the card | Bonded: drawn; unbonded: nothing. A state, never a target; the bond is made by Tends on the Companion |
+| **The skill notches** on the card | Its skill: filled notches only, min(notches, 3); nothing at zero; never an empty notch or a figure; shown here and nowhere else on the Station |
+| **Four modules**: Companion, Portrait, Cross, Wild | The four next steps, each one engraved word and one object, on every mibi |
+| **The strip** of bays | The other mibis; walking it changes the mibi shown |
 | **The meet ribbon** (the meet only) | A new mibi, met for the first time |
-| **The namer** (an overlay on the vivarium, up close, over the right column; not a screen of its own) | Naming at the meet, and renaming any time (its own spec, `namer.json`) |
-| **Bottom line** | What ✓ does with the focus, at its price; the context in words |
+| **The namer**, an overlay over the right column | Naming at the meet, renaming any time ([The namer](#the-namer)) |
+| **Bottom line** | What ✓ does with the focus, at its price; the context; `← Vivarium` |
 
-**Not on the stage:** prices, counts, "again", "+2 ❀", "with you", "placeholder" or any status word: they are the bottom line's. Nothing on the vivarium, up close is amber: a partner to cross with or a mibi with you is not a need.
+**Not up close:** prices, counts, "again", "+2 ❀" or any status word on the stage (they are the bottom line's); a meter or a need; anything amber.
 
 ### 3. Placement
 
-**Reading order:**
+**The whole.** The window takes the stage edge to edge, 0 to 1024, y 40 to 480, with no bezel: the section's whole is the place itself, inside the device's frame. The residents walk in its ground band; the bed sits at the right, where Idle has it. The strip runs along the foot in the same rectangle as one mibi up close, so moving between the levels keeps the strip, and the ring's tile, where they stood.
 
-1. **The mibi**, warm, centred in the window on x 296.
+1. **The residents**, warm, on the ground band.
+2. The bed and its sleepers, at the right.
+3. **The strip** along the foot.
+
+**One mibi up close.**
+
+1. **The mibi**, centred in the window on x 296.
 2. **Its name** on the tag under its feet.
-3. **The card's first line**, "your Loika, adult", then its other lines and plates.
+3. **The card's first line**, "your Loika, adult", the heart at its end, then the story, the code and the notches on one row, and the plates.
 4. **The modules**, left to right, top to bottom; Wild, the act that lets a mibi go, last.
 5. **The strip.**
-6. **The stamp label**, in the card's top right corner, 424 px from the mibi.
+6. **The stamp label**, at the card's top right, 424 px from the mibi.
 
-**At the edges:** the card and the modules in a 416 px column at the right (592 to 1008), which is also where the namer's panel stands; the strip along the foot. The living window stays left of x 592, so the mibi being named is always in view.
+**At the edges:** the card and the modules in a 416 px column at the right (592 to 1008), which is also where the namer's panel and the Sitting's deck stand; the strip along the foot. The window stays left of x 592, so the mibi being named is always in view.
 
 ### 4. Art direction
 
-- **Room:** the vivarium: cozy and warm, the pet happy at home. The window is the only warm field; the card, the modules and the strip are the instrument's cool chrome.
-- **One warm light**, the same as Home's glass and Idle: the warm key light from the top left in every light; at night warm and low, the moon only a cool rim.
-- **The mibi** is its standard painting at 304×312, or its placeholder with the waiting lamp until the painting lands. A juvenile reads young by proportion inside the same box. Never a token, never enlarged.
-- **The heart** is a small enamel heart painted in the house light: never a flat emoji heart, no face, no sparkle. There are no meters or needs anywhere.
-- **The stamp is a detail:** the 120 label, at the card's far corner.
-
-**Colour roles** (the one home is `habitat.json` `colours`; the heart, frames, gate and plate grounds are painted masters, `habitat.json` `masters`):
+One device in one look, as Home ([art direction](../art-direction.md), the Station world brief): the Vivarium is the warm living field, and everything round it is the device's matte housing and slate panels. Nothing glossy, no frost glass, no beam. Every colour below is a role of the palette; each spec's `colours` is its one home.
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Bezel, glass | As Home: `metal` bezel lit `enamel`, shade `bevel`, edge `hairline`; glass edge `frostD`. Until the up-close master: back `forest`, ground band (y 304 to 464) `clay` with a `sand` top row | The vivarium's warm field, the same as Home's |
-| Name tag | `panel` fill, `hairline` edge, the name `bone` | The kit's small plate, quiet on the warm field |
-| Meet ribbon | `tealD` fill, `aqua` rim, words `bone` | The one ribbon look: an event, cool on the warm field |
-| Waiting lamp | `frame-lamp-12-sky` | The kit's waiting role, never a word in the window |
-| Card | `panel` fill, `hairline` edge, `bevel` top; species line and code `bone`, the story `mist`; `mark-guide-16` | An instrument readout |
-| Plates | The signed grounds `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblems | The rail's states, as plates |
-| Modules | `panel` fill, `hairline` edge, `bevel` top, the word `metal`; no lamp | Home's modules, engraved and quiet |
-| Partner faces | `face-{species}-24` on a `bevel` ring | A face a partner, no digits |
-| Strip and tiles | Strip `ground`; tile `panel`; the shown tile `hairline`, one step up; a free bay a composed dashed outline, 1 px `hairline`, dash 2 and 2 | The focus ring is the only highlight |
+| The whole's window | Idle's painting, one a light; until it lands, back `forest`, ground band `clay` with a `sand` top row, foot `soil` | The same place as Home and Idle |
+| Up close: bezel, glass | Home's bezel; the glass the near painting (`vivarium-near-{day,dusk,night}-544x408`), until it lands the same placeholder | The Vivarium close by, at the hour the whole shows |
+| Name tag | `panel`, `hairline` edge, the name `bone` | The kit's small plate |
+| Meet ribbon | `tealD`, `aqua` rim, `bone` words | The one ribbon look |
+| Card | `panel`, `hairline` edge, `bevel` top; species line and code `bone`, the story `mist`; `mark-guide-16` | The device's readout |
+| Heart | `heart-full-24`: a small painted enamel heart, never a flat emoji heart, no face, no sparkle | A state of the mibi |
+| Notches | `notch-skill-16x24`: one filled notch cut into the card's plate, repeated one to three times | The skill as marks, never a figure |
+| Out mark | `mark-out-with-companion-64x96`: the mibi's place, kept for it, the Companion's outline standing on the ground | Out, never missing |
+| Plates | `chapter-plate-{read,unread,sealed}-40x40`, then the rail's emblems | The rail's states, as plates |
+| Modules | `panel`, `hairline` edge, `bevel` top, the word `metal`; no lamp | Home's modules, quiet |
+| Strip and tiles | Strip `ground`; tile `panel`; the shown tile `hairline`; a free bay a dashed `hairline` outline | The focus ring is the only highlight |
 
 ### 5. Composition
 
-The window fills the left (16 to 576) above the strip, the mibi centred in it with its tag under its feet. At the right the card sits on top, then two rows of modules. The strip runs the full width at the foot.
+**The whole** (`vivarium.json`).
 
-| Region | Rectangle | Notes |
-| --- | --- | --- |
-| Bezel | 16, 48, 560, 424 | 8 px bezel |
-| **Living window (glass)** | 24, 56, 544, 408 | Ground band 24, 304, 544, 160; no words but the tag and the meet ribbon |
-| **The mibi (focal)** | 144, 80, 304, 312 | Axis x 296, feet y 392; the juvenile's box on the Incubator, so it reads as the same creature after the hatch |
-| Waiting lamp | 436, 80, 12, 12 | At the box's top right, riding the lift, while the placeholder is drawn |
-| Name tag | in 184, 416, 224, 32 | 32 tall at y 416 (the feet + 24, 12 px under the feet ring); the name 20 px medium; the name's width + 24, rounded up to 8, at least 80, at most 224 (ten of the widest letter, 200, and its pads); centred on x 296. A name is never clipped |
-| Meet ribbon | 144, 416, 304, 40 | In the tag's place, 20 px, centred; the meet only |
-| Card | 592, 48, 416, 208 | `panel` |
-| Species line | 608, 64, 216, 24 | "your Loika, adult", 16 px, with `mark-guide-16` 4 px after the last word; a focus target |
-| Story | 608, 88, 248, 72 | Up to three lines of 16 px on a 24 pitch, filled from the top: a founder, "from the rock field"; a bred mibi, "of Pip" and "and Sorrel" on two lines; then "remembers the pond edge" |
-| Code | 608, 160, 248, 24 | The code in three groups with spaces, "3MB W21 1BB", live text |
-| **Stamp label** | 872, 64, 120, 120 | 424 px from the mibi's box |
-| Plates | 608 + 48i, 200, 40, 40 | One a chapter in ring order, up to eight (8 × 48 − 8 = 376): the signed ground, then the rail's emblem 24×24 at (8, 8); no word, no pips |
-| Companion | 592, 272, 272, 96 | Wide: the carried set. Word at (16, 12); the Companion's glyph 16×24 at (24, 52), solid docked, outline away; the carried mibis, 48×48, at (56, 40), (120, 40) and (184, 40), in the set as it will be, while docked; a carried mibi is not drawn while the Companion is away; a mibi whose add waits is drawn at 48×48 with `frame-lamp-8-stone` at the place's (40, 0) |
-| Portrait | 872, 272, 136, 96 | The sitting frame 32×48 at (52, 40) |
-| Cross | 592, 376, 272, 96 | Wide: it opens a screen. A face a partner, `face-{species}-24` on a 32 pitch: up to seven in one row at (16, 56); eight to eleven in two rows of up to seven, at y 38 and 64 |
-| Wild | 872, 376, 136, 96 | The gate 48×48 at (44, 40) |
-| Strip | 16, 488, 992, 64 | `panel` |
-| Tiles | from 32, 496, each 48 tall | One a bay, at most twelve: a vivarium holds at most twelve mibis. **Up to six bays:** tiles 152×48 on a 160 pitch, the thumbnail 48×48 at (52, 0). **Seven to twelve:** tiles 72×48 on an 80 pitch, the thumbnail at (12, 0). Thumbnails only: focusing a tile shows its mibi in the window, its name on the tag. A free bay is a dashed outline |
+| Region | Rectangle | Word or build | Notes |
+| --- | --- | --- | --- |
+| `stage` | 0, 40, 1024, 522 | frame, part stage | Flat `ground` round the strip |
+| `window` | 0, 40, 1024, 440 | living window, part inside, no frame | Idle's painting rows 120 to 560 at 1:1; ground band 0, 296, 1024, 176; foot 0, 472, 1024, 8 |
+| `resident` | 144×152 adult or elder, 104×112 juvenile | living window, residents | Feet in 16, 296, 992, 176 (Idle's band, 80 px higher); drawn by the feet's y; focused: the feet ring, a 4 px lift, the name tag; the waiting lamp 12×12 at the box's top right |
+| `bed` | 792, 416, 192, 56 | build `withYouBed` | Idle's bed 80 px higher. Sleepers' feet at x 888 + 48 × (i − (n − 1) / 2), y 456; an adult's box (footX − 72, 304, 144, 152); the nap ink at most (footX − 48, 368, 96, 88). Away: the Companion mark 16×24 at (880, 432). Docked with nobody carried: the nest drawn empty, no sleeper and no mark, not a target |
+| `nameTag` | 24 tall; the name + 16, up to 8, 48 to 176 | panel and text, build `nameTag` | Home's tag (16 px). Top at feet + 24; if its bottom would pass y 472 it sits over the resident (top = box.y − 4 − 32); a sleeper's over it. Slid to stay 8 px inside the window |
+| `strip` | 16, 488, 992, 64 | panel | The rectangle of one mibi up close |
+| `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch`) | Up close's forms: up to six bays 152×48 on a 160 pitch, the thumbnail at (52, 0); seven to twelve 72×48 on an 80 pitch, at (12, 0). A mibi out with the Companion: the outline glyph 16×24 centred where its thumbnail stands. No tile is "shown" here |
 
-Every module's objects start 8 px or more under its word's baseline (the word's line box at y + 12, its baseline at y + 28; the first object at y + 38 or lower).
+**Draw order:** stage, window, the residents and the bed by the feet's y, lamps, name tag, strip, tiles, ring, frame, message plate.
 
-**Regions and their words.** Every drawn region names its word from the closed vocabulary (`component`) or its composition (`build`). States: **rest**, **meet** and **empty**; the namer is an overlay with its own spec (`namer.json`), its panel at 592, 48, 416, 424 over the card and the modules.
+**One mibi up close** (`habitat.json`). The window fills the left (16 to 576) above the strip, the mibi centred in it with its tag under its feet. At the right the card sits on top, then two rows of modules. The strip runs the full width at the foot.
 
-| Region (`habitat.json`) | Rectangle | Word or build | Only in | States it shows |
+| Region | Rectangle | Word or build | Only in | Notes |
 | --- | --- | --- | --- | --- |
-| `stage` | 0, 40, 1024, 522 | frame, part stage (`room-vivarium-stage-habitat`) | | — |
-| `bezel` | 16, 48, 560, 424 | living window, part frame | | — |
-| `glass` | 24, 56, 544, 408 | living window, part inside | | — |
-| `resident` | 144, 80, 304, 312 | specimen (focal) | rest, meet | painting or placeholder; the waiting lamp; focused (4 px lift, the feet ring); its moment |
-| `nameTag` | 184, 416, 224, 32 | panel and text, build `nameTag` (shared with Home: h, px, weight, pad, round, min from the spec) | rest | the name; focused; the `named` flash |
-| `meetRibbon` | 144, 416, 304, 40 | ribbon | meet | "Meet Moss" |
-| `card` | 592, 48, 416, 208 | panel; it holds the heart sprite `heart-full-24`, 24×24 at (240, 16) in the card (832, 64, 24, 24), drawn when the mibi is bonded and nothing when not; the heart is a state, never a focus target | rest, meet | the heart, bonded or not |
-| `speciesLine`, `story`, `code` | 608, 64 / 88 / 160, 216 / 248 / 248, 24 / 72 / 24 | text | rest, meet | the species word focused |
-| `stamp` | 872, 64, 120, 120 | stamp label | rest, meet | the read chapters filled; a chapter printing |
-| `plates` | 608, 200, 376, 40 | list, build `chapterPlates` (rule `listPitch`) | rest, meet | each plate read, unread or sealed |
-| `door` | 592, 272, 272, 96 | panel, build `module` (lamp null) | rest, meet | docked, away, none; a request waiting |
-| `portrait` | 872, 272, 136, 96 | panel, build `module` | rest, meet | none, held, painting, portrayed |
-| `cross` | 592, 376, 272, 96 | panel, build `module` | rest, meet | a face a partner, in one or two rows, or none |
-| `wild` | 872, 376, 136, 96 | panel, build `module` | rest, meet | shut, armed |
-| `strip` | 16, 488, 992, 64 | panel | | — |
-| `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch` with forms: the form with the smallest `upTo` at least the bay count) | | shown, housed, free; the mibi with you while away |
+| `stage` | 0, 40, 1024, 522 | frame, part stage (`room-vivarium-stage-habitat`) | | The device's housing round the window, the card and the modules |
+| `bezel` | 16, 48, 560, 424 | living window, part frame | | 8 px bezel |
+| `glass` | 24, 56, 544, 408 | living window, part inside | | The near painting; ground band 24, 304, 544, 160; no words but the tag and the meet ribbon |
+| `resident` (focal) | 144, 80, 304, 312 | specimen | rest, meet | Axis x 296, feet y 392; the juvenile's box on the Incubator. Its waiting lamp 436, 80, 12, 12 while the placeholder is drawn |
+| `resident.out` | 264, 296, 64, 96 | specimen (the out mark) | out | On the axis, its foot on the feet line; not a target |
+| `nameTag` | in 184, 416, 224, 32 | panel and text, build `nameTag` | rest, out | 20 px medium; the name + 24, up to 8, 80 to 224; centred on x 296 |
+| `meetRibbon` | 144, 416, 304, 40 | ribbon | meet | "Meet Moss", 20 px, centred |
+| `card` | 592, 48, 416, 208 | panel | | Holds the heart and the notches as sprites |
+| Heart | 832, 64, 24, 24 | the card's sprite `heart-full-24` | | Bonded only |
+| `speciesLine` | 608, 64, 216, 24 | text | | "your Loika, adult", `mark-guide-16` 4 px after the last word; a target |
+| `story` | 608, 88, 248, 72 | text | | Up to three lines on a 24 pitch: a founder "from the rock field"; a bred mibi "of Pip" and "and Sorrel"; then "remembers the pond edge" |
+| `code` | 608, 160, 152, 24 | text | | Three groups with spaces; the widest, "WWW WWW WWW", is 152 at 16 px |
+| Notches | 768, 160, 88, 24 | the card's sprites `notch-skill-16x24` | | 16×24 on a 24 pitch, right-aligned to x 856: min(notches, 3) of them, one at 840; two at 816, 840; three at 792, 816, 840 (y 160). None at zero |
+| `stamp` | 872, 64, 120, 120 | stamp label | | 424 px from the mibi's box |
+| `plates` | 608, 200, 376, 40 | list, build `chapterPlates` (rule `listPitch`) | | 40×40 on a 48 pitch from 608, up to eight, in ring order; the emblem 24×24 at (8, 8); no word, no pips |
+| `door` (Companion) | 592, 272, 272, 96 | panel, build `module`, no lamp | | Word at (16, 12); the glyph 16×24 at (24, 52), solid docked, outline away; three places 48×48 at (56, 40), (120, 40), (184, 40): the set as it will be, docked or away; an add waiting with `frame-lamp-8-stone` at the place's (40, 0); a free place a dashed `hairline` outline 1 px inside it |
+| `portrait` | 872, 272, 136, 96 | panel, build `module` | | The sitting frame 32×48 at (52, 40): none, held, painting, portrayed |
+| `cross` | 592, 376, 272, 96 | panel, build `module` | | A face a partner, 24 on a 32 pitch: up to seven at (16, 56); eight to eleven in two rows at y 38 and 64. A partner out with the Companion while it is away is drawn dimmed, on a `stone` ring, and cannot be picked |
+| `wild` | 872, 376, 136, 96 | panel, build `module` | | The gate 48×48 at (44, 40), shut or ajar (armed) |
+| `strip` | 16, 488, 992, 64 | panel | | |
+| `tiles` | 32, 496, 952, 48 | list, build `bayStrip` (rule `listPitch` with forms) | | As the whole's; the shown mibi's tile `hairline`; an out mibi's tile the outline glyph, still a target |
 
-The ring is the frame's `focusRing` word; the bottom line and the top bar are the frame's. **Draw order:** stage, bezel, glass, resident, its lamp, name tag or meet ribbon, card (with its heart), its lines, stamp, plates, the four modules, strip, tiles, ring, frame, message plate, the namer.
+Every module's objects start 8 px or more under its word's baseline (y + 28). **Draw order:** stage, bezel, glass, the mibi or the out mark, its lamp, name tag or meet ribbon, card with its heart and notches, its lines, stamp, plates, the four modules, strip, tiles, ring, frame, message plate, the namer.
+
+<table><tr>
+<td valign="top"><img src="station-layouts/18a-vivarium-whole-away.png" width="480" alt="The whole, the Companion away"><br><em>18a. The whole, away: Pip and Sorrel out, the bed's Companion mark, their tiles' outline glyph, the ring on Pip's tile, <code>✓ Look at Pip</code>. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/18b-vivarium-whole-empty.png" width="480" alt="The whole, empty"><br><em>18b. The whole, empty: six free bays, no ring and no ✓ cap, "nobody lives here yet". 1×, measured.</em></td>
+</tr><tr>
+<td valign="top"><img src="station-layouts/19a-vivarium-mibi-meet.png" width="480" alt="One mibi up close, the meet"><br><em>19a. The meet: Moss from the hatch, its placeholder and waiting lamp, the ribbon in the tag's place, <code>✓ Name Moss</code>. Unbonded and young: no heart, no notches, no partners. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/19b-vivarium-mibi-child.png" width="480" alt="One mibi up close, a bred child"><br><em>19b. A bred child: two chapters still a surprise and one sealed; the ring on an unread plate, <code>✓ Read Coat   ◆ 1</code>. 1×, measured.</em></td>
+</tr><tr>
+<td valign="top"><img src="station-layouts/19c-vivarium-mibi-out.png" width="480" alt="One mibi up close, out with the Companion"><br><em>19c. Out: Pip is with the Companion; the out mark keeps its place, the ring on its name, <code>✓ Rename Pip</code>; the Companion module shows the set while away. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/19d-vivarium-mibi-carried.png" width="480" alt="One mibi up close, the carried set with an add waiting"><br><em>19d. The carried set: Fig chosen to go, in the third place with the pending lamp; no ✓ cap while it waits, "goes with you now". 1×, measured.</em></td>
+</tr><tr>
+<td valign="top"><img src="station-layouts/19e-vivarium-mibi-wild.png" width="480" alt="One mibi up close, Wild armed"><br><em>19e. Wild armed: Dot, unbonded and with no skill yet (no heart, no notch), the gate ajar, <code>✓ Again: return Dot   ❀ +2</code>. 1×, measured.</em></td>
+<td></td>
+</tr></table>
 
 ### 6. Interactions
 
+**The whole.**
+
 | Input | What happens, and how it shows |
 | --- | --- |
-| Pad | Moves the ring by [the vivarium's focus](#the-vivariums-focus-as-data); on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once) |
-| ✓ on the mibi or a tile | `✓ Greet Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing and shows nothing like a reward. In the meet, `✓ Name Moss` |
-| ✓ on the name tag | `✓ Rename Burr`: the namer opens over the right column; when it closes, the ring is on the name |
-| ✓ on the species line | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads Library |
-| ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |
-| ✓ on Companion | `✓ Take Fig with you` when Fig is not in the carried set as it will be and that set holds fewer than three: the context "goes with you now" (docked) or "goes at the next dock" (away). `✓ Bring Fig home` when Fig is carried and no request for it waits: "comes home now" (docked) or "home at the next dock" (away). A request for Fig waiting: no ✓ cap, the context says what waits ("goes with you now" or "goes at the next dock" for an add, "home at the next dock" for a home). Three carried and Fig not one of them: no ✓ cap, "the Companion is full". A mibi the Companion cannot take at the dock stays home, and the plate "Fig stayed home, no room" shows once |
-| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the sitting, its own screen under the vivarium, up close ([Sitting](#sitting); ← there reads the vivarium, up close). Otherwise no ✓ cap and the context says why: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way" |
-| ✓ on Cross | An adult or an elder with a partner: `✓ Cross Burr` opens Cross; ← there reads the vivarium, up close, and lands on the Cross module. A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
-| ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it (the mibi dithers out to the next in bay order, its tile frees, the plate "Burr goes back to the rock field"). Refused with no ✓ cap and the reason as the context: "a bonded mibi stays", "not until it is adult", "already with you", "goes at the next dock" (an add waits) |
+| Pad | Moves the ring by [the focus](#the-vivarium-focus-as-data) |
+| ✓ on a resident or a tile | `✓ Look at Bean`: the 180 ms screen transition to that mibi up close, the ring on it (on its name when it is out) |
+| ← | Home, the ring on the vivarium panel |
+| The Vivarium key | On the whole, the ring back on the mibi last seen up close |
+| Dock | Cuts: the bed's Companion mark goes and the carried set lies down; their tiles' glyphs become thumbnails. Lifted, the reverse |
+
+| Focus | ✓ and its verb | Context |
+| --- | --- | --- |
+| A resident | `✓ Look at Bean` | "an adult Untuva"; a sleeper "an elder Untuva, asleep"; the placeholder "its painting is on its way" |
+| A tile, the mibi at home | As its resident | As its resident |
+| A tile, the mibi out | `✓ Look at Pip` | "out with the Companion" |
+| Nothing (empty) | no ✓ cap | "nobody lives here yet" |
+
+**One mibi up close.**
+
+| Input | What happens, and how it shows |
+| --- | --- |
+| Pad | Moves the ring by the focus; on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once), in state out when that mibi is out |
+| ✓ on the mibi or its tile | `✓ Greet Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing. In the meet, `✓ Name Moss`. Out: no greet (the mibi is not here) |
+| ✓ on the name tag | `✓ Rename Burr`: the namer opens over the right column; any housed mibi, at home or out; when it closes, the ring is on the name |
+| ✓ on the species line | `✓ Open the guide`, "every Loika": a jump to the Book's guide spread |
+| ✓ on a plate | A bred child's unread chapter, at home or out: `✓ Read Coat   ◆ 1` (no price when free): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, "Coat, read", "Coat, sealed" |
+| ✓ on Companion | `✓ Take Fig with you` when Fig is not in the set as it will be and that set holds fewer than three: "goes with you now" (docked) or "goes at the next dock" (away). `✓ Bring Fig home` when Fig is carried and no request for it waits: "comes home now" or "home at the next dock". A request waiting: no ✓ cap, the context says what waits. Three in the set and Fig not one: no ✓ cap, "the Companion is full". A mibi the Companion could not take shows the plate "Fig stayed home, no room" once |
+| ✓ on Portrait | A sitting held and the mibi able to sit: `✓ Portray Burr`, "one sitting each, ever", opens the [Sitting](#sitting). Otherwise no ✓ cap and the reason: "no sitting held", "no pose seen yet", "already portrayed", "its portrait is on its way"; out, "sits when you dock" |
+| ✓ on Cross | An adult or an elder with a partner it can pick: `✓ Cross Burr`, "two Loika to pair with" (counting only the partners it can pick), opens Cross. Docked, a carried mibi crosses as any adult. Away, the shown mibi out with the Companion: no ✓ cap, "crosses when you dock"; at home with every partner out: no ✓ cap, "pairs when you dock". A juvenile: "crosses once adult"; alone: "no Loika to pair with" |
+| ✓ ✓ on Wild | `✓ Return Burr   ❀ +2`, "goes back to the wild": the first ✓ arms (the gate ajar, `Again: return Burr`, "never taken back"), the second returns it: it dithers out to the next mibi in bay order (the whole, empty, when none is left), its tile frees, the plate "Burr goes back to the rock field". Refused with no ✓ cap and the reason: "a bonded mibi stays", "not until it is adult", "already with you", "goes at the next dock" |
 | Any key but ✓ | Clears an arm. In the meet, ends the meet with the default name kept, and does what it does |
-| ← | Home, however the vivarium, up close, was opened; Home's ring lands on that mibi when it is at home, else on the room. While the namer is open, ← is the namer's |
-| The Vivarium key | On the vivarium, up close, the ring back on the mibi; from anywhere, the vivarium, up close, on the mibi last seen |
+| ← | The whole, however this level was opened (a jump, Home's ✓ Look at, the hatch), the ring on this mibi's resident, or its tile while it is out. While the namer is open, ← is the namer's |
+| The Vivarium key | The whole, the ring on this mibi |
 
-### The vivarium's focus as data
+The way back reads "Vivarium", its ← cap at x 922. **The watch** (`state.benchWatch`): only on one mibi up close, the shown mibi at rest or in the meet that is not carried (never while it is with the Companion, docked or away). Its time is summed over the day while this level shows and the face is awake; at 60 s, once a mibi a day, the first of its habits not yet seen is recorded and the message plate shows ("Fig is seen digging"), with the Data trickle and the counter's tick while under the day's cap; at the cap the habit is still recorded and the plate shows, with no tick.
 
-`habitat.json` `focus` replaces `nav.mjs` `habitatRows` and `habitatMove` with the graph primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): edges by name, selector, `nearestIn` with `ahead`, ordered lists, and `axis`. Targets: `resident`; `name` (the tag, rest only); `species`; `plate.<i>` in group `plate`; `door` and `portrait` in group `top`; `cross` and `wild` in group `low`; `tile.<mibi id>` in group `tile` (housed mibis only). The selector `tile.shown` is the shown mibi's tile. The name is first in the card's pad order: ▶ from the mibi reaches it before the species line.
+### The Vivarium: focus as data
+
+Both graphs use the primitives of [lvgl-switch.md §2.6.1](../proposals/lvgl-switch.md): edges by name, selector, `nearestIn` with `ahead`, ordered lists and `axis`.
+
+**The whole** (`vivarium.json` `focus`). Targets: `resident.<id>` (the feet ring; sleepers too, without the lift) and `tile.<id>` (round, every housed mibi, at home or out). The selectors are the view's: `tile.of`, the focused resident's own tile; `resident.of`, the focused tile's resident, null for a mibi that is out, when the selector rule takes the first resident in the list.
+
+| From | ◀ | ▶ | ▲ | ▼ |
+| --- | --- | --- | --- | --- |
+| `resident` | the nearest resident ahead, else none | the nearest resident ahead, else none | the nearest resident ahead, else none | `tile.of` |
+| `tile` (axis) | the previous tile; the first stops | the next tile; the last stops | `resident.of`, else none | none |
+| The room (empty) | none | none | none | none |
+
+**Opens on** the mibi last seen up close (its resident, else its tile); none seen yet, the first resident from the left; none at home, the first tile; none housed, the room. From one mibi up close, ← lands on that mibi. **Vectors** (`vivarium.json` `focus.vectors`, 22, played by `ui/focus.mjs` on wireframe 18's targets): Bean ▶ Dot; Bean ▼ its tile; Fig ▶ Burr; Sorrel ▶ Sorrel; Bean's tile ◀ stays; Fig's tile ▲ Fig; with Pip out, Pip's tile ▲ Bean.
+
+**One mibi up close** (`habitat.json` `focus`). Targets: `resident` (rest and the meet); `name` (rest and out); `species`; `plate.<i>` in group `plate`; `door` and `portrait` in group `top`; `cross` and `wild` in group `low`; `tile.<id>` in group `tile`. The selector `tile.shown` is the shown mibi's tile.
 
 | From | ◀ | ▶ | ▲ | ▼ |
 | --- | --- | --- | --- | --- |
 | `resident` | none | `name`, else `species` | none | `tile.shown` |
-| `name` | `resident` | `species` | `resident` | `tile.shown` |
+| `name` | `resident`, else none | `species` | `resident`, else none | `tile.shown` |
 | `species` | `name`, else `resident` | none | `name`, else `resident` | `plate.0` |
-| `plate` | the nearest plate to the left, else `resident` | the nearest plate to the right, else none | `species` | `nearestIn: top` |
-| `top` | the nearest of `top` to the left, else `resident` | the nearest of `top` to the right, else none | `nearestIn: plate` | `nearestIn: low` |
+| `plate` | the nearest plate to the left, else `resident`, else `name` | the nearest plate to the right, else none | `species` | `nearestIn: top` |
+| `top` | the nearest of `top` to the left, else `resident`, else `name` | the nearest of `top` to the right, else none | `nearestIn: plate` | `nearestIn: low` |
 | `low` | the nearest of `low` to the left, else `name`, else `resident` | the nearest of `low` to the right, else none | `nearestIn: top` | `tile.shown` |
-| `tile` | the previous tile (axis; the first stops) | the next tile (the last stops) | `resident` | none |
+| `tile` (axis) | the previous tile; the first stops | the next tile; the last stops | `resident`, else `name` | none |
 
-"The nearest to the left" is `{ "nearestIn": g, "ahead": true }`; "else" is the next entry of an ordered list. **Rings** (each target's `ring`, frame.json `focus.ring.forms`): the mibi's `feet` ring (136, 380, 320, 24) with the 4 px lift; `round` rings 4 px outside the name tag, the species line, a plate, a module or a tile, with the 2 px chrome lift on plates, modules and tiles. **Opens on:** the mibi (the Vivarium key: the one last seen; the hatch and Home's ✓ Meet: the new one, in the meet; Home's ✓ Look at and the Book's ✓ Visit: that one); from Cross, ← lands on the Cross module; from the sitting, ← and its begin land on the Portrait module, which is always a target (read-only, the context saying why, unless a sitting is held and the mibi can sit); after the namer, on the mibi (from the meet) or the name (from Rename); empty, the room (no ring). **Held:** while the moment, a read or a release holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key. **Vectors** are in `habitat.json` `focus.vectors` (for example resident ▶ name, plate.0 ▼ door, door ▲ plate.2, cross ◀ name, wild ▼ the shown tile).
+**Opens on** the mibi; out, its name; the meet, the new mibi. From Cross, ← lands on the Cross module; from the Sitting, on the Portrait module; after the namer, on the mibi (from the meet) or the name (from Rename). **Held:** while the moment, a read, a release or a screen transition holds, the face moves no focus and sends no intent; while the namer is open its own graph takes every key.
 
-### The vivarium's states and events
+### The Vivarium: states and events
 
-- **Rest:** one housed mibi shown.
-- **Meet:** the first look at a new mibi. The Incubator's hatch ends in its 180 ms dither on the vivarium's meet; Home's ✓ Meet opens it too. The ribbon "Meet Moss" stands in the tag's place, the mibi plays its moment once (no hold), and the ring is on it. The first ✓ is `✓ Name Moss` and opens the namer, filled with the default name; any other key ends the meet with that name kept, and does what it does. A new mibi usually shows its placeholder with the waiting lamp and the context "its painting is on its way" ("waiting for the cloud" while the Caddy is unreachable).
-- **Empty:** no housed mibi: the glass, the strip's free bays and the frame. No card, modules or ring; no ✓ cap; the context "no mibis yet". The empty vivarium up close does not lead toward growing: Home's ✓ leads to what needs the player.
-- **The painting landing:** a painting that lands while its mibi is on screen waits for the next fresh draw (the vivarium, up close, opened again, the strip bringing the mibi back, a wake); it never swaps in view. Then the mibi shows its painting and the lamp goes.
-- **The watch:** the mibi shown in rest or the meet, kept on screen for 60 s, once a mibi a day, is watched: the bench's Data trickle (+1 within its daily cap) and the first of its habits not yet seen. It shows only a message plate, "Fig is seen digging", and the counter's tick; nothing is amber.
-
-| Event | Hold | What plays |
+| Level | State | What shows |
 | --- | --- | --- |
-| `moment` | 300 ms | The species moment from its moving set; until it has one, the placeholder hops twice (the creature lift, 4 px up and back, at 0 and 900 ms). A press after the hold cuts it to its end |
-| `swap`: `{ kind: dither, target: resident, ms: 200, levels: 16 }` | no | The mibi shown changes as the ring walks the strip |
-| `watch` | no | After 60 s on the shown mibi, once a day: the plate and the counter's tick |
-| `read` | 300 ms | The plate turns read (a cut); the stamp prints the chapter's cells row by row from the top |
-| `release`: `{ kind: dither, target: resident, ms: 200, levels: 16 }` | 200 ms | The mibi dithers out to the next housed mibi in bay order (none: the empty state); its tile frees; the plate says where it went |
-| `named` | no | The namer saved a name: the tag (or the meet ribbon) takes the frame's 240 ms flash |
+| The whole | rest | At least one housed mibi: the residents, the bed, the strip |
+| The whole | empty | No housed mibi: the window, the free bays, the frame; it does not lead toward growing (Home's ✓ leads to what needs you) |
+| Up close | rest | One mibi at home; a carried mibi while the Companion is docked too (greet, Cross, Portrait, Bring home, its plates; Wild refuses it, "already with you"; never watched) |
+| Up close | meet | The first look at a new mibi, from the hatch or Home's ✓ Meet: the ribbon in the tag's place until the first press. Never out: a new mibi is at home |
+| Up close | out | The shown mibi is out with the Companion: the out mark in its place, no greet, everything else as at rest |
 
-With `motion: false` every event jumps to its end.
+Docked and away are conditions of every state: the bed, the Companion module's glyph, the tiles' glyphs and the top bar's three faces.
 
-### Placeholders in the vivarium
+| Event | Level | Hold | What plays |
+| --- | --- | --- | --- |
+| `walk` | the whole | no | The residents walk, rest and play their species' idle, as on Home and Idle |
+| `look` | the whole | 180 ms | The screen transition to one mibi up close |
+| `back` | up close | 180 ms | The screen transition to the whole, the ring on this mibi |
+| `moment` | up close | 300 ms | Greet: the species moment; until it has one, the placeholder hops twice |
+| `swap` | up close | no | A 200 ms dither in the mibi's box as the ring walks the strip |
+| `read` | up close | 300 ms | The plate turns read; the stamp prints the chapter's cells |
+| `release` | up close | 200 ms | The mibi dithers out to the next in bay order; none left, the whole, empty |
+| `named` | up close | no | The tag (or the ribbon) takes the frame's 240 ms flash |
+| `watch` | up close | no | After 60 s summed over the day on the shown mibi at home and not carried, once a mibi a day: the habit recorded, the plate, and the tick under the day's cap (none at the cap) |
 
-| Master | Pixel size |
-| --- | --- |
-| The mibi | 304×312: its standard painting, or the placeholder (the stylised rig pass) |
-| Thumbnails and the mibi with you | 48×48, the painting or placeholder rendered at that size |
-| `room-vivarium-stage-habitat` | 1024×522 |
-| `heart-full-24` | 24×24 |
-| `sitting-frame-empty-32x48`, `sitting-frame-held-32x48`, `sitting-frame-portrait-32x48` | 32×48 |
-| `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 |
-| `chapter-plate-read-40x40`, `chapter-plate-unread-40x40`, `chapter-plate-sealed-40x40`, with the existing `rail-emblem-{chapter}-{read,unread,sealed}-24x24` | 40×40, 24×24 |
-| `mark-guide-16` | 16×16 |
-| `frame-lamp-12-sky` | 12×12 |
-| `face-{species}-24`, one a species | 24×24 |
+A painting that lands while its mibi is on screen waits for the next fresh draw; it never swaps in view. With `motion: false` every event jumps to its end.
 
-Where the build departs from this layout is listed in `habitat.json` `buildChanges`.
+### The Vivarium: the words
+
+Every string, its zone and its longest case, measured in the face's metrics at its size; a name is ten of the widest letter.
+
+| Zone | Strings | Longest |
+| --- | --- | --- |
+| Title (20 px medium) | Vivarium | 85 |
+| Way back (16 px, 68) | Home (the whole), Vivarium (up close) | Vivarium 66 |
+| Action (16 px, 356) | Look at {name}, Greet {name}, Name {name}, Rename {name}, Open the guide, Read {Chapter}, Take {name} with you, Bring {name} home, Portray {name}, Cross {name}, Return {name}, Again: return {name} | Take {name} with you 268 |
+| Context (16 px, 208) | The contexts above; out with the Companion, crosses when you dock, pairs when you dock, sits when you dock | out with the Companion 177 |
+| Tag (16 px on the whole, 20 px up close) | the name | 160 at 16, 200 at 20 |
+
+### The Vivarium: the masters
+
+Every picture these levels place 1:1; none is drawn by the build. Until a master lands, its labelled placeholder stands in at its size.
+
+| Master | Size | Region | Shows | New |
+| --- | --- | --- | --- | --- |
+| Idle's painting | 1024×568, day, dusk, night | the whole's `window` (rows 120 to 560) | The Vivarium | — |
+| `vivarium-near-{day,dusk,night}-544x408` | 544×408 | up close's `glass` | The Vivarium close by, its ground band at y 304 to 464 of the glass, no mibi in it | yes |
+| `notch-skill-16x24` | 16×24 | the card's notches | One filled skill notch cut into the card's plate | yes |
+| `mark-out-with-companion-64x96` | 64×96 | `resident.out` | The mibi's place, kept: the Companion's outline standing on the ground | yes |
+| `room-vivarium-stage-habitat` | 1024×522 | up close's `stage` | The device's housing round the window, the card and the modules | — |
+| `heart-full-24` | 24×24 | the card's heart | A small painted enamel heart | — |
+| The mibi | 304×312 | `resident` | Its standard painting, or the placeholder | — |
+| Residents, sleepers, the bed | 144×152, 104×112, 192×56 | the whole | As on Home and Idle | — |
+| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48 | — |
+| `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
+| `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
+| `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
+| `mark-guide-16`, `frame-lamp-12-sky`, `frame-lamp-8-stone`, `face-{species}-24`, `frame-companion-{solid,outline}-16x24` | 16, 12, 8, 24, 16×24 | | | — |
+
+### What changed from the old up-close layout
+
+The measurements of one mibi up close stand; these change, and why:
+
+- **← goes to the whole, not Home**, and the way back reads "Vivarium": one mibi up close is the Vivarium's closest level, under the whole.
+- **The state empty goes** to the whole: one mibi up close always shows one mibi, and the last release lands on the whole, empty.
+- **A state out** for a mibi out with the Companion: its chapters can be read while it is out, so its page must open; the out mark keeps its place, and there is no greet.
+- **The skill notches** join the card, on the code's row; the code's box narrows from 248 to 152, which still holds the widest code.
+- **The Companion module shows the carried set while away too**, with the outline glyph, and its free places as dashed outlines: the set must read when Take and Bring are chosen away.
+- **The title reads Vivarium**; the frame's Companion zone shows three faces.
+- The near painting is named as a master, so the glass is no longer a flat stand-in by default.
+
+Where the build departs from this layout is listed in `habitat.json` and `vivarium.json` `buildChanges`.
 
 ### Not designed yet
 
@@ -1669,7 +1758,9 @@ Where the build departs from this layout is listed in `habitat.json` `buildChang
 
 ## Probe bench
 
-The one screen whose subject is a machine: the Probe in its service cradle. Reached from Home's Probe module; its title is Probe, under the Research mark. Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
+The Probe section: the one screen whose subject is a machine, the Probe on its work tray. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
+
+**As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×64, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Its wireframes predate the frame's three face places and 88 px way back, which the frame draws on every screen. Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
 
 <img src="station-layouts/11-bench.png" width="1024" alt="Probe bench, docked">
 
@@ -1693,13 +1784,13 @@ The one screen whose subject is a machine: the Probe in its service cradle. Reac
 
 ### 1. Purpose
 
-The Probe bench is where the player keeps the Probe ready for the next expedition: mends its Shield plates, sets whether the dock mends every plate, and fits the upgrade. The player comes away knowing, from the plates alone, how whole the Shield is, and what the upgrade would add.
+The Probe bench is where the player keeps the Probe ready for the next expedition: mends its Shield plates, sets whether the dock mends every plate, and fits the upgrade. The player comes away knowing, from the plates alone, how whole the Shield is, and what the upgrade would add. **Reads first:** the Probe, then its plates.
 
 ### 2. Elements
 
 | Element | Why it is here |
 | --- | --- |
-| **The Probe in its cradle**, large | The subject: the device the Companion carries out, at rest on its bench |
+| **The Probe on its work tray**, in its cradle, large | The subject: the device the Companion carries out, being mended |
 | **The Shield plates**, standing under it | The Shield's state with no words: whole or gone, the tier's count |
 | **The Mend module**: the switch, a picture of what it means (the dock, then the plates it leaves whole), a lamp | The standing choice: the dock mends every plate at its price, or two free |
 | **The Upgrade module**: the socket, the part, what it adds as pictures, a lamp | The upgrade: whether it can be fitted, and what it brings |
@@ -1720,8 +1811,8 @@ The cradle and the column form one group centred on x 512, from 56 to 968.
 
 ### 4. Art direction
 
-- **Room:** the research bench, a modern digital lab: a cool key light from the top left, as on Create and the Incubator; the Probe is the brightest object. No warm field on this screen.
-- **The Probe** is the same device the Companion draws, painted at the bench's size, one picture a tier. Away, the cradle is drawn empty, so the Probe reads as out, never missing.
+- **Room:** the device's work tray: the Probe lies on it among field tools and small gauges, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
+- **The Probe** is the same device the Companion draws, as the project's Probe art draws it, never a needle, painted at the bench's size, one picture a tier. Away, the cradle on the tray is drawn empty, so the Probe reads as out, never missing.
 - **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
 - **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`sprout`) or off.
 
@@ -2303,7 +2394,7 @@ The guide shows the species whole: every chapter at once, every trait with how m
 | ◀ ▶ in the band | Along the plates; ◀ from the first plate to the last carrier name; ▼ back to the open cell |
 | ✓ on a cell or "more?" | Read-only: no ✓ cap. The context: "Colour, more to find" or "Colour, every look found" |
 | ✓ on a plate | `✓ Add to the wish` (`wishPin`, when `wishPinBlock` is empty), or `✓ Take it off the wish` (`wishUnpin`) when that look is pinned. The context: "Colour, jade" |
-| ✓ on a carrier name | `✓ Visit Fig`, the context "Fig carries this look": a jump to the vivarium, up close, on that mibi, where ← reads Home |
+| ✓ on a carrier name | `✓ Visit Fig`, the context "Fig carries this look": a jump to the vivarium, up close, on that mibi, where ← reads Vivarium |
 | The notice | "a pod carries your wish" when `wishCarriers(st, id).pods` is not empty; otherwise none |
 | ← | "← Library", from either spread |
 | The ring | `rust` on the paper (frame.json `focus.ring.onPaper`), the same geometry, on the Library, the face spread and the guide spread |
@@ -2761,7 +2852,7 @@ Cool and quiet, the instrument at rest. The stage is the frame's stage part with
 - A rail of more than twelve chapters, a chapter page of nine or more traits, and a guide spread of more than eight chapters.
 - Any new vocabulary word or derived rule a screen needs; until it is designed, the screen lists it here and never improvises it.
 - The rest knob, the roll or the trait line on a second screen; the with-you bed beyond Home, Idle and the Vivarium's whole; the report card beyond Cargo.
-- The Vivarium's levels, the whole and one mibi up close, in detail, and the screen's own items under [Home, the sections and the Vivarium](#home-the-sections-and-the-vivarium).
+- The new masters of the Vivarium's levels (the near painting, the skill notch, the out mark): labelled placeholders until they land ([The Vivarium: the masters](#the-vivarium-the-masters)).
 - Whether Cargo's bay shows how many pods wait for a well, beyond its one mark.
 - [The namer](#the-namer):
   - **The guide's "Carried by" line** gives each name 120 px at 16 px; the widest needs 160, and dropping names cannot fit one name that is too wide alone.

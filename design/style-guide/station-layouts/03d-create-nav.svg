@@ -70,10 +70,10 @@
 <text x="656" y="388" font-size="11" fill="#222">the pod's overview, the ring on the pod;</text>
 <text x="560" y="403" font-size="11" fill="#222" font-weight="600"></text>
 <text x="656" y="403" font-size="11" fill="#222">nothing spent, the choices dropped</text>
-<text x="560" y="418" font-size="11" fill="#222" font-weight="600">room keys</text>
+<text x="560" y="418" font-size="11" fill="#222" font-weight="600">coloured keys</text>
 <text x="656" y="418" font-size="11" fill="#222">drop the unpaid choices; back starts fresh</text>
 <text x="560" y="433" font-size="11" fill="#222" font-weight="600">after Grow</text>
 <text x="656" y="433" font-size="11" fill="#222">the Incubator; its ← reads Home (a jump)</text>
 <text x="560" y="448" font-size="11" fill="#222" font-weight="600">held</text>
-<text x="656" y="448" font-size="11" fill="#222">during the grow event, no key acts</text>
+<text x="656" y="448" font-size="11" fill="#222">grow event: pad, ✓, ← do nothing; a key waits</text>
 </svg>

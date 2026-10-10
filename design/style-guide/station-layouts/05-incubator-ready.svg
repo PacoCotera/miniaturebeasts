@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator, ready: every leaf full, every chapter known, the dome glowing, the species' shape in the bud, the plaque says ready, ✓ Open, the waiting lamp while the painting is on its way, 1024×600 at 1×, measured. Layout only, no art.</title>
+<title>Incubator, ready: every leaf full, every chapter known, the chamber lit, the species' shape in the bud, the plaque says ready, ✓ Open, the waiting lamp while the painting is on its way, 1024×600 at 1×, measured. Layout only, no art.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
@@ -24,9 +24,9 @@
 <rect x="840.5" y="296.5" width="119" height="119" fill="#e6eef8" stroke="#2b6cb0" stroke-width="1.5"/>
 <text x="844" y="310" font-size="10" fill="#222">STAMP label 120</text>
 <text x="844" y="321" font-size="9" fill="#777">840,296 120×120</text>
-<text x="844" y="334" font-size="9" fill="#777">176 from the glass</text>
+<text x="844" y="334" font-size="9" fill="#777">176 from the window</text>
 <rect x="808.5" y="424.5" width="183" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q · 4MX · P2D</text>
+<text x="900" y="441" font-size="13" fill="#222" text-anchor="middle">K7Q 4MX P2D</text>
 <text x="900" y="460" font-size="9" fill="#777" text-anchor="middle">code 808,424 184×24</text>
 <rect x="256.5" y="88.5" width="511" height="215" fill="none" stroke="#9cc08f" stroke-width="1" stroke-dasharray="4 3"/>
 <path d="M 302 301 C 296 296, 297 286, 302 282.5 C 307 286, 308 296, 302 301 Z" transform="rotate(40 302 292)" fill="#84ae78" stroke="#5d7a5f" stroke-width="1"/>
@@ -54,11 +54,11 @@
 <path d="M 360.5 471.5 L 360.5 354 A 151.5 151.5 0 0 1 663.5 354 L 663.5 471.5" fill="#fff7e8" stroke="#b9772f" stroke-width="2" stroke-dasharray="6 2"/>
 <path d="M 392 300 A 120 120 0 0 1 452 230" fill="none" stroke="#ffffff" stroke-width="3"/>
 <rect x="360.5" y="200.5" width="303" height="271" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
-<text x="368" y="452" font-size="9" fill="#777">glass 360,200 304×272 · top 202, r152 on 512,354 · glowing</text>
+<text x="368" y="452" font-size="9" fill="#777">chamber window 360,200 304×272 · ink inside the arch, top 202, r152 on 512,354 · placeholder · glowing</text>
 <rect x="408.5" y="400.5" width="207" height="47" fill="#f6ecd8" stroke="#bf9157" stroke-width="1"/>
 <text x="412" y="444" font-size="9" fill="#7d5435">nest 408,400 208×48</text>
 <rect x="344.5" y="456.5" width="335" height="95" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · enamel</text>
+<text x="352" y="472" font-size="9" fill="#555">base 344,456 336×96 · placeholder</text>
 <rect x="448.5" y="496.5" width="127" height="31" fill="#2a2e38" stroke="#3c4b57" stroke-width="1"/>
 <rect x="352.5" y="547.5" width="319" height="2" fill="#eaeff6" stroke="#8ca0ab" stroke-width="1"/>
 <text x="672" y="544" font-size="9" fill="#555" text-anchor="end">foot light, on</text>
@@ -78,7 +78,7 @@
 <text x="668" y="532" font-size="9" fill="#1e5196" text-anchor="end">waiting lamp 652,506</text>
 <text x="24" y="96" font-size="10" fill="#2b6cb0">Ready reads across a table:</text>
 <text x="24" y="109" font-size="10" fill="#2b6cb0">the full leaves, the glowing</text>
-<text x="24" y="122" font-size="10" fill="#2b6cb0">dome, the plaque, ✓ Open.</text>
+<text x="24" y="122" font-size="10" fill="#2b6cb0">chamber, the plaque, ✓ Open.</text>
 <text x="24" y="135" font-size="10" fill="#2b6cb0">No ring.</text>
 <text x="24" y="148" font-size="10" fill="#2b6cb0"></text>
 <text x="24" y="161" font-size="10" fill="#2b6cb0">The shape: the species'</text>
@@ -97,25 +97,27 @@
 <line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
 <rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
-<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
+<rect x="760.5" y="8.5" width="119" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
+<rect x="780.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
 <line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="624.5" y="570.5" width="271" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
+<rect x="920.5" y="570.5" width="87" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
 <line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
 <line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
 <circle cx="24" cy="582" r="8" fill="#f2671b"/>
 <text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
 <text x="36" y="587" font-size="14" fill="#c4500f">Open</text>
 <text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">a Loika bud</text>
-<circle cx="962.4" cy="582" r="8" fill="#5d5974"/>
-<text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<circle cx="951" cy="582" r="8" fill="#5d5974"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
 <text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
 </svg>
