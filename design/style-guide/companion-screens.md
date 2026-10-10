@@ -62,11 +62,11 @@ That leaves 11 rows of ink between the rule and the capitals, and 6 under the de
 | Place | Placed from the view (the camera keeps the pawn in the middle third of 532 rows) | No fixed rows to move. The pod-swap chooser is placed up from the foot: (6, 460, 438, 98), was 462. The hit frame and the Wait ripple run on the view's edges, rows 32–563. Name tags keep to x 6–444, y 38–558, as set in [Place](#place) |
 | Menu | +6, and the menu starts below a top message box | Over the field: rows 44 high, 250 wide, 8 px from the side away from the pawn: x 192 when the pawn's screen x is 225 or less, x 8 when it is more. Six rows make it 284 high (rows × 44 + 20). Over a place: the card (192 or 8, 40, 250, 284), rows 40–323, its shadow to 327, while the message box is at the foot or no message shows; while the box is at the top, the card starts 8 px under the box's foot, y 60 + lines × 20: (·, 80, 250, 284) under one line, (·, 100, 250, 284) under two, (·, 120, 250, 284) under three, last row 403. The box never moves for the menu. Over the map: the card (192 or 8, 40, 250, 284), rows 40–323, always; the message there is in the reach view's band (y 434 at tier 1, 476 at tier 2), below the card. Everywhere else: the card (60, 116, 330, rows × 62 + 20), was y 110; five rows end at 446. The darkening fills rows 32–563 |
 | Probe | +6 | "Probe" at y 40; plates (12×22) at (24, 64); the two lines at y 60 and 82; Energy row at y 108; the tier 2 note panel (18, 130, 414, 26); "On the map" at y 172; legend rows from y 190 at an 18 px pitch, the 14th ending on row 440; the four stone tiles 34×34 at y 442, labels at 479; "Field guide" at y 500; species tokens (24 + 138*i*, 518, 130, 40), last row 557, 6 px over the line |
-| Cargo, in the field | +6 | Counters (22 + 138*i*, 42, 130, 40); "Pods" at y 94; pod panels (24 + 130*i*, 114, 122, 36); "This expedition" at y 162; met tiles 42×42 at y 182; the reach line at y 238; the Head home card (95, 268, 260, 50); the seal preview from y 332 at a 22 px pitch; "The sealed bay" at y 406; crates (24 + 140*i*, 428, 130, 66); the foot line at y 510 |
+| Cargo, in the field | +6 | Counters (22 + 138*i*, 42, 130, 40); "Pods" at y 94; pod panels (24 + 130*i*, 114, 122, 36); "This expedition" at y 162; met tiles 42×42 at y 182, and the moments line at (180, 196) beside them; with no creature met, `No creatures met yet` at (24, 186) and the moments line under it at (24, 208), see [Faults the care build fixes](#faults-the-care-build-fixes); the reach line at y 238; the Head home card (95, 268, 260, 50); the seal preview from y 332 at a 22 px pitch; "The sealed bay" at y 406; crates (24 + 140*i*, 428, 130, 66); the foot line at y 510 |
 | Cargo, at home | +6 | "In the hold" at y 42; counters at y 62; pod panels at y 110; "The sealed bay" at y 166; crates at y 190; the bay line at y 272; the Probe line at y 316; docked or away at y 342; the note from y 386 at 22; the world turn at y 476 |
-| Mibis (the list as built) | +6 | The first card (20, 42, 410, 64), a 72 px pitch. The scroll keeps the focused card's foot at y 526, 38 px over the line, as before. The roster in [Care and the carried set](#care-and-the-carried-set) replaces this list with its own rects, which are already on this frame |
+| Mibis (the list as built) | +6 | The first card (20, 42, 410, 64), a 72 px pitch. The scroll keeps the focused card's foot at y 526, 38 px over the line, as before, and the roster keeps that rule (see [Mibis (the roster)](#mibis-the-roster)). The roster in [Care and the carried set](#care-and-the-carried-set) replaces this list with its own rects, which are already on this frame |
 | Active mibi | The rects in [The active mibi screen, with care](#the-active-mibi-screen-with-care), now | Stage (24, 40, 402, 280), was (24, 36, 402, 276); the mibi's box at (97, 52), was 44; its shadow 180×22 at (135, 296), was 280; ◀ ▶ at y 172, was 166; name at y 332, was 324; the stage chip at y 331; species and ability at y 370; status at y 396, a 22 px pitch; page dots at y 452, the ring 10×10 at y 450. The species moments move with the mibi's box (+8): the Tuikis glow at (75, 60), the Loika's paws at y 78, the Untuva's puffs centred on (225, 178), the Tuikis sparks and the chirp +8 (the chirp's top at y 100) |
-| Head home | +6, and every line clipped | The outcome at y 46; the lines below keep their steps (34 after the outcome, 24 a line, 34 after a group, 84 for the bay). Every line is clipped at 410 px, so nothing passes x 432. World-turn lines stop when the next would start below y 506 (was 500). The bay-full and Probe-broke lines are fixed below |
+| Head home | +6, and every line clipped | The outcome at y 46; the lines below keep their steps (34 after the outcome, 24 a line, 34 after a group, 84 for the bay). Every line is clipped at 410 px, so nothing passes x 432. A skill notch is a row of the outcome block, not a world-turn line, and moves everything below it down 28 px. World-turn lines draw only while a line's foot stays on or above row 476, 8 px over the highest top the message box can take (484); this replaces the old cut at y 506 (was 500). Every row top is in [Head home with the carried set](#head-home-with-the-carried-set). The bay-full and Probe-broke lines are fixed below |
 | Expedition choice | +6, and the message box rule below | The strip at y 40; Weather (20, 64, 410, 84); Deep ground (20, 158, 410, 84); the partner card (20, 252, 410, 92); the inset 96×120 at (24, 360); the words beside it at y 362, 386, 410, the last-start flag at (136, 436), the at-home line at y 464. Docked: the panel (70, 512, 310, 26), its words at y 517. Away with crates sealed: the panel (70, 494, 310, 48), its words at y 500 and 520 |
 | New world | +6 | The question at y 136; the warning at y 182 and 204; the two choices (75, 266, 300, 54) and (75, 346, 300, 54), the brackets 7 px outside |
 | No mibi yet | +6 | The dotted pod centred on (225, 196); "No mibi yet" at y 276; the two lines at y 320 and 342; the bay line at y 378 |
@@ -356,7 +356,7 @@ The 280×300 HiBit resident on this screen, the 48 px field token, the 64 px par
 
 The Companion carries up to three mibis. Care happens here and nowhere else: Tend, once a day for each mibi with you, and the Walk, once a world turn for all of them together. Three Tends earn the bond; a bonded juvenile grows up through care. This section sets the screens that carry it: Mibis (the roster, with the Lead card), the active mibi screen, and the expedition choice's partner card.
 
-The geometry is on the frame: HUD 0–32, view 32–564, bottom line 564–600, all at 1×. Type is the Mibi 7×9 face at 2× (18 px line) or 3× (27 px line). Strings are given in backticks, exactly as they show. `‹name›` is the mibi's name; `‹next›` is the mibi that would lead next. Every string has been checked against a ten-letter name in the widest letters (118 px at 2×, 177 px at 3×), and every ✓ label is at most 24 characters with one.
+The geometry is on the frame: HUD rows 0–31, view rows 32–563, bottom line rows 564–599, all at 1×. Type is the Mibi 7×9 face at 2× (18 px line) or 3× (27 px line). Strings are given in backticks, exactly as they show. `‹name›` is the mibi's name; `‹next›` is the mibi that would lead next. Every string has been checked against a ten-letter name in the widest letters (118 px at 2×, 177 px at 3×), and every ✓ label is at most 24 characters with one.
 
 Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wireframes/companion-care/`](wireframes/companion-care/).
 
@@ -365,13 +365,26 @@ Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wire
 - No meter, bar, number, need or count for care, Tends or the bond. Nothing says how close a mibi is to bonding or to growing up. Nothing is amber because a mibi has not been tended.
 - An unbonded mibi shows no heart at all, never a dim one: the bond is never a need.
 - Undocked, a mibi at home is never shown: not in the roster, not as a page, not as a dot.
+- A mibi the Station has released is never shown, docked or not: not a row, a page, a dot, a face or a name, and no count includes it.
 - Mid-expedition, nothing can be tended, taken, left or made the lead.
 
 ### The words the screens use
 
 - **With you**: the mibis the Companion carries, in carried order (the order they were taken).
-- **At home**: every other mibi.
+- **At home**: every other mibi the Station has not released.
+- **Released**: a mibi the Station has released. The Companion reads it at the dock and from then on treats it as gone, see [A released mibi](#a-released-mibi).
 - **The partner**: the mibi that joins the Probe. It is the lead if the lead is with you and grown; otherwise the first grown mibi with you; otherwise none.
+
+### A released mibi
+
+The Station's release is read at the dock, between expeditions (mid-expedition it waits for the next dock). From that read on:
+
+- **The roster closes up.** Its row goes, from "With you" or "At home"; the rows below move up one pitch (72 px) and a carried one leaves a free place at the end of the three, as when a mibi is left at home. No message, no shake, no mark where it was.
+- **Focus.** If its row had focus when the dock was read, focus goes to the row now at that index in the same focus order, or to the last row when there is none. The same rule holds for the active mibi screen's pages: the view goes to the page now at that index, or the last page.
+- **The lead clears** if it was the lead; the partner is then found as in [The words the screens use](#the-words-the-screens-use), and the Lead card and the partner card show the result without a message.
+- **Call** never targets it: it is in no list Call reads.
+- **Counts** leave it out: "N raised", the page dots, the partner card's faces, the places.
+- **None left.** If every mibi has been released, the built "No mibi yet" screens apply, on Mibis and on the active mibi screen.
 
 ---
 
@@ -403,13 +416,13 @@ Wireframes, 450×600 at 1×, measured boxes and slot labels only, no art: [`wire
 | Place *i* (0–2) | 16, 172 + 72*i*, 418, 64 | A carried mibi's row, in carried order, or a free place: a dashed outline, 1 px `stone`, dash 2 and 2, no words, never focused |
 | Row: token | 28, row + 8, 48, 48 | The mibi's 48 px field token. The partner's stands on the teal ring (38, row + 48, 28×11) |
 | Row: name | 88, row + 6 | 3×, clipped at 200 px. Heart 16×16 at 8 px after the name, y row + 11, when bonded |
-| Row: chips | 88, row + 38, h 22 | The stage chip (`teal` juvenile, `stone` adult, `plum` elder); then, on the partner only, `leads` in `teal`. No "with you" or "at home" chip: the section says it |
+| Row: chips | 88, row + 38, h 22 | The stage chip (`teal` juvenile, `stone` adult, `plum` elder); then, on the partner only, `leads` in `teal`. No "with you" or "at home" chip: the section says it. Every chip is 22 high (rows row + 38 to row + 59), the label 2× `bone` at chip top + 3 and 8 px in from each side (chip width = label + 16), 4 px between chips: a descender ends on chip top + 20, one row of fill under it |
 | Row: open mark | right edge 422, row + 22 | `▶` 2× `mist`, on the focused row only: the pad's ▶ opens this mibi's page |
 | Caption, docked | 20, 392 | `At home` 2× `mist` |
 | Home row *j*, docked | 16, 416 + 72*j*, 418, 64 | As a carried row, in hatch order. Nothing on it is dimmed when the Companion is full: only ✓ says so |
 | Line, undocked | centred, y 400 | `the others are at home` 2× `mist`, when any mibi is at home. Mid-expedition `with you for this expedition` instead |
 
-The list scrolls inside the view, the Lead card with it: the offset is the least that keeps the focused card's foot 8 px above the bottom line (as built).
+The list scrolls inside the view, the Lead card with it: the offset is the least that keeps the focused card's foot on or above row 526, 38 px over the bottom line (as built, and as [The frame](#the-view-at-32564-screen-by-screen) sets). The 38 px show the next card's top 30 px (rows 534–563), so the list reads as going on. Undocked nothing scrolls (the line at y 400 ends the screen); docked, the second home row (foot 551) is the first to scroll, by 25 px. A message box on Mibis never covers the focused card: when the focused card's foot passes the low box's top (556 − box height), the box goes to the top of the view, its top at y 40, as the pawn test does in a place.
 
 **Focus.** Orange corner brackets 6 px outside the focused card, which lifts 2 px. Focus order, top to bottom: the Lead card, the mibis with you, the mibis at home. Opening Mibis from the expedition choice's partner card focuses the Lead card; from the active mibi screen, that mibi's row; from the menu, the first mibi with you (the Lead card when there is none).
 
@@ -457,14 +470,14 @@ The section [Companion mode / active mibi](#companion-mode--active-mibi) above s
 | The mibi | 97, 52, 256, 256 | The 280×300 resident drawn in its box (the prototype's 8× token until the derived set lands); contact shadow 180×22 at (135, 296) |
 | ◀ ▶ | (10, 172), right edge 440, y 172 | 2× `mist`, only with more than one page |
 | Name | 30, 332 | 3×, clipped at 260 px |
-| Stage chip | 14 px after the name, y 331, h 22 | As built |
+| Stage chip | 14 px after the name, y 331, h 22 | As the roster's chips: label at chip top + 3 (y 334), 8 px in from each side |
 | Heart | 10 px after the chip, y 330, 24×24 | Bonded only. A state, not a control |
 | Species · ability | 30, 370 | 2× `fog`, clipped at 390 px |
 | Status | 30, 396 | 2×, up to two lines at a 22 px pitch; `amber` on a mibi with you, `mist` at home |
 | Page dots | centred, y 452 | 6×6 at a 16 px pitch; a mibi with you ringed (10×10 `amber`); docked, 16 px more between the last mibi with you and the first at home |
 | Message box | centred, foot at 556 | As built: up to three 2× lines; never reaches the dots (its top is at least 484) |
 
-Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words Habitat uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Habitat card; on the Companion it is named only when a notch is earned at Head home, `‹name› gains a skill notch`, with no count), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
+Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words Habitat uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Habitat card; on the Companion it is named only when a notch is earned at Head home, `‹name› gains a skill notch`, with no count, as its own row of the outcome block, see [Head home with the carried set](#head-home-with-the-carried-set)), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
 
 **The ✓ on a mibi with you,** the first that applies:
 
@@ -513,11 +526,27 @@ Lines the world turn writes stay on the Head home screen, as built, worded for t
 | Card | 20, 252, 410, 92 | Paper card, the third focus target (as built) |
 | Face | 28, 264, 64, 64 | The partner's 64 px face on the teal ring (28×11 at 46, 322). No partner: a dashed circle 64×64 |
 | Name | 112, 260 | 3×, clipped at 220 px; heart 16×16 at 8 px after it, y 266, when bonded. No partner: `No partner` |
-| Stage chip | 112, 292, h 22 | The partner's stage. No partner: none |
+| Stage chip | 112, 292, h 22 | The partner's stage, as the roster's chips (label at y 295). No partner: none |
 | Line | 112, 320 (no partner: 112, 296) | 2×, clipped at 220 px: the partner's ability; or why there is none, as on the Lead card |
 | With you | 338, 366, 394; y 262; 24×24 each | The mibis with you as their HUD ring faces in carried order, the partner's ring `teal`, the others `stone`; a free place a dashed circle. No words |
 
 Bottom line: `✓ Open Mibis · ← menu` (as built) (Mibis opens on the Lead card), context `Partner: ‹name› · ‹ability›` (as built), `no one grown yet` or `no one with you`. The built "take one at the Station · N at home" loses its count.
+
+---
+
+### Faults the care build fixes
+
+Measured on main at 1× in Chromium. The care build rebuilds the roster and edits Cargo, so it fixes these two:
+
+- **Roster chips.** The built tag is 20 high with its label at top + 3, so a descender (`j` in `juvenile`, `y` in `with you`) ends on top + 20, one row under the chip (measured: chip rows 80–99, the `j`'s foot on row 100, on the card's paper). Every chip is 22 high with the label at top + 3 and 8 px side padding, as in the roster's table above, on the roster, the active mibi screen and the partner card. Measured on a patched copy: chip rows 80–101, the `j`'s foot on row 100, one row of fill under it.
+- **Cargo, in the field, no creature met.** `No creatures met yet` at (24, 186) is 196 px (x 24–219) and the moments line `0 creature moments (Data)` at (180, 196) is 240 px: they overlap on x 180–219, rows 196–203. With no creature met, the moments line moves under it, to (24, 208), rows 208–225, 12 rows over the reach line at y 238. With one or more met it stays at (180, 196), beside the tiles (three tiles end at x 158).
+
+Left to the field screens' next pass; the care build does not touch these screens:
+
+- **Probe legend.** Rows at an 18 px pitch with the text at row + 1 leave no blank row between one row's descenders and the next row's capitals (measured: rows 209–260 and 317–440 are unbroken runs of text). A 20 px pitch adds 26 rows, and under the legend the stones, their labels and the field guide leave 6 free rows (558–563), so it is a re-layout of the Probe screen, not a one-line fix.
+- **Place, the meadow pawn's tile touching the bottom line.** Not re-measured here.
+- **Menu over a place with no message.** The card (192, 40, 250, 284) can cover a pawn standing mid-screen, against "the pawn stays visible behind the card". Not re-measured here.
+- **Name tags in a place.** [Place](#place) already sets their bound (x 6–444, y 38–558) and their placement order; the build has neither. A build gap of the place screen.
 
 ---
 
@@ -561,7 +590,29 @@ The menu entry and screen read **Head home**: it seals the hold into the bay.
 - **Chrome.** `✓ Next expedition · ← menu`.
 - **Motion.** The slide in 170 ms, the seal stamp in 110 ms; still under reduced motion.
 
+### Head home with the carried set
+
+Measured on the frame at 1× (HUD rows 0–31, view 32–563, bottom line 564–599). Every y is a top row; a 2× line is 18 rows tall (capitals 14, descenders 4), a 3× line 27.
+
+**The skill notch row.** A notch is not a world-turn line. It is a row of the outcome block, directly under the outcome's last 2× line, on the block's 24 px pitch: row top = the last 2× line's y + 24. The row holds the partner's 24 px HUD ring face on its teal ring at (22, row top − 3, 24, 24), and `‹name› gains a skill notch` 2× `bone` at (54, row top), clipped at 374 px (it ends by x 428; a ten-letter name in the widest letters measures 290 px, x 54–343). The face is centred on the text: face rows row top − 3 to row top + 20, text rows row top to row top + 17. No count, no icon of notches. The row takes 28 px: the crates and everything under them move down 28 px. Only the partner earns a notch, so there is at most one row. Nothing explored earns none.
+
+| Outcome | 2× lines at y | Crates at y, no notch | Notch row top · face · crates at y |
+| --- | --- | --- | --- |
+| The Probe broke | 80, 104, 128 | 162 | 152 · (22, 149, 24, 24) · 190 |
+| Sealed, with the yield line | 80, 104 | 128 | 128 · (22, 125, 24, 24) · 156 |
+| Sealed, no yield line | 80 | 106 | 104 · (22, 101, 24, 24) · 134 |
+| Bay full, with the yield line | 80, 104, 128 | 162 | 152 · (22, 149, 24, 24) · 190 |
+| Bay full, no yield line | 80, 104 | 138 | 128 · (22, 125, 24, 24) · 166 |
+| Home, hold empty | 80 | 114 | 104 · (22, 101, 24, 24) · 142 |
+| Nothing explored | 80, 104 | 138 | no notch, no world-turn lines (as built) |
+
+The outcome is at y 46 (3×) in every case. Below the crates the steps are as built, from the crates' y (*c*): the bay line at *c* + 84, the dock line at *c* + 108, `Meanwhile, the world turned` at *c* + 142, the turn line at *c* + 164, the first world line at *c* + 190. The latest first world line is 380 (a break or a full bay with a notch).
+
+**World lines.** They keep worldTurn's order and are three at most (as built); the notch is never among them. Each is a 4×4 `orange` dot at (26, y + 6) and the line 2× `bone` at x 40, wrapped at 390 px and clipped at 392, 20 px a wrapped line and 6 px between lines. A line draws only while its foot, y + 20 × (wrapped lines − 1) + 17, stays on or above row 476: 8 px over 484, the highest top the message box takes (three lines, foot on row 555). The first line that fails ends the list: it and every line after it are cut silently, with no mark and no "more", and they stay in the crate. Three one-line world lines always fit (from 380 the third's foot is row 449); only wrapped lines are cut. Measured: a break with a notch and two wrapped lines draws two (feet 417 and 463); the third, at 472, is cut.
+
 **Pass when**
+- [ ] The notch row sits directly under the outcome's last 2× line, its face on the teal ring, and no world line repeats it.
+- [ ] No world line's foot passes row 476, with or without a message box.
 - [ ] The outcome reads from the picture before the words.
 - [ ] Bay full shows the finds staying in the hold.
 - [ ] Nothing suggests the cargo reached the Station.
