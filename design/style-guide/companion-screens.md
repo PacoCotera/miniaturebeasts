@@ -497,9 +497,9 @@ Status lines: `with you · leads the Probe` (the partner), `with you · can lead
 
 **The Walk.** One press, on any page of a mibi with you: the shown mibi plays its walk moment on the stage, and every other mibi with you stands at the stage's foot as its 48 px field token, at (36, 260) and (366, 260), 2 idle frames at 4 Hz, for 2.4 s, then they go ([10](wireframes/companion-care/10-active-walk.png)). The message box names them all, `‹A›, ‹B› and ‹C› walk together` or `‹A› and ‹B› walk together`; walking with one keeps the built walk line for its species. The view stays on the shown mibi.
 
-**The bond** ([11](wireframes/companion-care/11-active-bond.png)). It is checked after every Tend and every Walk. When a mibi bonds, after the action's own moment:
+**The bond** ([11](wireframes/companion-care/11-active-bond.png)). It is checked after a Tend only; a Walk never bonds. When a mibi bonds, after the Tend's own moment:
 
-1. The view is on that mibi's page (after a Walk, the view cuts to it; several bond in carried order, one after another).
+1. The view is on that mibi's page (the Tend was on it).
 2. The species moment plays again, short (900 ms).
 3. The heart, `c-heart-24` drawn at 2× (48×48, pixel for pixel), rises beside the mibi's head from (362, 140) to (362, 60) in four 20 px steps of 150 ms, holds 900 ms, and is gone. At that moment the 24×24 heart appears in the name row, and stays.
 4. The message box takes the bond line, `‹name› is bonded with you`, which stays until the next action.
