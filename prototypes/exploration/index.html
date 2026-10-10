@@ -855,11 +855,18 @@ const CARE_TEXT = {
   stLeads: 'with you · leads the Probe', stCanLead: 'with you · can lead the Probe', stTooYoung: 'with you · too young for the Probe', stGrowsWithCare: 'with you · grows with care',
   stHome: 'at home', stHomeBonded: 'at home · grows on the Companion',
   noOneWith: 'no one with you', noOneGrown: 'no one grown yet',
+  // the care screens (companion-screens.md: Mibis, the Lead card, the active mibi screen, the partner card)
+  leadLabel: n => 'Let ' + n + ' lead', leads: n => n + ' leads the Probe', leadCtx: 'joins the Probe', onlyGrown: 'the only grown one', leadsThisExp: 'leads this expedition',
+  partnerCap: 'Partner', noPartner: 'No partner', noOneWithT: 'No one with you', takeOne: 'take one at the Station',
+  youngCare: 'young · grows with care', youngTime: 'young · grows in time', leadsChip: 'leads',
+  withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
+  takeAlong: 'take mibis along', atStation: 'at the Station',
 };
-// Assets the care screens name that have no master yet: registered here, never drawn (no heart is drawn until it lands).
+// Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
+// plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
 const CARE_ASSETS = [
-  { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'empty' },
-  { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'empty' },
+  { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
+  { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'placeholder' },
 ];
 const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
@@ -875,9 +882,16 @@ function mibiStage(m) { return stageAt(m, S.turn, JUVENILE_TURNS, ELDER_TURNS); 
 function isAdult(m) { return !!m && mibiStage(m) !== 'juvenile'; }
 const isCarried = m => !!m && S.carried.includes(m.id);
 function carriedMibis() { return S.carried.map(mibiById).filter(Boolean); }
-function homeMibis() { return S.mibis.filter(m => !S.carried.includes(m.id)); }
+// A mibi the Station has released (read at the dock, between expeditions: `released` on the Companion's copy) is never
+// shown, named or counted: not a row, a page, a dot, a face or a line.
+function liveMibis() { return S.mibis.filter(m => !m.released); }
+function homeMibis() { return S.mibis.filter(m => !m.released && !S.carried.includes(m.id)); }
 // The partner: the lead if carried and grown; else the first grown mibi with you; else none.
 function partnerMibi() { const c = carriedMibis(), l = c.find(m => m.id === S.lead); return isAdult(l) ? l : c.find(isAdult) || null; }
+// The lead, set on the Lead card: a grown mibi with you, between expeditions only.
+function setLead(m) { if (!m || S.exp || !isCarried(m) || !isAdult(m)) return false; S.lead = m.id; logEv(m.name + ' leads the Probe'); return true; }
+// Who would lead next: the next grown mibi with you after the partner, in carried order, wrapping; none with fewer than two grown.
+function nextLead() { const g = carriedMibis().filter(isAdult), pm = partnerMibi(); return g.length < 2 || !pm ? null : g[(g.indexOf(pm) + 1) % g.length]; }
 // A juvenile grown on the clock this turn: never one with grownTurn and never a bonded juvenile (they grow through care).
 function grownNow(m) { return m.grownTurn == null && !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS; }
 function agedNow(m) { return m.grownTurn != null ? S.turn === m.grownTurn + ELDER_TURNS : !m.bonded && S.turn - (m.born || 0) === JUVENILE_TURNS + ELDER_TURNS; }
@@ -891,7 +905,7 @@ function releasedIds() { const st = stPart(); return new Set(((st && st.mibis) |
 function takeMibi(m) {
   if (!m || !canSwap()) return { ok: false, why: 'swap' };
   if (isCarried(m)) return { ok: false, why: 'carried' };
-  if (releasedIds().has(m.id)) return { ok: false, why: 'released' };
+  if (m.released || releasedIds().has(m.id)) return { ok: false, why: 'released' };
   if (S.carried.length >= CARRY_MAX) return { ok: false, why: 'full' };
   S.carried.push(m.id); logEv(m.name + ' is with you'); return { ok: true };
 }
@@ -933,6 +947,8 @@ function normalizeCare(S, released) {
   if (!Array.isArray(S.carried)) S.carried = [];
   const ids = new Set(S.mibis.map(m => m.id)), gone = released || new Set();
   S.carried = [...new Set(S.carried)].filter(id => ids.has(id) && !gone.has(id)).slice(0, CARRY_MAX);
+  for (const m of S.mibis) if (gone.has(m.id)) m.released = true;   // from this read on the Companion treats it as gone
+  if (S.lead != null && gone.has(S.lead)) S.lead = null;            // the lead clears; the partner is found again
   if (S.lead === undefined) S.lead = null; if (typeof S.carrySeen !== 'number') S.carrySeen = 0; if (!Array.isArray(S.carryRefused)) S.carryRefused = [];
   for (const m of S.mibis) {
     for (const k of ['care', 'tends', 'outings', 'notches']) if (typeof m[k] !== 'number') m[k] = 0;
@@ -2265,13 +2281,13 @@ function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
   const broke = reason === 'break'; S.ui.lastPos = ex.pos;
   const explored = exploredAny(ex), rc = reachCounts();
-  const notchLines = [];   // a notch earned is named on Head home (and logged), never with a count
+  let notch = null;   // a notch earned is named on Head home as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // every mibi with you remembers where you went most
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
-      if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notchLines.push(CARE_TEXT.notch(w.name)); } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
-  const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: notchLines.slice(), explored: rc.surveyed, of: rc.total };
+      if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
+  const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
   if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
     rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
@@ -2290,7 +2306,7 @@ function endExpedition(reason) {
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
-  const worldLines = worldTurn(pending); rep.lines = notchLines.concat(worldLines);   // the world turns once per Head home, on the Companion
+  const worldLines = worldTurn(pending); rep.lines = worldLines.slice();   // the world turns once per Head home, on the Companion
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
@@ -2309,20 +2325,23 @@ function walkAll() {
   for (const q of carriedMibis()) { q.outings = (q.outings || 0) + 1; q.care = (q.care || 0) + 1; out.push({ m: q, bonded: false, grown: growCheck(q) }); }
   logEv('Walked with ' + listWords(out.map(o => o.m.name))); return out;
 }
-// The lines after a Tend or a Walk: the action's own, then bond lines, then grow-up lines, in carried order.
-function careLines(first, evs) {
+// The lines after a Tend or a Walk: the action's own, then bond lines, then grow-up lines, in carried order. After the
+// action's moment (dur ms) the bond plays on its mibi's page (input held to its end); a grown mibi's page takes the view.
+function careLines(first, evs, dur) {
   fxMsg(first, 3);
   for (const e of evs) if (e.bonded) fxMsg(CARE_TEXT.bonded(e.m.name), 3);
   for (const e of evs) if (e.grown) fxMsg((partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(e.m.name), 3);
-  const ev = evs.find(e => e.bonded || e.grown); if (ev) { S.ui.aId = ev.m.id; FX.moment = { id: ev.m.id, at: NOW }; }   // the view goes to the mibi that bonded or grew
+  const b = evs.find(e => e.bonded), gr = evs.find(e => e.grown);
+  if (b) { S.ui.aId = b.m.id; FX.bond = { id: b.m.id, at: NOW + dur }; lockInput(dur + BOND_MS); }
+  if (gr) { FX.grow = { id: gr.m.id, at: NOW + dur, cut: 0 }; lockInput(dur); }
 }
 // The Walk as pressed on the shown mibi m: its walk moment; the line names them all. Its Data folds into the expedition's
 // field yield (research-economy §2), so it brings none of its own.
 function walk(m) {
   const evs = walkAll(); if (!evs) return;
-  FX.moment = { id: m.id, at: NOW }; lockInput(400);
+  FX.moment = { id: m.id, at: NOW }; FX.walk = { id: m.id, at: NOW, others: carriedMibis().filter(q => q !== m).map(q => q.id) }; lockInput(400);
   const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
-  careLines(did, evs);
+  careLines(did, evs, WALK_MS);
 }
 function dirWord(dx, dy, n) {
   const ax = dx / n, ay = dy / n, ns = ay < -.15 ? 'north' : ay > .15 ? 'south' : '', ew = ax > .15 ? 'east' : ax < -.15 ? 'west' : '';
@@ -2392,7 +2411,7 @@ function worldTurn(pending) {
     S.cr.push({ id: nextCr, sp, c, cv: 0, b: Math.round(rnd(S.seed, 'bold', nextCr) * 100) / 100, s: 0, young: 1 }); nextCr++; young.push({ sp, c }); }
   S.turn++; S.expN++;
   indexCreatures();
-  const grown = S.mibis.filter(grownNow), aged = S.mibis.filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
+  const grown = liveMibis().filter(grownNow), aged = liveMibis().filter(agedNow);   // the clock: never a bonded juvenile (it grows through care); elder from grownTurn when it has one
   for (const c of newPods) if (S.revealed[c]) recordSigns(c);
   // Two or three plain lines a player would care about.
   const lines = [];
@@ -2774,9 +2793,9 @@ function roofArt(chk) { return art('roof' + chk, () => { const pb = new PB(104, 
   return pb; }); }
 // The partner's marker: a 2 px teal ring under its feet (wild creatures never get one). Small copy for the HUD token.
 // The partner's marker: a 2 px bright teal ring with a 1 px dark outline (wild creatures never get one). Small copy for the HUD token.
-const ringArt = (key, w, h) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2;
+const ringArt = (key, w, h, lit, dark) => art(key, () => { const pb = new PB(w, h), cx = w / 2, cy = h / 2; lit = lit ?? C.aqua; dark = dark ?? C.tealD;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const d = Math.hypot((x + .5 - cx) / (w / 2 - .5), (y + .5 - cy) / (h / 2 - .5)), t = (w / 2 - .5) * (1 - d);
-    if (t >= -0.01 && t < 1) pb.set(x, y, C.tealD); else if (t >= 1 && t < 3) pb.set(x, y, C.aqua); else if (t >= 3 && t < 4) pb.set(x, y, C.tealD); }
+    if (t >= -0.01 && t < 1) pb.set(x, y, dark); else if (t >= 1 && t < 3) pb.set(x, y, lit); else if (t >= 3 && t < 4) pb.set(x, y, dark); }
   return pb; });
 const RING = () => ringArt('ptring2', 28, 11);
 const RING_S = () => ringArt('ptrings2', 14, 6);
@@ -3726,12 +3745,14 @@ function drawMessage() {
   if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
   const lines = wrapText(FX.msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
-  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = pl && pl.y + 20 > low ? VIEW_Y + 8 : low;
+  // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
+  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) ? VIEW_Y + 8 : low;
   panel(x, y, w, h, C.ink, C.amber);
   lines.forEach((l, i) => text(l, SCR_W / 2, y + 8 + i * 20, C.bone, 2, 'center'));
 }
 function disc(x, y, r, fill, ring) { blit(art('disc' + r + fill + ring, () => { const pb = new PB(r * 2, r * 2); pb.ell(r, r, r - .2, r - .2, C[ring]); pb.ell(r, r, r - 2.2, r - 2.2, C[fill]); return pb; }), x, y); }
-function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 4, C[col]); return w; }
+// A chip: 22 high, the 2× label at top + 3 and 8 px in from each side (a descender ends on top + 20, one row of fill under it).
+function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }
 function card(x, y, w, h, sel, enabled) {
   panel(x, y + 3, w, h, C.void); panel(x, y, w, h, enabled ? C.paper : C.slate, sel ? C.orange : C.ink);
   if (sel) { panel(x + 1, y + 1, w - 2, h - 2, enabled ? C.paper : C.slate, C.orange); brackets(x - 6, y - 6, w + 12, h + 12, C.amber); }
@@ -3760,16 +3781,18 @@ function drawSetup(t) {
   if (deepOk && fr) { R(70, 192, 2, 2, C.cream); R(69, 193, 4, 1, C.yellow); }
   text('Deep ground', 112, 168, deepOk ? C.ink : C.mist, 3);
   text(clipText(dig ? 'Caves · burrow pods · ' + dig.name + ' digs' : 'Caves · needs a digging partner', 306, 2), 112, 206, deepOk ? C.stone : C.fog);
-  // the partner, as a card (the partner, or the first mibi with you when none is grown)
-  const pm = partnerMibi(), w = pm || carriedMibis()[0] || null;
+  // the partner card: the partner's face on the teal ring, its name, stage and ability; or why there is none. The mibis with
+  // you as 24 px ring faces in carried order, a free place a dashed circle.
+  const pm = partnerMibi(), cm = carriedMibis();
   card(20, 252, 410, 92, sel === 2, true);
-  if (w) { const st = mibiStage(w);
-    if (pm) blit(RING(), 46, 322); blit(creatureArt(w.sp, 'idle', fr, 2), 28, 264);
-    text(clipText(w.name, 200, 3), 112, 260, C.ink, 3);
-    let cx = 112; cx += chip(cx, 292, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone') + 6; chip(cx, 292, 'with you', 'orange', 'bone');
-    text(clipText(pm ? SPECIES[pm.sp].abText[0].toUpperCase() + SPECIES[pm.sp].abText.slice(1) : 'Too young for the Probe', 306, 2), 112, 320, pm ? C.stone : C.rust); }
-  else if (S.mibis.length) { emptyPodSmall(52, 298); text('No one with you', 112, 264, C.ink, 3); text(clipText('dock to take one along', 306, 2), 112, 306, C.stone); }
+  if (pm) { const st = mibiStage(pm), nm = clipText(pm.name, 220, 3);
+    blit(RING(), 46, 322); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, 264);
+    text(nm, 112, 260, C.ink, 3); if (pm.bonded) heartPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
+    chip(112, 292, st, stageFill(st), 'bone');
+    text(clipText(SPECIES[pm.sp].abText, 220, 2), 112, 320, C.stone); }
+  else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(CARE_TEXT.noPartner, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
+  if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm); else blit(dashedCircleArt(24), fx, 262); }
   // the world preview: the whole map small, the last start flagged, and the count
   const iy = 360, u = 6; drawWorldInset(24, iy, t, u);
   const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
@@ -3794,7 +3817,7 @@ function partnerRow() {
   const pm = partnerMibi(), w = carriedMibis()[0];
   if (pm) return 'Partner: ' + pm.name + ' · ' + SPECIES[pm.sp].abText + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
   if (w) return CARE_TEXT.noOneGrown;
-  return S.mibis.length ? CARE_TEXT.noOneWith : 'No partner yet';
+  return liveMibis().length ? CARE_TEXT.noOneWith : 'No partner yet';
 }
 function digPartner() { const pm = partnerMibi(); return pm && SPECIES[pm.sp].ab === 'dig' ? pm : null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
@@ -3902,7 +3925,8 @@ function drawCargo(t) {
     ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 182, 42, 42, C.ink, C.slate);
       if (S.known.includes(sp)) blit(creatureArt(sp, 'idle', 0), x + 5, 186); else { blit(silhouette(sp), x + 5, 186); text('?', x + 16, 196, C.bone); }
       if (ex.newMet.includes(sp)) R(x + 33, 186, 5, 5, C.amber); });
-    text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', 180, 196, C.fog);
+    // beside the tiles; with no creature met, under "No creatures met yet" (they would overlap on x 180–219)
+    text(ex.moments.length + ' creature moment' + (ex.moments.length === 1 ? '' : 's') + ' (Data)', ex.met.length ? 180 : 24, ex.met.length ? 196 : 208, C.fog);
     // how much of the reach is done, in the same picture as the HUD corner
     text(cargoLine(), 24, 238, C.fog);
     { const r = S.exp.range, n = r * 2 + 1, pitch = n <= 5 ? 7 : 4, s0 = cxy(ex.start), reach = new Set(ex.reach), gx = 24 + textW(cargoLine(), 2) + 14, gy = 245 - Math.floor(n * pitch / 2);
@@ -3947,26 +3971,78 @@ function drawNoMibi() {
 }
 // A juvenile answering Call is still learning: it looks the wrong way first, on two calls in three.
 function callAnim(m) { const h = FX.callMibi; if (!h || h.id !== m.id) return null; const a = NOW - h.at; return a < 1500 ? Object.assign({ a }, h) : null; }
-// Mibis: the roster. One row per mibi with you, in carried order; docked, the mibis at home after them (undocked, none).
+// ---- The care screens' composed pieces: dashed outlines, rings, chips, and the placeholders of missing assets ----
+const stageFill = st => st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone';
+// A free place: a 1 px dashed outline, dash 2 and 2.
+function dashedRect(x, y, w, h, c) {
+  for (let i = 0; i < w; i += 4) { R(x + i, y, Math.min(2, w - i), 1, c); R(x + i, y + h - 1, Math.min(2, w - i), 1, c); }
+  for (let j = 0; j < h; j += 4) { R(x, y + j, 1, Math.min(2, h - j), c); R(x + w - 1, y + j, 1, Math.min(2, h - j), c); }
+}
+// A free face: a dashed circle d×d, 1 px `stone`, dash 2 and 2 along its perimeter.
+const dashedCircleArt = d => art('dcirc' + d, () => { const pb = new PB(d, d), c = d / 2, r = d / 2 - .5, pts = [];
+  for (let y = 0; y < d; y++) for (let x = 0; x < d; x++) { const q = Math.hypot(x + .5 - c, y + .5 - c); if (Math.abs(q - r) < .5) pts.push([x, y, Math.atan2(y + .5 - c, x + .5 - c)]); }
+  pts.sort((a, b) => a[2] - b[2]); pts.forEach(([x, y], i) => { if ((i >> 1) % 2 === 0) pb.set(x, y, C.stone); }); return pb; });
+// The 24 px HUD ring face, until the derived face lands: the HUD's own face icon pixel for pixel at 2×, on its ring (`teal` for
+// the partner, `stone` for the others) at its foot.
+function ringFace(x, y, sp, partner) {
+  const ring = partner ? ringArt('rf24t', 24, 8) : ringArt('rf24s', 24, 8, C.stone, C.slate);
+  blit(ring, x, y + 16); blit(upArt('mini' + sp, ICON.mini(sp), 2), x, y);
+  g.save(); g.beginPath(); g.rect(x, y + 20, 24, 4); g.clip(); blit(ring, x, y + 16); g.restore();   // the ring's front arc in front of the face: it stands on it
+}
+// A missing asset of the register (CARE_ASSETS), drawn as its labelled placeholder at its exact size (k: pixel for pixel at k×).
+function heartPlate(id, x, y, k) {
+  const a = CARE_ASSETS.find(e => e.id === id); k = k || 1; const w = a.w * k, h = a.h * k;
+  R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C.red);
+  const lbl = ['heart', 'h'].find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
+}
+// Why there is no partner, on the Lead card and the partner card.
+function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; const j = cm.find(m => !isAdult(m)); return j && j.bonded ? CARE_TEXT.youngCare : CARE_TEXT.youngTime; }
+// Mibis: the roster. The Lead card; "With you" and three places (a free place dashed, never focused); docked, "At home".
+// Focus order (S.ui.rSel): the Lead card (0), the mibis with you, then (docked) the mibis at home.
+const LEAD_Y = 44, PLACE_Y = 172, HOME_Y = 416, ROW_P = 72, ROSTER_FOOT = 526;
+function rosterAt(i) { return i > 0 ? rosterList()[i - 1] || null : null; }
+function rosterCount() { return 1 + rosterList().length; }
+// A focus index's card, [y, h], before the scroll.
+function rosterRect(i) { if (i <= 0) return [LEAD_Y, 92]; const k = i - 1, nc = carriedMibis().length; return k < nc ? [PLACE_Y + k * ROW_P, 64] : [HOME_Y + (k - nc) * ROW_P, 64]; }
+// The scroll: the least offset that keeps the focused card's foot (its last row) on or above row 526.
+function rosterOff(i) { const [y, h] = rosterRect(i); return Math.max(0, y + h - 1 - ROSTER_FOOT); }
+// Nothing to arrange: no mibi with you and none to take.
+const rosterIdle = () => !carriedMibis().length && !(canSwap() && homeMibis().length);
+// A paper card; focused, it lifts 2 px (its shadow stays) inside orange corner brackets 6 px outside it.
+function rosterCard(x, y, w, h, sel) {
+  panel(x, y + 3, w, h, C.void); const ly = sel ? y - 2 : y;
+  panel(x, ly, w, h, C.paper, sel ? C.orange : C.ink);
+  if (sel) { panel(x + 1, ly + 1, w - 2, h - 2, C.paper, C.orange); brackets(x - 6, ly - 6, w + 12, h + 12, C.amber); }
+}
+function rosterRow(m, y0, sel, isP, fr) {
+  rosterCard(16, y0, 418, 64, sel); const y = sel ? y0 - 2 : y0, st = mibiStage(m);
+  const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
+  if (isP) blit(RING(), 38, y + 48);
+  blit(creatureArt(m.sp, h ? 'alert' : 'idle', h ? 0 : fr, 1.5), 28, y + 8 - hy);
+  const nm = clipText(m.name, 200, 3); text(nm, 88, y + 6, C.ink, 3); if (m.bonded) heartPlate('c-heart-16', 88 + textW(nm, 3) + 8, y + 11);
+  let cx = 88; cx += chip(cx, y + 38, st, stageFill(st), 'bone') + 4; if (isP) chip(cx, y + 38, CARE_TEXT.leadsChip, 'teal', 'bone');
+  if (sel) text('▶', 422, y + 22, C.mist, 2, 'right');   // the open mark: ▶ opens this mibi's page
+}
 function drawMibis(t) {
-  viewBg(); drawTop('Mibis', S.mibis.length ? S.mibis.length + ' raised' : '', callSlot());
-  const list = rosterList(), pm = partnerMibi();
-  if (!list.length) { drawNoMibi(); return; }
-  const fr = motion() ? Math.floor(t * 1.2) % 2 : 0, PITCH = 72, top = 42, sel = clamp(S.ui.rSel, 0, list.length - 1);
-  const off = Math.max(0, (sel + 1) * PITCH - (VIEW_H - 40));
-  const tag = (x, y, label, fill) => { const tw = textW(label, 2) + 10; panel(x, y, tw, 20, C[fill]); text(label, x + 5, y + 3, C.bone); return tw + 4; };
-  g.save(); g.beginPath(); g.rect(0, VIEW_Y, SCR_W, VIEW_H); g.clip();
-  list.forEach((m, i) => { const y = top + i * PITCH - off, st = mibiStage(m), isW = isCarried(m); if (y < VIEW_Y - PITCH || y > SCR_H) return;
-    card(20, y, 410, 64, sel === i, true);
-    const h = callAnim(m), hy = h && motion() ? Math.round(Math.abs(Math.sin(h.a / 150)) * 8 * Math.max(0, 1 - h.a / 900)) : 0;
-    blit(creatureArt(m.sp, h ? 'alert' : 'idle', h ? 0 : fr, 2), 28, y - hy);
-    text(clipText(m.name, 200, 3), 104, y + 8, C.ink, 3);
-    let cx = 104; cx += tag(cx, y + 38, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone');
-    cx += tag(cx, y + 38, isW ? 'with you' : 'at home', isW ? 'orange' : 'slate');
-    if (isW && (m === pm || !isAdult(m))) text(m === pm ? 'partner' : 'too young', 420, y + 12, C.bark, 2, 'right');
-  });
+  viewBg(); drawTop('Mibis', '', callSlot());
+  if (!liveMibis().length) { drawNoMibi(); return; }
+  const list = rosterList(), cm = carriedMibis(), home = list.slice(cm.length), ex = S.exp;
+  const pm = ex ? (ex.pt ? mibiById(ex.pt.id) : null) : partnerMibi();   // mid-expedition: this expedition's partner
+  const sel = clamp(S.ui.rSel | 0, 0, rosterCount() - 1); S.ui.rSel = sel;
+  const off = rosterOff(sel), fr = motion() ? Math.floor(t * 1.2) % 2 : 0;
+  { const [ry, rh] = rosterRect(sel); RT.focusFoot = ry + rh - 1 - off - 2; }
+  clipView();
+  { const y = LEAD_Y - off - (sel === 0 ? 2 : 0); rosterCard(16, LEAD_Y - off, 418, 92, sel === 0);
+    text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
+    if (pm) { blit(RING(), 46, y + 70); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, y + 12);
+      const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) heartPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
+      text(clipText(SPECIES[pm.sp].abText, 314, 2), 104, y + 64, C.stone); }
+    else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
+  text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
+  for (let k = 0; k < CARRY_MAX; k++) { const y0 = PLACE_Y + k * ROW_P - off, m = cm[k]; if (m) rosterRow(m, y0, sel === k + 1, m === pm, fr); else dashedRect(16, y0, 418, 64, C.stone); }
+  if (home.length) { text(CARE_TEXT.atHomeCap, 20, 392 - off, C.mist); home.forEach((m, j) => rosterRow(m, HOME_Y + j * ROW_P - off, sel === cm.length + 1 + j, false, fr)); }
   g.restore();
-  if (S.exp && list.length && list.length * PITCH + top + 30 < SCR_H - LINE_H) text(CARE_TEXT.withYouThisExp, SCR_W / 2, top + list.length * PITCH + 8, C.mist, 2, 'center');
+  if (ex || !isDocked()) { const l = ex ? CARE_TEXT.withYouThisExp : homeMibis().length ? CARE_TEXT.othersHome : ''; if (l) text(l, SCR_W / 2, 400, C.mist, 2, 'center'); }
 }
 // Upscale a sprite by an integer factor, pixel for pixel (the token art, as the device would blit it).
 function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb = new PB(src.w * k, src.h * k);
@@ -3977,7 +4053,10 @@ const bigArt = (sp, pose, fr) => upArt('cr' + sp + pose + (fr ? 1 : 0), creature
 const haloArt = () => art('halo', () => { const pb = new PB(300, 220); pb.ell(150, 110, 148, 108, C.cream, { chk: 1 }); return pb; });
 // The active mibi screen: the Companion's home view. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
-function shownMibi() { const list = rosterList(); return list.find(m => m.id === S.ui.aId) || list[0] || null; }
+// A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
+function shownMibi() { const list = rosterList(); let i = list.findIndex(m => m.id === S.ui.aId);
+  if (i < 0 && list.length) { i = Math.min(S.ui.aIdx | 0, list.length - 1); S.ui.aId = list[i].id; }
+  if (i >= 0) S.ui.aIdx = i; return i >= 0 ? list[i] : null; }
 function activeStatus(m) {
   if (!isCarried(m)) return m.bonded && !isAdult(m) ? CARE_TEXT.stHomeBonded : CARE_TEXT.stHome;
   if (m === partnerMibi()) return CARE_TEXT.stLeads;
@@ -3985,12 +4064,26 @@ function activeStatus(m) {
   if (m.bonded) return CARE_TEXT.stGrowsWithCare;
   return CARE_TEXT.stTooYoung;   // exactly one listed line, nothing appended: no count of any kind
 }
+// No one with you, undocked: three free places and why.
+function drawNoOneWith() {
+  for (const x of [93, 189, 285]) blit(dashedCircleArt(72), x, 150);
+  text(CARE_TEXT.noOneWithT, SCR_W / 2, 250, C.bone, 3, 'center');
+  text(CARE_TEXT.takeAlong, SCR_W / 2, 294, C.mist, 2, 'center'); text(CARE_TEXT.atStation, SCR_W / 2, 316, C.mist, 2, 'center');
+  if (S.bay.length) text(bayLine(), SCR_W / 2, 352, C.amber, 2, 'center');
+}
+const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
 function drawActive(t) {
   viewBg(); drawHomeTop();
-  const m = shownMibi(); if (!m) { drawNoMibi(); return; }
-  const list = rosterList(), isW = isCarried(m), st = mibiStage(m), mo = motion();
+  if (FX.grow && !FX.grow.cut && NOW >= FX.grow.at) { FX.grow.cut = 1; S.ui.aId = FX.grow.id; }   // after the action's moment, the view is on the mibi that grew
+  const m = shownMibi(); if (!m) { if (liveMibis().length) drawNoOneWith(); else drawNoMibi(); return; }
+  const list = rosterList(), isW = isCarried(m), mo = motion();
+  const growing = FX.grow && FX.grow.id === m.id && NOW < FX.grow.at, st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes after the moment
+  const bond = FX.bond && FX.bond.id === m.id ? NOW - FX.bond.at : null;   // ms into the bond event (negative while the action's moment plays)
   panel(24, 40, 402, 280, C.ink, C.slate);
-  const h = callAnim(m), sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < 1800 ? FX.moment : null, sa = sp ? (mo ? NOW - sp.at : 900) : 0;
+  const h = callAnim(m);
+  let sp = FX.moment && FX.moment.id === m.id && NOW - FX.moment.at < TEND_MS ? FX.moment : null;
+  if (bond != null && bond >= 0 && bond < 900) sp = { at: FX.bond.at };   // the bond: the species moment again, short
+  const sa = sp ? (mo ? NOW - sp.at : 900) : 0;
   let x = 97, y = 52, pose = 'idle', fr = mo ? Math.floor(t * 1.25) % 2 : 0, flip = false;
   if (h) { const a = mo ? h.a : 1000, d = h.wrong ? 450 : 0;
     if (a < d) flip = true;   // looking the wrong way first
@@ -4004,19 +4097,26 @@ function drawActive(t) {
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 78);
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
   if (sp && m.sp === 1) for (const [sx, sy] of [[90, 88], [340, 118], [120, 248], [320, 238]]) blit(sparkArt(true), sx, sy);
+  // the Walk: every other mibi with you at the stage's foot as its 48 px field token, 2 idle frames at 4 Hz, for 2.4 s
+  const wk = FX.walk && FX.walk.id === m.id && NOW - FX.walk.at < WALK_MS ? FX.walk : null;
+  if (wk) wk.others.slice(0, 2).forEach((id, i) => { const q = mibiById(id); if (q) blit(creatureArt(q.sp, 'idle', mo ? Math.floor((NOW - wk.at) / 250) % 2 : 0, 1.5), i ? 366 : 36, 260); });
+  // the bond's heart: c-heart-24 at 2×, rising beside the head from y 140 to 60 in four 20 px steps of 150 ms, held 900 ms;
+  // under reduced motion it stands at y 60 for 1.5 s
+  if (bond != null && bond >= 900 && bond < BOND_MS) { const k = bond - 900; heartPlate('c-heart-24', 362, mo ? 140 - 20 * Math.min(4, Math.floor(k / 150)) : 60, 2); }
   if (list.length > 1) { text('◀', 10, 172, C.mist); text('▶', 440, 172, C.mist, 2, 'right'); }
-  text(clipText(m.name, 260, 3), 30, 332, C.bone, 3);
-  chip(30 + textW(clipText(m.name, 260, 3), 3) + 14, 331, st, st === 'juvenile' ? 'teal' : st === 'elder' ? 'plum' : 'stone', 'bone');
+  const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
+  const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, st, stageFill(st), 'bone');
+  if (m.bonded && !(bond != null && bond < BOND_MS)) heartPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
   text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
-  wrapText(activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
-  // the mood slot stays empty until bonding and care exist
-  const n = list.length, dx = 16, x0 = Math.round(SCR_W / 2 - (n - 1) * dx / 2);
-  if (n > 1) list.forEach((q, i) => { const px = x0 + i * dx; if (isCarried(q)) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
+  wrapText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
+  // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
+  const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
+  if (n > 1) list.forEach((q, i) => { const px = x0 + i * 16 + (i >= nc ? gap : 0); if (isCarried(q)) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
 }
 // Call at home: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
 // the view comes to it. Free.
 function callTarget() {
-  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterList()[S.ui.rSel] : null;
+  const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : null;
   return isCarried(f) ? f : partnerMibi() || carriedMibis()[0] || null;
 }
 function callWith() {
@@ -4032,7 +4132,7 @@ function tendPress(m) {
   if (S.exp) { fxMsg(CARE_TEXT.tendMidExp(m.name)); FX.bumpAt = NOW; return; }
   const r = tend(m); if (!r) { fxMsg(CARE_TEXT.tendedRefused(m.name)); FX.bumpAt = NOW; return; }
   FX.moment = { id: m.id, at: NOW }; lockInput(300);
-  careLines(CARE_TEXT.tended(m), [Object.assign({ m }, r)]);
+  careLines(CARE_TEXT.tended(m), [Object.assign({ m }, r)], TEND_MS);
 }
 // Take and Leave as pressed (docked, between expeditions). Take at three: the shake and why.
 function takePress(m) {
@@ -4053,15 +4153,19 @@ function drawNewWorld() {
 function drawSealed(t) {
   const r = S.report; viewBg(); drawTop('Head home', r ? 'expedition ' + r.n : '');
   if (!r) return;
-  let y = 46;   // every line below is clipped at 410 px, so nothing passes x 432
+  // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
+  let y = 46, last = 46;
+  const L = (s, col) => { text(clipText(s, 410, 2), 22, y, col); last = y; y += 24; };
   if (r.reason === 'break') { text(clipText('The Probe broke', 410, 3), 22, y, C.coral, 3); y += 34;
-    text(clipText(r.dropped ? 'Your ' + numWord(r.dropped) + ' pod' + (r.dropped === 1 ? '' : 's') + ' fell where it broke (skull on the map).' : 'Nothing was in the hold.', 410, 2), 22, y, C.bone); y += 24;
-    text(clipText('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), 410, 2), 22, y, C.peach); y += 24;
-    text(clipText('Docking mends the Probe free.', 410, 2), 22, y, C.amber); y += 34; }
-  else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('The world waits · nothing is sealed.', 410, 2), 22, y, C.fog); y += 24; text(clipText('Your finds stay in the hold.', 410, 2), 22, y, C.fog); y += 34; }
-  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
-  else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; text(clipText('Your finds stay in the hold, unsealed.', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text(clipText('A break would lose them.', 410, 2), 22, y, C.fog); y += 34; }
-  else { text(clipText('Home, hold empty', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Nothing to seal this time.', 410, 2), 22, y, C.fog); y += 34; }
+    L(r.dropped ? numWord(r.dropped).replace(/^./, c => c.toUpperCase()) + ' pod' + (r.dropped === 1 ? ' lies' : 's lie') + ' where it broke.' : 'Nothing was in the hold.', C.bone);
+    L('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), C.peach);
+    L('Docking mends the Probe free.', C.amber); y += 10; }
+  else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; L('The world waits · nothing is sealed.', C.fog); L('Your finds stay in the hold.', C.fog); y += 10; }
+  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
+  else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
+  else { text(clipText('Home, hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
+  // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
+  if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
   for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
@@ -4071,9 +4175,18 @@ function drawSealed(t) {
   if (!r.waited) drawTurnLines(r, y);
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
+// The world lines under Head home: worldTurn's order, three at most, each wrapped at 390 px (20 px a wrapped line, 6 between
+// lines). A line draws only while its foot, y + 20 × (wrapped lines − 1) + 17, stays on or above row 476 (8 px over 484, the
+// message box's highest top); the first that fails ends the list, silently. `wrap` splits one line into its wrapped parts.
+const WORLD_FOOT = 476;
+function worldLineRows(lines, y, wrap) {
+  const out = [];
+  for (const l of lines.slice(0, 3)) { const parts = wrap(l), foot = y + 20 * (parts.length - 1) + 17; if (foot > WORLD_FOOT) break; out.push({ y, parts, foot }); y += 20 * parts.length + 6; }
+  return out;
+}
 function drawTurnLines(r, y) {
   text(clipText('Meanwhile, the world turned', 410, 2), 22, y, C.stone); text(clipText(turnLine(), 410, 2), 22, y + 22, C.mist); y += 48;
-  for (const l of r.lines.slice(0, 3)) { if (y > 506) break; R(26, y + 6, 4, 4, C.orange); wrapText(l, 390, 2).forEach((s2, i) => text(clipText(s2, 410 - 18, 2), 40, y + i * 20, C.bone)); y += 20 * wrapText(l, 390, 2).length + 6; }
+  for (const row of worldLineRows(r.lines, y, l => wrapText(l, 390, 2))) { R(26, row.y + 6, 4, 4, C.orange); row.parts.forEach((s2, i) => text(clipText(s2, 392, 2), 40, row.y + i * 20, C.bone)); }
 }
 function outpostLights() { const out = []; for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && fs(String(c), f.id).lightT) out.push(outpostLeft(String(c), f)); } return out; }
 function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() + (l.length ? ' · ' + DEPOT_NAME + ' lights: ' + l.join(', ') : ''); }
@@ -4136,7 +4249,7 @@ function lineFor() {
   // Confirm labels stay within 24 characters and Back labels within 20 (companion-controls.md).
   const L1 = (ok, ctx, back, dim) => ({ ok: ok.length > 24 ? ok.slice(0, 23) + '…' : ok, ctx: ctx || '', back: back || '', dim: !!dim });
   switch (S.phase) {
-    case 'setup': if (S.ui.sel === 2) return S.mibis.length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
+    case 'setup': if (S.ui.sel === 2) return liveMibis().length ? L1('Open Mibis', partnerRow(), 'menu') : L1('Open Mibis', 'no partner yet', 'menu');
       if (S.ui.sel === 1 && !digPartner()) return L1('Needs a digger', 'Deep ground', 'menu', true);   // a mibi at home is never named
       { const b = startBlock(); if (b) return L1(isDocked() ? 'Lift to explore' : 'Probe broken', isDocked() ? 'docked' : 'dock: mended free', 'menu', true); }
       return L1('Start ' + (S.ui.sel ? 'Deep ground' : 'Weather'), bayLine(), 'menu');
@@ -4163,7 +4276,11 @@ function lineFor() {
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close') : L1('', '', 'close');   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('Head home', 'ends the expedition · seals the hold', 'close') : L1('', 'Head home: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
-    case 'mibis': { const m = rosterList()[S.ui.rSel], bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu'; if (!m) return L1(S.exp ? '' : 'Next expedition', '', bk);
+    case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
+      if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
+      if (!m) { if (S.exp) return L1('', CARE_TEXT.leadsThisExp, bk);   // the Lead card: read-only mid-expedition
+        const nx = nextLead(), g = carriedMibis().filter(isAdult).length;
+        return nx ? L1(CARE_TEXT.leadLabel(nx.name), CARE_TEXT.leadCtx, bk) : L1('', g === 1 ? CARE_TEXT.onlyGrown : CARE_TEXT.noOneGrown, bk); }
       if (isCarried(m)) return canSwap() ? L1(CARE_TEXT.leaveLabel(m.name), CARE_TEXT.leaveCtx, bk) : L1(CARE_TEXT.visitLabel(m.name), CARE_TEXT.visitCtx, bk);
       return L1(CARE_TEXT.takeLabel(m.name), S.carried.length >= CARRY_MAX ? CARE_TEXT.full : CARE_TEXT.takeCtx, bk, !canSwap() || S.carried.length >= CARRY_MAX); }   // a mibi at home shows only docked
     case 'active': { const m = shownMibi(); if (!m) return L1(S.exp ? '' : 'Next expedition', '', 'menu');
@@ -4178,7 +4295,7 @@ function lineFor() {
   return L1('', '', '');
 }
 function render(t) {
-  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null; RT.msgInBand = false;
+  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
@@ -4288,7 +4405,7 @@ function act(k, mode) {
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
         else if (id === 'newworld') { if (S.ui.nwArm) { S.ui.nwArm = 0; newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); }
           else { S.ui.nwArm = 1; fxMsg('New world erases this one' + (urlSeed() != null ? ' · same seed ' + urlSeed() + ' from the address' : '') + ' · Confirm again', 3); } }
-        else { S.phase = id; S.ui.nw = 0; S.ui.rSel = 0; S.ui.rFrom = 'menu'; } }
+        else { S.phase = id; S.ui.nw = 0; S.ui.rSel = carriedMibis().length ? 1 : 0; S.ui.rFrom = 'menu'; } }   // Mibis from the menu: the first mibi with you
       else if (k === 'back') S.phase = S.ui.from || 'setup';
       break; }
     case 'probe':   // patching spends Energy: two presses, the first only arms it
@@ -4300,20 +4417,21 @@ function act(k, mode) {
       else if (k === 'confirm' && S.exp && canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }
       else if (k === 'confirm' && S.exp) { fxMsg('Head home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; }
       break;
-    case 'mibis': { const list = rosterList(), m = list[S.ui.rSel];
-      if ((k === 'up' || k === 'down') && list.length) S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, list.length - 1);
+    case 'mibis': { const m = rosterAt(S.ui.rSel);
+      if (k === 'up' || k === 'down') S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, rosterCount() - 1);
       else if (k === 'back') { if (!S.exp && S.ui.rFrom === 'active') { S.phase = 'active'; openMenu(); } else if (!S.exp && S.ui.rFrom === 'setup') S.phase = 'setup'; else S.phase = 'menu'; }
       else if (k === 'call') callWith();
       else if (k === 'right' && m) { S.phase = 'active'; S.ui.aId = m.id; transition(); }   // ▶ opens the focused mibi's page
       else if (k === 'confirm') {
-        if (!m) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
-        else if (isCarried(m) && canSwap()) { if (leavePress(m)) S.ui.rSel = Math.max(0, rosterList().indexOf(m)); }   // focus follows the mibi
+        if (rosterIdle()) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
+        else if (!m) { const nx = !S.exp && nextLead(); if (nx && setLead(nx)) { fxMsg(CARE_TEXT.leads(nx.name)); FX.callMibi = { id: nx.id, at: NOW, wrong: false }; } }   // the new partner's row hops once
+        else if (isCarried(m) && canSwap()) { if (leavePress(m)) S.ui.rSel = rosterList().indexOf(m) + 1; }   // focus follows the mibi
         else if (isCarried(m)) { S.phase = 'active'; S.ui.aId = m.id; transition(); }
-        else if (takePress(m)) S.ui.rSel = Math.max(0, rosterList().indexOf(m)); }   // the player stays on Mibis
+        else if (takePress(m)) S.ui.rSel = rosterList().indexOf(m) + 1; }   // the player stays on Mibis
       break; }
     case 'active': { const list = rosterList(), m = shownMibi();
       if ((k === 'left' || k === 'right') && list.length > 1) { const i = list.indexOf(m), n = list.length; S.ui.aId = list[(i + (k === 'right' ? 1 : n - 1)) % n].id; }
-      else if (k === 'back') { if (!m) openMenu(); else { S.phase = 'mibis'; S.ui.rSel = Math.max(0, list.indexOf(m)); S.ui.rFrom = 'active'; } }
+      else if (k === 'back') { if (!m) openMenu(); else { S.phase = 'mibis'; S.ui.rSel = list.indexOf(m) + 1; S.ui.rFrom = 'active'; } }
       else if (k === 'call') callWith();
       else if (k === 'confirm') {
         if (!m) { if (!S.exp) { S.phase = 'setup'; S.ui.sel = 0; transition(); } }
@@ -4543,7 +4661,7 @@ requestAnimationFrame(frame);
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
-  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
+  capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }

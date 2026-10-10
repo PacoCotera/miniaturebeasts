@@ -43,7 +43,7 @@ function clockAt(day) { const [y, m, d] = day.split("-").map(Number), at = new D
 
 const CARE = ["mibiById", "listWords", "localDay", "stageAt", "mibiStage", "isAdult", "isCarried", "carriedMibis", "homeMibis", "partnerMibi",
   "grownNow", "agedNow", "rosterList", "canSwap", "releasedIds", "takeMibi", "leaveMibi", "canTend", "tend", "bondCheck", "growCheck", "migrateCarried", "normalizeCare",
-  "carryApply", "canWalk", "walkAll", "tripRecord", "TRIP_KINDS", "tripsWith"];
+  "carryApply", "canWalk", "walkAll", "tripRecord", "TRIP_KINDS", "tripsWith", "liveMibis", "setLead", "nextLead", "LEAD_Y", "rosterAt", "rosterCount", "rosterRect", "rosterOff"];
 // The care functions over a world: S, docked or not, on a given day. ctx.S, ctx.Date and the flags can change between calls.
 function world(S, o = {}) {
   const env = { docked: !!o.docked, log: [] };
@@ -175,7 +175,7 @@ test("T6: a bonded juvenile never grows on the clock: no grownTurn, no clock gro
   for (let turn = 0; turn <= 20; turn++) { S.turn = turn;
     for (const m of [dot, moss]) { assert.equal(t.grownNow(m), false); assert.equal(t.agedNow(m), false); assert.equal(t.mibiStage(m), "juvenile"); assert.equal(m.grownTurn, null); } }
   // the world-turn advance writes its lines from grownNow and agedNow, and nothing on the turn or at the expedition's end grows a mibi
-  assert.match(source("worldTurn"), /const grown = S\.mibis\.filter\(grownNow\), aged = S\.mibis\.filter\(agedNow\)/);
+  assert.match(source("worldTurn"), /const grown = liveMibis\(\)\.filter\(grownNow\), aged = liveMibis\(\)\.filter\(agedNow\)/);
   for (const fn of ["worldTurn", "endExpedition"]) assert.ok(!/growCheck\(|bondCheck\(|grownTurn =/.test(source(fn)), fn + " never grows or bonds");
   // an unbonded mibi grows on the clock as built: the line at born + 2, elder at born + 8
   const fig = S.mibis[2]; S.turn = 2; assert.equal(t.grownNow(fig), true); S.turn = 8; assert.equal(t.agedNow(fig), true);
@@ -239,7 +239,8 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   assert.deepEqual(plain(S.trips.at(-1)), { v: 1, n: 5, partner: 1, places: ["meadow"], storm: false, carried: [1, 2, 3] });
   dot.bonded = true; dot.bondCare = 0; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
   assert.equal(dot.notches, 1, "the bonded partner"); assert.equal(moss.notches, 0);
-  assert.equal(S.report.lines[0], "Dot gains a skill notch", "named on Head home, with no count");
+  assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0 }, "named on Head home as the outcome block's row, with no count");
+  assert.deepEqual(plain(S.report.lines), ["The world turned."], "never among the world lines");
   assert.deepEqual(plain(S.bay.at(-1).lines), ["The world turned."], "the crate keeps the world's lines only");
   moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
   const t = world(save()); const rec = t.tripRecord({ n: 3 }, S.carried); S.carried.push(9);
@@ -254,25 +255,25 @@ test("notch: a bonded partner digs, makes no Call, Head home: notches unchanged,
   const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
   S.exp = notchExp(0); ending(S, S.exp, "home");
   assert.equal(dot.notches, 1); assert.ok(S.report.waited, "nothing explored");
-  assert.ok(!S.report.lines.includes(NOTCH_LINE));
+  assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
 });
 test("notch: a bonded partner digs, makes a Call, then the Probe breaks: +1 and the line", () => {
   const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
   S.exp = notchExp(1); ending(S, S.exp, "break");
   assert.equal(dot.notches, 2);
-  assert.ok(S.report.lines.includes(NOTCH_LINE));
+  assert.equal(S.report.notch && S.report.notch.name, "Dot", "the notch row"); assert.ok(!S.report.lines.includes(NOTCH_LINE), "never a world line");
 });
 test("notch: an unbonded partner makes a Call and digs: no notch", () => {
   const S = notchSave(), dot = S.mibis[0];
   S.exp = notchExp(1); ending(S, S.exp, "home");
   assert.equal(dot.notches, 0);
-  assert.ok(!S.report.lines.includes(NOTCH_LINE));
+  assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
 });
 test("notch: already at 3 stays 3, no line", () => {
   const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 3;
   S.exp = notchExp(1); ending(S, S.exp, "home");
   assert.equal(dot.notches, 3);
-  assert.ok(!S.report.lines.includes(NOTCH_LINE));
+  assert.ok(!S.report.lines.includes(NOTCH_LINE)); assert.equal(S.report.notch, null, "no notch row");
 });
 test("T5: a trip record without `carried` reads as [partner] on the Station; with it, every id", { skip: station("tripCarried") }, () => {
   assert.deepEqual(ST.tripCarried({ v: 1, n: 1, partner: 2, places: [], storm: false }), [2]);
@@ -424,13 +425,17 @@ test("T4 merge: Companion care writes reach the Station by max and OR, and a sec
 });
 
 // ---- The words and the heart ----
-test("one strings table for care; the heart is registered as a missing asset and never drawn", () => {
+test("one strings table for care; the heart is a missing asset in the register, drawn only as its labelled placeholder", () => {
   assert.match(PAGE, /^const CARE_TEXT = \{$/m);
   const reg = PAGE.match(/^const CARE_ASSETS = \[[^]*?^\];$/m); assert.ok(reg, "the register");
   const entries = vm.runInContext(reg[0] + "\n;CARE_ASSETS", vm.createContext({}));
-  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "empty"], ["c-heart-16", 16, 16, "empty"]]);
+  assert.deepEqual(plain(entries.map(e => [e.id, e.w, e.h, e.status])), [["c-heart-24", 24, 24, "placeholder"], ["c-heart-16", 16, 16, "placeholder"]]);
   for (const e of entries) { assert.deepEqual(Object.keys(e).slice(0, 3), ["id", "what", "until"], "the Station register's keys first"); assert.ok(e.what && e.until); }
-  assert.equal(PAGE.split("c-heart").length - 1, 2, "named only in the register");
+  // every heart on a screen goes through heartPlate, which reads its size from the register: a flat plate and its label, no drawn heart
+  const uses = [...PAGE.matchAll(/'(c-heart-\d+)'/g)].map(x => x[1]), calls = [...PAGE.matchAll(/heartPlate\('(c-heart-\d+)'/g)].map(x => x[1]);
+  assert.equal(uses.length, 2 + calls.length, "named in the register and in heartPlate calls only");
+  assert.ok(calls.includes("c-heart-24") && calls.includes("c-heart-16"));
+  const hp = source("heartPlate"); assert.match(hp, /CARE_ASSETS\.find/); assert.ok(!/ell\(|poly\(|pline\(/.test(hp), "no drawn shape");
 });
 
 // ---- No count on the Companion (game designer, 16:24; the approved copy) ----
@@ -462,7 +467,7 @@ test("the approved strings: Tend's line from the species moment and the place; t
   assert.equal(T.noOneWith, "no one with you"); assert.equal(T.noOneGrown, "no one grown yet");
   // the expedition choice's partner card, bottom-line context (companion-screens.md, "Expedition choice: the partner card")
   const S = save({ carried: [], turn: 1 }), ctx = vm.createContext({ console, S, CARE_TEXT: T, JUVENILE_TURNS: 2, ELDER_TURNS: 6, SPECIES: [{ abText: "calms wary creatures" }, { abText: "sniffs out pods" }, { abText: "digs narrow burrows" }] });
-  const pr = vm.runInContext(["partnerRow", "partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt"].map(source).join("\n") + "\n;partnerRow", ctx);
+  const pr = vm.runInContext(["partnerRow", "partnerMibi", "carriedMibis", "liveMibis", "mibiById", "isAdult", "mibiStage", "stageAt"].map(source).join("\n") + "\n;partnerRow", ctx);
   assert.equal(pr(), "no one with you");
   S.carried = [1]; assert.equal(pr(), "no one grown yet", "a juvenile with you, no one grown");
   S.turn = 3; assert.equal(pr(), "Partner: Dot · calms wary creatures", "as built");
@@ -508,12 +513,13 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   const ctx = vm.createContext({ console, S, SCR_W: 450, MW: 1, MH: 1, JUVENILE_TURNS: 2, ELDER_TURNS: 6, C: new Proxy({}, { get: () => 0 }), ICON: new Proxy({}, { get: () => noop }),
     SPECIES: [{ ab: "calm", abText: "calms wary creatures" }, { ab: "sniff", abText: "sniffs out pods" }, { ab: "dig", abText: "digs narrow burrows" }],
     FX: {}, viewBg: noop, drawTop: noop, motion: () => false, tierOf: () => ({ shield: 3 }), wTurn: () => 4, clipText: id, text: t => said.push(String(t)), wrapText: t => [t], isDocked: () => false,
-    panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false });
-  const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "mibiById", "isAdult", "mibiStage", "stageAt"];
+    panel: noop, card: noop, disc: noop, blit: noop, R: noop, RING: noop, creatureArt: noop, chip: () => 0, emptyPodSmall: noop, drawWorldInset: noop, explored: () => false,
+    CARRY_MAX: 3, textW: () => 0, heartPlate: noop, dashedCircleArt: noop, ringFace: noop, stageFill: () => "stone", CARE_TEXT: { noPartner: "No partner", takeOne: "take one at the Station", youngCare: "young · grows with care", youngTime: "young · grows in time" } });
+  const names = ["drawSetup", "digPartner", "partnerMibi", "carriedMibis", "liveMibis", "leadWhy", "mibiById", "isAdult", "mibiStage", "stageAt"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSetup(0);", ctx);
   const home = S.mibis.map(m => m.name);
   for (const line of said) for (const n of home) assert.ok(!line.includes(n), "names " + n + ": " + line);
-  assert.ok(said.includes("dock to take one along") && said.includes("Caves · needs a digging partner"));
+  assert.ok(said.includes("No partner") && said.includes("take one at the Station") && said.includes("Caves · needs a digging partner"));
   assert.ok(!said.some(l => /at home/.test(l)), "no at-home list or count");
   for (const fn of ["lineFor", "drawSetup"]) assert.ok(!/mibiWith|homeMibis/.test(source(fn)));
   assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
@@ -554,4 +560,102 @@ test("T5: C8 marks only the partner; a carried mibi that is not the partner gets
   const S = save({ carried: [1, 2, 3], turn: 4 }); S.trips = [{ v: 1, n: 3, partner: 1, places: ["cave", "wood", "meadow"], storm: true, carried: [1, 2, 3] }];
   const st = stationWorld(S, false); ST.dockKey(st, S, ST.DEFAULT_SETTINGS, 1000);
   for (const q of st.mibis.filter(q => q.id !== 1)) assert.ok(!q.marks || Object.values(q.marks).every(k => !k.steps), q.name + " gets no marks");
+});
+
+// ---- The care screens (companion-screens.md at 2c5044a: Mibis, the Lead card, released mibis, Head home's notch row) ----
+test("setLead: a grown mibi with you, between expeditions only; nextLead cycles the grown ones with you after the partner, wrapping", () => {
+  const S = save({ turn: 3, carried: [1, 2, 3] }), t = world(S), [dot, moss, fig, pip] = S.mibis;
+  moss.born = 3;   // a juvenile with you
+  assert.equal(t.partnerMibi().id, 1); assert.equal(t.nextLead().id, 3, "the next grown after the partner, skipping the juvenile");
+  assert.equal(t.setLead(fig), true); assert.equal(S.lead, 3); assert.equal(t.partnerMibi().id, 3);
+  assert.equal(t.nextLead().id, 1, "wrapping to the first");
+  assert.equal(t.setLead(moss), false, "never a juvenile"); assert.equal(S.lead, 3);
+  assert.equal(t.setLead(pip), false, "never a mibi at home"); assert.equal(S.lead, 3);
+  S.exp = { n: 4 }; assert.equal(t.setLead(dot), false, "never mid-expedition"); assert.equal(S.lead, 3); S.exp = null;
+  S.carried = [1, 2]; assert.equal(t.nextLead(), null, "one grown: nothing to cycle");
+  dot.born = 3; assert.equal(t.nextLead(), null, "none grown");
+});
+test("the roster's focus order and rects: the Lead card, the mibis with you, then docked the mibis at home; the scroll keeps the foot on row 526", () => {
+  const S = save({ carried: [3, 1] }), t = world(S, { docked: true });
+  assert.equal(t.rosterAt(0), null, "index 0 is the Lead card");
+  assert.deepEqual([1, 2, 3, 4].map(i => t.rosterAt(i).id), [3, 1, 2, 4]); assert.equal(t.rosterCount(), 5);
+  assert.deepEqual(plain([0, 1, 2, 3, 4].map(i => t.rosterRect(i))), [[44, 92], [172, 64], [244, 64], [416, 64], [488, 64]], "places from 172, home rows from 416, 72 apart");
+  assert.deepEqual([0, 1, 2, 3, 4].map(i => t.rosterOff(i)), [0, 0, 0, 0, 25], "the second home row (foot 551) is the first to scroll, by 25");
+  S.carried = [1, 2, 3]; assert.deepEqual(plain(t.rosterRect(4)), [416, 64], "with three, the first home row");
+  t.env.docked = false; assert.equal(t.rosterCount(), 4, "undocked: the Lead card and the three with you"); assert.equal(t.rosterOff(3), 0, "undocked nothing scrolls");
+});
+test("released mibis: hidden from every list and count; the dock read marks them, drops them and clears the lead; Take refuses them", () => {
+  const S = save({ carried: [1, 2], lead: 2 }), t = world(S, { docked: true });
+  t.normalizeCare(S, new Set([2, 4]));
+  assert.deepEqual(plain(S.carried), [1]); assert.equal(S.lead, null, "the lead clears");
+  assert.equal(S.mibis[1].released, true); assert.equal(S.mibis[3].released, true); assert.equal(S.mibis[0].released, undefined);
+  assert.deepEqual(plain(t.liveMibis().map(m => m.id)), [1, 3]); assert.deepEqual(plain(t.homeMibis().map(m => m.id)), [3]);
+  assert.deepEqual(plain(t.rosterList().map(m => m.id)), [1, 3], "the roster closes up"); assert.equal(t.rosterCount(), 3);
+  t.env.st = null; assert.deepEqual(plain(t.takeMibi(S.mibis[3])), { ok: false, why: "released" }, "the Companion's own mark refuses it");
+  const once = JSON.stringify(S); t.normalizeCare(S, new Set([2, 4])); assert.equal(JSON.stringify(S), once, "idempotent");
+  t.normalizeCare(S); assert.equal(S.mibis[1].released, true, "without the Station's ids nothing is un-released");
+  // the world turn's lines never name a released mibi; the screens count only the others
+  assert.match(source("worldTurn"), /liveMibis\(\)\.filter\(grownNow\)/);
+  for (const fn of ["drawMibis", "drawActive", "partnerRow", "drawSetup"]) assert.match(source(fn), /liveMibis\(\)/, fn + " counts only the mibis not released");
+  assert.ok(!/S\.mibis\.length/.test(source("drawMibis") + source("drawSetup") + source("partnerRow")), "no count over released mibis");
+});
+test("the active screen: a page gone goes to the page now at that index, or the last", () => {
+  const S = save({ carried: [1, 2, 3], ui: { aId: 3, aIdx: 2 } }), t = world(S, { docked: false });
+  const sh = vm.runInContext(source("shownMibi") + ";shownMibi", t.ctx);
+  assert.equal(sh().id, 3); t.normalizeCare(S, new Set([3])); assert.equal(sh().id, 2, "the last page");
+  S.ui.aId = 1; sh(); t.normalizeCare(S, new Set([1])); assert.equal(sh().id, 2, "the page now at index 0");
+});
+// Head home: the outcome block, the notch row, the crates and the world lines, as drawn (text and pictures recorded).
+function sealed(rep, lines, bay = 1) {
+  const said = [], faces = [], crates = [], dots = [], noop = () => {};
+  const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
+    NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x,
+    text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
+    bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord"];
+  vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
+  return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
+}
+test("Head home: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
+  const W = ["The Loikas moved north.", "The outpost in the wood burns low.", "A storm charged stones in the east."];
+  const y = { data: 6, tier: 3, moments: 2 };
+  let d = sealed({ sealed: { id: "c0", pods: [1, 2] }, yield: y, notch: { id: 1, name: "Pip", sp: 0 } }, W);
+  assert.equal(d.at("Pip gains a skill notch").y, 128); assert.equal(d.at("Pip gains a skill notch").x, 54);
+  assert.deepEqual(plain(d.faces), [{ x: 22, y: 125, sp: 0, p: true }], "the partner's ring face, teal, at (22, row top − 3)");
+  assert.equal(d.crates[0].y, 156); assert.equal(d.at("Meanwhile, the world turned").y, 156 + 142);
+  assert.deepEqual(d.world.map(q => q.y - 6), [346, 372, 398], "the first world line at c + 190 (wireframe 17)");
+  assert.equal(d.said.filter(q => /skill notch/.test(q.str)).length, 1, "one row, never a world line");
+  // every outcome in the table: crates without and with the notch
+  const cases = [[{ reason: "break", dropped: 2, lost: [] }, 162, 152, 190], [{ sealed: { id: "c0", pods: [] }, yield: y }, 128, 128, 156], [{ sealed: { id: "c0", pods: [] } }, 106, 104, 134],
+    [{ kept: true, yield: y }, 162, 152, 190], [{ kept: true }, 138, 128, 166], [{ empty: true }, 114, 104, 142]];
+  for (const [r, c0, top, c1] of cases) {
+    assert.equal(sealed(r, W).crates[0].y, c0, JSON.stringify(r) + ": crates, no notch");
+    const n = sealed(Object.assign({ notch: { id: 1, name: "Pip", sp: 0 } }, r), W);
+    assert.equal(n.at("Pip gains a skill notch").y, top, JSON.stringify(r) + ": notch row"); assert.equal(n.faces[0].y, top - 3); assert.equal(n.crates[0].y, c1, JSON.stringify(r) + ": crates, notch");
+  }
+  assert.equal(sealed({ waited: true, notch: { id: 1, name: "Pip", sp: 0 } }, W).faces.length, 0, "nothing explored: no notch row");
+  assert.equal(sealed({ waited: true }, W).crates[0].y, 138);
+});
+test("Head home: world lines draw only while their foot stays on or above row 476; the first that fails ends the list", () => {
+  const wrap = l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], long = "x".repeat(60), short = "A storm charged stones.";
+  const rows = vm.runInContext(source("worldLineRows") + "\n" + source("WORLD_FOOT") + ";worldLineRows", vm.createContext({}));
+  assert.deepEqual(plain(rows([long, long, short], 380, wrap).map(r => [r.y, r.foot])), [[380, 417], [426, 463]], "a break with a notch, two wrapped lines: the third, at 472, is cut");
+  assert.deepEqual(plain(rows([short, short, short], 380, wrap).map(r => r.foot)), [397, 423, 449], "three one-line world lines always fit");
+  assert.deepEqual(plain(rows([short, long, short], 406, wrap).map(r => r.y)), [406, 432], "a line fits at 432 only if its foot ≤ 476");
+  assert.equal(rows([long, short], 450, wrap).length, 0, "the first fails: nothing after it, no mark");
+  assert.equal(rows([short, short, short, short], 100, wrap).length, 3, "three at most");
+  // on the screen: a break with a notch and a full bay of wrapped lines (wireframe 19's case) keeps every foot on or above 476
+  const d = sealed({ kept: true, yield: { data: 6, tier: 3, moments: 2 }, notch: { id: 1, name: "Pip", sp: 0 } }, ["The Loikas spread out.", "Fig is grown · take Fig to bring it on expeditions.", "Moss is an elder now · slower, with keener senses."]);
+  assert.deepEqual(d.world.map(q => q.y - 6), [380, 406], "the third (foot 489) is cut");
+  for (const q of d.said.filter(q => q.x === 40)) assert.ok(q.y + 17 <= 476, "foot " + (q.y + 17));
+});
+test("Head home after a break: the pods line in the copywriter's words (19:03)", () => {
+  for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
+    assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
+});
+test("Cargo, no creature met: the moments line moves under 'No creatures met yet', to (24, 208)", () => {
+  assert.match(source("drawCargo"), /ex\.met\.length \? 180 : 24, ex\.met\.length \? 196 : 208/);
+});
+test("chips are 22 high, the label at top + 3, 8 px in from each side", () => {
+  assert.equal(source("chip"), "function chip(x, y, label, fill, col) { const w = textW(label, 2) + 16; panel(x, y, w, 22, C[fill]); text(label, x + 8, y + 3, C[col]); return w; }");
 });
