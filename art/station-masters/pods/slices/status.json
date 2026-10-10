@@ -3428,5 +3428,20 @@
   "status": "signed",
   "signed_in": "art director, verdict (d09acb12)",
   "note": "signed (art director) at 1x: L* 36.0, key R-B 38, sat 24 against the Pods overview 36.8/35/22; floor 0.5 percent above L* 70 (the lit sand rim brings the whole to 4.7, as the overview's 3.3: housing, not glow); hoses clear of the gauges"
+ },
+ "chamber-back-400x320": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+ },
+ "chamber-front-400x320": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+ },
+ "plate-name-88x24": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
  }
 }
