@@ -1,6 +1,25 @@
 {
  "_note": "Home's journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
  "steps": {
+  "home-dock-arrival": [
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "home",
+    "focus": "room",
+    "ok": "Open Cargo",
+    "subject": "",
+    "idle": false
+   },
+   {
+    "arrival": true,
+    "crates": 2,
+    "cargoLamp": "needsYou",
+    "bed": "docked",
+    "notice": "two crates wait in the bay",
+    "plate": ""
+   }
+  ],
   "home-pad": [
    {
     "key": "right",

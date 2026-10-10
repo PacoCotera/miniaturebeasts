@@ -102,15 +102,21 @@ await page.waitForTimeout(400);
   expect(p.regions.bed.state === "away" && p.regions.cargo.state === "away" && p.regions.probe.state === "away" && p.regions.cargo.lamp === "off", "away: the bed, the bay and the Probe say so: " + JSON.stringify([p.regions.bed.state, p.regions.cargo.state, p.regions.probe.state]));
   expect(!(c.log?.type ?? []).some((t) => /not built/.test(t.text)) && (c.log?.regions ?? []).some((r) => r.id === "glass" && r.layer === "chrome"), "Home draws its living window and says nothing is not built: " + JSON.stringify((c.log?.type ?? []).map((t) => t.text))); }
 await frameShot("page-home", true);
+const trace = {}; let cur = null;
+const stepOf = (id) => { cur = trace[id] = []; };
+const said = () => page.evaluate(() => window.__st.said());
+const hpress = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(); cur.push({ key: k, said: m, screen: u.screen, focus: u.home, ok: l.ok ?? null, subject: l.subject ?? null, idle: u.idle }); return u; };
+const hintent = async (m, ms = 200) => { await said(); await intent(m, ms); const got = await said(), u = await ui(); cur.push({ intent: m, said: got, screen: u.screen, focus: u.home }); return u; };
 // 2. seed one Loika pod (fixed seed) beside the fixture's crate; dock while Home shows: the crates slide into the Cargo module (home-dock-arrival)
 await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
 const events0 = await page.evaluate(() => window.__st.face.stats.events);
-await press("dock", 300);
+stepOf("home-dock-arrival"); await hpress("dock", 300);
 s = await st(); expect(s.dock.docked, "docked");
 { const p = await props(), l = p.frame.line, events = (await page.evaluate(() => window.__st.face.stats.events)) - events0;
   expect(events >= 1 && !(await page.evaluate(() => window.__st.holding())), `home-dock-arrival: the crates' slide is an event for the face (${events}) and holds nothing`);
   expect(p.regions.cargo.state === "crates" && p.regions.cargo.crates === 2 && p.regions.cargo.lamp === "needsYou" && p.regions.bed.state === "docked" && p.regions.bed.sleepers.length === 1 && p.regions.probe.state === "docked", "home-dock-arrival: docked, two crates in the Cargo module, the Companion's mibi asleep on the bed: " + JSON.stringify([p.regions.cargo, p.regions.bed.state, p.regions.probe.state]));
   expect(l.need === "two crates wait in the bay" && l.ok === "Open Cargo" && !(await page.evaluate(() => window.__st.msg)), "home-dock-arrival: the notice names the crates, the room's ✓ opens Cargo and no plate is shown: " + JSON.stringify(l)); }
+{ const p = await props(); cur.push({ arrival: (await page.evaluate(() => window.__st.face.stats.events)) - events0 >= 1, crates: p.regions.cargo.crates, cargoLamp: p.regions.cargo.lamp, bed: p.regions.bed.state, notice: p.frame.line.need, plate: await page.evaluate(() => window.__st.msg) }); }
 await page.waitForTimeout(900); await frameShot("home-docked", true);
 await page.evaluate(() => window.__st.openBay()); await page.waitForTimeout(200);
 s = await st();
@@ -118,13 +124,8 @@ expect(s.accepted.includes("xw2n9c-5") && s.accepted.filter((id) => id.startsWit
 expect(s.tray.length === 4, "four pods in the wells: " + s.tray.length);
 await page.evaluate(() => window.__st.openBay()); s = await st(); expect(s.tray.length === 4, "an accepted crate never reopens");
 expect(!(await page.evaluate(() => window.__st.holding())), "the bay's arrivals are Cargo's: nothing plays and nothing is held until Cargo is built");
-// Home's steps on the face (L2.2 H1: home-pad, home-rack, home-lamp; home-dock-arrival is above): the walks are deterministic (reduced motion: the residents stand on their first waypoint); the focus the face says and the intents are
+// Home's steps on the face (L2.2 H1: home-pad, home-rack, home-lamp; home-dock-arrival is above): the walks are deterministic (reduced motion: the residents stand at their start); the focus the face says and the intents are
 // recorded per step and held to prototypes/face/golden/journey-home.json (lvgl-switch.md §4, gate check 5).
-const trace = {}; let cur = null;
-const stepOf = (id) => { cur = trace[id] = []; };
-const said = () => page.evaluate(() => window.__st.said());
-const hpress = async (k, ms = 200) => { await said(); await press(k, ms); const m = await said(), u = await ui(), l = await line(); cur.push({ key: k, said: m, screen: u.screen, focus: u.home, ok: l.ok ?? null, subject: l.subject ?? null, idle: u.idle }); return u; };
-const hintent = async (m, ms = 200) => { await said(); await intent(m, ms); const got = await said(), u = await ui(); cur.push({ intent: m, said: got, screen: u.screen, focus: u.home }); return u; };
 await page.emulateMedia({ reducedMotion: "reduce" }); await page.evaluate(() => { window.__st.goto("incubator"); }); await page.waitForTimeout(250); await page.evaluate(() => { window.__st.UI.home.f = "room"; window.__st.goto("home"); }); await page.waitForTimeout(500);
 { stepOf("home-pad"); let u = await ui(); expect(u.screen === "home" && u.home === "room", "home-pad: Home with the ring on the room: " + JSON.stringify(u));
   const first = (await line()); expect(first.ok === "Look at the pods" && !first.back, "home-pad: the room's ✓ is the notice's action and there is no ← cap on Home: " + JSON.stringify(first));

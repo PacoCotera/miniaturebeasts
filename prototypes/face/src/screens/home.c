@@ -78,14 +78,15 @@ static int ent_load(const char *cur) {
   if (!g_have_t0 || now - g_seen > 400u) { g_nw = 0; g_t0 = now; g_have_t0 = 1; }   /* Home shown again: the walks start from their seeds */
   g_seen = now;
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR;
-  uint32_t rel = now - g_t0;
+  uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0;   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
   for (int i = 0; i < nres; i++) {
     ent_t *e = &g_e[g_ne]; char P[64]; snprintf(P, sizeof P, "regions.residents.%d", i);
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 0; e->seed = (unsigned)v_pint(v_fmt("%s.seed", P), 0);
     const char *sz = e->juvenile ? "regions.resident.juvenile" : "regions.resident.adult"; int w = hk(sz, 0), h = hk(sz, 1);
-    if (i >= g_nw || strcmp(g_w[i].id, e->id) != 0 || g_w[i].seed != e->seed) { wk_init(&g_w[i], e->id, e->seed, w, h); g_w[i].done = 0; if (i >= g_nw) g_nw = i + 1; }
-    wk_t *k = &g_w[i];
+    wk_t *old = NULL; for (int j = 0; j < g_nw; j++) if (strcmp(g_w[j].id, e->id) == 0 && g_w[j].seed == e->seed && g_w[j].w == w) old = &g_w[j];
+    if (old) kept[nk] = *old; else wk_init(&kept[nk], e->id, e->seed, w, h);
+    wk_t *k = &kept[nk++];
     if (motion && rel >= 40u * (unsigned)(i & 1)) {
       long due = (long)((rel - 40u * (unsigned)(i & 1)) / 80u) + 1;
       if (due - k->done > 4000) k->done = due - 4000;   /* a long gap: catch up no further than the route repeats */
@@ -94,6 +95,7 @@ static int ent_load(const char *cur) {
     }
     e->box[0] = k->x; e->box[1] = k->feet - h; e->box[2] = w; e->box[3] = h; memcpy(e->draw, e->box, sizeof e->draw); g_ne++;
   }
+  memcpy(g_w, kept, sizeof(wk_t) * (size_t)nk); g_nw = nk;
   int ns = strcmp(v_pstr("regions.bed.state"), "docked") == 0 ? v_plen("regions.bed.sleepers") : 0; if (ns > MAXS) ns = MAXS;
   for (int i = 0; i < ns; i++) {
     ent_t *e = &g_e[g_ne]; char P[64]; snprintf(P, sizeof P, "regions.bed.sleepers.%d", i);
