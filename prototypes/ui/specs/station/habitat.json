@@ -27,6 +27,8 @@
   "amber": "nothing on one mibi up close is amber: no module, tile, count, heart or notch is a need. The notice is the frame's (what needs the player anywhere)",
   "out": "a mibi out with the Companion is still up close: its place in the window is empty but for the out mark, its name, card, chapters and modules as at home; its chapters can be read while it is out (research is knowledge kept at the Station). Greet needs the mibi here, so it has no greet",
   "notches": "the skill notches are the mibi's skill as filled notches only, one to three, on the card; none drawn at zero; never an empty notch, never a figure; they show here and nowhere else on the Station (not in the Library or the Book)",
+  "cut": "UI designer, 2026-10-10 02:29: a cutting press also acts. An event with `cut: true` (the moment) ends on the first key after its hold: the event jumps to its end on that frame and the key then does what it does, as on any other frame (✓ its action, ← back, the pad moves the ring, a coloured key its section). One press is never spent on skipping; the hold already keeps a reflexive double press from acting",
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The moment (and its placeholder hops), read, release, back and swap are cuts; the meet lands at once; the namer's flash is a cut",
   "carriedDocked": "a carried mibi while the Companion is docked is in state rest: greet, Cross, Portrait, Bring home and its plates as for any mibi at home; Wild is refused (strings.wildBlocks.withYou) and the watch never runs on it",
   "take": "✓ on the Companion module queues the request (carryAdd or carryHome): the door shows the mibi in its place with the pending lamp, and the strip's marks change on the frame of the press; no event plays"
  },
@@ -34,6 +36,7 @@
   "used": ["listPitch"],
   "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
   "needed": [],
+  "watch": {"rule": "host", "note": "a host rule, not an event (architect, 2026-10-10 02:23): it plays the existing message plate (strings.watchPlate) and the counter's tick, nothing of its own", "after": 60000, "source": "state.benchWatch (and state.watchResident)", "do": "only on one mibi up close: the shown mibi at rest or in the meet that is not in carriedIds (never while carried, docked or away), its time summed over the day while this level shows and the face is awake; at 60 s, once a mibi a day: the first of its habits not yet seen is recorded and the message plate strings.watchPlate shows, with the Data trickle (+1) and the counter's tick while under the day's cap (settings.trickleCap); at the cap the habit is still recorded and the plate shows, with no tick. Nothing amber"},
   "listPitch": "the plates and the strip's tiles are lists by pitch: { first, pitch, grid }. The strip's `forms` are { name: { upTo, first, pitch, grid } }: n tiles take the form with the smallest upTo at least n. Refused at load: a form with no upTo, two forms with one upTo, a grid shorter than its upTo; refused in props: n > 12 (the bay count is 0 to 12)"
  },
  "states": ["rest", "meet", "out"],
@@ -327,64 +330,63 @@
   "moment": {
    "kind": "moment",
    "target": "resident",
-   "hold": true,
-   "holdMs": 300,
    "ms": 1800,
-   "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice, the creature lift 4 px up and back, whole pixels, at 0 and 900 ms. Rewards nothing and shows nothing like a reward. A press after the hold cuts it to its end"
+   "hold": 300,
+   "cut": true,
+   "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice (placeholder). Rewards nothing and shows nothing like a reward. Input is held 300 ms; the first key after the hold cuts the moment to its end, and that key then does what it does (notes.cut)",
+   "placeholder": {
+    "hops": [0, 900],
+    "ms": 400,
+    "lift": [[0, 1], [50, 2], [100, 3], [150, 4], [200, 3], [250, 2], [300, 1], [350, 0]],
+    "rule": "UI designer, 2026-10-10 02:29: until the moving set lands, two hops, at 0 and 900 ms of the moment, each 400 ms; `lift` is [ms into the hop, px above where the creature stands], each a cut, whole pixels, no ease: up 1 px every 50 ms to 4 at 150, down 1 px every 50 ms to 0 at 350; still from 1250 to 1800. The box, the tag and the ring do not move; the ring stays on the resident's feet"
+   }
   },
   "swap": {
    "kind": "dither",
    "target": "resident",
-   "hold": false,
    "ms": 200,
+   "hold": 0,
    "levels": 16,
    "do": "the ring moved to another tile: the resident cross-dithers to the tile's mibi (lvgl-switch.md §2.7, the dither event); the tag, the card, the modules and the strip's shown tile are cuts on the frame of the key"
   },
   "meet": {
    "kind": "meet",
    "target": "resident",
-   "hold": false,
-   "from": "the Incubator's hatch: its 180 ms dither ends on one mibi up close in state meet (incubator.json handoff)",
-   "do": "the meet ribbon shows in the tag's place; the new mibi plays its moment once (no hold); the first press removes the ribbon (a cut): ✓ opens the namer, any other key keeps the default name and does what it does"
-  },
-  "watch": {
-   "kind": "watch",
-   "target": "resident",
-   "hold": false,
-   "after": 60000,
-   "source": "state.benchWatch (and state.watchResident)",
-   "do": "only on one mibi up close: the shown mibi at rest or in the meet that is not in carriedIds (never while carried, docked or away), its time summed over the day while this level shows and the face is awake; at 60 s, once a mibi a day: the first of its habits not yet seen is recorded and the message plate strings.watchPlate shows, with the Data trickle (+1) and the counter's tick while under the day's cap (settings.trickleCap); at the cap the habit is still recorded and the plate shows, with no tick. Nothing amber"
+   "ms": 0,
+   "hold": 0,
+   "when": "the Incubator's hatch: its 180 ms dither ends on one mibi up close in state meet (incubator.json handoff)",
+   "do": "the meet ribbon shows in the tag's place; the new mibi plays its moment once (events.moment with hold 0); the first press removes the ribbon (a cut) and, like any cutting press (notes.cut), also acts: ✓ opens the namer, any other key keeps the default name and does what it does"
   },
   "read": {
    "kind": "read",
    "target": "plate.<i>",
-   "hold": true,
-   "holdMs": 300,
+   "ms": 300,
+   "hold": 300,
    "do": "a bred child's chapter read: the plate turns from unread to read (a cut) and the stamp prints the chapter's cells row by row from the top over 300 ms, as on Create's grow"
   },
   "release": {
    "kind": "dither",
    "target": "resident",
-   "hold": true,
-   "holdMs": 200,
    "ms": 200,
+   "hold": 200,
    "levels": 16,
    "do": "the second ✓ on Wild: the resident dithers out to the next housed mibi in bay order (in state out when that one is out); none left, the frame's screen transition to the Vivarium's whole, empty; its tile becomes a free bay (a cut); the message plate strings.releasePlate"
   },
   "back": {
    "kind": "dither",
-   "hold": true,
-   "holdMs": 180,
+   "target": "stage",
    "ms": 180,
+   "hold": 180,
    "levels": 16,
    "do": "←: the frame's screen transition to the Vivarium's whole (vivarium.json), the ring on this mibi's resident, or its tile while it is out"
   },
   "refused": {
    "kind": "plate",
-   "hold": false,
+   "ms": 4000,
+   "hold": 0,
    "do": "the first draw of one mibi up close after a refusal: the message plate strings.carryRefused, once a refusal (state.seenCarryRefusal)"
   },
-  "named": {"kind": "flash", "target": "nameTag", "hold": false, "ms": 240, "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash"}
+  "named": {"kind": "flash", "target": "nameTag", "ms": 240, "hold": 0, "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash"}
  },
  "focus": {
   "initial": "resident; in state out, name",
@@ -486,7 +488,7 @@
    }
   },
   "armed": {"wild": "after the first ✓ on a mibi that may go", "clear": "any key but ✓ clears the arm; the arm never survives a screen change"},
-  "held": "while events.moment, read or release holds, the face moves no focus and sends no intent; while the namer is open its own graph has every key",
+  "held": "while events.moment, read, release or back holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends); after the moment's hold, the first key cuts it to its end and then acts (notes.cut); while the namer is open its own graph has every key",
   "vectors": [
    {"from": "resident", "key": "right", "to": "name"},
    {"from": "resident", "key": "down", "to": "tile.shown"},

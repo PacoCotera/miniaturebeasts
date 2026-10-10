@@ -194,8 +194,8 @@ test("the Create spec file agrees with the Create wireframes, region by region, 
   assert.deepEqual(Object.keys(cr.focus.shape.graph), ["roll"]); const st = cr.focus.shape.graph.roll.stepper;
   assert.ok(st.length && new Set(st).size === st.length && st.every((k) => STEP_KEYS.includes(k)) && !st.some((k) => k in cr.focus.shape.graph.roll), "the stepper's keys: non-empty, distinct, known, no edge on the same key");
   assert.deepEqual(cr.focus.nothingRead.targets, {}, "nothing read: no target"); assert.ok(STEP_KEYS.every((k) => cr.focus.nothingRead.graph.room[k] === "none"), "nothing read: the arrows do nothing");
-  assert.deepEqual([cr.events.roll.kind, cr.events.roll.target, cr.events.roll.hold, cr.events.roll.ms, cr.events.roll.levels], ["dither", "founder", false, 200, 16]);
-  assert.equal(cr.events.grow.holdMs, cr.events.grow.steps.at(-1).at + cr.events.grow.steps.at(-1).ms);
+  assert.deepEqual([cr.events.roll.kind, cr.events.roll.target, cr.events.roll.hold, cr.events.roll.ms, cr.events.roll.levels], ["dither", "founder", 0, 200, 16]);
+  assert.equal(cr.events.grow.hold, cr.events.grow.steps.at(-1).at + cr.events.grow.steps.at(-1).ms); assert.equal(cr.events.grow.ms, cr.events.grow.steps.at(-1).at, "grow plays until the jump's dither; the hold covers the dither");
   assert.equal(R.bench.slice, "room-bench-stage-create"); assert.equal(R.bench.until, "room-bench-stage-collection");
   assert.deepEqual(paletteBad(cr.colours), []);
 });
@@ -247,7 +247,7 @@ test("the Incubator spec file agrees with the Incubator wireframes, region by re
     for (const [px, py] of [[x, y], [x + lw, y], [x, y + lh], [x + lw, y + lh]]) assert.ok(glass(px, py) >= 30, `${k} slot ${i} 30 px or more off the glass`);
   }
   assert.deepEqual(inc.focus.targets, {}, "no ring on the Incubator"); assert.equal(inc.focus.roomKey, "room");
-  assert.equal(inc.events.hatch.holdMs, inc.events.hatch.steps.at(-1).at + inc.events.hatch.steps.at(-1).ms); assert.equal(inc.events.hatch.ms, 2600);
+  assert.equal(inc.events.hatch.hold, inc.events.hatch.steps.at(-1).at + inc.events.hatch.steps.at(-1).ms); assert.equal(inc.events.hatch.ms, 2600);
   assert.equal(inc.handoff.to, "habitat"); assert.equal(frame.navigation.jumps.find((j) => j.from === "incubator" && j.action === "Open").to, "habitat");
   const choose = frame.navigation.jumps.find((j) => j.from === "incubator" && j.state === "empty"); assert.deepEqual([choose.action, choose.to, choose.view], [inc.strings.choose, "pods", "collection"]);
   assert.equal(inc.colours.plaque.empty, "fog", "the empty plaque invites, never mist"); assert.notEqual(inc.colours.bud.shape, "amber"); assert.equal(inc.colours.leaves.empty, "metal");
@@ -472,7 +472,7 @@ test("the Probe bench spec file agrees with the bench wireframes, region by regi
   for (const [k, t] of Object.entries(be.focus.targets)) assert.ok(t.ring === "round" && !("shape" in t), k + ": the round ring");
   const TG = { plates: { group: "plates", box: R.plates.rect }, switch: { group: "module", box: R.switch.rect }, slot: { group: "module", box: R.slot.rect } }, AWAY = { switch: TG.switch, slot: TG.slot };
   for (const v of be.focus.vectors) { if (v.intent) continue; assert.equal(focusMove(be.focus.graph, v.state === "away" ? AWAY : TG, v.from, v.key), v.to, `${v.from} ${v.key} → ${v.to}`); }
-  assert.ok(!JSON.stringify(be.colours).includes("amber"), "no amber on the bench"); assert.equal(be.events.install.holdMs, Math.max(...be.events.install.steps.map((s) => s.at + (s.ms ?? 0))));
+  assert.ok(!JSON.stringify(be.colours).includes("amber"), "no amber on the bench"); assert.equal(be.events.install.hold, Math.max(...be.events.install.steps.map((s) => s.at + (s.ms ?? 0))));
   assert.equal(R.bench.until, "room-bench-stage-collection"); assert.deepEqual(paletteBad(be.colours), []);
 });
 
@@ -510,7 +510,7 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   const TG = Object.fromEntries(cards.slice(0, 5).map((c, i) => ["card." + i, { group: "card", box: c }]));
   let played = 0; for (const v of si.focus.vectors) { if (v.intent || v.state === "confirm") continue; assert.equal(focusMove(g, TG, v.from, v.key), v.to, `${v.state}: ${v.from} ${v.key} → ${v.to}`); played++; }
   assert.ok(played >= 8); assert.deepEqual(si.focus.confirm.targets, {}, "no ring on look and confirm"); assert.ok(STEP_KEYS.every((k) => si.focus.confirm.graph.room[k] === "none"));
-  assert.equal(si.events.begin.holdMs, Math.max(...si.events.begin.steps.map((s) => s.at + (s.ms ?? 0))));
+  assert.equal(si.events.begin.hold, Math.max(...si.events.begin.steps.map((s) => s.at + (s.ms ?? 0))));
   assert.ok(!JSON.stringify(si.colours).includes("amber")); assert.deepEqual(paletteBad(si.colours), []);
 });
 
@@ -627,13 +627,13 @@ test("the Cargo spec file agrees with the Cargo wireframes: the bay, one crate o
   assert.equal(R.report.rect[0] + R.report.rect[2] / 2, 512); assert.equal(R.report.rect[1] + R.report.rect[3], R.report.full.bottom); assert.equal(R.rack.rect[1] - R.report.full.bottom, 16);
   assert.equal(R.report.full.heading, R.report.rect[1] + R.report.heading.at[1]); assert.equal(R.report.full.crates[0], R.report.rect[1] + R.report.rows.first);
   // the opening holds input; the focus is the room; the frame knows Cargo
-  assert.equal(cg.events.opening.hold, true); assert.equal(cg.events.opening.perCrate, 3000); assert.ok(cg.events.opening.crate.every((s, i, a) => i === 0 || s.at >= a[i - 1].at));
+  assert.equal(cg.events.opening.hold, "crates × 3000 + 200"); for (const n of [1, 2, 3]) assert.deepEqual(cg.events.opening.byCrates[n], { ms: n * 3000 + 180, hold: n * 3000 + 200 }); assert.equal(cg.events.opening.perCrate, 3000); assert.ok(cg.events.opening.crate.every((s, i, a) => i === 0 || s.at >= a[i - 1].at));
   assert.deepEqual(cg.focus.graph, { room: { up: "none", down: "none", left: "none", right: "none" } });
   assert.deepEqual(frame.navigation.screens.cargo, { parent: "home", back: "Home", states: cg.states, spec: "cargo.json" }); assert.equal(frame.strings.titles.cargo, cg.strings.title); assert.equal(frame.regions.title.marks.cargo, cg.title.mark);
   assert.ok(frame.navigation.jumps.some((j) => j.from === "cargo" && j.to === "pods" && Object.values(cg.strings.newPods).includes(j.action)), "the hand-off to Pods");
   // the words
   for (const s of [cg.strings.open, ...Object.values(cg.strings.newPods), cg.strings.done]) assert.ok(wordsIn(s) <= 4, s);
-  assert.deepEqual(cg.strings.newPods, { one: "See the new pod", few: "See the new pods" }); assert.equal(cg.events.crateIn.kind, "arrival"); assert.equal(cg.events.crateIn.target, "crates"); assert.equal(cg.events.crateIn.hold, false);
+  assert.deepEqual(cg.strings.newPods, { one: "See the new pod", few: "See the new pods" }); assert.equal(cg.events.crateIn.kind, "arrival"); assert.equal(cg.events.crateIn.target, "crates"); assert.equal(cg.events.crateIn.hold, 0);
   for (const s of stringsOf(cg.strings.subjects)) { assert.ok(wordsIn(s) <= 6, s); assert.ok(!/\d/.test(s), s); }
   for (const s of stringsOf(cg.strings.ribbon)) assert.ok(!/\d/.test(s), s);
   assert.ok(!/outing|haul|pocket/.test(JSON.stringify(cg.strings)), "cargo, never haul");
