@@ -4004,10 +4004,10 @@
   ],
   "src": "typed by hand",
   "made": "the bottom line's confirm key cap: a 16 px disc, orange face, bone tick, ink keyline, 1 px bevel",
-  "sha256": "c0f9568865dc612d3450bf0ba3169916b810f5cba725bef231b2e8486efa5558",
+  "sha256": "89dc904227769e9e7a43644371040aa05dc80cb758d8ae3ef1bfeaefe04e20d2",
   "status": "signed",
-  "signed_in": "pass 10 (verdict)",
-  "status_note": "the three key caps, 16 px discs"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "frame-cap-confirm-16-dim": {
   "size": [
@@ -4022,10 +4022,10 @@
   ],
   "src": "typed by hand",
   "made": "the confirm key cap for the unavailable state: mist face, slate tick (its own slice)",
-  "sha256": "06e96d5e1a12bf938007aeae54ca2f7728a70c4948d1b34452b722875c723cce",
+  "sha256": "17934c119bec28e20a8138a5c0695723ddfd1b49c1502da1e451d40a73ea2be8",
   "status": "signed",
-  "signed_in": "pass 10 (verdict)",
-  "status_note": "the three key caps, 16 px discs"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "frame-cap-back-16": {
   "size": [
@@ -4040,10 +4040,10 @@
   ],
   "src": "typed by hand",
   "made": "the bottom line's back key cap: a 16 px disc, stone face, fog arrow",
-  "sha256": "1f21328e7dad2eb3edaa360d477f2ec2425701f7c44a39bf77ef90602875b9d5",
+  "sha256": "9e17a1fa25c052a8813c8edf8c69ddd33d3815238002c7da61ae9a3d31cfc0c8",
   "status": "signed",
-  "signed_in": "pass 10 (verdict)",
-  "status_note": "the three key caps, 16 px discs"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "frame-room-home-24": {
   "size": [
@@ -5453,10 +5453,10 @@
   ],
   "src": "geometry, seeded stipple",
   "made": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque",
-  "sha256": "99b007d5689af021ab895b4fa73e406a262961caec9a946fb191d80e0cef37de",
+  "sha256": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c",
   "status": "signed",
-  "signed_in": "art director, pass 88 remap",
-  "status_note": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "mark-clan-C01-24x24": {
   "size": [
@@ -5470,7 +5470,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C01 (Lophessa), plan B1\u00b7L4: a circle roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
+  "made": "clan C01 (Lophessa), plan B1·L4: a circle roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
   "sha256": "46576dd881a42220f99c0570b05c4a1555a29aad0188f7b5de5761ebdcce9588",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5488,7 +5488,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C02 (Kausida), plan R1\u00b7flaps: a hexagon (pointy) roundel, a 2 px ring in coral #e98268 and a solid 8 px centre in coral #e98268",
+  "made": "clan C02 (Kausida), plan R1·flaps: a hexagon (pointy) roundel, a 2 px ring in coral #e98268 and a solid 8 px centre in coral #e98268",
   "sha256": "ef1f2925cc4b4f0e7ade7928525554d629288d1adbdce1aad071ba955735ba7f",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5506,7 +5506,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C03 (Stilbera), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in lagoon #269fa5 and a solid 8 px centre in lagoon #269fa5",
+  "made": "clan C03 (Stilbera), plan B2·L4: a rounded square roundel, a 2 px ring in lagoon #269fa5 and a solid 8 px centre in lagoon #269fa5",
   "sha256": "1dfa9dc17e01b0ad16259ad3f3473adb7071572e13d5bc2ed3128bb52ebb8398",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5524,7 +5524,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C04 (Lathreta), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C04 (Lathreta), plan B2·L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in cream #dfd2ae (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "392542bef06b18eb3faa1578230c65d79e7ea81b60adaa7bff4c76fe599e4864",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5542,7 +5542,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C05 (Dasyla), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
+  "made": "clan C05 (Dasyla), plan B2·L4: a rounded square roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
   "sha256": "3eb9eea26987eb5ea74f3a183fbee524506bf41acee653bf2b96e7954c7326d1",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5560,7 +5560,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C06 (Prosopa), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
+  "made": "clan C06 (Prosopa), plan B2·L4: a rounded square roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in charcoal #465459",
   "sha256": "9fdd0e2848e0c9328e47be07cbbc7fed162bbb9fb0722f79bfda7e3cab12326e",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5578,7 +5578,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C07 (Skapana), plan B1\u00b7L4: a circle roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in russet #ae674d",
+  "made": "clan C07 (Skapana), plan B1·L4: a circle roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in russet #ae674d",
   "sha256": "62fba1c53d5c87da4046c72d7e641dcd73b140873f4cea9014e67199c4146c4b",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5596,7 +5596,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C08 (Kremnion), plan B2\u00b7L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in charcoal #465459 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C08 (Kremnion), plan B2·L4: a rounded square roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in charcoal #465459 (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "9097e55abab1b417b12144b07af491cd8b7e9398aade0aeeb00adfe9b69b1708",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5614,7 +5614,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C09 (Aithria), plan B2\u00b7L2\u00b7flaps: a diamond roundel, a 2 px ring in cobalt #4d7ed4 and a solid 8 px centre in cobalt #4d7ed4",
+  "made": "clan C09 (Aithria), plan B2·L2·flaps: a diamond roundel, a 2 px ring in cobalt #4d7ed4 and a solid 8 px centre in cobalt #4d7ed4",
   "sha256": "47826d455126adc3c54248c2ec5e83261de0934cfe3a9398b1dc042e20e0903e",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5632,7 +5632,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C10 (Kolymba), plan B3\u00b7L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in peach #ffd7c5 (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C10 (Kolymba), plan B3·L4: a hexagon (flat) roundel, a 2 px ring in russet #ae674d and a solid 8 px centre in peach #ffd7c5 (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "9679996bafd3aaed4e2f8e93f8f291cd8bbc534436cc979f495248f24bb966a3",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5650,7 +5650,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C11 (Thyreka), plan B1\u00b7L4: a circle roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
+  "made": "clan C11 (Thyreka), plan B1·L4: a circle roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
   "sha256": "228b8828fbea5dccc71610d818351107f861283d7b1dae17d06b93975cb21fb9",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5668,7 +5668,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C12 (Graptoma), plan B3\u00b7L6\u00b7flaps: a pentagon (up) roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
+  "made": "clan C12 (Graptoma), plan B3·L6·flaps: a pentagon (up) roundel, a 2 px ring in marigold #e8b83f and a solid 8 px centre in marigold #e8b83f",
   "sha256": "23faf90ea2b2fb501f67162b93c04138291e3e9c6b1ddd38acdd4f69a4088e43",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -5686,7 +5686,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C13 (Lepidos), plan B3\u00b7L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in sand #e6c98c (dot assigned: it collides in its shape family with another clan of the same anchor)",
+  "made": "clan C13 (Lepidos), plan B3·L6: a octagon roundel, a 2 px ring in charcoal #465459 and a solid 8 px centre in sand #e6c98c (dot assigned: it collides in its shape family with another clan of the same anchor)",
   "sha256": "fe92cfcdce4ab7d8aa4804c726c737f9728ae27ad36d1e66df3a4e6ccf71d3c8",
   "status": "signed",
   "signed_in": "pass 35 (signed on delivery)",
@@ -5722,7 +5722,7 @@
    24
   ],
   "src": "geometry, species frames",
-  "made": "clan C15 (Phyllaxa), plan Rfan2\u00b7rays: a horizontal stadium roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
+  "made": "clan C15 (Phyllaxa), plan Rfan2·rays: a horizontal stadium roundel, a 2 px ring in jade #38a878 and a solid 8 px centre in jade #38a878",
   "sha256": "1bac22024812da90a0ebf74064e16915cfddffe926092609248a53432bd266de",
   "status": "signed",
   "signed_in": "pass 33 verdict",
@@ -8320,10 +8320,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the unread picture's dotted outline typed at its size: 1 px `bevel` #5a6672 dots, 1 on 2 off; all four corners lit; from each corner the dots run inward on a 3 px period, each side's remainder one gap at its middle; no two dots touch; the middle fully transparent (pass 60; replaces the withdrawn cell-outline-unread-24x24)",
-  "sha256": "d3aa8a43881b95d52ed78cf035dac8643233179592bd45c40df2b8cef5367694",
+  "sha256": "99e0011a77bd07601d765eec5f85fee99b76e06934629609c27ea8f4040b5010",
   "status": "signed",
-  "signed_in": "pass 61 verdict",
-  "status_note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "mibi-halo-S04-128x160-clear": {
   "size": [
@@ -8541,10 +8541,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the same shape in bevel (enamel lit rim, hairline shade), for a trait that is one look or missing; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "2152bf6a474f2b169b9ef412e799326ee7aeb6098e1be71a224dcfb0a663139a",
+  "sha256": "ecc83bbb84a7b7645d840e2fc20914b1874e06d8d44e07b7fb4421cc8a645c91",
   "status": "signed",
-  "signed_in": "pass 70 verdict",
-  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "cross-gate-blend-16x16": {
   "size": [
@@ -8567,10 +8567,10 @@
   "rect": null,
   "src": "typed by hand",
   "made": "the same shape in bevel; typed pixel by pixel at this size (pass 69), never scaled; art layer, station.json colours only",
-  "sha256": "9e0444ab9e6f371a6307413bcef1c5e824e7f0f957e9bcf422c4fa506b3fadd5",
+  "sha256": "6a38827c43ab15d2a4cef30b3e2aa1654f29a5e1d5abcb71853493f42d635146",
   "status": "signed",
-  "signed_in": "pass 70 verdict",
-  "status_note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+  "signed_in": "palette re-sign (art director)",
+  "status_note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "cross-gate-switch-8x8": {
   "size": [

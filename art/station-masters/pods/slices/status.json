@@ -1201,18 +1201,18 @@
  },
  "frame-cap-confirm-16": {
   "status": "signed",
-  "signed_in": "pass 10 (verdict)",
-  "note": "the three key caps, 16 px discs"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "frame-cap-confirm-16-dim": {
   "status": "signed",
-  "signed_in": "pass 10 (verdict)",
-  "note": "the three key caps, 16 px discs"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "frame-cap-back-16": {
   "status": "signed",
-  "signed_in": "pass 10 (verdict)",
-  "note": "the three key caps, 16 px discs"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "frame-room-home-24": {
   "status": "signed",
@@ -1646,8 +1646,8 @@
  },
  "mark-species-frost-24x24": {
   "status": "signed",
-  "signed_in": "art director, pass 88 remap",
-  "note": "a 22 px disc in `bar` with a `hairline` stipple and a `bevel` rim upper left, all opaque"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "mark-clan-C01-24x24": {
   "status": "signed",
@@ -2546,8 +2546,8 @@
  },
  "cell-outline-unread-128x160": {
   "status": "signed",
-  "signed_in": "pass 61 verdict",
-  "note": "the seed values (bone rim, fog rim, frostS body, mist dark half and ghost; the ink ring ruled not needed), and the unread outline typed at its size"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "mibi-halo-S04-128x160-clear": {
   "status": "signed",
@@ -2631,8 +2631,8 @@
  },
  "cross-gate-switch-16x16-settled": {
   "status": "signed",
-  "signed_in": "pass 70 verdict",
-  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "cross-gate-blend-16x16": {
   "status": "signed",
@@ -2641,8 +2641,8 @@
  },
  "cross-gate-blend-16x16-settled": {
   "status": "signed",
-  "signed_in": "pass 70 verdict",
-  "note": "a hand-drawn Cross gate master: the 16x16 and its settled variant filled with the kind's colour, the 8x8 a plain filled shape"
+  "signed_in": "palette re-sign (art director)",
+  "note": "re-signed in the new Station palette: colours swapped by role (bevel, hairline, bar, panel, enamel)"
  },
  "cross-gate-switch-8x8": {
   "status": "signed",
