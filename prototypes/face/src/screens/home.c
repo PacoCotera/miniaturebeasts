@@ -25,13 +25,17 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
    Resident k (props order, sleepers left out) is in group g = k mod 2 and steps at t = 80 m + 40 g ms of the face's time since the screen's first frame, 2 px along the major axis of its path (the minor axis by
    Bresenham), so at most half of the boxes change in a frame of 40 ms or less. Its own 32-bit LCG runs from its seed. A focused resident stands on its pixel and its idle and walk freeze; with motion off it stands
    at its start. The walk state lives while the screen shows and starts again from the seeds when Home is shown again; a new id starts from its own seed, a props change with the same seed keeps the state. */
-#define KX 448
-#define KY 424
+static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the ground band */
+static void walk_load(void) {
+  int glass[4]; hrect("regions.glass.rect", glass); g_kx = hk("regions.resident.walk.keepOut", 0); g_ky = hk("regions.resident.walk.keepOut", 1);
+  g_xlo = glass[0] + 8; g_xhi = glass[0] + glass[2] - 8; g_flo = hk("regions.resident.walk.ground", 1); g_fn = hk("regions.resident.walk.ground", 3);
+}
 typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, nstep, step; long done; int live; } wk_t;
-static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0, g_seen; static int g_have_t0;
+static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
+void home_hidden(void) { g_have_t0 = 0; }
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
-static int meets_k(int x, int feet, int w) { return x + w > KX && feet > KY; }
-static void draw_point(wk_t *k, int *x, int *feet) { *x = 32 + (int)(wr(k) % (unsigned)(625 - k->w)); *feet = 300 + (int)(wr(k) % 228u); }
+static int meets_k(int x, int feet, int w) { return x + w > g_kx && feet > g_ky; }
+static void draw_point(wk_t *k, int *x, int *feet) { *x = g_xlo + (int)(wr(k) % (unsigned)(g_xhi - k->w - g_xlo + 1)); *feet = g_flo + (int)(wr(k) % (unsigned)g_fn); }
 static int path_clear(const wk_t *k, int x1, int f1) {   /* every box along the straight path stays out of the keep-out zone */
   int dx = x1 - k->x, dy = f1 - k->feet, M = (dx < 0 ? -dx : dx) > (dy < 0 ? -dy : dy) ? (dx < 0 ? -dx : dx) : (dy < 0 ? -dy : dy), n = (M + 1) / 2;
   for (int i = 1; i <= n; i++) { int d = 2 * i > M ? M : 2 * i, ax = dx, ay = dy, ma = ax < 0 ? -ax : ax, mb = ay < 0 ? -ay : ay, px, py;
@@ -43,7 +47,7 @@ static void wk_init(wk_t *k, const char *id, unsigned seed, int w, int h) {
   memset(k, 0, sizeof *k); snprintf(k->id, sizeof k->id, "%s", id); k->seed = seed; k->s = seed; k->w = w; k->h = h; k->live = 1; k->done = 0;
   int x = 32, feet = 300, ok = 0;
   for (int i = 0; i < 8 && !ok; i++) { draw_point(k, &x, &feet); ok = !meets_k(x, feet, w); }
-  if (!ok) x = 32;   /* all eight failed: box.x 32 with the last feet */
+  if (!ok) x = g_xlo;   /* all eight failed: the box at the left end with the last feet */
   k->x = x; k->feet = feet; k->facing = (int)(wr(k) & 1u); k->idle = 25 + (int)(wr(k) % 38u); k->walking = 0;
 }
 static void wk_step(wk_t *k) {   /* one step of this resident's own time */
@@ -73,10 +77,9 @@ static int g_last_tick = -1;
 
 static int ent_focused(const ent_t *e, const char *cur);
 static int ent_load(const char *cur) {
-  g_ne = 0;
+  g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(), frozen_to = 0; (void)frozen_to;
-  if (!g_have_t0 || now - g_seen > 400u) { g_nw = 0; g_t0 = now; g_have_t0 = 1; }   /* Home shown again: the walks start from their seeds */
-  g_seen = now;
+  if (!g_have_t0) { g_nw = 0; g_t0 = now; g_have_t0 = 1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR;
   uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0;   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
   for (int i = 0; i < nres; i++) {
@@ -102,8 +105,8 @@ static int ent_load(const char *cur) {
     snprintf(e->id, sizeof e->id, "%s", v_pstr(v_fmt("%s.id", P))); snprintf(e->name, sizeof e->name, "%s", v_pstr(v_fmt("%s.name", P))); snprintf(e->pic, sizeof e->pic, "%s", v_pstr(v_fmt("%s.picture", P)));
     e->juvenile = strcmp(v_pstr(v_fmt("%s.stage", P)), "juvenile") == 0; e->waiting = v_pbool(v_fmt("%s.waiting", P), 0); e->sleeper = 1; e->seed = 0;
     int foot = hk(v_fmt("regions.bed.sleepers.places.%d", ns), i), bw = hk("regions.bed.sleepers.ink.max", 0), bh = hk("regions.bed.sleepers.ink.max", 1), footY = hi("regions.bed.sleepers.footY", 512);
-    if (e->juvenile) { e->box[0] = foot - hi("regions.bed.sleepers.juvenile.size.0", 104) / 2; e->box[1] = 400; e->box[2] = hk("regions.bed.sleepers.juvenile.size", 0); e->box[3] = hk("regions.bed.sleepers.juvenile.size", 1); }
-    else { e->box[0] = foot - hk("regions.bed.sleepers.adult.size", 0) / 2; e->box[1] = 360; e->box[2] = hk("regions.bed.sleepers.adult.size", 0); e->box[3] = hk("regions.bed.sleepers.adult.size", 1); }
+    if (e->juvenile) { e->box[0] = foot - hi("regions.bed.sleepers.juvenile.size.0", 104) / 2; e->box[1] = footY - hk("regions.bed.sleepers.juvenile.size", 1); e->box[2] = hk("regions.bed.sleepers.juvenile.size", 0); e->box[3] = hk("regions.bed.sleepers.juvenile.size", 1); }
+    else { e->box[0] = foot - hk("regions.bed.sleepers.adult.size", 0) / 2; e->box[1] = footY - hk("regions.bed.sleepers.adult.size", 1); e->box[2] = hk("regions.bed.sleepers.adult.size", 0); e->box[3] = hk("regions.bed.sleepers.adult.size", 1); }
     e->draw[0] = foot - bw / 2; e->draw[1] = footY - bh; e->draw[2] = bw; e->draw[3] = bh;   /* the stand-in fitted in the nap pose's ink, centred on the foot, its bottom on the foot's y */
     g_ne++;
   }
@@ -144,12 +147,12 @@ static void glass_group(const char *cur) {
       const ent_t *e = &g_e[it[k].ent]; int y = e->draw[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0);
       if (it[k].kind == 2) { int rb[4]; memcpy(rb, e->box, sizeof rb); v_region("focus", LAYER_CHROME); word_focusRing("focus", rb, "home", "focus.targets.resident.ring", frame_ring()); }
       v_name(e->sleeper ? "bed" : "resident"); v_sprite(v_fmt("g.%d", n++), e->pic, e->draw[0], y, e->draw[2], e->draw[3]);
-      if (e->waiting) { v_region(e->sleeper ? "bed" : "resident", LAYER_CHROME); word_lamp(v_fmt("g.%d", n++), e->box[0] + e->box[2] - 12, e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0), "waiting"); }
+      if (e->waiting) { v_region(e->sleeper ? "bed" : "resident", LAYER_CHROME); build_waitingLamp(v_fmt("g.%d", n++), e->box[0] + e->box[2] - 12, e->box[1] - (it[k].kind == 2 && !e->sleeper ? lift : 0)); }
     } else {
       v_name("bed"); v_sprite(v_fmt("g.%d", n++), v_pstr("regions.bed.picture"), bed[0], bed[1], bed[2], bed[3]);
       for (int i = g_ne - 1; i >= 0; i--) if (g_e[i].sleeper && i != focused) {   /* right to left: the first carried is drawn last, in front */
         const ent_t *e = &g_e[i]; v_name("bed"); v_sprite(v_fmt("g.%d", n++), e->pic, e->draw[0], e->draw[1], e->draw[2], e->draw[3]);
-        if (e->waiting) { v_region("bed", LAYER_CHROME); word_lamp(v_fmt("g.%d", n++), e->box[0] + e->box[2] - 12, e->box[1], "waiting"); }
+        if (e->waiting) { v_region("bed", LAYER_CHROME); build_waitingLamp(v_fmt("g.%d", n++), e->box[0] + e->box[2] - 12, e->box[1]); }
       }
     }
   }
@@ -189,7 +192,7 @@ static void pods_objects(int dy) {
 static void incubator_objects(int dy) {
   v_name("incubator");
   put("incubator.chamber", v_pstr("regions.incubator.chamber"), "regions.incubator.chamberRect", dy);
-  word_leaves("regions.incubator.leaves", v_pstr("regions.incubator.leaves.emptyPicture"), v_pstr("regions.incubator.leaves.fullPicture"), v_pint("regions.incubator.leaves.total", 0), v_pint("regions.incubator.leaves.full", 0), dy);
+  word_leaves("regions.incubator.leaves", v_pstr("regions.incubator.leaves.emptyPicture"), v_pstr("regions.incubator.leaves.fullPicture"), v_pint("regions.incubator.leaves.total", 0), v_pint("regions.incubator.leaves.rows", 0), v_pint("regions.incubator.leaves.full", 0), dy);
 }
 static void probe_objects(int dy) {
   v_name("probe");
@@ -215,7 +218,7 @@ static void ring(const char *cur) {
   if (strcmp(cur, "vivarium") == 0) { hrect("regions.bezel.rect", box); word_focusRing("focus", box, "home", "focus.targets.vivarium.ring", rc); return; }
   if (strncmp(cur, "resident.", 9) == 0) return;   /* a resident's ring is in the glass, under it */
   if (strcmp(cur, "knob") == 0) { for (int k = 0; k < 4; k++) box[k] = hk("focus.targets.knob.box", k); box[1] -= hi("focus.targets.knob.lift", 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
-  for (int m = 0; m < 5; m++) if (strcmp(cur, MODULES[m]) == 0) { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi("focus.targets.cargo.lift", 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
+  for (int m = 0; m < 5; m++) if (strcmp(cur, MODULES[m]) == 0) { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi(v_fmt("focus.targets.%s.lift", cur), 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
 }
 
 void home_words(void) {
@@ -225,11 +228,11 @@ void home_words(void) {
     if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
   word_livingWindow("home", "bezel", "glass", v_pstr("regions.glass.picture"));
   glass_group(cur);
-  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; word_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
-  word_restKnob(strcmp(cur, "knob") == 0);
+  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(g_e[i].name, g_e[i].box, g_e[i].sleeper ? 0 : hi("regions.resident.lift", 4), tag); }
+  build_restKnob(strcmp(cur, "knob") == 0);
   for (int m = 0; m < 5; m++) {
-    int dy = strcmp(cur, MODULES[m]) == 0 ? -hi("focus.targets.cargo.lift", 2) : 0;
-    word_module(MODULES[m], dy, v_pstr(v_fmt("regions.%s.lamp", MODULES[m])));
+    int dy = strcmp(cur, MODULES[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODULES[m]), 2) : 0;
+    build_module(MODULES[m], dy, v_pstr(v_fmt("regions.%s.lamp", MODULES[m])));
     module_objects(MODULES[m], dy);
   }
   ring(cur);
@@ -270,5 +273,5 @@ void home_key(int code) {
 /* a step of the residents' walk is due (the redraw every STEP_MS while any resident walks) */
 int home_tick(uint32_t now) {
   if (strcmp(v_pstr("screen"), "home") != 0 || !spec_has(H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
-  int t = (int)(now / STEP_MS); if (t == g_last_tick) return 0; g_last_tick = t; return 1;
+  int t = (int)((now - g_t0) / STEP_MS); if (t == g_last_tick) return 0; g_last_tick = t; return 1;
 }

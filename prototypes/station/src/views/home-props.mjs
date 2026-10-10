@@ -13,33 +13,7 @@ const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 const paintWaiting = (mibi) => !mibi.paint || ["queued", "painting", "capped", "sent"].includes(mibi.paint.state);
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
-// m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }
-// ---- the notice: the first need that holds (strings.needs.order), mirroring state.need() so the room's ✓ and the notice agree ----
-export function needOf(m, spec) {
-  const { st, sv, settings } = m, N = spec.strings.needs, cs = S.bayCrates(st, sv);
-  const mk = (key, o = {}) => ({ key, module: N[key].module, ...o });
-  if (m.docked && cs.length) return mk("crates", { n: cs.length, max: 3, act: "cargo" });
-  if (S.budReady(st, settings)) return mk("budReady", { act: "incubator" });
-  const meet = m.ui?.meet != null ? S.mibiById(st, m.ui.meet) : null;
-  if (meet) return mk("meet", { name: meet.name, act: "meet" });
-  const fresh = st.tray.filter((p) => !p.idd);
-  if (fresh.length) return mk("newPods", { n: fresh.length, max: 6, act: "pods" });
-  const glint = st.tray.filter((p) => S.podGlints(st, p));
-  if (glint.length) return mk("glints", { n: glint.length, max: 6, act: "pods" });
-  if (st.waiting.length) return mk("waitingPods", { n: st.waiting.length, max: 6, act: "pods" });
-  const grown = st.tray.filter((p) => p.idd && p.read.length && !st.bud);
-  if (grown.length && !S.bayFull(st, settings)) {
-    const p = grown[0], c = S.growCost(st, {}, settings), icons = [st.e < c.e ? "⚡" : "", st.s < c.s ? "❀" : ""].filter(Boolean).join(" ");
-    return mk("couldGrow", { species: S.spName(p), a: S.aAn(S.spName(p)).split(" ")[0], short: icons || null, act: "pods" });
-  }
-  const unread = st.tray.filter((p) => p.idd && !S.fullyRead(p, settings));
-  if (unread.length) {
-    const p = unread[0], ch = S.frameFor(p).chapters.find((c) => !p.read.includes(c.id) && (!c.sealed || settings.sealedOpen)), cost = ch ? S.readCost(st, p, ch.id, settings) : 0;
-    return mk("toRead", { species: S.spName(p), a: S.aAn(S.spName(p)).split(" ")[0], short: cost && st.d < cost ? "◆" : null, act: "pods" });
-  }
-  if (st.bud) return mk("budGrowing", { act: "incubator" });
-  return null;
-}
+// m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
 function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
@@ -58,7 +32,7 @@ export function homeBuild(m, spec, frame) {
   const slot = (master, size, until) => req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until: until || "the Home masters (station-layouts.md, Home, Cargo and Idle: the masters)" });
   // a PH plate or hollow (home.json placeholders): a picture of the register, status placeholder, until its master
   const ph = (id, size, hollow = false) => req({ kind: "ph", id, size, hollow, until: "its master (home.json placeholders)" });
-  const need = needOf(m, spec), lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
+  const facts = S.needKey(st, sv, settings, m.ui ?? {}), need = facts && { ...facts, module: spec.strings.needs[facts.key].module }, lampOf = (mod) => (need && need.module === mod ? "needsYou" : null);
 
   // the living window: the glass's master (day), the residents at home walking, the bed with the carried set asleep
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
@@ -96,7 +70,7 @@ export function homeBuild(m, spec, frame) {
   const incubator = {
     state: incState, lamp: lampOf("incubator") ?? (incState === "growing" ? "well" : incState === "painting" ? "waiting" : "off"),
     chamber: slot(`home-chamber-${incState === "painting" ? "empty" : incState}`, R.incubator.chamber.slice(2)),
-    leaves: { total, full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, emptyPicture: ph(`home-leaf-empty-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf, true), fullPicture: ph(`home-leaf-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf) },
+    leaves: { total, rows: Math.ceil(total / R.incubator.leaves.perRow), full: bud ? (ready ? total : Math.min(total, Math.floor(progress * total))) : 0, emptyPicture: ph(`home-leaf-empty-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf, true), fullPicture: ph(`home-leaf-${R.incubator.leaves.leaf.join("x")}`, R.incubator.leaves.leaf) },
   };
   const pr = docked ? S.probeNow(st, sv) : null;
   const held = !!st.sitting;

@@ -21,6 +21,13 @@ void home_words(void);
 int home_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void home_key(int code);
 int home_tick(uint32_t now);
+/* Home's compositions (screens/home_builds.c): a module of the column, the name tag, the rest knob and a resident's waiting lamp */
+void build_module(const char *key, int dy, const char *lamp);
+void build_nameTag(const char *name, const int box[4], int lift, int out[4]);
+void build_restKnob(int focused);
+void build_waitingLamp(const char *id, int x, int y);
+/* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */
+void home_hidden(void);
 /* An intent or a focus message for the screen of the props (kind "intent" with a verb, or "focus"). */
 void screens_say(const char *kind, const char *target, const char *verb);
 /* The clock moved to `now` (ms): 1 when the screen is to be drawn again for a step of its own (Home's residents walking). */

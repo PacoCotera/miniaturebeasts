@@ -1,6 +1,5 @@
 // Home's intents (home.json: the keys, the line): the rule calls behind ✓ on the room, the Vivarium, a resident, a module of the column and the rest knob. The pad is the face's (focus.graph); ← does nothing on Home.
 import * as S from "../state.mjs";
-import { needOf } from "../views/home-props.mjs";
 
 export const ARRIVE_MS = 3000;
 // The bay opens, one crate at a time: the rule opens every crate, the host plays an `arrival` per crate and holds input while they play; what came is the report that follows. Cargo's (cargo.json, L2.2's second PR).
@@ -26,7 +25,7 @@ export function doNeed(h, nd) {
 export function intent(h, target, verb) {
   if (verb !== "confirm") return;
   const ui = h.ui;
-  if (target === "room") doNeed(h, needOf({ st: h.st, sv: h.sv, settings: h.settings, docked: S.docked(h.st), ui }, h.specs.home));
+  if (target === "room") doNeed(h, S.needKey(h.st, h.sv, h.settings, ui));
   else if (target === "vivarium") toVivarium(h, ui.hab.id ?? S.homeMibis(h.st, h.sv)[0]?.id ?? null);
   else if (typeof target === "string" && target.startsWith("resident.")) toVivarium(h, +target.slice(9));
   else if (target === "cargo") h.goto("cargo");
@@ -35,6 +34,7 @@ export function intent(h, target, verb) {
   else if (target === "probe") { ui.bench.f = 0; h.goto("bench"); }
   else if (target === "library") toLibrary(h);
   else if (target === "knob") {   // the rest: the knob settles, the screen dithers to Idle over the hold; with reduced motion the event is a cut to its end and Idle comes on the frame of the key
+    h.pendingRoom = null;   // a room key kept during an earlier wake never fires at the end of this rest
     if (h.motion ? h.motion() : true) h.play({ kind: "rest", target: "knob", ms: h.specs.home.events.rest.ms, hold: h.specs.home.events.rest.hold }); else ui.idle = true;
   }
 }

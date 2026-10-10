@@ -83,7 +83,8 @@ static void draw(void) {
   prim_begin(); v_set_focal(NULL);
   { char screen[32]; spec_str("props", "screen", screen, sizeof screen); /* a screen draws its words when the props carry its regions */
     if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
-    else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words(); }
+    else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
+    else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) not_built(1);          /* Idle has no binding table yet */
   else if (is_not_built()) not_built(0);
   frame_words();
@@ -110,7 +111,7 @@ void screens_say(const char *kind, const char *target, const char *verb) {
 void screens_key(int code) {
   if (anim_holding()) {   /* an event holds input: no key is acted on (§2.1); while Home's rest holds, a room key is still said, and the host keeps it until the hold ends (home.json focus.held) */
     char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-    if (rv && strcmp(sc, "home") == 0 && 1) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
+    if (rv && strcmp(sc, "home") == 0) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
     return;
   }
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);

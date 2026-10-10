@@ -8,7 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
-import { homeBuild, needOf } from "../src/views/home-props.mjs";
+import { homeBuild } from "../src/views/home-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -100,11 +100,11 @@ test("the notice and the line spell the counts and read home.json's strings", ()
 test("the room's ✓ agrees with state.need(): the same action, the same screen", () => {
   const ACT = { bay: "cargo", inc: "incubator", meet: "meet", pods: "pods" };
   for (const [name, { st, sv }] of Object.entries(scenes())) {
-    const n = S.need(st, sv, settings, {}), mine = needOf({ st, sv, settings, docked: S.docked(st), ui: {} }, spec);
+    const n = S.need(st, sv, settings, {}), mine = S.needKey(st, sv, settings, {});
     assert.equal(mine?.act ?? null, n.act ? ACT[n.act] : null, name);
   }
   const { st, sv } = scenes().docked; const m = st.mibis[0];
-  assert.equal(needOf({ st, sv, settings, docked: true, ui: { meet: m.id } }, spec).key, "meet"); assert.equal(build(st, sv, { ui: { meet: m.id } }).line.need, "meet " + m.name);
+  assert.equal(S.needKey(st, sv, settings, { meet: m.id }).key, "meet"); assert.equal(build(st, sv, { ui: { meet: m.id } }).line.need, "meet " + m.name);
 });
 
 test("the short notices carry each short material once, Energy before Essence, and ◆ for a read", () => {

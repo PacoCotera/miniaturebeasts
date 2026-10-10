@@ -22,11 +22,7 @@ void word_focusRingFor(const char *id, const int box[4], const char *group, cons
 void word_rail(void);    /* the chapter rail (frame spec) with the ring on its focused tab */
 /* station/ (Home) */
 void word_livingWindow(const char *screen, const char *bezel, const char *glass, const char *glassPicture);   /* the bezel and the glass (a flat plate until the glass master), the master over it */
-void word_lamp(const char *id, int x, int y, const char *state);   /* 12 x 12, a void rim and the state's fill: off, well, waiting, needsYou */
-void word_module(const char *key, int dy, const char *lamp);        /* a module of the column: panel, engraved word, lamp; dy is the focus lift */
-void word_nameTag(const char *name, const int box[4], int lift, int out[4]);   /* the name tag under (or over) the focused resident; the tag's rect in out */
-void word_restKnob(int focused);
-void word_leaves(const char *base, const char *emptyPic, const char *fullPic, int total, int full, int dy);   /* the leaves word, grid form */
+void word_leaves(const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy);   /* the leaves word, grid form */
 void word_topBar(void);
 void word_bottomLine(void);
 void word_messagePlate(void);

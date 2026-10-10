@@ -25,6 +25,7 @@ const SCENES = {
   "knob-focused":  { f: "knob", set: (w) => { w.adults(2); } },
   "vivarium-focused": { f: "vivarium", set: (w) => { w.adults(3); } },
   "resident-focused": { f: "resident:0", set: (w) => { w.adults(3); w.carry([2]); } },
+  "twelve": { f: "room", motionOnly: true, set: (w) => { w.bays(12); w.adults(12); } },
   "sleeper-focused":  { f: "resident:2", set: (w) => { w.adults(3); w.carry([2]); } },
 };
 // the helpers the scenes call, in the page
@@ -32,6 +33,7 @@ const WORLD = () => ({
   // the Companion's part of the save is re-read from storage on every save: an edit to it is written there at once
   persist() { const S = window.__st; localStorage.setItem("mb-save-v8", JSON.stringify({ ...S.SV, st: S.ST })); },
   reset() { const S = window.__st, st = S.ST, sv = S.SV; st.mibis = []; st.tray = []; st.waiting = []; st.bud = null; st.sitting = null; sv.bay = []; st.devBay = []; sv.carried = []; sv.with = null; st.dock = { docked: true, at: 1 }; st.accepted = []; st.nextMibi = 1; st.knownIds = []; S.UI.meet = null; this.persist(); },
+  bays(n) { window.__st.settings.bays = n; },
   adults(n) { const st = window.__st.ST, k = st.mibis.length; window.__st.seedAdults("S01", 5, n); for (const m of st.mibis.slice(k)) m.paint = { state: "landed" }; },
   young(n) { const st = window.__st.ST; const k = st.mibis.length; window.__st.seedAdults("S01", 77, n); for (const m of st.mibis.slice(k)) { m.born = st.turn; m.paint = { state: "landed" }; } },
   carry(ix) { const st = window.__st.ST; window.__st.SV.carried = ix.map((i) => st.mibis[i].id); this.persist(); },
@@ -48,6 +50,7 @@ const WORLD = () => ({
 // The two timed points, on the virtual clock at exact instants (motion on): the rest knob pressed 100 ms into events.rest (the knob settling, the ring gone) and the crates arriving at 375 ms of events.crateIn.
 const TIMED = {
   "knob-pressed": { scene: "knob-focused", at: 100, go: (w) => window.__st.intent({ screen: "home", target: "knob", verb: "confirm" }) },
+  "walk-8000ms": { scene: "twelve", at: 8000, pre: 0, go: () => {} },   // twelve residents walking, 8000 ms of the face's clock into Home: the walk's reference for the three builds (B4b)
   "crates-arriving": { scene: "away", at: 375, go: (w) => { w.crates(3); window.__st.dockKey(); } },
 };
 
@@ -63,7 +66,7 @@ async function timedStates(visit) {
     for (const [name, tp] of Object.entries(TIMED)) {
       const sc = SCENES[tp.scene];
       await page.evaluate(([setSrc, f]) => { const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.home.f = f; S.UI.idle = false; S.goto("home"); }, [sc.set.toString(), sc.f]);
-      await step(1200);   // the screen change's dither is over and the walk is under way
+      if (tp.pre !== 0) await step(1200);   // the screen change's dither is over and the walk is under way
       await page.evaluate(([goSrc]) => { eval(`(${goSrc})`)(window.__world); }, [tp.go.toString()]); await step(tp.at);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, holding: window.__st.holding() })); if (u.screen !== "home") fail(`home-${name}: on ${u.screen}`);
       await visit("home-" + name, page, fail);
@@ -83,6 +86,7 @@ async function staticStates(visit, { motion }) {
   }, [sc.set.toString(), sc.f]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
+      if (sc.motionOnly) continue;   // taken on the virtual clock below
       await apply(name, sc); await page.waitForTimeout(900);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, focus: window.__st.UI.home.f, idle: window.__st.UI.idle }));
       if (u.screen !== "home" || u.idle) fail(`home-${name}: on ${u.screen}${u.idle ? " (idle)" : ""}`);

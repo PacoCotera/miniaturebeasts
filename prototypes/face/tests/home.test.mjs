@@ -141,16 +141,18 @@ test("the walk is deterministic: the same props on the same clock give the same 
   const run = async (t) => { const f = await start(scene({ adults: 4, carry: [0] }), { t0: 5000 }); for (let ms = 40; ms <= t; ms += 40) f.frame(5000 + ms); return f.hash(); };
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200), "idle for the first two seconds, then they walk");
 });
-test("on a frame at most six adult boxes move (the living window staggers the steps) and the dirty area stays within a quarter of the screen, with twelve residents walking", { skip }, async () => {
-  const f = await start(scene({ adults: 12, young: 0, carry: [] }), { t0: 5000 }), M = f.M; let area = 0, boxes = 0, moved = 0;
-  for (let t = 40; t < 30000; t += 40) {
-    f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0, big = 0;
-    for (let i = 0; i < n; i++) { s += a[i * 4 + 2] * a[i * 4 + 3]; if (a[i * 4 + 2] * a[i * 4 + 3] > 12000) big++; }
-    area = Math.max(area, s); boxes = Math.max(boxes, big); if (n) moved++;
-  }
-  assert.ok(moved > 100, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 1024 * 600 * 0.25, `dirty area ${area} of ${1024 * 600}`); assert.ok(boxes <= 6, `${boxes} adult-sized rectangles in a frame`);
-  console.log(`# Home's walk, twelve residents: worst frame ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty, ${boxes} boxes`);
-});
+for (const [step, off] of [[40, 0], [33, 21], [17, 5], [16, 5]]) {
+  test(`on a frame at most six adult boxes move (the living window staggers the steps) and the dirty area stays within a quarter of the screen, with twelve residents walking: frames every ${step} ms from ${off} ms`, { skip }, async () => {
+    const f = await start(scene({ adults: 12, young: 0, carry: [] }), { t0: 5000 }), M = f.M; let area = 0, boxes = 0, moved = 0;
+    for (let t = step + off; t < 30000; t += step) {
+      f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0, big = 0;
+      for (let i = 0; i < n; i++) { s += a[i * 4 + 2] * a[i * 4 + 3]; if (a[i * 4 + 2] * a[i * 4 + 3] > 12000) big++; }
+      area = Math.max(area, s); boxes = Math.max(boxes, big); if (n) moved++;
+    }
+    assert.ok(moved > 100, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 1024 * 600 * 0.25, `dirty area ${area} of ${1024 * 600}`); assert.ok(boxes <= 6, `${boxes} adult-sized rectangles in a frame`);
+    console.log(`# Home's walk, twelve residents, frames every ${step} ms: worst frame ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty, ${boxes} boxes`);
+  });
+}
 
 test("a walking resident keeps its box in 32..656−w and its feet in 300..527, never meets the keep-out zone, walks at 2 px a step, and a focused one stands still and resumes where it was", { skip }, async () => {
   const K = homeSpec.regions.resident.walk.keepOut;

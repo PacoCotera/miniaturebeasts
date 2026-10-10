@@ -85,8 +85,12 @@
    "hash": "b494286c",
    "png": "home-knob-pressed.png"
   },
+  "home-walk-8000ms": {
+   "hash": "b15ea4b0",
+   "png": "home-walk-8000ms.png"
+  },
   "home-crates-arriving": {
-   "hash": "e81d7468",
+   "hash": "7d5c20d9",
    "png": "home-crates-arriving.png"
   }
  }
