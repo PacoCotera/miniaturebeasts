@@ -10521,12 +10521,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/incubator-bud-early2.jpg (gemini-3-pro-image)",
+  "src": "source/raw/incubator-bud-early3.jpg (gemini-3-pro-image)",
   "made": "the bud, early: a smooth warm bean (peach, lit cream, rust edge) glowing softly from within on a little moss, no dot, no eye, no sprout; keyed from the slate, scaled uniformly, bottom-centred in 128x160 (pass 111)",
-  "sha256": "8e075eaed9b900efdd7020b82752ceab7f364da56b2361cf1fa18e4ccea258a6",
+  "sha256": "6019fa07389d95ec1d550c95d3e90bd2c3f401f1c602b8a589b8be491f72dced",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "status_note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-late-128x160": {
   "size": [
@@ -10534,12 +10534,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/incubator-bud-early2.jpg",
+  "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, late: by hand, the skin toward blush (its yellow lowered, a little pink added, the inner light a little up), no drift to a species' hue (pass 111)",
-  "sha256": "50d202bda9db73e00303b27acd6b9b09113ee533534e81f808bf2e9f20ecde5d",
+  "sha256": "9fa3871d5d064bd4e73bbcec6d71da7dcfa59220da55557794c873dd263c063a",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "status_note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-128x160": {
   "size": [
@@ -10547,12 +10547,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/incubator-bud-early2.jpg",
+  "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, ready: by hand, the inner light up full, a soft cream light across the bean's middle where the shape's window sits (pass 111)",
-  "sha256": "d3b090b4ca211a648e7d937db5a67969e9a078b0f401c7d0ba55ea5bda7710e7",
+  "sha256": "e5eb941de33df2414ee8f1f7efa736c3d1635e5487e31706dd5ec20e72f1f9ae",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "status_note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-front-128x160": {
   "size": [
@@ -10560,12 +10560,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/incubator-bud-early2.jpg",
+  "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the skin over the shape: the bean's silhouette at half opacity, lighter at the middle, drawn over the shape in the ready bud (pass 111)",
-  "sha256": "11c2e1f0d1c1d237d353aff8ff53ed3e21c2289f0a609da323f46b113a7df638",
+  "sha256": "dbc92bae7c2eaffc02dd6f36789dd672cf25e4ea6e60a36564b825b190a39525",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "status_note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-1-128x160": {
   "size": [
@@ -10573,12 +10573,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/incubator-bud-early2.jpg",
+  "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the first crack step over the ready bud: a short rust crack with a thread of light, a transparent layer drawn by hand (pass 111)",
-  "sha256": "b5643406ec82e14ac22cf74b25348cd6b685599eaadb8f70157dfa9088c36a14",
+  "sha256": "a2ed071e534acc6ac123dcf6f909ee0da9782d5e0036faf640789af6bd8d94bf",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "status_note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-2-128x160": {
   "size": [
@@ -10586,12 +10586,12 @@
    160
   ],
   "rect": null,
-  "src": "source/raw/incubator-bud-early2.jpg",
+  "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the second crack step over the ready bud: a longer, wider crack with the light coming through, a transparent layer drawn by hand (pass 111)",
-  "sha256": "69a2a4407ae1f8fcb06c2d7f18fd439c54ef97c2fe45b837d3c0637c6b6b6e0e",
+  "sha256": "7522362dea5b015e88622f72966426243fc4dac4e5de800d3eb8b8918e975329",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "status_note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "leaf-empty-16x20": {
   "size": [
@@ -10737,5 +10737,18 @@
   "status": "signed",
   "signed_in": "art director, verdict (72561d74)",
   "status_note": "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"
+ },
+ "bud-small-64x80": {
+  "size": [
+   64,
+   80
+  ],
+  "rect": null,
+  "src": "slices/bud-early-128x160.png",
+  "made": "the bud for Create's small chamber: the new bud-early reduced by one half (64x80, only ever reduced) (pass 111)",
+  "sha256": "f8446c18a38066133d2762529b0ffe678c22988e3217d95f591e47ddc28d2a6d",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 117: the new bud-early reduced by one half for Create's small chamber (only ever reduced); awaiting the art director's judgement (not signed)"
  }
 }

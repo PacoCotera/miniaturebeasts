@@ -10,21 +10,15 @@ import numpy as np
 from PIL import Image, ImageFilter, ImageDraw
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); os.chdir(ROOT)
 exec(open("tools/lightfit.py").read(), globals())
-SRC = "source/raw/incubator-bud-early2.jpg"; a = np.asarray(Image.open(SRC).convert("RGB")).astype(float); H, W, _ = a.shape
+SRC = "source/raw/incubator-bud-early3.jpg"; a = np.asarray(Image.open(SRC).convert("RGB")).astype(float); H, W, _ = a.shape       # the third bean (one Pro request, owner-approved: a plump upright oval, no moss, on a flat slate key); the first two, early.jpg (on its side) and early2.jpg (a waist, a hilum, a moss mound), are not used
 bg = np.median(np.concatenate([a[:40].reshape(-1, 3), a[-40:].reshape(-1, 3), a[:, :40].reshape(-1, 3), a[:, -40:].reshape(-1, 3)]), axis=0)
-# the hilum: a patch of the bean's own skin, from the left of it, over the pale oval (feathered)
-a2 = a.copy(); dk0 = np.sqrt(((a - bg) ** 2).sum(2))
-for y in range(470, 642):                  # the hilum: row by row, the skin between x 548 and the bean's right edge is a straight blend of the two (the pale oval goes)
-    xr = 548 + int(np.argmax(dk0[y, 548:700] < 22)) if (dk0[y, 548:700] < 22).any() else 640
-    if xr - 4 > 556:
-        for x in range(550, xr - 2): t = (x - 548) / float(xr - 4 - 548); a2[y, x] = a[y, 548] * (1 - t) + a[y, xr - 4] * t
-dist = np.sqrt(((a2 - bg) ** 2).sum(2)); keyed = np.clip((dist - 14) / 26.0, 0, 1)
-box = (150, 225, 730, 940); crop = np.dstack([a2[box[1]:box[3], box[0]:box[2]], keyed[box[1]:box[3], box[0]:box[2]] * 255]); cy = crop.shape[0]; fade = np.clip((cy - np.arange(cy)) / 30.0, 0, 1)[:, None]; crop[..., 3] *= fade
-src = Image.fromarray(crop.astype(np.uint8), "RGBA"); s = min(128 / src.width, 160 / src.height); nw, nh = round(src.width * s), round(src.height * s)
+dist = np.sqrt(((a - bg) ** 2).sum(2)); keyed = np.clip((dist - 14) / 26.0, 0, 1); ys_, xs_ = np.where(keyed > 0.5); box = (xs_.min() - 4, ys_.min() - 4, xs_.max() + 5, ys_.max() + 5)
+crop = np.dstack([a[box[1]:box[3], box[0]:box[2]], keyed[box[1]:box[3], box[0]:box[2]] * 255])
+src = Image.fromarray(crop.astype(np.uint8), "RGBA"); s = min(112 / src.width, 140 / src.height); nw, nh = round(src.width * s), round(src.height * s)
 p = np.asarray(src).astype(float); pm = np.dstack([p[..., :3] * p[..., 3:] / 255.0, p[..., 3:]]).astype(np.uint8); r = np.asarray(Image.fromarray(pm, "RGBA").resize((nw, nh), Image.LANCZOS)).astype(float)
 al = r[..., 3:] / 255.0; col = np.where(al > 0.01, r[..., :3] / np.maximum(al, 0.01), 0)
-early = Image.new("RGBA", (128, 160), (0, 0, 0, 0)); early.paste(Image.fromarray(np.dstack([col, r[..., 3:]]).clip(0, 255).astype(np.uint8), "RGBA"), ((128 - nw) // 2, 160 - nh))
-early, erep = fit_light(early); print("bud-early", erep)
+early = Image.new("RGBA", (128, 160), (0, 0, 0, 0)); early.paste(Image.fromarray(np.dstack([col, r[..., 3:]]).clip(0, 255).astype(np.uint8), "RGBA"), ((128 - nw) // 2, 152 - nh))
+early, erep = fit_light(early, warm=True, soft=True); print("bud-early", erep)
 E = np.asarray(early).astype(float); bean = ((E[..., 0] > E[..., 1] + 6) & (E[..., 3] > 128)); bean = np.asarray(Image.fromarray((bean * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))) > 0
 ys, xs = np.where(bean); bx0, bx1, by0, by1 = xs.min(), xs.max(), ys.min(), ys.max(); cx, cy_ = (bx0 + bx1) / 2.0, (by0 + by1) / 2.0
 man = json.load(open("slices/manifest.json")); outs = {}
@@ -34,9 +28,9 @@ save("bud-early-128x160", early, "the bud, early: a smooth warm bean (peach, lit
 def shade(img, f):
     r_ = np.asarray(img).astype(float); lin = to_lin(r_[..., :3]); out = f(lin); r_[..., :3] = to_srgb(np.clip(out, 0, 1)); return Image.fromarray(r_.astype(np.uint8), "RGBA")
 Yg, Xg = np.mgrid[0:160, 0:128]
-late = shade(early, lambda l: np.where(bean[..., None], l * np.array([1.00, 0.90, 1.08]) * 1.05 + 0.012 * np.array([1.0, 0.1, 0.45]), l)); late, lrep = fit_light(late); print("bud-late", lrep); save("bud-late-128x160", late, "the bud, late: by hand, the skin toward blush (its yellow lowered, a little pink added, the inner light a little up), no drift to a species' hue")
+late = shade(early, lambda l: np.where(bean[..., None], l * np.array([1.00, 0.90, 1.08]) * 1.05 + 0.012 * np.array([1.0, 0.1, 0.45]), l)); late, lrep = fit_light(late, warm=True, soft=True); print("bud-late", lrep); save("bud-late-128x160", late, "the bud, late: by hand, the skin toward blush (its yellow lowered, a little pink added, the inner light a little up), no drift to a species' hue")
 rad = np.exp(-(((Xg - cx) / (0.30 * (bx1 - bx0 + 1))) ** 2 + ((Yg - (cy_ - 0.05 * (by1 - by0))) / (0.30 * (by1 - by0 + 1))) ** 2)); win = rad[..., None] * bean[..., None]
-ready = shade(early, lambda l: np.where(bean[..., None], 1 - (1 - l * 1.10) * (1 - np.clip(0.75 * win * np.array([1.0, 0.90, 0.68]), 0, 0.95)), l)); ready, rrep = fit_light(ready, cap=69.9); print("bud-ready", rrep); save("bud-ready-128x160", ready, "the bud, ready: by hand, the inner light up full, a soft cream light across the bean's middle where the shape's window sits")
+ready = shade(early, lambda l: np.where(bean[..., None], 1 - (1 - l * 1.10) * (1 - np.clip(0.75 * win * np.array([1.0, 0.90, 0.68]), 0, 0.95)), l)); ready, rrep = fit_light(ready, warm=True, cap=69.9, soft=True); print("bud-ready", rrep); save("bud-ready-128x160", ready, "the bud, ready: by hand, the inner light up full, a soft cream light across the bean's middle where the shape's window sits")
 fr = np.zeros((160, 128, 4)); sk = np.asarray(early).astype(float)[..., :3]; fr[..., :3] = sk; fr[..., 3] = bean * (150 - 70 * rad) ; save("bud-ready-front-128x160", Image.fromarray(fr.clip(0, 255).astype(np.uint8), "RGBA"), "the skin over the shape: the bean's silhouette at half opacity, lighter at the middle, drawn over the shape in the ready bud")
 def crack(points, w, glow):
     im = Image.new("RGBA", (128, 160), (0, 0, 0, 0)); d = ImageDraw.Draw(im)
@@ -67,6 +61,10 @@ def leaf(w, h, full):
 for (w, h) in ((16, 20), (8, 12)):
     for full in (False, True):
         n = f"leaf-{'full' if full else 'empty'}-{w}x{h}"; save(n, leaf(w, h, full), f"the leaf, {'full' if full else 'empty'}, hand-pixelled {w}x{h}: one ovate pointed leaf leaning about 40 degrees clockwise (the tip at the upper right), a centre vein, a short curved stem at the lower left; " + ("sage #84ae78 with a sageD #5d7a5f vein" if full else "a one-pixel outline in metal #8a947b (16x20) or bevel #565c63 (8x12)"), "hand-pixelled in tools/incubatorbud.py")
+# bud-small-64x80 (Create: a busy bud's glow in the small chamber, a 64x80 bud): the new bud-early reduced by one half, only ever reduced
+e = np.asarray(early).astype(float); pm_ = np.dstack([e[..., :3] * e[..., 3:] / 255.0, e[..., 3:]]).astype(np.uint8); rs_ = np.asarray(Image.fromarray(pm_, "RGBA").resize((64, 80), Image.LANCZOS)).astype(float); a_ = rs_[..., 3:] / 255.0
+small = Image.fromarray(np.dstack([np.where(a_ > 0.004, rs_[..., :3] / np.maximum(a_, 0.004), 0), rs_[..., 3:]]).clip(0, 255).astype(np.uint8), "RGBA")
+save("bud-small-64x80", small, "the bud for Create's small chamber: the new bud-early reduced by one half (64x80, only ever reduced)", "slices/bud-early-128x160.png")
 json.dump(man, open("slices/manifest.json", "w"), indent=1)
 S = 5; names = ["bud-early-128x160", "bud-late-128x160", "bud-ready-128x160", "bud-ready-front-128x160", "bud-crack-1-128x160", "bud-crack-2-128x160"]
 sheet = Image.new("RGB", (6 * 134 + 8 + 200, 168 + 130), (45, 53, 63)); x = 4

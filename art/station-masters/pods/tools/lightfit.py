@@ -8,9 +8,13 @@ def _stats(rgb, op):
     if qq.sum() < 20: qq = op
     key = rgb[qq & (L >= np.percentile(L[qq], 80))].mean(0); mx = rgb[op].max(1); mn = rgb[op].min(1)
     return L, float(key[0] - key[2]), float(((mx - mn) / np.maximum(mx, 1)).mean() * 100)
-def fit_light(img, warm=False, cap=69.5):
+def fit_light(img, warm=False, cap=69.5, soft=False):
     a = np.asarray(img).astype(float); op = a[..., 3] > 128; lin0 = to_lin(a[..., :3])
     def level(lin):
+        if soft:     # the highlights are pulled under the cap by a soft curve on L* (above 56, ceiling `cap`) instead of lowering the whole piece, so the mid-tones keep their colour
+            Y = lin @ np.array([0.2126, 0.7152, 0.0722]); Ls = np.where(Y > 0.008856, 116 * np.cbrt(Y) - 16, 903.3 * Y); knee0 = 60.0
+            top = cap; span = top - knee0; L2 = np.where(Ls > knee0, knee0 + span * (1 - np.exp(-(Ls - knee0) / (span * 0.9))), Ls)
+            Y2 = np.where(L2 > 8, ((L2 + 16) / 116) ** 3, L2 / 903.3); return to_srgb(lin * (Y2 / np.maximum(Y, 1e-6))[..., None])
         lo, hi = 0.2, 1.0
         for _ in range(26):
             g = (lo * hi) ** 0.5; L = lstar(to_srgb(lin * g))

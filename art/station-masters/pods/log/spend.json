@@ -2559,5 +2559,22 @@
    "thoughtsTokenCount": 222,
    "totalTokenCount": 2721
   }
+ },
+ {
+  "tag": "incubator-bud-early3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193864,
+  "mxn": 3.8773,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T16:47:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 872,
+   "candidatesTokenCount": 1353,
+   "thoughtsTokenCount": 248,
+   "totalTokenCount": 2473
+  }
  }
 ]

@@ -3377,32 +3377,32 @@
  "bud-early-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-late-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-front-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-1-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-2-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): a tall narrow kidney bean (78 px wide) that fills the window; the ready shape sits as a pale disc wider than the bean; one Pro redo: a plump upright oval bean about 112x140 in the box, smooth, no dot, no sprout; the ready shape glows through the skin, clipped to the bean"
+  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
  },
  "leaf-empty-16x20": {
   "status": "signed",
@@ -3453,5 +3453,10 @@
   "status": "signed",
   "signed_in": "art director, verdict (72561d74)",
   "note": "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"
+ },
+ "bud-small-64x80": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 117: the new bud-early reduced by one half for Create's small chamber (only ever reduced); awaiting the art director's judgement (not signed)"
  }
 }
