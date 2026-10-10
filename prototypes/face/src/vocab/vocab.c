@@ -35,6 +35,12 @@ int v_sprite_hidden(const char *id, const char *asset, int x, int y) {
   prim_node(v_id(id), FN_SPRITE, x, y, 0, 0, 1u << 16, hd, 0); return 1;   /* a window of no size at source x 1: it draws nothing and counts for nothing, and is the same node as the shown one */
 }
 
+int v_dither(const char *id, const char *fromAsset, const char *toAsset, int level, int x, int y, int w, int h) {
+  int fh = wire_asset_slot(fromAsset), th = wire_asset_slot(toAsset); if (fh < 0 || th < 0) return 0;
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "[[\"bayerPick\",%d,%d,%d,%d,%d]]", fh, th, level, x, y);
+  v_layer(prim_asset_layer_of(th)); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); return 1;
+}
+
 /* the icon a glyph stands for, and the length of its UTF-8 */
 static const char *icon_of(const char *p, int *len) {
   static const struct { const char *g; const char *name; } T[] = { { "\xe2\x9a\xa1", "energy" }, { "\xe2\x97\x86", "data" }, { "\xe2\x9d\x80", "essence" }, { "\xe2\x9c\x95", "cross" } };
@@ -67,6 +73,42 @@ v_run_t v_run(const char *id, const char *s, int x, int y, int px, const char *c
     } else if (n < V_STR - 1) piece[n++] = *p++; else p++;
   }
   r.end = cx; return r;
+}
+/* A price ("⚡ 2 ❀ 4 ◆ 1": Energy, Essence, Data in that order, each icon and its figure): the three materials always have their two nodes (icon, figure), the ones the price does not name with no size, so a price that gains or loses a material
+   changes nodes and never adds or removes one (§2.2). A price with no material in it ("free") is one text node. The icon's and the figure's layout is v_run's. */
+static const struct { const char *glyph, *icon; } PRICE[3] = { { "\xe2\x9a\xa1", "energy" }, { "\xe2\x9d\x80", "essence" }, { "\xe2\x97\x86", "data" } };
+/* 1 when the price is exactly "icon figure" pairs in the order of PRICE ("⚡ 2 ❀ 4 ◆ 1"), the shape the views send; any other text ("+1 ❀", "free") is one ordinary run */
+static int price_pairs(const char *s) {
+  int last = -1; const char *p = s; if (!*p) return 0;
+  while (*p) {
+    int g = -1; for (int k = 0; k < 3; k++) if (strncmp(p, PRICE[k].glyph, strlen(PRICE[k].glyph)) == 0) g = k;
+    if (g <= last) return 0; last = g; p += strlen(PRICE[g].glyph); if (*p != ' ') return 0; p++;
+    if (!*p || *p == ' ') return 0; while (*p && *p != ' ') p++; if (*p == ' ') p++; else if (*p) return 0;
+  }
+  return 1;
+}
+int v_price(const char *id, const char *s, int x, int y, int px, const char *cols[3], const char *other) {
+  if (!price_pairs(s)) { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); return v_run(nid, s, x, y, px, other, V_ALIGN_LEFT).end; }
+  int cx = x, groups = 0; char fig[3][24]; int has[3];
+  for (int g = 0; g < 3; g++) {
+    const char *p = strstr(s, PRICE[g].glyph); has[g] = p != NULL; fig[g][0] = 0; if (!p) continue;
+    p += strlen(PRICE[g].glyph); while (*p == ' ') p++; size_t n = 0; while (p[n] && p[n] != ' ' && n < sizeof fig[g] - 2) n++;   /* the figure: the word after the icon */
+    snprintf(fig[g], sizeof fig[g], " %.*s", (int)n, p); groups++;
+  }
+  int iy = y + v_cap(px) - px + (int)(px * 0.12 + 0.5);
+  for (int g = 0; g < 3; g++) {
+    char ic[48], nid[96]; snprintf(ic, sizeof ic, "icon:%s:%d", PRICE[g].icon, px);
+    if (has[g]) {
+      char prefix[V_STR]; const char *at = strstr(s, PRICE[g].glyph); snprintf(prefix, sizeof prefix, "%.*s", (int)(at - s), s);   /* each icon stands where the single run would put it: after the width of the price up to it */
+      cx = x + (at == s ? 0 : v_run_width(prefix, px));
+      snprintf(nid, sizeof nid, "%s.%d.i", id, g); if (!v_sprite(nid, ic, cx + 2, iy, px, px)) { char b[96]; snprintf(b, sizeof b, "word: the picture %.50s is not on the face", ic); v_error(b); }
+      cx += px + 4; int w = v_measure(fig[g], px); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, fig[g], cx, y, w, px, cols[g]); cx += w;
+    } else {
+      snprintf(nid, sizeof nid, "%s.%d.i", id, g); v_sprite_hidden(nid, ic, cx, iy); snprintf(nid, sizeof nid, "%s.%d.t", id, g); v_text(nid, "", cx, y, 0, px, cols[g]);
+    }
+  }
+  { char nid[96]; snprintf(nid, sizeof nid, "%s.o", id); int w = groups || !*s ? 0 : v_measure(s, px); v_text(nid, groups ? "" : s, cx, y, w, px, other); if (w) cx += w; }
+  return cx;
 }
 int v_wrap(const char *s, int maxw, int px, char *buf, int cap, int max) {
   int nl = 0, o = 0; char cur[V_STR * 2]; cur[0] = 0; int cl = 0;

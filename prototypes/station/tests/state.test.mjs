@@ -516,3 +516,15 @@ test("the migration of an older write defaults the care fields and back-fills a 
   S.normalize(st); assert.deepEqual([a.care, a.tends, a.bondCare, a.grownTurn], [0, 0, 0, a.born + S.JUVENILE_TURNS]); assert.deepEqual([b.bondCare, b.grownTurn], [0, null]); assert.deepEqual([st.carryReqs, st.carrySeq, st.carryRefusedSeen], [[], 0, 0]);
   const snap = JSON.stringify(st); S.normalize(st); assert.equal(snap, JSON.stringify(st), "idempotent");
 });
+
+test("growBlockKey names what stops Grow in the rules' order (unidentified, busy, no bay, clash, short) with the icons a short price lacks; growBlock's words are unchanged; shortIcons lists ⚡ ◆ ❀ as shortText does", () => {
+  const st = S.freshSt("w1", 1, 1000); S.normalize(st); st.firstMibi = false; S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, 1000); const p = st.tray[0];
+  assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "unidentified", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "identify it first");
+  S.skipIdentify(st, p); st.e = 99; st.d = 99; st.s = 99; assert.equal(S.growBlockKey(st, p, {}, settings), null); assert.equal(S.growBlock(st, p, {}, settings), "");
+  st.e = 0; st.s = 0; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "short", short: "⚡ ❀" }); assert.equal(S.growBlock(st, p, {}, settings), S.shortText(st, 2, 0, 4));
+  const free = { ...settings, economy: "free" }; assert.equal(S.growBlockKey(st, p, {}, free), null, "a free economy is short of nothing");
+  st.bud = { kind: "founder" }; assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "busy", short: null }, "busy before short"); assert.equal(S.growBlock(st, p, {}, settings), "the incubator is busy"); st.bud = null;
+  for (let i = 0; i < 12; i++) st.mibis.push({ id: 100 + i, bay: i, released: false }); assert.deepEqual(S.growBlockKey(st, p, {}, settings), { key: "noBay", short: null }); assert.equal(S.growBlock(st, p, {}, settings), "no bay free · return one"); st.mibis = [];
+  assert.deepEqual(S.growBlockKey(st, p, {}, settings, ["crown"]), { key: "clash", short: null }); assert.match(S.growBlock(st, p, {}, settings, ["crown"]), /^this shape won't grow · /);
+  st.e = 1; st.d = 0; st.s = 9; assert.equal(S.shortIcons(st, 2, 1, 4), "⚡ ◆"); assert.equal(S.shortIcons(st, 1, 0, 9), ""); assert.equal(S.shortIcons(st, 0, 0, 10), "❀");
+});

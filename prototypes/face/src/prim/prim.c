@@ -144,6 +144,12 @@ static int compose_tokens(uint8_t *px, int w, int h, const char *ops, size_t len
       if (bw < 1 || bh < 1 || bw * bh > 1024 * 64 || x < 0 || y < 0 || x + bw > w || y + bh > h || ring_tab_mask(mask, &t) < 0) { free(mask); return -1; }
       for (int yy = 0; yy < bh; yy++) for (int xx = 0; xx < bw; xx++) if (mask[yy * bw + xx]) put(px, w, h, x + xx, y + yy, rgb);
       free(mask);
+    } else if (nl == 9 && strncmp(name, "bayerPick", 9) == 0 && tok[i].size == 6) {   /* ["bayerPick", from, to, level, ox, oy]: the picture of asset `to` where BAYER[((oy + y) & 3) * 4 + ((ox + x) & 3)] < level (0..16), else that of asset `from`: whole pixels, no blend (lvgl-switch.md §2.7). Both are the picture's own size. */
+      static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
+      int fh = A(0), th = A(1), level = A(2), ox = A(3), oy = A(4);
+      if (g_bad || fh < 0 || th < 0 || fh >= MAX_ASSET || th >= MAX_ASSET || level < 0 || level > 16) return -1;
+      const uint8_t *from = g_a[fh].px, *to = g_a[th].px; if (!from || !to || g_a[fh].w != w || g_a[fh].h != h || g_a[th].w != w || g_a[th].h != h) return -1;
+      for (int yy = 0; yy < h; yy++) for (int xx = 0; xx < w; xx++) memcpy(px + (yy * w + xx) * 4, (BAYER[((oy + yy) & 3) * 4 + ((ox + xx) & 3)] < level ? to : from) + (yy * w + xx) * 4, 4);
     } else return -1;
 #undef A
 #undef COL
@@ -169,6 +175,7 @@ uint8_t *prim_asset(int handle, int w, int h) {
   return g_a[handle].px;
 }
 /* the layer a picture shows on, its asset's own (the host's policy: art or painted); a composed source has none and takes its node's */
+int prim_asset_layer_of(int handle) { return handle >= 0 && handle < MAX_ASSET && g_a[handle].layer ? g_a[handle].layer : LAYER_ART; }
 void prim_asset_layer(int handle, int layer) { if (handle >= 0 && handle < MAX_ASSET) g_a[handle].layer = layer; }
 void prim_asset_free(int handle) { if (handle < 0 || handle >= MAX_ASSET) return; free(g_a[handle].px); memset(&g_a[handle], 0, sizeof g_a[handle]); }
 /* A face-owned source picture from composed ops (w x h), cached by the ops' hash: the same ops are the same picture, kept once. A handle for a nine-slice or a sprite, or -1 when refused or the table is full. */
@@ -353,7 +360,7 @@ int prim_log_json(char *buf, int cap) {
   PUT("],\"type\":[");
   first = 1;
   for (int i = 0; i < g_n; i++) {
-    node_t *nd = &g_o[i]; if (!nd->seen || nd->kind != FN_TEXT) continue;
+    node_t *nd = &g_o[i]; if (!nd->seen || nd->kind != FN_TEXT || !lv_label_get_text(nd->obj)[0]) continue;   /* a text slot with no words (§2.2) says nothing */
     PUT("%s{\"text\":", first ? "" : ","); STR(lv_label_get_text(nd->obj)); PUT(",\"px\":%d,\"region\":", nd->a); STR(g_reg[nd->region]); PUT("}"); first = 0;
   }
   PUT("],\"refused\":%d,\"objects\":%d,\"table\":%d,\"pictures\":%d}", g_unknown, prim_lvgl_objects(), g_n, prim_pictures());   /* objects: the LVGL objects alive (a nine-slice is nine); table: the face's own, one a node */
