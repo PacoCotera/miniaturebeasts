@@ -33,7 +33,6 @@ void word_list(void) {
     int r[4]; layout_place_rect(S, C, i, r);
     const char *pre = v_fmt("regions.list.places.%d", i); char P[96]; snprintf(P, sizeof P, "%s", pre);
     const char *id = v_fmt("list.p%d", i); char pid[40]; snprintf(pid, sizeof pid, "%s", id);
-    v_region("place", LAYER_PAINTED); v_sprite(pid, v_pstr(v_fmt("%s.panel", P)), r[0], r[1], r[2], r[3]);
     for (int k = 0, nl = v_plen(v_fmt("%s.ringLayers", P)), j = 0; k < nl; k++) {
       char a[96]; snprintf(a, sizeof a, "%s", v_pstr(v_fmt("%s.ringLayers.%d", P, k)));
       char rid[64]; snprintf(rid, sizeof rid, "%s.ring.%d", pid, j);
@@ -45,6 +44,9 @@ void word_list(void) {
     char text[V_STR]; snprintf(text, sizeof text, "%s", v_pstr(v_fmt("%s.name", P)));
     int nx = r[0] + sa(C ".name.at", 0, 0), ny = r[1] + sa(C ".name.at", 1, 0), tw = v_measure(text, npx);
     int pw = layout_plate_width(S, C ".name", tw);
+    { char al[16] = "", cl[16] = ""; spec_str(S, C ".name.align", al, sizeof al); spec_str(S, C ".name.clamp", cl, sizeof cl);   /* align centre: `at` is the plate's centre; clamp place: the plate stays inside the place's rectangle */
+      if (strcmp(al, "centre") == 0) nx -= v_half(pw);
+      if (strcmp(cl, "place") == 0) { if (nx + pw > r[0] + r[2]) nx = r[0] + r[2] - pw; if (nx < r[0]) nx = r[0]; } }
     v_region("place.name", LAYER_PAINTED); v_plate(v_fmt("%s.plate", pid), C ".name", pw, nx, ny);
     v_region("place.name", LAYER_TYPE); v_text(v_fmt("%s.name", pid), text, nx + v_half(pw - tw), ny + v_fdiv(nh - v_cap(npx), 2), tw, npx, name);
     const char *find = v_pstr(v_fmt("%s.find", P));

@@ -76,7 +76,6 @@ export function createBuild(m, spec, pods) {
   regions.founder = { picture: req({ kind: "founder", id: fp.id, pod: p.id, choices: cr.choices, species: S.speciesOf(p), misty: fp.misty, ghost: fp.none, size: R.founder.rect.slice(2) }) };
   const sizeClass = fr.pod?.sizeClass ?? "medium", box = pods.classes.pod[sizeClass];
   regions.pod = { sizeClass, picture: req({ kind: "pod", id: `pod:${S.speciesOf(p)}:i:${box.join("x")}`, species: S.speciesOf(p), state: "identified", size: box }) };
-  regions.cradle = { cradle: slot(req, "room-cradle", R.cradle.rect, "the dish master"), front: slot(req, "room-cradle-front", R.cradleFront.rect, "the dish's front layer") };
   regions.origin = S.podOriginLines(p);
   regions.dome = { back: ph("create-dome-176x224", R.dome.rect.slice(2), false, stale) };
   regions.bud = { picture: ph("bud-small-64x80", R.bud.rect.slice(2), false, stale), busy: !!st.bud && !grown };   // another bud is growing: its glow in the small chamber

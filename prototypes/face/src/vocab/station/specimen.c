@@ -1,5 +1,5 @@
 /* The specimen word (the pod under the beam on its cradle; station-layouts.md, Pods §5), with the kin, the hatch and the stamp label beside it: ported from components/specimen.mjs, list.mjs
-   (kinHatch) and stampLabel.mjs. Spec: `pods` regions.<state> (overview or chapter). Props: regions.specimen { beam, room { shelf, cradle, cradleFront, shadow, plate (the series) }, pod { sizeClass, size,
+   (kinHatch) and stampLabel.mjs. Spec: `pods` regions.<state> (overview or chapter). Props: regions.specimen { beam, room { cradleFront, shadow, plate (the series) }, pod { sizeClass, size,
    sealed, identified }, cut, name, origin [lines], ribbon, figure, who [ids], originPicture }, regions.kin [ { id, ring, pod } ], regions.hatch, regions.stamp { size, asset, case { back, front } }.
    The bench candidates are regions.bench.room. A picture the host has not sent draws nothing and the layout does not move. */
 #include "../vocab.h"
@@ -42,12 +42,12 @@ int word_pod_size(int out[2]) {
 static int who_kind_painted(const char *base, int i) { char k[24]; spec_str(S, v_fmt("%s.who.kinds.%d", base, i), k, sizeof k); return strcmp(k, "clan") == 0; }
 void word_specimen(const char *base) {
   char name[24], origin[24], white[24]; colour("name", name, sizeof name); colour("origin", origin, sizeof origin); snprintf(white, sizeof white, "white");
-  int beam[4], shelf[4], cradle[4], front[4], nrect[4];
-  for (int k = 0; k < 4; k++) { beam[k] = sa(base, "beam.rect", k, 0); shelf[k] = sa(base, "shelf.rect", k, 0); cradle[k] = sa(base, "cradle.rect", k, 0); front[k] = sa(base, "cradleFront.rect", k, 0); nrect[k] = sa(base, "name.rect", k, 0); }
+  int beam[4], front[4], nrect[4];
+  for (int k = 0; k < 4; k++) { beam[k] = sa(base, "beam.rect", k, 0); front[k] = sa(base, "cradleFront.rect", k, 0); nrect[k] = sa(base, "name.rect", k, 0); }
   v_region("beam", LAYER_ART);
   if (!bench_present()) { const char *b = v_pstr("regions.specimen.beam"); if (has(b)) v_sprite("specimen.beam", b, beam[0], beam[1], beam[2], beam[3]); }
   v_region("specimen", LAYER_PAINTED);   /* the room's stages are painted masters (the art director's layer table) */
-  layer("specimen.shelf", shelf, v_pstr("regions.specimen.room.shelf")); layer("specimen.cradle", cradle, v_pstr("regions.specimen.room.cradle"));
+  /* the stage carries the dish and the shelf (room-bench-stage-overview, -chapter): only the dish's front lip is drawn, below */
   const char *sealed = v_pstr("regions.specimen.pod.sealed");
   int axis = si(base, "pod.axis", 0), feet = si(base, "pod.feet", 0), psz[2] = { 0, 0 }; word_pod_size(psz); int w = psz[0], h = psz[1];
   if (has(sealed)) {

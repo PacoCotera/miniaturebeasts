@@ -996,13 +996,6 @@
    ],
    "tile": 32
   },
-  "panel-place-320x224": {
-   "file": "pods/panel-place-320x224.png",
-   "w": 320,
-   "h": 224,
-   "sha256": "f7c11d6e4958160cefe39c7686c60b57f6a3828f62a5c456fa039829f29d47f7",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
   "place-cave-48x48": {
    "file": "pods/place-cave-48x48.png",
    "w": 48,
@@ -2806,78 +2799,50 @@
    "file": "pods/ring-collection-closed-176x176.png",
    "w": 176,
    "h": 176,
-   "sha256": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "f4e06d9a394f99664161dd3d5808d38093b66ec90d56f4a8d5881db4f47bdf8f",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "ring-collection-idle-176x176": {
    "file": "pods/ring-collection-idle-176x176.png",
    "w": 176,
    "h": 176,
-   "sha256": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-column-112x522": {
-   "file": "pods/ring-column-112x522.png",
-   "w": 112,
-   "h": 522,
-   "sha256": "d196eb9b72a86516f0280103f66e89e460cfc8dc2501f3a25da44b4382494314",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "30c32aff28484c8c065a61f75c7177ae919d2cb6362d48c7790440ff67dc7cd5",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "ring-hatch-80x56": {
    "file": "pods/ring-hatch-80x56.png",
    "w": 80,
    "h": 56,
-   "sha256": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "ring-kin-56x56": {
    "file": "pods/ring-kin-56x56.png",
    "w": 56,
    "h": 56,
-   "sha256": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-well-empty-80x80": {
-   "file": "pods/ring-well-empty-80x80.png",
-   "w": 80,
-   "h": 80,
-   "sha256": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-well-idle-80x80": {
-   "file": "pods/ring-well-idle-80x80.png",
-   "w": 80,
-   "h": 80,
-   "sha256": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "ring-well-selected-80x80": {
-   "file": "pods/ring-well-selected-80x80.png",
-   "w": 80,
-   "h": 80,
-   "sha256": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage": {
    "file": "pods/room-bench-stage.png",
    "w": 1024,
    "h": 522,
-   "sha256": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage-chapter": {
    "file": "pods/room-bench-stage-chapter.png",
    "w": 1024,
    "h": 522,
-   "sha256": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage-collection": {
    "file": "pods/room-bench-stage-collection.png",
    "w": 1024,
    "h": 522,
-   "sha256": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "73e7ceaa0bc18cd61b6385b27aaa4edf4a9569be000067c4dc5140f2826172eb",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-bench-stage-compare": {
    "file": "pods/room-bench-stage-compare.png",
@@ -2890,43 +2855,29 @@
    "file": "pods/room-bench-stage-overview.png",
    "w": 1024,
    "h": 522,
-   "sha256": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "room-cradle": {
-   "file": "pods/room-cradle.png",
-   "w": 224,
-   "h": 96,
-   "sha256": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-cradle-front": {
    "file": "pods/room-cradle-front.png",
    "w": 224,
    "h": 96,
-   "sha256": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
-  "room-shelf": {
-   "file": "pods/room-shelf.png",
-   "w": 288,
-   "h": 72,
-   "sha256": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-stamp-case-152x152": {
    "file": "pods/room-stamp-case-152x152.png",
    "w": 152,
    "h": 152,
-   "sha256": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "room-stamp-case-152x152-front": {
    "file": "pods/room-stamp-case-152x152-front.png",
    "w": 152,
    "h": 152,
-   "sha256": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
+   "signed": "art director, Pods room verdict (README fa105365)"
   },
   "spread-progress-empty-8x8": {
    "file": "pods/spread-progress-empty-8x8.png",
