@@ -146,7 +146,7 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 | --- | --- | --- |
 | **The namer** ([The namer](#the-namer), `namer.json`) | The overlay over the right column (592, 48, 416, 424), its keys, its states and its limit | Opened from one mibi up close |
 | **The Sitting** ([Sitting](#sitting), `sitting.json`) | Its three steps, its regions, its gilt frame and its events | Its parent is one mibi up close; from the pose step ← reads the mibi's name ("← Burr"), else "Back" |
-| **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Leave against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed home, no room", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | Greet replaces Spend time; the skill notches join the card |
+| **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Leave against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed home, no room", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | ✓ Greet on the mibi; the skill notches on the card |
 | **The top bar** | Its zones, rules and marks; the Companion zone at (760, 8, 120, 24) with three face places | One mibi up close is titled "Vivarium"; its mark is the Vivarium key's icon |
 | **The bottom line** | Its four zones and their rules | The way back widens to 88 (920, 570, 88, 24); the notice ends at 896 (624, 570, 272, 24) |
 | **Home** | The vivarium panel, the residents, the bed, the rest knob, the name tag, the room's ✓ | The column holds five section modules of 88 on a 104 pitch (Cargo, Pods, Incubator, Probe, Library); the panel is a focus target; the Bay module is Cargo; the arrival moves to Cargo |
@@ -1462,7 +1462,7 @@ One mibi up close, in the vivarium's light. Wireframes, 1×: [06-habitat](statio
 
 <img src="station-layouts/06-habitat.png" width="1024" alt="The vivarium, up close at rest">
 
-*06. The vivarium, up close, at rest: an adult founder with every chapter read, the ring on the mibi, `✓ Spend time with Burr`. 1×, measured.*
+*06. The vivarium, up close, at rest: an adult founder with every chapter read, the ring on the mibi, `✓ Greet Burr`. 1×, measured.*
 
 <img src="station-layouts/06b-habitat-meet.png" width="1024" alt="The vivarium, up close, the meet">
 
@@ -1597,7 +1597,7 @@ The ring is the frame's `focusRing` word; the bottom line and the top bar are th
 | Input | What happens, and how it shows |
 | --- | --- |
 | Pad | Moves the ring by [the vivarium's focus](#the-vivariums-focus-as-data); on a tile it also shows that mibi (a 200 ms dither in the mibi's box; the tag, card and modules change at once) |
-| ✓ on the mibi or a tile | `✓ Spend time with Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing and shows nothing like a reward. In the meet, `✓ Name Moss` |
+| ✓ on the mibi or a tile | `✓ Greet Burr`: its species moment (input held 300 ms, about 1.8 s); it rewards nothing and shows nothing like a reward. In the meet, `✓ Name Moss` |
 | ✓ on the name tag | `✓ Rename Burr`: the namer opens over the right column; when it closes, the ring is on the name |
 | ✓ on the species line | `✓ Open the guide`, the context "every Loika": a jump to the Book's guide spread, where ← reads Library |
 | ✓ on a plate | A bred child's unread chapter: `✓ Read Coat   ◆ 1` (no price when it costs nothing): the plate turns read and the stamp prints the chapter's cells (300 ms, held). A read or sealed plate: no ✓ cap, the context names it ("Coat, read", "Coat, sealed") |

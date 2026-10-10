@@ -278,7 +278,7 @@ The vivarium has six bays. The mibis with you keep their beds.
 
 ### Life stages
 
-- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. It grows up after 2 world turns.
+- **Juvenile**: just opened. It can be with you in the Companion, but it is too young for the Probe. An unbonded juvenile grows up after 2 world turns; a bonded one grows through care on the Companion, and waits at home, not growing, until it is carried and tended.
 - **Adult**: a full partner, using its ability at full strength.
 - **Elder**: after 6 more world turns. Still a partner: it calms and sniffs twice as far and feels every stray strike coming, but it is slow, and digs in two actions instead of one.
 
@@ -291,8 +291,8 @@ To choose, open the **Vivarium** on the Station, up close on the mibi, move to t
 ### The active mibi screen
 
 Between expeditions the Companion shows the mibi with you, large: its name, stage, species, ability and how it is doing ("with you · joins the Probe"). The pad shows your other mibis. **Call** makes it answer (a juvenile sometimes looks the wrong way first).
-- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does, and **+1 Data** into the hold.
-- After the walk, ✓ **Spend time** shows a little moment with it and what it remembers from its last expedition. Free.
+- ✓ **Walk** with it, once per world turn while the Companion is lifted: a short moment where it does what its species does. A walk helps a mibi grow, but never bonds it.
+- ✓ **Tend** it, once a day for each mibi with you. A few Tends (three) bond it, and a small heart marks it; a bond is never lost.
 
 ### Getting better and bonding
 
@@ -318,7 +318,7 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | | Map | Place | Screens | Home |
 | --- | --- | --- | --- | --- |
 | Pad | Step / hold to walk | Tap: creep · hold: walk | Move choice | Other mibis |
-| ✓ | Go down | Act on what you face, or Wait | Choose | Spend time / Take |
+| ✓ | Go down | Act on what you face, or Wait | Choose | Walk, Tend / Take |
 | ← | Head home (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
