@@ -13,9 +13,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the case's floor, the stage under everything: the housing rim at the edges, warm dark foam, hoses, a vent and a small gauge at the margins, no cut-outs; a Pro painting (pods-floor.jpg), 1024x522; the pods are placed by the renderer, never painted in",
   "sha256": "eb3300adbcd9eb9e9e14cc7cec81ea4077f8902f84708944c09e6d66981b725b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-cradle": {
   "size": [
@@ -31,9 +31,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the pod's fitted nest (224x96), cut from the composed overview at (144, 288); the pods are placed by the renderer, never painted in",
   "sha256": "d2d51648c2916128312d500b9b802fa8d3f56af109d9ea4aeacc2f4ccbe05f34",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-cradle-front": {
   "size": [
@@ -49,9 +49,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the nest's near rim as a separate layer (RGBA 224x96): the lower arc of the egg's rim, cut from the cradle; the pods are placed by the renderer, never painted in",
   "sha256": "0edcd0151bad7458fa064b4eca1f739edbf40b50bc64305f9dce555ab3b3ad2a",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-shelf": {
   "size": [
@@ -67,9 +67,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the case floor under the cradle (288x72), cut from the composed overview at (112, 328); the pods are placed by the renderer, never painted in",
   "sha256": "ef81494d369d839927e2e17c5fb750d645e887c58498e88a253c58706108c32b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-column": {
   "size": [
@@ -2077,9 +2077,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (360, 150) r 92",
   "made": "the Pods room set (pass 93): the same well with its rubber rim catching more warm light (the focus ring is composed in code over it); one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "683099aef4dd0bcf4091657facc3df9f9a1fe1451cbc2d59b7462b964480c024",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-well-idle-80x80": {
   "size": [
@@ -2095,9 +2095,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (150, 150) r 92",
   "made": "the Pods room set (pass 93): the well at rest: a matte rubber-edged circular recess in the case, empty; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "2e0a18a357f7d000569bb94eec04547a98d6531f020fd0ce345813e2a56f2726",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-arc-selected-n4-track": {
   "size": [
@@ -3409,9 +3409,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), box (688, 71, 912, 229)",
   "made": "the Pods room set (pass 93): the closed gasketed service hatch in the housing's sage; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "7484bf22296d17322b58160e086a807fdcb03e282628de1ea633e839b67bd318",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "page-pane-256x440": {
   "size": [
@@ -3662,9 +3662,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the small dim unlit matte stamp plate set into the housing, painted (pods-plate.jpg), cut at (856, 344); the pods are placed by the renderer, never painted in",
   "sha256": "d66b6979e11ba3b33a231372c372f2a8c3beb93c4a9d742449cd5290a4bc5ba4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-well-empty-80x80": {
   "size": [
@@ -3680,9 +3680,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (570, 150) r 92",
   "made": "the Pods room set (pass 93): the unused well: a smooth rubber plug seated nearly flush; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "e5d8067e4428fbd76f7783706de70746991bed7cd5d2bfafd0d9e57b8118598c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "rail-tab-fill-unread-full-152x40": {
   "size": [
@@ -3909,9 +3909,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the plate's rim only (RGBA 152x152, the opening transparent, no glass); the pods are placed by the renderer, never painted in",
   "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "trait-picture-frame-144x176": {
   "size": [
@@ -5094,9 +5094,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the overview stage: the floor with ONE fitted egg-shaped nest (about 150x96, uniformly scaled) on the pod axis x 256, the stamp plate at (856, 344) and a plain warm slate panel at the right; composed from three Pro paintings; the pods are placed by the renderer, never painted in",
   "sha256": "e5558c15acd38798d667eef071c2dbed1187670aac4b4cd9db975c694475f038",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-bench-stage-chapter": {
   "size": [
@@ -5112,9 +5112,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the chapter stage: the floor with the nest on the axis x 216 and a warm matte slate page panel to the right (424, 72, 584, 440); composed; the pods are placed by the renderer, never painted in",
   "sha256": "823b2601475d20ee2755af35b178088f30023c0f9864a2cbdb53cb18c0b03bdf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-collection-idle-176x176": {
   "size": [
@@ -5130,9 +5130,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (200, 500) r 168",
   "made": "the Pods room set (pass 93): the open ring recess at rest (the arcs sit on top); one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "30c32aff28484c8c065a61f75c7177ae919d2cb6362d48c7790440ff67dc7cd5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-collection-closed-176x176": {
   "size": [
@@ -5148,9 +5148,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (560, 500) r 168",
   "made": "the Pods room set (pass 93): the ring closed by its worn rubber cover; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "f4e06d9a394f99664161dd3d5808d38093b66ec90d56f4a8d5881db4f47bdf8f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "mark-species-S01-24x24": {
   "size": [
@@ -6048,9 +6048,9 @@
   "src": "source/raw/pods-room-sheet.jpg (gemini-3-pro-image), (1010, 150) r 78",
   "made": "the Pods room set (pass 93): the small fitted round recess; one sheet painting cut at size, reduced with Lanczos, never enlarged, a hard-edged alpha feathered 1 px",
   "sha256": "bca9aa8fe1d050fad68d52a63fd3fc5803a194482e055ff2fae21b05cdd062e2",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-arc-collection-n1-track-176x176": {
   "size": [
@@ -6858,9 +6858,9 @@
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
   "made": "the Pods room set, the redo (pass 95): the collection stage: the floor with six nests at the six places' centres; composed; the pods are placed by the renderer, never painted in",
   "sha256": "2a22134de9009b9575c455f1e35590c9298d691b924351226c745642f634179e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "mark-can-grow-16": {
   "size": [
@@ -10080,7 +10080,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: bay shut, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "9564c9284b84696cb2cb313964891ff45af23cddb4dccf51c104ea9e1eb2fa22"
+  "sha256": "9564c9284b84696cb2cb313964891ff45af23cddb4dccf51c104ea9e1eb2fa22",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-bay-open-176x72": {
   "size": [
@@ -10090,7 +10093,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "b3c0a5d1e26bb80d35e6dbfe83fe3edba061cee178b255ec294c90ce7204c646"
+  "sha256": "b3c0a5d1e26bb80d35e6dbfe83fe3edba061cee178b255ec294c90ce7204c646",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-well-32x32": {
   "size": [
@@ -10100,7 +10106,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: well, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 32x32, transparent around it (pass 99, the second sheet)",
-  "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44"
+  "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-chamber-empty-72x72": {
   "size": [
@@ -10110,7 +10119,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: chamber empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04"
+  "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-chamber-growing-72x72": {
   "size": [
@@ -10120,7 +10132,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: chamber growing, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1"
+  "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-chamber-ready-72x72": {
   "size": [
@@ -10130,7 +10145,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "f2cf2339915a5eb4883dbb00028edaf2a6767cc6be335c0c1a31179f5299cc4f"
+  "sha256": "f2cf2339915a5eb4883dbb00028edaf2a6767cc6be335c0c1a31179f5299cc4f",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-cradle-empty-96x72": {
   "size": [
@@ -10140,7 +10158,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: cradle empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb"
+  "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-cradle-full-96x72": {
   "size": [
@@ -10150,7 +10171,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: cradle full, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34"
+  "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-journal-104x72": {
   "size": [
@@ -10160,7 +10184,10 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: journal, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 104x72, transparent around it (pass 99, the second sheet)",
-  "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c"
+  "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  },
  "home-bed-192x56": {
   "size": [
@@ -10170,6 +10197,9 @@
   "rect": null,
   "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
   "made": "Home's section column: bed, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 192x56, transparent around it (pass 99, the second sheet)",
-  "sha256": "0ea14f4f939dd8d629addb214ec0c4a5dc20cad1ff08674c69897191f301f34e"
+  "sha256": "0ea14f4f939dd8d629addb214ec0c4a5dc20cad1ff08674c69897191f301f34e",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 99: Home's section column fitting, cut from the second Pro sheet (home-column-sheet-r2; the first, pass 97, was inked and had wood), transparent around it; awaiting the art director's judgement (not signed)"
  }
 }
