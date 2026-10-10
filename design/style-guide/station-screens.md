@@ -129,7 +129,7 @@ The concept rounds named below (Home A-r3-a1, Pods PV-D-r3-a4, Incubator IN-D-r1
 
 *Dock and arrival wireframe. Layout only.*
 
-The measured layout, states and timeline are [Station layouts, Dock and arrival](station-layouts.md#dock-and-arrival). The ribbon has no digits and says the crate only: "First crate home"; how far the land is explored is on the report card.
+The measured layout, states and timeline are [Station layouts, Cargo](station-layouts.md#cargo). The ribbon has no digits and says the crate only: "First crate home"; how far the land is explored is on the report card.
 
 ---
 

@@ -1,156 +1,239 @@
 {
  "screen": "home",
  "device": "station",
- "spec": "design/style-guide/station-layouts.md#home",
+ "spec": "design/style-guide/station-layouts.md#home-the-panel-and-the-column",
  "frame": "frame.json",
- "status": "The L2.2 spec: every drawn region names its word (`component`) or composition (`build`); the states home, arrival and report; the rest knob's states; Dock and arrival as events with the input hold; Home's focus as `order` and `nearestIn` data (lvgl-switch.md §2.6), each target group with its ring form (`ring`); the Incubator module's leaves as the `leaves` word, grid form",
- "note": "The one home of the Home numbers, transcribed from station-layouts.md (Home, Dock and arrival) and its wireframes 01-home.svg to 01e-home-rest.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. What the layout document did not give was listed under `derived`; each entry is now the UI designer's decision, written into the document too. Idle is a state of the frame, in frame.json `idle`.",
- "derived": {
-  "colours": "See `colours` and Home §4's colour roles. Bezel `metal`, lit `enamel`, shade `bevel`; glass edge `frostD`; the placeholder inside is a `forest` back and a `clay` ground band with a `sand` top row and a `soil` foot, the only warm field on screen; modules the kit's instrument panel with the word in `metal`, engraved and quiet; lamps off `hairline`, well `sprout`, waiting `sky`, needs you `amber`; the ribbon as on Pods; the report card an instrument `panel`, not paper",
-  "rack pods": "The signed 32×40 well pod, 1:1, at well + (4, 0). It fills the 40×40 well's height, so centred and bottom-aligned are one place: the stem on the well's top row, the shell's foot on its floor. The glint star is centred above its well, well + (14, -12)",
-  "message plate": "No plate. ← on the room does nothing and the bottom line shows no `← where`; a plate on Home would sit over the living window, which carries no words, and the top bar already names Home",
-  "waiting lamp": "UI designer, 2026-10-08: confirmed: at the resident box's top right, inset 0, so it stays off the creature's body; it rides the resident's 4 px lift; `sky` with a `void` rim",
-  "offsets": "derived, UI designer to confirm: where the document gives a region but not the place inside it: the crates sit 8 px in from the bay door's top left (crateAt); each row of leaves is 14 px under the one before (rowPitch); the Companion mark sits at (56, 16) on the bed (markAt); the ring under a resident is centred on its feet line, feet − 12 to feet + 12 (frame.json focus.ring.forms.feet); the focus starts from the middle of the stage (focus.roomAt) when nothing is focused — UI designer, 2026-10-09: confirmed, all five. The room's point is roomAt's centre (512, 300); nav.mjs homeMove's default (480, 280) is the build's and goes with it",
-  "shield plates": "Standing plates 16×32 on a 24 px pitch at (848 + 24i, 488), the tier's count (three on tier 1, four on tier 2, shields.perTier; count is the most), never a ghost plate; the report card's Probe row draws the same count of 16 px icons",
-  "sleeping mibi": "The resident painting in its nap pose in its stage's resident box (adult 144×152 at 512, 360; juvenile 104×112 at 532, 400), bottom-centred on the bed's hollow (584, 512), never the 48 px token; a focus target like a resident, no lift; the asleep mark at its box's top right (bed.sleeper)",
-  "bay lift": "2 px, the chrome lift (frame.json focus.lift.chrome), over 200 ms as the door opens, held while the crates open, settling when the report card shows. At 4 the Bay's top would sit 4 px under the top bar's rule; the door, the beam and the crates carry the arrival. Nothing is scaled",
-  "report card": "`regions.report` and Home §5's table. Heading, one row per crate (pods pictured, the land's reach in words), Gathered (figures beside material icons only), the Probe's mend, the world's lines; 24 px rows, height 104 + 24 × (crates + Probe row) + (lines ? 40 + 24 × lines : 0), at most 312",
-  "vocabulary": "A module is a build of panel and the vivarium is a living window, both existing words; the rest knob, the with-you bed and the report card are compositions of panel and sprites, not new words (station-layouts.md, the vocabulary). The build names are `module`, `restKnob`, `withYouBed` and `reportCard`; the residents are the living window's `residents` part; the pods' travel during an arrival is the module build's `travel` part, drawn over the column",
-  "ribbon wording": "UI designer, 2026-10-08 (carried from the design-home-spec branch, b1db9879): the arrival ribbon without digits. Was \"Expedition 4 home · 2 pods · explored 9 of 21\" — copywriter, 2026-10-09 12:22: the crate only, \"First crate home\" (strings.ribbon), three words; the reach stays on the report card",
-  "knob ring": "The knob's focus box is 40×16 at (620, 540), centred on the knob as its 48×24 target is; its round ring, 4 px outside, is the 48×24 at (616, 534) with the 2 px lift, ending at y 558, 4 px clear of the bottom line's rule at 562. 4 px outside the 48×24 target it would end on that rule",
-  "dock plate": "UI designer, 2026-10-09: no message plate for Dock. The top bar's Companion returns (frame), the crates slide into the bay, and the notice names them. A plate on Home would sit over the living window (as for ←). A refused dock still shows its plate",
-  "ink tops": "art director, 2026-10-09 12:40: the dome's and the cradle's slices and their placeholders keep rows 0 to 3 empty; first ink at y 340 (dome) and y 468 (cradle). Written as domeInkTop and cradleInkTop beside the rects, which stay [x, y, w, h] arrays for the loader and the tests",
-  "name tag": "owner, 2026-10-07 (in force): the resident's name sits under it inside the living window on a tag; regions.nameTag. The bottom line's context then drops the name and names the species and stage (strings.residentSubject); the action keeps it (\"✓ Look at Bean\") (UI designer, 2026-10-09)",
-  "bed master": "The nest is a placeholder. The Home master paints the concept's shallow glass dish, about 160×80 at (566, 405); when it lands, the bed's rect, the sleeper's foot and the Companion mark's place are re-measured from it. Away, the bed keeps the Companion mark (Station screens, Home), not the absent mibi's silhouette",
-  "module insets": "art director, 2026-10-09 12:25: the Incubator's and the Probe's objects moved 8 px down, clear of their words: dome (704, 336), cradle (704, 464), sitting slot (952, 464), Shield plates (848 + 24i, 488); UI designer, 2026-10-09: leaves to (800, 352), and the Rack's wells and pods to y 224 with the glint star at y 212, 8 px clear of the word's baseline (204) as on the Bay. Were dome 328, cradle and slot 456, plates 480, leaves 344, wells 216, star 204",
-  "away": "UI designer, 2026-10-09: with the Companion away the Bay's door is shut and its lamp off; the Probe module shows its cradle empty and no plates (the Probe and its Shield are out with the Companion, whose HUD shows them); the bed shows the Companion mark. Docked, the door is open, crates or not"
- },
- "states": ["home", "arrival", "report"],
+ "status": "Home's detail spec, from the structure in station-layouts.md (Home, the sections and the Vivarium): the vivarium panel, its residents and the with-you bed for up to three carried mibis, the rest knob, the column of five section modules with their objects, lamps and states, the focus graph as `order` and `nearestIn` data with its vectors, and the bottom line for every focus. The crates open in Cargo (cargo.json); Idle is a state of the frame (frame.json `idle`)",
+ "note": "The one home of the Home numbers, written from station-layouts.md (Home) and its wireframes 01-home.svg to 01f-home-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin.",
+ "states": ["home"],
  "initial": "home",
- "stateRule": "home: the screen at rest, docked or away. arrival: from ✓ Open the bay until the last crate has opened (events.arrival), input held. report: from the arrival's end until the next press. A region with `inStates` exists only in those states; the others exist in all three",
+ "stateRule": "Home has one state. Docked or away (the Companion in the Caddy or not) changes what the panel's bed and the Cargo and Probe modules show, never the layout",
  "regions": {
   "bezel": { "rect": [16, 48, 656, 504], "inset": 8, "component": "livingWindow", "part": "frame" },
-  "glass": { "rect": [24, 56, 640, 488], "component": "livingWindow", "part": "inside", "ground": [24, 300, 640, 228] },
-  "resident": { "component": "livingWindow", "part": "residents", "clip": "glass", "adult": [144, 152], "juvenile": [104, 112], "focus": { "ring": "feet", "widen": 16, "height": 24, "span": "feet − 12 to feet + 12 (frame.json focus.ring.forms.feet)" }, "lift": 4, "lamp": [12, 12], "walk": { "ground": [24, 300, 640, 228] }, "order": "draw order of the residents, the bed and the sleeping mibi: by their feet's y, lower in front (drawn later), left first on a tie; the bed and its sleeper sort as one, at the bed's foot (y 528) (art director, 2026-10-09 12:40)", "arrival": "the residents stop and face the column (right) until the report card shows", "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk" },
-  "bed": { "rect": [520, 472, 128, 56], "build": "withYouBed", "clip": "glass", "mark": [16, 24], "markAt": [56, 16], "sleeper": { "pose": "nap", "foot": [584, 512], "adult": [512, 360, 144, 152], "juvenile": [532, 400, 104, 112], "asleepMark": [24, 16], "markAt": "box top right", "lampGap": 8, "lift": 0, "focus": "the feet ring, as a resident (focus.targets.resident)" }, "states": { "docked": "the nest, then the sleeping mibi with you (sleeper)", "away": "the nest, then the Companion mark 16×24 at (576, 488)", "none": "the nest alone (no mibi with you)" }, "composition": ["sprite: bed", "sprite: the mibi with you, or the Companion mark"] },
-  "nameTag": { "build": "nameTag", "component": "panel", "text": "text", "clip": "glass", "when": "a resident (or the sleeping mibi) is focused; never otherwise", "h": 24, "w": "the name's width + 16, rounded up to the 8 px grid, at least 48", "pad": 8, "px": 16, "weight": 400, "words": "the name only", "x": "centred on the resident's box", "y": "top at feet + 24, 12 px below the ring's ellipse (feet − 12 to feet + 12)", "flip": "if its bottom would pass y 536, its bottom sits 8 px above the resident's box as drawn (lifted): top = box.y - 4 - 32; the sleeping mibi does not lift and its foot is 512, so its tag is always above: top = box.y - 32 (328 for the adult, 368 for the juvenile)", "inside": "slid sideways to stay 8 px inside the glass (32 to 656)", "lift": 0, "rule": "The name is contextual, under the creature inside the living window on a tag, so it does not float; the chrome carries system information only" },
+  "glass": { "rect": [24, 56, 640, 488], "component": "livingWindow", "part": "inside", "ground": [24, 300, 640, 228], "foot": [24, 528, 640, 16] },
+  "resident": { "component": "livingWindow", "part": "residents", "clip": "glass", "adult": [144, 152], "juvenile": [104, 112], "focus": { "ring": "feet", "widen": 16, "height": 24, "span": "feet − 12 to feet + 12 (frame.json focus.ring.forms.feet)" }, "lift": 4, "lamp": [12, 12], "walk": { "ground": [24, 300, 640, 228] }, "order": "draw order of the residents and the bed: by their feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 528)", "props": "per resident: mibi id, stage, painting or placeholder, waiting, seed; the face steps the walk" },
+  "bed": {
+   "rect": [448, 472, 192, 56], "build": "withYouBed", "clip": "glass", "mark": [16, 24], "markAt": [88, 16], "markRect": [536, 488, 16, 24],
+   "sleepers": {
+    "max": 3, "pose": "nap", "pitch": 48, "footY": 512, "centre": 544,
+    "footX": "544 + 48 × (i − (n − 1) / 2) for sleeper i of n, in carried order",
+    "places": { "1": [544], "2": [520, 568], "3": [496, 544, 592] },
+    "adult": { "size": [144, 152], "box": "[footX − 72, 360, 144, 152]" },
+    "juvenile": { "size": [104, 112], "box": "[footX − 52, 400, 104, 112]" },
+    "rects": { "3 adults": [[424, 360, 144, 152], [472, 360, 144, 152], [520, 360, 144, 152]] },
+    "ink": { "max": [96, 88], "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY in its box: at most [footX − 48, 424, 96, 88]. Three sit on the 192 px bed, 16 px or more inside the glass", "rects": { "3": [[448, 424, 96, 88], [496, 424, 96, 88], [544, 424, 96, 88]] } },
+    "order": "the bed first, then the sleepers right to left: the first carried is drawn last, in front",
+    "mark": null, "markNote": "no mark on a sleeper: the nap pose and the context (strings.subjects.sleeper, \"…, asleep\") say it; its waiting lamp at its box's top right, as a resident's", "lift": 0,
+    "focus": "each sleeper is a resident target (focus.targets.resident), with the feet ring and no lift"
+   },
+   "states": { "docked": "the nest, then one to three sleepers, the carried set (carriedIds) in carried order", "away": "the nest, then the Companion mark 16×24 at markRect", "none": "docked with nobody carried: the nest alone" },
+   "composition": ["sprite: bed", "sprites: the sleepers, or the Companion mark"]
+  },
+  "nameTag": { "build": "nameTag", "component": "panel", "text": "text", "clip": "glass", "when": "a resident or a sleeper is focused; never otherwise", "h": 24, "w": "the name's width + 16, rounded up to the 8 px grid, at least 48", "pad": 8, "px": 16, "weight": 400, "words": "the name only", "x": "centred on the resident's box", "y": "top at feet + 24, 12 px below the ring's ellipse (feet − 12 to feet + 12)", "flip": "if its bottom would pass y 536, its bottom sits 8 px above the resident's box as drawn (lifted): top = box.y − 4 − 32; a sleeper does not lift and its foot is 512, so its tag is always above: top = box.y − 32 (328 for an adult, 368 for a juvenile)", "inside": "slid sideways to stay 8 px inside the glass (32 to 656)", "lift": 0 },
   "knob": {
-   "rect": [624, 544, 32, 8], "drawn": [32, 6], "drawnNote": "the region stays 32×8 on the bezel's bottom rail (y 544 to 552); the knob is drawn 32×6, at rest at y 546 and lifted to 544, so it never covers the glass (rows up to 543) (art director, 2026-10-09 12:40; UI designer: confirmed, the ring stays 616, 534, 48, 24)", "target": [48, 24], "build": "restKnob", "composition": ["sprite: knob on the living window's frame"],
+   "rect": [624, 544, 32, 8], "drawn": [32, 6], "drawnNote": "the region is 32×8 on the bezel's bottom rail (y 544 to 552); the knob is drawn 32×6, at rest at y 546 and lifted to 544, so it never covers the glass (rows up to 543)", "target": [48, 24], "build": "restKnob", "composition": ["sprite: knob on the living window's frame"],
    "states": {
     "rest": { "rect": [624, 546, 32, 6], "ring": null },
-    "focused": { "rect": [624, 544, 32, 6], "ring": [616, 534, 48, 24], "lift": 2, "liftMs": 200, "line": { "action": "strings.rest", "subject": "strings.knobSubject", "back": null } },
+    "focused": { "rect": [624, 544, 32, 6], "ring": [616, 534, 48, 24], "lift": 2, "liftMs": 200, "line": { "action": "strings.actions.knob", "subject": "strings.subjects.knob", "back": null } },
     "pressed": { "rect": [624, 546, 32, 6], "ring": null, "event": "events.rest", "then": "Idle (frame.json idle)" }
-   },
-   "unreachable": "during the arrival (input held)"
-  },
-  "bay": {
-   "rect": [688, 48, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "door": [16, 36, 288, 72], "crate": [80, 56], "crateAt": [8, 8], "pitch": 96, "max": 3, "lift": 2, "liftMs": 200,
-   "crateRects": [[712, 92, 80, 56], [808, 92, 80, 56], [904, 92, 80, 56]],
-   "beam": { "at": [0, -8], "size": [80, 72], "note": "behind the opening crate, from the door's top to its foot: (712 + 96i, 84, 80, 72)" },
-   "crateStates": { "sealed": "the crate with its orange seal tag", "opening": "the tag gone, the lid lifting (300 ms, events.arrival)", "open": "the lid off, empty", "gone": "the slot empty" },
-   "states": {
-    "away": { "door": "shut", "lamp": "off", "crates": "none drawn", "subject": "strings.bayClosed" },
-    "docked": { "door": "open", "lamp": "needsYou while crates wait, else off", "crates": "one sealed crate per consignment, at most three, left to right in the order they open" },
-    "arrival": { "lift": 2, "door": "open", "beam": "behind the opening crate", "crates": "opened ones open, the current one opening, the rest sealed" },
-    "report": { "lift": 0, "door": "open", "crates": "gone" }
    }
   },
-  "rack": { "rect": [688, 176, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "wells": { "at": [24, 48], "size": [40, 40], "pitch": [48, 0], "slots": 6 }, "pod": { "asset": "pod.well", "size": [32, 40], "at": [4, 0] }, "star": [12, 12], "starAt": [14, -12], "arrival": "a well whose pod is still travelling shows empty until the pod lands; a pod that finds no free well does not travel: it waits sealed and lands, oldest first, as a well frees (game designer, 2026-10-09 12:24)" },
-  "incubator": { "rect": [688, 304, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "dome": [16, 32, 80, 80], "domeInkTop": 4, "leaves": { "at": [112, 48, 192, 40], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 12, "perRow": 16, "rowPitch": 14, "rows": 3, "max": 38, "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" }, "status": "both pictures are placeholders until their masters land: the Incubator's leaning leaf at 8×12, its empty outline `bevel` (create.json regions.leaves)", "place": "leaf i at (800 + 12 × (i mod 16), 352 + 14 × floor(i / 16)): rows at y 352, 366 and 380, the last ending at 392, the box's foot; 4 px between leaves, 2 px between rows", "clear": "the module word Incubator (Inter 16 at 704, 316, 72 px of ink to x 776, baseline 332): the first leaf row's ink starts at y 352 at the earliest, 20 px under the baseline, and at x 800, 24 px right of the word's ink; the dome (704 to 784) 16 px to the left; the lamp (984, 316) 24 px above the top row", "count": "one a minute the bud will take, up to 38 (create.json regions.leaves.count)", "props": "{ total, full, rows }" } },
-  "probe": { "rect": [688, 432, 320, 120], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "cradle": [16, 32, 128, 80], "cradleInkTop": 4, "shields": { "at": [160, 56], "size": [16, 32], "pitch": 24, "count": 4, "perTier": { "1": 3, "2": 4 } }, "slot": [264, 32, 40, 80], "states": { "docked": "the Probe in its cradle, its plates whole or gone", "away": "the cradle empty, no plates, the lamp off; the sitting slot still shows when a sitting is held (game designer, 2026-10-09 12:24: confirmed). The build draws a hairline ghost Probe (home.mjs drawCradle); the empty cradle replaces it" } },
-  "travel": { "rect": [688, 48, 320, 248], "build": "module", "part": "travel", "inStates": ["arrival"], "layer": "over the column", "pod": { "asset": "pod.well", "size": [32, 40] }, "from": "the opening crate's centre: (crate.x + 24, 100)", "to": "its well's pod place: (716 + 48i, 224)", "path": "a straight line, whole pixels, eased in and out", "note": "the pods travel from the bay across the 8 px gap into the rack; nothing is scaled; a pod never leaves this rectangle" },
-  "ribbon": { "rect": [40, 72, 608, 40], "component": "ribbon", "inStates": ["arrival"], "px": 20, "align": "centre", "lines": 1, "words": "strings.ribbon" },
-  "report": {
-   "rect": [64, 120, 560, 312], "maxHeight": 320, "component": "panel", "build": "reportCard", "inStates": ["report"], "pad": 16, "noDigits": "but beside a material icon",
-   "heading": { "at": [16, 16], "h": 32, "px": 20 },
-   "rows": { "first": 56, "h": 24, "pitch": 24, "icon": 16, "iconAt": 4, "lineAt": 2, "lead": [16, 128], "content": 152, "px": 16 },
-   "crates": { "max": 3, "podIcon": 16, "podPitch": 20, "podMax": 8, "reachAt": 328 },
-   "gathered": { "gapAbove": 8, "icon": 16, "gap": 4, "between": 24 },
-   "probe": { "plateIcon": 16, "platePitch": 20 },
-   "world": { "gapAbove": 16, "max": 3, "bullet": [16, 10, 4, 4], "lineAt": 32 },
-   "height": "104 + 24 × (crates + probe row) + (world lines ? 40 + 24 × lines : 0)",
-   "full": { "heading": 136, "crates": [176, 200, 224], "gathered": 256, "probe": 280, "world": 320, "lines": [344, 368, 392], "bottom": 432 }
+  "cargo": {
+   "rect": [688, 48, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "bay": [112, 8, 176, 72], "crate": [48, 40], "crateAt": [0, 16], "pitch": 64, "max": 3,
+   "crateRects": [[800, 72, 48, 40], [864, 72, 48, 40], [928, 72, 48, 40]],
+   "waiting": { "rect": [876, 80, 24, 24], "asset": "mark-waiting-24", "when": "pods wait in the bay for a free well and no crate waits", "lamp": "off: the waiting mark is never amber; the need lights pods (strings.needs.waitingPods)" },
+   "sittingCrates": { "places": "from the right: the first at 928, a second at 864; walk crates fill from the left; at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "lamp": { "at": [18, 44], "size": [12, 12], "rows": 10, "rule": "under its crate, inside the bay: the rows lit from the bottom, floor(10 × crateLamp) in sky, the rest hairline; full only when the crate is ready" } },
+   "states": {
+    "away": { "bay": "shut: the lid, unless a sitting crate is in the bay, which keeps it open", "crates": "sitting crates only", "lamp": "off, or needsYou for a ready sitting crate" },
+    "empty": { "bay": "open", "crates": "none", "lamp": "off" },
+    "crates": { "bay": "open", "crates": "one sealed crate per crate in the bay, at most three, left to right in the order they open", "lamp": "needsYou" },
+    "waiting": { "bay": "open", "crates": "none", "mark": "regions.cargo.waiting", "lamp": "off" }
+   }
+  },
+  "pods": {
+   "rect": [688, 152, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "wells": { "at": [136, 8], "size": [32, 32], "pitch": [48, 40], "cols": 3, "rows": 2, "slots": 6, "rects": [[824, 160, 32, 32], [872, 160, 32, 32], [920, 160, 32, 32], [824, 200, 32, 32], [872, 200, 32, 32], [920, 200, 32, 32]], "order": "rack order: left to right, the top row first" },
+   "pod": { "class": "rack", "size": [24, 32], "at": [4, 0], "note": "the pod at the rack class, rendered at 24×32 by the pod renderer, never the 32×40 well pod scaled" },
+   "star": [12, 12], "starAt": [34, 10], "starNote": "a glint star in the 16 px gap right of its well, 2 px clear of either well"
+  },
+  "incubator": {
+   "rect": [688, 256, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "chamber": [112, 8, 72, 72], "chamberRect": [800, 264, 72, 72],
+   "leaves": { "at": [200, 8, 88, 72], "rect": [888, 264, 88, 72], "component": "leaves", "form": "grid", "leaf": [8, 12], "pitch": 11, "perRow": 8, "rowPitch": 14, "rows": 5, "max": 40, "pictures": { "empty": "leaf-small-empty-8x12", "full": "leaf-small-full-8x12" }, "place": "leaf i at (888 + 11 × (i mod 8), 264 + 14 × floor(i / 8)): the last ink at x 973 and y 332", "count": "one a minute the bud will take, up to 40 (create.json regions.leaves.count)", "props": "{ total, full, rows }" },
+   "states": { "empty": "the chamber dark, no leaves, lamp off", "growing": "the bud in the chamber, its leaves filling, lamp well", "ready": "every leaf full, lamp needsYou", "painting": "the hatched mibi's painting on its way: lamp waiting" }
+  },
+  "probe": {
+   "rect": [688, 360, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "cradle": [112, 8, 96, 72], "cradleRect": [800, 368, 96, 72],
+   "shields": { "at": [224, 8], "size": [12, 24], "pitch": 16, "count": 4, "perTier": { "1": 3, "2": 4 }, "rects": [[912, 368, 12, 24], [928, 368, 12, 24], [944, 368, 12, 24], [960, 368, 12, 24]] },
+   "slot": [224, 48, 24, 32], "slotRect": [912, 408, 24, 32],
+   "states": { "docked": "the Probe in its cradle, its plates whole or gone, the tier's count; lamp well", "away": "the cradle empty, no plates, lamp off", "sitting": "a held sitting shows as the gilt frame in the slot, docked or away; none held, nothing" }
+  },
+  "library": {
+   "rect": [688, 464, 320, 88], "component": "panel", "build": "module", "word": [16, 12], "lamp": [296, 12, 12, 12], "objects": [112, 8, 176, 72],
+   "journal": [112, 8, 104, 72], "journalRect": [800, 472, 104, 72],
+   "states": { "empty": "no species found yet: the journal shut, lamp off", "pages": "the journal, lamp well" }
   }
  },
+ "lamps": {
+  "rule": "one 12×12 lamp per module at (984, module.y + 12); amber (needsYou) on one module at most: the module the room's ✓ acts on (strings.needs). The meet lights no module: the notice and the room's ✓ say it",
+  "cargo": { "off": "nothing in the bay ready to open; pods waiting for a well show the waiting mark, and the lamp stays off", "needsYou": "a crate is ready to open (walk crates while docked, a ready sitting crate) and that is the most pressing notice" },
+  "pods": { "off": "the rack is empty and no pod waits for a well", "well": "pods in the rack", "needsYou": "a new pod, a glinting pod, pods waiting for a well, a pod that could grow or one waiting to be read is the most pressing notice" },
+  "incubator": { "off": "empty", "well": "a bud growing", "waiting": "the hatched mibi's painting is on its way", "needsYou": "the bud is ready" },
+  "probe": { "off": "away", "well": "docked" },
+  "library": { "off": "no species found", "well": "species in the journal" }
+ },
  "events": {
-  "crateIn": { "kind": "crateIn", "target": "bay", "hold": false, "when": "the Companion docks with crates while Home shows, or Home is landed on from Idle by Dock; elsewhere the crates are simply in the bay when Home next shows", "each": { "from": [0, -64], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay's door (704, 84, 288, 72)" } },
-  "arrival": {
-   "kind": "arrival", "target": "bay", "hold": true, "holdMs": "crates × 3000 + 200", "perCrate": 3000, "focus": "the room; no ring; no key moves it",
-   "start": { "bayLift": { "px": 2, "ms": 200 }, "residents": "stop and face the column" },
-   "crate": [
-    { "at": 0, "ms": 300, "do": "the beam shows behind this crate; its seal tag breaks and the lid lifts (sealed → opening → open)" },
-    { "at": 300, "do": "the ribbon shows this crate's words (it appears on the first crate and changes words on the next; a cut, no fade)" },
-    { "at": 600, "do": "the counters tick this crate's materials (the top bar's own tick and flash)" },
-    { "at": 1200, "each": 150, "ms": 600, "do": "each of the crate's pods travels to its well (regions.travel), in well order" },
-    { "at": 1650, "do": "the world turn jumps to the crate's turn (the top bar's tick)" },
-    { "at": 2850, "do": "the beam goes; the crate stays open and empty" }
-   ],
-   "probeMend": { "crate": 0, "at": 600, "each": 300, "do": "each mended plate seats, gone → whole, left to right" },
-   "end": { "at": "crates × 3000", "do": "the ribbon goes, the crates go, the Bay settles (2 px, 200 ms), the residents walk again, the report card shows (state report)" }
-  },
+  "crateIn": { "kind": "arrival", "target": "cargo", "hold": false, "when": "the Companion docks with crates while Home shows, or Home is landed on from Idle by Dock; docked on another screen, the crates are in the bay when Home next shows", "each": { "from": [0, -40], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay (800, 56, 176, 72)" } },
   "rest": { "kind": "rest", "target": "knob", "hold": true, "holdMs": 380, "steps": [{ "at": 0, "ms": 200, "do": "the knob settles from its lift; the ring goes" }, { "at": 200, "ms": 180, "do": "the screen transition (16-level Bayer dither) to Idle" }] }
  },
  "focus": {
   "initial": "room",
-  "roomKey": "room",
   "roomAt": [496, 288, 32, 24],
-  "room": "the ring on nothing: no ring is drawn, ✓ does what needs the player (the notice), the room's point is roomAt's centre (512, 300)",
-  "fallback": "none",
-  "rule": "◀ on a resident goes to the nearest resident to its left and ▶ crosses to the column: the edge is { nearestIn: resident, ahead: true }, as on the residents' ▲ ▼ (lvgl-switch.md §2.6.1), so two residents at one height are never stranded",
+  "room": "the ring on nothing: no ring is drawn, ✓ does what needs the player (strings.needs), the room's point is roomAt's centre (512, 300)",
   "graph": {
-   "room": { "right": "bay", "left": { "nearestIn": "resident" }, "up": "none", "down": "none" },
-   "column": { "order": ["bay", "rack", "incubator", "probe", "knob"], "left": { "nearestIn": "resident" }, "right": "none" },
-   "resident": { "right": { "nearestIn": "column" }, "up": { "nearestIn": "resident", "ahead": true }, "down": { "nearestIn": "resident", "ahead": true }, "left": { "nearestIn": "resident", "ahead": true } }
+   "roomKey": "room",
+   "fallback": "none",
+   "room": { "up": "vivarium", "right": "cargo", "left": [{ "nearestIn": "resident" }, "vivarium"], "down": "none" },
+   "vivarium": { "up": "none", "left": "none", "right": "cargo", "down": [{ "nearestIn": "resident" }, "none"] },
+   "column": { "order": ["cargo", "pods", "incubator", "probe", "library", "knob"], "left": [{ "nearestIn": "resident" }, "vivarium"], "right": "none" },
+   "resident": { "up": [{ "nearestIn": "resident", "ahead": true }, "vivarium"], "down": { "nearestIn": "resident", "ahead": true }, "left": { "nearestIn": "resident", "ahead": true }, "right": { "nearestIn": "column" } }
   },
   "primitives": {
-   "spec": "lvgl-switch.md §2.6.1 (architect, 2026-10-09 12:25): the edge forms, the order of a move and the integer scores on doubled centres govern; the lines below say the same in words",
+   "spec": "lvgl-switch.md §2.6.1: the edge forms, the order of a move and the integer scores on doubled centres govern; the lines below say the same in words",
    "order": "▲ and ▼ step through the list as written, skipping ids that are not present; the ends stop, never a wrap; ◀ and ▶ take the group's own edges",
-   "nearestIn": "the present target of that group with the least 400 × across + abs(along) on doubled centres: the row nearest the ring for ◀ ▶ (from the room, roomAt's centre); none: the ring stays",
-   "nearestIn ahead": "only the group's present targets more than 6 px ahead in the key's direction (along > 12 on doubled centres), least 5 × along + 11 × across; none: the ring stays"
+   "nearestIn": "the present target of that group with the least 400 × across + abs(along) on doubled centres: the row nearest the ring for ◀ ▶, the column nearest for ▲ ▼",
+   "nearestIn ahead": "only the group's present targets more than 6 px ahead in the key's direction (along > 12 on doubled centres), least 5 × along + 11 × across",
+   "list": "an ordered list: the first entry that yields a present target wins; \"none\" last means the ring stays"
   },
-  "held": "while events.arrival or events.rest holds, the face moves no focus and sends no intent",
-  "report": "while the report card shows, a key closes it and also does what it does: the pad moves the ring by this graph, ✓ follows the bottom line, ← only closes",
+  "held": "while events.rest holds, the face moves no focus and sends no intent",
   "targets": {
-   "resident": { "group": "resident", "id": "resident.<mibi id>", "ring": "feet", "box": "the resident's box where the face has stepped it; the sleeping mibi on the bed is one (bed.sleeper), with no lift", "lift": 4 },
-   "bay": { "group": "column", "ring": "round", "box": "regions.bay.rect", "lift": 2 },
-   "rack": { "group": "column", "ring": "round", "box": "regions.rack.rect", "lift": 2 },
+   "vivarium": { "group": "vivarium", "ring": "round", "box": "regions.bezel.rect", "ringRect": [12, 44, 664, 512], "lift": 0, "liftNote": "the living window never moves: the ring alone marks it" },
+   "resident": { "group": "resident", "id": "resident.<mibi id>", "ring": "feet", "box": "the resident's box where the face has stepped it; each sleeper is one (regions.bed.sleepers), with no lift", "lift": 4 },
+   "cargo": { "group": "column", "ring": "round", "box": "regions.cargo.rect", "lift": 2 },
+   "pods": { "group": "column", "ring": "round", "box": "regions.pods.rect", "lift": 2 },
    "incubator": { "group": "column", "ring": "round", "box": "regions.incubator.rect", "lift": 2 },
    "probe": { "group": "column", "ring": "round", "box": "regions.probe.rect", "lift": 2 },
-   "knob": { "group": "column", "ring": "round", "box": [620, 540, 40, 16], "boxNote": "the knob's target box as the restKnob build registers it, at rest; with the 2 px lift it is (620, 538, 40, 16) and the round ring 4 px outside it is regions.knob.states.focused.ring (616, 534, 48, 24), 4 px clear of the bottom line's rule at 562. Its centre (640, 548) is regions.knob.target's, so nearestIn scores are unchanged", "lift": 2, "navigation": "frame.json navigation.homePad's \"rest\"" }
+   "library": { "group": "column", "ring": "round", "box": "regions.library.rect", "lift": 2 },
+   "knob": { "group": "column", "ring": "round", "box": [620, 540, 40, 16], "boxNote": "the knob's target box as the restKnob build registers it, at rest; with the 2 px lift it is (620, 538, 40, 16) and its round ring is regions.knob.states.focused.ring (616, 534, 48, 24), 4 px clear of the bottom line's rule at 562", "lift": 2, "navigation": "frame.json navigation.homePad's \"rest\"" }
+  },
+  "layout": {
+   "note": "the residents the vectors are played on: three at home and two sleepers on the bed (15a)",
+   "resident.bean": [40, 264, 144, 152],
+   "resident.dot": [200, 320, 104, 112],
+   "resident.fig": [296, 336, 144, 152],
+   "resident.moss": [448, 360, 144, 152],
+   "resident.pip": [496, 360, 144, 152]
   },
   "vectors": [
-   { "from": "room", "key": "right", "to": "bay" },
-   { "from": "bay", "key": "up", "to": "bay" },
-   { "from": "bay", "key": "down", "to": "rack" },
-   { "from": "probe", "key": "down", "to": "knob" },
+   { "from": "room", "key": "right", "to": "cargo" },
+   { "from": "room", "key": "up", "to": "vivarium" },
+   { "from": "room", "key": "down", "to": "room" },
+   { "from": "room", "key": "left", "to": "resident.bean" },
+   { "from": "room", "key": "left", "to": "vivarium", "residents": "none" },
+   { "from": "vivarium", "key": "right", "to": "cargo" },
+   { "from": "vivarium", "key": "down", "to": "resident.fig" },
+   { "from": "vivarium", "key": "down", "to": "vivarium", "residents": "none" },
+   { "from": "vivarium", "key": "up", "to": "vivarium" },
+   { "from": "vivarium", "key": "left", "to": "vivarium" },
+   { "from": "cargo", "key": "up", "to": "cargo" },
+   { "from": "cargo", "key": "down", "to": "pods" },
+   { "from": "pods", "key": "down", "to": "incubator" },
+   { "from": "probe", "key": "down", "to": "library" },
+   { "from": "library", "key": "down", "to": "knob" },
    { "from": "knob", "key": "down", "to": "knob" },
    { "from": "knob", "key": "right", "to": "knob" },
-   { "from": "room", "key": "up", "to": "room" },
-   { "from": "room", "key": "left", "to": "the resident nearest (512, 300) by row", "residents": "none", "toIfNone": "room" },
-   { "from": "the leftmost resident", "key": "left", "to": "the same resident" },
-   { "from": "a resident with others to its left", "key": "left", "to": "the nearest of them more than 6 px to its left, by along + 2.2 × across" }
+   { "from": "knob", "key": "up", "to": "library" },
+   { "from": "cargo", "key": "right", "to": "cargo" },
+   { "from": "cargo", "key": "left", "to": "resident.bean" },
+   { "from": "library", "key": "left", "to": "resident.pip" },
+   { "from": "incubator", "key": "left", "to": "resident.bean" },
+   { "from": "pods", "key": "left", "to": "vivarium", "residents": "none" },
+   { "from": "resident.bean", "key": "up", "to": "vivarium" },
+   { "from": "resident.bean", "key": "left", "to": "resident.bean" },
+   { "from": "resident.bean", "key": "down", "to": "resident.dot" },
+   { "from": "resident.fig", "key": "left", "to": "resident.dot" },
+   { "from": "resident.pip", "key": "left", "to": "resident.moss" },
+   { "from": "resident.moss", "key": "right", "to": "probe" },
+   { "from": "resident.pip", "key": "right", "to": "probe" },
+   { "from": "resident.bean", "key": "right", "to": "incubator" }
   ]
+ },
+ "keys": {
+  "pad": "focus.graph",
+  "confirm": "the bottom line's action for the focus (strings.actions); on the room, what needs the player (strings.needs)",
+  "back": "nothing: Home is the top of the tree; no ← cap, no message plate",
+  "home": "the ring back on the room (roomKey)",
+  "vivarium": "the Vivarium's whole, the ring on the mibi last seen up close",
+  "research": "Pods, the collection, the ring on the pod that most needs the player",
+  "library": "the Library's spread, the ring on the frame it was last on",
+  "dock": "the Caddy's Dock, a world event: the Companion returns in the top bar, the crates slide into the Cargo module (events.crateIn), the bed fills with the carried set and the notice names the crates. No message plate. Dock again lifts the Companion: the bay shuts (a cut), the bed shows the Companion mark"
+ },
+ "line": {
+  "rule": "the bottom line for each focus: the action (✓ and its verb), the context (mist, at most six words, the only part that may end in …), the notice (the most pressing need, strings.needs, amber with its lamp, the same wherever the ring is) and no way back",
+  "room": { "action": "strings.needs[*].action, or no ✓ cap when nothing needs the player", "subject": "" },
+  "vivarium": { "action": "strings.actions.vivarium", "subject": "strings.subjects.vivarium" },
+  "resident": { "action": "strings.actions.resident", "subject": "strings.subjects.resident" },
+  "cargo": { "action": "strings.actions.cargo", "subject": "strings.subjects.cargo" },
+  "pods": { "action": "strings.actions.pods", "subject": "strings.subjects.pods" },
+  "incubator": { "action": "strings.actions.incubator", "subject": "strings.subjects.incubator" },
+  "probe": { "action": "strings.actions.probe", "subject": "strings.subjects.probe" },
+  "library": { "action": "strings.actions.library", "subject": "strings.subjects.library" },
+  "knob": { "action": "strings.actions.knob", "subject": "strings.subjects.knob" }
  },
  "colours": {
   "bezel": { "fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline" },
-  "glass": { "edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil" },
+  "glass": { "edge": "hairline", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil" },
   "module": { "fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal" },
   "lamp": { "off": "hairline", "well": "sprout", "waiting": "sky", "needsYou": "amber", "rim": "void" },
-  "bay": { "door": "metal", "doorSlat": "bevel", "doorLight": "enamel", "inside": "ground", "beam": "tealD", "crate": "deepTeal", "crateTop": "teal", "crateEdge": "hairline", "seal": "orange" },
-  "rack": { "well": "ground", "wellShade": "void", "wellLip": "bevel", "glint": "yellow" },
-  "incubator": { "base": "enamel", "glassEdge": "frostD", "glassLight": "frost", "leaf": "sage", "leafVein": "sageD", "leafEmpty": "bevel" },
-  "probe": { "cradle": "metal", "plate": "white", "plateGone": "bevel", "slotEmpty": "hairline", "frame": "gold", "frameLight": "yellow" },
+  "cargo": { "inside": "ground", "lid": "enamel", "seal": "deepTeal", "crate": "enamel", "crateCorner": "deepTeal", "crateEdge": "hairline", "tag": "orange" },
+  "pods": { "well": "ground", "wellShade": "void", "wellLip": "bevel", "glint": "yellow" },
+  "incubator": { "housing": "enamel", "window": "hairline", "inside": "ground", "leaf": "sage", "leafVein": "sageD", "leafEmpty": "bevel" },
+  "probe": { "cradle": "enamel", "cradleInside": "ground", "plate": "white", "plateGone": "bevel", "frame": "gold", "frameLight": "yellow" },
+  "library": { "cover": "bark", "edge": "sand", "glint": "yellow" },
   "bed": { "rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist" },
   "waitingLamp": { "fill": "sky", "rim": "void" },
-  "knob": { "fill": "enamel", "light": "frost", "shade": "bevel" },
-  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" },
-  "report": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void", "heading": "bone", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel" }
+  "knob": { "fill": "enamel", "light": "sand", "shade": "bevel" },
+  "nameTag": { "fill": "panel", "edge": "hairline", "text": "bone" }
  },
- "strings": { "modules": { "bay": "Bay", "rack": "Rack", "incubator": "Incubator", "probe": "Probe" }, "bayClosed": "closed while the Companion is away", "rest": "Rest", "knobSubject": "the vivarium plays alone", "residentSubject": "{a} {stage} {species}", "residentSubjectExamples": ["an adult Untuva", "a young Loika", "an adult Untuva, asleep"], "arrivalSubject": "the bay is opening", "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "dev": "Developer crate home", "rule": "the crate only; the reach stays on the report card (copywriter, 2026-10-09 12:22)" },
-  "report": {
-   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "devCrate": "Developer crate", "noPods": "no pods", "manyPods": "many pods",
-   "reach": { "underThird": "a first look around", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
-   "gathered": "Gathered", "topUp": "· with the top-up", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended · {price}", "world": "Meanwhile, the world turned"
+ "strings": {
+  "stages": { "juvenile": "young", "adult": "adult", "elder": "elder" },
+  "modules": { "cargo": "Cargo", "pods": "Pods", "incubator": "Incubator", "probe": "Probe", "library": "Library" },
+  "actions": {
+   "vivarium": "Open the Vivarium",
+   "resident": "Look at {name}",
+   "cargo": "Open Cargo",
+   "pods": "Look at the pods",
+   "incubator": "Open the Incubator",
+   "probe": "Open the Probe bench",
+   "library": "Open the Library",
+   "knob": "Rest"
+  },
+  "subjects": {
+   "vivarium": { "none": "nobody lives here yet", "one": "one mibi at home", "few": "{count} mibis at home", "many": "the mibis at home", "rule": "{count} spelled, two to six; seven and more: many" },
+   "resident": "{a} {stage} {species}",
+   "sleeper": "{a} {stage} {species}, asleep",
+   "residentExamples": ["an adult Untuva", "a young Loika", "an elder Untuva, asleep"],
+   "cargo": { "away": "the bay is shut", "empty": "the bay is empty", "one": "a sealed crate", "few": "{count} sealed crates", "waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well" },
+   "pods": { "empty": "the rack is empty", "one": "a pod in the rack", "few": "{count} pods in the rack" },
+   "incubator": { "empty": "the Incubator is empty", "growing": "a {species} bud, growing", "ready": "a {species} bud, ready" },
+   "probe": { "docked": "the Probe in its cradle", "away": "the Probe is away" },
+   "library": { "pages": "the field journal", "empty": "the journal is empty" },
+   "knob": "the Vivarium plays alone"
+  },
+  "needs": {
+   "rule": "the notice and the room's ✓, the first that holds: the module it lights, the notice, the action. Counts are spelled (a, two to six); above what the picture holds the count is dropped",
+   "order": ["crates", "budReady", "meet", "newPods", "glints", "waitingPods", "couldGrow", "toRead", "budGrowing"],
+   "crates": { "module": "cargo", "notice": "{count} crates wait in the bay", "noticeOne": "a crate waits in the bay", "action": "Open Cargo", "rule": "the crates ready to open: walk crates while docked, and ready sitting crates, docked or away; the count is both, so the Cargo lamp, the notice and the room's ✓ agree: need() counts readyCrates (the ready sitting crates) with the bay's walk crates" },
+   "budReady": { "module": "incubator", "notice": "the bud is ready", "action": "Open the Incubator" },
+   "meet": { "module": null, "notice": "meet {name}", "action": "Meet {name}" },
+   "newPods": { "module": "pods", "notice": "{count} new pods wait", "noticeOne": "a new pod waits", "action": "Look at the pods" },
+   "glints": { "module": "pods", "notice": "{count} pods glint", "noticeOne": "a pod glints", "action": "Look at the pods" },
+   "waitingPods": { "module": "pods", "notice": "{count} pods wait for a well", "noticeOne": "a pod waits for a well", "action": "Look at the pods" },
+   "couldGrow": { "module": "pods", "notice": "{a} {species} pod could grow", "short": "{a} {species} pod needs more ⚡", "action": "Look at the pods", "rule": "short of what growing it costs, it stays a need: the short notice, ⚡ as its 16 px icon after the words, no figure" },
+   "toRead": { "module": "pods", "notice": "{a} {species} pod waits unread", "short": "{a} {species} pod needs more ◆", "action": "Look at the pods", "rule": "short of what reading its next chapter costs, it stays a need: the short notice, ◆ as its 16 px icon after the words, no figure" },
+   "budGrowing": { "module": null, "notice": "a bud is growing", "action": "Look at the Incubator" }
   }
  }
 }
