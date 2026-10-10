@@ -48,8 +48,10 @@ def state(kind):
     P.alpha_composite(ready_in if kind == "ready" else (standby if kind == "empty" else dome_back), (360, 160)); P.alpha_composite(nest, (408, 360))
     if kind == "growing": P.alpha_composite(bud, (448, 224))
     if kind == "ready":
-        P.alpha_composite(bud_ready, (448, 224)); sh = Image.new("RGBA", (112, 112), (0, 0, 0, 0)); ImageDraw.Draw(sh).rounded_rectangle([8, 8, 103, 103], radius=40, fill=(228, 196, 150, 255)); shape = Image.new("RGBA", (128, 160), (0, 0, 0, 0)); shape.paste(sh, (8, 24), sh)       # the species' shape (a placeholder), CLIPPED to the bean: it shows only through the bean, never as a disc
-        bm = np.asarray(bud_ready).astype(float)[..., 3:] / 255.0; sa = np.asarray(shape).astype(float); sa[..., 3] = sa[..., 3] * bm[..., 0]; P.alpha_composite(Image.fromarray(sa.astype(np.uint8), "RGBA"), (448, 224)); P.alpha_composite(bud_front, (448, 224))
+        # the species' shape (a placeholder: the real bud-shape-S01..S16 are carried and are not in this repository) at its 112x112 box (456, 288 on screen; stage (456, 248)), bark #7d5435, MULTIPLIED at about 45 percent inside the bean, so it shows through the skin and is clipped to the bean, never a pasted disc
+        P.alpha_composite(bud_ready, (448, 224)); bm = np.asarray(bud_ready).astype(float)[..., 3] / 255.0; shp = Image.new("L", (112, 112), 0); ImageDraw.Draw(shp).rounded_rectangle([8, 8, 103, 103], radius=40, fill=255); sf = np.zeros((160, 128)); sf[24:136, 8:120] = np.asarray(shp).astype(float) / 255.0
+        PA = np.asarray(P.convert("RGB")).astype(float); reg = PA[224:384, 448:576]; bark = np.array([125.0, 84.0, 53.0]) / 255.0; w45 = (0.45 * sf * bm)[..., None]
+        PA[224:384, 448:576] = reg * (1 - w45) + reg * bark[None, None, :] * w45; P = Image.fromarray(PA.astype(np.uint8)).convert("RGBA"); P.alpha_composite(bud_front, (448, 224))
     if kind != "empty": P.alpha_composite(nest_front, (408, 360))
     P.alpha_composite(dome_front, (360, 160)); P.alpha_composite(base, (344, 416)); return P.convert("RGB")
 sheet = Image.new("RGB", (1024, 3 * 522 + 16), (10, 14, 18))

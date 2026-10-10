@@ -10417,12 +10417,12 @@
    1024,
    522
   ],
-  "src": "source/raw/create-stage.jpg (gemini-3-pro-image)",
-  "made": "Create's own stage: the Pods room's sage and sand frame and dark foam floor, plain, with one small gauge and its hose in the upper left (outside every keep-clear zone: rail, roll and trait line, work tray, pod and dish, small chamber and leaves); the gauge low in the middle and the two gauges and the hose at the lower right, which lay in the zones, painted out by hand; a Pro painting, centre-cut to 1024x522, the foam rebuilt by a floor model, raised to a mean L* of 36 (pass 118)",
-  "sha256": "1e16035aa24ee2f23983daa2bd447c19aed56a4e3f858a9b75a6e4ee567f7510",
+  "src": "slices/room-bench-stage-incubator.png (signed; its Pro painting is gemini-3-pro-image)",
+  "made": "Create's own stage, drawn by hand from the signed Incubator stage in the same frame (the rim, screws and side plates are its pixels): its hoses and gauges painted out by the floor model, a plain slate floor with nothing in the keep-clear zones; the set-aside Pro painting is source/raw/create-stage.jpg (pass 120)",
+  "sha256": "209f9fda09c7f3f1a32cb47e3d1e33bf2f9ea7237dca521e0f7f16f9e8c26d2d",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director) at 1x: L* 36.0, key R-B 40, sat 25 fit, but the frame differs from the Incubator and Pods stages (no top or bottom rim) and a hose stub ends in mid-air; the brief's keep-clear zones leave no room for floor hardware (the art director's error). By hand: the signed room-bench-stage-incubator with its hoses and gauges painted out by the floor model, a plain floor in the same frame; the Pro painting is set aside"
+  "status_note": "pass 120: Create's stage by hand from the signed Incubator stage in the same frame, its hoses and gauges painted out by the floor model, a plain floor with nothing in the keep-clear zones (L* 35.5, key R-B 37, sat 25); awaiting the art director's judgement (not signed)"
  },
  "dome-front-304x272": {
   "size": [
@@ -10523,10 +10523,10 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg (gemini-3-pro-image)",
   "made": "the bud, early: a smooth warm bean (peach, lit cream, rust edge) glowing softly from within on a little moss, no dot, no eye, no sprout; keyed from the slate, scaled uniformly, bottom-centred in 128x160 (pass 111)",
-  "sha256": "6019fa07389d95ec1d550c95d3e90bd2c3f401f1c602b8a589b8be491f72dced",
+  "sha256": "1a4f8d27d789c135fc846e707bf332c3c2002dcdac56aaa3b9928930594de7b8",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-late-128x160": {
   "size": [
@@ -10536,10 +10536,10 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, late: by hand, the skin toward blush (its yellow lowered, a little pink added, the inner light a little up), no drift to a species' hue (pass 111)",
-  "sha256": "9fa3871d5d064bd4e73bbcec6d71da7dcfa59220da55557794c873dd263c063a",
+  "sha256": "6c240f273fd3b3db266110d05d712cf05b8d4e5c326903486fd36ebe6fc8d8e4",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-128x160": {
   "size": [
@@ -10549,10 +10549,10 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the bud, ready: by hand, the inner light up full, a soft cream light across the bean's middle where the shape's window sits (pass 111)",
-  "sha256": "e5eb941de33df2414ee8f1f7efa736c3d1635e5487e31706dd5ec20e72f1f9ae",
+  "sha256": "ac0de46537dd23737425b42f3feb04445677bb2890b7e674f9fd4fd4dac0e0d3",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-front-128x160": {
   "size": [
@@ -10562,10 +10562,10 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the skin over the shape: the bean's silhouette at half opacity, lighter at the middle, drawn over the shape in the ready bud (pass 111)",
-  "sha256": "dbc92bae7c2eaffc02dd6f36789dd672cf25e4ea6e60a36564b825b190a39525",
+  "sha256": "277d8ec89d525070ee702e025a860772c335e75af6e0a43902be4cad8eb2464a",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-1-128x160": {
   "size": [
@@ -10575,10 +10575,10 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the first crack step over the ready bud: a short rust crack with a thread of light, a transparent layer drawn by hand (pass 111)",
-  "sha256": "a2ed071e534acc6ac123dcf6f909ee0da9782d5e0036faf640789af6bd8d94bf",
+  "sha256": "efc178ea834f86fbf12a00438d02d58149923cc8d562f73644c88d27076ad15c",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-2-128x160": {
   "size": [
@@ -10588,10 +10588,10 @@
   "rect": null,
   "src": "source/raw/incubator-bud-early3.jpg",
   "made": "the second crack step over the ready bud: a longer, wider crack with the light coming through, a transparent layer drawn by hand (pass 111)",
-  "sha256": "7522362dea5b015e88622f72966426243fc4dac4e5de800d3eb8b8918e975329",
+  "sha256": "5001ded68fe7652cd217121d52ff7765455c515da2c8ff04c180676f93b794d4",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "leaf-empty-16x20": {
   "size": [
@@ -10746,9 +10746,9 @@
   "rect": null,
   "src": "slices/bud-early-128x160.png",
   "made": "the bud for Create's small chamber: the new bud-early reduced by one half (64x80, only ever reduced) (pass 111)",
-  "sha256": "f8446c18a38066133d2762529b0ffe678c22988e3217d95f591e47ddc28d2a6d",
+  "sha256": "8db175b45d97c8296655ad6fa2c14b3b242679f2bf39eae8cae208d2325b0202",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "status_note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  }
 }

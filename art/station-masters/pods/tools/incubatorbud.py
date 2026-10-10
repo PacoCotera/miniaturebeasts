@@ -18,6 +18,22 @@ src = Image.fromarray(crop.astype(np.uint8), "RGBA"); s = min(112 / src.width, 1
 p = np.asarray(src).astype(float); pm = np.dstack([p[..., :3] * p[..., 3:] / 255.0, p[..., 3:]]).astype(np.uint8); r = np.asarray(Image.fromarray(pm, "RGBA").resize((nw, nh), Image.LANCZOS)).astype(float)
 al = r[..., 3:] / 255.0; col = np.where(al > 0.01, r[..., :3] / np.maximum(al, 0.01), 0)
 early = Image.new("RGBA", (128, 160), (0, 0, 0, 0)); early.paste(Image.fromarray(np.dstack([col, r[..., 3:]]).clip(0, 255).astype(np.uint8), "RGBA"), ((128 - nw) // 2, 152 - nh))
+# the art director's return on pass 117: the bean kept a waist and was 82 px wide: every row of the painted bean is remapped by hand onto an ellipse 112 x 140 (bottom at y 152, centred on x 64): each row's opaque run is Lanczos-resampled to the ellipse's width at that row, so the waist goes and the shading stays
+ea = np.asarray(early).astype(float); mp = np.zeros_like(ea); cy_e = 152 - 70.0
+for y in range(160):
+    row = ea[y]; op = np.where(row[:, 3] > 20)[0]
+    if len(op) < 2: continue
+    t = (y + 0.5 - cy_e) / 70.0
+    if abs(t) >= 1: continue
+    tw = 2 * 56.0 * np.sqrt(1 - t * t)
+    if tw < 2: continue
+    xl, xr = op.min(), op.max() + 1; seg = row[xl:xr]; pm_ = np.dstack([seg[None, :, :3] * seg[None, :, 3:] / 255.0, seg[None, :, 3:]])[0]
+    n_ = int(round(tw)); r_ = np.asarray(Image.fromarray(pm_.astype(np.uint8).reshape(1, -1, 4), "RGBA").resize((n_, 1), Image.LANCZOS)).astype(float)[0]
+    al_ = r_[:, 3:] / 255.0; c_ = np.where(al_ > 0.004, r_[:, :3] / np.maximum(al_, 0.004), 0); x0_ = 64 - n_ // 2; mp[y, x0_:x0_ + n_, :3] = c_; mp[y, x0_:x0_ + n_, 3] = r_[:, 3]
+pmv = np.dstack([mp[..., :3] * mp[..., 3:] / 255.0, mp[..., 3:]]); pad = np.pad(pmv, ((2, 2), (0, 0), (0, 0)), mode="edge"); pmv = (pad[0:-4] * 1 + pad[1:-3] * 4 + pad[2:-2] * 6 + pad[3:-1] * 4 + pad[4:] * 1) / 16.0            # the rows are smoothed vertically (a 1-4-6-4-1 kernel) so the edge has no row-by-row steps
+pmv = np.asarray(Image.fromarray(pmv.clip(0, 255).astype(np.uint8), "RGBA").filter(ImageFilter.GaussianBlur(0.6))).astype(float); alv = pmv[..., 3:] / 255.0
+mp = np.dstack([np.where(alv > 0.004, pmv[..., :3] / np.maximum(alv, 0.004), 0), pmv[..., 3:]])
+early = Image.fromarray(mp.clip(0, 255).astype(np.uint8), "RGBA")
 early, erep = fit_light(early, warm=True, soft=True); print("bud-early", erep)
 E = np.asarray(early).astype(float); bean = ((E[..., 0] > E[..., 1] + 6) & (E[..., 3] > 128)); bean = np.asarray(Image.fromarray((bean * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(3)).filter(ImageFilter.MinFilter(3))) > 0
 ys, xs = np.where(bean); bx0, bx1, by0, by1 = xs.min(), xs.max(), ys.min(), ys.max(); cx, cy_ = (bx0 + bx1) / 2.0, (by0 + by1) / 2.0

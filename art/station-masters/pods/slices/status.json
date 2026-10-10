@@ -3337,7 +3337,7 @@
  "room-bench-stage-create": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director) at 1x: L* 36.0, key R-B 40, sat 25 fit, but the frame differs from the Incubator and Pods stages (no top or bottom rim) and a hose stub ends in mid-air; the brief's keep-clear zones leave no room for floor hardware (the art director's error). By hand: the signed room-bench-stage-incubator with its hoses and gauges painted out by the floor model, a plain floor in the same frame; the Pro painting is set aside"
+  "note": "pass 120: Create's stage by hand from the signed Incubator stage in the same frame, its hoses and gauges painted out by the floor model, a plain floor with nothing in the keep-clear zones (L* 35.5, key R-B 37, sat 25); awaiting the art director's judgement (not signed)"
  },
  "dome-front-304x272": {
   "status": "signed",
@@ -3377,32 +3377,32 @@
  "bud-early-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-late-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-ready-front-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-1-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "bud-crack-2-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  },
  "leaf-empty-16x20": {
   "status": "signed",
@@ -3457,6 +3457,6 @@
  "bud-small-64x80": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
+  "note": "pass 120: the bean remapped by hand row by row onto a 112x140 ellipse (bottom y 152, centred x 64; no waist, the shading kept), late, ready, front, cracks and bud-small re-cut from it; the ready shape (a bark placeholder at its 112x112 box, multiplied at 45 percent inside the bean) shows through the skin in the proof; awaiting the art director's judgement (not signed)"
  }
 }
