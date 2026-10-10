@@ -124,7 +124,7 @@
  },
  "masters": {
   "note": "every master the sitting names, at the size it is shown; none is drawn by the build",
-  "list": ["sitting-backdrop-plain-544x408", "sitting-backdrop-meadow-544x408", "sitting-backdrop-pond-544x408", "sitting-backdrop-rock-544x408", "sitting-backdrop-wood-544x408", "sitting-backdrop-cave-544x408", "sitting-gilt-560x424", "sitting-gilt-lit-560x424", "pose-{species}-{habit}-96x96, one a habit of each species frame: the species' pose picture, never the mibi acting", "pose-{species}-{habit}-48x48, hand-passed from the 96", "place-{place}-96x96 (the 48×48 exists)", "crate-sitting-80x56 (Home's Bay)", "room-vivarium-stage-habitat 1024×522 (Habitat's)"]
+  "list": ["sitting-backdrop-plain-544x408", "sitting-backdrop-meadow-544x408", "sitting-backdrop-pond-544x408", "sitting-backdrop-rock-544x408", "sitting-backdrop-wood-544x408", "sitting-backdrop-cave-544x408", "sitting-gilt-560x424", "sitting-gilt-lit-560x424", "pose-{species}-{habit}-96x96, one a habit of each species frame: the species' pose picture, never the mibi acting", "pose-{species}-{habit}-48x48, hand-passed from the 96", "place-{place}-96x96 (the 48×48 exists)", "crate-sitting-48x40 (Home's Cargo module)", "crate-sitting-256x176 (Cargo's bay)", "room-vivarium-stage-habitat 1024×522 (Habitat's)"]
  },
  "strings": {
   "title": "Sitting",
@@ -143,13 +143,13 @@
  },
  "home": {
   "plate": { "on": "Habitat, after events.begin", "lines": ["strings.beganPlate", "strings.welcomePlate, only when begin gave a waiting welcome sitting (sitting.mjs beginSitting, checkWelcome)"], "px": 16, "pad": 16, "line": 20, "height": "16 + 20 × lines: 36, or 56 with the welcome", "bottom": 550, "example": { "lines": 2, "widths": [193, 174], "rect": [399, 494, 226, 56], "note": "Fig: the longer line plus 16 each side, rounded up to an even width to centre on x 512; it covers the strip, not the mibi's box or the Portrait module" } },
-  "slot": { "rect": [952, 464, 40, 80], "after": "empty; held when begin gave a waiting welcome sitting" },
+  "slot": { "rect": [912, 408, 24, 32], "after": "nothing; the gilt frame when begin gave a waiting welcome sitting (home.json regions.probe.slotRect)" },
   "bay": {
-   "rule": "from begin until it is opened, the sitting's crate stands in Home's Bay (home.json regions.bay)",
-   "crate": { "size": [80, 56], "slots": "the door's slots from the right: the first at [904, 92], a second at [808, 92]; walk crates fill from the left (712 + 96i); at most three crates show, walk crates first", "asset": "crate-sitting-80x56", "until": "the walk crate's roles (deepTeal, teal lit top, hairline outline), no seal tag" },
-   "lamp": { "at": [34, 36], "size": [12, 12], "example": [938, 128, 12, 12], "rows": 10, "value": "sitting.mjs crateLamp", "lit": "floor(10 × crateLamp) inner rows from the bottom in colours.crateLamp.lit, the rest colours.crateLamp.unlit; nine rows while painting or waiting for the cloud (LAMP_SHORT), ten when ready; never amber" },
+   "rule": "from begin until it is opened, the sitting's crate stands in Cargo: on Home's Cargo module (home.json regions.cargo.sittingCrates) and in Cargo's bay (cargo.json regions.crates.sitting)",
+   "crate": { "size": [48, 40], "slots": "from the right: the first at [928, 72], a second at [864, 72]; walk crates fill from the left (800 + 64i); at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "until": "the walk crate's roles, no seal tag" },
+   "lamp": { "at": [18, 44], "size": [12, 12], "example": [946, 116, 12, 12], "rows": 10, "value": "sitting.mjs crateLamp", "lit": "floor(10 × crateLamp) inner rows from the bottom in colours.crateLamp.lit, the rest colours.crateLamp.unlit; nine rows while painting or waiting for the cloud (LAMP_SHORT), ten when ready; never amber" },
    "door": "open while a sitting crate is in the bay, docked or away; shut only on an empty bay with the Companion away",
-   "moduleLamp": "home.json regions.bay lamp (984, 60): amber only when a crate is ready to open (sitting.mjs bayState.amber: a ready sitting crate, or walk crates waiting while docked); otherwise off"
+   "moduleLamp": "home.json regions.cargo lamp (984, 60): amber only when a crate is ready to open (sitting.mjs bayState.amber: a ready sitting crate, or walk crates waiting while docked); otherwise off"
   }
  },
  "buildChanges": [

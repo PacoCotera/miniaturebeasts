@@ -1,106 +1,130 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Home with the Companion away and the ring on the rest knob, 1024×600 at 1×, measured. Layout only, no art.</title>
-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>Home with three carried mibis asleep on the bed and the ring on the rest knob: ✓ Rest starts Idle. 1024×600 at 1×.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
-<line x1="0" y1="40.5" x2="1024" y2="40.5" stroke="#444" stroke-width="1"/>
+<rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
+<rect x="16.5" y="48.5" width="655" height="503" fill="#e3e6dc" stroke="#444" stroke-width="1"/>
+<rect x="24.5" y="56.5" width="639" height="487" fill="#fff6e8" stroke="#bf9157" stroke-width="1"/>
+<path d="M24 300.5L664 300.5" fill="none" stroke="#e0b880" stroke-width="1" stroke-dasharray="4 3"/>
+<text x="452" y="314" font-size="9" fill="#a07040" font-family="DejaVu Sans Mono, ui-monospace, monospace">ground 24,300 640×228</text>
+<text x="668" y="56" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">bezel 16,48 656×504 · glass 24,56 640×488</text>
+<rect x="40.5" y="264.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="46" y="278" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult 144×152 · Bean</text>
+<rect x="200.5" y="320.5" width="103" height="111" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="206" y="334" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">juvenile 104×112</text>
+<rect x="296.5" y="336.5" width="143" height="151" fill="#fdebd6" stroke="#c45f12" stroke-width="1"/>
+<text x="302" y="350" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult</text>
+<rect x="448.5" y="472.5" width="191" height="55" fill="#efe0c8" stroke="#8a6a44" stroke-width="1"/>
+<text x="452" y="522" font-size="8" fill="#8a6a44" font-family="DejaVu Sans Mono, ui-monospace, monospace">with-you bed 448,472 192×56</text>
+<rect x="520.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="544.5" y="424.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
+<rect x="472.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="496.5" y="424.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
+<rect x="424.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="448.5" y="424.5" width="95" height="87" fill="#f6dcc0" stroke="#c45f12" stroke-width="1"/>
+<text x="430" y="376" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">asleep: 3 carried,</text>
+<text x="430" y="388" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">feet 48 apart on y 512</text>
+<text x="430" y="400" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">nap ink 96×88 at 448, 496, 544; y 424</text>
+<rect x="624.5" y="546.5" width="31" height="5" fill="#d8d8d8" stroke="#666" stroke-width="1"/>
+<text x="616" y="541" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">rest knob 624,544</text>
+<rect x="688.5" y="48.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="77" font-size="16" fill="#6f7a5e">Cargo</text>
+<rect x="984.5" y="60.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
+<path d="M800 56h176v72h-176z" fill="#3a414b"/>
+<rect x="688.5" y="152.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="181" font-size="16" fill="#6f7a5e">Pods</text>
+<rect x="984.5" y="164.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="824.5" y="160.5" width="31" height="31" fill="#2a313a" stroke="#555" stroke-width="1"/>
+<path d="M828 160h24v32h-24z" fill="#e9e2f5" opacity="0.9"/>
+<rect x="872.5" y="160.5" width="31" height="31" fill="#2a313a" stroke="#555" stroke-width="1"/>
+<path d="M876 160h24v32h-24z" fill="#e9e2f5" opacity="0.9"/>
+<path transform="translate(912,176)" d="M0 -6L1.5 -1.5L6 0L1.5 1.5L0 6L-1.5 1.5L-6 0L-1.5 -1.5z" fill="#f2c94c"/>
+<rect x="920.5" y="160.5" width="31" height="31" fill="#2a313a" stroke="#555" stroke-width="1"/>
+<path d="M924 160h24v32h-24z" fill="#e9e2f5" opacity="0.9"/>
+<rect x="824.5" y="200.5" width="31" height="31" fill="#2a313a" stroke="#555" stroke-width="1"/>
+<path d="M828 200h24v32h-24z" fill="#e9e2f5" opacity="0.9"/>
+<rect x="872.5" y="200.5" width="31" height="31" fill="#2a313a" stroke="#555" stroke-width="1"/>
+<rect x="920.5" y="200.5" width="31" height="31" fill="#2a313a" stroke="#555" stroke-width="1"/>
+<rect x="688.5" y="256.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="285" font-size="16" fill="#6f7a5e">Incubator</text>
+<rect x="984.5" y="268.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="264.5" width="71" height="71" fill="#cfc6b0" stroke="#444" stroke-width="1"/>
+<path d="M812 280h48v40h-48z" fill="#3a414b"/>
+<ellipse cx="836" cy="308" rx="12" ry="8" fill="#e8c08a"/>
+<path d="M888 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M899 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M910 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M921 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M932 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M943 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M954 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M965 264h8v12h-8z" fill="#8fb07a"/>
+<path d="M888 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M899 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M910 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M921 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M932 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M943 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M954 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M965 278h8v12h-8z" fill="#8fb07a"/>
+<path d="M888 292h8v12h-8z" fill="#8fb07a"/>
+<path d="M899 292h8v12h-8z" fill="#8fb07a"/>
+<path d="M910 292h8v12h-8z" fill="#8fb07a"/>
+<path d="M921 292h8v12h-8z" fill="#8fb07a"/>
+<path d="M932.5 292.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M943.5 292.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M954.5 292.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M965.5 292.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M888.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M899.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M910.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M921.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M932.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M943.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M954.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<path d="M965.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
+<rect x="688.5" y="360.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="389" font-size="16" fill="#6f7a5e">Probe</text>
+<rect x="984.5" y="372.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="368.5" width="95" height="71" fill="#cfc6b0" stroke="#444" stroke-width="1"/>
+<path d="M812 396h72v16h-72z" fill="#5c6370"/>
+<text x="848" y="432" font-size="8" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the Probe</text>
+<rect x="912.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="928.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="944.5" y="368.5" width="11" height="23" fill="none" stroke="#444" stroke-width="1"/>
+<rect x="688.5" y="464.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="704" y="493" font-size="16" fill="#6f7a5e">Library</text>
+<rect x="984.5" y="476.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="800.5" y="472.5" width="103" height="71" fill="#8a6a44" stroke="#444" stroke-width="1"/>
+<path d="M852 476h1v64h-1z" fill="#e8dcc0"/>
+<text x="1006" y="46" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">section column 688,48 · five modules 320×88 on a 104 pitch</text>
+<rect x="424.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="472.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="520.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="617" y="535" width="46" height="22" rx="6" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<rect x="624.5" y="544.5" width="31" height="5" fill="#d8d8d8" stroke="#666" stroke-width="1"/>
+<text x="40" y="80" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The ring on the rest knob: 616,534 48×24, the knob lifted 2 px.</text>
+<text x="40" y="93" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Three carried, asleep: feet at x 496, 544 and 592 on y 512,</text>
+<text x="40" y="106" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">boxes 424,360 · 472,360 · 520,360 (144×152); the first carried in front.</text>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Home</text>
-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/>
-<line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 9   ◆ 4   ❀ 6</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="836.5" y="16.5" width="7" height="7" fill="#9a96ae" stroke="#444" stroke-width="1"/>
-<circle cx="868" cy="20" r="11" fill="#eee" stroke="#9a96ae" stroke-width="2"/>
-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 5</text>
-<rect x="16.5" y="48.5" width="655" height="503" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="6 4"/>
-<rect x="24.5" y="56.5" width="639" height="487" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
-<line x1="24" y1="300.5" x2="664" y2="300.5" stroke="#e0b98a" stroke-width="1" stroke-dasharray="3 3"/>
-<rect x="72.5" y="320.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
-<text x="76" y="333" font-size="10" fill="#222">Adult 144×152</text>
-<text x="76" y="345" font-size="9" fill="#777">72,320</text>
-<rect x="248.5" y="264.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
-<text x="252" y="277" font-size="10" fill="#222">Adult 144×152</text>
-<text x="252" y="289" font-size="9" fill="#777">248,264</text>
-<rect x="400.5" y="392.5" width="103" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
-<text x="404" y="405" font-size="10" fill="#222">Juvenile 104×112</text>
-<text x="404" y="417" font-size="9" fill="#777">400,392</text>
-<rect x="520.5" y="472.5" width="127" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="524" y="484" font-size="9" fill="#222">With-you bed 128×56</text>
-<text x="524" y="495" font-size="9" fill="#777">520,472</text>
-<rect x="576.5" y="488.5" width="15" height="23" fill="#ddd" stroke="#666" stroke-width="1"/>
-<text x="520" y="466" font-size="9" fill="#555">Companion mark 576,488 16×24</text>
-<rect x="624.5" y="544.5" width="31" height="7" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 2"/>
-<rect x="624.5" y="544.5" width="31" height="5" fill="#e4e8ea" stroke="#444" stroke-width="1"/>
-<rect x="616.5" y="534.5" width="47" height="23" rx="6" fill="none" stroke="#d29a00" stroke-width="2.5"/>
-<text x="612" y="526" font-size="9" fill="#8a6500" text-anchor="end">ring 616,534 48×24 · knob 32×6 lifted 2 → 624,544</text>
-<rect x="688.5" y="48.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="704" y="71" font-size="12" fill="#555">Bay</text>
-<text x="976" y="71" font-size="9" fill="#777" text-anchor="end">688,48 320×120</text>
-<rect x="984.5" y="60.5" width="11" height="11" fill="#e2e2e2" stroke="#444" stroke-width="1"/>
-<rect x="704.5" y="84.5" width="287" height="71" fill="#d9d9d9" stroke="#666" stroke-width="1"/>
-<line x1="705" y1="92.5" x2="991" y2="92.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="100.5" x2="991" y2="100.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="108.5" x2="991" y2="108.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="116.5" x2="991" y2="116.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="124.5" x2="991" y2="124.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="132.5" x2="991" y2="132.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="140.5" x2="991" y2="140.5" stroke="#bbb" stroke-width="1"/>
-<line x1="705" y1="148.5" x2="991" y2="148.5" stroke="#bbb" stroke-width="1"/>
-<text x="712" y="124" font-size="10" fill="#444">door shut (away) 704,84 288×72</text>
-<rect x="688.5" y="176.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="704" y="199" font-size="12" fill="#555">Rack</text>
-<text x="976" y="199" font-size="9" fill="#777" text-anchor="end">688,176 320×120</text>
-<rect x="984.5" y="188.5" width="11" height="11" fill="#e2e2e2" stroke="#444" stroke-width="1"/>
-<rect x="712.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="760.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="808.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="856.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="904.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<rect x="952.5" y="224.5" width="39" height="39" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="712" y="278" font-size="9" fill="#777">wells 712+48i,224 40×40 · pod 32×40 at +4</text>
-<rect x="688.5" y="304.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="704" y="327" font-size="12" fill="#555">Incubator</text>
-<text x="976" y="327" font-size="9" fill="#777" text-anchor="end">688,304 320×120</text>
-<rect x="984.5" y="316.5" width="11" height="11" fill="#b7e48a" stroke="#444" stroke-width="1"/>
-<rect x="704.5" y="336.5" width="79" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="708" y="352" font-size="9" fill="#222">dome 704,336</text>
-<rect x="800.5" y="352.5" width="191" height="39" fill="#fff" stroke="#666" stroke-width="1"/><rect x="800.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="812.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="824.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="836.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="848.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="860.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="872.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="884.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="896.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="908.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="920.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="932.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="944.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="956.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="968.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="980.5" y="352.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="800.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="812.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="824.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="836.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="848.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="860.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="872.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="884.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="896.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="908.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="920.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="932.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="944.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="956.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="968.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="980.5" y="366.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="800.5" y="380.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="812.5" y="380.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="824.5" y="380.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="836.5" y="380.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="848.5" y="380.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/><rect x="860.5" y="380.5" width="7" height="11" fill="none" stroke="#999" stroke-width="1"/>
-<text x="800" y="406" font-size="9" fill="#222">leaves 800,352 · 3 rows, max 38</text>
-<rect x="688.5" y="432.5" width="319" height="119" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="704" y="455" font-size="12" fill="#555">Probe</text>
-<text x="976" y="455" font-size="9" fill="#777" text-anchor="end">688,432 320×120</text>
-<rect x="984.5" y="444.5" width="11" height="11" fill="#e2e2e2" stroke="#444" stroke-width="1"/>
-<rect x="704.5" y="464.5" width="127" height="79" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="4 3"/>
-<text x="708" y="484" font-size="10" fill="#555">cradle empty</text>
-<text x="708" y="496" font-size="9" fill="#777">(Probe away)</text>
-<text x="848" y="506" font-size="9" fill="#777">no plates</text>
-<rect x="952.5" y="464.5" width="39" height="79" fill="#fff" stroke="#666" stroke-width="1"/>
-<text x="956" y="480" font-size="9" fill="#222">slot</text>
-<text x="40" y="192" font-size="11" fill="#2b6cb0">Incubator lamp sprout: a bud growing, well, needs nothing; no notice.</text>
-<rect x="952.5" y="464.5" width="39" height="79" fill="none" stroke="#666" stroke-width="1"/>
-<text x="40" y="80" font-size="11" fill="#2b6cb0">Rest knob, focused: lifted 2 px, its ring the 48×24 target (round).</text>
-<text x="40" y="96" font-size="11" fill="#2b6cb0">✓ Rest: the knob settles (200 ms), then the screen transition</text>
-<text x="40" y="110" font-size="11" fill="#2b6cb0">(180 ms, 16-level Bayer dither) to Idle; input held 380 ms.</text>
-<text x="40" y="126" font-size="11" fill="#2b6cb0">Reached by ▼ from the Probe (the column's last), or ▶ from a resident</text>
-<text x="40" y="140" font-size="11" fill="#2b6cb0">whose row is nearest it. ← does nothing; there is no ← cap.</text>
-<text x="40" y="162" font-size="11" fill="#2b6cb0">Away: Bay door shut, lamp off; cradle empty, no plates;</text>
-<text x="40" y="176" font-size="11" fill="#2b6cb0">the bed shows the Companion mark; top bar glyph in outline.</text>
-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
+<text x="48" y="27" font-size="20" fill="#222" font-weight="500">Home</text>
+<path d="M256 8h1v24h-1z" fill="#888"/>
+<path d="M888 8h1v24h-1z" fill="#888"/>
+<text x="512" y="26" font-size="16" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
+<path d="M760 8h16v24h-16z" fill="#9a96ae"/>
+<path d="M780 16h8v8h-8z" fill="#7fd8a6"/>
+<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<circle cx="868" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<text x="1008" y="26" font-size="16" fill="#222" text-anchor="end">☀ 6</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/>
-<line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
-<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<path d="M404 571h1v20h-1z" fill="#888"/>
+<path d="M620 571h1v20h-1z" fill="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b" stroke="none" stroke-width="0"/>
 <text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
-<text x="36" y="587" font-size="14" fill="#c4500f">Rest</text>
-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">the vivarium plays alone</text>
-<text x="1006" y="587" font-size="9" fill="#999" text-anchor="end">(no ← on Home)</text>
+<text x="36" y="588" font-size="16" fill="#c4500f">Rest</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">the Vivarium plays alone</text>
+<path d="M792.5390625 576h12v12h-12z" fill="#e8a33d"/>
+<text x="896" y="588" font-size="16" fill="#b7791f" text-anchor="end">a pod glints</text>
 </svg>
