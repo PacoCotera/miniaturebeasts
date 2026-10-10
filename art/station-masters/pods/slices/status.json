@@ -1,23 +1,23 @@
 {
  "room-bench-stage": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-cradle": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-cradle-front": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-shelf": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-column": {
   "status": "withdrawn",
@@ -640,14 +640,14 @@
   "note": ""
  },
  "ring-well-selected-80x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-well-idle-80x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-arc-selected-n4-track": {
   "status": "signed",
@@ -1010,9 +1010,9 @@
   "note": "a strip of the housing: two rows of screws, a hose clip and a small vent; signed by the art director"
  },
  "ring-hatch-80x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "page-pane-256x440": {
   "status": "signed",
@@ -1095,14 +1095,14 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-stamp-case-152x152": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-well-empty-80x80": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "rail-tab-fill-unread-full-152x40": {
   "status": "signed",
@@ -1165,9 +1165,9 @@
   "note": "a mark of the Station frame; signed: research, library and habitat room marks, both companion glyphs, the sun, the three lamps, the three faces"
  },
  "room-stamp-case-152x152-front": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "trait-picture-frame-144x176": {
   "status": "withdrawn",
@@ -1545,24 +1545,24 @@
   "note": "withdrawn with the pane (the withdrawal signed by the art director): the open chapter page (origin/design-pods-open d00f372a) has no per-cell frame and no stand-in card; nothing more is cut for it (the pass 58 sill frames were never signed)"
  },
  "room-bench-stage-overview": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "room-bench-stage-chapter": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-collection-idle-176x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-collection-closed-176x176": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "mark-species-S01-24x24": {
   "status": "signed",
@@ -1810,9 +1810,9 @@
   "note": "the plates layer (scutes) and its relief"
  },
  "ring-kin-56x56": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "ring-arc-collection-n1-track-176x176": {
   "status": "signed",
@@ -2035,9 +2035,9 @@
   "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "room-bench-stage-collection": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 93: the Pods room set in the sample-case language (the signed concept board, frame 2): Pro paintings, the stage composed to the layout's rectangles, the pieces cut at size from one sheet; replaces the earlier glass-dish set; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, Pods room verdict (68130857)",
+  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
  },
  "mark-can-grow-16": {
   "status": "signed",
