@@ -134,9 +134,10 @@ Work in this phase:
 
 - Decide what happens to a mibi while it's away from home (the open
   [architecture](design/architecture.md) question).
-- Build care as designed: tending a carried mibi on the Companion builds its
-  bond; missing care loses nothing, as a bonded juvenile simply waits at home
-  until it is tended.
+- Care plays in the browser prototypes: the Companion carries up to three
+  mibis, tending one builds its bond, and missing care loses nothing, as a
+  bonded juvenile simply waits at home until it is tended. It moves to the
+  devices with the rest of the loop.
 - Design how partners' abilities open the world, connecting back to phase 1.
 - Breeding eligibility, viability and how refusal or failure is shown.
 - Zones inside a vivarium, if they still earn their place.
@@ -188,9 +189,9 @@ way can take a service's place without changing the game.
 
 1. **The Station loop and UI**, the first piece of phase 3: the loop's rules are
    decided and run headless in CI; the Station's screens are drawn by its LVGL
-   face, the only face in the sandbox. Pods is built on it; the other rooms
-   follow in the order of `design/proposals/lvgl-switch.md` and show "not built
-   yet" until then.
+   face, the only face in the sandbox. Pods is built on it and Home, Cargo and
+   Idle are being built; the other sections follow in the order of
+   `design/proposals/lvgl-switch.md` and show "not built yet" until then.
 2. **The cloud layer**, later: the optional, gated enhancements on top of the
    standalone kit.
 
