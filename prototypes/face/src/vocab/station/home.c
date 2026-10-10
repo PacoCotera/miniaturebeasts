@@ -77,7 +77,7 @@ void word_restKnob(int focused) {
   int r[4]; hrect("regions.knob.rect", r); int drawn_w = hk("regions.knob.drawn", 0), drawn_h = hk("regions.knob.drawn", 1);
   int y = hk("regions.knob.states.focused.rect", 1) ? hk("regions.knob.states.focused.rect", 1) : r[1];
   int rest_y = hk("regions.knob.states.rest.rect", 1);
-  anim_state_t t; int lifted = focused;
+  anim_state_t t; int lifted = focused && !anim_holding();   /* a rest holding: the knob stays settled */
   if (anim_get(ANIM_REST, "knob", &t)) { lifted = 0; y = t.elapsed < 100 ? y : t.elapsed < 200 ? y + 1 : rest_y; }   /* the knob settles from its lift in the first 200 ms */
   else y = lifted ? y : rest_y;
   v_region("knob", LAYER_CHROME);

@@ -30,7 +30,8 @@ static void frame_words(void) {
 static void stage_dither(void) {
   static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
   anim_state_t t; if (!anim_get(ANIM_DITHER, "stage", &t)) return;
-  int level = 16 - (16 * t.elapsed) / t.ms, r[4]; if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
+  int level = t.to > t.from ? t.from + ((t.to - t.from) * t.elapsed) / t.ms : 16 - (16 * t.elapsed) / t.ms, r[4];   /* from < to: the dither closes over the stage (Home's rest to Idle) */ if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
+  if (level > 16) level = 16;
   char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
   for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
   snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
@@ -109,7 +110,7 @@ void screens_say(const char *kind, const char *target, const char *verb) {
 void screens_key(int code) {
   if (anim_holding()) {   /* an event holds input: no key is acted on (§2.1); while Home's rest holds, a room key is still said, and the host keeps it until the hold ends (home.json focus.held) */
     char sc[32]; spec_str("props", "screen", sc, sizeof sc); const char *rv = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
-    if (rv && strcmp(sc, "home") == 0 && anim_get(ANIM_REST, "knob", NULL)) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
+    if (rv && strcmp(sc, "home") == 0 && 1) { char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur()); screens_say("intent", cur[0] ? cur : "room", rv); }
     return;
   }
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);

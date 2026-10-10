@@ -112,18 +112,19 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // the bay's own arrivals are Cargo's, and play nothing until it is built.
 const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]);
 export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
-  const holds = new Map();   // the events sent with hold: true that have not said done (an event the face drops, or whose done was lost, expires with its time)
-  const holding = () => { const t = nowMs(); for (const [k, until] of holds) if (until < t) holds.delete(k); return holds.size > 0; };
+  const holds = new Map();   // the holds in force: { until, byDone } by event. `hold` on the wire is whole ms from the event's start, independent of `ms` (lvgl-switch.md §2.1); a timeline event that holds while it plays (hold: true) is sent with hold = its ms and also ends its hold with its done (an event the face drops, or whose done was lost, expires with its time)
+  const holding = () => { const t = nowMs(); for (const [k, v] of holds) if (v.until < t) holds.delete(k); return holds.size > 0; };
   const play = (e) => {
     if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && e.target === "cargo") || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
-    if (e.hold) holds.set(e.kind + ":" + e.target, nowMs() + (e.ms || 0) + 500);
-    send({ t: "event", ...e });
+    const hold = e.hold === true ? e.ms || 0 : e.hold || 0, ev = { ...e, hold };
+    if (hold) holds.set(e.kind + ":" + e.target, { until: nowMs() + hold + (hold === (e.ms || 0) ? 500 : 0), byDone: hold === (e.ms || 0) });
+    send({ t: "event", ...ev });
   };
   const h = {
     get st() { return G.st; }, get sv() { return G.sv; }, get settings() { return G.settings; }, ui: UI, specs: SPECS,
     now: () => Date.now(), motion, say: msg, play, lock: () => {}, save: () => { save(); afterSave(); }, holding,
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
-    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => holds.delete(kind + ":" + target),
+    disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; }, release: (kind, target) => { const v = holds.get(kind + ":" + target); if (v && v.byDone) holds.delete(kind + ":" + target); },
     goto: (name) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180 }); },
   };
   return h;
@@ -134,8 +135,10 @@ export function onFaceMessage(h, m) {
   if (m.t === "done") {
     h.release(m.kind, m.target);
     if (m.kind === "hatch") { UI.hab.id = +m.target; UI.hab.f = "door"; h.goto("habitat"); }   // the hatch is over: meet the mibi, the ring on the door
-    if (m.kind === "rest") {   // the rest is over: Idle plays the Vivarium alone; Home keeps its state and focus unseen; a room key pressed during the hold is dispatched now
-      UI.idle = true; const k = h.pendingRoom; h.pendingRoom = null;
+    if (m.kind === "rest") {   // the knob has settled (events.rest.ms): the screen transition to Idle follows (its second step); with the hold still on
+      const ev = SPECS.home.events.rest, step = ev.steps[1]; UI.resting = true; h.play({ kind: "dither", target: "stage", ms: step.ms, from: 0, to: 16 });
+    } else if (m.kind === "dither" && UI.resting) {   // the transition is over, and the hold with it: Idle plays the Vivarium alone, Home keeping its state and focus unseen; the room key kept during the hold is dispatched now
+      UI.resting = false; UI.idle = true; const k = h.pendingRoom; h.pendingRoom = null;
       if (k) { UI.idle = false; dispatch(h, { screen: "home", target: "room", verb: "room:" + k }); }
     }
     return;
@@ -143,6 +146,8 @@ export function onFaceMessage(h, m) {
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }
   if (m.t !== "intent") return;
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
+  if (h.holding() && m.verb?.startsWith("room:")) { h.pendingRoom = m.verb.slice(5); return; }   // while the host's hold runs the last room: intent is kept and dispatched when the hold ends; every other intent is dropped
+  if (h.holding()) return;
   if (m.verb === "wake") { dispatch(h, m); h.play({ kind: "dither", target: "stage", ms: 180, hold: true }); return; }
   dispatch(h, m);
 }

@@ -207,25 +207,13 @@ static void module_objects(const char *key, int dy) {
 /* ---- the ring on the focused target ---- */
 static const char *frame_ring(void) { static char rc[24]; spec_str("frame", "colours.ring", rc, sizeof rc); return rc; }
 static void ring(const char *cur) {
-  if (!cur[0] || strcmp(cur, "room") == 0 || anim_get(ANIM_REST, "knob", NULL)) return;   /* the ring goes when the rest begins */
+  if (!cur[0] || strcmp(cur, "room") == 0 || anim_holding()) return;   /* the ring goes when the rest begins and stays away while it holds */
   char rc[24]; spec_str("frame", "colours.ring", rc, sizeof rc); int box[4];
   v_region("focus", LAYER_CHROME);
   if (strcmp(cur, "vivarium") == 0) { hrect("regions.bezel.rect", box); word_focusRing("focus", box, "home", "focus.targets.vivarium.ring", rc); return; }
   if (strncmp(cur, "resident.", 9) == 0) return;   /* a resident's ring is in the glass, under it */
   if (strcmp(cur, "knob") == 0) { for (int k = 0; k < 4; k++) box[k] = hk("focus.targets.knob.box", k); box[1] -= hi("focus.targets.knob.lift", 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
   for (int m = 0; m < 5; m++) if (strcmp(cur, MODULES[m]) == 0) { hrect(v_fmt("regions.%s.rect", cur), box); box[1] -= hi("focus.targets.cargo.lift", 2); word_focusRing("focus", box, "home", v_fmt("focus.targets.%s.ring", cur), rc); return; }
-}
-
-/* the rest event: the screen dithers over 180 ms to Idle after the knob has settled (the first 200 ms) */
-static void rest_dither(void) {
-  static const int BAYER[16] = { 0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5 };
-  anim_state_t t; if (!anim_get(ANIM_REST, "knob", &t) || t.elapsed < 200) return;
-  int level = (16 * (t.elapsed - 200)) / 180, r[4]; if (level > 16) level = 16; if (level <= 0 || !v_spec_rect("frame", "regions.stage.rect", r)) return;
-  char ops[400]; int n = snprintf(ops, sizeof ops, "[[\"lattice\",0,0,%d,%d,4,[", r[2], r[3]);
-  for (int k = 0, first = 1; k < 16; k++) if (BAYER[k] < level) { n += snprintf(ops + n, sizeof ops - (size_t)n, "%s[%d,%d]", first ? "" : ",", k % 4, k / 4); first = 0; }
-  snprintf(ops + n, sizeof ops - (size_t)n, "],\"void\"]]");
-  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops);
-  v_region("stage", LAYER_ART); prim_node(v_id("stage.rest"), FN_COMPOSED, r[0], r[1], r[2], r[3], 0, 0, 0);
 }
 
 void home_words(void) {
@@ -242,7 +230,6 @@ void home_words(void) {
     word_module(MODULES[m], dy, v_pstr(v_fmt("regions.%s.lamp", MODULES[m])));
     module_objects(MODULES[m], dy);
   }
-  rest_dither();
   ring(cur);
 }
 

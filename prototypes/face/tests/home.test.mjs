@@ -100,7 +100,7 @@ test("✓ on the focus says an intent on its target (on the room, on 'room'); th
   key(f, "up"); [m] = key(f, "home"); assert.ok(!m || m.verb === "room:home", "the Home key: the ring goes back to the room (the host sets it from the intent)");
 });
 test("while the rest holds, the face moves no focus and sends no intent but room:<x> (the host keeps it until the hold ends)", { skip }, async () => {
-  const f = await start(scene({ adults: 2, focus: "knob" })); f.send({ t: "event", kind: "rest", target: "knob", ms: 380, hold: true }); frames(f, 2);
+  const f = await start(scene({ adults: 2, focus: "knob" })); f.send({ t: "event", kind: "rest", target: "knob", ms: 200, hold: 380 }); frames(f, 2);
   for (const k of ["up", "left", "confirm", "back"]) assert.deepEqual(key(f, k), [], k);
   const [m] = key(f, "research"); assert.deepEqual([m.t, m.verb], ["intent", "room:research"]);
 });
@@ -120,14 +120,15 @@ test("the crates slide in (events.crateIn): each from 40 px above over 500 ms, 2
     assert.equal(w(249), rest[0][2], "one crate before the second begins at 250"); assert.ok(w(260) > rest[0][2], "the second"); assert.equal(w(499), rest[1][0] + rest[1][2] - rest[0][0]); assert.ok(w(510) > rest[1][0] + rest[1][2] - rest[0][0], "the third at 500");
     assert.deepEqual(at(total + 20), [rest[0][0], rest[0][1], rest[2][0] + rest[2][2] - rest[0][0], rest[0][3]], "the three on their rectangles when it ends"); assert.equal(f.poll("done")?.kind, "arrival"); }
 });
-test("the rest (events.rest): the knob settles in the first 200 ms and the ring goes; the screen dithers to Idle over the next 180; the face says done at 380", { skip }, async () => {
+test("the rest (events.rest): the knob settles in the first 200 ms and the ring goes; the face says done at 200; the host's dither closes over the stage for 180 ms; input is held until 380 and the ring and the lift stay away", { skip }, async () => {
   const f = await start(scene({ adults: 2, focus: "knob" }), { t0: 1000 }), R = homeSpec.regions.knob.states, knob = (lg) => lg.regions.find((r) => r.id === "knob"), ring = (lg) => lg.regions.some((r) => r.id === "focus"), dither = (lg) => lg.regions.some((r) => r.id === "stage" && r.layer === "art");
   let lg = logOf(f); assert.equal(knob(lg).rect[1], R.focused.rect[1], "lifted while focused"); assert.ok(ring(lg)); assert.ok(!dither(lg));
-  const t0 = f.t; f.send({ t: "event", kind: "rest", target: "knob", ms: 380, hold: true });
-  f.frame(t0 + 150); lg = logOf(f); assert.ok(!ring(lg), "the ring goes as the rest begins"); assert.ok(!dither(lg), "no dither in the first 200 ms");
-  f.frame(t0 + 230); lg = logOf(f); assert.equal(knob(lg).rect[1], R.rest.rect[1], "settled at 546"); assert.ok(dither(lg), "the dither is on after 200");
-  const mid = f.hash(); f.frame(t0 + 300); assert.notEqual(f.hash(), mid, "the dither deepens"); assert.equal(f.poll("done"), null, "not done before 380");
-  f.frame(t0 + 400); assert.equal(f.poll("done")?.kind, "rest");
+  const t0 = f.t, ev = homeSpec.events.rest; assert.deepEqual([ev.ms, ev.hold], [200, 380]); f.send({ t: "event", kind: "rest", target: "knob", ms: ev.ms, hold: ev.hold });
+  f.frame(t0 + 150); lg = logOf(f); assert.ok(!ring(lg), "the ring goes as the rest begins"); assert.equal(f.poll("done"), null);
+  f.frame(t0 + 210); lg = logOf(f); assert.equal(f.poll("done")?.kind, "rest", "the event ends at 200"); assert.equal(knob(lg).rect[1], R.rest.rect[1], "settled at 546"); assert.ok(!ring(lg), "no ring while the hold runs");
+  f.send({ t: "event", kind: "dither", target: "stage", ms: 180, from: 0, to: 16 }); f.frame(t0 + 330); lg = logOf(f); assert.ok(dither(lg), "the dither is closing over the stage"); const mid = f.hash(); f.frame(t0 + 370); assert.notEqual(f.hash(), mid, "it deepens");
+  assert.deepEqual(key(f, "confirm"), [], "input is still held at 370"); f.frame(t0 + 400); assert.equal(f.poll("done")?.kind, "dither");
+  assert.equal(f.send({ t: "event", kind: "rest", target: "knob", ms: 200, hold: true }), -1, "a boolean hold is refused"); assert.match(f.errors()[0], /boolean is refused/);
 });
 test("motion off: every event is at its end at once, the walk is at its place, and the same hash holds at any later time", { skip }, async () => {
   const b = scene({ adults: 4, crates: 2, carry: [0] }), f = await start(b, { motion: false }), h0 = f.hash();

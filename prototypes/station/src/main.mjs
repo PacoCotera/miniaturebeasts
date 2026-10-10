@@ -76,7 +76,7 @@ function frame(t) {
 export function act(k) {
   if (!G.ready || !FACE) return;
   clock.now = performance.now(); UI.lastInput = clock.now;
-  if (H.holding()) { if (["home", "research", "library", "habitat"].includes(k) && UI.screen === "home") H.pendingRoom = k; return; }   // an event holds input: presses are consumed; a room key is kept and dispatched when the rest ends (home.json focus.held)
+  // an event holds input: the face acts on no key but a room key while Home rests, and the host keeps that intent until the hold ends (host.mjs)
   syncProps();
   if (k === "dock") { const wasIdle = UI.idle; if (wasIdle) { UI.idle = false; FX.wake = clock.now; caddy.wake(); H.play({ kind: "dither", target: "stage", ms: 180, hold: true }); } frameIntents.dock(H, wasIdle); return; }
   if (k !== "back" || UI.screen !== "home") FX.msg = "";
