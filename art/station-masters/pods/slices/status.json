@@ -3205,19 +3205,19 @@
   "note": "a Sitting pose of a species whose painting does not exist yet: never a delivery; repaint once the species' painting is accepted (the art director, a079009f); the 48 is downsampled from the 96"
  },
  "idle-vivarium-day-1024x568": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "status": "signed",
+  "signed_in": "art director, Idle verdict (6b86fd68)",
+  "note": "signed (art director): Idle's Vivarium with the seams blended (pass 96); also the whole Vivarium's window (rows 120 to 560) and Home's glass (crop 0, 40, 640, 488)"
  },
  "idle-vivarium-dusk-1024x568": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "status": "signed",
+  "signed_in": "art director, Idle verdict (6b86fd68)",
+  "note": "signed (art director): Idle's Vivarium with the seams blended (pass 96); also the whole Vivarium's window (rows 120 to 560) and Home's glass (crop 0, 40, 640, 488)"
  },
  "idle-vivarium-night-1024x568": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 94: Idle's Vivarium by light (a Pro painting; dusk and night are Pro edits of the day picture, night graded to a mean L* of 30.5), no creatures; awaiting the art director's judgement (not signed); the slice id is proposed"
+  "status": "signed",
+  "signed_in": "art director, Idle verdict (6b86fd68)",
+  "note": "signed (art director): Idle's Vivarium with the seams blended (pass 96); also the whole Vivarium's window (rows 120 to 560) and Home's glass (crop 0, 40, 640, 488)"
  },
  "home-bay-shut-176x72": {
   "status": "new",
