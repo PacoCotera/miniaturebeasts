@@ -194,8 +194,8 @@
    "file": "pods/frame-bottom-line-1024x38.png",
    "w": 1024,
    "h": 38,
-   "sha256": "1322d4e5234ce0ce4999bf7e6bf37bd97615b7e7969a3987065cacadfbd644c2",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "8788ad07ae353c3d1c2cb83e87c6d6299f8a685fd3d4dd6dcbf5a8d24d5c4b3f",
+   "signed": "art director (frame bars, #112 78b6bfbc)"
   },
   "frame-cap-back-16": {
    "file": "pods/frame-cap-back-16.png",
@@ -299,8 +299,8 @@
    "file": "pods/frame-top-bar-1024x40.png",
    "w": 1024,
    "h": 40,
-   "sha256": "9d40520a555e4f43bf79a87e949a0856da79d0539468a11b75e0773dfa6de65a",
-   "signed": "signed (masters-pods b3b7e04)"
+   "sha256": "545ae9c79dbc56250c44f28f2e66b172c05ee383eee1048b6c4ca7c48f80f92f",
+   "signed": "art director (frame bars, #112 78b6bfbc)"
   },
   "glint-star-12x12": {
    "file": "pods/glint-star-12x12.png",
