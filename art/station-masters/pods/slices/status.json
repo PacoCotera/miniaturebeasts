@@ -3340,24 +3340,24 @@
   "note": "held (art director): signed as a cut (L* 36.8, key R-B 35, sat 22), but it is the Pods overview's stage with the nest moved, and its panel crosses Create's work tray (x 584-712); replaced by the Create set's own stage"
  },
  "dome-front-304x272": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 114: the housing in the stage's rendering by hand: a lit top-left edge, shade at the lower right, four screws on the frame, a hairline seam below the window; the width and the window as signed off; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; the sage housing at 304 on the radius-152 arch with the stage's rendering (lit top-left edge, shade, four screws, hairline seam), hood lip, no highlight"
  },
  "dome-back-304x272": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 114: the back is now a plain warm matte inner wall with the lamp (no hills, no moss; the bed is the nest slice); key R-B 101, sat 48; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 65.7, key R-B 101, sat 48 against the chamber rule (key R-B >= 70, sat 45-60); a plain warm matte inner wall with the lamp; the one window 226 wide"
  },
  "dome-inside-standby-304x272": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 114: standby from the new plain back (a soft warm pool low on the wall); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 60.3, key R-B 94, sat 48, a step below growing"
  },
  "dome-inside-ready-304x272": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 114: ready from the new plain back (the light up toward cream); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 62.8, key R-B 88, sat 47"
  },
  "base-336x96": {
   "status": "signed",
@@ -3367,12 +3367,12 @@
  "nest-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 112: unchanged; to be judged in the wider window (the bed reads inside the new chamber at the foot of the window); awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): the bed reads in the window, but empty it is a closed green log; the spec asks it lit and plump with its hollow visible: a shallow forest-shaded hollow in the top centre, by hand"
  },
  "nest-front-208x48": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 112: unchanged; to be judged in the wider window; awaiting the art director's judgement (not signed)"
+  "note": "judged with the nest's hollow fix"
  },
  "bud-early-128x160": {
   "status": "new",
@@ -3432,16 +3432,16 @@
  "chamber-back-400x320": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+  "note": "returned (art director) at 1x: L* 38.6, key R-B 35, sat 29 fit, but the tray reads as a flat UI box, not a tray in the housing; give it the stage's rendering: the enamel rim lit top-left and shaded lower right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners"
  },
  "chamber-front-400x320": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+  "note": "judged with the tray's rendering fix"
  },
  "plate-name-88x24": {
-  "status": "new",
-  "signed_in": null,
-  "note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "note": "signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from"
  }
 }

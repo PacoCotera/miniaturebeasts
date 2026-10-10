@@ -10433,9 +10433,9 @@
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the chamber's housing and window frame (sage metal, one arched window, the opening cleared), cut from the sheet, scaled uniformly to the dome's 272 rows (pass 111)",
   "sha256": "75c332edbc1273a23f8c0970429504a040231d4b56cd7eed65efaf6a8fa98c58",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 114: the housing in the stage's rendering by hand: a lit top-left edge, shade at the lower right, four screws on the frame, a hairline seam below the window; the width and the window as signed off; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; the sage housing at 304 on the radius-152 arch with the stage's rendering (lit top-left edge, shade, four screws, hairline seam), hood lip, no highlight"
  },
  "dome-back-304x272": {
   "size": [
@@ -10446,9 +10446,9 @@
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the chamber's warm interior (a plain lit wall, a small lamp, the moss bed with its hollow), empty, behind the housing (pass 111)",
   "sha256": "5ff57e7f85dd56419dc9e7e39109cb0c3a42fa6abbc37e0b49e464697e9f237c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 114: the back is now a plain warm matte inner wall with the lamp (no hills, no moss; the bed is the nest slice); key R-B 101, sat 48; awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 65.7, key R-B 101, sat 48 against the chamber rule (key R-B >= 70, sat 45-60); a plain warm matte inner wall with the lamp; the one window 226 wide"
  },
  "dome-inside-standby-304x272": {
   "size": [
@@ -10459,9 +10459,9 @@
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the interior with a soft warm pool on the bed (about half a growing glow), standby (pass 111)",
   "sha256": "54980d1be63d06dbc52fe801fabfb7cb4bedf5b68c411e4d290d25ae1491341f",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 114: standby from the new plain back (a soft warm pool low on the wall); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 60.3, key R-B 94, sat 48, a step below growing"
  },
  "dome-inside-ready-304x272": {
   "size": [
@@ -10472,9 +10472,9 @@
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the interior with its light up toward cream, ready (by hand: a cream light added on the wall and the bed, nothing else changed) (pass 111)",
   "sha256": "35140e5c170e56fcdcd4cbd591b0b03fa09eb19fe619171e48bf4b2a3bc86ec0",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 114: ready from the new plain back (the light up toward cream); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 62.8, key R-B 88, sat 47"
  },
  "base-336x96": {
   "size": [
@@ -10500,7 +10500,7 @@
   "sha256": "070b2d2cce42b0ac268ef6092a25396241df8eb192a063ed082fb696b3c96a45",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 112: unchanged; to be judged in the wider window (the bed reads inside the new chamber at the foot of the window); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director): the bed reads in the window, but empty it is a closed green log; the spec asks it lit and plump with its hollow visible: a shallow forest-shaded hollow in the top centre, by hand"
  },
  "nest-front-208x48": {
   "size": [
@@ -10513,7 +10513,7 @@
   "sha256": "f12e5e6fdd7c7e83d75ef67ec45e33a8748e6db583283a20384b7b2b384dcbf6",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 112: unchanged; to be judged in the wider window; awaiting the art director's judgement (not signed)"
+  "status_note": "judged with the nest's hollow fix"
  },
  "bud-early-128x160": {
   "size": [
@@ -10674,7 +10674,7 @@
   "sha256": "7ae3dfb8c63c9b484e042016112717fbaa42f97a33048c46beb8ed6e79873321",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+  "status_note": "returned (art director) at 1x: L* 38.6, key R-B 35, sat 29 fit, but the tray reads as a flat UI box, not a tray in the housing; give it the stage's rendering: the enamel rim lit top-left and shaded lower right, a soft inner shadow under the rim onto the panel, four screws at the rim's corners"
  },
  "chamber-front-400x320": {
   "size": [
@@ -10687,7 +10687,7 @@
   "sha256": "3d6d7ed5f44725bf93981bbb88d2ba95c9246886f5994d1545953812afabadaa",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+  "status_note": "judged with the tray's rendering fix"
  },
  "plate-name-88x24": {
   "size": [
@@ -10698,8 +10698,8 @@
   "src": "slices/plate-name-80x24.png (signed 9-slice)",
   "made": "the small plate for the trait line's tag, cut from the signed plate-name 9-slice (insets 14 px across, 8 px down): the 80 px plate widened to 88, its middle 52 px stretched to 60 (pass 113)",
   "sha256": "69eb5544e9405b2ef311d9968dba3fae0bec6695971d8fa4ef2b527185e09aa7",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 113: the Create screen's hand-made piece (the art director's Create brief; the work tray from the Incubator stage's foam and base-336x96's sand, the plate cut from the signed plate-name 9-slice); awaiting the art director's judgement (not signed)"
+  "status": "signed",
+  "signed_in": "art director, verdict (5238569a)",
+  "status_note": "signed (art director) at 1x: L* 57.2, key R-B -22, sat 15, as the signed plate-name 9-slice it is cut from"
  }
 }
