@@ -105,7 +105,7 @@ for y in range(5, 40):                                  # the body and lid
         if corner: c = 'deepTeal' if not (x in (1,) and y in (6, 36)) else 'bevel'
         elif edge: c = 'hairline'
         elif y == 6 or x == 1: c = 'enamel'
-        elif y >= 37 or x >= 45: c = 'bevel'
+        elif y >= 35 or x >= 44: c = 'bevel'
         elif y == 15: c = 'hairline'                    # the lid seam
         elif y == 16: c = 'enamel'
         elif x in (11, 36) and y > 6: c = 'bevel'       # moulded ribs
