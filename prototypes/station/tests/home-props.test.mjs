@@ -106,3 +106,12 @@ test("the room's ✓ agrees with state.need(): the same action, the same screen"
   const { st, sv } = scenes().docked; const m = st.mibis[0];
   assert.equal(needOf({ st, sv, settings, docked: true, ui: { meet: m.id } }, spec).key, "meet"); assert.equal(build(st, sv, { ui: { meet: m.id } }).line.need, "meet " + m.name);
 });
+
+test("the short notices carry each short material once, Energy before Essence, and ◆ for a read", () => {
+  const mk = (e, sEss) => { const st = world(); dock(st); const p = pod(st, "S01"); p.read = [frameOf("S01").chapters[0].id]; st.e = e; st.s = sEss; st.d = 99; const c = S.growCost(st, {}, settings); return { st, c }; };
+  const need = (st) => build(st, sv0()).line.need;
+  { const { st, c } = mk(0, 99); assert.ok(c.e > 0); assert.match(need(st), /pod needs more ⚡$/); assert.equal((need(st).match(/⚡/g) || []).length, 1); }
+  { const { st, c } = mk(99, 0); assert.ok(c.s > 0); assert.match(need(st), /pod needs more ❀$/); assert.ok(!/⚡/.test(need(st))); }
+  { const { st } = mk(0, 0); assert.match(need(st), /pod needs more ⚡ ❀$/); }
+  { const st = world(); dock(st); const p = pod(st, "S01"); st.d = 0; st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 }; p.read = []; st.readEver = true; const n = need(st); assert.match(n, /^an? \S+ pod needs more ◆$/); assert.equal((n.match(/◆/g) || []).length, 1); }
+});
