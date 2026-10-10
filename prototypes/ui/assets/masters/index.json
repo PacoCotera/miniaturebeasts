@@ -1,6 +1,13 @@
 {
  "schema": "mb-masters/1",
  "masters": {
+  "base-336x96": {
+   "file": "pods/base-336x96.png",
+   "w": 336,
+   "h": 96,
+   "sha256": "4130e141b41a1453dba1b2cf335f50c703c5d56beeb4096aff1a617d212bbe98",
+   "signed": "art director, verdict (d09acb12)"
+  },
   "cell-outline-unread-128x160": {
    "file": "pods/cell-outline-unread-128x160.png",
    "w": 128,
@@ -112,6 +119,34 @@
    "h": 8,
    "sha256": "ce5c2c4385a408ac220804eba86a3ddd6a59808f35a28314dc18d8b4abdacfe3",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "dome-back-304x272": {
+   "file": "pods/dome-back-304x272.png",
+   "w": 304,
+   "h": 272,
+   "sha256": "5ff57e7f85dd56419dc9e7e39109cb0c3a42fa6abbc37e0b49e464697e9f237c",
+   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
+  },
+  "dome-front-304x272": {
+   "file": "pods/dome-front-304x272.png",
+   "w": 304,
+   "h": 272,
+   "sha256": "dd60be032e0c821dc50661805bef519d5b8714a2c4ccd14177c2465b3113e0f7",
+   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
+  },
+  "dome-inside-ready-304x272": {
+   "file": "pods/dome-inside-ready-304x272.png",
+   "w": 304,
+   "h": 272,
+   "sha256": "028cce21b78e9daa50b3cdb92a3290b8e716b7ac877625d9cc2d99b18157c34b",
+   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
+  },
+  "dome-inside-standby-304x272": {
+   "file": "pods/dome-inside-standby-304x272.png",
+   "w": 304,
+   "h": 272,
+   "sha256": "54980d1be63d06dbc52fe801fabfb7cb4bedf5b68c411e4d290d25ae1491341f",
+   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
   },
   "face-24-empty": {
    "file": "pods/face-24-empty.png",
@@ -308,6 +343,20 @@
    "h": 12,
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "leaf-empty-16x20": {
+   "file": "pods/leaf-empty-16x20.png",
+   "w": 16,
+   "h": 20,
+   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "leaf-full-16x20": {
+   "file": "pods/leaf-full-16x20.png",
+   "w": 16,
+   "h": 20,
+   "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
+   "signed": "art director, verdict (d09acb12)"
   },
   "mark-asleep-24x16": {
    "file": "pods/mark-asleep-24x16.png",
@@ -876,6 +925,20 @@
    "sha256": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1",
    "signed": "placeholder (masters-pods b3b7e04), not final",
    "status": "placeholder"
+  },
+  "nest-208x48": {
+   "file": "pods/nest-208x48.png",
+   "w": 208,
+   "h": 48,
+   "sha256": "e91c96f9e16baac78eb06f421e783944567e59686d26dc4444bdbe341245d6dc",
+   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
+  },
+  "nest-front-208x48": {
+   "file": "pods/nest-front-208x48.png",
+   "w": 208,
+   "h": 48,
+   "sha256": "950f0b35f5ab770db84162547d48cdc9e31d099b7ce54d9b01360d8252c4c007",
+   "signed": "art director, verdicts (5238569a, 38affaae; fixes e863f47b)"
   },
   "page-mark-new-10": {
    "file": "pods/page-mark-new-10.png",
@@ -2787,6 +2850,13 @@
    "h": 522,
    "sha256": "448dad6e5615e144e0952609de261eb795cba0f86fff9479a67bf429cd88fb3e",
    "signed": "signed (masters-pods b3b7e04)"
+  },
+  "room-bench-stage-incubator": {
+   "file": "pods/room-bench-stage-incubator.png",
+   "w": 1024,
+   "h": 522,
+   "sha256": "37c92cbd023977ef3483bdc496ea8d27af1f933a116f8c09c7b3bb7593fac686",
+   "signed": "art director, verdict (d09acb12)"
   },
   "room-bench-stage-overview": {
    "file": "pods/room-bench-stage-overview.png",
