@@ -1,41 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Idle, the living view kept on all day (a state of the frame): the vivarium full screen and its one line, 1024×600 at 1×, measured. Layout only, no art.</title>
-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>Idle: the Vivarium's whole without the frame, one painting full screen with the residents awake, the bed with the carried set asleep, and one line on its strip. 1024×600 at 1×, measured.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="0.5" width="1023" height="567" fill="#fff4e3" stroke="#b9772f" stroke-width="1.5"/>
-<line x1="0" y1="320.5" x2="1024" y2="320.5" stroke="#e0b98a" stroke-width="1" stroke-dasharray="3 3"/>
-<line x1="0" y1="552.5" x2="1024" y2="552.5" stroke="#e0b98a" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="8" y="16" font-size="11" fill="#222">Vivarium (living window, inside only, no frame) 1024×568</text>
-<text x="8" y="28" font-size="9" fill="#777">0,0 1024×568 · the only thing on screen but the line</text>
-<text x="8" y="316" font-size="9" fill="#777">ground band 0,320 1024×232 · residents walk x 16 to 1008</text>
-<text x="8" y="564" font-size="9" fill="#777">foot 0,552 1024×16</text>
-<rect x="96.5" y="368.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
-<text x="100" y="381" font-size="10" fill="#222">Adult 144×152</text>
-<text x="100" y="393" font-size="9" fill="#777">96,368</text>
-<rect x="392.5" y="336.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
-<text x="396" y="349" font-size="10" fill="#222">Adult 144×152</text>
-<text x="396" y="361" font-size="9" fill="#777">392,336</text>
-<rect x="648.5" y="424.5" width="103" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
-<text x="652" y="437" font-size="10" fill="#222">Juvenile 104×112</text>
-<text x="652" y="449" font-size="9" fill="#777">648,424</text>
-<rect x="740.5" y="424.5" width="11" height="11" fill="#5bb9f3" stroke="#222" stroke-width="1"/>
-<text x="760" y="434" font-size="9" fill="#222">waiting lamp</text>
-<rect x="872.5" y="496.5" width="127" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="876" y="508" font-size="9" fill="#222">bed 872,496 128×56</text>
-<rect x="864.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 3"/>
-<text x="868" y="410" font-size="9" fill="#c45f12">sleeping mibi 864,384</text>
-<text x="868" y="421" font-size="9" fill="#c45f12">(foot on 936,536)</text>
+<path d="M0 376.5L1024 376.5" fill="none" stroke="#e0b98a" stroke-width="1" stroke-dasharray="3 3"/>
+<path d="M0 552.5L1024 552.5" fill="none" stroke="#e0b98a" stroke-width="1" stroke-dasharray="3 3"/>
+<rect x="1.5" y="120.5" width="1021" height="439" fill="none" stroke="#2b6cb0" stroke-width="1" stroke-dasharray="6 4"/>
+<text x="8" y="16" font-size="10" fill="#222" font-family="DejaVu Sans Mono, ui-monospace, monospace">Vivarium, inside only, no frame: 0,0 1024×568, one painting a light</text>
+<text x="8" y="132" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">rows 120 to 560: the Vivarium's whole shows this part in its window (0,40 1024×440), 1:1</text>
+<text x="8" y="372" font-size="9" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">ground band 0,376 1024×176 (the whole's 0,296) · residents walk x 16 to 1008</text>
+<text x="8" y="564" font-size="9" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">foot 0,552 1024×16</text>
+<rect x="96.5" y="392.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
+<text x="100" y="405" font-size="9" fill="#222" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult 144×152</text>
+<rect x="392.5" y="400.5" width="143" height="151" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
+<text x="396" y="413" font-size="9" fill="#222" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult</text>
+<rect x="632.5" y="424.5" width="103" height="111" fill="#ffeedb" stroke="#c45f12" stroke-width="1.5"/>
+<text x="636" y="437" font-size="9" fill="#222" font-family="DejaVu Sans Mono, ui-monospace, monospace">juvenile 104×112</text>
+<rect x="792.5" y="496.5" width="191" height="55" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
+<text x="796" y="546" font-size="8" fill="#222" font-family="DejaVu Sans Mono, ui-monospace, monospace">bed 792,496 192×56</text>
+<rect x="792.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="840.5" y="384.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="796" y="366" font-size="8" fill="#c45f12" font-family="DejaVu Sans Mono, ui-monospace, monospace">asleep: feet at 864 and 912 on y 536</text>
 <rect x="0.5" y="568.5" width="1023" height="31" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<line x1="0" y1="568.5" x2="1024" y2="568.5" stroke="#222" stroke-width="1"/>
 <rect x="16.5" y="568.5" width="991" height="31" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="512" y="589" font-size="14" fill="#6b6880" text-anchor="middle">a bud is growing</text>
-<text x="20" y="589" font-size="9" fill="#777">strip 0,568 1024×32 · line 16,568 992×32</text>
-<text x="1004" y="589" font-size="9" fill="#777" text-anchor="end">16 px mist, centred on 512; ≤ 6 words</text>
-<text x="300" y="62" font-size="12" fill="#2b6cb0">A living view to keep on all day, never a screen off:</text>
-<text x="300" y="80" font-size="12" fill="#2b6cb0">residents awake and walking, full light for the time of day.</text>
-<text x="300" y="134" font-size="12" fill="#2b6cb0">No top bar, no bottom line, no ring, no plate.</text>
-<text x="300" y="152" font-size="12" fill="#2b6cb0">The first press sends wake and nothing else (180 ms dither back).</text>
-<text x="300" y="170" font-size="12" fill="#2b6cb0">Dock wakes, docks and lands on Home; the crates slide in.</text>
-<text x="300" y="188" font-size="12" fill="#2b6cb0">Comes after 60 s without a press, or by ✓ Rest on Home.</text>
-<text x="300" y="206" font-size="12" fill="#2b6cb0">The line: crates, bud ready, bud growing, a mibi out (away only).</text>
+<text x="512" y="589" font-size="16" fill="#6b6880" text-anchor="middle">a bud is growing</text>
+<text x="20" y="589" font-size="9" fill="#777" font-family="DejaVu Sans Mono, ui-monospace, monospace">strip 0,568 1024×32 · line 16,568 992×32</text>
+<text x="1004" y="589" font-size="9" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">16 px mist, centred; six words or fewer</text>
+<text x="300" y="48" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Never a screen off: residents awake, walking and resting, full light for the time of day.</text>
+<text x="300" y="61" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">What moves: the residents, the sleepers breathing, the light. Nothing blinks or counts.</text>
+<text x="300" y="74" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">No top bar, no bottom line, no ring, no plate. The first press wakes, nothing else,</text>
+<text x="300" y="87" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">back to the screen under Idle as it was. After 60 s without a press, or ✓ Rest on Home.</text>
+<text x="300" y="100" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The line: crates, the bud ready, a bud growing, who is out (away only); else empty.</text>
 </svg>

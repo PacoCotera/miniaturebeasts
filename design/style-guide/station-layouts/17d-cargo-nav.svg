@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>The way through Cargo: Dock, Home's Cargo module, the bay, each crate opening, the report, and the hand-off to Pods; what ✓ and ← do at each step. 1024×600 at 1×.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
+<rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
+<rect x="16.5" y="72.5" width="191" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="24" y="94" font-size="13" fill="#222" font-weight="600">Dock (the Caddy)</text>
+<text x="24" y="118" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">crates slide into</text>
+<text x="24" y="134" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">the Cargo module</text>
+<rect x="216.5" y="72.5" width="191" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="224" y="94" font-size="13" fill="#222" font-weight="600">Home</text>
+<text x="224" y="118" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">Cargo lit amber;</text>
+<text x="224" y="134" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ Open Cargo (room</text>
+<rect x="416.5" y="72.5" width="191" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="424" y="94" font-size="13" fill="#222" font-weight="600">Cargo · the bay</text>
+<text x="424" y="118" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">sealed crates;</text>
+<text x="424" y="134" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ Open the bay</text>
+<rect x="616.5" y="72.5" width="191" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="624" y="94" font-size="13" fill="#222" font-weight="600">one crate opening</text>
+<text x="624" y="118" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">3 s a crate, held;</text>
+<text x="624" y="134" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">pods to the rack</text>
+<rect x="816.5" y="72.5" width="191" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="824" y="94" font-size="13" fill="#222" font-weight="600">the report</text>
+<text x="824" y="118" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">any press closes;</text>
+<text x="824" y="134" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ See the new pods</text>
+<text x="224" y="150" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">or the module)</text>
+<path d="M208 120L216 120" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M408 120L416 120" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M608 120L616 120" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M808 120L816 120" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="816.5" y="232.5" width="191" height="95" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
+<text x="824" y="254" font-size="13" fill="#222" font-weight="600">Pods · the collection</text>
+<text x="824" y="278" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">the ring on the pod that</text>
+<text x="824" y="294" font-size="11" fill="#333" font-family="DejaVu Sans Mono, ui-monospace, monospace">most needs you; ← Home</text>
+<path d="M912 168L912 232" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="918" y="204" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ (a jump)</text>
+<path d="M816 160L608 200" fill="none" stroke="#2b6cb0" stroke-width="1.2" stroke-dasharray="3 2"/>
+<path d="M608 200L512 168" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)" stroke-dasharray="3 2"/>
+<text x="600" y="216" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">← closes the card: the bay, empty</text>
+<path d="M416 150L312 168" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)" stroke-dasharray="3 2"/>
+<text x="280" y="196" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">← Home, the ring on Cargo</text>
+<text x="16" y="380" font-size="11" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The bay: crates sealed, left to right in the order they open; away, the lid shut. No targets: the ring on nothing.</text>
+<text x="16" y="394" font-size="11" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The opening: the dither to the crate closer; the seal tears, the lid lifts; the ribbon names the crate;</text>
+<text x="16" y="408" font-size="11" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the counters tick; each pod travels to its well; the turn ticks; then the next crate, or the report.</text>
+<text x="16" y="422" font-size="11" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">A pod with no free well stays in the bay and lands, oldest first, as a well frees.</text>
+<text x="16" y="436" font-size="11" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">A room key during the opening waits; on the report it closes the card and opens its section.</text>
+<text x="16" y="450" font-size="11" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Dock while the bay shows: the lid opens, the crates slide in. A lift during the opening waits for the report.</text>
+</svg>

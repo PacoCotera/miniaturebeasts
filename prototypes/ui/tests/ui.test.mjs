@@ -142,7 +142,7 @@ test("the frame components place the spec's regions and set every string in Inte
   const price = byId["line.a.1.0"], verbEnd = byId["line.a.0.0"].rect[0] + byId["line.a.0.0"].rect[2]; assert.equal(price.kind, "text"); assert.equal(price.rect[0] - verbEnd, 24, "the price is 24 px after the verb");
   assert.ok(!texts.some((n) => /·/.test(n.text)), "no dots in the frame");
   assert.deepEqual(byId["line.need.lamp"].rect.slice(2), [12, 12]);
-  const need = nodes.filter((n) => n.id.startsWith("line.need") && n.kind !== "rect"); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 904, "the notice ends at x 904");
+  const need = nodes.filter((n) => n.id.startsWith("line.need") && n.kind !== "rect"); assert.equal(need.at(-1).rect[0] + need.at(-1).rect[2], 896, "the notice ends at x 896, 24 px before the 88 px way back");
   const back = byId["line.back.0"]; assert.equal(back.rect[0] + back.rect[2], 1008, "the way back is right-aligned to 1008, alone in its zone");
   const subj = nodes.find((n) => n.id === "line.subject.0"); assert.ok(Math.abs(subj.rect[0] + subj.rect[2] / 2 - 512) <= 1);
   // the message plate: bottom at 550, over nothing focal

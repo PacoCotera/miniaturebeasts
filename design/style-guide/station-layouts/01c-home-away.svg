@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
-<title>Home's pad: the focus graph with its edges, and what ✓, ← and the four keys do on Home. 1024×600 at 1×.</title>
+<title>Home with the Companion away: the bay shut, the cradle empty, the Companion mark on the bed; the ring on the vivarium panel, ✓ Open the Vivarium. 1024×600 at 1×.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
@@ -16,26 +16,16 @@
 <text x="302" y="350" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">adult</text>
 <rect x="448.5" y="472.5" width="191" height="55" fill="#efe0c8" stroke="#8a6a44" stroke-width="1"/>
 <text x="452" y="522" font-size="8" fill="#8a6a44" font-family="DejaVu Sans Mono, ui-monospace, monospace">with-you bed 448,472 192×56</text>
-<rect x="496.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
-<path d="M616 360h24v16h-24z" fill="#c9c2e6"/>
-<rect x="448.5" y="360.5" width="143" height="151" fill="none" stroke="#c45f12" stroke-width="1" stroke-dasharray="3 2"/>
-<path d="M568 360h24v16h-24z" fill="#c9c2e6"/>
-<text x="454" y="376" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">asleep: 2 carried,</text>
-<text x="454" y="388" font-size="9" fill="#7d3a10" font-family="DejaVu Sans Mono, ui-monospace, monospace">feet 48 apart on y 512</text>
+<rect x="536.5" y="488.5" width="15" height="23" fill="#ffffff" stroke="#6b6880" stroke-width="1"/>
+<text x="452" y="466" font-size="8" fill="#6b6880" font-family="DejaVu Sans Mono, ui-monospace, monospace">away: the Companion mark 536,488 16×24</text>
 <rect x="624.5" y="546.5" width="31" height="5" fill="#d8d8d8" stroke="#666" stroke-width="1"/>
 <text x="616" y="541" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">rest knob 624,544</text>
 <rect x="688.5" y="48.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="704" y="77" font-size="16" fill="#6f7a5e">Cargo</text>
-<rect x="984.5" y="60.5" width="11" height="11" fill="#e8a33d" stroke="#444" stroke-width="1"/>
-<path d="M800 56h176v72h-176z" fill="#3a414b"/>
-<rect x="800.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
-<path d="M800 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M842 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M820 88h8v10h-8z" fill="#f0661a"/>
-<rect x="864.5" y="72.5" width="47" height="39" fill="#d9cfb8" stroke="#222" stroke-width="1"/>
-<path d="M864 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M906 72h6v6h-6z" fill="#2a2a2d"/>
-<path d="M884 88h8v10h-8z" fill="#f0661a"/>
+<rect x="984.5" y="60.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
+<path d="M800 56h176v72h-176z" fill="#cfc6b0"/>
+<path d="M800 86h176v4h-176z" fill="#3a3a3d"/>
+<text x="888" y="116" font-size="8" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">lid shut</text>
 <rect x="688.5" y="152.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="704" y="181" font-size="16" fill="#6f7a5e">Pods</text>
 <rect x="984.5" y="164.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
@@ -90,55 +80,30 @@
 <path d="M965.5 306.5h7v11h-7z" fill="none" stroke="#9aa0a6" stroke-width="1"/>
 <rect x="688.5" y="360.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="704" y="389" font-size="16" fill="#6f7a5e">Probe</text>
-<rect x="984.5" y="372.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
+<rect x="984.5" y="372.5" width="11" height="11" fill="#cfcfcf" stroke="#444" stroke-width="1"/>
 <rect x="800.5" y="368.5" width="95" height="71" fill="#cfc6b0" stroke="#444" stroke-width="1"/>
-<path d="M812 396h72v16h-72z" fill="#5c6370"/>
-<text x="848" y="432" font-size="8" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the Probe</text>
-<rect x="912.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="928.5" y="368.5" width="11" height="23" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="944.5" y="368.5" width="11" height="23" fill="none" stroke="#444" stroke-width="1"/>
 <rect x="688.5" y="464.5" width="319" height="87" fill="#f0f1f3" stroke="#444" stroke-width="1"/>
 <text x="704" y="493" font-size="16" fill="#6f7a5e">Library</text>
 <rect x="984.5" y="476.5" width="11" height="11" fill="#9bd17f" stroke="#444" stroke-width="1"/>
 <rect x="800.5" y="472.5" width="103" height="71" fill="#8a6a44" stroke="#444" stroke-width="1"/>
 <path d="M852 476h1v64h-1z" fill="#e8dcc0"/>
 <text x="1006" y="46" font-size="7" fill="#777" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">section column 688,48 · five modules 320×88 on a 104 pitch</text>
-<circle cx="512" cy="300" r="6" fill="#2b6cb0" stroke="none" stroke-width="1"/>
-<text x="520" y="296" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">room (no ring)</text>
-<path d="M518 300L684 102" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="560" y="230" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▶ Cargo</text>
-<path d="M512 293L512 60" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="516" y="150" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▲ the panel</text>
-<path d="M505 302L182 340" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="250" y="300" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">◀ nearest by row</text>
-<path d="M1000 132L1000 156" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<path d="M1000 236L1000 260" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<path d="M1000 340L1000 364" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<path d="M1000 444L1000 468" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<path d="M700 548L662 548" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="700" y="558" font-size="8" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▼ library → rest knob</text>
-<path d="M684 390L600 420" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)" stroke-dasharray="3 2"/>
-<text x="456" y="448" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">◀ column: nearest resident</text>
-<path d="M112 260L112 60" fill="none" stroke="#2b6cb0" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="118" y="100" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▲ topmost: the panel</text>
-<path d="M136 136h360v92h-360z" fill="#ffffff"/>
-<rect x="136.5" y="136.5" width="359" height="91" fill="none" stroke="#2b6cb0" stroke-width="1"/>
-<text x="144" y="152" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▲ ▼ walk the column, Cargo to Library, then the</text>
-<text x="144" y="164" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">rest knob; the ends stop. Residents: ▲ ▼ ◀ the</text>
-<text x="144" y="176" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">nearest more than 6 px ahead; ▶ the module by row.</text>
-<text x="144" y="188" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">✓ the bottom line's action; on the room, what needs</text>
-<text x="144" y="200" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">you. ← nothing. Home key: the ring to the room;</text>
-<text x="144" y="212" font-size="9" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">Vivarium, Research, Library: their sections.</text>
+<rect x="13" y="45" width="662" height="510" rx="6" fill="none" stroke="#d9a21b" stroke-width="2"/>
+<rect x="12.5" y="44.5" width="663" height="511" fill="none" stroke="none" stroke-width="1"/>
+<text x="40" y="80" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">The ring on the panel: round, 4 px outside the bezel, 12,44 664×512;</text>
+<text x="40" y="93" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">the living window does not lift. ▲ from the room or the topmost resident;</text>
+<text x="40" y="106" font-size="10" fill="#2b6cb0" font-family="DejaVu Sans Mono, ui-monospace, monospace">▼ to the resident nearest its middle; ▶ to Cargo. ✓ opens the Vivarium's whole.</text>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
 <rect x="16.5" y="8.5" width="23" height="23" fill="#dcdccf" stroke="#666" stroke-width="1"/>
 <text x="48" y="27" font-size="20" fill="#222" font-weight="500">Home</text>
 <path d="M256 8h1v24h-1z" fill="#888"/>
 <path d="M888 8h1v24h-1z" fill="#888"/>
 <text x="512" y="26" font-size="16" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
-<path d="M760 8h16v24h-16z" fill="#9a96ae"/>
-<path d="M780 16h8v8h-8z" fill="#7fd8a6"/>
-<circle cx="812" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
-<circle cx="840" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
+<path d="M760 8h16v24h-16z" fill="#ffffff"/>
+<rect x="760.5" y="8.5" width="15" height="23" fill="none" stroke="#9a96ae" stroke-width="1"/>
+<path d="M780 16h8v8h-8z" fill="#9a9a9a"/>
+<circle cx="812" cy="20" r="11" fill="#f6f6f6" stroke="#9a9a9a" stroke-width="2"/>
+<circle cx="840" cy="20" r="11" fill="#f6f6f6" stroke="#9a9a9a" stroke-width="2"/>
 <circle cx="868" cy="20" r="11.5" fill="none" stroke="#3c4b57" stroke-width="1" stroke-dasharray="2 2"/>
 <text x="1008" y="26" font-size="16" fill="#222" text-anchor="end">☀ 6</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
@@ -146,7 +111,8 @@
 <path d="M620 571h1v20h-1z" fill="#888"/>
 <circle cx="24" cy="582" r="8" fill="#f2671b" stroke="none" stroke-width="0"/>
 <text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
-<text x="36" y="588" font-size="16" fill="#c4500f">Open Cargo</text>
-<path d="M687.125 576h12v12h-12z" fill="#e8a33d"/>
-<text x="896" y="588" font-size="16" fill="#b7791f" text-anchor="end">two crates wait in the bay</text>
+<text x="36" y="588" font-size="16" fill="#c4500f">Open the Vivarium</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">three mibis at home</text>
+<path d="M755.0859375 576h12v12h-12z" fill="#e8a33d"/>
+<text x="896" y="588" font-size="16" fill="#b7791f" text-anchor="end">a bud is growing</text>
 </svg>
