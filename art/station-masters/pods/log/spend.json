@@ -2389,5 +2389,22 @@
    "thoughtsTokenCount": 197,
    "totalTokenCount": 2342
   }
+ },
+ {
+  "tag": "home-glass-day try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.195626,
+  "mxn": 3.9125,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:44:24Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 613,
+   "candidatesTokenCount": 1377,
+   "thoughtsTokenCount": 243,
+   "totalTokenCount": 2233
+  }
  }
 ]
