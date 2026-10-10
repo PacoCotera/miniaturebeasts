@@ -3295,8 +3295,8 @@
   "note": "signed (art director): the Vivarium up close, the same place as Idle at ground level"
  },
  "vivarium-near-night-544x408": {
-  "status": "held",
+  "status": "new",
   "signed_in": null,
-  "note": "held (art director): the night reads too bright and its glow blooms are for show; the same hand fix as Idle's night (the blooms cut, regraded to mean L* 30 or a little more, R >= B)"
+  "note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
  }
 }

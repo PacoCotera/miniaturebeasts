@@ -10255,9 +10255,9 @@
   "src": "source/raw/vivarium-near-day.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by day ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting, cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)",
   "sha256": "6f0c2e64a96226810a45c6b6fdab0d5c86f4dd9e81f72d1e1442d72fa4fa6bc6",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 101: the near Vivarium by light (a Pro painting; dusk and night are Pro edits of the near day picture, matched to the signed Idle lights), no creatures; awaiting the art director's judgement (not signed); the slice id is the art director's"
+  "status": "signed",
+  "signed_in": "art director, near Vivarium verdict (57490118)",
+  "status_note": "signed (art director): the Vivarium up close, the same place as Idle at ground level"
  },
  "vivarium-near-dusk-544x408": {
   "size": [
@@ -10273,9 +10273,9 @@
   "src": "source/raw/vivarium-near-dusk.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by dusk ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting (an edit of the near day picture, matched to Idle's dusk light), cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)",
   "sha256": "25e14dfbfa9efa2d7992bad4f066485a1501db818944540ce3354b718c8f1ce5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 101: the near Vivarium by light (a Pro painting; dusk and night are Pro edits of the near day picture, matched to the signed Idle lights), no creatures; awaiting the art director's judgement (not signed); the slice id is the art director's"
+  "status": "signed",
+  "signed_in": "art director, near Vivarium verdict (57490118)",
+  "status_note": "signed (art director): the Vivarium up close, the same place as Idle at ground level"
  },
  "vivarium-near-night-544x408": {
   "size": [
@@ -10290,9 +10290,9 @@
   ],
   "src": "source/raw/vivarium-near-night.jpg (gemini-3-pro-image)",
   "made": "the near Vivarium by night ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting (an edit of the near day picture, matched to Idle's night light), cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)",
-  "sha256": "ba13f91228a95fdbecae5c465e0780cec683f2471b2904378841364a1d5ab464",
+  "sha256": "85724db0f2882a3dfc520bc04bebd909bf4576ae0721b9e2a0d8aa3239802c50",
   "status": "new",
   "signed_in": null,
-  "status_note": "pass 101: the near Vivarium by light (a Pro painting; dusk and night are Pro edits of the near day picture, matched to the signed Idle lights), no creatures; awaiting the art director's judgement (not signed); the slice id is the art director's"
+  "status_note": "pass 103: the art director held it (too bright, blooms for show); fixed by hand (blooms cut 50 percent toward a 31 px median, regraded to mean L* about 30.5 with R above B); awaiting the art director's judgement (not signed)"
  }
 }
