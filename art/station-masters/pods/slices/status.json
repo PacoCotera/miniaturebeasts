@@ -3341,8 +3341,8 @@
  },
  "dome-front-304x272": {
   "status": "signed",
-  "signed_in": "art director, verdict (5238569a)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; the sage housing at 304 on the radius-152 arch with the stage's rendering (lit top-left edge, shade, four screws, hairline seam), hood lip, no highlight"
+  "signed_in": "art director, verdict (Station lead's hand fixes)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; trimmed to the radius-152 arch on (152, 154) with coverage edges (1020 px cleared), ink from row 2 (inkTop 2)"
  },
  "dome-back-304x272": {
   "status": "signed",
@@ -3356,8 +3356,8 @@
  },
  "dome-inside-ready-304x272": {
   "status": "signed",
-  "signed_in": "art director, verdict (5238569a)",
-  "note": "signed (art director) at 1x, opaque pixels: L* 62.8, key R-B 88, sat 47"
+  "signed_in": "art director, verdict (Station lead's hand fixes)",
+  "note": "signed (art director) at 1x, opaque pixels: L* 68.7 against growing (dome-back) 65.8 and standby 60.3, so ready is the brightest; rebuilt from dome-back with cream #fff4a6 screened on (t 0.07), the lamp's 582 pixels untouched; 30 percent above L* 70 by design: the ready light the spec asks for, exempt from the glow rule"
  },
  "base-336x96": {
   "status": "signed",

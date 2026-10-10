@@ -10432,10 +10432,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the chamber's housing and window frame (sage metal, one arched window, the opening cleared), cut from the sheet, scaled uniformly to the dome's 272 rows (pass 111)",
-  "sha256": "75c332edbc1273a23f8c0970429504a040231d4b56cd7eed65efaf6a8fa98c58",
+  "sha256": "dd60be032e0c821dc50661805bef519d5b8714a2c4ccd14177c2465b3113e0f7",
   "status": "signed",
-  "signed_in": "art director, verdict (5238569a)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; the sage housing at 304 on the radius-152 arch with the stage's rendering (lit top-left edge, shade, four screws, hairline seam), hood lip, no highlight"
+  "signed_in": "art director, verdict (Station lead's hand fixes)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 53.6, key R-B 12, sat 18; trimmed to the radius-152 arch on (152, 154) with coverage edges (1020 px cleared), ink from row 2 (inkTop 2)"
  },
  "dome-back-304x272": {
   "size": [
@@ -10444,7 +10444,7 @@
   ],
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
-  "made": "the chamber's warm interior (a plain lit wall, a small lamp, the moss bed with its hollow), empty, behind the housing (pass 111)",
+  "made": "the chamber's warm interior (a plain warm matte wall and a small lamp under the hood; the bed is the nest slice), empty, behind the housing (passes 111, 114)",
   "sha256": "5ff57e7f85dd56419dc9e7e39109cb0c3a42fa6abbc37e0b49e464697e9f237c",
   "status": "signed",
   "signed_in": "art director, verdict (5238569a)",
@@ -10471,10 +10471,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the interior with its light up toward cream, ready (by hand: a cream light added on the wall and the bed, nothing else changed) (pass 111)",
-  "sha256": "35140e5c170e56fcdcd4cbd591b0b03fa09eb19fe619171e48bf4b2a3bc86ec0",
+  "sha256": "028cce21b78e9daa50b3cdb92a3290b8e716b7ac877625d9cc2d99b18157c34b",
   "status": "signed",
-  "signed_in": "art director, verdict (5238569a)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 62.8, key R-B 88, sat 47"
+  "signed_in": "art director, verdict (Station lead's hand fixes)",
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 68.7 against growing (dome-back) 65.8 and standby 60.3, so ready is the brightest; rebuilt from dome-back with cream #fff4a6 screened on (t 0.07), the lamp's 582 pixels untouched; 30 percent above L* 70 by design: the ready light the spec asks for, exempt from the glow rule"
  },
  "base-336x96": {
   "size": [
