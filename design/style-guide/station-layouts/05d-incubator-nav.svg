@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Incubator: the navigation map, the states and the hand-off to Habitat's meet, 1024×600 at 1×.</title>
+<title>Incubator: the navigation map, the states and the hand-off to one mibi up close, in the meet, 1024×600 at 1×.</title>
 <defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker><marker id="ao" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#c45f12"/></marker><marker id="ag" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#6b6880"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <text x="16" y="24" font-size="14" fill="#222" font-weight="600">Incubator: how it opens, how its states follow, where Open leads (no ring: ✓ acts on the room)</text>
@@ -25,8 +25,8 @@
 <text x="860" y="196" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Incubator, hatch</text>
 <text x="860" y="212" font-size="9" fill="#777" text-anchor="middle">05b · held 2780 ms</text>
 <rect x="784.5" y="296.5" width="151" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
-<text x="860" y="316" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Vivarium, meet</text>
-<text x="860" y="332" font-size="9" fill="#777" text-anchor="middle">V · ← Vivarium</text>
+<text x="860" y="316" font-size="12" fill="#222" text-anchor="middle" font-weight="600">One mibi up close</text>
+<text x="860" y="332" font-size="9" fill="#777" text-anchor="middle">V · the meet · ← Vivarium</text>
 <rect x="528.5" y="56.5" width="151" height="47" fill="#f2f2f2" stroke="#444" stroke-width="1"/>
 <text x="604" y="76" font-size="12" fill="#222" text-anchor="middle" font-weight="600">Home</text>
 <text x="604" y="92" font-size="9" fill="#777" text-anchor="middle">ring on the Incubator</text>
@@ -64,17 +64,17 @@
 <text x="16" y="449" font-size="11" fill="#222" font-weight="600"></text>
 <text x="112" y="449" font-size="11" fill="#222">pod; only with a pod in the rack and a bay free</text>
 <text x="16" y="464" font-size="11" fill="#222" font-weight="600">✓ growing</text>
-<text x="112" y="464" font-size="11" fill="#222">Grow now · ❀ (1 a 2 minutes left); short: dimmed</text>
+<text x="112" y="464" font-size="11" fill="#222">Grow now, ❀ 1 a 2 minutes left; short: dimmed</text>
 <text x="16" y="479" font-size="11" fill="#222" font-weight="600">✓ ready</text>
-<text x="112" y="479" font-size="11" fill="#222">Open: the hatch, then Habitat's meet</text>
+<text x="112" y="479" font-size="11" fill="#222">Open: the hatch, then one mibi up close (the meet)</text>
 <text x="16" y="494" font-size="11" fill="#222" font-weight="600">✓ no bay</text>
 <text x="112" y="494" font-size="11" fill="#222">ready: a guard; a dimmed cap, a plate, the notice</text>
 <text x="16" y="509" font-size="11" fill="#222" font-weight="600">←</text>
 <text x="112" y="509" font-size="11" fill="#222">Home, the ring on the Incubator module</text>
-<text x="16" y="524" font-size="11" fill="#222" font-weight="600">room keys</text>
-<text x="112" y="524" font-size="11" fill="#222">as everywhere</text>
+<text x="16" y="524" font-size="11" fill="#222" font-weight="600">coloured keys</text>
+<text x="112" y="524" font-size="11" fill="#222">open their section; in a hold they wait</text>
 <text x="16" y="539" font-size="11" fill="#222" font-weight="600">held</text>
-<text x="112" y="539" font-size="11" fill="#222">Grow now (400 ms), the hatch (2780 ms)</text>
+<text x="112" y="539" font-size="11" fill="#222">Grow now (400 ms), the hatch (2780 ms): pad, ✓, ← do nothing</text>
 <text x="560" y="384" font-size="13" fill="#222" font-weight="700">States</text>
 <text x="560" y="404" font-size="11" fill="#222" font-weight="600">empty</text>
 <text x="640" y="404" font-size="11" fill="#222">no bud: it invites a new one</text>
