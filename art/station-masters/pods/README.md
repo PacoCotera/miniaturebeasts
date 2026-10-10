@@ -800,6 +800,10 @@ The Station art director's dawn fix (returned to `new` after a 1x check: the key
 
 Honest notes: the dawns' saturation (33, 36, 42) stays under the day's (48, 57, 50) and the dusk's (56, 62, 62); the key R-B reaches the asked 35 but not the day's 74. The night glass and the other lights are unchanged.
 
+## Pass 132 - Probe P1b from the owner's sketch (owner-approved Pro request)
+
+The art director's approved edit (the egg-shaped P1 read as a small robot with an eye and is set aside; it stays in `concepts/station-probe-p1/`): P1 painted from the owner's own sketch (project-owned references, masters-pods 6d5ae688), 1 Pro request, no retry, cap 4.5 MXN: **4.48 MXN**; today's total **193.21 MXN of 250**. A concept painting for the art director's silhouette check, not a slice: `concepts/station-probe-p1b/` (its README has the honest notes: four plates at tier 1 instead of three; two silhouettes drawn; thin tall mast).
+
 ## Pass 131 - the haul objects and Probe P1 (owner-approved Pro requests)
 
 The owner's picks (11:48), painted from the art director's hand sketches (project-owned, committed to masters-pods at 380e7197; each cropped to the wanted objects with every caption and label removed before it went in as an image reference; the owner's reference pictures were never used), two Pro requests, one each, no retry, cap 9 MXN each: the haul objects (Energy battery cell, Data cartridge, Essence vial) **4.37 MXN** and Probe P1, the field scanner **4.31 MXN**: 8.68; today's total **188.73 MXN of 250**. Concept paintings for the art director to check (silhouettes first), not slices: `concepts/cargo-haul-2/` and `concepts/station-probe-p1/` (their READMEs have the honest notes). Nothing cut.

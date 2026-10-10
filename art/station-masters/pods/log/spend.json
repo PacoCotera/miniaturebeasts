@@ -2831,5 +2831,22 @@
    "thoughtsTokenCount": 252,
    "totalTokenCount": 3022
   }
+ },
+ {
+  "tag": "probe-p1b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.22385,
+  "mxn": 4.477,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T17:53:59Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1825,
+   "candidatesTokenCount": 1545,
+   "thoughtsTokenCount": 290,
+   "totalTokenCount": 3660
+  }
  }
 ]
