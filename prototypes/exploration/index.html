@@ -3693,7 +3693,10 @@ function drawMenu(t) {
   if (S.ui.waiting && overField) return;   // waiting: the whole place stays in view; the bottom line is the strip
   // in the field the list is small and sits on the side away from the player, so the player stays visible (dimmed on the map)
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
-  const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
+  const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top0 = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
+  // over a place, when the message box goes to the top (drawMessage's own test), the card starts 8 px under its foot
+  const mLines = S.ui.from === 'patch' && FX.msg && !(S.phase === 'patch' && S.ui.swap) && !RT.msgInBand ? wrapText(FX.msg, 400, 2).slice(0, 3).length : 0,
+    mLow = SCR_H - LINE_H - (mLines * 20 + 12) - 8, top = overField && mLines && pl && pl.y + 20 > mLow ? VIEW_Y + 8 + (mLines * 20 + 12) + 8 : top0;
   if (!overField) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10); else if (S.ui.from === 'map') ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 5);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);
   panel(x, top, w, items.length * rowH + 20, C.paper, C.ink);
@@ -3908,7 +3911,7 @@ function drawSealed(t) {
   if (r.reason === 'break') { text(clipText('The Probe broke', 410, 3), 22, y, C.coral, 3); y += 34;
     text(clipText(r.dropped ? 'Your ' + numWord(r.dropped) + ' pod' + (r.dropped === 1 ? '' : 's') + ' fell where it broke (skull on the map).' : 'Nothing was in the hold.', 410, 2), 22, y, C.bone); y += 24;
     text(clipText('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), 410, 2), 22, y, C.peach); y += 24;
-    text(clipText('Dock at the Station: it mends the Probe free.', 410, 2), 22, y, C.amber); y += 34; }
+    text(clipText('Docking mends the Probe free.', 410, 2), 22, y, C.amber); y += 34; }
   else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('The world waits · nothing is sealed.', 410, 2), 22, y, C.fog); y += 24; text(clipText('Your finds stay in the hold.', 410, 2), 22, y, C.fog); y += 34; }
   else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; text(clipText('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } else y += 2; }
   else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; text(clipText('Your finds stay in the hold, unsealed.', 410, 2), 22, y, C.fog); y += 24; if (r.yield) { text(clipText(yieldLine(r.yield), 410, 2), 22, y, C.fog); y += 24; } text(clipText('A break would lose them.', 410, 2), 22, y, C.fog); y += 34; }
