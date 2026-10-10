@@ -132,7 +132,7 @@ Nothing else is on the stage: no card, no modules, no words in the window but th
 | Card | 592, 48, 416, 208 | Who it is: species line, heart, story, code, skill notches, stamp, chapter plates | `species` (`✓ Open the guide`), `plate.<i>` |
 | Heart | 832, 64, 24, 24 | Bonded: drawn; unbonded: nothing | — |
 | Skill notches | 768, 160, 88, 24 | Filled notches only, one to three, right-aligned to x 856; nothing at none; never a figure | — |
-| Companion module | 592, 272, 272, 96 | The carried set: three places, Take and Leave | `door` |
+| Companion module | 592, 272, 272, 96 | The carried set: three places, Take and Bring | `door` |
 | Portrait module | 872, 272, 136, 96 | A held sitting: the way into the Sitting | `portrait` |
 | Cross module | 592, 376, 272, 96 | A face a partner: the way into Cross | `cross` |
 | Wild module | 872, 376, 136, 96 | Return it to the wild, arm then confirm | `wild` |
@@ -146,7 +146,7 @@ The way back reads "Vivarium" and lands on the whole with the ring on this mibi 
 | --- | --- | --- |
 | **The namer** ([The namer](#the-namer), `namer.json`) | The overlay over the right column (592, 48, 416, 424), its keys, its states and its limit | Opened from one mibi up close |
 | **The Sitting** ([Sitting](#sitting), `sitting.json`) | Its three steps, its regions, its gilt frame and its events | Its parent is one mibi up close; from the pose step ← reads the mibi's name ("← Burr"), else "Back" |
-| **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Leave against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed home, no room", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | ✓ Greet on the mibi; the skill notches on the card |
+| **The carried set** (the Companion module, the top bar's three faces, the bed) | The three places on the Companion module, Take and Bring against the projected set, the pending stone lamp, the overflow rule, the refusal plate "Fig stayed home, no room", the heart as a state only, the bed's one to three sleepers, the Idle line naming those out | ✓ Greet on the mibi; the skill notches on the card |
 | **The top bar** | Its zones, rules and marks; the Companion zone at (760, 8, 120, 24) with three face places | One mibi up close is titled "Vivarium"; its mark is the Vivarium key's icon |
 | **The bottom line** | Its four zones and their rules | The way back widens to 88 (920, 570, 88, 24); the notice ends at 896 (624, 570, 272, 24) |
 | **Home** | The vivarium panel, the residents, the bed, the rest knob, the name tag, the room's ✓ | The column holds five section modules of 88 on a 104 pitch (Cargo, Pods, Incubator, Probe, Library); the panel is a focus target; the Bay module is Cargo; the arrival moves to Cargo |

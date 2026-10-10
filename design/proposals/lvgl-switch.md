@@ -67,7 +67,7 @@ Messages from the face to JavaScript:
 
 The contract number is 1. The sandbox's transport is `face_send(len)` over the face's own `face_in_buf`, so the host never allocates in the face's heap.
 
-**The intent table stays JavaScript.** Each screen's intent table (for Pods, `intents/pods.mjs`) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the bond heart) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline: while `TL.holding()` the dispatcher drops intents, and the face, which also knows from the event's `hold` that one is playing, does not move focus.
+**The intent table stays JavaScript.** Each screen's intent table (for Pods, `intents/pods.mjs`) maps `{ target group, verb }` to one rule call. Its result becomes the next state, and timeline events become `event` messages. Arm-then-confirm (the hatch, the Wild gate) stays in the intent table, and the face draws the armed state from `focus.armed`. Input holds stay on the JavaScript timeline: while `TL.holding()` the dispatcher drops intents, and the face, which also knows from the event's `hold` that one is playing, does not move focus.
 
 **Screen glue becomes DOM-free.** For S1 the screens' JavaScript must run in Node. Each screen becomes three modules: `views/<screen>.mjs` (state and focus to props), `intents/<screen>.mjs` (the intent table and the screen's UI state), and its spec file. None of them imports `gfx.mjs`, `document` or a canvas. The page and the Pi host differ only in the save adapter and the transport.
 
