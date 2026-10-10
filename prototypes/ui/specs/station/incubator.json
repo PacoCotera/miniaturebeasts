@@ -85,11 +85,14 @@
   "juvenile": { "rect": [360, 160, 304, 312], "component": "specimen", "inStates": ["hatch"], "axis": 512, "feet": 472, "asset": "the new mibi in its standard painting if it has landed, else its placeholder (the stylised rig pass)", "lift": 4, "handoff": "its size, 304×312, is one mibi up close's mibi (144, 80, 304, 312), where the hand-off lands it" }
  },
  "drawOrder": ["bench", "rail", "leaves", "dome", "nest", "bud", "bud shape", "bud front", "nestFront", "domeFront", "base", "base foot light", "plaque", "base lamp", "juvenile", "stamp", "code", "ribbon", "frame (top bar, bottom line)", "message plate"],
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. growNow fills every leaf at once and the tabs turn read; the hatch lands on one mibi up close in the meet on the frame of ✓ Open; the wipe is a cut. The leaf fill (props) still steps a row every 3 s. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts."
+ },
  "events": {
-  "wipe": { "kind": "wipe", "target": "rail.<i>", "hold": false, "ms": 1000, "do": "a founder's bud: the tab turns from unread to read (its word and emblem at once), its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter at the end" },
-  "growNow": { "kind": "growNow", "target": "room", "hold": true, "holdMs": 400, "do": "the leaves still to fill fill one whole leaf a step, left to right, inner then outer, over 400 ms; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; a cross bud keeps its unread chapters; the state is ready" },
+  "wipe": { "kind": "wipe", "target": "rail.<i>", "ms": 1000, "hold": 0, "do": "a founder's bud: the tab turns from unread to read (its word and emblem at once), its pips filling left to right over 1000 ms (the rail word's wipe, as on Pods, with no page); the stamp redraws with the chapter at the end" },
+  "growNow": { "kind": "growNow", "target": "room", "ms": 400, "hold": 400, "do": "the leaves still to fill fill one whole leaf a step, left to right, inner then outer, over 400 ms; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; a cross bud keeps its unread chapters; the state is ready" },
   "hatch": {
-   "kind": "hatch", "target": "room", "hold": true, "holdMs": 2780, "ms": 2600,
+   "kind": "hatch", "target": "room", "ms": 2600, "hold": 2780,
    "steps": [
     { "at": 0, "do": "the leaves and the plaque's word go (a cut)" },
     { "at": 0, "ms": 600, "do": "the chamber's window opens on its hood's hinge, swinging up and back in three slices (0, 200, 400 ms, each held 200 ms), clipped to (0, 88, 1024, 474) (art director, 2026-10-10 01:44). Placeholder until the chamber master lands: the window front (dome and domeFront) lifts 384 px, eased, whole pixels, out of sight under the rail, in the same 600 ms" },
@@ -115,7 +118,7 @@
   "fallback": "none",
   "graph": { "room": { "up": "none", "down": "none", "left": "none", "right": "none" } },
   "targets": {},
-  "held": "while events.growNow or events.hatch holds, the face moves no focus and sends no intent; a coloured key pressed meanwhile acts when the hold ends",
+  "held": "while events.growNow or events.hatch holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
   "vectors": [
    { "from": "room", "key": "up", "to": "room" },
    { "from": "room", "key": "right", "to": "room" },

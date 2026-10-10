@@ -46,10 +46,13 @@
    "full": { "heading": 88, "crates": [128, 152, 176], "gathered": 208, "probe": 232, "world": 272, "lines": [296, 320, 344], "bottom": 384 }
   }
  },
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every step is a cut to its end. crateIn: the crates stand in their places on the frame of the dock, hold 0. The opening keeps its pace and its hold (crates × 3000 + 200): one crate every 3000 ms, each step at its time as a cut, because each crate's words, materials and world turn are read in turn; the report shows at the end. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts."
+ },
  "events": {
-  "crateIn": { "kind": "arrival", "target": "crates", "hold": false, "when": "the Companion docks with crates while Cargo shows", "each": { "from": [0, -64], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay's inside (24, 56, 976, 304)" } },
+  "crateIn": { "kind": "arrival", "target": "crates", "ms": "(crates − 1) × 250 + 500", "hold": 0, "when": "the Companion docks with crates while Cargo shows", "each": { "from": [0, -64], "ms": 500, "stagger": 250, "ease": "out", "clip": "the bay's inside (24, 56, 976, 304)" } },
   "opening": {
-   "kind": "arrival", "target": "crate", "hold": true, "holdMs": "crates × 3000 + 200", "perCrate": 3000, "focus": "the room; no ring; no key moves it",
+   "kind": "arrival", "target": "crate", "ms": "crates × 3000 + 180", "hold": "crates × 3000 + 200", "byCrates": { "1": { "ms": 3180, "hold": 3200 }, "2": { "ms": 6180, "hold": 6200 }, "3": { "ms": 9180, "hold": 9200 }, "rule": "the host sends whole ms: crates × 3000 + 180 (the last crate's end dither) and the hold 20 ms longer; one to three crates as listed" }, "perCrate": 3000, "focus": "the room; no ring; no key moves it",
    "crate": [
     { "at": 0, "ms": 180, "do": "the dither (16 levels) from the bay, or from the crate before, to this crate closer: regions.crate sealed, the ribbon, the rack" },
     { "at": 200, "ms": 300, "do": "the seal tag tears and the lid lifts: sealed → opening → open, its pods in their places" },
@@ -68,7 +71,7 @@
   "room": "the ring on nothing: Cargo has no targets; ✓ does the bottom line's action, the pad does nothing",
   "fallback": "none",
   "graph": { "room": { "up": "none", "down": "none", "left": "none", "right": "none" } },
-  "held": "while events.opening holds, the face moves no focus and sends no intent; a room key waits until the report shows",
+  "held": "while events.opening holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends), when the report shows",
   "report": "while the report card shows, any key closes it and also does what it does: ✓ follows the bottom line, ← only closes it, the pad only closes it, a room key closes it and opens its section"
  },
  "keys": {
