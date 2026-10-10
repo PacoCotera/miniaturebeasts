@@ -91,7 +91,7 @@
  },
  "drawOrder": ["stage", "bezel", "glass", "resident", "resident lamp", "nameTag", "meetRibbon", "card", "speciesLine", "story", "code", "stamp", "plates", "door", "portrait", "cross", "wild", "strip", "tiles", "ring", "frame (top bar, bottom line)", "message plate", "the namer overlay (namer.json)"],
  "events": {
-  "moment": { "kind": "moment", "target": "resident", "hold": true, "holdMs": 300, "ms": 1800, "do": "Spend time: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice, the creature lift 4 px up and back, whole pixels, at 0 and 900 ms. Rewards nothing and shows nothing like a reward. A press after the hold cuts it to its end" },
+  "moment": { "kind": "moment", "target": "resident", "hold": true, "holdMs": 300, "ms": 1800, "do": "Greet: the mibi's species moment, from its moving set when it has one; until then the placeholder hops twice, the creature lift 4 px up and back, whole pixels, at 0 and 900 ms. Rewards nothing and shows nothing like a reward. A press after the hold cuts it to its end" },
   "swap": { "kind": "dither", "target": "resident", "hold": false, "ms": 200, "levels": 16, "do": "the ring moved to another tile: the resident cross-dithers to the tile's mibi (lvgl-switch.md §2.7, the dither event); the tag, the card, the modules and the strip's shown tile are cuts on the frame of the key" },
   "meet": { "kind": "meet", "target": "resident", "hold": false, "from": "the Incubator's hatch: its 180 ms dither ends on Habitat in state meet (incubator.json handoff)", "do": "the meet ribbon shows in the tag's place; the new mibi plays its moment once (no hold); the first press removes the ribbon (a cut): ✓ opens the namer, any other key keeps the default name and does what it does" },
   "watch": { "kind": "watch", "target": "resident", "hold": false, "after": 60000, "do": "the shown mibi in rest or meet, kept on screen for 60 s, once a mibi a day: the bench trickle (+1 Data within its daily cap) and state.watchResident (the first habit of its not yet seen). Shows only a message plate (strings.watchPlate) and the counter's tick; nothing amber" },
@@ -185,7 +185,7 @@
   "room": "as everywhere (frame.json navigation.roomKeys); the Habitat key on Habitat puts the ring back on the resident"
  },
  "bottomLine": {
-  "resident": { "action": "strings.spend; in the meet, strings.name", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); while the placeholder is drawn, strings.painting (strings.offline while the Caddy is unreachable)" },
+  "resident": { "action": "strings.greet; in the meet, strings.name", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); while the placeholder is drawn, strings.painting (strings.offline while the Caddy is unreachable)" },
   "name": { "action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi)" },
   "tile": "as resident, for the tile's mibi",
   "species": { "action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library" },
@@ -226,7 +226,7 @@
   "speciesLine": "your {Species}, {stage}",
   "speciesLineExamples": ["your Loika, adult", "your Loika, young", "your Loika, elder"],
   "story": { "founder": ["from the {place}"], "bred": ["of {A}", "and {B}"], "memory": "remembers the {place}", "rule": "filled from the top, at most three lines: where it came from (one line for a founder, two for a bred mibi), then what it remembers" },
-  "spend": "Spend time with {name}",
+  "greet": "Greet {name}",
   "residentContext": "{a} {stage} {species}",
   "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
