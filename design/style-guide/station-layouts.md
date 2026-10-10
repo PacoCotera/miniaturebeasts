@@ -1424,7 +1424,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 
 ### The Incubator's focus as data
 
-`incubator.json` `focus`: the room only, as on Home (`roomKey` room, the ring on nothing, its point roomAt's centre, the bud's centre 512, 344). No targets; every edge none; fallback none. ✓ sends `confirm` on the room and the intent table does what the bottom line says (Choose a pod, Grow now, Open). Holds: while `growNow` or `hatch` plays the face moves no focus and sends no intent. Vectors: room ▲ room; room ▶ room; room ✓ `confirm`.
+`incubator.json` `focus`: the room only, as on Home (`roomKey` room, the ring on nothing, its point roomAt's centre, the bud's centre 512, 344). No targets; every edge none; fallback none. ✓ sends `confirm` on the room and the intent table does what the bottom line says (Choose a pod, Grow now, Open). Holds: while `growNow` or `hatch` holds the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends). Vectors: room ▲ room; room ▶ room; room ✓ `confirm`.
 
 ### The leaf arcs
 
@@ -2038,7 +2038,7 @@ The ring is the frame's `focusRing` word, `round`, 4 px outside a card with the 
 
 ### The sitting's focus as data
 
-`sitting.json` `focus`, one graph a state. **Pose and place:** targets `card.<i>` in group `card`, each edge `[{ "nearestIn": "card", "ahead": true }, "none"]`, so the ring goes to the nearest card that way and stops at the ends; `initial` is "the card chosen before in this visit, else card.0". **Look and confirm:** no target; the ring on nothing (`room`); every edge none; ✓ sends `confirm` and arms, then begins; `focus.armed === "room"` sets the gilt's `lit`. **Held:** while begin holds, the face moves no focus and sends no intent. Vectors are in `sitting.json` (for example card.0 ▶ card.1, card.4 ▲ card.1, card.2 ▶ card.2).
+`sitting.json` `focus`, one graph a state. **Pose and place:** targets `card.<i>` in group `card`, each edge `[{ "nearestIn": "card", "ahead": true }, "none"]`, so the ring goes to the nearest card that way and stops at the ends; `initial` is "the card chosen before in this visit, else card.0". **Look and confirm:** no target; the ring on nothing (`room`); every edge none; ✓ sends `confirm` and arms, then begins; `focus.armed === "room"` sets the gilt's `lit`. **Held:** while begin holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends). Vectors are in `sitting.json` (for example card.0 ▶ card.1, card.4 ▲ card.1, card.2 ▶ card.2).
 
 ### The sitting's events
 
