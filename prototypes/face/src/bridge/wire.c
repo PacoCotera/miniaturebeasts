@@ -130,6 +130,12 @@ static int on_asset(const msg_t *m) {
   strcpy(g_ids[slot], id);
   if (!prim_asset(slot, w, h)) { g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: %dx%d is refused", id, w, h); return fail(b); }
   g_has_slice[slot] = 0; g_tile[slot] = 0;
+  { /* every picture names the layer it shows on, and what it is: policy "art" (palette-exact) or "painted"; status "placeholder" or "master" (lvgl-switch.md §2.1). A picture without them is refused, never guessed. */
+    char pol[12], stat[16];
+    if (!str(m, key(m, "policy"), pol, sizeof pol) || (strcmp(pol, "art") && strcmp(pol, "painted"))) { prim_asset_free(slot); g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: policy is \"art\" or \"painted\"", id); return fail(b); }
+    if (!str(m, key(m, "status"), stat, sizeof stat) || (strcmp(stat, "placeholder") && strcmp(stat, "master"))) { prim_asset_free(slot); g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: status is \"placeholder\" or \"master\"", id); return fail(b); }
+    prim_asset_layer(slot, strcmp(pol, "painted") == 0 ? LAYER_PAINTED : LAYER_ART);
+  }
   int sl = key(m, "slice");
   if (sl >= 0) {   /* a nine-slice's insets l, t, r, b (a byte each) and the tile of its edges and middle */
     if (m->tok[sl].type != JSMN_ARRAY || m->tok[sl].size != 4) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: slice is [left, top, right, bottom]"); }

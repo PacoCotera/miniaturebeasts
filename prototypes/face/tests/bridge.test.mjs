@@ -8,11 +8,12 @@ import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { bootFace, CONTRACT } from "../../station/src/face-lvgl.mjs";
+import { installScene } from "./node-scene.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const base = pathToFileURL(dist + "/");
 const palette = JSON.parse(readFileSync(path.resolve(here, "../../ui/palettes/station.json"), "utf8")).colours;
-const boot = async (opts) => { const f = await bootFace(base, opts); f.send({ t: "palette", name: "station", colours: palette }); return f; };
+const boot = async (opts) => { const f = installScene(await bootFace(base, opts)); f.send({ t: "palette", name: "station", colours: palette }); return f; };
 const cstr = (M, s) => { const b = new TextEncoder().encode(s + "\0"), p = M._malloc(b.length); M.HEAPU8.set(b, p); return p; };
 const rgbOf = (name) => { const h = palette.find(([n]) => n === name)[1]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
 const env = { rgb: rgbOf, cap: (px) => Math.round(px * 0.7), picture: () => null, slice: () => null, tile: () => 0 };
@@ -79,15 +80,24 @@ test("a ring form the loader does not know is refused: only round, feet, tab, a 
   for (const ring of ["round", "feet", "tab", { circle: { outside: 0 } }, { circle: { radius: 84, centre: [96, 112] } }]) { const f = await boot(), j = J(); j.targets.kin.ring = ring; assert.equal(f.send({ t: "spec", screen: "pods", json: j }), 0, JSON.stringify(ring) + ": " + f.errors().join()); }
 });
 
+test("an asset carries its layer policy and status, and is refused without a valid pair; a sprite takes its layer from its asset, a rect from its word", { skip }, async () => {
+  const f = await boot(), M = f.M;
+  for (const [what, bad] of [["no policy", { status: "master" }], ["a policy of nowhere", { policy: "gilt", status: "master" }], ["no status", { policy: "art" }], ["a status of nothing", { policy: "art", status: "held" }]]) {
+    assert.equal(f.send({ t: "asset", id: "q", w: 2, h: 2, src: "heap", ...bad }), -1, what); assert.match(f.errors()[0], /policy is|status is/, what);
+  }
+  assert.equal(f.send({ t: "asset", id: "q", w: 2, h: 2, src: "heap", policy: "painted", status: "master" }), 0);
+  assert.equal(f.send({ t: "asset", id: "r", w: 2, h: 2, src: "heap", policy: "art", status: "placeholder" }), 0);
+});
+
 test("pictures: an asset message makes a buffer for its id, the same id keeps its slot, a drop frees it, bad sizes and src file are refused, and the table holds 256", { skip }, async () => {
   const f = await boot(), M = f.M;
-  assert.equal(f.send({ t: "asset", id: "a", w: 4, h: 4, src: "heap" }), 0); const h = M._face_last_asset(); assert.ok(h >= 0 && M._face_asset_pixels(h) > 0);
-  assert.equal(f.send({ t: "asset", id: "a", w: 8, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "the same id: the same slot");
-  assert.equal(f.send({ t: "asset", id: "b", w: 0, h: 4 }), -1); assert.match(f.errors()[0], /is refused/); assert.equal(f.send({ t: "asset", id: "b", w: 4, h: 4, src: "file", path: "/x" }), -1); assert.match(f.errors()[0], /src "heap" only/);
-  assert.equal(f.send({ t: "asset", w: 4, h: 4 }), -1); assert.match(f.errors()[0], /id is required/);
-  assert.equal(f.send({ t: "asset", id: "a", drop: true }), 0); assert.equal(f.send({ t: "asset", id: "c", w: 2, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "a dropped slot is reused");
-  for (let i = 0; i < 255; i++) assert.equal(f.send({ t: "asset", id: "p" + i, w: 1, h: 1 }), 0);
-  assert.equal(f.send({ t: "asset", id: "one-too-many", w: 1, h: 1 }), -1); assert.match(f.errors()[0], /picture table holds 256/);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "a", w: 4, h: 4, src: "heap" }), 0); const h = M._face_last_asset(); assert.ok(h >= 0 && M._face_asset_pixels(h) > 0);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "a", w: 8, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "the same id: the same slot");
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "b", w: 0, h: 4 }), -1); assert.match(f.errors()[0], /is refused/); assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "b", w: 4, h: 4, src: "file", path: "/x" }), -1); assert.match(f.errors()[0], /src "heap" only/);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", w: 4, h: 4 }), -1); assert.match(f.errors()[0], /id is required/);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "a", drop: true }), 0); assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "c", w: 2, h: 2 }), 0); assert.equal(M._face_last_asset(), h, "a dropped slot is reused");
+  for (let i = 0; i < 255; i++) assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "p" + i, w: 1, h: 1 }), 0);
+  assert.equal(f.send({ t: "asset", policy: "art", status: "placeholder", id: "one-too-many", w: 1, h: 1 }), -1); assert.match(f.errors()[0], /picture table holds 256/);
 });
 
 test("props: the screen's spec must be loaded, seq may not go back, the budget is 32 KiB, regions is an object; events and keys are validated", { skip }, async () => {

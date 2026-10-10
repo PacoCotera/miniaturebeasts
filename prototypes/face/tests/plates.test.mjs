@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { plateSeries, railGrounds, pinnedPictures, plateWidth } from "../../ui/specs/derive.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
+import { installScene } from "./node-scene.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), frame = J("frame.json"), pods = J("pods.json");
@@ -29,7 +30,7 @@ test("the pinned set: the ten plates and the seven tab grounds, 145,920 B and 13
   assert.deepEqual(railGrounds(frame.regions.rail).sort(), ["rail-tab-fill-open-full-152x40", "rail-tab-fill-read-compact-72x40", "rail-tab-fill-read-full-152x40", "rail-tab-fill-sealed-compact-72x40", "rail-tab-fill-sealed-full-152x40", "rail-tab-fill-unread-compact-72x40", "rail-tab-fill-unread-full-152x40"]);
 });
 async function boot(podsSpec = pods) {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+  const f = installScene(await bootFace(pathToFileURL(dist + "/"), { test: true }));
   f.send({ t: "palette", colours: palette }); f.send({ t: "spec", screen: "frame", json: frame }); const rc = f.send({ t: "spec", screen: "pods", json: podsSpec }); return { f, rc };
 }
 const frames = (f, n = 3) => { for (let i = 0; i < n; i++) f.frame((f.t = (f.t ?? 0) + 16)); };

@@ -30,7 +30,7 @@ static int g_n, g_unknown, g_nseq, g_pass = 3;
 static uint32_t g_seq[MAX_OBJ];
 static char g_text[1024];
 static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
-typedef struct { int w, h; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
+typedef struct { int w, h, layer; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
 static asset_t g_a[MAX_ASSET + MAX_SRC];
 /* the tag of the nodes now arriving, and the clip they are inside */
 static int g_layer = LAYER_CHROME, g_region;
@@ -168,6 +168,8 @@ uint8_t *prim_asset(int handle, int w, int h) {
   dsc_of(&g_a[handle].dsc, g_a[handle].px, w, h, w * 4);
   return g_a[handle].px;
 }
+/* the layer a picture shows on, its asset's own (the host's policy: art or painted); a composed source has none and takes its node's */
+void prim_asset_layer(int handle, int layer) { if (handle >= 0 && handle < MAX_ASSET) g_a[handle].layer = layer; }
 void prim_asset_free(int handle) { if (handle < 0 || handle >= MAX_ASSET) return; free(g_a[handle].px); memset(&g_a[handle], 0, sizeof g_a[handle]); }
 /* A face-owned source picture from composed ops (w x h), cached by the ops' hash: the same ops are the same picture, kept once. A handle for a nine-slice or a sprite, or -1 when refused or the table is full. */
 int prim_source(const char *ops, int w, int h) {
@@ -252,6 +254,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
     i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].obj = make(&g_o[i], a, pobj);
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region;
+  if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
   int px = x - ox, py = y - oy;
   if (kind == FN_TEXT) {
     /* the label's top is the line's top; the page gives the cap top. The baseline sits (line height - base line) below the line's top. */

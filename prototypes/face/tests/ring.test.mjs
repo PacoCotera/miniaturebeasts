@@ -11,6 +11,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import path from "node:path";
 import { ringMask, tabRingMask } from "../../ui/rings.mjs";
 import { bootFace } from "../../station/src/face-lvgl.mjs";
+import { installScene } from "./node-scene.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const frame = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/frame.json"), "utf8")), F = frame.focus.ring, tabSpec = { tab: F.tab, width: F.width, tabTop: frame.regions.rail.y };
@@ -34,7 +35,7 @@ test("the round ring is a nine-slice of its 20x20 source (insets 8, the middle t
   }
 });
 test("the WebAssembly face draws the oracle's ring and tab ring", { skip }, async () => {
-  const f = await bootFace(pathToFileURL(dist + "/"), { test: true }); f.send({ t: "palette", colours: palette });
+  const f = installScene(await bootFace(pathToFileURL(dist + "/"), { test: true })); f.send({ t: "palette", colours: palette });
   const focus = palette.find(([n]) => n === "focus")[1], rgb = [1, 3, 5].map((i) => parseInt(focus.slice(i, i + 2), 16));
   const tab = tabRingMask(136, tabSpec);
   const env = { rgb: () => [0, 0, 0], cap: () => 12, picture: () => null, slice: () => null, tile: () => 0 };
