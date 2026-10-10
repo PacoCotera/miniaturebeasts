@@ -59,7 +59,8 @@ const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for 
 const SCENES = {
   "docked: five at home, two asleep, eight bays": { adults: 4, young: 3, carry: [0, 1] },
   "away: two out with the Companion, the mark on the bed": { adults: 4, young: 3, carry: [0, 1], away: true },
-  "a fresh world's: empty, six free bays": { bays: 6 },
+  "a fresh world's: empty, six free bays, the nest alone": { bays: 6 },
+  "a fresh world's, the Companion away: the nest and its mark": { bays: 6, away: true },
   "twelve adults, twelve compact tiles": { bays: 12, adults: 12 },
   "docked, nobody carried: the nest drawn empty": { adults: 3 },
   "the ring on a sleeper": { adults: 4, young: 3, carry: [0, 1], focus: "resident:1" },
@@ -73,7 +74,7 @@ for (const [name, o] of Object.entries(SCENES)) {
     const lg = logOf(f); assert.deepEqual(departures(lg, spec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length), []);
     const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
     assert.ok(JSON.stringify(b.props).length + JSON.stringify(b.line).length < 32 * 1024, "props under 32 KiB");
-    if (b.props.state === "empty") assert.ok(!lg.regions.some((r) => ["resident", "bed", "nameTag", "focus"].includes(r.id)), "the empty whole draws no people, bed, tag or ring");
+    if (b.props.state === "empty") assert.ok(!lg.regions.some((r) => ["resident", "nameTag", "focus"].includes(r.id)), "the empty whole draws no people, tag or ring");
     assert.equal(lg.regions.some((r) => r.id === "nameTag"), /^resident\./.test(b.props.focus.cur), "the name tag stands only on a resident or a sleeper");
   });
 }

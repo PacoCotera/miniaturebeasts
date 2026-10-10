@@ -39,6 +39,7 @@ const mibis = (w, n) => { S.seedAdults(w.st, "S01", 5, n, w.settings); for (cons
 function scenes() {
   const out = {};
   { const w = world(6); dock(w.st); out.empty = { w, sv: sv0() }; }
+  { const w = world(6); dock(w.st, false); out.emptyAway = { w, sv: sv0() }; }
   { const w = world(); dock(w.st); const m = mibis(w, 7); out.docked = { w, sv: sv0({ carried: [m[5].id, m[6].id] }) }; }
   { const w = world(); dock(w.st, false); const m = mibis(w, 7); out.away = { w, sv: sv0({ carried: [m[5].id, m[6].id] }) }; }
   { const w = world(12); dock(w.st); mibis(w, 12); out.twelve = { w, sv: sv0() }; }
@@ -66,7 +67,8 @@ test("every mibi at home walks (a seed each, in bay order), the docked carried s
     assert.deepEqual(R.tiles.items.map((t) => t.state), ["housed", "housed", "housed", "housed", "housed", "out", "out", "free"]); assert.equal(R.tiles.items[5].picture, "", "an out tile shows the glyph, not a thumbnail"); assert.equal(R.tiles.glyph, "frame-companion-outline-16x24"); }
   { const { w, sv } = S0.noneCarried, b = build(w, sv).props; assert.equal(b.regions.bed.state, "none"); assert.equal(b.regions.residents.length, 3); }
   { const { w, sv } = S0.twelve, b = build(w, sv).props; assert.equal(b.regions.residents.length, 12); assert.equal(b.regions.tiles.items.length, 12); }
-  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 6); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
+  { const { w, sv } = S0.empty, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.residents.length, 0); assert.equal(b.regions.tiles.items.length, 6); assert.deepEqual([b.regions.bed.state, b.regions.bed.mark, b.regions.bed.sleepers.length], ["none", "", 0], "the nest alone while docked"); assert.ok(b.regions.tiles.items.every((t) => t.state === "free")); assert.deepEqual(b.focus.targets, []); assert.equal(b.focus.cur, "room"); }
+  { const { w, sv } = S0.emptyAway, b = build(w, sv).props; assert.equal(b.state, "empty"); assert.equal(b.regions.bed.state, "away"); assert.ok(b.regions.bed.mark.length, "the nest and its mark while away"); assert.equal(b.regions.tiles.glyph, "frame-companion-outline-16x24"); }
 });
 
 test("the targets are the residents in bay order (sleepers in their bays' places) then the tiles; the ring starts on the mibi last seen up close (its resident, else its tile), else the first resident, else the first tile, else the room", () => {

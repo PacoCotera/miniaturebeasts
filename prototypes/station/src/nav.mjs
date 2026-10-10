@@ -2,7 +2,7 @@
 // Nothing here draws or reads the live game: the screens ask it where ← goes and what it is called and what each room key opens. The pads are the face's: each screen's `focus` graph is data in its spec.
 
 // --- the tree -------------------------------------------------------------------------------------------------------------------
-// A place is a screen or a state of one: home, pods.collection, pods.overview, pods.chapter, pods.compare, create, incubator, probe, library, book, habitat, cross.
+// A place is a screen or a state of one: home, pods.collection, pods.overview, pods.chapter, pods.compare, create, incubator, probe, library, book, vivarium, habitat, cross.
 // The live screen id for the Probe bench is "bench"; Idle is a state of the screen, not a place.
 export const SCREEN_PLACE = { bench: "probe" };
 export function placeOf({ screen, podsView, compare }) {

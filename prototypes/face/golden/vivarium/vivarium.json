@@ -6,15 +6,15 @@
    "png": "vivarium-docked.png"
   },
   "vivarium-away": {
-   "hash": "80fc3175",
+   "hash": "836844bd",
    "png": "vivarium-away.png"
   },
   "vivarium-mibi-out": {
-   "hash": "b10f2365",
+   "hash": "92e3ad31",
    "png": "vivarium-mibi-out.png"
   },
   "vivarium-empty": {
-   "hash": "b64dfd25",
+   "hash": "a55c109a",
    "png": "vivarium-empty.png"
   },
   "vivarium-tile": {
@@ -28,6 +28,26 @@
   "vivarium-twelve": {
    "hash": "ccc598b7",
    "png": "vivarium-twelve.png"
+  },
+  "vivarium-empty-away": {
+   "hash": "1f7aef48",
+   "png": "vivarium-empty-away.png"
+  },
+  "vivarium-docked-dawn": {
+   "hash": "45a4bf9a",
+   "png": "vivarium-docked-dawn.png"
+  },
+  "vivarium-docked-day": {
+   "hash": "9c24afd5",
+   "png": "vivarium-docked-day.png"
+  },
+  "vivarium-docked-dusk": {
+   "hash": "1fd5b6a8",
+   "png": "vivarium-docked-dusk.png"
+  },
+  "vivarium-docked-night": {
+   "hash": "f64c9c06",
+   "png": "vivarium-docked-night.png"
   },
   "vivarium-walk-8000ms": {
    "hash": "99a1be97",

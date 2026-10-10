@@ -34,7 +34,7 @@
   "dock": "Dock while the whole shows: the bed's Companion mark goes and the carried set lies down on it; their tiles' outline glyphs become thumbnails. Lifted: the reverse. Both on the frame of the world event, with no animation"
  },
  "initial": "by the save: no housed mibi, empty; else rest",
- "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window, the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
+ "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window with the bed (the nest alone while docked, the nest and its mark while away, as Home and Idle), the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
  "regions": {
   "stage": {
    "rect": [0, 40, 1024, 522],
@@ -81,7 +81,7 @@
    "build": "withYouBed",
    "clip": "window",
    "mark": [16, 24],
-   "markPicture": "frame-companion-outline-16x24",
+   "markPicture": "home-bed-mark-16x24",
    "markAt": [88, 16],
    "markRect": [880, 432, 16, 24],
    "sleepers": {
@@ -104,8 +104,8 @@
    },
    "states": {
     "docked": "the nest, then one to three sleepers, the carried set in carried order",
-    "away": "the nest, then the Companion mark at markRect",
-    "none": "docked with nobody carried: the nest drawn empty at the bed's rect (its rim `bark`, hollow `soil`, lit rim `sand`), no sleeper and no mark; not a target"
+    "away": "the nest, then its mark (home-bed-mark-16x24) 1:1 at markRect, as Home and Idle",
+    "none": "docked with nobody carried: the nest drawn empty at the bed's rect (its rim `bark`, hollow `soil`, lit rim `sand`), no sleeper and no mark; not a target; also the empty state while docked"
    },
    "note": "Idle's bed (frame.json idle.regions.bed) 80 px higher: the same place in the same painting"
   },
@@ -298,8 +298,9 @@
   "list": [
    "Idle's painting 1024×568, day, dusk and night (frame.json idle; rows 120 to 560 shown here)",
    "the residents at 144×152 and 104×112, and the nap poses (as on Home and Idle)",
-   "the bed 192×56",
-   "frame-companion-outline-16x24 (the bed's mark and the out tile's glyph)",
+   "home-bed-<light>-192x56 (the bed, as on Home and Idle)",
+   "home-bed-mark-16x24 (the bed's mark, away)",
+   "frame-companion-outline-16x24 (the out tile's glyph, frame.json marks.companion.away)",
    "the thumbnails 48×48 (the painting or placeholder rendered at that size)",
    "home-lamp-sky-12x12"
   ]
@@ -314,7 +315,7 @@
   "out": "out with the Companion",
   "empty": "nobody lives here yet",
   "measured": "16 px Inter, the face's metrics (prototypes/face/tests/vectors/metrics.json), a name as ten of the widest letter (160): look 220 in the action's 356; in the context's 208: painting 176, sleeper 174 (\"an elder Untuva, asleep\"), empty 160, out 177; back 45 in its 68; title 85 at 20 px",
-  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer, a context of six or fewer; Home's words where Home says the same thing (home.json strings.actions.resident, strings.subjects)"
+  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer, a context of six or fewer; Home's words where Home says the same thing (home.json strings.actions.resident, strings.subjects, strings.stages)"
  },
  "buildChanges": [
   "frame.json navigation: a new place `vivarium` (parent home, back Home) for the whole; `habitat` (one mibi up close) moves under it (parent vivarium, back Vivarium); the Vivarium key (roomKeys.habitat) opens `vivarium`, not `habitat`; Home's ✓ Open the Vivarium opens `vivarium`. nav.mjs, nav.test.mjs and the journey follow",

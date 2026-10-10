@@ -17,10 +17,10 @@ export function vivariumBuild(m, spec, frame, home) {
   const L = frame.light, lw = livingOf({ st, sv, settings, docked, light: m.light }, R, req, ph, L);
   const bayOf = new Map(housed.map((mb, i) => [String(mb.id), i]));
   const residents = lw.residents.slice().sort((a, b) => bayOf.get(a.id) - bayOf.get(b.id));   // the walkers in bay order: the face steps them in this order
-    const regions = {
+  const regions = {
     window: { picture: paintingOf(req, frame, m.light) },   // rows 120 to 560 of Idle's painting of the light, 1:1 (the face shows the window; the plates stand while it is not on the face)
-    residents: state === "rest" ? residents : [], bed: state === "rest" ? lw.bed : { state: "none", picture: lw.bed.picture, mark: "", sleepers: [] },
-    tiles: { glyph: R.bed.markPicture, items: [] },
+    residents, bed: lw.bed,   // the bed in every state: the nest alone while docked, with its mark while away (an empty whole has no residents and no sleepers)
+    tiles: { glyph: frame.regions.marks.companion.away, items: [] },   // an out mibi's tile shows the Companion's outline glyph (the top bar's away mark)
   };
   // a tile a bay: the housed mibis in bay order, then the free bays; a housed one shows its thumbnail, one out with the Companion its glyph
   const n = S.bayCount(st, settings), tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", picture: out(mb) ? "" : req({ kind: "mibi", id: `mibi:${mb.id}:48x48`, mibi: mb.id, species: S.speciesOf(mb), size: [48, 48] }) }));

@@ -6,7 +6,7 @@ import { roomTop, ROOM_KEYS } from "../nav.mjs";
 import { closeReport } from "./cargo.mjs";
 
 const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
-// A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Habitat: the stage).
+// A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
 export function roomKey(h, key) {
   if (!roomTop(key)) return false;
   const ui = h.ui; ui.create = null; ui.cross = null;
