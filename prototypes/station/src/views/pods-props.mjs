@@ -12,6 +12,8 @@ const podFrame = (p) => frameOf(S.speciesOf(p));
 const slot = (req, master, rect, until) => { const size = rect.slice(2); return req({ kind: "slot", id: `${master}:${size.join("x")}`, master, size, until }); };
 // An unidentified pod is the unknown pod: its own pictures, never a species' shell, even when the species is known.
 const shellFrame = (st, p) => (p.idd && st.knownIds.includes(S.speciesOf(p)) ? podFrame(p) : null);
+// The species a pod's shell shows (an unidentified pod, and a species not yet known, show the unknown shell): Pods' collection and Cargo's rack draw the same pod.
+export const shellSpecies = (st, p) => (shellFrame(st, p) ? S.speciesOf(p) : null);
 const railWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.rail : c.name);
 const headingWord = (c, spec) => (c.id === "legs-tail" ? spec.strings.legsTail.heading : c.name);
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);

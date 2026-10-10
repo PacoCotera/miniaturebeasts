@@ -25,6 +25,11 @@ export const PLACEHOLDERS = [
   { id: "home-leaf-8x12", what: "the Incubator module's leaves: a full leaf a PH plate, an empty one a PH hollow (home-leaf-empty-8x12), only while a bud is in the chamber; the chamber is left empty", until: "the leaf masters and the chamber master" },
   { id: "home-shield-12x24", what: "the Probe module's Shield plates: a whole plate a PH plate, a lost one a PH hollow (home-shield-gone-12x24); a held sitting a PH plate (home-sitting-24x32); the cradle is left empty", until: "the Probe module masters" },
   { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
+  { id: "cargo-bay-992x320", what: "Cargo's bay, 992×320, open and shut: the panel component (panel fill, a bevel top, a hairline edge, a ground inside, no rim and no seals drawn); shut, a PH plate (cargo-bay-shut-976x304) over its inside with no label", until: "the bay masters (open and shut)" },
+  { id: "crate-sealed-256x176", what: "a sealed crate in Cargo's bay: a PH plate; a sitting crate (crate-sitting-256x176) is left out until the portrait's reveal is designed", until: "the crate masters" },
+  { id: "crate-closer-384x256", what: "the crate closer: crate-sealed-384x256, crate-opening-384x256 and crate-open-384x256, each a PH plate", until: "the crate closer masters (sealed, opening and open)" },
+  { id: "cargo-well-96x128", what: "a rack well, 96×128: a PH hollow, the pod 88×112 at well + (4,8) over it", until: "the rack well master" },
+  { id: "icon-pod-16", what: "the report card's Pod icon, 16×16: a PH plate, at row y + 4 on a 20 px pitch; icon-shield-16, a PH plate a plate mended (never Home's 12×24 Shield placeholder)", until: "the report's icon masters" },
   { id: "icons", what: "the material icons and the Companion mark", until: "the icon set" },
   { id: "heart-full-24", what: "the bonded mark on the Vivarium card (habitat.json regions.card.heart, 24×24, shown only when the mibi is bonded): no master yet, so nothing is drawn for it, never a code-drawn heart", until: "the heart master (the art director is asked for it)" },
 ];

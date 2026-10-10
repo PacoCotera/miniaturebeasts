@@ -13,7 +13,7 @@ export const OLD_SAVE_KEYS = ["mb-exploration-v1", "mb-exploration-v2", "mb-expl
 export const DEV_KEY = "mb-station-dev";
 // The decided prices (research-economy.md §2).
 export const PRICE = { identify: 1, readTrait: 1, change: 1, growE: 2, growS: 4, mend: 1, tier2E: 12, tier2D: 4, wild: 1, wildMibi: 2 };
-export const RACK = 6, BAY = 3, BAYS = 6;
+export const RACK = 6, BAYS = 6;
 export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
 // What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
 export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
@@ -501,9 +501,9 @@ export function need(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
 
 // The room's one need, as facts (home.json strings.needs.order, the same order as need() above): the key of the first that holds, its count and the max the picture holds, the name or species and article it is about, the materials
 // short for it, and the screen its ✓ goes to. The Home view builds the words from home.json's strings; the room's ✓ goes where `act` says. null when nothing needs the player.
-export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}) {
+export function needKey(st, sv, settings = DEFAULT_SETTINGS, ui = {}, afterCrates = false) {
   const cs = bayCrates(st, sv), art = (w) => aAn(w).split(" ")[0];
-  if (docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
+  if (!afterCrates && docked(st) && cs.length) return { key: "crates", n: cs.length, max: 3, act: "cargo" };
   if (budReady(st, settings)) return { key: "budReady", act: "incubator" };
   const meet = ui.meet != null ? mibiById(st, ui.meet) : null;
   if (meet) return { key: "meet", name: meet.name, act: "meet" };
@@ -530,7 +530,7 @@ export function seedCrate(st, species, count, seed, now = Date.now()) {
   const fr = frameOf(species); if (!fr) return { ok: false, msg: "no frame " + species };
   const n = (st.devN = (st.devN || 0) + 1), id = "dev-" + n + "-" + (seed >>> 0).toString(36);
   const places = ["meadow", "pond", "rock", "wood", "cave"], hows = ["calm", "shake", "ground", "slab", "meal"];
-  const pods = Array.from({ length: Math.max(1, count | 0) }, (_, i) => { const gs = (Math.imul((seed >>> 0) + i * 7919, 2654435761) ^ (i * 40503)) >>> 0; return { id: "p" + i, species, sp: speciesIndex(species), g: places[(seed + i) % 5], how: hows[(seed + 2 * i) % 5], gs, k: null }; });
+  const pods = Array.from({ length: Math.min(6, Math.max(1, count | 0)) }, (_, i) => { const gs = (Math.imul((seed >>> 0) + i * 7919, 2654435761) ^ (i * 40503)) >>> 0; return { id: "p" + i, species, sp: speciesIndex(species), g: places[(seed + i) % 5], how: hows[(seed + 2 * i) % 5], gs, k: null }; });
   const crate = { id, n, turn: st.turn, at: now, e: 3, d: 3, s: 4, pods, met: [species], explored: 0, of: 0, lines: [], dev: true };
   st.devBay.push(crate); st.devWorld = true;
   logEv(st, "Developer crate " + n + " · " + plural(pods.length, fr.species.name + " pod") + " · seed " + (seed >>> 0));
