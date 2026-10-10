@@ -81,9 +81,9 @@ test("the Vivarium: the stage leans, the door takes the resident with you, the g
 
 test("Create: ◀ ▶ walk the read traits, ✓ grows the founder (a stamp event, input held, the incubator), a refusal is said, ← returns to the pod's overview", () => {
   const st = world(), p = pod(st, "S01", chapters("S01").slice(0, 2)), h = host(st), frame = frameOf("S01"); h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [] };
-  INTENTS.create.intent(h, "x", "step:right", { pod: p, frame }); assert.equal(h.ui.create.f, 1); INTENTS.create.intent(h, "x", "step:left", { pod: p, frame }); assert.equal(h.ui.create.f, 0);
-  INTENTS.create.intent(h, "x", "back", { pod: p, frame }); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.create], ["pods", "overview", "pod", null]);
-  h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [] }; INTENTS.create.intent(h, "x", "confirm", { pod: p, frame });
+  INTENTS.create.intent(h, "x", "step:right"); assert.equal(h.ui.create.f, 1); INTENTS.create.intent(h, "x", "step:left"); assert.equal(h.ui.create.f, 0);
+  INTENTS.create.intent(h, "x", "back"); assert.deepEqual([h.went.at(-1), h.ui.pods.view, h.ui.pods.focus.cur, h.ui.create], ["pods", "overview", "pod", null]);
+  h.ui.create = { podId: p.id, choices: {}, f: 0, clash: [] }; INTENTS.create.intent(h, "x", "confirm");
   assert.equal(h.went.at(-1), "incubator"); assert.ok(h.played.some((e) => e.kind === "stamp")); assert.ok(st.bud); assert.equal(h.ui.create, null); assert.match(h.said.at(-1), /^Grown · /);
 });
 
@@ -126,12 +126,28 @@ test("the frame presenter's events: a counter that rose ticks (one unit every 70
   assert.deepEqual(p.events({ e: 10, d: 5, s: 1, turn: 5 }), [{ kind: "tick", target: "e", from: 9, to: 10, ms: 240 }]);
 });
 
-import { readdirSync as ls2, readFileSync as rf2 } from "node:fs";
-test("the intents are DOM-free: no document, window, canvas or storage, and no import of a screen, the drawing half, the game's singletons or the renderer", () => {
-  const dir = path.resolve(here, "../src/intents");
-  for (const f of ls2(dir).filter((x) => x.endsWith(".mjs"))) {
-    const src = rf2(path.join(dir, f), "utf8").replace(/\/\/.*$/gm, "");
-    assert.doesNotMatch(src, /\b(document|window|canvas|getContext|localStorage|sessionStorage|performance)\b/, f);
-    for (const m of src.matchAll(/from "([^"]+)"/g)) assert.doesNotMatch(m[1], /screens\/|gfx|game\.mjs|\/render\/|components\/|scene|layout\.mjs$/, f + " imports " + m[1]);
+import { readdirSync as ls2, readFileSync as rf2, existsSync as ex2 } from "node:fs";
+// The transitive import graph of intents/: every module it reaches, followed through relative imports (and `import()`), reads like a Node program: no document, window, canvas, storage or clock of the page, and none of
+// the drawing half, the screens, the renderer or the game's singletons.
+const FORBIDDEN = /\b(document|window|canvas|getContext|localStorage|sessionStorage|performance|requestAnimationFrame|createImageBitmap|OffscreenCanvas|Image)\b/;
+const NOT_REACHED = /(^|\/)(screens|render|components)\/|(^|\/)(gfx|game|scene|layout|context|type|main|face-lvgl|masters|podsprites|pictures|dev|caddy)\.mjs$/;
+function graph(entry) {
+  const seen = new Map(), todo = [entry];
+  while (todo.length) {
+    const f = todo.pop(); if (seen.has(f)) continue;
+    const src = rf2(f, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, ""); seen.set(f, src);
+    for (const m of src.matchAll(/(?:from|import\()\s*"(\.[^"]+)"/g)) { const to = path.resolve(path.dirname(f), m[1]); if (/\.(mjs|js)$/.test(to) && ex2(to)) todo.push(to); }
+  }
+  return seen;
+}
+test("the intents are DOM-free, transitively: nothing they import reaches a document, a canvas, storage, the page's clock, a screen, the drawing half or the game's singletons", () => {
+  const dir = path.resolve(here, "../src/intents"), all = new Map();
+  for (const f of ls2(dir).filter((x) => x.endsWith(".mjs"))) for (const [k, v] of graph(path.join(dir, f))) all.set(k, v);
+  assert.ok(all.size > 12, "the graph was followed: " + all.size + " modules");
+  for (const [f, src] of all) {
+    const rel = path.relative(path.resolve(here, ".."), f);
+    assert.doesNotMatch(f, NOT_REACHED, rel + " is in the intents' graph");
+    const code = src.replace(/"(?:[^"\\\n]|\\.)*"/g, '""');   // a word in a string or a data key is not a use
+    assert.doesNotMatch(code, FORBIDDEN, rel + " names " + (code.match(FORBIDDEN) || [])[0]);
   }
 });

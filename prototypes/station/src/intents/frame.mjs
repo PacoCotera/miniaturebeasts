@@ -26,10 +26,9 @@ export function dock(h, fromIdle = false) {
 }
 // The first press on Idle only wakes the screen (a landed painting shows from here); the Dock key is a world event: it wakes and docks.
 export function wake(h, verb) { h.ui.idle = false; return verb === "dock" ? dock(h, true) : { ok: true, woke: true }; }
-// The verb a face intent carries to the frame's functions: "room:<key>" | "dock" | "wake".
+// The verbs a face intent carries to the frame's functions: "room:<key>" | "wake". The Dock key is not a face verb: the host calls dock(h) itself.
 export function intent(h, target, verb) {
   if (verb && verb.startsWith("room:")) return roomKey(h, verb.slice(5));
-  if (verb === "dock") return dock(h, false);
   if (verb === "wake") return wake(h);
   return false;
 }

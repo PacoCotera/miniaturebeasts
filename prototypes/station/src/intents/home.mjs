@@ -10,7 +10,7 @@ export function openBay(h) {
   r.plays.forEach((p, i) => h.play({ kind: "arrival", target: "bay", ms: ARRIVE_MS, from: i * ARRIVE_MS }));
   h.save(); return r;
 }
-const toPods = (h) => { const p = S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = h.pods?.initial ?? "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
+const toPods = (h) => { const p = S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
 // The notice's own action, from ✓ on the room.
 export function doNeed(h, nd) {
   if (nd.act === "bay") openBay(h);

@@ -1,14 +1,15 @@
 // Create's intents: ◀ ▶ walk the read traits, ▲ ▼ roll a trait's look, ✓ Grows the founder, ← goes up to the pod's overview. The roll is the screen's state (`h.ui.create`).
 import * as S from "../state.mjs";
-import { codeText } from "../genome.mjs";
+import { codeText, frameOf } from "../genome.mjs";
 
 export const STAMP_MS = 900;
 const clamp = (v, a, b) => (v < a ? a : v > b ? b : v);
 // The traits a pod can be shaped on: the read ones, in chapter order, with their chapter.
 export const reviewTraits = (p, frame) => frame.chapters.filter((c) => p.read.includes(c.id)).flatMap((c) => c.traits.map((t) => ({ c, t })));
-export function intent(h, target, verb, { pod, frame }) {
-  const cr = h.ui.create, p = pod; if (!p || !cr) return;
-  const list = reviewTraits(p, frame);
+// The screen's own state names the pod (h.ui.create.podId); its frame is the species'. Nothing else is on the wire: { screen, target, verb }.
+export function intent(h, target, verb) {
+  const cr = h.ui.create, p = cr && h.st.tray.find((q) => q.id === cr.podId); if (!p) return;
+  const frame = frameOf(S.speciesOf(p)), list = reviewTraits(p, frame);
   if (verb === "step:left" || verb === "step:right") cr.f = clamp(cr.f + (verb === "step:right" ? 1 : -1), 0, Math.max(0, list.length - 1));
   else if (verb === "step:up" || verb === "step:down") {
     const cur = list[clamp(cr.f, 0, list.length - 1)]; if (!cur) return; const opts = S.rollOptions(p, cur.t.id);

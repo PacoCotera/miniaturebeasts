@@ -8,8 +8,8 @@ import * as create from "./create.mjs";
 import * as pods from "./pods.mjs";
 
 export const INTENTS = { frame, home, incubator, library, habitat, create, pods };
-// A face intent { screen, target, verb } to its screen's function; the frame's verbs (room keys, dock, wake) are the same on every screen.
-export function dispatch(h, { screen, target, verb }, extra) {
-  if (verb && (verb.startsWith("room:") || verb === "dock" || verb === "wake")) return frame.intent(h, target, verb);
-  const m = INTENTS[screen]; return m ? m.intent(h, target, verb, extra) : undefined;
+// A face intent { screen, target, verb } (all that is on the wire) to its screen's function; the frame's verbs (the room keys and the wake) are the same on every screen. The Dock key is not a face verb: the host calls frame.dock(h).
+export function dispatch(h, { screen, target, verb }) {
+  if (verb && (verb.startsWith("room:") || verb === "wake")) return frame.intent(h, target, verb);
+  const m = INTENTS[screen]; return m ? m.intent(h, target, verb) : undefined;
 }

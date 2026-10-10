@@ -53,7 +53,7 @@ const legacy = (id, draw) => ({ id, kind: "legacy", rect: [0, 0, SW, SH], always
 const FACE_FLAG = new URLSearchParams(location.search).get("face") === "lvgl";
 let FACE = null;
 // The LVGL face draws the frame, the stage's ground and the focus ring for now; each screen's stage comes over with its screen. A screen on the layer says what the face draws (faceNodes); the others get the frame alone.
-const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), layer: (n) => (n.asset && assetEntry(n.asset)?.policy === "painted" ? "painted" : undefined), slice: (id) => assetEntry(id)?.slice ?? null, tile: (id) => assetEntry(id)?.tile ?? 0, picture: (id) => { const a = assetOf(id, SC.env); return a ? { w: a.w, h: a.h, data: a.rgba() } : null; } };
+const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), layer: (n) => (n.asset && assetEntry(n.asset)?.policy === "painted" ? "painted" : undefined), slice: (id) => assetEntry(id)?.slice ?? null, tile: (id) => assetEntry(id)?.tile ?? 0, picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; return { w: a.w, h: a.h, data: a.rgba ? a.rgba() : a.canvas().getContext("2d", { willReadFrequently: true }).getImageData(0, 0, a.w, a.h).data }; } };   // the frozen renderer's masks (ui/render/canvas-assets.mjs) have a canvas only, until B4a-3 deletes it
 function faceNodes() {
   const screen = screenOf(UI.screen), F = SPECS.frame, stage = { id: "stage", kind: "rect", rect: F.regions.stage.rect.slice(), colour: F.colours.stageGround };
   return [stage, ...(screen.faceNodes ? screen.faceNodes(CTX) : frameFor(CTX, UI.screen, lineFor()))];
