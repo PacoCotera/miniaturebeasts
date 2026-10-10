@@ -10078,12 +10078,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: bay shut, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 97)",
-  "sha256": "00b368bdd6426206fb8b11666b226874fb51cdf038ec9b7a9fa912d337cefe8b",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: bay shut, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "9564c9284b84696cb2cb313964891ff45af23cddb4dccf51c104ea9e1eb2fa22"
  },
  "home-bay-open-176x72": {
   "size": [
@@ -10091,12 +10088,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 97)",
-  "sha256": "9023eccafb48d2e309e0889e2a09eb0b0b51b2b40f7de68bf53e03455eb290c5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 176x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "b3c0a5d1e26bb80d35e6dbfe83fe3edba061cee178b255ec294c90ce7204c646"
  },
  "home-well-32x32": {
   "size": [
@@ -10104,12 +10098,9 @@
    32
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: well, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 32x32, transparent around it (pass 97)",
-  "sha256": "5f63ead545d5e91852702ccef2909eb193460b22a23986e5354a5b81cd15c17d",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: well, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 32x32, transparent around it (pass 99, the second sheet)",
+  "sha256": "75067e0b19f8c0442e12420c4d4575214f946c1074bd817ff31bf2cffb04be44"
  },
  "home-chamber-empty-72x72": {
   "size": [
@@ -10117,12 +10108,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: chamber empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 97)",
-  "sha256": "b467fa0e90a233a7fea0009908fd534a4080959f94e7f44dd28e0ae02e4cc18e",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: chamber empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "baf3ac785901f51e5f636696d7a5017022aa921f42eb7dfe2d83c487ca2e4b04"
  },
  "home-chamber-growing-72x72": {
   "size": [
@@ -10130,12 +10118,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: chamber growing, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 97)",
-  "sha256": "df6c13d7b25042f6a176d549d9f188c22d5a878bd3ae4bd58279f1dfb16338bc",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: chamber growing, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "19ff5a2e2554577245afa5e644e978eea2e635983e6a68cc63b2ea58ecc8ddf1"
  },
  "home-chamber-ready-72x72": {
   "size": [
@@ -10143,12 +10128,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 97)",
-  "sha256": "b30eb750929c65ffe4862f87912fe0c5e6ee1cec41fcb2de6055b698b170cd36",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: chamber ready, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 72x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "f2cf2339915a5eb4883dbb00028edaf2a6767cc6be335c0c1a31179f5299cc4f"
  },
  "home-cradle-empty-96x72": {
   "size": [
@@ -10156,12 +10138,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: cradle empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 97)",
-  "sha256": "bcbd8847064d186cc4cd95af55e1295aea35c2a9b951ac31bcaff0037f6a2d65",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: cradle empty, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "1a0f6b379fac6b88668ec799ddbed1405d575cfc28efe8d7ab4f1bad8ff110bb"
  },
  "home-cradle-full-96x72": {
   "size": [
@@ -10169,12 +10148,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: cradle full, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 97)",
-  "sha256": "803f3e86270a5609ce868b271de4670f11164f2f49d31653fcbdbdffe7f0b7d5",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: cradle full, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 96x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "10c3a1daae5c162ae09cf4c14a538ed0d55bd7de3521f7de91c758cf272fac34"
  },
  "home-journal-104x72": {
   "size": [
@@ -10182,12 +10158,9 @@
    72
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: journal, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 104x72, transparent around it (pass 97)",
-  "sha256": "79dac4b03bd1d0081e0694392ce3411fc7d770366eeed26acb3679930b489c70",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: journal, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 104x72, transparent around it (pass 99, the second sheet)",
+  "sha256": "f1938432b3c1110c073c60c0ba83ad4a1734768f6cb8be866c7288dd1054d16c"
  },
  "home-bed-192x56": {
   "size": [
@@ -10195,11 +10168,8 @@
    56
   ],
   "rect": null,
-  "src": "source/raw/home-column-sheet.jpg (gemini-3-pro-image)",
-  "made": "Home's section column: bed, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 192x56, transparent around it (pass 97)",
-  "sha256": "a61b3e1f36418cae2d7f4fc41651d4181f59d0b83b93895471fc63088e566bdf",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 97: Home's section column fitting, cut from one Pro sheet (home-column-sheet), transparent around it; awaiting the art director's judgement (not signed)"
+  "src": "source/raw/home-column-sheet-r2.jpg (gemini-3-pro-image)",
+  "made": "Home's section column: bed, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (never stretched) to fit 192x56, transparent around it (pass 99, the second sheet)",
+  "sha256": "0ea14f4f939dd8d629addb214ec0c4a5dc20cad1ff08674c69897191f301f34e"
  }
 }

@@ -2287,5 +2287,22 @@
    "thoughtsTokenCount": 426,
    "totalTokenCount": 2977
   }
+ },
+ {
+  "tag": "home-column-sheet-r2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.277302,
+  "mxn": 5.546,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-10T15:33:29Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1731,
+   "candidatesTokenCount": 1901,
+   "thoughtsTokenCount": 381,
+   "totalTokenCount": 4013
+  }
  }
 ]
