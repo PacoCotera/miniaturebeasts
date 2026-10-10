@@ -144,7 +144,7 @@ The other contracts (the wire format and every message are lvgl-switch.md §2.1)
 
 - **View:** `view(state, focus) → props`, for example `{ pod: { asset, sealed }, rail: { chapters: [{ id, read, glint, sealed }] }, line: { ok, price, back, subject, need } }`. Props name what, never where. Pure, tested in Node against the screen's props schema, and sent to the face as a `props` message.
 - **Intent:** a key goes through the face's focus graph, which gives either a focus move (a `focus` message) or `{ target, verb }` (an `intent` message). The screen's intent table maps it to one rule call, which returns `{ st, events }`.
-- **Event:** `{ kind: "wipe", target: "page", ms: 2000, hold: true }`. The JavaScript timeline decides that it plays and holds input; the face plays it. No global timestamps.
+- **Event:** `{ kind: "wipe", target: "page", ms: 2000, hold: 2000 }`. The JavaScript timeline decides that it plays and holds input; the face plays it. No global timestamps.
 - **Primitive:** the face's closed set (rect, text, sprite, nine-slice, clip, composed picture), each carrying its layer and the region that drew it. Colours are palette names, except on the painted and type layers. Fonts are LVGL fonts baked from the bundled file (`inter-16`, `inter-20`, `inter-28`; Mibi 7×9 when the Companion comes), never a CSS font string.
 - **Asset:** `{ id, file, w, h, policy: palette48 | stationChrome | painted | gray4 | print1, status: placeholder | master, until, hash }`. Files are PNG: indexed for the palette policies, 32-bit with straight alpha for `painted`. `bake-images.mjs` converts them to LVGL's binary images (lvgl-switch.md §2.4).
 

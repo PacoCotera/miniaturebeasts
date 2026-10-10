@@ -871,7 +871,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Region (`cargo.json`) | Rectangle | Notes |
 | --- | --- | --- |
 | `bay` | 16, 48, 992, 320 | Inside 24, 56, 976, 304: open, the floor; away, the lid shut across it |
-| `crates` | 64, 120, 896, 176 | Three places 256×176 on a 320 pitch at x 64, 384, 704, centred on 512; a walk crate per place left to right in the order they open; a sitting crate from the right (704, then 384), walk crates first, at most three shown, its 12×12 fill lamp under it at (place x + 122, 304); an empty place shows the floor. Away, the lid is shut unless a sitting crate is in the bay |
+| `crates` | 64, 120, 896, 176 | Three places 256×176 on a 320 pitch at x 64, 384, 704, centred on 512; a walk crate per place left to right in the order they open; a sitting crate from the right (704, then 384), walk crates first, at most three shown (more than three is developer only: the first three in the bay's order, walk crates first, and no others; the context line counts them all), its 12×12 fill lamp under it at (place x + 122, 304); an empty place shows the floor. Away, the lid is shut unless a sitting crate is in the bay |
 | `waiting` | 968, 328, 24, 24 | The waiting mark, while pods wait in the bay for a free well |
 | `rack` | 176, 400, 672, 144 | Six wells 96×128 on a 112 pitch from (184, 408), centred on 512; in each, its pod at the collection class 88×112 at well + (4, 8), or nothing |
 
@@ -884,7 +884,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 
 | Region | Rectangle | Notes |
 | --- | --- | --- |
-| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
+| `ribbon` | 208, 56, 608, 40 | 20 px medium, centred, one line: "First crate home", "Second crate home", "Third crate home", "Developer crate home"; a walk crate past the third (developer only) "Another crate home"; a sitting crate "Fig's portrait". A ready sitting crate opens in Cargo after the walk crates, in the same sequence, docked or away. It gets no row on the report; when only sitting crates opened, no card shows and the bay shows, emptied |
 | `crate` | 320, 104, 384, 256 | The crate closer, centred on 512, 8 px under the ribbon: sealed, opening (the tag torn, the lid lifting), open (its fitted cut-outs) |
 | Its pods | 88×112, 104 apart on y 184 | One at 468; two at 416, 520; three at 364, 468, 572. A crate of more than three shows three; each later pod rises in the middle place as the one before leaves |
 | `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
@@ -895,10 +895,10 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
 | Heading | 88, 32 tall | — | "Home from the field", 20 px medium |
-| A crate, one row each, in the order they opened | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Developer crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "a first look around", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
+| A crate, one row each, in the order they opened: the first three opened, at most three rows; later crates get no row, and Gathered adds up every crate | 128, 152, 176 | "First crate", "Second crate", "Third crate"; "Developer crate"; "Another crate" | Its pods as 16 px Pod icons on a 20 px pitch, at most eight (past eight "many pods"; none "no pods"); the reach in words: "a first look around", "half the land explored", "most of the land explored", "all the land explored"; a crate with no map says nothing here |
 | Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
 | Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
-| The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the last crate's world lines behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
+| The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
 
 **The Probe row's source.** The row comes from the dock's mend, `{ free, paid, broke }`: free plates or a break (a break is mended free) read "mended free"; plates paid for read "mended for" and their price; no mend, no row. Cargo keeps the mend in its UI state from the dock until the report. It is not in the save: after a reload the report has no Probe row.
 
@@ -914,7 +914,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | 1650 | The world turn jumps to the crate's turn |
 | 3000 | The next crate; after the last, the dither back to the bay, empty, with the report card over it |
 
-The opening plays crates × 3000 + 180 ms and holds input crates × 3000 + 200 ms: one crate 3180 and 3200, two 6180 and 6200, three 9180 and 9200. With reduced motion each step is a cut at its time; the pace and the hold are the same, since each crate's words, materials and turn are read in turn.
+The opening plays crates × 3000 + 180 ms and holds input crates × 3000 + 200 ms: one crate 3180 and 3200, two 6180 and 6200, three 9180 and 9200; in play at most three. The opening covers 1 to 9 crates (the hold at most 30000 ms); with ten or more (developer only) it plays the first nine, the rest are taken in, and the counters and the turn reach their final values at the end. With reduced motion each step is a cut at its time; the pace and the hold are the same, since each crate's words, materials and turn are read in turn.
 
 ### 6. Interactions
 
@@ -949,7 +949,6 @@ Cargo has no focus targets: the ring is on nothing, and the pad does nothing.
 | Crate closer | 384×256, sealed, opening and open |
 | Pod (crate, travel, rack) | 88×112, the collection class |
 | Well | 96×128 |
-| Ribbon | 608×40, the ribbon word |
 | Waiting mark | 24×24, `mark-waiting-24` |
 
 ---
