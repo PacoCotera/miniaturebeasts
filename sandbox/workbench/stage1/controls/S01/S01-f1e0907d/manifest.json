@@ -1,0 +1,1219 @@
+{
+ "schemaVersion": 1,
+ "level": "individual",
+ "id": "S01-f1e0907d",
+ "version": 1,
+ "species": "S01",
+ "clan": "C01",
+ "plan": "B1·L4",
+ "rig": "B1",
+ "genome": {
+  "structure.attachment-position": [
+   "high",
+   "high"
+  ],
+  "appearance.body-palette": [
+   "charcoal",
+   "charcoal"
+  ],
+  "appearance.underside-palette": [
+   "cream",
+   "cream"
+  ],
+  "appearance.marking-switch": [
+   "on",
+   "on"
+  ],
+  "appearance.marking-layout": [
+   "patches",
+   "patches"
+  ],
+  "appearance.marking-extent": [
+   "high",
+   "high"
+  ],
+  "appearance.marking-scale": [
+   "high",
+   "high"
+  ],
+  "appearance.marking-orientation": [
+   "low",
+   "low"
+  ],
+  "appearance.marking-contrast": [
+   "high",
+   "high"
+  ],
+  "appearance.surface-texture": [
+   "smooth",
+   "smooth"
+  ],
+  "movement.contact-phase": [
+   "low",
+   "low"
+  ],
+  "movement.cycle-rate": [
+   "low",
+   "high"
+  ],
+  "movement.stride-preference": [
+   "high",
+   "high"
+  ],
+  "movement.turn-control": [
+   "low",
+   "low"
+  ],
+  "energy.actuator-capacity": [
+   "low",
+   "low"
+  ],
+  "energy.reserve-capacity": [
+   "high",
+   "high"
+  ],
+  "energy.action-efficiency": [
+   "low",
+   "high"
+  ],
+  "anatomy.muzzle-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.crown-presence": [
+   "off",
+   "off"
+  ],
+  "anatomy.exterior-eye-presence": [
+   "on",
+   "on"
+  ],
+  "anatomy.crown-form": [
+   "pointed",
+   "pointed"
+  ],
+  "growth.core-half-length": [
+   "medium",
+   "medium"
+  ],
+  "growth.core-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.core-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.head-length-ratio": [
+   "large",
+   "large"
+  ],
+  "growth.head-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.head-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.head-lift-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.muzzle-projection-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.muzzle-width-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.support-drop-ratio": [
+   "short",
+   "short"
+  ],
+  "growth.support-splay-ratio": [
+   "low",
+   "low"
+  ],
+  "growth.support-radius-ratio": [
+   "stout",
+   "stout"
+  ],
+  "growth.terminal-length-ratio": [
+   "broad",
+   "broad"
+  ],
+  "growth.terminal-depth-ratio": [
+   "high",
+   "high"
+  ],
+  "growth.exterior-eye-size-ratio": [
+   "small",
+   "small"
+  ],
+  "growth.exterior-eye-spacing-ratio": [
+   "wide",
+   "wide"
+  ],
+  "growth.crown-height-ratio": [
+   "high",
+   "high"
+  ],
+  "anatomy.region-cross-exponent": [
+   "rounded-square",
+   "rounded-square"
+  ],
+  "anatomy.region-longitudinal-form": [
+   "barrel",
+   "barrel"
+  ],
+  "anatomy.contact-terminal-form": [
+   "pad",
+   "pad"
+  ],
+  "cognition.exploration-tendency": [
+   "seeking",
+   "seeking"
+  ],
+  "cognition.arousal-threshold": [
+   "low",
+   "low"
+  ],
+  "appearance.sheen": [
+   "glossy",
+   "glossy"
+  ],
+  "appearance.emission-brightness": [
+   "dim",
+   "dim"
+  ],
+  "appearance.emission-length": [
+   "long",
+   "long"
+  ],
+  "appearance.belly-field": [
+   "on",
+   "on"
+  ],
+  "growth.crest-leaf-count": [
+   "three",
+   "three"
+  ]
+ },
+ "genomeDigest": "S01-f1e0907d",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "sketch": {
+  "sketcherVersion": "mb-sketch/1",
+  "hash": "a15650f09d23f2fddf08937bde7ffec08e5fe34c0c5367fafcae802f6af8bbad",
+  "caption": "Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin, patches; plantigrade, fused head.",
+  "views": [
+   "front",
+   "side",
+   "three-quarter",
+   "top"
+  ],
+  "sizes": {
+   "tile": [
+    48,
+    48
+   ],
+   "companion": [
+    280,
+    300
+   ],
+   "station": [
+    300,
+    310
+   ],
+   "large": [
+    600,
+    620
+   ]
+  },
+  "slots": [
+   {
+    "slot": "body",
+    "pigments": [
+     "#465459"
+    ],
+    "flat": [
+     220,
+     80,
+     60
+    ],
+    "secondHalf": null
+   },
+   {
+    "slot": "second",
+    "pigments": [
+     "#dfd2ae"
+    ],
+    "flat": [
+     60,
+     140,
+     220
+    ],
+    "secondHalf": null
+   },
+   {
+    "slot": "eyeRim",
+    "pigments": [
+     "#f1eddc"
+    ],
+    "flat": [
+     240,
+     230,
+     200
+    ],
+    "secondHalf": null
+   },
+   {
+    "slot": "pupil",
+    "pigments": [
+     "#273036"
+    ],
+    "flat": [
+     40,
+     40,
+     50
+    ],
+    "secondHalf": null
+   },
+   {
+    "slot": "belly",
+    "pigments": [
+     "#dfd2ae"
+    ],
+    "flat": [
+     230,
+     150,
+     60
+    ],
+    "secondHalf": null
+   }
+  ],
+  "markingFields": [
+   "coat",
+   "belly"
+  ],
+  "bounds": {
+   "min": [
+    -1.2946596624284283,
+    -0.7803596143087312,
+    0
+   ],
+   "max": [
+    0.68696,
+    0.7803596143087311,
+    1.834685290357771
+   ]
+  },
+  "states": [
+   "idle",
+   "settle",
+   "sleep",
+   "eat",
+   "flee",
+   "hop",
+   "walk"
+  ]
+ },
+ "outputs": [
+  {
+   "file": "shaded.front.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "c10c3b5b53f3acb16ed537c147f695bade63243acfe74891d9a24e27b3ee71d2",
+   "clipped": false
+  },
+  {
+   "file": "slots.front.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "e645c828496afd58cbfc2a4535832f9b31da5bb4a052bff1abfaae093412c7cd",
+   "clipped": false
+  },
+  {
+   "file": "index.front.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "f5a120a1c8bdb63dc491113f5c328680b8112a9b1aab26a5e1d55ed35519b93d",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.front.companion.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "481da334a6932e488bbd58602e802a202b58e2c22e5ba5de307a44a437d4d9e4",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.front.companion.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "40094b189a3ac91a566ff27ffc539d034f9535d86b8797cfe3cb6c3c468cd83a",
+   "clipped": false
+  },
+  {
+   "file": "shaded.front.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "288e1075a182661a1dab6ee72e887cc56526d606f41db21aeb6e2c3b6ec330d2",
+   "clipped": false
+  },
+  {
+   "file": "slots.front.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "da5e3df2502eb962b348423f9554af6aef9ef9763c769452316d117c8fb44786",
+   "clipped": false
+  },
+  {
+   "file": "index.front.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "600f8f61cd53e75c08a1af016387f1ba96ec056f14eb5e35ec6cf7f0b164fa31",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.front.station.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "8ef560d77d24bb2b5e5015bcf533d77e0fe4117339145ec2358d49d53fb48f13",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.front.station.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "5b12460861fa9ecb3ea395358e4541f29cd30d448aa914ccf423762064eba36f",
+   "clipped": false
+  },
+  {
+   "file": "shaded.front.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "5557e1b4481d679d629471136d1815594503d623e83d0227252e510b1aa630ea",
+   "clipped": false
+  },
+  {
+   "file": "slots.front.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "10ff9ac084d40ffcae5ffcafb24cc988ba97122af8cd3239b28cbbeca9dc2d67",
+   "clipped": false
+  },
+  {
+   "file": "index.front.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "576f3d9b69b99c86d30df8ae0291cc6508035d61d8e8a012dc28959a5d7f3231",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.front.large.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "69e5eb325ed273ae120ca0a73063161d20282bc25412b3e73aae0f511ac040a0",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.front.large.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "front",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "4488a55432e2a26761a34b1440209d86e5d6ee40854a9d53675554c953055dcf",
+   "clipped": false
+  },
+  {
+   "file": "shaded.side.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "9685dcea8f9779ad316517d3ed3d0788b8a08353269ea49e84b71a6a3d624ed3",
+   "clipped": false
+  },
+  {
+   "file": "slots.side.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "2d84ccc8ad9d0efa8bc3de882c8492a3e351e96bbbc5e4be105b22845b95e1bc",
+   "clipped": false
+  },
+  {
+   "file": "index.side.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "7b1777661ff68d17892147304cacfb1595122408a1257d2746885b0a5bd6d62f",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.side.companion.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "ee8f529b2828bcf8f14dce2cc917a96ab50a91d1395ccbad7bf2c6f47a50b129",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.side.companion.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "81832d5f733b12c305d66107eae652e998f69481bf05b143de07ff8eb73aa09a",
+   "clipped": false
+  },
+  {
+   "file": "shaded.side.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "80f9c3f80e8b4d6d83f4289368e1701ee43463277f428a8dccc659b4f817c8d1",
+   "clipped": false
+  },
+  {
+   "file": "slots.side.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "791e04be9c8a706b28871fa5aca026cb4c405e6877400df62ec79ac3fd5799d5",
+   "clipped": false
+  },
+  {
+   "file": "index.side.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "216b4652ad91adb32cfed45390ce90bec1da76a6025a34610b2f63eee9c55ee7",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.side.station.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "7f709f608e5ed869510df0073795d412078c2f256ee85497767083d198f0e573",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.side.station.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "728870360d6a87355b5966020f1295dce5a7a10e16ec57eb96787abe872411d3",
+   "clipped": false
+  },
+  {
+   "file": "shaded.side.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "c39041f92fb5262ac9a90c7dfa5a8d81e57a3abc5ccb3339e8963911d505ab7a",
+   "clipped": false
+  },
+  {
+   "file": "slots.side.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "ea800e7d1f1ca71acb3a4a605d693bb2691303b3e81195c37356182323a14012",
+   "clipped": false
+  },
+  {
+   "file": "index.side.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "6ab1e2cf659937e54f03a33ea4aeaab4c41955e3073018d2db9e7208ad4c3919",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.side.large.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "76aa08293f9a1ad977b34546f337ca6d78b0dee41910da171ae646b780af0313",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.side.large.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "side",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "f99fa58f4d2e6e85b00709c476c62a0a9abee1956ccf7319a53b0f2e9969a22f",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "a339c6bf1156026018015c31f1c3edb8093568a1ac970a34fd6443fe22b245b5",
+   "clipped": false
+  },
+  {
+   "file": "slots.three-quarter.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "d35bcd78c32c428dc8ba08c6bec86fe36fb4d1b79b8cc3a7a6e7f185a2ce135c",
+   "clipped": false
+  },
+  {
+   "file": "index.three-quarter.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "721aaae30f143287bcce91506b2fb828102877c8fda6076fd66b6a1b90ce15fc",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.three-quarter.companion.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "7be4bcd0377a110d7a3530db20c4e1ca95bde8d6db31939f4df72f81a101e526",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.three-quarter.companion.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "33a7d8ba90b7f0f8f27fdebb7ada6c29a92246e6c09317826f577d96167601dd",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "89269d208b64de4439865b949184cb9bf8058e5c0cf79dc665948d9b77370428",
+   "clipped": false
+  },
+  {
+   "file": "slots.three-quarter.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "19ff439bcfffbee190cca8dc1e2eba6b7118d508866d352ee317e3efa8844372",
+   "clipped": false
+  },
+  {
+   "file": "index.three-quarter.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "14f063229a57f284c88d35b343e7ba1ee120d3a8f05f3fb415c644f21a95d7a9",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.three-quarter.station.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "99c700133d5228a3817a35c67c97e8c8c1fec4eba0e42c3edebb553cdd6ee515",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.three-quarter.station.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "159aeced5fa919e48ef372e597af54d06e84ac9c42fc1ac8fd2c173da59b997f",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "d8384ef250ed51b76a7f2ff86af7dda8832c9db1711492d40b8dad09cedbee40",
+   "clipped": false
+  },
+  {
+   "file": "slots.three-quarter.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "0050439af82581e75b01c1634bf8f94f0aa55a50eb0cf1930ebdecf987bec638",
+   "clipped": false
+  },
+  {
+   "file": "index.three-quarter.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "6f4c0138228920806f2c3382cd709200ee35512f40f532bd95b06c852d1a87bb",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.three-quarter.large.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "09f925d9066980dbaf6d1a72dd060e541a133ef7ba148a15dd016dab6d2dd555",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.three-quarter.large.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "three-quarter",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "d3e3808d99fc8c8af0a08a7dc2d525bffd24e4654a90db0530dd93fd7299ee55",
+   "clipped": false
+  },
+  {
+   "file": "shaded.top.companion.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "0715fd80f3debaa207843bb7255c52cdf93947608e769c003201dc1bb662d176",
+   "clipped": false
+  },
+  {
+   "file": "slots.top.companion.png",
+   "pass": "slots",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "739243186358eaab0c3c834cf8e70d87687bc8620a89644123f4eb96fcc2fc46",
+   "clipped": false
+  },
+  {
+   "file": "index.top.companion.png",
+   "pass": "index",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "1ecfea90c2ef3cc88a31cd5adfbabf7c00a30a05217aea7db49db67e1b9ef16c",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.top.companion.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "c7dbb067a9bbea9af4e98f7ba532c3d866f6dfbc60b2ca5ea2ba89615a42e6f3",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.top.companion.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "4051236e0f4ee013c5494a1adfbfc7934d4b5fcc63a7cce753f9eafd072414ca",
+   "clipped": false
+  },
+  {
+   "file": "shaded.top.station.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "84c651821860934912ce05913c80649a749805e06aa5214a9c109a184c0ec0c8",
+   "clipped": false
+  },
+  {
+   "file": "slots.top.station.png",
+   "pass": "slots",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "e8c47c76d095c1730d9e3da727a7416e52b678bc185d1a495a96dbfe8e1997ec",
+   "clipped": false
+  },
+  {
+   "file": "index.top.station.png",
+   "pass": "index",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "34e3ca3f208237d1b88c7df921b36fbcd2a92dd7c2fafab519747f737762ae22",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.top.station.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "cbc0bac50e9f0f29b8118aef3a87670bc91583e52cf3110c54ecb617f0d67703",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.top.station.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "fa33f9392db8929514a8df954d4c80e661045ce7ee6ca352b6c2a23c05fe91fb",
+   "clipped": false
+  },
+  {
+   "file": "shaded.top.large.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "421826ccafae6b4c3a7dce43bbbf86ee2108424e40b1c08657352c8141752d96",
+   "clipped": false
+  },
+  {
+   "file": "slots.top.large.png",
+   "pass": "slots",
+   "field": null,
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "bef0bc8f4fe4013156af8afb7148cbf7a3676c3f734316aa43431c44b9144f4c",
+   "clipped": false
+  },
+  {
+   "file": "index.top.large.png",
+   "pass": "index",
+   "field": null,
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "b9188d9f13ab1e3fe29fe7fb4fd8825865948e8537ed21a8d3ff4b792dd45dc8",
+   "clipped": false
+  },
+  {
+   "file": "markings-coat.top.large.png",
+   "pass": "markings",
+   "field": "coat",
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "90980b7e7820ab7f35873bd30b455094877a327ca356b835cee4043652ff16a6",
+   "clipped": false
+  },
+  {
+   "file": "markings-belly.top.large.png",
+   "pass": "markings",
+   "field": "belly",
+   "view": "top",
+   "size": [
+    600,
+    620
+   ],
+   "sha256": "8208aaf99ae7097efa280146b563b149817ca4ead62ff273bf065c7e61c837c9",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.front.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "front",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "d9ea665f25a9cfca8442d2a06c34ccae8ef7e6e963d0a6de3593e12e01b477c0",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.front.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "front",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "4f3284a8b1c87b4037cf00e7c7f5e0941a964db0122fe426e7dad8d56df7854b",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.front.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "front",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "f3725bfcaf5e8a0862be00c5dbb077874d35746f62ad53b0c39b424054e1481c",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.side.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "side",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "8f6b6df94219750eb9f651feddb6f443f57cd74bc41b90f620d4f6009846b37c",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.side.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "side",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "99a6ab8771689ae931499f525988e3e85ae3287bcb5c033ab0fbe399d47227dc",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.side.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "side",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "fb13fd6e2c4c32655d888e56575069f179fb9caa13eb49b9b0f8ca87553b8f76",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.three-quarter.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "23c28829be37064d4cd240fa5d0a7d1f712cac26fae911ff562ba4dc826b8116",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.three-quarter.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "3a2c15301a221d91aec347c8efa7af209631aaf578a9c573116f00d8b72c66a6",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.three-quarter.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "217e00498861b0ee212df72a6a4e403b43337df2aa77777f85edb5c82bc9abfc",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.top.tile.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "top",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "0dff130e6efd3d6a43afdfad8b894cb9f7b763cb1befe5bc24219061cd44d5d8",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.top.companion.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "top",
+   "size": [
+    280,
+    300
+   ],
+   "sha256": "28c6ea75a8840171d333672b75d45a8c8d043752d330b7db1d60ab9075bd1106",
+   "clipped": false
+  },
+  {
+   "file": "silhouette.top.station.png",
+   "pass": "silhouette",
+   "field": null,
+   "view": "top",
+   "size": [
+    300,
+    310
+   ],
+   "sha256": "b2bad12f533faed12a78a2af79827a057d5369506f0ea3f591274f7d69722902",
+   "clipped": false
+  },
+  {
+   "file": "shaded.three-quarter.tile.png",
+   "pass": "shaded",
+   "field": null,
+   "view": "three-quarter",
+   "size": [
+    48,
+    48
+   ],
+   "sha256": "ca67ed56d996bcfc4618fd5626fe3f2243e6094a1ca90c420b0a9338578dcc3a",
+   "clipped": false
+  }
+ ],
+ "prompt": null,
+ "references": [],
+ "model": null,
+ "critique": null,
+ "signoff": null,
+ "supersedes": null,
+ "licence": "CC-BY-SA-4.0 (project-held rights); deterministic render, not a generated image",
+ "generated": false,
+ "genomeSha256": "44f5ef73fa71c33bdb2d030a5de046d63f39cf5713f4290fe2987e54d65660a5"
+}

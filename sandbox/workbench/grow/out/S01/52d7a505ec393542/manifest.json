@@ -1,0 +1,408 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 3,
+ "controlVariant": "blurred",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "adfb4877-023f-4b3c-adbb-89015c7924c6",
+     "status": "ok",
+     "seconds": 8.3,
+     "checks": {
+      "silhouetteIoU": 0.991,
+      "silhouetteIoUInPlace": 0.989,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 0.994,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 0.905,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.698,
+        "painted": 0.778,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.415,
+        "painted": 0.476,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.265,
+        "painted": 0.307,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.776,
+        "painted": 0.818,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.346,
+        "painted": 0.425,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#464f51",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.891,
+        "median": "#646e6e",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 0.826,
+        "median": "#5c6565",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.944,
+        "median": "#cebd9c",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.828,
+        "median": "#bfab8b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.921,
+        "median": "#b49e7f",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 17,
+      "slotAgreement": 0.935,
+      "passed": true
+     },
+     "responseId": "rBHHavm0Lae6sOIPup6HmAs",
+     "checksAsRun": {
+      "silhouetteIoU": 0.991,
+      "silhouetteIoUInPlace": 0.989,
+      "parts": {
+       "region-0": 1.0,
+       "head": 1.0,
+       "muzzle": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.698,
+        "painted": 0.778,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.415,
+        "painted": 0.476,
+        "ok": true
+       },
+       "muzzle": {
+        "drawn": 0.265,
+        "painted": 0.307,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.776,
+        "painted": 0.818,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.346,
+        "painted": 0.425,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#464f51",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.891,
+        "median": "#646e6e",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@muzzle": {
+        "agreement": 0.826,
+        "median": "#5c6565",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.944,
+        "median": "#cebd9c",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.828,
+        "median": "#bfab8b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.921,
+        "median": "#b49e7f",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 17,
+      "slotAgreement": 0.935,
+      "passed": true
+     }
+    }
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:09:59Z"
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "99ea6c91-3f4f-4bb8-8be3-9a7b47965017",
+     "status": "ok",
+     "seconds": 12.2,
+     "checks": {
+      "silhouetteIoU": 0.98,
+      "silhouetteIoUInPlace": 0.975,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "muzzle": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "leg-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.627,
+        "painted": 0.646,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.395,
+        "painted": 0.462,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.283,
+        "painted": 0.322,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.287,
+        "painted": 0.328,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.981,
+        "median": "#424d4f",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.829,
+        "median": "#495454",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.964,
+        "median": "#d2c2a1",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.953,
+        "median": "#beab8b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.837,
+        "median": "#bfab8b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 18,
+      "slotAgreement": 0.916,
+      "passed": true
+     },
+     "responseId": "xhHHao22Ev-_39IPgoDIkA8",
+     "checksAsRun": {
+      "silhouetteIoU": 0.98,
+      "silhouetteIoUInPlace": 0.975,
+      "parts": {
+       "region-0": 1.0,
+       "head": 1.0,
+       "muzzle": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.627,
+        "painted": 0.646,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.395,
+        "painted": 0.462,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.283,
+        "painted": 0.322,
+        "ok": true
+       },
+       "leg-1": {
+        "drawn": 0.287,
+        "painted": 0.328,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.981,
+        "median": "#424d4f",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.829,
+        "median": "#495454",
+        "nearest": "#465459",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.964,
+        "median": "#d2c2a1",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second@leg-1": {
+        "agreement": 0.953,
+        "median": "#beab8b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "belly@region-0": {
+        "agreement": 0.837,
+        "median": "#bfab8b",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.0,
+      "missing": 0.0,
+      "bandTolerancePx": 18,
+      "slotAgreement": 0.916,
+      "passed": true
+     }
+    }
+   ],
+   "servedBy": "attempt 1",
+   "rechecked": "2026-10-08T04:10:09Z"
+  }
+ },
+ "species": "S01",
+ "name": "Loika",
+ "level": "individual",
+ "genomeDigest": "S01-b3748d39",
+ "genomeSha256": "52d7a505ec393542d472c5f28ab8dc8cf58a7b740348946742b532926dada9fa",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Loika: 1 body region (B1), a head, a snout, 2 eyes, 4 legs; skin; plantigrade, fused head. Coat: markings plain. Face: crown bare head; eye rings between. Proportions: a big head, the head carried high, a short muzzle, a tall crest, short legs, stout legs, broad feet, a stout build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:44:43Z",
+ "outputs": {
+  "station-portrait-600x620.png": "269bf77bd2a1f743e7ea58a09e3bf825acd15423219db79448c165e53bd5e3a8",
+  "station-portrait-300x310.png": "a2a19e2419cf6727b1d59d9296cc9dcb394c69bc28bcb62c19e15e071a9bcf27",
+  "station-side-600x620.png": "125d2ebbf8622c2162f4d28c07fa018277038e4ed7404ddcd5695b7a1dd2e7c2",
+  "station-side-300x310.png": "1bdad0b17e96ab879767b30a7a3ed409f9b4f5adc21b63891fc41141047b078f",
+  "companion-280x300.png": "ebd786aa2a8918b00050b0db246e06fb7f4310354502c87a33d18aa194989fe1",
+  "token-48.png": "8871fb82c91c4df1f6617ebd79ab73081561b765ebdeb653ae1eac9e01e2b001"
+ },
+ "calls": 2,
+ "seconds": 20.5,
+ "finishedAt": "2026-10-08T03:45:27Z",
+ "rechecked": "2026-10-08T04:10:10Z",
+ "checksVersion": "mb-grow-checks/3"
+}

@@ -1,0 +1,278 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 4,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "plain",
+   "attempts": [
+    {
+     "callId": "b01d57d0-7535-4a5e-b986-f776fce728bc",
+     "step": 1,
+     "status": "ok",
+     "seconds": 14.3,
+     "checks": {
+      "silhouetteIoU": 0.369,
+      "silhouetteIoUInPlace": 0.36,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.954
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.738
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 0.346
+       },
+       "head": {
+        "span": 0.114,
+        "coverage": 0.021
+       },
+       "beak": {
+        "span": 0.0,
+        "coverage": 0.0
+       },
+       "leg-0": {
+        "span": 0.749,
+        "coverage": 0.22
+       },
+       "flap": {
+        "span": 0.732,
+        "coverage": 0.698
+       },
+       "tail": {
+        "span": 0.328,
+        "coverage": 0.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.424,
+        "painted": 0.501,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.439,
+        "painted": 0.515,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.386,
+        "painted": 0.463,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.334,
+        "painted": 0.246,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.439,
+        "painted": 0.406,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.605,
+        "median": "#4d7ca0",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.522,
+        "median": "#597c7e",
+        "nearest": "#f1eddc",
+        "ok": true
+       },
+       "body@neck": {
+        "agreement": 0.455,
+        "median": "#967c9c",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.45,
+        "median": "#918965",
+        "nearest": "#f1eddc",
+        "ok": false
+       },
+       "second@leg-0": {
+        "agreement": 0.183,
+        "median": "#285163",
+        "nearest": "#4d7ed4",
+        "ok": false
+       }
+      },
+      "reasons": [
+       "paint lies well outside the drawn body (18% of the body beyond a 22 px band): a part was added, moved or re-laid",
+       "part of the drawn body is left unpainted (25% of the body inside a 22 px band): a part was dropped or moved",
+       "a part is missing or moved from where the part map puts it: head (painted along 11% of its length), beak (painted along 0% of its length), tail (painted along 33% of its length)",
+       "a pigment slot is painted in another slot's colour: the body slot on the head (painted #918965, the colour of eyeRim), the second slot on the leg-0 (painted #285163, the colour of body)"
+      ],
+      "outside": 0.176,
+      "missing": 0.255,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.543,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "myXHau3YDouo_uMP4JXL0Ag"
+    },
+    {
+     "callId": "9a66f3e8-44cd-44ad-aaf3-15cdf921a76f",
+     "step": 1,
+     "status": "ok",
+     "seconds": 13.6,
+     "checks": {
+      "silhouetteIoU": 0.596,
+      "silhouetteIoUInPlace": 0.532,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.984
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 0.553
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 0.8
+       },
+       "head": {
+        "span": 0.886,
+        "coverage": 0.579
+       },
+       "beak": {
+        "span": 0.448,
+        "coverage": 0.186
+       },
+       "leg-0": {
+        "span": 0.823,
+        "coverage": 0.458
+       },
+       "flap": {
+        "span": 0.953,
+        "coverage": 0.635
+       },
+       "tail": {
+        "span": 0.823,
+        "coverage": 0.392
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.424,
+        "painted": 0.503,
+        "ok": true
+       },
+       "region-1": {
+        "drawn": 0.439,
+        "painted": 0.49,
+        "ok": true
+       },
+       "neck": {
+        "drawn": 0.386,
+        "painted": 0.467,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.334,
+        "painted": 0.331,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.439,
+        "painted": 0.456,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.941,
+        "median": "#4d7cce",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@region-1": {
+        "agreement": 0.939,
+        "median": "#4c7bcc",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@neck": {
+        "agreement": 0.894,
+        "median": "#4a79c9",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.946,
+        "median": "#4b7acd",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.817,
+        "median": "#ecc89b",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "part of the drawn body is left unpainted (12% of the body inside a 22 px band): a part was dropped or moved",
+       "a part is missing or moved from where the part map puts it: beak (painted along 45% of its length)"
+      ],
+      "outside": 0.037,
+      "missing": 0.123,
+      "bandTolerancePx": 22,
+      "slotAgreement": 0.922,
+      "passed": false,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "0SXHatbKG8_3jrEP44a5gQE"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-634bd252",
+ "genomeSha256": "fdd23767e0ca6a2aa6aa377fba8d223447589e012afed8dccb97fb15f94cd943",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head large; beak long; crest tall; crown tall; eyes huge. Shape: waist thick; back line arched; hind body full; body pear; build wide. Legs & tail: tail curl curls up; tail long, thick. Proportions: a large body, a big head, the head carried high, a long beak, a tall crest, a tall feather crest, long legs, broad feet, a thick waist, an arched back, a long tail, the tail curled up, wide flaps.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T05:09:45Z",
+ "outputs": {
+  "station-portrait-600x620.png": "a4ce26aaad2642a718fe83c3c3f917852b8fa1346ac7420f9326d8d33ee82c83",
+  "station-portrait-300x310.png": "95665d286c094c48ceee3082aeb6ad2c61370a029bc1312968c03c35b86ba2ae",
+  "companion-280x300.png": "48db1319a3aaf1764e8b9e98c1e26c0400fd7b99fe6f47133f1ed5b75b841e4b",
+  "token-48.png": "9f88abe27a81f4c3a2dfdc3129ce43bebc931e373d5a510cfc32e62c51e6c1e0"
+ },
+ "calls": 2,
+ "seconds": 27.9,
+ "finishedAt": "2026-10-08T05:11:27Z"
+}

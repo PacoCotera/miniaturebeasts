@@ -1,0 +1,164 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "6B-contact-shadow",
+  "name": "Contact shadow",
+  "change": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 2,
+ "changed": "Step 2, the cast shadow ban becomes a small soft contact shadow under the feet: tests whether grounding the creature, as Pip is grounded, adds weight without failing the band check.",
+ "step1": {
+  "shared": "v5's drawing"
+ },
+ "step2": {
+  "callId": "d4e540cc-bdb2-4de9-b17a-71114cfe2cf8",
+  "status": "ok",
+  "seconds": 18.6,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.363,
+   "silhouetteIoUInPlace": 0.267,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.761
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.524
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.944
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.52
+    },
+    "beak": {
+     "span": 0.117,
+     "coverage": 0.0
+    },
+    "crown": {
+     "span": 0.547,
+     "coverage": 0.486
+    },
+    "leg-0": {
+     "span": 0.712,
+     "coverage": 0.339
+    },
+    "flap": {
+     "span": 0.876,
+     "coverage": 0.851
+    },
+    "tail": {
+     "span": 0.539,
+     "coverage": 0.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.468,
+     "ok": false
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.365,
+     "ok": false
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.446,
+     "ok": false
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.468,
+     "ok": false
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.209,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.456,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.68,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.935,
+     "median": "#253869",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.819,
+     "median": "#2d548d",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.769,
+     "median": "#2d5289",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.818,
+     "median": "#3a5e98",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.065,
+     "median": "#c5b49c",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.551,
+     "median": "#8e727e",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 1.0,
+     "median": "#ccb18a",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "paint lies well outside the drawn body (33% of the body beyond a 20 px band): a part was added, moved or re-laid",
+    "a part is missing or moved from where the part map puts it: beak (painted along 12% of its length), crown (painted along 55% of its length), tail (painted along 54% of its length)",
+    "the proportions are off: the region-0 is larger than drawn (0.47 of the body against 0.30), the region-1 is larger than drawn (0.36 of the body against 0.21), the neck is larger than drawn (0.45 of the body against 0.28), the head is larger than drawn (0.47 of the body against 0.31)",
+    "a pigment slot is painted in another slot's colour: the body slot on the crown (painted #c5b49c, the colour of second)"
+   ],
+   "outside": 0.327,
+   "missing": 0.068,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.793,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

@@ -1,0 +1,106 @@
+// The live game: the save as loaded (SV, the Companion's part, read only) and the Station's part (ST),
+// the developer settings, the focus state per screen (UI, never saved) and the presentation events
+// the renderer reads (FX). Screens import this; the rules live in state.mjs.
+import * as S from "./state.mjs";
+import { clock } from "./pixels.mjs";
+import { createTimeline } from "../../ui/timeline.mjs";
+import { createFramePresenter } from "./present.mjs";
+import { createFocus } from "../../ui/focus.mjs";
+
+export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
+export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
+export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
+  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 },
+  cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, meet: null, lastInput: 0, idle: false };
+// The timeline: presentation events on its own clock and the input holds of the screens on the layer.
+export const TL = createTimeline();
+// What the screen layer needs from the page's boot: the spec files, the components' context and the frame's presenter.
+export const SPECS = {}, LAYER = { ctx: null, presenter: createFramePresenter() };
+export const IDLE_MS = 60000, READ_MS = 2000, ID_MS = 2000;
+
+const listeners = new Set();
+export const onChange = (fn) => listeners.add(fn);
+const changed = () => { for (const fn of listeners) fn(); };
+export function msg(t) { FX.msg = t; FX.msgAt = clock.now; TL.play({ kind: "plate", target: "msg", ms: 4000 }); }   // the screens on the layer read the plate's time from the timeline
+export const now = () => clock.now;
+export const st = () => G.st;
+export const sv = () => G.sv;
+
+// --- the shared save ---
+export function readStored() {
+  try {
+    const raw = localStorage.getItem(S.SAVE_KEY);
+    if (raw) { const o = JSON.parse(raw); if (o && o.v === S.SAVE_V) return o; }
+  } catch { /* unreadable: a fresh Station */ }
+  return null;
+}
+function adopt(sv) {
+  if (!sv.st || sv.st.wid !== sv.wid) sv.st = S.freshSt(sv.wid, sv.turn || 0);   // a new world on the Companion: a fresh Station
+  const migrated = sv.st.schema !== S.ST_SCHEMA;
+  sv.st = S.normalize(S.migrate(sv.st, Date.now(), sv));
+  G.sv = sv; G.st = sv.st;
+  if (S.docked(G.st)) S.mergeCare(G.st, G.sv);   // docked: the care the Companion earned since
+  if (migrated) save();
+}
+export function load() {
+  const o = readStored();
+  if (!o) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; return; }
+  adopt(o);
+}
+// Re-read before writing and keep the Companion's part as stored; only `st` is ours.
+export function save() {
+  if (G.resetting) return;
+  try {
+    const cur = readStored();
+    if (cur && cur.wid === G.st.wid) G.sv = cur;
+    else if (cur && cur.wid !== G.st.wid) { G.sv = cur; G.st = S.freshSt(cur.wid, cur.turn || 0); }
+    G.sv.st = G.st; S.normalize(G.st); S.trimCarryReqs(G.st, G.sv); G.st.at = Date.now();
+    localStorage.setItem(S.SAVE_KEY, JSON.stringify(G.sv));
+  } catch { /* storage unavailable: keep playing in memory */ }
+  changed();
+}
+// The other page wrote the save: take its part, keep ours. A new world or a reset starts a fresh Station.
+export function storageChanged() {
+  const cur = readStored();
+  if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; goScreen("home"); changed(); return; }
+  if (cur.wid !== G.st.wid) { adopt(cur); goScreen("home"); save(); return; }
+  const mine = G.st; G.sv = cur; G.sv.st = mine;
+  if (S.docked(mine)) S.mergeCare(mine, cur);   // docked: the care the Companion earned since
+  changed();
+}
+export function resetSave() {
+  G.resetting = true;
+  try { for (const k of [S.SAVE_KEY].concat(S.OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch { /* nothing to erase */ }
+}
+// --- developer settings, under their own key ---
+export function loadSettings() {
+  try { const o = JSON.parse(localStorage.getItem(S.DEV_KEY) || "null"); if (o && typeof o === "object") Object.assign(G.settings, o); } catch { /* defaults */ }
+  return G.settings;
+}
+export function saveSettings(patch) { Object.assign(G.settings, patch || {}); try { localStorage.setItem(S.DEV_KEY, JSON.stringify(G.settings)); } catch { /* in memory */ } changed(); }
+
+// --- screens ---
+const SCREENS = {};
+const screenListeners = new Set();
+export const onScreenChange = (fn) => screenListeners.add(fn);
+// A screen is a binding table on the face, never a drawing: registering one with a draw, nodes or faceNodes throws (the import guard checks the same, lvgl-switch.md §5.1).
+export const registerScreen = (name, screen) => { for (const k of ["draw", "nodes", "faceNodes"]) if (screen && k in screen) throw new Error(`registerScreen(${name}): ${k} is the removed JavaScript drawing layer; the face draws the screen`); SCREENS[name] = screen; };
+export const screenOf = (name) => SCREENS[name];
+export function goScreen(name) {
+  const fresh = UI.screen !== name; if (fresh) FX.transAt = clock.now;
+  UI.screen = name;
+  if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
+  if (SCREENS[name]?.enter) SCREENS[name].enter();
+  if (name === "habitat" && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
+}
+export const need = () => S.need(G.st, G.sv, G.settings, UI);
+export const lineFor = () => (UI.idle ? {} : SCREENS[UI.screen].line());
+// Convenience views over the state for the screens.
+export const docked = () => S.docked(G.st);
+export const hasWorld = () => S.hasWorld(G.sv) || !!G.st.devWorld;
+export const bayCrates = () => S.bayCrates(G.st, G.sv);
+export const carriedIds = () => S.carriedIds(G.st, G.sv);
+export const projectCarried = () => S.projectCarried(G.st, G.sv);
+export const homeMibis = () => S.homeMibis(G.st, G.sv);
+export const mibiById = (id) => S.mibiById(G.st, id);
+export const podById = (id) => S.podById(G.st, id);

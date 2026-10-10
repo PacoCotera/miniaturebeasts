@@ -1,0 +1,260 @@
+{
+ "note": "The frame as components/frame.mjs draws it (the JavaScript, through the node path of face-lvgl.mjs, on the WebAssembly face with the stand-in pictures of words.test.mjs and the face's own Inter widths): the props of each case and the framebuffer's hash. The words must draw the same pixels. Frozen: regenerated only when the frame spec or the stand-ins change. Retaken from the words on B4a-2 when the frame spec moved the notice and the way back (Vivarium): the old spec reproduced every hash, and the pixels that differ lie in the notice and way-back zone only. Retaken again on B4a-2 for the Station palette of ui-kit.md §2 (the Station's 14): each case drawn under the old and the new palette, and every old colour maps to one new colour, so only the colours changed.",
+ "cases": [
+  {
+   "name": "a plain screen",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Pod 1",
+      "need": null
+     },
+     "plate": {
+      "text": "",
+      "focal": null
+     }
+    }
+   },
+   "hash": "8f123891"
+  },
+  {
+   "name": "flashes, a big turn, the Companion away with a mibi",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 120,
+      "turnFlash": true,
+      "materials": {
+       "e": 0,
+       "d": 3,
+       "s": 99999
+      },
+      "flash": {
+       "e": true,
+       "s": true
+      },
+      "companion": {
+       "docked": false,
+       "withMibi": "kestrel"
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Pod 1",
+      "need": null
+     },
+     "plate": {
+      "text": "",
+      "focal": null
+     }
+    }
+   },
+   "hash": "65cb009f"
+  },
+  {
+   "name": "a long subject, a price too short for it, a notice, a long way back",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "library",
+      "title": "Library",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Hatch ⚡ 3",
+      "price": "⚡ 3 ◆ 12",
+      "short": true,
+      "subject": "A subject that is far too long to fit in the little room the context has between its two rules",
+      "need": "Not enough ❀",
+      "back": "A name far wider than the room"
+     },
+     "plate": {
+      "text": "",
+      "focal": null
+     }
+    }
+   },
+   "hash": "2d51fbec"
+  },
+  {
+   "name": "a dimmed action with a price",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read",
+      "dim": true,
+      "price": "◆ 4",
+      "need": null
+     },
+     "plate": {
+      "text": "",
+      "focal": null
+     }
+    }
+   },
+   "hash": "1e44028a"
+  },
+  {
+   "name": "a one-line message",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Pod 1",
+      "need": null
+     },
+     "plate": {
+      "text": "Saved.",
+      "focal": null
+     }
+    }
+   },
+   "hash": "80c3062f"
+  },
+  {
+   "name": "a message of three lines",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Pod 1",
+      "need": null
+     },
+     "plate": {
+      "text": "The incubator is warm and the egg is turning slowly in its cradle, which is a good sign for the hatch.",
+      "focal": null
+     }
+    }
+   },
+   "hash": "a1c10d43"
+  },
+  {
+   "name": "a message over the focal box goes to the top",
+   "props": {
+    "screen": "pods",
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 5,
+       "d": 40,
+       "s": 7
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Pod 1",
+      "need": null
+     },
+     "plate": {
+      "text": "Something a little longer than a line, with a ⚡ in it and more words after, for the wrap.",
+      "focal": [
+       200,
+       400,
+       400,
+       150
+      ]
+     }
+    }
+   },
+   "hash": "2fa683af"
+  }
+ ]
+}

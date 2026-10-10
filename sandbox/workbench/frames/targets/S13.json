@@ -1,0 +1,26 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S13",
+ "name": "Oskol",
+ "resembles": "a beetle",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a domed oval body under its wing cases, a small head with antennae, six short legs",
+ "shapes": [
+  {"ellipse":[50,70,28,16],"part":"shell"},
+  {"ellipse":[50,78,24,6],"part":"body"},
+  {"ellipse":[78,74,8,6],"part":"head"},
+  {"capsule":[84,70,92,60,1],"part":"antenna"},
+  {"capsule":[84,72,94,66,1],"part":"antenna"},
+  {"capsule":[62,82,68,92,2.5],"part":"leg"},
+  {"capsule":[50,84,50,92,2.5],"part":"leg"},
+  {"capsule":[36,82,30,92,2.5],"part":"leg"},
+  {"capsule":[66,82,72,92,2.5],"part":"leg"},
+  {"capsule":[54,84,54,92,2.5],"part":"leg"},
+  {"capsule":[40,82,34,92,2.5],"part":"leg"}
+ ]
+}

@@ -1,0 +1,302 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "7D-naturalist-finish",
+  "name": "Naturalist's finish, not a vinyl collectible",
+  "change": "Both steps, the Finish line replaced: \"a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm\" (step 2 keeps the never-list). The owner's warning: cute by charm and craft as Pip is, never cartoon simplification, sticker faces, toy-like rendering or nursery colours; the lab synthesises it from v7.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Both steps, the Finish line replaced: \"a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm\" (step 2 keeps the never-list). The owner's warning: cute by charm and craft as Pip is, never cartoon simplification, sticker faces, toy-like rendering or nursery colours; the lab synthesises it from v7.",
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S09-33855bb1",
+  "controls": "out/S09/09e30f12feee02c6"
+ },
+ "step1": {
+  "callId": "387a0f68-79d3-43cd-bc3e-e39d16d6db91",
+  "status": "ok",
+  "seconds": 30.5,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.735,
+   "silhouetteIoUInPlace": 0.751,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.983
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "beak": {
+     "span": 0.987,
+     "coverage": 0.946
+    },
+    "crown": {
+     "span": 0.853,
+     "coverage": 0.704
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.993
+    },
+    "flap": {
+     "span": 0.99,
+     "coverage": 0.892
+    },
+    "tail": {
+     "span": 1.0,
+     "coverage": 1.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.36,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.291,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.356,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.384,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.307,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.654,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.991,
+     "median": "#4b70b3",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.932,
+     "median": "#6088cb",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.985,
+     "median": "#507fcf",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.958,
+     "median": "#537fd0",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.948,
+     "median": "#4a6fb2",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.83,
+     "median": "#d2b592",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.844,
+     "median": "#cba87f",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.055,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.935,
+   "passed": true,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "6422bfeb-26d7-41fd-b2bd-7d888e036aa0",
+  "status": "ok",
+  "seconds": 32.0,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.734,
+   "silhouetteIoUInPlace": 0.746,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.98
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.997
+    },
+    "beak": {
+     "span": 0.974,
+     "coverage": 0.95
+    },
+    "crown": {
+     "span": 0.853,
+     "coverage": 0.714
+    },
+    "leg-0": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "flap": {
+     "span": 0.99,
+     "coverage": 0.914
+    },
+    "tail": {
+     "span": 1.0,
+     "coverage": 1.0
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.358,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.291,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.356,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.384,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.307,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.388,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.654,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.994,
+     "median": "#3e5890",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.957,
+     "median": "#5979b4",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@neck": {
+     "agreement": 0.988,
+     "median": "#466eb9",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.955,
+     "median": "#4b6db7",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.962,
+     "median": "#415f98",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.828,
+     "median": "#bd9a7c",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.86,
+     "median": "#bd9a71",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.06,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.938,
+   "passed": true,
+   "gated": false
+  }
+ }
+}

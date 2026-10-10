@@ -1,0 +1,26 @@
+{
+ "$comment": "The props of Cargo (lvgl-switch.md §2.1): what views/cargo-props.mjs gives the face, beside the frame's. Props name what, never where: states, counts, strings, asset ids, which crate and which place of it a pod came from, and (with reduced motion) the step the host has staged; no rectangle, no measure, no layout rule, no colour (the words read those from cargo.json and the palette). An asset id names a picture the host has made ready (the view's `requests` list them); a picture the face does not hold draws nothing. Checked by prototypes/station/tests/cargo-props.test.mjs (a JSON-Schema subset: type, properties, required, additionalProperties, items, enum).",
+ "$defs": {
+  "well": { "type": "object", "required": ["well", "pod", "from"], "additionalProperties": false, "properties": { "well": { "type": "string" }, "pod": { "type": "string" }, "from": { "type": ["object", "null"], "required": ["crate", "order"], "additionalProperties": false, "properties": { "crate": { "type": "integer" }, "order": { "type": "integer" } } } } },
+  "crate": { "type": "object", "required": ["ribbon", "sealed", "opening", "open", "pods"], "additionalProperties": false, "properties": { "ribbon": { "type": "string" }, "sealed": { "type": "string" }, "opening": { "type": "string" }, "open": { "type": "string" }, "pods": { "type": "array", "items": { "type": "object", "required": ["picture", "well"], "additionalProperties": false, "properties": { "picture": { "type": "string" }, "well": { "type": "integer" } } } } } },
+  "row": { "type": "object", "required": ["lead", "pods", "text", "reach"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "pods": { "type": "integer" }, "text": { "type": "string" }, "reach": { "type": "string" } } }
+ },
+ "type": "object", "required": ["state", "regions", "focus"], "additionalProperties": false,
+ "properties": {
+  "state": { "enum": ["bay", "opening", "report"] },
+  "regions": { "type": "object", "required": ["rack"], "additionalProperties": false, "properties": {
+   "rack": { "type": "object", "required": ["wells"], "additionalProperties": false, "properties": { "wells": { "type": "array", "items": { "$ref": "well" } } } },
+   "bay": { "type": "object", "required": ["state", "lid"], "additionalProperties": false, "properties": { "state": { "enum": ["open", "shut"] }, "lid": { "type": "string" } } },
+   "crates": { "type": "object", "required": ["places"], "additionalProperties": false, "properties": { "places": { "type": "array", "items": { "type": "string" } } } },
+   "waiting": { "type": "string" },
+   "opening": { "type": "object", "required": ["crate", "at", "crates"], "additionalProperties": false, "properties": { "crate": { "type": "integer" }, "at": { "type": "integer" }, "crates": { "type": "array", "items": { "$ref": "crate" } } } },
+   "report": { "type": "object", "required": ["heading", "podIcon", "shieldIcon", "crates", "gathered", "probe", "world"], "additionalProperties": false, "properties": {
+    "heading": { "type": "string" }, "podIcon": { "type": "string" }, "shieldIcon": { "type": "string" },
+    "crates": { "type": "array", "items": { "$ref": "row" } },
+    "gathered": { "type": "object", "required": ["lead", "e", "d", "s", "top"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "e": { "type": "string" }, "d": { "type": "string" }, "s": { "type": "string" }, "top": { "type": "string" } } },
+    "probe": { "type": ["object", "null"], "required": ["lead", "plates", "text"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "plates": { "type": "integer" }, "text": { "type": "string" } } },
+    "world": { "type": ["object", "null"], "required": ["lead", "lines"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "lines": { "type": "array", "items": { "type": "string" } } } } } }
+  } },
+  "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "enum": ["room"] }, "targets": { "type": "array" } } }
+ }
+}

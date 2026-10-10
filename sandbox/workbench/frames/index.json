@@ -1,0 +1,207 @@
+{
+ "schema": "mb-frame-registry/1",
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 9,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "species": [
+  {
+   "id": "S01",
+   "name": "Loika",
+   "clan": "C01",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "starter",
+   "file": "species-S01.json",
+   "open": 5,
+   "traits": 5,
+   "carried": 50
+  },
+  {
+   "id": "S02",
+   "name": "Untuva",
+   "clan": "C02",
+   "plan": "R1·flaps",
+   "rig": "R1",
+   "tier": "early",
+   "file": "species-S02.json",
+   "open": 21,
+   "traits": 13,
+   "carried": 43
+  },
+  {
+   "id": "S03",
+   "name": "Tuikis",
+   "clan": "C03",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "mid",
+   "file": "species-S03.json",
+   "open": 40,
+   "traits": 25,
+   "carried": 60
+  },
+  {
+   "id": "S04",
+   "name": "Hiljan",
+   "clan": "C04",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "starter",
+   "file": "species-S04.json",
+   "open": 8,
+   "traits": 5,
+   "carried": 63
+  },
+  {
+   "id": "S05",
+   "name": "Tepor",
+   "clan": "C05",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "early",
+   "file": "species-S05.json",
+   "open": 13,
+   "traits": 9,
+   "carried": 57
+  },
+  {
+   "id": "S06",
+   "name": "Pesko",
+   "clan": "C06",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "early",
+   "file": "species-S06.json",
+   "open": 15,
+   "traits": 10,
+   "carried": 59
+  },
+  {
+   "id": "S07",
+   "name": "Azkon",
+   "clan": "C07",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "mid",
+   "file": "species-S07.json",
+   "open": 26,
+   "traits": 17,
+   "carried": 48
+  },
+  {
+   "id": "S08",
+   "name": "Rupar",
+   "clan": "C08",
+   "plan": "B2·L4",
+   "rig": "B2",
+   "tier": "mid",
+   "file": "species-S08.json",
+   "open": 22,
+   "traits": 15,
+   "carried": 58
+  },
+  {
+   "id": "S09",
+   "name": "Belatz",
+   "clan": "C09",
+   "plan": "B2·L2·flaps",
+   "rig": "B2",
+   "tier": "late",
+   "file": "species-S09.json",
+   "open": 36,
+   "traits": 27,
+   "carried": 61
+  },
+  {
+   "id": "S10",
+   "name": "Igara",
+   "clan": "C10",
+   "plan": "B3·L4",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-S10.json",
+   "open": 19,
+   "traits": 14,
+   "carried": 56
+  },
+  {
+   "id": "S11",
+   "name": "Kilpo",
+   "clan": "C11",
+   "plan": "B1·L4",
+   "rig": "B1",
+   "tier": "late",
+   "file": "species-S11.json",
+   "open": 26,
+   "traits": 19,
+   "carried": 43
+  },
+  {
+   "id": "S12",
+   "name": "Peplos",
+   "clan": "C12",
+   "plan": "B3·L6·flaps",
+   "rig": "B3",
+   "tier": "early",
+   "file": "species-S12.json",
+   "open": 7,
+   "traits": 7,
+   "carried": 49
+  },
+  {
+   "id": "S13",
+   "name": "Oskol",
+   "clan": "C13",
+   "plan": "B3·L6",
+   "rig": "B3",
+   "tier": "mid",
+   "file": "species-S13.json",
+   "open": 18,
+   "traits": 12,
+   "carried": 47
+  },
+  {
+   "id": "S14",
+   "name": "Usvel",
+   "clan": "C14",
+   "plan": "B3",
+   "rig": "B3",
+   "tier": "early",
+   "file": "species-S14.json",
+   "open": 11,
+   "traits": 9,
+   "carried": 35
+  },
+  {
+   "id": "S15",
+   "name": "Lehten",
+   "clan": "C15",
+   "plan": "Rfan2·rays",
+   "rig": "Rfan2",
+   "tier": "late",
+   "file": "species-S15.json",
+   "open": 26,
+   "traits": 18,
+   "carried": 39
+  },
+  {
+   "id": "S16",
+   "name": "Blikur",
+   "clan": "C16",
+   "plan": "Bfan3",
+   "rig": "Bfan",
+   "tier": "late",
+   "file": "species-S16.json",
+   "open": 24,
+   "traits": 18,
+   "carried": 35
+  }
+ ]
+}

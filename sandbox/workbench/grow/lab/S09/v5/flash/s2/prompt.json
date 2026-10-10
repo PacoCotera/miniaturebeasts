@@ -1,0 +1,301 @@
+{
+ "species": "S09",
+ "variant": {
+  "id": "v5",
+  "name": "v5 baseline",
+  "change": "The v5 art direction, species notes and description template.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3.1-flash-image",
+ "sample": 2,
+ "changed": "The v5 art direction, species notes and description template.",
+ "step1": {
+  "callId": "f40361b0-1599-47a8-82f8-508b0465a349",
+  "status": "ok",
+  "seconds": 7.8,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.591,
+   "silhouetteIoUInPlace": 0.603,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.974
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.992
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.96
+    },
+    "beak": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "crown": {
+     "span": 0.567,
+     "coverage": 0.004
+    },
+    "leg-0": {
+     "span": 0.949,
+     "coverage": 0.383
+    },
+    "flap": {
+     "span": 0.987,
+     "coverage": 0.99
+    },
+    "tail": {
+     "span": 0.951,
+     "coverage": 0.93
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.391,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.299,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.369,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.397,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.342,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.383,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.678,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.92,
+     "median": "#4066b2",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.01,
+     "median": "#fceaa9",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.939,
+     "median": "#4f7ed1",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.973,
+     "median": "#4f7dd1",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@crown": {
+     "agreement": 0.0,
+     "median": "#ede9e6",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "second@leg-0": {
+     "agreement": 0.813,
+     "median": "#c2a482",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.107,
+     "median": "#4c78bf",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a part is missing or moved from where the part map puts it: crown (painted along 57% of its length)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #fceaa9, the colour of second), the body slot on the crown (painted #ede9e6, the colour of second), the second slot on the flap (painted #4c78bf, the colour of body)"
+   ],
+   "outside": 0.074,
+   "missing": 0.001,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.79,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "febe444f-1058-408c-bc57-d81b4dd6596c",
+  "status": "ok",
+  "seconds": 9.1,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.589,
+   "silhouetteIoUInPlace": 0.603,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.972
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "neck": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.959
+    },
+    "beak": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "crown": {
+     "span": 0.56,
+     "coverage": 0.002
+    },
+    "leg-0": {
+     "span": 0.955,
+     "coverage": 0.37
+    },
+    "flap": {
+     "span": 0.994,
+     "coverage": 0.99
+    },
+    "tail": {
+     "span": 0.951,
+     "coverage": 0.975
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.299,
+     "painted": 0.39,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.213,
+     "painted": 0.299,
+     "ok": true
+    },
+    "neck": {
+     "drawn": 0.278,
+     "painted": 0.368,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.305,
+     "painted": 0.396,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.295,
+     "painted": 0.333,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.348,
+     "painted": 0.384,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.62,
+     "painted": 0.679,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.923,
+     "median": "#395686",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.011,
+     "median": "#e2c685",
+     "nearest": "#fff0b8",
+     "ok": false
+    },
+    "body@neck": {
+     "agreement": 0.94,
+     "median": "#5175ab",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.968,
+     "median": "#4e72ab",
+     "nearest": "#4d7ed4",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.79,
+     "median": "#9c7d6d",
+     "nearest": "#fff0b8",
+     "ok": true
+    },
+    "second@flap": {
+     "agreement": 0.106,
+     "median": "#5377a8",
+     "nearest": "#4d7ed4",
+     "ok": false
+    }
+   },
+   "reasons": [
+    "a part is missing or moved from where the part map puts it: crown (painted along 56% of its length)",
+    "a pigment slot is painted in another slot's colour: the body slot on the region-1 (painted #e2c685, the colour of second), the second slot on the flap (painted #5377a8, the colour of body)"
+   ],
+   "outside": 0.074,
+   "missing": 0.001,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.787,
+   "passed": false,
+   "gated": false
+  }
+ }
+}

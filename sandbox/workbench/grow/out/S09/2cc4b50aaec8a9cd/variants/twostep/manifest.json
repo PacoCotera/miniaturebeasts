@@ -1,0 +1,232 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 4,
+ "controlVariant": "twostep",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "68924eca-f7e8-4784-aaaf-98fa9c5ddadd",
+     "step": 1,
+     "status": "ok",
+     "seconds": 12.2,
+     "checks": {
+      "silhouetteIoU": 0.876,
+      "silhouetteIoUInPlace": 0.865,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.981
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "flap": {
+        "span": 1.0,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.276,
+        "painted": 0.356,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.251,
+        "painted": 0.291,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.411,
+        "painted": 0.453,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.639,
+        "painted": 0.638,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.999,
+        "median": "#4f7ecc",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.923,
+        "median": "#4f7ecc",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.986,
+        "median": "#fae37a",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 0.998,
+        "median": "#fcecb0",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.007,
+      "missing": 0.003,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.983,
+      "passed": true,
+      "proportionTolerance": 0.25
+     },
+     "responseId": "WiXHaty1FqDP_uMPjrXT2Qg"
+    },
+    {
+     "callId": "0f6f12a9-2993-4798-b232-6152e83bad1e",
+     "step": 2,
+     "status": "ok",
+     "seconds": 9.8,
+     "checks": {
+      "silhouetteIoU": 0.892,
+      "silhouetteIoUInPlace": 0.901,
+      "parts": {
+       "region-0": {
+        "span": 1.0,
+        "coverage": 0.999
+       },
+       "region-1": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "neck": {
+        "span": 1.0,
+        "coverage": 1.0
+       },
+       "head": {
+        "span": 1.0,
+        "coverage": 0.998
+       },
+       "leg-0": {
+        "span": 1.0,
+        "coverage": 0.991
+       },
+       "flap": {
+        "span": 0.997,
+        "coverage": 1.0
+       }
+      },
+      "proportions": {
+       "region-0": {
+        "drawn": 0.276,
+        "painted": 0.357,
+        "ok": true
+       },
+       "head": {
+        "drawn": 0.251,
+        "painted": 0.291,
+        "ok": true
+       },
+       "leg-0": {
+        "drawn": 0.411,
+        "painted": 0.451,
+        "ok": true
+       },
+       "flap": {
+        "drawn": 0.639,
+        "painted": 0.637,
+        "ok": true
+       }
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.988,
+        "median": "#5173a8",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.883,
+        "median": "#5f7fa8",
+        "nearest": "#4d7ed4",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 1.0,
+        "median": "#d2b87d",
+        "nearest": "#fff0b8",
+        "ok": true
+       },
+       "second@flap": {
+        "agreement": 1.0,
+        "median": "#e1ca89",
+        "nearest": "#fff0b8",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "outside": 0.005,
+      "missing": 0.0,
+      "bandTolerancePx": 19,
+      "slotAgreement": 0.978,
+      "passed": true,
+      "gated": false
+     },
+     "responseId": "lSXHaq34JN6j_PUPoLax0Qc"
+    }
+   ],
+   "steps": []
+  }
+ },
+ "species": "S09",
+ "name": "Belatz",
+ "level": "individual",
+ "genomeDigest": "S09-acbe4880",
+ "genomeSha256": "2cc4b50aaec8a9cd748885397ff0376bcf77fe764240295692ba8512850766b5",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Belatz: 2 body regions (B2), a head, 2 eyes, a 2-leaf crest, 2 legs, 2 flaps, a tail; feathers; upright, neck head. Coat: colour cobalt; fluff between; sheen between; feathers between; fur reach body only; second colour butter. Face: head small; beak short; crest low; crown low; eyes small, close. Shape: waist thin; back line dipping; hind body small; body egg; build slim. Legs & tail: tail curl hangs; tail short, thin. Proportions: a large body, a small head, the head carried low, a short beak, small eyes, a low crest, a low feather crest, long legs, broad feet, a thin waist, a dipping back, a short tail, the tail hanging, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of this species' type specimen (the Belatz)",
+  "name": "species/S09/portrait-600x620.png"
+ },
+ "startedAt": "2026-10-08T05:08:40Z",
+ "outputs": {
+  "station-portrait-600x620.png": "53d30b4507309220d5f2c58fe1de203b679bd18808e9508310e60e2ebcffca15",
+  "station-portrait-300x310.png": "54ff640c35a75ad8971a83f8671d5c6f4fc9da9a69faebd541c8d4fa5dc151ef",
+  "companion-280x300.png": "21b6518d2a5c80cb8b90b3866e8a8c82d31dc16285525637c9159d8c0d64fd1d",
+  "token-48.png": "141c2c24a63caffa8190b206934880a34774a18c45d5d4f061479ab31e6341d5"
+ },
+ "calls": 2,
+ "seconds": 22.0,
+ "finishedAt": "2026-10-08T05:10:39Z"
+}

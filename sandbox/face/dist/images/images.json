@@ -1,0 +1,3757 @@
+{
+ "schema": "mb-images/1",
+ "images": {
+  "cell-outline-unread-128x160": {
+   "file": "cell-outline-unread-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "fe9be39ffbf595b765dee799126154b6dd8c67927ac55b63b3282d68039fbdf3",
+   "source": "99e0011a77bd07601d765eec5f85fee99b76e06934629609c27ea8f4040b5010"
+  },
+  "cross-gate-blend-16x16": {
+   "file": "cross-gate-blend-16x16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "5befaa72300a8177afb28efdc1482ce623e3dfc8bcb1d1511abd7ccdfe15404c",
+   "source": "ba04d424fcd53fb300a642358bb9b2da5096c778d5cb833af6c6d1a6dc765fdf"
+  },
+  "cross-gate-blend-16x16-settled": {
+   "file": "cross-gate-blend-16x16-settled.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "9c97e75a5ce28f37370f85acc96256b8120c00c8389083e8e9bff34a46979be4",
+   "source": "6a38827c43ab15d2a4cef30b3e2aa1654f29a5e1d5abcb71853493f42d635146"
+  },
+  "cross-gate-blend-8x8": {
+   "file": "cross-gate-blend-8x8.bin",
+   "w": 8,
+   "h": 8,
+   "bytes": 268,
+   "sha256": "27e9ab1900631530bad9ceae28e28bc54a30e633ae04d6693ad68f34fd0ff3ed",
+   "source": "8eb3aac297fd3ccb663795c9f4113b5940b5352540a0452c6a7a378ba702fff0"
+  },
+  "cross-gate-switch-16x16": {
+   "file": "cross-gate-switch-16x16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "15a44a71abf7493f1d39446d377357222a6aa474a73cee12ec4530a80fa55708",
+   "source": "2ca26eec73d550318e55f183ee2e09d1d1f3cdf4bc3088db4bdc4d49f3bfc70c"
+  },
+  "cross-gate-switch-16x16-settled": {
+   "file": "cross-gate-switch-16x16-settled.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "38d7eb8931c6e9734779aeb8f1bf36c04705623c597bc2ef5ab108b08b3a1dd4",
+   "source": "ecc83bbb84a7b7645d840e2fc20914b1874e06d8d44e07b7fb4421cc8a645c91"
+  },
+  "cross-gate-switch-8x8": {
+   "file": "cross-gate-switch-8x8.bin",
+   "w": 8,
+   "h": 8,
+   "bytes": 268,
+   "sha256": "b3cff674c3baef862698040126040603bf0df3533f15bc65ccc1b5fb77fc461a",
+   "source": "ae7d00efe7f256dfc2ad5e23512000388af472a1d49af3e8fb4117aa4f2e0973"
+  },
+  "cross-kin-surface-10x10": {
+   "file": "cross-kin-surface-10x10.bin",
+   "w": 10,
+   "h": 10,
+   "bytes": 412,
+   "sha256": "8090456d2fdde769dae1d8b70584c5797eef83d92dc93c8af745951719b9cd22",
+   "source": "d18f82132ca78262ae2e06b3016a51601e9340f3b7a38be567d493cf1b3b0a77"
+  },
+  "cross-tick-a-12x8": {
+   "file": "cross-tick-a-12x8.bin",
+   "w": 12,
+   "h": 8,
+   "bytes": 396,
+   "sha256": "3926b1501f2abbe8d0819415d705b739c970edb0bb16d4e3d24e13e4eed45b45",
+   "source": "4539ae6bfbbfa62972075265d67dd5536190d5f2e6bf098c7754f34904797847"
+  },
+  "cross-tick-a-6x4": {
+   "file": "cross-tick-a-6x4.bin",
+   "w": 6,
+   "h": 4,
+   "bytes": 108,
+   "sha256": "0391744c6764cc0a666f1d38a95abd803df49987e92941378e07e4fb4fdeff9e",
+   "source": "a9d07450926f58f081c7774aab0534b5f9d8229b5c0d80071bc28e6fdd581de1"
+  },
+  "cross-tick-b-12x8": {
+   "file": "cross-tick-b-12x8.bin",
+   "w": 12,
+   "h": 8,
+   "bytes": 396,
+   "sha256": "87f1d0b625800c8e8473cc45b18491c3ab32f9c9b286d7eaa9684e6f6a3f425f",
+   "source": "8cac5d2a5243f9afc8c3144199b39c394948e0f797bc8ad1d4cf3091e5bb9d91"
+  },
+  "cross-tick-b-6x4": {
+   "file": "cross-tick-b-6x4.bin",
+   "w": 6,
+   "h": 4,
+   "bytes": 108,
+   "sha256": "a4b267eaca746adfddc7c2380a5a2e105f88edc0763351a664c2ab54d18fdd18",
+   "source": "d89f93b591fae42be614c1616411570225f42fa45db618c1d955a3c7e5f0e424"
+  },
+  "cross-wish-hollow-12x12": {
+   "file": "cross-wish-hollow-12x12.bin",
+   "w": 12,
+   "h": 12,
+   "bytes": 588,
+   "sha256": "6c01a1da10f9385dc7c4e58095aeb21f939918f21811549311c98d244cdf308d",
+   "source": "bb19523ae540fcffa7061ac26c7bd92a87e5da2df33512d5f90c96409e93ca78"
+  },
+  "cross-wish-hollow-8x8": {
+   "file": "cross-wish-hollow-8x8.bin",
+   "w": 8,
+   "h": 8,
+   "bytes": 268,
+   "sha256": "db184d00dfb557159214ae47804a1ef679a6a44ee240c51381b96aa6c4dd245c",
+   "source": "280840fc28793fa7391aadceb530219af565dec0a846c4cd18b6fdc8fbba3f4c"
+  },
+  "cross-wish-lit-12x12": {
+   "file": "cross-wish-lit-12x12.bin",
+   "w": 12,
+   "h": 12,
+   "bytes": 588,
+   "sha256": "54e497644d0312f4f9010a0f134cf4d9f6f80d2dc9dc30fc62ac4b7c07c845d5",
+   "source": "a1eaf9cc0929aa603ed7e2bf88441124220263361ed605aceb7dffd17c67f628"
+  },
+  "cross-wish-lit-8x8": {
+   "file": "cross-wish-lit-8x8.bin",
+   "w": 8,
+   "h": 8,
+   "bytes": 268,
+   "sha256": "c63ad8c39538e2ea4d98240358e3f32bb2ff2ea4849af91f897bc08ab5a753d2",
+   "source": "ce5c2c4385a408ac220804eba86a3ddd6a59808f35a28314dc18d8b4abdacfe3"
+  },
+  "face-24-empty": {
+   "file": "face-24-empty.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "34e025b49fc8ab17db9817d6cb94d82eb52a90bbd215a90e2be5658fb54367ff",
+   "source": "31a32690a97334cef6e50fb1f88592b765a6a8f43e82672d2e3a653507d892e8"
+  },
+  "face-belatz-24": {
+   "file": "face-belatz-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "fb091b293518af9cf40e91c7265a1b5d2d308a88791de998d9d32bd00d3cbe47",
+   "source": "a6c5fd2a48598ce79f8a1227905c3482ee9e3fef47da73169b7fde7d644b845e"
+  },
+  "face-belatz-24-away": {
+   "file": "face-belatz-24-away.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "b6837a4925268f5a86c5392111077b786945e5ac0607d0bedbe56850e4ac66a8",
+   "source": "79ffd8beeb87e9abcc2516b9beba16f3a7f67b62fa7ace352b94881bf845f0ad"
+  },
+  "face-loika-24": {
+   "file": "face-loika-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "0348d21f09226d19ea6985b630c715036a84a9172bc1afe80be9af3a3584de5c",
+   "source": "103830c29ebd70ce2ff262f837e79427b631a8bd0c6ce19bdd7d0c8df735925f"
+  },
+  "face-loika-24-away": {
+   "file": "face-loika-24-away.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "88c41616f39bff861118fef5d7749f12880ce09d3cfdc1cb0fd375d86e05f8cb",
+   "source": "f43bd9385242402d5fa0150fce171ea4db3ba1f3cbd430db3c2bbcb679062cbf"
+  },
+  "find-crystal-112x112": {
+   "file": "find-crystal-112x112.bin",
+   "w": 112,
+   "h": 112,
+   "bytes": 50188,
+   "sha256": "82d9fe99f9608ae953fc11be1f84c1801f6e251d320bf8e31935d01444528de4",
+   "source": "d6f7fb32181a1a0708f8d771923d35e5e1f8d2fb05c889590b77984ae7cc3e22"
+  },
+  "find-crystal-16x16": {
+   "file": "find-crystal-16x16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "07b325830417649c10c1ab1cdf81163b6038f21a9a373373ddc347504a8626a9",
+   "source": "2981e3b57aedf6eb40e3aff0a39a288f735b42f3261e1d54d2ca0a647b52567d"
+  },
+  "find-pearl-112x112": {
+   "file": "find-pearl-112x112.bin",
+   "w": 112,
+   "h": 112,
+   "bytes": 50188,
+   "sha256": "11a4ac2d3bef3f6d57070f8c2769feb05f6b9d743d285aa0bd399990745aab65",
+   "source": "3696a662cef689a7183f16fe0aef0d853bcb3279e1d73315d958abcdedcd2287"
+  },
+  "find-pearl-16x16": {
+   "file": "find-pearl-16x16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "ae8315e1f0317fe4853df40d544adc7ead2f4f68e081c2ad8644e3abb6117343",
+   "source": "56c395c1433bd66f4d7843c7e6a449bc9f60b725d0a2f3948c1fe861c4218ab0"
+  },
+  "find-shard-112x112": {
+   "file": "find-shard-112x112.bin",
+   "w": 112,
+   "h": 112,
+   "bytes": 50188,
+   "sha256": "be82d9a62f54ad23c960404798d1ddd628a85f8fff58d3b6c89823c2b02385ed",
+   "source": "6e50294624b0988c8a149fad69c21cf81e4d9f321ebffd6c6bb892d5872cfa50"
+  },
+  "find-shard-16x16": {
+   "file": "find-shard-16x16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "a5a92b5bf6c335d925545e8848ed5ac142392a8fa27c7cbcb34e86f5296ff83b",
+   "source": "0efb62f44b4cb30eee324d83c75908aa6f849cb0df1d42edf40ff03ba847a47c"
+  },
+  "frame-bottom-line-1024x38": {
+   "file": "frame-bottom-line-1024x38.bin",
+   "w": 1024,
+   "h": 38,
+   "bytes": 155660,
+   "sha256": "a945246959b6a7c77608adb648978f3c480a35b370186e93c7171118a62f974b",
+   "source": "1322d4e5234ce0ce4999bf7e6bf37bd97615b7e7969a3987065cacadfbd644c2"
+  },
+  "frame-cap-back-16": {
+   "file": "frame-cap-back-16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "f6b90a1a98190c4d3423e3bc2763fbe580a1a9f03f1110250e49d87f07f7739f",
+   "source": "9e17a1fa25c052a8813c8edf8c69ddd33d3815238002c7da61ae9a3d31cfc0c8"
+  },
+  "frame-cap-confirm-16": {
+   "file": "frame-cap-confirm-16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "fedb61c564cbd1380dc93e695fc2b543b5e33993d9f0f8d818c8bd5f7a8f87ee",
+   "source": "89dc904227769e9e7a43644371040aa05dc80cb758d8ae3ef1bfeaefe04e20d2"
+  },
+  "frame-cap-confirm-16-dim": {
+   "file": "frame-cap-confirm-16-dim.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "34f3f204643e570ed5eed30f6f780fa7cf4ce6ebcf3006407907ea296d90d39b",
+   "source": "17934c119bec28e20a8138a5c0695723ddfd1b49c1502da1e451d40a73ea2be8"
+  },
+  "frame-companion-outline-16x24": {
+   "file": "frame-companion-outline-16x24.bin",
+   "w": 16,
+   "h": 24,
+   "bytes": 1548,
+   "sha256": "d7bc0851f6075b9653aa4fc1a96a9daa418bca4e568345493e2f0ff16f23b203",
+   "source": "390ee6f7c05da87c416b0ef686c1cedfcdb7b1dc3dd137bfde2ce8312162fd66"
+  },
+  "frame-companion-solid-16x24": {
+   "file": "frame-companion-solid-16x24.bin",
+   "w": 16,
+   "h": 24,
+   "bytes": 1548,
+   "sha256": "546458e36e9620f7688017b0088b60bd3aa9834375386309db60840fc96806b2",
+   "source": "6fc434b6d4c8a66cc99f5a33f6dd6c5e62d8cbca6505932b4447a9e9071bb233"
+  },
+  "frame-lamp-12-amber": {
+   "file": "frame-lamp-12-amber.bin",
+   "w": 12,
+   "h": 12,
+   "bytes": 588,
+   "sha256": "eb9920742c805d15229ef98fcff227347112f47261c1be2d1e9c40b702382ddb",
+   "source": "7b2f7f70d0baca088268b9c09139d5a3ba57f3e92f0f5ca4500fc292a21693e5"
+  },
+  "frame-lamp-8-mint": {
+   "file": "frame-lamp-8-mint.bin",
+   "w": 8,
+   "h": 8,
+   "bytes": 268,
+   "sha256": "974e3e6233b28efd1a6b5210ab9b6d739c9b3acc7c11597c5f402a9f1822f75d",
+   "source": "e19fee66d66e53ffad6ea55c1796660a4840cfdff66f808d577cd09c79ba3ddb"
+  },
+  "frame-lamp-8-stone": {
+   "file": "frame-lamp-8-stone.bin",
+   "w": 8,
+   "h": 8,
+   "bytes": 268,
+   "sha256": "abe5e45f9f1fe7cd0f23f3c0fd707bff7194d80ce2d8e89bb9122a959a291cd4",
+   "source": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d"
+  },
+  "frame-room-habitat-24": {
+   "file": "frame-room-habitat-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "8a197dd5cbcdcc8f84a57279a6849ca0d5f85dc9d832bcad6ff8a183a463c3b5",
+   "source": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08"
+  },
+  "frame-room-home-24": {
+   "file": "frame-room-home-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "2d14452e63d1a3cb373e60064ab909493cb44aa21ba5ee84a7ee0e818c361f4f",
+   "source": "cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8"
+  },
+  "frame-room-library-24": {
+   "file": "frame-room-library-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "591429e0740d223112651aacbbe0f05b298a231570d0b0bcfeaf6a25998e658b",
+   "source": "764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4"
+  },
+  "frame-room-research-24": {
+   "file": "frame-room-research-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "da66231936e3666a6ba0ec62c754edaeb052cd71acc133b010b870585ac3927c",
+   "source": "1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3"
+  },
+  "frame-room-vivarium-24": {
+   "file": "frame-room-vivarium-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "22c41ed27d38be5e4c5f628780434d1b36cdd729d20df03b4e5867c81c58eb49",
+   "source": "50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b"
+  },
+  "frame-sun-16": {
+   "file": "frame-sun-16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "314cd611919b735de1421f24e7a904a96e9fdea540de5314bf5f920bb7486651",
+   "source": "59cf47153ed146c66d607da6f4cc0f588e899633813d7986b4aa9d7900faf9f7"
+  },
+  "frame-top-bar-1024x40": {
+   "file": "frame-top-bar-1024x40.bin",
+   "w": 1024,
+   "h": 40,
+   "bytes": 163852,
+   "sha256": "0d93bae9e6f1a760ecd2603f894e76317ebedaa5c09d78c38f32f637b00226ec",
+   "source": "9d40520a555e4f43bf79a87e949a0856da79d0539468a11b75e0773dfa6de65a"
+  },
+  "glint-star-12x12": {
+   "file": "glint-star-12x12.bin",
+   "w": 12,
+   "h": 12,
+   "bytes": 588,
+   "sha256": "98b001166f2a7927b1f7aa33c91887a027bf69167a31e334130ada776fc8751c",
+   "source": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc"
+  },
+  "mark-asleep-24x16": {
+   "file": "mark-asleep-24x16.bin",
+   "w": 24,
+   "h": 16,
+   "bytes": 1548,
+   "sha256": "df0299bede4948dbe8c5db3487d4721947c1106b69b8798882c4add5511a6327",
+   "source": "ae714dc2e8583f348ce682f5865e4baa35cab0d27f9afa718a7fb77275e7bdff"
+  },
+  "mark-breed-28x16": {
+   "file": "mark-breed-28x16.bin",
+   "w": 28,
+   "h": 16,
+   "bytes": 1804,
+   "sha256": "abda931f69335b0f550c3aa85659157830a4a03d7b0a7833cddcc668683be015",
+   "source": "a3d0ea28fb1eb1549e6d027e7dbc6c0b0f9ef086ec45f4eb89b071989644176b"
+  },
+  "mark-can-grow-16": {
+   "file": "mark-can-grow-16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "0dbd0e6e14311900d6665a3d86f01de3991a30b5cf43684808b235918e03b465",
+   "source": "8178d7b260b50f20d23ddd61b7b56bd34922b184646fcb5fdc676e870c9faa83"
+  },
+  "mark-clan-C01-24x24": {
+   "file": "mark-clan-C01-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "0c15557a3b3a8442f583e81fdb11ee50a378de2792bc08fa8a0d7367cb1416c6",
+   "source": "46576dd881a42220f99c0570b05c4a1555a29aad0188f7b5de5761ebdcce9588"
+  },
+  "mark-clan-C02-24x24": {
+   "file": "mark-clan-C02-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "f0013dfbd417ab8665bd5ba52cb6df55fe8c3faf898036d4f9406fb2c2935171",
+   "source": "ef1f2925cc4b4f0e7ade7928525554d629288d1adbdce1aad071ba955735ba7f"
+  },
+  "mark-clan-C03-24x24": {
+   "file": "mark-clan-C03-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "e2c4403dae8c4cdce7f0db5dac9acf698e8fe7b9ba1fd823f554f4e15f9cac6d",
+   "source": "1dfa9dc17e01b0ad16259ad3f3473adb7071572e13d5bc2ed3128bb52ebb8398"
+  },
+  "mark-clan-C04-24x24": {
+   "file": "mark-clan-C04-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "7be3f0094cf436457e6f147f4da8c7c6b34fb03f87988b2d23aa045997dbeb2d",
+   "source": "392542bef06b18eb3faa1578230c65d79e7ea81b60adaa7bff4c76fe599e4864"
+  },
+  "mark-clan-C05-24x24": {
+   "file": "mark-clan-C05-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "941e66b921a5b8fa2f5e80564d6c5e93ed055fb131a4ef774b8c7719d647550e",
+   "source": "3eb9eea26987eb5ea74f3a183fbee524506bf41acee653bf2b96e7954c7326d1"
+  },
+  "mark-clan-C06-24x24": {
+   "file": "mark-clan-C06-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "6e580566a2d394915d0619a415a785e580ff228cdec28b2f1fb41d790a52c604",
+   "source": "9fdd0e2848e0c9328e47be07cbbc7fed162bbb9fb0722f79bfda7e3cab12326e"
+  },
+  "mark-clan-C07-24x24": {
+   "file": "mark-clan-C07-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "b02a2758e80cc1c9eab39016e5bbf48d894d3c6946f24e869348a555e5077149",
+   "source": "62fba1c53d5c87da4046c72d7e641dcd73b140873f4cea9014e67199c4146c4b"
+  },
+  "mark-clan-C08-24x24": {
+   "file": "mark-clan-C08-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "f8c4e8c825e7f3d77a0539758dcd54c10c844f27438f4d72fed4d3f32be36c9f",
+   "source": "9097e55abab1b417b12144b07af491cd8b7e9398aade0aeeb00adfe9b69b1708"
+  },
+  "mark-clan-C09-24x24": {
+   "file": "mark-clan-C09-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "7510cff1cb734ea07f8a39070722c1cafe849513e5f31bd0bd96e4c7582f7990",
+   "source": "47826d455126adc3c54248c2ec5e83261de0934cfe3a9398b1dc042e20e0903e"
+  },
+  "mark-clan-C10-24x24": {
+   "file": "mark-clan-C10-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "854c539963debb0b56fb23699eb3378fd2404215f06a3334d67e1f3793a69f7f",
+   "source": "9679996bafd3aaed4e2f8e93f8f291cd8bbc534436cc979f495248f24bb966a3"
+  },
+  "mark-clan-C11-24x24": {
+   "file": "mark-clan-C11-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "0543ed8681496c9874f20a2dcaa1d9f913549b274a2c856d580f6458c70dfba5",
+   "source": "228b8828fbea5dccc71610d818351107f861283d7b1dae17d06b93975cb21fb9"
+  },
+  "mark-clan-C12-24x24": {
+   "file": "mark-clan-C12-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "6f4c6c9516ffd21cd83079317162d8b1ffb5580207ad398eeff858f9d3f4fbfe",
+   "source": "23faf90ea2b2fb501f67162b93c04138291e3e9c6b1ddd38acdd4f69a4088e43"
+  },
+  "mark-clan-C13-24x24": {
+   "file": "mark-clan-C13-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "74656dc53e2b718f0f987296a042aa727ec121cab06ce46629cc2f5046c0df24",
+   "source": "fe92cfcdce4ab7d8aa4804c726c737f9728ae27ad36d1e66df3a4e6ccf71d3c8"
+  },
+  "mark-clan-C14-24x24": {
+   "file": "mark-clan-C14-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "a3e717f87ad5dc5fe80df013ace4ac95a6b0d42f578a5870cd41812bf4af19a4",
+   "source": "5fe7a00c64a4b1ef5d6bb947c2522ce8e96297f5b04f6c35cd567bdf5dd0e925"
+  },
+  "mark-clan-C15-24x24": {
+   "file": "mark-clan-C15-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "fd55423f04eca1a526ac2834ea691d5bd7449a5fb6666f314f1cca1f5c2b4e0a",
+   "source": "1bac22024812da90a0ebf74064e16915cfddffe926092609248a53432bd266de"
+  },
+  "mark-clan-C16-24x24": {
+   "file": "mark-clan-C16-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "4c662fd16d93d17a63b33364fcfe8c0da272bbcb3494068e0f8ad56e74323cbe",
+   "source": "e63c0262e1bba6b08f2f5ecefb5bab00f16d23a3e873385af95fa97e09afdf5f"
+  },
+  "mark-first-16x16": {
+   "file": "mark-first-16x16.bin",
+   "w": 16,
+   "h": 16,
+   "bytes": 1036,
+   "sha256": "0f441c6d2a9f5701f876a282865796f47f540b20a5356a5323755b7bfeb70e60",
+   "source": "64484e2b12f4022848307f1a323f3b0a63696669bdacc5f8ae9d36155bd7360b"
+  },
+  "mark-line-only-16x8": {
+   "file": "mark-line-only-16x8.bin",
+   "w": 16,
+   "h": 8,
+   "bytes": 524,
+   "sha256": "b1fb6326d048eef74ede3dbd0d4068fabfc62a56fe2df822a2f5f97e8cdb2168",
+   "source": "0b4cccdefa46d108fd343bd8a211ccb6ac47d41d11aea769056008feb5a06f28"
+  },
+  "mark-line-seed-12x16": {
+   "file": "mark-line-seed-12x16.bin",
+   "w": 12,
+   "h": 16,
+   "bytes": 780,
+   "sha256": "b803ae9b4ed4f614c80772884365e692454cb5d83f9d2d05346f725cd72124a4",
+   "source": "5d2480ccc01fab311f73a90c355cd9891f1c6a409f14b400a89533954241fae7"
+  },
+  "mark-line-seed-pair-20x16": {
+   "file": "mark-line-seed-pair-20x16.bin",
+   "w": 20,
+   "h": 16,
+   "bytes": 1292,
+   "sha256": "5c309b7e66a9143c06741d6342c82fb32d9b4628a30db0fb1b47160e53649251",
+   "source": "0bd94a522721d74f9fb156df37e731a09252e01a8225302f8220df37ed3a4203"
+  },
+  "mark-only-72x8": {
+   "file": "mark-only-72x8.bin",
+   "w": 72,
+   "h": 8,
+   "bytes": 2316,
+   "sha256": "fc4983b4d757c2d484ba34cc778c0d3e632e6f9232136e6f2a10c38c6ac671e2",
+   "source": "3d056cd05d315fee9ce79f3e95787633b5a7ab01b2dbab97590b7f4bc02a902f"
+  },
+  "mark-seed-32x40": {
+   "file": "mark-seed-32x40.bin",
+   "w": 32,
+   "h": 40,
+   "bytes": 5132,
+   "sha256": "df56a55fe08ee2c8bb6e564cfcbf30c911fa3613e0960e6cbabac7b0f2aa887b",
+   "source": "cb7f974be2f58ccdc9fbe0cc3cc9613b6894916e570226d668dd697bee42c01d"
+  },
+  "mark-seed-32x40-mask": {
+   "file": "mark-seed-32x40-mask.bin",
+   "w": 32,
+   "h": 40,
+   "bytes": 5132,
+   "sha256": "d9315780cd1fce87db40521d29fafe116e81e9f0fb79d91babfe3c5e780826d2",
+   "source": "e55f75b18f438d0432f380cfbbb087d294ed289fa646ab2b9d0fa4ee9b8642fa"
+  },
+  "mark-seed-40x52": {
+   "file": "mark-seed-40x52.bin",
+   "w": 40,
+   "h": 52,
+   "bytes": 8332,
+   "sha256": "d2e20fc17da947f62f63f253df8123d2c22e40d64a776cde44a9027d4b73f534",
+   "source": "8b5bc9b231a740c43a7de055a6db671d70478d6f685dea0ee1c9ee0262c35fcc"
+  },
+  "mark-seed-40x52-mask": {
+   "file": "mark-seed-40x52-mask.bin",
+   "w": 40,
+   "h": 52,
+   "bytes": 8332,
+   "sha256": "ab36b116545333e6dbd0a6f2d86f27ca4f5d6271212582d92c9f9f712c1e8669",
+   "source": "2fefb4b797ef82dcbe5a3c4a5b7d3e68239fa7d3aa7fde396eef55e46cf66b5c"
+  },
+  "mark-species-frost-24x24": {
+   "file": "mark-species-frost-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "5209a1b9cf02cf4fd0d71f72e9dd4b9c9fc37dc5fbc71660c4f6f11ae98860bd",
+   "source": "57990c430fc018508b7b826fb5158b09e4df543652be30ce1d5ef8238d8bf67c"
+  },
+  "mark-species-S01-24x24": {
+   "file": "mark-species-S01-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "2b41ba672f87ab37eeced94f48d474283cdc55f1ff115731839833d14a2b0e98",
+   "source": "26c19b7d0b3073573eee1e199ce66967e7c9f74eddbaba12b61c3aa410536f5f"
+  },
+  "mark-species-S02-24x24": {
+   "file": "mark-species-S02-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "ffeb34988c236f6dadd097f7048f04430a1983af538548d5fd2b4b9163fd3bad",
+   "source": "cfbb5ac00d1430fa9e4e3bdfdfa6d1b401b5c6e177884b2a6836c82081fd4d84"
+  },
+  "mark-species-S03-24x24": {
+   "file": "mark-species-S03-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "1355245d8f22d559cbb9ce3419c2d6fa2197070298672287849a8c31d74ea04f",
+   "source": "eb25449c2f9fcafb8ea76d262ca0d0bc3538458d493df728b1c06ade139c4615"
+  },
+  "mark-species-S04-24x24": {
+   "file": "mark-species-S04-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "94a9709402c2fd7b47d216994f8de3cc0ddb4b991e93c192cc1ea91e9404c2bd",
+   "source": "ddff45e0e334b762b37dad7f59fe285d119d47a4fc739199f385393e52aa69dd"
+  },
+  "mark-species-S05-24x24": {
+   "file": "mark-species-S05-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "99e14d09e433497bf3b7ebdb06f7ac7cab595f4871d5dcedb171e22bf40fd0db",
+   "source": "cb294db4bcffb60012ff8b513ca53136c56f8acba1174915c20bcfa8e44f60f5"
+  },
+  "mark-species-S06-24x24": {
+   "file": "mark-species-S06-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "701289ea83ae92f946809a45567fe45d1d369cf4a475bef01aad070493ed4130",
+   "source": "23bcbf4c3c059ea1ef6c69a7fc81cb63ce0d73925fe19e9c8a8315d73c849cda"
+  },
+  "mark-species-S07-24x24": {
+   "file": "mark-species-S07-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "e0b4bb48be1ae2e8b9403ffe018e0a805ab663591bfb7c9e5fea574e6cfed96f",
+   "source": "2a4be6b63f285dccbac6d0498f3e6d17b79a5bf0d9b55091c19ac9789abc6453"
+  },
+  "mark-species-S08-24x24": {
+   "file": "mark-species-S08-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "6212362566bdb6f1ad3d0b3019ba42a64fb080daae88849e0b05832821851ee0",
+   "source": "aabcd1b4fb7de76fc44e7cd8269ae8c21cf220dbd1532bf53f522f6b58246fc3"
+  },
+  "mark-species-S09-24x24": {
+   "file": "mark-species-S09-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "5072f4ad9149f097b23c99b85215c0eea57a74274acda0b5fdab2b51f4d881cb",
+   "source": "1fdec141e949b11ce9d424e1e35a5ac24a2e50a1f462f42c8f0bf2b23e862a70"
+  },
+  "mark-species-S10-24x24": {
+   "file": "mark-species-S10-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "aaf01762444fa02095a80678b765d70e9aec971d15458768c025d3091ab2c03f",
+   "source": "ccfcd8acf6e8a87e51d0768aade8fd1a6b7369628e0e63e4023a4c4f488aa5e6"
+  },
+  "mark-species-S11-24x24": {
+   "file": "mark-species-S11-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "9736bc5434d5102f1d99b48c61af8829fca66fe75c4f7d783c364bc4611e6239",
+   "source": "3e4f0f01b2574b5c570c2901d17d63ece52f2f4ea5506f059a6e6f7c85380e34"
+  },
+  "mark-species-S12-24x24": {
+   "file": "mark-species-S12-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "2477f435e9170e042086d390544516dfc502999a52414ffa4e3e0cabefa5a3e4",
+   "source": "7373a8c5dcdfa37b8963be8f58b794c928580b8d8b48151b3b97fd26358e5228"
+  },
+  "mark-species-S13-24x24": {
+   "file": "mark-species-S13-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "a522a79f82089433ae5ebd21fa2acf25fedf5ff83945e0ea4a0601d8c8917242",
+   "source": "5c20add176b1cbeafce0695218cd1160ba85630c9e787ab3bc65361499629043"
+  },
+  "mark-species-S14-24x24": {
+   "file": "mark-species-S14-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "732aba5910b11019839b65b356198967e35092a9c1451fba506623b40cc72c33",
+   "source": "393645557b1bd3acbd1da62129ee2565a1ab281a4f09cae4128f5c63902fc523"
+  },
+  "mark-species-S15-24x24": {
+   "file": "mark-species-S15-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "f6180358fc5fc4bc6a200cc2cb68d6e455d9644e964fe2daf493048181475f0b",
+   "source": "f294b8296a9fefb31c940178c69044b013747486660eca404a74fbec116e18c3"
+  },
+  "mark-species-S16-24x24": {
+   "file": "mark-species-S16-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "0d3488f937932d65f49b621e251d669571a870be4a843f2c7d48e4c7782a7262",
+   "source": "20c80362a6007f34520f107dd601ea41d39689b09a1b9009b0ecd4776f6ea92a"
+  },
+  "mark-waiting-24": {
+   "file": "mark-waiting-24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "3b4d0ae9b1eb92f2320c8d2766366d6e49bc1a7c72815e89b48b54d327229df5",
+   "source": "12920d916e647e00fc37823a11d2d7777118730628d3b107043c08740ea2534d"
+  },
+  "mibi-halo-S01-128x160-clear": {
+   "file": "mibi-halo-S01-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "a97c89e4d3372ce230988ca5475b9c1616433b8ab61c50c91e8ee698faa3f4bf",
+   "source": "c154fe87d41a767734d48e56fa73625f85b1c1b12d415257fb7b5d31fca86e15"
+  },
+  "mibi-halo-S01-128x160-mist": {
+   "file": "mibi-halo-S01-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "84a1dc618dc5533302d383ec140a894090949a8be9de9272e636a01e9d1cacbf",
+   "source": "5619aaef87b0584c604a111b0edd21ecb284eab0c4e8e9ffc869d138758cc52d"
+  },
+  "mibi-halo-S02-128x160-clear": {
+   "file": "mibi-halo-S02-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "221252823da8ea37278011d0b2a007484d5f224323a2c6460d3a55b90481974c",
+   "source": "83ffd00ea6d0975571ec9b582bd70ed68a7eb5b6d993eb85d27488b4f2394186"
+  },
+  "mibi-halo-S02-128x160-mist": {
+   "file": "mibi-halo-S02-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "3bddbd97035d92734825cfcb0cd9c444546a1f75c6df3909f81420a286168a33",
+   "source": "7e1079b5f89cfa854eb8428cafd28c29d345a88f50b2d4d16b6c485d5f37dfca"
+  },
+  "mibi-halo-S03-128x160-clear": {
+   "file": "mibi-halo-S03-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "297542d69d3650e92fc22a8669f0dcb92c98927a035af807b778fc7335bb8484",
+   "source": "2c7c7d161e02b0e5549e595e558f747b617d80f621e787975f37428075ba8898"
+  },
+  "mibi-halo-S03-128x160-mist": {
+   "file": "mibi-halo-S03-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "78869dfe975c6b94946abe6e3b304655d398aaa62f777357ad9affab0248183b",
+   "source": "fe24941aea9e171818ad8deeee18fa5abb8d19bd6501bd52ca1f89d46acf05a6"
+  },
+  "mibi-halo-S04-128x160-clear": {
+   "file": "mibi-halo-S04-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "12b623ca8508f63eace1c85b05c09715c71415feb90694eaf50da980ce935f59",
+   "source": "e303d1816992299b6f39aa67bf4a9e9520491ed24733db5f0be9d4dca153b34f"
+  },
+  "mibi-halo-S04-128x160-mist": {
+   "file": "mibi-halo-S04-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "ad9249ab7cd4958fc9515b936e19566f5ca32754c3769cbe24f14d5b85659b68",
+   "source": "3ce9bdda586b501804a29f27531a35a54cb2f9f48ea553fedba9f9fb5038362a"
+  },
+  "mibi-halo-S05-128x160-clear": {
+   "file": "mibi-halo-S05-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "d7f935894e1bc79487bad6024c6261ad0c9acc1d5f31c03fbe31783470dbf3d3",
+   "source": "1183cd5f09c3808c9b91b3fff3fef116a0b066a3e26eff037f2d12d5b6819ddb"
+  },
+  "mibi-halo-S05-128x160-mist": {
+   "file": "mibi-halo-S05-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "f315359c47cf37c6ba52007c8d42755cc935ad692f3f9922abc1484ae3a6bd6f",
+   "source": "369706b46151d1c14928c17772d6195220ebbc7d5e36729a1bd010182f2e6fff"
+  },
+  "mibi-halo-S06-128x160-clear": {
+   "file": "mibi-halo-S06-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "7c9bc59733a7e4f6fd5c5295352b122fa030f34e41f6a8b87729834c6fed2b55",
+   "source": "deafeb1b05e98cec4be4dff3458363663cd4ffcaa631480310b1e5e9ca92e546"
+  },
+  "mibi-halo-S06-128x160-mist": {
+   "file": "mibi-halo-S06-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "34cc33996d28f1c660bec479d58eee660993dcdc72133f54b95d8705f46223fc",
+   "source": "c6a56dc33e1f4aa46089f3bbfb4784b7a9059dfe4dd29236329161a580c6605d"
+  },
+  "mibi-halo-S07-128x160-clear": {
+   "file": "mibi-halo-S07-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "7a71d0ae07b66878f49451bc8f593305403d2c899c33720e9e146d51cf4a1f54",
+   "source": "c0475e521f4531f2fb7c2485539a47b0204fe3b65bbe827025b94e6278512dbb"
+  },
+  "mibi-halo-S07-128x160-mist": {
+   "file": "mibi-halo-S07-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "ac1c57cf8c3761e5020cb7f86332a9388051e453cb1142ea1d729d3aac128080",
+   "source": "32b869b2f20128988dd1795c06d4d4ac3ec085d829a03ff027802b18d50769f7"
+  },
+  "mibi-halo-S08-128x160-clear": {
+   "file": "mibi-halo-S08-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "61216eb8c8de1797c35c0094002c2877bff0331ff29c55d3fdd49f62001c416e",
+   "source": "7513b13735882338fba06593cf9a19f732ecbe0b53be50bf173be6d67903e531"
+  },
+  "mibi-halo-S08-128x160-mist": {
+   "file": "mibi-halo-S08-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "bb70d6dce7e60e98d86001de2452b17b27ad891b2129610f51c86250be4b55ca",
+   "source": "d6fe20e434e8e28b00d71c7d6bb360a0746a592392076a729f765b23f4ecb466"
+  },
+  "mibi-halo-S09-128x160-clear": {
+   "file": "mibi-halo-S09-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "63e7778cc5429e51f30245f1c6efdae25e855907aa635f585de07d57e9cf3bf5",
+   "source": "e319c67694ed7b4a6ba0b9c7c72db7d06a7be46c88663613f0f61fd94c77fee5"
+  },
+  "mibi-halo-S09-128x160-mist": {
+   "file": "mibi-halo-S09-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "c330db380dc74c19782f78b7d2a45681ac40df737a9bb954135a4c646c24329a",
+   "source": "4650036f78db14ccbf50bf64d64000d4bd68ac80788acba798b467a27e324b1e"
+  },
+  "mibi-halo-S10-128x160-clear": {
+   "file": "mibi-halo-S10-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "06652d00312792681f8d9c47f50110c3e8299909a1ae9448c91cacb605b6ea74",
+   "source": "80ff01077d8b752093fceac2e5f97dedf00a9df905f99f085e66977666d54734"
+  },
+  "mibi-halo-S10-128x160-mist": {
+   "file": "mibi-halo-S10-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "ae38bbaa019db4edd2cf91fb11ca749976f8b743602c1270465c016c30560d8f",
+   "source": "0b2d9b6cf39d1f93bcf54cfea3a392b26178324d30921c25849a3aff019e6019"
+  },
+  "mibi-halo-S11-128x160-clear": {
+   "file": "mibi-halo-S11-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "998ef3fd22c8ad4ffa75111ca0b721b0b2c5904a331294bb0c25d9f0efa50030",
+   "source": "786b2c2ed77ef5b2e38e9a75d6bb4527f298212b5abe5459f5cf136de67b7c4f"
+  },
+  "mibi-halo-S11-128x160-mist": {
+   "file": "mibi-halo-S11-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "764db14008349fc1b9e02284fd5ae7cf43423bd04e78daa355a86aae9db00eaf",
+   "source": "8f3aad67db3335b74f35a5000429733a9bd5e02755142a92b93eb4162554f54b"
+  },
+  "mibi-halo-S12-128x160-clear": {
+   "file": "mibi-halo-S12-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "85cfe610d58c4c2061f713c3c13555b1a9957adf887b5a2d28496f712977b18c",
+   "source": "0907254c6b8d5d1dae3e7435721f3071d71343761dc37dfcf2d3dc5c860097e1"
+  },
+  "mibi-halo-S12-128x160-mist": {
+   "file": "mibi-halo-S12-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "a96d43cd94bd6bcef869f82e8ca2d4b8c30333db33853ff02d2e473466a3ef00",
+   "source": "82bdc838d923f2449b332343d9ce7705a779a959facc0e6c6e1b067517165a6f"
+  },
+  "mibi-halo-S13-128x160-clear": {
+   "file": "mibi-halo-S13-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "ab5c2131c685af32f6b5b8e800a07094d57582a2a334107662245e67fea46f81",
+   "source": "2457a36267085a64a742c2039681885e32360c08389eab5f43628966b0fcb2b8"
+  },
+  "mibi-halo-S13-128x160-mist": {
+   "file": "mibi-halo-S13-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "9c698bc3679c7572566d56162d87b808c3f5467230c53ed17bd741a4b9375e03",
+   "source": "032cb4c2e929cb5000e16f98de9d79f2d7488f37a488e3ebe6025a24a8e17425"
+  },
+  "mibi-halo-S14-128x160-clear": {
+   "file": "mibi-halo-S14-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "9469146d1aa4c13c670fa5b2fc02fabaca47083909a9ef6db220ff819fc52af2",
+   "source": "b7f8026d712ce37f52398910d1e78ca5fa1e01f537a822864a0623aa8f3479ae"
+  },
+  "mibi-halo-S14-128x160-mist": {
+   "file": "mibi-halo-S14-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "2ba25f5a6f550456ba24820ddeebde6e9a98abea6078c028cf05e4cf6500ace5",
+   "source": "a5b652ab09b9aba4ea94bd41ef3e1e333385633d2431fe2b8fd507b1ba040596"
+  },
+  "mibi-halo-S15-128x160-clear": {
+   "file": "mibi-halo-S15-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "9360b9881dfd390f83484b708925b5ae7d294e56b0a7af1042575183aff255f8",
+   "source": "1efcb8c1197de140eaa6b58bd75de3d1aa331ee0352ab6ceda829c6698e4de61"
+  },
+  "mibi-halo-S15-128x160-mist": {
+   "file": "mibi-halo-S15-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "5a7a10ffa3d1a9c4ef201e8bb467c1e039c8a7a395878414271761c6a3646ffb",
+   "source": "61bff9237bafd7eba65feb9ce2728044593ddef6bdbbe6882da8934745ee9864"
+  },
+  "mibi-halo-S16-128x160-clear": {
+   "file": "mibi-halo-S16-128x160-clear.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "3d1a5be7e6432b8caf098283072c126e3c2e79881a016a3fc22f5d097e59c927",
+   "source": "a8f7cd38110febcd7e755b6371c20e918b4e16959b389dd419ed61763938e57a"
+  },
+  "mibi-halo-S16-128x160-mist": {
+   "file": "mibi-halo-S16-128x160-mist.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "2239be0ce838dbd0b3b1a0be0cff38513c8f1918bb7f67a6eb289248cc527866",
+   "source": "e6d1dfe1bc5357e00114b4ada2a54f841ef7b11adbdc6b96600ba502c12d38e1"
+  },
+  "page-mark-new-10": {
+   "file": "page-mark-new-10.bin",
+   "w": 6,
+   "h": 6,
+   "bytes": 156,
+   "sha256": "94d81fe3aa717d7bebac0b486ce03eaaacbb4fffaca11c4d8fc38350abf097ab",
+   "source": "0e12dd402268ed52bfbfb61538f7fe3164d5a23d1b321fce6d004f771c41146d"
+  },
+  "page-pane-256x440": {
+   "file": "page-pane-256x440.bin",
+   "w": 256,
+   "h": 440,
+   "bytes": 450572,
+   "sha256": "19c756da4770ce97618dece7ded939dc906b79a0d4cb672bfeb421241be116c5",
+   "source": "4172d7ef216a1e2e71413366054199d45f84167fa0bf49bd0019b216b034e256"
+  },
+  "panel-place-320x224": {
+   "file": "panel-place-320x224.bin",
+   "w": 320,
+   "h": 224,
+   "bytes": 286732,
+   "sha256": "76b53174b91834783479f0646801608474bcfa58e40db3e536f9d7e487811d67",
+   "source": "f7c11d6e4958160cefe39c7686c60b57f6a3828f62a5c456fa039829f29d47f7"
+  },
+  "place-cave-48x48": {
+   "file": "place-cave-48x48.bin",
+   "w": 48,
+   "h": 48,
+   "bytes": 9228,
+   "sha256": "dce852d88a42cbcff3fdf1459fc8078eaa2ab6a0d24eca2df13142c00e51d108",
+   "source": "5260edf77a2d46b9f3ff088c202de35758f99d6c0c3cb42597aa8d335d73e19e"
+  },
+  "place-cave-64x64": {
+   "file": "place-cave-64x64.bin",
+   "w": 64,
+   "h": 64,
+   "bytes": 16396,
+   "sha256": "e6f1b76ec296a8529b4cdba000d6f73d1bd88b881a895455b78476d2c95a1d98",
+   "source": "c825a5380460798afb932816e479178601a81a23af34d377a1802d7f7e8fae9b"
+  },
+  "place-meadow-48x48": {
+   "file": "place-meadow-48x48.bin",
+   "w": 48,
+   "h": 48,
+   "bytes": 9228,
+   "sha256": "7e72e08832b81b0b88d47aa911dacee1b6f36e59405e5277595b27c048fdba08",
+   "source": "a1a6dcbf600a44bf8e952c5c68594947c9d4fe6f89a8e0f89327e26542e56733"
+  },
+  "place-meadow-64x64": {
+   "file": "place-meadow-64x64.bin",
+   "w": 64,
+   "h": 64,
+   "bytes": 16396,
+   "sha256": "15c50fab6d87c2ae547f0fbead6ebaa45c28ac7a2e5678ae57154fecd26c9b44",
+   "source": "1ab545a590d5e69c8a5dbec5e623aad95e7d82e86c887000d03f89a1707f224e"
+  },
+  "place-pond-48x48": {
+   "file": "place-pond-48x48.bin",
+   "w": 48,
+   "h": 48,
+   "bytes": 9228,
+   "sha256": "77b84d7043e17958e2721268a69aea520e8b929d52027e27c45f8a151c0199c2",
+   "source": "7e44aa1254c0eb9e49811be69d161ee872d775f514f13f1cdd74e0932eb50c14"
+  },
+  "place-pond-64x64": {
+   "file": "place-pond-64x64.bin",
+   "w": 64,
+   "h": 64,
+   "bytes": 16396,
+   "sha256": "930e7c75daf48059ed1aa7ae09af1df761d5d4aed5fb60a19bb295963f7df485",
+   "source": "e17c94bf08939691d08f4f3c9882e12189ea4a23ab4108f8ff847e8f5f4fc99f"
+  },
+  "place-rock-48x48": {
+   "file": "place-rock-48x48.bin",
+   "w": 48,
+   "h": 48,
+   "bytes": 9228,
+   "sha256": "a5acdbc56b7e0833e349257dbbfef971430f7776a722ecfbb8459029c52dcfda",
+   "source": "a3e585738f8180863894eeb5db2de0a1d9498d1a2a42cb91bb5232c97068e329"
+  },
+  "place-rock-64x64": {
+   "file": "place-rock-64x64.bin",
+   "w": 64,
+   "h": 64,
+   "bytes": 16396,
+   "sha256": "86b1e54ae2e3041043902dd272017aff6ab1d58ad8f549c7d16ccccc9fddeb4b",
+   "source": "9bc3c7801fafb8426a506e701c113c7d2e86da985ef5489c3812f3335c135e3f"
+  },
+  "place-wood-48x48": {
+   "file": "place-wood-48x48.bin",
+   "w": 48,
+   "h": 48,
+   "bytes": 9228,
+   "sha256": "044e9456750b428090a696f9d4c148a838bd2a6e47f4c9f82175f735b63ad611",
+   "source": "673d78a5141073ff3e7a1d433f2a018ffe281eab3155bab58e1b8e194879fd79"
+  },
+  "place-wood-64x64": {
+   "file": "place-wood-64x64.bin",
+   "w": 64,
+   "h": 64,
+   "bytes": 16396,
+   "sha256": "03b2d861b8116fcbbcc81756f33c59dd8cbde12d862ee093976ba7e19acbe71b",
+   "source": "aeea3ff5939c3e51a290562cbd99e49ccad03ef96b3582996adf61f6821e4a35"
+  },
+  "plate-message-640x36": {
+   "file": "plate-message-640x36.bin",
+   "w": 640,
+   "h": 36,
+   "bytes": 92172,
+   "sha256": "3cbfeeee1939972e6a1b8f296b2fc0bca51b3007762fdf26b9e268192b304383",
+   "source": "bd62ebb7c44911d7c56d573cf18195c7ca1089633726ef3a2801345ac6490ac1"
+  },
+  "plate-message-640x56": {
+   "file": "plate-message-640x56.bin",
+   "w": 640,
+   "h": 56,
+   "bytes": 143372,
+   "sha256": "087d6482022374239c3d2effb72b30acf26a02ba92904362a561ac6b34f5f4e6",
+   "source": "cbae9a27e051728c9beab62a2dc2fecea0cd74c6403fc20644e16f36d69ca54b"
+  },
+  "plate-message-640x76": {
+   "file": "plate-message-640x76.bin",
+   "w": 640,
+   "h": 76,
+   "bytes": 194572,
+   "sha256": "8be72c8e740a6c0c2ade539ae05c9418c24dd0d2aa46d14938ed0c0e82923357",
+   "source": "9bc8d345e227eb3c5a90e6bc426908af5c07dfd4663d567053a072b66ee8d466"
+  },
+  "plate-name-112x24": {
+   "file": "plate-name-112x24.bin",
+   "w": 112,
+   "h": 24,
+   "bytes": 10764,
+   "sha256": "f657d60ed4f3bcd8b619b36548d1b5e8b51205ab7e882224b8d1d7c0cdb65ad4",
+   "source": "6232526688c52dec4806df6494edb59dcc1889604b27d9741007694e965b118a"
+  },
+  "plate-name-128x24": {
+   "file": "plate-name-128x24.bin",
+   "w": 128,
+   "h": 24,
+   "bytes": 12300,
+   "sha256": "37888aa8f43c1a8bb075da8fa9ea22883b21b44781dd168dbe709aafb62577f2",
+   "source": "b939a7c978f1621612e44c2c2d0f1da67553373743ac44092ba624f001860649"
+  },
+  "plate-name-144x24": {
+   "file": "plate-name-144x24.bin",
+   "w": 144,
+   "h": 24,
+   "bytes": 13836,
+   "sha256": "bdad2537a34adf3d631913840906e44c0172d8b38163b0529d0b504b975845fc",
+   "source": "00e7086c5147e962dec8ef636f833756e5be0d2f2bdc6dc65cfc1a39bd2efc02"
+  },
+  "plate-name-160x24": {
+   "file": "plate-name-160x24.bin",
+   "w": 160,
+   "h": 24,
+   "bytes": 15372,
+   "sha256": "e7e45784da24298967bf5e85b3c6863262803c658d176639bb38327699aa9cf6",
+   "source": "a3731c896b5362d972164666ef8b5232821834df54c14e4741fd8f5e2898cd65"
+  },
+  "plate-name-176x24": {
+   "file": "plate-name-176x24.bin",
+   "w": 176,
+   "h": 24,
+   "bytes": 16908,
+   "sha256": "8fae58a5d3846174215860f89aa4695afdcf51ca761f583db92fb5c321a2d9f0",
+   "source": "c6f91b05a938b290bea46442b32b6db54808e73f9cc3cfd8f86acf8783ed0c01"
+  },
+  "plate-name-192x24": {
+   "file": "plate-name-192x24.bin",
+   "w": 192,
+   "h": 24,
+   "bytes": 18444,
+   "sha256": "8e88ee27b968fd5be7d69c90e364ba99fde906814bca5fbc6c8403606065b996",
+   "source": "cc39683c42448db5bcc2416df020ef1a29fb49043d340839a2db6652110b2f40"
+  },
+  "plate-name-208x24": {
+   "file": "plate-name-208x24.bin",
+   "w": 208,
+   "h": 24,
+   "bytes": 19980,
+   "sha256": "b81a2e4f0ae7064d3d0fc2c452a9700dbb8d88f8c7502a2335c8a46c9f947a3e",
+   "source": "087f6276eed23c5e0ffbaf6ae791a3ea8d851263da5ab39cb84fc1310f82ee38"
+  },
+  "plate-name-224x24": {
+   "file": "plate-name-224x24.bin",
+   "w": 224,
+   "h": 24,
+   "bytes": 21516,
+   "sha256": "2dcb36ed34ac3a20e0892ab4322ae6207a07f5431a7f5b7d3e084e6e0f326813",
+   "source": "2453edfaed652aeff47100a505d10145c7234fad3140abd1ed83dda3644a5a44"
+  },
+  "plate-name-80x24": {
+   "file": "plate-name-80x24.bin",
+   "w": 80,
+   "h": 24,
+   "bytes": 7692,
+   "sha256": "6740db6b66bcf4f9b7ce4b3d09cf888a7bdfb5fa05bc597b5198e3c7deb0153d",
+   "source": "c5d249822e5c02ae07015c2d000b2996f488117553d33923318fd5ee0146f323"
+  },
+  "plate-name-96x24": {
+   "file": "plate-name-96x24.bin",
+   "w": 96,
+   "h": 24,
+   "bytes": 9228,
+   "sha256": "0effe128609807e902cd1c4eb47cca1036772078755b5105188c0e109321ff19",
+   "source": "0342e35131e5131f35c1b55d7af656838e55927ad2465b83f2b0424382ceb580"
+  },
+  "pod-collection-band": {
+   "file": "pod-collection-band.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "051ce773702458d853559aed209e1b25eb73f3c07d7786c9f1886efd43328905",
+   "source": "40c7875589d5628dd6843c2c1377a1d6ba6d666d5a79c0792dd0e80de7ce2a6e"
+  },
+  "pod-collection-crack": {
+   "file": "pod-collection-crack.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "e43e2982cd9154db3efe6f924686df64b4707fa2fb8e2354b436b7b10394eb4c",
+   "source": "17a81668f422106b98c1fe8099cfa30de96bb0c3f4dc2997cdde2ccd80d86166"
+  },
+  "pod-collection-identified": {
+   "file": "pod-collection-identified.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "1b91cef540d0a368c5947e30a4fb2414dbef63efe16471b00a903e1050d93086",
+   "source": "f302ffdbb9265161502bdff66a51437dcee14d762ff58058075468e6aad03b83"
+  },
+  "pod-collection-mask-accent": {
+   "file": "pod-collection-mask-accent.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "b81d38d9c0fef11457b17cb98a1d5c6dc8fc86199b757bc910e682e8a269a0c7",
+   "source": "75382937b4f51a9468a8e9d42562265a203b14392b6915d32e58955f4cccde09"
+  },
+  "pod-collection-mask-body": {
+   "file": "pod-collection-mask-body.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "0968b198ec271e11597d3f151a744ced80914c8ac0bb1639d6c315b89af50200",
+   "source": "cb6d1fbd43a0e64cdd908a6957381616da934ae80f87bbc8e569d4085ea99f54"
+  },
+  "pod-collection-pattern-bands": {
+   "file": "pod-collection-pattern-bands.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "d1ff59c4f56e28d218a3bc39dea703bd1fd162c54dfcc6b465b38baf716cee13",
+   "source": "18c15519b022d588f1cbd3ae9d979a07f31540b7c3d2c9d547dfc1a3a0bf8e29"
+  },
+  "pod-collection-pattern-dots": {
+   "file": "pod-collection-pattern-dots.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "9e0f7b7480c2f946bef73148021d862e795239f0b98d178c844b96bcc10faf45",
+   "source": "78d2c5c603a1db34a9b960d8c9db8d5b9ebd0e850df8c4e1a371017890e523bf"
+  },
+  "pod-collection-pattern-plates": {
+   "file": "pod-collection-pattern-plates.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "d72bff7087c24c48d0511b676958705ac2ed95200b09b8d3423fbfe4786a817f",
+   "source": "737fb9351928aa6ffd609b4ed3d5511eb720cbb4b65c407a89ca4324abaa6e6e"
+  },
+  "pod-collection-pattern-plates-relief": {
+   "file": "pod-collection-pattern-plates-relief.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "1237511b014c8764b00edde1d7bab16599775f52768d4f25f9a056a7b0f381c5",
+   "source": "d2cdbdcc612d0f0fc91c46c0d46250b3ef02eef36b187176ae64bf374116be64"
+  },
+  "pod-collection-pattern-ribs": {
+   "file": "pod-collection-pattern-ribs.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "5a3ece4cfc969ce5e352b401b1ccec105ad0e4442003417cd258e0bd14dbbe73",
+   "source": "690f559ff60f070c4b31d6acfad9bbb1e8a71afa5412634e27f5e57910e93d1c"
+  },
+  "pod-collection-pattern-segments": {
+   "file": "pod-collection-pattern-segments.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "90efeaf81f1c65273632f35389a11bdd8af962b4661da21d26a140914316d0f5",
+   "source": "662285338b7c4a074027383862b6115dd6eac9397e556146973fc4237feb61bf"
+  },
+  "pod-collection-pattern-segments-relief": {
+   "file": "pod-collection-pattern-segments-relief.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "38e674a878a39b484344ff62f68d6e2d5e858bdca86e097b264ff1e00d8d9903",
+   "source": "ec97b1a473cad64ab0aac3361e0f365a088f2700823fbcf9f840ebd68df5e689"
+  },
+  "pod-collection-pattern-stripes": {
+   "file": "pod-collection-pattern-stripes.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "9ce3d54d5c6daf6810b886e04ced3f9284f4965f6d1c9049d4273de71fd3c6f2",
+   "source": "baaf0fe4a2eab57b3848dfc0031b1d0ab7170969045c384cadbbdd808b0e0e99"
+  },
+  "pod-collection-sealed": {
+   "file": "pod-collection-sealed.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "eefd801d0ab53239717668dc193a048e089dbab452c61d9d39bd2923d9f6ec14",
+   "source": "b0aa805cb460488fea08274a3cfe5595955092fd2b164e7b06b2f91b001039a0"
+  },
+  "pod-collection-shade": {
+   "file": "pod-collection-shade.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "70f3f5e3a904e120b0fd0b78f7ca126e90dc0984401390fe86216fb0e5debc8b",
+   "source": "be65bbf24cf1b84818d24123a24f9e334be5a1dcee8875087fdec5608b0a0bb5"
+  },
+  "pod-collection-shadow": {
+   "file": "pod-collection-shadow.bin",
+   "w": 104,
+   "h": 14,
+   "bytes": 5836,
+   "sha256": "81d858ed49ecc6eb4bd6bdeaa88b62c4a3b5a25ddaf74362242d4ec9bed72998",
+   "source": "f4a6dd5d9934b1eb845dd55b74057a3391d3af29aab4b536f408f8ca3450e0b9"
+  },
+  "pod-collection-unknown": {
+   "file": "pod-collection-unknown.bin",
+   "w": 88,
+   "h": 112,
+   "bytes": 39436,
+   "sha256": "7ec06939fa50bbacd13aab04e851f0dd9d6b53f65776baa5a71a9b5d6028f1c7",
+   "source": "f6a1ad4e46d4d276ca860ed7b01520201d7091549855155929a8cdc296674cf0"
+  },
+  "pod-large-band": {
+   "file": "pod-large-band.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "04ccaaca29bd84e1a3150b757b7370a5b3b2a8a8b04e7352b21c52854ee33d02",
+   "source": "26e706be7751274e14eac8873afbb86d9ffcc1f95bc342b4eceb67fdaa0d0642"
+  },
+  "pod-large-crack": {
+   "file": "pod-large-crack.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "35a608d7ab264e1c172ee164bc72e5bbdc5932b23a700505a8c7155b492cf793",
+   "source": "b88323a6204d9518fc46acf518ac303914e332a51782fce993648e8a299fc02e"
+  },
+  "pod-large-identified": {
+   "file": "pod-large-identified.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "d3e2b568e4d54916ab484179dc310b5ab0fafa2638b57d2ef82bf60569af3a4c",
+   "source": "7145f5546a3dcc85bb4a77a9d2b194c5d0e68b0f5ad32c0a034b8cc1789fec8d"
+  },
+  "pod-large-mask-accent": {
+   "file": "pod-large-mask-accent.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "54729cf3eb8d8e8a609bd4e7d62dfabc7707c6ce87739606adf4e32898dade0e",
+   "source": "913fd9738ff560fb3be026e7835a49ec4d698501c1de4dfca9a52c5f573f9434"
+  },
+  "pod-large-mask-body": {
+   "file": "pod-large-mask-body.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "c8661dfb815d1420c937ac0b7178d508a877b3c8fb3b35840e5fb633697c825d",
+   "source": "a9524bbfe27f48686bd9d3aa74f96e418cc874c4d12e28c20bf791240f47a631"
+  },
+  "pod-large-pattern-bands": {
+   "file": "pod-large-pattern-bands.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "0bb32553f1aac468203bfe00b43fcb23399d0d9aed895f399b4a6fb83e8f434f",
+   "source": "68513470ac4c65cf8557e8d8be7dc9c9a3cbdd7923d6691bf05fca58e471b034"
+  },
+  "pod-large-pattern-dots": {
+   "file": "pod-large-pattern-dots.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "920a2b91cc37b58ec36d13f1b06413c2181736b7ba8c649fbe9bfa0fe1346eba",
+   "source": "859429db53a1b2b897d51cd87b70f954d70544908e5f7adddf1a6896abde4966"
+  },
+  "pod-large-pattern-plates": {
+   "file": "pod-large-pattern-plates.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "6cfafa35a52e458e7d2b14c409956b24a6303e23fd6bca3b0860b4cf0e850c34",
+   "source": "f336309ce217bccf29058f5de627a95044b7de7789c9fe3e3b9d7dee74992dff"
+  },
+  "pod-large-pattern-plates-relief": {
+   "file": "pod-large-pattern-plates-relief.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "8e677d10eae49dc49b0000ed4ded886c355290de230494479c0ee7675e96eb2b",
+   "source": "cd234f7baee6e47a1f34bdbb91c4632880f721956b50034affb042432f597a9b"
+  },
+  "pod-large-pattern-ribs": {
+   "file": "pod-large-pattern-ribs.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "661ccd5de7e70f76928c8bab8ae3bca0f2fa653ba1c2c22fb8929f9e7d594819",
+   "source": "c4710d092453bbf531ea08c26e6dbc31eff00867e3a6a50d0f995cb95e96893c"
+  },
+  "pod-large-pattern-segments": {
+   "file": "pod-large-pattern-segments.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "f91a1f9a4c06fc291314bc2e27cb31246606627b6809054513be389913116fa2",
+   "source": "ea2ab984a9056434c21742e36c1266075208ccac99d3f606bae286655f62f1d6"
+  },
+  "pod-large-pattern-segments-relief": {
+   "file": "pod-large-pattern-segments-relief.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "68b09bd685290ddd8ed29c43ef0755d1be8f1f1b9f2097db78b47af08e1d92af",
+   "source": "931926452b0ed79c820f694185ef94fdee59a2525bfad55dce0a9a4721f38db6"
+  },
+  "pod-large-pattern-stripes": {
+   "file": "pod-large-pattern-stripes.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "1488c7b3731ca146aa51b0ee4102b0a85bd23bc099511d58c5518001cd936b7b",
+   "source": "157551c0b72f4b77c5982606cd93190244321be6538ea9391960e63e7985e1f0"
+  },
+  "pod-large-sealed": {
+   "file": "pod-large-sealed.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "a49e9872f8b9ddd524bc3b269fd86d111c04c40861e3a0cb8ac15292dff693f8",
+   "source": "8dfdb43c2915f69b00d8429f328a9e88dcf710629e1a19b7224455432f60dd5b"
+  },
+  "pod-large-shade": {
+   "file": "pod-large-shade.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "fb26a39756964ab21c6c07e5d9e165fbaf29076fa8179bf6f2e3e8b2b3e8bbc3",
+   "source": "0078c3a94d11bc6458e3da03cc6dfed0279a19426e8cabee078c76bda4cda977"
+  },
+  "pod-large-shadow": {
+   "file": "pod-large-shadow.bin",
+   "w": 160,
+   "h": 14,
+   "bytes": 8972,
+   "sha256": "31583c3e2ced2adf055cb5744ca81312f093ca1dbe408bbbca4b26cdb03c2133",
+   "source": "6a99a9bfb6d15d1a9e9c18c1cab99c09d30cca8dd70e7a12d7e6c7a99587b811"
+  },
+  "pod-large-unknown": {
+   "file": "pod-large-unknown.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "bdd6eedc5576f6a21bb41eefcd583d4766b2d18c1d0572494b96edca1efc540d",
+   "source": "e7d0644ea30d3177b4967b3515995fce4435194ac481700184f3910dc3b017c0"
+  },
+  "pod-medium-band": {
+   "file": "pod-medium-band.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "46862a8ca300b8207377e2ffe4351e2d8dfc4b54a9f231aa0debb2b8de4d71be",
+   "source": "6b6b42f6a86e27e12eae7073f469071184c2801a68ff49fab75f72ba06a0bcf8"
+  },
+  "pod-medium-crack": {
+   "file": "pod-medium-crack.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "2321058845ad5fc461716e7d5607cba2ce67bfac7a4815741c3a47f0e8888520",
+   "source": "42a03dfaaae851ecd8ad428d2aa6a71804b2b3f41dd770881dfed6daf23228ca"
+  },
+  "pod-medium-identified": {
+   "file": "pod-medium-identified.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "3e5e5fa416373b23d41cbfb6b57c204865d6f05b08f85c292115310427f0915b",
+   "source": "4706d8a9c724944b16c03a970cedf53533a77c1e72680c91b2604bf82c24dbe7"
+  },
+  "pod-medium-mask-accent": {
+   "file": "pod-medium-mask-accent.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "ce54b1fcdb4bb12c352e6856110685f877433eff63409abc56ac7909869d36a9",
+   "source": "757f873989bde006abf8145514063f2e33dce204fadbc4840202b72f9b340521"
+  },
+  "pod-medium-mask-body": {
+   "file": "pod-medium-mask-body.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "a9daa2bbbfac0bf7638ce9fa4cec6aaaf704114e0440f488eae0a8a7d336b844",
+   "source": "0795d489e1736e302b3cb250bc9a714668e733a9c88232aa82b5db33c38e576c"
+  },
+  "pod-medium-pattern-bands": {
+   "file": "pod-medium-pattern-bands.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "8a5111d749e8cafcf7087c2b6097b33495eec9139685a837d182ab7f23c07092",
+   "source": "814190d730b755459dd7568733d11d3b3f4a70a3e2b13f871528eee6fc988b7c"
+  },
+  "pod-medium-pattern-dots": {
+   "file": "pod-medium-pattern-dots.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "84d330b9f974a377b5ead50674664528ba8e994313224ffc6f02a8f903b51678",
+   "source": "cdcc38c0c3afa30b7aa6be4b948f2eed92a01e07a45fe9a86609786105276df0"
+  },
+  "pod-medium-pattern-plates": {
+   "file": "pod-medium-pattern-plates.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "3d0198db5a5112ce09b5e661ae0fdee67b1d84c6c381fa6d9852d0aa96c8936f",
+   "source": "b276930aa37c0de4f84567d0dac8ef4e4abb594b4fb4901dd2e898ccd300cf91"
+  },
+  "pod-medium-pattern-plates-relief": {
+   "file": "pod-medium-pattern-plates-relief.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "4a2abf0f6a3597579e5e0fdb9612c4fc8e392f29035ab2972c927f4d7b742006",
+   "source": "45a06968545a317b7bc7d41dbcba9f715a170e3ed440c0e316cc1021bceb7df7"
+  },
+  "pod-medium-pattern-ribs": {
+   "file": "pod-medium-pattern-ribs.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "ddec9897ee2fa663e9472bc04c6b93b3dcf00f124161da6d08e7f75e35e90026",
+   "source": "feb61cc0ee19f9aaa6eb2ed87d053c95bba27f3062b1450cfd0889f1a5c257e0"
+  },
+  "pod-medium-pattern-segments": {
+   "file": "pod-medium-pattern-segments.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "0b80747d316349d8f3747c9ef5626147267d4cb97e8543d7c02ad07ec13c4964",
+   "source": "3c4d3fba32c0932e4b10df31589a181eafb760d41d8e90b47537296316bfe404"
+  },
+  "pod-medium-pattern-segments-relief": {
+   "file": "pod-medium-pattern-segments-relief.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "946003b35cb79f02d74da5d42a5fe689a3a520673b5d955783ff7886fc4fbb98",
+   "source": "216795a3630ebaa07fd7189bfa9464b584b41acf979f29a84396c6f3a46f93a5"
+  },
+  "pod-medium-pattern-stripes": {
+   "file": "pod-medium-pattern-stripes.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "61584bae00ed7093c67e2f80633188adce67fc660fcca92ff1992a92c3cd06d1",
+   "source": "fea9283a49769eb66f89254d9e96097a69e1da89123065a4807ca41c52813c7f"
+  },
+  "pod-medium-sealed": {
+   "file": "pod-medium-sealed.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "1d594a4eb6b43bfe9b35275c66ad5fa7403d0eb6c2755dd9452729dd57b34fa6",
+   "source": "a1dec3284a7207c6e1d9a9f65fe3db7b56fcf4572314d3206c040a8c4f9149b6"
+  },
+  "pod-medium-shade": {
+   "file": "pod-medium-shade.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "db83f71d0ba13c218cc03522ba5b5fcde9581302b8514556210d74f48ec949bd",
+   "source": "6b131c952a2e200178c5bd97713c4e523f8c625b943833b60c11bcdc13a25f81"
+  },
+  "pod-medium-shadow": {
+   "file": "pod-medium-shadow.bin",
+   "w": 136,
+   "h": 14,
+   "bytes": 7628,
+   "sha256": "2849a69534a706b808723b8ccc7cacf84f32ededca6ac4f4cb6d62351a5e860b",
+   "source": "7c9bb668a59879981815b7ac097617f97a526fb5428a1ed799cd2ebf2b8991e6"
+  },
+  "pod-medium-unknown": {
+   "file": "pod-medium-unknown.bin",
+   "w": 120,
+   "h": 152,
+   "bytes": 72972,
+   "sha256": "76e92ba5c63f2d8b8420f01fc28c2ab501a00bbc8a3690106ca497a249d64d0b",
+   "source": "4094787088cc3f4152b25030ad8b2497eed27de1bcb17aa629a7112333e475c5"
+  },
+  "pod-small-band": {
+   "file": "pod-small-band.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "727bdbb6f79662b180ec58d8104f76a5670b49d27eeb5dc7e77037745cefa1ac",
+   "source": "f91394c40e6cd6277bc6599d5a233d70fe23aaf181c492d50e5fd1a2d65f564d"
+  },
+  "pod-small-crack": {
+   "file": "pod-small-crack.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "a391efa723e959c541e7b0387fe0014080cc065dd6ffd753a80ec4578a3647f3",
+   "source": "216a424afa504aff374fc0c0437d8340c5c81dab9e09e061eeb685587f01823b"
+  },
+  "pod-small-identified": {
+   "file": "pod-small-identified.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "f831ec22177a6f01497252359a822e0e002d281e16d3e31212993faeb95e07bf",
+   "source": "9c1dc72ddb4eae4f2cee550ffe6ce6a48eeceed384175cc465c8ec846f7d01d9"
+  },
+  "pod-small-mask-accent": {
+   "file": "pod-small-mask-accent.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "fad86e10d95967ff395692543eb0bf7b0202aa86d5bcdd25d8851d2f67091a17",
+   "source": "f761108a4689813bbc48ca63d3adf20708fdc58bfcd28606ee79d29527a429fa"
+  },
+  "pod-small-mask-body": {
+   "file": "pod-small-mask-body.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "582cdd96f2d5c498c5bad0911b3b0a36816c02dec39c34b9b4fd37c0e04799b9",
+   "source": "18b8e8cb35d042f91f4e90c311e6ec5b5b46479c62530d2bfdce1f0bbbe8ac2f"
+  },
+  "pod-small-pattern-bands": {
+   "file": "pod-small-pattern-bands.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "7409df00a318d289cd34071354a75a01a5b13ea8fe1565b0df18776d277e5565",
+   "source": "7a10e629abf7ae9b1b03cc4a295383d9d32d0bcf34dbd6647d0f4d72a313dff0"
+  },
+  "pod-small-pattern-dots": {
+   "file": "pod-small-pattern-dots.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "c0a3eae00e352af7527f60ec6a423458a0b7b5b673ff6a92e0d2f3c64cbcbd35",
+   "source": "5439673315ecd330b9ef5a354ed25f790902edaff75e046d4075a18cc3825023"
+  },
+  "pod-small-pattern-plates": {
+   "file": "pod-small-pattern-plates.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "bb8d53c5873f202498bc44d08ccb4a2c3096c12e8dae1b438d650e24e6cc1738",
+   "source": "cab089c1ec60448397f97b815dafe135dae3738f372aa4d07cf0dd91a922094a"
+  },
+  "pod-small-pattern-plates-relief": {
+   "file": "pod-small-pattern-plates-relief.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "70c6b61d90d9c51db62a6e0268ebccba2cb6b06a795d38e22fe9c42988d95a7b",
+   "source": "c7821cea46f90198676d78423d6220147679a9fe56b09fcedf26a10d591d6b5e"
+  },
+  "pod-small-pattern-ribs": {
+   "file": "pod-small-pattern-ribs.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "2f62bcf5e6c0e90f6ccedc8ef2b465cbbb89b4c08538d52894d783ee15b22072",
+   "source": "7c71a7dff30f373059b05945b0c74a73f7df375df56edb28dde28ab76e7e4192"
+  },
+  "pod-small-pattern-segments": {
+   "file": "pod-small-pattern-segments.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "3a6dfcdc1ac353762ff83297432c30f7e9daaf6f2d6c5a19b1df3c14d1beb093",
+   "source": "9518344333a8d7ef7054c32d10951bbebda492eef8d05f922d5f9ff45f2ea71b"
+  },
+  "pod-small-pattern-segments-relief": {
+   "file": "pod-small-pattern-segments-relief.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "f48919139aec18f9c048ef10c8fbb8985ee1f852f5f94a956c2120c670cdedf5",
+   "source": "4ad85f18ab68e14842678e3bbe6eca0fe593d404ab5c0a9a35b34d752df04aeb"
+  },
+  "pod-small-pattern-stripes": {
+   "file": "pod-small-pattern-stripes.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "a900dd16fda37ada1065b13a681904dbc372f4a5f9119dda90e80588bcad618f",
+   "source": "907b0a6a63703ea6c0d968ef5bcd661451c038bc1fc7e08a05511a74b38fcef5"
+  },
+  "pod-small-sealed": {
+   "file": "pod-small-sealed.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "3c2ee236749de954330e40f88917eed86a6d4d52b7e4e509e1fbbca074840abd",
+   "source": "66a625fd972a4ef17c6262fbc73f84b046810b37e5659e9edfbafcbcdbdca3ce"
+  },
+  "pod-small-shade": {
+   "file": "pod-small-shade.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "1b9b54e0430e0173d5b6a34c28312cc66fae6373741e262bf8e4809f594ef659",
+   "source": "ac7a024e69031773f101666c580f53f8cf9911af9818bc9d7a9620f3208a23fa"
+  },
+  "pod-small-shadow": {
+   "file": "pod-small-shadow.bin",
+   "w": 120,
+   "h": 14,
+   "bytes": 6732,
+   "sha256": "ea7b656b8b9f8000ed80cb1566bad53121bb4fe4d69b11e5fb1ccae9c792aab7",
+   "source": "c0826b447b2f6e5a22c5f6b3d928eaca57629ae99d8218c7a76d8c0f356ebfc6"
+  },
+  "pod-small-unknown": {
+   "file": "pod-small-unknown.bin",
+   "w": 104,
+   "h": 128,
+   "bytes": 53260,
+   "sha256": "162465b6963613a17a59958d88ced397bc3600a7ef4f906982f63478bb4cd6c9",
+   "source": "d394efb849f88bcdc23846b5f66e711dd4f361059f9444bff9803f16c3da5244"
+  },
+  "pod-well-band": {
+   "file": "pod-well-band.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "fbd184ac487c2374112139f9fa7cd382e76f77532fb11798872b9ce534cc2aca",
+   "source": "6968e2fa959f8a3c69ef59e1af276288247e9fadb97e0855628f5df570b0a02d"
+  },
+  "pod-well-crack": {
+   "file": "pod-well-crack.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "808f4cd666f08bf00fb341cce97dbb68df73af4b76fc74033739ef3fec6bd658",
+   "source": "d32a99fc6c672a57965797d177fc4821be099b56ecbc3fce028d23bd8331ff2c"
+  },
+  "pod-well-identified": {
+   "file": "pod-well-identified.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "6a8f22e00f75419199d5e46628ffedba7fc416602cce78272ba9358eee73ebf7",
+   "source": "1def9aa52197d5dff7755d2b6f8ae71dfbffc498ffc6c2d4e6b08e086974426c"
+  },
+  "pod-well-mask-accent": {
+   "file": "pod-well-mask-accent.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "5e5d9eee791bce817403f3804878dbe29dfcda75ad9dd8755a9dab462fff608c",
+   "source": "2236fa0afe54c90eccbe22a55f0861209641132041b8f5e923135de4d1fe86ae"
+  },
+  "pod-well-mask-body": {
+   "file": "pod-well-mask-body.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "a7d76a3d520e8847873c375fedbb5d9c4f6c66bee4451b704687294e811f2d64",
+   "source": "ed6c5626f1ff3e74f50ec3674a1af844ae585fba844d47bde7ffad4a3eab1a56"
+  },
+  "pod-well-pattern-bands": {
+   "file": "pod-well-pattern-bands.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "9391caf0542cf06c774c56d034b751aa198e0b65570a4ab91d8e569dd6d3114b",
+   "source": "bc43435d4fca6bc4c628c8830e81ff002ed4e5114aab575a6dddd23a49553ad7"
+  },
+  "pod-well-pattern-dots": {
+   "file": "pod-well-pattern-dots.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "da7743dd4e42e5463e40ae55193d4503386316ca4e5697cf43f4c8dc26ad876e",
+   "source": "dca28c8ee4a97cc5cba1652d6f0cef0bc5985475fc8ae504074d8b4c36d9fdce"
+  },
+  "pod-well-pattern-plates": {
+   "file": "pod-well-pattern-plates.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "cff78c5152a97ba0109e63b82dd8ed9508f5fb5f9410a646911e20315cbbc470",
+   "source": "f6a16282f9c548688af899f0abc68fee04d47632687c03ebbe54a8c1f5246e63"
+  },
+  "pod-well-pattern-plates-relief": {
+   "file": "pod-well-pattern-plates-relief.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "2caa2fdb999f86719d2dbf9b8b661505960c12df38901b62e3be6a2032883403",
+   "source": "1b9836f619a3efeb7f63e27850a1e1bd8537bfaf557167e245a2c82f2708fae2"
+  },
+  "pod-well-pattern-ribs": {
+   "file": "pod-well-pattern-ribs.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "756ef43979ca549e222eeda6cae6aa23e8539c24f332c8f0a4a8289452664e3f",
+   "source": "576aee5a7d62b1aa76f3011da9ee2ef3ca8aea5a4e9f7650d60f502f38de9c67"
+  },
+  "pod-well-pattern-segments": {
+   "file": "pod-well-pattern-segments.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "5bea72b49aff0a16e79e1a9fe3bf487d637352bdae7eedd61085c22862fe957b",
+   "source": "b4c76252c8c7c9dee9d0f1e77cee8852ddc495d5389e636641a1e03d5f3fa64d"
+  },
+  "pod-well-pattern-segments-relief": {
+   "file": "pod-well-pattern-segments-relief.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "a7427a953c81468414df331f926b8c438ed0f24f187af299493d63b32d36cef0",
+   "source": "e3ecdb30617ef724bf0858de2d06be49d89305ba11824dbdf61ba4280c1aad7b"
+  },
+  "pod-well-pattern-stripes": {
+   "file": "pod-well-pattern-stripes.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "126e8b512b9903833674d94e19db83ffb1be9502d630294320861cb83a51a8ad",
+   "source": "e631f0f010b5d2ce0bd486e5f6a9b7c1e4eeb64ca9198a8763387ece878ee147"
+  },
+  "pod-well-sealed": {
+   "file": "pod-well-sealed.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "765cbc4c47f301d6f830168cf60af41df8a72d8dd89bb7b1350401ba2ff32edf",
+   "source": "c57634f8f3735888659c0de006931b5b65d8599f303c665d967200308668b1d5"
+  },
+  "pod-well-shade": {
+   "file": "pod-well-shade.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "50b6ef0e6e52b065de149e286418e7476213f6f401d82c85ba3bd51f16304077",
+   "source": "c40fd8f578ee4403b4fad2973c0ce3f2b7ff09bc079287e953d72218726c6e1b"
+  },
+  "pod-well-shadow": {
+   "file": "pod-well-shadow.bin",
+   "w": 56,
+   "h": 14,
+   "bytes": 3148,
+   "sha256": "4f71d8bc3d7ebb4c55e5a180ffb09a0e73f1f2596c55ee226acbe87dbf104b22",
+   "source": "e250f80ed856145e2b6252291f31cee3ff3543eda23a6f51d157ac8c73f67094"
+  },
+  "pod-well-unknown": {
+   "file": "pod-well-unknown.bin",
+   "w": 40,
+   "h": 48,
+   "bytes": 7692,
+   "sha256": "32b99ce24226107e5da6e648ab64696484441ab56ff6614661ed2bd3a3faab1e",
+   "source": "05d476feb77e39341e24a64adef2a40c56740c05fe1747066c511e7bfa930550"
+  },
+  "rail-emblem-character-read-24x24": {
+   "file": "rail-emblem-character-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "37a97ba0f2dfd8e47c8a3e64a39a38acb4356e5af993c85e2c201a36ae5dc21e",
+   "source": "73e8b0c40c09597463f2bdf80c2d648dc69bc83e3c9ef070fdb2a29a6fcf4948"
+  },
+  "rail-emblem-character-sealed-24x24": {
+   "file": "rail-emblem-character-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "c407d5414057081c7c70259940b518c03451f812f9b5948aea222d9929b7e529",
+   "source": "5e3233e2b16fd2b4a13ef96a27a8fce1c7936927ebca47b0abf824f27dd9168d"
+  },
+  "rail-emblem-character-unread-24x24": {
+   "file": "rail-emblem-character-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "f6098bac6ab88f275049e0f9678e6b9e8220214377f39d8822900062e472c279",
+   "source": "96acef814e4e4bac154ddc26631e39585529024c9e423dd5a186d2e1490e3079"
+  },
+  "rail-emblem-charge-read-24x24": {
+   "file": "rail-emblem-charge-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "43f86f71991f92a809c17fdc92bea9c5cefd386694d2cdef9d18f23b3aeb4542",
+   "source": "36db425c2b69a13d2f3b38dfe824c504f81f1269a37862efee594b486fa41fde"
+  },
+  "rail-emblem-charge-sealed-24x24": {
+   "file": "rail-emblem-charge-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "6a22168948ed2fe4809da23d747f402c3794fc9ab7c2d997e59f75a7f24944a1",
+   "source": "9567167a5d77d1e6663abed3cfcd38b4fb8b7a6be5b43d044f0e5def35a663fd"
+  },
+  "rail-emblem-charge-unread-24x24": {
+   "file": "rail-emblem-charge-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "df3e0ecfbf163cca84f48fffe80411eadb65f5bb96493f4c5ee3a88ffa42cf39",
+   "source": "fc814be8c7c19d4722659da2a3e1f857537176e42ca1f4350b18e96942e34f0d"
+  },
+  "rail-emblem-coat-read-24x24": {
+   "file": "rail-emblem-coat-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "af279e3f88343ebc01f5b2e5084338138ebb1b32b1cdf4bf0f48ba895968dc88",
+   "source": "ca8bcf94563be3f860b5f981edcbe3a523410aa777337b16e82ac450dac42cea"
+  },
+  "rail-emblem-coat-sealed-24x24": {
+   "file": "rail-emblem-coat-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "c1366fe5f4b7d32c3d0143bbfbd19875ba62f388bca9482fecb436982d3e52c0",
+   "source": "2db580c2927ca9bb4d8351b9008310f9c190f2eb8760b06cb020aa6e15354b98"
+  },
+  "rail-emblem-coat-unread-24x24": {
+   "file": "rail-emblem-coat-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "6f858901f03c982c57780faaa81b3df08e8af0bf9232c0172de1da21ca1c86cb",
+   "source": "01e18c2125c141a6b1bfc9162f52500d022f99f570cb664d35b4748e7542b18a"
+  },
+  "rail-emblem-face-read-24x24": {
+   "file": "rail-emblem-face-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "1a4968f3160868e0d94b9650099ed82d0f2a6630a2539d3e635b16e0e1315f24",
+   "source": "0065f37420c576fbf533f34d25040031697021577e0749f80828e266576e53ea"
+  },
+  "rail-emblem-face-sealed-24x24": {
+   "file": "rail-emblem-face-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "b29ad58afcb1309efcf23f37e00678973f167038f1e32f8d2f4022fcb144ee94",
+   "source": "fbe93db1122fbdc9de0965a5dcb2e9a03fdd41e60a3a330e409a9b11df4fdbb7"
+  },
+  "rail-emblem-face-unread-24x24": {
+   "file": "rail-emblem-face-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "ee0f33bd0876ad9bc49e9c706f571694a2ca85c75cd476cc5459398b09ce596f",
+   "source": "34e7df89deba960389ce267c49c38716eeefd1bb88b3ed0b78ad9a69288f940a"
+  },
+  "rail-emblem-glow-read-24x24": {
+   "file": "rail-emblem-glow-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "129fce2fd5401e0606889f758bfbe99191eec992a0a1aa926f1cd4cc22ced43c",
+   "source": "d3f6c2fba002309bd75d2ca460ecdbbb7d1028c147abc5184b8660caa1d3e7e4"
+  },
+  "rail-emblem-glow-sealed-24x24": {
+   "file": "rail-emblem-glow-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "b1123cfdaee07fc00ebc3921fac19efdcf37dbbc66d6f09bb98a41beb8b79bd5",
+   "source": "dd36c355b9bb32becb2ba43bfa045b92e52f3eeabe6eedf23800dda7d3086b2e"
+  },
+  "rail-emblem-glow-unread-24x24": {
+   "file": "rail-emblem-glow-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "89c2ca8ff21e3e04be4fe0c26b0f16fc562d37856fd01c931a92b4e66396f290",
+   "source": "ad415891525695b590521aa8dfc96420985676ebbe70bf9c4c6d4ad8db290aac"
+  },
+  "rail-emblem-legs-tail-read-24x24": {
+   "file": "rail-emblem-legs-tail-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "5afeda771fda0057b1c97c48c34de4adf980efe3d5600cd0b88feb46b6665202",
+   "source": "d0701d8efc3807cf9131c465cff360f20517ee6c38afd42d20faaedb642d8621"
+  },
+  "rail-emblem-legs-tail-sealed-24x24": {
+   "file": "rail-emblem-legs-tail-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "31b1774e3a566da99159e60d6229a35b0414bd8ac936191ba2ac03c1f818e4de",
+   "source": "c9e45c73b91c36a8c898a35febc013909e22845efc18c4e69bd274f8fe434386"
+  },
+  "rail-emblem-legs-tail-unread-24x24": {
+   "file": "rail-emblem-legs-tail-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "5ee086fe5e8bd8a0171dbc1eec6ae2fd13c6ba5f7b7b61d60e501f6890d999ab",
+   "source": "57c57f43be31091a193fb4fe1af57ad26405c3beebe7b36661d7134940412d4e"
+  },
+  "rail-emblem-movement-read-24x24": {
+   "file": "rail-emblem-movement-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "7bf03184b86e8d2cc6b3387ee7557b6f5dde8633ef2f5cbe5b71ce61110a5a12",
+   "source": "aad8088107741a8c87802d52f9ed0da06a8e0495bba549d97747670536d36e02"
+  },
+  "rail-emblem-movement-sealed-24x24": {
+   "file": "rail-emblem-movement-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "c18cd567100b5e7518a31df6eae710e7b694e8d545bd3f1c51d4913065ed60b3",
+   "source": "3c2333c4caaa6bb3d2a58c005344fe8a33f78c27c14358f30c70270d60e1b600"
+  },
+  "rail-emblem-movement-unread-24x24": {
+   "file": "rail-emblem-movement-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "f0b98850259c05dfa1a110a2544de6b94b1edaf0fc02c59a915184093594dbe7",
+   "source": "b958b040cddd9cdefd775ddf84cf2449a8271e55a77b660641950b1d714c3242"
+  },
+  "rail-emblem-shape-read-24x24": {
+   "file": "rail-emblem-shape-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "a725633b877b399102f974bf371c1bd71ae161f0c8a6e416a11f46686c8c57db",
+   "source": "231e9fe1f509cc30cce2e1b75a834083fac54f9d9801eb8766d4b8ae72e6365f"
+  },
+  "rail-emblem-shape-sealed-24x24": {
+   "file": "rail-emblem-shape-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "bf8db3dcffa17ce8567877b0f893ef1978958b2cd4bbd5b18e7bd10b6919e9df",
+   "source": "35e1e8741aa0e5fd16de5109241294abc4d8b6cbf8b2a6ee58849b3d69fc9302"
+  },
+  "rail-emblem-shape-unread-24x24": {
+   "file": "rail-emblem-shape-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "c5e49654e484b416491114aa0e2763b4ee67f92d84b756ac3b61f571dd7e8eed",
+   "source": "2aeac7180f2c8c8fd698b7ee5a0c99db6a26d7fa0465dc5c1fbb118f34d870e5"
+  },
+  "rail-emblem-stamina-read-24x24": {
+   "file": "rail-emblem-stamina-read-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "4278a64c25d1d5bff20f5da3793ea79269a0b17e68ce754fe596e3732e28e397",
+   "source": "a969f9ba8ea742268fbea0b079bf8dfd640c6d8a2bd518d35d0759d6c159e927"
+  },
+  "rail-emblem-stamina-sealed-24x24": {
+   "file": "rail-emblem-stamina-sealed-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "3bf070698b0a31be2baafbdcd356e08798d37ef1cd23f03976bf1172f45e225b",
+   "source": "4d05d9639f062d230508d318b1b9ab80dcebf922a067f6972b76c8234f94de8f"
+  },
+  "rail-emblem-stamina-unread-24x24": {
+   "file": "rail-emblem-stamina-unread-24x24.bin",
+   "w": 24,
+   "h": 24,
+   "bytes": 2316,
+   "sha256": "9d31c65b872da59b601814384046b0c1b74fa5a574daaa3f0837468dba56f7d5",
+   "source": "87a1dd57ed7ef2ce89fb766094fea0fd176c8d39c787d46a760bcb4a1ed85bdc"
+  },
+  "rail-tab-fill-open-compact-72x40": {
+   "file": "rail-tab-fill-open-compact-72x40.bin",
+   "w": 72,
+   "h": 40,
+   "bytes": 11532,
+   "sha256": "74d0cbdcd8d08ff7ebc607cfe185eec1699510a53032a1693c231e436d0c436d",
+   "source": "0da80eb7e586d4e2df15164592bc75fadbb16d0fed3a9197431eb1f760869083"
+  },
+  "rail-tab-fill-open-full-152x40": {
+   "file": "rail-tab-fill-open-full-152x40.bin",
+   "w": 152,
+   "h": 40,
+   "bytes": 24332,
+   "sha256": "e14ba29780a63e5db4baecdd480568ab245416c230527b40e74805c7d348aaa7",
+   "source": "75976f3c3e3a197d24a7f9328aca280e98750289cd346b566e692cddd2d6d10f"
+  },
+  "rail-tab-fill-read-compact-72x40": {
+   "file": "rail-tab-fill-read-compact-72x40.bin",
+   "w": 72,
+   "h": 40,
+   "bytes": 11532,
+   "sha256": "95cccfa1447fb2e87410f5e7efde2cea4ec33c0fc31fcf036d3d5119fda27be2",
+   "source": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389"
+  },
+  "rail-tab-fill-read-full-152x40": {
+   "file": "rail-tab-fill-read-full-152x40.bin",
+   "w": 152,
+   "h": 40,
+   "bytes": 24332,
+   "sha256": "667ba582fa30f23a2aaf601b7ac9fd8f11160e44b7f4a8ae380465c6f3ad8171",
+   "source": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f"
+  },
+  "rail-tab-fill-sealed-compact-72x40": {
+   "file": "rail-tab-fill-sealed-compact-72x40.bin",
+   "w": 72,
+   "h": 40,
+   "bytes": 11532,
+   "sha256": "57ad4746c29205139921982703c72210775554964d56f863dd5fabcaa04d9462",
+   "source": "169ed3286a2ab4825e2441086ae53b6ab19fb90a1ea5f2e60f2ced52940b7123"
+  },
+  "rail-tab-fill-sealed-full-152x40": {
+   "file": "rail-tab-fill-sealed-full-152x40.bin",
+   "w": 152,
+   "h": 40,
+   "bytes": 24332,
+   "sha256": "5d0d3adf2c37021ad28bee68720386d8f26c60859b33783bc409973db60fbef8",
+   "source": "a911730768514b615f00b044a69ae93e99c0129ef237e41679891d73951548bf"
+  },
+  "rail-tab-fill-unread-compact-72x40": {
+   "file": "rail-tab-fill-unread-compact-72x40.bin",
+   "w": 72,
+   "h": 40,
+   "bytes": 11532,
+   "sha256": "95cccfa1447fb2e87410f5e7efde2cea4ec33c0fc31fcf036d3d5119fda27be2",
+   "source": "78035abd4b5465809a704de441ead97446ccaa9641ada0d3623cde62962fb389"
+  },
+  "rail-tab-fill-unread-full-152x40": {
+   "file": "rail-tab-fill-unread-full-152x40.bin",
+   "w": 152,
+   "h": 40,
+   "bytes": 24332,
+   "sha256": "667ba582fa30f23a2aaf601b7ac9fd8f11160e44b7f4a8ae380465c6f3ad8171",
+   "source": "eec243268c4a3a4be43f0bbccf9b17e34483696962ce372fccdbf458d3a6ff2f"
+  },
+  "ring-arc-collection-n1-s1-176x176": {
+   "file": "ring-arc-collection-n1-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "1a256dcc6203fdd493cfcf267bf1492df62ab3ae3411df7a38eb58be778787e3",
+   "source": "642a7984006a2d0437aaeedaabe72992dc8934b57e1ca1d08f8517dbb5457a06"
+  },
+  "ring-arc-collection-n1-track-176x176": {
+   "file": "ring-arc-collection-n1-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "54e31ccfe0955b88d5f854098e66bbe97d077a93a2349c735a89a4f638dfaa53",
+   "source": "3b6ff44cd73e70549adc6ca89efd1fc8d6c2d7708c9e5b516d199f3202e2128c"
+  },
+  "ring-arc-collection-n2-s1-176x176": {
+   "file": "ring-arc-collection-n2-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "6d62363b52f28f8f613300531616d7255966e86ceba38abf41e18ba506dc825d",
+   "source": "37ee769cdfbdc701fc522eaf7ee86f2192da1accbaa3fa5f979c85acb0aca0f9"
+  },
+  "ring-arc-collection-n2-s2-176x176": {
+   "file": "ring-arc-collection-n2-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "315e832d3ca568098797788d06f9e2c4fdc4df512fd204cd6d26d48cce0ee40a",
+   "source": "79b653cb1a39daa00270565a4338570766cdeb37504a24e511cc638c2f6cc38c"
+  },
+  "ring-arc-collection-n2-track-176x176": {
+   "file": "ring-arc-collection-n2-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "f84eaefc177e1497db38a2bcd0dba644da7fadc2245437dedfd67b76d228e890",
+   "source": "440f924aed498462492ebe2bc176f39175a363875eaf9f18eb4094c4a3894910"
+  },
+  "ring-arc-collection-n3-s1-176x176": {
+   "file": "ring-arc-collection-n3-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "4209d3ff2185de8c79e8090f869852153a96a15b278a3cc99dfcb03b83cf6d74",
+   "source": "9f578a253f7ea2d6a91458a6019f27b341140a0789bedd52268d25eedc858627"
+  },
+  "ring-arc-collection-n3-s2-176x176": {
+   "file": "ring-arc-collection-n3-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "a7fc0fdefc849a0fed4fc725ce17af771825f743ef1a6dc67fd16a24fbb6a28b",
+   "source": "b7fd8cd76f8acd48706375b86cbb299cde987e247e3a52b9213d493772592b04"
+  },
+  "ring-arc-collection-n3-s3-176x176": {
+   "file": "ring-arc-collection-n3-s3-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "75e61086e5e89957b2078dc6982b4ddfc63b5bf20081f9b85b863a780be96a81",
+   "source": "f9ff2c9605182c495a9e5c151f1ae0d241c3b8318f9dadf7f9992957bb34678b"
+  },
+  "ring-arc-collection-n3-track-176x176": {
+   "file": "ring-arc-collection-n3-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "0fedb8f3a3bc31d832d7c3e0594fad517b91e57eebd98d2f5661f9a682f1cdf3",
+   "source": "1172792e18466a549cb05638b80f4b89ea0564d896fe4eb1d40e93c18348554d"
+  },
+  "ring-arc-collection-n4-s1-176x176": {
+   "file": "ring-arc-collection-n4-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "e860fb37d8475cc7261e0a097341fd77ba11ff3641a956bf22002ee9375b0211",
+   "source": "02ec0981ee40097fc6bb318a6c8a6cd55b094e3e19963abf5351cdc05e223291"
+  },
+  "ring-arc-collection-n4-s2-176x176": {
+   "file": "ring-arc-collection-n4-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "6b83f6df2d2562e9b5a44522c2a849055539cdd2710dccf7f65298646f8477bd",
+   "source": "9faa5036ed282c7bde6c90e1f63e4f9fe5bf0159410607cb74e692ed006ea15f"
+  },
+  "ring-arc-collection-n4-s3-176x176": {
+   "file": "ring-arc-collection-n4-s3-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "25c7799327366054cf4db214ab2e2e8d331a1bfd603107d23256c4e14f4535e8",
+   "source": "89f6691e2612e8562da6a55d8b91222a1d0735ad42cd9aef9d84f6fdc0b408ec"
+  },
+  "ring-arc-collection-n4-s4-176x176": {
+   "file": "ring-arc-collection-n4-s4-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "826addc7ce3df9b621e12207d5e70be084e8afbd79cb71f20f9003f0181f0df0",
+   "source": "482de3fd0cf9faefb7850e49cdeb0cc6788e5524bf09c5d216ad125c3aeef111"
+  },
+  "ring-arc-collection-n4-track-176x176": {
+   "file": "ring-arc-collection-n4-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "78c69d8f502c86cd78798770a3a4f43bf4eecab6b0f3623200cf36fee3696cee",
+   "source": "7bc0ec1d057fd176c89b5a091ac8e90859aca91eed38b1f105d10f1223165118"
+  },
+  "ring-arc-collection-n5-s1-176x176": {
+   "file": "ring-arc-collection-n5-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "5fd42d8cf0e973c9d2ff19c5456fac042609d27dec862d8b01e9a8e5dc36ad1a",
+   "source": "72eab24dcf3f7c30ff8e0ff380fa08bcde3060eb9748b9c653408fdb46725f54"
+  },
+  "ring-arc-collection-n5-s2-176x176": {
+   "file": "ring-arc-collection-n5-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "a9347d65aa4d85b004fcf287938c87f2207d845205d544e29da80aa8aaeef576",
+   "source": "fa3b507f26aad0d24918708fd871b9f2c800ff6c8a2ecd01e66714eda33b835b"
+  },
+  "ring-arc-collection-n5-s3-176x176": {
+   "file": "ring-arc-collection-n5-s3-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "01583f209c38422f1aefdf641f2e11893378ebf13be99ea61ade023251ffa270",
+   "source": "3dc23d2f55d77f623ee5c37e6e40ec68057ad16f9aa85854b75e8e51e021dba7"
+  },
+  "ring-arc-collection-n5-s4-176x176": {
+   "file": "ring-arc-collection-n5-s4-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "a98b6480345b5fd681950678e8a51d693e128ed66794cbcd8b649217c058b3dd",
+   "source": "6763f1d9207fa294d1d7c3ea4a9f388edfe5f4731889bda6ef6b5e25229fcf04"
+  },
+  "ring-arc-collection-n5-s5-176x176": {
+   "file": "ring-arc-collection-n5-s5-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "193a4e2af7be0b920b391dce7b74bb71856e076e8c78cdc0ab38389c1f647fd1",
+   "source": "c2e7d1fd3e3c9ac2b6a2aeb66884c58e2a1381dc3f6b1916502b7f5afb4b60bf"
+  },
+  "ring-arc-collection-n5-track-176x176": {
+   "file": "ring-arc-collection-n5-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "f66311d14b4d895ccabac350e3098d16c42e2b59ecb61794ef78324d1838aec2",
+   "source": "8affe3297f9fbf35767dd5faa777f511229e96e9be9663c69fae51cc11c6aab6"
+  },
+  "ring-arc-collection-n6-s1-176x176": {
+   "file": "ring-arc-collection-n6-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "e851dbcd4709da29f9bd26629a2dd94692e2b8037078eb14a17c8b66d54fb2ee",
+   "source": "9838d2d241bfb4c5cee9ef5435d828e68cdbbff40f597ed3672a5dd7cfdd8ccd"
+  },
+  "ring-arc-collection-n6-s2-176x176": {
+   "file": "ring-arc-collection-n6-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "f4315341eace186aac3d828498f38009d17550c02c8c162aabd03cd52458b0f1",
+   "source": "728f159cdb3c170313619d8673f8ade9082e3fbb3a6fcc5f0f62d7974e0f6ec6"
+  },
+  "ring-arc-collection-n6-s3-176x176": {
+   "file": "ring-arc-collection-n6-s3-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "7355e90033965f13580145de77e1f24e40114552245a08393f11d5ff4530e9e8",
+   "source": "312cb0536506e2a4c224b53ebb6d37e568c47343558c9122c73bfd02cccfea8d"
+  },
+  "ring-arc-collection-n6-s4-176x176": {
+   "file": "ring-arc-collection-n6-s4-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "29632b14436570eef530aea34c5067a8e627cfec18eaf9843e5522f187bc74b3",
+   "source": "e20e2009febfa27e30313c4da6daf3b909d59897dc14354a81a8965db8662899"
+  },
+  "ring-arc-collection-n6-s5-176x176": {
+   "file": "ring-arc-collection-n6-s5-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "7624fb31b934984818ad7e549ccbf8584807a334c8f4a29d80a617ff33bb6c4f",
+   "source": "5b54063e7119fb28f32fddb8c483db203993a11bef71c99ad7b14bf28be56e52"
+  },
+  "ring-arc-collection-n6-s6-176x176": {
+   "file": "ring-arc-collection-n6-s6-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "12506b4c299f933544223b16f05444c7128abd29efd6bcd4c53ce7870803f550",
+   "source": "4b84259b4f982650783c4d4ea8c5b81a9245610557d9cb5b493ef2dacabc5b28"
+  },
+  "ring-arc-collection-n6-track-176x176": {
+   "file": "ring-arc-collection-n6-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "0b59a048eac74a9e8a5bce674620d0caaa00899c2cb7fd5241f7cd5f98c8b2af",
+   "source": "90e188cf167107d5fa336f090ce8a3b3573b832a0659bafeb0653e8956a80714"
+  },
+  "ring-arc-collection-n7-s1-176x176": {
+   "file": "ring-arc-collection-n7-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "e7c249ad23a7be6b83e1becea890bc83ac05692cba17627ee46494bed12e3658",
+   "source": "03cd67997a96fe300167eeba6066bfd5ec77cb900b1456ae2d0b07963496e800"
+  },
+  "ring-arc-collection-n7-s2-176x176": {
+   "file": "ring-arc-collection-n7-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "896dcc1008c893d4a7708ebf70c6fe77cb7dbaa6f6a2bd10579543f6af01db40",
+   "source": "f4ca17d5bda85e227eb06031cc8b5fe7daa990d61824b8cc2865343f78982f9e"
+  },
+  "ring-arc-collection-n7-s3-176x176": {
+   "file": "ring-arc-collection-n7-s3-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "2586f819e661e1724bb73209d34af036eface0bc2bc80560edfeff08a66602e6",
+   "source": "108bb6e8c9d4dfde790aa97276e3e80ca798c07ecbac7f0894f692d48f96a262"
+  },
+  "ring-arc-collection-n7-s4-176x176": {
+   "file": "ring-arc-collection-n7-s4-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "a5b3cd95b65d8e0dbae6ddfa532069540bed0b28d02e2558c0d7929399cf21f0",
+   "source": "925e909ffc151ed240e6a86dcb92cc557b894dc5c7f6e10e9a7d4237b6788f19"
+  },
+  "ring-arc-collection-n7-s5-176x176": {
+   "file": "ring-arc-collection-n7-s5-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "764b824e60589047e702ad689f747ed615d6fceb2dc6f7d58f76b4eed88f5cfb",
+   "source": "d4bd41d843285d8e2e823ae175b945cfd935e7e755bbe7039b8f186c1491386a"
+  },
+  "ring-arc-collection-n7-s6-176x176": {
+   "file": "ring-arc-collection-n7-s6-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "dd42796fb50d4b9384620870bc93567289e8a68a436f222a430b0816a158b232",
+   "source": "359ad6a640028f517ad028955ce3d809ea622cd79041e77041a5d40f6fac870d"
+  },
+  "ring-arc-collection-n7-s7-176x176": {
+   "file": "ring-arc-collection-n7-s7-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "26c668d65034b75ea6cf5872ae5d30202d471079533796e6762798c493fcf172",
+   "source": "6700fcb869ad9dfdd31832e673b4bfdea471a51101a9f2ae2a928c0142f1fce2"
+  },
+  "ring-arc-collection-n7-track-176x176": {
+   "file": "ring-arc-collection-n7-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "e0922799b7b2df68dca59581538cf9349f88adf3623d8bbc41fad047cf30fc02",
+   "source": "36a701e3120618d145e6133b6748f5281dfc903d68e253b2fa8c33aa2dba33a8"
+  },
+  "ring-arc-collection-n8-s1-176x176": {
+   "file": "ring-arc-collection-n8-s1-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "7a3543e6e7cdc794e560262e6ee62c408b6f264552f3e340736192fa975c91ff",
+   "source": "05095aa67ae06b423eb0a419f63abde5f938d032337424bc1f2276b6bcf17ab7"
+  },
+  "ring-arc-collection-n8-s2-176x176": {
+   "file": "ring-arc-collection-n8-s2-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "a13d7cf1d2fde18788ac157db84c00b443ea0c376b10ea3df33492197c615110",
+   "source": "7e516892cfa662716761585097a865204ee62fa688c450e73eaed49914d32b84"
+  },
+  "ring-arc-collection-n8-s3-176x176": {
+   "file": "ring-arc-collection-n8-s3-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "ecef79192259770a80cc7282795ea727e9746546ce56fe9aeb7c27a1d1348b70",
+   "source": "11c84597cb0073cfb76ad99b469031640da51e966abdb4fdadbcc01a59127fb3"
+  },
+  "ring-arc-collection-n8-s4-176x176": {
+   "file": "ring-arc-collection-n8-s4-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "b602de397033412ebb9c0749046103212f12ed2111d698faa1804be8f930a505",
+   "source": "cecefcc4c6e838e0fb1bdef1996bc0174b499f5965f1dcceebb8c0a395d52cdf"
+  },
+  "ring-arc-collection-n8-s5-176x176": {
+   "file": "ring-arc-collection-n8-s5-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "01b0533f2dae44947d573901224dd3065896448a27bed0481a0b0cf0af88163e",
+   "source": "9dea32b67f166cde7afe3a82e4a38f8c3fec73468342015afc9966754cf2b2a3"
+  },
+  "ring-arc-collection-n8-s6-176x176": {
+   "file": "ring-arc-collection-n8-s6-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "d83b8494260f6fb6337404d87672c2a6310d5200206de4035258b58693a1bd65",
+   "source": "60a1b59e7974a66a7a8cf1a2b9179c3b0856c4cd5e9671a9993288a3576c978e"
+  },
+  "ring-arc-collection-n8-s7-176x176": {
+   "file": "ring-arc-collection-n8-s7-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "f87b36f5f7820d50852c4d760245669d36a3cb402de20dee523dbb3801d11305",
+   "source": "0c59fe3b9890ac15f1415d604eaaca5369c03e8d445ec9fac9d37d00332fab91"
+  },
+  "ring-arc-collection-n8-s8-176x176": {
+   "file": "ring-arc-collection-n8-s8-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "e780295b575625c33f5b74fef00a709dc6a74aa714b3d5be25a103063a4946c7",
+   "source": "1e605c7b7d9e4d3e0472b7da50323e33758662804f06b72230529b6f44b71edd"
+  },
+  "ring-arc-collection-n8-track-176x176": {
+   "file": "ring-arc-collection-n8-track-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "060621e0e61995f9d4c8e63796dbd502893c4beb0262edde6d02aea885707b6d",
+   "source": "a29040b53d2c434f461849d351022175cea080f10c1f2c4b1233c10184979f4b"
+  },
+  "ring-arc-idle-n4-s0": {
+   "file": "ring-arc-idle-n4-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "0fe85f30f14fc40d550e86cf12d95616cbd02052b12dc85008e3cd37a4f990de",
+   "source": "50b6ed428e312010f0dd045c976c4e5b3af89d6160894e741882787769299487"
+  },
+  "ring-arc-idle-n4-s1": {
+   "file": "ring-arc-idle-n4-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "28613bf6c816c5b0628bd24e61bf339250408e03bba060a72943c680d3b3f72e",
+   "source": "a0db353a94e4867a80139a4a62b6b57b2eace7c0682ee04a9b46e098a0e15d6c"
+  },
+  "ring-arc-idle-n4-s2": {
+   "file": "ring-arc-idle-n4-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "87845ed2008bf8c75c106aa4bb804caece7af1c6a90e178fb0f28a37958a61e9",
+   "source": "d49332d4601961807227c6d868e61846ba190bf4cd319d209f4c0db9af2e2bb6"
+  },
+  "ring-arc-idle-n4-s3": {
+   "file": "ring-arc-idle-n4-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "22bc57f176c55eec51c2c1466cc1a771c3573e20c4ed4eada7cbf773d6a06420",
+   "source": "8ad8ca16f73a3b97d85f9a9df7dcd9d5fcb7571f2a82612656a157231e22c0f7"
+  },
+  "ring-arc-idle-n4-track": {
+   "file": "ring-arc-idle-n4-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "90358dcab9ed1067a6983586e63d90b7b587292ba4998e745faf0f966fbd5927",
+   "source": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+  },
+  "ring-arc-idle-n5-s0": {
+   "file": "ring-arc-idle-n5-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "490999fbdc09388858fbc6a65eaa7ba9b3ef9fc32065548097cd6a870a003e6f",
+   "source": "fcb068d422d94244574b015bdf1da5b3260eea0fa87049644c57be29676d6b70"
+  },
+  "ring-arc-idle-n5-s1": {
+   "file": "ring-arc-idle-n5-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "5a768d0993b0abf4ec5abdec9d17dc5e45f86f0a8f3b27ae438deb0b48b7cd75",
+   "source": "f1b8220765a3424e77bf0fe2a94dbe300ee1d1aa1ebe38b6c4f47aee6efdfdc1"
+  },
+  "ring-arc-idle-n5-s2": {
+   "file": "ring-arc-idle-n5-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "c2340f73f9f688676111d82b35e0dba794b2bd39670b9928f6c983c7d4faf131",
+   "source": "60a0a58eae7171468d263de81824177a3b8e8e72d2a63f63c973a60818a882f8"
+  },
+  "ring-arc-idle-n5-s3": {
+   "file": "ring-arc-idle-n5-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "478bd481aa2acea37de78d606558ea0f2848e04f254fc4dcc2c9c0233090c03a",
+   "source": "e2c2719dc120977b0e075c7d2ab16807b17d6983af06449e1c2e8b5e20e2e0d1"
+  },
+  "ring-arc-idle-n5-s4": {
+   "file": "ring-arc-idle-n5-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "6f40e4c57f15a9bfa60c56ba5e779cf2f0ee5887478c69e47a211a58b9a35fc7",
+   "source": "effe613df5fd7202e30714c332f2710936d0891e49b1eb08dde572eab3aee4c6"
+  },
+  "ring-arc-idle-n5-track": {
+   "file": "ring-arc-idle-n5-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "90358dcab9ed1067a6983586e63d90b7b587292ba4998e745faf0f966fbd5927",
+   "source": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+  },
+  "ring-arc-idle-n6-s0": {
+   "file": "ring-arc-idle-n6-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "b1ac66b7942407d0c5cdb3a29b35b2cd0be1b80dbd2e94c12ce8c0c924cde18a",
+   "source": "a1ee1105f7cd9dea6a4e76badb80daf3b2abe8df391c6d1ed3190262d9d6391e"
+  },
+  "ring-arc-idle-n6-s1": {
+   "file": "ring-arc-idle-n6-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "ea0099d5d5295fb8d142956e1e5b7f902d54ee4a0e08aa7db4b5b89ab0284ca3",
+   "source": "4fea1016823ce5ce2567d12395a3cbcaa4172de6fe424875ceb54df606cea617"
+  },
+  "ring-arc-idle-n6-s2": {
+   "file": "ring-arc-idle-n6-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "6fbece84ee9220e6049671ffaed5222beff45f69807ff719719e2e024aebf656",
+   "source": "6b7a4eba192c73a84e0c00f5c5e5fa38bdce3e2d48aee857dabb7d019f45c763"
+  },
+  "ring-arc-idle-n6-s3": {
+   "file": "ring-arc-idle-n6-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "1cbb8dc2b88d406f18c2c12438f482f889db64b813494e7194c5fae83f9d63e3",
+   "source": "1098a3d4f6a737fa5e4926f8ba8db7d20511b79947c66b4b465896a39c2bee96"
+  },
+  "ring-arc-idle-n6-s4": {
+   "file": "ring-arc-idle-n6-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "b1cadd99670eed6319e5761f6a9222c2cc9280f82411df8721c7e161579df304",
+   "source": "48d1752c59d3990c387b77ae768376d7d2f16302227b1cc845cd5c96c97341cf"
+  },
+  "ring-arc-idle-n6-s5": {
+   "file": "ring-arc-idle-n6-s5.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "4b89d448fa4d8176d9c71f1cc5296782470f3eab0442871aadfea17a405ee834",
+   "source": "182f8fdbdbbcfc855085662d18edd572c64d63d54d91d19280c9e6c29837aff1"
+  },
+  "ring-arc-idle-n6-track": {
+   "file": "ring-arc-idle-n6-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "90358dcab9ed1067a6983586e63d90b7b587292ba4998e745faf0f966fbd5927",
+   "source": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+  },
+  "ring-arc-idle-n7-s0": {
+   "file": "ring-arc-idle-n7-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "fe0182b4f4b348830db3e01be9015e859c9512d2deb0d53eb730a1e28d9a8732",
+   "source": "f741cc832a26bce17ee4c0df35c5631f1de28b8f4baae7be111489a9161eddcf"
+  },
+  "ring-arc-idle-n7-s1": {
+   "file": "ring-arc-idle-n7-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "8d620ab547b64f934a6c8ffa6725fd3cfb88243f4f5030b6ad16050c16b6a7b3",
+   "source": "34c436bf091ac593b04bd95376d9be1d43004ab8431d1ffe372ca7fb4b8c99c7"
+  },
+  "ring-arc-idle-n7-s2": {
+   "file": "ring-arc-idle-n7-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "a072cfadf6980c0b31e484aaaef695effae096cfa49fcb5d00d87e30f27087e3",
+   "source": "cfcf83eafcf854e2013f484999f054ebf3405d33b06508d0c3a3fa90280f3d01"
+  },
+  "ring-arc-idle-n7-s3": {
+   "file": "ring-arc-idle-n7-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "c10bcd229db957aea81dea5122584e96f6bdb8a0d40956518e60bf0b1132fcf0",
+   "source": "86dbd19a862c0d8b202745bb7318040e030e913e8d96d664f7515f595e25499d"
+  },
+  "ring-arc-idle-n7-s4": {
+   "file": "ring-arc-idle-n7-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "aa11511ecd0725b7994efd9c0dc3a2c1432fd7d42a74d19c21a82e0fb14114e0",
+   "source": "1f6b740755905ac89a54a2d771f1329d823862c8a1eae5e75ea52c3655e7d53f"
+  },
+  "ring-arc-idle-n7-s5": {
+   "file": "ring-arc-idle-n7-s5.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "7d99cf9364dedf34f7f67addf7890bf26aa80807d56c16fe0f92e7992222101c",
+   "source": "961cc8012e50292bdf5621146aa44edbe20d2ac7bfdefc6e9d74ce3d4d20b3e6"
+  },
+  "ring-arc-idle-n7-s6": {
+   "file": "ring-arc-idle-n7-s6.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "0e7733bb0bb1081a1bd4b3acef4ff8f05938138f7f738a00f501d37ee606a20a",
+   "source": "ea16f17f35bd4f3cfc40a932453968eb2e0601d47b65f39c2a172c3788033bef"
+  },
+  "ring-arc-idle-n7-track": {
+   "file": "ring-arc-idle-n7-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "90358dcab9ed1067a6983586e63d90b7b587292ba4998e745faf0f966fbd5927",
+   "source": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+  },
+  "ring-arc-idle-n8-s0": {
+   "file": "ring-arc-idle-n8-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "19a86743bb4f9d27cdf247304ee13dd515520a61d47a42da35d11fe1b2d76545",
+   "source": "894993823c214db340461c5e3322a53969e1083d6c38d4403428ef4a58037cd9"
+  },
+  "ring-arc-idle-n8-s1": {
+   "file": "ring-arc-idle-n8-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "619d213eacff058a72b9bae0e42b165e28343061a12438d820cbb4c472ac7647",
+   "source": "b0935f79c791b20c7aeca967f391c8e98f9e6a3d4f2c8085130b77af45456b95"
+  },
+  "ring-arc-idle-n8-s2": {
+   "file": "ring-arc-idle-n8-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "c7fd52387b872741aed85713d08e4a8d56d4f02206dfebfe7816bca1beb53396",
+   "source": "688c5be0cdbe143c16e7ee066bcc465770330ffa9e6e3c8b195c89405a7c6482"
+  },
+  "ring-arc-idle-n8-s3": {
+   "file": "ring-arc-idle-n8-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "b5270b7dbedfd03041f7ecff6c789a87e61ea623958d2c1b33e7a9cd1010c4a1",
+   "source": "bfc20fe510687e8c177bc2dc0104a61fc3ea8e855d205c0ed789c1b2e62189e5"
+  },
+  "ring-arc-idle-n8-s4": {
+   "file": "ring-arc-idle-n8-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "a37193ffa01734dbb9a47797189958d2d88a450083feb68f8b76b76a1b12bdb6",
+   "source": "8d3c8a081ae7cefaa7f3e5da7fde67b20dff202bc0f823b3fc86f79cdc53f0db"
+  },
+  "ring-arc-idle-n8-s5": {
+   "file": "ring-arc-idle-n8-s5.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "ae79342836f4ef11a46bde98384678d430aba0dd5d000a8ffcba8df9dae26987",
+   "source": "8b6bea6d0e80551099d12e6466f9c30d1354209a90a2efc6f55b40221b60d781"
+  },
+  "ring-arc-idle-n8-s6": {
+   "file": "ring-arc-idle-n8-s6.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "e59fce5250a503e28844e0a33b50ff7486fe91574bedc0fe48b52a21a6d5a209",
+   "source": "64c855357c05d15865f4aee92ca37d3d0a75b184f2e593d273e8a0e7a2aa32aa"
+  },
+  "ring-arc-idle-n8-s7": {
+   "file": "ring-arc-idle-n8-s7.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "2b9ecd298a64fdbbfbec7f2210c429d62ace8429ba4dfaa79724c99f78ab94cf",
+   "source": "6cff2127d26d5207ad8f83aec95854d1a208eb5c7294f692a3720e748533a6f0"
+  },
+  "ring-arc-idle-n8-track": {
+   "file": "ring-arc-idle-n8-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "90358dcab9ed1067a6983586e63d90b7b587292ba4998e745faf0f966fbd5927",
+   "source": "cde5886dd9872788f4eba5b80a7c465a7edfdd3d72648205f9fd19649047233b"
+  },
+  "ring-arc-selected-n4-s0": {
+   "file": "ring-arc-selected-n4-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "065ed05c7573df790c532d9e3c07158330062a4073d41daf1943d3ae55749b49",
+   "source": "068bbb8bf1fb828cba419fc219824aae58ef470728f0eac1c652251bee9cc19d"
+  },
+  "ring-arc-selected-n4-s1": {
+   "file": "ring-arc-selected-n4-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "e0e97c37ea942daafe558cb08f0de3ac2474264de63811e81f24aa586c4db4a9",
+   "source": "6b61ab4beb4dcecd0158447f7197e7a7afb66827b5f3fff4c5179be2bb6fa035"
+  },
+  "ring-arc-selected-n4-s2": {
+   "file": "ring-arc-selected-n4-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "fbc2f678f78fc51490420b334634defb04b95a6796ecab41f31ca4eb71c987b7",
+   "source": "c5e155e9df75e208b63b4a5f5d9be56153fcea4f314869c297d4e02047bc584b"
+  },
+  "ring-arc-selected-n4-s3": {
+   "file": "ring-arc-selected-n4-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "77120a48dcf36e58a593c7f235af47cee45de6b7136d2316d55984e48f5bdf6d",
+   "source": "ccce4cc66663230e3064b7a8fb59356e1fb261952ef3a47458aed1c0b26f9005"
+  },
+  "ring-arc-selected-n4-track": {
+   "file": "ring-arc-selected-n4-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "0e2e0730595df77e573915b8ed42502c65f9b1e38f258cc805102972a4ea118c",
+   "source": "a7ad1a5f51622d076a937f7eaa4d68e31fd1fc5e38c9a1bcca9ff61a8c3408b2"
+  },
+  "ring-arc-selected-n5-s0": {
+   "file": "ring-arc-selected-n5-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "a317df878f6e99d18e3859a1b568710f4b51050f0fef9169ac2e65ee231b3c7a",
+   "source": "f65c0b2930c4b23058b9dbdb0ed45a256ef1aafdbe136b814d05bfd5ab1cc3ab"
+  },
+  "ring-arc-selected-n5-s1": {
+   "file": "ring-arc-selected-n5-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "227f0804aab6226c0debdd0d74ed8ceb5172d66e2d53658373e466fb9e77c0e7",
+   "source": "60e69b8e98c1118d677c27c911434300e93183722ea7a77d82b98dfe190912a8"
+  },
+  "ring-arc-selected-n5-s2": {
+   "file": "ring-arc-selected-n5-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "1f7485a1379ebb82c629a1bc2216a9bcbeccf9905f76c36d5efaddfe365b9bde",
+   "source": "8d3ed6f2d42d0ef47b1faa24d4b3532b74a4f57bc9be1bd9ad15969ef520dfdd"
+  },
+  "ring-arc-selected-n5-s3": {
+   "file": "ring-arc-selected-n5-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "a77b87f41505303b0eac7e84fb70d3dafcf0c611dc513dae409cf8119068aeca",
+   "source": "bfff8099145c03ac04955cbff9a8f350121a7b70ae756799b395be5b5b108733"
+  },
+  "ring-arc-selected-n5-s4": {
+   "file": "ring-arc-selected-n5-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "13c3e1820a1a7156113573959821106c478b449fd8ed57309acce0bb5b5c1293",
+   "source": "74c378b89180851da449f8d1fec5fe334c04efb242f9538e3366813bfbce0f43"
+  },
+  "ring-arc-selected-n5-track": {
+   "file": "ring-arc-selected-n5-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "f5449fcf3fef64816c43ed8b1457dbf374f1025eba8adbbcfeb31673b141cbdf",
+   "source": "800b21b19de75dd213da1ec05382b251b45dc28a867a67196ab401c3eb5ca9ac"
+  },
+  "ring-arc-selected-n6-s0": {
+   "file": "ring-arc-selected-n6-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "5649cd67c36b3f155a6dbcda40216f32041c826ee144d4c54099c4389999c670",
+   "source": "7e6f21b9b349782b7584b63b1917c5ab8dad42395c20d2dfcb61fc6b61b5d137"
+  },
+  "ring-arc-selected-n6-s1": {
+   "file": "ring-arc-selected-n6-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "532e5bfda9a41016d9e00ad5b012344cd288f17398b7f1deb41a9a7ea62291f3",
+   "source": "23b7a6045da1244cfa887d0a6bf32f329095d5b17ccb0364f2cff9351442a144"
+  },
+  "ring-arc-selected-n6-s2": {
+   "file": "ring-arc-selected-n6-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "0c14b4368c40f0096e0c9f68dbc8b65ac91ad66836b6a08cc09a7e1cb1c3bff2",
+   "source": "e5e42aac48540a80282b5a0127f5dbdb99de787c1f10756462dbb80470771de6"
+  },
+  "ring-arc-selected-n6-s3": {
+   "file": "ring-arc-selected-n6-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "b8091781953bbd3d2d8a3452e32f91c4b6dfbfc85d4316a6cf594e62f9c059b9",
+   "source": "69dd493d9733873ff22439262c51cbd2841a2d48ba8f6049a1c8af80ecbb376b"
+  },
+  "ring-arc-selected-n6-s4": {
+   "file": "ring-arc-selected-n6-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "b8f5bd640de7d014dbb8d07ad45c46fcf18026a28f2d6dd3eda019f5f6edd1e2",
+   "source": "b867f7fbdb9ee0b47a74ad60532f92e0154cb1b8bc3537b575c05f1c7c396f55"
+  },
+  "ring-arc-selected-n6-s5": {
+   "file": "ring-arc-selected-n6-s5.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "44a975654616c2c441e1bca61f92393a865918be61aefe4e9be4a70f9b7a463f",
+   "source": "791c64a7f90d37cf2110b3d0dcce27105024f44dd75e4f2c34ff52791ef8d536"
+  },
+  "ring-arc-selected-n6-track": {
+   "file": "ring-arc-selected-n6-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "d157b8db6d9085c3d51aab8c1aedf32613d6f93ff0853b709cdf80be51515b11",
+   "source": "4a8f184b41d2ebcbd64188c7a84809bf6d4b11df64f2b97524cba228a12bfaae"
+  },
+  "ring-arc-selected-n7-s0": {
+   "file": "ring-arc-selected-n7-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "5ad14e6b73357522f2052ad822909a618a5aebc88c0f66e29aaf1b8724773ce3",
+   "source": "88218cf229ccb36eeb4b42aac5059dae47f399de50bd23f7010da33e31fb4cc3"
+  },
+  "ring-arc-selected-n7-s1": {
+   "file": "ring-arc-selected-n7-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "5d58746cabc30912054e12b8919369005df6898b72765161f2f9cd89fcdfa169",
+   "source": "d0d0c15bafd16ecd7d1f24f0b114c5ea67b043c163b44d3f7876cca477a4db80"
+  },
+  "ring-arc-selected-n7-s2": {
+   "file": "ring-arc-selected-n7-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "c28ac27a61d316d060d713632a1fa89c746677d5686e47035ed364fc6c8b9f4b",
+   "source": "b6c7910935f88fbc2a364a5de527595eaf8559029ef8da8c368d0103c7e9f4c4"
+  },
+  "ring-arc-selected-n7-s3": {
+   "file": "ring-arc-selected-n7-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "4139355b0ef59b3a6a1ae85285097907a6ab5c73241b101d42f12b3b9ff56ca8",
+   "source": "3bcc0d2b49642824e4e0773515b25de5d2857a98c6ea0a7080bc35a84c3081f3"
+  },
+  "ring-arc-selected-n7-s4": {
+   "file": "ring-arc-selected-n7-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "dba9e59a3f3b00075f454a2d9864665223f0122529ad8ef3959e2a0e8780b64f",
+   "source": "98f4efb9b8aedb903758dd2ffb0d6da38b7f91d860b6b92e42bb4fb65289e873"
+  },
+  "ring-arc-selected-n7-s5": {
+   "file": "ring-arc-selected-n7-s5.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "d123b8cbd700dc7b579e8048a4bc6cdbdcc6fae07aff8f636e0dea9f896b3b2c",
+   "source": "77ddd025aa9dd8d7bf7de276a045069afcd1ed7f9f23f36512edec533fac5966"
+  },
+  "ring-arc-selected-n7-s6": {
+   "file": "ring-arc-selected-n7-s6.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "9d67af7c012853bd2471575ca6f369e44e17e64075a1d52f0538a4e6552ea257",
+   "source": "de37e8578c124185ba70c2b657122bab3435bfc0da109f75fb04b6a38c4056ec"
+  },
+  "ring-arc-selected-n7-track": {
+   "file": "ring-arc-selected-n7-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "bd9c83811689bd8f364ee00ac5837f91771bd21ab82db0f94c38a276fc064dcc",
+   "source": "78d3529dba705c2946933645e1f17a6d48436a9786ef9496f6382fa600382b20"
+  },
+  "ring-arc-selected-n8-s0": {
+   "file": "ring-arc-selected-n8-s0.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "793489f5715c71b9aab138592cebdf81b7848ff80a8cb30513e07dc19a0c6569",
+   "source": "092e81713eddbb24311367ca83945d0067b89b8d3f25961cad125121e7c014ee"
+  },
+  "ring-arc-selected-n8-s1": {
+   "file": "ring-arc-selected-n8-s1.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "6d266bb4d5852b9e7a33e86a88b11447e0695b166d3186c911f5094a67bb4ad1",
+   "source": "2be7f10c2caa7b916ccd6c0b5a70e5bb6d1c9861e292809af2f16fa8be7c881b"
+  },
+  "ring-arc-selected-n8-s2": {
+   "file": "ring-arc-selected-n8-s2.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "ddc96598ab4603eda4831ba9eb01bbdfe040f6dab6e38543b50c17630dcb50f1",
+   "source": "ccd56f0c6d8e103dde3b7ce85a185b15db1ea5411ba00473844b6bd6e501da4f"
+  },
+  "ring-arc-selected-n8-s3": {
+   "file": "ring-arc-selected-n8-s3.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "ecdd5f20a15339253fda649710cb744cb867a0a9002ea54e99aa8530eaaa8c47",
+   "source": "3f0777a85cb3b44cc5473a460dd82e922a5e8d0ea361b58e31705d782fed14af"
+  },
+  "ring-arc-selected-n8-s4": {
+   "file": "ring-arc-selected-n8-s4.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "a3b29185aa300c244b82b4a53be267de4d54643a2d2a4ca0f950cd1bee2a438f",
+   "source": "d32811299947b640af3d8b498a90deb7b59c8f7353dee9887350836e1a96895f"
+  },
+  "ring-arc-selected-n8-s5": {
+   "file": "ring-arc-selected-n8-s5.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "940011754bc8df8897b66fc787651b56ba4a73f2a1c7381b3b2703c99482e6f1",
+   "source": "e1cd66ad372760040847015e94311a9c699971254cc7146afe6a5698336de5f4"
+  },
+  "ring-arc-selected-n8-s6": {
+   "file": "ring-arc-selected-n8-s6.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "d332b647c91d9514496b7318cf150da22a0a35e0527a53c352db40316a3ee89a",
+   "source": "f76b8760b730cd12165834b527c0158518b830cdad0754ae7cc6eb9742eb095c"
+  },
+  "ring-arc-selected-n8-s7": {
+   "file": "ring-arc-selected-n8-s7.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "2b8e0436ed89fcd5e00afedcffb3375f373c438916bb336f228191c7e0bc1822",
+   "source": "b591c0e411682b50269dc29ef510df94066a9f6f32f0f836b592b8ba353f283d"
+  },
+  "ring-arc-selected-n8-track": {
+   "file": "ring-arc-selected-n8-track.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "0da23bb323fdc663527c59ced8cfea136f60370f6c79701288731faeae380c25",
+   "source": "eed42ea9a69ff11f6fb6a53c5e40bb3dde3add689cfa024cb716a5ed97d69ab9"
+  },
+  "ring-collection-closed-176x176": {
+   "file": "ring-collection-closed-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "307e3bd4ea6dc9099237fd6e32193e6655145645d2ba0d96616e81b120640325",
+   "source": "f94ea16f3fe14282a04724485f3020eccd563429440aa34aedcb4a7f583bfd56"
+  },
+  "ring-collection-idle-176x176": {
+   "file": "ring-collection-idle-176x176.bin",
+   "w": 176,
+   "h": 176,
+   "bytes": 123916,
+   "sha256": "11a4ca5de96cfdf495c6d757c040c3cfb8a11200661dd89d520a01bada6f1f3d",
+   "source": "a31d629d6f913fb354560efbd45abe271e8804e8ab7b36818f646740add792f6"
+  },
+  "ring-column-112x522": {
+   "file": "ring-column-112x522.bin",
+   "w": 112,
+   "h": 522,
+   "bytes": 233868,
+   "sha256": "d3f1d2bf2c648f8470dae9d050c91bb9bfeff8d57bcd6bbb99e91ee56fcc20ed",
+   "source": "d196eb9b72a86516f0280103f66e89e460cfc8dc2501f3a25da44b4382494314"
+  },
+  "ring-hatch-80x56": {
+   "file": "ring-hatch-80x56.bin",
+   "w": 80,
+   "h": 56,
+   "bytes": 17932,
+   "sha256": "f13733425fee1a9233431f51ff2e49cc4b63b7b3e244a97120d6584fcd330bf6",
+   "source": "3ebdddd988510d13e2e974a351a5d24597e5dee085f24b0073a36fe80da9b7dc"
+  },
+  "ring-kin-56x56": {
+   "file": "ring-kin-56x56.bin",
+   "w": 56,
+   "h": 56,
+   "bytes": 12556,
+   "sha256": "dd9b37cf31607ac3227c9c698fb783f681e8ec4604979e438cd62e8625a343ad",
+   "source": "d3bf810d97510cd39008a4a2585cbf766500beee8d4357e7f2decfc8cd844d09"
+  },
+  "ring-well-empty-80x80": {
+   "file": "ring-well-empty-80x80.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "02f2c778a4f8af03a0eec2255ed15854440041e039607e802fb3092bec8081ad",
+   "source": "932445e687b4c22fa962799655c5f4b292a2ddf3bbc210bff7ee5a1caef0ae12"
+  },
+  "ring-well-idle-80x80": {
+   "file": "ring-well-idle-80x80.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "d4da0221075a994dad6654afe1f577b92b6f1ff972dd1d4dedfa7b22e72fb453",
+   "source": "58323b911f752140d9cee0b9fca872731e532eab86897ed094b799945514d46a"
+  },
+  "ring-well-selected-80x80": {
+   "file": "ring-well-selected-80x80.bin",
+   "w": 80,
+   "h": 80,
+   "bytes": 25612,
+   "sha256": "645e558ef5db34a978cfa1de5861d216ccffb53d0349acf3846d6daec75a0149",
+   "source": "d9de6aa8bb2e70f6b3c65fab3a7434c951f6c435542962244740813f17684eed"
+  },
+  "room-bench-stage": {
+   "file": "room-bench-stage.bin",
+   "w": 1024,
+   "h": 522,
+   "bytes": 2138124,
+   "sha256": "69c628d133a40a31016283d36d20e651be0f4c4f2586df52eee591840938f075",
+   "source": "3fb6816569974e1603e48840c99b7a7842fd2c306608ae0a001f54a5880a9a1f"
+  },
+  "room-bench-stage-chapter": {
+   "file": "room-bench-stage-chapter.bin",
+   "w": 1024,
+   "h": 522,
+   "bytes": 2138124,
+   "sha256": "ddac1f8f48f490a0ba867c8be0be9112b7f8637ab7780870103e41139a4b2fa4",
+   "source": "5e620334d5f1f8285ba04f4576d00431a150a5bfdd14894a6ea3d9afbffff9c8"
+  },
+  "room-bench-stage-collection": {
+   "file": "room-bench-stage-collection.bin",
+   "w": 1024,
+   "h": 522,
+   "bytes": 2138124,
+   "sha256": "e4492f334b3e4bfbdb334faa22e91b342c82701e1206a0ed81857e78513dcdbf",
+   "source": "cc7fe4242032c8f9626f2bfe6b28738fc8b2581c41e30dafc35666191114bede"
+  },
+  "room-bench-stage-compare": {
+   "file": "room-bench-stage-compare.bin",
+   "w": 1024,
+   "h": 522,
+   "bytes": 2138124,
+   "sha256": "3139321575bbd7a16f74e4d4bd1e8fd89a76905a97aba3698fe0b8e39df428e9",
+   "source": "448dad6e5615e144e0952609de261eb795cba0f86fff9479a67bf429cd88fb3e"
+  },
+  "room-bench-stage-overview": {
+   "file": "room-bench-stage-overview.bin",
+   "w": 1024,
+   "h": 522,
+   "bytes": 2138124,
+   "sha256": "b896379a8c2b4e889df6dd40933fe58ef1f87674fb6b0f0da72795cc6c94198f",
+   "source": "2e4a79fde8dd1f4c71107989d09389342f7b4a971c0bc44de7fa1f968356bcfc"
+  },
+  "room-cradle": {
+   "file": "room-cradle.bin",
+   "w": 224,
+   "h": 96,
+   "bytes": 86028,
+   "sha256": "c2c14ebf71f8a9778edb056ea3b5d590bfdab4ef7a1c2eb2634f130f32f2d346",
+   "source": "f7f74e0a57f8cd9af167539408eb55431a2332ae00fe19649fb2a1babf2c0459"
+  },
+  "room-cradle-front": {
+   "file": "room-cradle-front.bin",
+   "w": 224,
+   "h": 96,
+   "bytes": 86028,
+   "sha256": "df94fae1e4c89f252c7d37a355f75100d7a19baaa7bc849bf8de433e29f7656c",
+   "source": "6dc1c962ef4e46038c326bddf1ab159f71d008d089a7d1150a273ad3d5752611"
+  },
+  "room-shelf": {
+   "file": "room-shelf.bin",
+   "w": 288,
+   "h": 72,
+   "bytes": 82956,
+   "sha256": "e0c3f481d7d4d04007d7f83123b39a053a2437d16d4e9b240c0be099671c5355",
+   "source": "c382c8d1980968878d82884d751a0930b95982623859a68c73e0bba7662223d6"
+  },
+  "room-stamp-case-152x152": {
+   "file": "room-stamp-case-152x152.bin",
+   "w": 152,
+   "h": 152,
+   "bytes": 92428,
+   "sha256": "4314dd569a74f87d1e63d0c109304b4067d29a9374b0c616f984702ece8343ca",
+   "source": "f966465a22ed2105be71980b68daa508ce7fcfdc307833c2d044d0f92704ca78"
+  },
+  "room-stamp-case-152x152-front": {
+   "file": "room-stamp-case-152x152-front.bin",
+   "w": 152,
+   "h": 152,
+   "bytes": 92428,
+   "sha256": "977d9f9a5f3da365e8f0c5da7d473d5021b44617ed3c902a79b134f03d43fcec",
+   "source": "00feb9883f5994caba3592385bc637c05f88567140c0a388809d5b8be54f0a1e"
+  },
+  "stamp-label-120x120": {
+   "file": "stamp-label-120x120.bin",
+   "w": 120,
+   "h": 120,
+   "bytes": 57612,
+   "sha256": "72e08c0275ca50f560e2a566fe8823c869f6c0b70b6a03c255b3dde0eab1f3a5",
+   "source": "474f93f940e3d682378c8943d2532816f5b811a52bbfba97bbb344eb53faef39"
+  },
+  "trait-S01-crown-leaf-crest-104x160": {
+   "file": "trait-S01-crown-leaf-crest-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "643c0f167ae64cb8bd34f6cfc088efca8baa51aab0219187697bf6444a906534",
+   "source": "a135a009ac3e8a4c6b6882c410f74aacd7be4583e27ba0235b9c644f993daa56"
+  },
+  "trait-S01-crown-leaf-crest-104x64": {
+   "file": "trait-S01-crown-leaf-crest-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "89811c5c340605d0149c95282c7ab0b8407a0c3a384eb8c30168a25887cb416b",
+   "source": "3a55004a949cde0626bbc53c8c2e1afb78a35dcee18270d093cd566e205ec564"
+  },
+  "trait-S01-crown-leaf-crest-104x96": {
+   "file": "trait-S01-crown-leaf-crest-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "7ff83577bc6cb365dea5cba65c815ed874f7454b310c39936a5c9fdae8955c92",
+   "source": "d163453d2723f249a8209be31780a42a52e59da00eea58e7afabea5676c82ca4"
+  },
+  "trait-S01-crown-leaf-crest-128x160": {
+   "file": "trait-S01-crown-leaf-crest-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "9bd8d84f466d678bdada16466b4c6672330c6e65bcf126ae8f7a20c5cd7f4300",
+   "source": "6342f0e32e187c98092aeca0911e76a1dbe2660e14ba7b7fefa761f55dc35353"
+  },
+  "trait-S01-crown-leaf-crest-144x176": {
+   "file": "trait-S01-crown-leaf-crest-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "0f1828aa4acf5797991cd1eab66c72c4d6240db8e11b6e57c8f3920652e7e23b",
+   "source": "18a163cb2a8f7d98db14ae54112f0b371176577117fa62ecff2875b7a873cc79"
+  },
+  "trait-S01-eyes-between-small-and-large-104x160": {
+   "file": "trait-S01-eyes-between-small-and-large-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "cd901fc047e7a153cd64f2caab11b5304c2a520ff3f4999644975fb8191a8348",
+   "source": "aac1a5ab70270075b5df898f1a47ba876b552cac24a9cca6eda3fe6fe7e94244"
+  },
+  "trait-S01-eyes-between-small-and-large-104x64": {
+   "file": "trait-S01-eyes-between-small-and-large-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "6e5fa08feb88b5edde1f48547256c6ac1508fe52613735c06d7b3b0ee40e40e0",
+   "source": "f57402d091ba61705cd3cd8f5cefc8cf150c19314e17e26a4d08b4cacb16295a"
+  },
+  "trait-S01-eyes-between-small-and-large-104x96": {
+   "file": "trait-S01-eyes-between-small-and-large-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "a367a7ccaf622d41c6dee2d73f5360c40d0beab33137f0348b3e462e219bc0d6",
+   "source": "529885a951dcf212fd105b49ac81e8a7fab47db0bb3330a047b78901b5aaa925"
+  },
+  "trait-S01-eyes-between-small-and-large-128x160": {
+   "file": "trait-S01-eyes-between-small-and-large-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "d6f4b4c63224d33591c678b11253e22f2724676dd670c9d5b9dabe4c77aeb405",
+   "source": "41a4514d6c17b579315f23337ef552747470a3db4b1526ef3fe700faa019c15d"
+  },
+  "trait-S01-eyes-between-small-and-large-144x176": {
+   "file": "trait-S01-eyes-between-small-and-large-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "5938122ee83d9cc9786585934ad1621f79172894809bfa8b674904b5cd42db8d",
+   "source": "9d0276fee7cd1eca2331612d49df2c04dd5147e55dab26003b41cc307d8e9b98"
+  },
+  "trait-S01-markings-plain-104x160": {
+   "file": "trait-S01-markings-plain-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "ec011351279af69f4ba74c74f80a9a713dca339513c557fd9dff0de3e9344283",
+   "source": "7d404a64c1ee72b6bbc50668b4027e10d49194de1a49d9f87071941d0ec24bad"
+  },
+  "trait-S01-markings-plain-104x64": {
+   "file": "trait-S01-markings-plain-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "83566cbef76f64905e4921d6c727ac6e470bfcc403c0782ae3a94bcf3b8d0e7c",
+   "source": "5d2d115179cb4898e4d7b4679cfa9a0e806615bf47841268909c430e24896aae"
+  },
+  "trait-S01-markings-plain-104x96": {
+   "file": "trait-S01-markings-plain-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "2bafe5f18473ffa365012d1b6246dd4f9494963e32c54d29fe597c20aa570ed6",
+   "source": "826839c602e9bc4c6de189e557d5f671b12abcf6424668c48665d79d6bf63a1c"
+  },
+  "trait-S01-markings-plain-128x160": {
+   "file": "trait-S01-markings-plain-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "2249f2aa97f512e5f53234e91e67a20bdc33d3604b2693a355cdaa7fe86d7d2d",
+   "source": "3dce76216eda4ae4f87f4dc8376d2f281b90746bf0e708e99a5ea289d06fb218"
+  },
+  "trait-S01-markings-plain-144x176": {
+   "file": "trait-S01-markings-plain-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "2c0bb193b17953e44ee9321a72f8a92b81e3cfeb71ebc50e36ba4e9d32845074",
+   "source": "69d906a5e09b0c41340423798ecac272fe01539d598c6e63c6f9bc348d39b615"
+  },
+  "trait-S09-beak-between-104x160": {
+   "file": "trait-S09-beak-between-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "10c4a1cbe8605463ef5f90115262b9ff269bae85e117f06679dec8583518259c",
+   "source": "2302f810da46dd0f0b007259c42f38b31bea3bf769719308c2db6fd29009b114"
+  },
+  "trait-S09-beak-between-104x64": {
+   "file": "trait-S09-beak-between-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "d9f1b2e0a4fbaee639a754e7123ec40de152a3e25dda65af87de93149d37056e",
+   "source": "df7c9303c8bf112ed3a9d57c83d25524ca50d1028aa08aad6f3a7e77e687bd2f"
+  },
+  "trait-S09-beak-between-104x96": {
+   "file": "trait-S09-beak-between-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "99f90f41850dc3004f3e67801b0a2a8b7a2993111822660efc12682c8dd15175",
+   "source": "6c967892d4dcaea767572f096fa288a0affe38bf1982bcbf5195b06da066bc05"
+  },
+  "trait-S09-beak-between-128x160": {
+   "file": "trait-S09-beak-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "02e57a17a9564a4faf02fccbcac6142a75d997f0505d85928c93061c90a497f3",
+   "source": "510275cff0d9eb7e99a0dbea84fd816370f86480493ba0ed2f725e31caf7af7d"
+  },
+  "trait-S09-beak-between-144x176": {
+   "file": "trait-S09-beak-between-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "ca0ad1d49f403923bdc6b9b10dc55fb95da7c5e88b2509a40d90420f3f480693",
+   "source": "dc74dbbd281771dcb427bd20161022c3716003338a37a80cfc38ce0ae516505a"
+  },
+  "trait-S09-carriage-straight-128x160": {
+   "file": "trait-S09-carriage-straight-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "b466208e82687aead3f9e5ff34d971fd6f5fa7da539622e6287f15ac05c2374b",
+   "source": "c6dd1bfa50b5b961e38cc01b8ed555aaab7c7900e9fd878bd5c6b4f46151b169"
+  },
+  "trait-S09-colour-cobalt-128x160": {
+   "file": "trait-S09-colour-cobalt-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "b005781f441a3e9b3dcf1a53a7dd64159af91bcfdd1cf85fff52ec19c42c1115",
+   "source": "d6d01e978a5be71cc267a116a84ac22343096aed69aeeefc51827453369dd6e3"
+  },
+  "trait-S09-crest-between-128x160": {
+   "file": "trait-S09-crest-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "bc652755366269bc4235981660f16080cfdb11bde5032ac28adfe9f9136e6747",
+   "source": "b7195edc6d6cd03c0ba7a13866ad78b3457ccba69e802d666ab330fca1e3cea9"
+  },
+  "trait-S09-crown-tall-104x160": {
+   "file": "trait-S09-crown-tall-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "cfb64974242884e33305a87f92f568aa9ed33a71694c82fc860dccd8d4ffbd5f",
+   "source": "e9a366c43453863e7076efb83de4a8459a550f4a6c7aa8b05c74620905b407dd"
+  },
+  "trait-S09-crown-tall-104x64": {
+   "file": "trait-S09-crown-tall-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "99f238c2ca5f068bfd95aed270986f4d4168c07cd308361937c12e1f3494e85d",
+   "source": "415c9c7f29b4f532bf002899dbafb78c951e60836f628cf9ff08d03333c5d582"
+  },
+  "trait-S09-crown-tall-104x96": {
+   "file": "trait-S09-crown-tall-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "c8f004892884de662a4c86cf24f80ae835abb3531383a1a057cdc4283ced37f5",
+   "source": "962202cbebe72ce880255aa63c38267ecdfbf47658a53b5c1d8d19f6db5c4222"
+  },
+  "trait-S09-crown-tall-128x160": {
+   "file": "trait-S09-crown-tall-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "719bf63eea66e639ee8e56cbdef94f89419d72aa2767c6255e1fed7739b86cbf",
+   "source": "d8e5cf5596aba1b567ecb0fa891e59c3081962da1d18754ed147ec5884b52e6c"
+  },
+  "trait-S09-crown-tall-144x176": {
+   "file": "trait-S09-crown-tall-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "0ead0440f3b8f38c03e03e48687640b0100b7126c137f71369d6dcf89813453c",
+   "source": "28278adfdb4c001201d477b194dec4c1916e15afeae00a1c6a88e737bb0621f5"
+  },
+  "trait-S09-eyes-small-128x160": {
+   "file": "trait-S09-eyes-small-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "6b40c1981201749695ab592c1c9ebb79ea51e443fba36a4c08125980af92fb1c",
+   "source": "a624e46131dc03db6d6452e0e16b82cb3d28c35369e53e81b99cc40bb02d6f34"
+  },
+  "trait-S09-feathers-between-128x160": {
+   "file": "trait-S09-feathers-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "d76d6b9b540cb417239370369034464dc21ff8984710c6336278a2c031704f1d",
+   "source": "36190da9a96d71b715b1c384f9e883fa844d977c49c7c651743581c70cd35957"
+  },
+  "trait-S09-fluff-between-128x160": {
+   "file": "trait-S09-fluff-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "a006e4783487dd8eac541d3f190f695612f61b9754a6a643523a4d346891d384",
+   "source": "45a9d45607ed9f3f136354173ba9d0f902e0d463555fa6fec5d32a5278a8035f"
+  },
+  "trait-S09-head-between-small-and-large-104x160": {
+   "file": "trait-S09-head-between-small-and-large-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "fd42c347918903dfceabda921f43e8b18a97488c60f7434eec3bb44bf73a9518",
+   "source": "bb858be98ceac17a00cc89ff1f3cbfa4a7a5c021082d154518c82f7e67c350fc"
+  },
+  "trait-S09-head-between-small-and-large-104x64": {
+   "file": "trait-S09-head-between-small-and-large-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "b460ba261a6ac863ab2bfe9c945bae6a0634327b7f4f16601a0a0e684296caf9",
+   "source": "23f26a34ea591d784f2f71ee1ff894719ab7711e86c03f777bb250a08c3caca5"
+  },
+  "trait-S09-head-between-small-and-large-104x96": {
+   "file": "trait-S09-head-between-small-and-large-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "662264dee02a1d8f161e085bdec75e0585cb6637af0f1c52138dca2cf6fd4425",
+   "source": "0fccd0def8cfe582c7ca478077ff28196189b7e0747e826c7e2ea200e9b93bd9"
+  },
+  "trait-S09-head-between-small-and-large-128x160": {
+   "file": "trait-S09-head-between-small-and-large-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "c3544ca68d42afd4d5160c648905dcbbc0ca99a2b76e625cd5ceebde4cd4d55b",
+   "source": "cc3bc0e45f20d7f7873c93f097cd26da9236615074a8fd36bfb45497ae90cd44"
+  },
+  "trait-S09-head-between-small-and-large-144x176": {
+   "file": "trait-S09-head-between-small-and-large-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "58090ea8bffb3a58d7ecf89eda154a53d44e7fa64825ffbd9c2cb95556e01665",
+   "source": "b31476b5e8c6ec98ec55c7ab180fa0ab66067056b864d2a6677663162734af24"
+  },
+  "trait-S09-sheen-between-128x160": {
+   "file": "trait-S09-sheen-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "850af8ef97801699b3676a4da7dddcc03faf7e6943e57a635267ccb729427b97",
+   "source": "02002406ef348847e14cd49d139e71c9b1e9fd6c6a9b49143d1e56def314e9ce"
+  },
+  "trait-S09-tail-between-104x160": {
+   "file": "trait-S09-tail-between-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "eb56dee4f72fc0450eb02c83cdb5e05f6880eb490fa50c80e971606a9f6789d5",
+   "source": "9cf7643e4ba644f6a4364439b92b6251d87d8d4d254ab352ecf41b521e223a6a"
+  },
+  "trait-S09-tail-between-104x64": {
+   "file": "trait-S09-tail-between-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "7cf5d5e15bdbe0085b7558a20df008c7b9ded17a520304c3691dfec18a26accc",
+   "source": "4e129a3d3258cea80cd0ca1b7cd18ac1f4948e437e440c7128ca585afb690ae8"
+  },
+  "trait-S09-tail-between-104x96": {
+   "file": "trait-S09-tail-between-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "8fd336f52383e4b19c1508296f142a18eaf0aa1e8e1debcf2177eaa5d22ecbf4",
+   "source": "00e0f7c04aaf85944fd9ec99b68c4fdf82c327e785a24c1444b02bac49e8d473"
+  },
+  "trait-S09-tail-between-128x160": {
+   "file": "trait-S09-tail-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "6a59d371a913bb9dd8309545b319713de313e75acbad6c440fc953e92de8879b",
+   "source": "111af3b48bde099e971654ca36e9aa4a40c887a57e224a0247b06b4ee44410b8"
+  },
+  "trait-S09-tail-between-144x176": {
+   "file": "trait-S09-tail-between-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "571aa1b7bd83a2623e95bd0924a249ef30dc6ae21c4aa41a4a63206215a47c05",
+   "source": "8d43595f0a092c85515b5d75d20f553e2778fe63a2a81192eca4235c69fd032c"
+  },
+  "trait-S09-tufts-body-only-128x160": {
+   "file": "trait-S09-tufts-body-only-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "829593633d812f88cd15c717aeb904336685b9329c00a644a61bc7568420efb4",
+   "source": "f5cefd818d6eda5154e149ea8f55a8efd466984231adfd91e8225df5b7169642"
+  },
+  "trait-S12-colour-marigold-104x160": {
+   "file": "trait-S12-colour-marigold-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "cc02c7c85322bba032bc543f5c7d87fa66e24929eb55e25912569dbce35777a8",
+   "source": "e918fea72b763bdef9f676b2acf677fa341ae10572306b253a719e0e5d8acf11"
+  },
+  "trait-S12-colour-marigold-104x64": {
+   "file": "trait-S12-colour-marigold-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "5e7aaa259f5fca366f476ad0b1ae472da502d3db92ed02125cdc80320ad77181",
+   "source": "bb178796811734b16cf20e3b751c4b6124093d95e2675de2a49e9f18b3cd63e3"
+  },
+  "trait-S12-colour-marigold-104x96": {
+   "file": "trait-S12-colour-marigold-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "151077c819e546862458afe3e957c3ec438e29a92e621c3e8a3afb92fcb3ff8c",
+   "source": "4cfb1060ff3898f6650ce52b1d6fdbbd00e651b22af06c1c160d3f05b3481cae"
+  },
+  "trait-S12-colour-marigold-128x160": {
+   "file": "trait-S12-colour-marigold-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "31dfeea63ca47f4c18eec2164556952f2480ba4ea98edb81ae766f09cba764d3",
+   "source": "56440c699fe8b31e5cb042faa2f857fedb58255d9ca3097dbe08bd5d0ec5b0c4"
+  },
+  "trait-S12-colour-marigold-144x176": {
+   "file": "trait-S12-colour-marigold-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "9347b18e167397a57e5d07b81fed91a42063cc240fd97151517f81dcfc6cf423",
+   "source": "7e0ac0c46e375d5f172081d1226e40eff0a76542a58dd35479a676980c3c4ae4"
+  },
+  "trait-S12-haunch-between-104x160": {
+   "file": "trait-S12-haunch-between-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "90cd224aecd61e1fa86b1add3e58b103464b83a36181616c33589ce744a79cf8",
+   "source": "27ffdfc8cd3febf6961a064c419770b43afa9184682ab89ba8afb03c461d8e23"
+  },
+  "trait-S12-haunch-between-104x64": {
+   "file": "trait-S12-haunch-between-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "96a627a1940907041a57c3c5f5a6db04d3ffef0f757efc27e376ff79a61920e6",
+   "source": "b431d03234b86531dcf8b66b42097a664fdfac9e31b71e55f575a33c4950099f"
+  },
+  "trait-S12-haunch-between-104x96": {
+   "file": "trait-S12-haunch-between-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "802e6453c5402f98811dee5e869c38c3c3a4cbbc6f65a1a2350e509a9146447f",
+   "source": "ab94f92b531dfeb2e5d6d233d08f34b9e445b4ef9d2dee9e14b39671f13488dc"
+  },
+  "trait-S12-haunch-between-128x160": {
+   "file": "trait-S12-haunch-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "633214b8d6c11ddf2abdeffb140d74b9e9c70ea4f3f2fa917e8bc62e92e30e3c",
+   "source": "6d06df6c776c246751769dc38f7ec6d28ec0633df595545d7daf09612ea393a6"
+  },
+  "trait-S12-haunch-between-144x176": {
+   "file": "trait-S12-haunch-between-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "f85afd417d6f1f1bbfb666dd678cbaea30250b4e8fe147d863c634b1b58fc7f3",
+   "source": "b65e1d9dbdaea7b629c87c5523c73c81a10b66855137e36271016b84b51397c8"
+  },
+  "trait-S12-pattern-plain-104x160": {
+   "file": "trait-S12-pattern-plain-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "28effea228e26fada9c6d9a0767e29fe91ce9b618cf6a1c08e3caa059b61a9fa",
+   "source": "8989e2769f82cd272d0d169805e298c8790d00dd965810e4b4532a54ec3e3f65"
+  },
+  "trait-S12-pattern-plain-104x64": {
+   "file": "trait-S12-pattern-plain-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "728c7e9f416727f257bb2b123fa95b2aef8862e42db576a860f9cec46208f825",
+   "source": "fdede88a1f2a940ad92841509776dd525d5c9d73ca5ecc1cdce6cc0b5e04e8c5"
+  },
+  "trait-S12-pattern-plain-104x96": {
+   "file": "trait-S12-pattern-plain-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "a5bda03fa1b5271055f3acac6d96113d5ef85fd086e5e0a3a8fd3274532856c1",
+   "source": "643cd3feaa1e217d91350f8ae846675f4515a63ccb4f5924404af8ede37b45ac"
+  },
+  "trait-S12-pattern-plain-128x160": {
+   "file": "trait-S12-pattern-plain-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "0a9335381d7e2c36aa753ef38f5d49dd6ed26816389d5cea8bd4f1479a2a57ba",
+   "source": "0aa03765c666a84efcd3620d2832259526030a4e61260917ed8d857556bfb887"
+  },
+  "trait-S12-pattern-plain-144x176": {
+   "file": "trait-S12-pattern-plain-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "840cdeb802a8d5c961ec216470c5781878c8824bf1579c0d955128982c32a064",
+   "source": "49851d7dc1be77fee21e4a97f3f9e66c61e25c56181d1883b51688fd5a59deba"
+  },
+  "trait-S12-translucency-between-104x160": {
+   "file": "trait-S12-translucency-between-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "00c71de4a47e0f3e8b1bee67e4522938a4640c1c0222ece7e98089d377a9773b",
+   "source": "da9545cb8fdea8d62135b92e5c8d88fd5615369efdab6498c9b6938aff8b91b0"
+  },
+  "trait-S12-translucency-between-104x64": {
+   "file": "trait-S12-translucency-between-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "a7948990a5d1302d3fa4ff0608b519d9460ca37be1e416d0cbf09b7c8e8cfd00",
+   "source": "2adfa6407afbfef08595a1b93526b4da4ea113baa46459ef1aacd2b06aa9875a"
+  },
+  "trait-S12-translucency-between-104x96": {
+   "file": "trait-S12-translucency-between-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "c80e6da0229b0caf67a54f3965793ab337ba940b0781280f579c03f626f4fca0",
+   "source": "f2188e73c8ce543ad16ac405afde12f550b20a6caf4417bb2ca1a2e759d8de13"
+  },
+  "trait-S12-translucency-between-128x160": {
+   "file": "trait-S12-translucency-between-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "22376e8554c57b1ab90e136e11b1ca0eb6e72e5f8b29d58643f3c5052cd02885",
+   "source": "82002c13694d777d096b963ca5b81bdb7be4f9a7e5c41e7daae62580f101bdb2"
+  },
+  "trait-S12-translucency-between-144x176": {
+   "file": "trait-S12-translucency-between-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "72eae9c9637f5fc82118cc52c01a2eaaff2772a906fb52ec36ab0f9af6f20db9",
+   "source": "71814d956b88488715f6a44f0b3f0bc3b0d3b0a93a35a149fa91c35688f0aff3"
+  },
+  "trait-S12-trim-butter-104x160": {
+   "file": "trait-S12-trim-butter-104x160.bin",
+   "w": 104,
+   "h": 160,
+   "bytes": 66572,
+   "sha256": "10d30ef9274bc513d207c9350d6bca1174d24c03aa7f22e377fd0a2b1c10dfc2",
+   "source": "0795c3b2c6788ac30a5be7a6aa7909e95749e5e02ef170e4c762b73d1ab58121"
+  },
+  "trait-S12-trim-butter-104x64": {
+   "file": "trait-S12-trim-butter-104x64.bin",
+   "w": 104,
+   "h": 64,
+   "bytes": 26636,
+   "sha256": "f99af5dcc67f63efcc19ab16f0d404f34afee8476af67ac31bbd19ded837feb4",
+   "source": "5eabf3180efaf9639d83f7952e2fb267dd72ec55fd826213a3fe417670d66b8d"
+  },
+  "trait-S12-trim-butter-104x96": {
+   "file": "trait-S12-trim-butter-104x96.bin",
+   "w": 104,
+   "h": 96,
+   "bytes": 39948,
+   "sha256": "0cf2e3eb9ce8be7a2140420632ecc4160f2e86e92b456da801f9b3b714c2fd06",
+   "source": "69a8a71aaa85b1f903330bff6e33400c8a96578242fe93a47275edf9bb8d1657"
+  },
+  "trait-S12-trim-butter-128x160": {
+   "file": "trait-S12-trim-butter-128x160.bin",
+   "w": 128,
+   "h": 160,
+   "bytes": 81932,
+   "sha256": "5daa4889ddb43d596835102b088fb8a10db08fae1ffe72c03bffff9bb151589f",
+   "source": "23ee88b38ab308da4f7e256706e2c97ce6f69b4b6e06e07d4aff9666d7b0e555"
+  },
+  "trait-S12-trim-butter-144x176": {
+   "file": "trait-S12-trim-butter-144x176.bin",
+   "w": 144,
+   "h": 176,
+   "bytes": 101388,
+   "sha256": "3c897bf6fe2cdd996833db8e47657c73f8914393b02d868b87b5d55034c2dd05",
+   "source": "5854821ebbf957c3ef2f558baf5e58790a8cb021ede9cd432b85e39ac24725fd"
+  }
+ }
+}

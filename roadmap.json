@@ -1,0 +1,108 @@
+{
+  "updated": "2026-10-10",
+  "modules": [
+    {
+      "id": "station",
+      "name": "Station",
+      "oneLine": "The home device where pods are studied, mibis are grown and families begin.",
+      "image": "assets/strip-station.webp",
+      "items": [
+        { "title": "Bring pods home and read them", "status": "live", "text": "Dock the Companion, open its crates, identify each pod and read its genome chapter by chapter, then compare two pods of the same species side by side.", "link": "prototypes/station/README.md" },
+        { "title": "Create and grow a mibi", "status": "live", "text": "Shape the traits you have read, grow the mibi in its bud and open it to meet the juvenile.", "link": "design/proposals/station-loop.md" },
+        { "title": "The Vivarium and its bays", "status": "live", "text": "Six bays hold your mibis in the Vivarium, and up to three of them travel on the Companion and keep their beds. Any pod, or any grown mibi you have not bonded, can be returned to the wild.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "Cross two mibis", "status": "live", "text": "Pick two adults of one species and see what their child could inherit, drawn only from the chapters you have read.", "link": "design/proposals/the-cross.md" },
+        { "title": "A new face for every Station screen", "status": "building", "text": "The Station build runs on the graphics engine the real device will run. Pods is built on it; every other screen shows that it is not built yet until its turn comes.", "link": "design/proposals/lvgl-switch.md" },
+        { "title": "Portrait sittings", "status": "building", "text": "Research milestones earn a mibi a sitting for its own portrait, which comes home as a crate at the dock.", "link": "design/proposals/the-portrait.md" },
+        { "title": "Home and Idle on the new face", "status": "building", "text": "Home with the Vivarium at its centre and the sections beside it, Cargo where the Companion's crates open, and the Idle view that keeps the Vivarium on show all day.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "Create and the Incubator on the new face", "status": "next", "text": "Shape a mibi's traits, then watch it grow under the dome leaf by leaf until it is ready to open.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "The Vivarium on the new face", "status": "next", "text": "The whole Vivarium, and each mibi up close with its card.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "The Library and the field guide", "status": "next", "text": "A tome with a plate for every species you have found and a book per species that fills in as you read more pods.", "link": "design/proposals/collection-display.md" },
+        { "title": "The Probe on the new face", "status": "next", "text": "The Probe section, where the Shield is mended and upgraded.", "link": "design/style-guide/station-layouts.md" },
+        { "title": "The Cross on the new face", "status": "next", "text": "Pick two mibis and see what their child could inherit, chapter by chapter, redrawn on the new face.", "link": "design/proposals/the-cross.md" },
+        { "title": "The family tree", "status": "later", "text": "Each mibi's book will show its lineage once there are enough bred families to design it around.", "link": "design/proposals/family-tree.md" }
+      ]
+    },
+    {
+      "id": "companion",
+      "name": "Companion",
+      "oneLine": "The handheld for exploring a fogged world with your partner and carrying discoveries home.",
+      "image": "assets/strip-companion.webp",
+      "items": [
+        { "title": "Expeditions on a fogged world map", "status": "live", "text": "Every step lifts the fog, and each world turn changes what is out there waiting to be found.", "link": "prototypes/exploration/README.md" },
+        { "title": "Survey places with Call", "status": "live", "text": "Places start under a veil that lifts as you walk, and Call sweeps further to reveal pods, stones and creatures.", "link": "design/proposals/exploration-round-3.md" },
+        { "title": "Storms, Energy and the Shield", "status": "live", "text": "Storms charge stones with Energy but can strike you in the open, so your Shield and shelter matter.", "link": "design/proposals/exploration-round-2.md" },
+        { "title": "Outposts and beacons", "status": "live", "text": "Light an outpost to head home and shelter there, or light a beacon to reveal the land around it.", "link": "design/proposals/outposts.md" },
+        { "title": "Head home with your crates", "status": "live", "text": "Heading home seals what you found into crates in the bay, ready to open at the Station.", "link": "design/proposals/send-home-and-trail.md" },
+        { "title": "Your partner on the road", "status": "live", "text": "Up to three mibis travel with you on the Companion. One at a time is your partner, has its own screen between expeditions and helps in the field, such as digging into caves.", "link": "design/proposals/companion-mode.md" },
+        { "title": "Care and the bond", "status": "live", "text": "Tend the mibis the Companion carries, up to three: tending earns a mibi its bond, a bonded juvenile grows up through your care, and nothing is lost while you are away.", "link": "design/style-guide/companion-screens.md" },
+        { "title": "Redrawn Companion art", "status": "building", "text": "The world, the explorer and the signs are being redrawn at a larger tile size in the game's art style.", "link": "design/proposals/companion-48px-redraw.md" },
+        { "title": "Companion software for the device", "status": "later", "text": "Once the game loop is settled, the Companion's screens move to native code for the real handheld.", "link": "design/proposals/technical-architecture.md" }
+      ]
+    },
+    {
+      "id": "caddy",
+      "name": "Caddy",
+      "oneLine": "The shared dock that charges both handhelds, connects the kit and prints what you find.",
+      "image": "assets/strip-caddy.webp",
+      "items": [
+        { "title": "Docking the Companion", "status": "live", "text": "On the sandbox, a stand-in dock beside the Station page moves your crates across when you dock.", "link": "prototypes/station/README.md" },
+        { "title": "Handing each new mibi to the Caddy", "status": "live", "text": "When a mibi grows, the Station hands it to the Caddy for its finished pictures, and the game plays on with a placeholder if the Caddy cannot be reached.", "link": "prototypes/caddy/README.md" },
+        { "title": "The e-paper summary", "status": "later", "text": "A quiet four-grey screen on the Caddy will show your residents, waiting pods and supplies at a glance.", "link": "design/devices.md" },
+        { "title": "Printed cards", "status": "later", "text": "The Caddy's printer will feed out a card for a mibi, carrying its genome stamp so it can be scanned back.", "link": "prototypes/genome-stamp/README.md" },
+        { "title": "Caddy software for the device", "status": "later", "text": "Once the game loop is settled, the Caddy's screen and printer move to native code for the real dock.", "link": "design/proposals/technical-architecture.md" }
+      ]
+    },
+    {
+      "id": "genome",
+      "name": "Species and genetics",
+      "oneLine": "Real genetics under every mibi: species built from genomes, and children that inherit from both parents.",
+      "items": [
+        { "title": "The species workbench", "status": "live", "text": "Build any of the sixteen species from its genome, roll individuals and cross two of them in your browser.", "link": "prototypes/workbench/README.md" },
+        { "title": "Inheritance that really works", "status": "live", "text": "Some traits blend between the parents, others show or hide by dominant and recessive copies, and close relatives make weaker crosses.", "link": "design/proposals/the-cross.md" },
+        { "title": "The genome stamp", "status": "live", "text": "Every mibi carries a stamp that encodes its real genome, and a phone scan page reads it back.", "link": "prototypes/genome-stamp/README.md" },
+        { "title": "Art for all sixteen species", "status": "building", "text": "Each species is getting its finished look; most still show a placeholder for now.", "link": "design/proposals/taxonomy.md" },
+        { "title": "Mutation", "status": "later", "text": "Rare changes may one day appear during growing, breeding or exploring.", "link": "design/proposals/the-cross.md" },
+        { "title": "Growing up and growing old", "status": "live", "text": "Mibis grow from juvenile to adult to elder, with strengths that shift along the way; a bonded juvenile grows up through your care.", "link": "design/play-manual.md" }
+      ]
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud",
+      "oneLine": "Optional online extras on top of a kit that plays fully on its own.",
+      "items": [
+        { "title": "A painted look for every mibi", "status": "building", "text": "The full path from growing a mibi to its picture landing runs on the sandbox with stand-in pictures while the painted style is tuned species by species.", "link": "design/proposals/art-pipeline.md" },
+        { "title": "Wireless sync for the Companion", "status": "later", "text": "Your Companion could stay in step with the kit without docking.", "link": "design/architecture.md" },
+        { "title": "A global mibi exchange", "status": "later", "text": "A place to meet and swap mibis with other players, always with the keeper's consent.", "link": "design/architecture.md" },
+        { "title": "Lineage records and certificates", "status": "later", "text": "Lasting records of your families, with certificates you can print.", "link": "design/architecture.md" },
+        { "title": "Mini-games and printer games", "status": "later", "text": "Extra ways to play with your mibis, on screen and on paper.", "link": "design/architecture.md" }
+      ]
+    },
+    {
+      "id": "hardware",
+      "name": "Hardware",
+      "oneLine": "Open-hardware devices to print and build yourself; nothing physical exists yet, because the game is proven in software first.",
+      "items": [
+        { "title": "The Station on a Raspberry Pi 4", "status": "later", "text": "The new face is built for the Pi as it is made; running it on a real Pi, with its speed checks, waits until the game plays end to end.", "link": "design/proposals/lvgl-switch.md" },
+        { "title": "A bench console", "status": "later", "text": "A Companion reference board with real buttons, running an expedition.", "link": "ROADMAP.md" },
+        { "title": "Screens and controls at real size", "status": "later", "text": "Displays and controls compared side by side against the game's art.", "link": "ROADMAP.md" },
+        { "title": "Power, charging, radio and printing", "status": "later", "text": "Each part tried and measured on the bench before anything is fixed.", "link": "hardware/README.md" },
+        { "title": "Boards and enclosures", "status": "later", "text": "Boards and 3D-printable cases, designed after the measurements and published as open hardware.", "link": "hardware/README.md" },
+        { "title": "A small pilot", "status": "later", "text": "A handful of complete kits, assembled with common tools.", "link": "ROADMAP.md" }
+      ]
+    },
+    {
+      "id": "website",
+      "name": "Website",
+      "oneLine": "Where to see the kit, play the prototypes and follow the project.",
+      "items": [
+        { "title": "The homepage", "status": "live", "text": "What Miniature Beasts is, the three devices, and links to play and to the source.", "link": "design/proposals/homepage-spec.md" },
+        { "title": "The sandbox", "status": "live", "text": "Every prototype is published to the sandbox automatically after each change, with the build it is serving in the footer.", "link": "prototypes/" },
+        { "title": "This roadmap", "status": "building", "text": "A public page showing what exists, what is being built and what comes next for each part of the project.", "link": "ROADMAP.md" },
+        { "title": "A real pitch with a playable demo", "status": "next", "text": "A fuller page built around the actual world and creatures, with a playable embedded in it.", "link": "ROADMAP.md" },
+        { "title": "Builder documentation", "status": "later", "text": "Guides for printing, wiring and assembling your own kit.", "link": "ROADMAP.md" },
+        { "title": "Devlog", "status": "later", "text": "Regular notes on what changed and why.", "link": "ROADMAP.md" },
+        { "title": "Kit sign-up", "status": "later", "text": "A way to hear when kits are ready.", "link": "ROADMAP.md" }
+      ]
+    }
+  ]
+}

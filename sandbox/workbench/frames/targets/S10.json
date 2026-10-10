@@ -1,0 +1,28 @@
+{
+ "schema": "mb-target-mask/1",
+ "species": "S10",
+ "name": "Igara",
+ "resembles": "an otter",
+ "view": "side",
+ "facing": "right",
+ "canvas": [
+  100,
+  100
+ ],
+ "note": "a long low sleek body, a small flat head with tiny ears and a short muzzle, four short legs, a thick tapering tail",
+ "shapes": [
+  {"capsule":[24,69,68,66,9,12],"part":"body"},
+  {"ellipse":[80,62,9,7],"part":"head"},
+  {"ellipse":[76,56,2.5,2.5],"part":"ear"},
+  {"ellipse":[88,64,4,3],"part":"muzzle"},
+  {"capsule":[64,74,66,90,3.5],"part":"leg"},
+  {"capsule":[70,74,72,90,3.5],"part":"leg"},
+  {"capsule":[30,76,28,90,3.5],"part":"leg"},
+  {"capsule":[36,76,36,90,3.5],"part":"leg"},
+  {"ellipse":[28,90,5,2.5],"part":"leg"},
+  {"ellipse":[36,90,5,2.5],"part":"leg"},
+  {"ellipse":[66,90,5,2.5],"part":"leg"},
+  {"ellipse":[72,90,5,2.5],"part":"leg"},
+  {"capsule":[18,72,2,80,6,2],"part":"tail"}
+ ]
+}

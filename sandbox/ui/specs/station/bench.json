@@ -1,0 +1,157 @@
+{
+ "screen": "bench",
+ "device": "station",
+ "section": "probe",
+ "level": "the bench, the section's one level: it holds one Probe, so its whole is that one item",
+ "spec": "design/style-guide/station-layouts.md#probe-bench",
+ "frame": "frame.json",
+ "status": "The layout spec for the Probe section, the bench, slot P (the Probe bench) of lvgl-switch.md §3, on the LVGL face, opened from Home's Probe module and taking the whole stage: every drawn region names its word or composition, the states docked and away, the bench's focus as data, the events, the bottom line and the strings",
+ "wireframes": ["design/style-guide/station-layouts/11-bench.png", "design/style-guide/station-layouts/11b-bench-armed.png", "design/style-guide/station-layouts/11c-bench-away.png", "design/style-guide/station-layouts/11d-bench-tier2.png", "design/style-guide/station-layouts/11e-bench-nav.png"],
+ "note": "The one home of the Probe bench numbers, transcribed from station-layouts.md (Probe bench) and its wireframes 11-bench.svg to 11e-bench-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The bench is the one screen whose subject is a machine: the Probe in its cradle at the left with its Shield plates under it, the mend switch and the upgrade slot in a column at the right. The live screen id is `bench`; its place in frame.json navigation is `probe`.",
+ "purpose": "Keep the Probe ready for the next expedition: see from the plates alone how whole its Shield is, mend a plate, set whether the dock mends every plate, and fit the upgrade, seeing what it adds. Reads first: the Probe; then its plates",
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The mend, the switch's slide and the install are cuts to their ends. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
+  "subject": "the Probe on its work tray, large, is the spotlight, being mended among the device's field tools; its Shield plates under it read the Shield's state with no words. The Probe as the project's Probe art draws it, never a needle",
+  "light": "the device's warm daylight, one soft key light from the top left, as on every section; the Probe the brightest object. No lab: no cool light, no glass, no clean-room machine",
+  "group": "the cradle with its plates and the column of two modules form one group centred on x 512 (56 to 968)",
+  "plates": "the tier's count of plates, never a ghost for a plate the tier does not have (as on Home's Probe module); one table of places a tier, keyed by the tier, centred on the cradle's axis 296; one sprite a place",
+  "column": "two modules (Home's `module` build, with a lamp): the mend switch, then the upgrade slot. The switch is a standing choice, so it is set at any time; the slot needs the Probe docked",
+  "amber": "nothing on the bench is amber: a worn plate or an affordable upgrade is a choice, not a need. The lamps are `sprout` (on, ready) or `hairline` (off)",
+  "away": "while the Probe is out with the Companion the cradle shows empty, so the Probe reads as out, never missing; no plates are drawn"
+ },
+ "rules": {
+  "used": [],
+  "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
+  "needed": [],
+  "plates": "the plates' places are tables in the spec chosen by the tier (regions.plates.places), data rather than a rule"
+ },
+ "states": ["docked", "away"],
+ "initial": "by the save: the Companion docked, docked; else away",
+ "stateRule": "docked: the Probe in its cradle with its plates; tier 1 or tier 2 and the slot's arm are props of this state (props.tier, focus.armed). away: the Probe out with the Companion; the cradle empty, no plates. A region with `inStates` exists only in those states",
+ "regions": {
+  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-probe", "until": "room-bench-stage-collection", "note": "the section's ground: the work tray, field tools and small gauges in the device's housing and light; until it lands, Pods' bench stage" },
+  "cradle": {
+   "rect": [56, 104, 480, 288], "component": "specimen", "focal": true, "axis": 296,
+   "pictures": { "tier1": "bench-probe-t1-480x288", "tier2": "bench-probe-t2-480x288", "away": "bench-cradle-empty-480x288" },
+   "inkTop": 4, "note": "the Probe on the tray in its cradle, one painted picture a tier; away, the empty cradle on the tray. The slice keeps rows 0 to 3 empty, as Home's cradle does. Its silhouette is the art director's, inside this box"
+  },
+  "plates": {
+   "rect": [192, 416, 208, 80], "build": "shieldPlates", "inStates": ["docked"],
+   "plate": [32, 64],
+   "places": { "1": [[232, 424], [280, 424], [328, 424]], "2": [[208, 424], [256, 424], [304, 424], [352, 424]] },
+   "pitch": 48,
+   "slices": { "whole": "bench-plate-whole-32x64", "gone": "bench-plate-gone-32x64" },
+   "states": { "whole": "the whole plate, `white`", "gone": "its outline, `bevel`" },
+   "note": "the region is the focus target's box; one sprite a place, 8 px inside its top; nothing else is drawn"
+  },
+  "switch": {
+   "rect": [584, 104, 384, 128], "component": "panel", "build": "module", "word": [16, 12], "lamp": [356, 12, 12, 12],
+   "toggle": { "at": [16, 56], "size": [80, 40], "track": { "off": "bench-switch-track-off-80x40", "on": "bench-switch-track-on-80x40" }, "knob": { "slice": "bench-switch-knob-40x40", "size": [40, 40], "x": { "off": 16, "on": 56 }, "y": 56, "move": "x 16 → 56 (and back) over 200 ms in whole pixels" } },
+   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 60], "icon": [16, 32], "pitch": 24, "count": "the tier's (3 or 4)", "whole": "icon-shield-16x32", "gone": "icon-shield-gone-16x32", "off": "the first two whole, the rest gone", "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
+   "states": { "off": "the knob left, the lamp `hairline`", "on": "the knob right, the lamp `sprout`" }
+  },
+  "slot": {
+   "rect": [584, 248, 384, 248], "component": "panel", "build": "module", "word": [16, 12], "lamp": [356, 12, 12, 12],
+   "socket": { "at": [16, 48], "size": [160, 160], "slice": "bench-socket-160" },
+   "part": { "at": [32, 64], "size": [128, 128], "armedAt": [32, 56], "slices": { "dim": "bench-part-t2-dim-128", "ready": "bench-part-t2-ready-128", "fitted": "bench-part-t2-fitted-128" } },
+   "adds": {
+    "pods": { "at": [200, 64], "icon": [16, 16], "pitch": 24, "count": 3, "new": 1, "slice": "icon-pod-16", "newSlice": "icon-pod-16-new" },
+    "plates": { "at": [200, 104], "icon": [16, 32], "pitch": 24, "count": 4, "new": 1, "slice": "icon-shield-16x32", "newSlice": "icon-shield-16x32-new" },
+    "reach": { "at": [200, 160], "size": [40, 40], "slice": "bench-reach-t2-40", "newSlice": "bench-reach-t2-40-new" },
+    "deep": { "at": [256, 160], "size": [40, 40], "slice": "bench-deep-t2-40", "newSlice": "bench-deep-t2-40-new" },
+    "rule": "what the upgrade adds, as pictures with no digits: three pods carried, four Shield plates, a wider reach, the deep read; the one each adds over tier 1 drawn in its `new` slice"
+   },
+   "states": { "dim": "docked, tier 1, not affordable, or away: the part dim, the lamp `hairline`", "ready": "docked, tier 1, affordable: the part lit, the lamp `sprout`", "armed": "after the first ✓: the part lifted 8 px out of the socket", "fitted": "tier 2: the part seated, the lamp `sprout`, the adds drawn full" }
+  }
+ },
+ "drawOrder": ["bench", "cradle", "plates", "switch", "slot", "ring", "frame (top bar, bottom line)", "message plate"],
+ "events": {
+  "mend": { "kind": "mend", "target": "plates", "ms": 300, "hold": 300, "do": "the first gone plate from the left seats, gone → whole, over 300 ms (the plate's own two slices, a dither of 16 levels); the counter ticks the price" },
+  "switch": { "kind": "switch", "target": "switch", "ms": 200, "hold": 0, "do": "the knob slides from x 16 to 56 (or back) in whole pixels; the plates of the meaning picture and the lamp change at the end" },
+  "install": {
+   "kind": "install", "target": "slot", "ms": 900, "hold": 900,
+   "steps": [
+    { "at": 0, "ms": 300, "do": "the armed part drops 8 px into the socket, whole pixels; the counters tick the price" },
+    { "at": 300, "do": "the cradle's picture cuts to tier 2; the plates move from the tier-1 places to the tier-2 places (a cut), all whole" },
+    { "at": 300, "ms": 300, "do": "the fourth plate seats, gone → whole" },
+    { "at": 600, "ms": 300, "do": "the adds draw full; the lamp steadies" }
+   ]
+  }
+ },
+ "focus": {
+  "initial": "plates when the Probe is docked and a plate is gone; else switch",
+  "fallback": "none",
+  "graph": {
+   "plates": { "right": { "nearestIn": "module" }, "left": "none", "up": "none", "down": "none" },
+   "module": { "order": ["switch", "slot"], "left": ["plates", "none"], "right": "none" }
+  },
+  "primitives": "lvgl-switch.md §2.6.1 governs: `order` steps ▲ ▼ through the list as written, skipping ids that are not present, stopping at the ends; nearestIn takes the row nearest the ring",
+  "targets": {
+   "plates": { "group": "plates", "ring": "round", "box": "regions.plates.rect", "lift": 2, "present": "docked only", "enabled": "a plate is gone" },
+   "switch": { "group": "module", "ring": "round", "box": "regions.switch.rect", "lift": 2, "enabled": "always" },
+   "slot": { "group": "module", "ring": "round", "box": "regions.slot.rect", "lift": 2, "enabled": "docked, tier 1 and affordable (state.tier2Ready)" }
+  },
+  "armed": { "slot": "after the first ✓ on a ready slot", "clear": "any key but ✓ clears the arm; the arm never survives a screen change" },
+  "held": "while events.mend or events.install holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
+  "vectors": [
+   { "from": "plates", "key": "right", "to": "slot", "note": "the row nearest the plates (centre y 456): the slot (372), not the switch (168)" },
+   { "from": "plates", "key": "up", "to": "plates" },
+   { "from": "switch", "key": "down", "to": "slot" },
+   { "from": "switch", "key": "up", "to": "switch" },
+   { "from": "slot", "key": "down", "to": "slot" },
+   { "from": "slot", "key": "up", "to": "switch" },
+   { "from": "slot", "key": "left", "to": "plates" },
+   { "state": "away", "from": "switch", "key": "left", "to": "switch" },
+   { "from": "slot", "key": "confirm", "intent": "confirm", "to": "slot", "armed": "slot" }
+  ]
+ },
+ "keys": {
+  "pad": "moves the ring by focus.graph",
+  "confirm": "does the bottom line's action exactly; the slot arms on the first ✓ and fits the part on the second",
+  "back": "Home, the ring on Home's Probe module (home.json, ← on a child of Home)",
+  "room": "as everywhere (frame.json navigation.roomKeys)"
+ },
+ "bottomLine": {
+  "plates": { "worn": { "action": "strings.mend", "price": "⚡ and its figure (state.PRICE.mend), icon before figure; no price when it costs nothing (the free economy)", "context": "strings.toMend", "short": "the frame's dimmed cap" }, "whole": { "action": null, "context": "strings.whole" } },
+  "switch": { "off": { "action": "strings.switchOn", "context": "strings.offContext" }, "on": { "action": "strings.switchOff", "context": "strings.onContext" } },
+  "slot": { "ready": { "action": "strings.fit", "price": "⚡ 12 ◆ 4 (state.PRICE.tier2E, tier2D), icon before figure", "context": "strings.adds" }, "armed": { "action": "strings.fitAgain", "price": "⚡ 12 ◆ 4", "context": "strings.adds" }, "short": { "action": "strings.fit", "price": "the frame's dimmed cap, the short figure `amber`", "context": "strings.adds" }, "away": { "action": null, "context": "strings.dockFirst" }, "fitted": { "action": null, "context": "strings.fitted" } },
+  "notice": "the frame's notice only; nothing on the bench sets one",
+  "back": "Home"
+ },
+ "colours": {
+  "module": { "fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal" },
+  "lamp": { "off": "hairline", "on": "sprout", "rim": "void" }
+ },
+ "masters": {
+  "note": "every master the bench names, at the size it is shown; none is drawn by the build. No new id; the stage and the three Probe pictures follow the Probe section's look: the work tray in daylight, the Probe lying on it being mended, never a needle, never a lab",
+  "list": ["room-bench-stage-probe 1024×522", "bench-probe-t1-480x288", "bench-probe-t2-480x288", "bench-cradle-empty-480x288 (rows 0 to 3 empty)", "bench-plate-whole-32x64", "bench-plate-gone-32x64", "bench-switch-track-off-80x40", "bench-switch-track-on-80x40", "bench-switch-knob-40x40", "mark-dock-24x24", "icon-shield-16x32", "icon-shield-16x32-new", "icon-shield-gone-16x32", "icon-pod-16", "icon-pod-16-new", "bench-socket-160", "bench-part-t2-dim-128", "bench-part-t2-ready-128", "bench-part-t2-fitted-128", "bench-reach-t2-40", "bench-reach-t2-40-new", "bench-deep-t2-40", "bench-deep-t2-40-new", "the lamps at 12: sprout and off"]
+ },
+ "strings": {
+  "title": "Probe",
+  "back": "Home",
+  "modules": { "switch": "Mend", "slot": "Upgrade" },
+  "mend": "Mend a plate",
+  "toMend": "{n in words} {plate|plates} to mend",
+  "whole": "every plate whole",
+  "switchOn": "Switch on",
+  "switchOff": "Switch off",
+  "offContext": "the dock mends two, free",
+  "onContext": "the dock mends all",
+  "fit": "Fit the upgrade",
+  "fitAgain": "Again: fit the upgrade",
+  "adds": "the Probe reaches further",
+  "dockFirst": "dock the Probe first",
+  "fitted": "the upgrade is fitted",
+  "note": "today's words in the frame's zones (station-layouts.md, The frame); the string table's words replace them"
+ },
+ "buildChanges": [
+  "as the Probe section: the title Probe after the Research key's icon, the frame's three face places and its 88 px way back; the layout, the states, the focus and the words stand",
+  "screens/bench.mjs draw(): the lamp pool and the drawn cradle ellipse (100, 300, 340×80) with probeArt at 172, 120 become the painted cradle picture 56, 104, 480×288, one a tier, and the empty cradle while away",
+  "\"The Probe is away\" and \"with the Companion\" in 28 and 20 px on the stage go: the empty cradle says it, the context names it",
+  "the plates (64×36 at 270 − n·37 + 74i, y 392) become 32×64 standing plates on the tier's places at y 424; the line \"tier 1 · 2 of 3 plates\" goes",
+  "the switch panel (520, 120, 420×90 with two lines of words) becomes the Mend module 584, 104, 384×128: the word, the switch, the picture of its meaning and the lamp; its words go to the bottom line",
+  "the tier 2 slot (520, 260, 420×160, `focus` fill when lit, with three lines of words and the price) becomes the Upgrade module 584, 248, 384×248: the socket and part, what it adds as pictures, the lamp; the price and \"armed · ✓ again installs\" go to the bottom line",
+  "the legacy amber ring round benchTargets becomes the frame's focus ring; benchTargets and navSpatial are replaced by focus.graph",
+  "the subject's \"cheaper at the dock than a field patch (3 ⚡)\" and the notice \"n plates to mend\" go: the context counts the plates in words, nothing is amber"
+ ]
+}

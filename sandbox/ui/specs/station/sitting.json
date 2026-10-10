@@ -1,0 +1,162 @@
+{
+ "screen": "sitting",
+ "device": "station",
+ "spec": "design/style-guide/station-layouts.md#sitting",
+ "frame": "frame.json",
+ "status": "The layout spec for the sitting on the LVGL face: every drawn region names its word or composition, the states pose, place, confirm and begin, the focus as data, the events, the bottom line and the strings",
+ "wireframes": ["design/style-guide/station-layouts/14-sitting-pose.png", "design/style-guide/station-layouts/14b-sitting-place.png", "design/style-guide/station-layouts/14c-sitting-confirm.png", "design/style-guide/station-layouts/14d-sitting-nav.png"],
+ "note": "The one home of the sitting's numbers, transcribed from station-layouts.md (Sitting) and its wireframes 14-sitting-pose.svg to 14d-sitting-nav.svg. Rectangles are [x, y, w, h] in screen pixels; `at` offsets are from the region's own origin. The sitting spends a held sitting on one mibi: the player picks a pose from its habits and a place it has been, looks, and confirms. Its left half is Habitat's living window, unchanged, so the mibi stays where it stood; the choices are in the deck at the right (Habitat's right column, the namer's panel rectangle), the three steps along the foot. Every rectangle is on the 8 px grid.",
+ "notes": {
+  "motion": "Reduced motion (props.motion false; UI designer, 2026-10-10 02:29): every event on this screen is a cut to its end, so the host sends hold 0 and runs what follows an event's end (a hand-off, a jump, the next state) on the frame of the key; nothing waits on a still frame. The backdrop's dither is a cut; begin lands on one mibi up close, the ring on the Portrait module, on the frame of the second ✓, and its plate shows. A press that ends an event with `cut: true` also acts (habitat.json notes.cut); no event here cuts.",
+  "where": "its own screen under one mibi up close (frame.json navigation.screens.sitting: parent habitat, back {name}), opened from its Portrait module with ✓ Portray {name}, only while a sitting is held and the mibi can sit (sitting.portraitBlock empty: it has a habit seen and a place been)",
+  "rules": "prototypes/station/src/sitting.mjs: offer(st, m) gives the poses (the habits seen, habitsOf) and the places (where it has been, placesOf); beginSitting(st, m, pose, place) spends the held sitting and nothing else, sends the crate to the bay and sets the mibi's portrait painting. Nothing is spent before the last ✓",
+  "window": "the same bezel, glass, mibi box and name tag as Habitat, so the screen change keeps the mibi where it stood; the glass shows a plain backdrop, washed in the focused place's colours on the place step",
+  "frame": "the gilt frame around the window from the look-and-confirm step: the portrait to be. It lights when the confirm is armed",
+  "visit": "inside the screen ← keeps every choice; leaving the screen (← from the pose step, a room key) drops every choice, and coming back starts on the pose step with the ring on card.0",
+  "order": "the order of the cards is the frame's: poses in the species frame's habit order (the habits seen); places the pod's place first, then the order walked to (a bred mibi has only the places it walked to)",
+  "amber": "nothing on the sitting is amber"
+ },
+ "rules": {
+  "used": ["listPitch"],
+  "closedList": "station-layouts.md, The derived rules (closed): railCompaction slantTabs pageGrid platePosition listPitch splicePlan guideColumns pipGroups leafArc",
+  "needed": [],
+  "listPitch": "the cards (three columns, two rows), the chosen cards and the three step tiles are lists by pitch: { first, pitch, grid }"
+ },
+ "states": ["pose", "place", "confirm", "begin"],
+ "initial": "pose",
+ "stateRule": "pose: pick one of the mibi's habits seen. place: pick one of the places it has been. confirm: look at the choice in the gilt frame and confirm, arm-then-confirm. begin: from the second ✓ until the screen changes to Habitat (events.begin), input held. ✓ on a card goes a step forward; ← goes a step back (from pose, to Habitat). A region with `inStates` exists only in those states",
+ "regions": {
+  "stage": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "offGrid": true, "slice": "room-vivarium-stage-habitat", "until": "the stage ground rect, colours.stageGround", "note": "Habitat's stage" },
+  "bezel": { "rect": [16, 48, 560, 424], "inset": 8, "component": "livingWindow", "part": "frame" },
+  "glass": { "rect": [24, 56, 544, 408], "component": "livingWindow", "part": "inside", "pictures": { "pose": "sitting-backdrop-plain-544x408", "place": "sitting-backdrop-{place}-544x408, the focused place", "confirm": "sitting-backdrop-{place}-544x408, the chosen place, seen through the gilt frame's opening" }, "backdrops": ["sitting-backdrop-meadow-544x408", "sitting-backdrop-pond-544x408", "sitting-backdrop-rock-544x408", "sitting-backdrop-wood-544x408", "sitting-backdrop-cave-544x408"], "load": "the place backdrops load on entering the place step and are dropped on leaving the screen", "note": "a plain stage in the vivarium's light; no words but the name tag" },
+  "resident": { "rect": [144, 80, 304, 312], "component": "specimen", "focal": true, "axis": 296, "feet": 392, "clip": "glass", "asset": "the mibi's standard painting (the portrait is not shown before it is painted)", "lift": 0 },
+  "nameTag": { "rect": [184, 416, 224, 32], "build": "nameTag", "component": "panel", "text": "text", "clip": "glass", "h": 32, "px": 20, "weight": 500, "pad": 12, "round": 8, "min": 80, "max": 224, "lineTop": 418, "centre": 296, "words": "the name only", "target": null, "note": "as on Habitat; not a target here" },
+  "gilt": { "rect": [16, 48, 560, 424], "component": "livingWindow", "part": "gilt", "inStates": ["confirm", "begin"], "sprite": "painted, placed 1:1 over the frame", "slices": { "rest": "sitting-gilt-560x424", "armed": "sitting-gilt-lit-560x424" }, "props": { "lit": "focus.armed === \"room\"" },
+   "moulding": 16, "opening": [32, 64, 528, 392], "openingAt": [16, 16], "bands": { "bead": [0, 3], "leaf": [3, 11], "lip": [11, 14], "sight": [14, 16] },
+   "look": "a modelled moulding 16 px deep on every side: outer bead 3 px, leaf face 8 px lit from the top left, inner shade lip 3 px, sight edge 2 px; lit is the leaf one value brighter with a 2 px warm sight edge; the sitting's gold, never the focus colour",
+   "standIn": "colours.giltStandIn: the wireframes' stand-in until the masters land; the build draws only the masters",
+   "note": "over the bezel; its opening sits 8 px inside the glass on every side, the mibi and its tag inside it" },
+  "deck": { "rect": [592, 48, 416, 424], "component": "panel", "inset": 16, "note": "the right column in every state: Habitat's card and modules column and the namer's panel rectangle" },
+  "heading": { "rect": [608, 64, 384, 32], "component": "text", "px": 20, "weight": 500, "lineTop": 66, "text": "strings.heading, by state" },
+  "cards": {
+   "rect": [608, 112, 384, 248], "component": "list", "build": "choiceCards", "layout": ["listPitch"], "inStates": ["pose", "place"],
+   "places": { "first": [608, 112, 112, 112], "pitch": [136, 136], "grid": [3, 2], "max": 6 },
+   "props": { "items": [{ "picture": "<96 id>", "chosen": "bool" }] }, "refuses": "more items than grid[0] × grid[1]", "targets": "card.<i>",
+   "card": { "picture": { "at": [8, 8], "size": [96, 96] }, "pose": "pose-{species}-{habit}-96x96", "place": "place-{place}-96x96", "chosen": "the card chosen before in this visit (on coming back a step): fill colours.card.chosen, one step up" },
+   "order": "the frame's: pose, the habits seen in the species frame's habit order; place, the pod's place first, then the order walked to (a bred mibi: only the places it walked to)"
+  },
+  "chosen": { "rect": [608, 112, 248, 112], "component": "list", "build": "choiceCards", "layout": ["listPitch"], "inStates": ["confirm", "begin"], "places": { "first": [608, 112, 112, 112], "pitch": [136, 0], "grid": [2, 1], "exactly": 2 }, "props": { "items": [{ "picture": "<96 id>", "chosen": false }] }, "note": "the pose's card, then the place's card, as chosen; not targets" },
+  "strip": { "rect": [16, 488, 992, 64], "component": "panel" },
+  "steps": {
+   "rect": [32, 496, 952, 48], "component": "list", "build": "stepTiles", "layout": ["listPitch"],
+   "places": { "first": [32, 496, 312, 48], "pitch": [320, 0], "grid": [3, 1], "exactly": 3 },
+   "props": { "items": [{ "state": "current | done | ahead", "word": "strings.steps", "picture": "<48 id> | null, only when done" }] },
+   "tile": { "word": { "at": [16, 14], "px": 16 }, "thumb": { "at": [256, 0], "size": [48, 48], "pictures": "the chosen card's picture at 48: pose-{species}-{habit}-48x48 (hand-passed from the 96), place-{place}-48x48 (existing)" } },
+   "states": { "current": "fill `hairline`, the word `bone`", "done": "fill `panel`, the word `bone`, the chosen picture", "ahead": "fill `panel`, the word `mist`" },
+   "words": "strings.steps"
+  }
+ },
+ "drawOrder": ["stage", "bezel", "glass", "resident", "nameTag", "gilt", "deck", "heading", "cards", "chosen", "strip", "steps", "ring", "frame (top bar, bottom line)", "message plate"],
+ "events": {
+  "backdrop": { "kind": "dither", "target": "glass", "ms": 200, "hold": 0, "levels": 16, "do": "the place step: the ring moved to another place card; the backdrop cross-dithers to that place's (lvgl-switch.md §2.7). Entering the place step dithers from the plain backdrop to the focused place's; going back to the pose step dithers to the plain one", "load": "regions.glass.load" },
+  "step": { "kind": "step", "ms": 0, "hold": 0, "do": "✓ on a card or ← inside: the heading, the cards, the steps' tiles and the bottom line change on the frame of the key (cuts); the gilt frame shows on the confirm step (a cut)" },
+  "begin": {
+   "timeline": "begin, the host timeline", "ms": 480, "hold": 480, "presses": "the pad, ✓ and ← do nothing; a coloured key waits and acts when the hold ends (focus.held)",
+   "steps": [
+    { "at": 0, "kind": "dither", "target": "gilt", "from": "sitting-gilt-lit-560x424", "to": null, "ms": 300, "levels": 16, "do": "the lit gilt frame dithers out: the frame leaves for the bay" },
+    { "at": 300, "kind": "dither", "target": "screen", "from": "sitting", "to": "habitat", "ms": 180, "levels": 16, "focus": "portrait", "do": "the standard screen transition to Habitat, the ring on the Portrait module in its painting state; the message plate (home.plate)" }
+   ],
+   "then": "home: the plate on Habitat, Home's sitting slot and the Bay"
+  }
+ },
+ "focus": {
+  "pose": {
+   "initial": "the card chosen before in this visit, else card.0", "entry": "card.0: opening the screen always starts here, no choice made (notes.visit)", "fallback": "none",
+   "graph": { "card": { "left": [{ "nearestIn": "card", "ahead": true }, "none"], "right": [{ "nearestIn": "card", "ahead": true }, "none"], "up": [{ "nearestIn": "card", "ahead": true }, "none"], "down": [{ "nearestIn": "card", "ahead": true }, "none"] } },
+   "targets": { "card": { "group": "card", "id": "card.<i>, i from 0 in the cards' order", "ring": "round", "box": "regions.cards.places, card i", "lift": 2 } }
+  },
+  "place": { "same": "as pose" },
+  "confirm": {
+   "initial": "room", "roomKey": "room", "roomAt": [280, 224, 32, 32], "fallback": "none",
+   "graph": { "room": { "up": "none", "down": "none", "left": "none", "right": "none" } },
+   "targets": {},
+   "armed": "room: after the first ✓; regions.gilt.props.lit is focus.armed === \"room\"; any key but ✓ clears the arm",
+   "room": "the ring on nothing: the gilt frame is the focus; ✓ arms, then begins"
+  },
+  "held": "while events.begin holds, the face moves no focus and sends no intent but room:<x> (kept by the host and dispatched when the hold ends)",
+  "vectors": [
+   { "state": "pose", "from": "card.0", "key": "right", "to": "card.1" },
+   { "state": "pose", "from": "card.2", "key": "right", "to": "card.2" },
+   { "state": "pose", "from": "card.0", "key": "left", "to": "card.0" },
+   { "state": "place", "from": "card.0", "key": "down", "to": "card.3" },
+   { "state": "place", "from": "card.4", "key": "up", "to": "card.1" },
+   { "state": "place", "from": "card.3", "key": "right", "to": "card.4" },
+   { "state": "place", "from": "card.1", "key": "down", "to": "card.4" },
+   { "state": "place", "from": "card.3", "key": "down", "to": "card.3" },
+   { "state": "confirm", "from": "room", "key": "left", "to": "room" },
+   { "state": "confirm", "from": "room", "key": "confirm", "intent": "confirm", "target": "room", "armed": "room" }
+  ]
+ },
+ "keys": {
+  "pad": "pose and place: moves the ring among the cards; confirm: nothing",
+  "confirm": "pose: this pose, then the place step; place: this place, then the confirm step; confirm: the first ✓ arms (the gilt frame lights), the second begins the sitting (events.begin)",
+  "back": "a step back, keeping the choice made there (the ring on it): confirm to place, place to pose; from pose, Habitat with the ring on the Portrait module (habitat.json focus.entry.backFromSitting), the choices dropped. Nothing is spent",
+  "room": "as everywhere (frame.json navigation.roomKeys); leaving drops every choice and nothing is spent, as on Create and Cross"
+ },
+ "bottomLine": {
+  "pose": { "action": "strings.thisPose", "context": "the focused habit's words (strings.habits)", "back": "Habitat", "capX": 934 },
+  "place": { "action": "strings.thisPlace", "context": "the focused place's words (strings.places)", "back": "strings.steps.pose", "capX": 950 },
+  "confirm": { "action": "strings.portray, armed strings.portrayAgain", "price": null, "context": "strings.once", "back": "strings.steps.place", "capX": 946 },
+  "begin": { "action": null, "context": null, "back": null },
+  "notice": "the frame's notice only",
+  "backCap": "the ← cap's x is 1008 − the word's width − 20 (the 16 px cap, 4 px, the word right-aligned to 1008): Habitat 54 px → 934, Pose 38 → 950, Place 42 → 946"
+ },
+ "colours": {
+  "bezel": { "fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline" },
+  "glass": { "edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil" },
+  "nameTag": { "fill": "panel", "edge": "hairline", "name": "bone" },
+  "heading": "bone",
+  "deck": { "fill": "panel", "edge": "hairline", "top": "bevel" },
+  "card": { "fill": "ground", "edge": "hairline", "chosen": "hairline" },
+  "giltStandIn": { "rest": { "bead": "soil", "leaf": "gold", "leafShade": "bark", "lip": "soil", "sight": "bark" }, "lit": { "bead": "soil", "leaf": "yellow", "leafShade": "gold", "lip": "soil", "sight": "sand" } },
+  "crateLamp": { "rim": "void", "lit": "sky", "unlit": "hairline" },
+  "strip": { "fill": "ground", "edge": "hairline" },
+  "step": { "fill": "panel", "current": "hairline", "word": "bone", "ahead": "mist" }
+ },
+ "masters": {
+  "note": "every master the sitting names, at the size it is shown; none is drawn by the build",
+  "list": ["sitting-backdrop-plain-544x408", "sitting-backdrop-meadow-544x408", "sitting-backdrop-pond-544x408", "sitting-backdrop-rock-544x408", "sitting-backdrop-wood-544x408", "sitting-backdrop-cave-544x408", "sitting-gilt-560x424", "sitting-gilt-lit-560x424", "pose-{species}-{habit}-96x96, one a habit of each species frame: the species' pose picture, never the mibi acting", "pose-{species}-{habit}-48x48, hand-passed from the 96", "place-{place}-96x96 (the 48×48 exists)", "crate-sitting-48x40 (Home's Cargo module)", "crate-sitting-256x176 (Cargo's bay)", "room-vivarium-stage-habitat 1024×522 (Habitat's)"]
+ },
+ "strings": {
+  "title": "Sitting",
+  "heading": { "pose": "Pick a pose", "place": "Pick a place", "confirm": "Ready to sit" },
+  "steps": { "pose": "Pose", "place": "Place", "confirm": "Portray" },
+  "thisPose": "Pick this pose",
+  "thisPlace": "Pick this place",
+  "portray": "Portray {name}",
+  "portrayAgain": "Again: portray {name}",
+  "once": "one sitting each, ever",
+  "habits": "the habit as an -ing phrase: \"shaking dry\", \"calm\", \"sleeping curled\", \"sniffing\", \"puffing\", \"digging\", \"glowing\"",
+  "places": "the place's word: \"the meadow\", \"the pond edge\", \"the rock field\", \"the wood\", \"the cave\"",
+  "beganPlate": "{name}'s portrait is on its way",
+  "welcomePlate": "Another sitting is yours",
+  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording"
+ },
+ "home": {
+  "plate": { "on": "Habitat, after events.begin", "lines": ["strings.beganPlate", "strings.welcomePlate, only when begin gave a waiting welcome sitting (sitting.mjs beginSitting, checkWelcome)"], "px": 16, "pad": 16, "line": 20, "height": "16 + 20 × lines: 36, or 56 with the welcome", "bottom": 550, "example": { "lines": 2, "widths": [193, 174], "rect": [399, 494, 226, 56], "note": "Fig: the longer line plus 16 each side, rounded up to an even width to centre on x 512; it covers the strip, not the mibi's box or the Portrait module" } },
+  "slot": { "rect": [912, 408, 24, 32], "after": "nothing; the gilt frame when begin gave a waiting welcome sitting (home.json regions.probe.slotRect)" },
+  "bay": {
+   "rule": "from begin until it is opened, the sitting's crate stands in Cargo: on Home's Cargo module (home.json regions.cargo.sittingCrates) and in Cargo's bay (cargo.json regions.crates.sitting)",
+   "crate": { "size": [48, 40], "slots": "from the right: the first at [928, 72], a second at [864, 72]; walk crates fill from the left (800 + 64i); at most three crates show, walk crates first", "asset": "crate-sitting-48x40", "until": "the walk crate's roles, no seal tag" },
+   "lamp": { "at": [18, 44], "size": [12, 12], "example": [946, 116, 12, 12], "rows": 10, "value": "sitting.mjs crateLamp", "lit": "floor(10 × crateLamp) inner rows from the bottom in colours.crateLamp.lit, the rest colours.crateLamp.unlit; nine rows while painting or waiting for the cloud (LAMP_SHORT), ten when ready; never amber" },
+   "door": "open while a sitting crate is in the bay, docked or away; shut only on an empty bay with the Companion away",
+   "moduleLamp": "home.json regions.cargo lamp (984, 60): amber only when a crate is ready to open (sitting.mjs bayState.amber: a ready sitting crate, or walk crates waiting while docked); otherwise off"
+  }
+ },
+ "buildChanges": [
+  "the build has no sitting screen: sitting.mjs holds its rules headless (offer, beginBlock, beginSitting); habitat.mjs offers no Portray",
+  "Habitat's Portrait module (habitat.json regions.portrait) opens this screen with ✓ Portray {name}; begin returns to Habitat with the ring on it",
+  "sitting.mjs offer gives the poses in the order seen (habitsOf); the face orders them by the species frame's habits",
+  "home.json regions.bay draws no sitting crate and keeps the door shut while away; sitting.json home.bay is the Bay with a sitting crate"
+ ]
+}

@@ -1,0 +1,7409 @@
+{
+ "note": "Pods as the JavaScript drew it (the view and the components of the freeze, through the node path, on the WebAssembly face) and the props for the same scene from views/pods-props.mjs: the stand-in pictures to upload (flat blocks keyed by id), and the framebuffer's hash. The words must draw the same pixels. Regenerated only when the spec, the stand-ins or the view's decisions change.",
+ "cases": [
+  {
+   "state": "collection",
+   "name": "partly and wholly read pods, finds and marks",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176",
+         "ring-arc-collection-n4-s1-176x176:176x176",
+         "ring-arc-collection-n4-s2-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "find": "place:meadow:48",
+        "grow": "grow:16",
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176",
+         "ring-arc-collection-n4-s1-176x176:176x176",
+         "ring-arc-collection-n4-s2-176x176:176x176",
+         "ring-arc-collection-n4-s3-176x176:176x176"
+        ],
+        "pod": "pod:S02:i:88x112",
+        "name": "Untuva",
+        "find": "place:pond:48",
+        "grow": "grow:16",
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n8-track-176x176:176x176",
+         "ring-arc-collection-n8-s1-176x176:176x176"
+        ],
+        "pod": "pod:S03:i:88x112",
+        "name": "Tuikis",
+        "find": "place:rock:48",
+        "grow": "grow:16",
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S04:i:88x112",
+        "name": "Hiljan",
+        "find": "place:wood:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n6-track-176x176:176x176"
+        ],
+        "pod": "pod:S05:i:88x112",
+        "name": "Tepor",
+        "find": "place:cave:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S06:i:88x112",
+        "name": "Pesko",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      },
+      {
+       "id": "place.2",
+       "group": "place",
+       "index": 2
+      },
+      {
+       "id": "place.3",
+       "group": "place",
+       "index": 3
+      },
+      {
+       "id": "place.4",
+       "group": "place",
+       "index": 4
+      },
+      {
+       "id": "place.5",
+       "group": "place",
+       "index": 5
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 982,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Untuva is fully read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-s2-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "grow:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "ring-arc-collection-n4-s3-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "place:pond:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "ring-arc-collection-n8-s1-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S03:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "place:rock:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "ring-arc-collection-n5-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S04:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "place:wood:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "ring-arc-collection-n6-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S05:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "place:cave:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "pod:S06:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "32d78d1c"
+  },
+  {
+   "state": "overview",
+   "name": "an unidentified pod, the pod focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:-:s:120x152",
+       "identified": null
+      },
+      "name": "Unknown",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "mibi-halo-empty-128x160:128x160",
+      "who": [
+       "mark-species-frost-24x24:24x24",
+       "mark-species-frost-24x24:24x24"
+      ]
+     },
+     "rail": null,
+     "page": null,
+     "stamp": null,
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Identify",
+      "price": "",
+      "dim": false,
+      "back": "Pods",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:-:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "mibi-halo-empty-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-frost-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "75b3f9d3"
+  },
+  {
+   "state": "overview",
+   "name": "an unidentified pod, the hatch focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:-:s:120x152",
+       "identified": null
+      },
+      "name": "Unknown",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "mibi-halo-empty-128x160:128x160",
+      "who": [
+       "mark-species-frost-24x24:24x24",
+       "mark-species-frost-24x24:24x24"
+      ]
+     },
+     "rail": null,
+     "page": null,
+     "stamp": null,
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "hatch",
+     "armed": false,
+     "targets": [
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Return to the wild",
+      "price": "+1 ❀",
+      "back": "Pods",
+      "subject": "Back to the meadow",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:-:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "mibi-halo-empty-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-frost-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "f0515226"
+  },
+  {
+   "state": "overview",
+   "name": "an unidentified pod from another place",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S03-0f81b211",
+       "sizeClass": "medium",
+       "sealed": "pod:-:s:120x152",
+       "identified": null
+      },
+      "name": "Unknown",
+      "origin": [
+       "Found at the pond edge,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:pond:64",
+      "figure": "mibi-halo-empty-128x160:128x160",
+      "who": [
+       "mark-species-frost-24x24:24x24",
+       "mark-species-frost-24x24:24x24"
+      ]
+     },
+     "rail": null,
+     "page": null,
+     "stamp": null,
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Identify",
+      "price": "",
+      "dim": false,
+      "back": "Pods",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:-:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "mibi-halo-empty-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-frost-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:pond:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "3e6d1525"
+  },
+  {
+   "state": "overview",
+   "name": "the seal half cleared",
+   "events": [
+    {
+     "kind": "seal",
+     "target": "dev-1:S01-9bae06fb",
+     "ms": 2000,
+     "hold": 2000
+    }
+   ],
+   "at": 1000,
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:0/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb::95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "hatch",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Return to the wild",
+      "price": "+1 ❀",
+      "back": "Pods",
+      "subject": "Back to the meadow",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb::95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "8fdc5e24"
+  },
+  {
+   "state": "overview",
+   "name": "a ribbon in the origin's place",
+   "events": [
+    {
+     "kind": "ribbon",
+     "target": "dev-1:S02-8a384b4e",
+     "ms": 7400,
+     "from": 1400
+    }
+   ],
+   "at": 2000,
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14"
+      },
+      "pod": {
+       "id": "dev-1:S02-8a384b4e",
+       "sizeClass": "large",
+       "sealed": "pod:S02:s:144x176",
+       "identified": "pod:S02:i:144x176"
+      },
+      "name": "Untuva",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S02:0/4",
+      "who": [
+       "mark-species-S02-24x24:24x24",
+       "mark-clan-C02-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 5,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "sealed",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:sealed:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S02-8a384b4e::81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Coat",
+      "back": "Pods",
+      "subject": "Untuva is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S02:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "figure:S02:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-S02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "mark-clan-C02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S02-8a384b4e::81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-sealed-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:character:sealed:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "a8fe2878"
+  },
+  {
+   "state": "overview",
+   "name": "an identified pod with kin",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:0/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb::95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S01-9bae06fb",
+       "ring": "kinring:56",
+       "pod": "pod:S01:i:40x48"
+      },
+      {
+       "id": "dev-3:S01-9bae06fb",
+       "ring": "kinring:56",
+       "pod": "pod:S01:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "kin.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "kin.1",
+       "group": "kin",
+       "index": 1
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Compare",
+      "back": "Pods",
+      "subject": "Loika is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb::95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "53af3862"
+  },
+  {
+   "state": "overview",
+   "name": "S01: partly read, the second tab focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:2/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb:coat,face:95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 997,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:2/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb:coat,face:95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "d2c8e443"
+  },
+  {
+   "state": "overview",
+   "name": "S04: partly read, the second tab focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S04-2d0430da",
+       "sizeClass": "medium",
+       "sealed": "pod:S04:s:120x152",
+       "identified": "pod:S04:i:120x152"
+      },
+      "name": "Hiljan",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S04:2/5",
+      "who": [
+       "mark-species-S04-24x24:24x24",
+       "mark-clan-C04-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 92,
+      "asset": "stamp:S04-2d0430da:coat,face:92",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 998,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S04:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S04:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S04:2/5",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C04-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S04-2d0430da:coat,face:92",
+     "w": 92,
+     "h": 92
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "ddfbaed6"
+  },
+  {
+   "state": "overview",
+   "name": "S08: partly read, the second tab focused",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14"
+      },
+      "pod": {
+       "id": "dev-1:S08-39c6e15a",
+       "sizeClass": "large",
+       "sealed": "pod:S08:s:144x176",
+       "identified": "pod:S08:i:144x176"
+      },
+      "name": "Rupar",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S08:2/6",
+      "who": [
+       "mark-species-S08-24x24:24x24",
+       "mark-clan-C08-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 4,
+        "filled": 4,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S08-39c6e15a:coat,face:81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "rail.5",
+       "group": "rail",
+       "index": 5
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 995,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S08:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S08:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S08:2/6",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-S08-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S08-39c6e15a:coat,face:81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "3a13090d"
+  },
+  {
+   "state": "overview",
+   "name": "S02: wholly read, the last tab focused, the stamp",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14"
+      },
+      "pod": {
+       "id": "dev-1:S02-8a384b4e",
+       "sizeClass": "large",
+       "sealed": "pod:S02:s:144x176",
+       "identified": "pod:S02:i:144x176"
+      },
+      "name": "Untuva",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S02:3/4",
+      "who": [
+       "mark-species-S02-24x24:24x24",
+       "mark-clan-C02-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 3,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 5,
+        "filled": 5,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "sealed",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:sealed:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S02-8a384b4e:coat,movement,shape:81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S02-8a384b4e",
+       "ring": "kinring:56",
+       "pod": "pod:S02:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.3",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 993,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Character",
+      "back": "Pods",
+      "subject": "Character is sealed",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S02:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "figure:S02:3/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-species-S02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "mark-clan-C02-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S02:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S02-8a384b4e:coat,movement,shape:81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-sealed-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:character:sealed:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "4739259c"
+  },
+  {
+   "state": "overview",
+   "name": "S06: wholly read, the last tab focused, the stamp",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S06-454cfde4",
+       "sizeClass": "medium",
+       "sealed": "pod:S06:s:120x152",
+       "identified": "pod:S06:i:120x152"
+      },
+      "name": "Pesko",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S06:5/5",
+      "who": [
+       "mark-species-S06-24x24:24x24",
+       "mark-clan-C06-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 4,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "legs-tail",
+        "word": "Legs & Tail",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:legs-tail:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 81,
+      "asset": "stamp:S06-454cfde4:coat,face,legs-tail,movement,shape:81",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S06-454cfde4",
+       "ring": "kinring:56",
+       "pod": "pod:S06:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.4",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 991,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Movement",
+      "back": "Pods",
+      "subject": "Movement is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S06:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S06:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "figure:S06:5/5",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C06-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S06:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S06-454cfde4:coat,face,legs-tail,movement,shape:81",
+     "w": 81,
+     "h": 81
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:legs-tail:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "b53bd26d"
+  },
+  {
+   "state": "overview",
+   "name": "a read wipe in progress",
+   "events": [
+    {
+     "kind": "wipe",
+     "target": "face",
+     "ms": 2000,
+     "hold": 2000
+    }
+   ],
+   "at": 1000,
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:2/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": 1,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb:coat,face:95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 997,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Face",
+      "back": "Pods",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:2/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb:coat,face:95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "86be5ba7"
+  },
+  {
+   "state": "chapter",
+   "name": "S01: chapter 0, 0 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 0,
+      "open": 0,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "coat",
+      "heading": {
+       "emblem": "emblem:coat:unread:24",
+       "word": "Coat"
+      },
+      "cells": [
+       {
+        "name": "Markings",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read Coat",
+      "price": "",
+      "dim": false,
+      "back": "Loika",
+      "subject": "Coat is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "f32326f5"
+  },
+  {
+   "state": "chapter",
+   "name": "S01: chapter 1, 2 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 1,
+      "open": 1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "face",
+      "heading": {
+       "emblem": "emblem:face:read:24",
+       "word": "Face"
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [
+         {
+          "key": "hides",
+          "asset": "mark-line-seed-12x16:12x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-crown-leaf-crest-128x160:128x160"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-eyes-between-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.1",
+      "rail.open": "rail.1",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 997,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Loika",
+      "subject": "Face is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S01-crown-leaf-crest-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-12x16:12x16",
+     "w": 12,
+     "h": 16
+    },
+    {
+     "id": "trait-S01-eyes-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-pair-20x16:20x16",
+     "w": 20,
+     "h": 16
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "be57b448"
+  },
+  {
+   "state": "chapter",
+   "name": "S04: chapter 2, 4 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S04-2d0430da",
+       "sizeClass": "medium",
+       "sealed": "pod:S04:s:120x152",
+       "identified": "pod:S04:i:120x152"
+      },
+      "name": "Hiljan",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 2,
+      "open": 2,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "shape",
+      "heading": {
+       "emblem": "emblem:shape:read:24",
+       "word": "Shape"
+      },
+      "cells": [
+       {
+        "name": "Topline",
+        "lines": [
+         "only arched"
+        ],
+        "glyphs": [
+         {
+          "key": "only",
+          "asset": "mark-line-only-16x8:16x8"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S04-topline-arched-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.2",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.2",
+      "rail.open": "rail.2",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 996,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Hiljan",
+      "subject": "Shape is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S04:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S04:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S04-topline-arched-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "96c7b245"
+  },
+  {
+   "state": "chapter",
+   "name": "S08: chapter 3, 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14"
+      },
+      "pod": {
+       "id": "dev-1:S08-39c6e15a",
+       "sizeClass": "large",
+       "sealed": "pod:S08:s:144x176",
+       "identified": "pod:S08:i:144x176"
+      },
+      "name": "Rupar",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 3,
+      "open": 3,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 4,
+        "filled": 4,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:stamina:read:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:character:read:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "movement",
+      "heading": {
+       "emblem": "emblem:movement:read:24",
+       "word": "Movement"
+      },
+      "cells": [
+       {
+        "name": "Turning",
+        "lines": [
+         "tight turns to wide turns"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         },
+         {
+          "key": "doing",
+          "asset": "mark-breed-28x16:28x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S08-turning-between-128x160:128x160"
+       },
+       {
+        "name": "Stride",
+        "lines": [
+         "long steps to short steps"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         },
+         {
+          "key": "doing",
+          "asset": "mark-breed-28x16:28x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S08-stride-between-128x160:128x160"
+       },
+       {
+        "name": "Pace",
+        "lines": [
+         "only steady"
+        ],
+        "glyphs": [
+         {
+          "key": "only",
+          "asset": "mark-line-only-16x8:16x8"
+         },
+         {
+          "key": "doing",
+          "asset": "mark-breed-28x16:28x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S08-pace-steady-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 3,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.3",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      },
+      {
+       "id": "rail.5",
+       "group": "rail",
+       "index": 5
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.3",
+      "rail.open": "rail.3",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 987,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Rupar",
+      "subject": "Movement is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S08:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S08:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:character:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S08-turning-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-pair-20x16:20x16",
+     "w": 20,
+     "h": 16
+    },
+    {
+     "id": "trait-S08-stride-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "trait-S08-pace-steady-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "c7e54967"
+  },
+  {
+   "state": "chapter",
+   "name": "S02: chapter 0, 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-large-shadow:160x14"
+      },
+      "pod": {
+       "id": "dev-1:S02-8a384b4e",
+       "sizeClass": "large",
+       "sealed": "pod:S02:s:144x176",
+       "identified": "pod:S02:i:144x176"
+      },
+      "name": "Untuva",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 0,
+      "open": 0,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 5,
+        "filled": 5,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 3,
+        "filled": 3,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "character",
+        "word": "Character",
+        "state": "sealed",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:character:sealed:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "coat",
+      "heading": {
+       "emblem": "emblem:coat:read:24",
+       "word": "Coat"
+      },
+      "cells": [
+       {
+        "name": "Colour",
+        "lines": [
+         "coral to plum"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-colour-two-side-by-side-128x160:128x160"
+       },
+       {
+        "name": "Spots",
+        "lines": [
+         "bare · asleep: patches or bands"
+        ],
+        "glyphs": [
+         {
+          "key": "asleep",
+          "asset": "mark-asleep-24x16:24x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-spots-bare-128x160:128x160"
+       },
+       {
+        "name": "Fluff",
+        "lines": [
+         "long, swept to short, straight"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-fluff-between-128x160:128x160"
+       },
+       {
+        "name": "Tint",
+        "lines": [
+         "plum to raspberry"
+        ],
+        "glyphs": [
+         {
+          "key": "blend",
+          "asset": "mark-line-seed-pair-20x16:20x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-tint-raspberry-and-plum-128x160:128x160"
+       },
+       {
+        "name": "Flecks",
+        "lines": [
+         "spots · hides bare"
+        ],
+        "glyphs": [
+         {
+          "key": "hides",
+          "asset": "mark-line-seed-12x16:12x16"
+         }
+        ],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S02-flecks-spots-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 5,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 993,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Untuva",
+      "subject": "Coat is read",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod:S02:s:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "pod:S02:i:144x176",
+     "w": 144,
+     "h": 176
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-sealed-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:character:sealed:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "mark-line-seed-pair-20x16:20x16",
+     "w": 20,
+     "h": 16
+    },
+    {
+     "id": "mark-asleep-24x16:24x16",
+     "w": 24,
+     "h": 16
+    },
+    {
+     "id": "trait-S02-fluff-between-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "trait-S02-tint-raspberry-and-plum-128x160:128x160",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-line-seed-12x16:12x16",
+     "w": 12,
+     "h": 16
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "e9fa32c7"
+  },
+  {
+   "state": "chapter",
+   "name": "S06: chapter 1, 1 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S06-454cfde4",
+       "sizeClass": "medium",
+       "sealed": "pod:S06:s:120x152",
+       "identified": "pod:S06:i:120x152"
+      },
+      "name": "Pesko",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 1,
+      "open": 1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:shape:unread:24"
+       },
+       {
+        "id": "legs-tail",
+        "word": "Legs & Tail",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:legs-tail:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 3,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "face",
+      "heading": {
+       "emblem": "emblem:face:unread:24",
+       "word": "Face"
+      },
+      "cells": [
+       {
+        "name": "Head",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "rail.4",
+       "group": "rail",
+       "index": 4
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.1",
+      "rail.open": "rail.1",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read Face",
+      "price": "1 ◆",
+      "dim": false,
+      "back": "Pesko",
+      "subject": "Face is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S06:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S06:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:shape:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:legs-tail:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "cb07b020"
+  },
+  {
+   "state": "chapter",
+   "name": "a read wipe in progress",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "chapter",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-chapter:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [],
+      "ribbon": null
+     },
+     "rail": {
+      "focused": 1,
+      "open": 1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": {
+      "region": "page",
+      "chapter": "face",
+      "heading": {
+       "emblem": "emblem:face:unread:24",
+       "word": "Face"
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       },
+       {
+        "name": "Eyes",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true,
+        "outline": "cell-outline-unread-128x160:128x160"
+       }
+      ],
+      "differs": null,
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": "page-mark-new-10",
+      "overflow": false,
+      "pane": null
+     },
+     "stamp": null,
+     "kin": [],
+     "hatch": null
+    },
+    "focus": {
+     "cur": "rail.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.1",
+      "rail.open": "rail.1",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 999,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Read Face",
+      "price": "2 ◆",
+      "dim": false,
+      "back": "Loika",
+      "subject": "Face is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-chapter:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "a1f01f1e"
+  },
+  {
+   "state": "compare",
+   "name": "S01: compare, 99 and 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-compare:1024x522",
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": 1,
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 2,
+        "filled": 2,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:movement:read:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:stamina:read:24"
+       }
+      ],
+      "star": "star:12",
+      "current": 1
+     },
+     "pageA": {
+      "region": "compareA",
+      "chapter": "face",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-eyes-between-184x256:184x256"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     },
+     "pageB": {
+      "region": "compareB",
+      "chapter": "face",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "crop": "trait-S01-eyes-between-184x256:184x256"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     }
+    },
+    "focus": {
+     "cur": null,
+     "armed": false,
+     "targets": [],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 991,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Loika",
+      "subject": "two Loika pods",
+      "need": "no read trait differs"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-compare:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
+     "w": 184,
+     "h": 256
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "28c2d946"
+  },
+  {
+   "state": "compare",
+   "name": "S01: compare, 99 and 1 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-compare:1024x522",
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": 1,
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ],
+      "star": "star:12",
+      "current": 1
+     },
+     "pageA": {
+      "region": "compareA",
+      "chapter": "face",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [
+         "leaf crest · hides bare head"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-crown-leaf-crest-184x256:184x256"
+       },
+       {
+        "name": "Eyes",
+        "lines": [
+         "wide pale rings to thin rings"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S01-eyes-between-184x256:184x256"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     },
+     "pageB": {
+      "region": "compareB",
+      "chapter": "face",
+      "heading": {
+       "pod": "pod:S01:i:40x48",
+       "who": [
+        "mark-species-S01-24x24:24x24",
+        "mark-clan-C01-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Crown",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true
+       },
+       {
+        "name": "Eyes",
+        "lines": [],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "frost": true
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 2,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     }
+    },
+    "focus": {
+     "cur": null,
+     "armed": false,
+     "targets": [],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 994,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Loika",
+      "subject": "two Loika pods",
+      "need": "no read trait differs"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-compare:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S01-crown-leaf-crest-184x256:184x256",
+     "w": 184,
+     "h": 256
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "91e895e7"
+  },
+  {
+   "state": "compare",
+   "name": "S04: compare, 3 and 99 read",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "compare",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-compare:1024x522",
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": 1,
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:coat:read:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:face:read:24"
+       },
+       {
+        "id": "shape",
+        "word": "Shape",
+        "state": "read",
+        "pips": 1,
+        "filled": 1,
+        "glint": false,
+        "emblem": "emblem:shape:read:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ],
+      "star": "star:12",
+      "current": 1
+     },
+     "pageA": {
+      "region": "compareA",
+      "chapter": "face",
+      "heading": {
+       "pod": "pod:S04:i:40x48",
+       "who": [
+        "mark-species-S04-24x24:24x24",
+        "mark-clan-C04-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Eyes",
+        "lines": [
+         "only small, close"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": true,
+        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     },
+     "pageB": {
+      "region": "compareB",
+      "chapter": "face",
+      "heading": {
+       "pod": "pod:S04:i:40x48",
+       "who": [
+        "mark-species-S04-24x24:24x24",
+        "mark-clan-C04-24x24:24x24"
+       ]
+      },
+      "cells": [
+       {
+        "name": "Eyes",
+        "lines": [
+         "only small, close"
+        ],
+        "glyphs": [],
+        "diff": false,
+        "isNew": false,
+        "crop": "trait-S04-eyes-small-close-376x264:376x264"
+       }
+      ],
+      "differs": "frame-lamp-12-amber:12x12",
+      "count": 1,
+      "sealedFind": null,
+      "sealedPicture": null,
+      "newMark": null,
+      "overflow": false,
+      "pane": "page-pane-256x440"
+     }
+    },
+    "focus": {
+     "cur": null,
+     "armed": false,
+     "targets": [],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 99,
+       "d": 992,
+       "s": 99
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Hiljan",
+      "subject": "two Hiljan pods",
+      "need": "no read trait differs"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-compare:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "rail-tab-fill-read-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-open-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:face:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:shape:read:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "pod:S04:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "mark-clan-C04-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "trait-S04-eyes-small-close-376x264:376x264",
+     "w": 376,
+     "h": 264
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "b9448af4"
+  },
+  {
+   "state": "overview",
+   "name": "a message over the pod",
+   "events": [
+    {
+     "kind": "plate",
+     "target": "msg",
+     "ms": 4000
+    }
+   ],
+   "at": 1000,
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "overview",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-overview:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "specimen": {
+      "beam": "beam:240x320",
+      "room": {
+       "shelf": "room-shelf:288x72",
+       "cradle": "room-cradle:224x96",
+       "cradleFront": "room-cradle-front:224x96",
+       "shadow": "pod-medium-shadow:136x14"
+      },
+      "pod": {
+       "id": "dev-1:S01-9bae06fb",
+       "sizeClass": "medium",
+       "sealed": "pod:S01:s:120x152",
+       "identified": "pod:S01:i:120x152"
+      },
+      "name": "Loika",
+      "origin": [
+       "Found in the meadow,",
+       "it lay buried."
+      ],
+      "ribbon": "New species",
+      "originPicture": "place:meadow:64",
+      "figure": "figure:S01:0/4",
+      "who": [
+       "mark-species-S01-24x24:24x24",
+       "mark-clan-C01-24x24:24x24",
+       null
+      ]
+     },
+     "rail": {
+      "focused": null,
+      "open": -1,
+      "star": "star:12",
+      "tabs": [
+       {
+        "id": "coat",
+        "word": "Coat",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:coat:unread:24"
+       },
+       {
+        "id": "face",
+        "word": "Face",
+        "state": "unread",
+        "pips": 2,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:face:unread:24"
+       },
+       {
+        "id": "movement",
+        "word": "Movement",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:movement:unread:24"
+       },
+       {
+        "id": "stamina",
+        "word": "Stamina",
+        "state": "unread",
+        "pips": 1,
+        "filled": 0,
+        "glint": false,
+        "emblem": "emblem:stamina:unread:24"
+       }
+      ]
+     },
+     "page": null,
+     "stamp": {
+      "size": 95,
+      "asset": "stamp:S01-9bae06fb::95",
+      "case": {
+       "back": "room-stamp-case-152x152:152x152",
+       "front": "room-stamp-case-152x152-front:152x152"
+      }
+     },
+     "kin": [
+      {
+       "id": "dev-2:S01-9bae06fb",
+       "ring": "kinring:56",
+       "pod": "pod:S01:i:40x48"
+      }
+     ],
+     "hatch": "hatch:80x56"
+    },
+    "focus": {
+     "cur": "pod",
+     "armed": false,
+     "targets": [
+      {
+       "id": "rail.0",
+       "group": "rail",
+       "index": 0
+      },
+      {
+       "id": "rail.1",
+       "group": "rail",
+       "index": 1
+      },
+      {
+       "id": "rail.2",
+       "group": "rail",
+       "index": 2
+      },
+      {
+       "id": "rail.3",
+       "group": "rail",
+       "index": 3
+      },
+      {
+       "id": "pod",
+       "group": "pod"
+      },
+      {
+       "id": "kin.0",
+       "group": "kin",
+       "index": 0
+      },
+      {
+       "id": "hatch",
+       "group": "hatch"
+      }
+     ],
+     "resolve": {
+      "rail.last": "rail.0",
+      "rail.open": "rail.0",
+      "kin.first": "kin.0"
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open Coat",
+      "back": "Pods",
+      "subject": "Loika is unread",
+      "need": null
+     },
+     "plate": {
+      "text": "The incubator is warm and the egg is turning slowly in its cradle, which is a good sign for the hatch.",
+      "timed": true
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-overview:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "pod-medium-shadow:136x14",
+     "w": 136,
+     "h": 14
+    },
+    {
+     "id": "pod:S01:s:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "pod:S01:i:120x152",
+     "w": 120,
+     "h": 152
+    },
+    {
+     "id": "room-cradle-front:224x96",
+     "w": 224,
+     "h": 96
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "figure:S01:0/4",
+     "w": 128,
+     "h": 160
+    },
+    {
+     "id": "mark-clan-C01-24x24:24x24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:64",
+     "w": 64,
+     "h": 64
+    },
+    {
+     "id": "kinring:56",
+     "w": 56,
+     "h": 56
+    },
+    {
+     "id": "pod:S01:i:40x48",
+     "w": 40,
+     "h": 48
+    },
+    {
+     "id": "hatch:80x56",
+     "w": 80,
+     "h": 56
+    },
+    {
+     "id": "room-stamp-case-152x152:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "stamp:S01-9bae06fb::95",
+     "w": 95,
+     "h": 95
+    },
+    {
+     "id": "room-stamp-case-152x152-front:152x152",
+     "w": 152,
+     "h": 152
+    },
+    {
+     "id": "rail-tab-fill-unread-full-152x40",
+     "w": 152,
+     "h": 40
+    },
+    {
+     "id": "emblem:coat:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:face:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:movement:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "emblem:stamina:unread:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "b14e9c94"
+  },
+  {
+   "state": "collection",
+   "name": "a message on the rack",
+   "events": [
+    {
+     "kind": "plate",
+     "target": "msg",
+     "ms": 4000
+    }
+   ],
+   "at": 3999,
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.1",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": "Saved.",
+      "timed": true
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:-:s:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "ad46a55a"
+  },
+  {
+   "state": "collection",
+   "name": "an empty rack",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "back": "Home",
+      "subject": "the rack is empty",
+      "need": "take the Companion exploring"
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "f7784130"
+  },
+  {
+   "state": "collection",
+   "name": "two unidentified pods",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ],
+        "pod": "pod:-:s:88x112",
+        "name": "Unknown",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "sealed until identified",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:-:s:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-128x24",
+     "w": 128,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "22ecbd62"
+  },
+  {
+   "state": "collection",
+   "name": "four identified pods",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S02:i:88x112",
+        "name": "Untuva",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n8-track-176x176:176x176"
+        ],
+        "pod": "pod:S03:i:88x112",
+        "name": "Tuikis",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n5-track-176x176:176x176"
+        ],
+        "pod": "pod:S04:i:88x112",
+        "name": "Hiljan",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": null
+     }
+    },
+    "focus": {
+     "cur": "place.2",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      },
+      {
+       "id": "place.1",
+       "group": "place",
+       "index": 1
+      },
+      {
+       "id": "place.2",
+       "group": "place",
+       "index": 2
+      },
+      {
+       "id": "place.3",
+       "group": "place",
+       "index": 3
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Tuikis is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "pod:S02:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-96x24",
+     "w": 96,
+     "h": 24
+    },
+    {
+     "id": "pod:S03:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "ring-arc-collection-n5-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S04:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "b20273aa"
+  },
+  {
+   "state": "collection",
+   "name": "a pod waiting",
+   "props": {
+    "t": "props",
+    "screen": "pods",
+    "state": "collection",
+    "regions": {
+     "bench": {
+      "room": [
+       "room-bench-stage-collection:1024x522",
+       "room-bench-stage:1024x522"
+      ]
+     },
+     "list": {
+      "places": [
+       {
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176",
+         "ring-arc-collection-n4-track-176x176:176x176"
+        ],
+        "pod": "pod:S01:i:88x112",
+        "name": "Loika",
+        "find": "place:meadow:48",
+        "grow": null,
+        "glint": null
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       },
+       {
+        "empty": true,
+        "panel": "placepanel:320x224",
+        "ringLayers": [
+         "ring-collection-idle-176x176:176x176"
+        ]
+       }
+      ],
+      "waiting": "waiting:24"
+     }
+    },
+    "focus": {
+     "cur": "place.0",
+     "armed": false,
+     "targets": [
+      {
+       "id": "place.0",
+       "group": "place",
+       "index": 0
+      }
+     ],
+     "resolve": {
+      "rail.last": null,
+      "rail.open": null,
+      "kin.first": null
+     }
+    },
+    "frame": {
+     "top": {
+      "screen": "pods",
+      "title": "Pods",
+      "turn": 12,
+      "turnFlash": false,
+      "materials": {
+       "e": 0,
+       "d": 0,
+       "s": 0
+      },
+      "flash": {},
+      "companion": {
+       "docked": true,
+       "withMibi": null
+      }
+     },
+     "line": {
+      "ok": "Open",
+      "back": "Home",
+      "subject": "Loika is unread",
+      "need": null
+     },
+     "plate": {
+      "text": ""
+     }
+    }
+   },
+   "pictures": [
+    {
+     "id": "room-bench-stage-collection:1024x522",
+     "w": 1024,
+     "h": 522
+    },
+    {
+     "id": "placepanel:320x224",
+     "w": 320,
+     "h": 224,
+     "slice": [
+      16,
+      16,
+      16,
+      16
+     ],
+     "tile": 0
+    },
+    {
+     "id": "ring-collection-idle-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "ring-arc-collection-n4-track-176x176:176x176",
+     "w": 176,
+     "h": 176
+    },
+    {
+     "id": "pod:S01:i:88x112",
+     "w": 88,
+     "h": 112
+    },
+    {
+     "id": "plate-name-80x24",
+     "w": 80,
+     "h": 24
+    },
+    {
+     "id": "place:meadow:48",
+     "w": 48,
+     "h": 48
+    },
+    {
+     "id": "waiting:24",
+     "w": 24,
+     "h": 24
+    },
+    {
+     "id": "icon:energy:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:data:16",
+     "w": 16,
+     "h": 16
+    },
+    {
+     "id": "icon:essence:16",
+     "w": 16,
+     "h": 16
+    }
+   ],
+   "hash": "b0ee2b2b"
+  }
+ ]
+}

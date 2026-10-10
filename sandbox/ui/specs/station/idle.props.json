@@ -1,0 +1,16 @@
+{
+ "$comment": "The props of Idle (lvgl-switch.md §2.1): what views/idle-props.mjs gives the face, with props.idle true and no frame but the one line. Props name what, never where: the people of the living window (a seed each), the bed, the painting's slot and the line; no rectangle, no measure, no layout rule, no colour (the face reads those from frame.json idle). Checked by prototypes/station/tests/idle-props.test.mjs (a JSON-Schema subset).",
+ "$defs": {
+  "person": { "type": "object", "required": ["id", "name", "stage", "picture", "waiting", "seed"], "additionalProperties": false, "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "stage": { "enum": ["juvenile", "adult", "elder"] }, "picture": { "type": "string" }, "waiting": { "type": "boolean" }, "seed": { "type": "integer" } } }
+ },
+ "type": "object", "required": ["idle", "regions", "frame"], "additionalProperties": false,
+ "properties": {
+  "idle": { "enum": [true] },
+  "regions": { "type": "object", "required": ["vivarium", "residents", "bed"], "additionalProperties": false, "properties": {
+   "vivarium": { "type": "object", "required": ["picture"], "additionalProperties": false, "properties": { "picture": { "type": "string" } } },
+   "residents": { "type": "array", "items": { "$ref": "person" } },
+   "bed": { "type": "object", "required": ["state", "picture", "sleepers"], "additionalProperties": false, "properties": { "state": { "enum": ["docked", "away", "none"] }, "picture": { "type": "string" }, "sleepers": { "type": "array", "items": { "$ref": "person" } } } }
+  } },
+  "frame": { "type": "object", "required": ["idle"], "additionalProperties": false, "properties": { "idle": { "type": "object", "required": ["line"], "additionalProperties": false, "properties": { "line": { "type": "string" } } } } }
+ }
+}

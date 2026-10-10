@@ -1,0 +1,270 @@
+{
+ "species": "S01",
+ "variant": {
+  "id": "1B-anti-artefact",
+  "name": "Anti-artefact words",
+  "change": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+  "imageOrder1": [
+   "index",
+   "reference",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Step 1, anti-artefact words only: the limbs sentence names living anatomy and the artefacts to avoid.",
+ "step1": {
+  "callId": "e5db922b-c620-43a9-b43c-504939b4dcfd",
+  "status": "ok",
+  "seconds": 18.3,
+  "imageOrder": [
+   "index",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.928,
+   "silhouetteIoUInPlace": 0.913,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.917
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.966
+    },
+    "crown": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.86
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.896
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.637,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.429,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.273,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.392,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.555,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.312,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.25,
+     "median": "#403f47",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.259,
+     "median": "#403f48",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.538,
+     "median": "#e1c8ac",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.674,
+     "median": "#dbbea2",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.99,
+     "median": "#84bc79",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.166,
+     "median": "#dabea1",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.232,
+     "median": "#f4e9cd",
+     "nearest": "#f1eddc",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.0,
+   "missing": 0.013,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.376,
+   "passed": true,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "214080fd-3a11-4b92-b8fa-2833655be842",
+  "status": "ok",
+  "seconds": 18.2,
+  "imageOrder": [
+   "drawing",
+   "reference",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.875,
+   "silhouetteIoUInPlace": 0.862,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.979
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "muzzle": {
+     "span": 1.0,
+     "coverage": 0.999
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.979
+    },
+    "crown": {
+     "span": 0.953,
+     "coverage": 0.941
+    },
+    "leg-0": {
+     "span": 0.84,
+     "coverage": 0.99
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.902
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.565,
+     "painted": 0.649,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.352,
+     "painted": 0.436,
+     "ok": true
+    },
+    "muzzle": {
+     "drawn": 0.234,
+     "painted": 0.279,
+     "ok": true
+    },
+    "crown": {
+     "drawn": 0.378,
+     "painted": 0.38,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.528,
+     "painted": 0.59,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.238,
+     "painted": 0.321,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.233,
+     "median": "#3f3b41",
+     "nearest": "#273036",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.429,
+     "median": "#4b4649",
+     "nearest": "#465459",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.828,
+     "median": "#d0ad8f",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.587,
+     "median": "#b89e90",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "leaf@crown": {
+     "agreement": 0.672,
+     "median": "#6e8b58",
+     "nearest": "#5aa65c",
+     "ok": true
+    },
+    "belly@region-0": {
+     "agreement": 0.658,
+     "median": "#c09474",
+     "nearest": "#dfd2ae",
+     "ok": true
+    },
+    "belly@muzzle": {
+     "agreement": 0.98,
+     "median": "#e3c3a0",
+     "nearest": "#dfd2ae",
+     "ok": true
+    }
+   },
+   "reasons": [],
+   "outside": 0.003,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.522,
+   "passed": true,
+   "gated": false
+  }
+ }
+}

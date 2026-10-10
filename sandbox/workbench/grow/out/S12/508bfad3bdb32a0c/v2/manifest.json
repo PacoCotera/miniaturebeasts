@@ -1,0 +1,188 @@
+{
+ "schema": "mb-grow/1",
+ "service": "grow/service.py",
+ "model": "gemini-3.1-flash-image",
+ "promptVersion": 2,
+ "species": "S12",
+ "name": "Peplos",
+ "level": "individual",
+ "genomeDigest": "S12-88f97f04",
+ "genomeSha256": "508bfad3bdb32a0c1feb3ea7fd75ed2c67f4843c356530c5b79990a8bdc73537",
+ "frameVersion": 2,
+ "catalogue": {
+  "id": "mb-genome-framework",
+  "version": 8,
+  "parent": {
+   "id": "genomic-compositional-source-experiment",
+   "version": 6,
+   "foundationDigest": "0cdfdf47dbef5b20f36fb0d5e86c324e6a5d074bfbb8422f802bfe7866254beb",
+   "source": "v1/prototype/generator-workbench/innate-profile-package.mjs#innateProfilePackage().catalogue"
+  }
+ },
+ "controls": "mb-grow-controls/1",
+ "plainVersion": "mb-plain/2",
+ "description": "A juvenile Peplos: 3 body regions (B3), a head, 2 eyes, two antennae, 6 legs, 4 flaps; skin; splayed, neck head. Coat: colour raspberry; translucency between; flap markings spots; second colour peach and cream. Shape: hind body small. Proportions: a small body, the head carried low, big eyes, long antennae, short legs, fine legs, narrow feet, a thin waist, a dipping back, wide flaps, a slim build.",
+ "reference": {
+  "what": "the accepted painting of Pip, the Loika's type specimen (art/miniature-lives) (this species' own type specimen painting is not made yet)",
+  "name": "rich-plain-300x310.png"
+ },
+ "startedAt": "2026-10-08T03:15:53Z",
+ "views": {
+  "portrait": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "4ab55e16-54a2-4aaa-bf7f-07247ce3bf90",
+     "status": "ok",
+     "seconds": 8.0,
+     "checks": {
+      "silhouetteIoU": 0.929,
+      "silhouetteIoUInPlace": 0.958,
+      "parts": {
+       "region-0": 1.0,
+       "head": 0.999,
+       "antenna": 0.969,
+       "leg-0": 0.998,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#bc3e5c",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.986,
+        "median": "#ca4a6c",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second@leg-0": {
+        "agreement": 0.882,
+        "median": "#f1d6b3",
+        "nearest": "#dfd2ae",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.997,
+        "median": "#f7d7c9",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.991,
+      "passed": true
+     },
+     "responseId": "6QrHasCeJo_V-8YPoMHQKQ"
+    }
+   ]
+  },
+  "side": {
+   "status": "painted",
+   "attempts": [
+    {
+     "callId": "4d4b84e1-df12-432f-8b17-ab1b2aedb9a4",
+     "status": "ok",
+     "seconds": 9.6,
+     "checks": {
+      "silhouetteIoU": 0.782,
+      "silhouetteIoUInPlace": 0.815,
+      "parts": {
+       "region-0": 0.906,
+       "head": 0.913,
+       "antenna": 0.0,
+       "leg-0": 0.962,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 0.983
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 0.788,
+        "median": "#d15f7c",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.822,
+        "median": "#cc5576",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 1.0,
+        "median": "#f5ded1",
+        "nearest": "#ffd7c5",
+        "ok": true
+       }
+      },
+      "reasons": [
+       "the silhouette does not match the drawing (IoU 0.78): the body was turned, reshaped or re-posed",
+       "a part is missing or moved from where the part map puts it: antenna (0.00)"
+      ],
+      "slotAgreement": 0.94,
+      "passed": false
+     },
+     "responseId": "9QrHarKHF8qi_uMPhOqj6A4"
+    },
+    {
+     "callId": "e5cf23b5-2eb6-480a-81ec-f8b18d4e8979",
+     "status": "ok",
+     "seconds": 8.4,
+     "checks": {
+      "silhouetteIoU": 0.893,
+      "silhouetteIoUInPlace": 0.889,
+      "parts": {
+       "region-0": 1.0,
+       "head": 0.995,
+       "antenna": 1.0,
+       "leg-0": 1.0,
+       "leg-1": 1.0,
+       "leg-2": 1.0,
+       "flap": 1.0
+      },
+      "slots": {
+       "body@region-0": {
+        "agreement": 1.0,
+        "median": "#c24667",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "body@head": {
+        "agreement": 0.878,
+        "median": "#c8516e",
+        "nearest": "#d95688",
+        "ok": true
+       },
+       "second#2@flap": {
+        "agreement": 0.999,
+        "median": "#efdfc6",
+        "nearest": "#dfd2ae",
+        "ok": true
+       }
+      },
+      "reasons": [],
+      "slotAgreement": 0.983,
+      "passed": true
+     },
+     "responseId": "AQvHatC4IKDP_uMPjrXT2Qg"
+    }
+   ]
+  }
+ },
+ "outputs": {
+  "station-portrait-600x620.png": "916b5a8301ee3cd4f198677de0f8a6fc56325c69175da98a628bb0852ec82520",
+  "station-portrait-300x310.png": "5b531ed35c3a137fd7ee24c1b5f43823e5496c1d951a0f3126020ad3521eb8aa",
+  "station-side-600x620.png": "86ef2ca3d198203c0260624fed5230dc04a606b2f1af4c8e16e4f1be7908c14d",
+  "station-side-300x310.png": "930cf37448580fc4584825a8316ff419bb2af8c41a3fb091139aa2ba8728683e",
+  "companion-280x300.png": "ccad3b7766231543e1fcba6348c714c957edbef51bc50d6030ac99f294250cde",
+  "token-48.png": "17c861ad109b6144304c3859e0c28b2c9155645a275b278a893dee398a943c41"
+ },
+ "calls": 3,
+ "seconds": 26.0,
+ "finishedAt": "2026-10-08T03:16:28Z"
+}

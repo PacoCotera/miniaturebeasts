@@ -1,0 +1,316 @@
+{
+ "species": "S12",
+ "variant": {
+  "id": "7D-naturalist-finish",
+  "name": "Naturalist's finish, not a vinyl collectible",
+  "change": "Both steps, the Finish line replaced: \"a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm\" (step 2 keeps the never-list). The owner's warning: cute by charm and craft as Pip is, never cartoon simplification, sticker faces, toy-like rendering or nursery colours; the lab synthesises it from v7.",
+  "imageOrder1": [
+   "index",
+   "key"
+  ],
+  "imageOrder2": [
+   "drawing",
+   "key"
+  ]
+ },
+ "model": "gemini-3-pro-image",
+ "sample": 1,
+ "changed": "Both steps, the Finish line replaced: \"a naturalist's study of a small living animal, rendered with the Miniature Lives finish: tactile, softly modelled, grounded, with real weight and real anatomy under the charm\" (step 2 keeps the never-list). The owner's warning: cute by charm and craft as Pip is, never cartoon simplification, sticker faces, toy-like rendering or nursery colours; the lab synthesises it from v7.",
+ "subject": {
+  "member": "type-specimen",
+  "genomeDigest": "S12-94f298de",
+  "controls": "out/S12/2af58fb73ac5cbbd"
+ },
+ "step1": {
+  "callId": "16319d5f-aeb3-48fd-9372-64c6379c4b4a",
+  "status": "ok",
+  "seconds": 21.1,
+  "imageOrder": [
+   "index",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.651,
+   "silhouetteIoUInPlace": 0.604,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.915
+    },
+    "eye": {
+     "span": 1.0,
+     "coverage": 0.983
+    },
+    "antenna": {
+     "span": 0.939,
+     "coverage": 0.624
+    },
+    "leg-0": {
+     "span": 0.59,
+     "coverage": 0.412
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.551
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.448
+    },
+    "flap": {
+     "span": 0.955,
+     "coverage": 0.976
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.314,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.251,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.31,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.505,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.274,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.299,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.541,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.964,
+     "median": "#f6a832",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.754,
+     "median": "#d48631",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.94,
+     "median": "#f4a62f",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.103,
+     "median": "#d1ac63",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.105,
+     "median": "#d78e46",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.087,
+     "median": "#d59a34",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.539,
+     "median": "#ecd57e",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a part is missing or moved from where the part map puts it: leg-0 (painted along 59% of its length)",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-2 (painted #d59a34, the colour of body)"
+   ],
+   "outside": 0.088,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.701,
+   "passed": false,
+   "gated": false
+  }
+ },
+ "step2": {
+  "callId": "aeb99e04-46f1-427a-afdd-bc4e015f217a",
+  "status": "ok",
+  "seconds": 29.5,
+  "imageOrder": [
+   "drawing",
+   "key"
+  ],
+  "checks": {
+   "silhouetteIoU": 0.652,
+   "silhouetteIoUInPlace": 0.603,
+   "parts": {
+    "region-0": {
+     "span": 1.0,
+     "coverage": 0.997
+    },
+    "region-1": {
+     "span": 1.0,
+     "coverage": 0.998
+    },
+    "region-2": {
+     "span": 1.0,
+     "coverage": 1.0
+    },
+    "head": {
+     "span": 1.0,
+     "coverage": 0.909
+    },
+    "eye": {
+     "span": 0.984,
+     "coverage": 1.0
+    },
+    "antenna": {
+     "span": 0.925,
+     "coverage": 0.636
+    },
+    "leg-0": {
+     "span": 0.59,
+     "coverage": 0.416
+    },
+    "leg-1": {
+     "span": 1.0,
+     "coverage": 0.548
+    },
+    "leg-2": {
+     "span": 1.0,
+     "coverage": 0.449
+    },
+    "flap": {
+     "span": 0.955,
+     "coverage": 0.974
+    }
+   },
+   "proportions": {
+    "region-0": {
+     "drawn": 0.242,
+     "painted": 0.316,
+     "ok": true
+    },
+    "region-1": {
+     "drawn": 0.167,
+     "painted": 0.252,
+     "ok": true
+    },
+    "head": {
+     "drawn": 0.216,
+     "painted": 0.311,
+     "ok": true
+    },
+    "leg-0": {
+     "drawn": 0.487,
+     "painted": 0.507,
+     "ok": true
+    },
+    "leg-1": {
+     "drawn": 0.181,
+     "painted": 0.275,
+     "ok": true
+    },
+    "leg-2": {
+     "drawn": 0.206,
+     "painted": 0.301,
+     "ok": true
+    },
+    "flap": {
+     "drawn": 0.501,
+     "painted": 0.544,
+     "ok": true
+    }
+   },
+   "slots": {
+    "body@region-0": {
+     "agreement": 0.982,
+     "median": "#f1ae42",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@region-1": {
+     "agreement": 0.703,
+     "median": "#c89537",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "body@head": {
+     "agreement": 0.929,
+     "median": "#e1963a",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-0": {
+     "agreement": 0.186,
+     "median": "#ceab68",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-1": {
+     "agreement": 0.192,
+     "median": "#cb8d4b",
+     "nearest": "#e8b83f",
+     "ok": true
+    },
+    "second@leg-2": {
+     "agreement": 0.163,
+     "median": "#d2a041",
+     "nearest": "#e8b83f",
+     "ok": false
+    },
+    "second@flap": {
+     "agreement": 0.671,
+     "median": "#ecd487",
+     "nearest": "#fff0b8",
+     "ok": true
+    }
+   },
+   "reasons": [
+    "a part is missing or moved from where the part map puts it: leg-0 (painted along 59% of its length)",
+    "a pigment slot is painted in another slot's colour: the second slot on the leg-2 (painted #d2a041, the colour of body)"
+   ],
+   "outside": 0.086,
+   "missing": 0.0,
+   "bandTolerancePx": 20,
+   "slotAgreement": 0.756,
+   "passed": false,
+   "gated": false
+  }
+ }
+}
