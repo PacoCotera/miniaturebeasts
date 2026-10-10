@@ -1981,7 +1981,7 @@ Where the build departs from this layout is listed in `sitting.json` `buildChang
 
 ## Library spread
 
-The Library's whole, its overview level ([The screen map](#the-screen-map)): Home's Library module and the Library key open it, ✓ goes one level closer to a species' Book, and ← goes Home. Spec: [`library.json`](../../prototypes/ui/specs/station/library.json) `spread`, the one home of these numbers. Concept plate, decided 2026-10-08: `art/concept-station/library-spread/placed/SP-P-r4-a1-pip-named-1024x600.png`. Built in slot 5, L: the Library spread ([lvgl-switch.md §3](../proposals/lvgl-switch.md)).
+The Library's whole, its overview level ([The screen map](#the-screen-map)): Home's Library module and the Library key open it, ✓ goes one level closer to a species' Book, and ← goes Home. Spec: [`library.json`](../../prototypes/ui/specs/station/library.json) `spread`, the one home of these numbers. Concept plate, the decided spread: `art/concept-station/library-spread/placed/SP-P-r4-a1-pip-named-1024x600.png`. Built in slot 5, L: the Library spread ([lvgl-switch.md §3](../proposals/lvgl-switch.md)).
 
 <img src="station-layouts/20-library-spread.png" width="1024" alt="The Library spread: sixteen frames, four found, one met, eleven empty, the ring on Tuikis">
 
