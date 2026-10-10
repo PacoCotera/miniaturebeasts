@@ -811,7 +811,7 @@ The art director's approved edit (the owner's own sketches' object #1 of each, p
 | `cargo-energy-48x64` | 48.0 | (145, 143, 130) | 15 | 16 |
 | `cargo-data-48x64` | 51.2 | (114, 171, 200) | -86 | 23 |
 
-Mean over opaque pixels: Energy L* 48.0, sat 16, mean R-B about 5; Data L* 51.2 (the big sky window, flat), sat 23; 0.0 percent above L* 70 in both. Honest notes: the three amber bars read as one amber block with two faint dark gaps at 48x64; the cartridge's window is a large flat blue field, so its key R-B reads negative (blue); Energy's cap terminal is a small grey dome; both are 40 to 46 px wide at 64 rows (the sheet's two objects are not the same height, so they are not equal in width). Proof over the open crate at 1x and 4x (Energy at the left, Data at the right, feet on the crate's foot line y 384): `marks/cargo-haul-proof-1x.png`, `marks/cargo-haul-proof-4x.png`.
+Mean over opaque pixels: Energy L* 48.0, sat 16, mean R-B 23.9; Data L* 51.2 (the big sky window, flat), sat 23, mean R-B -20.4 (the blue window; the band the art director gave for the crate does not suit a blue object); 0.0 percent above L* 70 in both. Honest notes: the three amber bars read as one amber block with two faint dark gaps at 48x64; the cartridge's window is a large flat blue field, so its key R-B reads negative (blue); Energy's cap terminal is a small grey dome; both are 40 to 46 px wide at 64 rows (the sheet's two objects are not the same height, so they are not equal in width). Proof over the open crate at 1x and 4x (Energy at the left, Data at the right, feet on the crate's foot line y 384): `marks/cargo-haul-proof-1x.png`, `marks/cargo-haul-proof-4x.png`.
 
 ## Pass 132 - Probe P1b from the owner's sketch (owner-approved Pro request)
 
