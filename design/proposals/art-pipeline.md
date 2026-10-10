@@ -50,7 +50,7 @@ Generic, locally hosted generation below the quality of the Loika painted with G
 
 The player presses Grow. From that press to Open are the **incubation minutes** (station-loop §1, **Decided**: small 2, medium 3, large 4, +1 per chapter beyond three, +1 per trait changed; the first mibi ever 1). That is the latency budget.
 
-**Decided 2026-10-08.** *The gate changes:* Grow no longer starts a generation job. Step 1 (the rig renders the standard look, on screen within a second) is the whole flow for every mibi; steps 2–5 run only when the player **spends a jewel** on a mibi (earned by a research item, or from the paid tier's monthly allowance), and the jewel's wait is its own, not the incubation's. *2026-10-08, the words:* the gate is the **sitting**: `✓ Portray Fig · 1 sitting` on Habitat, with the pose and place chosen in the ceremony ([the portrait](the-portrait.md) §1); the job runs for a few hours and the portrait lands in the sample bay as a crate, never in the incubator. The incubation minutes are now [research-economy](research-economy.md) §5 (twenty plus one per shaped trait; the first bud ever five; an instant grow for a cost). The latency reasoning below stands for the jewel's job and is otherwise *superseded*.
+*The gate changes:* Grow no longer starts a generation job. Step 1 (the rig renders the standard look, on screen within a second) is the whole flow for every mibi; steps 2–5 run only when the player **spends a jewel** on a mibi (earned by a research item, or from the paid tier's monthly allowance), and the jewel's wait is its own, not the incubation's. *The words:* the gate is the **sitting**: `✓ Portray Fig · 1 sitting` on the vivarium, up close, with the pose and place chosen in the ceremony ([the portrait](the-portrait.md) §1); the job runs for a few hours and the portrait lands in the sample bay as a crate, never in the incubator. The incubation minutes are now [research-economy](research-economy.md) §5 (twenty plus one per shaped trait; the first bud ever five; an instant grow for a cost). The latency reasoning below stands for the jewel's job and is otherwise *superseded*.
 
 **Decided 2026-10-08 (the standard painting).** *The gate changes back:* Grow starts the standard painting for every mibi (§1.1), and steps 1–5 are the flow again. Step 1 shows the **placeholder**, not a finished look; steps 2–5 bring the painting (three-quarter and side, one retry) inside the bud's twenty minutes on a connected kit, and later on an offline one. The sitting is a second, separate job for the portrait. The bud and the daily grow cap bound how many jobs a day can start.
 
@@ -111,7 +111,7 @@ Decided 4 and 6 draw the line; the cut-off is what §9 tests. The default below 
 
 | Output | Size | Unique or generic | Comes from |
 | --- | --- | --- | --- |
-| Station resident (vivarium, Habitat, Visit) | 300×310, master 600×620 | **unique** | the service, main view, one per life stage |
+| Station resident (vivarium, the vivarium, up close, Visit) | 300×310, master 600×620 | **unique** | the service, main view, one per life stage |
 | Station side view (walking, routines) | 300×310 | unique, a second call; or the plain side view if the eye accepts it | the service or the rig |
 | Companion resident | 280×300 | **unique, derived**: the master down-rendered on the Station (k-centroid reduction, the 48 ramps, the outline from the index pass, no alpha) | the Station |
 | Caddy four-grey and print | the Caddy's sizes, 203 dpi | unique, derived through the signed value table and Bayer | the Station |

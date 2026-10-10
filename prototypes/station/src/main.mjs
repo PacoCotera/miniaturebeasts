@@ -53,7 +53,7 @@ const legacy = (id, draw) => ({ id, kind: "legacy", rect: [0, 0, SW, SH], always
 const FACE_FLAG = new URLSearchParams(location.search).get("face") === "lvgl";
 let FACE = null;
 // The LVGL face draws the frame, the stage's ground and the focus ring for now; each screen's stage comes over with its screen. A screen on the layer says what the face draws (faceNodes); the others get the frame alone.
-const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), slice: (id) => assetEntry(id)?.slice ?? null, tile: (id) => assetEntry(id)?.tile ?? 0, picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; const g = a.canvas().getContext("2d"); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; } };
+const faceEnv = { rgb: (n) => SC.env.rgb(n), cap: (px) => CTX.cap(px), layer: (n) => (n.asset && assetEntry(n.asset)?.policy === "painted" ? "painted" : undefined), slice: (id) => assetEntry(id)?.slice ?? null, tile: (id) => assetEntry(id)?.tile ?? 0, picture: (id) => { const a = assetOf(id, SC.env); if (!a) return null; const g = a.canvas().getContext("2d"); return { w: a.w, h: a.h, data: g.getImageData(0, 0, a.w, a.h).data }; } };
 function faceNodes() {
   const screen = screenOf(UI.screen), F = SPECS.frame, stage = { id: "stage", kind: "rect", rect: F.regions.stage.rect.slice(), colour: F.colours.stageGround };
   return [stage, ...(screen.faceNodes ? screen.faceNodes(CTX) : frameFor(CTX, UI.screen, lineFor()))];
@@ -201,10 +201,40 @@ function checkSnapshot() {
 // Test hooks (not part of play).
 window.__st = { ready, renderErrors, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
   say: (t) => msg(t), faceNodes: () => (FACE ? JSON.parse(JSON.stringify(faceNodes())) : null), targets: () => screenOf(UI.screen).targets?.() ?? null, act: (k) => { FX.lockUntil = 0; TL.release(); act(k); }, press: act, lineFor, need, dockKey, openBay, save, unlock: () => { FX.lockUntil = 0; TL.release(); }, wake: () => { UI.idle = false; UI.lastInput = performance.now(); },
-  get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel } : null; }, get msg() { return FX.msg; }, capture: () => (FACE ? vis : SC.capture()).toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
+  get face() { return FACE ? { refused: () => FACE.refused(), objects: () => FACE.objects(), version: FACE.version, size: FACE.size, loadMs: FACE.loadMs, hash: FACE.hash(), stats: FACE.stats(), pixel: FACE.pixel, pass: FACE.pass, offPalette: FACE.offPalette, poll: FACE.poll } : null; }, get msg() { return FX.msg; }, capture: () => (FACE ? vis : SC.capture()).toDataURL("image/png"), offPalette, layer: (name) => { const d = SC.layerData(name); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, offPaletteOf: (name) => SC.offPalette(name), typeLog: () => SC.typeLog.slice(), typeFrame: () => SC.frameLog.slice(), typeMissing: () => [...SC.type.missing], rendererErrors: () => ({ sizes: SC.sizeErrors.slice(), missing: SC.missing.slice() }), holding: () => TL.holding(), region: (layer, r) => { const d = SC.ctx[layer].getImageData(r[0], r[1], r[2], r[3]); return { width: d.width, height: d.height, data: Array.from(d.data) }; }, sceneRegions: () => scene.regions(), sceneTexts: () => scene.texts(), check: () => checkSnapshot(), manifest: () => manifestOf(), specs: () => SPECS, artSize, frameOf, frameIds, podById, genomesText,
   stampRGBA: (podId, side = 200) => { const p = podById(podId); if (!p) return null; const fr = frameOf(S.speciesOf(p)); return stampArt(fr, p.genome, p.read, side).rgba(); },
   stampGenome: (podId) => { const p = podById(podId); const fr = frameOf(S.speciesOf(p)); return stampGenome(fr, p.genome, p.read); },
   grow: (podId, choices) => { const r = S.grow(G.st, podById(podId), choices || {}, G.settings, Date.now()); save(); return r; }, openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; }, forecastOf: (aId, bId) => S.forecastOf(G.st, podById ? mibiById(aId) : null, mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   podsGo: (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") goScreen("pods"); },
   seedCrate: (species, n, seed) => { const r = S.seedCrate(G.st, species, n, seed, Date.now()); save(); return r; }, skipRead: (podId) => { S.skipRead(G.st, podById(podId), G.settings); save(); }, addMaterials: (e, d, s) => { S.addMaterials(G.st, e, d, s); save(); } };
+
+// Test hook (not part of play): Pods drawn by the C words, in the face's test mode, with the pictures the page itself makes ready (the placed masters, the generated stand-ins, the pod from its layers). A second face is
+// booted, the state's props (views/pods-props.mjs) and the frame's go in, and the pixels outside the palette are read on pass 1 (chrome) and pass 2 (chrome and art). With `attribute`, a failing reading names the
+// pictures whose removal lowers it (the ones tagged art that are painted).
+window.__st.wordsCheck = async ({ attribute = true, capture = false } = {}) => {
+  const [{ podsProps }, { registerPictures, iconRequests }, { pinnedPictures }] = await Promise.all([import("./views/pods-props.mjs"), import("./pictures.mjs"), import("../../ui/specs/derive.mjs")]);
+  const P = UI.pods, m = { st: G.st, settings: G.settings, docked: docked(), crates: bayCrates().length, ui: P, focus: P.focus.cur, present: {} };
+  const body = podsProps(m, SPECS.pods, SPECS.frame), reqs = [...body.requests, ...iconRequests()];
+  registerPictures(reqs, { podById, frameOf });
+  const ids = new Set(reqs.map((r) => r.id)); (function walk(o) { if (typeof o === "string") { if (assetEntry(o)) ids.add(o); } else if (o && typeof o === "object") for (const v of Object.values(o)) walk(v); })([SPECS.frame.regions, body.props]);
+  { const wid0 = hasWorld() ? S.withId(G.sv) : null, wm0 = wid0 == null ? null : mibiById(wid0), key0 = wm0 ? S.spName(wm0).toLowerCase() : null, fm = SPECS.frame.regions?.marks?.face || {};
+    for (const t of [fm.docked, fm.away, fm.empty]) if (typeof t === "string") ids.add(key0 ? t.replace("{mibi}", key0) : t); }   // the companion's face, docked or away, as the frame resolves it
+  const pinned = pinnedPictures(SPECS.pods, SPECS.frame); for (const p of pinned) ids.add(p.id);
+  const wid = hasWorld() ? S.withId(G.sv) : null, wm = wid == null ? null : mibiById(wid), withMibi = wm ? S.spName(wm).toLowerCase() : null;   // the live companion, as the frame screen reads it
+  const frame = { top: { screen: "pods", title: "Pods", turn: G.st.turn + 1, turnFlash: false, materials: { e: G.st.e, d: G.st.d, s: G.st.s }, flash: {}, companion: { docked: docked(), withMibi: withMibi } }, line: body.line, plate: { text: "" } };
+  const pic = (id) => { const p = faceEnv.picture(id); if (!p) return null; const sl = faceEnv.slice(id); return sl ? { ...p, slice: sl, tile: faceEnv.tile(id) } : p; };
+  const run = async (blank = null) => {
+    const f = await bootFace(undefined, { test: true }); sendBoot(f);
+    f.pin(pinned, pic);
+    for (const id of ids) f.handleOf(id, (x) => { const p = pic(x); if (p && x === blank) p.data = new Uint8ClampedArray(p.data.length); return p; });
+    if (f.props({ screen: "pods", ...body.props, frame }) !== 0) throw new Error("props refused: " + f.errors().join("; "));
+    for (let i = 0; i < 3; i++) f.frame(16 * (i + 1));
+    const out = {}; for (const n of [1, 2]) { f.pass(n); out["pass" + n] = f.offPalette(); } f.pass(3); out.errors = f.errors(); out.refused = f.refused();
+    if (capture && !blank) { f.frame(16 * 4); out.hash = f.hash(); const c = document.createElement("canvas"); c.width = 1024; c.height = 600; f.forceFull(); f.present(c.getContext("2d")); out.png = c.toDataURL("image/png"); }
+    return out;
+  };
+  const r = await run();
+  if (attribute && r.pass2 > 0) { r.offenders = []; for (const id of ids) { const x = await run(id); if (x.pass2 < r.pass2) r.offenders.push([id, r.pass2 - x.pass2]); } r.offenders.sort((a, b) => b[1] - a[1]); }
+  return r;
+};

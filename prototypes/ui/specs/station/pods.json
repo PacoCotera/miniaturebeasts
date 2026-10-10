@@ -1179,7 +1179,10 @@
   "overview": {
    "pod": {
     "up": "rail.last",
-    "right": "kin.first",
+    "right": [
+     "kin.first",
+     "hatch"
+    ],
     "down": "none",
     "left": "none"
    },
@@ -1194,7 +1197,10 @@
     "up": "rail.last"
    },
    "hatch": {
-    "up": "kin.first",
+    "up": [
+     "kin.first",
+     "none"
+    ],
     "left": "pod",
     "down": "none"
    },

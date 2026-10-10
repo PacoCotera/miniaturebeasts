@@ -126,26 +126,26 @@ bands.
   read tab's lit rim (`teal`), a ticking counter and the glint (`yellow`), a clash (`red`),
   whole Shield plates (`white`), drop shadows (`void`), readouts and the stamp label's plate
   (`bone`), and context and a dimmed ✓ (`mist`).
-- **The Station's 14:** the instrument the accepted concept screens show, a cool ramp from deep
-  blue-teal through graphite and brushed metal to frost, one deep teal, the leaf timer's sage
-  and the cream of the focus ring.
+- **The Station's 14:** the device's colours: dark matte slate panels, the sage
+  and sand housing, dark rubber, the frost veil, the leaf timer's sage and the
+  focus cream.
 
 | Name | Hex | Role | Darker · lighter | Seen in |
 | --- | --- | --- | --- | --- |
-| `ground` | `#162a37` | Deep blue-teal ground: the stage behind the chrome, deep panes (the open chapter page) | `void` · `panel` | Home A-r3-a1, between the window and the modules; Pods PV-D-r3-a4; Incubator IN-D-r1-a3 |
-| `panel` | `#2a2e38` | Graphite panels: the module boxes, the list column, cards, a sealed tab's slats | `ground` · `bar` | Home A-r3-a1, the module column |
-| `bar` | `#34383f` | The top bar and the bottom line | `panel` · `hairline` | Every accepted plate's bars: Home, Create CR-C2, Incubator, the Book BK-D-r2-a1 |
-| `hairline` | `#3c4b57` | 1 px rules and edges: the bars' rules, separators, pane and label edges, unread outlines, empty leaves | `bar` · `bevel` | Pods PV-D-r3-a4, the rules and tab edges |
-| `bevel` | `#5a6672` | The lit top-left bevel of panels, tabs and wells | `hairline` · `metal` | Home A-r3-a1, the modules' top edges |
-| `metal` | `#717c86` | Brushed metal: the living window's bezel, cradles, the Probe dock | `bevel` · `enamel` | Home A-r3-a1, the window's bezel; Create CR-C2, the chamber's base |
-| `enamel` | `#8ca0ab` | Enamel bases and plates, and the body of glass where the build draws it | `metal` · `frostS` | Incubator IN-D-r1-a3, the dome's base; the glass of the Pods cradle |
-| `frostS` | `#a9b5c8` | Frost's shade: an unread tab's fill, the shade side of frost on an unread part | `enamel` · `frostD` | Create CR-C2, the founder's frosted head |
-| `frostD` | `#cbd5e2` | Frost: the veil on an unread page or part; glass edges | `frostS` · `frost` | Create CR-C2; Pods PV-D-r3-a4, the glass pane |
-| `frost` | `#eaeff6` | Frost's light and the glint on glass | `frostD` · `white` | Pods PV-D-r3-a4; Incubator IN-D-r1-a3, the dome's highlight |
-| `deepTeal` | `#275663` | A read tab's fill, crate bodies, the bay door's inside | `ground` · `teal` | Home A-r3-a1, the crates and the bay |
-| `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Incubator IN-D-r1-a3, the leaves over the dome |
-| `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Incubator IN-D-r1-a3 |
-| `focus` | `#ffe6ad` | The focus ring, warm cream; with the amber lamp and Confirm's orange, one of the chrome's only warm marks | `sand` · `white` | Home A-r3-a1, the ring under Pip; the Spread SP-P-r4-a1 |
+| `ground` | `#1d232b` | The deepest slate: behind the panels | `void` · `panel` | Station concept board, frame 1: the slate around the vivarium and between the modules |
+| `panel` | `#2b3038` | Matte slate panels: sections, cards, the column | `ground` · `bar` | Frame 1: the section column's modules; frame 3: the readout boxes |
+| `bar` | `#23292f` | The top bar and bottom line, slate | `panel` · `hairline` | Frame 1: the slate under the bottom plates |
+| `hairline` | `#3d434b` | 1 px rules on slate | `bar` · `bevel` | Frame 1: the modules' edges |
+| `bevel` | `#565c63` | The lit top-left edge of panels and wells | `hairline` · `metal` | Frame 1: the modules' lit top edges |
+| `metal` | `#8a947b` | Housing, sage: the frame around the vivarium and the device's parts | `bevel` · `enamel` | Frame 1: the sage housing around the screen; frame 3: the chamber's housing |
+| `enamel` | `#a99f8a` | Housing, sand: bases, plates, the light parts of the device | `metal` · `frostS` | Frame 2: the case's sand rim; frame 3: the outer frame |
+| `frostS` | `#a9b5c8` | The veil over what is unread, only; never glass. Frost's shade: an unread tab's fill, the shade side of frost on an unread part | `enamel` · `frostD` | Not on the board: the veil over what is unread (a meaning, drawn only on unread parts) |
+| `frostD` | `#cbd5e2` | The veil over what is unread, only; never glass. Frost: the veil on an unread page or part | `frostS` · `frost` | Not on the board: the veil over what is unread (a meaning, drawn only on unread parts) |
+| `frost` | `#eaeff6` | The veil over what is unread, only; never glass. Frost's light | `frostD` · `white` | Not on the board: the veil over what is unread (a meaning, drawn only on unread parts) |
+| `deepTeal` | `#2a2a2d` | Dark rubber: bumpers, hoses, gaskets, crate bodies | `void` · `bar` | Frame 1: the corner bumpers; frame 3: the hoses |
+| `sage` | `#84ae78` | The leaf timer: a filled leaf | `sageD` · `sprout` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
+| `sageD` | `#5d7a5f` | A leaf's vein and shade; the line a filling leaf rises to | `forest` · `sage` | Frame 3: the leaf timer; frame 1: the Incubator module's leaves |
+| `focus` | `#ffe6ad` | The focus ring, warm cream; with the amber lamp and Confirm's orange, one of the panels' only warm marks | `sand` · `white` | Not on the board: the focus ring |
 
 <img src="ui-kit/station-palette-1x.png" width="950" alt="The Station palette as a swatch strip, 1×">
 
@@ -154,10 +154,10 @@ the file by [`strip.py`](../../prototypes/ui/palettes/strip.py). Top row: the Co
 ramp. Bottom row: the Station's 14 in the table's order. Each column shows its lighter neighbour
 above and its darker below. Diagram, Working rule.*
 
-**Not in the palette.** Wood, felt, the evening room's moss greens and warm lamp pools: the
-Station is never a cottage. In-between steps for dithered bands: the chrome is flat, and the
+**Not in the palette.** Wood, felt, chrome, gloss and glowing blues, the evening room's moss
+greens and warm lamp pools: the Station is never a cottage. In-between steps for dithered bands: the chrome is flat, and the
 light is painted. The violet-grey neutrals of the core stay in it for the creatures and type
-shadows; the instrument is drawn in the cool ramp above. Where the layout spec names a slate
+shadows; the device is drawn in the Station's 14 above. Where the layout spec names a slate
 edge or a graphite panel, the colours are `hairline` and `panel`.
 
 **Typography.** *Mibi 7×9*, a custom proportional bitmap font in the kit: cap height 7,
@@ -343,7 +343,7 @@ genome-to-sprite pipeline: parts and markings are parameters, and art never chan
   commercial bitmap font family only if the custom face falls short in play.
 - **Rebuild order:** (1) Companion place: tiles, tokens, pawn, HUD, bottom line; (2) reach view
   and full map; (3) menus, messages, expedition, Probe and Cargo screens; (4) the active mibi
-  screen; (5) Station Home; (6) Pods, Create, Incubator; (7) Library, Habitat; (8) Caddy
+  screen; (5) Station Home; (6) Pods, Create, Incubator; (7) Library, Vivarium; (8) Caddy
   four-gray and print versions of the same sprites.
 
 ## 6. Decided

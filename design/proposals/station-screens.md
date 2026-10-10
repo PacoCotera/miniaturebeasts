@@ -12,7 +12,7 @@ Every screen has a top bar (40 px), a stage (522 px) and a bottom line (38 px), 
 | Key | Role on every screen |
 | --- | --- |
 | Pad | Moves focus in the picture. On Create, ▲▼ also rolls a shapeable trait |
-| Home, Research, Library, Habitat | Switch view; spend or stop nothing (**Decided**) |
+| Home, Research, Library, Vivarium | Switch view; spend or stop nothing |
 | ← | Back one view, restoring focus; on Home, "← Rest" fades to the idle view |
 | ✓ | Exactly what the bottom line names; every spend is a deliberate press |
 
@@ -21,10 +21,10 @@ Prototype only: a depicted Caddy beside the Station on the page has one key, **D
 ## Visual language
 
 - **Pictures first.** Each screen is one picture to act on: a vivarium, a pod on the specimen stage, a glass dome, a field guide, a resident. Words support it: a name and one line, two sizes on the stage, six words or fewer per line, play language.
-- **Richer treatment.** Miniature Lives at Station size: sculpted, with soft directional light. The Station is a research device, not a cottage (**Decided**); materials and mood follow the four vibes in the [style guide](../style-guide/station-screens.md#four-rooms-four-vibes): the overview is hardware, the research bench a modern digital lab, the vivarium a cozy pet home, the Library a botanical tome. A subject on Create and Habitat is about rich Pip size (300×310).
+- **Richer treatment.** Miniature Lives at Station size: sculpted, with soft directional light. The Station is a research device, not a cottage; materials and mood follow [one device, one look](../style-guide/station-screens.md#one-device-one-look) in the style guide. A subject on Create and the vivarium, up close is about rich Pip size (300×310).
 - **Numbers only where they are prices,** plus the three counters and the world turn the Companion already shows. No timers in digits, percentages, ratios, IDs, progress digits, counts of traits or loci, or letters for genes. Waits are drawn as growth.
 - **Not this:** no tables, no panels with title bars, no logs, graphs, monospace or boxed buttons. The v1 study (a sample as `Pp`, paragraphs, a stock line) and the amber and colour terminals (dense windowed dashboards) decorate a process; here the art is the thing played with.
-- **One chapter language everywhere.** A species' chapters (Coat, Face, Movement…) appear as arcs on the pod's rings and as pages of trait pictures on Pods, Create, the incubator, Library and Habitat, always in the same order clockwise from the notch, so Coat always lives in the same place.
+- **One chapter language everywhere.** A species' chapters (Coat, Face, Movement…) appear as arcs on the pod's rings and as pages of trait pictures on Pods, Create, the incubator, Library and Vivarium, always in the same order clockwise from the notch, so Coat always lives in the same place.
 - **Shapes carry meaning:** seed, glint star, solid base, sleeping mark, family mark, seal and notch, leaves. Colour doubles them, never replaces them; every animation has a still state.
 
 ## Screen map
@@ -36,7 +36,7 @@ Prototype only: a depicted Caddy beside the Station on the page has one key, **D
                      Arrival      PODS ──✓ Shape──▶ CREATE ──✓ Grow──▶ INCUBATOR ──✓ Open──▶ Home (meet)
                                  (Research key)                         ▲         Probe bench
  HABITAT ──✓ Cross (an adult)──▶ CROSS ──✓ Cross them────────────────────┘
- LIBRARY (Library key): shelf ▶ field guide ▶ ✓ Visit (Habitat) · ✓ Wish
+ LIBRARY (Library key): shelf ▶ field guide ▶ ✓ Visit (the vivarium, up close) · ✓ Wish
 ```
 
 ## The screens
@@ -71,19 +71,19 @@ Prototype only: a depicted Caddy beside the Station on the page has one key, **D
 
 *Incubator wireframe: glass dome with the ring of leaves as the timer (layout only).*
 
-**Library** ([07](station-screens/07-library.svg)). A shelf across the top: known species as bright cards, met ones as silhouettes, dashed empty slots that admit more exist. Below, the focused species' **field guide**: its portrait with one line of habits and its places as stamps; its **frame**, what the species fixes, shown once; **one page per chapter**, every look found so far as a picture per trait, with one dotted "more?" (knowledge, never material, **Decided**); **lineage** as a branch: each pod → its mibi, each child → its two parents, with ring and code; and **wishes**, the dream mibis pinned for the species. Pad: ◀▶ along the shelf (the guide follows), ▼ into the guide, spatial within. ✓ on a mibi: `Visit Fig` (Habitat); on a look: `Add to the wish` (free; pods and mibis carrying a piece of the wish then glint); on a wish: `Find a pair` (opens Cross with the forecast toward it). ←: shelf, then Home.
+**Library** ([07](station-screens/07-library.svg)). A shelf across the top: known species as bright cards, met ones as silhouettes, dashed empty slots that admit more exist. Below, the focused species' **field guide**: its portrait with one line of habits and its places as stamps; its **frame**, what the species fixes, shown once; **one page per chapter**, every look found so far as a picture per trait, with one dotted "more?" (knowledge, never material); **lineage** as a branch: each pod → its mibi, each child → its two parents, with ring and code; and **wishes**, the dream mibis pinned for the species. Pad: ◀▶ along the shelf (the guide follows), ▼ into the guide, spatial within. ✓ on a mibi: `Visit Fig` (the vivarium, up close); on a look: `Add to the wish` (free; pods and mibis carrying a piece of the wish then glint); on a wish: `Find a pair` (opens Cross with the forecast toward it). ←: shelf, then Home.
 
 ![Library wireframe: shelf of species, field guide pages and lineage (layout only; drawn as a sticker book before the research loop)](station-screens/07-library.svg)
 
 *Library wireframe: shelf of species, field guide pages and lineage (layout only; drawn as a sticker book before the research loop).*
 
-**Habitat** ([08](station-screens/08-habitat.svg)). The focused resident large in its corner of the vivarium; at right its card: name, stage and species, ability, a memory line, its ring as a seal with the code, and its chapters as the Library knows them. Under the card, the **with-you door** (the mibi in the Companion, or "away"), the **bond heart** and, on an adult, the **cross** mark. A strip of residents along the bottom with an empty place. Pad: ◀▶ along the strip (the stage swaps), ▲ or ▶ to the door and heart. ✓: on the resident `Spend time with Fig` (a species moment, no reward); on the door `Take Fig with you` (swaps at the dock; not during an expedition, **Decided**); on the heart, once offered after a first walk or expedition, `Bond with Fig`, then ✓ again (a small heart, no meters, **Decided**); on the cross mark `Cross Fig` (opens Cross with Fig as the first parent). ←: Home.
+**The vivarium, up close** ([08](station-screens/08-habitat.svg)). The focused resident large in its corner of the vivarium; at right its card: name, stage and species, ability, a memory line, its ring as a seal with the code, and its chapters as the Library knows them. Under the card, the **with-you door** (the mibi in the Companion, or "away"), the **bond heart** and, on an adult, the **cross** mark. A strip of residents along the bottom with an empty place. Pad: ◀▶ along the strip (the stage swaps), ▲ or ▶ to the door and heart. ✓: on the resident `Spend time with Fig` (a species moment, no reward); on the door `Take Fig with you` (swaps at the dock; not during an expedition); on the heart, once offered after a first walk or expedition, `Bond with Fig`, then ✓ again (a small heart, no meters); on the cross mark `Cross Fig` (opens Cross with Fig as the first parent). ←: Home.
 
-![Habitat wireframe: resident large, card at right, strip of residents below (layout only)](station-screens/08-habitat.svg)
+![The vivarium up close, wireframe: resident large, card at right, strip of residents below (layout only)](station-screens/08-habitat.svg)
 
-*Habitat wireframe: resident large, card at right, strip of residents below (layout only).*
+*The vivarium up close, wireframe: resident large, card at right, strip of residents below (layout only).*
 
-**Cross and Wish** (from Habitat on an adult, or from a wish in the Library; no wireframe yet). Two adults of one species stand left and right, each with its ring; between them the child to be, misty, and under it each trait as a **forecast** of four seed pictures (one in four spotted, two in four hiding spots): quarters drawn, never odds as numbers on the child-facing view, and never a promise. With a wish pinned, the traits that can reach it wear its mark. Pad: ◀▶ picks a parent, ▲▼ rolls through the other eligible adults of the species, ▼ into the forecast (look only). An ineligible pair greys out and says why before anything is spent. ✓ `Cross them · 2 ⚡ 4 ❀`: the two rings line up, one track from each parent, and the child's pod glides into the incubator; it opens known only where both parents' copies were the same, "one of these" elsewhere until that chapter is read. ←: back where it came from, nothing spent.
+**Cross and Wish** (from the vivarium, up close, on an adult, or from a wish in the Library; no wireframe yet). Two adults of one species stand left and right, each with its ring; between them the child to be, misty, and under it each trait as a **forecast** of four seed pictures (one in four spotted, two in four hiding spots): quarters drawn, never odds as numbers on the child-facing view, and never a promise. With a wish pinned, the traits that can reach it wear its mark. Pad: ◀▶ picks a parent, ▲▼ rolls through the other eligible adults of the species, ▼ into the forecast (look only). An ineligible pair greys out and says why before anything is spent. ✓ `Cross them · 2 ⚡ 4 ❀`: the two rings line up, one track from each parent, and the child's pod glides into the incubator; it opens known only where both parents' copies were the same, "one of these" elsewhere until that chapter is read. ←: back where it came from, nothing spent.
 
 **Probe bench** (from Home's cradle). The Probe large in its cradle, Shield as plates, a switch and a slot:
 
@@ -120,7 +120,7 @@ A child sees a picture of the trait that shows, a misty seed holding what hides,
 **Decided:** the fingerprint is a genome ring that stores the real copies ([research loop](research-loop.md) §7; printability and scanability still to be tested, and the art may be refined). For the screens:
 - **Parts:** the species glyph at the centre; a grey band for the locked frame, the same in every member; two coloured tracks, one spoke per heritable part, the inner holding one copy and the outer the other (a long or short bar for which look); one sector per chapter, clockwise from the notch, in the chapters' order; outer dashes for species, version and check. Unread parts are hairlines, so the ring fills as reads do.
 - **Code:** base-32 with a check character, shown grouped in threes (`G7F · CD0 · 3H2`) and only for mibis: it appears at Grow, the moment the individual is fixed. It is the mibi's name and a lookup, not the genome.
-- **Where:** the pod's stage plate (96 px, filling with each read); Create's right column (spokes flip with each roll); stamped on the shell at Grow (220 px, a short press); the incubator plate; the Cross screen (each parent's, lining up into the child's); the Habitat card seal (96 px); every lineage entry (40 px); later the Caddy card. Monochrome-safe, so it survives four-gray and paper. Scanning shows and never grants (**Working rule**).
+- **Where:** the pod's stage plate (96 px, filling with each read); Create's right column (spokes flip with each roll); stamped on the shell at Grow (220 px, a short press); the incubator plate; the Cross screen (each parent's, lining up into the child's); the vivarium, up close card seal (96 px); every lineage entry (40 px); later the Caddy card. Monochrome-safe, so it survives four-gray and paper. Scanning shows and never grants.
 
 ## Ten presses: Dock to meet the mibi
 

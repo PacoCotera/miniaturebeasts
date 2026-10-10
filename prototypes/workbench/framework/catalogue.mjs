@@ -218,6 +218,33 @@ export function binFor(locus, copy) {
 // The value range of a set of named alleles (the catalogue's, or a species pool): [min, max].
 export const valueRange = (locus, ids = locus.alleles.map((a) => a.id)) => { const vs = ids.map((id) => copyValue(locus, id)); return [Math.min(...vs), Math.max(...vs)]; };
 
+// The blend step (decided 2026-10-09: blends are stored on a fixed fine step so the stamp holds the
+// exact genome). A blended copy is one of BLEND_STEPS + 1 values spread evenly over the catalogue's
+// range of the locus, from its lowest named allele (step 0) to its highest (step BLEND_STEPS), each
+// rounded to 1e-6. The stamp's codec (genome-stamp/src/codec.mjs, stepValue) computes the same values
+// from the same allele values, so a stepped copy round-trips exactly; its cost is measured there.
+export const BLEND_STEPS = 59;   // 1/59 of the range: the finest step 6 bits of a stamp hold beside up to 4 named alleles
+const round6 = (v) => Math.round(v * 1e6) / 1e6;
+export function stepValue(locus, k) { const [lo, hi] = valueRange(locus); return round6(lo + (k * (hi - lo)) / BLEND_STEPS); }
+// The step a number sits on, or -1 when it is off the step (a value from before the step).
+export function stepOf(locus, v) {
+  if (typeof v !== "number") return -1;
+  const [lo, hi] = valueRange(locus), k = Math.round(((v - lo) / (hi - lo)) * BLEND_STEPS);
+  return k >= 0 && k <= BLEND_STEPS && stepValue(locus, k) === v ? k : -1;
+}
+// A blended value on the step: the nearest step, kept inside `bounds` (a species pool's range) by
+// moving inward to the nearest step that lies within it. Monotone, so a range's ends quantise to the
+// ends of its quantised children; idempotent.
+export function quantize(locus, v, bounds = valueRange(locus)) {
+  const [lo, hi] = valueRange(locus), s = (hi - lo) / BLEND_STEPS, eps = 1e-9;
+  const kmin = Math.ceil((bounds[0] - lo) / s - eps), kmax = Math.floor((bounds[1] - lo) / s + eps);
+  if (kmin > kmax) throw new Error(`${locus.id}: no step inside [${bounds[0]}, ${bounds[1]}]`);
+  return stepValue(locus, Math.min(kmax, Math.max(kmin, Math.round((v - lo) / s))));
+}
+// Two copy pairs carry the same copies, in either order (a pair has no order): the one comparison the
+// frame check and the cross use for a locked pair.
+export const samePair = (p, q) => Array.isArray(p) && Array.isArray(q) && p.length === 2 && q.length === 2 && ((p[0] === q[0] && p[1] === q[1]) || (p[0] === q[1] && p[1] === q[0]));
+
 export function resolveCopies(locus, copies) {
   if (!Array.isArray(copies) || copies.length !== 2) throw new Error(`${locus.id}: two copies required`);
   const values = copies.map((c) => copyValue(locus, c));

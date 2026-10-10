@@ -33,14 +33,17 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 
 - **1024×600, used to the full.** Native resolution everywhere. Never a scaled-up Companion screen or upscaled tokens.
 - **Painted light on the painted layer:** one key light from the top left, soft cast shadows, correct form shading, painted gradients. No dither bands and no flat fills in a painting.
-- **Flat chrome on the art layer:** bars, panels, panes, tabs and rings are flat fills with one bevel of light and 1 px hairlines, never dithered and never painted. The layers are in [Station screens, Palette and layers](station-screens.md#palette-and-layers).
-- **A research instrument:** cool chrome, hairline rules, corner ticks, status lamps, few-word readouts, and equipment: sample bay, pod rack, incubation chamber, Probe dock.
-- **One living window per screen,** warm and lively: the only warm light on the screen. Everything outside it is cool and calm.
-- **Never a cottage:** no wooden benches, felt, shelves, lamp-lit rooms or evening greens. Glass, enamel, brushed metal, frosted panes.
+- **Flat panels on the art layer:** the device's panels (bars, panels, panes, tabs and rings) are flat fills with one bevel of light and 1 px hairlines, never dithered and never painted. The layers are in [Station screens, Palette and layers](station-screens.md#palette-and-layers).
+- **Field gear that keeps life going.** The Station is the Companion's sibling, made by the same maker; both dock into the Caddy. The screen is the Station's own face, never a picture of a room with a device in it.
+- **Rugged, matte, handled.** Sage and sand housing, dark rubber, screws, engraved marks; powder-coat, rubber, moulded polymer, canvas, braided hose, paper. Inside the frame, dark matte slate panels and cream type; orange for the action.
+- **Cozy, tethered to its tech.** The equipment that keeps the life going is visible and works for it: feed lines, vents, misters, small gauges, grow lamps. Cozy, never clinical, never hidden.
+- **The vivarium is the most alive thing on the screen,** Miniature Lives in warm daylight, and the eye goes there first.
+- **Never:** glowing HUDs, holograms, neon, chrome, polished glass, gloss, brushed metal, alien technology, sterile labs, a cabinet or display case, a cottage with no equipment, anything childish.
+- **One test:** beside the Companion concept and the kit test, it reads as the same maker's field gear, working to keep something alive.
 - **HiBit is allowed:** a fine pixel grain on creatures and world; chrome and type crisp.
 - **1× grain, measured.** Cut each 1024×600 capture into the top bar (y 0–40), the stage (y 40–562) and the bottom line (y 562–600). In each region take 2×2 blocks at each of the four grid phases, counting only blocks whose 4×4 surround holds more than one colour. **G2** is the share of those blocks that are one colour, at the best phase. G2 of 0.60 or more is 2× rendering and fails; 0.40 or less is 1× grain; between the two, the region is judged by eye at 1×. Anti-aliased type is never block-uniform, so the bottom line's G2 is at most 0.40.
 - **Type:** a smooth face, Inter (OFL), anti-aliased, with tabular figures. The Companion keeps the bitmap face; the two devices share colour roles, not a typeface.
-- **Carry more** than the concept: keep its quality, fill the screen with the instrument and its life.
+- **Carry more** than the concept: keep its quality, fill the screen with the device and its life.
 
 ## Creatures on both devices
 
@@ -72,7 +75,7 @@ Materials keep one shape on both devices: Energy a yellow bolt, Data a blue diam
 ## Motion vocabulary
 
 - **Companion, stepped frames:** idle 2 frames at 2 Hz; walk 3 frames, 150 ms a step; flame and crackle 2 frames at 4 Hz; water 2 Hz; Call ring 3 frames over 300 ms; slides 110–170 ms; counters +1 per 90 ms with a 260 ms flash.
-- **Station, smooth and eased:** the living window moves all the time (breathing, routines, plants, water). The instrument moves only when something happens: doors, rails and lamps in 200–400 ms. Reveals (a frost wipe, a shell clearing) take about two seconds.
+- **Station, smooth and eased:** the living window moves all the time (breathing, routines, plants, water). The device's controls move only when something happens: doors, rails and lamps in 200–400 ms. Reveals (a frost wipe, a shell clearing) take about two seconds.
 - **Both:** the first frame is the still state; nothing means something only by blinking; presses during a motion are consumed.
 
 ## What every screen and piece meets

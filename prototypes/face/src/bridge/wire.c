@@ -1,4 +1,6 @@
 #include "wire.h"
+#include "../screens/screens.h"
+#include "../anim/anim.h"
 #include "../prim/prim.h"
 #include "../spec/spec.h"
 #include "../face.h"
@@ -21,7 +23,7 @@ static uint32_t g_seq; static int g_seq_set;
 static char g_props_screen[32]; static char *g_props;
 static char g_ids[MAX_IDS][96]; static int g_nids;
 
-void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; }
+void wire_init(void) { g_dropped = g_unreported = 0; if (!g_in) g_in = (char *)malloc(WIRE_IN_CAP + 1); g_hello = 0; g_test = 0; g_qh = g_qn = 0; g_last_asset = -1; g_nprops = g_nevents = 0; g_seq_set = 0; g_nids = 0; anim_reset(); }
 char *wire_in_buf(void) { return g_in; }
 int wire_test_mode(void) { return g_test; }
 void wire_changed(void) { g_dirty_log = 1; }
@@ -53,6 +55,7 @@ void wire_error(const char *what) {
   char esc[400]; jesc(esc, sizeof esc, what); char *m = (char *)malloc(strlen(esc) + 32); if (!m) return;
   sprintf(m, "{\"t\":\"error\",\"what\":\"%s\"}", esc); push(m);
 }
+void wire_emit(const char *json) { size_t n = strlen(json); char *m = (char *)malloc(n + 1); if (!m) return; memcpy(m, json, n + 1); push(m); }
 static int fail(const char *what) { wire_error(what); return -1; }
 
 /* ---- reading a message ---- */
@@ -84,7 +87,8 @@ static int hex(const char *s, uint32_t *rgb) { if (s[0] != '#' || strlen(s) != 7
 
 /* ---- the messages in ---- */
 static int on_hello(const msg_t *m) {
-  int c = -1; if (!num(m, key(m, "contract"), &c)) return fail("hello: contract is required");
+  int c = -1, ck = key(m, "contract"); if (ck < 0) return fail("hello: contract is required");
+  if (!num(m, ck, &c)) return fail("hello: contract must be an integer");
   if (c != WIRE_CONTRACT) { char b[80]; snprintf(b, sizeof b, "contract %d expected, got %d", WIRE_CONTRACT, c); return fail(b); }
   g_hello = 1; g_test = flag(m, key(m, "test"));
   char *r = (char *)malloc(320); if (!r) return -1;
@@ -106,8 +110,12 @@ static int on_spec(const msg_t *m) {
   char screen[40]; if (!str(m, key(m, "screen"), screen, sizeof screen)) return fail("spec: screen is required");
   int j = key(m, "json"); if (j < 0 || m->tok[j].type != JSMN_OBJECT) return fail("spec: json must be the spec file's object");
   if (spec_load(screen, m->js + m->tok[j].start, (size_t)(m->tok[j].end - m->tok[j].start)) < 0) return fail(spec_error());
+  { char why[200]; if (screens_vet_spec(screen, why, sizeof why) < 0) { spec_drop(screen); return fail(why); } }   /* a spec that names a word wrongly is refused whole, never improvised */
   return 0;
 }
+int wire_asset_slot(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
+static int g_slice[256][4], g_tile[256], g_has_slice[256];
+int wire_asset_nine(int slot, int insets[4], int *tile) { if (slot < 0 || slot >= 256 || !g_has_slice[slot]) return 0; memcpy(insets, g_slice[slot], sizeof g_slice[slot]); if (tile) *tile = g_tile[slot]; return 1; }
 static int slot_of(const char *id) { for (int i = 0; i < g_nids; i++) if (strcmp(g_ids[i], id) == 0) return i; return -1; }
 static int on_asset(const msg_t *m) {
   char id[96]; int w = 0, h = 0, drop = flag(m, key(m, "drop"));
@@ -121,15 +129,28 @@ static int on_asset(const msg_t *m) {
   if (slot < 0) { if (g_nids >= prim_asset_limit()) { char b[160]; snprintf(b, sizeof b, "asset %s: the picture table holds %d", id, prim_asset_limit()); return fail(b); } slot = g_nids++; }
   strcpy(g_ids[slot], id);
   if (!prim_asset(slot, w, h)) { g_ids[slot][0] = 0; char b[160]; snprintf(b, sizeof b, "asset %s: %dx%d is refused", id, w, h); return fail(b); }
+  g_has_slice[slot] = 0; g_tile[slot] = 0;
+  int sl = key(m, "slice");
+  if (sl >= 0) {   /* a nine-slice's insets l, t, r, b (a byte each) and the tile of its edges and middle */
+    if (m->tok[sl].type != JSMN_ARRAY || m->tok[sl].size != 4) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: slice is [left, top, right, bottom]"); }
+    for (int k = 0; k < 4; k++) { int v; if (!num(m, sl + 1 + k, &v) || v < 0 || v > 255) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: a slice inset is an integer from 0 to 255"); } g_slice[slot][k] = v; }
+    g_has_slice[slot] = 1;
+  }
+  int tl = key(m, "tile"); if (tl >= 0) { int v; if (!num(m, tl, &v) || v < 0 || v > 1024) { prim_asset_free(slot); g_ids[slot][0] = 0; return fail("asset: tile is an integer from 0 to 1024"); } g_tile[slot] = v; }
   g_last_asset = slot; return 0;
 }
-static const char *KINDS[] = { "seal", "wipe", "ribbon", "plate", "tick", "flash", "dither", "arrival", "hatch", "wake", "rest" };
 static int on_event(const msg_t *m) {
   char k[24]; if (!str(m, key(m, "kind"), k, sizeof k)) return fail("event: kind is required");
-  int ok = 0; for (size_t i = 0; i < sizeof KINDS / sizeof *KINDS; i++) if (strcmp(KINDS[i], k) == 0) ok = 1;
-  if (!ok) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
-  int ms = 0; if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
-  g_nevents++; g_dirty_log = 1; return 0;
+  int kind = anim_kind(k);
+  if (kind < 0) { char b[80]; snprintf(b, sizeof b, "event: unknown kind %s", k); return fail(b); }
+  int ms = 0, from = 0, to = 0; char target[48] = "";
+  if (key(m, "ms") >= 0 && !num(m, key(m, "ms"), &ms)) return fail("event: ms must be a number");
+  if (key(m, "from") >= 0 && !num(m, key(m, "from"), &from)) return fail("event: from must be a number");
+  if (key(m, "to") >= 0 && !num(m, key(m, "to"), &to)) return fail("event: to must be a number");
+  if (key(m, "target") >= 0 && !str(m, key(m, "target"), target, sizeof target)) return fail("event: target must be a string of at most 47 bytes");
+  int hold = flag(m, key(m, "hold"));
+  if (anim_add(kind, target, ms, hold, from, to, spec_bool("props", "motion", 1)) < 0) return fail("event: the face holds 24 events at once");
+  g_nevents++; g_dirty_log = 1; screens_redraw(); return 0;
 }
 static const struct { const char *name; int code; } KEYS[] = { { "up", 17 }, { "down", 18 }, { "right", 19 }, { "left", 20 }, { "confirm", 10 }, { "back", 27 }, { "home", 2 }, { "research", 114 }, { "library", 108 }, { "habitat", 98 }, { "dock", 100 } };
 static int on_key(const msg_t *m) {
@@ -146,7 +167,9 @@ static int on_props(const msg_t *m, int len) {
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
   int r = key(m, "regions"); if (r >= 0 && m->tok[r].type != JSMN_OBJECT) return fail("props: regions must be an object");
   free(g_props); g_props = (char *)malloc((size_t)len + 1); if (!g_props) return -1; memcpy(g_props, m->js, (size_t)len); g_props[len] = 0;
-  strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1; return 0;
+  strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1;
+  if (key(m, "frame") >= 0) return screens_props(g_props, len);   /* props that carry the frame are drawn by the words */
+  return 0;
 }
 int wire_send(const char *json, int len) {
   if (len <= 0 || len > WIRE_IN_CAP) return fail("message: empty or larger than the in-buffer");
