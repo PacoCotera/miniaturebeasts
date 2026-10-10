@@ -6,7 +6,7 @@ P = dict(void='#0c0a12', bone='#f1ebdf', white='#ffffff', mist='#8d8aa6', stone=
          sky='#5bb9f3', ice='#a9e6ff', river='#3084d8',
          hairline='#3d434b', bevel='#565c63', bar='#23292f', panel='#2b3038', ground='#1d232b',
          metal='#8a947b', enamel='#a99f8a', deepTeal='#2a2a2d', sage='#84ae78', sageD='#5d7a5f',
-         orange='#f2671b', rust='#a6420c', sand='#e6c98c', clay='#bf9157', bark='#7d5435',
+         orange='#f2671b', amber='#ffa83f', cream='#fff4a6', rust='#a6420c', sand='#e6c98c', clay='#bf9157', bark='#7d5435',
          coral='#ff5f57', peach='#ffa67c', red='#c93440', wine='#6b1e33', blush='#ffd4bf')
 H = lambda n: tuple(int(P[n][i:i+2], 16) for i in (1, 3, 5)) + (255,)
 def img(w, h): return Image.new('RGBA', (w, h), (0, 0, 0, 0))
@@ -17,7 +17,7 @@ OUT = sys.argv[1]; os.makedirs(OUT, exist_ok=True); made = {}
 def save(name, im): im.save(os.path.join(OUT, name + '.png')); made[name] = im
 
 # Lamps 12x12: a void rim, the body, one lit 2x2 at the upper left (the house light).
-for col, lit in (('sprout', 'lime'), ('sky', 'ice'), ('hairline', 'bevel')):
+for col, lit in (('sprout', 'lime'), ('sky', 'ice'), ('hairline', 'bevel'), ('amber', 'cream')):
     im = img(12, 12); outer = disc_mask(12, 12, 0.1); inner = disc_mask(12, 12, 1.1)
     for y in range(12):
         for x in range(12):

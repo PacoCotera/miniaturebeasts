@@ -308,5 +308,15 @@
   "made": "clan C16's roundel on the Library spread: its clan mark's shape family, a 1 px outline and a 2\u00d72 dot in `stone`",
   "sha256": "08178e9744f4eb41f6ec21dc6efbd32f324cb68fcf9ad07df80b99472cceb792",
   "status": "signed"
+ },
+ "home-lamp-amber-12x12": {
+  "size": [
+   12,
+   12
+  ],
+  "src": "typed by hand (source/home_marks.py)",
+  "made": "the lamp that needs you: an amber disc, void rim, a cream light at the upper left",
+  "sha256": "1ae7134a8be71e91e83f6c5d9c8248103cfbef47ec835e399842709228ce6304",
+  "status": "signed"
  }
 }

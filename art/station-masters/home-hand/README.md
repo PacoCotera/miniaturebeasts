@@ -14,6 +14,7 @@ The art-layer pieces of Home, the Vivarium card and the Library spread, hand-pla
 
 | Id | Size | What |
 | --- | --- | --- |
+| `home-lamp-amber-12x12` | 12×12 | the lamp that needs you: an amber disc, void rim, a cream light at the upper left |
 | `home-lamp-sprout-12x12` | 12×12 | the well-ready lamp: a sprout disc, void rim, lit upper left |
 | `home-lamp-sky-12x12` | 12×12 | the waiting lamp: a sky disc, void rim, lit upper left |
 | `home-lamp-hairline-12x12` | 12×12 | the lamp off: a hairline disc, void rim, lit upper left |
