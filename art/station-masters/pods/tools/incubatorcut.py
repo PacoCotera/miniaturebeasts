@@ -41,6 +41,16 @@ wedge = np.clip(np.asarray(Image.fromarray((win * 255).astype(np.uint8)).filter(
 ledge = np.clip(lip_o - np.asarray(Image.fromarray((lip_o * 255).astype(np.uint8)).filter(ImageFilter.MinFilter(3))).astype(float) / 255.0, 0, 1) * (Yg < 150)
 hair = np.array([92.0, 106.0, 84.0]); hous = hous * (1 - 0.6 * edge[..., None]) + hair * 0.6 * edge[..., None]; hous = hous * (1 - 0.7 * wedge[..., None]) + hair * 0.7 * wedge[..., None]; hous = hous * (1 - 0.45 * ledge[..., None]) + hair * 0.45 * ledge[..., None]
 feet = np.zeros((Hd, Wd)); feet[262:272, 0:6] = 1; feet[262:272, 298:304] = 1; hous = hous * (1 - 0.18 * feet[..., None])
+# the stage's rendering (the art director's pass 112 note): light from the upper left, a matte lit edge along the top-left of the housing and of the window's frame, shade at the lower right, four screws on the frame, a hairline seam below the window
+dgl = (Xg + Yg) / float(Wd + Hd); hous = hous * (1 + 0.07 - 0.20 * dgl)[..., None]
+sh = lambda m, dx, dy: np.asarray(Image.fromarray((m * 255).astype(np.uint8)).transform((Wd, Hd), Image.AFFINE, (1, 0, dx, 0, 1, dy))).astype(float) / 255.0
+lit = np.clip(body - sh(body, 3, 3), 0, 1) * (1 - win); dark = np.clip(body - sh(body, -3, -3), 0, 1) * (1 - win)
+hous = hous * (1 + 0.11 * lit[..., None]) * (1 - 0.15 * dark[..., None])
+wl = np.clip((1 - win) * sh(win, -2, -2) - 0, 0, 1); wd = np.clip((1 - win) * sh(win, 2, 2), 0, 1); hous = hous * (1 - 0.12 * wl[..., None]) * (1 + 0.06 * wd[..., None])
+seam = np.zeros((Hd, Wd)); seam[246, :] = 1; hous = hous * (1 - 0.30 * (seam * body)[..., None]) + np.array([255.0, 255.0, 255.0]) * 0.03 * (np.roll(seam, 1, 0) * body)[..., None]
+for (sx, sy) in ((19, 172), (285, 172), (19, 258), (285, 258)):
+    rr = np.hypot(Xg - sx, Yg - sy); ring = np.clip(1 - np.abs(rr - 4.2) / 1.0, 0, 1) * (rr < 5.4); face = np.clip(4.2 - rr, 0, 1); slot = np.clip(1 - np.abs((Xg - sx) * 0.7 + (Yg - sy) * 0.7) / 0.8, 0, 1) * (rr < 3.0)
+    hous = hous * (1 - 0.55 * ring[..., None]) + np.array([86.0, 100.0, 78.0]) * 0.55 * ring[..., None]; hous = hous * (1 - 0.25 * (slot * face)[..., None]); hous = hous + (face * (1 - slot))[..., None] * 0.0
 front = Image.fromarray(np.dstack([hous.clip(0, 255), body * (1 - win) * 255]).astype(np.uint8), "RGBA")
 # the interior: a plain lit wall (sheet a3's wall colours, a vignette to its edges), the hood's shadow under the lip, sheet a3's lamp and moss bed
 wall_top, wall_mid, wall_edge = np.array([214.0, 186.0, 140.0]), np.array([206.0, 183.0, 146.0]), np.array([195.0, 168.0, 131.0])
@@ -53,11 +63,7 @@ def sprite(box, thr_fn):
     arr = np.dstack([reg, m * 255]); w2, h2 = round((x1 - x0) * sc), round((y1 - y0) * sc); return fit(arr, w2, h2)[0], (x1 - x0, y1 - y0)
 back_rgb = wall.copy()
 # the moss bed: sheet a3's own moss texture (its bottom rows, x 230 to 440, y 510 to 572), mirrored to cover the window's foot, under an undulating top edge with a soft hollow; the lamp: a small brown shade and a warm bulb, drawn
-tex = a[505:570, 214:446]; mh = 62; moss = np.zeros((Hd, Wd, 4)); ys0 = 236 - mh                                   # a straight crop (230 px wide, no mirroring): the bed fills the window's foot
-for x in range(Wd):
-    top = ys0 + 6 * np.sin(x / 19.0 + 0.7) + 3 * np.sin(x / 7.0) + 3 * (1 - np.exp(-((x - 152) / 70.0) ** 2))      # the hollow dips in the middle
-    for y in range(int(top) - 3, Hd):
-        t = float(np.clip((y - top) / 3.0 + 0.5, 0, 1)); ty_ = min(tex.shape[0] - 1, y - ys0 + 6); tx_ = min(tex.shape[1] - 1, max(0, x - 39)); moss[y, x, :3] = tex[ty_, tx_] * (0.85 + 0.15 * min(1.0, (y - top) / 40.0)); moss[y, x, 3] = t * 255
+moss = np.zeros((Hd, Wd, 4))      # pass 114 (the art director): no painted hills or moss in the back: the inside is a plain warm matte wall with the lamp; the bed is the nest slice
 back_img = Image.fromarray(back_rgb.clip(0, 255).astype(np.uint8), "RGB").convert("RGBA"); back_img.alpha_composite(Image.fromarray(moss.astype(np.uint8), "RGBA"))
 lamp = Image.new("RGBA", (Wd * 4, Hd * 4), (0, 0, 0, 0)); dl = ImageDraw.Draw(lamp)
 dl.rectangle([4 * 151, 4 * 45, 4 * 153, 4 * 55], fill=(96, 70, 44, 255)); dl.pieslice([4 * 132, 4 * 52, 4 * 172, 4 * 76], 180, 360, fill=(122, 86, 52, 255)); dl.ellipse([4 * 144, 4 * 63, 4 * 160, 4 * 78], fill=(255, 236, 170, 255))

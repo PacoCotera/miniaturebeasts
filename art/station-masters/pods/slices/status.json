@@ -3342,22 +3342,22 @@
  "dome-front-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
+  "note": "pass 114: the housing in the stage's rendering by hand: a lit top-left edge, shade at the lower right, four screws on the frame, a hairline seam below the window; the width and the window as signed off; awaiting the art director's judgement (not signed)"
  },
  "dome-back-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
+  "note": "pass 114: the back is now a plain warm matte inner wall with the lamp (no hills, no moss; the bed is the nest slice); key R-B 101, sat 48; awaiting the art director's judgement (not signed)"
  },
  "dome-inside-standby-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
+  "note": "pass 114: standby from the new plain back (a soft warm pool low on the wall); awaiting the art director's judgement (not signed)"
  },
  "dome-inside-ready-304x272": {
   "status": "new",
   "signed_in": null,
-  "note": "returned (art director), rebuilt at 304 wide with one window 226 wide: the width and the window are right. Two fixes by hand: the painted hills behind the bed make the inside a small landscape (the spec: never a small vivarium), so the back becomes a plain warm, matte inner wall of the housing with the lamp; and the housing reads flat beside the stage, so give it the stage's rendering (a lit top-left edge, shade at the lower right, four screws, a hairline seam)"
+  "note": "pass 114: ready from the new plain back (the light up toward cream); awaiting the art director's judgement (not signed)"
  },
  "base-336x96": {
   "status": "signed",
