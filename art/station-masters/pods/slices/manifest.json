@@ -10876,10 +10876,10 @@
   "rect": null,
   "src": "source/raw/cargo-haul-3.jpg (gemini-3-pro-image)",
   "made": "the Data haul container: the rugged ribbed cartridge standing upright, its connector at the foot, a flat sky window (#5bb9f3); a Pro edit from the owner's own sketch, keyed from the ground, uniformly scaled to 64 rows with the feet on the bottom row, the body graded to a mean L* of 47, highlights capped under L* 70, the window flat colour capped at L* 69.5 (pass 133)",
-  "sha256": "4847c06bef7a46fe9727d63919e29cef2124d00659b11f23435c0f1eec607480",
+  "sha256": "0e9f79a8ebd4ba63a66c1a753fdcc5ba3ddc06065d1b839d65d845140ec13fd4",
   "status": "signed",
   "signed_in": "art director, the haul trio (owner's yes)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 52.4, mean R-B -17.6, sat 24.4, 0.0 percent above L* 70 (window and bars capped at L* 69.5), in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED; redrawn by hand as a thick card seen nearly face-on (the owner: a thick card, not a stick): a 38 px face, a 3 px side, ribs at the top, the sky window with two white bars, gold contacts at the foot"
+  "status_note": "signed (art director) at 1x, opaque pixels: L* 49.5, mean R-B -14.2, sat 22.1, 0.0 percent above L* 70 (window capped at L* 69.5), in the crate's band (L* 45-49 +-4, sat <= 35); layer family PAINTED; redrawn by hand to the trio's weight (the owner: the card looked heavier than the other two): a thick card seen nearly face-on, a 31 px face with a 2 px side, dark corner bumpers, short ribs, a smaller recessed sky window with two bars, gold contacts at the foot; 1773 opaque px, between Energy (2448) and Essence (1431)"
  },
  "cargo-essence-48x64": {
   "size": [
