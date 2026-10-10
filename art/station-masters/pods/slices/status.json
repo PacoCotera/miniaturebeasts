@@ -3337,7 +3337,7 @@
  "room-bench-stage-create": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 118: Create's own stage (a new Pro painting, owner-approved): the same frame and slate floor as the Incubator stage, plain, one small gauge and its hose in the upper left outside every keep-clear zone, the gauges and hose that lay in the zones painted out by hand; L* 36.0, key R-B 40, sat 25; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director) at 1x: L* 36.0, key R-B 40, sat 25 fit, but the frame differs from the Incubator and Pods stages (no top or bottom rim) and a hose stub ends in mid-air; the brief's keep-clear zones leave no room for floor hardware (the art director's error). By hand: the signed room-bench-stage-incubator with its hoses and gauges painted out by the floor model, a plain floor in the same frame; the Pro painting is set aside"
  },
  "dome-front-304x272": {
   "status": "signed",
@@ -3377,32 +3377,32 @@
  "bud-early-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  },
  "bud-late-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  },
  "bud-ready-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  },
  "bud-ready-front-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  },
  "bud-crack-1-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  },
  "bud-crack-2-128x160": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the bud redone from the owner-approved Pro request (a plump upright oval bean, smooth, no dot, no sprout, no moss; 82x140 in the 128x160 box; the bean's slight waist on one side remains); late, ready, front and cracks by hand from it, the ready shape clipped to the bean; awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  },
  "leaf-empty-16x20": {
   "status": "signed",
@@ -3457,6 +3457,6 @@
  "bud-small-64x80": {
   "status": "new",
   "signed_in": null,
-  "note": "pass 117: the new bud-early reduced by one half for Create's small chamber (only ever reduced); awaiting the art director's judgement (not signed)"
+  "note": "returned (art director): still a kidney bean with a waist, 82 px wide (the brief: a plump upright oval about 112x140, no kidney); and ready does not show the species' shape through the skin. By hand, no new call: remap each row of the painted bean onto an ellipse 112x140 (bottom at y 152, centred on x 64), Lanczos per row, so the waist goes and the shading stays; then re-cut late, ready, ready-front, the cracks and bud-small from it; ready shows the bud-shape at its 112x112 box, bark, multiplied at about 45 percent inside the bean, with the cream light up"
  }
 }
