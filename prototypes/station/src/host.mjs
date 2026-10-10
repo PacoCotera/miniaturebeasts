@@ -9,6 +9,7 @@ import * as S from "./state.mjs";
 import { frameOf } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild } from "./views/home-props.mjs";
+import { cargoBuild } from "./views/cargo-props.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
@@ -17,7 +18,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "pods"];
+export const BUILT = ["home", "cargo", "pods"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -43,8 +44,11 @@ function companionIds() {
 // ---- the frame ----
 // The top bar's facts: the room's key and one word, the counters as the rules hold them (the face counts them up on `tick` events), the Companion and whether a mibi is with it.
 export function topFor(screen) {
-  return { screen, title: SPECS.frame.strings.titles[screen], turn: G.st.turn + 1, turnFlash: false, materials: { e: G.st.e, d: G.st.d, s: G.st.s }, flash: {}, companion: { docked: docked(), withMibi: withMibiKey() } };
+  const v = topValues();
+  return { screen, title: SPECS.frame.strings.titles[screen], turn: v.turn + 1, turnFlash: false, materials: { e: v.e, d: v.d, s: v.s }, flash: {}, companion: { docked: docked(), withMibi: withMibiKey() } };
 }
+// The counters and the turn as the top bar shows them: the rules' while a crate is not opening, and while the crates open (cargo.json events.opening) what each crate has shown by its step, so the bar ticks crate by crate.
+export const topValues = () => UI.cargo.shown ?? { e: G.st.e, d: G.st.d, s: G.st.s, turn: G.st.turn };
 // A screen the face has no words for: no action, no subject, the way back from navigation and the default notice.
 export function notBuiltLine(screen) {
   const nav = SPECS.frame.navigation, place = SCREEN_PLACE[screen] || screen, pod = podById(UI.create?.podId ?? UI.pods.cur), back = backWord(nav, place, pod ? S.cap(S.spName(pod)) : "");   // a way back that names the pod ("{pod}") names the pod Create was opened on; the face reads "Back" when the name does not fit
@@ -86,6 +90,12 @@ export function homeBody() {
   return body;
 }
 
+// ---- Cargo ----
+// The bay, the crate opening and the report: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
+export function cargoBody() {
+  return cargoBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI }, SPECS.cargo, SPECS.home, SPECS.frame);
+}
+
 // ---- the props of the screen on the page ----
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
@@ -93,7 +103,7 @@ export function screenProps(plate) {
   if (UI.idle) return { msg: { screen, idle: true }, ids: [] };
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [] };
-  const body = screen === "home" ? homeBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "home" ? homeBody() : screen === "cargo" ? cargoBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById, frameOf, mibiGenome: (id) => mibiById(id)?.genome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
@@ -108,15 +118,15 @@ export function frameIds() {
 export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 
 // ---- the host the intents call ----
-// h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
-// the bay's own arrivals are Cargo's, and play nothing until it is built. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
+// h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
+// the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]);
-export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true }) {
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
+export function createHost({ send, nowMs, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
   let holdUntil = 0; const timers = [];
   const holding = () => nowMs() < holdUntil;
   const play = (e) => {
-    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && e.target === "cargo") || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
+    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
     const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
     if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
     send({ t: "event", ...e, hold });
@@ -129,6 +139,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
     frame: () => {
       const t = nowMs(); timers.sort((a, b) => a.t - b.t);
       while (timers.length && timers[0].t <= t) timers.shift().fn();
+      if (!holding() && h.pendingDock) { h.pendingDock = false; onDock(h); }   // a Dock key pressed in a hold is kept (two presses cancel) and acts when the hold ends, before a kept room key: the Dock is a world event (cargo.json keys.dock, frame.json idle.keys.dock)
       if (!holding() && h.pendingRoom) { const k = h.pendingRoom; h.pendingRoom = null; dispatch(h, { screen: UI.screen, target: "room", verb: "room:" + k }); }
     },
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
@@ -139,7 +150,7 @@ export function createHost({ send, nowMs, afterSave = () => {}, motion = () => t
 }
 
 // What the face said, as the rules: the ring moved (Pods keeps the focus of its state), or a key on a focused target (an intent). A not-built screen has no targets; its ← goes to the parent in the navigation tree.
-// While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends; Home's rest drops it too (home.json events.rest.keys).
+// While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") return;   // informative only: nothing waits for it
   if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; return; }

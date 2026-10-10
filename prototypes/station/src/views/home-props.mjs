@@ -15,7 +15,7 @@ const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
 // The notice and the action of a need, from strings.needs. A count is spelled to the picture's most; above it the count is dropped.
-function wordsOf(need, spec) {
+export function wordsOf(need, spec) {
   if (!need) return { notice: "", action: null };
   const N = spec.strings.needs[need.key], word = need.n != null && need.n >= 1 && need.n <= need.max ? COUNT[need.n] : "";
   let notice = need.n === 1 && N.noticeOne ? N.noticeOne : N.notice;
