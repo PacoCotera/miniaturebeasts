@@ -102,6 +102,27 @@ lengths on the real display.
 **Open:** final physical controls for all three devices; the Station's controls
 and UI are the next design work.
 
+### The buttons' faces
+
+No button on any device carries a word: each carries one icon, and the
+branding on top is the only text on a front face. One icon means one thing on
+every device: the pad, back and confirm look the same everywhere, and the
+Caddy's OK is confirm. The icons are engraved, tone on tone on the coloured
+caps and filled with bone paint on the dark caps.
+
+| Device | Button | Icon |
+| --- | --- | --- |
+| All | Pad | Four arrowheads (the Caddy: left and right) |
+| Station, Companion | Back (dark grey) | ← |
+| All | Confirm (orange; the Caddy's OK, charcoal) | ✓ |
+| Station | Home (ochre) | A house with its door |
+| Station | Vivarium (green) | A terrarium arch over a mound with a sprout |
+| Station | Research (teal) | A lens over a leaf |
+| Station | Library (violet) | The field journal, open |
+| Companion | Call (teal) | A dot sending two arcs |
+| Caddy | Print (charcoal) | A card whose lower edge is torn in teeth |
+| Caddy | Feed (charcoal) | A thin strip of paper running from the roll |
+
 ## Rules
 
 **Working rules** from the first prototype, all consistent with the decisions:
