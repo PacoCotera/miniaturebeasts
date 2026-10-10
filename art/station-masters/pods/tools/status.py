@@ -54,8 +54,8 @@ AD_RECORDS = {
  "chamber-front-400x320": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 55.6, key R-B 38, sat 25; the tray's front lip over the founder's feet"),
  "dome-small-back-176x224": ('signed', 'art director, verdict (72561d74)', 'signed (art director) at 1x, opaque pixels: L* 66.0, key R-B 102, sat 48; the signed chamber reduced to 176, empty, floor at region y 192'),
  "dome-small-front-176x224": ('signed', 'art director, verdict (72561d74)', "signed (art director) at 1x, opaque pixels: L* 54.1, key R-B 13, sat 18; the signed chamber's housing reduced to 176"),
- "nest-208x48": ('new', None, 'returned (art director) at 1x: L* 30.2, key R-B 44, sat 58; the hollow now reads, but a pale cut fringe runs along the top contour (332 px with R+G+B above 480): defringe to the moss, by hand'),
- "nest-front-208x48": ('new', None, 'returned (art director) at 1x: L* 26.6, key R-B 40, sat 60; the same pale fringe (143 px): defringe, by hand'),
+ "nest-208x48": ('new', None, "pass 116: the pale cut fringe along the top contour defringed to the moss by hand (every pixel over R+G+B 440 takes the nearest dark moss colour; 0 pixels over 480 now, was 332 and 143), the hollow kept; awaiting the art director's judgement (not signed)"),
+ "nest-front-208x48": ('new', None, "pass 116: the pale cut fringe along the top contour defringed to the moss by hand (every pixel over R+G+B 440 takes the nearest dark moss colour; 0 pixels over 480 now, was 332 and 143), the hollow kept; awaiting the art director's judgement (not signed)"),
 }
 
 def sign(n, status, sig, note=""): S[n] = {"status": status, "signed_in": sig, "note": note}

@@ -106,7 +106,17 @@ nb = (668, 440, 1292, 610); nest = rgba(nb); t_n, sn = fit(nest, 208, 48)
 tn = np.asarray(t_n).astype(float); hh, ww = tn.shape[:2]; Yn, Xn = np.mgrid[0:hh, 0:ww].astype(float)
 hol = np.exp(-(((Xn - ww / 2.0) / 58.0) ** 4 + ((Yn - 15.0) / 11.0) ** 2)); lipl = np.exp(-(((Xn - ww / 2.0) / 54.0) ** 4 + ((Yn - 25.0) / 3.0) ** 2))
 shade = np.array([20.0, 40.0, 20.0]); tn[..., :3] = tn[..., :3] * (1 - 0.88 * hol[..., None] * (tn[..., 3:] / 255.0)) + shade * 0.88 * hol[..., None] * (tn[..., 3:] / 255.0)
-tn[..., :3] = tn[..., :3] * (1 + 0.22 * lipl[..., None]) + np.array([10.0, 14.0, 4.0]) * lipl[..., None]; t_n = Image.fromarray(tn.clip(0, 255).astype(np.uint8), "RGBA")
+tn[..., :3] = tn[..., :3] * (1 + 0.22 * lipl[..., None]) + np.array([10.0, 14.0, 4.0]) * lipl[..., None]
+# pass 116 (the art director: a pale cut fringe runs along the top contour, 332 and 143 pixels with R+G+B over 480): defringed to the moss by hand: every pixel of the nest whose R+G+B is over 440 (the keyed slate's bleed and the pale tips) takes the colour of the nearest dark moss pixel (the pixels under 400 that are almost opaque), found by growing those outward
+clean = (tn[..., 3] > 230) & (tn[..., :3].sum(2) < 400); pale = (tn[..., 3] > 0) & (tn[..., :3].sum(2) > 440); fillc = tn[..., :3].copy(); have = clean.copy()
+for _ in range(14):
+    pad = np.pad(fillc, ((1, 1), (1, 1), (0, 0)), mode="edge"); hp = np.pad(have, 1); acc = np.zeros_like(fillc); cnt = np.zeros(have.shape)
+    for dy in (-1, 0, 1):
+        for dx in (-1, 0, 1):
+            mm = hp[1 + dy:1 + dy + have.shape[0], 1 + dx:1 + dx + have.shape[1]]; acc += pad[1 + dy:1 + dy + have.shape[0], 1 + dx:1 + dx + have.shape[1]] * mm[..., None]; cnt += mm
+    new_ = (~have) & (cnt > 0); fillc[new_] = acc[new_] / cnt[new_][:, None]; have = have | new_
+tn[..., :3][pale] = fillc[pale]
+t_n = Image.fromarray(tn.clip(0, 255).astype(np.uint8), "RGBA")
 save("nest-208x48", t_n, "the moss nest, plump with its hollow visible and no twigs, scaled uniformly to 48 rows")
 f = np.asarray(t_n).astype(float); h_ = f.shape[0]; ramp = np.clip((np.arange(h_) - 0.50 * h_) / (0.14 * h_), 0, 1)[:, None]; f[..., 3] = f[..., 3] * ramp
 save("nest-front-208x48", Image.fromarray(f.astype(np.uint8), "RGBA"), "the nest's rim fibres only, the near half of the cushion with its top edge soft, drawn over the bud")

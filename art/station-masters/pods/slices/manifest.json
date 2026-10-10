@@ -10497,10 +10497,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the moss nest, plump with its hollow visible and no twigs, scaled uniformly to 48 rows (pass 111)",
-  "sha256": "a8ea49b3767277677818359a1f38ae120b497eb81767bed7d15b6aa90d7c2796",
+  "sha256": "e91c96f9e16baac78eb06f421e783944567e59686d26dc4444bdbe341245d6dc",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director) at 1x: L* 30.2, key R-B 44, sat 58; the hollow now reads, but a pale cut fringe runs along the top contour (332 px with R+G+B above 480): defringe to the moss, by hand"
+  "status_note": "pass 116: the pale cut fringe along the top contour defringed to the moss by hand (every pixel over R+G+B 440 takes the nearest dark moss colour; 0 pixels over 480 now, was 332 and 143), the hollow kept; awaiting the art director's judgement (not signed)"
  },
  "nest-front-208x48": {
   "size": [
@@ -10510,10 +10510,10 @@
   "rect": null,
   "src": "source/raw/incubator-sheet-a3.jpg (gemini-3-pro-image)",
   "made": "the nest's rim fibres only, the near half of the cushion with its top edge soft, drawn over the bud (pass 111)",
-  "sha256": "c107b3853b2160251065592941a09c7c6ca3f115e8498df23c373617a1b5d472",
+  "sha256": "950f0b35f5ab770db84162547d48cdc9e31d099b7ce54d9b01360d8252c4c007",
   "status": "new",
   "signed_in": null,
-  "status_note": "returned (art director) at 1x: L* 26.6, key R-B 40, sat 60; the same pale fringe (143 px): defringe, by hand"
+  "status_note": "pass 116: the pale cut fringe along the top contour defringed to the moss by hand (every pixel over R+G+B 440 takes the nearest dark moss colour; 0 pixels over 480 now, was 332 and 143), the hollow kept; awaiting the art director's judgement (not signed)"
  },
  "bud-early-128x160": {
   "size": [
