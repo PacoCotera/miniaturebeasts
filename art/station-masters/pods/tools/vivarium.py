@@ -55,15 +55,11 @@ for k, s in SRC.items():
     if k == "night":
         exec(open("tools/nightdist.py").read(), globals()); im, nrep = night_dist(im, 330, 90, 190); rep["night detail"] = nrep
     if k == "dawn":
-        a = np.asarray(im).astype(float) / 255.0; lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
-        for g in np.arange(1.0, 0.3, -0.01):
-            l2 = lin * g; cand = np.clip(np.rint(np.where(l2 <= 0.0031308, l2 * 12.92, 1.055 * l2 ** (1 / 2.4) - 0.055) * 255), 0, 255)
-            if lstar(cand).mean() <= 41.0: break
-        im = Image.fromarray(cand.astype(np.uint8)); rep["dawn gain"] = round(float(g), 2)
+        exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 700); rep["dawn detail"] = drep
     n = f"idle-vivarium-{k}-1024x568"; im.save(f"slices/{n}.png", optimize=True); out[k] = im; rep[k] = {"mean L*": round(float(lstar(np.asarray(im).astype(float)).mean()), 1)}
     man[n] = {"size": [1024, 568], "rect": None, "src": f"source/raw/{s}.jpg (gemini-3-pro-image)", "made": f"Idle's Vivarium by {k}: a Pro painting of the vivarium alone (canopy band on top, ground band with burrow, water, stones and moss, feed line, mister and vent at the edges, no creatures), cropped to 1024:568 and reduced with Lanczos" + (f" (the day picture's edit: dusk is warmer and lower)" if k == "dusk" else f" (an edit of the day picture: warm, low, glow-moss, the moon a cool rim only; graded x{rep.get('night gain')} in linear light to a mean L* of {rep[k]['mean L*']})" if k == "night" else "") + " (pass 94)",
                       "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
-man["idle-vivarium-dawn-1024x568"]["made"] = "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded by the least linear gain that brings the mean L* to 41 or less (the brief asks 38 to 42)"
+man["idle-vivarium-dawn-1024x568"]["made"] = "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded and given a gold tint by hand (tools/dawntint.py: the lit pixels warmed, the level set to a mean L* of 40.5)"
 json.dump(man, open("slices/manifest.json", "w"), indent=1); print(json.dumps(rep))
 sheet = Image.new("RGB", (1024 + 640 + 24, 4 * 576 + 8), (10, 14, 18))
 for i, k in enumerate(("day", "dusk", "night", "dawn")): sheet.paste(out[k], (4, 4 + i * 576)); sheet.paste(out[k].crop((0, 40, 640, 488)), (1024 + 16, 4 + i * 576 + 60))

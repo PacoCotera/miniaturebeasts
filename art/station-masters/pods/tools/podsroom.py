@@ -43,7 +43,7 @@ ch_ = floor.copy(); put_panel(ch_, (424, 72, 584, 440)); put_nest(ch_, 216, 336,
 def gblur(a, sg):
     """Gaussian blur of a float 2D array by FFT (PIL cannot blur float images), edges wrapped"""
     fy = np.fft.fftfreq(a.shape[0])[:, None]; fx = np.fft.rfftfreq(a.shape[1])[None, :]; return np.fft.irfft2(np.fft.rfft2(a) * np.exp(-2 * (np.pi * sg) ** 2 * (fx ** 2 + fy ** 2)), a.shape)
-def coons(img, box, sm=5, lift=None):
+def coons(img, box, sm=40, lift=None):
     """fill a rectangle of foam from its four bounding lines (each smoothed along its length): a Coons patch, so the rim's shadow gradient runs through unbroken"""
     x0, y0, x1, y1 = box; w, h = x1 - x0, y1 - y0
     def line(a, ax):
@@ -54,12 +54,20 @@ def coons(img, box, sm=5, lift=None):
     if lift is not None: wgt = (np.sin(np.pi * s_) * np.sin(np.pi * t_)) ** 0.5; c = c + wgt * (lift - c[h // 2, w // 2])    # a large patch in the middle of the case: the middle is lifted to the foam beside it, the rim keeps its shadow
     img[y0:y1, x0:x1] = c; return img
 def clean_floor():
-    fa = np.asarray(floor).astype(float); out = fa.copy(); hole = np.zeros(fa.shape[:2], bool)
-    for bx in ((84, 46, 700, 112), (712, 42, 936, 106), (84, 112, 130, 286), (668, 232, 950, 490)):
-        out = coons(out, bx, lift=(0.5 * (fa[190:226, 700:880].reshape(-1, 3).mean(0) + fa[300:460, 590:650].reshape(-1, 3).mean(0)) if bx[0] == 668 else None)); hole[bx[1]:bx[3], bx[0]:bx[2]] = True
+    """the floor without its hoses, gauge and vent. The foam is modelled in log light as a(x) + b(y) (the rim shadows are steep but run along the edges: a(x) and b(y) are medians over the clean pixels, fitted alternately) plus a smooth residual (a normalised blur, sigma 25, of what is left over on the clean pixels), so the fill continues the rim shadows and the local level without a cut edge; the floor's own grain is added."""
+    fa = np.asarray(floor).astype(float); H, W, _ = fa.shape; hole = np.zeros((H, W), bool)
+    for bx in ((84, 46, 700, 112), (712, 42, 936, 106), (84, 112, 130, 286), (668, 232, 950, 490)): hole[bx[1]:bx[3], bx[0]:bx[2]] = True
+    hole = hole | (np.asarray(Image.fromarray((hole * 255).astype(np.uint8)).filter(ImageFilter.MaxFilter(5))) > 0)
+    lg = np.log(np.maximum(fa, 1.0)); ma = np.where(hole[..., None], np.nan, lg); A = np.zeros((1, W, 3)); B = np.zeros((H, 1, 3))
+    for _ in range(8):
+        B = np.nanmedian(ma - A, axis=1, keepdims=True); B = np.nan_to_num(B, nan=0.0); A = np.nanmedian(ma - B, axis=0, keepdims=True); A = np.nan_to_num(A, nan=0.0)
+    res = np.where(hole[..., None], 0.0, lg - A - B); wgt = (~hole).astype(float)
+    sm = np.stack([gblur(res[..., c] * wgt, 25.0) / np.maximum(gblur(wgt, 25.0), 1e-3) for c in range(3)], -1)
+    fill = np.exp(A + B + sm)
     grain = fa[400:480, 380:500] - np.stack([gblur(fa[400:480, 380:500, c], 3) for c in range(3)], -1)
-    tile = np.tile(grain, (fa.shape[0] // 80 + 1, fa.shape[1] // 120 + 1, 1))[:fa.shape[0], :fa.shape[1]]
-    out = np.where(hole[..., None], out + tile, out); return fa, Image.fromarray(out.clip(0, 255).astype(np.uint8))
+    tile = np.tile(grain, (H // 80 + 1, W // 120 + 1, 1))[:H, :W]
+    fm_ = np.clip(gblur(hole.astype(float), 3.0), 0, 1)[..., None]; out = fa * (1 - fm_) + (fill + tile) * fm_
+    return fa, Image.fromarray(out.clip(0, 255).astype(np.uint8))
 fa, clean = clean_floor(); ca = np.asarray(clean).astype(float)
 def hardware(box, dest, fade_bottom=0):
     """cut a fitting from the original floor (alpha from its difference to the refilled foam) and set it down at dest on the collection floor"""
@@ -70,9 +78,9 @@ def hardware(box, dest, fade_bottom=0):
 col = clean.copy()
 for src, al, (dx, dy) in (hardware((296, 48, 692, 108), (66, 238)), hardware((714, 44, 804, 104), (470, 238)), hardware((842, 44, 934, 104), (640, 238)), hardware((890, 232, 960, 300), (890, 232), 16)):
     h_, w_ = al.shape; reg = np.asarray(col).astype(float); reg[dy:dy + h_, dx:dx + w_] = reg[dy:dy + h_, dx:dx + w_] * (1 - al[..., None]) + src * al[..., None]; col = Image.fromarray(reg.clip(0, 255).astype(np.uint8))
-for c in range(3):
-    for r in range(2): put_nest(col, 176 + 336 * c, 120 + 240 * r, 0.34 * EGG_H)
-out = {"room-bench-stage": floor, "room-bench-stage-overview": ov, "room-bench-stage-chapter": ch_, "room-bench-stage-collection": col}
+# pass 109 (the art director, for the Station lead): the collection floor is plain: NOTHING is painted inside the six place rects (16 + 336c, 48 + 240r, 320x224), no nests, moss or tags; the ring wells and the pods are drawn on it by the renderer
+create = floor.copy(); put_panel(create, (584, 80, 424, 432)); put_plate(create); put_nest(create, 256 - 96, 336 + 16, 96)          # pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it
+out = {"room-bench-stage": floor, "room-bench-stage-overview": ov, "room-bench-stage-chapter": ch_, "room-bench-stage-collection": col, "room-bench-stage-create": create}
 cradle = ov.crop((144, 288, 368, 384)); shelf = ov.crop((112, 328, 400, 400)); stamp = ov.crop((856, 344, 1008, 496))
 # the front lip: the lower arc of the egg's rim in the cradle (the egg is centred at (112, 48) in the cradle, 96 tall and about 150 wide)
 s = s_ov; ew, eh = 625 * s, 400 * s; ring = Image.new("L", (224, 96), 0); dr = ImageDraw.Draw(ring)
@@ -84,7 +92,7 @@ sfront = stamp.convert("RGBA"); sfront.putalpha(sm.filter(ImageFilter.GaussianBl
 files = {"room-cradle": cradle, "room-cradle-front": front, "room-shelf": shelf, "room-stamp-case-152x152": stamp, "room-stamp-case-152x152-front": sfront}; files.update(out)
 man = json.load(open("slices/manifest.json"))
 WHAT = {"room-bench-stage": "the case's floor, the stage under everything: the housing rim at the edges, warm dark foam, hoses, a vent and a small gauge at the margins, no cut-outs; a Pro painting (pods-floor.jpg), 1024x522", "room-bench-stage-overview": "the overview stage: the floor with ONE fitted egg-shaped nest (about 150x96, uniformly scaled) on the pod axis x 256, the stamp plate at (856, 344) and a plain warm slate panel at the right; composed from three Pro paintings",
-        "room-bench-stage-chapter": "the chapter stage: the floor with the nest on the axis x 216 and a warm matte slate page panel to the right (424, 72, 584, 440); composed", "room-bench-stage-collection": "the collection stage: the floor with six nests at the six places' centres; composed", "room-cradle": "the pod's fitted nest (224x96), cut from the composed overview at (144, 288)",
+        "room-bench-stage-create": "the Create stage: the overview stage with the nest moved by (-96, +16) to (160, 352), so Create's cradle-front registers on it; the rest as the overview (the panel and the plate); composed", "room-bench-stage-chapter": "the chapter stage: the floor with the nest on the axis x 216 and a warm matte slate page panel to the right (424, 72, 584, 440); composed", "room-bench-stage-collection": "the collection stage: the plain case floor, nothing painted inside the six place rects (16 + 336c, 48 + 240r, 320x224); the hose, gauge and vent in the strip between the rows; composed (pass 109)", "room-cradle": "the pod's fitted nest (224x96), cut from the composed overview at (144, 288)",
         "room-cradle-front": "the nest's near rim as a separate layer (RGBA 224x96): the lower arc of the egg's rim, cut from the cradle", "room-shelf": "the case floor under the cradle (288x72), cut from the composed overview at (112, 328)", "room-stamp-case-152x152": "the small dim unlit matte stamp plate set into the housing, painted (pods-plate.jpg), cut at (856, 344)", "room-stamp-case-152x152-front": "the plate's rim only (RGBA 152x152, the opening transparent, no glass)"}
 SRC = "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py"
 for n, im in files.items():

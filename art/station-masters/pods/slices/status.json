@@ -2035,9 +2035,9 @@
   "note": "the collection ring masters (ids per ef254a37: -176x176, segments 1 to N)"
  },
  "room-bench-stage-collection": {
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 109: the collection's plain floor, nothing inside the six place rects (the art director's ask for the Station lead); the hose, gauge and vent stay in the strip between the rows; awaiting the art director's judgement (not signed)"
  },
  "mark-can-grow-16": {
   "status": "signed",
@@ -3333,5 +3333,10 @@
   "status": "new",
   "signed_in": null,
   "note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "room-bench-stage-create": {
+  "status": "new",
+  "signed_in": null,
+  "note": "pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it; awaiting the art director's judgement (not signed)"
  }
 }

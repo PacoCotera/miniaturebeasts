@@ -26,17 +26,13 @@ for k in ("day", "dusk", "night", "dawn"):
     else: ch = round(W * 408 / 544); y0 = (H - ch) // 2; im = im.crop((0, y0, W, y0 + ch))
     im = im.resize((544, 408), Image.LANCZOS)
     if k == "dawn":
-        a = np.asarray(im).astype(float) / 255.0; lin = np.where(a <= 0.04045, a / 12.92, ((a + 0.055) / 1.055) ** 2.4)
-        for g in np.arange(1.0, 0.3, -0.01):
-            l2 = lin * g; cand = np.clip(np.rint(np.where(l2 <= 0.0031308, l2 * 12.92, 1.055 * l2 ** (1 / 2.4) - 0.055) * 255), 0, 255)
-            if lstar(cand).mean() <= 41.0: break
-        im = Image.fromarray(cand.astype(np.uint8)); rep["dawn gain"] = round(float(g), 2)
+        exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 370); rep["dawn detail"] = drep
     if k == "night":
         exec(open("tools/nightdist.py").read(), globals()); before = im; im, nrep = night_dist(im, 212, 82, 135); rep["night detail"] = nrep; before.save("/tmp/near-night-before.png")
     n = f"vivarium-near-{k}-544x408"; im.save(f"slices/{n}.png", optimize=True); outs[k] = im
     rep[k] = round(float(lstar(np.asarray(im).astype(float)).mean()), 1)
     man[n] = {"size": [544, 408], "rect": [24, 56, 544, 408], "src": f"source/raw/vivarium-near-{k}.jpg (gemini-3-pro-image)", "made": f"the near Vivarium by {k} ('one mibi up close', the glass at screen (24, 56)): the same place as the signed Idle painting seen closer at ground level, a clear moss and soil band across the bottom 160 rows for one mibi, the burrow's edge, stones and roots behind, the feed line and the mist at the right edge, no creature; a Pro painting" + ("" if k == "day" else f" (an edit of the near day picture, matched to Idle's {k} light)") + ", cut to 4:3 and reduced to 544x408 with Lanczos (pass 101)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
-man["vivarium-near-dawn-544x408"]["made"] = "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, graded by the least linear gain that brings the mean L* to 41 or less (pass 105)"
+man["vivarium-near-dawn-544x408"]["made"] = "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, given a gold tint by hand and set to a mean L* of 40.5 (tools/dawntint.py; passes 105 and 108)"
 json.dump(man, open("slices/manifest.json", "w"), indent=1); print(json.dumps(rep))
 sheet = Image.new("RGB", (544 + 1024 + 24, 4 * 576 + 8), (10, 14, 18))
 for i, k in enumerate(("day", "dusk", "night", "dawn")): sheet.paste(outs[k], (4, 4 + i * 576)); sheet.paste(Image.open(f"slices/idle-vivarium-{k}-1024x568.png").convert("RGB"), (544 + 16, 4 + i * 576))

@@ -10,14 +10,10 @@ man = json.load(open("slices/manifest.json")); outs = {}; rep = {}
 for k in ("dawn", "day", "dusk", "night"):
     im = Image.open(f"source/raw/home-glass-{k}.jpg").convert("RGB"); W, H = im.size; cw = round(H * 640 / 488); x0 = (W - cw) // 2; im = im.crop((x0, 0, x0 + cw, H)).resize((640, 488), Image.LANCZOS)
     if k == "dawn":
-        lin = to_lin(np.asarray(im).astype(float))
-        for g in np.arange(1.0, 0.3, -0.01):
-            cand = to_srgb(lin * g)
-            if lstar(cand).mean() <= 41.0: break
-        im = Image.fromarray(cand.astype(np.uint8)); rep["dawn gain"] = round(float(g), 2)
+        exec(open("tools/dawntint.py").read(), globals()); im, drep = dawn_grade(im, 700 * 640 / 1024); rep["dawn detail"] = drep
     if k == "night": im, nrep = night_dist(im, 268, 88, 70); rep["night detail"] = nrep
     n = f"home-glass-{k}-640x488"; im.save(f"slices/{n}.png", optimize=True); outs[k] = im; rep[k] = round(float(lstar(np.asarray(im).astype(float)).mean()), 1)
-    man[n] = {"size": [640, 488], "rect": [24, 56, 640, 488], "src": f"source/raw/home-glass-{k}.jpg (gemini-3-pro-image)", "made": f"Home's glass by {k}: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro " + ("recompose of the signed day picture" if k == "day" else f"edit of the home glass day picture matched to Idle's {k} light") + ", cut to 640:488 and reduced with Lanczos" + (", graded down to a mean L* of 41 or less" if k == "dawn" else ", regraded by distribution (dark background, warm ground band, small glow pools)" if k == "night" else "") + " (pass 107)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
+    man[n] = {"size": [640, 488], "rect": [24, 56, 640, 488], "src": f"source/raw/home-glass-{k}.jpg (gemini-3-pro-image)", "made": f"Home's glass by {k}: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro " + ("recompose of the signed day picture" if k == "day" else f"edit of the home glass day picture matched to Idle's {k} light") + ", cut to 640:488 and reduced with Lanczos" + (", given the dawn's gold tint and set to a mean L* of 40.5 (tools/dawntint.py)" if k == "dawn" else ", regraded by distribution (dark background, warm ground band, small glow pools)" if k == "night" else "") + " (pass 107)", "sha256": hashlib.sha256(open(f"slices/{n}.png", "rb").read()).hexdigest()}
 json.dump(man, open("slices/manifest.json", "w"), indent=1); print(json.dumps(rep))
 sheet = Image.new("RGB", (2 * 640 + 12, 2 * 488 + 12), (10, 14, 18))
 for i, k in enumerate(("dawn", "day", "dusk", "night")):

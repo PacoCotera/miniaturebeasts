@@ -6856,11 +6856,11 @@
    522
   ],
   "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
-  "made": "the Pods room set, the redo (pass 95): the collection stage: the floor with six nests at the six places' centres; composed; the pods are placed by the renderer, never painted in",
-  "sha256": "2a22134de9009b9575c455f1e35590c9298d691b924351226c745642f634179e",
-  "status": "signed",
-  "signed_in": "art director, Pods room verdict (68130857)",
-  "status_note": "signed (art director): the Pods room in the world brief's look, the sample case of board frame 2 (passes 93, 95, 98)"
+  "made": "the Pods room set, the redo (pass 95): the collection stage: the plain case floor, nothing painted inside the six place rects (16 + 336c, 48 + 240r, 320x224); the hose, gauge and vent in the strip between the rows; composed (pass 109); the pods are placed by the renderer, never painted in",
+  "sha256": "f0b6fdbb499e75e71668b0bdef335c41b9be5f7c13a2c50633811ef7674565d3",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 109: the collection's plain floor, nothing inside the six place rects (the art director's ask for the Station lead); the hose, gauge and vent stay in the strip between the rows; awaiting the art director's judgement (not signed)"
  },
  "mark-can-grow-16": {
   "size": [
@@ -10302,8 +10302,8 @@
   ],
   "rect": null,
   "src": "source/raw/vivarium-dawn.jpg (gemini-3-pro-image)",
-  "made": "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded by the least linear gain that brings the mean L* to 41 or less (the brief asks 38 to 42)",
-  "sha256": "a11ef57b656f6d8ef84a001ec9f51c561caaaf1b7567690d1e43417ee8c73305",
+  "made": "Idle's Vivarium by dawn (the owner's decision of Oct 10: the Vivarium gets a dawn, 06:00 to 06:59): a Pro edit of the signed day picture (low cool-gold light from the left, a soft mist over the water and moss, dew on the leaves; paler, cleaner and cooler than dusk; nothing glowing), cut like the others, the canopy seams blended by hand (pass 104); graded and given a gold tint by hand (tools/dawntint.py: the lit pixels warmed, the level set to a mean L* of 40.5)",
+  "sha256": "523004d9e0d95f4e2366d7e1504b1b95a8016f0137c05cc83aea4d276e1edebb",
   "status": "new",
   "signed_in": null,
   "status_note": "returned to new (art director): the key light went grey at 1x (L* 40.8, key R-B 18, sat 31 against day 72/48 and dusk 73/56); a hand gold tint pending (key R-B 35 or more, L* 38 to 42, the mist kept)"
@@ -10320,8 +10320,8 @@
    408
   ],
   "src": "source/raw/vivarium-near-dawn.jpg (gemini-3-pro-image)",
-  "made": "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, graded by the least linear gain that brings the mean L* to 41 or less (pass 105)",
-  "sha256": "fd08527e36d530a7db622ece5e98f38a6f6bc60ab891f32eb0cf50c111622b68",
+  "made": "the near Vivarium by dawn (the owner's decision of Oct 10): a Pro edit of the signed near day picture in Idle's dawn light (pale, clean, cool-gold, a soft mist and dew, nothing glowing), the same place, cut to 4:3 and reduced to 544x408, given a gold tint by hand and set to a mean L* of 40.5 (tools/dawntint.py; passes 105 and 108)",
+  "sha256": "0703870e003ccd936a5b44b00504ddffbcb495bf3ccfb656b8be25346568ca1a",
   "status": "new",
   "signed_in": null,
   "status_note": "returned to new (art director): the key light is grey at 1x (L* 40.6, key R-B 27, sat 36); the same hand gold tint as Idle's dawn pending"
@@ -10334,7 +10334,7 @@
   "rect": null,
   "src": "slices/idle-vivarium-dawn-1024x568.png (signed, gemini-3-pro-image)",
   "made": "Home's bed by dawn: the moss hollow cut 192x56 from the signed Vivarium's ground band at (752, 452) on the painting (the clear moss on the right of the ground band), edges feathered to clear (pass 100)",
-  "sha256": "33fff95e9444c09a2ef811b2b9950e791472137de7b7607a7c5492ab77bd8c46",
+  "sha256": "78e5d8f49e5e2c2a9a4c3103d64ac97bdb33be4018c00faa2286e72550dfd69d",
   "status": "new",
   "signed_in": null,
   "status_note": "returned to new (art director): passes alone (L* 38.5, R-B 88) but is cut from the dawn painting, so it is re-cut after the dawn fix"
@@ -10351,8 +10351,8 @@
    488
   ],
   "src": "source/raw/home-glass-dawn.jpg (gemini-3-pro-image)",
-  "made": "Home's glass by dawn: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dawn light, cut to 640:488 and reduced with Lanczos, graded down to a mean L* of 41 or less (pass 107)",
-  "sha256": "fafa805723b08931b734340494fb33bad47bd7c43c6300c4191b399a5796e74e",
+  "made": "Home's glass by dawn: the signed Vivarium's place recomposed for a 640x488 window (burrow left, pool right of centre, the mister and vent inside the right edge, the feed line at the left, the walk band on in-focus moss and soil, a dark soil foot), a Pro edit of the home glass day picture matched to Idle's dawn light, cut to 640:488 and reduced with Lanczos, given the dawn's gold tint and set to a mean L* of 40.5 (tools/dawntint.py) (pass 107)",
+  "sha256": "1d7b866bf1d8fe7cec5c26e8a85822c5fe06b37e46980a16aae6ad391ca5b6d2",
   "status": "new",
   "signed_in": null,
   "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
@@ -10410,5 +10410,18 @@
   "status": "new",
   "signed_in": null,
   "status_note": "pass 107: Home's glass by light (a Pro recompose of the signed Idle day for the 640x488 window; the other lights Pro edits matched to the signed Idle lights; dawn graded to L* 41, night regraded by distribution); awaiting the art director's judgement (not signed)"
+ },
+ "room-bench-stage-create": {
+  "size": [
+   1024,
+   522
+  ],
+  "rect": null,
+  "src": "source/raw/pods-floor.jpg, pods-nest.jpg, pods-plate.jpg (gemini-3-pro-image), composed in tools/podsroom.py",
+  "made": "the Pods room set, the redo (pass 95): the Create stage: the overview stage with the nest moved by (-96, +16) to (160, 352), so Create's cradle-front registers on it; the rest as the overview (the panel and the plate); composed; the pods are placed by the renderer, never painted in",
+  "sha256": "68bb9985198d62aaa07e2938c991bc46a84098bbbccf9f5b21c12e1a96dfc171",
+  "status": "new",
+  "signed_in": null,
+  "status_note": "pass 109: the overview stage with the nest moved by (-96, +16), so Create's cradle-front registers on it; awaiting the art director's judgement (not signed)"
  }
 }
