@@ -1,0 +1,19 @@
+[
+ {
+  "name": "pods-plate",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE SIGNED CASE (frame 2: matte sage-green and sand powder-coated housing with screws, dark rubber, warm dark foam, warm daylight from the upper left: match its materials and colours exactly):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/pods-floor.jpg",
+    "THE FLOOR (the case's warm dark foam and its housing rim: match):"
+   ]
+  ],
+  "prompt": "Output a NEW image, seen perfectly flat from directly above, with two separate pieces of the same rugged field case side by side. LEFT HALF: a flat piece of the matte sage-green and sand powder-coated housing (worn, fine texture, a few visible screws at its corners) with ONE small square matte plate set into it, centred at about 27 percent across and 50 percent down, about 22 percent of the picture's width wide: a small dim unlit plate of warm dark grey-brown rubberised slate in a thin matte rubber gasket with a slightly raised matte edge in the housing's own sage-and-sand tones and a screw at each corner, nothing on it. RIGHT HALF: one large plain flat matte panel, a warm slate grey-brown rubberised panel (warm, never cool or blue) with fine wear and soft scuffs and a thin dark rubber edge, filling from 52 percent across to 98 percent across and from 6 percent to 94 percent down, with nothing on it. Plain dark warm foam between and around the pieces. NO text, no letters, no digits, no logos, no symbols; no glass, no chrome, no polished or shiny metal, no gloss, no cool blue light, no blue edges anywhere, nothing childish. Matte, worn, handled materials; the same warm soft daylight from the upper left and the same sculpted, softly lit miniature rendering as the case reference."
+ }
+]

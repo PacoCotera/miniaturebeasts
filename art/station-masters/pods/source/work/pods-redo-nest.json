@@ -1,0 +1,19 @@
+[
+ {
+  "name": "pods-nest",
+  "aspect": "16:9",
+  "size": "1K",
+  "model": "gemini-3-pro-image",
+  "refs": [
+   [
+    "art/station-masters/pods/concepts/station-board/frame-2-pods-v2-1024x600.png",
+    "THE SIGNED CASE (frame 2: the fitted egg-shaped nests pressed into the warm dark foam, worn and scuffed, with small paper tags and a little moss: paint this kind of nest exactly, in this foam, light and rendering):"
+   ],
+   [
+    "art/station-masters/pods/source/raw/pods-floor.jpg",
+    "THE FLOOR (the same case's warm dark foam, to sit on: use this foam):"
+   ]
+  ],
+  "prompt": "Output a NEW image: ONE single fitted egg-shaped nest of the field case, pressed into the warm dark brown-charcoal foam, seen perfectly flat from directly above and filling the picture's middle: the nest is an EMPTY worn egg-shaped recess LYING ON ITS SIDE, its long axis horizontal, about 2.3 times as wide as it is tall (about 62 percent of the picture's width wide and 27 percent of its height tall), centred in the picture, with a soft pressed rim, scuffed and handled edges, a little fine moss and dust gathered at one end, and one small blank paper tag tied to a short string lying on the foam beside the nest's lower edge. Everything around the nest is plain, quiet, even warm dark foam right to the picture's edges (no housing rim, no hoses, no gauge, no other nests).  NO pod or egg inside it (the nest is EMPTY), no objects in it; no text, no letters, no digits, no logos; no glass, no chrome, no shiny metal, no gloss, no spotlight cone, no cool blue light, nothing childish. Matte, worn, handled materials; the same warm soft daylight from the upper left and the same sculpted, softly lit miniature rendering as the case reference."
+ }
+]
