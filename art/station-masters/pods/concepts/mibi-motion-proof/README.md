@@ -19,7 +19,7 @@ Total 15.94 MXN of the 22.5 hard stop. `sheets-overview.png` puts the four side 
 - **Young S01's sheet carries thin black cell borders** despite the prompt; the cut removes them (they sit between cells, never on a figure).
 - Not cut, not signed. Next: the cut (feet on row 305, shadow split, sizes, baked breath steps), then the 1× flip test against each stand.
 
-## The cut and the 1× flipbooks (Oct 11, 14:40)
+## The cut and the 1× flipbooks (Oct 11, 14:17)
 
 - **Cut:** `guides/cut-motion.py` (magenta from each cell's border, 6 px inset drops the cell borders, 1 px choke, shadow split at alpha 110, feet on row 305). One scale per sheet, set so the anchor's body width equals the stand's, capped so every key fits above the feet row. Scales: young S01 0.601, Pip 0.733, young S05 0.405, the Grow individual 0.841 (stand: its `station-portrait-300x310`). Keys in `keys/` at 304×312.
 - **Pip's crouch failed** before any flip: its top drops 9 % from the stand (young S01 20 %, the individual 27 %), legs barely bent. The pre-approved single-key fix edit, `source/raw/motion-S01-adult-crouch-b.jpg` (1 Pro request, 3.66 MXN, Pip's stand as the only input), is a real anticipation: body low and wide, legs folded, head pulled in. Cut at the sheet's scale matched on the iris (0.312): `keys/pip-crouch-b-304x312.png`. Its brush is a touch flatter than the sheet's; on a 160 ms beat that does not read as a different animal.
