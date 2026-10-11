@@ -736,13 +736,16 @@ const X1 = await (async () => {
       putSt(st) { const o = JSON.parse(store[KEY]); o.st = JSON.parse(JSON.stringify(st)); store[KEY] = JSON.stringify(o); } };
     return p;
   }
-  // The Companion's world, the Station's write (S05 Dot and Moss, S10 Bean and Fig, docked); `spName` as the Station's normalize will write it, when asked.
-  function docked({ spName = false, seed = true } = {}) {
+  // The Companion's world, the Station's write (S05 Dot and Moss, S10 Bean and Fig, docked), normalized as the Station does before every save,
+  // so each mibi carries the spName the Station's own normalize writes; `oldSave` drops it (a Station save from before the field).
+  function docked({ oldSave = false, seed = true } = {}) {
     const p = page(); p.run("newWorld(1); save();");
     const st = ST.normalize(ST.freshSt(p.S.wid, p.S.turn));
     if (seed) assert.ok(ST.seedAdults(st, "S05", 3).ok && ST.seedAdults(st, "S10", 4).ok);
     assert.ok(ST.dockKey(st, p.sv()).docked);
-    if (spName) for (const m of st.mibis) m.spName = frameOf(m.species).species.name;
+    ST.normalize(st);
+    for (const m of st.mibis) assert.equal(m.spName, frameOf(m.species).species.name, "the Station's normalize writes spName");
+    if (oldSave) for (const m of st.mibis) delete m.spName;
     p.putSt(st);
     return { p, st, before: p.store[p.KEY] };
   }
@@ -761,7 +764,7 @@ test("X1 1: a save holding S05 and S10 mibis (sp -1) loads: save() does not thro
 });
 
 test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Tend, Walk and the skills run; no line reads undefined or null", () => {
-  const { p, st } = X1.docked({ spName: true }); p.run("save()");
+  const { p, st } = X1.docked(); p.run("save()");
   // every labelled plate drawn, recorded as id@x,y×k
   p.run("var __plates = []; (() => { const real = placeholderPlate; placeholderPlate = (id, x, y, k) => { __plates.push([id, x, y, k || 1]); return real(id, x, y, k); }; })()");
   const drawn = () => p.run("__plates.splice(0).map(a => a[0] + '@' + a[1] + ',' + a[2] + 'x' + a[3])");
@@ -802,7 +805,7 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
 });
 
 test("X1 3: the dock changes only the Companion's mibis, dockSeen and log; the Station's part is byte-identical", () => {
-  const { p, before } = X1.docked({ spName: true }); p.run("save()");
+  const { p, before } = X1.docked(); p.run("save()");
   const a = JSON.parse(before), b = p.sv();
   const moved = (x, y) => Object.keys({ ...x, ...y }).filter(k => JSON.stringify(x[k]) !== JSON.stringify(y[k])).sort();
   // the dock's own fields, with no mibi at all (the Probe's mend: probeSeen, shield), move as before; the four mibis add only `mibis`, `dockSeen` and `log`
@@ -819,7 +822,7 @@ test("X1 3: the dock changes only the Companion's mibis, dockSeen and log; the S
 });
 
 test("X1 4: the round trip: a fresh page saves the same string; the Station still resolves S05 and S10", () => {
-  const { p } = X1.docked({ spName: true }); p.run("save()");
+  const { p } = X1.docked(); p.run("save()");
   const once = p.store[p.KEY], q = X1.page({ [p.KEY]: once }); q.run("save()");
   assert.equal(q.store[q.KEY], once, "byte-identical");
   const st2 = ST.normalize(ST.migrate(q.sv().st));
@@ -828,7 +831,7 @@ test("X1 4: the round trip: a fresh page saves the same string; the Station stil
 });
 
 test("X1 5: with no spName in the save (a Station save from before it), the name is CARE_TEXT.spOther", () => {
-  const { p } = X1.docked(); p.run("save()");
+  const { p } = X1.docked({ oldSave: true }); p.run("save()");
   assert.equal(p.run("CARE_TEXT.spOther"), "a Station species");
   assert.deepEqual(plain(p.run("S.mibis.map(mibiSpName)")), Array(4).fill("a Station species"));
   assert.ok(p.S.log.some(l => /Dot \(a Station species\) is home at the Station/.test(l)));
