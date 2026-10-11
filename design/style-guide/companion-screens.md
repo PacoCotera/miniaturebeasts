@@ -178,6 +178,10 @@ The reach view's 78 px and 48 px cells and both insets fit as given above. In a 
 - **Palette.** Lavender-grey cloud from the violet and cool neutral ramps; ground in its own ramps; seen cells faded; unsurveyed quarters under the Bayer dot.
 - **Type.** Nothing on the cells. The band in 2×.
 - **Chrome.** Dashes frame the reach; orange brackets on the pawn's cell.
+- **Grid.** No line is drawn through a cell's centre: no dotted cross, at either tier, so a cell's centre never reads as a corner. Surveyed quarters show by the dither only. The pawn stays centred in its cell.
+- **Pawn-cell brackets.** Orange (#f2671b), 2 px thick, static, drawn after the pawn, at the four corners of the pawn's cell on its outer 2 px rows and columns. Arms L = 10 px at tier 1 (78 px cells) and L = 6 px at tier 2 (48 px cells). The top-left bracket is the rects (x, y, L, 2) and (x, y, 2, L); the other three mirror it. 144 px of orange at tier 1, 80 px at tier 2.
+- **Pending outline.** A reach cell not yet explored blinks its fog outline: 1 px dots inset 2, every 3 px (k = 2, 5, 8 … < cs − 2). On the pawn's cell only, a dot at offset k is drawn only when L + 2 ≤ k ≤ cs − L − 3, so no outline dot touches a bracket (tier 1 keeps k = 14 … 65, tier 2 keeps k = 8 … 38). Other cells keep the full outline.
+- **Sign slots.** Signs sit in the cell's corner slots at pad 4 (was 3): the start flag first, top-left. The flag's sprite stays 2 px clear of the top-left bracket.
 - **Motion.** Clouds drift 1 px per action; rain leans with the storm's heading; the pawn walks 3 frames.
 
 **Pass when**

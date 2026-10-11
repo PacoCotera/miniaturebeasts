@@ -3241,15 +3241,17 @@ function drawReachView(t) {
       continue; }
     const rm = !S.visited[c] ? 4 : (ex.storm && stormCovers(X)) ? 1 : 0;
     g.drawImage(landPatch(c, q.cs, rm, 0), x, y);
-    if (S.visited[c] && passable(c)) {   // quarters: unsurveyed under the dither, 75% lighter, a dotted grid between them
+    if (S.visited[c] && passable(c)) {   // quarters: unsurveyed under the dither, 75% lighter; no line between them
       const m = S.svy[c] || 0, mf = svyFull(c), h = q.cs / 2;
-      for (let k = 0; k < 4; k++) if (!((mf >> k) & 1)) ditherFill(x + (k & 1) * h, y + (k >> 1) * h, h, h, 'night', (m >> k) & 1 ? 2 : 7);
-      for (let k = 0; k < q.cs; k += 3) { R(x + h, y + k, 1, 1, C.ink); R(x + k, y + h, 1, 1, C.ink); } }
+      for (let k = 0; k < 4; k++) if (!((mf >> k) & 1)) ditherFill(x + (k & 1) * h, y + (k >> 1) * h, h, h, 'night', (m >> k) & 1 ? 2 : 7); }
     if (ex.mstrike && ex.mstrike.c === c) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
-    if (!explored(c) && !gatedCell(c) && ex.reach.includes(c) && blink) for (let k = 2; k < q.cs - 2; k += 3) { R(x + k, y + 2, 1, 1, C.fog); R(x + k, y + q.cs - 3, 1, 1, C.fog); R(x + 2, y + k, 1, 1, C.fog); R(x + q.cs - 3, y + k, 1, 1, C.fog); }
+    // the pending outline; on the pawn's cell it skips the dots under the bracket arms (L + 2 <= k <= cs - L - 3)
+    const onPawn = c === ex.pos, L = q.big ? 10 : 6;
+    if (!explored(c) && !gatedCell(c) && ex.reach.includes(c) && blink) for (let k = 2; k < q.cs - 2; k += 3) { if (onPawn && (k < L + 2 || k > q.cs - L - 3)) continue;
+      R(x + k, y + 2, 1, 1, C.fog); R(x + k, y + q.cs - 3, 1, 1, C.fog); R(x + 2, y + k, 1, 1, C.fog); R(x + q.cs - 3, y + k, 1, 1, C.fog); }
     // signs in corner slots: the start flag first, then the cell's signs in their usual order
     const list = (c === ex.start ? [{ kind: 'flag' }] : []).concat((signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)));
-    list.slice(0, 4).forEach((sg, n) => { const a = signSprite(sg.kind, sg, fr, q.big); if (!a) return; const pad = 3;
+    list.slice(0, 4).forEach((sg, n) => { const a = signSprite(sg.kind, sg, fr, q.big); if (!a) return; const pad = 4;
       const sx = n & 1 ? x + q.cs - pad - a.w : x + pad, sy = n & 2 ? y + q.cs - pad - a.h : y + pad; blit(a, sx, sy, sg.rm || 0); });
   }
   // the storm's heading at the band's leading edge, if it is in the reach
@@ -3258,6 +3260,10 @@ function drawReachView(t) {
   const p = cxy(ex.pos), px = q.dx + (p.x - (q.s0.x - q.r)) * q.cs + q.cs / 2, py = q.dy + (p.y - (q.s0.y - q.r)) * q.cs + q.cs / 2;
   const pawn = q.big ? playerArt(ex.face || 'down', 'stand', 0) : ICON.pawn(ex.face || 'down');   // tier 1: the place pawn itself; tier 2: the small one
   blit(pawn, Math.round(px - pawn.w / 2), Math.round(py - pawn.h / 2)); RT.plScr = { x: px, y: py };
+  { // brackets on the pawn's cell: orange, 2 px, static, on the cell's outer 2 px; arms 10 at tier 1, 6 at tier 2
+    const L = q.big ? 10 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
+    R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
+    R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
   for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
   // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
