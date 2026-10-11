@@ -42,6 +42,11 @@
  "states": ["rest", "meet", "out"],
  "initial": "by the way in: arriving from the Incubator's hatch (or Home's ✓ Meet), meet; the shown mibi out with the Companion (in carriedIds while the Companion is away), out; else rest. One mibi up close always shows one mibi: with none housed the Vivarium's whole shows its empty state",
  "stateRule": "rest: one housed mibi at home shown. meet: the same layout on the first look at a new mibi (never out: a new mibi is at home), from the hatch's hand-off until the first press; the meet ribbon stands in the name tag's place, and the first ✓ opens the namer. out: the shown mibi is out with the Companion: the window shows its place empty with the out mark (regions.resident.out), the tag, the card and the modules as in rest; no greet. A region with `inStates` exists only in those states; the arm of Wild is focus.armed, not a state; the namer is an overlay (overlays.namer), not a state; docked and away are conditions of every state (the Companion module, the tiles, the top bar). A carried mibi while the Companion is docked is at home, asleep on the bed: state rest, with greet, Cross, Portrait, Bring home and its plates; Wild refuses it (\"already with you\") and it is never watched",
+ "light": {
+  "pictures": { "dawn": "vivarium-near-dawn", "day": "vivarium-near-day", "dusk": "vivarium-near-dusk", "night": "vivarium-near-night" },
+  "size": [544, 408],
+  "note": "the glass's painting by the light of the hour (frame.json light.from), one a light, the master id `<picture>-544x408`: switched with Home's glass and Idle's painting, dropped on a light change as theirs are"
+ },
  "overlays": {
   "namer": {
    "spec": "namer.json",
@@ -67,7 +72,7 @@
    "component": "livingWindow",
    "part": "inside",
    "ground": [24, 304, 544, 160],
-   "slice": "vivarium-near-{day,dusk,night}-544x408",
+   "slice": "vivarium-near-{dawn,day,dusk,night}-544x408",
    "until": "the placeholder: back `forest`, ground band `clay` with a `sand` top row (colours.glass)",
    "note": "no words inside, but the name tag and the meet ribbon. The painting is the Vivarium close by, one a light, the light of the whole and Idle at that hour"
   },
@@ -79,7 +84,7 @@
    "axis": 296,
    "feet": 392,
    "clip": "glass",
-   "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile at its own proportions inside the same box",
+   "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile drawn at the same 304×312 as the hatch, reading young by its proportions inside the box, never scaled down",
    "lamp": {
     "rect": [436, 80, 12, 12],
     "slice": "home-lamp-sky-12x12",
@@ -184,7 +189,7 @@
    "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
    "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
   },
-  "stamp": {"rect": [872, 64, 120, 120], "component": "stampLabel", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled", "fromFocal": 424},
+  "stamp": {"rect": [872, 64, 120, 120], "component": "stampLabel", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: the bare bone label, no words", "fromFocal": 424},
   "plates": {
    "rect": [608, 200, 376, 40],
    "component": "list",
@@ -215,6 +220,8 @@
     "docked": "each mibi's painting or placeholder at 48",
     "away": "the same: the carried mibis drawn at 48, so the set reads while they are out; the outline glyph says they are out",
     "waiting": "an add request waiting: its picture at 48 with frame-lamp-8-stone at the place's (40, 0)",
+    "lampAt": [40, 0],
+    "recess": "each place's box, [648|712|776, 312, 48, 48], filled colours.door.recess (ground), no edge; the picture over it at 48; a free place adds the dash outline 1 px inside; no recess round the row; chrome, no master",
     "free": "a place the set does not fill: a composed `dash` outline 1 px inside the place's box, 1 px `hairline`, dash [2, 2], as the strip's free bay, so the three places read with no figure"
    },
    "states": {"docked": "the solid glyph and the three places", "away": "the outline glyph and the three places", "none": "nobody carried: the glyph and three free places"}
@@ -288,6 +295,7 @@
    "tile": {
     "fill": "a panel rect in the tile's box",
     "thumb": {"full": [52, 0, 48, 48], "compact": [12, 0, 48, 48]},
+    "outGlyph": [16, 24],
     "name": null,
     "free": "a composed `dash` outline round the tile's box, 1 px `hairline`, dash [2, 2]; nothing in it, not a target",
     "away": "each mibi with you (up to three) while the Companion is away: the outline Companion glyph 16×24 in place of its thumbnail, centred where the thumbnail stands; it stays a target, and focusing it shows that mibi in state out"
@@ -386,7 +394,7 @@
    "hold": 0,
    "do": "the first draw of one mibi up close after a refusal: the message plate strings.carryRefused, once a refusal (state.seenCarryRefusal)"
   },
-  "named": {"kind": "flash", "target": "nameTag", "ms": 240, "hold": 0, "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash"}
+  "named": {"kind": "flash", "target": "nameTag", "ms": 240, "hold": 240, "reduced": "no flash, hold 0 (namer.json notes.motion)", "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash"}
  },
  "focus": {
   "initial": "resident; in state out, name",
@@ -593,7 +601,7 @@
   "bezel": {"fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline"},
   "glass": {"edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
-  "nameTag": {"fill": "panel", "edge": "hairline", "name": "bone"},
+  "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "tealD", "edge": "aqua", "text": "bone"},
   "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
   "stampLabel": {"fill": "bone", "edge": "slate"},
@@ -608,7 +616,7 @@
   "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`)",
   "new": [
    {
-    "id": "vivarium-near-{day,dusk,night}-544x408",
+    "id": "vivarium-near-{dawn,day,dusk,night}-544x408",
     "size": [544, 408],
     "shows": "the Vivarium close by, the ground band at y 304 to 464 of the glass, one painting a light, the light of the whole and Idle at that hour; no mibi in it",
     "region": "glass"
@@ -628,7 +636,7 @@
   ],
   "list": [
    "room-vivarium-stage-habitat 1024×522",
-   "vivarium-near-{day,dusk,night}-544x408 (new)",
+   "vivarium-near-{dawn,day,dusk,night}-544x408 (new)",
    "notch-skill-16x24 (new)",
    "mark-out-with-companion-64x96 (new)",
    "heart-full-24",
@@ -700,8 +708,10 @@
   "wildBlocks": {"bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": "already with you", "waiting": "goes at the next dock"},
   "releasePlate": "{name} goes back to the {place}",
   "watchPlate": "{name} is seen {habit}",
-  "watchPlateExamples": ["Fig is seen digging", "Moss is seen sleeping curled"],
+  "watchPlateExamples": ["Fig is seen digging", "Moss is seen curled up asleep"],
+  "watchHabits": { "shake-dry": "shaking itself dry", "calm": "calming a creature", "sleep-curled": "curled up asleep", "sniff": "sniffing", "puff": "puffing out its down", "dig": "digging", "glow": "glowing" },
   "out": "out with the Companion",
+  "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
   "partnersRule": "n counts only the partners that can be picked (not out with the Companion while it is away)",

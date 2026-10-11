@@ -5,7 +5,7 @@
 // accepted, dockN, known, probe, carryReqs, returned, and each mibi's id, name, sp, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
-import { frameOf, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
+import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 3;
 export const SAVE_KEY = "mb-save-v8", SAVE_V = 8, V7_KEY = "mb-exploration-v7";
@@ -146,13 +146,51 @@ function claimExisting(st) {
 function renameDigits(st) {
   for (const m of [...st.mibis].sort((a, b) => a.id - b.id)) {
     if (!/\d/.test(m.name)) continue;
-    const old = m.name, fresh = drawName(st); m.name = fresh;
-    for (const x of st.mibis) { const of = x.from?.of; if (Array.isArray(of)) x.from.of = of.map((n) => (n === old ? fresh : n)); for (const q of x.parents || []) if (q && q.id === m.id) q.name = fresh; }
-    if (st.bud) { const of = st.bud.from?.of; if (Array.isArray(of)) st.bud.from.of = of.map((n) => (n === old ? fresh : n)); for (const q of st.bud.parents || []) if (q && q.id === m.id) q.name = fresh; }
-    for (const r of st.releases) if (r && r.id === m.id) r.name = fresh;
-    for (const list of Object.values(st.guideNotes)) for (const n of Array.isArray(list) ? list : []) if (n && n.code === m.code && n.name === old) n.name = fresh;
+    const old = m.name, fresh = drawName(st); followName(st, m, old, fresh);
     logEv(st, "Renamed " + old + " to " + fresh);
   }
+}
+// A mibi takes a new name and what refers to the old one follows.
+function followName(st, m, old, fresh) {
+  m.name = fresh;
+  for (const x of st.mibis) { const of = x.from?.of; if (Array.isArray(of)) x.from.of = of.map((n) => (n === old ? fresh : n)); for (const q of x.parents || []) if (q && q.id === m.id) q.name = fresh; }
+  if (st.bud) { const of = st.bud.from?.of; if (Array.isArray(of)) st.bud.from.of = of.map((n) => (n === old ? fresh : n)); for (const q of st.bud.parents || []) if (q && q.id === m.id) q.name = fresh; }
+  for (const r of st.releases) if (r && r.id === m.id) r.name = fresh;
+  for (const list of Object.values(st.guideNotes)) for (const n of Array.isArray(list) ? list : []) if (n && n.code === m.code && n.name === old) n.name = fresh;
+}
+// --- naming one's mibi (namer.json; station-layouts.md, The namer) -------------------------------------------------------------------------------------------------------------------------
+// What stops a name from being saved, in the order the say line gives it: fewer than two letters; a character past NAME_MAX; a mark first, last or beside another mark (space, hyphen, ’); a species' name; a clan's name; a name another living
+// mibi holds (the holder's name says it). `atDone` adds the mark last, which is only refused at Done. Returns null when the name can be saved, else { key: short | full | first | last | twice | species | clan | taken, holder? }.
+export function nameProblem(st, m, text, atDone = true) {
+  const t = String(text ?? "").replace(/'/g, "’"), cs = [...t], marks = cs.map((c) => SEPARATORS.includes(c));
+  if (cs.filter((c, i) => !marks[i]).length < 2) return { key: "short" };
+  if (cs.length > NAME_MAX) return { key: "full" };
+  if (marks[0]) return { key: "first" };
+  if (marks.some((x, i) => x && marks[i + 1])) return { key: "twice" };
+  if (atDone && marks.at(-1)) return { key: "last" };
+  const k = nameKey(t);
+  for (const id of frameIds()) { const f = frameOf(id); if (nameKey(f.species.name) === k) return { key: "species" }; if (f.taxonomy?.clanName && nameKey(f.taxonomy.clanName) === k) return { key: "clan" }; }
+  const held = st.mibis.find((x) => x !== m && !x.released && nameKey(x.name) === k); if (held) return { key: "taken", holder: held.name };
+  return null;
+}
+// The next names of the pool, as births draw them, that this mibi could be given (not used, not held at home, not a species' or clan's name, not over the limit): n of them, nothing consumed.
+export function peekNames(st, m, n = 12, pool = {}) {
+  const used = new Set(usedKeys(st)), out = [];
+  for (const c of namePool(pool)) {
+    if (out.length >= n) break;
+    if (/\d/.test(c) || [...c].length > NAME_MAX || used.has(nameKey(c)) || nameProblem(st, m, c)) continue;
+    out.push(c);
+  }
+  return out;
+}
+// Saves a name: exactly the mibi's own is Keep (nothing written, nothing logged); a refused name changes nothing; otherwise the name is the mibi's (a change of case only is a rename too), what refers to the old one follows and its key is used.
+export function renameMibi(st, m, text) {
+  const t = String(text ?? "").replace(/'/g, "’");
+  if (t === m.name) return { ok: true, kept: true, name: m.name };
+  const why = nameProblem(st, m, t); if (why) return { ok: false, why };
+  const old = m.name; followName(st, m, old, t); const used = usedKeys(st), k = nameKey(t); if (!used.includes(k)) used.push(k);
+  logEv(st, "Renamed " + old + " to " + t);
+  return { ok: true, kept: false, name: t, old };
 }
 // known/met as Companion indexes (the Companion reads them) follow knownIds/metIds, the Station's truth.
 function syncKnown(st) {
@@ -325,6 +363,8 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 // A habit is one of the species' routine acts (the frame's `habits`). It is recorded when a resident is kept in focus for a minute of its routine (`watchResident`, the bench),
 // and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
 export const WATCH_MS = 60000;   // the default of settings.watchMs
+// A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
+export const FIELD_ONLY_HABITS = ["calm"];
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
 // A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
@@ -374,7 +414,7 @@ export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS, now = D
   const dt = Math.max(0, Math.min(250, +dtMs || 0)); L.watchMs[m.id] = (L.watchMs[m.id] || 0) + dt;
   if (L.watchMs[m.id] < need) return { ok: true, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
   L.watched.push(m.id);
-  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !habitsOf(m).includes(h)); if (habit) recordHabit(st, m, habit);   // the first unseen habit, in frame order
+  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !FIELD_ONLY_HABITS.includes(h) && !habitsOf(m).includes(h)); if (habit) recordHabit(st, m, habit);   // the first unseen habit, in frame order
   const r = settings.trickleCap === 0 ? { earned: 0, full: false } : benchEarn(st, L, settings, "watched " + m.name);
   return { ok: true, earned: r.earned, full: r.full, habit: habit ?? null };
 }
@@ -732,18 +772,22 @@ export function genomeLookup(st) {
 }
 // An elder crosses as an adult does (a juvenile does not): for the cross and for the partner list.
 export const isAdult = (st, m, settings) => { const s = mibiStage(st, m, settings); return s === "adult" || s === "elder"; };
-// Refused before cost, on the pick itself: the same individual, another species, not adult, released.
+// Out with the Companion while it is away: a mibi in the carried set cannot be crossed until the Companion docks.
+export const isAway = (st, sv, m) => !!m && !docked(st) && carriedIds(st, sv).includes(m.id);
+// Refused before cost, on the pick itself: the same individual, another species, not adult, released, out with the Companion (away).
 export function crossBlock(st, sv, a, b, settings = DEFAULT_SETTINGS) {
   if (!a || !b) return "pick two";
   if (a === b || a.id === b.id) return "one mibi is not a pair";
   if (speciesOf(a) !== speciesOf(b)) return "another species";
   if (!isAdult(st, a, settings) || !isAdult(st, b, settings)) return "not adult";
   if (a.released || b.released) return "gone to the wild";
+  if (isAway(st, sv, a) || isAway(st, sv, b)) return "away";
   if (st.bud) return "the incubator is busy";
   if (bayFull(st, settings)) return "no bay free · return one";
   return "";
 }
-export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings));
+// The partners of an adult or an elder, in bay order. A partner out with the Companion while it is away is kept in the list marked `away: true` (its face is drawn dimmed and it cannot be picked), not dropped.
+export const crossPartners = (st, sv, a, settings = DEFAULT_SETTINGS) => st.mibis.filter((m) => m !== a && !m.released && speciesOf(m) === speciesOf(a) && isAdult(st, m, settings)).map((m) => (isAway(st, sv, m) ? { ...m, away: true } : m));
 export function kinshipOf(st, a, b) { const k = pedigreeKinship(a, b, genomeLookup(st)); return k; }   // the mibi records: compared by id, parents by their ids
 export const kinshipWord = (k) => (k <= 0 ? "wild founders · kinship 0" : k >= 0.5 ? "the same line" : k >= 0.25 ? "close kin · a quarter" : k >= 0.125 ? "half kin · an eighth" : k >= 0.0625 ? "cousins · a sixteenth" : "distant kin");
 // The forecast per trait: four seeds (quarters) for a switch, a range for a blend, firm where both parents match. It shows only what the player has read (the owner, 2026-10-09: "only what you

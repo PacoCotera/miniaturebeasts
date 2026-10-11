@@ -151,12 +151,12 @@ test("T10 to T12 the watch records the first unseen habit at the minute; with ev
   const st = bench(), [a] = st.mibis, fr = frameOf("S01"); assert.ok(fr.habits.length >= 2); a.habits = [];
   watchFor(st, a, 59000); assert.deepEqual(a.habits, []); const r = watchFor(st, a, 1000); assert.equal(r.earned, 1); assert.deepEqual(a.habits, [fr.habits[0]], "the first unseen, in frame order");
   const s2 = bench(), [b] = s2.mibis; b.habits = [...fr.habits]; assert.equal(watchFor(s2, b, 60000).earned, 1); assert.deepEqual(b.habits, fr.habits, "all seen: nothing to record");
-  const s3 = bench(); s3.bench = { day: "2026-10-09", d: 2, watchMs: {}, watched: [], compared: [] }; const [c] = s3.mibis; c.habits = [fr.habits[0]]; const f = watchFor(s3, c, 60000); assert.equal(f.earned, 0); assert.equal(s3.d, 0); assert.deepEqual(c.habits, [fr.habits[0], fr.habits[1]], "a full cap still records the habit");
+  const s3 = bench(); s3.bench = { day: "2026-10-09", d: 2, watchMs: {}, watched: [], compared: [] }; const [c] = s3.mibis; c.habits = [fr.habits[0]]; const f = watchFor(s3, c, 60000); assert.equal(f.earned, 0); assert.equal(s3.d, 0); assert.deepEqual(c.habits, [fr.habits[0], fr.habits[2]], "a full cap still records the habit");
 });
 test("the frame hook watches only the shown resident, on Habitat, awake; Idle and other screens accumulate nothing", () => {
-  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: null, dt: 250, now: NOON };
+  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: a.id, dt: 250, now: NOON };
   assert.equal(habitatShown(st, sv0, null).id, a.id); assert.equal(habitatShown(st, sv0, b.id).id, b.id); assert.equal(habitatShown(st, { with: a.id }, null).id, b.id, "the first not with you");
-  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
+  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, habId: null, screen: "habitat", idle: false }), null, "no mibi chosen up close: the fallback is never watched"); assert.equal(watchFrame({ ...base, habId: a.id, sv: { carried: [a.id] }, screen: "habitat", idle: false }), null, "a carried mibi is never watched"); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
   for (let i = 0; i < 240; i++) watchFrame({ ...base, screen: "habitat", idle: false }); assert.equal(st.d, 1); assert.deepEqual(Object.keys(st.bench.watchMs), [String(a.id)]);
 });
 
@@ -259,4 +259,17 @@ test("a sitting is refused for want of a pose, and separately for want of a walk
   m.habits = []; m.walked = []; m.from = { ...m.from, g: null };
   assert.match(T.portraitBlock(st, m), /no pose seen yet/); S.recordHabit(st, m, S.frameFor(m).habits[0]);
   assert.match(T.portraitBlock(st, m), /no expedition yet/);
+});
+
+// W1, W2: calm is felt in the field, never watched; every habit of a frame has its words in habitat.json
+test("W2 a lone Loika watched on three days records shake-dry, then sleep-curled, then nothing; calm comes only from a dock whose habitsDone holds it", () => {
+  const st = fresh(); S.seedAdults(st, "S01", 3, 1, settings); st.d = 0; const [m] = st.mibis, day = (n) => new Date(2026, 9, 9 + n, 12, 0).getTime();
+  const once = (n) => { S.benchWatch(st, sv0, m, 250, settings, day(n)); watchFor(st, m, 60000, settings, day(n)); return [...(m.habits || [])]; };
+  assert.deepEqual(once(0), ["shake-dry"]); assert.deepEqual(once(1), ["shake-dry", "sleep-curled"]); assert.deepEqual(once(2), ["shake-dry", "sleep-curled"], "nothing left to watch");
+  m.outings = 0; S.mergeCare(st, { mibis: [{ id: m.id, outings: 1, habitsDone: [] }], trips: [] }); assert.deepEqual(m.habits, ["shake-dry", "sleep-curled"], "a walk that did no habit records no calm");
+  m.outings = 0; S.mergeCare(st, { mibis: [{ id: m.id, outings: 1, habitsDone: ["calm"] }], trips: [] }); assert.deepEqual(m.habits, ["shake-dry", "sleep-curled", "calm"], "calm from the dock");
+});
+test("W1 every habit of every frame has its words in habitat.json strings.watchHabits", () => {
+  const words = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/habitat.json"), "utf8")).strings.watchHabits;
+  for (const f of readdirSync(fdir).filter((x) => x.startsWith("species-"))) for (const hb of JSON.parse(readFileSync(path.join(fdir, f), "utf8")).habits || []) assert.ok(words[hb], `${f}: the habit ${hb} has no words in strings.watchHabits`);
 });

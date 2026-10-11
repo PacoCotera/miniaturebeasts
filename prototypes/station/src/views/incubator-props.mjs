@@ -62,8 +62,8 @@ export function incubatorBuild(m, spec, pods) {
     regions.code = codeText(hatch ? hatch.code : B.code);
   }
   if (state === "hatch") {
-    const [jw, jh] = R.juvenile.rect.slice(2);
-    regions.juvenile = { picture: req({ kind: "mibi", id: `mibi:${mb.id}:${jw}x${jh}`, mibi: mb.id, species, size: [jw, jh] }) };
+    const [jw, jh] = R.juvenile.rect.slice(2), stage = S.mibiStage(st, mb, settings);   // the stage the mibi has now: the meet draws the same picture
+    regions.juvenile = { picture: req({ kind: "mibi", id: `mibi:${mb.id}:${stage}:${jw}x${jh}`, mibi: mb.id, stage, species, size: [jw, jh] }) };
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
 

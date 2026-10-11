@@ -68,7 +68,9 @@ static int vet_ring(const char *screen, const char *name, char *err, int cap) {
   if (*why) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, R, why); return -1; }
   return 0;
 }
+int screens_overlay_known(const char *id) { return strcmp(id, "namer") == 0; }
 int screens_vet_spec(const char *screen, char *err, int cap) {
+  { char kind[16]; if (spec_str(screen, "kind", kind, sizeof kind) > 0 && strcmp(kind, "overlay") == 0 && spec_len(screen, "over") <= 0) { snprintf(err, (size_t)cap, "spec %s: an overlay lists the screens it opens over (over)", screen); return -1; } }
   for (int i = 0, n = spec_len(screen, "targets"); i < n; i++) { char key[48], dummy[2]; if (spec_member(screen, "targets", i, key, sizeof key, dummy, sizeof dummy) && vet_ring(screen, key, err, cap) < 0) return -1; }
   /* a focus graph that cannot be walked is refused at load, with the parser's reason (§2.6.1): focus.graph when the spec has one, else (a spec with states) every focus.<state> */
   { char b[160]; int gl; const char *g = spec_raw(screen, "focus.graph", &gl), *fo = spec_raw(screen, "focus", NULL);
@@ -100,12 +102,14 @@ static void draw(void) {
     else if (strcmp(screen, "pods") == 0 && spec_has("pods") && spec_len("props", "regions") >= 0) pods_words();
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
     else if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) vivarium_words();
+    else if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { home_hidden(); habitat_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); create_words(); }
     else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); incubator_words(); }
     else home_hidden(); }   /* a screen other than Home: its walk starts again from the seeds when it shows */
   if (spec_bool("props", "idle", 0)) { if (spec_len("props", "regions") >= 0) build_idleLine(); }   /* Idle: the living window above, its line last */
   else if (is_not_built()) not_built();
+  if (spec_len("props", "overlay") >= 0) { char id[24]; spec_str("props", "overlay.id", id, sizeof id); if (strcmp(id, "namer") == 0 && spec_has("namer")) namer_words(); }   /* an overlay: after the screen's words, before the frame's (the plate stands over it): order, not a layer */
   frame_words();
   stage_dither();
   prim_end();
@@ -122,7 +126,7 @@ int screens_props(const char *json, int len) {
 
 /* ---- keys ---- */
 void screens_say(const char *kind, const char *target, const char *verb) {
-  char screen[32], b[300]; spec_str("props", "screen", screen, sizeof screen);
+  char screen[32], b[300]; if (spec_len("props", "overlay") >= 0) spec_str("props", "overlay.id", screen, sizeof screen); else spec_str("props", "screen", screen, sizeof screen);   /* while an overlay is open the intent is its own */
   if (verb) snprintf(b, sizeof b, "{\"t\":\"intent\",\"seq\":%u,\"screen\":\"%s\",\"target\":\"%s\",\"verb\":\"%s\"}", wire_props_seq(), screen, target, verb);
   else snprintf(b, sizeof b, "{\"t\":\"%s\",\"seq\":%u,\"screen\":\"%s\",\"target\":\"%s\"}", kind, wire_props_seq(), screen, target);
   wire_emit(b);
@@ -136,6 +140,7 @@ void screens_key(int code) {
   anim_cut();   /* a press ends the events that carry `cut` (they say done on this frame), and then acts itself */
   char screen[32]; spec_str("props", "screen", screen, sizeof screen);
   if (spec_bool("props", "idle", 0)) { screens_say("intent", "idle", "wake"); return; }   /* the first press on Idle wakes and does nothing else */
+  if (spec_len("props", "overlay") >= 0 && spec_has("namer")) { namer_key(code); return; }   /* an overlay open: its graph is the only one and the screen beneath takes no key */
   if (is_not_built()) {   /* no targets, no ring: a room key opens its room; ← goes to the parent when the bottom line names one; the rest does nothing */
     const char *v = code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL; char b[64];
     if (!v && code == 27 && spec_str("props", "frame.line.back", b, sizeof b) > 0) v = "back";
@@ -144,6 +149,7 @@ void screens_key(int code) {
   }
   if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) { home_key(code); return; }
   if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) { vivarium_key(code); return; }
+  if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { habitat_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
   if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }
   if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { incubator_key(code); return; }

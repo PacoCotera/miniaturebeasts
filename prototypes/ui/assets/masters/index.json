@@ -344,20 +344,6 @@
    "sha256": "2e2147e6ad334f82316ad204c9383f4803b358ffa586b83200ae837732c092bc",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "leaf-empty-16x20": {
-   "file": "pods/leaf-empty-16x20.png",
-   "w": 16,
-   "h": 20,
-   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
-   "signed": "art director, verdict (d09acb12)"
-  },
-  "leaf-full-16x20": {
-   "file": "pods/leaf-full-16x20.png",
-   "w": 16,
-   "h": 20,
-   "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
-   "signed": "art director, verdict (d09acb12)"
-  },
   "heart-full-24": {
    "file": "pods/heart-full-24.png",
    "w": 24,
@@ -512,11 +498,25 @@
    "sha256": "3dd1077137c080904691b283088b6def18be9f3b71876ec8ab49a46532dde9ab",
    "signed": "art director, Idle verdicts (62bbd883, d09acb12, a1cce1fe)"
   },
+  "leaf-empty-16x20": {
+   "file": "pods/leaf-empty-16x20.png",
+   "w": 16,
+   "h": 20,
+   "sha256": "bdf62329103b339253e5f7b0f24c8fbad2892a4281fcbb6bc73ea28288a797d6",
+   "signed": "art director, verdict (d09acb12)"
+  },
   "leaf-empty-8x12": {
    "file": "pods/leaf-empty-8x12.png",
    "w": 8,
    "h": 12,
    "sha256": "0c9ef9727100259710afb5aa0c35bc5e03d176153428684e22338fb4571b58cb",
+   "signed": "art director, verdict (d09acb12)"
+  },
+  "leaf-full-16x20": {
+   "file": "pods/leaf-full-16x20.png",
+   "w": 16,
+   "h": 20,
+   "sha256": "9a65f66c3b4d36b9f5d8323b804f1040c923101add869a862ae799e2f9216687",
    "signed": "art director, verdict (d09acb12)"
   },
   "leaf-full-8x12": {
@@ -3585,6 +3585,34 @@
    "sha256": "5854821ebbf957c3ef2f558baf5e58790a8cb021ede9cd432b85e39ac24725fd",
    "signed": "new (masters-pods b3b7e04), not final",
    "status": "new"
+  },
+  "vivarium-near-dawn-544x408": {
+   "file": "vivarium/vivarium-near-dawn-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "0703870e003ccd936a5b44b00504ddffbcb495bf3ccfb656b8be25346568ca1a",
+   "signed": "art director, light verdict (eb64c0d6)"
+  },
+  "vivarium-near-day-544x408": {
+   "file": "vivarium/vivarium-near-day-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "6f0c2e64a96226810a45c6b6fdab0d5c86f4dd9e81f72d1e1442d72fa4fa6bc6",
+   "signed": "art director, near Vivarium verdict (57490118)"
+  },
+  "vivarium-near-dusk-544x408": {
+   "file": "vivarium/vivarium-near-dusk-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "25e14dfbfa9efa2d7992bad4f066485a1501db818944540ce3354b718c8f1ce5",
+   "signed": "art director, near Vivarium verdict (57490118)"
+  },
+  "vivarium-near-night-544x408": {
+   "file": "vivarium/vivarium-near-night-544x408.png",
+   "w": 544,
+   "h": 408,
+   "sha256": "f5ac46fcd6618a41f1a078ab08391fad817678cd9834233cbedebc464b772ab8",
+   "signed": "art director, verdict (night pair grade)"
   }
  }
 }

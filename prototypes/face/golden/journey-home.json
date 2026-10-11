@@ -491,8 +491,8 @@
     ],
     "screen": "habitat",
     "focus": "resident.1",
-    "ok": null,
-    "subject": "",
+    "ok": "Greet Dot",
+    "subject": "its painting is on its way",
     "idle": false
    },
    {
@@ -501,7 +501,7 @@
      {
       "t": "intent",
       "screen": "habitat",
-      "target": "screen",
+      "target": "resident",
       "verb": "back"
      }
     ],

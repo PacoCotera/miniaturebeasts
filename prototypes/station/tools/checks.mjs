@@ -19,11 +19,13 @@ import { departures as idleDepartures } from "../../face/tools/idle-regions.mjs"
 import { departures as createDepartures } from "../../face/tools/create-regions.mjs";
 import { departures as incubatorDepartures } from "../../face/tools/incubator-regions.mjs";
 import { departures as vivariumDepartures } from "../../face/tools/vivarium-regions.mjs";
+import { departures as habitatDepartures } from "../../face/tools/habitat-regions.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), ui = path.resolve(here, "../../ui");
 const file = process.argv[2] || process.env.STATION_CHECKS || path.join(tmpdir(), "mb-station-checks.json");
 if (!existsSync(file)) { console.error("no journey record at " + file); process.exit(2); }
 const incubatorSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/incubator.json"), "utf8")), vivariumSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/vivarium.json"), "utf8"));
+const habitatSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/habitat.json"), "utf8")), namerSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/namer.json"), "utf8"));
 const rec = JSON.parse(readFileSync(file, "utf8")), home = JSON.parse(readFileSync(path.join(ui, "specs/station/home.json"), "utf8")), pods = JSON.parse(readFileSync(path.join(ui, "specs/station/pods.json"), "utf8")), createSpec = JSON.parse(readFileSync(path.join(ui, "specs/station/create.json"), "utf8")), frame = JSON.parse(readFileSync(path.join(ui, "specs/station/frame.json"), "utf8"));
 const palette = Object.fromEntries(JSON.parse(readFileSync(path.join(ui, "palettes/station.json"), "utf8")).colours);
 const rgbOf = (name) => { const h = palette[name]; return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); };
@@ -75,6 +77,8 @@ for (const s of rec.shots) {
     const d = incubatorDepartures(lg, incubatorSpec, frame, c.props.state); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen === "vivarium" && c.viv) {   // the Vivarium's whole: every region of the face's log against vivarium.json (face/tools/vivarium-regions.mjs): zero departures; a tile a bay
     const d = vivariumDepartures(lg, vivariumSpec, c.viv.state, c.viv.cur, c.viv.n); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
+  } else if (c.screen === "habitat" && c.hab) {   // one mibi up close: every region of the face's log against habitat.json (and namer.json while the namer is open) (face/tools/habitat-regions.mjs): zero departures
+    const d = habitatDepartures(lg, habitatSpec, namerSpec, c.hab.state, c.hab.cur, c.hab.n, c.hab.open); for (const m of d) must(false, m); regionsChecked += lg.regions.length;
   } else if (c.screen !== "pods" || c.props?.state === "notBuilt") {   // a screen the face has no words for: the frame, the stage in the ground and the line, centred on 512 with its cap top on 288
     must(c.props?.state === "notBuilt", `${c.screen} is not built and sends state notBuilt`);
     one("chrome", "notBuilt.stage", F.stage.rect, "the stage ground");
@@ -101,9 +105,9 @@ for (const s of rec.shots) {
     for (const [layer, id] of ids) if (!shots.some((x) => (x.check.log?.regions ?? []).some((r) => r.id === id && r.layer === layer))) fail(`Pods in its ${mode} state: no drawn region "${id}" on the ${layer} layer in any of its ${shots.length} screenshot points`); }
   regionsChecked++; }
 for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === "home")) fail(`no screenshot point records Home as ${pt}`);
-for (const screen of ["library", "habitat", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
+for (const screen of ["library", "bench", "cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
-for (const [pt, state] of [["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
+for (const [pt, state] of [["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-meet-placeholder", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
 
 // ---- 5. ink: where each frame region's ink lies in the frame's pixels, against the spec

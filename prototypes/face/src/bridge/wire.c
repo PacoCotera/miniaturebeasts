@@ -66,6 +66,11 @@ static int key(const msg_t *m, const char *name) {   /* the value token of a top
   int k = 1; for (int c = m->tok[0].size; c > 0; c--) { if ((int)strlen(name) == m->tok[k].end - m->tok[k].start && strncmp(m->js + m->tok[k].start, name, strlen(name)) == 0) return k + 1; k = skip(m, k + 1); }
   return -1;
 }
+static int subkey(const msg_t *m, int obj, const char *name) {   /* the value token of a key of an object token, or -1 */
+  if (obj < 0 || m->tok[obj].type != JSMN_OBJECT) return -1;
+  int k = obj + 1; for (int c = m->tok[obj].size; c > 0; c--) { if ((int)strlen(name) == m->tok[k].end - m->tok[k].start && strncmp(m->js + m->tok[k].start, name, strlen(name)) == 0) return k + 1; k = skip(m, k + 1); }
+  return -1;
+}
 static int num(const msg_t *m, int i, int *out) { return i >= 0 && m->tok[i].type == JSMN_PRIMITIVE && json_int(m->js + m->tok[i].start, m->tok[i].end - m->tok[i].start, out); }
 static int str(const msg_t *m, int i, char *buf, int cap) { if (i < 0 || m->tok[i].type != JSMN_STRING) return 0; int l = m->tok[i].end - m->tok[i].start; if (l >= cap) return 0; memcpy(buf, m->js + m->tok[i].start, (size_t)l); buf[l] = 0; return 1; }
 /* the first top-level key that appears twice, or NULL (a message with two answers to one question is refused, not resolved) */
@@ -182,6 +187,18 @@ static int on_props(const msg_t *m, int len) {
   int unbuilt = flag(m, key(m, "idle")) || strcmp(state, "notBuilt") == 0;   /* a screen with no binding table needs no spec: the frame's notBuilt composition draws it */
   if (!unbuilt && !spec_has(screen)) { char b[96]; snprintf(b, sizeof b, "props for the screen %s, whose spec is not loaded", screen); return fail(b); }
   if (g_seq_set && (uint32_t)seq < g_seq) return fail("props: seq went back");
+  { int ov = key(m, "overlay");   /* an overlay (the namer): only on a screen whose spec lists it, whose own spec is an overlay over this screen, with a binding table in the face; refused whole, the previous props stay */
+    if (ov >= 0) {
+      char oid[32], kind[16], ob[160], p2[96]; if (m->tok[ov].type != JSMN_OBJECT) return fail("props: overlay must be an object");
+      if (!str(m, subkey(m, ov, "id"), oid, sizeof oid)) return fail("props: overlay.id is required");
+      if (unbuilt) return fail("props: an overlay needs a screen drawn with words (not Idle, not notBuilt)");
+      if (!spec_has(oid)) { snprintf(ob, sizeof ob, "props: the overlay %.30s has no spec loaded", oid); return fail(ob); }
+      if (spec_str(oid, "kind", kind, sizeof kind) <= 0 || strcmp(kind, "overlay") != 0) { snprintf(ob, sizeof ob, "props: the spec %.30s is not an overlay", oid); return fail(ob); }
+      int listed = 0; for (int i = 0, n = spec_len(oid, "over"); i < n && !listed; i++) { snprintf(p2, sizeof p2, "over.%d", i); char s2[32]; if (spec_str(oid, p2, s2, sizeof s2) > 0 && strcmp(s2, screen) == 0) listed = 1; }
+      if (!listed) { snprintf(ob, sizeof ob, "props: the overlay %.30s does not list the screen %.30s", oid, screen); return fail(ob); }
+      snprintf(p2, sizeof p2, "overlays.%.30s", oid); if (!spec_raw(screen, p2, NULL)) { snprintf(ob, sizeof ob, "props: the screen %.30s does not list the overlay %.30s", screen, oid); return fail(ob); }
+      if (!screens_overlay_known(oid)) { snprintf(ob, sizeof ob, "props: the face has no binding table for the overlay %.30s", oid); return fail(ob); }
+    } }
   int r = key(m, "regions"); if (r >= 0 && m->tok[r].type != JSMN_OBJECT) return fail("props: regions must be an object");
   free(g_props); g_props = (char *)malloc((size_t)len + 1); if (!g_props) return -1; memcpy(g_props, m->js, (size_t)len); g_props[len] = 0;
   strcpy(g_props_screen, screen); g_seq = (uint32_t)seq; g_seq_set = 1; g_nprops++; g_dirty_log = 1;

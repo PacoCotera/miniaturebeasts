@@ -275,3 +275,17 @@ test("a node moved into a removed node's place keeps its picture: a composed rin
   f.scene([bg, { id: "b", kind: "rect", rect: [90, 90, 80, 60], colour: "clay" }, ring, { id: "c", kind: "rect", rect: [420, 400, 10, 10], colour: "ice" }], env); frames(f);   // new nodes reuse the table's end, and one is drawn under the ring so the ring is drawn again
   assert.deepEqual(f.pixel(100, 120), rgbOf("focus"), "the ring is still drawn");
 });
+
+test("an overlay is refused whole, the previous props stay: not an object, no id, on a screen drawn without words, no spec, a spec that is not an overlay, an overlay spec that lists no screen (refused at load) or not this one, a screen that does not list it, no binding table", { skip }, async () => {
+  const f = await boot(), M = f.M, spec = (screen, json) => assert.equal(f.send({ t: "spec", screen, json }), 0, f.errors().join("; "));
+  spec("habitat", { regions: {}, overlays: { namer: {}, ghost: {}, plain: {}, nolist: {} } }); spec("namer", { kind: "overlay", over: ["habitat"], regions: {} });
+  spec("ghost", { kind: "overlay", over: ["habitat"], regions: {} }); spec("plain", { regions: {} }); assert.equal(f.send({ t: "spec", screen: "nolist", json: { kind: "overlay", regions: {} } }), -1); assert.match(f.errors()[0], /lists the screens it opens over/); spec("nolist", { kind: "overlay", over: ["home"], regions: {} });
+  const props = (overlay, extra = {}) => f.send({ t: "props", seq: 1 + (f.s = (f.s ?? 0) + 1), screen: "habitat", state: "rest", regions: {}, overlay, ...extra });
+  assert.equal(props({ id: "namer", state: "open" }), 0, f.errors().join("; ")); const n = M._face_props_count();
+  const refused = (overlay, re, extra) => { assert.equal(props(overlay, extra), -1); assert.match(f.errors()[0], re); assert.equal(M._face_props_count(), n, "the previous props stay"); };
+  refused("open", /overlay must be an object/); refused(null, /overlay must be an object/); refused({ state: "open" }, /overlay\.id is required/); refused({ id: "namer" }, /needs a screen drawn with words/, { idle: true }); refused({ id: "namer" }, /needs a screen drawn with words/, { state: "notBuilt" });
+  refused({ id: "absent" }, /the overlay absent has no spec loaded/); refused({ id: "plain" }, /the spec plain is not an overlay/); refused({ id: "nolist" }, /the overlay nolist does not list the screen habitat/);
+  spec("home", { regions: {} }); refused({ id: "namer" }, /the overlay namer does not list the screen home/, { screen: "home" });
+  spec("both", { kind: "overlay", over: ["habitat"], regions: {} }); refused({ id: "both" }, /the screen habitat does not list the overlay both/);
+  refused({ id: "ghost" }, /the face has no binding table for the overlay ghost/);
+});

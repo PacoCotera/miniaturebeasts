@@ -167,6 +167,7 @@ const int *v_focal(void) { return g_has_focal ? g_focal : NULL; }
 static char g_focus_override[48]; static int g_has_override;
 void v_focus_set(const char *id) { if (id) { snprintf(g_focus_override, sizeof g_focus_override, "%s", id); g_has_override = 1; } else g_has_override = 0; }
 const char *v_focus_cur(void) { return g_has_override ? g_focus_override : v_pstr("focus.cur"); }
+const char *v_focus_cur_at(const char *path) { return g_has_override ? g_focus_override : v_pstr(path); }
 
 void v_plate(const char *id, const char *namePath, int w, int x, int y) {
   char series[48], p[200]; snprintf(p, sizeof p, "%s.plate.series", namePath); spec_str("pods", p, series, sizeof series); snprintf(p, sizeof p, "%s.plate.h", namePath); int h = spec_int("pods", p, 24);

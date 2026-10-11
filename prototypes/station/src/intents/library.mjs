@@ -11,7 +11,7 @@ export function intent(h, target, verb) {
   const l = h.ui.lib; if (l.page == null) { l.page = 0; l.i = 0; }
   if (l.f === "book") {
     if (verb === "back") l.f = "spread";
-    else if (verb === "confirm") { const m = Lib.visitTarget(h.st, l.sp); if (m) { h.ui.hab.id = m.id; h.ui.hab.f = "stage"; h.goto("habitat"); } }
+    else if (verb === "confirm") { const m = Lib.visitTarget(h.st, l.sp); if (m) { h.ui.hab.id = m.id; h.ui.hab.f = "resident"; h.goto("habitat"); } }
     return;
   }
   if (verb === "back") { h.goto("home"); return; }

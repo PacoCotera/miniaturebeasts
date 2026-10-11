@@ -136,7 +136,7 @@
   "portray": "Portray {name}",
   "portrayAgain": "Again: portray {name}",
   "once": "one sitting each, ever",
-  "habits": "the habit as an -ing phrase: \"shaking dry\", \"calm\", \"sleeping curled\", \"sniffing\", \"puffing\", \"digging\", \"glowing\"",
+  "habits": "the habit as its phrase in habitat.json strings.watchHabits (\"shaking itself dry\", \"calming a creature\", \"curled up asleep\", \"sniffing\", \"puffing out its down\", \"digging\", \"glowing\")",
   "places": "the place's word: \"the meadow\", \"the pond edge\", \"the rock field\", \"the wood\", \"the cave\"",
   "beganPlate": "{name}'s portrait is on its way",
   "welcomePlate": "Another sitting is yours",

@@ -14,10 +14,10 @@ import { openBay } from "../src/intents/cargo.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
-const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame"), homeSpec = J("home"), cargoSpec = J("cargo"), createSpec = J("create"), vivariumSpec = J("vivarium"), incubatorSpec = J("incubator");
+const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame"), homeSpec = J("home"), cargoSpec = J("cargo"), createSpec = J("create"), vivariumSpec = J("vivarium"), incubatorSpec = J("incubator"), habitatSpec = J("habitat"), namerSpec = J("namer");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
 
-const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null) }, create: null, inc: {}, cross: null, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 }, meet: null, idle: false, report: null });
+const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null) }, create: null, inc: {}, cross: null, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, bench: { f: 0, arm: 0 }, meet: null, idle: false, report: null });
 // A recording host: the effects are lists to read afterwards.
 function host(st, sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, ui = newUI()) {
   const h = { st, sv, settings, ui, specs: { pods: podsSpec, frame: frameSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, vivarium: vivariumSpec }, holds: [], motion: () => h.moving !== false, said: [], went: [], played: [], timers: [], saved: 0, t: T0, now: () => h.t };
@@ -29,7 +29,7 @@ function pod(st, id, read = [], gs = 5, identified = true) { S.seedPodFromGenome
 const chapters = (id) => frameOf(id).chapters.map((c) => c.id);
 
 test("every screen with intents has a module, and a face intent reaches it; the frame's verbs are the same on every screen", () => {
-  assert.deepEqual(Object.keys(INTENTS).sort(), ["cargo", "create", "frame", "habitat", "home", "incubator", "library", "pods", "vivarium"]);
+  assert.deepEqual(Object.keys(INTENTS).sort(), ["cargo", "create", "frame", "habitat", "home", "incubator", "library", "namer", "pods", "vivarium"]);
   const st = world(), h = host(st); h.ui.screen = "library";
   dispatch(h, { screen: "library", target: "x", verb: "room:home" }); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "room");
 });
@@ -48,7 +48,7 @@ test("Home: ✓ goes to the target's screen (Cargo, Pods on the pod that most ne
   const h = host(st), m = st.mibis[0], go = (t) => INTENTS.home.intent(h, t, "confirm");
   go("cargo"); assert.equal(h.went.at(-1), "cargo"); go("incubator"); assert.equal(h.went.at(-1), "incubator"); go("probe"); assert.deepEqual([h.went.at(-1), h.ui.bench.f], ["bench", 0]); go("library"); assert.deepEqual([h.went.at(-1), h.ui.lib.f], ["library", "spread"]);
   go("pods"); assert.equal(h.went.at(-1), "pods"); assert.equal(h.ui.pods.cur, S.neediestPod(st).id);
-  go("resident." + m.id); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "stage", "habitat"]);
+  go("resident." + m.id); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]);
   h.ui.hab.id = st.mibis[1].id; go("vivarium"); assert.deepEqual([h.ui.hab.id, h.went.at(-1)], [st.mibis[1].id, "vivarium"], "Home's panel opens the whole (its ring is the view's: the mibi last seen up close)");
   go("room"); assert.equal(h.went.at(-1), "pods", "the room's ✓ does what needs the player: a new pod");
   const ev = h.specs.home.events.rest; go("knob"); assert.deepEqual(h.played.at(-1), { kind: "rest", target: "knob", ms: ev.ms, hold: ev.hold }); assert.equal(h.ui.idle, false, "Idle comes at the end of the hold, on the host's own clock"); assert.deepEqual(h.timers.map((t) => t.ms), [ev.steps[1].at, ev.hold], "the dither at 200 and Idle at 380 are scheduled, not waited for"); h.timers.at(-1).fn(); assert.equal(h.ui.idle, true); assert.equal(h.ui.resting, false); h.ui.idle = false; h.motion = () => false; go("knob"); assert.equal(h.ui.idle, true, "reduced motion: a cut, Idle at once");
@@ -120,25 +120,46 @@ test("the Library: ✓ on a known or met species opens its book, on an empty fra
   S.seedAdults(st, "S01", 5, 2, settings); INTENTS.library.openBook(h, "S01"); INTENTS.library.intent(h, "book", "confirm"); assert.equal(h.went.at(-1), "habitat"); assert.ok(h.ui.hab.id != null);
 });
 
-test("the Vivarium: the stage leans, the door takes the resident with you (a queued add), the gate arms on the first ✓ and acts on the second, any other key disarms, ← goes Home", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis, h = host(st); h.ui.hab.id = b.id;
-  INTENTS.habitat.intent(h, "stage", "confirm"); assert.match(h.said.at(-1), /leans on the glass/); assert.equal(h.played.at(-1).kind, "moment");
-  INTENTS.habitat.intent(h, "wild", "confirm"); assert.equal(h.ui.hab.wildArm, 1); assert.equal(b.released, false); INTENTS.habitat.intent(h, "wild", "back"); assert.equal(h.ui.hab.wildArm, 0); assert.equal(h.went.at(-1), "home");
-  INTENTS.habitat.intent(h, "door", "confirm"); assert.deepEqual(st.carryReqs, [{ seq: 1, op: "add", id: b.id }], "the door queued an add"); assert.deepEqual(S.projectCarried(st, h.sv), [b.id]); assert.deepEqual(S.carriedIds(st, h.sv), [], "nothing is carried until the Companion applies it");
+test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, the gate arms on the first ✓ and acts on the second, any other key disarms, ← goes to the whole with the ring on this mibi", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [a, b] = st.mibis, h = host(st); h.ui.hab.id = b.id; h.specs.habitat = habitatSpec; h.specs.namer = namerSpec;
+  INTENTS.habitat.intent(h, "resident", "confirm"); assert.deepEqual(h.played.at(-1), { kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true }); assert.deepEqual(h.said, [], "nothing said, nothing rewarded");
+  h.moving = false; INTENTS.habitat.intent(h, "resident", "confirm"); assert.equal(h.played.at(-1).hold, 0, "reduced motion: the host sends hold 0"); h.moving = true;
+  INTENTS.habitat.intent(h, "name", "confirm"); assert.deepEqual([h.ui.hab.namer.mode, h.ui.hab.namer.text, h.ui.hab.namer.fs, h.ui.hab.namer.f], ["rename", b.name, "selected", "act.done"]); h.ui.hab.namer = null;
+  INTENTS.habitat.intent(h, "wild", "confirm"); assert.equal(h.ui.hab.wildArm, 1); assert.equal(b.released, false); INTENTS.habitat.intent(h, "wild", "back"); assert.equal(h.ui.hab.wildArm, 0); assert.deepEqual([h.went.at(-1), h.holds.at(-1)], ["vivarium", 180]); assert.equal(h.ui.hab.id, b.id, "the whole's ring follows this mibi");
+  INTENTS.habitat.intent(h, "door", "confirm"); assert.deepEqual(st.carryReqs, [{ seq: 1, op: "add", id: b.id }], "the door queued an add"); assert.deepEqual(S.projectCarried(st, h.sv), [b.id]); assert.deepEqual(S.carriedIds(st, h.sv), [], "nothing is carried until the Companion applies it"); assert.deepEqual(h.said, [], "no plate");
   h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "wild", "confirm"); INTENTS.habitat.intent(h, "wild", "confirm");
-  if (S.returnMibiBlock(st, h.sv, a)) assert.ok(h.said.at(-1)); else { assert.equal(a.released, true); assert.equal(h.ui.hab.id, null); }
+  assert.equal(a.released, true, "the second ✓ returns it"); assert.equal(h.ui.hab.id, b.id, "the next housed mibi in bay order"); assert.equal(h.played.at(-1).kind, "dither"); assert.match(h.said.at(-1), /goes back to the/);
+  INTENTS.habitat.intent(h, "wild", "back"); h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "wild", "confirm"); assert.equal(h.ui.hab.wildArm, 0, "a carried-to-be mibi's return is blocked: nothing arms");
 });
 
-test("the Vivarium's door: take and bring say the signed words docked and away; a waiting request makes ✓ do nothing; a full set is refused with its plate; a blocked return says nothing", () => {
-  const st = world(); S.seedAdults(st, "S01", 5, 4, settings); const [a, b, c, d] = st.mibis, sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [a.id], carrySeen: 0, tier: 1, shield: 3 }, h = host(st, sv);
-  const door = (m) => { h.ui.hab.id = m.id; INTENTS.habitat.intent(h, "door", "confirm"); return h.said.at(-1); };
-  assert.equal(door(b), b.name + " goes at the next dock", "away: an add");
-  const n = st.carryReqs.length, said = h.said.length; door(b); assert.deepEqual([st.carryReqs.length, h.said.length], [n, said], "a request for it waits: ✓ does nothing (it does not cancel it)");
-  st.dock = { docked: true, at: T0 }; assert.equal(door(c), c.name + " goes with you now", "docked: an add");
-  assert.equal(door(d), "The Companion takes three at most", "a full set"); assert.equal(st.carryReqs.length, 2, "nothing queued");
-  assert.equal(door(a), a.name + " comes home now", "docked: a home"); st.dock = { docked: false, at: T0 }; sv.carried = [b.id]; sv.carrySeen = 3; st.carryReqs = [];
-  assert.equal(door(b), b.name + " comes home when you dock", "away: a home");
-  h.said.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "wild", "confirm"); INTENTS.habitat.intent(h, "wild", "confirm"); assert.deepEqual(h.said, [], "a carried mibi's return is blocked: the Wild module says why, the intent says nothing"); assert.equal(b.released, false);
+test("one mibi up close, the Companion module: take and bring change the request queue and say nothing; a waiting request makes ✓ do nothing; a full set is refused with its plate", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 4, settings); const [a, b, c, d] = st.mibis, sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [a.id], carrySeen: 0, tier: 1, shield: 3 }, h = host(st, sv); h.specs.habitat = habitatSpec;
+  const door = (m) => { h.ui.hab.id = m.id; INTENTS.habitat.intent(h, "door", "confirm"); };
+  st.dock = { docked: false, at: T0 }; door(b); assert.deepEqual(st.carryReqs, [{ seq: 1, op: "add", id: b.id }]); const n = st.carryReqs.length; door(b); assert.equal(st.carryReqs.length, n, "a request for it waits: ✓ does nothing (it does not cancel it)");
+  st.dock = { docked: true, at: T0 }; door(c); assert.equal(st.carryReqs.length, 2); h.said.length = 0; door(d); assert.equal(st.carryReqs.length, 2, "a full set: nothing queued"); assert.equal(h.said.at(-1), d.name + " stayed home, no room");
+  door(a); assert.deepEqual(st.carryReqs.at(-1), { seq: 3, op: "home", id: a.id }, "a carried mibi is brought home");
+  st.dock = { docked: false, at: T0 }; sv.carried = [b.id]; sv.carrySeen = 3; st.carryReqs = []; h.said.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "wild", "confirm"); INTENTS.habitat.intent(h, "wild", "confirm"); assert.deepEqual(h.said, [], "a carried mibi's return is blocked: the Wild module says why, the intent says nothing"); assert.equal(b.released, false);
+});
+
+test("one mibi up close, the meet: the first ✓ opens the namer and ends the meet; any other key ends it and acts", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 2, settings); const [a] = st.mibis, h = host(st); h.specs.habitat = habitatSpec; h.specs.namer = namerSpec;
+  h.ui.hab.id = a.id; h.ui.meet = a.id; INTENTS.habitat.intent(h, "resident", "confirm"); assert.equal(h.ui.meet, null); assert.deepEqual([h.ui.hab.namer.mode, h.ui.hab.namer.text], ["meet", a.name]); assert.deepEqual(h.played, [], "the moment is not played: the first ✓ names");
+  h.ui.hab.namer = null; h.ui.meet = a.id; INTENTS.habitat.intent(h, "resident", "back"); assert.equal(h.ui.meet, null); assert.equal(h.went.at(-1), "vivarium");
+});
+
+test("one mibi up close, a chapter plate: ✓ reads an unread chapter (the read event, 300 ms held 300), a read or sealed plate does nothing", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 1, settings); const m = st.mibis[0], fr = frameOf("S01"), h = host(st); h.specs.habitat = habitatSpec; h.ui.hab.id = m.id; st.readEver = true;
+  m.read = fr.chapters.filter((c, i) => i > 0 && !c.sealed).map((c) => c.id); const d0 = st.d;
+  INTENTS.habitat.intent(h, "plate.0", "confirm"); assert.ok(m.read.includes(fr.chapters[0].id)); assert.ok(st.d <= d0); assert.deepEqual(h.played.at(-1), { kind: "read", target: "plate.0", ms: 300, hold: 300 });
+  h.played.length = 0; INTENTS.habitat.intent(h, "plate.0", "confirm"); assert.deepEqual(h.played, [], "read: nothing");
+});
+
+test("one mibi up close, Cross: only a partner at home can be picked (the first not away); a mibi out with the Companion, or with only away partners, does not open it", () => {
+  const st = world(); S.seedAdults(st, "S01", 5, 3, settings); const [a, b, c] = st.mibis, sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [b.id], tier: 1, shield: 3 }, h = host(st, sv); h.specs.habitat = habitatSpec; st.dock = { docked: false, at: T0 };
+  h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.equal(h.went.at(-1), "cross"); assert.equal(h.ui.cross.bId, c.id, "b is out: the first partner not away");
+  h.went.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "the shown mibi is out: it cannot cross until it docks");
+  sv.carried = [b.id, c.id]; h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "only away partners: refused");
+  st.dock = { docked: true, at: T0 }; INTENTS.habitat.intent(h, "cross", "confirm"); assert.equal(h.went.at(-1), "cross", "docked, the carried mibi crosses as any adult");
 });
 
 test("Create: ◀ ▶ walk the read traits, ← returns to the pod's overview with nothing spent", () => {
@@ -252,8 +273,8 @@ test("the intents are DOM-free, transitively: nothing they import reaches a docu
 test("the Vivarium's whole: ✓ on a resident or a tile looks at that mibi up close (the transition held for events.look), nothing on the room or an unknown mibi; ← goes Home with the ring on the panel", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); st.dock = { docked: true, at: T0 };
   const h = host(st), m = st.mibis[1], ev = h.specs.vivarium.events.look;
-  INTENTS.vivarium.intent(h, "resident." + m.id, "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "stage", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
-  h.ui.meet = st.mibis[2].id; INTENTS.vivarium.intent(h, "tile." + st.mibis[2].id, "confirm"); assert.equal(h.ui.meet, null, "looking at the mibi that was to be met ends the meet");
+  INTENTS.vivarium.intent(h, "resident." + m.id, "confirm"); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]); assert.equal(h.holds.at(-1), ev.hold, "the look holds input for events.look.hold");
+  h.ui.meet = st.mibis[2].id; INTENTS.vivarium.intent(h, "tile." + st.mibis[2].id, "confirm"); assert.equal(h.ui.meet, st.mibis[2].id, "looking at the mibi that was to be met opens its meet: the first press up close ends it");
   const n = h.went.length; INTENTS.vivarium.intent(h, "room", "confirm"); INTENTS.vivarium.intent(h, "tile.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to look at, nothing happens");
   INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "vivarium"]);
 });
