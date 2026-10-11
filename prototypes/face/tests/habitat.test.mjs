@@ -179,6 +179,10 @@ test("up close (M1 §2.4, §3): the resident from its close atlas breathes on it
   for (const c of ["stand", "stand-b1", "stand-b2"]) assert.ok(seen.has(c), "the breath shows " + c); assert.ok([...seen].every((c) => ["stand", "stand-b1", "stand-b2", "blink"].includes(c)), [...seen].join()); assert.ok(worst <= 153600, `${worst} px`);
   for (let k = 1; k < changes.length; k++) assert.ok((changes[k].t + 16) % 80 < 32, `a change at ${changes[k].t} ms is on an 80 ms tick`);   // the face's tick from the screen's first frame, seen by 16 ms frames
 });
+test("up close with a moving set, focused (UI/UX Q8): the walkers' order, the glass, the shadow, the feet ring, the resident", { skip }, async () => {
+  const { f } = await upClose({ focus: "resident" }), ids = logOf(f).regions.map((r) => r.id), at = (id) => ids.indexOf(id);
+  assert.ok(at("resident.shadow") > at("glass") && at("glass") >= 0, ids.join()); assert.ok(at("focus") > at("resident.shadow"), "the ring draws over the shadow: " + ids.join()); assert.ok(at("resident") > at("focus"), "the resident over the ring: " + ids.join());
+});
 test("Greet up close with a moving set (M1 §2.4, override 4): hops at 0 and 900 ms, each crouch 160, air 400 on [8, 20, 24, 20, 8], crouch 160, then stand", { skip }, async () => {
   const { f } = await upClose({ focus: "resident" }); f.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true });
   const tr = traceClose(f, "adult", 1900), lifts = tr.filter((x) => x.cell === "air").map((x) => x.lift);
