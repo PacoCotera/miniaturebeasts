@@ -150,3 +150,47 @@ test("old saves: no trips list, an expedition without the new fields", () => {
 test("a new world starts with no trips and expedition 1", () => {
   assert.match(source("newWorld"), /expN: 1, trips: \[\]/);
 });
+
+// Ruling (game designer 18:02): End expedition is allowed while the Companion is docked, with no guard and canSend unchanged.
+test("End expedition while docked at the start", () => {
+  const wid = "w1", store = {};
+  const st = { wid, dock: { docked: false }, dockN: 0, accepted: [], known: [], returned: [], probe: null,
+    mibis: [{ id: 1, name: "Dot", sp: 0, born: 0 }, { id: 2, name: "Moss", sp: 1, born: 0 }], carryReqs: [] };
+  const S = { v: 8, wid, turn: 3, expN: 5, trips: [], shield: 1, tier: 1, hist: [], bay: [], hold: null, ui: {}, visited: [], known: [], pods: [], retSeen: [],
+    mibis: [{ id: 1, name: "Dot", sp: 0, born: 0 }, { id: 2, name: "Moss", sp: 1, born: 0 }], carried: [1], lead: null, carrySeen: 0, carryRefused: [], dockSeen: 0, probeSeen: 0, walkTurn: -1,
+    exp: null, phase: "map" };
+  const writeSt = () => { store["mb-save-v8"] = JSON.stringify(Object.assign({}, S, { st })); };
+  const sv = () => JSON.parse(store["mb-save-v8"]);
+  const t = load(["endExpedition", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
+    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "clamp", ...TRIP], {
+    S, window: {}, SAVE_KEY: "mb-save-v8", SAVE_V: 8, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+    G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
+    CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ surveyed: 1, total: 9 }),
+    walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},
+    worldTurn: () => { S.turn++; S.expN++; return []; }, logEv: () => {}, fxMsg: () => {}, transition: () => {},
+  });
+  // start an expedition, undocked
+  writeSt(); t.save();
+  S.exp = expedition({ start: 0, pos: 0, shield: 1, smax: 3, actions: 4, cargo: { e: 1, d: 0, s: 0, pods: [] }, tripPlaces: ["meadow"] });
+  t.save();
+  const before = { turn: S.turn, trips: sv().trips.length, bay: S.bay.length };
+  // dock mid-expedition with the pawn on the start cell; the Station mends the Probe and queues a carry request
+  Object.assign(st, { dock: { docked: true }, dockN: 1, probe: { seq: 1, tier: 1, shield: 3 }, carryReqs: [{ seq: 1, op: "add", id: 2 }] });
+  writeSt(); t.save();
+  assert.equal(t.isDocked(), true);
+  assert.equal(S.exp.shield, 3, "the cradle mends the Probe mid-expedition");
+  assert.deepEqual(plain(S.carried), [1], "mid-expedition the carry request waits");
+  assert.equal(t.canWalk(), false);
+  assert.match(t.startBlock(), /^Docked/);
+  assert.equal(t.canSend(), true, "canSend unchanged: on the start cell, docked or not");
+
+  t.endExpedition("sent");
+  assert.equal(S.exp, null);
+  assert.equal(S.turn, before.turn + 1);
+  assert.equal(sv().trips.length, before.trips + 1);
+  assert.equal(S.bay.length, before.bay + 1);
+  assert.equal(S.shield, 3, "the shield as mended at the dock");
+  assert.deepEqual(plain(S.carried), [1, 2], "the queued carry request applies after save");
+  assert.equal(S.carrySeen, 1);
+  assert.deepEqual(sv().carried, [1, 2]);
+});
