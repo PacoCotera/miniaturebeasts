@@ -293,6 +293,73 @@
     "back": "Home"
    },
    {
+    "plate": "Its Book needs its pod identified"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S03",
+    "ok": "Open its Book",
+    "subject": "Tuikis",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S02"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S02",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S01"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S01",
+    "ok": "Open its Book",
+    "subject": "Loika",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S05"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S05",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
     "key": "confirm",
     "said": [
      {
@@ -307,6 +374,57 @@
     "focus": "frame.S05",
     "ok": null,
     "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "plate": "Nothing is known here yet"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S01"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S01",
+    "ok": "Open its Book",
+    "subject": "Loika",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S02"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S02",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S03",
+    "ok": "Open its Book",
+    "subject": "Tuikis",
     "back": "Home"
    },
    {
