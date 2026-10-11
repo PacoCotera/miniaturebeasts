@@ -15,3 +15,7 @@ Round total **18.63 of 19** (the line was 18 until the S13 redo).
 **Cut** (`cut-adults.py`): keyed on each raw's own magenta. The shadow is found by component, so S16's lilac neck stays whole, and a shadow joined to the feet is split in the lowest fifth. Height = the juvenile's solid height ÷ 0.67 (≤ 296), feet row 305. Then 144×152 (×0.4737, feet 145), 96×88 (×0.276, feet 85), and 48×48 refit to 44. Proof: `adult-round1-1x.png` over #D6CEBE.
 
 Placement waits on the adult hook slot (pictures.mjs:74, the architect's spec).
+
+## Re-cut after the programme lead's 1× note (15:02), 0 MXN
+
+The first cut left magenta key residue under S13's feet and belly (1,163 px at 304×312), with smaller amounts on S09 (182) and S16 (28). My sign missed it. The cut now removes body pixels whose green sits far below their red and blue (under 0.6×, i.e. magenta and its painted shadow; S16's lilac skin keeps more green). Such pixels in the lower half become the shadow, and the 2 px edge is defringed. Re-cut from the raws. **Measured: 0 magenta pixels on S09, S13 and S16 at 304×312, 144×152 and 96×88.** Re-signed at 1× on #D6CEBE (`adult-round1-1x.png`).

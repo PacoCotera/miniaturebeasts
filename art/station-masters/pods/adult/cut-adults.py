@@ -20,9 +20,20 @@ def cut_adult(a):                                                  # shadow by c
         if (sha & c).sum() > 0.8 * k: shadow |= c
         elif k > 1500:
             ys = np.where(c.any(1))[0]; low = c & (np.arange(c.shape[0])[:, None] > ys.min() + 0.8 * (ys.max() - ys.min()))
-            body |= c & ~(sha & low); shadow |= sha & low          # a shadow joined to the feet: its shadow-coloured pixels in the lowest fifth
+            sl = sha & low & (g < 0.6 * np.minimum(r, b)); body |= c & ~sl; shadow |= sl          # a shadow joined to the feet: its shadow-coloured pixels in the lowest fifth
     body = nd.binary_fill_holes(body) & ~nd.binary_dilation(mag, iterations=1); body = nd.binary_erosion(body, iterations=1)
     shadow &= ~body
+    # defringe (programme lead 15:02): the painted shadow's magenta cast left inside the body mask
+    ys = np.where(body.any(1))[0]; mid = (ys.min() + ys.max()) / 2
+    dbg = np.abs(a - bg).sum(-1)                                  # distance from this picture's own magenta: the residue sits near it, a lilac skin does not
+    deep = (g < 0.6 * np.minimum(r, b)) & (np.abs(r - b) < 70) & (np.minimum(r, b) > 60)   # magenta and its shadow; a lilac or purple skin keeps more green
+    cast = body & deep
+    lowh = np.arange(a.shape[0])[:, None] > mid
+    shadow |= cast & lowh; body &= ~cast
+    edge = body & ~nd.binary_erosion(body, iterations=2)
+    body &= ~(edge & (g < 0.75 * np.minimum(r, b)) & (np.abs(r - b) < 70))
+    lab2, n2 = nd.label(body); sz2 = nd.sum(body, lab2, range(1, n2 + 1)); body = np.isin(lab2, 1 + np.where(sz2 > 200)[0])
+    shadow = nd.binary_closing(shadow, iterations=2) & ~body
     ys = np.where(body.any(1))[0]; foot = ys.max()
     ground = max(foot, np.where(shadow.any(1))[0].max() - 3) if shadow.any() else foot
     alpha = np.where(body, 255, np.where(shadow, 110, 0)).astype(np.uint8)
