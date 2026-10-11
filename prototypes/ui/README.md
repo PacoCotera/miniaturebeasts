@@ -60,6 +60,6 @@ Also printed: clamp misses (should be 0), and the leg strain, the largest |db|/(
 
 The breath bake is the animator's `breathBake`: row copies per column, no resampling. yb(x) is the belly line; rows at and below it are fixed. b1: out(y) = in(y + 1) for y < yb − 1, row yb − 1 keeps itself. b2 adds a second lift for the rows above ym = round((ytop + yb) / 2), ytop the column's first ink row, ym at most yb − 8. Rows shifted in from above the figure are transparent.
 
-`tools/samples/phaseA/` holds the S05 cycle M8 (unlocked keys: counts kept, no verdict) and the S01 hop check (stand, crouch and air, both ends) as CSVs and contact sheets.
+`tools/samples/phaseA/` holds the S05 cycle M8 (s05-cycle: the first unlocked keys, counts kept, no verdict; s05-cycle-locked: the locked stepA / stepB pair, a verdict run) and the S01 hop check (stand, crouch and air, both ends) as CSVs and contact sheets.
 
 `tools/samples/matrix/` holds the dry run on the signed S04 stand at 304x312, 104x112 and 96x88 with the animator's provisional topline landmarks (the landmarks file itself is not in this repository): the 1x PNGs (stand, warped down, warped up), the field maps, the head masks, the contact sheets, the breathing pairs as APNGs and `measures.csv`. The inputs are the signed cut keys in masters-pods (level, dipping, arched; body and shadow at each size); every file's SHA-256 is in the CSV. It is not a verdict: the landmarks are the animator's provisional ones.
