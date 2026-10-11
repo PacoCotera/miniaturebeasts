@@ -278,6 +278,26 @@ The reach view's 78 px and 48 px cells and both insets fit as given above. In a 
 
 ---
 
+## Docked mid-expedition
+
+**Purpose.** Show that the field is paused while the Companion sits in the Caddy mid-expedition, and what still works. The game designer's dock-freeze ruling, the UI designer's display ruling, the copywriter's strings and the art director's signs (2026-10-10). **Reads first:** the chip in the top bar.
+
+- **What freezes.** Every press that would move you, spend, act in a place, wait or leave: the four directions, ✓ and Call on the map and in a place, ✓ in the swap chooser, Wait, ✓ on the Waiting strip, "Leave this place" and "Climb out", and the Probe screen's Patch shield. Nothing changes and no action is spent; the storm, fog, creatures and pending strikes wait, and the expedition resumes at Lift as it was. ← opens the menu (in a finished place too); menu browsing, Full map / Reach view, Probe, Cargo, Mibis, the mibi pages, Call a mibi and End expedition (at the start or a lit outpost) still work.
+- **The chip.** In the HUD on the reach view, the full map, a place, the cave and the menu over the field: `Docked`, ink fill, a 1 px `mint` (#adf6e0) border and `mint` 2× text, `panel(x, 6, textW+16, 22)` with the text at (x + 8, 9). x is right after the pod slots and the crate count; when the chip would pass `rx − 4`, the crate count is not drawn and the chip takes its place. The partner's token and name follow the chip, 4 px after it, with their usual fit rule. Energy, Data and Essence are drawn exactly as undocked. It comes and goes on the frame the dock changes, no animation.
+- **A refused press.** The pawn's bump (±1 px in x, 40 ms steps, 160 ms; none under reduced motion): in the reach view the pawn only, the brackets never move. The message replaces the current one: the first refused press of each dock `Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost`, every later one `Docked · lift to go on`. A held direction stops at once.
+- **Dimmed.** The refused ✓ labels draw in `stone`, the ✓ glyph stays orange: Go down on the map, the place's action, the swap chooser's Leave, Wait again on the strip, Patch shield. In a place ← reads `menu`. In the menu Wait, Leave this place and Climb out draw in `mist`, keep their place and take focus (a press bumps); opening the menu focuses the first row that is not frozen (End expedition in a place). End expedition is not dimmed by docking.
+- **Probe screen.** The Shield line at (120, 82) reads `Docked · the Station mends it` in `stone` (`Shield is whole` when the Shield is full). Mid-expedition the reach, hold and tier read the Probe the expedition set out with; a tier bought while docked says `Tier 2 · from the next expedition` and applies from the next one.
+- **Lift.** No message. The chip goes and the dimmed rows come back. When the Station mended the Shield while docked, each mended bar flashes `cream` (#fff4a6) behind its outline, (x + 9i − 2, 7, 10, 18), on and off every 120 ms for 700 ms; steady for 700 ms under reduced motion.
+- **Expedition ended, docked.** The crate keeps its slide-in. Under the bay: `‹n› crate(s) sealed · ready for the Station`, then `In the Caddy · open Cargo on the Station` (`In the Caddy` alone when the bay is empty).
+
+**Pass when**
+- [ ] The chip shows only while docked mid-expedition, and never covers the view.
+- [ ] A refused press changes nothing and says why once per dock.
+- [ ] Wait and Leave dimmed in place; End expedition not.
+- [ ] The counters are unchanged.
+
+---
+
 ## Cargo
 
 **Purpose.** What the hold carries, what End expedition will seal, and the bay. **Reads first:** the pods carried.
