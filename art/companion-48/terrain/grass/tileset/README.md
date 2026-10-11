@@ -19,6 +19,12 @@
   - Quarters for water cells, in the lips' 47-blob scheme, two frames each, plus the body fill.
   - Macro outer corners (2 × 2 cells, radius 60 or 42) round a pond's lobes, as b1's do. The shore swells 1 px per quarter, so mirrored quarters can't zigzag.
   - The bank is inset 18 px, with corners rounded to 26 and 18 px and a wavering edge. Inside it: a 2 px foam line (continuous, broken every 23 px), the wet line, the shallow band and the body.
+- **`stairs/`** (made by `tools/cut-stairs.py`): the phase 1 stair pieces, under the spec's §6.1 names. They are cut from b1's own lower stair and its trodden earth.
+  - `wide2x1-1`, `-2`: the south stair, 2 × 2 cells (one level). It is rebuilt from 7 of b1's 11 steps at b1's own pitch, between b1's stringers.
+  - `landing-l/r`, `foot-l/r`: the earth at the stair's head and foot.
+  - `top2x1`: the north stair top, cut into the rim. It shows four treads going down away from the camera, a step darker each.
+  - `apron-top-l/r`: the earth inside a north stair top.
+  - `side2x2-e`, `-w`: the side stairs. Each is the south stair turned so that its head meets the higher side.
 - **`props/`** (made by `tools/cut-props.py`): 15 props keyed from the props sheet, at b1's pixel size, on the meadow palette.
   - The bridge is turned to run north to south and is two cells wide.
   - Its posts are redrawn upright in b1's 3/4 view: an oval cap, a round shaded front and a dark outline. The sheet drew them as side-view logs.
@@ -39,4 +45,4 @@
       - The pond's lobes are rounded rectangles, where b1's are free curves.
       - The side faces read thinner than b1's top-left column, which is chunky pillars about 45 px wide.
       - The stream runs straight. b1's bends along its side cliff.
-      - The stairs are b1 crops, not cut pieces. There are no north or side stairs yet.
+      - The side stairs are the south stair turned. They read as stairs but aren't yet drawn for their own view.

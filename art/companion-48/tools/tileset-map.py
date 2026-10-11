@@ -18,7 +18,8 @@ Pieces used:
                 piece on every cell of a run's bottom edge, and small boulders and ferns along it
   side faces    tileset/walls/side-*: a rock column (32 px west, 20 px east) down each plateau's west and east sides, in the lower cell's
                 place, lit on the west, shaded on the east, with rounded top and foot ends
-  stairs        b1's stairs (one level 2 x 2 cells, two levels 2 x 4, each with its landing row): not yet cut pieces
+  stairs        tileset/stairs: wide2x1 per level of drop (two stacked for b1's two-level stair), the landing on the row
+                above, the foot below
   pond, stream  tileset/water: two flat tones, a continuous foam line with breaks, the wet line, a sand bank; a lobe's outer
                 corners are macro pieces (2 x 2 cells, radius 60)
   props         tileset/props (bushes, ferns, boulders, reeds, flowers, the bridge) at b1's places, each with a flat contact
@@ -340,11 +341,18 @@ for r in range(R):
         for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "sw": (24, 0), "se": (24, 24)}.items():
             Y, X = r * 48 + y, c * 48 + x; pq = WQ[(q, wstate(r, c, q))]; img[Y:Y + 24, X:X + 24] = np.where(pq >= 0, pq, img[Y:Y + 24, X:X + 24])
 
-# ---- stairs: b1's own, at two cells per level, with the landing row above
-SRC = {1: B1[460:622, 262:370], 2: B1[88:268, 258:362]}
+# ---- stairs: the stair pieces (tileset/stairs, tools/cut-stairs.py): a wide2x1 per level of drop, the landing on the row above,
+#      the foot on the row below
+SD = os.path.join(os.path.dirname(walls_d), "stairs")
+SP = {f[:-4]: to_idx(Image.open(os.path.join(SD, f))) for f in os.listdir(SD) if f.endswith(".png")}
+def sput(name, Y, X):
+    p = SP[name]; h_, w_ = p.shape; h_ = min(h_, HPX - Y)
+    if h_ > 0: img[Y:Y + h_, X:X + w_] = np.where(p[:h_] >= 0, p[:h_], img[Y:Y + h_, X:X + w_])
 for r, c, n in STAIRS:
-    hh = 48 * (2 * n + 1); st = np.asarray(Image.fromarray(SRC[n].astype(np.uint8)).resize((96, hh), Image.NEAREST)).astype(int)
-    Y, X = (r - 1) * 48, c * 48; img[Y:Y + hh, X:X + 96] = st
+    X = c * 48
+    for k in range(n): sput(f"wide2x1-{1 + (r + k) % 2}", (r + 2 * k) * 48, X)
+    sput("landing-l", (r - 1) * 48, X); sput("landing-r", (r - 1) * 48, X + 48)
+    sput("foot-l", (r + 2 * n) * 48, X); sput("foot-r", (r + 2 * n) * 48, X + 48)
 
 # ---- props at b1's places, each on a flat contact shadow
 PD = os.path.join(os.path.dirname(walls_d), "props"); PJ = json.load(open(os.path.join(PD, "props.json")))["pieces"]
