@@ -251,7 +251,7 @@ void home_words(void) {
   build_restKnob(strcmp(cur, "knob") == 0);
   for (int m = 0; m < 5; m++) {
     int dy = strcmp(cur, MODULES[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODULES[m]), 2) : 0;
-    build_module(MODULES[m], dy, v_pstr(v_fmt("regions.%s.lamp", MODULES[m])));
+    build_module(H, MODULES[m], dy, v_pstr(v_fmt("regions.%s.lamp", MODULES[m])));
     module_objects(MODULES[m], dy);
   }
   ring(cur);

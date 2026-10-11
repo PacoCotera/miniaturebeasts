@@ -35,19 +35,23 @@ void build_waitingLamp(const char *id, int x, int y, int shown) {
   v_sprite_hidden(id, home_lamp_pic("waiting"), x, y);
 }
 
-/* the module: a panel (fill, bevel top, hairline edge), its engraved word at the spec's offset and its lamp; the objects are the screen's. `dy` is the focused module's lift (negative). Draws region `key`. */
-void build_module(const char *key, int dy, const char *lampState) {
-  int r[4], word[2], lampAt[2]; char p[64]; snprintf(p, sizeof p, "regions.%s.rect", key); hrect(p, r);
-  word[0] = hk(v_fmt("regions.%s.word", key), 0); word[1] = hk(v_fmt("regions.%s.word", key), 1); lampAt[0] = hk(v_fmt("regions.%s.lamp", key), 0); lampAt[1] = hk(v_fmt("regions.%s.lamp", key), 1);
+/* the module of the screen whose spec is `sp`: a panel (fill, bevel top, hairline edge), its engraved word at the spec's offset and its lamp (a module whose spec says `"lamp": null` has none, and no lamp node); the objects are the screen's. `dy` is the
+   focused module's lift (negative). Draws region `key`. Home's and one mibi up close's modules are this one build. */
+void build_module(const char *sp, const char *key, int dy, const char *lampState) {
+  int r[4], word[2], lampAt[2] = { 0, 0 }; char p[64]; snprintf(p, sizeof p, "regions.%s.rect", key); if (!v_spec_rect(sp, p, r)) r[0] = r[1] = r[2] = r[3] = 0;
+  word[0] = sk(sp, v_fmt("regions.%s.word", key), 0); word[1] = sk(sp, v_fmt("regions.%s.word", key), 1);
+  const char *lraw = spec_raw(sp, v_fmt("regions.%s.lamp", key), NULL); int hasLamp = lraw && lraw[0] == '[';
+  if (hasLamp) { lampAt[0] = sk(sp, v_fmt("regions.%s.lamp", key), 0); lampAt[1] = sk(sp, v_fmt("regions.%s.lamp", key), 1); }
   int x = r[0], y = r[1] + dy;
   v_region(key, LAYER_CHROME);
-  word_panel(v_fmt("%s", key), x, y, r[2], r[3], colr("colours.module.fill"), colr("colours.module.edge"));
-  v_rect(v_fmt("%s.top", key), x + 1, y + 1, r[2] - 2, 1, colr("colours.module.top"));
-  v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState);   /* the lamp logs as its own region, with the module's lift */
-  char w[40]; spec_str(H, v_fmt("strings.modules.%s", key), w, sizeof w);
-  v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, colr("colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
+  word_panel(v_fmt("%s", key), x, y, r[2], r[3], scol(sp, "colours.module.fill"), scol(sp, "colours.module.edge"));
+  v_rect(v_fmt("%s.top", key), x + 1, y + 1, r[2] - 2, 1, scol(sp, "colours.module.top"));
+  if (hasLamp) { v_name(v_fmt("%s.lamp", key)); lamp(v_fmt("%s.lamp", key), x + lampAt[0], y + lampAt[1], lampState); }   /* the lamp logs as its own region, with the module's lift */
+  char w[40]; spec_str(sp, v_fmt("strings.modules.%s", key), w, sizeof w);
+  v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, scol(sp, "colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }
 
+int g_tagFlash;   /* the name tag takes the frame's flash (the namer saved a name): the frame's `flash` fill and `flashInk` ink while set */
 /* the name tag, for the screen whose spec is `sp` and whose window (Home's glass, the whole's window) is the region `glass`: a panel and the name, h tall (regions.nameTag); its width the name's plus twice the pad rounded up to the 8 px grid, 48 at least,
    the widest the spec's max; centred on the box, 12 px under the ring (top at feet + 24), over the box (top = box.y − lift − 8 − h) when its bottom would pass 8 px above the window's bottom, slid to stay 8 px inside the window. `lift`: the box is the resident's
    as drawn (a sleeper does not lift). Returns the tag's rect in out. */
@@ -59,9 +63,11 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   if (y + h > gy + gh - 8) y = box[1] - lift - 8 - h;   /* the window's bottom less 8: below it the tag goes over the box */
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
-  const char *ink = scol(sp, "colours.nameTag.text");
-  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge"));
-  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, ink);
+  const char *ink = g_tagFlash ? scol("frame", "colours.flashInk") : scol(sp, "colours.nameTag.text");
+  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, g_tagFlash ? scol("frame", "colours.flash") : scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge"));
+  /* the name's cap top: 5 px under the tag's top (the 24 px tag), or from the spec's line top (regions.nameTag.lineTop in the tag's rectangle: one mibi up close's 32 px tag at 20 px) on the type's line pitch (20 at 16, 28 at 20, 36 at 28) */
+  int ty = y + 5; if (spec_int(sp, "regions.nameTag.lineTop", 0) > 0) { int pitch = px == 16 ? 20 : px == 20 ? 28 : 36; ty = y + (spec_int(sp, "regions.nameTag.lineTop", 0) - sk(sp, "regions.nameTag.rect", 1)) + v_fdiv(pitch - v_cap(px), 2); }
+  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), ty, tw, px, ink);
 }
 
 /* the rest knob on the bezel's bottom rail: 32 x 6, at rest at y 546, lifted to 544 while focused; settling from the lift while the `rest` event plays. A flat plate in the knob's three roles. */
@@ -87,7 +93,7 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
   char fk[48]; if (n > 12 || layout_list_form(sp, "regions.tiles", n, fk, sizeof fk) < 0) { v_error("word: the bay strip holds twelve bays at most, and its forms must hold this many"); return; }
   int tx = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 0), ty = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 1), tw = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 2), th = sk(sp, v_fmt("regions.tiles.tile.thumb.%s", fk), 3);
   int gw = sk(sp, "regions.tiles.tile.outGlyph", 0), gh = sk(sp, "regions.tiles.tile.outGlyph", 1), lift = si(sp, "focus.targets.tile.lift", 2);
-  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = scol(sp, "colours.tile.fill"), *dash = scol(sp, "colours.tile.free");
+  const char *glyph = v_pstr("regions.tiles.glyph"), *fill = scol(sp, "colours.tile.fill"), *dash = scol(sp, "colours.tile.free"), *shownFill = scol(sp, "colours.tile.shown");
   for (int i = 0; i < n; i++) {
     char P[64]; snprintf(P, sizeof P, "regions.tiles.items.%d", i);
     const char *id = v_pstr(v_fmt("%s.id", P)), *state = v_pstr(v_fmt("%s.state", P)), *pic = v_pstr(v_fmt("%s.picture", P));
@@ -96,7 +102,7 @@ void build_bayStrip(const char *sp, const char *cur, int box[4]) {
     int focused = strncmp(cur, "tile.", 5) == 0 && *id && strcmp(cur + 5, id) == 0, x = b[0], y = b[1] - (focused ? lift : 0), w = b[2], h = b[3];
     if (focused && box) { box[0] = x; box[1] = y; box[2] = w; box[3] = h; }
     char nm[40], reg[24]; snprintf(reg, sizeof reg, "tile.%d", i); v_region(reg, LAYER_CHROME);   /* a region a tile: the log holds each tile's box */
-    snprintf(nm, sizeof nm, "tile.%d", i); v_rect(nm, x, y, free_ ? 0 : w, free_ ? 0 : h, fill);
+    snprintf(nm, sizeof nm, "tile.%d", i); v_rect(nm, x, y, free_ ? 0 : w, free_ ? 0 : h, v_pbool(v_fmt("%s.shown", P), 0) && *shownFill ? shownFill : fill);   /* the mibi up close: one step up (colours.tile.shown) */
     v_name(reg); snprintf(nm, sizeof nm, "tile.%d.thumb", i);
     if (housed && *pic) v_sprite(nm, pic, x + tx, y + ty, tw, th); else v_sprite_hidden(nm, glyph, x + tx, y + ty);
     snprintf(nm, sizeof nm, "tile.%d.glyph", i);

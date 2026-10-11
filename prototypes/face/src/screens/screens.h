@@ -21,14 +21,24 @@ void home_words(void);
 void vivarium_words(void);   /* the Vivarium's whole: the living window on vivarium.json, the bays along the foot (screens/home.c) */
 int vivarium_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void vivarium_key(int code);
+/* One mibi up close (screens/habitat.c): its words, the targets as they drew them, its keys */
+void habitat_words(void);
+int habitat_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
+void habitat_key(int code);
+/* The namer (screens/namer.c), an overlay: its words, its targets as they drew them (the props' list), its keys. `screens_overlay_known`: whether the face has a binding table for the overlay id */
+void namer_words(void);
+int namer_focus(focus_target_t *out, int cap);
+void namer_key(int code);
+int screens_overlay_known(const char *id);
 void idle_words(void);   /* Idle: the living window's code on frame.json idle, and its line (screens/home.c) */
 int home_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void home_key(int code);
 int home_tick(uint32_t now);
 /* Home's compositions (screens/home_builds.c): a module of the column, the name tag, the rest knob and a resident's waiting lamp */
-void build_module(const char *key, int dy, const char *lamp);
+void build_module(const char *spec, const char *key, int dy, const char *lamp);   /* the module of `spec`'s region `key` (a spec with "lamp": null has no lamp node) */
 void build_nameTag(const char *spec, const char *glass, const char *name, const int box[4], int lift, int out[4]);   /* the name tag for the screen of `spec`, over its window region `glass` */
 void build_restKnob(int focused);
+extern int g_tagFlash;   /* set while the name tag flashes (the namer saved a name) */
 const char *home_lamp_pic(const char *state);   /* frame.json regions.marks.lamp12.<state>, the signed 12 × 12 lamp picture of a state */
 void build_bayStrip(const char *spec, const char *cur, int box[4]);   /* the Vivarium's strip of bays (vivarium.json regions.strip, tiles); box: the focused tile's box, or zeros */
 void build_waitingLamp(const char *id, int x, int y, int shown);

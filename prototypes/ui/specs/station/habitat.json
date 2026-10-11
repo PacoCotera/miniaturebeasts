@@ -293,6 +293,7 @@
    "tile": {
     "fill": "a panel rect in the tile's box",
     "thumb": {"full": [52, 0, 48, 48], "compact": [12, 0, 48, 48]},
+    "outGlyph": [16, 24],
     "name": null,
     "free": "a composed `dash` outline round the tile's box, 1 px `hairline`, dash [2, 2]; nothing in it, not a target",
     "away": "each mibi with you (up to three) while the Companion is away: the outline Companion glyph 16×24 in place of its thumbnail, centred where the thumbnail stands; it stays a target, and focusing it shows that mibi in state out"
@@ -598,7 +599,7 @@
   "bezel": {"fill": "metal", "light": "enamel", "shade": "bevel", "edge": "hairline"},
   "glass": {"edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
-  "nameTag": {"fill": "panel", "edge": "hairline", "name": "bone"},
+  "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "ribbon": {"fill": "tealD", "edge": "aqua", "text": "bone"},
   "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
   "stampLabel": {"fill": "bone", "edge": "slate"},

@@ -46,6 +46,7 @@ void v_set_focal(const int box[4]);
 /* The focused target: the props' focus.cur, or the id the face moved the ring to on a key since (cleared when new props arrive). */
 void v_focus_set(const char *id);
 const char *v_focus_cur(void);
+const char *v_focus_cur_at(const char *path);          /* the same where the ring is not the screen's (an overlay's: "overlay.focus.cur") */
 const int *v_focal(void);
 int v_fdiv(int a, int b);                              /* floor(a / b) for b > 0, as Math.floor does */
 int v_half(int a);                                     /* Math.round(a / 2) on an integer: floor((a + 1) / 2) */
