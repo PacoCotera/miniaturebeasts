@@ -39,13 +39,13 @@ export function habitatBuild(m, spec, frame, home) {
   // the card: who it is (the species word is the door to the guide), where it came from and what it remembers, its code, the heart and the notches, its stamp
   const place = (g) => S.PLACE_WORD[g] || g, from = shown.from || {};
   const story = (from.of && from.of.length === 2 ? [fill(Sg.story.bred[0], { A: from.of[0] }), fill(Sg.story.bred[1], { B: from.of[1] })] : [fill(Sg.story.founder[0], { place: place(from.g) })]).concat(shown.mem ? [fill(Sg.story.memory, { place: place(shown.mem) })] : []).slice(0, 3);
-  const sz = stampSizing(fr, shown.genome);
+  const sz = stampSizing(fr, shown.genome), read = fr.chapters.filter((c) => (shown.read || []).includes(c.id)).map((c) => c.id);   // the stamp of the chapters read: never an unread or a shut sealed one (the Incubator hatch's form, so the meet keeps the hatch's picture)
   regions.card = {
     heart: shown.bonded ? slot("heart-full-24", R.card.heart.size, "the heart master") : "",
     notches: { count: Math.min(shown.notches || 0, 3), picture: slot("notch-skill-16x24", R.card.notches.notch, "the skill notch master") },
-    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: slot("mark-guide-16", [16, 16], "the guide mark master") },
+    species: { text: fill(Sg.speciesLine, { Species: species, stage: stageWord }), mark: req({ kind: "ph", id: "mark-guide-16", size: [16, 16], hollow: false, until: "the guide mark master (not signed)" }) },
     story, code: codeText(shown.code),
-    stamp: { size: sz.size, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...(shown.read || [])].sort().join(",")}:${sz.size}`, species: S.speciesOf(shown), read: shown.read || [], size: sz.size, mibi: shown.id }) },
+    stamp: { size: sz.size, N: sz.N, cell: sz.cell, asset: req({ kind: "stamp", id: `stamp:${genomeDigest(shown.genome)}:${[...read].sort().join(",")}:${sz.size}`, mibi: shown.id, species: S.speciesOf(shown), read, size: sz.size }) },
   };
 
   // the plates, one a chapter in ring order: read, unread (readable at home or out) or sealed
@@ -123,7 +123,7 @@ export function habitatBuild(m, spec, frame, home) {
     const why = pst === "none" ? Sg.noSitting : pst === "painting" ? Sg.portraitOnWay : pst === "portrayed" ? Sg.portrayed : !docked && carried.includes(shown.id) ? Sg.portraitOut : !habitsOf(shown).length ? Sg.noPose : !placesOf(shown).length ? Sg.noPlace : null;
     line = why ? { ok: null, subject: why, back: Sg.back, need: null } : { ok: fill(Sg.portray, named), subject: Sg.portrayContext, back: Sg.back, need: null };
   } else if (id === "cross") {
-    line = crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners, { "n in words": WORDS[Math.min(pickable.length, 11)], Species: species }) }
+    line = crossState === "adult" ? { ok: fill(Sg.cross, named), subject: fill(Sg.partners.replace("{n in words}", "{n}"), { n: WORDS[Math.min(pickable.length, 11)], Species: species }) }
       : { ok: null, subject: crossState === "out" ? Sg.crossOut : crossState === "away" ? Sg.crossAway : crossState === "alone" ? fill(Sg.noPartner, { Species: species }) : Sg.crossLater };
     line = { ...line, back: Sg.back, need: null };
   } else if (id === "wild") {

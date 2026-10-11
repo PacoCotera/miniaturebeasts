@@ -154,9 +154,9 @@ test("T10 to T12 the watch records the first unseen habit at the minute; with ev
   const s3 = bench(); s3.bench = { day: "2026-10-09", d: 2, watchMs: {}, watched: [], compared: [] }; const [c] = s3.mibis; c.habits = [fr.habits[0]]; const f = watchFor(s3, c, 60000); assert.equal(f.earned, 0); assert.equal(s3.d, 0); assert.deepEqual(c.habits, [fr.habits[0], fr.habits[1]], "a full cap still records the habit");
 });
 test("the frame hook watches only the shown resident, on Habitat, awake; Idle and other screens accumulate nothing", () => {
-  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: null, dt: 250, now: NOON };
+  const st = bench(), [a, b] = st.mibis, base = { st, sv: sv0, settings, habId: a.id, dt: 250, now: NOON };
   assert.equal(habitatShown(st, sv0, null).id, a.id); assert.equal(habitatShown(st, sv0, b.id).id, b.id); assert.equal(habitatShown(st, { with: a.id }, null).id, b.id, "the first not with you");
-  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
+  assert.equal(watchFrame({ ...base, screen: "home", idle: false }), null); assert.equal(watchFrame({ ...base, habId: null, screen: "habitat", idle: false }), null, "no mibi chosen up close: the fallback is never watched"); assert.equal(watchFrame({ ...base, habId: a.id, sv: { carried: [a.id] }, screen: "habitat", idle: false }), null, "a carried mibi is never watched"); assert.equal(watchFrame({ ...base, screen: "habitat", idle: true }), null); assert.equal(st.bench, undefined);
   for (let i = 0; i < 240; i++) watchFrame({ ...base, screen: "habitat", idle: false }); assert.equal(st.d, 1); assert.deepEqual(Object.keys(st.bench.watchMs), [String(a.id)]);
 });
 

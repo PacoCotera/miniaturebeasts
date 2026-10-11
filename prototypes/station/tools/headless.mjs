@@ -80,7 +80,7 @@ export class Player {
   open() { return this.step("open the bud", () => S.openBud(this.st, this.sv, this.settings, this.now)); }
   // Walks until a mibi is adult (the Companion's world turns: one expedition each).
   growUp(m) { let n = 0; while (!S.isAdult(this.st, m, this.settings) && n < 10) { this.takeWalk(); n++; } return n; }
-  cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed))); }
+  cross(a, b) { const c = S.crossCost(this.settings); this.afford(c.e, c.d, c.s); return this.step("cross " + a.name + " × " + b.name, () => { const was = S.docked(this.st); this.st.dock = { ...(this.st.dock || {}), docked: true }; const r = S.doCross(this.st, this.sv, a, b, this.settings, this.now, mulberry(this.seed)); this.st.dock.docked = was; return r; }); }   // a mibi out with the Companion cannot be crossed until it docks: the cross is made at the dock
   readMibi(m, ch) { this.afford(0, S.mibiReadCost(this.st, m, ch, this.settings) || 0); return this.step("read " + ch + " on " + m.name, () => S.readMibi(this.st, m, ch, this.settings)); }
   // The bench's Data trickle (opt-in, as it is a minute of the player's day): one mibi watched for its minute, one pair compared; each earns what the day's cap allows.
   benchDay(m, a, b) {

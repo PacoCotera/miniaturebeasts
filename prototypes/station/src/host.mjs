@@ -10,11 +10,14 @@ import { frameOf } from "./genome.mjs";
 import { podsProps } from "./views/pods-props.mjs";
 import { homeBuild } from "./views/home-props.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
+import { habitatBuild } from "./views/habitat-props.mjs";
+import { namerBuild } from "./views/namer-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
 import { createBuild, createPod } from "./views/create-props.mjs";
 import { incubatorBuild } from "./views/incubator-props.mjs";
 import { incubatorTick } from "./intents/incubator.mjs";
+import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { lampText } from "./caddy.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
@@ -24,7 +27,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium"];
+export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -104,6 +107,18 @@ export function vivariumBody(light = lightNow()) {
   return body;
 }
 
+// ---- One mibi up close ----
+// The mibi chosen on the whole (or the hatch's, or the first at home), its card, the modules and the strip; the ring is the face's (habitat.json focus.graph) and the host keeps what the face says in UI.hab.f. While the namer is open its props ride on
+// habitat's (an overlay) and its bottom line is the frame's. Returns null with no mibi housed: the whole shows its empty state.
+export function habitatBody(light = lightNow()) {
+  const body = habitatBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light, focus: UI.hab.f, habId: UI.hab.id, meetId: UI.meet, armed: UI.hab.wildArm === 1 }, SPECS.habitat, SPECS.frame, SPECS.home);
+  if (!body) return null;
+  UI.hab.f = body.props.focus.cur; UI.hab.id = body.shown.id;
+  const n = UI.hab.namer, who = n && mibiById(n.id);
+  if (n && who) { const nb = namerBuild({ st: G.st, mibi: who, ui: n }, SPECS.namer); body.props.overlay = nb.overlay; body.line = nb.line; } else if (n) UI.hab.namer = null;
+  return body;
+}
+
 // ---- Cargo ----
 // The bay, the crate opening and the report: Cargo's state is the UI's (UI.cargo), the pods and the crates are the rules'. The ring is on nothing; the pad does nothing.
 export function cargoBody() {
@@ -127,6 +142,7 @@ export function incubatorBody() {
 // { msg: the props message (without seq), ids: every picture the face needs before them, requests: the Pods pictures to register }
 export function screenProps(plate) {
   if (UI.screen === "create" && !(UI.create && createPod(G.st, UI.create))) goScreen("pods");   // Create with no pod to shape: Pods
+  if (UI.screen === "habitat" && !S.housed(G.st).length) goScreen("vivarium");   // one mibi up close always shows one mibi: with none housed the whole shows its empty state
   const screen = UI.screen, light = lightNow();   // the light is read once per sync: the props and the pictures dropped after them agree on it
   if (UI.idle) {   // Idle: the whole screen, no frame but its line (frame.json idle): the living window's people, the painting's slot and the one line
     const body = idleBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), light }, SPECS.frame);
@@ -136,15 +152,16 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen)) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen), plate: pl } }, ids: [], light };
-  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
+  if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
   if (screen === "create" && UI.create.prev) ids.add(UI.create.prev);   // the founder the roll's dither starts from stays on the face until the event ends
   const line = { ...body.line }; if (line.need == null) line.need = need().text;   // the frame's notice on every screen unless the screen has its own
   return { msg: { screen, ...body.props, frame: { top, line, plate: pl } }, ids: [...ids], light };
 }
 // The pictures a light puts on the face, by their ids (their sizes from the specs that place them): the host drops them once props with the next light are taken.
-export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, g = SPECS.home.regions.glass.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-glass-${light}:${g[2]}x${g[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`]; };
+export const lightIds = (light) => { const v = SPECS.frame.idle.regions.vivarium.rect, g = SPECS.home.regions.glass.rect, b = SPECS.frame.idle.regions.bed.rect; return [`idle-vivarium-${light}:${v[2]}x${v[3]}`, `home-glass-${light}:${g[2]}x${g[3]}`, `home-bed-${light}-${b[2]}x${b[3]}`, ...(SPECS.habitat?.light ? [`${SPECS.habitat.light.pictures[light]}-${SPECS.habitat.light.size.join("x")}`] : [])]; };   // and one mibi up close's near Vivarium
 // The pictures of the frame and the Companion's face, the same on every screen.
 export function frameIds() {
   const ids = new Set(); walk(SPECS.frame.regions, ids); for (const id of companionIds()) if (assetEntry(id)) ids.add(id);
@@ -159,7 +176,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "moment", "read"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 export function createHost({ send, nowMs, light, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
@@ -168,7 +185,7 @@ export function createHost({ send, nowMs, light, afterSave = () => {}, motion = 
   const holding = () => nowMs() < holdUntil;
   const arriving = () => nowMs() < arrivalUntil;   // an arrival plays (Home's crates sliding in holds nothing, and the idle timer waits for its end)
   const play = (e) => {
-    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && e.target === "turn"))) return;
+    if (!(PLAYS.has(e.kind) || (e.kind === "arrival" && ARRIVALS.has(e.target)) || (e.kind === "tick" && ["e", "d", "s"].includes(e.target)) || (e.kind === "flash" && (e.target === "turn" || e.target === "nameTag")))) return;
     const hold = e.hold ?? 0; if (!Number.isInteger(hold) || hold < 0 || hold > 30000) throw new Error(`play ${e.kind}: hold is a whole number of ms (0 = none), not ${hold}`);
     if (hold) holdUntil = Math.max(holdUntil, nowMs() + hold);
     if (e.kind === "arrival") arrivalUntil = Math.max(arrivalUntil, nowMs() + (e.ms || 0));
@@ -188,17 +205,34 @@ export function createHost({ send, nowMs, light, afterSave = () => {}, motion = 
     },
     // Any key but ✓ disarms: the hatch and the gate wait for a second ✓ and nothing else.
     disarm: () => { UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; },
-    goto: (name, hold = 0) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) play({ kind: "dither", target: "stage", ms: 180, hold }); },   // hold: whole ms of held input (the Vivarium's look holds 180)
+    goto: (name, hold = 0) => { const fresh = UI.screen !== name; goScreen(name); if (fresh) { play({ kind: "dither", target: "stage", ms: 180, hold }); if (name === "habitat") enterHabitat(h); } },   // hold: whole ms of held input (the Vivarium's look holds 180)
   };
   return h;
+}
+
+// The ring moved on one mibi up close: the host keeps it, the first move ends the meet, and a tile shows its mibi in the window (events.swap: the resident cross-dithers to it, a cut when either is out with the Companion).
+function habitatFocus(h, target) {
+  const a = UI.hab; a.f = target; endMeet(h);
+  if (!target.startsWith("tile.")) return;
+  const id = +target.slice(5), was = S.mibiById(G.st, a.id), now = S.mibiById(G.st, id); if (!now || id === a.id) return;
+  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? `mibi:${mb.id}:${SPECS.habitat.regions.resident.rect[2]}x${SPECS.habitat.regions.resident.rect[3]}` : "");
+  const from = px(was); a.id = id;
+  if (from && px(now)) { const e = SPECS.habitat.events.swap; a.prev = from; h.play({ kind: e.kind, target: e.target, from, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prev === from) a.prev = null; }); }
 }
 
 // What the face said, as the rules: the ring moved (Pods keeps the focus of its state), or a key on a focused target (an intent). A not-built screen has no targets; its ← goes to the parent in the navigation tree.
 // While a hold runs every intent is dropped but a room key, which is kept (the last one) and dispatched when the hold ends, after a kept Dock key; Home's rest drops it too (home.json events.rest.keys).
 export function onFaceMessage(h, m) {
   if (m.t === "done") return;   // informative only: nothing waits for it
-  if (m.t === "focus") { if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return; }
+  if (m.t === "focus") {
+    if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
+    if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
+    if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
+  }
   if (m.t !== "intent") return;
+  if (m.screen === "namer" && !(UI.screen === "habitat" && UI.hab.namer)) return;   // a namer intent after it closed is dropped
+  if (m.screen === "habitat" && UI.hab.namer && !m.verb?.startsWith("room:")) return;   // the screen beneath takes no key while the namer is open
+  if (m.screen === "habitat" && m.verb?.startsWith("room:") && !h.holding()) endMeet(h);   // the first press ends the meet, a room key too
   if (m.verb === "back" && !isBuilt(m.screen) && !UI.idle && !h.holding()) { const up = parentScreen(m.screen); if (up) { if (up.screen === "pods" && up.state) { UI.pods.view = up.state; UI.pods.focusView = null; } h.goto(up.screen); } return; }
   if (h.holding()) { if (m.verb?.startsWith("room:") && !UI.resting) h.pendingRoom = m.verb.slice(5); return; }
   if (m.verb === "wake") { dispatch(h, m); const w = SPECS.frame.idle.wake, cut = !(h.motion ? h.motion() : true); h.play({ kind: "dither", target: "stage", ms: w.transition.ms, hold: cut ? 0 : w.hold }); return; }

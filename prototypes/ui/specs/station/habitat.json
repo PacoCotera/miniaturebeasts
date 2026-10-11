@@ -189,7 +189,7 @@
    "text": "the mibi's code in three groups with spaces, no dots (\"3MB W21 1BB\"), live text, shareable",
    "room": "152: the widest code, \"WWW WWW WWW\", is 152 at 16 px; the notches sit 8 px after it"
   },
-  "stamp": {"rect": [872, 64, 120, 120], "component": "stampLabel", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled", "fromFocal": 424},
+  "stamp": {"rect": [872, 64, 120, 120], "component": "stampLabel", "inStates": ["rest", "meet", "out"], "live": "the mibi's stamp, its read chapters filled (m.read: never an unread or a shut sealed chapter); the same in rest, meet and out", "picture": "kind stamp by mibi, as the Incubator's hatch (incubator-props.mjs:61), id stamp:<genomeDigest>:<sorted read>:<size>, so the meet keeps the hatch's picture; size = (N+2)·floor(104/(N+2)), at most 104, centred on the 120 label (station-layouts.md, The stamp label); props { size, N, cell, asset }", "until": "no asset: the bare bone label, no words", "fromFocal": 424},
   "plates": {
    "rect": [608, 200, 376, 40],
    "component": "list",

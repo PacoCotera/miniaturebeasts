@@ -10,7 +10,7 @@ import { lightAt } from "./views/home-props.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
-import { watchFrame } from "./trickle.mjs";
+import { watch as watchHabitat } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters } from "./masters.mjs";
@@ -66,7 +66,7 @@ let errN = 0, lastT = null;
 function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
   if (G.ready && FACE) {
-    const w = watchFrame({ st: G.st, sv: G.sv, settings: G.settings, screen: UI.screen, idle: UI.idle, habId: UI.hab.id, dt, now: Date.now() }); if (w && w.earned) save();   // the bench trickle (before the Idle check: Idle watches nothing)
+    watchHabitat(H, dt);   // the bench trickle (before the Idle check: Idle watches nothing): one mibi up close, rest or meet, not carried (habitat.json rules.watch)
     frameIntents.idleTick(H, t, IDLE_MS);   // frame.json idle.enter: a minute without a press, never in a hold, an arrival or Cargo's report card
     try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
@@ -151,7 +151,7 @@ const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]
 // The spec files the face takes (frame, pods, home, cargo and create), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer"]) SPECS[k] = await spec(k + ".json");
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
