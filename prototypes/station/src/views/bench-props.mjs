@@ -15,8 +15,8 @@ export function benchBuild(m, spec, frame) {
   const pr = S.probeNow(st, sv), tier = S.tierNow(st, sv), places = R.plates.places[tier] ?? [], count = S.TIER[tier].shield;
   const whole = Math.min(pr.shield, places.length), gone = !!st.probe && pr.shield < pr.smax;   // a plate is gone: the Probe was docked (it holds a Shield) and one is worn
 
-  // the stage: the Probe section's master, until it lands the collection's
-  const room = [slot(req, R.bench.slice, R.bench.rect, "the Probe section's stage master"), slot(req, "room-bench-stage-collection", R.bench.rect, "the collection's room master")];
+  // the stage: the Probe section's master (signed), one candidate
+  const room = [slot(req, R.bench.slice, R.bench.rect, "the Probe section's stage master (signed)")];
   // the cradle: one picture a tier, the empty cradle while the Probe is away; the tier-1 picture stays on the face while the install plays (it cuts at 300)
   const C = R.cradle.pictures, cradle = ph(!docked ? C.away : tier === 2 ? C.tier2 : C.tier1, R.cradle.rect.slice(2), !docked);
   if (ui?.install) ph(C.tier1, R.cradle.rect.slice(2));

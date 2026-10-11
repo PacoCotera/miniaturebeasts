@@ -10,12 +10,12 @@
 <text x="296" y="244" font-size="11" fill="#5a6672" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the Probe, tier 2</text>
 <line x1="296.5" y1="104" x2="296.5" y2="496" stroke="#c9d2da" stroke-dasharray="2 4"/>
 <rect x="192.5" y="416.5" width="207" height="79" fill="none" stroke="#9aa3ab" stroke-width="1" stroke-dasharray="2 3"/>
-<rect x="208.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="256.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="304.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="352.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<text x="408" y="440" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">plates 32×64, 48 pitch</text>
-<text x="408" y="450" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">tier 2: x 208, 256, 304, 352, y 424</text>
+<rect x="208.5" y="440.5" width="31" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="256.5" y="440.5" width="31" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="304.5" y="440.5" width="31" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="352.5" y="440.5" width="31" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<text x="408" y="440" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">plates 32×32, 48 pitch</text>
+<text x="408" y="450" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">tier 2: x 208, 256, 304, 352, y 440</text>
 <rect x="584.5" y="104.5" width="383" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/>
 <text x="600" y="132" font-size="16" fill="#8a947b">Mend</text>
 <rect x="940.5" y="116.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
@@ -26,10 +26,10 @@
 <text x="600" y="212" font-size="6" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">track on 80×40, knob x 56</text>
 <rect x="696.5" y="168.5" width="23" height="23" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <text x="708" y="202" font-size="6" fill="#777" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">dock</text>
-<rect x="736.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="760.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="808.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="736.5" y="172.5" width="15" height="15" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="760.5" y="172.5" width="15" height="15" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="172.5" width="15" height="15" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="172.5" width="15" height="15" fill="#ffffff" stroke="#444" stroke-width="1"/>
 <text x="840" y="184" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">the dock mends every plate</text>
 <rect x="584.5" y="248.5" width="383" height="247" fill="none" stroke="#9aa3ab" stroke-width="1" stroke-dasharray="2 3"/>
 <rect x="584.5" y="246.5" width="383" height="247" fill="#eceef1" stroke="#444" stroke-width="1"/>
@@ -45,10 +45,10 @@
 <rect x="784.5" y="310.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <rect x="808.5" y="310.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <rect x="832.5" y="310.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="350.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="808.5" y="350.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="832.5" y="350.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="856.5" y="350.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="358.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="358.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="832.5" y="358.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="856.5" y="358.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <rect x="784.5" y="406.5" width="39" height="39" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <rect x="840.5" y="406.5" width="39" height="39" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <text x="880" y="322" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">three pods</text>

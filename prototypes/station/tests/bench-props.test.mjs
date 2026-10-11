@@ -59,7 +59,7 @@ for (const [name, mk] of Object.entries(SCENES)) {
     assert.ok(!("tier" in b.props), "no top-level tier");
     assert.ok(JSON.stringify(b.props).length < 2 * 1024, "props " + JSON.stringify(b.props).length);
     for (const r of b.requests) assert.ok(["ph", "slot"].includes(r.kind), r.kind);
-    assert.deepEqual(b.props.regions.bench.room, [`${spec.regions.bench.slice}:1024x522`, "room-bench-stage-collection:1024x522"].map((x) => x));
+    assert.deepEqual(b.props.regions.bench.room, [`${spec.regions.bench.slice}:1024x522`]);
   });
 }
 
