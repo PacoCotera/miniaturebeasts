@@ -2,8 +2,8 @@
  "rules": [],
  "lip_joins": 0,
  "face_join": 0,
- "seam": 0.34,
+ "seam": 1.134,
  "seam_joins": 45,
- "repeat": 0.387,
+ "repeat": 0.016,
  "repeat_note": "autocorrelation at 48 px minus the mean at 30-43 and 53-66 px; <= 0.10 passes"
 }

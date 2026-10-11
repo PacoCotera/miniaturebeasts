@@ -40,14 +40,18 @@ EDGE = [0, 1, 1, 0, 1, 2, 1, 1, 0, 1, 1, 2, 2, 1, 0, 1, 1, 0, 1, 2, 1, 1, 0, 0]
 def rim_north(q):
     """the plateau's north edge across a quarter: drop line, lit rock lip, turf ragged edge."""
     for x in range(24):
-        q[0, x] = C["night"]; q[1, x] = C["rockL"]; q[2, x] = C["rockL"]; q[3, x] = C["rock"]; q[4, x] = C["forest"]
-        for k in range(EDGE[x]): q[5 + k, x] = C["leaf"]
+        q[0, x] = C["night"]; q[1, x] = C["rockL"]; q[2, x] = C["rockL"]; q[3, x] = C["rock"]; q[4, x] = C["stone"]; q[5, x] = C["forest"]
+        for k in range(EDGE[x]): q[6 + k, x] = C["leaf"]
+        for k, dens in enumerate(MARGIN): 
+            y = 6 + k
+            if q[y, x] == T and B4[y % 4, x % 4] < dens: q[y, x] = SH
 def rim_south(q):
     """the plateau's south edge (the face starts on the cell below): turf overhang, dark underside."""
     for x in range(24):
         d = EDGE[x]
         q[23, x] = C["forest"]; q[22, x] = C["leaf"]
         for k in range(d): q[21 - k, x] = C["leaf"]
+MARGIN = [16, 16, 13, 10, 8, 5, 3, 1]  # the grass inside a ledge one DARK step darker, fading over 8 px (Bayer thresholds of 16)
 SIDE_W = ["night", "rockL", "rockL", "rock", "rock", "stone", "forest"]      # the plateau's west side, lit: outline, rock strip, turf underside
 SIDE_E = ["night", "slate", "slate", "stone", "stone", "rock", "forest"]      # the east side, in shade
 def rim_west(q):
@@ -55,11 +59,17 @@ def rim_west(q):
         for i, n in enumerate(SIDE_W): q[y, i] = C[n]
         if (y + 2) % 7 == 0: q[y, 3] = C["stone"]                               # a joint in the strip
         for k in range(EDGE[y]): q[y, 7 + k] = C["leaf"]
+        for k, dens in enumerate(MARGIN):
+            x = 7 + k
+            if q[y, x] == T and B4[y % 4, x % 4] < dens: q[y, x] = SH
 def rim_east(q):
     for y in range(24):
         for i, n in enumerate(SIDE_E): q[y, 23 - i] = C[n]
         if (y + 5) % 7 == 0: q[y, 20] = C["slate"]
         for k in range(EDGE[y]): q[y, 16 - k] = C["leaf"]
+        for k, dens in enumerate(MARGIN):
+            x = 16 - k
+            if q[y, x] == T and B4[y % 4, x % 4] < dens: q[y, x] = SH
 
 def lip(quad, state):
     q = np.full((24, 24), T, dtype=np.int64)
@@ -84,11 +94,11 @@ def lip(quad, state):
         # rim, or the south turf, by the 6 columns of the side strip), coloured so each join continues its neighbour's strip.
         north = quad in ("nw", "ne"); west = quad in ("nw", "sw")
         side = SIDE_W if west else SIDE_E
-        for k in range(4):
+        for k in range(5 if north else 4):
             y = k if north else 23 - k
             for j in range(6):
                 x = j if west else 23 - j
-                if north: q[y, x] = C[side[j]] if k == 0 or j == 0 else C[["night", "rockL", "rockL", "rock"][k]]
+                if north: q[y, x] = C[side[j]] if k == 0 or j == 0 else C[["night", "rockL", "rockL", "rock", "stone"][k]]
                 elif k < 2 and j < 4: q[y, x] = C["forest"] if k == 0 else C["leaf"]   # south: the turf overhang turns the corner; the side strip below ends under it
         return q
 

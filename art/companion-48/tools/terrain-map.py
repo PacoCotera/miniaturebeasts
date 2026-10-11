@@ -12,7 +12,8 @@ Checks printed (and written to checks.json):
   face_join pixels that differ across the join of every pair of face tiles (they share bands, so 0)
   seam      mean luminance step across tile joins / mean step inside tiles, on the rendered map (<= 1.25 passes)
   repeat    autocorrelation of the grass luminance at a 48 px lag / at lag 1 px (<= 0.5 passes)
-usage: python3 -I terrain-map.py PIECES_DIR GROUND_DIR SHORE_DIR OUT_DIR"""
+usage: python3 -I terrain-map.py PIECES_DIR GROUND_DIR SHORE_DIR OUT_DIR [DECAL_DIR]
+(with DECAL_DIR the ground is body1..4 with the decals placed by a seeded rule off the tile grid; without it, the review place's grass1..4)"""
 import json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -20,6 +21,7 @@ from PIL import Image
 import quant
 P = quant.P; C = P.index
 pieces, ground, shore, out = sys.argv[1:5]; os.makedirs(out, exist_ok=True)
+decal_dir = sys.argv[5] if len(sys.argv) > 5 else None
 T, SH = -1, -2
 
 def load(p, shade=True):
@@ -28,7 +30,9 @@ def load(p, shade=True):
     if shade and os.path.exists(sp): a = np.where(np.asarray(Image.open(sp)) > 0, SH, a)
     return a
 def piece(n): return load(os.path.join(pieces, n + ".png"))
-G = {n: load(os.path.join(ground, n + ".png"), False) for n in ("grass1", "grass2", "grass3", "grass4", "flowers1", "flowers2", "water1", "water2")}
+GN = ("body1", "body2", "body3", "body4") if decal_dir else ("grass1", "grass2", "grass3", "grass4", "flowers1", "flowers2")
+G = {n: load(os.path.join(ground, n + ".png"), False) for n in GN + ("water1", "water2")}
+DEC = [load(os.path.join(decal_dir, f), False) for f in sorted(os.listdir(decal_dir)) if f.endswith(".png")] if decal_dir else []
 S = {m: load(os.path.join(shore, f"shore-{m:02d}-1.png"), False) for m in range(16)}
 D = {n: load(os.path.join(shore, f"shore-diag-{n}-1.png"), False) for n in ("ne", "se", "sw", "nw")}
 LIP = {(q, s): piece(f"lip-{q}-{s}") for q in ("nw", "ne", "se", "sw") for s in ("fill", "edgeh", "edgev", "outer", "inner")}
@@ -92,21 +96,44 @@ def lip_state(H, r, c, q):
 
 def grass_for(r, c):
     k = (r * 7 + c * 13 + r * c) % 11
+    if decal_dir: return G[GN[(r * 5 + c * 3 + (r * c) % 3) % 4]]
     return G[["grass1", "grass2", "grass3", "grass4", "grass1", "grass2", "grass3", "grass4", "flowers1", "grass2", "flowers2"][k]]
 
+PITCH = 23      # the decal grid: 23 px, which shares no period with the 48 px tiles
+def place_decals(img, ok):
+    """one decal at most per 23 px cell of a jittered grid, seeded; drawn only where its whole footprint is on plain ground."""
+    r = np.random.RandomState(4829)
+    for gy in range(0, img.shape[0], PITCH):
+        for gx in range(0, img.shape[1], PITCH):
+            pick, roll, ox, oy = r.randint(len(DEC)), r.rand(), r.randint(PITCH), r.randint(PITCH)
+            if roll > .8: continue
+            d = DEC[pick]; y, x = gy + oy - d.shape[0] // 2, gx + ox - d.shape[1] // 2
+            if y < 0 or x < 0 or y + d.shape[0] > img.shape[0] or x + d.shape[1] > img.shape[1]: continue
+            if not ok[y:y + d.shape[0], x:x + d.shape[1]].all(): continue
+            img[y:y + d.shape[0], x:x + d.shape[1]] = np.where(d >= 0, d, img[y:y + d.shape[0], x:x + d.shape[1]])
+
 def render(hm, stairs=(), bridge=(), lips_only=False):
-    H, Wt = model(hm); R, Cn = H.shape; img = np.zeros((R * 48, Cn * 48), dtype=np.int64)
+    H, Wt = model(hm); R, Cn = H.shape; img = np.zeros((R * 48, Cn * 48), dtype=np.int64); ok = np.zeros(img.shape, bool)
     w = lambda r, c: bool(Wt[r, c]) if 0 <= r < R and 0 <= c < Cn else False
+    # 1. the ground: bodies, water, the shore
     for r in range(R):
         for c in range(Cn):
+            plain = False
             if Wt[r, c]: t = G["water1" if (r + c) % 3 else "water2"].copy()
             else:
-                t = grass_for(r, c).copy()
+                t = grass_for(r, c).copy(); plain = not is_face(H, r, c)
                 if H[r, c] == 0 and not is_face(H, r, c):
                     m = w(r - 1, c) * 1 + w(r, c + 1) * 2 + w(r + 1, c) * 4 + w(r, c - 1) * 8
-                    if m: t = S[m].copy()
+                    if m: t = S[m].copy(); plain = False
                     for n, (dr, dc, a, b) in {"ne": (-1, 1, 1, 2), "se": (1, 1, 2, 4), "sw": (1, -1, 4, 8), "nw": (-1, -1, 8, 1)}.items():
-                        if w(r + dr, c + dc) and not (m & a) and not (m & b): t = over(t, D[n])
+                        if w(r + dr, c + dc) and not (m & a) and not (m & b): t = over(t, D[n]); plain = False
+            img[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = t; ok[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = plain
+    # 2. the meadow decals, off the tile grid
+    if DEC and not lips_only: place_decals(img, ok)
+    # 3. the terrain over it: lips, faces, stairs, shadows, foam
+    for r in range(R):
+        for c in range(Cn):
+            t = img[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48].copy()
             if H[r, c] >= 1 and not is_face(H, r, c):
                 for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "sw": (24, 0), "se": (24, 24)}.items():
                     t[y:y + 24, x:x + 24] = over(t[y:y + 24, x:x + 24], LIP[(q, lip_state(H, r, c, q))])
@@ -116,8 +143,7 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
                 if k == "cc" and (r + c) % 2: k = "cc-v"
                 t = over(t, piece("stairs") if (r, c) in stairs else FACE[k])
             if not lips_only and (r, c) in [(sr - 1, sc) for sr, sc in stairs]: t = over(t, piece("stairs-top"))
-            if not lips_only and c > 0 and not is_face(H, r, c) and H[r, c] < H[r, c - 1] + (1 if is_face(H, r, c - 1) else 0) \
-                    and (is_face(H, r, c - 1) or H[r, c - 1] > H[r, c]) and not Wt[r, c]:
+            if not lips_only and c > 0 and not is_face(H, r, c) and not Wt[r, c] and (is_face(H, r, c - 1) or H[r, c - 1] > H[r, c]):
                 t = over(t, piece("side-shadow-e"))
             if not lips_only and r > 0 and is_face(H, r - 1, c) and not is_face(H, r, c):
                 t = over(t, piece("foot-foam-1") if Wt[r, c] else piece("foot-shadow"))
