@@ -30,6 +30,10 @@ void namer_words(void);
 int namer_focus(focus_target_t *out, int cap);
 void namer_key(int code);
 int screens_overlay_known(const char *id);
+/* The Library spread (screens/library.c): its words, the frames as they drew them, its keys */
+void library_words(void);
+int library_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
+void library_key(int code);
 void idle_words(void);   /* Idle: the living window's code on frame.json idle, and its line (screens/home.c) */
 int home_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void home_key(int code);

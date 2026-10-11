@@ -82,6 +82,8 @@ int screens_vet_spec(const char *screen, char *err, int cap) {
         { char gp[176]; int gl; snprintf(gp, sizeof gp, "focus.%s.graph", key); const char *own = spec_raw(screen, gp, &gl); if (own && own[0] == '{') { sg = own; sl = gl; snprintf(b, sizeof b, "focus.%.140s.graph", key); } }   /* a state that keeps its graph beside its targets (Create, Incubator): that graph */
         char why[160]; focus_graph_t *fg = focus_graph_parse(sg, sl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: %s: %s", screen, b, why); return -1; } focus_graph_free(fg);
       } }
+  { int gl; const char *sg = spec_raw(screen, "spread.focus.graph", &gl);   /* a spec whose screen has a spread: its own graph is vetted too */
+    if (sg) { char why[160]; focus_graph_t *fg = focus_graph_parse(sg, gl, why, sizeof why); if (!fg) { snprintf(err, (size_t)cap, "spec %s: spread.focus.graph: %s", screen, why); return -1; } focus_graph_free(fg); } }
   for (int i = 0, n = spec_len(screen, "regions"); i < n; i++) {
     char key[48], base[96], p[160], dummy[2]; if (!spec_member(screen, "regions", i, key, sizeof key, dummy, sizeof dummy)) continue;
     snprintf(base, sizeof base, "regions.%s.forms", key);   /* a list's forms (listPitch): a form with no upTo, two with one upTo or a grid shorter than its upTo is refused at load */
@@ -103,6 +105,7 @@ static void draw(void) {
     else if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) home_words();
     else if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) vivarium_words();
     else if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { home_hidden(); habitat_words(); }
+    else if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { home_hidden(); library_words(); }
     else if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { home_hidden(); cargo_words(); }
     else if (strcmp(screen, "create") == 0 && spec_has("create") && spec_has("pods") && spec_len("props", "regions") >= 0) { home_hidden(); create_words(); }
     else if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { home_hidden(); incubator_words(); }
@@ -150,6 +153,7 @@ void screens_key(int code) {
   if (strcmp(screen, "home") == 0 && spec_has("home") && spec_len("props", "regions") >= 0) { home_key(code); return; }
   if (strcmp(screen, "vivarium") == 0 && spec_has("vivarium") && spec_len("props", "regions") >= 0) { vivarium_key(code); return; }
   if (strcmp(screen, "habitat") == 0 && spec_has("habitat") && spec_len("props", "regions") >= 0) { habitat_key(code); return; }
+  if (strcmp(screen, "library") == 0 && spec_has("library") && spec_len("props", "regions") >= 0) { library_key(code); return; }
   if (strcmp(screen, "cargo") == 0 && spec_has("cargo") && spec_len("props", "regions") >= 0) { cargo_key(code); return; }
   if (strcmp(screen, "create") == 0 && spec_has("create") && spec_len("props", "regions") >= 0) { create_key(code); return; }
   if (strcmp(screen, "incubator") == 0 && spec_has("incubator") && spec_len("props", "regions") >= 0) { incubator_key(code); return; }
