@@ -3205,5 +3205,22 @@
    "thoughtsTokenCount": 241,
    "totalTokenCount": 2063
   }
+ },
+ {
+  "tag": "bench-cradle-empty-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180706,
+  "mxn": 3.6141,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T15:02:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1073,
+   "candidatesTokenCount": 1318,
+   "thoughtsTokenCount": 170,
+   "totalTokenCount": 2561
+  }
  }
 ]
