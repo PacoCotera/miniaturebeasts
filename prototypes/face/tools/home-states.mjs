@@ -15,7 +15,6 @@ const SCENES = {
   "incubator-empty":    { f: "incubator", set: (w) => { w.adults(2); } },
   "incubator-growing":  { f: "incubator", set: (w) => { w.adults(2); w.bud(false); } },
   "incubator-ready":    { f: "incubator", set: (w) => { w.adults(2); w.bud(true); } },
-  "incubator-painting": { f: "incubator", set: (w) => { w.adults(2); w.painting(); } },
   "probe-docked":  { f: "probe", set: (w) => { w.adults(2); } },
   "probe-away":    { f: "probe", set: (w) => { w.adults(2); w.away(); } },
   "probe-sitting": { f: "probe", set: (w) => { w.adults(2); w.sitting(); } },
@@ -42,7 +41,6 @@ export const WORLD = () => ({
   pods(n) { const S = window.__st; for (let i = 0; i < n; i++) S.seedPod("S01", 3 + i); },
   waiting(n) { const st = window.__st.ST; for (let i = 0; i < n; i++) st.waiting.push({ ...st.tray[i], id: "wait" + i }); },
   bud(ready) { const st = window.__st.ST; st.bud = { kind: "founder", species: "S01", sp: 0, gs: 5, genome: st.mibis[0]?.genome ?? null, sha: "bud", code: "BUD", start: Date.now() - (ready ? 1e8 : 1000), minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: false, early: false }; },
-  painting() { const st = window.__st.ST, m = st.mibis[st.mibis.length - 1]; if (m) m.paint = { state: "sent" }; },
   sitting() { window.__st.ST.sitting = { mibi: window.__st.ST.mibis[0]?.id ?? 1 }; },
   known(ids) { window.__st.ST.knownIds = ids; },
 });

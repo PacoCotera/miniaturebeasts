@@ -10,8 +10,7 @@ export const BASE = "/caddy-api/v1";
 export const POLL_MS = 30000;
 export const state = { online: null, lastAt: 0, lastStatus: null, pending: new Map(), landed: new Map(), error: null };
 const wid = () => G.st.wid || "no-world";
-const waiting = (m) => !m.released && (!m.paint || ["queued", "painting", "capped", "sent"].includes(m.paint.state));
-export const anyWaiting = () => G.st.outbox.length > 0 || G.st.mibis.some(waiting) || (G.st.bud && (!G.st.bud.paint || G.st.bud.paint.state !== "done"));
+export const anyWaiting = () => G.st.outbox.length > 0;
 // The lamp's word for a mibi: null (its painting landed or failed for good), "waiting for the cloud" (offline or painter off), or "its painting is on its way".
 export function lampText(m) {
   if (!m.paint && !G.st.outbox.some((o) => o.sha === m.sha)) return m.paint?.state === "failed" ? null : "its painting is on its way";
