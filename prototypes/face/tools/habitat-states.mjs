@@ -27,10 +27,10 @@ const SCENES = {
   "docked-dusk": { shown: 0, f: "resident", state: "rest", light: "dusk", set: (w) => { w.bays(8); w.adults(4); } },
   "docked-night": { shown: 0, f: "resident", state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); } },
   namer: { shown: 0, f: "resident", state: "rest", meet: true, open: true, set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-typed": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["act.suggest", "x:back", "x:back", "key.12", "key.14", "key.13", "key.4"], set: (w) => { w.bays(8); w.adults(4); } },
+  "namer-typed": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["act.suggest", "x:back", "key.12", "key.14", "key.13", "key.4"], set: (w) => { w.bays(8); w.adults(4); } },
   "namer-accents": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.3", "mod.page"], set: (w) => { w.bays(8); w.adults(4); } },
   "namer-refused": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.0", "act.done"], set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-empty": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "x:back"], set: (w) => { w.bays(8); w.adults(4); } },
+  "namer-empty": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back"], set: (w) => { w.bays(8); w.adults(4); } },
   "namer-full": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", ...Array(10).fill("key.22")], set: (w) => { w.bays(8); w.adults(4); } },
 };
 async function enter(page, sc) {
