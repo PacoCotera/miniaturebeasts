@@ -166,3 +166,58 @@ test("a walking resident keeps its box in 16..1008 and its feet in the band 296.
   for (let ms = 40; ms <= 6000; ms += 40) f.frame(5000 + ms); logOf(f);
   withFocus(f, "resident." + b.st.mibis[0].id); let t = 6000; const p0 = (f.frame(5000 + (t += 40)), pos()); for (let i = 0; i < 400; i++) f.frame(5000 + (t += 40)); assert.equal(pos(), p0, "focused: it stands on its pixel");
 });
+
+// ---- Station M1 §3: residents with moving sets (stand-in atlases synthesized at the slot sizes; moving-scene.mjs) ----
+import { MOVING as MOVING_SETS, movingScene, bootScene, resend, runFrames, STATE, CLIP, ids as movingIds } from "./moving-scene.mjs";
+const HOUSE = { adults: 6, juveniles: 5, s05: 1, sleepers: 3 };   // S01 adult ×6, S01 juvenile ×5, S05 juvenile ×1, three bed sleepers breathing
+for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
+  test(`MOVING (M1 §3): twelve residents with moving sets and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}, the top bar live: no frame over 153,600 px, no overflow, at most six residents changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
+    const f = await bootScene(movingScene("vivarium", HOUSE)); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    const r = runFrames(f, 30000, { cadence, top: true });
+    assert.ok(r.worst <= 153600, `a frame redrew ${r.worst} px`); assert.ok(r.steps <= 6, `${r.steps} residents changed in one frame`); assert.equal(r.offgroup, 0); assert.ok(r.worstTick <= 148000, `a tick of ${r.worstTick} px`); assert.equal(f.invOverflows(), 0);
+    console.log(`# the Vivarium (moving, cadence ${cadence.join("/")}): worst frame ${r.worst} px, worst tick ${r.worstTick} px, ${r.deferred} deferred`);
+  });
+}
+// a test spec: the travel rules opened so every walker travels at once, an S05 adult at 144 × 152 walking 5 px a tick (stride 15): the per-tick budget must defer
+const rule2Sets = () => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S05.adult = { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [144, 152], stride: 15 }, shadow: { walk: [144, 16], close: [304, 24] } }; m.S05.juvenile.walk.stride = 15; return m; };
+const openRules = (spec) => { const v = JSON.parse(JSON.stringify(spec)); v.rules.travel = { floorDiv: 1, capMin: 12, capDiv: 1, airborne: 2, minRest: 1 }; return v; };
+test("rule 2 (M1 §3): six adult walkers at 5 px a tick on one group tick with the bed sleepers breathing: the tick stays inside 148,000 px and the budget defers, deterministically", { skip }, async () => {
+  const run = async () => {
+    const sc = movingScene("vivarium", { adults: 12, sleepers: 3, vivSpec: openRules(SPEC_VIV()) });
+    sc.props.regions.residents.forEach((r, i) => { if (i % 2) delete r.moving; else r.moving = { set: "S05", walk: "moving:adult:S05:walk:144x152:species", shadow: "moving:adult:S05:shadow:144x16" }; });   // the six of group 0 walk; the odd ones are stills
+    sc.requests.push({ kind: "moving", id: "moving:adult:S05:walk:144x152:species" }, { kind: "moving", id: "moving:adult:S05:shadow:144x16" });
+    const f = await bootScene(sc, { moving: rule2Sets() }); assert.deepEqual(f.errors(), []);
+    const r = runFrames(f, 20000); return { r, hash: f.hash() };
+  };
+  const a = await run(), b = await run();
+  assert.ok(a.r.worstTick <= 148000, `a tick of ${a.r.worstTick} px`); assert.ok(a.r.deferred > 0, "the budget deferred changes"); assert.equal(a.hash, b.hash, "deterministic"); assert.equal(a.r.deferred, b.r.deferred);
+  console.log(`# rule 2: worst tick ${a.r.worstTick} px, ${a.r.deferred} changes deferred in 20 s, worst frame ${a.r.worst} px`);
+});
+const SPEC_VIV = () => JSON.parse(JSON.stringify(spec));
+test("twelve at 160 × 154 (synthesized, S09's size) walking 5 px a tick, groups balanced: no frame over 153,600 px, no overflow, deferrals logged and deterministic (the same case on signed S09 cells: deferred to M3)", { skip }, async () => {
+  const sets = (() => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S09 = { species: "S09", native: "right", gait: "walk", adult: { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [160, 154], stride: 15 }, shadow: { walk: [160, 16], close: [304, 24] } } }; return m; })();
+  const run = async () => {
+    const v = SPEC_VIV(); v.regions.resident.adult = [160, 154];
+    const sc = movingScene("vivarium", { adults: 12, vivSpec: v }); sc.props.regions.residents.forEach((r) => { r.moving = { set: "S09", walk: "moving:adult:S09:walk:160x154:species", shadow: "moving:adult:S09:shadow:160x16" }; r.picture = r.picture.replace("144x152", "160x154"); });
+    sc.requests = sc.requests.map((q) => (q.size && q.size[0] === 144 ? { ...q, id: q.id.replace("144x152", "160x154"), size: [160, 154] } : q)); sc.requests.push({ kind: "moving", id: "moving:adult:S09:walk:160x154:species" }, { kind: "moving", id: "moving:adult:S09:shadow:160x16" });
+    const f = await bootScene(sc, { moving: sets }); assert.deepEqual(f.errors(), []); for (let i = 0; i < 12; i++) assert.ok(f.M._face_test_cell(i) >= 0, "resident " + i + " moves");
+    const groups = Array.from({ length: 12 }, (_, i) => f.M._face_test_mv(i, 10)); assert.equal(groups.filter((g) => g === 0).length, 6, "the large residents alternate groups");
+    const r = runFrames(f, 30000, { cadence: [16, 5, 120], top: true }); return { r, hash: f.hash() };
+  };
+  const a = await run(), b = await run();
+  assert.ok(a.r.worst <= 153600, `a frame redrew ${a.r.worst} px`); assert.equal(a.r.overflows, 0); assert.equal(a.hash, b.hash); assert.equal(a.r.deferred, b.r.deferred);
+  console.log(`# twelve at 160 × 154: worst frame ${a.r.worst} px, worst tick ${a.r.worstTick} px, ${a.r.deferred} deferred (deterministic)`);
+});
+test("determinism (M1 §3): the same props and frame times give the same hash in two faces; a late frame and fifty frames on give the on-time run's walk, later", { skip }, async () => {
+  const run = async (L) => { const f = await bootScene(movingScene("vivarium", HOUSE)); runFrames(f, 6000, { cadence: [40, 0, 0] }); f.frame((f.t += L)); for (let i = 1; i <= 50; i++) f.frame((f.t += 40)); return f.hash(); };
+  const a = await run(40), b = await run(40); assert.equal(a, b, "two faces, one walk");
+  for (const L of [80, 120, 1000]) assert.equal(await run(L), a, `${L} ms late: fifty frames on, the household is the on-time household, later`);
+});
+test("motion off (M1 §3): every moving resident stands (curls when asleep), and nothing is redrawn over 10 s", { skip }, async () => {
+  for (const time of [12 * 3600, 23 * 3600]) {
+    const sc = movingScene("vivarium", { ...HOUSE, time }), f = await bootScene(sc, { motion: false }), M = f.M, I = movingIds("S01", "adult");
+    for (let i = 0; i < 12; i++) { const s = STATE(M._face_test_state(i)), r = sc.props.regions.residents[i], set = MOVING_SETS[r.moving.set][r.stage === "juvenile" ? "juvenile" : "adult"].walk.cells;
+      assert.equal(s.clip, time > 20 * 3600 ? CLIP.asleep : CLIP.rest); const c = M._face_test_cell(i), name = c < set.length ? set[c] : MOVING_SETS[r.moving.set][r.stage === "juvenile" ? "juvenile" : "adult"].walk.mirror[c - set.length]; assert.equal(name, time > 20 * 3600 ? "curl" : "stand", `resident ${i} at ${time / 3600} h`); }
+    const r = runFrames(f, 10000); assert.equal(r.worst, 0, "dirty 0"); void I;
+  }
+});

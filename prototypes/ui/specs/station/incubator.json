@@ -103,7 +103,25 @@
     { "at": 1400, "ms": 200, "lift": [[0,1],[25,2],[50,3],[75,4],[100,3],[125,2],[150,1],[175,0]], "do": "the juvenile steps out: `lift` ([ms into the step, px above its feet line 472]), each a cut, whole pixels, no ease; the ribbon and the base's lamp stay (the meet's hop at half its period, habitat.json events.moment.placeholder; UI designer, 2026-10-10 09:15)" },
     { "at": 1800, "ms": 200, "lift": "the same table as the step at 1400", "do": "a second step, the same table" },
     { "at": 2600, "ms": 180, "do": "the screen transition (16-level Bayer dither) to one mibi up close, in the meet (handoff)" }
-   ]
+   ],
+   "moving": {
+    "ms": 6400, "hold": 2720, "firstHold": 5840, "cut": true, "cutMeetHold": 300,
+    "when": "the juvenile has a moving set (its `moving` prop: the close atlas and its shadow); with none, the steps above; motion off: the cut to the meet on the frame of ✓, as now (Station M1 §2.5, the game designer's R2 and R5)",
+    "hold.rule": "input is held to 2720 (the stand: crack, curled, one sleeping breath and the wake seen whole); on a save's first hatch (bud.firstEver, kept on the hatch) to 5840, the stand after the first hop",
+    "steps": [
+     { "at": 0, "ms": 1000, "do": "the bud as now: still to 600, crack 1 at 600, crack 2 at 800" },
+     { "at": 1000, "ms": 180, "do": "the curl dithers in from clear over the held open bud (crack 2 under it), 16 levels; the bud goes at 1180" },
+     { "at": 1180, "do": "curl (b0)" },
+     { "at": 1500, "ms": 640, "do": "curl-b1" },
+     { "at": 2140, "ms": 180, "do": "curl to crouch, a 16-level dither; the crouch drawn 2 px lower" },
+     { "at": 2320, "ms": 400, "do": "crouch held" },
+     { "at": 2720, "do": "stand (+2 px rise to its line); the first breath: b0 880, b1 240, b2 800, b1 480" },
+     { "at": 5120, "ms": 720, "lift": [6, 14, 17, 14, 6], "do": "the first hop at 0.7×: crouch 160, air 400 (the lift on 80 ms ticks: the up-close table at 0.7×, the animator's M1 number), crouch 160" },
+     { "at": 5840, "do": "stand, breathing from b0" },
+     { "at": 6400, "ms": 180, "do": "the hand-off (the 180 ms screen dither), unless a key cut it" }
+    ],
+    "cut.rule": "UI/UX \"Hatch cutting key\": from the hold to 6400 the first key only lands the meet, drawn as a cut with no dither (the ring on resident at [136, 380, 320, 24], the meet ribbon at [144, 416, 304, 40], no name tag, the bottom line's action strings.name, the resident's waiting lamp only while its placeholder is drawn); ✓ opens no namer, ← does not leave, the pad does not end the meet, a room key (pressed after the hold, or kept from it) is used up; the Dock is not a cutting key. After a cut landing the meet's moment holds input cutMeetHold ms; after a normal hand-off it holds none"
+   }
   }
  },
  "handoff": {

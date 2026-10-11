@@ -34,6 +34,59 @@
     },
     "seed": {
      "type": "integer"
+    },
+    "moving": {
+     "oneOf": [
+      {
+       "enum": [
+        ""
+       ]
+      },
+      {
+       "type": "object",
+       "required": [
+        "set",
+        "walk",
+        "shadow"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "set": {
+         "type": "string"
+        },
+        "walk": {
+         "type": "string"
+        },
+        "shadow": {
+         "type": "string"
+        }
+       }
+      },
+      {
+       "type": "object",
+       "required": [
+        "set",
+        "nap"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "set": {
+         "type": "string"
+        },
+        "nap": {
+         "type": "string"
+        }
+       }
+      }
+     ],
+     "description": "Station M1 §2.2: \"\" (a still, main's walk) or the atlases of its moving set (the walk and its shadow; a bed sleeper its nap); the face never makes an id"
+    },
+    "rest": {
+     "enum": [
+      "awake",
+      "asleep"
+     ],
+     "description": "Station M1 §2.6: by restOf (the rest stagger) from the Station time"
     }
    }
   },

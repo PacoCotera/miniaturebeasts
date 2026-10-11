@@ -17,6 +17,7 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
+  if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
   if (sc.enum && !sc.enum.includes(v)) { out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(sc.enum)}`); return out; }
   if (sc.type) {
     const ts = [].concat(sc.type), ty = v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v;
@@ -59,9 +60,9 @@ test("Home's props validate against home.props.json in every scene, name no rect
   }
 });
 
-test("residents at home walk (a seed each), the carried set sleeps on the bed (no seed), the bed is a PH plate in every state", () => {
+test("residents at home walk (a seed each), the carried set sleeps on the bed (a seed each too: its breath's phase, Station M1 §2.6), the bed is a PH plate in every state", () => {
   const sc = scenes(), d = build(sc.docked.st, sc.docked.sv).props.regions;
-  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.deepEqual(d.bed.sleepers.map((s) => s.seed), [0, 0]); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
+  assert.equal(d.residents.length, 2); assert.ok(d.residents.every((r) => r.seed > 0)); assert.ok(d.bed.sleepers.every((s) => s.seed > 0)); assert.notDeepEqual(d.bed.sleepers.map((s) => s.seed), d.residents.map((r) => r.seed)); assert.equal(d.bed.state, "docked"); assert.equal(d.bed.mark, "", "docked: no mark on the bed"); assert.match(d.bed.picture, /^home-bed-day-192x56/);
   const a = build(sc.away.st, sc.away.sv).props.regions; assert.equal(a.bed.state, "away"); assert.deepEqual(a.bed.sleepers, []); assert.equal(a.bed.mark, "home-bed-mark-16x24", "away: the bed shows its mark"); assert.equal(a.cargo.state, "away"); assert.equal(a.probe.state, "away");
   const n = build(sc.empty.st, sc.empty.sv).props.regions; assert.equal(n.bed.state, "none"); assert.deepEqual(n.residents, []);
   const seeds = d.residents.map((r) => r.seed), again = build(sc.docked.st, sc.docked.sv).props.regions.residents.map((r) => r.seed); assert.deepEqual(again, seeds, "the seed is the mibi's, the same every time");

@@ -17,6 +17,7 @@ const T0 = 1_000_000, cfg = (bays) => ({ ...S.DEFAULT_SETTINGS, economy: "decide
 
 function validate(v, sc, at = "$", out = []) {
   if (sc.$ref) return validate(v, schema.$defs[sc.$ref], at, out);
+  if (sc.oneOf) { const ok = sc.oneOf.filter((o) => validate(v, o, at, []).length === 0).length; if (ok !== 1) out.push(`${at}: matches ${ok} of oneOf`); return out; }   // the moving prop: "" or one object form (Station M1 §2.2)
   if (sc.enum && !sc.enum.includes(v)) { out.push(`${at}: ${JSON.stringify(v)} is not one of ${JSON.stringify(sc.enum)}`); return out; }
   if (sc.type) {
     const ts = [].concat(sc.type), ty = v === null ? "null" : Array.isArray(v) ? "array" : Number.isInteger(v) ? "integer" : typeof v;

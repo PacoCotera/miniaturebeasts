@@ -14,6 +14,7 @@
 #include "../bridge/wire.h"
 #include "../anim/anim.h"
 #include "../focus/focus.h"
+#include "moving.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,11 +54,12 @@ static void build_bench(void) {
 }
 static void picture(const char *region, const char *id, const char *path, const char *asset) { int r[4]; crect(path, r); if (has(asset)) { v_name(region); v_sprite(id, asset, r[0], r[1], r[2], r[3]); } }
 
+static int hatch_moving(void);
 /* the bud: its five pictures and the ready shape are always nodes, one shown by the state (and the hatch's time): the wait's first half, the second, ready (with the shape), the crack at 600, the opening at 800, nothing at 1000 */
 static void build_bud(int t) {
   if (spec_len("props", "regions.bud") < 0) return;
   int r[4], s[4]; crect("regions.bud.rect", r); crect("regions.bud.shape.rect", s); const char *stage = v_pstr("regions.bud.stage");
-  int a1 = ci("events.hatch.steps.2.at", 600), a2 = ci("events.hatch.steps.3.at", 800), a3 = ci("events.hatch.steps.4.at", 1000);
+  int a1 = ci("events.hatch.steps.2.at", 600), a2 = ci("events.hatch.steps.3.at", 800), a3 = hatch_moving() ? 1180 : ci("events.hatch.steps.4.at", 1000);   /* with a moving set the open bud is held under the curl's dither-in, gone at 1180 */
   const char *which = strcmp(stage, "early") == 0 ? "early" : strcmp(stage, "late") == 0 ? "late" : "ready";
   if (t >= a3) which = ""; else if (t >= a2) which = "crack2"; else if (t >= a1) which = "crack1";
   static const char *K[5] = { "early", "late", "ready", "crack1", "crack2" };
@@ -72,9 +74,51 @@ static void build_base(void) {
     v_text("plaque", w, cx - v_half(tw), ci("regions.plaque.lineTop", 502) + v_fdiv(20 - v_cap(px), 2), *w ? tw : 0, px, colr(v_fmt("colours.plaque.%s", strcmp(st, "hatch") == 0 ? "ready" : st))); }
   { const char *pic = v_pstr("regions.lamp.picture"); if (spec_len("props", "regions.lamp") >= 0) { int r[4]; crect("regions.base.lamp.rect", r); v_name("lamp"); if (v_pbool("regions.lamp.on", 0)) v_sprite("lamp", pic, r[0], r[1], r[2], r[3]); else v_sprite_hidden("lamp", pic, r[0], r[1]); } }
 }
+/* ---- the hatch's first motion (Station M1 §2.5; incubator.json events.hatch.moving) for a juvenile with a moving set: the curl dithers in from clear over the held open bud (1000–1180), curl, curl·b1 (1500), curl to crouch
+   (2140–2320, the crouch 2 px lower), crouch held, the stand at 2720 and its first breath, the first hop at 5120 (crouch 160, air 400 on the up-close table at 0.7×, crouch 160), stand at 5840 breathing from b0. ---- */
+static const mv_stage_t *hatch_set(void) {
+  const char *set = v_pstr("regions.juvenile.moving.set"), *atlas = v_pstr("regions.juvenile.moving.close"); if (!*set || !wire_has_asset(atlas)) return NULL;
+  const mv_stage_t *ms = moving_stage(set, MV_JUV); int r[4]; crect("regions.juvenile.rect", r); return ms && ms->cw == r[2] && ms->ch == r[3] ? ms : NULL;
+}
+static int hatch_moving(void) { return hatch_set() != NULL && in_state("hatch"); }
+int incubator_tick(uint32_t now) { (void)now; return 0; }   /* the hatch is an event: its frames are drawn while it plays */
+static int mv_at(int at_ms) { return at_ms; }
+/* the cell (close-cell name), dy, lift, a dither (from NULL: clear) and shadow-75 at t ms of the hatch; NULL cell: not shown yet */
+typedef struct { const char *cell, *dfrom; int dy, lift, dl, ddf, ddt, sh75, shadow; } hatchf_t;
+static void hatch_frame(const mv_stage_t *S0, int t, hatchf_t *f) {
+  memset(f, 0, sizeof *f);
+  if (t == HATCH_END || t >= mv_at(5840)) {   /* stand, breathing from b0 (the hand-off at 6400 is the host's); the end state is the stand */
+    int k = t == HATCH_END ? 0 : (t - 5840) / 80, p = 0; for (int i = 0; i < S0->breathe.n; i++) p += S0->breathe.ms[i] / 80; k %= p > 0 ? p : 1;
+    int c = S0->breathe.cell[0]; for (int i = 0; i < S0->breathe.n; i++) { int d = S0->breathe.ms[i] / 80; if (k < d) { c = S0->breathe.cell[i]; break; } k -= d; }
+    f->cell = S0->wcell[c]; f->shadow = 1; return; }
+  if (t < 1000) return;
+  if (t < 1180) { f->cell = "curl"; f->dl = 1 + 15 * (t - 1000) / 180; f->dfrom = NULL; return; }   /* 16 levels from clear */
+  if (t < 1500) { f->cell = "curl"; f->shadow = 1; return; }
+  if (t < 2140) { f->cell = "curl-b1"; f->shadow = 1; return; }
+  if (t < 2320) { f->cell = "crouch"; f->dy = 2; f->dl = 1 + 15 * (t - 2140) / 180; f->dfrom = "curl"; f->ddt = 2; f->shadow = 1; return; }
+  if (t < 2720) { f->cell = "crouch"; f->dy = 2; f->shadow = 1; return; }
+  if (t < 5120) { int k = (t - 2720) / 80, c = S0->breathe.cell[0]; for (int i = 0; i < S0->breathe.n; i++) { int d = S0->breathe.ms[i] / 80; if (k < d) { c = S0->breathe.cell[i]; break; } k -= d; } f->cell = S0->wcell[c]; f->shadow = 1; return; }   /* the first breath from 2720 */
+  { int lift[8], n = 0; for (int i = 0, m = spec_len(I, "events.hatch.moving.steps"); i < m; i++) if (spec_len(I, v_fmt("events.hatch.moving.steps.%d.lift", i)) > 0) { n = spec_len(I, v_fmt("events.hatch.moving.steps.%d.lift", i)); if (n > 8) n = 8; for (int k = 0; k < n; k++) lift[k] = spec_int(I, v_fmt("events.hatch.moving.steps.%d.lift.%d", i, k), 0); break; }
+    const char *c = "stand"; int up = 0, sh = 0; if (n && moving_close_hop(S0, t - 5120, lift, n, 1, 1, &c, &up, &sh)) { f->cell = c; f->lift = up; f->sh75 = sh; } else f->cell = "stand"; f->shadow = 1; }
+}
+int incubator_test_cell(void) { const mv_stage_t *S0 = hatch_set(); if (!S0) return -100; hatchf_t f; hatch_frame(S0, hatch_time(), &f); return !f.cell ? -50 : f.dl ? -1 - f.dl : moving_close_cell(S0, f.cell); }
+static void build_moving_juvenile(const mv_stage_t *S0, int t) {
+  int r[4]; crect("regions.juvenile.rect", r); const char *atlas = v_pstr("regions.juvenile.moving.close"), *shadow = v_pstr("regions.juvenile.moving.shadow"); char at[96], sh[96]; snprintf(at, sizeof at, "%s", atlas); snprintf(sh, sizeof sh, "%s", shadow);
+  hatchf_t f; hatch_frame(S0, t, &f); int feet = r[1] + r[3];
+  if (wire_has_asset(sh)) { v_name("juvenile.shadow"); if (f.cell && f.shadow) v_sprite_window("juvenile.shadow", sh, 1 + (f.sh75 ? 1 : 0) * S0->scw, 0, r[0], feet - S0->sch, S0->scw, S0->sch); else v_sprite_hidden("juvenile.shadow", sh, r[0], feet - S0->sch); }
+  v_name("juvenile");
+  if (!f.cell) { v_sprite_hidden("juvenile", at, r[0], r[1]); return; }
+  int ci = moving_close_cell(S0, f.cell); if (ci < 0) ci = 0;
+  if (f.dl) {
+    int a = f.dfrom ? moving_close_cell(S0, f.dfrom) : -1, D = f.ddf > f.ddt ? f.ddf : f.ddt, hh = r[3] - (f.ddf > f.ddt ? f.ddf - f.ddt : f.ddt - f.ddf);
+    v_sprite_hidden("juvenile", at, r[0], r[1]);
+    v_region("juvenile", LAYER_ART); v_dither_window("juvenile.dither", a >= 0 ? at : NULL, a >= 0 ? 1 + a * S0->cw : 0, D - f.ddf, at, 1 + ci * S0->cw, D - f.ddt, f.dl, r[0], r[1] + D, r[2], hh);
+  } else v_sprite_window("juvenile", at, 1 + ci * S0->cw, 0, r[0], r[1] - f.lift + f.dy, r[2], r[3]);
+}
 /* the juvenile stands in its box on the base from 1000 and steps out at 1400 and 1800; the picture is the new mibi's, its placeholder until the painting lands */
 static void build_juvenile(int t) {
   if (spec_len("props", "regions.bud") < 0) return;
+  { const mv_stage_t *S0 = hatch_set(); if (S0 && in_state("hatch")) { build_moving_juvenile(S0, t); return; } }
   int r[4]; crect("regions.juvenile.rect", r); const char *pic = v_pstr("regions.juvenile.picture"); int a = ci("events.hatch.steps.4.at", 1000), up = 0, sat[4], sms[4], table, ns = lift_steps(sat, sms, &table, 4);
   int on = has(pic) && t >= a; for (int i = 0; on && i < ns; i++) if (t >= sat[i] && t < sat[i] + sms[i]) up = step_lift(table, t - sat[i]);
   v_name("juvenile"); if (on) v_sprite("juvenile", pic, r[0], r[1] - up, r[2], r[3]); else v_sprite_hidden("juvenile", has(pic) ? pic : v_pstr("regions.bud.ready"), r[0], r[1]);

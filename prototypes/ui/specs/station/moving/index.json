@@ -1,0 +1,1 @@
+{ "sets": ["S01", "S05"], "note": "the moving sets the host loads (Station M1 §2.2): one file a species, merged into the one spec `moving` (spec.c holds 24 specs); a species is added here with its file, no code change" }

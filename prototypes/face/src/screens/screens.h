@@ -25,6 +25,7 @@ void vivarium_key(int code);
 void habitat_words(void);
 int habitat_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void habitat_key(int code);
+void habitat_hidden(void); int habitat_tick(uint32_t now); int habitat_test_cell(void); int habitat_test_lift(void);   /* up close with a moving set: its own 80 ms tick (Station M1 §2.4) */
 /* The namer (screens/namer.c), an overlay: its words, its targets as they drew them (the props' list), its keys. `screens_overlay_known`: whether the face has a binding table for the overlay id */
 void namer_words(void);
 int namer_focus(focus_target_t *out, int cap);
@@ -42,6 +43,7 @@ void idle_words(void);   /* Idle: the living window's code on frame.json idle, a
 int home_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 void home_key(int code);
 int home_tick(uint32_t now);
+int home_test_cell(int i); int home_test_state(int i); int home_test_mv(int i, int field); int home_test_nap(int i);   /* test hooks on the moving residents (M1 §2.3 item 11) */
 /* Home's compositions (screens/home_builds.c): a module of the column, the name tag, the rest knob and a resident's waiting lamp */
 void build_module(const char *spec, const char *key, int dy, const char *lamp);   /* the module of `spec`'s region `key` (a spec with "lamp": null has no lamp node) */
 void build_nameTag(const char *spec, const char *glass, const char *name, const int box[4], int lift, int out[4]);   /* the name tag for the screen of `spec`, over its window region `glass` */
@@ -62,6 +64,7 @@ int create_focus(focus_target_t *out, int cap, char *graph_key, int gcap);
 /* The Incubator (screens/incubator.c): its words by the state the props name, and its keys (one subject: the room, no ring, no pad) */
 void incubator_words(void);
 void incubator_key(int code);
+int incubator_tick(uint32_t now); int incubator_test_cell(void);   /* the hatch with a moving set (Station M1 §2.5) */
 /* Home's walk starts again from the seeds the next time it shows (called when the screen drawn is another) */
 void home_hidden(void);
 /* An intent or a focus message for the screen of the props (kind "intent" with a verb, or "focus"). */

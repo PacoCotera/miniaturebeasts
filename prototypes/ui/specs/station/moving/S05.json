@@ -1,0 +1,19 @@
+{
+  "species": "S05",
+  "native": "right",
+  "gait": "walk",
+  "juvenile": {
+    "walk": { "size": [104, 112], "cells": ["stand", "stand-b1", "stand-b2", "crouch", "pass", "stepa", "stepb", "curl", "curl-b1"], "mirror": ["stand", "stand-b1", "stand-b2", "crouch", "pass", "stepa", "stepb"],
+      "beat": "quick", "cycle": [["pass", 80], ["stepa", 160], ["pass", 80], ["stepb", 160]], "stride": 12, "passRise": 1 },
+    "close": { "size": [304, 312], "cells": ["stand", "stand-b1", "stand-b2", "crouch", "stepa", "curl", "curl-b1"] },
+    "nap": { "size": [96, 88], "cells": ["curl", "curl-b1"] },
+    "shadow": { "walk": [104, 16], "close": [304, 24] },
+    "breathe": [["stand", 880], ["stand-b1", 240], ["stand-b2", 800], ["stand-b1", 480]],
+    "asleep": [["curl", 2400], ["curl-b1", 2400]],
+    "curl": { "crouch": 320, "lower": [1, 1], "dither": 4, "breathAfter": 800 },
+    "wake": { "dither": 4, "crouch": 400, "rise": 2 },
+    "stir": { "dither": 4, "crouch": [2000, 4000] },
+    "ack": { "crouch": 160 },
+    "closeDitherMs": 180
+  }
+}
