@@ -197,14 +197,14 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 
   <aside class="panel" aria-label="Playtest notes">
     <h1>Companion Field Test</h1>
-    <p class="lede">Exploration on a simulated Companion screen. It shares one save with the <a href="../station/">Station page</a> in this browser: Head home here, then dock there and open your crates to read the pods.</p>
+    <p class="lede">Exploration on a simulated Companion screen. It shares one save with the <a href="../station/">Station page</a> in this browser: End an expedition here, then dock there and open your crates to read the pods.</p>
     <details id="howTo">
       <summary>How to play</summary>
       <ul>
         <li><kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> or <kbd>WASD</kbd>, or the pad: move. Tap to creep one step; hold to walk. Creeping never startles a creature unless you step right next to it.</li>
         <li><kbd>Enter</kbd> / <kbd>Space</kbd> or the orange button: <b>Confirm</b>. It does exactly what the bottom line says after ✓.</li>
-        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← Head home" on the start cell or a lit outpost, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or Head home on top, then Wait, Probe, Cargo, Mibis.</li>
-        <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. At home it calls the mibi with you, which answers..</li>
+        <li><kbd>Esc</kbd> / <kbd>Backspace</kbd> or the grey <b>←</b> key. The key has no word on it: the right end of the bottom line always says what it does ("← Leave" in a place, "← End expedition" on the start cell or a lit outpost, "← Mibis", "← close"). In the field it opens the menu: Leave (in a place) or End expedition on top, then Wait, Probe, Cargo, Mibis.</li>
+        <li><kbd>C</kbd> or the teal button: <b>Call</b>. In a place it sends a pulse (one action): hidden finds glint, curious creatures come, shy ones hide, your partner comes. On the map it pins your cell for 1 Energy. On Mibis and a mibi's own screen it calls the mibi with you, which answers..</li>
         <li>Every step, act, Call or Wait is one tick of the field clock. Doing nothing changes nothing. Facing nothing in a place, ✓ waits one action; Wait shows time passing and says what moved, or "Nothing is moving here".</li>
         <li>Each place starts under a veil: you see the ground, not what is on it. It lifts 4 tiles around you as you walk, and stays lifted; <b>Call</b> sends a ring that lifts it as it spreads, 7 tiles round (4 in a fog bank); creatures show through it. A quarter counts as surveyed once every tile in it is unveiled; the overview shows 75% as a lighter "almost".</li>
         <li>The dots top left are your reach, one per cell: a dot fills once you have been in that place and Called there; your cell is framed. Fill them all and everything in reach is explored. The map's quarters show how fully each place is surveyed.</li>
@@ -221,10 +221,10 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data. A walk brings home 2 / 4 / 6 / 8 Data by the tier of the place (meadow and pond edge 2, wood and rock field 6, the cave 8): moments bring it in early, the rest arrives at Head home.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data. A walk earns 2 / 4 / 6 / 8 Data by the tier of the place (meadow and pond edge 2, wood and rock field 6, the cave 8): moments bring it in early, the rest arrives when you end the expedition.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
-        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>Head home</b> from the menu; away from it the menu says how far. Head home seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then <b>Open the crates</b> in its developer panel (the Station's Cargo is not built yet), and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
-        <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can head home there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
+        <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then <b>Open the crates</b> in its developer panel (the Station's Cargo is not built yet), and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
+        <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
         <li>In a fog bank you see 4 tiles: creep close to wary creatures and fill up on dew.</li>
       </ol>
     </details>
@@ -273,7 +273,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
    Rules are separate from rendering. All world randomness is seeded.
    Sections: 0 palette · 1 constants · 2 RNG · 3 world · 4 patch layouts
    5 state & persistence · 6 map rules · 7 patch rules · 8 creatures & partner
-   9 Head home, the sealed bay & world turn · 10+ rendering, input, page
+   9 End expedition, the sealed bay & world turn · 10+ rendering, input, page
    ===================================================================== */
 
 // ===================== 0. Screen palette (data; maps 1:1 to an LVGL palette) =====================
@@ -334,7 +334,7 @@ function setDataStep(v) { v = +v; dataStep = v > 0 && v <= 20 ? v : DATA_STEP; t
 function placeTier(lay) { return lay.cave ? CAVE_TIER : PLACE_TIER[lay.land] || 1; }
 function noteTier(ex, lay) { ex.placeTier = Math.max(ex.placeTier || 0, placeTier(lay)); }   // the walk's tier: the highest place it entered
 const walkTier = ex => ex.placeTier || 0;
-const walkYield = ex => Math.round(walkTier(ex) * dataStep);                                 // the Data this walk brings home
+const walkYield = ex => Math.round(walkTier(ex) * dataStep);                                 // the Data this walk earns
 const dataLadder = () => [1, 2, 3, 4].map(t => Math.round(t * dataStep)).join(' / ');
 // Station stand-in prices.
 const DEPOT_NAME = 'outpost';   // placeholder name, one place to rename it
@@ -342,7 +342,7 @@ const PRICE = { depot: 1, depotMend: 1, beacon: 1, identify: 1, hatchE: 2, hatch
 const STRAY = { strong: 1 / 20, peak: 1 / 10 };   // stray strike odds per action in the open
 const JUVENILE_TURNS = 2, ELDER_TURNS = 6;      // juvenile for 2 world turns; elder after 6 more as an adult
 // Warm stones: at each world turn the sun warms a few of the stones lightning didn't strike (+1, never more):
-// 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk brings home about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
+// 6 to 8 in the Probe's reach (was 3 to 5; tuned 2026-10-09, 6 to 8 after the first measure, so a calm walk earns about 3 Energy, research-economy.md §9), chosen when the expedition sets out. Each still holds +1, never more.
 const WARM_MIN = 6, WARM_MAX = 8, WARM_NEAR = 0.25;   // the seeded pick leans toward cells near the start
 // Survey: Call lifts the veil CALL_R tiles around you (CALL_R_FOG in a fog bank); a quarter of 14×16 tiles counts at SURVEY_AT.
 const CALL_R = 11, CALL_R_FOG = 6,   // the Call's range: a round 11 tiles (6 in a fog bank); its ring IS the unveil
@@ -368,7 +368,7 @@ const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', c
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
 // The five map signs, each explained once the first time the line names it.
 const SIGN_NAME = { pod: 'pod found', t: 'tracks', b: 'slow beat', k: 'bolt', kw: 'warm stone', beacon: 'lit beacon', skull: 'the Probe broke here', depot: DEPOT_NAME, pin: 'pin', burrow: 'needs a digger', water: 'fast water', deep: 'deep ?' };
-const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'A beacon: light it for 1 Energy to reveal the land around', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: 'An ' + DEPOT_NAME + ': light it for 1 Energy to head home, mend and shelter there',
+const SIGN_HELP = { pod: 'Pod · found here, not taken yet', t: 'Tracks · creatures live here', b: 'Slow beat · something pulses underground, often a pod', k: 'Bolt · a stone here holds storm charge', kw: 'Hollow bolt · a warm stone found here · +1 Energy', beacon: 'A beacon: light it for 1 Energy to reveal the land around', skull: 'Skull · the Probe broke here · its pods lie in this place (or in the cave below)', depot: 'An ' + DEPOT_NAME + ': light it for 1 Energy to end an expedition, mend and shelter there',
   pin: 'Pin · your mark · ))) on it again removes it', burrow: 'Narrow hole · a digging partner can open it', water: 'Fast water · needs a swimmer', deep: 'Deep ? · a tier 2 Probe can read it' };
 
 // ===================== 2. Seeded RNG and noise =====================
@@ -641,7 +641,7 @@ function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q =
   for (const c of ex.reach) if (depotLit(c) && d(c) < best.n) best = { c, n: d(c), name: cap(DEPOT_NAME) };
   return best; }
 function sendHint() { const b = nearestSend(); return b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'); }
-function headBack() { if (canSend()) return '← Head home'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
+function headBack() { if (canSend()) return '← End expedition'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
 function genPatch(cell) {
   const seed = S.seed, R = makeRng(hash(seed, 'patch', cell)), ns = hash(seed, 'pn', cell);
   const land = G.land[cell], { x: cx, y: cy } = cxy(cell), isFord = land === L.WATER;
@@ -867,7 +867,7 @@ const CARE_TEXT = {
 const CARE_ASSETS = [
   { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
   { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'placeholder' },
-  { id: 'c-face-24', what: 'the mibi’s HUD ring face: the partner card’s faces, the notch row on Head home (its ring is drawn as the partner’s marker)', until: 'the derived face from the Station', w: 24, h: 24, status: 'placeholder' },
+  { id: 'c-face-24', what: 'the mibi’s HUD ring face: the partner card’s faces, the notch row on Expedition ended (its ring is drawn as the partner’s marker)', until: 'the derived face from the Station', w: 24, h: 24, status: 'placeholder' },
   { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
   { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
@@ -1273,7 +1273,7 @@ function reachCounts() { if (!S.exp) return Object.assign(cellCounts([]), { gate
 const gatedTail = rc => rc.gated ? ' · ' + rc.gated + ' gated' : '';
 function surveyedLine() { const rc = reachCounts(); return 'Explored ' + rc.surveyed + ' of ' + rc.total + (rc.gated ? gatedTail(rc) : ' in reach'); }
 function cargoLine() { const rc = reachCounts(); return 'Explored ' + rc.surveyed + ' of ' + rc.total + (rc.total && rc.surveyed >= rc.total ? ' ✓' : '') + gatedTail(rc) + ' · fully surveyed ' + rc.full; }
-// The going-home lines: said once each, at their moments. "Explored" arrives as the last reach dot fills.
+// The expedition's closing lines: said once each, at their moments. "Explored" arrives as the last reach dot fills.
 function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
@@ -1378,7 +1378,7 @@ function startExpedition(type, cell) {
   chooseWarm(ex); ensureCharge(ex);
   const p = cxy(cell);
   logEv('Set out · ' + (type === 'deep' ? 'Deep ground' : 'Weather') + ' at ' + p.x + ',' + p.y + (pm ? ' with ' + pm.name : '') + ' · tier ' + S.tier);
-  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · the flag is your start: head home from there', 3);
+  fxOnce('mapintro', 'Walk with the pad · ✓ goes down · the flag is your start: end the expedition there', 3);
   if (S.exp.shield < S.exp.smax) fxMsg('Shield ' + S.exp.shield + '/' + S.exp.smax + ' · stray strikes break it fast · shelter in a storm', 4);
   S.phase = 'map'; transition(); save();
 }
@@ -1430,7 +1430,7 @@ function shieldHit(stray) {
   if (!S.found.includes('shield')) fxOnce('shield', 'The bars top left are the Probe’s Shield', 3);
   if (stray) fxOnce('strayexp', 'Stray strikes hit anywhere in the open · trees don’t shelter you · overhangs and caves do', 3);
   logEv('Probe hit · shield ' + ex.shield);
-  if (ex.shield === 1) fxOnce('bank', 'A break loses what you carry · ← Head home seals it', 3);
+  if (ex.shield === 1) fxOnce('bank', 'A break loses what you carry · end the expedition to seal it', 3);
 }
 // A stray strike: no warning (unless a keen partner felt it), lands where you stand.
 function strayHit(scope) {
@@ -1667,13 +1667,13 @@ function patchAction() {
       case 'u': if (cupFull(key, ft)) return { label: lay.cave ? 'Collect drip water' : 'Collect dew', run: () => takeDew(ft) }; break;
       case 'k': if (stoneCharge(key, ft) > 0 && stoneSeen(key, ft)) return { label: 'Take the charge', run: () => takeCharge(ft) }; break;
       case 'h': { const st = fs(key, ft.id), left = outpostLeft(key, ft), relight = !!st.lightT;
-        if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: relight, 1 Energy' : 'Relight · 1 Energy') : 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'head home, mend and shelter here';
+        if (!left) { const lbl = relight ? (S.ui.depotArm ? 'Confirm: relight, 1 Energy' : 'Relight · 1 Energy') : 'Light the ' + DEPOT_NAME + ' · 1 Energy', ctx = relight ? cap(DEPOT_NAME) + ' · dark' : 'end here, mend and shelter';
           return ex.cargo.e >= PRICE.depot ? { label: lbl, ctx, run: () => lightDepot(ft, relight) }
             : { label: lbl, ctx: (relight ? cap(DEPOT_NAME) + ' · dark · ' : '') + 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the ' + DEPOT_NAME + ' costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; }
         const litCtx = cap(DEPOT_NAME) + ' · lit ' + left + ' more turn' + (left === 1 ? '' : 's');
         if (ex.shield < ex.smax) return ex.cargo.e >= PRICE.depotMend ? { label: S.ui.depotArm ? 'Confirm: mend, 1 Energy' : 'Mend a bar · 1 Energy', ctx: litCtx + ' · Shield ' + ex.shield + '/' + ex.smax, run: () => depotMend() }
           : { label: 'Mend a bar · 1 Energy', ctx: litCtx + ' · you have 0 Energy', dim: true, run: () => { fxMsg('Mending costs 1 Energy a bar · you have 0'); FX.bumpAt = NOW; } };
-        return { label: 'Head home from here', ctx: litCtx, run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
+        return { label: 'End expedition here', ctx: litCtx, run: () => { S.ui.from = 'patch'; S.phase = 'cargo'; } }; }
       case 'j': if (!fs(key, ft.id).up) return ex.cargo.e >= PRICE.beacon ? { label: 'Light the beacon · 1 Energy', ctx: 'reveals the land around', run: () => lightBeacon(ft) }
         : { label: 'Light the beacon · 1 Energy', ctx: 'you have 0 Energy', dim: true, run: () => { fxMsg('Lighting the beacon costs 1 Energy · you have 0'); FX.bumpAt = NOW; } }; break;
       case 'g':
@@ -1760,7 +1760,7 @@ function lightDepot(f, relight) {
   if (relight && !S.ui.depotArm) { S.ui.depotArm = 1; fxMsg('Relight the ' + DEPOT_NAME + ' · 1 Energy · ✓ again to confirm', 3); return; }   // relighting takes two presses
   const ex = S.exp, key = ex.patch.key; S.ui.depotArm = 0; ex.cargo.e -= PRICE.depot; setFS(key, f.id, { lightT: S.turn + OUTPOST_TURNS }); fxFloat(f.x, f.y, '-' + PRICE.depot, 'energy');
   logEv((relight ? 'Relit' : 'Lit') + ' the ' + DEPOT_NAME + ' · −1 Energy · lit ' + OUTPOST_TURNS + ' turns');
-  fxMsg('The ' + DEPOT_NAME + ' is lit for ' + numWord(OUTPOST_TURNS) + ' turns · head home, mend and shelter here', 3); advance('patch', { noise: 'act' });
+  fxMsg('The ' + DEPOT_NAME + ' is lit for ' + numWord(OUTPOST_TURNS) + ' turns · end an expedition, mend and shelter here', 3); advance('patch', { noise: 'act' });
 }
 // Mending at a lit depot: 1 Energy a bar, two presses (the first arms it).
 function depotMend() {
@@ -1802,7 +1802,7 @@ function takePod(p, leave) {
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
-  if (!S.found.includes('firstpod')) fxOnce('firstpod', 'Pods open at the Station · ← Head home when you’re ready', 3);
+  if (!S.found.includes('firstpod')) fxOnce('firstpod', 'Pods open at the Station · end the expedition to seal them', 3);
   else if (!out && ex.cargo.pods.length >= ex.hold) fxOnce('holdfull', 'Hold full · swap, or ' + headBack(), 3, true);
   advance('patch', { noise: 'act' });
 }
@@ -1811,7 +1811,7 @@ function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.
 function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? SPECIES[ex.pt.sp].ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
 // Data is a record of creatures doing things: a moment you cause brings +1, +2 the first time ever for that species and
 // moment; once per creature per expedition. Moments bring the walk's Data in early, up to the walk's yield (2 / 4 / 6 / 8
-// by the tier of the place) and never past it; whatever the moments did not bring arrives at Head home.
+// by the tier of the place) and never past it; whatever the moments did not bring arrives when the expedition ends.
 function awardMoment(c, kind, X) {
   const ex = S.exp; if (ex.momented[c.id]) return; ex.momented[c.id] = 1;
   // +2 the first time ever for this species and moment, and for the first moment with each species on an expedition
@@ -1830,7 +1830,7 @@ function offer(c) {
   if (!SPECIES[c.sp].eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
   const fog = !lay.cave && inFog(lay.cell);
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
-    if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch at Head home
+    if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch when the expedition ends
     ex.carry = null; c.st = 'eat'; c.eat = 2; c.t = 0; ex.stats.handFeeds++;
     awardMoment(c, 'eat', X);
   } else { c.st = 'alert'; c.t = 1; c.go = 1; fxOnce('wary', 'The ' + spName(c.sp) + ' is wary · put the fruit down and back off', 2); }
@@ -1927,7 +1927,7 @@ function waitTick(scope) {
   if (scope === 'patch' && ex.patch) routineStep(a);
   const ch = waitChanges(a, waitSnap(scope), scope);
   if (ch.length) fxMsg(cap(ch.join(' · ')), 1);
-  else if (FX.notes.length === notes) fxMsg('Nothing is moving here · ← ' + (scope === 'patch' ? 'Leave' : 'Head home'), 1);
+  else if (FX.notes.length === notes) fxMsg('Nothing is moving here · ← ' + (scope === 'patch' ? 'Leave' : 'End expedition'), 1);
   ex.stats.waits = (ex.stats.waits || 0) + 1; if (!ch.length) ex.stats.idleWaits = (ex.stats.idleWaits || 0) + 1;
 }
 // While you wait, if no creature in sight moved, one idle one takes a visible routine step (toward you if it can).
@@ -2242,9 +2242,9 @@ function partnerTick(X) {
 }
 
 // ===================== 9. Expedition end, the sealed bay, world turn =====================
-// Head home ends the expedition and seals the hold (pods and materials) as one consignment into the Companion's
+// End expedition ends this expedition and seals the hold (pods and materials) as one consignment into the Companion's
 // sealed bay (three at most, one per expedition, never topped up). Nothing is teleported: the Station accepts each
-// consignment once, when the Companion is docked (prototypes/station). The world turns once per Head home.
+// consignment once, when the Companion is docked (prototypes/station). The world turns once per expedition ended.
 // Guards: an expedition that explored nothing seals nothing and turns nothing; an empty hold seals no consignment;
 // with the bay full the finds stay in the hold and ride along unsealed. A break seals nothing.
 function needText(e, s, d, full) {
@@ -2263,7 +2263,7 @@ function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ?
   return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
 function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
 function bayLine() { const n = S.bay.length; return n ? n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer' : ''; }
-// The Cargo screen's preview of what Head home will do.
+// The Cargo screen's preview of what End expedition will do.
 function sealPreview() {
   const ex = S.exp, out = [];
   if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
@@ -2291,17 +2291,17 @@ function endExpedition(reason) {
   const ex = S.exp; if (!ex) return;
   const broke = reason === 'break'; S.ui.lastPos = ex.pos;
   const explored = exploredAny(ex), rc = reachCounts();
-  let notch = null;   // a notch earned is named on Head home as its own row of the outcome block (and logged), never with a count, never a world line
+  let notch = null;   // a notch earned is named on Expedition ended as its own row of the outcome block (and logged), never with a count, never a world line
   { const n = {}; for (const c of new Set(ex.trail)) if (S.visited[c] && passable(c)) n[G.land[c]] = (n[G.land[c]] || 0) + 1;   // every mibi with you remembers where you went most
     const best = Object.keys(n).sort((a, b) => n[b] - n[a] || a - b)[0];
     for (const w of carriedMibis()) { if (best != null) w.mem = LAND_NAME[best];
       if (explored) w.outings = (w.outings || 0) + 1;   // an outing for each, never care: an expedition is not care
       if (explored && ex.abUsed && ex.pt && ex.pt.id === w.id && w.bonded) { const was = w.notches || 0; w.notches = Math.min(3, was + 1); if (w.notches > was) { logEv(CARE_TEXT.notch(w.name)); notch = { id: w.id, name: w.name, sp: w.sp }; } } } }   // notches: the bonded partner only, on an expedition that explored something (a break keeps it)
   const rep = { reason, n: ex.n, items: [], lost: [], sealed: null, kept: false, empty: false, waited: false, lines: [], notch, explored: rc.surveyed, of: rc.total };
-  if (explored && !broke) {   // the field yield: the walk brings home its tier's Data; moments brought part of it in early, the rest arrives now
+  if (explored && !broke) {   // the field yield: the walk earns its tier's Data; moments brought part of it in early, the rest arrives now
     const tier = walkTier(ex), want = walkYield(ex), top = Math.max(0, want - (ex.dField || 0)), got = top ? addMat('d', top) : 0; ex.dField = (ex.dField || 0) + got;
     rep.yield = { tier, data: want, moments: ex.moments.length, early: ex.dField - got, late: got };
-    logEv('Field yield · ' + want + ' Data · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · ' + (ex.dField - got) + ' from moments, ' + got + ' at Head home'); }
+    logEv('Field yield · ' + want + ' Data · ' + TIER_NAME[tier] + ' place (tier ' + tier + ') · ' + (ex.dField - got) + ' from moments, ' + got + ' at the expedition\'s end'); }
   for (const [k, name] of [['e', 'Energy'], ['d', 'Data'], ['s', 'Essence']]) if (ex.cargo[k]) (broke ? rep.lost : rep.items).push({ k, text: (broke ? '' : '+') + ex.cargo[k] + ' ' + name });
   if (ex.carry === 'fruit') ex.carry = null;
   if (broke) { S.shield = 0; dropPods(ex, rep); S.hold = null; logEv('Probe broke · carried supplies lost'); }   // a break seals nothing; the Station mends it free at the dock
@@ -2312,17 +2312,17 @@ function endExpedition(reason) {
     warm: ex.stats.warm || 0, warmInReach: (ex.warm || []).length, dTier: walkTier(ex), dYield: explored && !broke ? walkYield(ex) : 0, calls: ex.stats.calls || 0, callsAt: ex.callsAt || {}, crossings: ex.stats.crossings || 0, waits: ex.stats.waits || 0, idleWaits: ex.stats.idleWaits || 0, storm: !!ex.hadStorm, srcAtStart: ex.stats.srcAtStart });
   if (S.hist.length > 40) S.hist.shift();
   if (!explored) {   // nothing explored: nothing sealed, nothing turns, and the finds stay in the hold (a break loses them)
-    rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Headed home · nothing explored · the world waits');
+    rep.waited = true; S.hold = broke || holdEmpty(ex.cargo) ? null : ex.cargo; logEv('Expedition ended · nothing explored · the world waits');
     S.exp = null; S.report = rep; S.phase = 'sealed'; transition(); save(); return; }
   S.lastEntered = (ex.entered || []).slice(); S.lastTrail = { cells: ex.trail.slice(), turn: S.turn + 1 };
   S.trips = tripsWith(S.trips, tripRecord(ex, S.carried));   // the world turns: this expedition is a trip for the Station
-  const worldLines = worldTurn(pending); rep.lines = worldLines.slice();   // the world turns once per Head home, on the Companion
+  const worldLines = worldTurn(pending); rep.lines = worldLines.slice();   // the world turns once per expedition ended, on the Companion
   if (!broke) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
         pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice() };   // the crate carries the world's lines only
-      S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Headed home · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
+      S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
   S.phase = 'sealed'; transition(); save();
@@ -3185,7 +3185,7 @@ function drawSign(kind, s, px, py, fr) {
 // The reach view: in an expedition the map shows only the Probe's reach, drawn at its own scale (not a blow-up
 // of the 26 px map): 78 px cells at tier 1 (5×5), 48 px at tier 2 (9×9). Each cell shows its land as a patch of
 // the place's real 32 px tiles, its quarters (dotted while unsurveyed), its signs at 1× or 2× in corner slots,
-// pending outlines, the pawn at 2×; fog cells show the map's fog texture. Below: the way home, the count, and a
+// pending outlines, the pawn at 2×; fog cells show the map's fog texture. Below: where to end the expedition, the count, and a
 // small inset of the whole world. "Full map" in the menu switches to the whole map at 26 px.
 const INSET = { w: MW * 6, h: MH * 6 };
 function reachGeom() {
@@ -3271,7 +3271,7 @@ function drawReachView(t) {
   if (FX.msg) {   // a message takes the band's text space for one action, so nothing covers the reach or the inset
     const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20)), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
-  else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'Head home here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
+  else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
     text(clipText(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
   drawInset(ix, iy, t, u);
 }
@@ -3850,7 +3850,7 @@ function digPartner() { const pm = partnerMibi(); return pm && SPECIES[pm.sp].ab
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
-  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'Head home' };
+  const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
   if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
   if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }, { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
@@ -3909,8 +3909,8 @@ function drawProbe(t) {
     [(x, y) => { blit(ICON.bolt(), x - 13, y - 8); blit(ICON.bolt(), x, y - 8); }, 'Storm', 'open: ' + Math.round(STRAY.strong * 100) + '%, peak ' + Math.round(STRAY.peak * 100) + '%'],
     [(x, y) => blit(ICON.pin(), x - 5, y - 10), 'Pin', 'your mark · 1 Energy'],
     [(x, y) => { blit(ICON.beacon(0), x - 13, y - 8); blit(ICON.beacon(1, 0), x + 1, y - 8); }, 'Beacon', 'dark, lit: shows the land'],
-    [(x, y) => blit(ICON.flag(), x - 6, y - 10), 'Flag', 'your start: head home'],
-    [(x, y) => blit(ICON.depot(3, 0), x - 10, y - 8), cap(DEPOT_NAME), 'lit: send, mend, shelter'],
+    [(x, y) => blit(ICON.flag(), x - 6, y - 10), 'Flag', 'your start: end here'],
+    [(x, y) => blit(ICON.depot(3, 0), x - 10, y - 8), cap(DEPOT_NAME), 'lit: end, mend, shelter'],
     [(x, y) => blit(ICON.skull(), x - 7, y - 7), 'Skull', 'lost pods lie here'],
     [(x, y) => { blit(ICON.burrow(0), x - 14, y - 7); blit(BADGE(), x + 2, y - 9); }, 'Gate', 'a partner or tier 2'],
     [(x, y) => ditherFill(x - 16, y - 11, 32, 22, 'fog', 8), 'Fog bank', 'calm · 4 tiles of sight'],
@@ -3961,24 +3961,24 @@ function drawCargo(t) {
         const px = gx + i * pitch, py = gy + j * pitch, d = pitch - 2;
         if (c === ex.pos) R(px - 1, py - 1, d + 2, d + 2, C.amber);
         R(px, py, d, d, explored(c) ? C.mint : C.stone); if (!explored(c) && d > 2) R(px + 1, py + 1, d - 2, d - 2, C.night); } }
-    if (canSend()) { card(95, 268, 260, 50, true, true); R(98, 271, 254, 44, C.orange); text('Head home', SCR_W / 2, 282, C.bone, 3, 'center'); }
-    else { card(95, 268, 260, 50, false, false); text('Head home', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 300, C.fog, 2, 'center'); }
+    if (canSend()) { card(95, 268, 260, 50, true, true); R(98, 271, 254, 44, C.orange); text('End expedition', SCR_W / 2, 282, C.bone, 3, 'center'); }
+    else { card(95, 268, 260, 50, false, false); text('End expedition', SCR_W / 2, 276, C.mist, 3, 'center'); text(sendHint(), SCR_W / 2, 300, C.fog, 2, 'center'); }
     let y = 332; for (const l of sealPreview().slice(0, 3)) { R(40, y + 6, 4, 4, C.orange); text(clipText(l, 384, 2), 54, y, C.bone); y += 22; }
     text('The sealed bay', 24, 406, C.mist); drawBay(24, 428);
-    text('Ends the expedition · the world turns', SCR_W / 2, 510, C.stone, 2, 'center');
+    text('The world turns · set out again at once', SCR_W / 2, 510, C.stone, 2, 'center');
   } else {
     const h = S.hold || { e: 0, d: 0, s: 0, pods: [] };
     text('In the hold (unsealed)', 24, 42, C.mist); drawMats(h, 62, true);
     for (let i = 0; i < 3; i++) { const p = h.pods[i], x = 24 + i * 130; panel(x, 110, 122, 36, C.ink, C.slate); podSlot(x + 6, 118, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 120, p ? C.bone : C.stone); }
     text('The sealed bay', 24, 166, C.mist); drawBay(24, 190);
-    text(S.bay.length ? bayLine() : 'Nothing sealed · Head home seals the hold', 24, 272, S.bay.length ? C.amber : C.stone);
+    text(S.bay.length ? bayLine() : 'Nothing sealed · End expedition seals it', 24, 272, S.bay.length ? C.amber : C.stone);
     text('Probe tier ' + S.tier + ' · Shield ' + (S.shield == null ? tierOf().shield : Math.max(0, S.shield)) + '/' + tierOf().shield, 24, 316, C.fog);
     text(isDocked() ? 'Docked' : 'Away', 24, 342, isDocked() ? C.mint : C.fog);
     wrapText('The Station accepts each crate once, when you dock. It cannot see what the Companion carries until then.', 400, 2).forEach((l, i) => text(l, 24, 386 + i * 22, C.stone));
     text(clipText(turnLine(), 400, 2), 24, 476, C.mist);
   }
 }
-// The top bar at home: Energy, then battery and connectivity, then what Call does.
+// The top bar between expeditions: Energy, then battery and connectivity, then what Call does.
 function drawHomeTop(title) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
   let x = 8;
@@ -4079,7 +4079,7 @@ function upArt(key, src, k) { return art('up' + key + 'k' + k, () => { const pb 
 const BIG = 8;   // the 32×32 token at 8×: 256×256, inside the 280×300 stage
 const bigArt = (sp, pose, fr) => upArt('cr' + sp + pose + (fr ? 1 : 0), creatureArt(sp, pose, fr), BIG);
 const haloArt = () => art('halo', () => { const pb = new PB(300, 220); pb.ell(150, 110, 148, 108, C.cream, { chk: 1 }); return pb; });
-// The active mibi screen: the Companion's home view. The mibi large, its name, stage, ability and status.
+// The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
 // A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
 function shownMibi() { const list = rosterList(); let i = list.findIndex(m => m.id === S.ui.aId);
@@ -4141,7 +4141,7 @@ function drawActive(t) {
   const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
   if (n > 1) list.forEach((q, i) => { const px = x0 + i * 16 + (i >= nc ? gap : 0); if (isCarried(q)) R(px - 2, 450, 10, 10, C.amber); R(px, 452, 6, 6, q === m ? C.bone : C.stone); });
 }
-// Call at home: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
+// Call between expeditions: the shown (or focused) mibi with you answers; otherwise the partner, or the first mibi with you, and
 // the view comes to it. Free.
 function callTarget() {
   const f = S.phase === 'active' ? shownMibi() : S.phase === 'mibis' ? rosterAt(S.ui.rSel) : null;
@@ -4176,10 +4176,10 @@ function drawNewWorld() {
     panel(75, y, 300, 54, sel ? (i ? C.red : C.paper) : C.slate, sel ? C.ink : null); if (sel) brackets(68, y - 7, 314, 68, C.amber);
     text(s, SCR_W / 2, y + 20, sel ? (i ? C.bone : C.ink) : C.fog, 2, 'center'); });
 }
-// Head home: the hold sealed into the bay (or why not), the world turn, and the way on. The Station opens the crates
+// Expedition ended: the hold sealed into the bay (or why not), the world turn, and the way on. The Station opens the crates
 // only when the Companion is docked (the Station page).
 function drawSealed(t) {
-  const r = S.report; viewBg(); drawTop('Head home', r ? 'expedition ' + r.n : '');
+  const r = S.report; viewBg(); drawTop(r ? 'Expedition ' + r.n + ' ended' : 'Expedition ended', '');
   if (!r) return;
   // every line below is clipped at 410 px, so nothing passes x 432; `last` is the outcome block's last 2× line
   let y = 46, last = 46;
@@ -4191,7 +4191,7 @@ function drawSealed(t) {
   else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; L('The world waits · nothing is sealed.', C.fog); L('Your finds stay in the hold.', C.fog); y += 10; }
   else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
   else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
-  else { text(clipText('Home, hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
+  else { text(clipText('Hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
@@ -4203,7 +4203,7 @@ function drawSealed(t) {
   if (!r.waited) drawTurnLines(r, y);
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
-// The world lines under Head home: worldTurn's order, three at most, each wrapped at 390 px (20 px a wrapped line, 6 between
+// The world lines under Expedition ended: worldTurn's order, three at most, each wrapped at 390 px (20 px a wrapped line, 6 between
 // lines). A line draws only while its foot, y + 20 × (wrapped lines − 1) + 17, stays on or above row 476 (8 px over 484, the
 // message box's highest top); the first that fails ends the list, silently. `wrap` splits one line into its wrapped parts.
 const WORLD_FOOT = 476;
@@ -4286,7 +4286,7 @@ function lineFor() {
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go down', mapContext(), canSend() ? 'Head home' : 'menu');   // ← opens the menu, Head home on top where it works
+      return L1('Go down', mapContext(), canSend() ? 'End expedition' : 'menu');   // ← opens the menu, End expedition on top where it works
     case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
@@ -4300,10 +4300,10 @@ function lineFor() {
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
     case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
-      if (it.id === 'send' && it.far) return L1('Head home', sendHint(), 'close', true);
-      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what goes home'] : '', 'close'); }
+      if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
+      return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : '', 'close'); }
     case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close') : L1('', '', 'close');   // read-only: one way out
-    case 'cargo': return S.exp ? (canSend() ? L1('Head home', 'ends the expedition · seals the hold', 'close') : L1('', 'Head home: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
+    case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
       if (!m) { if (S.exp) return L1('', CARE_TEXT.leadsThisExp, bk);   // the Lead card: read-only mid-expedition
@@ -4359,7 +4359,7 @@ function frame(t) {
 // ===================== 16. Input: Companion controls =====================
 function beaconBack() { const ex = S.exp; if (!ex || !ex.beaconView) return; delete ex.beaconView; if (ex.patch) { S.phase = 'patch'; transition(); } }
 function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.ui.waiting = 0; S.phase = 'menu';
-  if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send')); }   // focus on Head home once the reach is done
+  if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send')); }   // focus on End expedition once the reach is done
 // Expeditions start only undocked (lift the Companion at the Station page), and not with a broken Probe.
 function startBlock() {
   if (isDocked()) return 'Docked · lift the Companion to explore';
@@ -4427,7 +4427,7 @@ function act(k, mode) {
       else if (k === 'confirm' && !(items[S.ui.menuSel] || {}).dis) { const id = (items[S.ui.menuSel] || items[0]).id;
         if (id === 'wait') { waitTick(S.ui.from); S.ui.waiting = 1; if (S.phase === 'menu' && !S.exp) S.phase = 'sealed'; }   // folds to a strip: Confirm again waits again
         else if (id === 'leave') { leavePatch(); if (S.exp && S.exp.patch) S.phase = 'patch'; }
-        else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('Head home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; } }
+        else if (id === 'send') { if (canSend()) S.phase = 'cargo'; else { fxMsg('End the expedition at the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; } }
         else if (id === 'next') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
         else if (id === 'worldmap') { S.phase = 'worldmap'; transition(); }
         else if (id === 'fullmap') { S.ui.mapFull = !S.ui.mapFull; S.phase = 'map'; transition(); }   // the map's view, saved with the game
@@ -4443,7 +4443,7 @@ function act(k, mode) {
     case 'cargo':
       if (k === 'back') S.phase = 'menu';
       else if (k === 'confirm' && S.exp && canSend()) { S.ui.lastPos = S.exp.pos; endExpedition('sent'); }
-      else if (k === 'confirm' && S.exp) { fxMsg('Head home works from the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; }
+      else if (k === 'confirm' && S.exp) { fxMsg('End the expedition at the start or a lit ' + DEPOT_NAME + ' · ' + sendHint(), 3); FX.bumpAt = NOW; }
       break;
     case 'mibis': { const m = rosterAt(S.ui.rSel);
       if (k === 'up' || k === 'down') S.ui.rSel = clamp(S.ui.rSel + (k === 'down' ? 1 : -1), 0, rosterCount() - 1);
@@ -4472,7 +4472,7 @@ function act(k, mode) {
       else if (k === 'back') S.phase = 'menu';
       else if (k === 'confirm') { if (S.ui.nw === 1) { newWorld(urlSeed()); RT.mp = null; RT.key = null; mapCv = null; transition(); } else S.phase = 'menu'; }
       break;
-    case 'sealed':   // Head home's short screen: ✓ Next expedition (the expedition choice; it starts only undocked)
+    case 'sealed':   // Expedition ended, the short screen: ✓ Next expedition (the expedition choice; it starts only undocked)
       if (k === 'confirm') { S.phase = 'setup'; S.ui.sel = 0; transition(); }
       else if (k === 'back') openMenu();
       break;
@@ -4568,11 +4568,11 @@ document.getElementById('devStepReset').addEventListener('click', e => { setData
 function newCareDay() { const c = carriedMibis(); for (const m of c) m.tendDay = null; logEv('Developer · new care day' + (c.length ? ' for ' + listWords(c.map(m => m.name)) : '')); save(); }
 document.getElementById('devCareDay').addEventListener('click', e => { if (S) newCareDay(); if (e.detail) e.currentTarget.blur(); });
 showDevStep();
-// What this walk yields: its tier, the Data it brings home, how much the moments have brought in so far.
+// What this walk yields: its tier, the Data it earns, how much the moments have brought in so far.
 function yieldText() {
   const ex = S.exp, r = S.report;
-  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data this walk · ' + (ex.dField || 0) + ' in from ' + ex.moments.length + ' moment' + (ex.moments.length === 1 ? '' : 's') + ', ' + Math.max(0, walkYield(ex) - (ex.dField || 0)) + ' at Head home' : 'no place entered yet') + ' | ladder ' + dataLadder(); }
-  if (S.phase === 'sealed' && r && r.yield) return 'last walk: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' moment' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at Head home | ladder ' + dataLadder();
+  if (ex) { const t = walkTier(ex); return (t ? TIER_NAME[t] + ' place (tier ' + t + ') · ' + walkYield(ex) + ' Data this walk · ' + (ex.dField || 0) + ' in from ' + ex.moments.length + ' moment' + (ex.moments.length === 1 ? '' : 's') + ', ' + Math.max(0, walkYield(ex) - (ex.dField || 0)) + ' at the expedition\'s end' : 'no place entered yet') + ' | ladder ' + dataLadder(); }
+  if (S.phase === 'sealed' && r && r.yield) return 'last walk: ' + r.yield.data + ' Data · ' + TIER_NAME[r.yield.tier] + ' place (tier ' + r.yield.tier + ') · ' + r.yield.early + ' from ' + r.yield.moments + ' moment' + (r.yield.moments === 1 ? '' : 's') + ', ' + r.yield.late + ' at the expedition\'s end | ladder ' + dataLadder();
   return 'ladder ' + dataLadder() + ' by tier (starter / early / mid / late)';
 }
 (function buildPalette() {
@@ -4609,7 +4609,7 @@ function energyText() {
 function onStateChanged() {
   if (!obsEl || obsEl.hidden || !S) return;
   const ex = S.exp;
-  document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · home' : S.expN + ' · not started';
+  document.getElementById('oExp').textContent = ex ? ex.n + ' · ' + (ex.type === 'deep' ? 'Deep ground' : 'Weather') : (S.phase === 'sealed' && S.report) ? S.report.n + ' · ended' : S.expN + ' · not started';
   document.getElementById('oTurn').textContent = wTurn();
   document.getElementById('oYield').textContent = yieldText();
   document.getElementById('oAct').textContent = ex ? ex.actions + ' (total ' + S.totalActions + ')' : 'total ' + S.totalActions;
