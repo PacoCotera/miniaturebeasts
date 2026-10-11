@@ -65,6 +65,8 @@ static int loop_at(const mv_loop_t *l, int t) { int p = 0; for (int i = 0; i < l
 static int loop_len(const mv_loop_t *l) { int p = 0; for (int i = 0; i < l->n; i++) p += l->ms[i] / 80; return p > 0 ? p : 1; }
 /* the frame of the moving resident at the face's time: its close cell (by name), lift, dy, a dither (from, to, level; from NULL is clear) and shadow-75 */
 typedef struct { const char *cell, *dfrom, *dto; int lift, dy, dl, ddf, ddt, sh75; } close_t;
+/* the step up close (closeStep, the animator's S05 ruling): crouch, the step cell, then stand; NULL outside it */
+static const char *close_step(const mv_stage_t *S0, int dt) { if (dt < 0 || !S0->cstep_ms || dt >= S0->cstep_crouch + S0->cstep_ms) return NULL; return dt < S0->cstep_crouch ? "crouch" : S0->ccell[S0->cstep_cell]; }
 static void close_frame(const mv_stage_t *S0, close_t *f, int scale_n, int scale_d) {
   memset(f, 0, sizeof *f); uint32_t now = anim_now(); int asleep = !strcmp(v_pstr("regions.resident.rest"), "asleep"), seed = v_pint("regions.resident.seed", 0), motion = v_pbool("motion", 1);
   const char *stand = "stand", *curl = "curl";
@@ -76,16 +78,17 @@ static void close_frame(const mv_stage_t *S0, close_t *f, int scale_n, int scale
   if (moment) {
     int e = t.elapsed, h0 = spec_int(S, "events.moment.placeholder.hops.0", 0), h1 = spec_int(S, "events.moment.placeholder.hops.1", 900);
     if (asleep && t.ms == spec_int(S, "events.moment.asleep.ms", 2880)) {   /* a sleeper's Greet: wake (dither, crouch 400, stand), the hops, crouch 320, dither, curl */
-      int wcr = S0->wake_crouch ? S0->wake_crouch : 400, hops0 = dither + wcr, hopEnd = hops0 + h1 + (S0->chop_crouch + S0->chop_nlift * 80 + S0->chop_land), ccr = S0->curl_crouch ? S0->curl_crouch : 320;
+      int wcr = S0->wake_crouch ? S0->wake_crouch : 400, hops0 = dither + wcr, hopEnd = hops0 + h1 + (S0->chop_nlift ? S0->chop_crouch + S0->chop_nlift * 80 + S0->chop_land : S0->cstep_crouch + S0->cstep_ms), ccr = S0->curl_crouch ? S0->curl_crouch : 320;
       if (e < dither) { f->cell = "crouch"; f->dy = 2; f->dl = 16 * e / dither; f->dfrom = curl; f->dto = "crouch"; f->ddt = 2; if (f->dl < 1) f->dl = 1; return; }
       if (e < hops0) { f->cell = "crouch"; f->dy = 2; return; }
-      if (e < hopEnd) { const char *c = stand; int up = 0, sh = 0; if (S0->chop_nlift) { if (!moving_close_hop(S0, e - hops0 - h0, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh)) moving_close_hop(S0, e - hops0 - h1, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh); } f->cell = c; f->lift = up; f->sh75 = sh; return; }
+      if (e < hopEnd) { const char *c = stand; int up = 0, sh = 0; if (S0->chop_nlift) { if (!moving_close_hop(S0, e - hops0 - h0, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh)) moving_close_hop(S0, e - hops0 - h1, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh); } else c = close_step(S0, e - hops0 - h0) ? close_step(S0, e - hops0 - h0) : close_step(S0, e - hops0 - h1) ? close_step(S0, e - hops0 - h1) : stand; f->cell = c; f->lift = up; f->sh75 = sh; return; }
       if (e < hopEnd + ccr) { f->cell = "crouch"; f->dy = 2; return; }
       if (e < hopEnd + ccr + dither) { f->cell = curl; f->dl = 16 * (e - hopEnd - ccr) / dither; if (f->dl < 1) f->dl = 1; f->dfrom = "crouch"; f->ddf = 2; f->dto = curl; return; }
       f->cell = curl; return;
     }
     if (!asleep) { const char *c = stand; int up = 0, sh = 0;   /* Greet: the hops at 0 and 900 ms of the moment */
       if (S0->chop_nlift && (moving_close_hop(S0, e - h0, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh) || moving_close_hop(S0, e - h1, S0->chop_lift, S0->chop_nlift, scale_n, scale_d, &c, &up, &sh))) { f->cell = c; f->lift = up; f->sh75 = sh; return; }
+      if (!S0->chop_nlift && S0->cstep_ms) { const char *st = close_step(S0, e - h0); if (!st) st = close_step(S0, e - h1); if (st) { f->cell = st; return; } }   /* a set with no hop up close (S05): the eager step, twice, on the hop's schedule */
       f->cell = stand; return; }
   }
   int tick = (int)((now - g_hbreath0) / 80u);

@@ -48,7 +48,7 @@ static void lift(const char *path0, int *out, int *n, int cap) {
   for (int i = 0; i < k; i++) { out[i] = num(P("%s.%d", path, i)); if (g_bad) return; int d = out[i] - prev; if (d > 12 || d < -12) { bad("%s changes by %d px between ticks (at most 12)", path, d); return; } if (out[i] > cap) { bad("%s: the apex %d px passes the cap of %d", path, out[i], cap); return; } prev = out[i]; }
   if (prev > 12) bad("%s changes by %d px to the ground (at most 12)", path, prev);
 }
-static const char *KNOWN[] = { "walk", "close", "nap", "shadow", "breathe", "asleep", "curl", "wake", "stir", "ack", "hop", "closeHop", "closeDitherMs", "blink", NULL };
+static const char *KNOWN[] = { "walk", "walkCycle", "close", "nap", "shadow", "breathe", "asleep", "curl", "wake", "stir", "ack", "hop", "closeHop", "closeStep", "closeDitherMs", "blink", NULL };
 static void stage(const char *sid, const char *sn, int si, mv_stage_t *s) {
   const char *B = P("%s.%s", sid, sn); char base[32]; snprintf(base, sizeof base, "%s", B);
   for (int i = 0, n = spec_len(M, base); i < n; i++) { char k[24], d[2]; spec_member(M, base, i, k, sizeof k, d, sizeof d); int ok = 0; for (int j = 0; KNOWN[j]; j++) if (!strcmp(KNOWN[j], k)) ok = 1; if (!ok) { bad("%s: unknown clip %s", base, k); return; } }
@@ -84,15 +84,18 @@ static void stage(const char *sid, const char *sn, int si, mv_stage_t *s) {
     if (moving_walk_cell(s, "air") < 0) { bad("%s.hop: the set has no air cell", base); return; }
     for (int i = 0, n = spec_len(M, P("%s.hop.shadow75", base)); i < n && i < 8; i++) { int t = num(P("%s.hop.shadow75.%d", base, i)); if (t >= 1 && t <= 8) s->sh75[t - 1] = 1; }
   }
-  if (has(P("%s.walk.cycle", base))) {
-    s->walker = 1; s->cycle_n = spec_len(M, P("%s.walk.cycle", base)); if (s->cycle_n < 1 || s->cycle_n > MV_LOOP) { bad("%s.walk.cycle must be 1 to 8 [cell, ms] pairs", base); return; }
-    int sum = 0; for (int i = 0; i < s->cycle_n; i++) { char nm[16]; spec_str(M, P("%s.walk.cycle.%d.0", base, i), nm, sizeof nm); s->cycle_cell[i] = moving_walk_cell(s, nm); if (s->cycle_cell[i] < 0) { bad("%s.walk.cycle: the key %s is not in the part's cells", base, nm); return; } s->cycle_ms[i] = hold80(P("%s.walk.cycle.%d.1", base, i)); sum += s->cycle_ms[i]; }
+  if (has(P("%s.walkCycle", base))) {   /* the legged walk's cycle, its own clip beside hop (the architect's Q4): the walk part stays the atlas's cells */
+    s->walker = 1; s->cycle_n = spec_len(M, P("%s.walkCycle.cycle", base)); if (s->cycle_n < 1 || s->cycle_n > MV_LOOP) { bad("%s.walkCycle.cycle must be 1 to 8 [cell, ms] pairs", base); return; }
+    int sum = 0; for (int i = 0; i < s->cycle_n; i++) { char nm[16]; spec_str(M, P("%s.walkCycle.cycle.%d.0", base, i), nm, sizeof nm); s->cycle_cell[i] = moving_walk_cell(s, nm); if (s->cycle_cell[i] < 0) { bad("%s.walkCycle.cycle: the key %s is not in the part's cells", base, nm); return; } s->cycle_ms[i] = hold80(P("%s.walkCycle.cycle.%d.1", base, i)); sum += s->cycle_ms[i]; }
     if (g_bad) return;
-    s->beat_mean = sum / s->cycle_n; s->stride = num(P("%s.walk.stride", base)); s->pass_rise = spec_int(M, P("%s.walk.passRise", base), 0); if (g_bad) return;
-    if (s->stride <= 0 || s->stride * 80 > 5 * 2 * s->beat_mean) { bad("%s.walk: a walk speed of %d·80/(2·%d) px a tick passes 5", base, s->stride, s->beat_mean); return; }
-    if (moving_walk_cell(s, "pass") < 0) { bad("%s.walk: a legged walk has a pass cell", base); return; }
+    s->beat_mean = sum / s->cycle_n; s->stride = num(P("%s.walkCycle.stride", base)); s->pass_rise = spec_int(M, P("%s.walkCycle.passRise", base), 0); if (g_bad) return;
+    if (s->stride <= 0 || s->stride * 80 > 5 * 2 * s->beat_mean) { bad("%s.walkCycle: a walk speed of %d·80/(2·%d) px a tick passes 5", base, s->stride, s->beat_mean); return; }
+    if (moving_walk_cell(s, "pass") < 0) { bad("%s.walkCycle: a legged walk has a pass cell", base); return; }
   }
-  if (!s->hopper && !s->walker) { bad("%s: a set hops or walks", base); return; }
+  if (has(P("%s.closeStep", base))) {   /* the animator's S05 ruling: up close and in the hatch a step on the hop's schedule, no lift */
+    char nm[16]; spec_str(M, P("%s.closeStep.cell", base), nm, sizeof nm); s->cstep_cell = moving_close_cell(s, nm); if (s->cstep_cell < 0) { bad("%s.closeStep: the key %s is not in the close part's cells", base, nm); return; }
+    s->cstep_crouch = num(P("%s.closeStep.crouch", base)); s->cstep_ms = num(P("%s.closeStep.step", base)); if (g_bad) return;
+  }
   if (has(P("%s.closeHop", base))) {
     s->chop_crouch = spec_int(M, P("%s.closeHop.crouch", base), 160); s->chop_air = spec_int(M, P("%s.closeHop.air", base), 400); s->chop_land = spec_int(M, P("%s.closeHop.land", base), 160); s->chop_travel = spec_int(M, P("%s.closeHop.travel", base), 0);
     lift(P("%s.closeHop.lift", base), s->chop_lift, &s->chop_nlift, jcap); if (g_bad) return;
@@ -131,11 +134,14 @@ int moving_load(char *err, int cap) {
     mv_set_t *set = &sets[n]; memset(set, 0, sizeof *set); snprintf(set->id, sizeof set->id, "%s", sid);
     for (int k = 0, m = spec_len(M, sid); k < m; k++) { char key[24], v[2]; spec_member(M, sid, k, key, sizeof key, v, sizeof v); if (strcmp(key, "species") && strcmp(key, "native") && strcmp(key, "gait") && strcmp(key, "juvenile") && strcmp(key, "adult") && strcmp(key, "elder")) { bad("%s: unknown clip %s", sid, key); break; } }
     char nat[8]; spec_str(M, P("%s.native", sid), nat, sizeof nat); if (strcmp(nat, "right") && strcmp(nat, "left")) bad("%s.native is \"right\" or \"left\"", sid); set->native_right = !strcmp(nat, "right");
-    char gait[8]; spec_str(M, P("%s.gait", sid), gait, sizeof gait); if (strcmp(gait, "hop") && strcmp(gait, "walk")) bad("%s.gait is \"hop\" or \"walk\"", sid);
+    char gait[12]; spec_str(M, P("%s.gait", sid), gait, sizeof gait); if (strcmp(gait, "hop") && strcmp(gait, "walkCycle")) bad("%s.gait is \"hop\" or \"walkCycle\" (the clip it names)", sid);
     if (has(P("%s.juvenile", sid))) stage(sid, "juvenile", MV_JUV, &set->st[MV_JUV]);
     if (has(P("%s.adult", sid))) stage(sid, "adult", MV_ADULT, &set->st[MV_ADULT]);
     if (has(P("%s.elder", sid))) elder(sid, set);
-    if (!g_bad) for (int k = 0; k < 3; k++) if (set->st[k].present && ((!strcmp(gait, "hop")) != set->st[k].hopper)) bad("%s: the gait %s and the clips disagree", sid, gait);
+    static const char *SN[3] = { "juvenile", "adult", "elder" };   /* the loader reads the clip `gait` names: a stage with both hop and walkCycle, or without the one named, is refused (the architect's Q4) */
+    if (!g_bad) for (int k = 0; k < 3; k++) if (set->st[k].present) { const mv_stage_t *t = &set->st[k];
+      if (t->hopper && t->walker) bad("%s.%s has both hop and walkCycle", sid, SN[k]);
+      else if (!strcmp(gait, "hop") ? !t->hopper : !t->walker) bad("%s.%s: the gait names %s, which the stage lacks", sid, SN[k], gait); }
     if (g_bad) break;
     n++;
   }

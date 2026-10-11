@@ -201,8 +201,8 @@ test("the rail refuses a pip that is not 6 × 6: the composed marks are defined 
 import { MOVING as MSETS, sendMoving, atlasPicture } from "./moving-scene.mjs";
 import { setMoving } from "../../station/src/moving.mjs";
 setMoving(MSETS);
-async function hatchMoving({ motion = true } = {}) {
-  const st = world(), id = "S01"; S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); S.read(st, p, frameOf(id).chapters[0].id, settings);
+async function hatchMoving({ motion = true, id = "S01" } = {}) {
+  const st = world(); S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); S.read(st, p, frameOf(id).chapters[0].id, settings);
   assert.ok(S.grow(st, p, {}, settings, T0).ok); const now = T0 + 30 * 60000, r = S.openBud(st, {}, settings, now); assert.ok(r.ok);
   const b = incubatorBuild({ st, settings, now, ui: { inc: { hatch: { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null } } }, lamp: "", motionSets: true }, incSpec, podsSpec);
   assert.ok(b.props.regions.juvenile.moving, "the juvenile names its close atlas");
@@ -226,4 +226,9 @@ test("the hatch with a moving set (M1 §2.5, R2): the table by face_test_cell: n
 });
 test("the hatch with a moving set, motion off: the cut to its end (the stand)", { skip }, async () => {
   const f = await hatchMoving({ motion: false }); frames(f); assert.equal(hatchCell(f), "stand");
+});
+test("the S05 hatch (the animator's ruling): at 5120 one step, not a hop: stepa 320, then stand", { skip }, async () => {
+  const f = await hatchMoving({ id: "S05" }), cells = MSETS.S05.juvenile.close.cells, seen = []; let last = null;
+  for (let t = 16; t <= 6300; t += 16) { f.frame((f.t += 16)); const c = f.M._face_test_hatch_cell(), n = c === -50 ? "none" : c < 0 ? "dither" : cells[c]; if (n !== last) { seen.push([t, n]); last = n; } }
+  const step = seen.find(([, n]) => n === "stepa"); assert.ok(step && step[0] >= 5120 && step[0] <= 5136, JSON.stringify(seen)); const after = seen.find(([t, n]) => t > step[0] && n !== "stepa"); assert.equal(after[1], "stand"); assert.ok(after[0] >= 5440 && after[0] <= 5456);
 });

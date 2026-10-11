@@ -6,6 +6,8 @@
 import { assetEntry, asset as assetOf, registerAsset, hasAsset } from "../../ui/assets.mjs";
 
 let MOVING = {};
+// the stand-in shadow's ink (the art director's Q6 ruling for M1a: #1e1a22 at alpha 110, a literal, no new palette name); one constant, so a ruling changes one place
+export const SHADOW_INK = { rgb: [0x1e, 0x1a, 0x22], alpha: 110 };
 export const setMoving = (json) => { MOVING = json || {}; };
 export const movingSpec = () => MOVING;
 const atlasStage = (stage) => (stage === "elder" ? "adult" : stage);   // an elder takes the adult's cells at the elder's tempo (the face reads the tempo)
@@ -48,9 +50,9 @@ function standIn(name, w, h, src) {
     default: blit(out, st, 0, 0); return out;
   }
 }
-function shadowStandIn(w, h, rgb) {   // a flat ellipse of the shadow ink, w × h
+function shadowStandIn(w, h, ink) {   // a flat ellipse of the shadow ink, w × h (ink: { rgb, alpha })
   const out = pic(w, h), rx = w / 2, ry = h / 2;
-  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const dx = (x + 0.5 - rx) / rx, dy = (y + 0.5 - ry) / ry; if (dx * dx + dy * dy <= 1) { const o = (y * w + x) * 4; out.data[o] = rgb[0]; out.data[o + 1] = rgb[1]; out.data[o + 2] = rgb[2]; out.data[o + 3] = 255; } }
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const dx = (x + 0.5 - rx) / rx, dy = (y + 0.5 - ry) / ry; if (dx * dx + dy * dy <= 1) { const o = (y * w + x) * 4; out.data[o] = ink.rgb[0]; out.data[o + 1] = ink.rgb[1]; out.data[o + 2] = ink.rgb[2]; out.data[o + 3] = ink.alpha; } }
   return out;
 }
 // compose one atlas: the gutter column clear, the cells at 1 + i·w, a mirror each row reversed, shadow-75 the shadow's alpha × 3 / 4 rounded down; `layers` (the look's, empty in M1) are composed over each cell by the bake slot
@@ -58,7 +60,7 @@ export function compose(id, src, layers = []) {
   const a = parse(id); if (!a) throw new Error("not a moving atlas id: " + id);
   if (layers.length) throw new Error("moving: the look's layers are composed in the bake slot (layer-bake §3.1); M1 composes none");
   const cells = cellsOf(a.species, a.stage, a.part, a.w, a.h), out = pic(1 + cells.length * a.w, a.h);
-  const cellPic = (c) => { if (placed(c.master)) return assetOf(c.master); return a.part === "shadow" ? shadowStandIn(a.w, a.h, src.shadowRGB) : standIn(c.name, a.w, a.h, { stand: (w, h) => src.stand(a.species, a.stage, w, h), nap: () => src.nap(a.species) }); };
+  const cellPic = (c) => { if (placed(c.master)) return assetOf(c.master); return a.part === "shadow" ? shadowStandIn(a.w, a.h, src.shadowInk ?? SHADOW_INK) : standIn(c.name, a.w, a.h, { stand: (w, h) => src.stand(a.species, a.stage, w, h), nap: () => src.nap(a.species) }); };
   const byName = new Map();
   cells.forEach((c, i) => {
     let p = c.derived75 ? null : c.mirror ? byName.get(c.name) : cellPic(c);

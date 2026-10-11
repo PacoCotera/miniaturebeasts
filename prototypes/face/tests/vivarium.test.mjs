@@ -179,7 +179,7 @@ for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
   });
 }
 // a test spec: the travel rules opened so every walker travels at once, an S05 adult at 144 × 152 walking 5 px a tick (stride 15): the per-tick budget must defer
-const rule2Sets = () => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S05.adult = { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [144, 152], stride: 15 }, shadow: { walk: [144, 16], close: [304, 24] } }; m.S05.juvenile.walk.stride = 15; return m; };
+const rule2Sets = () => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S05.adult = { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [144, 152] }, walkCycle: { ...j.walkCycle, stride: 15 }, shadow: { walk: [144, 16], close: [304, 24] } }; m.S05.juvenile.walkCycle.stride = 15; return m; };
 const openRules = (spec) => { const v = JSON.parse(JSON.stringify(spec)); v.rules.travel = { floorDiv: 1, capMin: 12, capDiv: 1, airborne: 2, minRest: 1 }; return v; };
 test("rule 2 (M1 §3): six adult walkers at 5 px a tick on one group tick with the bed sleepers breathing: the tick stays inside 148,000 px and the budget defers, deterministically", { skip }, async () => {
   const run = async () => {
@@ -195,7 +195,7 @@ test("rule 2 (M1 §3): six adult walkers at 5 px a tick on one group tick with t
 });
 const SPEC_VIV = () => JSON.parse(JSON.stringify(spec));
 test("twelve at 160 × 154 (synthesized, S09's size) walking 5 px a tick, groups balanced: no frame over 153,600 px, no overflow, deferrals logged and deterministic (the same case on signed S09 cells: deferred to M3)", { skip }, async () => {
-  const sets = (() => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S09 = { species: "S09", native: "right", gait: "walk", adult: { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [160, 154], stride: 15 }, shadow: { walk: [160, 16], close: [304, 24] } } }; return m; })();
+  const sets = (() => { const m = JSON.parse(JSON.stringify(MOVING_SETS)), j = m.S05.juvenile; m.S09 = { species: "S09", native: "right", gait: "walkCycle", adult: { ...JSON.parse(JSON.stringify(j)), walk: { ...j.walk, size: [160, 154] }, walkCycle: { ...j.walkCycle, stride: 15 }, shadow: { walk: [160, 16], close: [304, 24] } } }; return m; })();
   const run = async () => {
     const v = SPEC_VIV(); v.regions.resident.adult = [160, 154];
     const sc = movingScene("vivarium", { adults: 12, vivSpec: v }); sc.props.regions.residents.forEach((r) => { r.moving = { set: "S09", walk: "moving:adult:S09:walk:160x154:species", shadow: "moving:adult:S09:shadow:160x16" }; r.picture = r.picture.replace("144x152", "160x154"); });
@@ -267,15 +267,16 @@ test("focus holds rest changes (game designer R4): a resident focused across its
 });
 test("G10 (M1 §3): twelve awake for 120 s: from 2.0 s on, at every frame, ⌈N/3⌉ ≤ travelling ≤ max(4, ⌈N/2⌉), at most 2 in the air, each resident travels in every 20 s window, no trip ends off its waypoint", { skip }, async () => {
   const sc = movingScene("vivarium", { adults: 6, juveniles: 5, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 12, floor = Math.ceil(N / 3), cap = Math.max(4, Math.ceil(N / 2));
-  const last = Array(N).fill(0), was = Array(N).fill(false); let minT = 99, maxT = 0, maxAir = 0, gap = 0, ends = 0;
+  const last = Array(N).fill(0), was = Array(N).fill(false); let minT = 99, maxT = 0, maxAir = 0, gap = 0, ends = 0, starts = 0;
   runFrames(f, 120000, { each: (t) => {
     let trav = 0, air = 0;
+    { let n = 0, started = false; for (let i = 0; i < N; i++) { const s = STATE(M._face_test_state(i)); if (s.travelling) n++; if (s.travelling && !was[i]) started = true; } if (started) { starts++; assert.ok(n <= cap, `a start took the travelling count to ${n} (cap ${cap}) at ${t}, look-ahead tick or not`); } }   // the architect's Q7
     for (let i = 0; i < N; i++) { const s = STATE(M._face_test_state(i)); if (s.travelling) { trav++; last[i] = t; } if (s.airborne) air++;
       if (was[i] && !s.travelling) { ends++; assert.deepEqual([M._face_test_mv(i, 0), M._face_test_mv(i, 1)], [M._face_test_mv(i, 8), M._face_test_mv(i, 9)], `resident ${i}'s trip ended off its waypoint at ${t}`); }
       was[i] = s.travelling; if (t > 20000) gap = Math.max(gap, t - last[i]); }
     if (t >= 2000) { minT = Math.min(minT, trav); maxT = Math.max(maxT, trav); } maxAir = Math.max(maxAir, air);
   } });
-  assert.ok(minT >= floor, `travelling fell to ${minT} (floor ${floor})`); assert.ok(maxT <= cap, `travelling rose to ${maxT} (cap ${cap})`); assert.ok(maxAir <= 2, `${maxAir} in the air`); assert.ok(gap <= 20000, `a resident rested ${gap} ms`); assert.ok(ends > 100, ends + " trips");
+  assert.ok(minT >= floor, `travelling fell to ${minT} (floor ${floor})`); assert.ok(maxT <= cap, `travelling rose to ${maxT} (cap ${cap})`); assert.ok(maxAir <= 2, `${maxAir} in the air`); assert.ok(gap <= 20000, `a resident rested ${gap} ms`); assert.ok(ends > 100, ends + " trips"); assert.ok(starts > 100);
   console.log(`# G10 over 120 s: travelling ${minT} to ${maxT}, at most ${maxAir} in the air, the longest rest ${gap} ms, ${ends} trips`);
 });
 test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when facing right and the painted ones when facing left; the curl is never mirrored", { skip }, async () => {

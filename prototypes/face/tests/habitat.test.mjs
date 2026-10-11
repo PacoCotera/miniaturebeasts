@@ -157,7 +157,7 @@ import { setMoving } from "../../station/src/moving.mjs";
 setMoving(MSETS);
 async function upClose(o = {}) {
   const settings = cfg(8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
-  S.seedAdults(st, "S01", 5, 2, settings); for (const m of st.mibis) m.paint = { state: "landed" }; if (o.juvenile) st.mibis[0].born = st.turn;
+  S.seedAdults(st, o.species ?? "S01", 5, 2, settings); for (const m of st.mibis) m.paint = { state: "landed" }; if (o.juvenile) st.mibis[0].born = st.turn;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
   const b = habitatBuild({ st, sv, settings, docked: true, light: "day", focus: o.focus ?? "name", habId: st.mibis[0].id, meetId: null, armed: false, time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: true }, spec, frameSpec, homeSpec);
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
@@ -197,4 +197,12 @@ test("motion off up close: stand, or curl asleep; the moment plays nothing", { s
   const a = await upClose({ motion: false }); assert.equal(cellOf(a.f, "adult"), "stand");
   const b = await upClose({ motion: false, time: 23 * 3600 }); assert.equal(cellOf(b.f, "adult"), "curl");
   let worst = 0; for (let t = 0; t < 4000; t += 16) { a.f.frame((a.f.t += 16)); worst = Math.max(worst, dirty(a.f)); } assert.equal(worst, 0);
+});
+test("S05 up close (the animator's ruling): no hop: an eager step twice on the hop's schedule, crouch 160, stepa 320, stand; lift 0", { skip }, async () => {
+  const { f, b } = await upClose({ species: "S05", juvenile: true, focus: "resident" }); assert.equal(b.props.regions.resident.moving.set, "S05");
+  f.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true });
+  const cells = MSETS.S05.juvenile.close.cells, tr = []; let last = null;
+  for (let t = 0; t <= 1900; t += 20) { f.frame((f.t += 20)); const c = f.M._face_test_close_cell(), name = c < 0 ? "dither" : cells[c]; if (name !== last) { tr.push([t, name, f.M._face_test_close_lift()]); last = name; } }
+  const steps = tr.filter((x) => x[1] === "stepa"); assert.equal(steps.length, 2, JSON.stringify(tr)); assert.ok(tr.every((x) => x[2] === 0), "lift 0"); assert.ok(Math.abs(steps[1][0] - steps[0][0] - 900) <= 20, "the steps 900 ms apart");
+  const cr = tr.find((x) => x[1] === "crouch"); assert.ok(steps[0][0] - cr[0] >= 140 && steps[0][0] - cr[0] <= 180, "crouch 160 first");
 });

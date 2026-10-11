@@ -133,8 +133,11 @@ for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
     console.log(`# Idle (moving, cadence ${cadence.join("/")}): worst frame ${r.worst} px, worst tick ${r.worstTick} px, ${r.deferred} deferred`);
   });
 }
-// one adult hop box with its shadow (§3: "one adult hop box, 154 × 164, plus its shadow"): the description's sum; the spec's figure 26,000 is asked (it is less than its own description)
-const HOP_BOX = 154 * 164 + 154 * 16;
+// the bound of one hopping resident's frame (the architect's Q5): (cell w + the most it travels in a tick) × (cell h + the lift cap a tick, 12) + (cell w + that travel) × 16 for its shadow node; the travel is the hop's over its air ticks, rounded up
+import { MOVING as MSETS } from "./moving-scene.mjs";
+const hopBound = (stage) => { const s = MSETS.S01[stage], [w, h] = s.walk.size, t = Math.ceil(s.hop.travel / s.hop.lift.length); return (w + t) * (h + 12) + (w + t) * 16; };
+const HOP_BOX = hopBound("adult");
+test("the G7 bound (the architect's Q5): 27,720 px for an adult, 15,680 for a juvenile, from the formula", () => { assert.equal(hopBound("adult"), 27720); assert.equal(hopBound("juvenile"), 15680); });
 test("G7 night (M1 §3, game designer R3): Pip alone, asleep, 6 min 10 s: 7–18 stirs 20–40 s apart and none while Pip wanders, none within 20 s of its last curl; a wanderer wakes, travels at most 200 px, rests and curls; no frame over one adult hop box and its shadow; the face asks for a few frames a second", { skip }, async () => {
   const f = await bootScene(movingScene("idle", { adults: 1, time: 23 * 3600 })), M = f.M;
   const stirs = [], wanders = []; let prev = { clip: CLIP.asleep, wanderer: false }, worst = 0, drawn = 0, frames = 0, wakeAt = null, curlEnd = 0, travelled = 0, wander = null;

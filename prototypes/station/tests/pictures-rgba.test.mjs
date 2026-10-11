@@ -33,7 +33,7 @@ for (const id of JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")).s
 setMoving(sets);
 // a stand whose every pixel says where it is (x, y), so a shift or a mirror is read exactly
 const coded = (w, h) => { const d = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) d.set([x & 255, y & 255, 77, 255], (y * w + x) * 4); return { w, h, rgba: () => d }; };
-const src = { stand: (sp, st, w, h) => coded(w, h), nap: () => coded(96, 88), shadowRGB: [10, 20, 30] };
+const src = { stand: (sp, st, w, h) => coded(w, h), nap: () => coded(96, 88) };
 const px = (p, x, y) => Array.from(p.rgba().slice((y * p.w + x) * 4, (y * p.w + x) * 4 + 4));
 test("an atlas (M1 §1.2): one row, a clear 1 px column, then the cells in the set's order at 1 + i·w; the width 1 + n·w", () => {
   const id = movingIds("S01", "juvenile").walk, a = compose(id, src), cells = cellsOf("S01", "juvenile", "walk", 104, 112);
@@ -54,10 +54,10 @@ test("mirrors (M1 §1.2): each mirror is its cell with every row reversed, exact
   const a = compose(movingIds("S01", "adult").walk, src), w = 144, nb = 7;
   for (let k = 0; k < 5; k++) for (const [x, y] of [[0, 0], [10, 40], [143, 151], [70, 3]]) assert.deepEqual(px(a, 1 + (nb + k) * w + (w - 1 - x), y), px(a, 1 + k * w + x, y), `mirror of cell ${k} at ${x},${y}`);
 });
-test("the shadow (M1 §1.5): a flat ellipse of the shadow ink, and shadow-75 its alpha × 3 / 4 rounded down", () => {
+test("the shadow (M1 §1.5, the art director's Q6): a flat ellipse of #1e1a22 at alpha 110, and shadow-75 its alpha × 3 / 4 rounded down", () => {
   const a = compose(movingIds("S01", "juvenile").shadow, src); assert.deepEqual([a.w, a.h], [1 + 2 * 104, 16]);
-  assert.deepEqual(px(a, 1 + 52, 8), [10, 20, 30, 255]); assert.equal(px(a, 1 + 0, 0)[3], 0, "outside the ellipse");
-  assert.deepEqual(px(a, 1 + 104 + 52, 8), [10, 20, 30, Math.floor(255 * 3 / 4)]);
+  assert.deepEqual(px(a, 1 + 52, 8), [0x1e, 0x1a, 0x22, 110]); assert.equal(px(a, 1 + 0, 0)[3], 0, "outside the ellipse");
+  assert.deepEqual(px(a, 1 + 104 + 52, 8), [0x1e, 0x1a, 0x22, Math.floor(110 * 3 / 4)]);
 });
 test("status (M1 §1.5): an atlas is a placeholder while any cell is a stand-in, a master when every cell is a placed master; the play gate opens only then", () => {
   const id = movingIds("S05", "juvenile").nap; assert.equal(atlasIsMaster(id), false); assert.equal(playable("S05", "juvenile"), false);

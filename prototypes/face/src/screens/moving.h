@@ -22,6 +22,7 @@ typedef struct {
   int hopper, hop_crouch, hop_air, hop_land, hop_stand, hop_lift[8], hop_nlift, hop_travel, hop_min, hop_max, sh75[8];
   int walker, cycle_n, cycle_cell[MV_LOOP], cycle_ms[MV_LOOP], stride, pass_rise, beat_mean;   /* a legged walk: the cycle in walk-cell indexes */
   int chop_crouch, chop_air, chop_land, chop_lift[8], chop_nlift, chop_travel;
+  int cstep_cell, cstep_crouch, cstep_ms;                                  /* up close a step, not a hop (closeStep): its close cell and holds */
   int close_dither_ms, blink_ms, blink_lo, blink_hi;
 } mv_stage_t;
 typedef struct { char id[8]; int native_right; mv_stage_t st[3]; } mv_set_t;

@@ -99,7 +99,9 @@ static void hatch_frame(const mv_stage_t *S0, int t, hatchf_t *f) {
   if (t < 2720) { f->cell = "crouch"; f->dy = 2; f->shadow = 1; return; }
   if (t < 5120) { int k = (t - 2720) / 80, c = S0->breathe.cell[0]; for (int i = 0; i < S0->breathe.n; i++) { int d = S0->breathe.ms[i] / 80; if (k < d) { c = S0->breathe.cell[i]; break; } k -= d; } f->cell = S0->wcell[c]; f->shadow = 1; return; }   /* the first breath from 2720 */
   { int lift[8], n = 0; for (int i = 0, m = spec_len(I, "events.hatch.moving.steps"); i < m; i++) if (spec_len(I, v_fmt("events.hatch.moving.steps.%d.lift", i)) > 0) { n = spec_len(I, v_fmt("events.hatch.moving.steps.%d.lift", i)); if (n > 8) n = 8; for (int k = 0; k < n; k++) lift[k] = spec_int(I, v_fmt("events.hatch.moving.steps.%d.lift.%d", i, k), 0); break; }
-    const char *c = "stand"; int up = 0, sh = 0; if (n && moving_close_hop(S0, t - 5120, lift, n, 1, 1, &c, &up, &sh)) { f->cell = c; f->lift = up; f->sh75 = sh; } else f->cell = "stand"; f->shadow = 1; }
+    const char *c = "stand"; int up = 0, sh = 0;
+    if (!S0->chop_nlift && S0->cstep_ms) { f->cell = t - 5120 < S0->cstep_ms ? S0->ccell[S0->cstep_cell] : "stand"; f->shadow = 1; return; }   /* a set with no hop (S05, the animator's ruling): one step at 5120, stepa 320, then stand */
+    if (n && moving_close_hop(S0, t - 5120, lift, n, 1, 1, &c, &up, &sh)) { f->cell = c; f->lift = up; f->sh75 = sh; } else f->cell = "stand"; f->shadow = 1; }
 }
 int incubator_test_cell(void) { const mv_stage_t *S0 = hatch_set(); if (!S0) return -100; hatchf_t f; hatch_frame(S0, hatch_time(), &f); return !f.cell ? -50 : f.dl ? -1 - f.dl : moving_close_cell(S0, f.cell); }
 static void build_moving_juvenile(const mv_stage_t *S0, int t) {

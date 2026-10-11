@@ -53,7 +53,6 @@ const placedPic = (id, w, h) => { const m = masterAt(id, w, h); return m ? asset
 const movingSource = (env) => ({
   stand: (species, stage, w, h) => placedPic(`mibi-${stage === "juvenile" ? "juvenile" : "adult"}-${species}-${w}x${h}`, w, h) ?? speciesArt(env.frameOf(species), w, h, "three-quarter"),
   nap: (species) => placedPic(`mibi-juvenile-${species}-96x88`, 96, 88) ?? speciesArt(env.frameOf(species), 96, 88, "three-quarter"),
-  shadowRGB: RGB[C.ink],   // the stand-in shadow's ink (§1.5 names a palette `shadow`, which the Station palette does not have: asked)
 });
 // Register what a view asked for. `env`: { podById, frameOf }. Returns nothing; the ids are in the requests.
 export function registerPictures(reqs, env) {
