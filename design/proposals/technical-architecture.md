@@ -8,7 +8,7 @@ This is the software structure every Station, Companion and Caddy build follows,
 
 - The hardware: ESP32 for the Companion and the Caddy, a Raspberry Pi 4 for the Station, and each screen's resolution and colour depth. The Pi 4 is the ceiling, and everything is built for underpowered hardware. The toolkit and the language are chosen within these limits.
 - **First define the loop**, honouring each device's pixels and colours; once the loop and the interactions are stable, **port**. Hardware prototyping starts once the loop is complete in software.
-- The Station at 1024×600 at 1× with Inter at 16, 20 and 28 px, anti-aliased, and painted full-colour art; the Companion at 450×600 on the 48-colour palette with 48 px tiles, HUD 32, view 532, bottom line 36, and the Mibi 7×9 bitmap type; the Caddy in four grays.
+- The Station at 1024×600 at 1× with Inter at 16, 20 and 28 px, anti-aliased, and painted full-colour art; the Companion at 450×600 in 8-bit indexed colour (up to 256 entries, in per-biome sets) with 48 px tiles, HUD 32, view 532, bottom line 36, and the Mibi 7×9 bitmap type; the Caddy in four grays.
 - The kit plays standalone with no internet; cargo moves only on docking; the Caddy brokers paintings over Wi-Fi from the Station.
 - Genome, rig and stamp are imported from `prototypes/workbench` and `prototypes/genome-stamp`, never copied.
 - Routine play uses the depicted keys only. The developer-tools mode is a build requirement. No MicroPython or Arduino.
@@ -72,7 +72,7 @@ Arithmetic from the reference hardware ([devices.md](../devices.md)), to be meas
 | Assets | One byte a pixel: a 48 px tile is 2.3 KB, a 280×300 resident 84 KB. v1's 942 KB of RGBA art would be about 235 KB | Four-gray sets; paintings on the SD card | Paintings at full colour, 372 KB each at 300×310 decoded; the rig, rasteriser, validator and derivation run here (art pipeline §11) |
 | Lesson from v1 | The 1.4 MB image was 1.1 MB of flash data, mostly RGBA art and anti-aliased font tables. Indexed assets and bitmap type remove most of it | 470 KB Caddy UI compiled | Never ran on a Pi |
 
-The Companion's pixel model (a 48-entry palette, indexes in memory, a lookup to 16-bit on the way to the panel) is the same model the sandbox uses. The device enforces the palette for free.
+The Companion's pixel model (8-bit indexed colour: a palette of up to 256 entries in per-biome sets, indexes in memory, a lookup to 16-bit on the way to the panel) is the same model the sandbox uses. The device enforces the palette for free.
 
 ### 4.2 The Companion and the Caddy
 
@@ -260,3 +260,4 @@ The face's build plan, bridge, words, checks, budgets and milestones are [lvgl-s
 
 - Generating the layout spec's tables and wireframes from the spec files.
 - The form of the spec files compiled to C tables for the Companion and the Caddy.
+- The asset policy for the Companion's 8-bit indexed colour: whether `palette48` becomes one `palette256` policy or one policy per biome.

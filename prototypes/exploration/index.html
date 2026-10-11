@@ -1006,7 +1006,11 @@ function save() {
   if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
+  if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
   if (S.st) { syncStation(); normalizeCare(S); }
+  if (!fieldFrozen() && FX.shieldAtDock != null) {   // Lift (or the expedition ended): the bars the cradle mended flash once
+    if (S.exp && S.exp.shield > FX.shieldAtDock) FX.shieldFlash = { from: FX.shieldAtDock, at: NOW };
+    FX.shieldAtDock = null; FX.dockSaid = 0; }
   try { localStorage.setItem(SAVE_KEY, JSON.stringify(S)); } catch (e) { /* storage unavailable: keep playing in memory */ }
   if (typeof onStateChanged === 'function') onStateChanged();
 }
@@ -1039,6 +1043,12 @@ function load() {
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
 function isDocked() { const st = stPart(); return !!(st && st.dock && st.dock.docked); }
+// Docked mid-expedition the field is frozen: nothing that reaches advance(), moves you or spends is taken, and the
+// expedition resumes at Lift as it was (game designer's dock-freeze ruling). Field input only; views still open.
+const fieldFrozen = () => !!(S && S.exp) && isDocked();
+const DOCK_TEXT = { chip: 'Docked', first: 'Field paused while docked · lift to go on · End expedition still works at the start or a lit outpost', again: 'Docked · lift to go on',
+  tierMid: 'Tier 2 · from the next expedition', probe: 'Docked · the Station mends it', bay: n => n + ' crate' + (n === 1 ? '' : 's') + ' sealed · ready for the Station',
+  sealed: 'In the Caddy · open Cargo on the Station', sealedEmpty: 'In the Caddy' };
 // Docked, the Companion takes what the Station hands over: accepted crates leave the bay; the Probe as mended or
 // upgraded; the Station's carry requests (st.carryReqs); the mibis raised; species identified; pods returned to the wild.
 function syncStation() {
@@ -1054,15 +1064,16 @@ function syncStation() {
     if (!q && m.released) continue;   // released before the Companion ever knew it: not created, not logged
     if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); logEv(m.name + ' (' + SPECIES[m.sp].name + ') is home at the Station'); }
     q.name = m.name; q.born = m.born || 0; q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
-  if (st.probe && st.probe.seq > (S.probeSeen || 0)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
-    if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; the expedition continues after Lift
-    if (S.tier > was) fxMsg('Probe tier 2 · reaches further, carries 3 pods', 3); }
+  if (st.probe && st.probe.seq > (S.probeSeen || 0) && !(S.exp && S.exp.ending)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
+    if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; frozen while docked; resumes at Lift as it was
+    if (S.tier > was) fxMsg(S.exp ? DOCK_TEXT.tierMid : 'Probe tier 2 · reaches further, carries 3 pods', 3); }   // an upgrade mid-expedition applies from the next one
   if (!S.exp) for (const r of carryApply(S, st)) { const m = mibiById(r.id), n = m ? m.name : 'a mibi';   // mid-expedition the requests wait
     if (r.op === 'home') { fxMsg(CARE_TEXT.left(n), 3); logEv(n + ' stays home (from the Station)'); }
     else if (r.ok) { fxMsg(CARE_TEXT.took(n), 3); logEv(n + ' is with you (from the Station)'); }
     else { if (r.why === 'full') fxMsg(CARE_TEXT.fullRefused(n), 3); logEv(n + ' stays home · the Station’s request refused (' + r.why + ')'); } }
   if (!S.exp) normalizeCare(S, releasedIds());   // a released mibi leaves the carried set at the dock, between expeditions; mid-expedition it waits
-  for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
+  // pods returned to the wild wait while an expedition runs (retSeen stays unmarked), so no place changes under a docked field
+  if (!S.exp) for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
     S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
 }
@@ -3259,7 +3270,8 @@ function drawReachView(t) {
   // the pawn at 2× (1× at tier 2), and the frame
   const p = cxy(ex.pos), px = q.dx + (p.x - (q.s0.x - q.r)) * q.cs + q.cs / 2, py = q.dy + (p.y - (q.s0.y - q.r)) * q.cs + q.cs / 2;
   const pawn = q.big ? playerArt(ex.face || 'down', 'stand', 0) : ICON.pawn(ex.face || 'down');   // tier 1: the place pawn itself; tier 2: the small one
-  blit(pawn, Math.round(px - pawn.w / 2), Math.round(py - pawn.h / 2)); RT.plScr = { x: px, y: py };
+  const jx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;   // a refused press jitters the pawn only: the brackets and RT.plScr stay put
+  blit(pawn, Math.round(px - pawn.w / 2) + jx, Math.round(py - pawn.h / 2)); RT.plScr = { x: px, y: py };
   { // brackets on the pawn's cell: orange, 2 px, static, on the cell's outer 2 px; arms 10 at tier 1, 6 at tier 2
     const L = q.big ? 10 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
@@ -3707,16 +3719,22 @@ function drawHUD() {
   const ex = S.exp; R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
   if (!ex) return;
   let x = drawReachGrid(7) + 4;
+  { const sf = FX.shieldFlash, a = sf ? NOW - sf.at : 1e9;   // Lift: the bars the cradle mended flash cream, 700 ms (steady with reduced motion)
+    if (a >= 0 && a < 700 && (!motion() || Math.floor(a / 120) % 2 === 0)) for (let i = sf.from; i < ex.shield; i++) R(x + i * 9 - 2, 7, 10, 18, C.cream); }
   for (let i = 0; i < ex.smax; i++) R(x + i * 9 - 1, 9, 8, 14, C.void);   // each bar with a 1 px dark outline
   shieldBars(x, 10, ex.shield, ex.smax, 6, 12);
   x += ex.smax * 9 + 3;
   const pf = FX.podFlash && NOW - FX.podFlash.at < 700 ? FX.podFlash : null;
   for (let i = 0; i < ex.hold; i++) { if (pf && pf.i === i && Math.floor((NOW - pf.at) / 120) % 2 === 0) R(x - 1, 5, 18, 22, C.amber); podSlot(x, 6, ex.cargo.pods[i]); x += 18; }
-  x += 4; if (S.bay.length) x = drawCrateCount(x);
+  x += 4;
   // what has to fit right of the partner's token: storm and fog headings, three counters, Call, battery and radio
   const lvl = 0, fogW = 0, stormW = 0;   // conditions (storm, fog bank) live on the bottom line now
   let rx = drawStatus(SCR_W - 6) - 2;
   rx -= countersW(ex.cargo); drawCounters(rx, ex.cargo, 'x'); rx -= 6;
+  // docked mid-expedition: the chip after the pods and crate count (the crate count gives way when it would not fit); the partner moves after it
+  const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
+  if (S.bay.length && !(chipW && x + crateW + chipW > rx - 4)) x = drawCrateCount(x);
+  if (chipW) { panel(x, 6, chipW, 22, C.ink, C.mint); text(DOCK_TEXT.chip, x + 8, 9, C.mint); x += chipW + 4; }
   if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 21); blit(ICON.mini(ex.pt.sp), x, 10); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 9, C.amber); }
   if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }
 }
@@ -3852,8 +3870,9 @@ function digPartner() { const pm = partnerMibi(); return pm && SPECIES[pm.sp].ab
 function menuItems() {
   const from = S.ui.from, base = [{ id: 'probe', label: 'Probe' }, { id: 'cargo', label: 'Cargo' }, { id: 'mibis', label: 'Mibis' }], send = { id: 'send', label: 'End expedition' };
   // ✓ waits when you face nothing, so Wait sits lower down; the top entry is what ← names on the bottom line
-  if (from === 'patch' && S.exp && S.exp.patch) return [{ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }].concat(base);
-  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), { id: 'wait', label: 'Wait' }, { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
+  const frz = fieldFrozen() ? { frz: 1 } : {};   // docked mid-expedition: Wait and Leave stay in place, dimmed, and refuse
+  if (from === 'patch' && S.exp && S.exp.patch) return [Object.assign({ id: 'leave', label: layout(S.exp.patch.key).cave ? 'Climb out' : 'Leave this place' }, frz), Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz)].concat(base);
+  if (from === 'map' && S.exp) return [Object.assign({}, send, canSend() ? {} : { far: 1 }), Object.assign({ id: 'wait', label: 'Wait' }, frz), { id: 'fullmap', label: S.ui.mapFull ? 'Reach view' : 'Full map' }].concat(base);
   if ((from === 'sealed' || from === 'active') && !S.exp) return [{ id: 'next', label: 'Next expedition' }].concat(base, [{ id: 'newworld', label: 'New world', sep: 1 }]);
   if (from === 'setup' && !S.exp) return [{ id: 'mibis', label: 'Mibis' }, { id: 'worldmap', label: 'Full map' }, { id: 'newworld', label: 'New world', sep: 1 }];
   return base.concat([{ id: 'newworld', label: 'New world', sep: 1 }]);
@@ -3884,19 +3903,21 @@ function drawMenu(t) {
     if (sel) { panel(x + 10, y + 3, w - 20, rowH - 6, C.blush); R(x + 10, y + 7, 5, rowH - 14, C.orange); }
     menuIcon(it.id, x + 24, y + rowH / 2 - 14);
     if (it.sep) for (let k = x + 16; k < x + w - 16; k += 6) R(k, y - 1, 3, 2, C.stone);   // separator above New world
-    text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.dis || it.far ? C.mist : it.id === 'newworld' ? C.rust : C.ink, sc); });
+    text(it.label, x + 64, y + rowH / 2 - (sc === 3 ? 11 : 8), it.dis || it.far || it.frz ? C.mist : it.id === 'newworld' ? C.rust : C.ink, sc); });
 }
 function canPatch() { const ex = S.exp; return !!ex && ex.shield < ex.smax && ex.cargo.e >= PRICE.patch; }
 // The Probe screen, in three groups with one heading colour: the Probe (shield, reach, Energy, the tier 2 price
 // as its last row), the map's signs and cells as an icon | name | meaning grid, and the field guide as tokens.
 function drawProbe(t) {
-  const ex = S.exp, tier = tierOf(); viewBg(); drawTop('Probe', 'tier ' + S.tier);
+  // mid-expedition the Probe is as it set out (ex.range, ex.hold, ex.smax): a docked upgrade applies from the next expedition
+  const ex = S.exp, tier = ex ? { range: ex.range, hold: ex.hold, shield: ex.smax } : tierOf(), tierN = ex ? +(Object.keys(TIER).find(k => TIER[k].shield === ex.smax) || S.tier) : S.tier;
+  viewBg(); drawTop('Probe', 'tier ' + tierN);
   const head = (l, y) => text(l, 24, y, C.mist), C1 = 70, C2 = 212;
   head('Probe', 40);
   shieldBars(24, 64, ex ? ex.shield : (S.shield != null ? Math.max(0, S.shield) : tier.shield), ex ? ex.smax : tier.shield, 12, 22);
   text('Reaches ' + tier.range + ' cells each way · ' + tier.hold + ' pods', 120, 60, C.fog);
-  const sh = ex ? (canPatch() ? (S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar') : ex.shield >= ex.smax ? 'Shield is whole' : 'Patch: 3 Energy · have ' + ex.cargo.e) : 'Station mends 1 Energy a bar';
-  text(sh, 120, 82, ex && canPatch() ? C.amber : C.stone);
+  const frozen = fieldFrozen(), sh = ex ? (ex.shield >= ex.smax ? 'Shield is whole' : frozen ? DOCK_TEXT.probe : canPatch() ? (S.ui.patchArm ? '✓ again: patch, 3 Energy' : '3 Energy mends a bar') : 'Patch: 3 Energy · have ' + ex.cargo.e) : 'Station mends 1 Energy a bar';
+  text(sh, 120, 82, ex && canPatch() && !frozen ? C.amber : C.stone);   // docked: the Station mends it, in stone
   { const er = energyInReach(); blit(ICON.energy(), 24, 109); text(ex ? 'Energy in reach: ' + er.e : 'Energy in the hold: ' + ((S.hold && S.hold.e) || 0), 44, 108, C.bone);
     if (ex) text(er.n ? 'found, not drawn' : 'Call to find it', 426, 108, C.mist, 2, 'right'); }
   if (S.tier < 2) { panel(18, 130, 414, 26, C.night); text('Tier 2 at the Station: ' + PRICE.tier2E + ' Energy + ' + PRICE.tier2D + ' Data', 26, 135, C.amber); }
@@ -4198,8 +4219,9 @@ function drawSealed(t) {
   const age = NOW - FX.transAt, slide = motion() ? clamp((age - 200) / 500, 0, 1) : 1;
   for (let i = 0; i < BAY; i++) { const c = S.bay[i], isNew = r.sealed && c && c.id === r.sealed.id; crateIcon(24 + i * 140, y + (isNew ? Math.round((1 - slide) * -40) : 0), c, 130); }
   y += 84;
-  text(clipText(S.bay.length ? bayLine() : 'The bay is empty', 410, 2), 22, y, S.bay.length ? C.amber : C.stone); y += 24;
-  text(clipText(isDocked() ? 'Docked · open Cargo on the Station' : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
+  const dk = isDocked();   // docked: the Companion is in the Caddy, and the crates are ready for the Station
+  text(clipText(S.bay.length ? (dk ? DOCK_TEXT.bay(S.bay.length) : bayLine()) : 'The bay is empty', 410, 2), 22, y, S.bay.length ? C.amber : C.stone); y += 24;
+  text(clipText(dk ? (S.bay.length ? DOCK_TEXT.sealed : DOCK_TEXT.sealedEmpty) : S.bay.length ? 'The Station opens them when you dock' : 'Nothing to transfer', 410, 2), 22, y, C.mist); y += 34;
   if (!r.waited) drawTurnLines(r, y);
 }
 function yieldLine(q) { return '+' + q.data + ' Data · ' + TIER_NAME[q.tier] + ' place · ' + q.moments + ' moment' + (q.moments === 1 ? '' : 's'); }
@@ -4286,7 +4308,7 @@ function lineFor() {
       if (first) { const sg = G.spawns.includes(c) && spawnSign(c), base = LAND_NAME[G.land[c]] + (sg ? ' · ' + SIGN_WORD[sg] : ''); return L1(placeValid(c) ? 'Start here' : placeReason(c), [base + wx, base + ' · storm preview', base], 'back', !placeValid(c)); }
       const base = S.revealed[c] ? cellWords(c) : ''; return L1(placeValid(c) ? 'Start here' : placeReason(c), base ? [base + wx, base + ' · storm preview', base] : wx.slice(3), 'back', !placeValid(c)); }
     case 'map': if (S.exp.beaconView) return L1('', 'the land around the beacon', 'back');
-      return L1('Go down', mapContext(), canSend() ? 'End expedition' : 'menu');   // ← opens the menu, End expedition on top where it works
+      return L1('Go down', mapContext(), canSend() ? 'End expedition' : 'menu', fieldFrozen());   // ← opens the menu, End expedition on top where it works; docked: ✓ dimmed
     case 'patch': { const lay = curLay(), cov = !lay.cave && stormCovers(lay.cell % MW), a = patchAction();
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
@@ -4295,14 +4317,16 @@ function lineFor() {
       const sv = '\x01' + placeState(lay.cell);
       let ctx = lay.cave ? 'cave' : [LAND_NAME[lay.land] + ' · ' + sv + wx, sv + wx, sv, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
-      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep'); }
+      if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
+      if (fieldFrozen()) return L1(a.label, ctx, 'menu', true);   // docked: ✓ dimmed, and ← opens the menu
       return L1(a.label, ctx, lay.cave ? 'Climb out' : 'Leave', !a.run || a.dim); }
-    case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close');
+    case 'menu': { if (S.ui.waiting && S.exp) return L1('Wait again', 'Waiting', 'close', fieldFrozen());
       const it = menuItems()[S.ui.menuSel] || menuItems()[0];
+      if (it.frz) return L1(it.id === 'wait' ? 'Wait one action' : it.label, '', 'close', true);   // docked: a frozen row keeps its label, dimmed
       if (it.id === 'send' && it.far) return L1('End expedition', sendHint(), 'close', true);
       return L1(it.id === 'wait' ? 'Wait one action' : it.id === 'leave' || it.id === 'send' || it.id === 'next' ? it.label : it.id === 'newworld' ? (S.ui.nwArm ? 'Erase · start a new one' : 'New world') : 'Open ' + it.label, it.id === 'send' && S.exp ? [surveyedLine(), 'shows what it seals'] : '', 'close'); }
-    case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close') : L1('', '', 'close');   // read-only: one way out
+    case 'probe': return canPatch() ? L1(S.ui.patchArm ? 'Confirm: patch, 3 Energy' : 'Patch shield · 3 Energy', 'cheaper at the dock', 'close', fieldFrozen()) : L1('', '', 'close');   // read-only: one way out
     case 'cargo': return S.exp ? (canSend() ? L1('End expedition', 'seals the hold · the world turns', 'close') : L1('', 'End expedition: ' + sendHint(), 'close')) : L1('', bayLine(), 'close');
     case 'mibis': { const m = rosterAt(S.ui.rSel), bk = !S.exp && S.ui.rFrom === 'setup' ? 'back' : 'menu';
       if (rosterIdle()) return L1(S.exp ? '' : 'Next expedition', '', bk);   // nothing to arrange
@@ -4359,7 +4383,8 @@ function frame(t) {
 // ===================== 16. Input: Companion controls =====================
 function beaconBack() { const ex = S.exp; if (!ex || !ex.beaconView) return; delete ex.beaconView; if (ex.patch) { S.phase = 'patch'; transition(); } }
 function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.ui.waiting = 0; S.phase = 'menu';
-  if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send')); }   // focus on End expedition once the reach is done
+  if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send'));   // focus on End expedition once the reach is done
+  if (fieldFrozen()) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => !i.frz)); }   // docked: the first row that is not frozen
 // Expeditions start only undocked (lift the Companion at the Station page), and not with a broken Probe.
 function startBlock() {
   if (isDocked()) return 'Docked · lift the Companion to explore';
@@ -4387,10 +4412,30 @@ function moveCursor(dir) {
   }
   const x = clamp(p.x + dx, 0, MW - 1), y = clamp(p.y + dy, 0, MH - 1); S.ui.cur = y * MW + x;
 }
+// Docked mid-expedition: the presses that would move you, spend, act in a place, wait or leave (the ruling's refused list).
+// ← in a place, menu browsing, the views, End expedition and the mibi pages still work.
+function frozenRefuses(k) {
+  if (!fieldFrozen()) return false;
+  switch (S.phase) {
+    case 'map': return k in DIRS || k === 'confirm' || k === 'call';
+    case 'patch': return S.ui.swap ? k === 'confirm' : k in DIRS || k === 'confirm' || k === 'call';
+    case 'menu': if (S.ui.waiting) return k === 'confirm';
+      return k === 'confirm' && !!(menuItems()[S.ui.menuSel] || {}).frz;
+    case 'probe': return k === 'confirm' && canPatch();   // the cradle mends instead
+  }
+  return false;
+}
+// A refused press changes nothing in S: a bump, and the message (the first of each dock says why and what to do).
+function refuseFrozen() {
+  stopRepeat(); FX.bumpAt = NOW;   // a held direction stops at once instead of repeating the refusal
+  const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
+}
 function act(k, mode) {
-  if (k !== 'confirm' && S && S.ui) S.ui.depotArm = 0;
+  const refused = frozenRefuses(k);
+  if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
+  if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
   if (k !== 'back' && !(S.phase === 'menu' && k !== 'confirm')) { FX.msg = ''; FX.notes = (FX.held || []).filter(n => (n.age = (n.age || 0) + 1) <= 2); FX.held = []; }   // a message lasts until the next action; a note that didn't fit comes next (Back and browsing the list keep it)
   const isDir = k in DIRS;
@@ -4417,7 +4462,7 @@ function act(k, mode) {
         break; }
       if (isDir) patchStep(k, mode || 'creep');
       else if (k === 'confirm') { const a = patchAction(); if (a.run) a.run(); else { FX.bumpAt = NOW; return; } }   // "Nothing here": no action spent
-      else if (k === 'back') { if (doneEmpty()) leavePatch(); else openMenu(); }   // "← Leave": one press out of a finished place
+      else if (k === 'back') { if (doneEmpty() && !fieldFrozen()) leavePatch(); else openMenu(); }   // "← Leave": one press out of a finished place (docked: the menu)
       else if (k === 'call') callPlace();
       break;
     case 'menu': { const items = menuItems(), n = items.length; if (k !== 'confirm') S.ui.nwArm = 0;
@@ -4478,8 +4523,7 @@ function act(k, mode) {
       break;
   }
   if (S.exp && S.exp.patch == null && S.phase === 'patch') S.phase = 'map';
-  noteSigns(); noteHud();
-  settleOnce();
+  if (!fieldFrozen()) { noteSigns(); noteHud(); settleOnce(); }   // docked mid-expedition: no one-time hint shows or is spent (each shows on the first press after Lift if it still holds)
   save();
 }
 
