@@ -4014,7 +4014,7 @@ function drawNoOneWith() {
   if (S.bay.length) text(bayLine(), SCR_W / 2, 352, C.amber, 2, 'center');
 }
 // The look-out (animator, 2026-10-11 15:04): a juvenile with you, on the stage mid-expedition and undocked, glances out of the
-// Companion: `alert` frame 0 at (97, 58) for LOOK_HOLD ms, a seeded LOOK_MIN–LOOK_MAX ms (start to start) from the page
+// Companion: `alert` frame 0 at (97, 52), the place of idle (only the pose and the flip change) for LOOK_HOLD ms, a seeded LOOK_MIN–LOOK_MAX ms (start to start) from the page
 // opening; a Call answer or a page change restarts it. Every second look-out is flipped, and the turn sticks in its idle until
 // the next one turns it back. Reduced motion: idle frame 0, no look-out. a: ms since the (re)start.
 const LOOK_MIN = 5000, LOOK_MAX = 8000, LOOK_HOLD = 960;
@@ -4043,7 +4043,7 @@ function drawActive(t) {
   if (mo && isW && S.exp && !isDocked() && st === 'juvenile') {   // the look-out: restarted by a page change (the stage not drawn on the last frame) or a Call answer
     const L = RT.look; if (!L || L.id !== m.id || RT.lookN !== RT.frameN - 1 || h) RT.look = { id: m.id, at: NOW, n: (L ? L.n : 0) + 1 };
     RT.lookN = RT.frameN;
-    if (!h && !sp) { const o = lookOut(hash(S.seed, 'look', m.id, RT.look.n), NOW - RT.look.at); flip = o.flip; if (o.on) { pose = 'alert'; fr = 0; y = 58; } } }
+    if (!h && !sp) { const o = lookOut(hash(S.seed, 'look', m.id, RT.look.n), NOW - RT.look.at); flip = o.flip; if (o.on) { pose = 'alert'; fr = 0; } } }
   if (sp && m.sp === 1) blit(haloArt(), 75, 60);   // a Tuikis glows
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet

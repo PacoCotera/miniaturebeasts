@@ -1090,7 +1090,7 @@ test("X26 placeholder plates: no label unless the observer panel is open; a mibi
   assert.ok(lettered(d).some(c => c[1] === "token"), "the observer open: the labels, as before"); assert.ok(lettered(d).some(c => c[1] === "mibi" || c[1] === "m"), "X1's plates too");
 });
 
-test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms, alert frame 0 at (97, 58); every second one flipped and the turn sticks; a page change restarts it; reduced motion holds idle frame 0", () => {
+test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms, alert frame 0 at (97, 52), where idle stands; every second one flipped and the turn sticks; a page change restarts it; reduced motion holds idle frame 0", () => {
   // the pure schedule
   const s = X1.page(); assert.deepEqual(plain(s.run("[LOOK_MIN, LOOK_MAX, LOOK_HOLD]")), [5000, 8000, 960]);
   const sched = seed => { const on = [], flips = []; let was = false; for (let a = 0; a <= 40000; a += 10) { const o = s.run(`lookOut(${seed}, ${a})`); if (o.on && !was) { on.push(a); flips.push(o.flip); } was = o.on; } return { on, flips }; };
@@ -1108,7 +1108,7 @@ test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms,
   let f = frames(1000, 20000);
   const alerts = f.filter(x => x[3] === "alert");
   assert.ok(alerts.length, "it looks out");
-  for (const x of alerts) { assert.equal(x[4], 0, "frame 0"); assert.equal(x[5], 97); assert.equal(x[6], 58); }
+  for (const x of alerts) { assert.equal(x[4], 0, "frame 0"); assert.equal(x[5], 97); assert.equal(x[6], 52, "the place of idle"); }
   for (const x of f.filter(x => x[3] === "idle")) { assert.equal(x[5], 97); assert.equal(x[6], 52, "idle at (97, 52)"); }
   const runs = []; for (let i = 0; i < f.length; i++) if (f[i][3] === "alert" && (i === 0 || f[i - 1][3] !== "alert")) { let j = i; while (j + 1 < f.length && f[j + 1][3] === "alert") j++; runs.push({ at: f[i][0], len: f[j][0] - f[i][0] + 20, flip: f[i][8], after: f[Math.min(j + 10, f.length - 1)][8] }); }
   assert.ok(runs.length >= 2, "at least two look-outs in 20 s: " + JSON.stringify(runs));
@@ -1125,4 +1125,19 @@ test("X26 look-out on a virtual clock: seeded 5000–8000 ms apart, held 960 ms,
   // reduced motion: idle frame 0 throughout, never flipped
   const r = X26.world([dot()], [1]); r.setOut(); r.run("S.ui.aId = 1");
   for (let t = 0; t < 12000; t += 40) { const sp = r.draw("active", t).find(c => c[0] === "sprite"); assert.deepEqual([sp[2], sp[3], sp[7]], ["idle", 0, false], "t " + t); }
+});
+
+test("X26 the foot row: in a 10 s virtual-clock run with a look-out, the lowest visible sprite row is the idle foot row in every frame (283 for Tuikis), for all three species; the sprite never moves", () => {
+  for (const sp of [0, 1, 2]) {
+    const p = X26.world([X26.mib(1, "Dot", sp)], [1], { motion: true }); p.setOut(); p.run("S.ui.aId = 1");
+    // the lowest source row holding a pixel visible on the stage's ink, for a pose and frame, at 8× from the drawn y
+    const low = (pose, fr, y) => p.run(`(() => { const a = creatureArt(${sp}, ${JSON.stringify(pose)}, ${fr}); let r = -1; for (let j = 0; j < a.h; j++) for (let i = 0; i < a.w; i++) { const v = a.p[j * a.w + i]; if (v >= 0 && v !== C.ink) r = j; } return ${y} + r * 8 + 7; })()`);
+    const foot = low("idle", 0, 52); if (sp === 1) assert.equal(foot, 283, "Tuikis: the visible feet end on row 283");
+    let alerts = 0;
+    for (let t = 1000; t < 11000; t += 20) { const s = p.draw("active", t).find(c => c[0] === "sprite"); assert.ok(s, "drawn, t " + t);
+      const [, , pose, fr, x, y] = s; if (pose === "alert") alerts++;
+      assert.deepEqual([x, y], [97, 52], "the sprite never moves: t " + t + " " + pose);
+      assert.equal(low(pose, fr, y), foot, "sp " + sp + " t " + t + " " + pose + ": the idle foot row"); }
+    assert.ok(alerts > 0, "sp " + sp + ": a look-out in the 10 s run");
+  }
 });
