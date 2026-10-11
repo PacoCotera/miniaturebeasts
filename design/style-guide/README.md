@@ -14,7 +14,7 @@ Creatures are sculpted, rounded and tactile, lit from the top left, with express
 <table><tr><td valign="top"><img src="../../art/concept-homepage/companion-map-hands.png" width="420" alt="Companion reach view concept"><br><em>companion-map-hands: the north star for the map. Approved concept, generated; a reference, not a master.</em></td>
 <td valign="top"><img src="../../art/concept-homepage/companion-storm.png" width="280" alt="Companion storm concept"><br><em>companion-storm: the north star for a place. Approved concept, generated. The tree is not shelter.</em></td></tr></table>
 
-- **Palette:** the kit's 48 colours as ramps (cool and warm neutrals, grass, teal, blue, violet, red, orange, yellow, pink, white; values in [ui-kit §2](../proposals/ui-kit.md#2-the-kit)). Nothing off palette.
+- **Palette:** the Companion's 8-bit indexed colour, up to 256 entries in per-biome sets, built on the kit's ramps (cool and warm neutrals, grass, teal, blue, violet, red, orange, yellow, pink, white; values in [ui-kit §2](../proposals/ui-kit.md#2-the-kit)). Nothing off palette.
 - **Light:** one light, from the top left. Shade in three or four steps of one ramp. Shadows lean cool, highlights warm.
 - **Outline:** 1 px in the darkest step of the part's own ramp, never black; one step lighter on the lit side. Touching parts get a contact shade, not a line.
 - **No alpha,** no anti-aliasing, no gradients. Blends are palette tables (dark, light, veil, fade) or the 4×4 Bayer dither. Nothing else.
