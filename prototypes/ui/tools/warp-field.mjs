@@ -52,15 +52,21 @@ export function decodeField(buf, end = null) {
 export const headMaskFrom = (buf) => { const p = decodePNG(buf), m = new Uint8Array(p.width * p.height); for (let i = 0; i < m.length; i++) m[i] = p.data[i * 4] > 127 ? 1 : 0; return { w: p.width, h: p.height, mask: m }; };
 
 // ---- landmarks
-// The landmarks of one picture at the target size: the animator's own picture if one is named for that size, else the base picture scaled by the size ratio.
+// The landmarks of one picture at the target size: the animator's own picture block for that size if there is one (placed), else the 304 block, to be mapped by the figure bbox (derived).
 export function pickPicture(landmarks, w, h, name = null) {
   const pics = landmarks.pictures ?? {}, own = Object.keys(pics).find((k) => k.endsWith(`-${w}x${h}`));
-  if (own && (!name || name === own)) return { pic: pics[own], scaleX: 1, scaleY: 1, name: own };
+  if (own && (!name || name === own)) return { pic: pics[own], derived: false, name: own };
   const baseName = name ?? Object.keys(pics).find((k) => k.endsWith(`-${BASE_SIZE[0]}x${BASE_SIZE[1]}`));
   if (!baseName || !pics[baseName]) throw new Error(`no landmark picture for ${w}x${h}${name ? ` (asked for "${name}")` : ""}`);
-  const [bw, bh] = parseSize(baseName.slice(baseName.lastIndexOf("-") + 1));
-  return { pic: pics[baseName], scaleX: w / bw, scaleY: h / bh, name: baseName };
+  return { pic: pics[baseName], derived: true, name: baseName };
 }
+// The figure bbox of a picture: the pixels with alpha > 110 in the rows above its first zero row, as [x0, y0, x1, y1] with y1 the row just above that row.
+export function figureBbox(img, zeroY) {
+  let x0 = img.w, x1 = -1, y0 = img.h; for (let y = 0; y < Math.min(zeroY, img.h); y++) for (let x = 0; x < img.w; x++) if (img.data[(y * img.w + x) * 4 + 3] > 110) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); }
+  return [x0, y0, x1, zeroY - 1];
+}
+// The mapping from the 304 set to another picture, each axis on its own: p' = t0 + r((p - b0) * s), d' = r(d * s).
+export const bboxMapping = (base, target) => ({ sx: (target[2] - target[0]) / (base[2] - base[0]), sy: (target[3] - target[1]) / (base[3] - base[1]), bx0: base[0], by0: base[1], tx0: target[0], ty0: target[1], base, target });
 // Even-odd polygon fill, a pixel is inside when its centre (x + 0.5, y + 0.5) is.
 export function rasterPolygon(poly, w, h) {
   const m = new Uint8Array(w * h);
@@ -101,10 +107,15 @@ function tps(pts) {
 
 // The field toward `end` at w×h. opts: { picture, overrides: { headMask: {mask}, shadowRows: [[y0,y1]], bellyY: N, amplitude: k, noCheck: true } }. Returns the field, or throws with the reason.
 // field: { w, h, size, end, dx, dy: Int8Array, headMask: Uint8Array|null, headSource, zeroRows, bellyY: Int32Array|null, maxD, maxGradient, gradientAt, picture, overrides: [names] }
-export function buildField(landmarks, end, w, h, { picture = null, overrides = {}, ink = null } = {}) {
+export function buildField(landmarks, end, w, h, { picture = null, overrides = {}, ink = null, mapping = null } = {}) {
   if (BOUNDS[`${w}x${h}`] == null) throw new Error(`no displacement bound for ${w}x${h} (bounds: ${Object.keys(BOUNDS).join(", ")})`);
-  const { pic, scaleX, scaleY, name } = pickPicture(landmarks, w, h, picture), amp = overrides.amplitude ?? 1, used = [];
-  const sx = (x) => rha(x * scaleX), sy = (y) => rha(y * scaleY), polyAt = (p) => p.map(([x, y]) => [x * scaleX, y * scaleY]);
+  const { pic, derived, name } = pickPicture(landmarks, w, h, picture), amp = overrides.amplitude ?? 1, used = [];
+  if (derived) {
+    if (!pic.fieldZeroRows && !overrides.shadowRows) throw new Error(`no fieldZeroRows for ${w}x${h}`);
+    if (!mapping) throw new Error(`${w}x${h} has no picture block of its own: give the 304 stand and this stand for the figure-bbox mapping (--base-stand)`);
+  }
+  const M = derived ? mapping : { sx: 1, sy: 1, bx0: 0, by0: 0, tx0: 0, ty0: 0 };
+  const sx = (x) => M.tx0 + rha((x - M.bx0) * M.sx), sy = (y) => M.ty0 + rha((y - M.by0) * M.sy), polyAt = (p) => p.map(([x, y]) => [sx(x), sy(y)]), scaleX = M.sx, scaleY = M.sy;
   const pxs = [], pys = [], add = (x, y, vx, vy, nm) => { pxs.push({ x, y, v: vx, nm }); pys.push({ x, y, v: vy, nm }); };
   for (const [nm, [x, y]] of Object.entries(pic.fixed ?? {})) add(sx(x), sy(y), 0, 0, nm);
   for (const [nm, m] of Object.entries(pic.moving ?? {})) {
@@ -113,11 +124,11 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
     add(sx(m.pos[0]) + dx, sy(m.pos[1]) + dy, dx, dy, nm);       // fitted at the destination p + d, so the landmark lands on p + d
   }
   if (overrides.amplitude != null) used.push("amplitude");
-  let rows = pic.fieldZeroRows ? [[sy(pic.fieldZeroRows[0]), Math.min(h - 1, sy(pic.fieldZeroRows[1]))]] : [];
+  let rows = pic.fieldZeroRows && !derived ? [[pic.fieldZeroRows[0], Math.min(h - 1, pic.fieldZeroRows[1])]] : [];
   if (overrides.shadowRows) { rows = overrides.shadowRows; used.push("shadow-rows"); }
   for (const [y0] of rows) { for (let x = 0; x < w; x += 8) add(x, y0, 0, 0, "zero-row"); if ((w - 1) % 8) add(w - 1, y0, 0, 0, "zero-row"); }
   // topline: the belly stays put (rules.bellyFixed), so d = 0 points every 8 px along the belly line join the constraints before the fit
-  const bellyLine = pic.bellyLine?.map(([x, y]) => [x * scaleX, y * scaleY]), bellyFixed = landmarks.rules?.bellyFixed?.value === true;
+  const bellyLine = pic.bellyLine?.map(([x, y]) => (derived ? [sx(x), sy(y)] : [x, y])), bellyFixed = landmarks.rules?.bellyFixed?.value === true;
   if (bellyFixed && bellyLine) {
     const yb = bellyColumns(bellyLine, w);                      // the line extended flat to the picture edges, so a leg beyond its last vertex is fixed too
     for (let x = 0; x < w; x += 8) if (!pxs.some((p) => p.x === x && p.y === yb[x])) add(x, yb[x], 0, 0, "belly-fixed");
@@ -139,7 +150,7 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   else if (pic.headMaskPolygon) { headMask = rasterPolygon(polyAt(pic.headMaskPolygon), w, h); headSource = "polygon"; }
   // the domain: 0 outside the ink dilated by the bound (never the 6 px of the head zone: the head is drawn unwarped anyway)
   if (ink) { const D = fieldDomain(ink, w, h, BOUNDS[`${w}x${h}`]); for (let i = 0; i < w * h; i++) if (!D[i]) { dxI[i] = 0; dyI[i] = 0; } }
-  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, bellyFixed, picture: name, overrides: used, ink };
+  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, bellyFixed, picture: name, overrides: used, ink, pointsFrom: derived ? "mapped" : "placed", mapping: derived ? mapping : null };
   if (overrides.noCheck) used.push("no-check"); else checkField(field);
   return field;
 }

@@ -19,7 +19,7 @@ import { deflateSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { encodePNG, decodePNG } from "../png.mjs";
-import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legCompression, bellyColumns, rha, quantT, sha256, chunk } from "./warp-field.mjs";
+import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legCompression, bellyColumns, rha, quantT, sha256, chunk, pickPicture, figureBbox, bboxMapping } from "./warp-field.mjs";
 
 export const OPAQUE = 110;                                 // alpha > 110 is opaque (the animator's measure for the topline)
 export const M5_LIMITS = { "304x312": { iou: 0.95, profile: 2 }, "104x112": { iou: 0.93, profile: 1 } };
@@ -120,6 +120,37 @@ export function silhouette(img, thr = OPAQUE) {
   for (let i = 0; i < w * h; i++) if (m[i]) { const x = i % w, y = (i / w) | 0; let any = false; for (const [dx, dy] of N8) { const nx = x + dx, ny = y + dy; if (nx >= 0 && ny >= 0 && nx < w && ny < h && m[ny * w + nx]) { any = true; break; } } if (!any) orphans++; }
   return { components, holes, orphans };
 }
+// The same three measures with the bounding box of every region (component, hole, orphan), as [x0, y0, x1, y1].
+export function silhouetteRegions(img, thr = OPAQUE) {
+  const { w, h } = img, m = opaqueMask(img, thr), label = new Uint8Array(w * h), out = { components: [], holes: [], orphans: [] };
+  const N8 = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], N4 = [[0, -1], [-1, 0], [1, 0], [0, 1]];
+  const flood = (start, want, nb) => { const stack = [start], box = [w, h, 0, 0]; let touches = false; label[start] = 1; while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0; box[0] = Math.min(box[0], x); box[1] = Math.min(box[1], y); box[2] = Math.max(box[2], x); box[3] = Math.max(box[3], y); if (x === 0 || y === 0 || x === w - 1 || y === h - 1) touches = true; for (const [dx, dy] of nb) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const j = ny * w + nx; if (m[j] === want && !label[j]) { label[j] = 1; stack.push(j); } } } return { box, touches }; };
+  for (let i = 0; i < w * h; i++) if (m[i] && !label[i]) out.components.push(flood(i, 1, N8).box);
+  label.fill(0);
+  for (let i = 0; i < w * h; i++) if (!m[i] && !label[i]) { const r = flood(i, 0, N4); if (!r.touches) out.holes.push(r.box); }
+  for (let i = 0; i < w * h; i++) if (m[i]) { const x = i % w, y = (i / w) | 0; if (!N8.some(([dx, dy]) => { const nx = x + dx, ny = y + dy; return nx >= 0 && ny >= 0 && nx < w && ny < h && m[ny * w + nx]; })) out.orphans.push([x, y, x, y]); }
+  return out;
+}
+// The regions of `after` that are new against `before`: each region of `before` is matched once (largest box first) to the nearest unmatched region of the same kind in `after` within `tol` px
+// (Chebyshev gap between boxes); the regions left over are new (a piece split off a region is new, a region shifted by the field is not).
+export function newRegions(before, after, tol) {
+  const near = (a, b) => a[0] - tol <= b[2] && b[0] - tol <= a[2] && a[1] - tol <= b[3] && b[1] - tol <= a[3], area = (b) => (b[2] - b[0] + 1) * (b[3] - b[1] + 1), cen = (b) => [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2], out = [];
+  for (const kind of ["components", "holes", "orphans"]) {
+    const free = after[kind].map((box, i) => ({ box, i })), used = new Set();
+    for (const b of [...before[kind]].sort((x, y) => area(y) - area(x) || x[0] - y[0] || x[1] - y[1])) {
+      let best = null, bd = Infinity; for (const c of free) if (!used.has(c.i) && near(b, c.box)) { const d = Math.hypot(cen(b)[0] - cen(c.box)[0], cen(b)[1] - cen(c.box)[1]); if (d < bd) { bd = d; best = c; } }
+      if (best) used.add(best.i);
+    }
+    for (const c of free) if (!used.has(c.i)) out.push({ kind: kind.slice(0, -1), box: c.box });
+  }
+  return out;
+}
+// A copy of a 1x picture with 1 px outlines (a review mark, on the copy only) around the boxes.
+export function outlineBoxes(img, boxes, rgb = [255, 0, 0]) {
+  const out = { w: img.w, h: img.h, data: new Uint8ClampedArray(img.data) }, put = (x, y) => { if (x >= 0 && y >= 0 && x < img.w && y < img.h) out.data.set([...rgb, 255], (y * img.w + x) * 4); };
+  for (const [x0, y0, x1, y1] of boxes) { for (let x = x0 - 1; x <= x1 + 1; x++) { put(x, y0 - 1); put(x, y1 + 1); } for (let y = y0 - 1; y <= y1 + 1; y++) { put(x0 - 1, y); put(x1 + 1, y); } }
+  return out;
+}
 // M4: outline pixels = opaque with a 4-neighbour that is transparent or outside; irregular = outline pixels whose count of outline 4-neighbours is not 2 (8 would flag a clean square's edge pixels beside its corners).
 export function outlineIrregular(img) {
   const { w, h } = img, m = opaqueMask(img), edge = new Uint8Array(w * h), at = (x, y) => (x >= 0 && y >= 0 && x < w && y < h ? m[y * w + x] : 0);
@@ -205,14 +236,20 @@ export function runSet(set, opts = {}) {
   row(size, "input", "stand sha256", sha256(standBuf), "", "info");
   const idBase = lm ? `mibi-${lm.stage}-${lm.species}-stand` : "stand", blendId = lm?.blend ?? "blend";
   const status = [], fields = {}, refused = {}, ink = inkMask(stand);
+  // the figure-bbox mapping from the 304 set to this picture (derived sizes, and M5a's profile at a placed size): needs the 304 stand (--base-stand) and this picture's zero rows
+  let mapping = null;
+  if (lm && set["base-stand"]) {
+    const info = pickPicture(lm, stand.w, stand.h, set.picture ?? null), baseKey = Object.keys(lm.pictures).find((k) => k.endsWith("-304x312")), tz = info.derived ? ov.shadowRows?.[0][0] : info.pic.fieldZeroRows?.[0];
+    if (tz != null && lm.pictures[baseKey].fieldZeroRows) { const bImg = decodeImage(readSource(set["base-stand"])); mapping = bboxMapping(figureBbox(bImg, lm.pictures[baseKey].fieldZeroRows[0]), figureBbox(stand, tz)); }
+  }
   for (const e of ENDS) {
     try {
       if (set[`field-${e}`]) {                                      // a map given by path; the head and rows still come from the landmarks when there are some
         const f = decodeField(readFileSync(set[`field-${e}`]), e);
-        if (lm) { const facts = buildField(lm, e, stand.w, stand.h, { picture: set.picture ?? null, overrides: { ...ov, noCheck: true } }); Object.assign(f, { ink, headMask: facts.headMask, headSource: facts.headSource, zeroRows: facts.zeroRows, bellyY: facts.bellyY, overrides: ["field-map"] }); }
+        if (lm) { const facts = buildField(lm, e, stand.w, stand.h, { picture: set.picture ?? null, overrides: { ...ov, noCheck: true }, mapping }); Object.assign(f, { ink, headMask: facts.headMask, headSource: facts.headSource, zeroRows: facts.zeroRows, bellyY: facts.bellyY, overrides: ["field-map"] }); }
         else Object.assign(f, { ink, headMask: null, headSource: "none", zeroRows: [], bellyY: null, overrides: ["field-map"] });
         if (!ov.noCheck) checkField(f); fields[e] = f;
-      } else if (lm) fields[e] = buildField(lm, e, stand.w, stand.h, { picture: set.picture ?? null, overrides: ov, ink });
+      } else if (lm) fields[e] = buildField(lm, e, stand.w, stand.h, { picture: set.picture ?? null, overrides: ov, ink, mapping });
       else throw new Error(`set ${set.name}: give --landmarks or --field-${e}`);
     } catch (err) { refused[e] = err.message; row(size, "field", e, err.message, "", "FAIL (refused)"); }
   }
@@ -221,6 +258,8 @@ export function runSet(set, opts = {}) {
   if (!headMask) status.push("head unmasked");
   if (overrideNames.length || live.some((e) => fields[e].overrides.length)) status.push("override: " + [...new Set([...overrideNames, ...live.flatMap((e) => fields[e].overrides)])].join(", "));
   row(size, "head", "mask source", headSource, "", "info");
+  if (live.length) { const f0 = fields[live[0]]; row(size, "points", `picture block ${f0.picture}`, f0.pointsFrom ?? "from the field map", "", "info"); }
+  if (mapping) row(size, "points", "figure-bbox mapping from the 304 set", `sx ${mapping.sx.toFixed(4)}, sy ${mapping.sy.toFixed(4)}, base ${mapping.base.join(",")}, target ${mapping.target.join(",")}`, "", "info");
   if (headMask) { const hb = encodeMask(headMask, stand.w, stand.h); files.set(`${set.name}/${idBase}-map-head-${size}.png`, hb); row(size, "head", "mask png sha256", sha256(hb), "", "info"); }
   const painted = {}, warped = {}, wbody = {}, stats = { clampMisses: 0 };
   for (const e of ENDS) {
@@ -241,15 +280,25 @@ export function runSet(set, opts = {}) {
     const nc = newColours(stand, warped[e]); row(size, "M2", `warped-${e}`, nc, 0, nc === 0 ? "pass" : "FAIL");
     const s = silhouette(warped[e]), sb = silhouette(wbody[e]);
     row(size, "M3", `warped-${e} strict counts (head drawn)`, sil(s), "1 comp, 0 holes, 0 orphans: information only", "info");
-    const rel = (img, base0, base110, what) => { const c0 = silhouette(img, 0), c1 = silhouette(img, OPAQUE), ok = c0.components <= base0.components && c0.holes <= base0.holes && c0.orphans <= base0.orphans && c1.components <= base110.components && c1.holes <= base110.holes && c1.orphans <= base110.orphans; row(size, "M3", what, `alpha>0 ${c0.components}/${c0.holes}/${c0.orphans}, alpha>110 ${c1.components}/${c1.holes}/${c1.orphans} (components/holes/orphans)`, `<= the unwarped: alpha>0 ${base0.components}/${base0.holes}/${base0.orphans}, alpha>110 ${base110.components}/${base110.holes}/${base110.orphans}`, ok ? "pass" : "FAIL"); };
-    rel(warped[e], standS0, standS1, `warped-${e} not worse than its own unwarped picture`);
-    rel(wbody[e], standS0, standS1, `warped-${e} body layer alone, not worse than the unwarped body layer`);
+    // M3: alpha > 110 gates (components, holes, orphans each <= the unwarped picture's); alpha > 0 informs, with the box of every region new against the unwarped picture
+    const gate = (img, base, what) => { const c = silhouette(img, OPAQUE), ok = c.components <= base.components && c.holes <= base.holes && c.orphans <= base.orphans; row(size, "M3", what, `alpha>110 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `<= the unwarped ${base.components}/${base.holes}/${base.orphans}`, ok ? "pass" : "FAIL"); };
+    gate(warped[e], standS1, `warped-${e} not worse than its own unwarped picture (alpha>110 gates)`);
+    gate(wbody[e], standS1, `warped-${e} body layer alone, not worse than the unwarped body layer (alpha>110 gates)`);
+    const report = (img, what) => { const c = silhouette(img, 0); row(size, "M3", what, `alpha>0 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `the unwarped ${standS0.components}/${standS0.holes}/${standS0.orphans}`, "report"); };
+    report(warped[e], `warped-${e} alpha>0 counts`); report(wbody[e], `warped-${e} body layer alpha>0 counts`);
+    const fresh = [["alpha>0", 0], ["alpha>110", OPAQUE]].flatMap(([lab, thr]) => newRegions(silhouetteRegions(stand, thr), silhouetteRegions(warped[e], thr), Math.ceil(fields[e].maxD) + 1).map((r) => ({ ...r, lab })));
+    fresh.forEach((r) => row(size, "M3", `warped-${e} new ${r.kind} at ${r.lab}`, r.box.join(","), "x0,y0,x1,y1", "report"));
+    if (fresh.length) files.set(`${set.name}/${size}-warped-${e}-new-regions.png`, png(outlineBoxes(warped[e], fresh.map((r) => r.box))));
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
     const lc = legCompression(fields[e], stand), lcFixed = fields[e].bellyFixed; row(size, "legs", `leg compression px (${e})`, lc, lcFixed ? 0 : "", lcFixed ? (lc === 0 ? "pass" : "FAIL") : "info");
     row(size, "field", `${e} max |d| px / stretch / shear`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxStretch.toFixed(3)} / ${fields[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
-    if (lm?.toplineProfile && size === "304x312" && headMask) { const p = profileFit(stand, warped[e], lm.toplineProfile, e, headEdge); row(size, "M5a", `${e} top edge vs the measured profile, ${p.columns} columns x <= ${headEdge - 6}`, `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`, `${M5A.column} / ${M5A.mean}`, p.max <= M5A.column && p.mean <= M5A.mean ? "pass" : "FAIL"); }
-    else row(size, "M5a", e, size === "304x312" ? "no toplineProfile or head mask" : "only at 304x312", "", "n/a");
+    const prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;
+    if (lm?.toplineProfile && headMask && (prof304 || scaled)) {
+      const P = lm.toplineProfile, prof = prof304 ? P : { x: P.x.map((x) => mapping.tx0 + rha((x - mapping.bx0) * mapping.sx)), down: P.down.map((d) => d * mapping.sy), up: P.up.map((d) => d * mapping.sy) };
+      const colTol = prof304 ? M5A.column : Math.max(1, Math.ceil(M5A.column * mapping.sy)), meanTol = prof304 ? M5A.mean : Math.ceil(M5A.mean * mapping.sy * 2) / 2;   // scaled by sy, rounded up to 1 px and 0.5 px
+      const p = profileFit(stand, warped[e], prof, e, headEdge); row(size, "M5a", `${e} top edge vs the ${prof304 ? "measured" : "mapped"} profile, ${p.columns} columns x <= ${headEdge - 6}`, `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`, `${colTol} / ${meanTol}`, p.max <= colTol && p.mean <= meanTol ? "pass" : "FAIL");
+    } else row(size, "M5a", e, "no toplineProfile, head mask or --base-stand mapping", "", "n/a");
     if (painted[e]) {
       const j = iou(warped[e], painted[e]), pd = profileDelta(warped[e], painted[e]);
       row(size, "M5", `iou warped-${e} vs painted`, j, L5 ? L5.iou : "", L5 ? (j >= L5.iou ? "pass" : "FAIL") : "n/a at this size");

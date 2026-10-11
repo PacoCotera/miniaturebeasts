@@ -4,8 +4,8 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
-import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain } from "../tools/warp-field.mjs";
-import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand } from "../tools/tier2-test.mjs";
+import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping } from "../tools/warp-field.mjs";
+import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
 const A = [200, 120, 60, 255], B = [150, 90, 40, 255], C = [240, 220, 160, 255], D = [90, 60, 30, 255];
@@ -159,4 +159,27 @@ test("bellyFixed: d = 0 points along the belly line, so the legs do not stretch 
     for (let x = 20; x <= 100; x += 8) assert.equal(f.dy[76 * 104 + x], 0, `belly line pin at x ${x}`);
   }
   assert.equal(buildField(free, "down", 104, 112).bellyFixed, false);
+});
+test("M3 gates at alpha > 110 and reports alpha > 0 with the boxes of new regions, outlined on a copy", () => {
+  const a = blank(20, 20), put = (im, x, y, al) => im.data.set([9, 9, 9, al], (y * im.w + x) * 4);
+  for (let y = 4; y < 14; y++) for (let x = 4; x < 14; x++) put(a, x, y, 255);
+  const b = { w: 20, h: 20, data: new Uint8ClampedArray(a.data) }; put(b, 16, 16, 255); put(b, 8, 8, 0);          // a new orphan component, a new hole
+  const fresh = newRegions(silhouetteRegions(a), silhouetteRegions(b), 2);
+  assert.deepEqual(fresh.map((r) => [r.kind, ...r.box]), [["component", 16, 16, 16, 16], ["hole", 8, 8, 8, 8], ["orphan", 16, 16, 16, 16]]);
+  const shifted = { w: 20, h: 20, data: new Uint8ClampedArray(20 * 20 * 4) }; for (let y = 5; y < 15; y++) for (let x = 4; x < 14; x++) put(shifted, x, y, 255);
+  assert.deepEqual(newRegions(silhouetteRegions(a), silhouetteRegions(shifted), 2), [], "a region the field only shifted is not new");
+  const soft = blank(20, 20); for (let y = 4; y < 14; y++) for (let x = 4; x < 14; x++) put(soft, x, y, 255); put(soft, 9, 9, 60);
+  assert.equal(silhouette(soft, 110).holes, 1); assert.equal(silhouette(soft, 0).holes, 0, "a faint pixel is a hole at alpha > 110 and none at alpha > 0");
+  const marked = outlineBoxes(b, [[16, 16, 16, 16]]); assert.deepEqual([...marked.data.slice((15 * 20 + 15) * 4, (15 * 20 + 15) * 4 + 4)], [255, 0, 0, 255]);
+  assert.deepEqual([...b.data.slice((15 * 20 + 15) * 4, (15 * 20 + 15) * 4 + 4)], [0, 0, 0, 0], "the original is untouched");
+});
+test("a derived size is mapped by the figure bbox, each axis on its own, and refused without fieldZeroRows or the mapping", () => {
+  const img = fixture(), base = figureBbox(img, 96), m = bboxMapping(base, [10, 20, 10 + (base[2] - base[0]) * 2, 20 + (base[3] - base[1]) * 3]);
+  assert.deepEqual(base, [24, 38, 99, 95]); assert.equal(m.sx, 2); assert.equal(m.sy, 3);
+  const only304 = { rules: landmarks.rules, pictures: { "stand-304x312": structuredClone(landmarks.pictures["stand-104x112"]) } };
+  const noRows = structuredClone(only304); delete noRows.pictures["stand-304x312"].fieldZeroRows;
+  assert.throws(() => buildField(noRows, "down", 144, 152, { mapping: m }), /no fieldZeroRows for 144x152/);
+  assert.throws(() => buildField(only304, "down", 144, 152), /no picture block of its own/);
+  const sizes = buildField(noRows, "down", 144, 152, { mapping: bboxMapping(base, [34, 53, 34 + 76 * 1.4, 53 + 58 * 1.4]), overrides: { shadowRows: [[140, 151]] } });
+  assert.equal(sizes.pointsFrom, "mapped"); assert.equal(sizes.size, "144x152");
 });
