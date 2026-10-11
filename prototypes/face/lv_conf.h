@@ -27,6 +27,8 @@
 #define LV_DRAW_SW_SUPPORT_L8 0
 #define LV_DRAW_SW_SUPPORT_AL88 0
 #define LV_DRAW_SW_SUPPORT_I1 0
+/* invalid areas a refresh; one more and LVGL redraws the whole screen (lv_refr.c lv_inv_area) */
+#define LV_INV_BUF_SIZE 128
 #define LV_DRAW_SW_COMPLEX 1
 #define LV_DRAW_SW_SHADOW_CACHE_SIZE 0
 #define LV_USE_DRAW_SW_ASM LV_DRAW_SW_ASM_NONE

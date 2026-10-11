@@ -15,6 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { cargoBuild } from "../../station/src/views/cargo-props.mjs";
 import { INTENTS } from "../../station/src/intents/index.mjs";
 import { departures } from "../tools/cargo-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), cargoSpec = J("cargo"), homeSpec = J("home");
@@ -225,8 +226,7 @@ test("the report card rows sit on the spec's y: the crates' pod icons at 128, 15
 for (const [step, off] of [[40, 0], [16, 5]]) test(`while three crates open (9180 ms, frames every ${step} ms): no refresh redraws more than a quarter of the screen, outside the dither the host plays at each crate's start and at the end`, { skip }, async () => {
   const b = scene({ crates: 3, open: true, podsEach: 3 }), f = await start(b, { t0: 1000 }), M = f.M; logOf(f); const t0 = f.t; f.send({ t: "event", kind: "arrival", target: "crate", ms: 9180, hold: 9200 }); let area = 0, moved = 0;
   for (let t = step + off; t < 9180; t += step) {
-    f.frame(t0 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
-    for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; area = Math.max(area, s); if (n) moved++;
+    f.frame(t0 + t); const n = M._face_dirty_count(), s = dirty(f); area = Math.max(area, s); if (n) moved++;
   }
   assert.ok(moved > 30, "the pods travel: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
   console.log(`# Cargo's opening, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);

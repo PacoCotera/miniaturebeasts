@@ -15,6 +15,7 @@ import { setFrames } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { benchBuild } from "../../station/src/views/bench-props.mjs";
 import { departures, partDepartures } from "../tools/bench-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist/node"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("bench"), EV = spec.events;
@@ -55,7 +56,7 @@ const setProps = (f, b) => { f.build = b; give(f, b); assert.equal(f.props({ scr
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg ?? f.lastLog ?? null; };
 const boxOf = (f) => (id) => f.nodeBox(id)?.box ?? null;
-const area = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
+const area = (f, o) => dirty(f, o);
 const rects = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); const o = []; for (let i = 0; i < n; i++) o.push(Array.from(a.subarray(i * 4, i * 4 + 4))); return o; };
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) { if (m.t === "log") f.lastLog = m; else if (m.t === "done") (f.done ??= []).push(m.kind); else if (m.t === "focus" || m.t === "intent") out.push(m); } return out; };
 const play = (f, e) => f.send({ t: "event", ...e });
@@ -143,7 +144,10 @@ test("the cuts: the install step at t = 300 jumped from 0 ≤ 173,056 px; the in
   { const f = await start(scene({ f: "slot", arm: 1, mendFull: true, install: true }), { fixedLine: true }); const t1 = f.t; play(f, { kind: "install", target: "slot", ms: 900, hold: 900, from: 2, to: 4 }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true, install: true }));
     f.frame(t1 + 316); const a = area(f); assert.ok(a <= 173056, `install at 300 from 0: ${a}`); console.log(`# the install step at 300 jumped from 0: ${a} px`); }
   // the key frames with the real frame: the after-props come with their own bottom line, and the Dock key with the companion docked and its message on the plate
-  { const f = await start(scene({ f: "slot", arm: 1, mendFull: true }), { motion: false }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true })); f.frame((f.t += 16)); const a = area(f); assert.ok(a <= 191040, `install key frame, motion off: ${a}`); console.log(`# the install key frame (motion off): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); }
+  { const topAt = (e, d) => ({ top: { ...frameProps().top, materials: { e, d, s: 0 } } });   // the install spends ⚡ 12 ◆ 4: the counters on the top bar change with the line, as they do on the page
+    const f = await start(scene({ f: "slot", arm: 1, mendFull: true, e: 14, d: 6 }), { motion: false, over: topAt(14, 6) }), after = scene({ f: "slot", tier: 2, shield: 4, mendFull: true, e: 2, d: 2 });
+    f.build = after; give(f, after); assert.equal(f.props({ screen: "bench", ...after.props, motion: false, frame: frameProps(after.line, topAt(2, 2)) }), 0, f.errors().join("; ")); f.frame((f.t += 16));
+    const a = area(f), n = f.M._face_dirty_count(); assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); assert.ok(n <= f.invCap()); assert.ok(a <= 191040, `install key frame, motion off, its own line and counters: ${a}`); console.log(`# the install key frame (motion off, the line and ⚡ 14→2 ◆ 6→2): ${a} px (${(100 * a / 614400).toFixed(1)}%) in ${n} areas, ${f.invOverflows()} overflows`); }
   { const lifted = scene({ docked: false, shield: 3, f: "switch" }), f = await start(lifted, { over: { top: { ...frameProps().top, companion: { docked: false, withMibi: null } } } }), sv0 = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
     const r = S.dockKey(lifted.st, sv0, settings, T0 + 5); assert.ok(r.ok, "the Dock key docks"); const after = benchBuild({ st: lifted.st, sv: sv0, settings, docked: true, ui: { f: "switch", arm: 0, install: false } }, spec, frameSpec);
     f.build = after; give(f, after); play(f, { kind: "plate", target: "msg", ms: 4000 });

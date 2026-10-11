@@ -15,6 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { incubatorBuild } from "../../station/src/views/incubator-props.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 import { departures } from "../tools/incubator-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), incSpec = J("incubator");
@@ -34,7 +35,7 @@ function scene(o = {}) {
   if (o.grow) ui.inc.grow = o.grow(st, now);
   return { ...incubatorBuild({ st, settings, now, ui, lamp }, incSpec, podsSpec), st, now };
 }
-const frameProps = (line = {}) => ({ top: { screen: "incubator", title: "Incubator", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: null, need: "", ...line }, plate: { text: "", timed: false } });
+const frameProps = (line = {}, top = {}) => ({ top: { screen: "incubator", title: "Incubator", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null }, ...top }, line: { back: null, need: "", ...line }, plate: { text: "", timed: false } });
 
 // stand-in pictures: a flat block keyed by id, at the size the request names; the colour is the id's, so a picture is told by one pixel
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -43,14 +44,14 @@ function standIn(id, size, hollow = false) { const [w, h] = size, d = new Uint8C
 const sizeOf = (r) => (typeof r.size === "number" ? [r.size, r.size] : r.size) ?? (r.kind === "star" ? [12, 12] : r.kind === "emblem" ? [24, 24] : [16, 16]);
 const PINNED = pinnedPictures(podsSpec, frameSpec);
 
-async function start(b, { motion = true, t0 = 0 } = {}) {
+async function start(b, { motion = true, t0 = 0, top = {} } = {}) {
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["incubator", incSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const p of PINNED) f.handleOf(p.id, withPolicy((i) => standIn(i, [p.w, p.h])));
   for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   f.t = t0; f.motion = motion; f.build = b;
-  assert.equal(f.props({ screen: "incubator", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); return f;
+  assert.equal(f.props({ screen: "incubator", ...b.props, motion, frame: frameProps(b.line, top) }), 0, f.errors().join("; ")); frames(f); return f;
 }
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
@@ -59,7 +60,7 @@ const region = (lg, id, layer) => lg.regions.find((r) => r.id === id && (!layer 
 
 // the two fronts are painted with a clear window; their stand-ins are clear as well
 const hollowOf = (r) => r.hollow || /^(dome|nest)-front-/.test(r.id);
-const area = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
+const area = (f, o) => dirty(f, o);
 
 const colourIs = (f, x, y, id) => { const got = f.pixel(x, y), want = colourOf(id); return got.every((v, i) => v === want[i]); };
 const SC = {
@@ -171,12 +172,12 @@ test("no refresh redraws more than a quarter of the screen across the hatch (fra
     const w = worst(f, t0, 420, 16); assert.ok(w <= 153600, `growNow: dirty ${w}`); console.log(`# the Incubator's growNow: worst refresh ${w} px (${(100 * w / 614400).toFixed(1)}%)`); }
 });
 test("growNow with reduced motion is one cut on the key's frame: the leaves, the tabs and the ready state in one refresh of at most 162,432 px", { skip }, async () => {
-  const before = scene({ minutes: 13.2 }), f = await start(before, { motion: false, t0: 1000 });
+  const before = scene({ minutes: 13.2 }), f = await start(before, { motion: false, t0: 1000, top: { materials: { e: 9, d: 10, s: 9 } } });   // the grow spends ◆ 4 (10 → 6): the top bar changes and flashes with the line, as on the page
   const after = scene({ minutes: 13.2, grow: undefined }); const st = after.st; S.instantGrow(st, settings, after.now);
   const b2 = incubatorBuild({ st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
-  assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f);
-  console.log(`# the Incubator's growNow cut (motion off), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%)`); assert.ok(a <= 162432, `dirty ${a}`);
+  assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line, { materials: { e: 9, d: 6, s: 9 }, flash: { d: true } }) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f), n = f.M._face_dirty_count();
+  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# the Incubator's growNow cut (motion off, ◆ 10→6 and the flash), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%) in ${n} areas, ${f.invOverflows()} overflows`); assert.ok(a <= 162432, `dirty ${a}`);
 });
 
 test("growNow with motion on: the props show the bud as it was until 400, then the ready state lands on one refresh of at most 153,600 px", { skip }, async () => {

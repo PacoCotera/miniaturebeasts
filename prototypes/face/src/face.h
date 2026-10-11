@@ -9,7 +9,7 @@ extern "C" {
 #endif
 #define FACE_W 1024
 #define FACE_H 600
-#define FACE_MAX_DIRTY 64
+#define FACE_MAX_DIRTY 128   /* the areas a frame lists: as many as LVGL keeps a refresh (LV_INV_BUF_SIZE in lv_conf.h); asserted in face.c */
 
 void face_init(void);
 /* One frame: advance the clock to `ms` (monotonic) and let LVGL run its timers and redraw. */
@@ -28,6 +28,9 @@ void face_key(int code, int down);
 int face_key_count(void);
 int face_last_key(void);
 const char *face_version(void);
+/* LVGL keeps LV_INV_BUF_SIZE invalid areas a refresh and redraws the whole screen on the next one (lv_refr.c lv_inv_area): the face counts those overflows (monotonic) and tells the cap. */
+unsigned face_inv_overflows(void);
+int face_inv_cap(void);
 
 #ifdef FACE_NODE_API
 /* The node path, the test build only (-DFACE_NODE_API; lvgl-switch.md §2.1): a test places rectangles, text, pictures, nine-slices, clips and composed pictures by hand, in draw order;

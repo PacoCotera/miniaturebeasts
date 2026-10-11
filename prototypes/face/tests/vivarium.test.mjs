@@ -15,6 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { vivariumBuild } from "../../station/src/views/vivarium-props.mjs";
 import { departures } from "../tools/vivarium-regions.mjs";
 import { listPitch } from "../../ui/specs/derive.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("vivarium"), homeSpec = J("home");
@@ -118,8 +119,7 @@ for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
     const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0;
     for (let t = step + off; t < 120000; t += step) {
-      f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
-      for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3];
+      f.frame(5000 + t); const n = M._face_dirty_count(), s = dirty(f);
       area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, M._face_test_steps());
     }
     assert.ok(steps <= 6, `${steps} residents stepped in one frame`); assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);

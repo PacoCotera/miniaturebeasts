@@ -236,6 +236,6 @@ void wire_after_frame(double frame_ms) {
   char *b = (char *)malloc(65536); if (!b) return;
   int n = prim_log_json(b, 60000);
   if (n < 0) { free(b); wire_error("log: more than 60000 bytes of regions and type"); return; }
-  char tail[128]; int k = snprintf(tail, sizeof tail, ",\"dropped\":%d,\"frameMs\":%.3f,\"t\":\"log\"}", g_dropped, frame_ms); memcpy(b + n - 1, tail, (size_t)k + 1);
+  char tail[160]; int k = snprintf(tail, sizeof tail, ",\"dropped\":%d,\"frameMs\":%.3f,\"invOverflows\":%u,\"t\":\"log\"}", g_dropped, frame_ms, face_inv_overflows()); memcpy(b + n - 1, tail, (size_t)k + 1);
   push(b);
 }
