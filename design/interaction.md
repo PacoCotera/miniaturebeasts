@@ -71,7 +71,7 @@ New world is offered only outside an expedition (**Decided**). After Wait the
 menu stays open, so Confirm waits again (**Built**).
 
 **The map views** (**Decided**). During an expedition the map shows the **reach
-view**: the Probe's reach fills the view (78 px cells at tier 1, 48 px at tier 2,
+view**: the Probe's reach fills the view (72 px cells at tier 1, 48 px at tier 2,
 **Built**) with a band below naming the way home, how much of the reach is
 explored, and a whole-world inset. The **full map** is a menu entry; both views
 are playable, and the choice is remembered (**Built**). Picking a start uses the
