@@ -3137,5 +3137,22 @@
    "thoughtsTokenCount": 236,
    "totalTokenCount": 2692
   }
+ },
+ {
+  "tag": "meadow-src-walls-a1 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.20754,
+  "mxn": 4.1508,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T02:09:28Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 810,
+   "candidatesTokenCount": 1399,
+   "thoughtsTokenCount": 317,
+   "totalTokenCount": 2526
+  }
  }
 ]
