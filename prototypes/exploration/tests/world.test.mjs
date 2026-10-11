@@ -498,3 +498,17 @@ test("generator 2 play: a SHADOW tile draws its own base tile (its own variant a
     for (let y = 0; y < 32; y++) for (let xx = 0; xx < 32; xx++) { const b = base.p[y * 32 + xx]; assert.equal(got.p[y * 32 + xx], y >= 28 && p.run(`BAYER[${(y & 3) * 4 + (xx & 3)}]`) < 8 ? p.run(`DARK[${b}]`) : b); } }
   assert.ok(n > 0 && vs.size > 1, "a shadow row with more than one variant");
 });
+
+test("generator 2 play: the side tail draws no ink on its high-side column; a plain SIDE tile keeps it", () => {
+  const p = page({}, "?gen=2"); p.run("newWorld(1)");
+  const ink = p.run("C.ink"), col = (pb, x) => Array.from({ length: 32 }, (_, y) => pb.p[y * 32 + x]);
+  for (const [east, x] of [[1, 0], [0, 31]]) {
+    for (const m of [16 | east, 16 | 4 | east]) { const pb = p.run(`buildTile(T.FACE, T.GRASS, TERR.SIDE, ${m}, 0, {})`);
+      assert.ok(!col(pb, x).includes(ink), `tail mask ${m}: no ink on x ${x}`);
+      if (m & 4) assert.ok(Array.from({ length: 16 }, (_, i) => pb.p[30 * 32 + (east ? i : 16 + i)]).every(v => v === p.run("C.stone")), `tail mask ${m}: the full-width foot`); }
+    const plain = p.run(`buildTile(T.FACE, T.GRASS, TERR.SIDE, ${east}, 0, {})`);
+    assert.ok(col(plain, x).every(v => v === ink), `plain SIDE ${east}: the high-side ink`); }
+  // and on a real place: seed 1, cell 73 has a tail at (0, 0..1)
+  const lay = p.run("layout('73')"), I = (x, y) => y * PW + x;
+  for (const y of [0, 1]) { assert.ok(lay.tmask[I(0, y)] & 16, "a tail tile"); assert.ok(!col(p.run(`tilePB(layout('73'), ${I(0, y)}, 0)`), 0).includes(ink), `tail ${y}: no ink`); }
+});

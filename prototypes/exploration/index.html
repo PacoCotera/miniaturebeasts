@@ -2666,7 +2666,7 @@ function buildTerrTile(t, base, v, m, fr, bv, bm) {
     groundInto(pb, base, h);
     pb.rect(x0, 0, 16, 32, C.rock);
     pb.rect(lo, 0, 1, 32, C.stone);                                              // the low side's stone edge
-    pb.rect(hi, 0, 1, 32, C.ink);                                                // the high side's ink
+    if (!(m & 16)) pb.rect(hi, 0, 1, 32, C.ink);                                 // the high side's ink (none on the side tail: the face's end ink is the corner)
     if (m & 2) pb.rect(x0, 0, 16, 1, C.ink);                                     // north end: the ink turns across the top
     if ((m & 16) && (m & 4)) pb.rect(east ? 0 : 16, 30, 16, 2, C.stone);          // the side tail's foot: the face's foot line across the whole column
     else if ((m & 4) && !(m & 8)) pb.rect(east ? 1 : 16, 30, 15, 2, C.stone);    // south end: the foot (none where a face follows)
