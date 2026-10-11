@@ -137,8 +137,13 @@ static void build_reportCard(void) {
   if (nl > ci("regions.report.world.max", 3)) nl = ci("regions.report.world.max", 3);
   int gapG = ci("regions.report.gathered.gapAbove", 8), gapW = ci("regions.report.world.gapAbove", 16);
   int base = ci("regions.report.rows.first", 56) + gapG + rowH + pad, worldExtra = gapW + rowH;   /* the card: its first row, the gap above Gathered, Gathered, the pad = 104; the world: its gap and its heading = 40 (cargo.json regions.report.height) */
-  int h = base + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? worldExtra + rowH * nl : 0);
-  if (h > ci("regions.report.maxHeight", 320)) h = ci("regions.report.maxHeight", 320);
+  /* the goal rows (cargo.json regions.report.goal): the last rows of the card, 8 px below the row above, and the meanwhile row directly under; the card grows by 8 + 24 x (1 + meanwhile), never past maxHeight, and
+     the world lines drop from the last until it fits (the view trims them too; the face never draws past the card) */
+  int hasGoal = *v_pstr("regions.report.goal.text") != 0, hasMw = hasGoal && *v_pstr("regions.report.meanwhile.text") != 0, gapGoal = ci("regions.report.goal.gapAbove", 8), maxH = ci("regions.report.maxHeight", 320);
+  int goalExtra = hasGoal ? gapGoal + rowH * (1 + (hasMw ? 1 : 0)) : 0;
+  int h = base + rowH * (nc + (hasProbe ? 1 : 0)) + (hasWorld ? worldExtra + rowH * nl : 0) + goalExtra;
+  while (h > maxH && nl > 0) { nl--; h -= rowH; if (nl == 0) { h -= worldExtra; hasWorld = 0; } }
+  if (h > maxH) h = maxH;
   int x0 = r[0], y0 = r[1], cx = x0 + ci("regions.report.rows.content", 152), reach = x0 + ci("regions.report.crates.reachAt", 328);
   v_region("report", LAYER_CHROME);
   v_rect("report.shadow", x0 + spec_int(C, "regions.report.shadow.0", 0), y0 + spec_int(C, "regions.report.shadow.1", 0), r[2], h, colr("colours.report.shadow"));
@@ -184,6 +189,25 @@ static void build_reportCard(void) {
     for (int i = 0; i < nl; i++, y += rowH) {
       v_region("report.world", LAYER_CHROME); v_rect(v_fmt("report.w.bullet.%d", i), x0 + ck("regions.report.world.bullet", 0), y + ck("regions.report.world.bullet", 1), ck("regions.report.world.bullet", 2), ck("regions.report.world.bullet", 3), colr("colours.report.bullet"));
       v_region("report.world", LAYER_TYPE); text_row(v_fmt("report.w.%d", i), v_pstr(v_fmt("regions.report.world.lines.%d", i)), x0 + ci("regions.report.world.lineAt", 32), y, line, px, r[2] - ci("regions.report.world.lineAt", 32) - pad);
+    }
+  }
+  if (hasGoal) {
+    y += gapGoal; int room = ci("regions.report.goal.content.1", 392);
+    const char *words = v_pstr("regions.report.goal.text"), *icons = v_pstr("regions.report.goal.icons"), *plain = v_pstr("regions.report.goal.plain"); int ni = 0;
+    for (const char *q = icons; *q; q++) if ((unsigned char)*q == 0xe2) ni++;
+    if (v_run_width(words, px) + 20 * ni > room && *plain) words = plain;   /* a name too wide: the nameless sibling (the face's own sum) */
+    v_region("report.goal", LAYER_TYPE); text_row("report.goal.lead", v_pstr("regions.report.goal.lead"), x0 + pad, y, lead, px, leadW);
+    text_row("report.goal.text", words, cx, y, line, px, room - 20 * ni);
+    { char fit[V_STR]; v_clip(words, room - 20 * ni, px, fit, sizeof fit); int ix = cx + v_measure(fit, px) + 4;
+      for (const char *q = icons; *q; ) { const char *nm = NULL; if (!strncmp(q, "\xe2\x9a\xa1", 3)) nm = "icon:energy:16"; else if (!strncmp(q, "\xe2\x97\x86", 3)) nm = "icon:data:16"; else if (!strncmp(q, "\xe2\x9d\x80", 3)) nm = "icon:essence:16";
+        if (nm) { v_name("report.goal"); v_sprite(v_fmt("report.goal.icon.%d", (int)(ix)), nm, ix, y + iconAt, 16, 16); ix += 20; q += 3; } else q++; } }
+    y += rowH;
+    if (hasMw) {
+      v_region("report.goal", LAYER_TYPE); text_row("report.mw.lead", v_pstr("regions.report.meanwhile.lead"), x0 + pad, y, lead, px, leadW);
+      const char *mt = v_pstr("regions.report.meanwhile.text"), *mp = v_pstr("regions.report.meanwhile.price"); char fit[V_STR]; v_clip(mt, room - 60, px, fit, sizeof fit);
+      text_row("report.mw.text", fit, cx, y, line, px, room - 60); int ix = cx + v_measure(fit, px) + 4;
+      v_name("report.goal"); v_sprite("report.mw.icon", "icon:data:16", ix, y + iconAt, 16, 16);
+      v_region("report.goal", LAYER_TYPE); text_row("report.mw.price", mp, ix + 20, y, fig, px, v_measure(mp, px) + 1);
     }
   }
 }

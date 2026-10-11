@@ -27,9 +27,9 @@ const SCENES = {
   "bay-empty":  { set: (w) => { w.adults(2); w.pods(2); } },
   "bay-away":   { set: (w) => { w.adults(2); w.away(); } },
   "bay-waiting":{ set: (w) => { w.adults(2); w.pods(6); w.waitingPods(2); } },
-  "report":         { open: 3, set: (w) => { w.adults(2); w.pods(1); w.crates(3, 3, { lines: w.LINES }); w.mend({ free: 0, paid: 2, broke: false, spent: 2 }); } },
+  "report":         { open: 3, set: (w) => { w.adults(2); w.unread(0); w.pods(1); w.crates(3, 3, { lines: w.LINES }); w.mend({ free: 0, paid: 2, broke: false, spent: 2 }); } },
   "report-small":   { open: 1, set: (w) => { w.adults(2); w.crates(1, 1); } },
-  "report-waiting": { open: 2, set: (w) => { w.adults(2); w.pods(5); w.crates(2, 2, { lines: w.LINES.slice(0, 1) }); w.mend({ free: 2, paid: 0, broke: true, spent: 0 }); } },
+  "report-waiting": { open: 2, set: (w) => { w.young(2); for (const m of window.__st.ST.mibis) m.born += 10; window.__st.seedPod("S04", 3); window.__st.seedPod("S04", 4); w.identified(2); window.__st.ST.probe.tier = 2; w.crates(2, 2, { lines: w.LINES.slice(0, 1) }); w.mend({ free: 2, paid: 0, broke: true, spent: 0 }); } },
 };
 // the opening, one crate of three pods, at the instants of its steps (events.opening.crate) and at its end: motion on, the face's own clock ("at 0" is the first frame, 1 ms in, with the dither still fully over the stage; `opening-90` is the dither half cleared)
 const STEPS = { "opening-0": 1, "opening-90": 90, "opening-200": 200, "opening-500": 500, "opening-800": 800, "opening-1200": 1200, "opening-1650": 1650, "opening-end": 3090 };

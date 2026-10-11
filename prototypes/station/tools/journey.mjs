@@ -203,11 +203,11 @@ await press("research", 200);
 { const u = await ui(); expect(u.screen === "pods" && u.view === "collection", "Research opens the collection: " + JSON.stringify(u)); }
 const loika = s.tray.find((p) => p.id.startsWith("xw2n9c-5")), loika2 = s.tray.find((p) => p.id.startsWith("dev-"));
 await page.evaluate((id) => { window.__st.podsGo(id, "pod"); }, loika.id); await page.waitForTimeout(250);
-const e0 = s.e;
-let l = await line(); expect(/Identify/.test(l.ok) && l.price === "⚡ 1", "identify costs 1 Energy (the first was spent in the fixture): " + JSON.stringify(l));
+const e0 = s.e, dId0 = s.d;
+let l = await line(); expect(/Identify/.test(l.ok) && l.price === "◆ 1", "identify costs ◆ 1: " + JSON.stringify(l));
 await press("confirm", 2200);
 s = await st(); const pl = s.tray.find((p) => p.id === loika.id);
-expect(pl.idd === 1 && s.e === e0 - 1, "identified for 1 Energy");
+expect(pl.idd === 1 && s.d === dId0 - 1 && s.e === e0, "identified for ◆ 1, no Energy");
 await frameShot("page-identified");
 // Identify leaves the Library where it was; ✓ on an identified pod opens Create, whatever has been read: the line reads "Shape a founder", dimmed by what stops it; Create is built (nothing read: the founder frosted), and ← names the pod
 { l = await line(); expect(l.ok === "Shape a founder", "✓ on an identified pod names Create: " + JSON.stringify(l)); await press("confirm", 400);
@@ -271,7 +271,7 @@ s = await st(); expect(s.tray.length === 6, "six pods in the wells: " + s.tray.l
 const untuva = s.tray.find((p) => p.species === "S02"), coatSix = s.tray.find((p) => p.species === "S09"), tuikisPod = s.tray.find((p) => p.species === "S03");
 await page.evaluate((id) => { window.__st.podsGo(id, "pod", undefined, 0); }, untuva.id);
 await page.waitForTimeout(500);
-l = await line(); expect(l.ok === "Identify" && l.price === "⚡ 1", "an unidentified pod offers Identify: " + JSON.stringify(l));
+l = await line(); expect(l.ok === "Identify" && l.price === "◆ 1", "an unidentified pod offers Identify: " + JSON.stringify(l));
 await frameShot("pods-unidentified");
 // Identify holds input for its seal: a key pressed meanwhile is consumed; the ring stays on the pod
 await press("confirm", 500); expect(await page.evaluate(() => window.__st.holding()), "Identify holds input"); await frameShot("pods-identifying");

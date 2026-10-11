@@ -1,4 +1,4 @@
-// X10 (station-x10-economy.md, the game designer): Identify in Data always, the dock spends nothing, the loose top-up, loop 2 never stalls, the next goal (goalKey), where a short comes from (shortFrom) and the
+// X10 (station-x10-economy.md, the game designer): Identify in Data always, the dock spends nothing, the loose refill, loop 2 never stalls, the next goal (goalKey), where a short comes from (shortFrom) and the
 // pre-spend warning (goalSpendWarn).
 //   node --test prototypes/station/tests/
 import { test } from "node:test";
@@ -25,17 +25,17 @@ test("the dock spends nothing, and a fresh save's switch is off", () => {
   const r = S.dockKey(st, sv, settings, 1000); assert.equal(r.ok, true); assert.equal(r.mend.paid, 0, "the dock charged nothing for a plate"); assert.equal(st.e, 5);
 });
 
-test("the loose top-up is { e: 2, d: 3, s: 4 }", () => { assert.deepEqual(S.DEFAULT_SETTINGS.topUp, { e: 2, d: 3, s: 4 }); });
+test("the loose refill is { e: 2, d: 3, s: 4 }", () => { assert.deepEqual(S.DEFAULT_SETTINGS.topUp, { e: 2, d: 3, s: 4 }); });
 
 test("loop 2 never stalls: two crates of (2,2,0) and (0,2,0) a trip, a plate lost each trip, Identify in Data, Grow twice", () => {
   const st = fresh(), sv = sv0([crate(1, [loikaPod(1, 11)])]); st.probe = { tier: 1, shield: 2, smax: 3 };
-  dock(st, sv); assert.equal(st.e, 4, "crate 1: the walk's ⚡2 and the loose top-up's 2"); assert.equal(st.d, 5, "◆2 and the top-up's 3");
+  dock(st, sv); assert.equal(st.e, 4, "crate 1: the walk's ⚡2 and the loose refill's 2"); assert.equal(st.d, 5, "◆2 and the refill's 3");
   const a = st.tray[0]; assert.equal(S.identify(st, a, settings).ok, true); assert.equal(st.d, 4, "Identify costs ◆1");
   assert.equal(S.read(st, a, frameOf("S01").chapters[0].id, settings).ok, true, "the first read ever is free"); assert.equal(st.d, 4);
   assert.equal(S.grow(st, a, {}, settings, 1000).ok, true); assert.equal(st.e, 2, "Grow ⚡2");
   // the first bud is out of the way: loop 2's second crate follows with the incubator free
   st.accepted.push("x1"); sv.bay = [crate(2, [loikaPod(2, 12)], { e: 0, d: 2, s: 0 })]; st.dock = { docked: false, at: 1 }; st.bud = null;
-  dock(st, sv); assert.equal(st.e, 4, "crate 2 (0,2,0): the top-up's ⚡2 on the 2 left");
+  dock(st, sv); assert.equal(st.e, 4, "crate 2 (0,2,0): the refill's ⚡2 on the 2 left");
   const b = st.tray.find((p) => !p.idd); assert.equal(S.identify(st, b, settings).ok, true);
   assert.equal(S.growBlockKey(st, b, {}, settings), null, "Grow can be paid after the Identify: loop 2 does not stall");
   assert.equal(S.grow(st, b, {}, settings, 2000).ok, true); assert.equal(st.e, 2); assert.ok(st.s >= 0);

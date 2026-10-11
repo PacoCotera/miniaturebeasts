@@ -19,7 +19,9 @@
     "crates": { "type": "array", "items": { "$ref": "row" } },
     "gathered": { "type": "object", "required": ["lead", "e", "d", "s", "top"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "e": { "type": "string" }, "d": { "type": "string" }, "s": { "type": "string" }, "top": { "type": "string" } } },
     "probe": { "type": ["object", "null"], "required": ["lead", "plates", "text"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "plates": { "type": "integer" }, "text": { "type": "string" } } },
-    "world": { "type": ["object", "null"], "required": ["lead", "lines"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "lines": { "type": "array", "items": { "type": "string" } } } } } }
+    "world": { "type": ["object", "null"], "required": ["lead", "lines"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "lines": { "type": "array", "items": { "type": "string" } } } },
+    "goal": { "type": ["object", "null"], "required": ["lead", "text", "icons", "plain"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "text": { "type": "string" }, "icons": { "type": "string" }, "plain": { "type": "string" } } },
+    "meanwhile": { "type": ["object", "null"], "required": ["lead", "text", "price"], "additionalProperties": false, "properties": { "lead": { "type": "string" }, "text": { "type": "string" }, "price": { "type": "string" } } } } }
   } },
   "focus": { "type": "object", "required": ["cur", "targets"], "additionalProperties": false, "properties": { "cur": { "enum": ["room"] }, "targets": { "type": "array" } } }
  }

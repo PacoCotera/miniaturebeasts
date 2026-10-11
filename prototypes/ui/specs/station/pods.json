@@ -1342,6 +1342,7 @@
   "unknownSubject": "sealed until identified",
   "backTo": "Back to the {place}",
   "needMore": "needs more {icons}",
+  "needMoreFrom": { "field": "needs more {icons}: go out", "bench": "needs more {icons}: watch your mibis", "fieldOrPod": "needs {icons}: go out or return pods", "fieldAndBench": "needs {icons}: go out and watch" },
   "glintHere": "something new here",
   "glintPod": "something new waits",
   "openChapter": "Open {chapter}",

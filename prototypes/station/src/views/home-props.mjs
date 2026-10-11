@@ -4,6 +4,7 @@
 // Runs in Node, tested there (tests/home-props.test.mjs); the shape is home.props.json. Sitting crates and the Cargo screen are L2.2's second PR (cargo.json); here the bay's crates are the walk crates.
 import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
+import { goalWords } from "./goal-words.mjs";
 
 const SPELL = ["no", "one", "two", "three", "four", "five", "six"];
 const COUNT = ["", "a", "two", "three", "four", "five", "six"];
@@ -110,7 +111,7 @@ export function homeBuild(m, spec, frame) {
   const cur = m.focus && targets.some((t) => t.id === m.focus) ? m.focus : "room";
   const focus = { cur, targets };
 
-  const line = lineOf(m, spec, { cur, residents, sleepers, here, cargoState, crates, pods, incubator, probe, library, need });
+  const line = lineOf(m, spec, { frame, cur, residents, sleepers, here, cargoState, crates, pods, incubator, probe, library, need });
   return { props: { state: "home", regions, focus }, line, requests, need, targets };
 }
 
@@ -118,7 +119,10 @@ export function homeBuild(m, spec, frame) {
 function lineOf(m, spec, v) {
   const { st } = m, Sg = spec.strings, { notice, action } = wordsOf(v.need, spec), cur = v.cur;
   const spelled = (n) => SPELL[n] ?? "many", plural = (t, n, key) => fill(n === 1 && t[key + "One"] ? t[key + "One"] : t[key], { count: spelled(n) });
-  const base = { back: null, need: notice };
+  // the notice zone: the first-group need as now (amber, its lamp, the goal does not show); else the goal (mist, no lamp); else the soft need (couldGrow short, toRead, budGrowing) as now. needKey and the room's ✓ are unchanged.
+  const goal = S.goalKey(st, m.sv, m.settings), first = v.need && (["crates", "budReady", "meet", "newPods", "glints", "waitingPods"].includes(v.need.key) || (v.need.key === "couldGrow" && !v.need.short));
+  const goalWords_ = !first && goal ? goalWords(goal, !!m.docked, v.frame) : null;
+  const base = { back: null, need: goalWords_ ? "" : notice, ...(goalWords_ ? { goal: goalWords_ } : {}) };
   if (cur === "room") return { ...base, ok: action, subject: "" };
   if (cur === "vivarium") {
     const n = v.residents.length + v.sleepers.length, S0 = Sg.subjects.vivarium;   // the mibis in the window: the residents and, docked, the sleepers on the bed
@@ -140,7 +144,7 @@ function lineOf(m, spec, v) {
     const B = st.bud, sp = B ? S.spName(B) : "";
     return { ...base, ok: Sg.actions.incubator, subject: !B ? S1.incubator.empty : fill(v.incubator.state === "ready" ? S1.incubator.ready : S1.incubator.growing, { species: sp }) };
   }
-  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? S1.probe.docked : S1.probe.away };
+  if (cur === "probe") return { ...base, ok: Sg.actions.probe, subject: v.probe.state === "docked" ? (goal && goal.probe && goal.probe.key === "fit" ? S1.probe.fit : goal && goal.probe && goal.probe.key === "save" ? S1.probe.save : S1.probe.docked) : S1.probe.away };
   if (cur === "library") return { ...base, ok: Sg.actions.library, subject: v.library.state === "pages" ? S1.library.pages : S1.library.empty };
   if (cur === "knob") return { ...base, ok: Sg.actions.knob, subject: S1.knob };
   return base;

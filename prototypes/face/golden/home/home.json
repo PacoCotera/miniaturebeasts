@@ -2,12 +2,20 @@
  "_note": "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones): the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "home-fresh": {
-   "hash": "7f0d3987",
+   "hash": "50a8bc2f",
    "png": "home-fresh.png"
   },
   "home-docked": {
    "hash": "01c74cda",
    "png": "home-docked.png"
+  },
+  "home-goal-docked": {
+   "hash": "a0010aa2",
+   "png": "home-goal-docked.png"
+  },
+  "home-goal-away": {
+   "hash": "bf92d0e8",
+   "png": "home-goal-away.png"
   },
   "home-away": {
    "hash": "d8aa0a0a",
@@ -54,7 +62,7 @@
    "png": "home-probe-sitting.png"
   },
   "home-library-empty": {
-   "hash": "e1b5cac8",
+   "hash": "53e8798c",
    "png": "home-library-empty.png"
   },
   "home-library-pages": {
@@ -74,11 +82,11 @@
    "png": "home-vivarium-focused.png"
   },
   "home-resident-focused": {
-   "hash": "344a6150",
+   "hash": "61d59254",
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "740c4ab9",
+   "hash": "8e816ec3",
    "png": "home-sleeper-focused.png"
   },
   "home-knob-pressed": {

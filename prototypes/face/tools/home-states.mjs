@@ -8,6 +8,8 @@ import { openStation } from "./station-page.mjs";
 const SCENES = {
   fresh:      { f: "room", set: () => {} },
   docked:     { f: "room", set: (w) => { w.adults(4); w.young(3); w.carry([0, 1]); w.crates(2); w.pods(3); w.bud(false); } },
+  "goal-docked": { f: "room", set: (w) => { w.young(2); w.carry([0, 1]); } },
+  "goal-away": { f: "room", set: (w) => { w.young(2); w.carry([0]); w.away(); } },
   away:       { f: "room", set: (w) => { w.adults(4); w.young(3); w.carry([0]); w.away(); w.pods(3); } },
   waiting:    { f: "room", set: (w) => { w.adults(2); w.pods(6); w.waiting(2); } },
   "bed-none": { f: "room", set: (w) => { w.adults(3); } },
@@ -44,6 +46,8 @@ export const WORLD = () => ({
   bud(ready) { const st = window.__st.ST; st.bud = { kind: "founder", species: "S01", sp: 0, gs: 5, genome: st.mibis[0]?.genome ?? null, sha: "bud", code: "BUD", start: Date.now() - (ready ? 1e8 : 1000), minutes: 20, firstEver: false, parents: null, from: { n: 0, g: "meadow", how: "ground", podId: null }, read: [], shaped: false, early: false }; },
   painting() { const st = window.__st.ST, m = st.mibis[st.mibis.length - 1]; if (m) m.paint = { state: "sent" }; },
   sitting() { window.__st.ST.sitting = { mibi: window.__st.ST.mibis[0]?.id ?? 1 }; },
+  unread(i) { const m = window.__st.ST.mibis[i]; if (m) m.read = []; this.persist(); },
+  identified(n) { const S = window.__st; for (const p of S.ST.tray.slice(0, n)) S.readSome(p.id, 0); },
   known(ids) { window.__st.ST.knownIds = ids; },
 });
 
