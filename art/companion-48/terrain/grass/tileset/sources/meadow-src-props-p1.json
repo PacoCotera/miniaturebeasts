@@ -1,0 +1,16 @@
+[
+{
+"name": "meadow-src-props-p1",
+"model": "gemini-3-pro-image",
+"aspect": "1:1",
+"size": "1K",
+"tries": 1,
+"refs": [
+[
+"scratch:b1-scene.png",
+"Our approved meadow scene (project-owned): match its art style, colours, flat colour steps, scale and light exactly. Its bushes, ferns, boulders, reeds, flowers and plank bridge are the props to draw."
+]
+],
+"prompt": "Make a props sheet for cutting, in exactly the reference's style, scale and light (top-down three-quarter view, light from the top left). On a plain flat solid magenta (#FF00FF) background with nothing else on it, draw separate props spaced well apart, none touching: three round leafy bushes of different sizes; three fern clumps; four grey boulders with moss, from small to large; two clumps of pond reeds with cattails; two small flower clusters (white and yellow); one wooden plank bridge seen from above, straight, running top to bottom, with a post at each corner, about five times as long as it is wide. No ground under any prop and no cast shadow on the background. Flat colour steps, no soft gradients, strong dark outlines. No grass ground, no water, no cliffs, no characters, no text, no grid, no border."
+}
+]

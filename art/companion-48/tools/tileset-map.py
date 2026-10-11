@@ -7,7 +7,7 @@ Pieces used:
   walls         tileset/walls: faces two cells tall per level, runs packed from pieces 3, 2 and 1 wide with no piece twice running, a
                 rounded cap at an open end; a lower face under another (a stack) has its turf replaced by its own rock
   stairs        a macro piece cut from b1's lower stair, two cells wide and three tall (its landing on the plateau cell above)
-  bridge, props macro pieces cut from b1 (the plank bridge, a bush, a boulder), placed on whole cells by the props rule
+  bridge, props the props pieces (tileset/props: bushes, ferns, boulders, reeds, flowers, the plank bridge), set by their feet
   pond          the water pieces (tileset/water, tools/build-water-quarters.py): two flat tones, foam and wet line, a sand bank
 Writes test-map-1x.png, -3x.png and beside-b1-1x.png (the test map and b1's own screen at the same size).
 usage: python3 -I tileset-map.py B1_DIR PIECES_DIR WALLS_DIR OUT_DIR"""
@@ -106,15 +106,14 @@ HM = ["22222222221111",
       "00000000000000",
       "00000000000000",
       "00000000000000",
-      "0000wwww000000",
-      "00wwwwwwwwww00",
-      "0wwww0wwwwwww0",
-      "0wwwwwwwwwww00",
-      "00wwww0wwww000",
-      "00000000000000"]
+      "00wwww00000000",
+      "0wwwwwwww00000",
+      "wwwwwwwwwwwwww",
+      "wwwwwwwwwwwwww",
+      "wwwwwwwwwwwwww",
+      "wwwwwwwwwwwwww"]
 STAIRS = [(5, 4), (12, 6)]           # (first face row, left cell)
-BRIDGE = (14, 9)                     # top-left cell of the 2 x 6 bridge piece
-PROPS = [("boulder", 9, 12), ("boulder", 2, 2)]
+BRIDGE = (16, 9)                     # top-left cell of the 2 x 5 bridge piece: from the bank to the map's edge, as in b1
 H = np.array([[0 if ch == "w" else int(ch) for ch in r] for r in HM]); WAT = np.array([[ch == "w" for ch in r] for r in HM]); R, Cn = H.shape
 # faces: the two rows under every drop (a drop under a face makes a stack)
 FACE = np.zeros((R, Cn), bool); TOP = np.zeros((R, Cn), bool)
@@ -243,7 +242,7 @@ for r in range(R):
 WD = os.path.join(os.path.dirname(walls_d), "water")
 WQ = {(q, st_): to_idx(Image.open(os.path.join(WD, f"q-{q}-{st_}-f1.png"))) for q in ("nw", "ne", "se", "sw") for st_ in ("fill", "edgeh", "edgev", "outer", "inner")}
 def wstate(r, c, q):
-    land = lambda dr, dc: not (0 <= r + dr < R and 0 <= c + dc < Cn) or not WAT[r + dr, c + dc]
+    land = lambda dr, dc: (0 <= r + dr < R and 0 <= c + dc < Cn) and not WAT[r + dr, c + dc]   # the pond runs on past the map's edge
     vy = -1 if q in ("nw", "ne") else 1; vx = -1 if q in ("nw", "sw") else 1
     a_, b_, d_ = land(vy, 0), land(0, vx), land(vy, vx)
     return "outer" if a_ and b_ else ("edgeh" if a_ else ("edgev" if b_ else ("inner" if d_ else "fill")))
@@ -258,16 +257,25 @@ for r in range(R):
 st = B1[460:622, 262:370]; st = np.asarray(Image.fromarray(st.astype(np.uint8)).resize((96, 144), Image.NEAREST)).astype(int)
 for (r, c) in STAIRS:
     Y, X = (r - 1) * 48, c * 48; img[Y:Y + 144, X:X + 96] = st
-# 6. bridge and props: macro pieces cut from b1, placed on whole cells
-br = B1[832:1072, 424:520]
-Yb, Xb = BRIDGE[0] * 48, BRIDGE[1] * 48; hh = min(br.shape[0], img.shape[0] - Yb)
-keep = (mat[br[:hh]] != "grass") & ~((br[:hh] == BODY) | (br[:hh] == SHAL))   # the planks and posts only: b1's grass and water stay ours
-img[Yb:Yb + hh, Xb:Xb + 96] = np.where(keep, br[:hh], img[Yb:Yb + hh, Xb:Xb + 96])
-PROP = {"bush": B1[570:628, 424:492], "boulder": B1[628:668, 462:528]}
-for name, r, c in PROPS:
-    p = PROP[name]; m = np.isin(mat[p], ["rock", "earth", "wood", "accent"]) | (lum[p] > 150) & (mat[p] != "grass"); ph, pw = p.shape
-    Y, X = r * 48 + 48 - ph, c * 48 + (48 - pw) // 2
-    if Y >= 0 and X >= 0: img[Y:Y + ph, X:X + pw] = np.where(m, p, img[Y:Y + ph, X:X + pw])
+# 6. bridge and props: the props pieces (tileset/props, tools/cut-props.py), each set by its foot (bottom centre) on a pixel
+PD = os.path.join(os.path.dirname(walls_d), "props"); PJ = json.load(open(os.path.join(PD, "props.json")))["pieces"]
+PROP = {p["file"][:-4]: to_idx(Image.open(os.path.join(PD, p["file"]))) for p in PJ}
+def put(name, fx, fy):
+    p = PROP[name]; ph, pw = p.shape; Y, X = fy - ph, fx - pw // 2
+    y0, x0 = max(0, Y), max(0, X); y1, x1 = min(img.shape[0], Y + ph), min(img.shape[1], X + pw)
+    if y1 <= y0 or x1 <= x0: return
+    q = p[y0 - Y:y1 - Y, x0 - X:x1 - X]; img[y0:y1, x0:x1] = np.where(q >= 0, q, img[y0:y1, x0:x1])
+br_ = PROP["bridge-1"]; Yb, Xb = BRIDGE[0] * 48 - 24, BRIDGE[1] * 48
+put("bridge-1", Xb + 48, Yb + br_.shape[0])
+# the props layout, by the scene's rules: ferns and bushes at the walls' feet, boulders on open ground, reeds at the bank, flowers on the lawn
+SCAT = [("fern-1", 96, 720), ("bush-1", 300, 718), ("fern-3", 640, 712), ("boulder-3", 600, 470), ("bush-2", 70, 470),
+        ("fern-2", 190, 384), ("boulder-2", 520, 362), ("boulder-1", 560, 372), ("boulder-4", 120, 120), ("bush-3", 610, 210),
+        ("reeds-1", 150, 772), ("reeds-2", 600, 790), ("flowers-1", 380, 150), ("flowers-2", 200, 520), ("flowers-1", 470, 712),
+        ("fern-3", 30, 160)]
+for name, fx, fy in SCAT: put(name, fx, fy)
+# the island: b1's own, a macro piece with its pond keyed out (only the two water tones go; its bank and foam stay)
+isl = B1[800:955, 185:300]; isl = np.where((isl == BODY) | (isl == SHAL), -1, isl)
+PROP["island-b1"] = isl; put("island-b1", 260, 960)
 im = Image.fromarray(PAL[np.clip(img, 0, None)].astype(np.uint8))
 im.save(os.path.join(out, "test-map-1x.png")); im.resize((im.width * 3, im.height * 3), Image.NEAREST).save(os.path.join(out, "test-map-3x.png"))
 b1im = Image.open(os.path.join(b1d, "scene-1x.png")).convert("RGB").crop((0, 0, im.width, im.height))

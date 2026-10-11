@@ -1,0 +1,157 @@
+{
+ "biome": "meadow",
+ "source": "meadow-src-props-p1.jpg",
+ "scale": 0.5,
+ "pieces": [
+  {
+   "name": "meadow/prop/boulder-1",
+   "file": "boulder-1.png",
+   "kind": "prop",
+   "type": "boulder",
+   "px": [
+    33,
+    30
+   ]
+  },
+  {
+   "name": "meadow/prop/boulder-2",
+   "file": "boulder-2.png",
+   "kind": "prop",
+   "type": "boulder",
+   "px": [
+    43,
+    38
+   ]
+  },
+  {
+   "name": "meadow/prop/boulder-3",
+   "file": "boulder-3.png",
+   "kind": "prop",
+   "type": "boulder",
+   "px": [
+    61,
+    51
+   ]
+  },
+  {
+   "name": "meadow/prop/boulder-4",
+   "file": "boulder-4.png",
+   "kind": "prop",
+   "type": "boulder",
+   "px": [
+    71,
+    76
+   ]
+  },
+  {
+   "name": "meadow/prop/bridge-1",
+   "file": "bridge-1.png",
+   "kind": "prop",
+   "type": "bridge",
+   "px": [
+    96,
+    287
+   ]
+  },
+  {
+   "name": "meadow/prop/bush-1",
+   "file": "bush-1.png",
+   "kind": "prop",
+   "type": "bush",
+   "px": [
+    89,
+    79
+   ]
+  },
+  {
+   "name": "meadow/prop/bush-2",
+   "file": "bush-2.png",
+   "kind": "prop",
+   "type": "bush",
+   "px": [
+    125,
+    112
+   ]
+  },
+  {
+   "name": "meadow/prop/bush-3",
+   "file": "bush-3.png",
+   "kind": "prop",
+   "type": "bush",
+   "px": [
+    174,
+    160
+   ]
+  },
+  {
+   "name": "meadow/prop/fern-1",
+   "file": "fern-1.png",
+   "kind": "prop",
+   "type": "fern",
+   "px": [
+    120,
+    92
+   ]
+  },
+  {
+   "name": "meadow/prop/fern-2",
+   "file": "fern-2.png",
+   "kind": "prop",
+   "type": "fern",
+   "px": [
+    79,
+    76
+   ]
+  },
+  {
+   "name": "meadow/prop/fern-3",
+   "file": "fern-3.png",
+   "kind": "prop",
+   "type": "fern",
+   "px": [
+    56,
+    52
+   ]
+  },
+  {
+   "name": "meadow/prop/flowers-1",
+   "file": "flowers-1.png",
+   "kind": "prop",
+   "type": "flowers",
+   "px": [
+    43,
+    35
+   ]
+  },
+  {
+   "name": "meadow/prop/flowers-2",
+   "file": "flowers-2.png",
+   "kind": "prop",
+   "type": "flowers",
+   "px": [
+    46,
+    48
+   ]
+  },
+  {
+   "name": "meadow/prop/reeds-1",
+   "file": "reeds-1.png",
+   "kind": "prop",
+   "type": "reeds",
+   "px": [
+    54,
+    76
+   ]
+  },
+  {
+   "name": "meadow/prop/reeds-2",
+   "file": "reeds-2.png",
+   "kind": "prop",
+   "type": "reeds",
+   "px": [
+    56,
+    76
+   ]
+  }
+ ]
+}
