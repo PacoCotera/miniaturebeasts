@@ -207,6 +207,6 @@ test("M6 measures the mean over the columns the field moves, not every opaque co
   const mk = (tops) => { const im = blank(6, 10); tops.forEach((t, x) => { for (let y = t; y < 10; y++) im.data.set([9, 9, 9, 255], (y * 6 + x) * 4); }); return im; };
   const stand = mk([4, 4, 4, 4, 4, 4]), down = mk([4, 6, 6, 4, 4, 4]), up = mk([4, 2, 2, 3, 4, 4]);
   assert.deepEqual(movedColumns(down, stand, up), [1, 2, 3], "a column where either end differs from the stand");
-  assert.equal(profileDeltaOver(down, up, [1, 2, 3]).mean, (4 + 4 + 3) / 3); assert.equal(profileDeltaOver(down, up, [1, 2, 3]).columns, 3);
+  assert.equal(profileDeltaOver(down, up, [1, 2, 3]).mean, (4 + 4 + 1) / 3); assert.equal(profileDeltaOver(down, up, [1, 2, 3]).columns, 3);
   assert.ok(profileDeltaOver(down, up, [0, 1, 2, 3, 4, 5]).mean < 3, "over every column the mean would be diluted");
 });
