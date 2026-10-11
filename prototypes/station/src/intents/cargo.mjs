@@ -24,7 +24,7 @@ const walkOrdinals = (plays) => { let w = 0; return plays.map((p) => (p.c.dev ? 
 function reportOf(spec, plays, settings, mend, st) {
   const T = spec.strings.report, R = spec.regions.report, podMax = R.crates.podMax, walk = walkOrdinals(plays);
   const crates = plays.slice(0, R.crates.max).map((p, k) => {
-    const n = (p.c.pods || []).length;
+    const n = p.ids.length;   // the pods that landed, never the crate's raw contents (a pod of no species is not opened)
     return { lead: leadOf(spec, p.c, walk[k]), pods: n && n <= podMax ? n : 0, text: n === 0 ? T.noPods : n > podMax ? T.manyPods : "", reach: reachWord(spec, p.c) };
   });
   const sum = (key) => plays.reduce((a, p) => a + p.gained[key], 0);

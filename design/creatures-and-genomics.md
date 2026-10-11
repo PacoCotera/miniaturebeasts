@@ -175,9 +175,8 @@ steps brighter. Its children take one of Ember's copies, dim or bright, and no
 mark; Ember's stamp still shows dim and bright.
 
 How a change reads on screen is in
-[research and breeding](research-and-breeding.md). The painting follows the
-mark at the mibi's next life stage
-([art direction](art-direction.md#from-genome-to-creature)).
+[research and breeding](research-and-breeding.md); how a mibi is drawn is in
+[art direction](art-direction.md#from-genome-to-creature).
 
 ## Species frames
 
