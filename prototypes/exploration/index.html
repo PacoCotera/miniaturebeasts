@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Companion Field Test</title>
+<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 48-colour palette, the world map, living patches, storms, partners and two gates.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -162,6 +163,9 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 @media (prefers-reduced-motion: reduce){
   *{transition:none !important; animation:none !important}
 }
+html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
+html.embed body{visibility:hidden}
+html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(--embed-w,450px); height:auto; max-width:none; border-radius:0}
 </style>
 </head>
 <body>
@@ -221,7 +225,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
         <li>Pick a glint to start. The dotted square is how far the Probe reaches; the dot grid top left is the same square.</li>
         <li>Go down into a place and Call in each quarter. Watch the overview: its quarters lose their dots as you survey them.</li>
         <li>Call to find Energy: warm stones (a dim amber ring) give +1 each, only a few each world turn; storm-struck stones (a yellow zigzag) give +2 or +3. A Call that finds one says "Energy nearby", the map marks the cell with a bolt (hollow for a warm stone), and the Probe screen counts "Energy in reach".</li>
-        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data. An expedition that fills a dot brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks: moments bring it in early, the rest arrives when you end the expedition.</li>
+        <li>Shake a bush. The line says who eats the fruit. Press it for Essence, or put it down, back off three tiles and let an eater have it for Data, and sometimes a pod. An expedition that fills a dot brings home 2 / 4 / 6 / 8 Data by the highest tier it entered (meadow and pond edge 2, wood and rock field 6, the cave 8), none if the Probe breaks: moments bring it in early, the rest arrives when you end the expedition.</li>
         <li>When the storm is over you, charge up from struck stones. Count the bolts top right; the arrow beside them is where it heads. Shelter is an overhang, a cave or a lit outpost; trees are not.</li>
         <li>Fill every dot in your reach, then head back to the flag (your start) and <b>End expedition</b> from the menu; away from it the menu says how far. Ending the expedition seals the hold (pods and materials) as a crate in the Companion's bay, three at most, and the world turns. The Companion keeps the crates while you set out again at once, Walk or Tend, or dock when you like. With the bay full, the finds stay unsealed in the hold and ride along: a break would lose them. Nothing reaches the Station until you dock: open the <a href="../station/">Station page</a>, press <kbd>D</kbd> to dock, then <b>Open the crates</b> in its developer panel (the Station's Cargo is not built yet), and press <kbd>R</kbd> for Pods. Lift it again (<kbd>D</kbd>) before the next expedition. If the Probe breaks, nothing is sealed: your pods fall where it broke, under a skull on the map, until you come back for them.</li>
         <li>Find an outpost (a hut with a mast) and light it for 1 Energy: for three world turns (its flame shrinks each turn) you can end an expedition there, mend the Shield for 1 Energy a bar, and shelter from stray strikes beside it. Relight it when it goes dark. The top bar's "T" counts world turns.</li>
@@ -416,6 +420,22 @@ function genLife(seed) {
   return { cr, pods };
 }
 function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land]; }
+// The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
+// Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
+// a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
+// its own seed, so genLife's seven world pods stay where they are. startExpedition adds them on the first placement only.
+function firstPods(seed, cell, pods) {
+  const R = makeRng(hash(seed, 'firstPods', cell)), s0 = cxy(cell), reach = reachCells(cell, TIER[1].range).sort((a, b) => a - b), out = [];
+  const buried = () => [...pods, ...out].filter(p => p.h === 1 && p.bur === 1), dist = c => cheb(cxy(c), s0);
+  const ok = c => !G.spawns.includes(c) && c !== G.gate && c !== G.deep && c !== G.swim && !G.island[c] && G.land[c] !== L.WATER && G.comp[c] === 1 && passable(c) && !buried().some(p => p.k === String(c));
+  const pick = (pools, id, sp) => { const pool = pools.find(a => a.length); if (pool) { const c = R.pick(pool); out.push({ id, k: String(c), x: -1, y: -1, sp, h: 1, bur: 1, g: groundName(G.land[c], false), how: 'ground' }); } };
+  const d1 = reach.filter(c => dist(c) === 1);
+  if (!buried().some(p => p.sp === 0 && d1.includes(+p.k))) { const e = d1.filter(ok);
+    pick([e.filter(c => G.land[c] === L.MEADOW || G.land[c] === L.POND), e.filter(c => !G.glow.includes(c)), e], 'fa', 0); }
+  if (buried().filter(p => reach.includes(+p.k)).length < 2) { const e = reach.filter(c => dist(c) === 2 && ok(c));
+    pick([e.filter(c => G.land[c] === L.ROCK || G.land[c] === L.WOOD), e], 'fb', 1); }
+  return out;
+}
 
 // ===================== 4. Patch layouts (pure: seed + cell) =====================
 const layoutCache = new Map();
@@ -1045,6 +1065,7 @@ function ensureCharge(ex) {
 }
 function startExpedition(type, cell) {
   const R = makeRng(hash(S.seed, 'exp', S.expN)), tier = tierOf();
+  if (firstPlacement()) S.pods.push(...firstPods(S.seed, cell, S.pods));   // a new world's first expedition: two pods in reach (X2)
   const stormOn = type === 'weather' || R.chance(.3);
   const fogOn = type === 'deep' || R.chance(.45);
   const pm = partnerMibi();
@@ -1705,6 +1726,8 @@ function patchTick(info) {
   // the four bubbles over creatures, each explained the first time it shows in view
   const inView = live.cr.filter(c => !c.hide && !X.away(c) && inSight(c.x, c.y));
   for (const c of inView) { const b = bubbleOf(c, ex.carry); if (b && BUBBLE_HELP[b]) fxOnce('mark' + b, BUBBLE_HELP[b], 2); }
+  // the Untuva meal, once per save: fruit in hand with an Untuva in sight (named only once identified)
+  if (ex.carry === 'fruit' && inView.some(c => c.sp === 2)) fxOnce('cmp.hint.untuvaMeal', S.known.includes(2) ? 'A well-fed Untuva may drop a pod · put the fruit down, back off three tiles' : 'A well-fed round creature may drop a pod · put the fruit down, back off three tiles', 2);
   // Warned strikes aim at stones (the storm's offer); the risk is the stray strike, rolled in advance().
   if (raining && !live.strike && rnd(S.seed, 'sk', ex.n, ex.actions) < .5) {
     live.strike = pickStrike(X);
@@ -4439,9 +4462,11 @@ window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll(
 
 // ===================== 17. Page: fit, build stamp, observer =====================
 const fitEl = document.getElementById('deviceFit');
+const EMBED = document.documentElement.classList.contains('embed');
 // Scale the depicted device to the window. When the screen would land close to a whole number of
 // physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {
+  if (EMBED) return;
   const W = 522, H = 832, vw = document.documentElement.clientWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
   const desktop = vw >= 900 && window.matchMedia && matchMedia('(pointer: fine)').matches;
   let s = Math.min(1, (vw - 32) / W);
@@ -4452,6 +4477,12 @@ function fit() {
   deviceEl.style.transform = `scale(${s})`;
 }
 window.addEventListener('resize', fit);
+// ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
+function embedFit() {
+  const dpr = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(dpr));
+  document.documentElement.style.setProperty('--embed-w', (450 * k / dpr) + 'px');
+}
+if (EMBED) { window.addEventListener('resize', embedFit); embedFit(); }
 
 const stampEl = document.getElementById('stamp');
 fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {

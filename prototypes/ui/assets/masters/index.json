@@ -512,40 +512,33 @@
    "sha256": "7732c769d62f375be1b8a2721675f9ed81c09d5d211ed9f9b312b5e6af94bb2d",
    "signed": "signed (masters-pods b3b7e04)"
   },
-  "frame-room-habitat-24": {
-   "file": "pods/frame-room-habitat-24.png",
-   "w": 24,
-   "h": 24,
-   "sha256": "fe744992d97e78b1018beff76bf1d928f53d1b0397419e0e44f53d1e958c9b08",
-   "signed": "signed (masters-pods b3b7e04)"
-  },
   "frame-room-home-24": {
    "file": "pods/frame-room-home-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "cfa9ac14a811a04f098bf939c6a60a7e64490b81cad254f6e8896e5312399ec8",
-   "signed": "art director (device-button marks, #75 122a75ad)"
+   "sha256": "d4f4e3ad0c0e68ede883ab33a96529135a7bc8d3494de1a35e09956718641cd7",
+   "signed": "art director, original concept marks (#117)"
   },
   "frame-room-library-24": {
    "file": "pods/frame-room-library-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "764d9ed80d21165b7e60abbe950188724301a95127ab1727d876651ced406ac4",
-   "signed": "art director (device-button marks, #75 122a75ad)"
+   "sha256": "bb4ad9b4d7b635fd224e01a88b1df307e493e4e12625355822470f51e393ee3c",
+   "signed": "art director, original concept marks (#117)"
   },
   "frame-room-research-24": {
    "file": "pods/frame-room-research-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "1adadf0b760e3c447547c064837cf1b80b9974d9490ada361f5ff0ff8ee75be3",
-   "signed": "art director (device-button marks, #75 122a75ad)"
+   "sha256": "239e82dba592f147a149a96c9247bc016644b3a0d3631ea6f81e437c6a0d884d",
+   "signed": "art director, original concept marks (#117)"
   },
   "frame-room-vivarium-24": {
    "file": "pods/frame-room-vivarium-24.png",
    "w": 24,
    "h": 24,
-   "sha256": "50efba0be741c452e382595ccef33f30fcf4f883ee2c7794ed6b6566be2ee83b",
-   "signed": "art director (device-button marks, #75 122a75ad)"
+   "sha256": "c38244b25463abe0700244cd2d783313f07027cce402cafe87028adcc9c56ee5",
+   "signed": "art director, original concept marks (#117)"
   },
   "frame-sun-16": {
    "file": "pods/frame-sun-16.png",
@@ -3753,6 +3746,34 @@
    "h": 152,
    "sha256": "22758728f9d6b516c2c568ea095e20526c9441c250f01a8c1410032744e722cc",
    "signed": "art director, Pods room verdict (README fa105365)"
+  },
+  "shell-key-home-24": {
+   "file": "shell/shell-key-home-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "045b6298939b4588492ed8e3b800805358d67f5e3a8694b1f566db1e29f7f67d",
+   "signed": "art director, original concept marks (#117)"
+  },
+  "shell-key-library-24": {
+   "file": "shell/shell-key-library-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "22a4059f45993884a22c66e834fe11fffa364aba635a980a060c4c022eac4bfe",
+   "signed": "art director, original concept marks (#117)"
+  },
+  "shell-key-research-24": {
+   "file": "shell/shell-key-research-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "0390ecda305347452e1e402d1882828a60689790481cc5d3760eba081dbad372",
+   "signed": "art director, original concept marks (#117)"
+  },
+  "shell-key-vivarium-24": {
+   "file": "shell/shell-key-vivarium-24.png",
+   "w": 24,
+   "h": 24,
+   "sha256": "24672e5575e04e3388d0d1e48020363b824664c0ee88827f4fa15a99871815a9",
+   "signed": "art director, original concept marks (#117)"
   },
   "spread-progress-empty-8x8": {
    "file": "pods/spread-progress-empty-8x8.png",

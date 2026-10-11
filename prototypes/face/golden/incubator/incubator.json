@@ -2,55 +2,55 @@
  "_note": "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants and growNow at two: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "incubator-empty": {
-   "hash": "2d3a7ee5",
+   "hash": "2c617f46",
    "png": "incubator-empty.png"
   },
   "incubator-growing": {
-   "hash": "8c7eaf31",
+   "hash": "b8a71b9e",
    "png": "incubator-growing.png"
   },
   "incubator-growing-late": {
-   "hash": "cacf261d",
+   "hash": "6ba61fe6",
    "png": "incubator-growing-late.png"
   },
   "incubator-ready": {
-   "hash": "34280a9d",
+   "hash": "93346d0a",
    "png": "incubator-ready.png"
   },
   "incubator-hatch-100": {
-   "hash": "807a9742",
+   "hash": "d917420d",
    "png": "incubator-hatch-100.png"
   },
   "incubator-hatch-300": {
-   "hash": "09611d00",
+   "hash": "ba53d83f",
    "png": "incubator-hatch-300.png"
   },
   "incubator-hatch-650": {
-   "hash": "ed87f936",
+   "hash": "12c3cdd5",
    "png": "incubator-hatch-650.png"
   },
   "incubator-hatch-850": {
-   "hash": "658274d4",
+   "hash": "a8596763",
    "png": "incubator-hatch-850.png"
   },
   "incubator-hatch-1100": {
-   "hash": "6c51976e",
+   "hash": "3e6e9cc1",
    "png": "incubator-hatch-1100.png"
   },
   "incubator-hatch-1500": {
-   "hash": "50375c93",
+   "hash": "3b2684b8",
    "png": "incubator-hatch-1500.png"
   },
   "incubator-hatch-2000": {
-   "hash": "ad322e3e",
+   "hash": "d0808459",
    "png": "incubator-hatch-2000.png"
   },
   "incubator-growNow-200": {
-   "hash": "05cc2a13",
+   "hash": "eca6f5d0",
    "png": "incubator-grownow-200.png"
   },
   "incubator-growNow-420": {
-   "hash": "72f1751a",
+   "hash": "4c6d0efd",
    "png": "incubator-grownow-420.png"
   }
  }

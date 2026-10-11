@@ -42,10 +42,10 @@ The Station's depicted keys, mapped to the keyboard. Routine play uses these onl
 | Key | Keyboard | Does |
 | --- | --- | --- |
 | Pad | ← ↑ → ↓ | Moves the warm focus ring between drawn things. On Pods the order is fixed: ↑ ↓ walk the wells, then the hatch; → from a well to the pod, ← back; ↑ from the pod to the chapter rail, ◀ ▶ among the chapters, ↓ back to the pod |
-| Home (amber) | H | The vivarium and the bench |
-| Research (teal) | R | The pods |
-| Library (violet) | L | The tome's spread of sixteen frames and a Book per species |
-| Vivarium (green) | B | Residents, the with-you door |
+| Home (yellow) | H | Home |
+| Vivarium (green) | B | The Vivarium's whole |
+| Research (blue) | R | Pods, the collection |
+| Library (plum) | L | The Library, the spread |
 | ← | Esc / Backspace | Back one view. On Home: focus back to the room; on the room it only says so |
 | ✓ Confirm | Enter / Space | Exactly what the bottom line names, with its price |
 | Caddy: Dock / Lift | D | Prototype only, beside the Station: docks or lifts the Companion. It is not a Station key |

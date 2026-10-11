@@ -549,7 +549,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
 });
 test("the page's help: the carried set, Walk together and Tend; no Spend time and no Habitat", () => {
-  const help = PAGE.slice(0, PAGE.indexOf("<script"));
+  const help = PAGE.slice(0, PAGE.indexOf("<script type=\"module\">"));   // the page before its script (the ?embed line in <head> is a classic script)
   assert.match(help, /Up to three mibis are <b>with you<\/b>/); assert.match(help, /<b>Tend<\/b> each one once a day/);
   assert.ok(!/spends time|One mibi is|Habitat/.test(PAGE), "retired words");
 });
@@ -712,7 +712,7 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
   assert.match(source("lineFor"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
 });
 
-// ---- X1: a Station species the Companion does not know (plans/companion/x1-unknown-species.md) ----
+// ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
 // (sp -1 on the Station: a species beyond the Companion's three), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
