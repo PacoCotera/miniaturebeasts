@@ -1,9 +1,10 @@
 // The art director's loader check for a 48 px terrain drop (plans/companion/c2a-48px-spec.md §5.1): run on the drop before its PR
 // is opened, and its output quoted in the PR. It refuses what the page's loader would refuse, with the same rules:
-//   node prototypes/exploration/tools/atlas-check.mjs <meadow.json> [more.json ...]
+//   node prototypes/exploration/tools/atlas-check.mjs [--drop] <meadow.json> [more.json ...]
+// --drop is the mode whose output the art director quotes in the drop PR: any sheet that is not 8-bit indexed fails.
 // Several manifests merge as the page's ATLAS_URLS do: every manifest's pieces, the last one winning on a duplicate name.
 // - Decode: each sheet (or a piece's own `file`) with node:zlib: 8-bit indexed (PLTE, tRNS for alpha) or 8-bit RGBA, non-interlaced.
-//   Any other PNG form is refused and named. A gAMA, iCCP, cHRM or sRGB chunk refuses the sheet.
+//   Any other PNG form is refused and named; each sheet's form is printed. A gAMA, iCCP, cHRM or sRGB chunk refuses the sheet.
 // - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the page's 48-colour RGB table.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
@@ -13,7 +14,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { inflateSync } from "node:zlib";
-import { decodeExact, catalogue, coreMissing } from "../src/atlas.mjs";
+import { decodeExact, catalogue, coreMissing, QUADS, LIP_STATES } from "../src/atlas.mjs";
 
 // The page's palette, read from index.html as the tests read it (the page's own PALETTE, HEX and RGB declarations).
 export function pageRGB() {
@@ -105,23 +106,29 @@ function keyCounts(o, pre = "", out = []) {
   return out;
 }
 
-// The blocking kinds (§4.4) whose own pieces are all absent, when the rock stand-in (face.w1 and material.rock) is absent too.
-function noStandIn(cat) {
-  const standIn = cat.face.w1.length > 0 && cat.material.rock.length > 0; if (standIn) return [];
-  const lipAny = Object.keys(cat.lip).some(q => q !== "shadowN" && Object.values(cat.lip[q]).some(l => l.length));
+// The blocking kinds (§4.4, settled at M1) that are incomplete, so that the page would need the rock stand-in for some tile, while
+// the stand-in (face.w1 and material.rock) is not there: lip with any of its 4 × 7 quarter lists empty; face with face.w1 empty
+// (every other face list falls back to it); side with side.e.mid or side.w.mid empty; rock with no boulder of 48 × 48 or less.
+export function incompleteKinds(cat) {
   const out = [];
-  if (!cat.face.w3.length && !cat.face.w2.length && !cat.face.w1.length) out.push("FACE");
+  if (QUADS.some(q => LIP_STATES.some(s => !cat.lip[q][s].length))) out.push("LIP");
+  if (!cat.face.w1.length) out.push("FACE");
   if (!cat.side.e.mid.length || !cat.side.w.mid.length) out.push("SIDE");
-  if (!lipAny) out.push("LIP");
   if (!cat.prop.boulder.some(p => p.w <= 48 && p.h <= 48)) out.push("ROCK");
-  if (!cat.face.w1.length || !cat.material.rock.length) out.push("CLIFF (generator 1)");
   return out;
 }
+const noStandIn = cat => (cat.face.w1.length && cat.material.rock.length ? [] : incompleteKinds(cat));
 
-export function check(files, log = console.log) {
+export function check(files, log = console.log, { drop = false } = {}) {
   const RGB = pageRGB(), of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
   const merged = new Map(), images = new Map(); let refused = 0;
-  const image = file => { if (!images.has(file)) { try { images.set(file, decodePNG(readFileSync(file))); } catch (e) { images.set(file, { err: e.message }); } } return images.get(file); };
+  const image = file => {
+    if (!images.has(file)) {
+      let img; try { img = decodePNG(readFileSync(file)); } catch (e) { img = { err: e.message }; }
+      if (drop && !img.err && img.form !== "8-bit indexed") img = { err: img.form + " (--drop takes 8-bit indexed only)", form: img.form };
+      images.set(file, img);
+    }
+    return images.get(file); };
   for (const f of files) {
     const dir = path.dirname(f); let man;
     try { man = JSON.parse(readFileSync(f, "utf8")); } catch (e) { log("REFUSED manifest " + f + ": " + e.message); refused++; continue; }
@@ -152,6 +159,8 @@ export function check(files, log = console.log) {
     }
     if (err.length) { refused++; log("  REFUSED " + name + ": " + err.join("; ")); } else log("  ok " + name + " " + w + "×" + h);
   }
+  log("sheets" + (drop ? " (--drop: 8-bit indexed only)" : "") + ":");
+  for (const [file, img] of images) log("  " + (img.err ? "REFUSED " : "") + path.relative(process.cwd(), file) + ": " + (img.err ? img.err : img.form + " " + img.w + "×" + img.h));
   const cat = catalogue(accepted), missing = coreMissing(cat), blocked = noStandIn(cat);
   log("catalogue (" + accepted.length + " accepted of " + merged.size + "):");
   const groups = new Map(); for (const [k, n] of keyCounts(cat)) { const g = k.split(/[.[]/)[0]; groups.set(g, (groups.get(g) || []).concat(k + " " + n)); }
@@ -164,8 +173,8 @@ export function check(files, log = console.log) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const files = process.argv.slice(2);
-  if (!files.length) { console.error("usage: node prototypes/exploration/tools/atlas-check.mjs <meadow.json> [more.json ...]"); process.exit(2); }
-  const r = check(files);
+  const args = process.argv.slice(2), drop = args.includes("--drop"), files = args.filter(a => a !== "--drop");
+  if (!files.length) { console.error("usage: node prototypes/exploration/tools/atlas-check.mjs [--drop] <meadow.json> [more.json ...]"); process.exit(2); }
+  const r = check(files, console.log, { drop });
   process.exit(r.refused || r.missing.length ? 1 : 0);
 }

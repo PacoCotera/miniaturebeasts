@@ -7,7 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import { deflateSync } from "node:zlib";
 import { check, decodePNG, pageRGB } from "../tools/atlas-check.mjs";
-import { decodeExact, QUADS, SHORE_STATES } from "../src/atlas.mjs";
+import { decodeExact, QUADS, SHORE_STATES, LIP_STATES } from "../src/atlas.mjs";
 
 const CRC = Array.from({ length: 256 }, (_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c >>> 0; });
 const crc = b => { let c = 0xffffffff; for (const x of b) c = CRC[(c ^ x) & 255] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; };
@@ -58,7 +58,7 @@ test("a complete core set in the page's colours passes; the statuses are counted
   const r = run(CORE.map((p, i) => i === 0 ? Object.assign({}, p, { status: "signed" }) : p));
   assert.equal(r.refused, 0, r.out); assert.deepEqual(r.missing, []); assert.match(r.out, /^PASS$/m);
   assert.match(r.out, /statuses: 43 candidate, 1 signed/); assert.match(r.out, /lawn 3/); assert.match(r.out, /water\.se\.inner 2/);
-  assert.match(r.out, /blocking kinds with no stand-in: FACE, SIDE, LIP, ROCK, CLIFF \(generator 1\)/, "no face.w1 or material.rock: nothing stands in");
+  assert.match(r.out, /blocking kinds with no stand-in: LIP, FACE, SIDE, ROCK \(/, "no face.w1 or material.rock: nothing stands in");
   const withStandIn = run(CORE.concat(piece("t/face/w1", { kind: "face", cells: [1, 2] }), piece("t/rock", { kind: "material", set: "rock" })));
   assert.match(withStandIn.out, /blocking kinds with no stand-in: none \(stand-in: face\.w1 1, material\.rock 1\)/);
 });
@@ -77,5 +77,42 @@ test("refusals: off-palette, partial alpha, rect outside the sheet, missing fiel
   assert.match(r.out, /REFUSED x\/nooffset: missing field offset/); assert.match(r.out, /REFUSED x\/nostatus: missing field status/);
   assert.match(r.out, /REFUSED x\/badstatus: status "draft" \(candidate or signed\)/); assert.match(r.out, /REFUSED x\/gama: sheet g\.png: carries gAMA/);
   const short = run(CORE.filter(p => p.name !== "t/water/ne-outer-f2" && p.name !== "t/lawn/2"));
-  assert.deepEqual(short.missing, ["lawn (2 of 3)", "water.ne.outer (1 of 2 frames)"]); assert.match(short.out, /^FAIL: 0 refused, 2 core keys missing$/m);
+  assert.deepEqual(short.missing, ["lawn (2 of 3)", "water.ne.outer (frame 2 missing)"]); assert.match(short.out, /^FAIL: 0 refused, 2 core keys missing$/m);
+});
+
+test("water is complete with frames 1 and 2 exactly: other frame numbers are not water", () => {
+  const swap = (from, to) => CORE.map(p => p.name === "t/water/sw-inner-f" + from ? Object.assign({}, p, { frame: to }) : p);
+  assert.deepEqual(run(swap(2, 3)).missing, ["water.sw.inner (frame 2 missing)"], "frames 1 and 3");
+  const zeroOne = CORE.map(p => p.kind === "shore" && p.quad === "nw" && p.state === "fill" ? Object.assign({}, p, { frame: p.frame - 1 }) : p);
+  assert.deepEqual(run(zeroOne).missing, ["water.nw.fill (frame 2 missing)"], "frames 0 and 1: only frame 1 counts");
+  assert.deepEqual(run(CORE).missing, []);
+});
+test("no stand-in: a blocking kind incomplete (any lip quarter list, face.w1, either side's mid, a boulder of 48 × 48 or less) while face.w1 or material.rock is empty", () => {
+  const big = png(49, 49, new Array(49 * 49).fill(1), { plte: RGB.slice(0, 2) });
+  const LIPS = QUADS.flatMap(q => LIP_STATES.map(s => piece("t/lip/" + q + "-" + s, { kind: "lip", quad: q, state: s })));
+  const FULL = CORE.concat(LIPS, piece("t/face/w1", { kind: "face", cells: [1, 2] }), piece("t/side/e", { kind: "side", side: "e" }), piece("t/side/w", { kind: "side", side: "w" }),
+    piece("t/boulder", { kind: "prop", type: "boulder" }));
+  const files = { "s.png": SHEET(), "big.png": big }, at = r => r.out.match(/blocking kinds with no stand-in: (.*) \(stand-in/)[1];
+  assert.equal(at(run(FULL, files)), "none", "every kind complete: no stand-in needed, though material.rock is empty");
+  assert.equal(at(run(FULL.filter(p => p.name !== "t/lip/se-edgev0"), files)), "LIP", "one lip quarter list empty");
+  assert.equal(at(run(FULL.filter(p => p.name !== "t/side/w"), files)), "SIDE", "the west side's mid empty");
+  assert.equal(at(run(FULL.filter(p => p.name !== "t/face/w1").concat(piece("t/face/w3", { kind: "face", cells: [3, 2] })), files)), "FACE", "face.w3 alone: face.w1 is what the rest falls back to");
+  assert.equal(at(run(FULL.filter(p => p.name !== "t/boulder").concat(piece("t/boulder-big", { kind: "prop", type: "boulder", sheet: undefined, file: "big.png" })), files)), "ROCK", "only a 49 × 49 boulder");
+  const withRock = FULL.filter(p => p.name !== "t/lip/se-edgev0").concat(piece("t/rock", { kind: "material", set: "rock" }));
+  assert.equal(at(run(withRock, files)), "none", "an incomplete lip with the stand-in there");
+});
+test("--drop: every sheet's form is printed, and a sheet that is not 8-bit indexed fails; sRGB stays refused in both modes", () => {
+  const rgba = png(4, 2, RGB.slice(0, 8).flatMap(c => [...c, 255]), { ctype: 6 }), srgb = png(4, 2, [1, 1, 1, 1, 1, 1, 1, 1], { plte: RGB.slice(0, 2), extra: [["sRGB", Buffer.from([0])]] });
+  const pieces = CORE.concat(piece("x/rgba", { sheet: "r" })), files = { "s.png": SHEET(), "r.png": rgba }, sheets = { s: "s.png", r: "r.png" };
+  const loose = run(pieces, files, sheets); assert.equal(loose.refused, 0, loose.out);
+  assert.match(loose.out, /^ {2}\S*s\.png: 8-bit indexed 4×2$/m); assert.match(loose.out, /^ {2}\S*r\.png: 8-bit RGBA 4×2$/m);
+  const d = dir(); for (const [f, b] of Object.entries(files)) writeFileSync(path.join(d, f), b);
+  writeFileSync(path.join(d, "meadow.json"), JSON.stringify({ sheets, pieces }));
+  const q = quiet(), strict = check([path.join(d, "meadow.json")], q.log, { drop: true }), out = q.lines.join("\n");
+  assert.equal(strict.refused, 1, out); assert.match(out, /REFUSED x\/rgba: sheet r\.png: 8-bit RGBA \(--drop takes 8-bit indexed only\)/);
+  assert.match(out, /^ {2}REFUSED \S*r\.png: 8-bit RGBA \(--drop/m); assert.match(out, /^ {2}\S*s\.png: 8-bit indexed 4×2$/m);
+  for (const drop of [false, true]) {
+    const e = dir(); writeFileSync(path.join(e, "s.png"), srgb); writeFileSync(path.join(e, "m.json"), JSON.stringify({ sheets: { s: "s.png" }, pieces: [piece("x/srgb")] }));
+    const q2 = quiet(); assert.equal(check([path.join(e, "m.json")], q2.log, { drop }).refused, 1); assert.match(q2.lines.join("\n"), /REFUSED x\/srgb: sheet s\.png: carries sRGB/);
+  }
 });

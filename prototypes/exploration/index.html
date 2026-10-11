@@ -1646,17 +1646,20 @@ function probeDeep() {
   advance('patch', { noise: 'act' });
 }
 function dig() {
-  const ex = S.exp, live = curLive();
+  const ex = S.exp, live = curLive(), g = layout(ex.patch.key).feats.find(f => f.kind === 'g');
   if (live.pt) { live.pt.st = 'dig'; }
   // an elder digs in two actions
   if (ex.pt.elder && !ex.digProg) { ex.digProg = 1; fxMsg(ex.pt.name + ' is digging · slow but sure', 1); advance('patch', { noise: 'act' }); return; }
   ex.digProg = 0; ex.abUsed = 1;
+  FX.dig = { at: NOW, x: g.x, y: g.y };
   lockInput(950);
   S.opened[G.gate] = 1; S.pins = S.pins.filter(p => !(p.c === G.gate && p.k === 'burrow'));
   logEv(ex.pt.name + ' dug the burrow open');
   advance('patch', { noise: 'act' });
-  if (S.exp && S.exp.patch) { enterCave(); FX.dig = { at: NOW, x: S.exp.patch.x, y: S.exp.patch.y }; }   // the spray plays at the cave's mouth
+  ex.caveDue = 1; save(); setTimeout(digDone, 900);
 }
+// the dug burrow's entry, 900 ms after the press: held in the save (caveDue) so a reload or a press in that window still completes it
+function digDone() { const ex = S && S.exp; if (!ex || !ex.caveDue) return; delete ex.caveDue; FX.dig = null; if (ex.patch) enterCave(); }
 
 function patchTick(info) {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key];
@@ -4275,6 +4278,7 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
+  if (S && S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press
   if (RT.readOnly) return;   // a save from a newer page: input is ignored
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
@@ -4558,6 +4562,7 @@ function drawNewer() {
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(beaconDone, 0);   // reloaded mid-sweep: back beside the beacon
+if (ld === true && S.exp && S.exp.caveDue) setTimeout(digDone, 0);   // reloaded before the dug burrow's entry: into the cave
 // The side panel's two sections start collapsed on every load.
 for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.

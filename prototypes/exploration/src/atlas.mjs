@@ -46,7 +46,7 @@ export function catalogue(pieces) {
       case 'ground': ok = p.set === 'lawn' || p.set === 'sand' || p.set === 'deep' ? put(cat[p.set], p) : false; break;
       case 'material': ok = p.set === 'rock' && put(cat.material.rock, p); break;
       case 'decal': ok = (p.set === 'tall' || p.set === 'flowers') && put(cat.decal[p.set], p); break;
-      case 'shore': ok = p.set === 'water' && QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && Number.isInteger(p.frame) && put(water[p.quad][p.state], p); break;
+      case 'shore': ok = p.set === 'water' && QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && (p.frame === 1 || p.frame === 2) && put(water[p.quad][p.state], p); break;
       case 'lip': ok = p.set === 'shadow-n' ? put(lip.shadowN, p) : QUADS.includes(p.quad) && LIP_STATES.includes(p.state) && put(lip[p.quad][p.state], p); break;
       case 'face': ok = cellsAre(p, 3, 2) ? put(cat.face.w3, p) : cellsAre(p, 2, 2) ? put(cat.face.w2, p) : cellsAre(p, 1, 2) ? put(cat.face.w1, p) : false; break;
       case 'cap': ok = (p.side === 'w' || p.side === 'e') && put(cat.cap[p.side], p); break;
@@ -67,13 +67,15 @@ export function catalogue(pieces) {
   return cat;
 }
 
-// The core set: lawn with at least 3 pieces, sand, and water complete for both frames (every quarter in every shore state).
+// The core set: lawn with at least 3 pieces, sand, and water complete: frames 1 and 2 exactly in every quarter and shore state
+// (the page's fr 0 is frame 1, fr 1 frame 2; a shore piece with another frame number is not catalogued as water).
 // Without it the page draws places at 32 px. coreMissing names what is absent; coreSet is the page's test.
 export function coreMissing(cat) {
   const out = [];
   if (cat.lawn.length < 3) out.push('lawn (' + cat.lawn.length + ' of 3)');
   if (!cat.sand.length) out.push('sand');
-  for (const q of QUADS) for (const s of SHORE_STATES) { const n = new Set(cat.water[q][s].map(p => p.frame)).size; if (n < 2) out.push('water.' + q + '.' + s + ' (' + n + ' of 2 frames)'); }
+  for (const q of QUADS) for (const s of SHORE_STATES) { const no = [1, 2].filter(f => !cat.water[q][s].some(p => p.frame === f));
+    if (no.length) out.push('water.' + q + '.' + s + ' (frame' + (no.length > 1 ? 's ' : ' ') + no.join(' and ') + ' missing)'); }
   return out;
 }
 export function coreSet(cat) { return coreMissing(cat).length === 0; }
