@@ -7,8 +7,8 @@ straight runs waver by a 24-periodic offset that is 0 at the quarter's ends. The
   land side (the inset margin)   a sand bank, its outermost pixel a dark edge where it meets the lawn
   water side                     2 px foam (a continuous line, broken every 23 px), 1 px wet line, a shallow band to 9 px, then the body
 Two frames: frame 2 moves the foam along the edge (the foam animates; nothing else does).
-Macro outer corners (2 x 2 cells, radius RM) round a pond's lobes as b1's do; their straight ends join the edge quarters.
-Writes water/q-<quad>-<state>-f<n>.png, water/macro-<quad>-outer-f<n>.png, water/fill-body.png and water.json.
+Macro outer corners (2 x 2 cells, radius 60 or 42) round a pond's lobes as b1's do; their straight ends join the edge quarters.
+Writes water/q-<quad>-<state>-f<n>.png, water/macro-<quad>-outer-r<radius>-f<n>.png, water/fill-body.png and water.json.
 usage: python3 -I build-water-quarters.py PALETTE_JSON OUT_DIR"""
 import json, os, sys
 import numpy as np
@@ -19,7 +19,7 @@ near = lambda rgb: int(((PAL - np.array(rgb)) ** 2).sum(1).argmin())
 BODY, SHAL, FOAM, WET = near((29, 104, 136)), near((34, 121, 147)), near((255, 255, 255)), near((219, 238, 229))
 SAND, SAND2, EDGE = near((196, 170, 110)), near((166, 140, 90)), near((60, 48, 36))
 INSET, R_OUT, R_IN = 18, 26, 18
-WAVE = [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 0, 0, -1, -1, -1, -2, -2, -1, -1, 0, 0]   # slow: a step of at most 1 px per pixel, so the foam runs smooth
+WAVE = [0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0]   # one low 1 px swell per quarter: mirrored quarters can't zigzag
 
 def land_mask(state):
     """normalised quarter (corner of the cell at u=v=0, extended -16..39): True where it is land (the bank's side)"""
@@ -55,8 +55,8 @@ def quarter(quad, state, frame):
                 else: q[y, x] = BODY
     return q
 
-RM = 60                                                            # the macro corner's radius: b1's pond lobes turn on about 60-70 px
-def macro(quad, frame):
+RMS = (60, 42)                                                     # the macro corners' radii: b1's lobes turn on about 40-70 px
+def macro(quad, frame, RM):
     """a 2 x 2 cell outer corner (96 px), on the same bank and bands as the quarters, so its straight ends join edge quarters"""
     north = quad in ("nw", "ne"); west = quad in ("nw", "sw")
     U, V = np.meshgrid(np.arange(-16, 112), np.arange(-16, 112)); w = np.array(WAVE)
@@ -86,10 +86,13 @@ for quad in ("nw", "ne", "se", "sw"):
         for f in (1, 2):
             save(quarter(quad, st, f - 1), f"q-{quad}-{st}-f{f}")
             atlas.append({"name": f"meadow/shore/water-{quad}-{st}-f{f}", "file": f"q-{quad}-{st}-f{f}.png", "kind": "shore", "quad": quad, "state": st, "frame": f})
+for f_ in os.listdir(out):
+    if f_.startswith("macro-"): os.remove(os.path.join(out, f_))
 for quad in ("nw", "ne", "se", "sw"):
-    for f in (1, 2):
-        save(macro(quad, f - 1), f"macro-{quad}-outer-f{f}")
-        atlas.append({"name": f"meadow/shore/water-macro-{quad}-outer-f{f}", "file": f"macro-{quad}-outer-f{f}.png", "kind": "shore-macro", "cells": [2, 2], "quad": quad, "frame": f})
+    for rm in RMS:
+        for f in (1, 2):
+            nm = f"macro-{quad}-outer-r{rm}-f{f}"; save(macro(quad, f - 1, rm), nm)
+            atlas.append({"name": f"meadow/shore/water-{nm}", "file": nm + ".png", "kind": "shore-macro", "cells": [2, 2], "quad": quad, "radius": rm, "frame": f})
 save(np.full((48, 48), BODY, int), "fill-body"); atlas.append({"name": "meadow/band/fill-body", "file": "fill-body.png", "kind": "band", "cells": [1, 1]})
 json.dump({"biome": "meadow", "tile": 48, "quarter": 24, "tones": {"body": cols[BODY]["hex"], "shallow": cols[SHAL]["hex"]}, "pieces": atlas},
           open(os.path.join(out, "water.json"), "w"), indent=1)

@@ -1,4 +1,4 @@
-"""Test map 4 for the meadow tileset: b1's own layout, built from tiles only, beside b1 at the same size (864 x 1152).
+"""Test map 6 for the meadow tileset: b1's own layout, built from tiles only, beside b1 at the same size (864 x 1152).
 
 The layout is b1's, read off b1's materials (its plateaus, walls, pond, stream, stairs and bridge) and snapped to the 48 px cell
 grid that the pieces live on. b1 is a painting and is not consistent in scale: its upper steps are about 60 px, where one level is
@@ -13,7 +13,8 @@ Pieces used:
                 at seeded sites ~30 px apart, none alone
   plateau edges on north, west and east: a rounded outline, a lit rim, a dark line under it, blades over it, two flat shadow steps
   walls         tileset/walls: two cells per level (a two-level drop stacks two), runs packed from pieces 3, 2 and 1 wide, caps at
-                open ends; the plateau's rim hangs 6-12 px over the wall's top with a ragged lower edge and hanging blades; a foot
+                open ends; the plateau's turf hangs 6-26 px over the wall's top in lumps and lobes, with hanging blades; moss and
+                roots on the faces; a foot
                 piece on every cell of a run's bottom edge, and small boulders and ferns along it
   stairs        b1's stairs (one level 2 x 2 cells, two levels 2 x 4, each with its landing row): not yet cut pieces
   pond, stream  tileset/water: two flat tones, a continuous foam line with breaks, the wet line, a sand bank; a lobe's outer
@@ -72,7 +73,7 @@ HM = ["113333333333331ww0"] * 3 + ["111111112222221ww0"] * 4 + ["111111111111111
       "00wwwwwww00wwwwww0",
       "00wwwwwwwwwwwwwww0",
       "00wwwwwwwwwwwwwww0",
-      "00wwwwwwwwwwwwwww0",
+      "00wwwwwww00wwwwww0",
       "00wwwwwww00wwwwww0",
       "000000000000000000",
       "000000000000000000"]
@@ -98,7 +99,7 @@ for L_ in (1, 2, 3):
     pad_ = np.pad(m0, k_, mode="edge"); cs_ = pad_.cumsum(0).cumsum(1)
     bx = ((cs_[2 * k_:, 2 * k_:] - cs_[:-2 * k_, 2 * k_:] - cs_[2 * k_:, :-2 * k_] + cs_[:-2 * k_, :-2 * k_]) / (2 * k_) ** 2)[:HPX, :WPX]
     yy2, xx2 = np.mgrid[0:HPX, 0:WPX]
-    wob = .10 * np.sin(xx2 / 13.0 + L_) * np.cos(yy2 / 17.0) + .07 * np.sin((xx2 + 2 * yy2) / 9.0)
+    wob = .12 * np.sin(xx2 / 29.0 + L_) * np.cos(yy2 / 23.0) + .06 * np.sin((xx2 + yy2) / 41.0)      # slow: an outline that wanders, never a zigzag
     LVLM[L_] = bx > .5 + wob
 LV = np.zeros((HPX, WPX), int)
 for L_ in (1, 2, 3): LV[LVLM[L_]] = L_
@@ -141,6 +142,8 @@ for by in range(0, HPX, 96):
 rng0 = np.random.RandomState(1944)
 FACEPX = np.kron(FACE, np.ones((48, 48), bool)); WATPX = np.kron(WAT, np.ones((48, 48), bool))
 okp = ~grow(FACEPX | WATPX, 6)
+LIX = {t: k for k, t in enumerate(LRAMP)}
+def ls(i, k): return LRAMP[max(0, min(len(LRAMP) - 1, LIX[i] + k))] if i in LIX else gstep(i, k)
 def tuft(cy, cx):
     base = img[cy, cx]
     if mat[base] != "grass": return
@@ -149,8 +152,8 @@ def tuft(cy, cx):
         for k in range(hgt):
             y = cy - k; xx = x + (lean if k == hgt - 1 else 0)
             if not (0 <= y < HPX and 0 < xx < WPX - 1) or not okp[y, xx]: break
-            img[y, xx] = GS[2][base] if k == hgt - 1 else GS[-1][base]
-            if k < hgt - 1 and okp[y, xx + 1]: img[y, xx + 1] = GS[-2][base]
+            img[y, xx] = ls(base, 2) if k == hgt - 1 else ls(base, -1)                     # on b1's ramp: a lit tip, a body a step down
+            if k < hgt - 1 and okp[y, xx + 1]: img[y, xx + 1] = ls(base, -3)              # and a dark side
 for gy in range(0, HPX, 30):
     for gx in range(0, WPX, 30):
         if rng0.rand() > .6: continue
@@ -229,6 +232,27 @@ for r in range(R):
         Yb = (r + 2) * 48                                         # the cast shadow on the cell under the face: one flat step, 8 px
         if Yb < HPX and not FACE[min(R - 1, r + 2), c0]:
             band = img[Yb:Yb + 8, c0 * 48:c * 48]; img[Yb:Yb + 8, c0 * 48:c * 48] = np.where(mat[band] == "grass", DARK[band], band)
+# moss and roots on the faces (b1's walls are about half rock): moss where a slow field runs high, most near the top, as the
+# lawn's dark green with a lit upper edge; roots hang from the top every 25-60 px, a dark wavering line 12-40 px long
+yy3, xx3 = np.mgrid[0:HPX, 0:WPX]
+fld = np.sin(xx3 / 7.0 + 1.3) * np.cos(yy3 / 5.0) + np.sin((xx3 + yy3) / 11.0) + .7 * np.cos((xx3 - 2 * yy3) / 17.0)
+ROOT = nearest((70, 46, 30)); rngm = np.random.RandomState(21)
+for r, c0, c1, stack, L_ in RUNS:
+    Y = r * 48; X0, X1 = c0 * 48, c1 * 48
+    sub = img[Y:Y + 96, X0:X1]; rock = mat[np.clip(sub, 0, None)] == "rock"
+    depth = np.arange(sub.shape[0])[:, None] / 96.0
+    moss = rock & (fld[Y:Y + 96, X0:X1] > 1.1 + 1.1 * depth)
+    sub[moss] = LRAMP[1]
+    litm = moss & ~np.roll(moss, 1, 0); sub[litm] = LRAMP[3]
+    x = X0 + rngm.randint(10, 30)
+    while x < X1 - 6:
+        xx_, ln = x, rngm.randint(12, 41)
+        for k in range(ln):
+            y = Y + 8 + k
+            if y >= min(HPX, Y + 92): break
+            if rngm.rand() < .2: xx_ += rngm.choice([-1, 1])
+            if X0 <= xx_ < X1 and mat[img[y, xx_]] == "rock": img[y, xx_] = ROOT
+        x += rngm.randint(25, 61)
 # the wall's feet: a foot piece (tileset/walls/foot-<n>) on every cell of every run's bottom edge, and props from the props sheet
 # along it (small boulders and ferns, seeded, ~one per 1.5 cells), so no wall ends on a ruled line
 FEET = [to_idx(Image.open(os.path.join(walls_d, p["file"]))) for p in WJ if p["kind"] == "foot"]
@@ -249,10 +273,10 @@ for r, c0, c1, stack, L_ in RUNS:
     if stack: continue
     Y = r * 48; up = gstep(BASE, LTONE[L_]); ph = rngr.rand() * 6
     xs = np.arange(c0 * 48, c1 * 48)
-    dd = np.clip(np.round(8 + 2.5 * np.sin(xs / 4.3 + ph) + 1.5 * np.sin(xs / 1.7 + 2 * ph) + rngr.randint(-1, 2, len(xs))), 6, 12).astype(int)
-    for x, d in zip(xs, dd):                                      # turf lumps: 6-12 px, a lit top only where a lump is deep
+    lobe = 16 * np.maximum(0, np.sin(xs / 31.0 + ph)) ** 3                 # turf lobes that come down over the face, as b1's do
+    dd = np.clip(np.round(8 + lobe + 2 * np.sin(xs / 5.3 + 2 * ph) + rngr.randint(-1, 2, len(xs))), 6, 26).astype(int)   # the top line steps and curves
+    for x, d in zip(xs, dd):                                      # turf lumps and lobes, 6-26 px: the lawn's own tone, a darker underside, a dark line
         img[Y:Y + d, x] = up; img[Y + d - 2:Y + d, x] = GS[-1][up]; img[Y + d, x] = OUTL
-        if d >= 10: img[Y + 2:Y + 4, x] = LIGHT1[up]
         if rngr.rand() < .18:
             for t in range(1, rngr.randint(2, 5)): img[Y + d + t, x] = GS[-1][up] if t < 3 else OUTL
 
@@ -265,7 +289,7 @@ def wstate(r, c, q):
     a_, b_, d_ = land(vy, 0), land(0, vx), land(vy, vx)
     return "outer" if a_ and b_ else ("edgeh" if a_ else ("edgev" if b_ else ("inner" if d_ else "fill")))
 # macro corners: a 2 x 2 block of water whose two outer sides are all land takes one 96 px corner piece in place of its quarters
-WM = {q: to_idx(Image.open(os.path.join(WD, f"macro-{q}-outer-f1.png"))) for q in ("nw", "ne", "se", "sw")}
+WM = {(q, rm): to_idx(Image.open(os.path.join(WD, f"macro-{q}-outer-r{rm}-f1.png"))) for q in ("nw", "ne", "se", "sw") for rm in (60, 42)}
 isw = lambda r, c: not (0 <= r < R and 0 <= c < Cn) or WAT[r, c]
 MAC = []; inmac = set()
 for r in range(R - 1):
@@ -276,7 +300,7 @@ for r in range(R - 1):
             if all(not isw(ro, c + b) for b in (0, 1)) and all(not isw(r + a, co) for a in (0, 1)) and not isw(ro, co):
                 MAC.append((r, c, q)); inmac |= {(r + a, c + b) for a in (0, 1) for b in (0, 1)}; break
 for r, c, q in MAC:
-    pm = WM[q]; Y, X = r * 48, c * 48; img[Y:Y + 96, X:X + 96] = np.where(pm >= 0, pm, img[Y:Y + 96, X:X + 96])
+    pm = WM[(q, (60, 42)[(r * 7 + c * 3) % 2])]; Y, X = r * 48, c * 48; img[Y:Y + 96, X:X + 96] = np.where(pm >= 0, pm, img[Y:Y + 96, X:X + 96])
 for r in range(R):
     for c in range(Cn):
         if not WAT[r, c] or (r, c) in inmac: continue
@@ -302,7 +326,10 @@ def put(name, fx, fy, shadow=True):
     y0, x0 = max(0, Y), max(0, X); y1, x1 = min(HPX, Y + ph), min(WPX, X + pw)
     q = p[y0 - Y:y1 - Y, x0 - X:x1 - X]; img[y0:y1, x0:x1] = np.where(q >= 0, q, img[y0:y1, x0:x1])
 for name, fx, fy in FOOTPROPS: put(name, fx, fy)
-put("bridge-1", 471, 1036, shadow=False)
+land = B1[1028:1078, 410:530]; land = np.where(np.isin(mat[land], ["earth", "wood"]) | ((mat[land] == "core") & (lum[land] < 160) & (lum[land] > 60)), land, -1)
+PROP["landing-b1"] = land; PROP["landing-b1-n"] = np.flipud(land)
+put("landing-b1-n", 471, 800, shadow=False); put("landing-b1", 471, 1078, shadow=False)
+put("bridge-1", 471, 1062, shadow=False)
 put("island-b1", 245, 955, shadow=False)
 for name, fx, fy in [("boulder-4", 70, 372), ("bush-1", 45, 660), ("boulder-1", 22, 682), ("fern-1", 160, 640), ("fern-3", 225, 640),
                      ("bush-2", 445, 625), ("boulder-3", 495, 668), ("fern-2", 520, 462), ("boulder-3", 470, 470), ("boulder-1", 545, 470),

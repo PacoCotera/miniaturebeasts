@@ -328,91 +328,195 @@
    "frame": 2
   },
   {
-   "name": "meadow/shore/water-macro-nw-outer-f1",
-   "file": "macro-nw-outer-f1.png",
+   "name": "meadow/shore/water-macro-nw-outer-r60-f1",
+   "file": "macro-nw-outer-r60-f1.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "nw",
+   "radius": 60,
    "frame": 1
   },
   {
-   "name": "meadow/shore/water-macro-nw-outer-f2",
-   "file": "macro-nw-outer-f2.png",
+   "name": "meadow/shore/water-macro-nw-outer-r60-f2",
+   "file": "macro-nw-outer-r60-f2.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "nw",
+   "radius": 60,
    "frame": 2
   },
   {
-   "name": "meadow/shore/water-macro-ne-outer-f1",
-   "file": "macro-ne-outer-f1.png",
+   "name": "meadow/shore/water-macro-nw-outer-r42-f1",
+   "file": "macro-nw-outer-r42-f1.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "nw",
+   "radius": 42,
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-macro-nw-outer-r42-f2",
+   "file": "macro-nw-outer-r42-f2.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "nw",
+   "radius": 42,
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-macro-ne-outer-r60-f1",
+   "file": "macro-ne-outer-r60-f1.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "ne",
+   "radius": 60,
    "frame": 1
   },
   {
-   "name": "meadow/shore/water-macro-ne-outer-f2",
-   "file": "macro-ne-outer-f2.png",
+   "name": "meadow/shore/water-macro-ne-outer-r60-f2",
+   "file": "macro-ne-outer-r60-f2.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "ne",
+   "radius": 60,
    "frame": 2
   },
   {
-   "name": "meadow/shore/water-macro-se-outer-f1",
-   "file": "macro-se-outer-f1.png",
+   "name": "meadow/shore/water-macro-ne-outer-r42-f1",
+   "file": "macro-ne-outer-r42-f1.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "ne",
+   "radius": 42,
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-macro-ne-outer-r42-f2",
+   "file": "macro-ne-outer-r42-f2.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "ne",
+   "radius": 42,
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-macro-se-outer-r60-f1",
+   "file": "macro-se-outer-r60-f1.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "se",
+   "radius": 60,
    "frame": 1
   },
   {
-   "name": "meadow/shore/water-macro-se-outer-f2",
-   "file": "macro-se-outer-f2.png",
+   "name": "meadow/shore/water-macro-se-outer-r60-f2",
+   "file": "macro-se-outer-r60-f2.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "se",
+   "radius": 60,
    "frame": 2
   },
   {
-   "name": "meadow/shore/water-macro-sw-outer-f1",
-   "file": "macro-sw-outer-f1.png",
+   "name": "meadow/shore/water-macro-se-outer-r42-f1",
+   "file": "macro-se-outer-r42-f1.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
-   "quad": "sw",
+   "quad": "se",
+   "radius": 42,
    "frame": 1
   },
   {
-   "name": "meadow/shore/water-macro-sw-outer-f2",
-   "file": "macro-sw-outer-f2.png",
+   "name": "meadow/shore/water-macro-se-outer-r42-f2",
+   "file": "macro-se-outer-r42-f2.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "se",
+   "radius": 42,
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r60-f1",
+   "file": "macro-sw-outer-r60-f1.png",
    "kind": "shore-macro",
    "cells": [
     2,
     2
    ],
    "quad": "sw",
+   "radius": 60,
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r60-f2",
+   "file": "macro-sw-outer-r60-f2.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 60,
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r42-f1",
+   "file": "macro-sw-outer-r42-f1.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 42,
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-macro-sw-outer-r42-f2",
+   "file": "macro-sw-outer-r42-f2.png",
+   "kind": "shore-macro",
+   "cells": [
+    2,
+    2
+   ],
+   "quad": "sw",
+   "radius": 42,
    "frame": 2
   },
   {
