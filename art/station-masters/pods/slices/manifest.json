@@ -10082,8 +10082,8 @@
   "made": "Home's Cargo bay, shut (away, no sitting crate): the same plate, frame and screws as home-bay-open-176x72, registered pixel for pixel, a sage roller shutter over the recess (slats every 5 px, the light from the top left) with a sand pull at x 78-98 (pass 137)",
   "sha256": "70a31efda54232c7245704cb96bfb48b1c18dea95864d15b1ad6e4fec3c5fa56",
   "status": "signed",
-  "signed_in": "art director, hand recut (pass 137)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 52.7, mean R-B 16.1, 2.3 percent above L* 70; registers with the open bay outside the recess",
+  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
+  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 52.7, mean R-B 16.1, 2.3 percent above L* 70; registers with the open bay outside the recess",
   "replaces": "home-bay-shut-176x72 sha256 9564c9284b84 (art director, Home column verdict (1f7d4a83)): Home's section column: bay shut, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (n"
  },
  "home-bay-open-176x72": {
@@ -10096,8 +10096,8 @@
   "made": "Home's Cargo bay, open and empty: the module's bay ground at its region (home.json cargo.bay, screen 800,56,176,72), no case: a sage plate with two screws, a grey metal framed recess (3,4)-(173,60), the warm dim back wall, two metal posts at x 54 and 118 between the places, a sage moulded floor (y 45-57) with three shallow places under the crate rects (x 0, 64, 128, 48x40, feet on y 56); the plate plain under the crates for the sitting lamps (18+64k, 60) and behind the waiting mark (76, 24) (pass 137)",
   "sha256": "5000a012065260677d54b10ae3be1b33efba927d48b4638afa4df8a92c9742bf",
   "status": "signed",
-  "signed_in": "art director, hand recut (pass 137)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 37.4, mean R-B 15.2, 1.8 percent above L* 70; the column's sibling of the chamber, the walk and sitting crates stand on its floor line",
+  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
+  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 37.4, mean R-B 15.2, 1.8 percent above L* 70; the column's sibling of the chamber, the walk and sitting crates stand on its floor line",
   "replaces": "home-bay-open-176x72 sha256 b3c0a5d1e26b (art director, Home column verdict (1f7d4a83)): Home's section column: bay open, cut from one Pro sheet by keying the flat slate ground, trimmed and scaled uniformly (n"
  },
  "home-well-32x32": {
@@ -10906,8 +10906,8 @@
   "made": "the sitting Cargo crate at Home's crate size (home.json cargo.sittingCrates asset, sitting.json): the signed crate-sitting-256x176 reduced uniformly (scale 0.1917, never enlarged) to 46x29, 1 px clear at each side, the feet on the box's bottom row as home-crate-48x40; nothing retouched: the 48x32 brass plate reduces to a 10x7 mark that reads at 1x; replaces crate-sitting-80x56 for Home (pass 137)",
   "sha256": "e9af94a27c29680e4b63be600a9e923169a6706e6171ba98f78bfa23aa1c25c9",
   "status": "signed",
-  "signed_in": "art director, hand recut (pass 137)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 49.7, mean R-B 14.3, 3.2 percent above L* 70; the 256 crate reduced, the plate a 10x7 brass mark; inside the crate band (L* 48.0 +-4, mean R-B 13.5 +-8)"
+  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
+  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 49.7, mean R-B 14.3, 3.2 percent above L* 70; the 256 crate reduced, the plate a 10x7 brass mark; inside the crate band (L* 48.0 +-4, mean R-B 13.5 +-8)"
  },
  "home-crate-48x40": {
   "size": [
@@ -10919,8 +10919,8 @@
   "made": "Home's walk crate, the bay's sealed crate (home.json cargo.cratePicture): the signed crate-sealed-256x176 reduced uniformly (scale 0.1917, never enlarged) to 46x29, 1 px clear at each side, the feet on row 39, as crate-sitting-48x40; the orange seal tag kept, nothing retouched (pass 138)",
   "sha256": "a896513a48c395d956fb3f9a89a0475fdcf5649b54f911ce12ada4550ffea053",
   "status": "signed",
-  "signed_in": "art director, hand recut (pass 138)",
-  "status_note": "signed (art director) at 1x, opaque pixels: L* 50.7, mean R-B 14.8, 3.3 percent above L* 70; one object with the sitting crate and Cargo's crates, beside the open bay (pass 137)",
+  "signed_in": "art director at 1x, 10-11 14:37 (the reviewer's passes 137-138 were advice)",
+  "status_note": "measured at 1x by the Station lead's reviewer, opaque pixels: L* 50.7, mean R-B 14.8, 3.3 percent above L* 70; one object with the sitting crate and Cargo's crates, beside the open bay (pass 137)",
   "replaces": "home-crate-48x40 sha256 87d9a930ffd6 on main (art/station-masters/home-hand/slices, #116, signed): a walk crate typed by hand (source/home_marks.py), flat pixel work that read as another hand beside the painted bay and crates"
  },
  "trait-S01-crown-bare-head-144x176": {
