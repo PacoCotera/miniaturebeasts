@@ -3851,5 +3851,73 @@
    "thoughtsTokenCount": 266,
    "totalTokenCount": 2093
   }
+ },
+ {
+  "tag": "mibi-adult-S09-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181992,
+  "mxn": 3.6398,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:43:49Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 816,
+   "candidatesTokenCount": 1298,
+   "thoughtsTokenCount": 205,
+   "totalTokenCount": 2319
+  }
+ },
+ {
+  "tag": "mibi-adult-S13-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182076,
+  "mxn": 3.6415,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:44:13Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 798,
+   "candidatesTokenCount": 1313,
+   "thoughtsTokenCount": 191,
+   "totalTokenCount": 2302
+  }
+ },
+ {
+  "tag": "mibi-adult-S16-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.181968,
+  "mxn": 3.6394,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:44:31Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 804,
+   "candidatesTokenCount": 1319,
+   "thoughtsTokenCount": 184,
+   "totalTokenCount": 2307
+  }
+ },
+ {
+  "tag": "mibi-adult-S16-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.194626,
+  "mxn": 3.8925,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:45:08Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 833,
+   "candidatesTokenCount": 1339,
+   "thoughtsTokenCount": 269,
+   "totalTokenCount": 2441
+  }
  }
 ]

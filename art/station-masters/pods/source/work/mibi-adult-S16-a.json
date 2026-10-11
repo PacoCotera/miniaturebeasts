@@ -1,0 +1,20 @@
+[
+ {
+  "name": "mibi-adult-S16-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "1:1",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/juvenile/guides/adult-rig-S16-304x312.png",
+    "The adult of this species (project-owned rig render): its body plan, proportions and colours only, a crude 3D blockout to be painted over: a wisp of lightning: a pale lavender tall slim body with a round head on a thin neck, floating, with three pointed fins below."
+   ],
+   [
+    "art/station-masters/pods/slices/mibi-halo-S16-128x160-clear.png",
+    "The species' signed silhouette (project-owned): the adult's outline."
+   ]
+  ],
+  "prompt": "Paint the ADULT of the creature in the references, keeping its body plan, proportions and colours exactly (a wisp of lightning: a pale lavender tall slim body with a round head on a thin neck, floating, with three pointed fins below). This is the species' BARE BASE picture: Its skin carries the species' small soft pale spots, painted into the skin; it floats just above its shadow. Matte painterly rendering like a children's book, the same family as a soft hand-painted storybook creature: smooth painted forms, gentle shading, light from the top left, a soft flat contact shadow beneath it. Three-quarter view from the front left, facing the viewer, calm, standing at rest. One creature, centred, large, on a plain flat solid magenta (#FF00FF) background with nothing else. No outline glow, no text, no ground, no props, no people. Never childish: a grown animal, not a baby."
+ }
+]
