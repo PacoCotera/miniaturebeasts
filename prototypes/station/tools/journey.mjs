@@ -669,33 +669,6 @@ expect(stored.st.schema === 3 && stored.st.tray.length === (await st()).tray.len
 await page.evaluate(() => { localStorage.removeItem("mb-save-v8"); });
 
 await assertFace("the journey");
-{ stepOf("library-spread-found");
-  await page.evaluate(() => { const S = window.__st, st = S.ST; st.knownIds = ["S01", "S03", "S09"]; st.metIds = ["S04"]; S.fillGuide("S03", 0.55); S.fillGuide("S09", 1); S.UI.home.f = "room"; S.UI.lib.f = "spread"; S.UI.lib.i = 0; S.goto("home"); }); await page.waitForTimeout(400);
-  let r = await lpress("library", 500);
-  expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S01", "library-spread: the Library key opens the spread, the ring on S01: " + JSON.stringify([r.u.screen, r.ring]));
-  r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S03", "library-spread: ▶ walks the frames in order: " + r.ring);
-  r = await lpress("down", 250); expect(r.ring === "frame.S07", "library-spread: ▼ is the frame below: " + r.ring);
-  r = await lpress("up", 250); expect(r.ring === "frame.S03", "library-spread: ▲ is the frame above: " + r.ring);
-  r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("left", 250); expect(r.ring === "frame.S01", "library-spread: ◀ stops at the page's edge: " + r.ring);
-  r = await lpress("right", 250); expect(r.ring === "frame.S04", "library-spread: ▶ again, S04: " + r.ring);
-  r = await lpress("right", 250); expect(r.ring === "frame.S09", "library-spread: ▶ from the last frame of the left page is the first of the right: " + r.ring);
-  r = await lpress("left", 250); r = await lpress("back", 300); r = await lpress("library", 400);
-  await page.evaluate(() => { window.__st.UI.lib.i = 3; }); await page.waitForTimeout(300);
-  { const p = await props(); expect(p.focus.cur === "frame.S04" && !p.frame.line.ok && /Hiljan/.test(JSON.stringify(p.frame.line) + JSON.stringify(p.regions.leftPage.items[3])), "library-spread: a met frame (S04): the ring on it, no ✓ cap: " + JSON.stringify([p.focus.cur, p.frame.line])); }
-  r = await lpress("confirm", 300); expect(r.u.screen === "library" && r.p.state === "spread" && /\S/.test(r.p.frame?.line?.subject ?? "") === true && !!(await page.evaluate(() => window.__st.msg)), "library-spread: ✓ on a met frame shows its message plate and nothing opens: " + JSON.stringify([r.u.screen, r.p.state]));
-  await page.evaluate(() => { window.__st.UI.lib.i = 4; }); await page.waitForTimeout(300);
-  r = await lpress("confirm", 300); expect(r.u.screen === "library" && r.p.state === "spread" && !r.p.frame.line.ok && !!(await page.evaluate(() => window.__st.msg)), "library-spread: ✓ on an unmet frame shows its message plate, no ✓ cap: " + JSON.stringify([r.u.screen, r.p.frame.line]));
-  await page.evaluate(() => { window.__st.UI.lib.i = 2; }); await page.waitForTimeout(300);
-  { const p = await props(); expect(p.focus.cur === "frame.S03" && p.frame.line.ok === "Open its Book", "library-spread: a found frame offers ✓ Open its Book: " + JSON.stringify(p.frame.line)); }
-  r = await lpress("confirm", 500); expect(r.u.screen === "library" && r.p.state === "notBuilt" && r.p.frame.top.title === "Library" && r.p.frame.line.back === "Library", "library-spread: ✓ on a found frame is the Book, not built yet, titled Library, ← Library: " + JSON.stringify([r.u.screen, r.p.state, r.p.frame?.top?.title, r.p.frame?.line?.back]));
-  await frameShot("page-library-book", true);
-  r = await lpress("back", 500); expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S03", "library-spread: ← from the Book is the spread with the ring on that species: " + JSON.stringify([r.u.screen, r.p.state, r.ring]));
-  await frameShot("page-library-spread", true);
-  r = await lpress("back", 500); expect(r.u.screen === "home" && r.u.home === "library", "library-spread: ← on the spread is Home with the ring on the Library module: " + JSON.stringify([r.u.screen, r.u.home])); }
-{ const file = path.resolve(here, "../../face/golden/journey-library.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("library-"))), json = JSON.stringify({ _note: "The Library spread, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
-  if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
-  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-library.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
-  console.log(`library steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 await page.goto(`http://127.0.0.1:${port}/sandbox/station/?test`, { waitUntil: "load" });
 await page.evaluate(() => window.__st.ready);
@@ -739,6 +712,33 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   await loop("back", "← is the Vivarium's whole", () => window.__st.UI.screen === "vivarium");
   await loop("back", "← from the whole is Home", () => window.__st.UI.screen === "home");
   { const u = await ui(); expect(u.screen === "home" && u.home === "vivarium", "fresh-loop: the loop ends on Home with the ring on the Vivarium: " + JSON.stringify([u.screen, u.home])); } }
+{ stepOf("library-spread-found");
+  await page.evaluate(() => { const S = window.__st, st = S.ST; st.knownIds = ["S01", "S03", "S09"]; st.metIds = ["S04"]; S.fillGuide("S03", 0.55); S.fillGuide("S09", 1); S.UI.home.f = "room"; S.UI.lib.f = "spread"; S.UI.lib.i = 0; S.goto("home"); }); await page.waitForTimeout(400);
+  let r = await lpress("library", 500);
+  expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S01", "library-spread: the Library key opens the spread, the ring on S01: " + JSON.stringify([r.u.screen, r.ring]));
+  r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S03", "library-spread: ▶ walks the frames in order: " + r.ring);
+  r = await lpress("down", 250); expect(r.ring === "frame.S07", "library-spread: ▼ is the frame below: " + r.ring);
+  r = await lpress("up", 250); expect(r.ring === "frame.S03", "library-spread: ▲ is the frame above: " + r.ring);
+  r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("left", 250); expect(r.ring === "frame.S01", "library-spread: ◀ stops at the page's edge: " + r.ring);
+  r = await lpress("right", 250); expect(r.ring === "frame.S04", "library-spread: ▶ again, S04: " + r.ring);
+  r = await lpress("right", 250); expect(r.ring === "frame.S09", "library-spread: ▶ from the last frame of the left page is the first of the right: " + r.ring);
+  r = await lpress("left", 250); r = await lpress("back", 300); r = await lpress("library", 400);
+  await page.evaluate(() => { window.__st.UI.lib.i = 3; }); await page.waitForTimeout(300);
+  { const p = await props(); expect(p.focus.cur === "frame.S04" && !p.frame.line.ok && /Hiljan/.test(JSON.stringify(p.frame.line) + JSON.stringify(p.regions.leftPage.items[3])), "library-spread: a met frame (S04): the ring on it, no ✓ cap: " + JSON.stringify([p.focus.cur, p.frame.line])); }
+  r = await lpress("confirm", 300); expect(r.u.screen === "library" && r.p.state === "spread" && /\S/.test(r.p.frame?.line?.subject ?? "") === true && !!(await page.evaluate(() => window.__st.msg)), "library-spread: ✓ on a met frame shows its message plate and nothing opens: " + JSON.stringify([r.u.screen, r.p.state]));
+  await page.evaluate(() => { window.__st.UI.lib.i = 4; }); await page.waitForTimeout(300);
+  r = await lpress("confirm", 300); expect(r.u.screen === "library" && r.p.state === "spread" && !r.p.frame.line.ok && !!(await page.evaluate(() => window.__st.msg)), "library-spread: ✓ on an unmet frame shows its message plate, no ✓ cap: " + JSON.stringify([r.u.screen, r.p.frame.line]));
+  await page.evaluate(() => { window.__st.UI.lib.i = 2; }); await page.waitForTimeout(300);
+  { const p = await props(); expect(p.focus.cur === "frame.S03" && p.frame.line.ok === "Open its Book", "library-spread: a found frame offers ✓ Open its Book: " + JSON.stringify(p.frame.line)); }
+  r = await lpress("confirm", 500); expect(r.u.screen === "library" && r.p.state === "notBuilt" && r.p.frame.top.title === "Library" && r.p.frame.line.back === "Library", "library-spread: ✓ on a found frame is the Book, not built yet, titled Library, ← Library: " + JSON.stringify([r.u.screen, r.p.state, r.p.frame?.top?.title, r.p.frame?.line?.back]));
+  await frameShot("page-library-book", true);
+  r = await lpress("back", 500); expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S03", "library-spread: ← from the Book is the spread with the ring on that species: " + JSON.stringify([r.u.screen, r.p.state, r.ring]));
+  await frameShot("page-library-spread", true);
+  r = await lpress("back", 500); expect(r.u.screen === "home" && r.u.home === "library", "library-spread: ← on the spread is Home with the ring on the Library module: " + JSON.stringify([r.u.screen, r.u.home])); }
+{ const file = path.resolve(here, "../../face/golden/journey-library.json"), steps = Object.fromEntries(Object.entries(trace).filter(([id]) => id.startsWith("library-"))), json = JSON.stringify({ _note: "The Library spread, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.", steps }, null, 1) + "\n";
+  if (process.env.JOURNEY_GOLDEN === "write") { mkdirSync(path.dirname(file), { recursive: true }); writeFileSync(file, json); console.log("wrote " + file); }
+  else if (!existsSync(file)) fail("no golden journey at " + file); else if (readFileSync(file, "utf8") !== json) { const want = JSON.parse(readFileSync(file, "utf8")).steps; for (const id of new Set([...Object.keys(want), ...Object.keys(steps)])) if (JSON.stringify(want[id]) !== JSON.stringify(steps[id])) { const a = want[id] ?? [], b = steps[id] ?? [], i = [...Array(Math.max(a.length, b.length)).keys()].find((k) => JSON.stringify(a[k]) !== JSON.stringify(b[k])); fail(`journey-library.json: step ${id} differs from the golden at action ${i} (golden ${a.length} actions, now ${b.length}): golden ${JSON.stringify(a[i])?.slice(0, 400)} · now ${JSON.stringify(b[i])?.slice(0, 400)}`); }; }
+  console.log(`library steps: ${Object.entries(steps).map(([id, t]) => id + " " + t.length).join(" · ")} actions recorded`); }
 checks.textApiCalls += await page.evaluate(() => window.__fillTextCalls);
 if (checks.textApiCalls !== 0) { errors.push("the page called the canvas text API " + checks.textApiCalls + " times"); console.error("FAIL text API calls " + checks.textApiCalls); }
 if (external.length) { errors.push("requests left the page's origin: " + external.join(", ")); console.error("FAIL external requests " + external.join(", ")); }
