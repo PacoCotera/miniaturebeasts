@@ -1689,13 +1689,14 @@ function dig() {
   if (ex.pt.elder && !ex.digProg) { ex.digProg = 1; fxMsg(ex.pt.name + ' is digging · slow but sure', 1); advance('patch', { noise: 'act' }); return; }
   ex.digProg = 0; ex.abUsed = 1;
   FX.dig = { at: NOW, x: g.x, y: g.y };
-  lockInput(950);
+  lockInput(DIG_MS + 50);
   S.opened[G.gate] = 1; S.pins = S.pins.filter(p => !(p.c === G.gate && p.k === 'burrow'));
   logEv(ex.pt.name + ' dug the burrow open');
   advance('patch', { noise: 'act' });
-  ex.caveDue = 1; save(); setTimeout(digDone, 900);
+  ex.caveDue = 1; save(); setTimeout(digDone, DIG_MS);
 }
-// the dug burrow's entry, 900 ms after the press: held in the save (caveDue) so a reload or a press in that window still completes it
+// the dug burrow's entry, DIG_MS after the press: held in the save (caveDue) so a reload in that window still completes it
+const DIG_MS = 900;
 function digDone() { const ex = S && S.exp; if (!ex || !ex.caveDue) return; delete ex.caveDue; FX.dig = null; if (ex.patch) enterCave(); }
 
 function patchTick(info) {
@@ -4323,11 +4324,11 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
-  if (S && S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press
   if (RT.readOnly) return;   // a save from a newer page: input is ignored
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored, as before)
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
