@@ -349,6 +349,22 @@ test("Expedition ended, docked: the bay lines say the Companion is in the Caddy"
   assert.ok(p.run("__t").includes("In the Caddy"), "an empty bay: In the Caddy alone");
 });
 
+test("bayLine(): the docked variant while docked, today's line undocked", () => {
+  const { p, st } = begin();
+  p.run("S.exp = null; S.phase = 'setup'; S.bay = [{ id: 'a', n: 1, pods: [] }]; save();");
+  assert.equal(p.run("isDocked()"), false);
+  assert.equal(p.run("bayLine()"), "1 crate sealed · dock to transfer", "undocked: unchanged");
+  p.run("S.bay.push({ id: 'b', n: 2, pods: [] });");
+  assert.equal(p.run("bayLine()"), "2 crates sealed · dock to transfer");
+  dockKey(st, p.sv()); p.writeSt(st); assert.equal(p.run("isDocked()"), true);
+  assert.equal(p.run("bayLine()"), p.run("DOCK_TEXT.bay(2)"), "docked: the dock freeze's own string");
+  assert.equal(p.run("bayLine()"), "2 crates sealed · ready for the Station");
+  p.run("S.bay = [S.bay[0]];");
+  assert.equal(p.run("bayLine()"), "1 crate sealed · ready for the Station");
+  p.run("S.bay = [];");
+  assert.equal(p.run("bayLine()"), "", "an empty bay: no line");
+});
+
 // ---- the game designer's ruling on hints while docked (QA D1) ----
 test("docked: no one-time hint shows or is spent; after Lift the first press shows the Call hint and spends it", () => {
   const CALL = "The teal CALL button pulses: it lifts the veil and finds things";

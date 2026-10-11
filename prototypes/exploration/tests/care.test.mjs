@@ -239,7 +239,7 @@ test("an expedition: an outing to every carried mibi, notches to the bonded part
   assert.deepEqual(plain(S.trips.at(-1)), { v: 1, n: 5, partner: 1, places: ["meadow"], storm: false, carried: [1, 2, 3] });
   dot.bonded = true; dot.bondCare = 0; S.exp = Object.assign(ex(6), { pt: { id: 1 }, cargo: { e: 1, d: 0, s: 0, pods: [] } }); ending(S, S.exp);
   assert.equal(dot.notches, 1, "the bonded partner"); assert.equal(moss.notches, 0);
-  assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0 }, "named on Head home as the outcome block's row, with no count");
+  assert.deepEqual(plain(S.report.notch), { id: 1, name: "Dot", sp: 0 }, "named on End expedition as the outcome block's row, with no count");
   assert.deepEqual(plain(S.report.lines), ["The world turned."], "never among the world lines");
   assert.deepEqual(plain(S.bay.at(-1).lines), ["The world turned."], "the crate keeps the world's lines only");
   moss.bonded = true; S.exp = Object.assign(ex(7), { pt: { id: 1 } }); ending(S, S.exp); assert.equal(moss.notches, 0, "a bonded mibi that is not the partner");
@@ -584,7 +584,7 @@ test("T5: C8 marks only the partner; a carried mibi that is not the partner gets
   for (const q of st.mibis.filter(q => q.id !== 1)) assert.ok(!q.marks || Object.values(q.marks).every(k => !k.steps), q.name + " gets no marks");
 });
 
-// ---- The care screens (companion-screens.md at 2c5044a: Mibis, the Lead card, released mibis, Head home's notch row) ----
+// ---- The care screens (companion-screens.md at 2c5044a: Mibis, the Lead card, released mibis, End expedition's notch row) ----
 test("setLead: a grown mibi with you, between expeditions only; nextLead cycles the grown ones with you after the partner, wrapping", () => {
   const S = save({ turn: 3, carried: [1, 2, 3] }), t = world(S), [dot, moss, fig, pip] = S.mibis;
   moss.born = 3;   // a juvenile with you
@@ -627,7 +627,7 @@ test("the active screen: a page gone goes to the page now at that index, or the 
   assert.equal(sh().id, 3); t.normalizeCare(S, new Set([3])); assert.equal(sh().id, 2, "the last page");
   S.ui.aId = 1; sh(); t.normalizeCare(S, new Set([1])); assert.equal(sh().id, 2, "the page now at index 0");
 });
-// Head home: the outcome block, the notch row, the crates and the world lines, as drawn (text and pictures recorded).
+// End expedition: the outcome block, the notch row, the crates and the world lines, as drawn (text and pictures recorded).
 function sealed(rep, lines, bay = 1) {
   const said = [], faces = [], crates = [], dots = [], noop = () => {};
   const ctx = vm.createContext({ console, S: { report: Object.assign({ n: 4, lines }, rep), bay: Array.from({ length: bay }, (_, i) => ({ id: "c" + i })) }, NOW: 0, FX: { transAt: 0 }, BAY: 3, TIER_NAME: ["", "starter", "early", "mid"],
@@ -671,7 +671,7 @@ test("End expedition: world lines draw only while their foot stays on or above r
   assert.deepEqual(d.world.map(q => q.y - 6), [380, 406], "the third (foot 489) is cut");
   for (const q of d.said.filter(q => q.x === 40)) assert.ok(q.y + 17 <= 476, "foot " + (q.y + 17));
 });
-test("Head home after a break: the pods line in the copywriter's words (19:03)", () => {
+test("End expedition after a break: the pods line in the copywriter's words (19:03)", () => {
   for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
     assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
 });
