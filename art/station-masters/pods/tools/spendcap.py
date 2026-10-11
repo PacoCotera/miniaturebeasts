@@ -9,6 +9,7 @@ until the lead gives the published ones."""
 import json, os, threading, datetime
 from zoneinfo import ZoneInfo
 CAP_MXN = 250.0; MXN_PER_USD = 20.0; WORST_CASE_USD = 0.24
+CAP_BY_DAY = {"2026-10-10": 500.0}     # owner, decisions.md 2026-10-10 20:05: "you can raise the cap for today another 250" (that day only)
 RATES = {"pro-image": {"input": 2.0, "output": 120.0, "thinking": 120.0},                       # USD per million tokens
          "flash-image": {"input": 2.0, "output": 120.0, "thinking": 120.0, "placeholder": True}}  # PLACEHOLDER until the published Nano Banana 2 rates are given
 _LOCK = threading.Lock()
@@ -23,7 +24,7 @@ def day_total(path, day=None):
     day = day or pacific_day(); return sum(float(r.get("mxn") or 0) for r in _rows(path) if r.get("pacific_day") == day)
 def precheck(path, worst_usd=WORST_CASE_USD, now=None):
     """May a request that could cost up to worst_usd be made? Returns (allowed, the day's running total in MXN)."""
-    total = day_total(path, pacific_day(now)); return total + worst_usd * MXN_PER_USD <= CAP_MXN + 1e-9, total
+    day = pacific_day(now); total = day_total(path, day); return total + worst_usd * MXN_PER_USD <= CAP_BY_DAY.get(day, CAP_MXN) + 1e-9, total
 def real_cost_usd(model, usage, http_status):
     """The real cost of one Gemini request from its usageMetadata (a dict with promptTokenCount, candidatesTokenCount, thoughtsTokenCount)."""
     if http_status != 200: return 0.0
