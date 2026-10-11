@@ -23,7 +23,7 @@ import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkFi
 
 export const OPAQUE = 110;                                 // alpha > 110 is opaque (the animator's measure for the topline)
 export const M5_LIMITS = { "304x312": { iou: 0.95, profile: 2 }, "104x112": { iou: 0.93, profile: 1 } };
-export const M5A = { column: 1.5, mean: 1 }, M6_MIN = 2, M7_MAX_MS = 5, M4_SLACK = 0.05, SECONDS = 10;
+export const M6_MIN = 2, M7_MAX_MS = 5, M4_SLACK = 0.05, SECONDS = 10;
 
 // The breathing cycle b0 → b1 → b2 → b1 (the animator's `breathPair`: holds b0, b1, b2, b1back in ms), shifted by phaseMs; [{ t0, t1, frame }] over 0..totalMs.
 export function breathSegments(holds, phaseMs, totalMs) {
@@ -333,12 +333,11 @@ export function runSet(set, opts = {}) {
     const prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;
     if (lm?.toplineProfile && headMask && (prof304 || scaled)) {
       const P = lm.toplineProfile, prof = prof304 ? P : { x: P.x.map((x) => mapping.tx0 + rha((x - mapping.bx0) * mapping.sx)), down: P.down.map((d) => d * mapping.sy), up: P.up.map((d) => d * mapping.sy) };
-      const colTol = prof304 ? M5A.column : Math.max(1, Math.ceil(M5A.column * mapping.sy)), meanTol = prof304 ? M5A.mean : Math.ceil(M5A.mean * mapping.sy * 2) / 2;   // scaled by sy, rounded up to 1 px and 0.5 px
+      // the one M5a tolerance is the animator's rules.M5aTolerance: 304 at its own, 104 and 144, and a figure scale below 0.30 (the nap); there is no fallback
+      const T = lm.rules?.M5aTolerance, small = !prof304 && Math.max(mapping.sx, mapping.sy) < 0.30, tol = !T ? null : prof304 ? T["304x312"] : small ? T["figure scale < 0.30 (the 96x88 nap)"] : T["104x112 and 144x152"];
       const p = profileFit(stand, warped[e], prof, e, headEdge), what = `${e} top edge vs the ${prof304 ? "measured" : "mapped"} profile, ${p.columns} columns x <= ${headEdge - 6}`, val = `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`;
-      const fb = info?.pic.M5aTolerance, small = !prof304 && Math.max(mapping.sx, mapping.sy) < 0.30;           // the animator's fallback below a figure scale of 0.30, used only if the standard tolerance misses
-      if (p.max <= colTol && p.mean <= meanTol) row(size, "M5a", what, val, `${colTol} / ${meanTol}`, "pass");
-      else if (fb && small) row(size, "M5a", what, val, `${colTol} / ${meanTol} missed; fallback ${fb.max} / ${fb.mean}`, p.max <= fb.max && p.mean <= fb.mean ? "pass (fallback tolerance)" : "FAIL");
-      else row(size, "M5a", what, val, `${colTol} / ${meanTol}`, "FAIL");
+      if (!tol) row(size, "M5a", what, val, "no rules.M5aTolerance for this size in the landmarks", "n/a");
+      else row(size, "M5a", what, val, `${tol.max} / ${tol.mean}`, p.max <= tol.max + 1e-9 && p.mean <= tol.mean + 1e-9 ? "pass" : "FAIL");
     } else row(size, "M5a", e, "no toplineProfile, head mask or --base-stand mapping", "", "n/a");
     if (painted[e]) {
       const j = iou(warped[e], painted[e]), pd = profileDelta(warped[e], painted[e]);
