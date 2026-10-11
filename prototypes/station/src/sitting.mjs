@@ -10,7 +10,7 @@
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
 import { frameOf, chapterLooks } from "./genome.mjs";
-import { mibiById, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
+import { mibiById, mergeCare, bayCrates, docked, logEv, plural, clamp, habitsOf, placesOf, frameFor, carriedIds, mibiStage, dockKey, guideAdd, DEFAULT_SETTINGS } from "./state.mjs";
 import { fieldGuide } from "./library.mjs";
 
 // What a mibi has done (state.mjs): habits watched, places been; re-exported here, where the sitting reads them.
@@ -124,6 +124,11 @@ export function dock(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const r = dockKey(st, sv, settings, now);
   if (r.ok && r.docked) r.welcome = checkWelcome(st, now, r.home || []);
   return r;
+}
+// The save read while docked (the other page wrote it, or the page loaded): the care that came home, and the welcome if a mibi came home from a walk.
+export function mergeHome(st, sv, now = Date.now()) {
+  const home = mergeCare(st, sv);
+  return { home, welcome: home.length ? checkWelcome(st, now, home) : null };
 }
 
 // --- the ceremony: pose, place, confirm ---------------------------------------------------------------------------------------

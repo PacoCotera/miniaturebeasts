@@ -107,6 +107,15 @@ test("the welcome sitting: at the first dock at which a mibi comes home from a w
   const rel = world(1); rel.mibis[0].released = true; assert.ok(T.checkWelcome(rel, T0, [rel.mibis[0].id]).early, "a released mibi does not count");
 });
 
+test("the welcome sitting: a walk home read while docked (the save changed, no Dock key) gives the welcome once; a held sitting makes it wait", () => {
+  const st = world(1), m = st.mibis[0];
+  assert.ok(T.dock(st, sv([{ id: m.id, outings: 0 }]), settings, T0).welcome.early);
+  const back = sv([{ id: m.id, outings: 1, habitsDone: ["calm"] }], 4, [{ v: 1, n: 1, partner: m.id, places: ["wood"], carried: [m.id] }]);
+  const r = T.mergeHome(st, back, T0 + 1); assert.deepEqual(r.home, [m.id]); assert.ok(r.welcome.ok); assert.equal(st.sitting.source, "welcome"); assert.ok(st.welcomeGiven);
+  const r2 = T.mergeHome(st, back, T0 + 2); assert.deepEqual(r2.home, []); assert.equal(r2.welcome, null);
+  const h = world(1); T.devGrantSitting(h); T.dock(h, sv([{ id: h.mibis[0].id }]), settings, T0); const w = T.mergeHome(h, sv([{ id: h.mibis[0].id, outings: 1 }]), T0 + 1).welcome; assert.ok(w.waits && h.welcomePending && !h.welcomeGiven);
+});
+
 test("the offer and its refusals: no sitting, a mibi that needs a walk, a pose it has not done, a place it has not been, one sitting each", () => {
   const st = world(2), [a, b] = st.mibis; walked(st, a);
   assert.match(T.beginSitting(st, a, "calm", "wood", settings, T0).msg, /no sitting held/); T.devGrantSitting(st, T0);

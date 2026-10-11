@@ -2,6 +2,7 @@
 // the developer settings, the focus state per screen (UI, never saved) and the presentation events
 // the renderer reads (FX). Screens import this; the rules live in state.mjs.
 import * as S from "./state.mjs";
+import * as T from "./sitting.mjs";
 import { clock } from "./pixels.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
@@ -39,8 +40,8 @@ function adopt(sv) {
   const migrated = sv.st.schema !== S.ST_SCHEMA;
   sv.st = S.normalize(S.migrate(sv.st, Date.now(), sv));
   G.sv = sv; G.st = sv.st;
-  if (S.docked(G.st)) S.mergeCare(G.st, G.sv);   // docked: the care the Companion earned since
-  if (migrated) save();
+  const home = S.docked(G.st) ? T.mergeHome(G.st, G.sv).home : [];   // docked: the care the Companion earned since, and the welcome
+  if (migrated || home.length) save();
 }
 export function load() {
   const o = readStored();
@@ -65,7 +66,7 @@ export function storageChanged() {
   if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; goScreen("home"); changed(); return; }
   if (cur.wid !== G.st.wid) { adopt(cur); goScreen("home"); save(); return; }
   const mine = G.st; G.sv = cur; G.sv.st = mine;
-  if (S.docked(mine)) S.mergeCare(mine, cur);   // docked: the care the Companion earned since
+  if (S.docked(mine) && T.mergeHome(mine, cur).home.length) { save(); return; }   // docked: the care and the welcome; save() calls changed()
   changed();
 }
 export function resetSave() {
