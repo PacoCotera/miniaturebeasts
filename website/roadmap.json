@@ -71,7 +71,7 @@
       "name": "Cloud",
       "oneLine": "Optional online extras on top of a kit that plays fully on its own.",
       "items": [
-        { "title": "A painted look for every mibi", "status": "building", "text": "The full path from growing a mibi to its picture landing runs on the sandbox with stand-in pictures while the painted style is tuned species by species.", "link": "design/proposals/art-pipeline.md" },
+        { "title": "Every mibi drawn true to its looks", "status": "building", "text": "Each mibi is drawn from painted layers on its species' poses, so it moves true to its own looks on both devices. A mibi gets a painting of its own when it sits for its portrait.", "link": "design/proposals/the-portrait.md" },
         { "title": "Wireless sync for the Companion", "status": "later", "text": "Your Companion could stay in step with the kit without docking.", "link": "design/architecture.md" },
         { "title": "A global mibi exchange", "status": "later", "text": "A place to meet and swap mibis with other players, always with the keeper's consent.", "link": "design/architecture.md" },
         { "title": "Lineage records and certificates", "status": "later", "text": "Lasting records of your families, with certificates you can print.", "link": "design/architecture.md" },
