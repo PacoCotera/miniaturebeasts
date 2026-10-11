@@ -116,7 +116,7 @@ test("the welcome sitting: a walk home read while docked (the save changed, no D
   const h = world(1); T.devGrantSitting(h); T.dock(h, sv([{ id: h.mibis[0].id }]), settings, T0); const w = T.mergeHome(h, sv([{ id: h.mibis[0].id, outings: 1 }]), T0 + 1).welcome; assert.ok(w.waits && h.welcomePending && !h.welcomeGiven);
 });
 
-test("the offer and its refusals: no sitting, a mibi that needs a walk, a pose it has not done, a place it has not been, one sitting each", () => {
+test("the offer and its refusals: no sitting, a mibi with no expedition yet, a pose it has not done, a place it has not been, one sitting each", () => {
   const st = world(2), [a, b] = st.mibis; walked(st, a);
   assert.match(T.beginSitting(st, a, "calm", "wood", settings, T0).msg, /no sitting held/); T.devGrantSitting(st, T0);
   assert.match(T.beginSitting(st, b, "calm", "meadow", settings, T0).msg, /no pose seen yet/, "no habit seen");
