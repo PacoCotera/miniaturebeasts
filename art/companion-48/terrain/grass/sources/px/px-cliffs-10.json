@@ -1,0 +1,24 @@
+{
+ "id": "px-cliffs-10",
+ "tool": "retro-diffusion",
+ "style": "rd_plus__topdown_map",
+ "size": "256x256",
+ "prompt": "top-down RPG pixel art landscape, grass plateaus and rocky boulder cliffs, crisp shading with highlights and dark borders, detailed stone, clean readable pixels, light from the top left",
+ "seed": 77,
+ "input_image": {
+  "file": "px-cliffs-10.png",
+  "sha256": "b1caba12f580ce49041de839b35b10dc9c46fc3c632aa63d916446a89229ec5c",
+  "strength": 0.45
+ },
+ "palette": "palette-ext-strip.png",
+ "time": "2026-10-11T01:28:08Z",
+ "task_id": "212bddbc-df77-4972-97cc-648e7b560cfb",
+ "result": {
+  "http": 200,
+  "cost_usd": 0.06,
+  "credit_cost": 4,
+  "remaining_balance": 40.3,
+  "file": "px-cliffs-10-rd.png",
+  "sha256": "566029c99a575ddf4513280a8f0704aac93b59ce8fd24c203936fe6988257d8d"
+ }
+}

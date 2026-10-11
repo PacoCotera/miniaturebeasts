@@ -1,0 +1,24 @@
+{
+ "id": "px-pond-00",
+ "tool": "retro-diffusion",
+ "style": "rd_plus__topdown_map",
+ "size": "256x256",
+ "prompt": "top-down RPG pixel art landscape, grass plateaus and rocky boulder cliffs, crisp shading with highlights and dark borders, detailed stone, clean readable pixels, light from the top left",
+ "seed": 77,
+ "input_image": {
+  "file": "px-pond-00.png",
+  "sha256": "f815e8cae62d17fbb1e181de6ca88e2b9108b631f7517c2f4c1a61cce3f7d9c3",
+  "strength": 0.45
+ },
+ "palette": "palette-ext-strip.png",
+ "time": "2026-10-11T01:28:49Z",
+ "task_id": "7a556247-3302-4dc3-9825-b7432093ef46",
+ "result": {
+  "http": 200,
+  "cost_usd": 0.06,
+  "credit_cost": 4,
+  "remaining_balance": 40.12,
+  "file": "px-pond-00-rd.png",
+  "sha256": "f9db0695732c42b2503d2c7e4858be259542c0e2726b62a02b8d79b321fce6a4"
+ }
+}

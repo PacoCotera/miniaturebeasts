@@ -1,7 +1,7 @@
 """One Retro Diffusion call for a terrain material tile, booked on the day ledger (the 250 MXN cap) before it is made.
 Dry run (check_cost, free) unless --run; the price check_cost returns is charged through spendcap.charge, which refuses a call
 that would pass the cap. Raw PNG and a sidecar (prompt, input hash, cost; no key material) kept in OUT_DIR.
-usage: python3 -I terrain-rd.py TAG OUT_DIR W H "prompt" --input IMG [--strength 0.5] [--seed N] [--style rd_tile__single_tile] [--run]
+usage: python3 -I terrain-rd.py TAG OUT_DIR W H "prompt" --input IMG [--strength 0.5] [--seed N] [--style rd_tile__single_tile] [--palette PNG] [--run]
 env: MB_SPEND = the day ledger (spend.json)"""
 import base64, hashlib, json, os, sys, time, urllib.request, urllib.error
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -10,6 +10,7 @@ PAL = os.path.join(HERE, "..", "palette", "palette.png"); API = "https://api.ret
 tag, out, w, h, prompt = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]), sys.argv[5]
 def opt(k, d=None): return sys.argv[sys.argv.index(k) + 1] if k in sys.argv else d
 inp, strength, seed, style, run = opt("--input"), float(opt("--strength", "0.5")), int(opt("--seed", "48")), opt("--style", "rd_tile__single_tile"), "--run" in sys.argv
+PAL = opt("--palette", PAL)                                  # the signed 48 by default; the extended proposal when given
 def b64(p): return base64.b64encode(open(p, "rb").read()).decode()
 def req(method, url, body=None):
     r = urllib.request.Request(url, data=json.dumps(body).encode() if body is not None else None, method=method,
@@ -22,7 +23,7 @@ payload = {"prompt": prompt, "width": w, "height": h, "num_images": 1, "prompt_s
 if inp: payload["input_image"] = b64(inp); payload["strength"] = strength
 side = {"id": tag, "tool": "retro-diffusion", "style": style, "size": f"{w}x{h}", "prompt": prompt, "seed": seed,
         "input_image": {"file": os.path.basename(inp), "sha256": hashlib.sha256(open(inp, "rb").read()).hexdigest(), "strength": strength} if inp else None,
-        "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+        "palette": os.path.basename(PAL), "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
 st, cc = req("POST", API, {**payload, "check_cost": True}); usd = float(cc.get("balance_cost") or cc.get("cost") or 0)
 print("check_cost", st, {k: v for k, v in cc.items() if k != "base64_images"})
 if not run: sys.exit(0)
