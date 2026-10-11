@@ -34,6 +34,21 @@ the Station the pod is identified and hatches; then the world turns once.
 - **Open map.** The player moves freely and chooses where to go; no route, no
   roads-only movement (**Decided**). Wide water and cliffs block the map
   (**Built**).
+- **Free browsing.** The pawn browses freely, cell to adjacent cell, wherever
+  the terrain lets it through: cliffs, rivers and gates decide, and no light
+  rule holds it back.
+- **Height and edges.** The land has three height levels, and neighbouring
+  cells differ by at most one. Where two cells meet at different
+  heights the edge between them is a cliff, which blocks, or a stair, which is
+  the free way up and down; a cell's own land still decides whether it can be
+  stood on (**Built** for new worlds). On the map, cliffs and stairs are marked on the edges
+  themselves and higher land is drawn lighter; in a place, a cliff is a solid
+  face or rim and a stair is the one way across it (**Built**). A world saved
+  before height levels keeps its land as it was, with no levels (**Built**).
+- **The blocked-edge refusal.** A step against a cliff edge, on the map or at a
+  place's border, spends nothing: the pawn bumps and the line says "Steep edge ·
+  look for stairs" (**Built**). Facing an edge, the map line names it first:
+  "Ahead: steep edge", "Ahead: stairs up", "Ahead: stairs down" (**Built**).
 - **Generated once, then permanent.** Each world is generated from a seed when
   the save starts and then persists: land, landmarks and obstacles change only by
   events and the player (**Decided**). Storage is the seed plus changes; places
