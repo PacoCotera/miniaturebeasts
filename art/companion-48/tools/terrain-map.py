@@ -58,7 +58,7 @@ def hash01(y, x):
     h = (y * 73856093) ^ (x * 19349663) ^ 0x5bd1e995
     h = (h ^ (h >> 13)) * 0x5bd1e995 & 0xffffffff
     return ((h ^ (h >> 15)) & 0xffff) / 65536.0
-FACE = {k: piece("face-" + k) for k in ("ee", "ec", "ce", "cc", "cc-v", "cc-v2", "cc-v3")}
+FACE = {k + sfx: piece("face-" + k + sfx) for k in ("ee", "ec", "ce", "cc", "cc-v", "cc-v2", "cc-v3") for sfx in ("", "-nf", "-nt")}
 
 def over(base, o):
     """overlay o on base: transparent keeps base, shade darkens base one DARK step."""
@@ -69,22 +69,25 @@ def over(base, o):
     return np.where(o >= 0, o, b)
 
 # ------------------------------------------------------------------ the test map
-HM = ["11111222222111",
+HM = ["11111122222111",
       "11112222222211",
       "11112222222211",
       "11111122222211",
-      "11111122211111",
-      "00111111111111",
-      "00111111111111",
-      "00001111111100",
-      "00001111001100",
-      "00000000000000",
-      "0000000000wwww",
-      "ww00000000wwww",
-      "wwwww00000wwww",
+      "11111122222111",
+      "01111111111110",
+      "00111000000100",
+      "00011000000100",
+      "00000000011100",
+      "00000ww0000000",
+      "000wwwwwwww000",
+      "00wwww0wwww000",
+      "0wwwwwwwwwww00",
+      "00wwww00www000",
       "00000000000000"]
-STAIRS = [(3, 4), (8, 8)]
-BRIDGE = [(9, 12, "bridge-ns-n"), (10, 12, "bridge-ns-m"), (11, 12, "bridge-ns-m"), (12, 12, "bridge-ns-m"), (13, 12, "bridge-ns-s")]
+STAIRS = [(3, 4), (8, 3)]            # wide stairs: the left of two face cells
+BRIDGE = [(9, 8, "bridge-ns-n"), (10, 8, "bridge-ns-m"), (11, 8, "bridge-ns-m"), (12, 8, "bridge-ns-m"), (13, 8, "bridge-ns-m"), (14, 8, "bridge-ns-s")]
+PROPS = [(118, 470, "reeds"), (286, 528, "reeds"), (520, 610, "reeds"), (96, 650, "reeds"), (300, 545, "stone-plain2"), (612, 410, "stone"), (40, 250, "bush"), (560, 120, "bush")]
+PROP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "review-place", "work", "props")
 
 def model(hm):
     H = np.array([[0 if ch == "w" else int(ch) for ch in row] for row in hm]); Wt = np.array([[ch == "w" for ch in row] for row in hm])
@@ -160,8 +163,9 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
     # 2. the meadow decals, off the tile grid
     if DEC and not lips_only: place_decals(img, ok)
     if WDEC and not lips_only: place_decals(img, wok, WDEC, 9134, 31, .4)
-    # 2b. a raised top is a touch lighter than the ground below: its grass one LIGHT step up on a share of its pixels (22 % a
-    # level), inside the rounded edge only (the lip's region masks), by a dither with no period
+    # 2b. each level its own value, so a glance separates them: the low ground one DARK step down on 45 % of its grass, the
+    # middle level as it is, the top one LIGHT step up on 55 %; inside the rounded edges only (the lips' region masks); a dither
+    # with no period
     if not lips_only:
         GR = {C[n] for n in ("pine", "forest", "leaf", "grass", "sprout")}
         light = np.array(P.light); yy, xx = np.mgrid[0:img.shape[0], 0:img.shape[1]]
@@ -175,7 +179,11 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
                     for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "sw": (24, 0), "se": (24, 24)}.items():
                         L0[y:y + 24, x:x + 24] = np.where(REG[(q, lip_state(H, r, c, q))], H[r, c], H[r, c] - 1)
                 lvl[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = L0
-        m = np.isin(img, list(GR)) & (hz < .22 * lvl)
+        darkt = np.array(P.dark)
+        m0 = np.isin(img, list(GR)) & (lvl == 0) & (hz < .45)
+        img[m0] = darkt[img[m0]]
+        m2 = np.isin(img, list(GR)) & (lvl >= 2) & (hz < .55)
+        img[m2] = light[img[m2]]
         img[m] = light[img[m]]
     # 3. the terrain over it: lips, faces, stairs, shadows, foam
     for r in range(R):
@@ -188,9 +196,15 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
                 cont = lambda cc: is_face(H, r, cc) or h(H, r, cc, -1) > H[r, c]
                 k = ("c" if cont(c - 1) else "e") + ("c" if cont(c + 1) else "e")
                 if k == "cc": k = ("cc", "cc-v", "cc-v2", "cc-v3")[(c * 7 + r * 3 + (c * c) % 5) % 4]   # no two-tile rhythm along a wall
-                t = over(t, piece("stairs") if (r, c) in stairs else FACE[k])
-            if not lips_only and (r, c) in [(sr - 1, sc) for sr, sc in stairs]: t = over(t, piece("stairs-top"))
-            if not lips_only and (r, c) in [(sr + 1, sc) for sr, sc in stairs]: t = over(t, piece("stairs-foot"))
+                if (r, c) in stairs: t = over(t, piece("stairs2-l"))
+                elif (r, c - 1) in stairs: t = over(t, piece("stairs2-r"))
+                else:
+                    sfx = "-nt" if is_face(H, r - 1, c) else ("-nf" if is_face(H, r + 1, c) else "")   # stacked faces: one wall of rock
+                    t = over(t, FACE[k + sfx])
+            for sr, sc in ([] if lips_only else stairs):
+                for dr, nm in ((-1, "stairs2-top"), (1, "stairs2-foot")):
+                    if (r, c) == (sr + dr, sc): t = over(t, piece(nm + "-l"))
+                    if (r, c) == (sr + dr, sc + 1): t = over(t, piece(nm + "-r"))
             if not lips_only and c > 0 and not is_face(H, r, c) and not Wt[r, c] and (is_face(H, r, c - 1) or H[r, c - 1] > H[r, c]):
                 t = over(t, piece("side-shadow-e"))
             if not lips_only and r > 0 and c > 0 and is_face(H, r - 1, c - 1) and not is_face(H, r - 1, c) and not is_face(H, r, c - 1) \
@@ -199,6 +213,11 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
             if not lips_only and r > 0 and is_face(H, r - 1, c) and not is_face(H, r, c):
                 t = over(t, piece("foot-foam-1") if Wt[r, c] else piece("foot-shadow"))
             img[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = t
+    for x, y, n in ([] if lips_only else PROPS):
+        pr = load(os.path.join(PROP_DIR, n + ".png"), False); h_, w_ = pr.shape
+        y0, x0 = y - h_, x - w_ // 2                                       # anchored at the foot
+        if 0 <= y0 and y0 + h_ <= img.shape[0] and 0 <= x0 and x0 + w_ <= img.shape[1]:
+            img[y0:y0 + h_, x0:x0 + w_] = np.where(pr >= 0, pr, img[y0:y0 + h_, x0:x0 + w_])
     for r, c, n in ([] if lips_only else bridge):
         img[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = over(img[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48], piece(n))
     return img
@@ -271,7 +290,7 @@ for r in range(H.shape[0]):
             js.append(d[:, 47].mean()); ins.append(np.delete(d, 47, axis=1).mean())
 res["seam"] = round(float(np.mean(js) / np.mean(ins)), 3); res["seam_joins"] = len(js)
 # repeat: a strip of plain plateau grass; autocorrelation at the tile period against the mean at nearby lags
-gr = L[5 * 48:6 * 48, :]; gr = gr - gr.mean()
+gr = L[1 * 48 + 8:3 * 48 - 8, 5 * 48:11 * 48]; gr = gr - gr.mean()     # plain grass on the top level, clear of its edges
 def ac(lag): return float((gr[:, :-lag] * gr[:, lag:]).mean() / (gr * gr).mean())
 base = np.mean([ac(k) for k in list(range(30, 44)) + list(range(53, 67))])
 res["repeat"] = round(ac(48) - base, 3); res["repeat_note"] = "autocorrelation at 48 px minus the mean at 30-43 and 53-66 px; <= 0.10 passes"

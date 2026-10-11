@@ -52,7 +52,7 @@ def save(name, a):
 INSET, R_OUT, R_IN = 6, 12, 6
 WAVE = [0, 0, 1, 1, 0, -1, -1, 0, 1, 2, 1, 0, 0, -1, 0, 1, 1, 0, -1, -2, -1, 0, 0, 0]       # the edge's waver, 24-periodic, 0 at both ends
 TUFT = [0, 2, 3, 1, 0, 0, 2, 3, 3, 1, 0, 1, 0, 0, 3, 2, 0, 1, 2, 3, 2, 0, 0, 0]             # grass hanging over the lip
-LIPW = {"n": 3, "w": 3, "e": 9, "s": 0}      # north and west: a thin lit rim; east: a face in shade
+LIPW = {"n": 4, "w": 4, "e": 9, "s": 0}      # north and west: a lit lip; east: a face in shade
 MARGIN = [16, 16, 13, 10, 8, 5, 3, 1]
 SHINE = [16, 14, 10, 6, 3]
 SIDE = from_rgba(mat("side-rock")) if MAT else None
@@ -108,6 +108,13 @@ def lip(quad, state):
             u = x if west else 23 - x; v = y if north else 23 - y      # normalised
             gu, gv = u + 16, v + 16
             if low[gv, gu]:
+                # lower ground under a north or west lip: a darker band 3 px deep, so the edge reads as a step, not a crack
+                k = 0
+                while k < 4 and gu + k + 1 < low.shape[1] and low[gv, gu + k + 1]: k += 1
+                kv = 0
+                while kv < 4 and gv + kv + 1 < low.shape[0] and low[gv + kv + 1, gu]: kv += 1
+                if vside == "w" and k < 3 and not low[gv, gu + k + 1]: q[y, x] = SH2 if k == 0 else SH; continue
+                if hside == "n" and kv < 3 and not low[gv + kv + 1, gu]: q[y, x] = SH2 if kv == 0 else SH; continue
                 # lower ground: the cast shadow beyond a shaded (east) side, measured from the plateau's edge
                 if vside == "e":
                     k = 0
@@ -124,16 +131,14 @@ def lip(quad, state):
             wdt = LIPW[side] + (1 if TUFT[t] > 2 else 0)
             if d == 1: q[y, x] = C["night"]
             elif d <= wdt:
-                if side in ("n", "w"): q[y, x] = (C["rockL"], C["rock"])[min(1, d - 2)]
+                if side in ("n", "w"): q[y, x] = (C["rockL"], C["rockL"], C["rock"])[min(2, d - 2)]
                 else: q[y, x] = rock_px(y + (0 if north else 24), x, False)
                 if side == "e" and d >= wdt - TUFT[t] + 1: q[y, x] = C["leaf"] if d < wdt else C["forest"]   # clumps hang over the east face
             elif d == wdt + 1: q[y, x] = C["forest"] if side == "e" else C["lime"]
             elif d <= wdt + 1 + TUFT[t] // 2: q[y, x] = C["leaf"] if side == "e" else C["sprout"]
             else:
                 k = d - wdt - 2 - TUFT[t] // 2
-                if side == "e":
-                    if k < len(MARGIN) and B4[y % 4, x % 4] < MARGIN[k]: q[y, x] = SH
-                elif k < len(SHINE) and B4[y % 4, x % 4] < SHINE[k]: q[y, x] = LT
+                if k < len(SHINE) and B4[y % 4, x % 4] < SHINE[k]: q[y, x] = LT                # the top surface's lit rim, on every side
     # the south edge: the turf hangs over the face below in uneven clumps, a dark underside
     if not north and state in ("edgeh", "outer", "outer0"):
         for x in range(24):
@@ -142,6 +147,9 @@ def lip(quad, state):
             t = x % 24
             if TUFT[t] >= 2: q[23, x] = C["leaf"]
             if TUFT[t] >= 3: q[22, x] = C["leaf"]
+            for k, dens in enumerate(SHINE):                                              # the lit rim above the drop
+                y = 21 - (TUFT[t] >= 3) - k
+                if q[y, x] == T and B4[y % 4, x % 4] < dens: q[y, x] = LT
 
     return q
 
@@ -222,7 +230,7 @@ def face_body(seed, variant=0):
         for y in range(d): f[y, x] = C["leaf"] if y < d - 1 else C["forest"]
     return f
 
-def face(left, right, variant=0):
+def face(left, right, variant=0, top=True, foot=True):
     f = face_body(11 + variant, variant)
     if MAT:
         f = from_rgba(mat("face-rock2" if variant % 2 else "face-rock"))
@@ -241,7 +249,12 @@ def face(left, right, variant=0):
     FOOT = [0, 0, 1, 3, 4, 4, 3, 1, 0, 0, 2, 4, 5, 5, 4, 2, 1, 0, 1, 2, 2, 1, 0, 0, 1, 3, 5, 5, 4, 3, 1, 0, 0, 1, 2, 4, 4, 3, 1, 0, 0, 2, 3, 3, 2, 1, 0, 0]
     fv = [(FOOT[(x + 11 * variant) % 48] if 0 < x < 47 else 0) for x in range(48)]
     if variant: fv[0] = fv[47] = 0
-    for x in range(48):
+    if not top:                                                                        # a face stacked under another: rock up to its top, no turf
+        GRS = (C["leaf"], C["grass"], C["forest"], C["sprout"], C["lime"], C["pine"], C["bark"], C["soil"])
+        for x in range(48):
+            for y in range(12):
+                if f[y, x] in GRS: f[y, x] = f[y + 12, x]
+    for x in range(48 if foot else 0):
         for k in range(fv[x]):
             y = 47 - k; f[y, x] = cast(y, x, 0)                                       # below a raised boulder: the ground, in its shadow
         y = 47 - fv[x]; f[y, x] = C["night"]
@@ -267,7 +280,7 @@ def face(left, right, variant=0):
     if right == "e": end(False)
     # the turf hangs over the rock top in uneven clumps (1-8 px), with gaps where the rock's lit lip shows; 48-periodic, short at both edges
     HANG = [2, 2, 3, 5, 7, 8, 6, 3, 1, 1, 0, 1, 3, 4, 3, 2, 2, 4, 6, 7, 5, 2, 1, 0, 0, 2, 3, 6, 8, 7, 4, 2, 1, 1, 3, 3, 2, 1, 0, 1, 4, 6, 5, 3, 2, 2, 2, 2]
-    for x in range(48):
+    for x in range(48 if top else 0):
         if f[0, x] == T: continue
         h = HANG[(x + 13 * variant) % 48] if 3 < x < 44 else 2
         top = 0
@@ -282,6 +295,12 @@ for l in ("e", "c"):
     for rr in ("e", "c"):
         save(f"face-{l}{rr}", face(l, rr))
 save("face-cc-v", face("c", "c", 1)); save("face-cc-v2", face("c", "c", 2)); save("face-cc-v3", face("c", "c", 3))
+# stacked faces (a drop of two levels in one wall): the upper without its foot, the lower without its turf, so the rock runs on
+for l in ("e", "c"):
+    for rr in ("e", "c"):
+        save(f"face-{l}{rr}-nf", face(l, rr, foot=False)); save(f"face-{l}{rr}-nt", face(l, rr, top=False))
+for v in (1, 2, 3):
+    save(f"face-cc-v{'' if v == 1 else v}-nf", face("c", "c", v, foot=False)); save(f"face-cc-v{'' if v == 1 else v}-nt", face("c", "c", v, top=False))
 
 # the shade under a face: four rows Bayer-dithered (the ground under it one DARK step), denser at the top
 sh = np.full((48, 48), T, dtype=np.int64)
@@ -360,6 +379,45 @@ for y in range(0, 6):
 for y in range(6, 10):
     for x in range(X0 - 2, X1 + 5): bot[y, x] = cast(y, x, y - 4)
 save("stairs-foot", bot)
+
+# the wide stair: two face cells, 96 px; treads 60 px between rock cheeks that wrap the face, as tall as the face it climbs
+W2 = np.hstack([face("c", "c"), face("c", "c", 1)])
+A0, A1, CW2 = 18, 78, 8
+for y in range(48):
+    for x in range(A0 - CW2, A1 + CW2):
+        if A0 <= x < A1: continue
+        lit = x < A0
+        if y < 3: continue                                                            # the turf runs over the cheeks
+        W2[y, x] = rock_px(y, x, lit) if MAT else (C["rock"] if lit else C["stone"])
+    W2[y, A0 - CW2] = C["night"] if y > 2 else W2[y, A0 - CW2]; W2[y, A1 + CW2 - 1] = C["night"] if y > 2 else W2[y, A1 + CW2 - 1]
+    W2[y, A0 - 1] = C["slate"]; W2[y, A1] = C["night"]
+    if y > 2: W2[y, A0 - CW2 + 1] = C["rockL"]
+for i, (t, h) in enumerate(STEPS):
+    for y in range(t, min(48, t + h)):
+        k = y - t
+        for x in range(A0, A1):
+            if k == 0: v = C["fog"]
+            elif k < h - 4: v = C["rockL"] if (x + 2 * y + i) % 13 else C["rock"]
+            elif k == h - 4: v = C["slate"]
+            else: v = C["rock"] if k < h - 2 else C["stone"]
+            W2[y, x] = v
+    for y in range(t, min(48, t + h - 4)):
+        for x in range(A1 - 4, A1):
+            if B4[y % 4, x % 4] < (x - (A1 - 5)) * 3: W2[y, x] = P.dark[W2[y, x]]
+save("stairs2-l", W2[:, :48]); save("stairs2-r", W2[:, 48:])
+T2 = np.full((48, 96), T, dtype=np.int64)            # the landing: a worn strip of stone, flush, fading into the grass
+for y in range(41, 48):
+    for x in range(A0, A1):
+        if B4[y % 4, x % 4] < (y - 40) * 3 or y >= 46: T2[y, x] = C["rockL"] if (x * 3 + y) % 7 else C["rock"]
+save("stairs2-top-l", T2[:, :48]); save("stairs2-top-r", T2[:, 48:])
+B2 = np.full((48, 96), T, dtype=np.int64)
+for y in range(0, 6):
+    for x in range(A0 - 4, A1 + 4):
+        B2[y, x] = C["rockL"] if y == 0 else (C["rock"] if y < 4 else (C["stone"] if y == 4 else C["night"]))
+    B2[y, A0 - 4] = C["night"]; B2[y, A1 + 3] = C["night"]
+for y in range(6, 10):
+    for x in range(A0 - 3, A1 + 7): B2[y, x] = cast(y, x, y - 4)
+save("stairs2-foot-l", B2[:, :48]); save("stairs2-foot-r", B2[:, 48:])
 
 # ---------------------------------------------------------------- the bridge (plank decks over water, posts at the ends)
 PLANKS = from_rgba(mat("planks")) if MAT else None          # planks running left to right
