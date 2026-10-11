@@ -48,7 +48,7 @@ The sandbox publishes `prototypes/*` side by side, so `../workbench/` and `../ge
 
 ### 2.3 The save and its migration
 
-The key stays `mb-save-v8` and the Companion's top-level part is untouched. Only the Station's part `st` changes, under a schema number of its own (`st.schema`: 2 for the research loop, 3 for the carried set). The fields the Companion reads (`accepted`, `dockN`, `known`, `probe`, `carryReqs`, `carrySeq`, `carryRefusedSeen`, `returned`, and each mibi's `id`, `name`, `sp`, `born`, `from`, `bonded`) keep their shape, so the Companion page needs one change only: drop a mibi marked released. The migration runs once on load, is logged, and never runs backward.
+The key stays `mb-save-v8` and the Companion's top-level part is untouched. Only the Station's part `st` changes, under a schema number of its own (`st.schema`: 2 for the research loop, 3 for the carried set). The fields the Companion reads (`accepted`, `dockN`, `known`, `probe`, `carryReqs`, `carrySeq`, `carryRefusedSeen`, `returned` (each entry with `species` and `gs`, both additive), and each mibi's `id`, `name`, `sp`, `species`, `spName` (additive), `born`, `from`, `bonded`) keep their shape, so the Companion page needs one change only: drop a mibi marked released. The migration runs once on load, is logged, and never runs backward.
 
 | Field | v8 `st`, as built | After migration |
 | --- | --- | --- |
