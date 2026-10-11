@@ -3188,5 +3188,22 @@
    "thoughtsTokenCount": 225,
    "totalTokenCount": 2357
   }
+ },
+ {
+  "tag": "meadow-src-props-p1 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189032,
+  "mxn": 3.7806,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T02:32:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 496,
+   "candidatesTokenCount": 1326,
+   "thoughtsTokenCount": 241,
+   "totalTokenCount": 2063
+  }
  }
 ]
