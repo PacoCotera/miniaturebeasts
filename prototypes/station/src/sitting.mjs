@@ -6,6 +6,8 @@
 //   st.sitting        null, or the held sitting { source: "moment" | "welcome" | "dev", key, at }  (one slot, one frame)
 //   st.moments        the ledger of research moments already paid, so none pays twice: { "<key>": at }
 //   st.welcomeGiven   the welcome sitting is given once per player; st.welcomePending: it came while one was held and waits for the slot
+//   st.doorAt         null until the sitting's door first opens on this save; until then no moment is paid and none is lost (the-portrait.md §8, X21)
+//   st.owed           the moments earned before the door opened, paid into the ledger and waiting in earned order: [{ key, at }]; one comes into the slot whenever it is empty
 //   st.sittingCrates  the crates of sittings begun: { id, mibiId, pose, place, start, source, painted, opened }
 //   m.habits          the habits seen (ids from the frame's `habits`); m.walked the places it walked to; m.portrait null | { state, pose, place, crate, start, at }
 //   st.face           the species' face in the book: { "<species>": mibiId }   (library.mjs)
@@ -62,8 +64,9 @@ export function momentsEarned(st, settings = DEFAULT_SETTINGS) {
   for (const m of st.mibis) { const k = lineKey(st, m); if (lineDepth(st, m) >= DEEP_LINE && !out.some((o) => o.key === k)) out.push({ key: k, kind: "line", mibi: m.id }); }   // one moment a line
   return out;
 }
-// Pay every moment not yet paid, in order; returns what happened to each.
+// Pay every moment not yet paid, in order; returns what happened to each. Behind the shut door nothing is paid: each moment stays earned.
 export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (!st.doorAt) return [];
   const res = [];
   for (const mo of momentsEarned(st, settings)) { if (st.moments[mo.key]) continue; res.push({ ...mo, ...grantSitting(st, "moment", mo.key, now) }); }
   return res;
@@ -71,7 +74,7 @@ export function collectMoments(st, settings = DEFAULT_SETTINGS, now = Date.now()
 // The warnings, before the act that pays a moment, while a sitting is held ("use your sitting first", on the price line, before anything is paid):
 // a guide one look from full; the first read of a sealed chapter; a cross whose child would complete a deep line.
 export function sittingWarning(st, settings = DEFAULT_SETTINGS) {
-  if (!st.sitting) return [];
+  if (!st.doorAt || !st.sitting) return [];   // behind the shut door nothing can be lost, so nothing to warn
   return [...new Set(st.knownIds)].filter((id) => !st.moments["guide:" + id] && fieldGuide(st, id, settings)?.oneFromFull);
 }
 // The moments an act would earn that are not yet paid (the keys). The warning comes when the act would lose one: any, while a sitting is held, or the second of two earned at once
@@ -85,6 +88,7 @@ export function momentsOf(st, act, settings = DEFAULT_SETTINGS, species = null) 
 const losesOne = (st, n) => (st.sitting ? n >= 1 : n >= 2);
 // A read of `chapterId` on `x` (a pod or a mibi): counts the moments it would earn: the sealed chapter's first read and the guide it may fill.
 export function readWarning(st, species, chapterId, x = null, settings = DEFAULT_SETTINGS) {
+  if (!st.doorAt) return "";
   const fr = frameOf(species), ch = fr && fr.chapters.find((c) => c.id === chapterId); if (!ch) return "";
   const n = momentsOf(st, (c) => {
     const once = c.readOnce[species] || (c.readOnce[species] = []); if (!once.includes(chapterId)) once.push(chapterId);
@@ -94,10 +98,28 @@ export function readWarning(st, species, chapterId, x = null, settings = DEFAULT
 }
 // A cross whose child would complete a deep line: one moment, lost if a sitting is held.
 export function crossWarning(st, a, b, settings = DEFAULT_SETTINGS) {
-  if (!a || !b) return "";
+  if (!st.doorAt || !a || !b) return "";
   const child = { id: -1, parents: [{ id: a.id }, { id: b.id }] }, snap = structuredClone(st); snap.mibis.push(child);
   const n = lineDepth(snap, child) >= DEEP_LINE && !st.moments[lineKey(snap, child)] ? 1 : 0;
   return losesOne(st, n) ? WARNING : "";
+}
+
+// --- behind a shut door (the-portrait.md §8, X21) ------------------------------------------------------------------------------
+// The door first opens: every moment earned before then is owed. It goes into the ledger (so it never pays twice) and waits in earned order; one comes into the slot whenever
+// the slot is empty. An owed sitting is never lost and never expires. Idempotent: the save's doorAt is the rule's only view of the door.
+export function openSittingDoor(st, settings = DEFAULT_SETTINGS, now = Date.now()) {
+  if (st.doorAt) return { ok: false, again: true };
+  st.doorAt = now;
+  for (const k of unpaid(st, settings)) { st.moments[k] = now; st.owed.push({ key: k, at: now }); }
+  logEv(st, "Sittings owed · " + st.owed.length);
+  return giveOwed(st, now);
+}
+// One owed sitting into the slot, when it is empty and no welcome waits for it (the welcome comes first because it teaches).
+export function giveOwed(st, now = Date.now()) {
+  if (st.sitting || st.welcomePending || !st.owed.length) return { ok: false };
+  const { key } = st.owed.shift();
+  st.sitting = { source: "moment", key, at: now }; logEv(st, "A sitting is held · " + key);
+  return { ok: true };
 }
 
 // --- a mibi may sit once, when it has a habit and a place -----------------------------------------------------------------------
@@ -155,8 +177,8 @@ export function beginSitting(st, m, pose, place, settings = DEFAULT_SETTINGS, no
   const crate = { id: "sit" + st.crateN, mibiId: m.id, pose, place, start: now, source, painted: false, opened: false };
   st.sittingCrates.push(crate); m.portrait = { state: "painting", pose, place, crate: crate.id, start: now, stage: mibiStage(st, m, settings) };   // the portrait shows this stage forever
   logEv(st, m.name + " sits for its portrait · " + pose + " · " + place);
-  const w = st.welcomePending ? checkWelcome(st, now) : null;
-  return { ok: true, crate, wait: sittingWaitMs(settings), welcome: w };
+  const w = st.welcomePending ? checkWelcome(st, now) : null, o = w && w.ok ? null : giveOwed(st, now);   // a waiting welcome first, then the owed sittings in earned order
+  return { ok: true, crate, wait: sittingWaitMs(settings), welcome: w, owed: o };
 }
 
 // --- the crate: the lamp fills, the painting lands, the bay opens --------------------------------------------------------------
