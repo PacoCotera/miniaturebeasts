@@ -42,6 +42,11 @@
  "states": ["rest", "meet", "out"],
  "initial": "by the way in: arriving from the Incubator's hatch (or Home's ✓ Meet), meet; the shown mibi out with the Companion (in carriedIds while the Companion is away), out; else rest. One mibi up close always shows one mibi: with none housed the Vivarium's whole shows its empty state",
  "stateRule": "rest: one housed mibi at home shown. meet: the same layout on the first look at a new mibi (never out: a new mibi is at home), from the hatch's hand-off until the first press; the meet ribbon stands in the name tag's place, and the first ✓ opens the namer. out: the shown mibi is out with the Companion: the window shows its place empty with the out mark (regions.resident.out), the tag, the card and the modules as in rest; no greet. A region with `inStates` exists only in those states; the arm of Wild is focus.armed, not a state; the namer is an overlay (overlays.namer), not a state; docked and away are conditions of every state (the Companion module, the tiles, the top bar). A carried mibi while the Companion is docked is at home, asleep on the bed: state rest, with greet, Cross, Portrait, Bring home and its plates; Wild refuses it (\"already with you\") and it is never watched",
+ "light": {
+  "pictures": { "dawn": "vivarium-near-dawn", "day": "vivarium-near-day", "dusk": "vivarium-near-dusk", "night": "vivarium-near-night" },
+  "size": [544, 408],
+  "note": "the glass's painting by the light of the hour (frame.json light.from), one a light, the master id `<picture>-544x408`: switched with Home's glass and Idle's painting, dropped on a light change as theirs are"
+ },
  "overlays": {
   "namer": {
    "spec": "namer.json",
@@ -67,7 +72,7 @@
    "component": "livingWindow",
    "part": "inside",
    "ground": [24, 304, 544, 160],
-   "slice": "vivarium-near-{day,dusk,night}-544x408",
+   "slice": "vivarium-near-{dawn,day,dusk,night}-544x408",
    "until": "the placeholder: back `forest`, ground band `clay` with a `sand` top row (colours.glass)",
    "note": "no words inside, but the name tag and the meet ribbon. The painting is the Vivarium close by, one a light, the light of the whole and Idle at that hour"
   },
@@ -608,7 +613,7 @@
   "note": "every master one mibi up close names, at the size it is shown; none is drawn by the build. New for this level, each with a labelled placeholder until it lands: the near painting, the skill notch and the out mark (`new`)",
   "new": [
    {
-    "id": "vivarium-near-{day,dusk,night}-544x408",
+    "id": "vivarium-near-{dawn,day,dusk,night}-544x408",
     "size": [544, 408],
     "shows": "the Vivarium close by, the ground band at y 304 to 464 of the glass, one painting a light, the light of the whole and Idle at that hour; no mibi in it",
     "region": "glass"
@@ -628,7 +633,7 @@
   ],
   "list": [
    "room-vivarium-stage-habitat 1024×522",
-   "vivarium-near-{day,dusk,night}-544x408 (new)",
+   "vivarium-near-{dawn,day,dusk,night}-544x408 (new)",
    "notch-skill-16x24 (new)",
    "mark-out-with-companion-64x96 (new)",
    "heart-full-24",
@@ -702,6 +707,7 @@
   "watchPlate": "{name} is seen {habit}",
   "watchPlateExamples": ["Fig is seen digging", "Moss is seen sleeping curled"],
   "out": "out with the Companion",
+  "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",
   "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer for the action, a label of six words or fewer for the context; no dot-joined parts; \"Again: …\" is the arm's wording on every screen",
   "partnersRule": "n counts only the partners that can be picked (not out with the Companion while it is away)",

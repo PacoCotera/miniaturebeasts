@@ -281,6 +281,20 @@ test("six bays: a full vivarium refuses Grow before payment and Open until one i
 });
 
 // --- M4 Cross ---
+test("Cross while away: a mibi out with the Companion cannot be crossed, as the shown mibi or as a partner; docked it crosses as any adult; an away partner is listed marked, not dropped", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
+  const [a, b, c] = S.seedAdults(st, "S01", 31, 3, settings).mibis, sv = { carried: [b.id] };
+  st.dock = { docked: false, at: 1 };
+  assert.equal(S.crossBlock(st, sv, a, b, settings), "away", "the partner is out with the Companion");
+  assert.equal(S.crossBlock(st, sv, b, a, settings), "away", "the shown mibi is out");
+  assert.equal(S.crossBlock(st, sv, a, c, settings), "", "two at home cross while the Companion is away");
+  assert.deepEqual(S.crossPartners(st, sv, a, settings).map((m) => [m.id, !!m.away]), [[b.id, true], [c.id, false]], "the away partner is marked and kept, in bay order");
+  assert.equal(S.crossPartners(st, sv, a, settings)[1], c, "a partner at home is the mibi itself");
+  st.dock = { docked: true, at: 2 };
+  assert.equal(S.crossBlock(st, sv, a, b, settings), "", "docked, the carried mibi crosses as any adult");
+  assert.ok(S.crossPartners(st, sv, a, settings).every((m) => !m.away), "docked, nobody is away");
+});
+
 test("the cross: refusals before cost; a child of two founders with real parents, known only where switch parents match; the forecast's quarters and range", () => {
   const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
   const r = S.seedAdults(st, "S01", 31, 2, settings), [a, b] = r.mibis, fr = frameOf("S01");
@@ -537,4 +551,20 @@ test("the Station keeps an unknown top-level Companion field (gen) through load,
   mem.set(S.SAVE_KEY, JSON.stringify({ ...stored(), gen: 3 }));
   game.storageChanged(); game.save(); assert.equal(stored().gen, 3, "storageChanged then save keeps the Companion's newer gen");
   const before = JSON.stringify({ ...stored(), st: undefined }); game.save(); assert.equal(JSON.stringify({ ...stored(), st: undefined }), before, "a save changes nothing of the Companion's part");
+});
+
+test("naming: what stops a name (short, full, marks, a species, a clan, a holder), the pool's next names peeked and nothing consumed, a rename that follows its references, Keep that writes nothing", () => {
+  const { st } = readPod([crate(1, [loikaPod(1, 21)])]);
+  const [a, b] = S.seedAdults(st, "S01", 31, 2, settings).mibis; S.normalize(st);
+  const why = (t, atDone = true) => S.nameProblem(st, a, t, atDone)?.key ?? null;
+  assert.equal(why("A"), "short"); assert.equal(why("A-"), "short", "a mark is not a letter"); assert.equal(why("Abcdefghijk"), "full"); assert.equal(why("-Abc"), "first"); assert.equal(why("Ab--c"), "twice"); assert.equal(why("Ab c-"), "last"); assert.equal(why("Ab c-", false), null, "a mark last is refused at Done only");
+  assert.equal(why("Loika"), "species"); assert.equal(why("loika"), "species", "by the name's key"); assert.equal(why("Lophessa"), "clan");
+  assert.deepEqual(S.nameProblem(st, a, b.name), { key: "taken", holder: b.name }); assert.equal(S.nameProblem(st, b, b.name), null, "its own name is not held by another");
+  const used = [...st.namesUsed], next = S.peekNames(st, a, 12);
+  assert.equal(next.length, 12); assert.ok(next.every((n) => !S.nameProblem(st, a, n) && ![...used].includes(S.nameKey(n))), "each could be given"); assert.deepEqual(st.namesUsed, used, "nothing is consumed"); assert.deepEqual(S.peekNames(st, a, 12), next, "the same twelve each time");
+  assert.deepEqual(S.renameMibi(st, a, a.name), { ok: true, kept: true, name: a.name }); assert.ok(!st.log.some((l) => /Renamed/.test(l.text ?? l)), "Keep logs nothing");
+  assert.equal(S.renameMibi(st, a, "Loika").ok, false); assert.equal(a.name === "Loika", false);
+  b.from = { ...b.from, of: [a.name, "Zed"] }; b.parents = [{ id: a.id, name: a.name }]; const old = a.name, r = S.renameMibi(st, a, "Mo-Mo");
+  assert.deepEqual([r.ok, r.kept, r.name, r.old], [true, false, "Mo-Mo", old]); assert.equal(a.name, "Mo-Mo"); assert.deepEqual(b.from.of, ["Mo-Mo", "Zed"], "the origin follows"); assert.equal(b.parents[0].name, "Mo-Mo", "the parents follow"); assert.ok(st.namesUsed.includes("momo"));
+  assert.equal(S.renameMibi(st, a, "MO-MO").ok, true, "a change of case only is a rename"); assert.equal(a.name, "MO-MO");
 });
