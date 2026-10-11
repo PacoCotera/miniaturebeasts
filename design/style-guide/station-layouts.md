@@ -807,7 +807,7 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Thing | Pixel size |
 | --- | --- |
 | Vivarium (Home's glass) | 640×488 |
-| Residents, sleepers | 144×152 adult or elder, 104×112 juvenile; a sleeper in its nap pose |
+| Residents, sleepers | 144×152 adult or elder; a sleeper in its nap pose. A juvenile is not a placeholder: its signed stand-in, mibi-juvenile-<species>-104x112, and asleep -96x88 |
 | Bed | 192×56 |
 | Cargo's bay, open and shut | 176×72 |
 | Waiting mark | 24×24, `mark-waiting-24` |
@@ -1016,7 +1016,7 @@ The Vivarium only, one painting a light (dawn, day, dusk, night), the warm key l
 | Thing | Pixel size |
 | --- | --- |
 | Vivarium | 1024×568, a painting per light |
-| Residents, sleepers | 144×152 adult, 104×112 juvenile |
+| Residents, sleepers | 144×152 adult; a juvenile is its signed stand-in, mibi-juvenile-<species>-104x112 |
 | Bed | 192×56 |
 
 ---
@@ -1387,7 +1387,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | `stamp` | 840, 296, 120, 120 | stamp label | growing, ready, hatch | its chapters filling as they clear |
 | `code` | 808, 424, 184, 24 | text | growing, ready, hatch | — |
 | `ribbon` | 312, 104, 400, 40 | ribbon | hatch | — |
-| `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting or its placeholder; the step lift |
+| `juvenile` | 360, 160, 304, 312 | specimen | hatch | its painting, else its signed juvenile stand-in; the step lift |
 
 **Draw order:** bench, rail, leaves, dome, nest, bud (with the bud's shape and the bud's front), nestFront, the dome's front, base, plaque, the base's lamp, juvenile, stamp, code, ribbon, frame, message plate. The juvenile stands in front of the base's top.
 
@@ -1433,7 +1433,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | --- | --- | --- |
 | `wipe` (1000 ms), a tab clearing | 0 | A founder's bud: the tab turns from unread to read (word and emblem at once) and its pips fill left to right; the stamp redraws with the chapter at the end. The rail word's wipe, as on Pods, with no page |
 | `growNow` (400 ms) | 400 ms | The leaves still to fill fill one whole leaf a step, left to right, inner then outer; then, on a founder's bud, every tab still unread turns read (a cut), except a sealed chapter that is still shut, and the stamp redraws; the state is ready |
-| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its placeholder. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
+| `hatch` (2600 ms) | 2780 ms | 0: the leaves and the plaque's word go. 0 to 600: a still beat: the chamber stays as it stands, its window open with no pane, and nothing moves; the bud keeps its ready picture, its shape and its front until 600. 600 and 800: the bud cracks in two steps. 1000: the bud goes and the juvenile stands in its box on the base, in its painting if it has landed, else its signed juvenile stand-in. 1200: the ribbon, "Fig, a young Loika". 1400 and 1800: it steps, the meet's hop at half its period: up 1, 2, 3, 4 px and back down in 200 ms (a cut every 25 ms). 2600 to 2780: the screen transition (16-level Bayer dither) to one mibi up close, in the meet |
 
 **The hand-off.** The hatch ends on the new mibi up close, the Vivarium's closest level, in its meet ([the Vivarium: states and events](#the-vivarium-states-and-events)). This spec fixes only what the hand-off needs: the new mibi shown at 304×312 in one mibi up close's box (144, 80), the size the juvenile stood at, with its feet ring on it; and Open as a jump, so ← there reads "Vivarium" and goes to the Vivarium's whole with the ring on the new mibi ([The screen map](#the-screen-map), stack navigation). `frame.json` carries it: the whole `vivarium` under Home, `habitat` under it (← "Vivarium"), Cross and the Sitting under `habitat` (← the mibi's name). With `motion: false` the hatch jumps to its end, the meet.
 
@@ -1449,7 +1449,7 @@ The chamber stands centred and large. The leaves arc over it in two arcs centred
 | Nest | 208×48, and its front rim fibres `nest-front-208x48`, a placeholder to be painted | Stale: a twig nest; becomes the moss bed |
 | Waiting lamp | 12×12 | Carried |
 | Stage | 1024×522, `room-bench-stage-incubator`, to be commissioned (until then `room-bench-stage-collection`) | Stale: a research bench; the Incubator is its own place in the device |
-| Juvenile | 304×312: the new mibi's painting, or its placeholder | Carried |
+| Juvenile | 304×312: the new mibi's painting, or its signed juvenile stand-in (mibi-juvenile-<species>-304x312) | Carried |
 
 ---
 
@@ -1571,7 +1571,7 @@ One device in one look, as Home ([art direction](../art-direction.md), the Stati
 | `stage` | 0, 40, 1024, 522 | frame, part stage (`room-vivarium-stage-habitat`) | | The device's housing round the window, the card and the modules |
 | `bezel` | 16, 48, 560, 424 | living window, part frame | | 8 px bezel |
 | `glass` | 24, 56, 544, 408 | living window, part inside | | The near painting; ground band 24, 304, 544, 160; no words but the tag and the meet ribbon |
-| `resident` (focal) | 144, 80, 304, 312 | specimen | rest, meet | Axis x 296, feet y 392; the juvenile's box on the Incubator. Its waiting lamp 436, 80, 12, 12 while the placeholder is drawn |
+| `resident` (focal) | 144, 80, 304, 312 | specimen | rest, meet | Axis x 296, feet y 392; the juvenile's box on the Incubator. Its waiting lamp 436, 80, 12, 12 until its painting lands |
 | `resident.out` | 264, 296, 64, 96 | specimen (the out mark) | out | On the axis, its foot on the feet line; not a target |
 | `nameTag` | in 184, 416, 224, 32 | panel and text, build `nameTag` | rest, out | 20 px medium; the name + 24, up to 8, 80 to 224; centred on x 296 |
 | `meetRibbon` | 144, 416, 304, 40 | ribbon | meet | "Meet Moss", 20 px, centred |
@@ -1596,7 +1596,7 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 <td valign="top"><img src="station-layouts/18a-vivarium-whole-away.png" width="480" alt="The whole, the Companion away"><br><em>18a. The whole, away: Pip and Sorrel out, the bed's Companion mark, their tiles' outline glyph, the ring on Pip's tile, <code>✓ Look at Pip</code>. 1×, measured.</em></td>
 <td valign="top"><img src="station-layouts/18b-vivarium-whole-empty.png" width="480" alt="The whole, empty"><br><em>18b. The whole, empty: six free bays, no ring and no ✓ cap, "nobody lives here yet". 1×, measured.</em></td>
 </tr><tr>
-<td valign="top"><img src="station-layouts/19a-vivarium-mibi-meet.png" width="480" alt="One mibi up close, the meet"><br><em>19a. The meet: Moss from the hatch, its placeholder and waiting lamp, the ribbon in the tag's place, <code>✓ Name Moss</code>. Unbonded and young: no heart, no notches, no partners. 1×, measured.</em></td>
+<td valign="top"><img src="station-layouts/19a-vivarium-mibi-meet.png" width="480" alt="One mibi up close, the meet"><br><em>19a. The meet: Moss from the hatch, its signed stand-in and waiting lamp, the ribbon in the tag's place, <code>✓ Name Moss</code>. Unbonded and young: no heart, no notches, no partners. 1×, measured.</em></td>
 <td valign="top"><img src="station-layouts/19b-vivarium-mibi-child.png" width="480" alt="One mibi up close, a bred child"><br><em>19b. A bred child: two chapters still a surprise and one sealed; the ring on an unread plate, <code>✓ Read Coat   ◆ 1</code>. 1×, measured.</em></td>
 </tr><tr>
 <td valign="top"><img src="station-layouts/19c-vivarium-mibi-out.png" width="480" alt="One mibi up close, out with the Companion"><br><em>19c. Out: Pip is with the Companion; the out mark keeps its place, the ring on its name, <code>✓ Rename Pip</code>; the Companion module shows the set while away. 1×, measured.</em></td>
@@ -1620,7 +1620,7 @@ Every module's objects start 8 px or more under its word's baseline (y + 28). **
 
 | Focus | ✓ and its verb | Context |
 | --- | --- | --- |
-| A resident | `✓ Look at Bean` | "an adult Untuva"; a sleeper "an elder Untuva, asleep"; the placeholder "its painting is on its way" |
+| A resident | `✓ Look at Bean` | "an adult Untuva"; a sleeper "an elder Untuva, asleep"; one waiting for its painting "its painting is on its way" |
 | A tile, the mibi at home | As its resident | As its resident |
 | A tile, the mibi out | `✓ Look at Pip` | "out with the Companion" |
 | Nothing (empty) | no ✓ cap | "nobody lives here yet" |
@@ -1689,7 +1689,7 @@ Docked and away are conditions of every state: the bed, the Companion module's g
 | `walk` | the whole | 0 | The residents walk, rest and play their species' idle, as on Home and Idle |
 | `look` (180 ms) | the whole | 180 ms | The screen transition to one mibi up close |
 | `back` (180 ms) | up close | 180 ms | The screen transition to the whole, the ring on this mibi |
-| `moment` (1800 ms, cut) | up close | 300 ms | Greet: the species moment; until it has one, the placeholder hops twice, at 0 and 900 ms, each 400 ms: up 1 px every 50 ms to 4 px at 150, down to 0 at 350, whole pixels. The first key after the hold cuts it and then acts |
+| `moment` (1800 ms, cut) | up close | 300 ms | Greet: the species moment; until it has one, the mibi hops twice, at 0 and 900 ms, each 400 ms: up 1 px every 50 ms to 4 px at 150, down to 0 at 350, whole pixels. The first key after the hold cuts it and then acts |
 | `swap` (200 ms) | up close | 0 | A 200 ms dither in the mibi's box as the ring walks the strip |
 | `read` (300 ms) | up close | 300 ms | The plate turns read; the stamp prints the chapter's cells |
 | `release` (200 ms) | up close | 200 ms | The mibi dithers out to the next in bay order; none left, the whole, empty |
@@ -1725,9 +1725,9 @@ Every picture these levels place 1:1; none is drawn by the build. Until a master
 | `mark-out-with-companion-64x96` | 64×96 | `resident.out` | The mibi's place, kept: the Companion's outline standing on the ground | yes |
 | `room-vivarium-stage-habitat` | 1024×522 | up close's `stage` | The device's housing round the window, the card and the modules | — |
 | `heart-full-24` | 24×24 | the card's heart | A small painted enamel heart | — |
-| The mibi | 304×312 | `resident` | Its standard painting, or the placeholder | — |
+| The mibi | 304×312 | `resident` | Its standard painting, else its placeholder; a juvenile's, its signed stand-in mibi-juvenile-<species>-304x312 | — |
 | Residents, sleepers, the bed | 144×152, 104×112, 192×56 | the whole | As on Home and Idle | — |
-| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48 | — |
+| Thumbnails | 48×48 | tiles, the Companion's places | The painting or placeholder rendered at 48; a juvenile, its signed stand-in mibi-juvenile-<species>-48x48, 1:1 | — |
 | `sitting-frame-{empty,held,portrait}-32x48` | 32×48 | Portrait | | — |
 | `gate-wild-shut-48x48`, `gate-wild-open-48x48` | 48×48 | Wild | | — |
 | `chapter-plate-{read,unread,sealed}-40x40` with `rail-emblem-{chapter}-{state}-24x24` | 40×40, 24×24 | plates | | — |
