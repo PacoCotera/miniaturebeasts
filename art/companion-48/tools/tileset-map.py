@@ -316,6 +316,7 @@ for r, c, n in STAIRS:
 # ---- props at b1's places, each on a flat contact shadow
 PD = os.path.join(os.path.dirname(walls_d), "props"); PJ = json.load(open(os.path.join(PD, "props.json")))["pieces"]
 PROP = {p["file"][:-4]: to_idx(Image.open(os.path.join(PD, p["file"]))) for p in PJ}
+SHADE = {n: np.asarray(Image.open(os.path.join(PD, "shade", n + ".png"))) > 0 for n in PROP if os.path.exists(os.path.join(PD, "shade", n + ".png"))}
 isl = B1[800:955, 185:300]; PROP["island-b1"] = np.where((isl == BODY) | (isl == SHAL), -1, isl)
 def put(name, fx, fy, shadow=True):
     p = PROP[name]; ph, pw = p.shape; Y, X = fy - ph, fx - pw // 2
@@ -324,6 +325,9 @@ def put(name, fx, fy, shadow=True):
         yy, xx = yy[e], xx[e]; k = (yy >= 0) & (yy < HPX) & (xx >= 0) & (xx < WPX); yy, xx = yy[k], xx[k]
         g = mat[img[yy, xx]] == "grass"; img[yy[g], xx[g]] = DARK[img[yy[g], xx[g]]]
     y0, x0 = max(0, Y), max(0, X); y1, x1 = min(HPX, Y + ph), min(WPX, X + pw)
+    if name in SHADE:                                             # the piece's own shade mask: the ground under it one step darker
+        sm = SHADE[name][y0 - Y:y1 - Y, x0 - X:x1 - X]; g = img[y0:y1, x0:x1]
+        g[sm & (mat[g] == "grass")] = DARK[g[sm & (mat[g] == "grass")]]; g[sm & (g == SHAL)] = BODY
     q = p[y0 - Y:y1 - Y, x0 - X:x1 - X]; img[y0:y1, x0:x1] = np.where(q >= 0, q, img[y0:y1, x0:x1])
 for name, fx, fy in FOOTPROPS: put(name, fx, fy)
 land = B1[1028:1078, 410:530]; land = np.where(np.isin(mat[land], ["earth", "wood"]) | ((mat[land] == "core") & (lum[land] < 160) & (lum[land] > 60)), land, -1)
