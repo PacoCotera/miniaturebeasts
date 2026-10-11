@@ -720,7 +720,7 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   r = await lpress("down", 250); expect(r.ring === "frame.S07", "library-spread: ▼ is the frame below: " + r.ring);
   r = await lpress("up", 250); expect(r.ring === "frame.S03", "library-spread: ▲ is the frame above: " + r.ring);
   r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("left", 250); expect(r.ring === "frame.S01", "library-spread: ◀ stops at the page's edge: " + r.ring);
-  r = await lpress("right", 250); expect(r.ring === "frame.S04", "library-spread: ▶ again, S04: " + r.ring);
+  r = await lpress("right", 250); r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S04", "library-spread: ▶ three times from S01 is S04: " + r.ring);
   r = await lpress("right", 250); expect(r.ring === "frame.S09", "library-spread: ▶ from the last frame of the left page is the first of the right: " + r.ring);
   r = await lpress("left", 250); r = await lpress("back", 300); r = await lpress("library", 400);
   await page.evaluate(() => { window.__st.UI.lib.i = 3; }); await page.waitForTimeout(300);
