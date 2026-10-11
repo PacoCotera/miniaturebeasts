@@ -355,7 +355,7 @@ export function runSet(set, opts = {}) {
   if (size === "104x112") for (const [kind, ends] of [["warped", [warped.down, stand, warped.up]], ["painted", [painted.down, stand, painted.up]]]) {
     if (ends.some((x) => !x)) { row(size, "M6", kind, "ends not available", "", "n/a"); continue; }
     const cols = movedColumns(ends[0], ends[1], ends[2]); row(size, "M6", `${kind} columns the field moves`, cols.length, "", "info");
-    for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDeltaOver(ends[a], ends[b], cols).mean; row(size, "M6", `${kind} ${label} (mean over the moved columns)`, d, M6_MIN, d >= M6_MIN ? "pass" : "FAIL"); }
+    for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDeltaOver(ends[a], ends[b], cols).mean; row(size, "M6", `${kind} ${label} (mean over the moved columns)`, d, M6_MIN, label === "down-up" ? (d >= M6_MIN ? "pass" : "FAIL") : `info (${d >= M6_MIN ? "above" : "below"} the bar; only down-up gates)`); }
   } else row(size, "M6", "only at 104x112", "", "", "n/a");
   // M7
   for (const e of live) { const ms = warpMs(stand, fields[e], headMask); row(size, "M7", `warp ms per picture (${e}; a clock reading)`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }

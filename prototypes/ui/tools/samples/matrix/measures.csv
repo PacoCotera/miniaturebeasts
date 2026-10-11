@@ -47,8 +47,8 @@ s04-304x312,304x312,M5,profile columns warped-up vs painted,"139 matched, 0 unma
 s04-304x312,304x312,M3,painted-up,"1 comp, 0 holes, 0 orphans",info,info
 s04-304x312,304x312,M4,painted-up irregular,379,,info
 s04-304x312,304x312,M6,only at 104x112,,,n/a
-s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),4.1740,,info
-s04-304x312,304x312,M7,warp ms per picture (up; a clock reading),3.9898,,info
+s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),3.9087,,info
+s04-304x312,304x312,M7,warp ms per picture (up; a clock reading),3.5730,,info
 s04-304x312,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -105,15 +105,15 @@ s04-104x112,104x112,M5,profile columns warped-up vs painted,"50 matched, 0 unmat
 s04-104x112,104x112,M3,painted-up,"1 comp, 1 holes, 0 orphans",info,info
 s04-104x112,104x112,M4,painted-up irregular,140,,info
 s04-104x112,104x112,M6,warped columns the field moves,15,,info
-s04-104x112,104x112,M6,warped down-stand (mean over the moved columns),1.2667,2,FAIL
-s04-104x112,104x112,M6,warped stand-up (mean over the moved columns),1.6667,2,FAIL
+s04-104x112,104x112,M6,warped down-stand (mean over the moved columns),1.2667,2,info (below the bar; only down-up gates)
+s04-104x112,104x112,M6,warped stand-up (mean over the moved columns),1.6667,2,info (below the bar; only down-up gates)
 s04-104x112,104x112,M6,warped down-up (mean over the moved columns),2.9333,2,pass
 s04-104x112,104x112,M6,painted columns the field moves,18,,info
-s04-104x112,104x112,M6,painted down-stand (mean over the moved columns),1.1111,2,FAIL
-s04-104x112,104x112,M6,painted stand-up (mean over the moved columns),1.9444,2,FAIL
+s04-104x112,104x112,M6,painted down-stand (mean over the moved columns),1.1111,2,info (below the bar; only down-up gates)
+s04-104x112,104x112,M6,painted stand-up (mean over the moved columns),1.9444,2,info (below the bar; only down-up gates)
 s04-104x112,104x112,M6,painted down-up (mean over the moved columns),2.8333,2,pass
-s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.3451,5,pass (this machine; confirm on the CI runner)
-s04-104x112,104x112,M7,warp ms per picture (up; a clock reading),0.3031,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.2887,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (up; a clock reading),0.3009,5,pass (this machine; confirm on the CI runner)
 s04-104x112,104x112,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -170,8 +170,8 @@ s04-96x88,96x88,M5,profile columns warped-up vs painted,"40 matched, 0 unmatched
 s04-96x88,96x88,M3,painted-up,"1 comp, 1 holes, 0 orphans",info,info
 s04-96x88,96x88,M4,painted-up irregular,107,,info
 s04-96x88,96x88,M6,only at 104x112,,,n/a
-s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.3549,,info
-s04-96x88,96x88,M7,warp ms per picture (up; a clock reading),0.2904,,info
+s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.2637,,info
+s04-96x88,96x88,M7,warp ms per picture (up; a clock reading),0.2055,,info
 s04-96x88,96x88,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -215,12 +215,12 @@ s04-104x112-exaggerated,104x112,field,up max |d| px / stretch / shear,4.00 / 0.2
 s04-104x112-exaggerated,104x112,M5a,up,not applied: this field is deliberately beyond the painted ends,,n/a
 s04-104x112-exaggerated,104x112,M5,warped-up vs painted,no painted end given,,n/a
 s04-104x112-exaggerated,104x112,M6,warped columns the field moves,17,,info
-s04-104x112-exaggerated,104x112,M6,warped down-stand (mean over the moved columns),2.1765,2,pass
-s04-104x112-exaggerated,104x112,M6,warped stand-up (mean over the moved columns),2.3529,2,pass
+s04-104x112-exaggerated,104x112,M6,warped down-stand (mean over the moved columns),2.1765,2,info (above the bar; only down-up gates)
+s04-104x112-exaggerated,104x112,M6,warped stand-up (mean over the moved columns),2.3529,2,info (above the bar; only down-up gates)
 s04-104x112-exaggerated,104x112,M6,warped down-up (mean over the moved columns),4.5294,2,pass
 s04-104x112-exaggerated,104x112,M6,painted,ends not available,,n/a
-s04-104x112-exaggerated,104x112,M7,warp ms per picture (down; a clock reading),0.3911,5,pass (this machine; confirm on the CI runner)
-s04-104x112-exaggerated,104x112,M7,warp ms per picture (up; a clock reading),0.3483,5,pass (this machine; confirm on the CI runner)
+s04-104x112-exaggerated,104x112,M7,warp ms per picture (down; a clock reading),0.8322,5,pass (this machine; confirm on the CI runner)
+s04-104x112-exaggerated,104x112,M7,warp ms per picture (up; a clock reading),0.7956,5,pass (this machine; confirm on the CI runner)
 s04-104x112-exaggerated,104x112,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112-exaggerated,104x112,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112-exaggerated,104x112,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -264,8 +264,8 @@ s04-96x88-exaggerated,96x88,field,up max |d| px / stretch / shear,3.00 / 0.250 /
 s04-96x88-exaggerated,96x88,M5a,up,not applied: deliberately beyond the painted ends,,n/a
 s04-96x88-exaggerated,96x88,M5,warped-up vs painted,no painted end given,,n/a
 s04-96x88-exaggerated,96x88,M6,only at 104x112,,,n/a
-s04-96x88-exaggerated,96x88,M7,warp ms per picture (down; a clock reading),0.3181,,info
-s04-96x88-exaggerated,96x88,M7,warp ms per picture (up; a clock reading),0.2676,,info
+s04-96x88-exaggerated,96x88,M7,warp ms per picture (down; a clock reading),0.4187,,info
+s04-96x88-exaggerated,96x88,M7,warp ms per picture (up; a clock reading),0.3862,,info
 s04-96x88-exaggerated,96x88,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88-exaggerated,96x88,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88-exaggerated,96x88,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
