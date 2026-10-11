@@ -125,6 +125,8 @@ test("the report: a row a crate with its pods and its reach in words, what was g
   assert.equal(reported(world(), sv0([crate(1, 1)]), { free: 0, paid: 0, broke: false, spent: 0 }).props.regions.report.probe, null, "no mend, no row");
   assert.deepEqual(reported(world(), sv0([crate(1, 1)]), { free: 2, paid: 0, broke: true, spent: 0 }).props.regions.report.probe, { lead: "Probe", plates: 2, text: "mended free" });
   assert.equal(reported(world(), sv0([crate(1, 1)])).props.regions.report.probe, null, "after a reload the report has no Probe row");
+  const bad = crate(1, 2); bad.pods[1] = { id: "p9", sp: -1, g: "cave", how: "ground", gs: 7, k: "3" };
+  assert.deepEqual(reported(world(), sv0([bad])).props.regions.report.crates.map((c) => c.pods), [1], "the row counts the pods that landed, not the crate's raw contents");
   const one = reported(world(), sv0([crate(1, 1)])); assert.equal(one.line.ok, "See the new pod"); assert.equal(reported(world(), sv0([crate(1, 0)])).line.ok, "Done", "no new pod: Done closes the card");
   const loose = { ...settings, economy: "loose" }; const st3 = world(), h3 = { st: st3, sv: sv0([crate(1, 1)]), settings: loose, ui: { screen: "cargo", home: {}, ...cargoUI() }, specs: { cargo: spec, home, frame: frameSpec }, timers: [], say() {}, goto() {}, play() {}, at(ms, fn) { this.timers.push({ ms, fn }); }, now: () => T0, motion: () => true, save() {} };
   INTENTS.cargo.intent(h3, "room", "confirm"); h3.timers.forEach((t) => t.fn()); assert.equal(cargoBuild({ st: st3, sv: h3.sv, settings: loose, docked: true, ui: h3.ui }, spec, home, frameSpec).props.regions.report.gathered.top, "with the top-up");
