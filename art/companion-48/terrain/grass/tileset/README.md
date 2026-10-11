@@ -11,13 +11,14 @@
   - 49 pieces: faces 1, 2 and 3 cells wide and two cells tall (one level, at b1's own scale), plus caps.
     - Each cap's outer side is cut to a rounded, lumpy column with a dark outline.
   - 4 foot pieces (`tools/build-wall-feet.py`, run after `cut-walls.py`): grass clumps and pebbles that break a wall's bottom edge.
-  - Side faces (`tools/build-side-faces.py`, run after `cut-walls.py`): a rock column down a plateau's west side (32 px, lit) or east side (20 px, shaded).
+  - Side faces (`tools/build-side-faces.py`, run after `cut-walls.py`): a rock column down a plateau's west side (44 px, lit) or east side (28 px, shaded), its outer edge cut into 2–3 rounded boulders a cell.
     - One cell tall, three variants a side, plus rounded top and foot ends. Cut from the walls' own rock.
   - Each piece's edges are cross-faded over 16 px to one join strip, so any piece joins any other. Seam step 0.31–0.36.
   - The pieces use only the meadow palette.
 - **`water/`** (made by `tools/build-water-quarters.py`): the accepted two-tone pond as pieces.
   - Quarters for water cells, in the lips' 47-blob scheme, two frames each, plus the body fill.
-  - Macro outer corners (2 × 2 cells, radius 60 or 42) round a pond's lobes, as b1's do. The shore swells 1 px per quarter, so mirrored quarters can't zigzag.
+  - Macro outer corners (2 × 2 cells, radius 60 or 42) round a pond's lobes, as b1's do.
+  - Lobe pieces (2 cells along a straight shore, `lobe-<side>-<out|in>`) bulge the bank 10 px out or in on a half sine, so a pond's sides are curves. The shore swells 1 px per quarter, so mirrored quarters can't zigzag.
   - The bank is inset 18 px, with corners rounded to 26 and 18 px and a wavering edge. Inside it: a 2 px foam line (continuous, broken every 23 px), the wet line, the shallow band and the body.
 - **`stairs/`** (made by `tools/cut-stairs.py`): the phase 1 stair pieces, under the spec's §6.1 names. They are cut from b1's own lower stair and its trodden earth.
   - `wide2x1-1`, `-2`: the south stair, 2 × 2 cells (one level). It is rebuilt from 7 of b1's 11 steps at b1's own pitch, between b1's stringers.
@@ -29,7 +30,7 @@
   - The bridge is turned to run north to south and is two cells wide.
   - Its posts are redrawn upright in b1's 3/4 view: an oval cap, a round shaded front and a dark outline. The sheet drew them as side-view logs.
   - The posts' contact shadows are in `props/shade/`.
-- **`proof/`** (made by `tools/tileset-map.py`): test map 7, built from tiles only on b1's own layout, beside b1 at the same size (`beside-b1-1x.png`).
+- **`proof/`** (made by `tools/tileset-map.py`): test map 8, built from tiles only on b1's own layout, beside b1 at the same size (`beside-b1-1x.png`).
   - The layout is b1's, read off its materials and snapped to the cell grid.
     - b1's upper steps are about 60 px, where one level here is 96 px. Its plateaus' south rims therefore sit up to a cell from b1's.
   - The lawn is on b1's own seven-tone ramp: the band layer (b1's own bands) plus fleck tiles (b1's lawn less its bands, three 96 px variants).
@@ -39,10 +40,9 @@
   - Foot pieces sit along every wall's bottom edge, with small boulders and ferns.
   - Props stand on contact shadows. b1's island is used as a macro piece.
   - The pond's lobes round on macro corners.
-  - **Test map 7 is not signed.**
+  - **Test map 8 is not signed.**
     - Holds at 1× beside b1: the pond, the lawn, the props, the wall feet and ends.
     - The gaps:
       - The pond's lobes are rounded rectangles, where b1's are free curves.
-      - The side faces read thinner than b1's top-left column, which is chunky pillars about 45 px wide.
-      - The stream runs straight. b1's bends along its side cliff.
+      - The stream bends along the plateau's side, but in one-cell steps (a dog-leg), where b1's curves.
       - The side stairs are the south stair turned. They read as stairs but aren't yet drawn for their own view.

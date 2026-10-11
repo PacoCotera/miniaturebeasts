@@ -1,10 +1,10 @@
 """The meadow's side faces: the rock seen on a plateau's west or east side in the 3/4 top-down view (the camera looks north,
 so a side face shows as a narrow column, as b1 draws at its top left and along its stream).
 
-Each strip is one cell (48 px) tall, 32 px wide on a west side (in the light, as b1's column) and 20 px on an east side, and tiles down a plateau's side. It is cut from the rock of the wall faces
+Each strip is one cell (48 px) tall, 44 px wide on a west side (in the light, as b1's chunky column) and 28 px on an east side, and tiles down a plateau's side. It is cut from the rock of the wall faces
 (tileset/walls, their 3-wide pieces, rows clear of the turf), so its stones are the walls' own; it is made seamless top to bottom
 by cross-fading its last 10 rows into its first, then snapped to the meadow palette. A west side faces the light (top left) and
-is lifted 12 %; an east side is in shade, 22 % down. The outer edge is cut on a lumpy 1-4 px profile with a dark outline.
+is lifted 12 %; an east side is in shade, 22 % down. The outer edge is cut into 2-3 rounded boulders a cell (a 1-8 px profile, 0 at the ends so strips tile) with a dark outline.
 End pieces: side-<w|e>-top (the strip's top rounded on 8 px, under the plateau's rim), side-<w|e>-foot (its foot rounded
 on 12 px, with a dark base line) and side-<w|e>-tail (the side's last two rows beside a face's outer end, 96 px, ending on
 the face's foot line: stone, then a dark base; phase 6 name face/side-e-tail, face/side-w-tail). Three variants per side.
@@ -25,7 +25,7 @@ def snap(rgb):
     X = lab(rgb.reshape(-1, 3)); return ((X[:, None] - PL[None]) ** 2).sum(-1).argmin(1).reshape(rgb.shape[:2])
 wj = json.load(open(os.path.join(wd, "walls.json"))); wj["pieces"] = [p for p in wj["pieces"] if p.get("kind") not in ("side", "side-end")]
 faces = sorted(p["file"] for p in wj["pieces"] if p.get("kind") == "face" and p["cells"][0] == 3)
-Hh, FW = 48, 10; WID = {"w": 32, "e": 20}
+Hh, FW = 48, 10; WID = {"w": 44, "e": 28}   # chunky pillars, as b1's top-left column (~45 px)
 rng = np.random.RandomState(2020)
 def save(a, name, kind, side, extra=None):
     rgba = np.zeros(a.shape + (4,), np.uint8); m = a >= 0; rgba[m, :3] = PAL[a[m]]; rgba[m, 3] = 255
@@ -46,7 +46,9 @@ for side, gain in (("w", 1.12), ("e", .78)):
         for i in range(FW):                                          # seamless: the last 10 rows fade into the first
             t = (i + 1) / (FW + 1); strip[Hh + i - FW] = strip[Hh + i - FW] * (1 - t) + strip[i] * t
         rgb = np.clip(strip[:Hh] * gain, 0, 255); a = snap(rgb)
-        prof = np.clip(np.round(2.5 + 1.5 * np.sin(np.arange(Hh) * 2 * np.pi / Hh * (n + 1) + n)), 1, 4).astype(int)   # periodic: tiles
+        yy_ = np.arange(Hh)                                            # boulders: 2-3 rounded bulges a cell, 0 at the ends (tiles)
+        k_ = (2, 3, 2)[n]; bump = np.abs(np.sin(np.pi * k_ * yy_ / Hh))
+        prof = np.clip(np.round(1 + 7 * (1 - bump) ** 1.5), 1, 8).astype(int)
         save(outline(a, side, prof), f"side-{side}-{n + 1}", "side", side, {"cells": [0, 1], "variant": n + 1})
     base = snap(np.clip(np.asarray(Image.open(os.path.join(wd, faces[0])).convert("RGB")).astype(float)[22:70, 40:40 + W] * gain, 0, 255))
     top = base[:24].copy(); prof = np.full(24, 2)

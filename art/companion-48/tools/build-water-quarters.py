@@ -8,7 +8,8 @@ straight runs waver by a 24-periodic offset that is 0 at the quarter's ends. The
   water side                     2 px foam (a continuous line, broken every 23 px), 1 px wet line, a shallow band to 9 px, then the body
 Two frames: frame 2 moves the foam along the edge (the foam animates; nothing else does).
 Macro outer corners (2 x 2 cells, radius 60 or 42) round a pond's lobes as b1's do; their straight ends join the edge quarters.
-Writes water/q-<quad>-<state>-f<n>.png, water/macro-<quad>-outer-r<radius>-f<n>.png, water/fill-body.png and water.json.
+Lobe pieces (2 cells along a straight shore) curve the bank out or in by 10 px on a half sine, so a pond's sides are free curves.
+Writes water/lobe-<n|s|w|e>-<out|in>-f<n>.png, water/q-<quad>-<state>-f<n>.png, water/macro-<quad>-outer-r<radius>-f<n>.png, water/fill-body.png and water.json.
 usage: python3 -I build-water-quarters.py PALETTE_JSON OUT_DIR"""
 import json, os, sys
 import numpy as np
@@ -77,6 +78,25 @@ def macro(quad, frame, RM):
                 elif d <= 9: q[y, x] = SHAL
     return q
 
+from scipy import ndimage as nd
+def render(land, frame):
+    """the bank and bands for any land mask with a 16 px margin round the piece (the quarters' rules, distances by transform)"""
+    dw = nd.distance_transform_edt(land); dl = nd.distance_transform_edt(~land)    # land px: distance to water; water px: to land
+    hh, ww = land.shape[0] - 32, land.shape[1] - 32; q = np.full((hh, ww), BODY, int)
+    yy, xx = np.mgrid[16:16 + hh, 16:16 + ww]
+    L = land[16:16 + hh, 16:16 + ww]; d1 = np.floor(dw[16:16 + hh, 16:16 + ww]).astype(int); d2 = np.floor(dl[16:16 + hh, 16:16 + ww]).astype(int)
+    q[L] = np.where(d1[L] > 8, -1, np.where(d1[L] >= 7, EDGE, np.where(d1[L] >= 3, SAND, SAND2)))
+    W_ = ~L; foam = W_ & (d2 <= 2); q[foam] = np.where((xx[foam] + yy[foam] + 4 * frame) % 23 < 3, WET, FOAM)
+    q[W_ & (d2 == 3)] = WET; q[W_ & (d2 > 3) & (d2 <= 9)] = SHAL
+    return q
+AMP = 10                                                            # the lobe's bulge: 10 px at the middle of two cells, 0 at its ends
+def edge_macro(side, sign, frame):
+    """a straight shore two cells long (96 px) as one curve: the bank bulges out (sign +1) or bays in (-1) on a half sine"""
+    U, V = np.meshgrid(np.arange(-16, 112), np.arange(-16, 64)); u = np.clip(U, 0, 96)
+    land = V < INSET + sign * AMP * np.sin(np.pi * u / 96)       # the land to the north, normalised
+    q = render(land, frame)                                       # 96 x 48, land north
+    return {"n": q, "s": np.flipud(q), "w": q.T, "e": np.fliplr(q.T)}[side]
+
 atlas = []
 def save(a, name):
     rgba = np.zeros(a.shape + (4,), np.uint8); m = a >= 0; rgba[m, :3] = PAL[a[m]]; rgba[m, 3] = 255
@@ -93,6 +113,11 @@ for quad in ("nw", "ne", "se", "sw"):
         for f in (1, 2):
             nm = f"macro-{quad}-outer-r{rm}-f{f}"; save(macro(quad, f - 1, rm), nm)
             atlas.append({"name": f"meadow/shore/water-{nm}", "file": nm + ".png", "kind": "shore-macro", "cells": [2, 2], "quad": quad, "radius": rm, "frame": f})
+for side in "nswe":
+    for sign, tag in ((1, "out"), (-1, "in")):
+        for f in (1, 2):
+            nm = f"lobe-{side}-{tag}-f{f}"; save(edge_macro(side, sign, f - 1), nm)
+            atlas.append({"name": f"meadow/shore/water-{nm}", "file": nm + ".png", "kind": "shore-lobe", "cells": [2, 1] if side in "ns" else [1, 2], "side": side, "bulge": tag, "frame": f})
 save(np.full((48, 48), BODY, int), "fill-body"); atlas.append({"name": "meadow/band/fill-body", "file": "fill-body.png", "kind": "band", "cells": [1, 1]})
 json.dump({"biome": "meadow", "tile": 48, "quarter": 24, "tones": {"body": cols[BODY]["hex"], "shallow": cols[SHAL]["hex"]}, "pieces": atlas},
           open(os.path.join(out, "water.json"), "w"), indent=1)

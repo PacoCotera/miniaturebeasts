@@ -567,7 +567,7 @@
    "kind": "side",
    "side": "w",
    "px": [
-    32,
+    44,
     48
    ],
    "cells": [
@@ -582,7 +582,7 @@
    "kind": "side",
    "side": "w",
    "px": [
-    32,
+    44,
     48
    ],
    "cells": [
@@ -597,7 +597,7 @@
    "kind": "side",
    "side": "w",
    "px": [
-    32,
+    44,
     48
    ],
    "cells": [
@@ -612,7 +612,7 @@
    "kind": "side-end",
    "side": "w",
    "px": [
-    32,
+    44,
     24
    ],
    "end": "top"
@@ -623,7 +623,7 @@
    "kind": "side-end",
    "side": "w",
    "px": [
-    32,
+    44,
     24
    ],
    "end": "foot"
@@ -634,7 +634,7 @@
    "kind": "side-end",
    "side": "w",
    "px": [
-    32,
+    44,
     96
    ],
    "end": "tail",
@@ -649,7 +649,7 @@
    "kind": "side",
    "side": "e",
    "px": [
-    20,
+    28,
     48
    ],
    "cells": [
@@ -664,7 +664,7 @@
    "kind": "side",
    "side": "e",
    "px": [
-    20,
+    28,
     48
    ],
    "cells": [
@@ -679,7 +679,7 @@
    "kind": "side",
    "side": "e",
    "px": [
-    20,
+    28,
     48
    ],
    "cells": [
@@ -694,7 +694,7 @@
    "kind": "side-end",
    "side": "e",
    "px": [
-    20,
+    28,
     24
    ],
    "end": "top"
@@ -705,7 +705,7 @@
    "kind": "side-end",
    "side": "e",
    "px": [
-    20,
+    28,
     24
    ],
    "end": "foot"
@@ -716,7 +716,7 @@
    "kind": "side-end",
    "side": "e",
    "px": [
-    20,
+    28,
     96
    ],
    "end": "tail",

@@ -1,4 +1,4 @@
-"""Test map 6 for the meadow tileset: b1's own layout, built from tiles only, beside b1 at the same size (864 x 1152).
+"""Test map 8 for the meadow tileset: b1's own layout, built from tiles only, beside b1 at the same size (864 x 1152).
 
 The layout is b1's, read off b1's materials (its plateaus, walls, pond, stream, stairs and bridge) and snapped to the 48 px cell
 grid that the pieces live on. b1 is a painting and is not consistent in scale: its upper steps are about 60 px, where one level is
@@ -21,7 +21,7 @@ Pieces used:
   stairs        tileset/stairs: wide2x1 per level of drop (two stacked for b1's two-level stair), the landing on the row
                 above, the foot below
   pond, stream  tileset/water: two flat tones, a continuous foam line with breaks, the wet line, a sand bank; a lobe's outer
-                corners are macro pieces (2 x 2 cells, radius 60)
+                corners are macro pieces (2 x 2 cells, radius 60 or 42); straight shores take 2-cell lobe pieces (a 10 px bulge out or in)
   props         tileset/props (bushes, ferns, boulders, reeds, flowers, the bridge) at b1's places, each with a flat contact
                 shadow; b1's island as a macro piece
 Writes test-map-1x.png, -3x.png and beside-b1-1x.png.
@@ -65,9 +65,9 @@ def majority(m, n):
     return m
 
 # ---- b1's layout on cells (18 x 24): levels 0-3, w water (a face is drawn in the cells under its drop, at the lower level)
-HM = ["113333333333331ww0"] * 3 + ["111111112222221ww0"] * 4 + ["111111111111111ww0"] * 3 + [
-      "000000000001111ww0",
-      "000000000001111ww0",
+HM = ["113333333333331ww0"] * 3 + ["111111112222221ww0"] * 3 + ["1111111122222211ww"] + ["1111111111111111ww"] * 3 + [
+      "0000000000011111ww",
+      "0000000000011111ww",
       "000000000001111ww0",
       "000000000001111ww0",
       "000000000001111ww0",
@@ -341,6 +341,21 @@ for r in range(R):
         for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "sw": (24, 0), "se": (24, 24)}.items():
             Y, X = r * 48 + y, c * 48 + x; pq = WQ[(q, wstate(r, c, q))]; img[Y:Y + 24, X:X + 24] = np.where(pq >= 0, pq, img[Y:Y + 24, X:X + 24])
 
+# lobes: along a straight shore, each pair of water cells whose land side is the same and whose other quarters are open water
+# takes one 2-cell lobe piece, bulging out and in by turns, so a pond's sides curve as b1's
+LOBE = {(sd, t): to_idx(Image.open(os.path.join(WD, f"lobe-{sd}-{t}-f1.png"))) for sd in "nswe" for t in ("out", "in")}
+QS = lambda r, c: {q: wstate(r, c, q) for q in ("nw", "ne", "sw", "se")}
+WANT = {"n": {"nw": "edgeh", "ne": "edgeh", "sw": "fill", "se": "fill"}, "s": {"sw": "edgeh", "se": "edgeh", "nw": "fill", "ne": "fill"},
+        "w": {"nw": "edgev", "sw": "edgev", "ne": "fill", "se": "fill"}, "e": {"ne": "edgev", "se": "edgev", "nw": "fill", "sw": "fill"}}
+used = set(); k_l = 0
+for sd in "nswe":
+    for r in range(R):
+        for c in range(Cn):
+            r2, c2 = (r, c + 1) if sd in "ns" else (r + 1, c)
+            if not (r2 < R and c2 < Cn) or (r, c) in used or (r2, c2) in used or (r, c) in inmac or (r2, c2) in inmac: continue
+            if not (WAT[r, c] and WAT[r2, c2] and QS(r, c) == WANT[sd] and QS(r2, c2) == WANT[sd]): continue
+            pz = LOBE[(sd, ("out", "in")[k_l % 2])]; k_l += 1; Y, X = r * 48, c * 48; hh, ww = pz.shape
+            img[Y:Y + hh, X:X + ww] = np.where(pz >= 0, pz, img[Y:Y + hh, X:X + ww]); used |= {(r, c), (r2, c2)}
 # ---- stairs: the stair pieces (tileset/stairs, tools/cut-stairs.py): a wide2x1 per level of drop, the landing on the row above,
 #      the foot on the row below
 SD = os.path.join(os.path.dirname(walls_d), "stairs")

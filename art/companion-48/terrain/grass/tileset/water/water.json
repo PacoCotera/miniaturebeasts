@@ -520,6 +520,198 @@
    "frame": 2
   },
   {
+   "name": "meadow/shore/water-lobe-n-out-f1",
+   "file": "lobe-n-out-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "out",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-out-f2",
+   "file": "lobe-n-out-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "out",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-in-f1",
+   "file": "lobe-n-in-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "in",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-n-in-f2",
+   "file": "lobe-n-in-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "n",
+   "bulge": "in",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-out-f1",
+   "file": "lobe-s-out-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "out",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-out-f2",
+   "file": "lobe-s-out-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "out",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-in-f1",
+   "file": "lobe-s-in-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "in",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-s-in-f2",
+   "file": "lobe-s-in-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    2,
+    1
+   ],
+   "side": "s",
+   "bulge": "in",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-out-f1",
+   "file": "lobe-w-out-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "out",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-out-f2",
+   "file": "lobe-w-out-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "out",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-in-f1",
+   "file": "lobe-w-in-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "in",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-w-in-f2",
+   "file": "lobe-w-in-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "w",
+   "bulge": "in",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-out-f1",
+   "file": "lobe-e-out-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "out",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-out-f2",
+   "file": "lobe-e-out-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "out",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-in-f1",
+   "file": "lobe-e-in-f1.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "in",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-lobe-e-in-f2",
+   "file": "lobe-e-in-f2.png",
+   "kind": "shore-lobe",
+   "cells": [
+    1,
+    2
+   ],
+   "side": "e",
+   "bulge": "in",
+   "frame": 2
+  },
+  {
    "name": "meadow/band/fill-body",
    "file": "fill-body.png",
    "kind": "band",
