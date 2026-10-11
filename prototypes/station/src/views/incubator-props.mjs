@@ -2,7 +2,7 @@
 // ids, strings and flags; no rectangle, no measure, no layout rule, no colour (the words place everything from incubator.json). The output is plain JSON:
 // { props (state, regions, focus), line (the bottom line, for the frame), requests (the pictures the host makes ready before the props) }.
 // Runs in Node, tested there (tests/incubator-props.test.mjs); the shape is incubator.props.json.
-//   m: { st, sv, settings, now, ui: { inc: { hatch } }, lamp: lampText of the newest mibi (host), spec incubator.json, pods pods.json }
+//   m: { st, sv, settings, now, ui: { inc: { hatch } }, spec incubator.json, pods pods.json }
 import * as S from "../state.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot, maxTraits } from "./pods-props.mjs";

@@ -21,7 +21,6 @@ import { incubatorBuild } from "./views/incubator-props.mjs";
 import { incubatorTick } from "./intents/incubator.mjs";
 import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
-import { lampText } from "./caddy.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
 import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
@@ -151,10 +150,9 @@ export function createBody() {
 }
 
 // ---- Incubator ----
-// The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). The lamp is the hatched mibi's painting, as Home's.
+// The bud's wait and the hatch: the bud is the rules', the hatch (the juvenile stepping out) the UI's (UI.inc.hatch). No lamp: Grow paints nothing (decisions 10-11 14:17).
 export function incubatorBody() {
-  const hm = UI.inc?.hatch ? mibiById(UI.inc.hatch.mibi) : null, B = G.st.bud;   // the lamp: the hatched mibi's painting, or the ready bud's
-  return incubatorBuild({ st: G.st, settings: G.settings, ui: UI, ...living(), lamp: hm ? lampText(hm) ?? "" : B && S.budReady(G.st, G.settings, Date.now()) ? lampText(B) ?? "" : "" }, SPECS.incubator, SPECS.pods);
+  return incubatorBuild({ st: G.st, settings: G.settings, ui: UI, ...living(), lamp: "" }, SPECS.incubator, SPECS.pods);
 }
 
 // ---- the props of the screen on the page ----

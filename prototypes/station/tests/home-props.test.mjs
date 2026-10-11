@@ -177,3 +177,9 @@ test("Home's residents with moving sets fit home.props.json: moving (the walk an
   assert.ok(b.props.regions.bed.sleepers.every((s) => s.moving && s.moving.nap), "the sleepers name their nap atlas");
   const off = build(sc.docked.st, sc.docked.sv, { time: hm(12), restRules: REST, motionSets: false }); assert.ok(off.props.regions.residents.every((r) => !r.moving), "the play gate: no moving set without its masters or the developer switch");
 });
+test("a mibi with no painting changes nothing on Home: the Incubator is empty with its lamp off and nobody waits (Grow paints nothing)", () => {
+  const { st, sv } = scenes().docked; assert.ok(st.mibis.every((m) => !m.paint), "no mibi has a painting");
+  const r = build(st, sv).props.regions;
+  assert.equal(r.incubator.state, "empty"); assert.equal(r.incubator.lamp, "off");
+  assert.ok(r.residents.every((p) => p.waiting === false) && r.bed.sleepers.every((p) => p.waiting === false), "no person has waiting: true");
+});

@@ -91,11 +91,11 @@ test("the targets are the residents in bay order (sleepers in their bays' places
   { const { w, sv } = S0.empty, b = build(w, sv); assert.equal(b.line.ok, null); assert.equal(b.line.subject, "nobody lives here yet"); assert.equal(b.line.back, "Home"); }
 });
 
-test("the window's picture is Idle's painting of the light (no slot of its own), the painting waiting on its way is the line's context", () => {
+test("the window's picture is Idle's painting of the light (no slot of its own), a painting on its way is no longer the line's context (Grow paints nothing)", () => {
   const { w, sv } = scenes().docked;
   for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }), id = b.props.regions.window.picture; assert.equal(id, `idle-vivarium-${light}:1024x568`); assert.ok(b.requests.some((r) => r.id === id && r.kind === "slot")); assert.ok(!b.requests.some((r) => /vivarium-whole/.test(r.id)), "no register entry of its own"); }
   const id = w.st.mibis[0].id; w.st.mibis[0].paint = { state: "sent" };
-  assert.equal(build(w, sv, { focus: "resident." + id }).line.subject, "its painting is on its way");
+  assert.notEqual(build(w, sv, { focus: "resident." + id }).line.subject, "its painting is on its way");
 });
 
 test("a mibi that grows up changes every picture id from :juvenile: to :adult: with the tiles' and sleepers' size unchanged and a resident's following its stage (the whole's residents, the sleepers and the tiles)", () => {

@@ -133,11 +133,11 @@ test("the strip: a tile a bay, the housed mibis in bay order then the free bays,
   assert.equal(build(S0.twelve.w, S0.twelve.sv).props.regions.tiles.items.length, 12);
 });
 
-test("the window: the near Vivarium of the light, its master named by habitat.json light.pictures; the resident's picture the mibi at the box; the lamp while its painting is on its way", () => {
+test("the window: the near Vivarium of the light, its master named by habitat.json light.pictures; the resident's picture the mibi at the box; no waiting lamp whatever the painting's state (Grow paints nothing)", () => {
   const { w, sv } = scenes().rest;
   for (const light of ["dawn", "day", "dusk", "night"]) { const b = build(w, sv, { light }); assert.equal(b.props.regions.glass.picture, `vivarium-near-${light}-544x408`); assert.ok(b.requests.some((r) => r.id === `vivarium-near-${light}-544x408` && r.kind === "slot")); }
   const m = w.st.mibis[0], b = build(w, sv); assert.equal(b.props.regions.resident.picture, `mibi:${m.id}:adult:304x312`); assert.equal(b.props.regions.resident.waiting, false);
-  m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, true); assert.equal(x.line.subject, "its painting is on its way");
+  m.paint = { state: "sent" }; const x = build(w, sv); assert.equal(x.props.regions.resident.waiting, false); assert.notEqual(x.line.subject, spec.strings.painting);
 });
 
 test("the bottom line: the resident greets (in the meet it names), the name renames, the species word opens the guide, a tile reads as its mibi; ← Vivarium", () => {

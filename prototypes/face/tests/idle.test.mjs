@@ -56,7 +56,7 @@ for (const [name, o] of Object.entries(SCENES)) test(`Idle, ${name}: draws witho
   const lg = logOf(f); assert.deepEqual(departures(lg, frameSpec), []);
   const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
   assert.ok(JSON.stringify(b.props).length < 32 * 1024);
-  if (name === "waiting lamps") assert.equal(b.props.regions.residents.filter((r) => r.waiting).length, 2, "the two whose paintings are on their way show the lamp, the other two have landed");
+  if (name === "waiting lamps") assert.equal(b.props.regions.residents.filter((r) => r.waiting).length, 0, "no resident shows a waiting lamp, whatever its painting's state (Grow paints nothing)");
 });
 test("the departure check bites: a resident leaving the walk ground, the strip moved, a ring and a frame word are each found", { skip }, async () => {
   const f = await start(scene({ adults: 3, crates: 1 })), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, frameSpec); };

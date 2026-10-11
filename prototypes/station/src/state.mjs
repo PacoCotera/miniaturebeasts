@@ -124,6 +124,7 @@ export function migrate(st, now = Date.now(), sv = null) {
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
   for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed"]) if (!Array.isArray(st[k])) st[k] = [];
+  st.outbox = st.outbox.filter((o) => o.sitting);   /* the Caddy is called only for the sitting's portrait: an old Grow or Cross entry never goes (additive, no schema bump) */
   if (st.doorAt === undefined) st.doorAt = null;   /* the sitting's door: null until it first opens on this save (sitting.mjs openSittingDoor); additive, no schema bump */
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
@@ -679,7 +680,7 @@ export function growBlock(st, p, choices = {}, settings = DEFAULT_SETTINGS, clas
   const cost = growCost(st, choices, settings); return shortText(st, cost.e, cost.d, cost.s);
 }
 // Grow: one pod becomes one fixed individual; the stamp is pressed; the pod goes into the incubator; the
-// genome joins the outbox for the Caddy service (M3). Validated whole before anything is spent.
+// Grow paints nothing: the mibi is drawn from its layers (decisions 10-11 14:17); the own painting is made only at the sitting. Validated whole before anything is spent.
 export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Date.now()) {
   const b = growBlock(st, p, choices, settings); if (b) return { ok: false, msg: "Grow it · " + b };
   const fr = frameFor(p), cost = growCost(st, choices, settings), changed = changedTraits(choices), genome = founderGenome(p, choices), sha = genomeSha(genome);
@@ -690,7 +691,6 @@ export function grow(st, p, choices = {}, settings = DEFAULT_SETTINGS, now = Dat
   st.bud = { kind: "founder", species: fr.species.id, sp: p.sp, gs: p.gs, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: first, parents: null, from: { n: p.n || 0, g: p.g, how: p.how, podId: p.id }, read, shaped: changed, early: false };
   st.firstMibi = false;
   st.tray = st.tray.filter((q) => q !== p); fillWells(st, settings, now);
-  st.outbox.push({ sha, species: fr.species.id, genome, at: now });
   logEv(st, "Grew " + aAn(fr.species.name) + " founder · " + st.bud.code + " · " + plural(minutes, "minute") + (changed.length ? " · shaped " + changed.join(", ") : "") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
@@ -842,7 +842,6 @@ export function doCross(st, sv, a, b, settings = DEFAULT_SETTINGS, now = Date.no
   const minutes = budMinutes(st, 0, settings);
   st.bud = { kind: "cross", species: fr.species.id, sp: a.sp, gs: null, genome, sha, code: nameCode(sha), start: now, minutes, firstEver: !!st.firstMibi, parents: [snap(a), snap(b)], kinship: k, from: { n: 0, g: a.from?.g ?? null, how: "cross", podId: null, of: [a.name, b.name] }, read, shaped: [], early: false };
   st.firstMibi = false;
-  st.outbox.push({ sha, species: fr.species.id, genome, at: now });
   logEv(st, "Crossed " + a.name + " × " + b.name + " · " + st.bud.code + " · kinship " + Math.round(k * 1000) / 1000 + " · " + plural(minutes, "minute") + " · " + spendText(cost.e, cost.d, cost.s));
   return { ok: true, bud: st.bud, cost };
 }
