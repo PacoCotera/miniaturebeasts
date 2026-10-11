@@ -4,6 +4,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
+import * as W from "../src/world.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 
@@ -141,7 +142,7 @@ test("old saves: no trips list, an expedition without the new fields", () => {
   const saved = { v: 8, seed: 7, cr: [], mibis: [], wid: "w7", retSeen: [], bay: [] }, store = { "mb-save-v8": JSON.stringify(saved) };
   const ctx = { localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; }, removeItem: k => { delete store[k]; } },
     SAVE_KEY: "mb-save-v8", SAVE_V: 8, V7_KEY: "v7", OLD_SAVE_KEYS: [], migrate7: o => o,
-    layoutCache: { clear() {} }, genWorld() {}, indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2 };
+    layoutCache: { clear() {} }, genWorld() {}, GENS: [1], indexCreatures() {}, S: null, CARRY_MAX: 3, JUVENILE_TURNS: 2 };
   const l = load(["load", "migrateCarried", "normalizeCare"], ctx);
   assert.equal(l.load(), true);
   assert.deepEqual(plain(vm.runInContext("S.trips", l.ctx)), []);
@@ -162,8 +163,8 @@ test("End expedition while docked at the start", () => {
   const writeSt = () => { store["mb-save-v8"] = JSON.stringify(Object.assign({}, S, { st })); };
   const sv = () => JSON.parse(store["mb-save-v8"]);
   const t = load(["endExpedition", "holdEmpty", "exploredAny", "carriedMibis", "mibiById", "save", "storedSt", "stPart", "isDocked", "syncStation", "carryApply",
-    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "clamp", "fieldFrozen", ...TRIP], {
-    S, window: {}, FX: {}, NOW: 0, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 8, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
+    "normalizeCare", "releasedIds", "canWalk", "startBlock", "canSend", "fieldFrozen", ...TRIP], {
+    S, window: {}, FX: {}, NOW: 0, clamp: W.clamp, DOCK_TEXT: { tierMid: "" }, SAVE_KEY: "mb-save-v8", SAVE_V: 8, localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = v; } },
     G: { land: [] }, LAND_NAME: [], SPECIES: [{ name: "Loika" }, { name: "Tuikis" }], TIER_NAME: ["", "starter"], BAY: 3, CARRY_MAX: 3, JUVENILE_TURNS: 2,
     CARE_TEXT: { left: n => n, took: n => n, fullRefused: n => n, notch: n => n }, reachCounts: () => ({ surveyed: 1, total: 9 }),
     walkTier: () => 1, walkYield: () => 2, addMat: (k, n) => n, passable: () => true, dropPods: () => {}, depotLit: () => false, reveil: () => {},

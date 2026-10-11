@@ -60,7 +60,10 @@ jobs:
       - name: Check the pages parse
         run: |
           set -euo pipefail
-          node -e "const fs=require('fs');for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script(?![^>]*src)[^>]*>([\s\S]*?)<\/script>/g)){new Function(m[1]);}}console.log('scripts parse')" $(find _site -name '*.html')
+          node -e "const fs=require('fs'),os=require('os'),path=require('path'),{execFileSync}=require('child_process');const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'parse-'));let n=0;
+          for(const f of process.argv.slice(1)){const s=fs.readFileSync(f,'utf8');for(const m of s.matchAll(/<script(?![^>]*src)([^>]*)>([\s\S]*?)<\/script>/g)){
+           if(/type=[\"']module[\"']/.test(m[1])){const t=path.join(tmp,(n++)+'.mjs');fs.writeFileSync(t,m[2]);execFileSync(process.execPath,['--check',t],{stdio:'inherit'});}else new Function(m[2]);}}
+          console.log('scripts parse')" $(find _site -name '*.html')
       - name: Playwright's Chromium (cached by the Playwright version)
         # The browser download was the one step whose time varied (30 s to 2 m 35 s). The key's 1.49.1 moves with playwright@1.49.1 below.
         uses: actions/cache@v4

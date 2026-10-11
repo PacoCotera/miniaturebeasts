@@ -203,7 +203,7 @@ The style guide's measured checks run in CI. The face's test mode makes them exa
 
 ## 6. Migration path
 
-Each milestone ships to the sandbox and plays from a fresh world. The save doesn't change in any of them.
+Each milestone ships to the sandbox and plays from a fresh world. The save changes in one way only: C1 adds `S.gen`, the world's generator, as one additive field under `SAVE_V` 8 with no version bump.
 
 | | Ships | Note |
 | --- | --- | --- |
@@ -211,10 +211,12 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | **L0 to L2** | The toolchain, the frame and Pods drawn by the LVGL face (§8) | The face's first screen |
 | **L2.0, the Station's slots, then L3** | Every Station screen on the LVGL face, in lvgl-switch.md §3's order: L2.0 the platform and Pods on C words, with B4a removing the JavaScript face (the sandbox boots the LVGL face; a screen not yet on it shows "not built yet"); then every section's overview: Home, Cargo and Idle; Create and the Incubator; the Vivarium, whole and up close, with the namer; the Library spread; the Probe bench; then the deeper levels: Cross, the Book and the field guide, the Sitting, the Vivarium's remaining states. L3 closes out the switch | Each slot passes the gate of lvgl-switch.md §4 |
 | **M6 Sitting and the whole journey** | On the face; the Sitting's first screen in its slot (lvgl-switch.md §4, slot 9) | |
-| **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change | Independent of the Station |
+| **C1 Companion split** | The inline script into modules (rules, world, state, renderer, screens) with no visible change. First slice: `src/world.mjs`, the seeded world and places (generator 1 moved unchanged; `genWorld(seed, gen)`, `genPlace(G, seed, key)`), proven by golden vectors in `tests/world-vectors.json` that the Companion's C port carries as data. New generators are integer-only; `S.gen` (absent means 1) selects the generator, and a save never changes generator. | Independent of the Station |
 | **C2 Companion on the face** | HUD 32, view 532, line 36; Mibi 7×9; the map viewport for 48 px tiles, with the art redraw; the `common/` words under the Companion's profile, with its indexed world view inside (lvgl-switch.md §2.2) | Lands with the 48 px redraw |
 | **H0 Host-build proof** | The native builds of the face: headless, SDL and aarch64 under qemu-user, with framebuffer hashes equal to WebAssembly's (lvgl-switch.md §2.9) | Part of L2.0. No hardware until the loop is complete in software |
 | **P1 Port** | The **Station** (S1: the face's DRM platform on the Pi, the Node host, the image cache, the save file, GPIO keys), then the Companion and the Caddy firmware from the C words, specs, assets and test vectors | **After the loop is stable.** Hardware work starts here |
+
+**The world's generator.** A save never changes generator. `S.gen` is set once, when the world is created, and a save without it is generator 1. A new generator reaches players only through New world, which gives the world a new `wid`. The Station never reads `gen`. `S.gen` sits under `SAVE_V` 8 with no version bump.
 
 **The Station at the port.** The Station's screens are built once, on the LVGL face in the sandbox (L2.0 to L3), and the same C runs on the Pi. P1 adds no Station screen: only the platform layer (DRM display, keys), the Node host over the socket, the image cache and the save file. Against S2, it avoids porting the genome, rig, stamp, cross and Caddy client and keeping them twice. The face is built once for three devices.
 
@@ -227,7 +229,7 @@ Each milestone ships to the sandbox and plays from a fresh world. The save doesn
 | Node's memory or the rig's speed on the Pi 4 proves too much | Rig work is background and cached by genome hash; the seam lets S2 replace the logic process without touching the face; measured when hardware work starts (lvgl-switch.md §2.10) |
 | Inter from LVGL's fonts reads differently from the browser's | The sandbox draws with LVGL's fonts, so the type judged in the sandbox is the type the device draws |
 | The device port differs from the sandbox's pixels | The same C face on both; golden framebuffer hashes equal on WebAssembly, native x86-64 and aarch64 |
-| Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay |
+| Splitting the Companion breaks the playable page | C1 makes no visible change; the smoke and parse checks stay (the parse check reads module scripts with `node --check`); golden world vectors for each generator |
 | The Station palette moves while art and layouts settle (`ui/palettes/station.json`, 62 colours, painted art on top) | The renderer takes the palette as data (the `palette` message); the UI designer and the art director set it; the check follows |
 
 ## 7. The device split in brief
