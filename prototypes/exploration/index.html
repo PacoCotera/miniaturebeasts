@@ -359,6 +359,14 @@ const SPECIES = [
     ab: 'nose', abText: 'sniffs out buried pods', born: 'a round Untuva', learn: 'Untuvas shed after a full meal.',
     col: { body: 'coral', light: 'peach', shade: 'red', dark: 'wine' } },
 ];
+// A species the Companion has no entry for (a Station species beyond the three): no habitat, no diet, no ability, no art.
+const SP_OTHER = Object.freeze({ other: true, name: null, plural: null, hab: [], notice: [2, 4], flee: 2, eats: false, shedP: 0, how: null,
+  ab: null, abText: null, born: null, learn: null, col: null });
+// The one lookup into SPECIES: any other value (the Station's sp -1) is SP_OTHER.
+const spOf = sp => (Number.isInteger(sp) && sp >= 0 && sp < SPECIES.length ? SPECIES[sp] : SP_OTHER);
+// The species name of a mibi: the Companion's own, else the one the Station wrote on it, else the slot.
+const mibiSpName = m => spOf(m.sp).name ?? m.spName ?? CARE_TEXT.spOther;
+const abTextOf = sp => spOf(sp).abText ?? CARE_TEXT.abOther;
 const MIBI_NAMES = ['Dot', 'Moss', 'Bean', 'Fig', 'Nib', 'Tuft', 'Pebble', 'Wren'];   // short and species-neutral; never the reference individual's name from the art and website
 const POD_SHELL = { meadow: 'lime', pond: 'ice', rock: 'sand', wood: 'sprout', cave: 'lavender' };
 const PIN_TEXT = { burrow: 'needs a digger', water: 'needs a swimmer', deep: 'needs Probe tier 2', own: 'your pin' };
@@ -387,7 +395,7 @@ function genLife(seed) {
   const add = (sp, c, cv) => { cr.push({ id, sp, c, cv: cv ? 1 : 0, b: Math.round(rnd(seed, 'bold', id) * 100) / 100, s: 0 }); id++; };
   for (let c = 0; c < MW * MH; c++) {
     const l = G.land[c]; if (!passable(c) || l === L.WATER) continue;
-    const pool = [0, 1, 2].filter(s => SPECIES[s].hab.includes(l)); if (!pool.length) continue;
+    const pool = SPECIES.map((_, i) => i).filter(s => spOf(s).hab.includes(l)); if (!pool.length) continue;
     const r = rnd(seed, 'pop', c); let n = 0;
     if (G.spawns.includes(c)) n = 4 + Math.floor(rnd(seed, 'pn', c) * 3);
     else if (r < .3) n = 4 + Math.floor(rnd(seed, 'pn', c) * 5);
@@ -462,7 +470,7 @@ function settleOnce() {
   for (const n of FX.notes) if (n.once && FX.msg.includes(n.text) && !onceDone(n.once, n.local)) {
     if (n.local) { if (S.exp) (S.exp.once = S.exp.once || {})[n.once] = 1; } else S.found.push(n.once); }
 }
-const spName = sp => S.known.includes(sp) ? SPECIES[sp].name : 'creature';   // species names are proper nouns: never lower-cased
+const spName = sp => S.known.includes(sp) ? spOf(sp).name : 'creature';   // species names are proper nouns: never lower-cased
 const aAn = w => (/^[aeiou]/i.test(w) ? 'an ' : 'a ') + w;
 function fxFloat(x, y, text, icon) { FX.floats.push({ x, y, text, icon, at: NOW }); }
 function fxGlint(x, y, delay) { FX.rings.push({ x, y, at: NOW + (delay || 0), glint: 1 }); }
@@ -486,7 +494,7 @@ function mibiById(id) { return S.mibis.find(m => m.id === id) || null; }
 const TEND_MOMENT = ['leans on the glass', 'glows softly', 'puffs'];   // the species moment's words, as built (Loika, Tuikis, Untuva)
 const CARE_TEXT = {
   tendLabel: n => 'Tend ' + n, tendOnce: 'once a day', tendedToday: 'tended today', tendAfter: 'after the expedition',
-  tended: m => m.name + ' ' + TEND_MOMENT[m.sp] + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
+  tended: m => m.name + ' ' + (TEND_MOMENT[m.sp] ?? CARE_TEXT.tendMomentOther) + ' · ' + (m.mem ? 'it remembers the ' + m.mem : 'it hasn’t been out yet'),
   tendedRefused: n => n + ' was tended today', tendMidExp: n => 'Tend ' + n + ' when the expedition is over',
   walkLabel: names => names.length === 1 ? 'Walk with ' + names[0] : 'Walk together', walkOnce: 'once a turn',
   walked: names => listWords(names) + ' walk together',
@@ -507,6 +515,9 @@ const CARE_TEXT = {
   youngCare: 'young · grows with care', youngTime: 'young · grows in time', leadsChip: 'leads',
   withYouCap: 'With you', atHomeCap: 'At home', othersHome: 'the others are at home',
   takeAlong: 'take mibis along', whenDocked: 'when docked',
+  // a mibi of a species the Companion has no entry for (X1): the copywriter's signed strings (2026-10-11 14:42)
+  spOther: 'a Station species', abOther: 'no field ability yet', tendMomentOther: 'settles',
+  walkedOther: (n, mem) => n + ' walks the ' + (mem || 'path'),
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
@@ -517,6 +528,8 @@ const CARE_ASSETS = [
   { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'placeholder' },
   { id: 'c-face-24', what: 'the mibi’s HUD ring face: the partner card’s faces, the notch row on Expedition ended (its ring is drawn as the partner’s marker)', until: 'the derived face from the Station', w: 24, h: 24, status: 'placeholder' },
   { id: 'c-token-48', what: 'the mibi’s 48 px field token: roster rows, the Walk on the active mibi screen', until: 'the derived token from the Station', w: 48, h: 48, status: 'placeholder' },
+  { id: 'c-sprite-other-32', what: 'a mibi of a species the Companion has no art for: the field partner (1×), the partner card and the Lead card (2×), the active mibi stage (8×)', until: 'the species’ HiBit sprite from the art director (X6, one look)', w: 32, h: 32, status: 'placeholder' },
+  { id: 'c-mini-other-12', what: 'the 12 px partner mini of such a mibi: the HUD and the field marker', until: 'the species’ HiBit mini from the art director', w: 12, h: 12, status: 'placeholder' },
   { id: 'c-moment-tend-S01-280x300', what: 'the Loika Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-tend-S02-280x300', what: 'the Untuva Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-tend-S03-280x300', what: 'the Tuikis Tend moment on the stage, frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
@@ -532,7 +545,8 @@ const CARE_ASSETS = [
   { id: 'FOOT', what: 'the foot below a stair, on the lower ground (stair/foot)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
   { id: 'APRON_TOP', what: 'the tile inside a north-facing stair top (stair/apron-top)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
 ];
-const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f']], 'c-token-48': ['stone', ['token', 't']] };   // each placeholder's plate colour and labels, longest first
+const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f']], 'c-token-48': ['stone', ['token', 't']],
+  'c-sprite-other-32': ['stone', ['mibi', 'm']], 'c-mini-other-12': ['stone', ['m']] };   // each placeholder's plate colour and labels, longest first
 const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
 function listWords(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 // The Companion's local date, Y-M-D on its own clock (never toISOString: that is UTC).
@@ -720,8 +734,10 @@ function syncStation() {
   for (const sp of st.known || []) if (!S.known.includes(sp)) S.known.push(sp);
   for (const m of st.mibis || []) { let q = S.mibis.find(x => x.id === m.id);
     if (!q && m.released) continue;   // released before the Companion ever knew it: not created, not logged
-    if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); logEv(m.name + ' (' + SPECIES[m.sp].name + ') is home at the Station'); }
-    q.name = m.name; q.born = m.born || 0; q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
+    const isNew = !q; if (!q) { q = { id: m.id, name: m.name, sp: m.sp, born: m.born || 0, from: m.from ? m.from.n : 0 }; S.mibis.push(q); }
+    q.name = m.name; q.born = m.born || 0; q.species = m.species ?? q.species ?? null; q.spName = m.spName ?? q.spName ?? null;   // the Station's species id and name, for a species the Companion has no entry for
+    if (isNew) logEv(m.name + ' (' + mibiSpName(q) + ') is home at the Station');
+    q.bonded = !!q.bonded || !!m.bonded; }   // a bond made on the Station (legacy) flows in; no care field is read from the Station
   if (st.probe && st.probe.seq > (S.probeSeen || 0) && !(S.exp && S.exp.ending)) { S.probeSeen = st.probe.seq; const was = S.tier; S.tier = st.probe.tier || S.tier; S.shield = st.probe.shield;
     if (S.exp) S.exp.shield = clamp(Math.max(S.exp.shield, st.probe.shield), 0, S.exp.smax);   // docked mid-expedition: the cradle mends it; frozen while docked; resumes at Lift as it was
     if (S.tier > was) fxMsg(S.exp ? DOCK_TEXT.tierMid : 'Tier 2 · reaches further, carries 3 pods', 3); }   // an upgrade mid-expedition applies from the next one
@@ -733,7 +749,7 @@ function syncStation() {
   // pods returned to the wild wait while an expedition runs (retSeen stays unmarked), so no place changes under a docked field
   if (!S.exp) for (const r of st.returned || []) { if (S.retSeen.includes(r.id)) continue; S.retSeen.push(r.id); if (S.retSeen.length > 60) S.retSeen.shift();
     const key = r.k && /^\d+$/.test(r.k) ? r.k : null; if (!key) continue;
-    S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
+    S.pods.push({ id: 'r' + (S.nextId++), k: key, x: -1, y: -1, sp: r.sp, ...(r.species ? { species: r.species } : {}), ...(r.gs != null ? { gs: r.gs >>> 0 } : {}), h: 1, bur: 1, g: r.g, how: 'ground' }); reveil(+key); logEv('A returned pod is back in the ' + LAND_NAME[G.land[+key]]); }
 }
 
 // Feature state helpers: the layout says what is there; S.cells says what the player changed.
@@ -764,7 +780,7 @@ function chooseWarm(ex) {
 }
 function stoneCharge(key, f) { const ch = stormCharge(key, f); return ch > 0 ? ch : stoneWarm(key, f); }
 function bushFull(key, f) { return !fs(key, f.id).bare; }
-function podTag(sp) { return S.known.includes(sp) ? SPECIES[sp].name : 'unknown species'; }
+function podTag(sp) { return S.known.includes(sp) ? spOf(sp).name : 'unknown species'; }
 function addPin(c, k) { if (!S.pins.some(p => p.c === c && p.k === k)) { S.pins.push({ c, k }); logEv('Pin · ' + PIN_TEXT[k]); return true; } return false; }
 function ownPin(c) { return S.pins.find(p => p.c === c && p.k === 'own') || null; }
 
@@ -1083,7 +1099,7 @@ function advance(scope, info) {
   // Roll the next action's stray strike now, so a keen partner can feel it coming.
   if (!ex.stray && lvl >= 2 && !inFog(ex.pos) && !depotShelter() && ex.passWarned && ex.actions - ex.hitAt >= 6 && rnd(S.seed, 'stray', ex.n, ex.actions) < (lvl === 3 ? STRAY.peak : STRAY.strong)) {
     ex.stray = { at: ex.actions + 1 };
-    const pt = ex.pt, keen = pt && (pt.elder || SPECIES[pt.sp].ab === 'nose');
+    const pt = ex.pt, keen = pt && (pt.elder || spOf(pt.sp).ab === 'nose');
     if (keen && !sheltered()) { fxMsg(pt.name + ' flinches · lightning is coming', 3); const live = ex.patch && ex.live[ex.patch.key]; if (live && live.pt) live.pt.flinch = ex.actions + 1; else ex.flinch = ex.actions + 1; }
   }
   if (ex.shield <= 0 && !ex.ending) { ex.ending = 1; fxMsg('The Probe breaks · your pods fall here', 4); lockInput(1100); setTimeout(() => endExpedition('break'), 1100); }
@@ -1195,7 +1211,7 @@ function ensureLive(key) {
     if (!s) continue;
     live.cr.push({ id: w.id, sp: w.sp, x: s.x, y: s.y, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: w.b, face: 1,
       // the guaranteed early burrowers are always ready in the first two expeditions
-      ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || rnd(S.seed, 'ready', w.id, ex.n) < SPECIES[w.sp].shedP });
+      ready: (w.sp === 1 && ex.n <= 2 && G.glow.includes(w.c)) || rnd(S.seed, 'ready', w.id, ex.n) < spOf(w.sp).shedP });
   }
   return live;
 }
@@ -1262,7 +1278,7 @@ function frontOf(P) { const [dx, dy] = DIRS[P.dir]; return { x: P.x + dx, y: P.y
 function sightR(lay) { if (lay.cave || !inFog(lay.cell)) return 99; const pt = S.exp.pt; return pt && pt.sp === 1 ? SIGHT_GLOW : SIGHT_FOG; }
 function inSight(x, y) { const P = S.exp.patch, r = sightR(layout(P.key)); return r >= 99 || Math.hypot(x - P.x, y - P.y) <= r + .5; }
 function seenFromPlayer(key, x, y) { return unveiled(key, x, y) && inSight(x, y); }
-function canDig() { const pt = S.exp && S.exp.pt; return !!pt && SPECIES[pt.sp].ab === 'dig'; }
+function canDig() { const pt = S.exp && S.exp.pt; return !!pt && spOf(pt.sp).ab === 'dig'; }
 
 function patchStep(dir, mode) {
   const ex = S.exp, P = ex.patch, key = P.key, live = curLive(), [dx, dy] = DIRS[dir];
@@ -1332,7 +1348,7 @@ const NOTHING = { label: 'Wait', run: () => waitTick('patch') };
 function patchAction() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive(), f = frontOf(P);
   const o = occupant(key, f.x, f.y, 'player');
-  const nm = sp => S.known.includes(sp) ? ' · ' + SPECIES[sp].name : '';
+  const nm = sp => S.known.includes(sp) ? ' · ' + spOf(sp).name : '';
   const fruit = ex.carry === 'fruit';
   // a veiled tile: you can walk the ground you see, but what stands on it is unknown until a Call
   if (o && o.type !== 'tile' && o.type !== 'pt' && o.type !== 'cr' && !(o.type === 'fruit' && o.fr.put) && !unveiled(key, f.x, f.y))
@@ -1341,9 +1357,9 @@ function patchAction() {
     // before identification one neutral label, whatever it eats: no diet leaks, and nothing is offered
     if (!S.known.includes(o.c.sp)) return { label: 'Unknown creature', run: null };
     // never offered to a non-eater: the label says so and pressing spends nothing
-    if (!SPECIES[o.c.sp].eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
-      const eaters = [0, 1, 2].filter(sp => SPECIES[sp].eats && S.known.includes(sp)).map(sp => SPECIES[sp].plural);
-      fxMsg(fruit ? cap(SPECIES[o.c.sp].plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
+    if (!spOf(o.c.sp).eats) return { label: fruit ? 'Doesn’t eat fruit' : 'Watch, or Call', dim: fruit, run: () => { FX.bumpAt = NOW;
+      const eaters = SPECIES.map((_, i) => i).filter(sp => spOf(sp).eats && S.known.includes(sp)).map(sp => spOf(sp).plural);
+      fxMsg(fruit ? cap(spOf(o.c.sp).plural) + ' don’t eat fruit' + (eaters.length ? ' · ' + eaters.join(' and ') + ' do' : '') : 'The ' + spName(o.c.sp) + ' watches you · keep still and it settles, or Call', 2); } };
     return fruit ? { label: 'Offer fruit' + nm(o.c.sp), run: () => offer(o.c) }
       : { label: 'Bring fruit, or Call', run: () => { fxMsg('The ' + spName(o.c.sp) + ' watches you · bring fruit, or Call', 2); FX.bumpAt = NOW; } }; }
   if (o && o.type === 'fruit') return fruit ? { label: 'Hands full', run: null } : { label: 'Pick up the fruit', run: () => pickUp(o.fr) };
@@ -1399,8 +1415,8 @@ function addMat(k, n, x, y) {
 // Only creatures you can see count, and only identified species are named.
 function eatersHere(live) {
   const seen = live.cr.filter(c => !c.hide && inSight(c.x, c.y)), sps = [...new Set(seen.map(c => c.sp))];
-  const known = sps.filter(sp => SPECIES[sp].eats && S.known.includes(sp));
-  if (known.length) return known.map(sp => SPECIES[sp].plural).join(' and ') + ' eat these';
+  const known = sps.filter(sp => spOf(sp).eats && S.known.includes(sp));
+  if (known.length) return known.map(sp => spOf(sp).plural).join(' and ') + ' eat these';
   if (sps.every(sp => S.known.includes(sp))) return 'no one here eats fruit';
   return 'watch who comes for it';
 }
@@ -1475,7 +1491,7 @@ function lightBeacon(f) {
   fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
-function podName(p, short) { return S.known.includes(p.sp) ? SPECIES[p.sp].name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
+function podName(p, short) { return S.known.includes(p.sp) ? spOf(p.sp).name + (short ? '' : ' pod') : short ? 'unknown' : 'Unknown pod'; }
 function podTagOf(p) {
   const how = { slab: 'under a slab', deep: 'from the deep', shake: 'shed, shaking dry', calm: 'shed by a burrow', curl: 'under rain', meal: 'after a meal' }[p.how];
   return how || (p.g === 'cave' ? 'cave' : p.bur ? 'from a hole' : 'from the ' + ({ pond: 'pond edge', rock: 'rock field' }[p.g] || p.g));
@@ -1489,8 +1505,8 @@ function takePod(p, leave) {
   const out = full ? ex.cargo.pods.splice(leave, 1)[0] : null;
   S.pods = S.pods.filter(q => q !== p);
   // the genome seed is fixed the first time a pod is taken: the Station reads its genome from it
-  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key });
-  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 3); }
+  ex.cargo.pods.splice(full ? leave : ex.cargo.pods.length, 0, { id: p.id, sp: p.sp, ...(p.species ? { species: p.species } : {}), g: p.g, how: p.how || 'ground', bur: p.bur ? 1 : 0, gs: p.gs != null ? p.gs : hash(S.seed, 'gs', p.id, p.sp, S.turn), k: key });
+  if (out) { S.pods.push({ id: out.id, k: key, x: p.x, y: p.y, sp: out.sp, ...(out.species ? { species: out.species } : {}), h: 0, g: out.g, how: out.how, bur: out.bur, out: 1, gs: out.gs }); FX.podFlash = { i: leave, at: NOW }; fxMsg('Swapped · ' + podName(out) + ' left here', 3); }
   else FX.podFlash = { i: ex.cargo.pods.length - 1, at: NOW };
   fxFloat(p.x, p.y, out ? 'swap' : '', 'pod');
   logEv((out ? 'Swapped for a pod · ' : 'Took a pod · ') + podTag(p.sp) + (p.how && p.how !== 'ground' ? ' (' + p.how + ')' : ''));
@@ -1500,7 +1516,7 @@ function takePod(p, leave) {
 }
 function calmRadius(X) { return X.ptElder ? 8 : 4; }
 function calmedBy(c, X) { return !!X.pt && cheb(c, X.pt) <= calmRadius(X) && (X.ptAb === 'calm' || X.ptSp === c.sp); }
-function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? SPECIES[ex.pt.sp].ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
+function ptCtx() { const ex = S.exp, live = curLive(); return { pt: live.pt, ptAb: ex.pt ? spOf(ex.pt.sp).ab : null, ptSp: ex.pt ? ex.pt.sp : -1, ptElder: !!(ex.pt && ex.pt.elder) }; }
 // Data is a record of creatures doing things: a moment you cause brings +1, +2 the first time ever for that species and
 // moment; once per creature per expedition. Moments bring the expedition's Data in early, up to its yield (2 / 4 / 6 / 8
 // by the tier of the place) and never past it; whatever the moments did not bring arrives when the expedition ends.
@@ -1519,7 +1535,7 @@ function awardMoment(c, kind, X) {
 function offer(c) {
   const ex = S.exp, live = curLive(), X = ptCtx(), lay = curLay();
   ex.stats.feedTries++;
-  if (!SPECIES[c.sp].eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
+  if (!spOf(c.sp).eats) { c.st = 'alert'; c.t = 1; c.snub = 2; advance('patch', { noise: 'act' }); return; }
   const fog = !lay.cave && inFog(lay.cell);
   if (c.b > .55 || calmedBy(c, X) || fog || c.st === 'approach' || c.st === 'seek') {
     if (!(c.b > .55) && !fog && calmedBy(c, X)) ex.abUsed = 1;   // the partner's calm made this possible: a skill notch when the expedition ends
@@ -1608,7 +1624,7 @@ function waitChanges(a, b, scope) {
     else if (n.x !== o.x || n.y !== o.y) add(n.sp, 'wander'); }
   for (const [id, o] of a.cr) if (!b.cr.has(id)) { const c = curLive().cr.find(q => q.id === id); add(o.sp, c && c.hide ? 'hole' : 'gone'); }
   const crs = [...ev.entries()].map(([k, n]) => { const [sp, v] = k.split('|'), s = +sp, known = S.known.includes(s), vb = v === 'routine' ? ROUTINE[s] : VERB[v];
-    const who = n > 1 ? numWord(n) + ' ' + (known ? SPECIES[s].plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
+    const who = n > 1 ? numWord(n) + ' ' + (known ? spOf(s).plural : 'creatures') : (v === 'view' ? aAn(spName(s)) : 'the ' + spName(s));
     return { t: who + ' ' + vb[n > 1 ? 1 : 0], w: v === 'wander' ? 1 : 0 }; }).sort((x, y) => x.w - y.w).map(o => o.t);
   return out.concat(crs.slice(0, 2));
 }
@@ -1779,7 +1795,7 @@ function shedPod(c, X) {
   const id = 'p' + (S.nextId++);
   S.pods.push({ id, k: X.key, x: p.x, y: p.y, sp: c.sp, h: 0, g: groundName(X.lay.land, X.lay.cave), how });
   const w = crById.get(c.id); if (w) w.s = S.exp.n;
-  S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(SPECIES[c.sp].name)) : 'A creature') + ' shed a pod (' + how + ')');
+  S.exp.stats.sheds++; logEv((S.known.includes(c.sp) ? cap(aAn(spOf(c.sp).name)) : 'A creature') + ' shed a pod (' + how + ')');
   fxGlint(p.x, p.y, 200);
   const verb = { shake: 'shook dry', calm: 'settled', curl: 'curled up out of the rain', meal: 'finished its meal' }[how];
   if (X.away(p)) fxMsg('Something dropped a pod ' + whereWord(X, p.x, p.y), 1);
@@ -1798,12 +1814,12 @@ const BUBBLE_HELP = { '!': '! · it noticed you · stop, or it runs', '?': '? ·
 function bubbleOf(c, carry) {
   if (c.st === 'alert') return '!';
   if (c.st === 'approach' || c.st === 'seek') return '?';
-  if (carry === 'fruit' && SPECIES[c.sp].eats && S.known.includes(c.sp) && c.st !== 'eat' && c.st !== 'flee') return 'f';
+  if (carry === 'fruit' && spOf(c.sp).eats && S.known.includes(c.sp) && c.st !== 'eat' && c.st !== 'flee') return 'f';
   if (c.sp === 1 && c.calm >= 1 && c.st !== 'glow') return '…';
   return null;
 }
 function creatureTick(c, X) {
-  const sp = SPECIES[c.sp], P = X.P;
+  const sp = spOf(c.sp), P = X.P;
   if (c.snub) c.snub--;
   if (c.hide > 0) {
     c.hide--; if (X.raining) c.hide = Math.max(c.hide, 1);
@@ -1974,7 +1990,7 @@ function dropPods(ex, rep) {
   const free = []; for (let i = 0; i < PW * PH; i++) if (lay.reach[i] && !taken.has(i)) free.push(i);
   rep.dropped = ex.cargo.pods.length; rep.at = cxy(cell);
   for (const pod of ex.cargo.pods) { const i = free.length ? free.splice(R.int(free.length), 1)[0] : lay.spawnPt.y * PW + lay.spawnPt.x;   // no free tile: the entry tile, stacked
-    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs }); }
+    S.pods.push({ id: 'b' + (S.nextId++), k: key, x: i % PW, y: (i / PW) | 0, sp: pod.sp, ...(pod.species ? { species: pod.species } : {}), h: 0, g: pod.g, how: pod.how, bur: pod.bur, out: 1, gs: pod.gs }); }
   if (rep.dropped) (S.skulls = S.skulls || {})[cell] = key;   // which place holds the pods (the cave sits under the gate cell)
   logEv('Probe broke at ' + rep.at.x + ',' + rep.at.y + ' · ' + rep.dropped + ' pod' + (rep.dropped === 1 ? '' : 's') + ' left there (skull on the map)');
   ex.cargo.pods = [];
@@ -2013,7 +2029,7 @@ function endExpedition(reason) {
     if (holdEmpty(ex.cargo)) { rep.empty = true; S.hold = null; }
     else if (S.bay.length >= BAY) { rep.kept = true; S.hold = ex.cargo; logEv('Bay full · the finds stay in the hold'); }
     else { const c = { id: 'x' + S.wid + '-' + ex.n, n: ex.n, turn: S.turn, at: Date.now(), e: ex.cargo.e, d: ex.cargo.d, s: ex.cargo.s,
-        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice() };   // the crate carries the world's lines only
+        pods: ex.cargo.pods.map(q => ({ id: q.id, sp: q.sp, ...(q.species ? { species: q.species } : {}), g: q.g, how: q.how, gs: q.gs != null ? q.gs >>> 0 : hash(S.seed, 'gs', q.id, q.sp, S.turn), k: q.k || null })), met: ex.met.slice(), explored: rc.surveyed, of: rc.total, lines: worldLines.slice() };   // the crate carries the world's lines only
       S.bay.push(c); S.hold = null; rep.sealed = c; logEv('Expedition ended · sealed crate ' + S.bay.length + ' of ' + BAY + ' · ' + c.pods.length + ' pod' + (c.pods.length === 1 ? '' : 's')); }
   }
   S.exp = null; S.report = rep;
@@ -2052,7 +2068,7 @@ function careQueue(evs, dur) {
 function walk(m) {
   const evs = walkAll(); if (!evs) return;
   FX.moment = { id: m.id, at: NOW }; FX.walk = { id: m.id, at: NOW, others: carriedMibis().filter(q => q !== m).map(q => q.id) }; lockInput(400);
-  const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp];
+  const did = evs.length > 1 ? CARE_TEXT.walked(evs.map(e => e.m.name)) : [m.name + ' sniffs along the ' + (m.mem || 'path') + ' and calms a wary Loika', m.name + ' digs a little burrow in the ' + (m.mem || 'soft ground'), m.name + ' sniffs out where pods lie in the ' + (m.mem || 'grass')][m.sp] ?? CARE_TEXT.walkedOther(m.name, m.mem);
   careLines(did, evs, WALK_MS);
 }
 function dirWord(dx, dy, n) {
@@ -2091,7 +2107,7 @@ function worldTurn(pending) {
     const p = cxy(w.c), opts = [];
     for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
       const c = y * MW + x; if (canStep(w.c, dir) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
-    const good = opts.filter(c => SPECIES[w.sp].hab.includes(G.land[c]));
+    const good = opts.filter(c => spOf(w.sp).hab.includes(G.land[c]));
     const pick = (good.length && R.chance(.8)) ? R.pick(good) : opts.length ? R.pick(opts) : -1;
     if (pick >= 0) { const q = cxy(pick); mv[w.sp].dx += q.x - p.x; mv[w.sp].dy += q.y - p.y; mv[w.sp].n++; w.c = pick; }
   }
@@ -2135,7 +2151,7 @@ function worldTurn(pending) {
   // Movement: a species you know first; a direction only when the herd really drifted one way.
   const moves = [0, 1, 2].filter(sp => mv[sp].n >= 2).map(sp => ({ sp, known: S.known.includes(sp) ? 1 : 0, dw: dirWord(mv[sp].dx, mv[sp].dy, mv[sp].n) }))
     .filter(o => o.dw || o.known).sort((a, b) => (b.known - a.known) || (!!b.dw - !!a.dw) || (mv[b.sp].n - mv[a.sp].n));
-  if (moves.length) { const o = moves[0], who = o.known ? 'The ' + SPECIES[o.sp].plural : 'Unfamiliar creatures';
+  if (moves.length) { const o = moves[0], who = o.known ? 'The ' + spOf(o.sp).plural : 'Unfamiliar creatures';
     lines.push(o.dw ? who + ' moved ' + o.dw + '.' : who + ' spread out.'); }
   // A storm every turn would repeat itself: say it once, name the new place if it moved, stay quiet if it is the same place.
   const stormWhere = charged.length ? placePhrase(charged) : null;
@@ -2144,7 +2160,7 @@ function worldTurn(pending) {
   if (stormWhere || !pending.storm.length) S.lastStorm = stormWhere;   // a stormy turn that charged nothing keeps the memory
   if (bushes) lines.push('Fruit is back on ' + (bushes === 1 ? 'one bush.' : numWord(bushes) + ' bushes.'));
   if (lines.length < 3 && newPods.length) lines.push('Something new is stirring in ' + regionWord(newPods) + '.');
-  if (lines.length < 3 && young.length) { const y0 = young[0]; lines.push('Young ' + (S.known.includes(y0.sp) ? SPECIES[y0.sp].plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.'); }
+  if (lines.length < 3 && young.length) { const y0 = young[0]; lines.push('Young ' + (S.known.includes(y0.sp) ? spOf(y0.sp).plural : 'creatures') + ' were born ' + placePhrase([y0.c]) + '.'); }
   if (!lines.length) lines.push('A quiet turn. Little changed.');
   logEv('World turn ' + wTurn());
   return lines.slice(0, 3);
@@ -2292,7 +2308,7 @@ function clipText(str, maxW, s) { if (textW(str, s) <= maxW) return str; while (
 
 // ---------- Creature tokens (procedural pixel art; facing right; feet near y = 28·s) ----------
 function buildCreature(sp, pose, fr, s) {
-  s = s || 1; const pb = new PB(32 * s, 32 * s), k = SPECIES[sp].col;
+  s = s || 1; const pb = new PB(32 * s, 32 * s), k = spOf(sp).col;
   const E = (x, y, rx, ry, c, o) => pb.ell(x * s, y * s, rx * s, ry * s, C[c], o && o.sh ? Object.assign({}, o, { sh: o.sh.map(n => C[n]) }) : o);
   const Rr = (x, y, w, h, c) => pb.rect(Math.round(x * s), Math.round(y * s), Math.max(1, Math.round(w * s)), Math.max(1, Math.round(h * s)), C[c]);
   const Pp = (pts, c) => pb.poly(pts.map(([x, y]) => [x * s, y * s]), C[c]);
@@ -2567,7 +2583,7 @@ const ICON = {
   tri: () => art('i-tri', () => { const pb = new PB(8, 12); pb.poly([[0, 0], [8, 6], [0, 12]], C.orange); return pb; }),
   wave: () => art('i-wave', () => { const pb = new PB(16, 12); for (const y0 of [3, 8]) for (let x = 0; x < 16; x++) pb.set(x, y0 + Math.round(Math.sin(x * .8) * 1.4), C.sky); return pb; }),
   burrow: (lit) => art('i-burrow' + lit, () => { const pb = new PB(16, 14); pb.ell(8, 12, 7.5, 9, lit ? C.clay : C.stone, { clip: (x, y) => y < 13 }); pb.ell(8, 13, 4, 7, lit ? C.void : C.night, { clip: (x, y) => y < 13 }); pb.rect(0, 13, 16, 1, lit ? C.bark : C.slate); if (lit) pb.rect(7, 10, 2, 2, C.yellow); return pb; }),
-  mini: (sp) => art('i-mini' + sp, () => { const k = SPECIES[sp].col, pb = new PB(12, 12); pb.ell(6, 6.5, 4.6, 4.4, C[k.body], { sh: [C[k.light], C[k.shade]] }); pb.rect(7, 5, 1, 2, C.void); pb.outline(() => C.orange); return pb; }),
+  mini: (sp) => art('i-mini' + sp, () => { const k = spOf(sp).col, pb = new PB(12, 12); pb.ell(6, 6.5, 4.6, 4.4, C[k.body], { sh: [C[k.light], C[k.shade]] }); pb.rect(7, 5, 1, 2, C.void); pb.outline(() => C.orange); return pb; }),
   tick: (col) => art('i-tick' + col, () => { const pb = new PB(11, 9); for (const [x, y] of [[0, 4], [1, 5], [2, 6], [3, 7], [4, 6], [5, 5], [6, 4], [7, 3], [8, 2], [9, 1], [10, 0]]) pb.rect(x, y, 1, 2, C[col]); pb.outline(() => C.ink); return pb; }),
   pip: () => art('i-pip', () => { const pb = new PB(5, 5); pb.rect(1, 1, 3, 3, C.white); pb.outline(() => C.ink); return pb; }),
   call: (col) => art('i-call' + col, () => { const pb = new PB(14, 14), c = C[col]; pb.rect(0, 6, 2, 2, c);
@@ -2922,7 +2938,7 @@ function mapSigns() {
 function signsAt(c) { const e = mapSigns().find(q => q.c === c); return e ? e.list.map(q => q.kind) : []; }
 function drawSign(kind, s, px, py, fr) {
   if (kind === 'pod') { blit(podArt('bone', 1), px + 1, py + 1, s.rm); return; }
-  if (kind === 't') { const col = s.sp != null ? SPECIES[s.sp].col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
+  if (kind === 't') { const col = s.sp != null ? spOf(s.sp).col.body : 'bone'; blit(ICON.paw(col), px + 2, py + 15, s.rm); blit(ICON.paw(col), px + 8, py + 9, s.rm); }
   else if (kind === 'b') blit(ICON.beat(s.rm ? 0 : fr), px + 2, py, s.rm);
   else if (kind === 'k') blit(ICON.bolt(), px + 13, py + 2, s.rm);
   else if (kind === 'kw') blit(ICON.boltHollow(), px + 11, py + 1);
@@ -2966,7 +2982,7 @@ function signSprite(kind, s, fr, big) {
   const k = big ? 2 : 1, sc = (key, pb) => k === 2 ? up2(key, pb) : pb;
   switch (kind) {
     case 'pod': return podArt('bone', 1);   // 16×20, always 1×
-    case 't': return sc('paw' + (s.sp != null ? SPECIES[s.sp].col.body : 'bone'), ICON.paw(s.sp != null ? SPECIES[s.sp].col.body : 'bone'));
+    case 't': return sc('paw' + (s.sp != null ? spOf(s.sp).col.body : 'bone'), ICON.paw(s.sp != null ? spOf(s.sp).col.body : 'bone'));
     case 'b': return ICON.beat(fr);
     case 'k': return sc('bolt', ICON.bolt());
     case 'kw': return sc('boltH', ICON.boltHollow());
@@ -3222,7 +3238,7 @@ function drawMap(mode, t) {
     RT.mp = tween(RT.mp, p.x * CELL, p.y * CELL, 120);
     let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
     const face = ex.face || 'down', [fdx, fdy] = DIRS[face], cx = ox + RT.mp.x + 13 + bx, cy = oy + RT.mp.y + 13;
-    if (ex.pt) { const mx = cx - fdx * 9 - (fdx ? 6 : 12), my = cy - fdy * 9 - 2; blit(ICON.mini(ex.pt.sp), mx, my); if (ex.flinch === ex.actions + 1) blit(bubbleArt('!'), mx, my - 13); }
+    if (ex.pt) { const mx = cx - fdx * 9 - (fdx ? 6 : 12), my = cy - fdy * 9 - 2; miniOf(ex.pt.sp, mx, my); if (ex.flinch === ex.actions + 1) blit(bubbleArt('!'), mx, my - 13); }
     circ(cx, cy - 2, 11, C.void); circ(cx, cy - 2, 10, C.white);   // a light ring so the pawn reads on any ground
     blit(ICON.pawn(face), cx - 8, cy - 10); RT.plScr = { x: cx, y: cy };
   }
@@ -3458,7 +3474,7 @@ function drawPartner(sp, pt, x, y, t) {
   const m = motion(), fr = m ? Math.floor(t * 2.4) % 2 : 0;
   blit(RING(), x + 2, y + 23);
   const pose = pt.st === 'sniff' ? 'alert' : 'idle', dy = pt.st === 'dig' ? (m ? Math.floor(t * 12) % 2 * 2 : 0) : pose === 'idle' ? fr : 0;
-  blit(creatureArt(sp, pose, 0), x, y + dy, 0, (pt.face || 1) < 0);
+  mibiSprite(sp, pose, 0, x, y + dy, 1, (pt.face || 1) < 0);
   const f = pt.face || 1;
   if (pt.st === 'sniff') for (let i = 0; i < 3; i++) R(f > 0 ? x + 30 + i * 3 : x - 2 - i * 3, y + 14 - i * 2 - ((fr + i) % 2), 2, 2, C.bone);
   if (pt.st === 'dig') for (let i = 0; i < 5; i++) { const a = ((t * 6) + i / 5) % 1; R(f > 0 ? x + 4 - a * 12 : x + 26 + a * 12, y + 20 - Math.round(Math.sin(a * Math.PI) * 10), 2, 2, C.clay); }
@@ -3562,7 +3578,7 @@ function drawHUD() {
   const chipW = fieldFrozen() ? textW(DOCK_TEXT.chip, 2) + 16 : 0, crateW = S.bay.length ? 19 + textW(String(S.bay.length), 2) + 6 : 0;
   if (S.bay.length && !(chipW && x + crateW + chipW > rx - 4)) x = drawCrateCount(x);
   if (chipW) { panel(x, 6, chipW, 22, C.ink, C.mint); text(DOCK_TEXT.chip, x + 8, 9, C.mint); x += chipW + 4; }
-  if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 21); blit(ICON.mini(ex.pt.sp), x, 10); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 9, C.amber); }
+  if (ex.pt && x + 14 < rx) { blit(RING_S(), x - 1, 21); miniOf(ex.pt.sp, x, 10); if (x + 15 + textW(ex.pt.name, 2) < rx - 4) text(ex.pt.name, x + 15, 9, C.amber); }
   if (ex.actions - ex.hitAt <= 5) { panel(4, HUD_H + 3, 112, 22, C.ink, C.coral); text('Shield ' + ex.shield + '/' + ex.smax, 12, HUD_H + 7, C.bone); }
 }
 function drawTop(title, right, cs) {
@@ -3658,10 +3674,10 @@ function drawSetup(t) {
   const pm = partnerMibi(), cm = carriedMibis();
   card(20, 252, 410, 92, sel === 2, true);
   if (pm) { const st = mibiStage(pm), nm = clipText(pm.name, 220, 3);
-    blit(RING(), 46, 322); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, 264);
+    blit(RING(), 46, 322); mibiSprite(pm.sp, 'idle', fr, 28, 264, 2);
     text(nm, 112, 260, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 112 + textW(nm, 3) + 8, 266);
     chip(112, 292, st, stageFill(st), 'bone');
-    text(clipText(SPECIES[pm.sp].abText, 220, 2), 112, 320, C.stone); }
+    text(clipText(abTextOf(pm.sp), 220, 2), 112, 320, C.stone); }
   else if (liveMibis().length) { blit(dashedCircleArt(64), 28, 264); text(carriedMibis().length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 112, 260, C.ink, 3); text(clipText(leadWhy(), 220, 2), 112, 296, C.stone); }
   else { emptyPodSmall(52, 298); text('No partner yet', 112, 264, C.ink, 3); wrapText('Raise a mibi at the Station and take it with you', 306, 2).slice(0, 2).forEach((l, i) => text(l, 112, 302 + i * 20, C.stone)); }
   if (liveMibis().length) for (let i = 0; i < CARRY_MAX; i++) { const q = cm[i], fx = 338 + i * 28; if (q) ringFace(fx, 262, q.sp, q === pm); else blit(dashedCircleArt(24), fx, 262); }
@@ -3689,11 +3705,11 @@ function drawWorldInset(x, y, t, u) {
 // The partner row: "Partner: Pip · calms wary creatures", or why there is none.
 function partnerRow() {
   const pm = partnerMibi(), w = carriedMibis()[0];
-  if (pm) return 'Partner: ' + pm.name + ' · ' + SPECIES[pm.sp].abText + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
+  if (pm) return 'Partner: ' + pm.name + ' · ' + abTextOf(pm.sp) + (mibiStage(pm) === 'elder' ? ' · slow, keen' : '');
   if (w) return CARE_TEXT.noOneGrown;
   return liveMibis().length ? CARE_TEXT.noOneWith : 'No partner yet';
 }
-function digPartner() { const pm = partnerMibi(); return pm && SPECIES[pm.sp].ab === 'dig' ? pm : null; }
+function digPartner() { const pm = partnerMibi(); return pm && spOf(pm.sp).ab === 'dig' ? pm : null; }
 // The menu. During an expedition its first entry is Wait: one deliberate quiet action. The list stays open
 // after waiting, so Confirm, Confirm… waits again while the place stays visible behind it.
 function menuItems() {
@@ -3775,7 +3791,7 @@ function drawProbe(t) {
       text(l, x + 17, y + 37, C.fog, 2, 'center'); }); }
   head('Field guide', 500);
   if (!S.known.length) text('No species identified yet', 24, 522, C.stone);
-  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 518, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 522); text(SPECIES[sp].name, x + 42, 530, C.bone); });
+  S.known.forEach((sp, i) => { const x = 24 + i * 138; panel(x, 518, 130, 40, C.ink, C.slate); blit(creatureArt(sp, 'idle', 0), x + 6, 522); text(spOf(sp).name, x + 42, 530, C.bone); });
 }
 function drawMats(c, y, cap) {
   [['energy', 'Energy', c.e], ['data', 'Data', c.d], ['essence', 'Essence', c.s]].forEach(([ic, name, v], i) => { const x = 22 + i * 138;
@@ -3796,7 +3812,7 @@ function drawCargo(t) {
   if (ex) {
     drawMats(ex.cargo, 42, true);
     text('Pods', 24, 94, C.mist);
-    for (let i = 0; i < ex.hold; i++) { const p = ex.cargo.pods[i], x = 24 + i * 130; panel(x, 114, 122, 36, C.ink, C.slate); podSlot(x + 6, 122, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 124, p ? C.bone : C.stone); }
+    for (let i = 0; i < ex.hold; i++) { const p = ex.cargo.pods[i], x = 24 + i * 130; panel(x, 114, 122, 36, C.ink, C.slate); podSlot(x + 6, 122, p); text(p ? (S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown') : 'empty', x + 28, 124, p ? C.bone : C.stone); }
     text('This expedition', 24, 162, C.mist);
     if (!ex.met.length) text('No creatures met yet', 24, 186, C.stone);
     ex.met.forEach((sp, i) => { const x = 24 + i * 46; panel(x, 182, 42, 42, C.ink, C.slate);
@@ -3819,7 +3835,7 @@ function drawCargo(t) {
   } else {
     const h = S.hold || { e: 0, d: 0, s: 0, pods: [] };
     text('In the hold (unsealed)', 24, 42, C.mist); drawMats(h, 62, true);
-    for (let i = 0; i < 3; i++) { const p = h.pods[i], x = 24 + i * 130; panel(x, 110, 122, 36, C.ink, C.slate); podSlot(x + 6, 118, p); text(p ? (S.known.includes(p.sp) ? SPECIES[p.sp].name : 'unknown') : 'empty', x + 28, 120, p ? C.bone : C.stone); }
+    for (let i = 0; i < 3; i++) { const p = h.pods[i], x = 24 + i * 130; panel(x, 110, 122, 36, C.ink, C.slate); podSlot(x + 6, 118, p); text(p ? (S.known.includes(p.sp) ? spOf(p.sp).name : 'unknown') : 'empty', x + 28, 120, p ? C.bone : C.stone); }
     text('The sealed bay', 24, 166, C.mist); drawBay(24, 190);
     text(S.bay.length ? bayLine() : 'Nothing sealed · End expedition seals it', 24, 272, S.bay.length ? C.amber : C.stone);
     text('Probe tier ' + S.tier + ' · Shield ' + (S.shield == null ? tierOf().shield : Math.max(0, S.shield)) + '/' + tierOf().shield, 24, 316, C.fog);
@@ -3873,6 +3889,12 @@ function placeholderPlate(id, x, y, k) {
   R(x, y, w, h, C.void); R(x + 1, y + 1, w - 2, h - 2, C[fill]);
   const lbl = labels.find(l => textW(l, 1) <= w - 4); if (lbl) text(lbl, x + Math.round((w - textW(lbl, 1)) / 2), y + Math.round((h - 9) / 2), C.bone, 1);
 }
+// A mibi's sprite at k× (1 field, 2 cards, BIG the stage); a species the Companion has no art for is its labelled plate in the same rect.
+function mibiSprite(sp, pose, fr, x, y, k, flip) {
+  if (spOf(sp).other) placeholderPlate('c-sprite-other-32', x, y, k); else blit(k > 2 ? bigArt(sp, pose, fr) : creatureArt(sp, pose, fr, k), x, y, 0, flip);
+}
+// The 12 px partner mini (the HUD, the field marker); a species with no art is its labelled plate.
+function miniOf(sp, x, y) { if (spOf(sp).other) placeholderPlate('c-mini-other-12', x, y); else blit(ICON.mini(sp), x, y); }
 // Why there is no partner, on the Lead card and the partner card.
 function leadWhy() { const cm = carriedMibis(); if (!cm.length) return CARE_TEXT.takeOne; const j = cm.find(m => !isAdult(m)); return j && j.bonded ? CARE_TEXT.youngCare : CARE_TEXT.youngTime; }
 // Mibis: the roster. The Lead card; "With you" and three places (a free place dashed, never focused); docked, "At home".
@@ -3912,9 +3934,9 @@ function drawMibis(t) {
   clipView();
   { const y = LEAD_Y - off - (sel === 0 ? 2 : 0); rosterCard(16, LEAD_Y - off, 418, 92, sel === 0);
     text(CARE_TEXT.partnerCap, 104, y + 6, C.mist);
-    if (pm) { blit(RING(), 46, y + 70); blit(creatureArt(pm.sp, 'idle', fr, 2), 28, y + 12);
+    if (pm) { blit(RING(), 46, y + 70); mibiSprite(pm.sp, 'idle', fr, 28, y + 12, 2);
       const nm = clipText(pm.name, 314, 3); text(nm, 104, y + 28, C.ink, 3); if (pm.bonded) placeholderPlate('c-heart-16', 104 + textW(nm, 3) + 8, y + 34);
-      text(clipText(SPECIES[pm.sp].abText, 314, 2), 104, y + 64, C.stone); }
+      text(clipText(abTextOf(pm.sp), 314, 2), 104, y + 64, C.stone); }
     else { blit(dashedCircleArt(64), 28, y + 12); text(cm.length ? CARE_TEXT.noPartner : CARE_TEXT.noOneWithT, 104, y + 28, C.ink, 3); text(clipText(leadWhy(), 314, 2), 104, y + 64, C.stone); } }
   text(CARE_TEXT.withYouCap, 20, 148 - off, C.mist);
   for (let k = 0; k < CARRY_MAX; k++) { const y0 = PLACE_Y + k * ROW_P - off, m = cm[k]; if (m) rosterRow(m, y0, sel === k + 1, m === pm, fr); else dashedRect(16, y0, 418, 64, C.stone); }
@@ -3970,7 +3992,7 @@ function drawActive(t) {
   if (sp && m.sp === 0) { y += 10; x += 8; }        // a Loika leans on the glass
   // shadow under its feet
   blit(art('bigshadow', () => { const pb = new PB(180, 22); pb.ell(90, 11, 88, 10, C.night); return pb; }), 135, 296);
-  blit(bigArt(m.sp, pose, fr), x, y, 0, flip);
+  mibiSprite(m.sp, pose, fr, x, y, BIG, flip);
   if (h && !flip && h.a > (h.wrong ? 900 : 450)) for (let i = 0; i < 3; i++) R(352 + i * 8, 100 - i * 10, 10 - i * 2, 4, C.bone);   // a chirp
   if (sp && m.sp === 0) for (const px of [250, 300]) blit(upArt('paw', ICON.paw('blush'), 3), px, 78);
   if (sp && m.sp === 2) for (let i = 0; i < 10; i++) { const a = i / 10 * 6.28, r = 60 + Math.min(1, sa / 1200) * 70; R(225 + Math.round(Math.cos(a) * r * 1.2) - 4, 178 + Math.round(Math.sin(a) * r * .8) - 4, 8, 8, C.fog); }
@@ -3985,7 +4007,7 @@ function drawActive(t) {
   const nm = clipText(m.name, 260, 3); text(nm, 30, 332, C.bone, 3);
   const cx = 30 + textW(nm, 3) + 14, cw = chip(cx, 331, st, stageFill(st), 'bone');
   if (m.bonded && !(bond != null && bond < BOND_MS)) placeholderPlate('c-heart-24', cx + cw + 10, 330);   // the heart as a state, once the bond has played
-  text(clipText(SPECIES[m.sp].name + ' · ' + SPECIES[m.sp].abText + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
+  text(clipText(mibiSpName(m) + ' · ' + abTextOf(m.sp) + (st === 'elder' ? ' · slow, keen' : ''), 390, 2), 30, 370, C.fog);
   wrapText(growing ? CARE_TEXT.stGrowsWithCare : activeStatus(m), 390, 2).slice(0, 2).forEach((l, i) => text(l, 30, 396 + i * 22, isW ? C.amber : C.mist));
   // page dots: the mibis with you ringed; docked, 16 px more between the last mibi with you and the first at home
   const n = list.length, nc = list.filter(isCarried).length, gap = nc > 0 && n > nc ? 16 : 0, x0 = Math.round(SCR_W / 2 - ((n - 1) * 16 + gap) / 2);
@@ -4127,8 +4149,8 @@ function noteSigns() {
 }
 function dietLine(sp, long) {
   if (!S.known.includes(sp)) return 'Unknown creature · watch what it does';
-  const nm = SPECIES[sp].name;
-  if (SPECIES[sp].eats) return nm + ' · eats fruit';
+  const nm = spOf(sp).name;
+  if (spOf(sp).eats) return nm + ' · eats fruit';
   return nm + ' · doesn’t eat fruit' + (long && sp === 1 ? ' · settles when you keep still' : '');
 }
 function lineFor() {
@@ -4499,7 +4521,7 @@ function onStateChanged() {
   document.getElementById('oWhere').textContent = whereText();
   const cm = carriedMibis(), pm = ex ? ex.pt : partnerMibi(), home = homeMibis();
   const careOf = m => ' (care ' + (m.care || 0) + ', tends ' + (m.tends || 0) + (m.tendDay ? ', tended ' + m.tendDay : '') + (m.bonded ? ', bonded' : '') + (m.grownTurn != null ? ', grown T' + m.grownTurn : '') + ')';   // the observer only: no screen shows care
-  document.getElementById('oPartner').textContent = (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + SPECIES[m.sp].name + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : '');
+  document.getElementById('oPartner').textContent = (cm.length ? 'with you (' + cm.length + ' of ' + CARRY_MAX + '): ' + cm.map(m => m.name + ' · ' + mibiSpName(m) + ' ' + mibiStage(m) + (pm && pm.id === m.id ? ' · partner' : '') + (S.lead === m.id ? ' · lead' : '') + careOf(m)).join('; ') : S.mibis.length ? 'no one with you' : 'none yet') + (home.length ? ' · at home: ' + home.map(m => m.name + ' ' + mibiStage(m) + careOf(m)).join(', ') : '');
   document.getElementById('oSeed').textContent = S.seed;
   const t = tierOf();
   document.getElementById('oProbe').textContent = 'tier ' + S.tier + ' · range ' + t.range + ' · hold ' + t.hold + ' · shield ' + (ex ? ex.shield + '/' + ex.smax : t.shield) + (ex ? ' · storm ' + stormLevel() + ' bolt' + (stormLevel() === 1 ? '' : 's') : '');
@@ -4521,8 +4543,8 @@ function notesText() {
   L2.push('Survey: ' + surveyText());
   L2.push('Energy: ' + energyText());
   L2.push('Where: ' + whereText());
-  L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + SPECIES[m.sp].name + ', ' + mibiStage(m) + ', ' + SPECIES[m.sp].abText + ')').join('; ') : 'none'));
-  L2.push('Known species: ' + (S.known.length ? S.known.map(s => SPECIES[s].name).join(', ') : 'none'));
+  L2.push('Mibis: ' + (S.mibis.length ? S.mibis.map(m => m.name + ' (' + mibiSpName(m) + ', ' + mibiStage(m) + ', ' + abTextOf(m.sp) + ')').join('; ') : 'none'));
+  L2.push('Known species: ' + (S.known.length ? S.known.map(s => spOf(s).name).join(', ') : 'none'));
   L2.push('Pins: ' + (S.pins.length ? S.pins.map(p => { const q = cxy(p.c); return q.x + ',' + q.y + ' ' + PIN_TEXT[p.k]; }).join('; ') : 'none'));
   L2.push('Burrow: ' + (S.opened[G.gate] ? 'open' : 'closed') + ' · Bay: ' + S.bay.length + ' of ' + BAY + ' sealed · ' + (isDocked() ? 'docked' : 'away') + ' · Hold: ' + (S.hold ? S.hold.e + ' energy, ' + S.hold.d + ' data, ' + S.hold.s + ' essence, ' + S.hold.pods.length + ' pods' : 'empty'));
   L2.push(''); L2.push('Recent events:'); for (const s of S.log.slice(-12)) L2.push('- ' + s);
