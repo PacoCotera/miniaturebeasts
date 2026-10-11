@@ -195,3 +195,30 @@ test("End expedition while docked at the start", () => {
   assert.equal(S.carrySeen, 1);
   assert.deepEqual(sv().carried, [1, 2]);
 });
+
+// ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, sized to whole physical pixels.
+test("?embed shows the screen alone and fit() stands aside", () => {
+  assert.ok(PAGE.includes('<title>Companion Field Test</title>\n<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>'));
+  for (const rule of [
+    "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
+    "html.embed body{visibility:hidden}",
+    "html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(--embed-w,450px); height:auto; max-width:none; border-radius:0}",
+  ]) assert.ok(PAGE.includes(rule + "\n"), rule);
+  assert.ok(PAGE.indexOf("html.embed #screen") < PAGE.indexOf("</style>"));
+  assert.equal(source("EMBED"), "const EMBED = document.documentElement.classList.contains('embed');");
+  assert.match(source("fit"), /^function fit\(\) \{\n  if \(EMBED\) return;\n/);
+
+  // fit() under embed touches nothing; embedFit() sets --embed-w to 450·k/dpr px
+  const touch = new Proxy({}, { get() { throw new Error("fit() ran under embed"); } });
+  for (const [dpr, want] of [[1, "450px"], [2, "450px"], [1.25, "360px"], [3, "450px"]]) {
+    const set = {};
+    const t = load(["fit", "embedFit"], {
+      EMBED: true, fitEl: touch, deviceEl: touch, matchMedia: touch,
+      window: { devicePixelRatio: dpr, innerHeight: 600 },
+      document: { documentElement: { clientWidth: 450, style: { setProperty: (k, v) => { set[k] = v; } } } },
+    });
+    t.fit();
+    t.embedFit();
+    assert.deepEqual(set, { "--embed-w": want }, "dpr " + dpr);
+  }
+});

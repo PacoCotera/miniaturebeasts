@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Companion Field Test</title>
+<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>
 <meta name="description" content="Miniature Beasts exploration rough playable on a simulated Companion screen: 450×600 pixels at 1:1, a fixed 48-colour palette, the world map, living patches, storms, partners and two gates.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -162,6 +163,9 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 @media (prefers-reduced-motion: reduce){
   *{transition:none !important; animation:none !important}
 }
+html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}
+html.embed body{visibility:hidden}
+html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:var(--embed-w,450px); height:auto; max-width:none; border-radius:0}
 </style>
 </head>
 <body>
@@ -4417,9 +4421,11 @@ window.addEventListener('blur', () => { stopRepeat(); document.querySelectorAll(
 
 // ===================== 17. Page: fit, build stamp, observer =====================
 const fitEl = document.getElementById('deviceFit');
+const EMBED = document.documentElement.classList.contains('embed');
 // Scale the depicted device to the window. When the screen would land close to a whole number of
 // physical pixels per device pixel, snap to it so the pixel grid stays even.
 function fit() {
+  if (EMBED) return;
   const W = 522, H = 832, vw = document.documentElement.clientWidth, vh = window.innerHeight, dpr = window.devicePixelRatio || 1;
   const desktop = vw >= 900 && window.matchMedia && matchMedia('(pointer: fine)').matches;
   let s = Math.min(1, (vw - 32) / W);
@@ -4430,6 +4436,12 @@ function fit() {
   deviceEl.style.transform = `scale(${s})`;
 }
 window.addEventListener('resize', fit);
+// ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
+function embedFit() {
+  const dpr = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(dpr));
+  document.documentElement.style.setProperty('--embed-w', (450 * k / dpr) + 'px');
+}
+if (EMBED) { window.addEventListener('resize', embedFit); embedFit(); }
 
 const stampEl = document.getElementById('stamp');
 fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {
