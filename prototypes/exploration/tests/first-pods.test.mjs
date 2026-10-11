@@ -7,12 +7,15 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
+import * as A from "../src/atlas.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-const IMPORT = /^import \{([^}]*)\} from "\.\/src\/world\.mjs";$/m;
-const BINDINGS = MODULE.match(IMPORT)[1].split(",").map(s => s.trim().split(/\s+as\s+/));
-const SCRIPT = MODULE.replace(IMPORT, "");
+// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
+const MODS = { world: W, atlas: A };
+const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
+const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
+const SCRIPT = MODULE.replace(IMPORT_RE, "");
 
 function page(store = {}) {
   const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
@@ -22,7 +25,7 @@ function page(store = {}) {
     matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [from, to = from] of BINDINGS) ctx[to] = W[from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
+  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
   const run = src => vm.runInContext(src, ctx);
   const p = {
     run, store,
@@ -194,10 +197,11 @@ function digUp(p, id) {
   }
   return false;
 }
-const PLAY_SEEDS = +(process.env.FIRST_PODS_SEEDS || 200);   // the full 1,000: FIRST_PODS_SEEDS=1000
-test(`6. gettable in play: calm, start at glint 0, walk in, Call, dig up fa and fb (seeds 1 to ${PLAY_SEEDS})`, () => {
+const FROM = +(process.env.FIRST_PODS_FROM || 1), N = process.env.FIRST_PODS_SEEDS;
+const PLAY = N ? Array.from({ length: +N - FROM + 1 }, (_, i) => FROM + i) : [...Array.from({ length: 24 }, (_, i) => i + 1), 117];   // 117: the one fog re-Call in seeds 1–200
+test(`6. gettable in play: calm, start at glint 0, walk in, Call, dig up fa and fb (${PLAY.length} seeds)`, () => {
   let a = 0, b = 0, again = 0, wantA = 0, wantB = 0;
-  for (let s = +(process.env.FIRST_PODS_FROM || 1); s <= PLAY_SEEDS; s++) {
+  for (const s of PLAY) {
     const p = page();
     p.run(`newWorld(${s}); TEST.calm = true;`);
     p.key("confirm"); p.key("confirm");   // Weather, then the cursor's glint: glint 0 on a new world
@@ -219,8 +223,9 @@ test(`6. gettable in play: calm, start at glint 0, walk in, Call, dig up fa and 
       if (id === "fa") a++; else b++;
     }
   }
-  console.log(`# taken in play: fa ${a}, fb ${b} over ${PLAY_SEEDS} seeds; a second Call after a short walk (fog) ${again}`);
+  console.log(`# taken in play: fa ${a}, fb ${b} over ${PLAY.length} seeds; a second Call after a short walk (fog) ${again}`);
   assert.equal(a, wantA); assert.equal(b, wantB);
+  if (!N) assert.ok(again >= 1 && wantB >= 1, "the default seeds still take the fog re-Call and fb");
 });
 
 // ---- the Untuva meal hint (copywriter's cmp.hint.untuvaMeal) ----
