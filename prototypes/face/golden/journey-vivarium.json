@@ -332,7 +332,7 @@
     "ring": "resident.8",
     "ok": "Look at Pip",
     "price": null,
-    "subject": "its painting is on its way",
+    "subject": "a young Loika",
     "back": "Home"
    },
    {
@@ -350,7 +350,7 @@
     "ring": "resident",
     "ok": "Greet Pip",
     "price": null,
-    "subject": "its painting is on its way",
+    "subject": "a young Loika",
     "back": "Vivarium"
    },
    {
@@ -367,7 +367,7 @@
     "ring": "name",
     "ok": "Rename Pip",
     "price": null,
-    "subject": "its painting is on its way",
+    "subject": "a young Loika",
     "back": "Vivarium"
    },
    {
@@ -436,7 +436,7 @@
     "ring": "resident",
     "ok": "Greet Pip",
     "price": null,
-    "subject": "its painting is on its way",
+    "subject": "a young Loika",
     "back": "Vivarium"
    },
    {
@@ -453,7 +453,7 @@
     "ring": "name",
     "ok": "Rename Pip",
     "price": null,
-    "subject": "its painting is on its way",
+    "subject": "a young Loika",
     "back": "Vivarium"
    },
    {
@@ -619,7 +619,7 @@
     "ring": "tile.8",
     "ok": "Greet Pip",
     "price": null,
-    "subject": "its painting is on its way",
+    "subject": "a young Loika",
     "back": "Vivarium"
    },
    {

@@ -539,6 +539,8 @@ expect(child.read.length < 4, "the child is known only where the switch parents 
 expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [child.id, dot.id])) === 0.25, "child and parent: kinship a quarter");
 // reading the child on the Vivarium's card
 const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id), fr = window.__st.frameOf(m.species); return fr.chapters.findIndex((c) => !m.read.includes(c.id)); }, child.id);
+// The child's painting lands on the Caddy mock's clock, which a slower runner reaches later (the first look's subject reads the painting): the step starts with it landed, as the journey does elsewhere, so its trace never depends on the clock.
+await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id); m.paint = { state: "landed" }; }, child.id);
 { stepOf("vivarium-card");
   await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.meet = null; U.viv.f = null; window.__st.goto("home"); }, child.id); await page.waitForTimeout(300);   // the child's meet ended with a first press, off this step
   const hp = async (k, ms = 250) => { await said(); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 5000 }).catch(() => {}); await press(k, ms);   // a key pressed in a hold is dropped: wait the hold out first (a slower runner holds longer)
