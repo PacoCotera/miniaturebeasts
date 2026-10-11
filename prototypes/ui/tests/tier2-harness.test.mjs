@@ -1,6 +1,6 @@
-import { test } from "node:test";
+import { test, after } from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
@@ -15,6 +15,7 @@ function fixture() {
   return img;
 }
 const tmp = mkdtempSync(path.join(tmpdir(), "tier2-"));
+after(() => rmSync(tmp, { recursive: true, force: true }));
 const standFile = path.join(tmp, "stand.png"), lmFile = path.join(tmp, "lm.json"), standBytes = png(fixture());
 writeFileSync(standFile, standBytes);
 // the shape of the animator's landmarks file, with synthetic values
