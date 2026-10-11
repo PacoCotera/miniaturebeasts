@@ -4004,5 +4004,22 @@
    "thoughtsTokenCount": 172,
    "totalTokenCount": 1837
   }
+ },
+ {
+  "tag": "mibi-adult-S13-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191072,
+  "mxn": 3.8214,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T21:00:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 856,
+   "candidatesTokenCount": 1342,
+   "thoughtsTokenCount": 236,
+   "totalTokenCount": 2434
+  }
  }
 ]
