@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
-import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping } from "../tools/warp-field.mjs";
+import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping, pickPicture } from "../tools/warp-field.mjs";
 import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
@@ -209,4 +209,13 @@ test("M6 measures the mean over the columns the field moves, not every opaque co
   assert.deepEqual(movedColumns(down, stand, up), [1, 2, 3], "a column where either end differs from the stand");
   assert.equal(profileDeltaOver(down, up, [1, 2, 3]).mean, (4 + 4 + 1) / 3); assert.equal(profileDeltaOver(down, up, [1, 2, 3]).columns, 3);
   assert.ok(profileDeltaOver(down, up, [0, 1, 2, 3, 4, 5]).mean < 3, "over every column the mean would be diluted");
+});
+test("a named variant block for the size (an -exaggerated one) is a placed picture, and the run renders one down-up pair for it, with M5a not applied", () => {
+  const lmx = structuredClone(landmarks); lmx.pictures["stand-104x112-exaggerated"] = { ...structuredClone(landmarks.pictures["stand-104x112"]), M5a: "not applied: beyond the painted ends" };
+  assert.equal(pickPicture(lmx, 104, 112, "stand-104x112-exaggerated").derived, false);
+  assert.equal(pickPicture(lmx, 104, 112).name, "stand-104x112", "without a name the placed block is the plain one");
+  const lf = path.join(tmp, "lmx.json"); writeFileSync(lf, JSON.stringify(lmx));
+  const r = runAll([{ name: "exag", stand: standFile, landmarks: lf, picture: "stand-104x112-exaggerated" }]);
+  assert.deepEqual([...r.files.keys()].filter((k) => k.endsWith(".apng")), ["exag/vivarium-pair-104x112-exaggerated-down-up.apng"]);
+  assert.ok(r.rows.filter((x) => x.measure === "M5a").every((x) => x.result === "n/a"));
 });

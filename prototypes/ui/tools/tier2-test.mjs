@@ -333,8 +333,9 @@ export function runSet(set, opts = {}) {
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
     const lc = legCompression(fields[e], stand), lcFixed = fields[e].bellyFixed; row(size, "legs", `leg compression px (${e})`, lc, lcFixed ? 0 : "", lcFixed ? (lc === 0 ? "pass" : "FAIL") : "info");
     row(size, "field", `${e} max |d| px / stretch / shear`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxStretch.toFixed(3)} / ${fields[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
-    const prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;
-    if (lm?.toplineProfile && headMask && (prof304 || scaled)) {
+    const notApplied = typeof info?.pic.M5a === "string" && info.pic.M5a.startsWith("not applied"), prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;
+    if (notApplied) row(size, "M5a", e, info.pic.M5a, "", "n/a");
+    else if (lm?.toplineProfile && headMask && (prof304 || scaled)) {
       const P = lm.toplineProfile, prof = prof304 ? P : { x: P.x.map((x) => mapping.tx0 + rha((x - mapping.bx0) * mapping.sx)), down: P.down.map((d) => d * mapping.sy), up: P.up.map((d) => d * mapping.sy) };
       // the one M5a tolerance is the animator's rules.M5aTolerance: 304 at its own, 104 and 144, and a figure scale below 0.30 (the nap); there is no fallback
       const T = lm.rules?.M5aTolerance, small = !prof304 && Math.max(mapping.sx, mapping.sy) < 0.30, tol = !T ? null : prof304 ? T["304x312"] : small ? T["figure scale < 0.30 (the 96x88 nap)"] : T["104x112 and 144x152"];
@@ -396,8 +397,9 @@ export function runSet(set, opts = {}) {
   else {
     row(size, "pair", "holds b0/b1/b2/b1back ms, offset ms, seconds", `${holds.join("/")}, ${offsetMs}, ${totalMs / 1000}`, "", "info");
     const set3 = (img) => [img, bakeStep(img, 1, yb), bakeStep(img, 2, yb)], copy = { down: warped.down && set3(warped.down), middle: set3(stand), up: warped.up && set3(warped.up) };
-    for (const [l, r] of [["down", "middle"], ["middle", "up"], ["down", "up"]]) if (copy[l] && copy[r]) {
-      const v = vivariumPair(copy[l], copy[r], { holds, offsetMs, totalMs, bg }); files.set(`${set.name}/vivarium-pair-${size}-${l}-${r}.apng`, v.bytes);
+    const exag = /exaggerated/.test(info?.name ?? "");                                  // a variant block: one extra pair, down against up
+    for (const [l, r] of exag ? [["down", "up"]] : [["down", "middle"], ["middle", "up"], ["down", "up"]]) if (copy[l] && copy[r]) {
+      const v = vivariumPair(copy[l], copy[r], { holds, offsetMs, totalMs, bg }); files.set(`${set.name}/vivarium-pair-${size}-${exag ? "exaggerated-" : ""}${l}-${r}.apng`, v.bytes);
       if (v.delays.some((d) => d % 80)) row(size, "pair", `${l}|${r} frame delays`, "not all multiples of 80 ms", "", "note");
     }
   }

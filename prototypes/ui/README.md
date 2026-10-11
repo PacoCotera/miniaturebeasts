@@ -40,6 +40,8 @@ The warp with the head layer: the head (composite inside the mask) is split off;
 
 Writes per set: the 1x PNGs (painted down, warped down, stand, warped up, painted up), the field maps and the head mask, a contact sheet per set and one for all, `measures.csv`, and `vivarium-pair-<size>-<down|middle>-<middle|up>.apng` for the three pairings: two Hiljans side by side, 10 s at 1x on #D6CEBE, breathing b0 b1 b2 b1 with the animator's holds and copy B offset (`breathPair`). b1 and b2 are baked from each warped stand (the field reused by id; a step is never warped on its own).
 
+A picture block named for the size with a suffix (`stand-104x112-exaggerated`, selected with `--picture`) is a placed variant: it renders one extra breathing pair, `vivarium-pair-<size>-exaggerated-down-up.apng`, and a block that says `M5a: "not applied..."` skips M5a (a field deliberately beyond the painted ends).
+
 Opaque means alpha > 110.
 
 | # | Measure | Pass |

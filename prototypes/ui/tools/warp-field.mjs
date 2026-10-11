@@ -56,6 +56,7 @@ export const headMaskFrom = (buf) => { const p = decodePNG(buf), m = new Uint8Ar
 export function pickPicture(landmarks, w, h, name = null) {
   const pics = landmarks.pictures ?? {}, own = Object.keys(pics).find((k) => k.endsWith(`-${w}x${h}`));
   if (own && (!name || name === own)) return { pic: pics[own], derived: false, name: own };
+  if (name && pics[name] && name.includes(`-${w}x${h}`)) return { pic: pics[name], derived: false, name };    // a named block for this size (a variant, e.g. -exaggerated)
   const baseName = name ?? Object.keys(pics).find((k) => k.endsWith(`-${BASE_SIZE[0]}x${BASE_SIZE[1]}`));
   if (!baseName || !pics[baseName]) throw new Error(`no landmark picture for ${w}x${h}${name ? ` (asked for "${name}")` : ""}`);
   return { pic: pics[baseName], derived: true, name: baseName };
