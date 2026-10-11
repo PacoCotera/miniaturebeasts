@@ -9,7 +9,8 @@ Every piece's left and right 16 px are cross-faded to one join strip taken from 
 edge: its left half for every piece's right edge, its right half for every left edge), so any piece joins any other as the strip's own two halves do.
 Writes tileset/walls/<name>.png, walls.json (name, kind, cells, variant) and walls-runs-1x.png (random runs assembled, for the eye).
 Runs come from several source sheets (a1, a2, a3); each sheet's ground and shadow greens are its own two most common greens.
-Runs with rounded ends give caps; runs cut square at the sheet's edge give only faces.
+Runs with rounded ends give caps; runs cut square at the sheet's edge give only faces. A cap's outer side is cut to a rounded,
+lumpy column (top corner 10 px, foot 22 px) with a dark outline, so a run never ends on a square edge.
 usage: python3 -I cut-walls.py SOURCES_DIR PALETTE_JSON OUT_DIR"""
 import json, os, sys
 import numpy as np
@@ -75,6 +76,16 @@ for rn, (sh, x0, x1, rt, rb, caps) in RUNS.items():
         p = fade(a[:, sl], l, r); k = key[:, sl].copy()
         if l: k[:, :FW] = False
         if r: k[:, -FW:] = False
+        # the end's silhouette: a rounded column, not a square cut. Its outer side is inset by a lumpy profile (2-7 px), its
+        # top corner rounded on 10 px and its foot on 22 px; a 1 px dark outline follows the new edge
+        yy = np.arange(FACE_H); prof = 2 + np.round(2.5 + 2.5 * np.sin(yy / 7.0 + (3 if nm[-1] == "e" else 0))).astype(int)
+        top_r, foot_r = 10, 22
+        prof = np.maximum(prof, np.where(yy < top_r, top_r - np.sqrt(np.maximum(0, top_r ** 2 - (top_r - yy) ** 2)), 0).astype(int))
+        fy = FACE_H - 1 - yy; prof = np.maximum(prof, np.where(fy < foot_r, foot_r - np.sqrt(np.maximum(0, foot_r ** 2 - (foot_r - fy) ** 2)), 0).astype(int))
+        xx = np.arange(48)[None, :] if nm[-1] == "w" else (47 - np.arange(48))[None, :]
+        cut = xx < prof[:, None]; k = k | cut
+        edge = ~k & (np.roll(k, 1, 1) | np.roll(k, -1, 1) | np.roll(k, 1, 0) | np.roll(k, -1, 0)) & (np.abs(xx - prof[:, None]) <= 1)
+        p = p.copy(); p[edge] = PAL[int(PL[:, 0].argmin())]
         name = f"wall-{nm}-{rn}"; snap(p, k).save(os.path.join(out, name + ".png")); pieces[name] = (p, k)
         atlas.append({"name": f"meadow/{'cap'}/{name}", "file": name + ".png", "kind": "cap", "cells": [1, FACE_H // 48], "side": nm[-1], "variant": rn})
     mid = a[:, 48:W - 48]; mk = key[:, 48:W - 48]; n = mid.shape[1] // 48; x = 0

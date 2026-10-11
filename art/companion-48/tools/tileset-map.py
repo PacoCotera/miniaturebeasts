@@ -5,14 +5,16 @@ grid that the pieces live on. b1 is a painting and is not consistent in scale: i
 two cells (96 px) here, so the plateaus' south rims sit up to a cell from b1's. Any other difference is the tiles.
 
 Pieces used:
-  lawn          one flat base (b1's lit lawn tone), one ramp step per level
+  lawn          b1's own lawn ramp: the band layer's step plus a fleck tile (b1's lawn less its bands, -2..+2 steps, three
+                96 px variants), the basin one step down
   light layer   b1's own light and shade bands (its lawn's value averaged over 13 px, cut at three levels), as flat steps up or
                 down of the same grass: a layer, not baked into tiles
   tufts         clustered tufts (3-5 blades: a dark side, a body one step down, a lit tip two steps up) and sparse clover,
-                at seeded sites ~40 px apart, none alone
+                at seeded sites ~30 px apart, none alone
   plateau edges on north, west and east: a rounded outline, a lit rim, a dark line under it, blades over it, two flat shadow steps
   walls         tileset/walls: two cells per level (a two-level drop stacks two), runs packed from pieces 3, 2 and 1 wide, caps at
-                open ends; the plateau's rim hangs 6-10 px over the wall's top with a ragged lower edge and hanging blades
+                open ends; the plateau's rim hangs 6-12 px over the wall's top with a ragged lower edge and hanging blades; a foot
+                piece on every cell of a run's bottom edge, and small boulders and ferns along it
   stairs        b1's stairs (one level 2 x 2 cells, two levels 2 x 4, each with its landing row): not yet cut pieces
   pond, stream  tileset/water: two flat tones, a continuous foam line with breaks, the wet line, a sand bank; a lobe's outer
                 corners are macro pieces (2 x 2 cells, radius 60)
@@ -59,8 +61,12 @@ def majority(m, n):
     return m
 
 # ---- b1's layout on cells (18 x 24): levels 0-3, w water (a face is drawn in the cells under its drop, at the lower level)
-HM = ["113333333333331ww0"] * 3 + ["111111112222221ww0"] * 4 + ["111111111111111ww0"] * 3 + ["000000000001111ww0"] * 4 + [
-      "000000000000011ww0",
+HM = ["113333333333331ww0"] * 3 + ["111111112222221ww0"] * 4 + ["111111111111111ww0"] * 3 + [
+      "000000000001111ww0",
+      "000000000001111ww0",
+      "000000000001111ww0",
+      "000000000001111ww0",
+      "000000000001111ww0",
       "000000000000000ww0",
       "00wwwwwww000000ww0",
       "00wwwwwww00wwwwww0",
@@ -77,7 +83,7 @@ FACE = np.zeros((R, Cn), bool); TOP = np.zeros((R, Cn), bool); FLV = np.zeros((R
 for c in range(Cn):
     for r in range(1, R):
         d = H[r - 1, c] - H[r, c]
-        if d > 0 and not FACE[r - 1, c] and not WAT[r - 1, c]:
+        if d > 0 and not FACE[r - 1, c] and not WAT[r - 1, c] and not WAT[r, c]:   # never a face into water
             for k in range(2 * d):
                 if r + k < R: FACE[r + k, c] = True; FLV[r + k, c] = H[r - 1, c]
             for k in range(d): TOP[r + 2 * k, c] = True
@@ -109,9 +115,27 @@ def boxavg(a, k):
     n = 2 * k + 1; return (cs[n:, n:] - cs[:-n, n:] - cs[n:, :-n] + cs[:-n, :-n]) / n ** 2
 b1l = boxavg(np.where(lawn, lum[B1], lum[BASE]).astype(float), 6)      # b1's lawn value, averaged over 13 px: its bands, not its flecks
 lit = majority(b1l > 155, 2); shd = majority(b1l < 127, 2); shd2 = majority(b1l < 114, 2)
+# the lawn's fleck tiles: b1's lawn, less its bands. Each pixel's step on b1's ramp minus the 13 px average of those steps, kept to
+# -2..+2, from 96 px windows of b1 that are lawn throughout; three variants, one per 96 px block by a seeded rule
+RI = np.full(B1.shape, np.nan); 
+for k_, t_ in enumerate(LRAMP): RI[B1 == t_] = k_
+inl = ~np.isnan(RI); avg = boxavg(np.where(inl, RI, LB).astype(float), 6); RES = np.clip(np.round(np.where(inl, RI, LB) - avg), -2, 2).astype(int)
+cov = boxavg(inl.astype(float), 48)
+cand = sorted(((cov[y, x], y, x) for y in range(48, B1.shape[0] - 48, 24) for x in range(48, B1.shape[1] - 48, 24)), reverse=True)
+FLECK = []
+for cv, y, x in cand:
+    if cv < .995 or len(FLECK) == 3: break
+    if all(abs(y - y2) > 96 or abs(x - x2) > 96 for y2, x2 in [f[1] for f in FLECK]): FLECK.append((RES[y - 48:y + 48, x - 48:x + 48], (y, x)))
+rngl = np.random.RandomState(5)
+BAND = np.zeros((HPX, WPX), int); BAND[lit] = 1; BAND[shd] = -2; BAND[shd2] = -4
 gm = mat[img] == "grass"
-for L_ in range(4):                                               # bands on b1's ramp: lit one up, shade two down, deep shade four down
-    m_ = gm & (LV == L_); img[m_ & lit] = lt(L_, 1); img[m_ & shd] = lt(L_, -2); img[m_ & shd2] = lt(L_, -4)
+for by in range(0, HPX, 96):
+    for bx in range(0, WPX, 96):
+        f = FLECK[rngl.randint(len(FLECK))][0]; hh, ww = min(96, HPX - by), min(96, WPX - bx)
+        for L_ in range(4):
+            m_ = gm[by:by + hh, bx:bx + ww] & (LV[by:by + hh, bx:bx + ww] == L_)
+            k_ = np.clip(LB + LTONE[L_] + BAND[by:by + hh, bx:bx + ww] + f[:hh, :ww], 0, len(LRAMP) - 1)
+            img[by:by + hh, bx:bx + ww][m_] = np.array(LRAMP)[k_[m_]]
 
 # ---- tufts: clustered, never alone. Sites ~40 px apart; each a cluster of 2-4 tufts within 9 px; clover rarely
 rng0 = np.random.RandomState(1944)
@@ -127,11 +151,15 @@ def tuft(cy, cx):
             if not (0 <= y < HPX and 0 < xx < WPX - 1) or not okp[y, xx]: break
             img[y, xx] = GS[2][base] if k == hgt - 1 else GS[-1][base]
             if k < hgt - 1 and okp[y, xx + 1]: img[y, xx + 1] = GS[-2][base]
-for gy in range(0, HPX, 40):
-    for gx in range(0, WPX, 40):
-        if rng0.rand() > .55: continue
-        cy, cx = gy + rng0.randint(40), gx + rng0.randint(40)
+for gy in range(0, HPX, 30):
+    for gx in range(0, WPX, 30):
+        if rng0.rand() > .6: continue
+        cy, cx = gy + rng0.randint(30), gx + rng0.randint(30)
         if not (6 <= cy < HPX - 2 and 6 <= cx < WPX - 6) or not okp[cy, cx]: continue
+        if rng0.rand() < .08:                                   # a flower: a white or yellow head on a dark stem
+            if mat[img[cy, cx]] == "grass":
+                img[cy, cx] = GS[-2][img[cy, cx]]; img[cy - 1, cx] = nearest((240, 240, 230) if rng0.rand() < .6 else (240, 210, 70))
+            continue
         if rng0.rand() < .15:                                   # clover: three lit leaves round a dark centre
             base = img[cy, cx]
             if mat[base] == "grass":
@@ -185,9 +213,14 @@ for r in range(R):
         x = c0 * 48; Y = r * 48; joins = []
         for f in seq:
             p = WALL[f][0].copy()
-            if stack: p[:12] = np.where(p[12:24] >= 0, p[24:36], p[:12])         # a stacked lower face: rock to its top, no turf
+            if stack:                                             # a stacked lower face: its turf gives way to the face above, mirrored, so the rock runs on
+                above = np.flipud(img[Y - 14:Y, x:x + p.shape[1]]); p[:14] = np.where(mat[np.clip(above, 0, None)] != "grass", above, p[:14])
             hh, ww = p.shape; hh = min(hh, HPX - Y)
             img[Y:Y + hh, x:x + ww] = np.where(p[:hh] >= 0, p[:hh], img[Y:Y + hh, x:x + ww]); x += ww; joins.append(x)
+        if stack:                                                 # break the stack's line: columns shift by -2..2 px within 3 px of it
+            for xx in range(c0 * 48, c * 48):
+                s_ = rng.randint(-2, 3)
+                if s_: img[Y - 3:Y + 3, xx] = img[Y - 3 + s_:Y + 3 + s_, xx]
         for jx in joins[:-1]:                                     # break each join: rows shift by -2..2 px within 3 px of it
             for yy in range(Y + 12, min(HPX, Y + 94)):
                 s_ = rng.randint(-2, 3)
@@ -196,6 +229,19 @@ for r in range(R):
         Yb = (r + 2) * 48                                         # the cast shadow on the cell under the face: one flat step, 8 px
         if Yb < HPX and not FACE[min(R - 1, r + 2), c0]:
             band = img[Yb:Yb + 8, c0 * 48:c * 48]; img[Yb:Yb + 8, c0 * 48:c * 48] = np.where(mat[band] == "grass", DARK[band], band)
+# the wall's feet: a foot piece (tileset/walls/foot-<n>) on every cell of every run's bottom edge, and props from the props sheet
+# along it (small boulders and ferns, seeded, ~one per 1.5 cells), so no wall ends on a ruled line
+FEET = [to_idx(Image.open(os.path.join(walls_d, p["file"]))) for p in WJ if p["kind"] == "foot"]
+FOOTPROPS = []
+rngf = np.random.RandomState(96)
+for r, c0, c1, stack, L_ in RUNS:
+    if r + 2 < R and FACE[r + 2, c0]: continue                     # an upper face of a stack: its foot is the face below
+    Yf = (r + 2) * 48
+    for cc in range(c0, c1):
+        f = FEET[rngf.randint(len(FEET))]; Y0 = Yf - f.shape[0] + 2
+        if Y0 + f.shape[0] <= HPX: img[Y0:Y0 + f.shape[0], cc * 48:cc * 48 + 48] = np.where(f >= 0, f, img[Y0:Y0 + f.shape[0], cc * 48:cc * 48 + 48])
+        if rngf.rand() < .65 and Yf + 4 < HPX and not WAT[min(R - 1, r + 2), cc]:
+            FOOTPROPS.append((["boulder-1", "boulder-2", "fern-3", "fern-2"][rngf.randint(4)], cc * 48 + rngf.randint(8, 40), Yf + rngf.randint(3, 7)))
 # the plateau's rim over each (unstacked) run: the upper lawn hangs 6-10 px over the wall's top, ragged, with a dark lower line
 # and blades hanging past it
 rngr = np.random.RandomState(11)
@@ -255,6 +301,7 @@ def put(name, fx, fy, shadow=True):
         g = mat[img[yy, xx]] == "grass"; img[yy[g], xx[g]] = DARK[img[yy[g], xx[g]]]
     y0, x0 = max(0, Y), max(0, X); y1, x1 = min(HPX, Y + ph), min(WPX, X + pw)
     q = p[y0 - Y:y1 - Y, x0 - X:x1 - X]; img[y0:y1, x0:x1] = np.where(q >= 0, q, img[y0:y1, x0:x1])
+for name, fx, fy in FOOTPROPS: put(name, fx, fy)
 put("bridge-1", 471, 1036, shadow=False)
 put("island-b1", 245, 955, shadow=False)
 for name, fx, fy in [("boulder-4", 70, 372), ("bush-1", 45, 660), ("boulder-1", 22, 682), ("fern-1", 160, 640), ("fern-3", 225, 640),

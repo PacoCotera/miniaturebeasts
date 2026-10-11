@@ -504,6 +504,62 @@
     2
    ],
    "variant": "i14"
+  },
+  {
+   "name": "meadow/foot/foot-1",
+   "file": "foot-1.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 1
+  },
+  {
+   "name": "meadow/foot/foot-2",
+   "file": "foot-2.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 2
+  },
+  {
+   "name": "meadow/foot/foot-3",
+   "file": "foot-3.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 3
+  },
+  {
+   "name": "meadow/foot/foot-4",
+   "file": "foot-4.png",
+   "kind": "foot",
+   "cells": [
+    1,
+    0
+   ],
+   "px": [
+    48,
+    16
+   ],
+   "variant": 4
   }
  ]
 }
