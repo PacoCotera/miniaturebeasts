@@ -40,3 +40,11 @@ Total 15.94 MXN of the 22.5 hard stop. `sheets-overview.png` puts the four side 
 - **Young S05** plays the quick class: pass 80, steps 160 (in place; no stride measure yet).
 - The individual's air and curl face its stand's way. The light flips with the mirror; at 1× the key light reads from the top right on those two keys. I accept it for the proof, and the roster sheets are painted in one facing.
 - Crouch-a (Pip's failed crouch) is withdrawn from the flipbooks.
+
+## The air keys rise alone (programme lead's note, 0 MXN)
+
+The animator signed `juv-S05-walk-curl`. On the three hoppers, every air key still carried painted shadow ink under its feet, so the shadow rose with the arc. `guides/air-shadow.py` fixes that:
+- The air key's low-alpha ink (shadow split, painted shadow, half-alpha rim) is stripped, giving `{n}-air-body`.
+- The ground shadow is a soft ellipse in the shadow colour (alpha ≤ 110) spanning the stand's feet (`{n}-air-shadow`). It stays on the ground and fades to 75 % at the apex.
+
+The flipbooks are re-rendered. Each strip shows stand, crouch, the first hop's apex and asleep.

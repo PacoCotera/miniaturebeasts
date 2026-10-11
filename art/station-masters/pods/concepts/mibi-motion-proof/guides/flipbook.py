@@ -25,6 +25,11 @@ def frame(im, x, lift=0, shk=1.0):
         sa = np.asarray(s).copy(); sa[..., 3] = (sa[..., 3] * shk).astype(np.uint8); s = Image.fromarray(sa)
     c.alpha_composite(s, (x, 20)); c.alpha_composite(b, (x, 20 - lift))
     return c
+def air(n, x, lift, shk):                                            # the air key: the body alone rises; the ground shadow (the stand's) stays
+    c = Image.new('RGBA', (CW, CH), BG + (255,))
+    sa = np.asarray(key(f'{n}-air-shadow')).copy(); sa[..., 3] = (sa[..., 3] * shk).astype(np.uint8)
+    c.alpha_composite(Image.fromarray(sa), (x, 20)); c.alpha_composite(key(f'{n}-air-body'), (x, 20 - lift))
+    return c
 def dither(fa, fb, level):                                            # level 1..16 of fb shown over fa
     a, b = np.asarray(fa), np.asarray(fb); h, w = a.shape[:2]
     m = (np.tile(BAYER, (h // 4 + 1, w // 4 + 1))[:h, :w] < level)[..., None]
@@ -48,7 +53,7 @@ def hopper(n, stage, crouch, apex, travel, hops=3, x=20):
     for _ in range(hops):
         bk.add(frame(key(f'{n}-{crouch}'), x), 160)
         for i, f in enumerate([.36, .86, 1, .86, .36]):
-            bk.add(frame(key(f'{n}-air'), x + round(travel * (i + 1) / 5), round(apex * f), 1 - .25 * f), T)
+            bk.add(air(n, x + round(travel * (i + 1) / 5), round(apex * f), 1 - .25 * f), T)
         x += travel; bk.add(frame(key(f'{n}-{crouch}'), x), 160); bk.stand('anchor', x, 480)
     bk.stand('anchor', x, 720); bk.add(frame(key(f'{n}-{crouch}'), x), 320)
     fa, fb = frame(key(f'{n}-{crouch}'), x), frame(key(f'{n}-curl'), x)
@@ -68,8 +73,9 @@ def save(fr, name):
     ims = [f.convert('RGB') for f, _ in fr]
     ims[0].save(f'{O}/{name}.png', save_all=True, append_images=ims[1:], duration=[d for _, d in fr], loop=0)
     strip = Image.new('RGB', (CW * 4, CH), BG)
-    air = [i for i, (f, d) in enumerate(fr) if d == T][2] if any(d == T for _, d in fr) else 1
-    for i, p in enumerate([0, 16, air, len(fr) - 1]): strip.paste(ims[min(p, len(ims) - 1)], (i * CW, 0))
+    cr = next((i for i, (f, d) in enumerate(fr) if d == 160), 1)
+    air = cr + 3 if fr[cr + 1][1] == T else cr + 1           # the apex tick of the first hop (a walker: its first step)
+    for i, p in enumerate([0, cr, air, len(fr) - 1]): strip.paste(ims[min(p, len(ims) - 1)], (i * CW, 0))
     strip.save(f'{O}/{name}-1x-strip.png')
     return sum(d for _, d in fr), len(fr)
 for name, fr in [('juv-S01-hop3-curl', hopper('juv-S01', 'juvenile', 'crouch', 16, 36)),
