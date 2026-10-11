@@ -1757,7 +1757,7 @@ Where the build departs from this layout is listed in `habitat.json` and `vivari
 
 The Probe section: the one screen whose subject is a machine, the Probe on its work tray. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
 
-**As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×64, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
+**As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×32, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
 
 <img src="station-layouts/11-bench.png" width="1024" alt="Probe bench, docked">
 
@@ -1825,9 +1825,9 @@ The cradle and the column form one group centred on x 512, from 56 to 968.
 | Region | Rectangle | Notes |
 | --- | --- | --- |
 | **Cradle (focal)** | 56, 104, 480, 288 | The Probe standing in its cradle, one painted picture a tier; away, the empty cradle. Axis x 296; first ink at y 108 |
-| Plates | 192, 416, 208, 80 | Plates 32×64 at y 424 on a 48 pitch: tier 1 at x 232, 280, 328; tier 2 at 208, 256, 304, 352; centred on x 296; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
-| Mend module | 584, 104, 384, 128 | Word at (16, 12), lamp at (356, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16x32` from (152, 60) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16x32`; on, all whole |
-| Upgrade module | 584, 248, 384, 248 | Word at (16, 12), lamp at (356, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×32 at (200, 104), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
+| Plates | 192, 416, 208, 80 | Plates 32×32 at y 440, centred in the region, on a 48 pitch: tier 1 at x 232, 280, 328; tier 2 at 208, 256, 304, 352; centred on x 296; one sprite a place. Never a ghost for a plate the tier does not have. The region is the focus target's box |
+| Mend module | 584, 104, 384, 128 | Word at (16, 12), lamp at (356, 12). The switch at (16, 56): its track 80×40 (off or on), its knob 40×40 at x 16 (off) or 56 (on). Its meaning: `mark-dock-24x24` at (112, 64), then the tier's plates as `icon-shield-16` 16×16 from (152, 68) on a 24 pitch; off, the first two whole and the rest `icon-shield-gone-16`; on, all whole |
+| Upgrade module | 584, 248, 384, 248 | Word at (16, 12), lamp at (356, 12); the socket 160×160 at (16, 48) with the part 128×128 at (32, 64) (armed, at (32, 56)). What it adds: three pod icons 16×16 on a 24 pitch at (200, 64), four plate icons 16×16 at (200, 112), the reach 40×40 at (200, 160) and the deep read 40×40 at (256, 160); the one each adds over tier 1 in its `-new` picture |
 
 Each module's objects start 8 px or more under its word's baseline (y + 28).
 
@@ -1835,7 +1835,7 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 
 | Region (`bench.json`) | Rectangle | Word or build | Only in | States it shows |
 | --- | --- | --- | --- | --- |
-| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`; until it lands, `room-bench-stage-collection`) | | — |
+| `bench` | 0, 40, 1024, 522 | frame, part stage (`room-bench-stage-probe`, signed) | | — |
 | `cradle` | 56, 104, 480, 288 | specimen (focal) | | tier 1, tier 2, empty |
 | `plates` | 192, 416, 208, 80 | build `shieldPlates` (one sprite a place, the places by tier) | docked | each plate whole or gone; a plate seating |
 | `switch` | 584, 104, 384, 128 | panel, build `module` | | off, on |
@@ -1878,21 +1878,23 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 
 With `motion: false` every event jumps to its end.
 
-### Placeholders on the Probe bench
+### Masters on the Probe bench
 
 | Master | Pixel size |
 | --- | --- |
 | `room-bench-stage-probe` | 1024×522 |
 | `bench-probe-t1-480x288`, `bench-probe-t2-480x288`, `bench-cradle-empty-480x288` | 480×288, rows 0 to 3 kept empty |
-| `bench-plate-whole-32x64`, `bench-plate-gone-32x64` | 32×64 |
+| `bench-plate-whole-32x32`, `bench-plate-gone-32x32` | 32×32 |
 | `bench-switch-track-off-80x40`, `bench-switch-track-on-80x40`; `bench-switch-knob-40x40` | 80×40; 40×40 |
 | `mark-dock-24x24` | 24×24 |
-| `icon-shield-16x32`, `icon-shield-16x32-new`, `icon-shield-gone-16x32` | 16×32 |
+| `icon-shield-16`, `icon-shield-16-new`, `icon-shield-gone-16` | 16×16 |
 | `icon-pod-16`, `icon-pod-16-new` | 16×16 |
 | `bench-socket-160` | 160×160 |
 | `bench-part-t2-dim-128`, `bench-part-t2-ready-128`, `bench-part-t2-fitted-128` | 128×128 |
 | `bench-reach-t2-40`, `bench-reach-t2-40-new`, `bench-deep-t2-40`, `bench-deep-t2-40-new` | 40×40 |
 | The lamps, on (`home-lamp-sprout-12x12`) and off (`home-lamp-hairline-12x12`): signed, placed | 12×12 |
+
+Signed by the art director, masters-pods 5f04d417; placed.
 
 Where the build departs from this layout is listed in `bench.json` `buildChanges`.
 
