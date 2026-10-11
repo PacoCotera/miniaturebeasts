@@ -42,13 +42,13 @@ const SCENES = {
 const frameProps = (line = {}, over = {}) => ({ top: { screen: "bench", title: "Probe", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" }, ...over });
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, [w, h]) { const dd = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { dd[i * 4] = 70 + (k & 127); dd[i * 4 + 1] = 70 + ((k >> 7) & 127); dd[i * 4 + 2] = 70 + ((k >> 14) & 127); dd[i * 4 + 3] = 255; } return { w, h, data: dd }; }
-async function start(b, { motion = true, t0 = 1000, fixedLine = false } = {}) {   // fixedLine: the frame's bottom line stays as it was, so a refresh is the bench's own (the architect's ceilings are the bench's objects)
+async function start(b, { motion = true, t0 = 1000, fixedLine = false, over = {} } = {}) {   // fixedLine: the frame's bottom line stays as it was, so a refresh is the bench's own (the architect's ceilings are the bench's objects)
   const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
   f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["bench", spec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0);
   for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
   for (const id of ["frame-companion-outline-16x24", "home-lamp-hairline-12x12", "home-lamp-sprout-12x12"]) f.handleOf(id, withPolicy((i) => standIn(i, id.includes("outline") ? [16, 24] : [12, 12])));
   f.t = t0; f.motion = motion; f.build = b; f.fixedLine = fixedLine ? b.line : null; give(f, b);
-  assert.equal(f.props({ screen: "bench", ...b.props, motion, frame: frameProps(f.fixedLine ?? b.line) }), 0, f.errors().join("; ")); frames(f); return f;
+  assert.equal(f.props({ screen: "bench", ...b.props, motion, frame: frameProps(f.fixedLine ?? b.line, over) }), 0, f.errors().join("; ")); frames(f); return f;
 }
 const give = (f, b) => { for (const r of b.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, r.size ?? [16, 16]))); };
 const setProps = (f, b) => { f.build = b; give(f, b); assert.equal(f.props({ screen: "bench", ...b.props, motion: f.motion, frame: frameProps(f.fixedLine ?? b.line) }), 0, f.errors().join("; ")); };
@@ -69,11 +69,11 @@ for (const [name, o] of Object.entries(SCENES)) {
   });
 }
 
-test("the plates per tier: tier 1 on 232, 280, 328 and tier 2 on 208, 256, 304, 352 at y 424 (lifted 2 while the ring is on them), the tier's missing place a node of no size, none away; the armed part stands 8 px out of its socket", { skip }, async () => {
+test("the plates per tier: tier 1 on 232, 280, 328 and tier 2 on 208, 256, 304, 352 at y 424 (lifted 2 while the ring is on them), the tier's missing place a node of no size, away the four nodes stay with no size; the armed part stands 8 px out of its socket", { skip }, async () => {
   let f = await start(scene({ f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[232, 424, 32, 64], [280, 424, 32, 64], [328, 424, 32, 64], [352, 424, 0, 0]]);
   f = await start(scene({ tier: 2, shield: 4, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 424, 32, 64], [256, 424, 32, 64], [304, 424, 32, 64], [352, 424, 32, 64]]);
   f = await start(scene({ f: "plates" })); assert.deepEqual(boxOf(f)("plates.0"), [232, 422, 32, 64], "the ring on the plates lifts them 2 px");
-  f = await start(scene({ docked: false, shield: 3, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`).slice(2)), [[0, 0], [0, 0], [0, 0], [0, 0]], "away: the four plate nodes stay, with no size (hidden, not destroyed)"); assert.equal(f.nodeBox("plates.seat"), null);
+  f = await start(scene({ docked: false, shield: 3, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 424, 0, 0], [256, 424, 0, 0], [304, 424, 0, 0], [352, 424, 0, 0]], "away: the four plate nodes stay, with no size (hidden, not destroyed)"); assert.equal(f.nodeBox("plates.seat"), null);
   const idle = await start(scene({ f: "switch" })), armed = await start(scene({ f: "slot", arm: 0 })), armed2 = await start(scene({ f: "slot", arm: 1 }));
   assert.equal(boxOf(idle)("slot.part")[1], 248 + 64, "ready: seated"); assert.equal(boxOf(armed2)("slot.part")[1], 248 - 2 + 56, "armed: 56 in the module (the module lifted 2 with the ring)"); assert.equal(boxOf(armed)("slot.part")[1], 248 - 2 + 64);
   const armedNoRing = await start(scene({ f: "switch", arm: 1 })); assert.equal(boxOf(armedNoRing)("slot.part")[1], 248 + 56, "armed: y + 56");
@@ -144,7 +144,7 @@ test("the cuts: the install step at t = 300 jumped from 0 ≤ 173,056 px; the in
     f.frame(t1 + 316); const a = area(f); assert.ok(a <= 173056, `install at 300 from 0: ${a}`); console.log(`# the install step at 300 jumped from 0: ${a} px`); }
   // the key frames with the real frame: the after-props come with their own bottom line, and the Dock key with the companion docked and its message on the plate
   { const f = await start(scene({ f: "slot", arm: 1, mendFull: true }), { motion: false }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true })); f.frame((f.t += 16)); const a = area(f); assert.ok(a <= 191040, `install key frame, motion off: ${a}`); console.log(`# the install key frame (motion off): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); }
-  { const lifted = scene({ docked: false, shield: 3, f: "switch" }), f = await start(lifted), sv0 = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
+  { const lifted = scene({ docked: false, shield: 3, f: "switch" }), f = await start(lifted, { over: { top: { ...frameProps().top, companion: { docked: false, withMibi: null } } } }), sv0 = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
     const r = S.dockKey(lifted.st, sv0, settings, T0 + 5); assert.ok(r.ok, "the Dock key docks"); const after = benchBuild({ st: lifted.st, sv: sv0, settings, docked: true, ui: { f: "switch", arm: 0, install: false } }, spec, frameSpec);
     f.build = after; give(f, after); play(f, { kind: "plate", target: "msg", ms: 4000 });
     assert.equal(f.props({ screen: "bench", ...after.props, motion: true, frame: frameProps(after.line, { plate: { text: r.msg, timed: true } }) }), 0, f.errors().join("; ")); f.frame((f.t += 16));

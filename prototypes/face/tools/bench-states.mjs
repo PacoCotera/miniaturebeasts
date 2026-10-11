@@ -1,7 +1,6 @@
-// The Probe bench in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `bench` (wireframe 11: docked, tier 1, two of the three plates whole, the ring on the plates,
-// the switch off, ⚡ 14 ◆ 6), `bench-armed` (11b: affordable, the upgrade armed, the ring on the slot, the switch on), `bench-away` (11c: the Probe away, the switch off, the ring on the switch) and `bench-tier2` (11d: four whole plates,
-// the upgrade fitted, the ring on the slot, the switch on). Each is reached by the page's own state and asserted (screen, state, the plates, the switch, the slot, the ring) before `visit(name, page, fail)` is called. Taken with reduced
-// motion. Returns { fails }.
+// The Probe bench in each of its capture points on the Station page (?test: the face in test mode), as the layer check and the goldens take them: `bench` (docked, tier 1, two of the three plates whole, the ring on the plates, the switch off,
+// ⚡ 14 ◆ 6), `bench-armed` (affordable, the upgrade armed, the ring on the slot, the switch on), `bench-away` (the Probe away, the switch off, the ring on the switch) and `bench-tier2` (four whole plates, the upgrade fitted, the ring on the slot,
+// the switch on). Each is reached by the page's own state and asserted (screen, state, the plates, the switch, the slot, the ring) before `visit(name, page, fail)` is called. Taken with reduced motion. Returns { fails }.
 import { openStation } from "./station-page.mjs";
 import { WORLD } from "./home-states.mjs";
 
