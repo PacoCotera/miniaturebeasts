@@ -9,8 +9,9 @@ import * as namer from "./namer.mjs";
 import * as vivarium from "./vivarium.mjs";
 import * as create from "./create.mjs";
 import * as pods from "./pods.mjs";
+import * as bench from "./bench.mjs";
 
-export const INTENTS = { frame, home, cargo, incubator, library, habitat, namer, vivarium, create, pods };
+export const INTENTS = { frame, home, cargo, incubator, library, habitat, namer, vivarium, create, pods, bench };
 // A face intent { screen, target, verb } (all that is on the wire) to its screen's function; the frame's verbs (the room keys and the wake) are the same on every screen. The Dock key is not a face verb: the host calls frame.dock(h).
 export function dispatch(h, { screen, target, verb }) {
   if (verb && (verb.startsWith("room:") || verb === "wake")) return frame.intent(h, target, verb);

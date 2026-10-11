@@ -47,7 +47,7 @@
   "switch": {
    "rect": [584, 104, 384, 128], "component": "panel", "build": "module", "word": [16, 12], "lamp": [356, 12, 12, 12],
    "toggle": { "at": [16, 56], "size": [80, 40], "track": { "off": "bench-switch-track-off-80x40", "on": "bench-switch-track-on-80x40" }, "knob": { "slice": "bench-switch-knob-40x40", "size": [40, 40], "x": { "off": 16, "on": 56 }, "y": 56, "move": "x 16 → 56 (and back) over 200 ms in whole pixels" } },
-   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 60], "icon": [16, 32], "pitch": 24, "count": "the tier's (3 or 4)", "whole": "icon-shield-16x32", "gone": "icon-shield-gone-16x32", "off": "the first two whole, the rest gone", "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
+   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 60], "icon": [16, 32], "pitch": 24, "count": "the tier's (3 or 4)", "whole": "icon-shield-16x32", "gone": "icon-shield-gone-16x32", "off": "the first two whole, the rest gone", "offWhole": 2, "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
    "states": { "off": "the knob left, the lamp `hairline`", "on": "the knob right, the lamp `sprout`" }
   },
   "slot": {

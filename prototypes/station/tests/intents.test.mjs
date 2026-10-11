@@ -14,13 +14,13 @@ import { openBay } from "../src/intents/cargo.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), fdir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(fdir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(fdir, f), "utf8"))));
-const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame"), homeSpec = J("home"), cargoSpec = J("cargo"), createSpec = J("create"), vivariumSpec = J("vivarium"), incubatorSpec = J("incubator"), habitatSpec = J("habitat"), namerSpec = J("namer");
+const J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), podsSpec = J("pods"), frameSpec = J("frame"), homeSpec = J("home"), cargoSpec = J("cargo"), createSpec = J("create"), vivariumSpec = J("vivarium"), benchSpec = J("bench"), incubatorSpec = J("incubator"), habitatSpec = J("habitat"), namerSpec = J("namer");
 const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 12 }, T0 = 1_000_000;
 
-const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null) }, create: null, inc: {}, cross: null, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, bench: { f: 0, arm: 0 }, meet: null, idle: false, report: null });
+const newUI = () => ({ screen: "home", home: { f: "room" }, viv: { f: "tile.9" }, cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, pods: { view: "collection", cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null) }, create: null, inc: {}, cross: null, lib: { sp: null, f: "spread", page: 0, i: 0 }, hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, bench: { f: null, arm: 0, install: false }, meet: null, idle: false, report: null });
 // A recording host: the effects are lists to read afterwards.
 function host(st, sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, ui = newUI()) {
-  const h = { st, sv, settings, ui, specs: { pods: podsSpec, frame: frameSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, vivarium: vivariumSpec }, holds: [], motion: () => h.moving !== false, said: [], went: [], played: [], timers: [], saved: 0, t: T0, now: () => h.t };
+  const h = { st, sv, settings, ui, specs: { pods: podsSpec, frame: frameSpec, home: homeSpec, cargo: cargoSpec, create: createSpec, vivarium: vivariumSpec, bench: benchSpec }, holds: [], motion: () => h.moving !== false, said: [], went: [], played: [], timers: [], saved: 0, t: T0, now: () => h.t };
   Object.assign(h, { say: (t) => h.said.push(t), goto: (s, hold = 0) => { h.went.push(s); h.holds.push(hold); ui.screen = s; }, play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms, fn }), save: () => { h.saved++; } });
   return h;
 }
@@ -29,7 +29,7 @@ function pod(st, id, read = [], gs = 5, identified = true) { S.seedPodFromGenome
 const chapters = (id) => frameOf(id).chapters.map((c) => c.id);
 
 test("every screen with intents has a module, and a face intent reaches it; the frame's verbs are the same on every screen", () => {
-  assert.deepEqual(Object.keys(INTENTS).sort(), ["cargo", "create", "frame", "habitat", "home", "incubator", "library", "namer", "pods", "vivarium"]);
+  assert.deepEqual(Object.keys(INTENTS).sort(), ["bench", "cargo", "create", "frame", "habitat", "home", "incubator", "library", "namer", "pods", "vivarium"]);
   const st = world(), h = host(st); h.ui.screen = "library";
   dispatch(h, { screen: "library", target: "x", verb: "room:home" }); assert.deepEqual(h.went, ["home"]); assert.equal(h.ui.home.f, "room");
 });
@@ -46,7 +46,7 @@ test("the room keys: the unpaid choices of Create and Cross are dropped; Researc
 test("Home: ✓ goes to the target's screen (Cargo, Pods on the pod that most needs the player, the Incubator, the Probe bench, the Library, the Vivarium on a resident); the rest knob holds input for events.rest and the face's done takes Idle; ← does nothing", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 2, settings); st.dock = { docked: true, at: T0 }; pod(st, "S01", [], 5, false);
   const h = host(st), m = st.mibis[0], go = (t) => INTENTS.home.intent(h, t, "confirm");
-  go("cargo"); assert.equal(h.went.at(-1), "cargo"); go("incubator"); assert.equal(h.went.at(-1), "incubator"); go("probe"); assert.deepEqual([h.went.at(-1), h.ui.bench.f], ["bench", 0]); go("library"); assert.deepEqual([h.went.at(-1), h.ui.lib.f], ["library", "spread"]);
+  go("cargo"); assert.equal(h.went.at(-1), "cargo"); go("incubator"); assert.equal(h.went.at(-1), "incubator"); go("probe"); assert.deepEqual([h.went.at(-1), h.ui.bench.f], ["bench", null]); go("library"); assert.deepEqual([h.went.at(-1), h.ui.lib.f], ["library", "spread"]);
   go("pods"); assert.equal(h.went.at(-1), "pods"); assert.equal(h.ui.pods.cur, S.neediestPod(st).id);
   go("resident." + m.id); assert.deepEqual([h.ui.hab.id, h.ui.hab.f, h.went.at(-1)], [m.id, "resident", "habitat"]);
   h.ui.hab.id = st.mibis[1].id; go("vivarium"); assert.deepEqual([h.ui.hab.id, h.went.at(-1)], [st.mibis[1].id, "vivarium"], "Home's panel opens the whole (its ring is the view's: the mibi last seen up close)");
@@ -282,4 +282,51 @@ test("the Vivarium's whole: ✓ on a resident or a tile looks at that mibi up cl
   h.ui.meet = st.mibis[2].id; INTENTS.vivarium.intent(h, "tile." + st.mibis[2].id, "confirm"); assert.equal(h.ui.meet, st.mibis[2].id, "looking at the mibi that was to be met opens its meet: the first press up close ends it");
   const n = h.went.length; INTENTS.vivarium.intent(h, "room", "confirm"); INTENTS.vivarium.intent(h, "tile.nobody", "confirm"); assert.equal(h.went.length, n, "nothing to look at, nothing happens");
   INTENTS.vivarium.intent(h, "resident." + m.id, "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "vivarium"]);
+});
+
+// ---- the Probe bench (bench.json): ✓ on the plates mends one, the switch toggles the dock's mend, the slot arms and fits ----
+function benchHost({ docked = true, shield = 2, tier = 1, e = 99, d = 99, mendFull = true, moving = true } = {}) {
+  const st = world(); st.e = e; st.d = d; st.mendFull = mendFull; st.dock = { docked, at: T0 }; st.probe = { shield, smax: S.TIER[tier].shield, tier, seq: 1 };
+  const h = host(st); h.ui.screen = "bench"; h.moving = moving; return h;
+}
+const BE = JSON.parse(readFileSync(path.join(specs, "bench.json"), "utf8")).events, BS = JSON.parse(readFileSync(path.join(specs, "bench.json"), "utf8")).strings;
+test("the bench: ✓ on the plates mends one plate for ⚡ 1, plays the mend (from the whole before, to one more) holding 300 ms, and saves; reduced motion holds nothing", () => {
+  let h = benchHost(); INTENTS.bench.intent(h, "plates", "confirm");
+  assert.equal(h.st.probe.shield, 3); assert.equal(h.st.e, 98); assert.deepEqual(h.played, [{ kind: "mend", target: "plates", ms: BE.mend.ms, hold: BE.mend.hold, from: 2, to: 3 }]); assert.equal(h.saved, 1); assert.deepEqual(h.said, [], "no plate: the context and the counters say it");
+  h = benchHost({ moving: false }); INTENTS.bench.intent(h, "plates", "confirm"); assert.deepEqual(h.played, [{ kind: "mend", target: "plates", ms: BE.mend.ms, hold: 0, from: 2, to: 3 }]);
+  h = benchHost({ shield: 3 }); INTENTS.bench.intent(h, "plates", "confirm"); assert.deepEqual([h.played, h.said, h.saved], [[], [], 0], "every plate whole: nothing");
+  h = benchHost({ docked: false }); INTENTS.bench.intent(h, "plates", "confirm"); assert.deepEqual([h.played.length, h.st.e], [0, 99], "away: nothing");
+});
+test("the bench: ✓ on the plates short of ⚡ says it on the message plate and spends nothing, plays nothing", () => {
+  const h = benchHost({ e: 0 }); INTENTS.bench.intent(h, "plates", "confirm");
+  assert.equal(h.st.probe.shield, 2); assert.equal(h.st.e, 0); assert.deepEqual(h.played, []); assert.deepEqual(h.said, [BS.short.replace("{icons}", "⚡")]); assert.equal(h.saved, 0);
+});
+test("the bench: ✓ on the switch toggles whether the dock mends every plate, plays the switch (from and to), holds nothing, saves; set away too", () => {
+  let h = benchHost({ mendFull: true }); INTENTS.bench.intent(h, "switch", "confirm");
+  assert.equal(h.st.mendFull, false); assert.deepEqual(h.played, [{ kind: "switch", target: "switch", ms: BE.switch.ms, hold: 0, from: 1, to: 0 }]); assert.equal(h.saved, 1);
+  INTENTS.bench.intent(h, "switch", "confirm"); assert.equal(h.st.mendFull, true); assert.deepEqual(h.played.at(-1), { kind: "switch", target: "switch", ms: BE.switch.ms, hold: 0, from: 0, to: 1 });
+  h = benchHost({ docked: false, mendFull: false }); INTENTS.bench.intent(h, "switch", "confirm"); assert.equal(h.st.mendFull, true, "away: the standing choice is still set");
+  assert.ok(h.st.log.some((l) => /mends every plate/.test(l)), "a log line");
+});
+test("the bench: the slot's two-press gate: short says so and spends nothing; the first ✓ arms; the second fits (⚡ −12 ◆ −4, tier 2, four plates), plays the install holding 900 ms and sets then clears the install flag; reduced motion sets none", () => {
+  let h = benchHost({ e: 5, d: 1 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.said, h.ui.bench.arm, h.played, h.st.e], [[BS.short.replace("{icons}", "⚡ ◆")], 0, [], 5], "short: the plate, no arm");
+  h = benchHost({ shield: 2 }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.ui.bench.arm, h.played, h.st.e], [1, [], 99], "the first ✓ arms and spends nothing");
+  INTENTS.bench.intent(h, "slot", "confirm");
+  assert.deepEqual([h.st.e, h.st.d, S.tierNow(h.st, h.sv), h.st.probe.shield, h.ui.bench.arm, h.ui.bench.install], [87, 95, 2, 4, 0, true]);
+  assert.deepEqual(h.played, [{ kind: "install", target: "slot", ms: BE.install.ms, hold: BE.install.hold, from: 2, to: 4 }]); assert.equal(h.saved, 1);
+  assert.deepEqual(h.timers.map((t) => t.ms), [BE.install.ms]); h.timers[0].fn(); assert.equal(h.ui.bench.install, false, "the flag clears when the install ends");
+  h = benchHost({ moving: false }); INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.ui.bench.install, h.played[0].hold, h.timers.length, S.tierNow(h.st, h.sv)], [false, 0, 0, 2]);
+  h = benchHost({ tier: 2, shield: 4 }); INTENTS.bench.intent(h, "slot", "confirm"); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.played, h.said, h.ui.bench.arm], [[], [], 0], "fitted: nothing");
+  h = benchHost({ docked: false }); INTENTS.bench.intent(h, "slot", "confirm"); assert.deepEqual([h.played, h.said, h.ui.bench.arm], [[], [], 0], "away: nothing");
+});
+test("the bench: any verb but ✓ clears the arm; ← goes Home with the ring on the Probe module; the ring the face says is kept", () => {
+  const h = benchHost(); INTENTS.bench.intent(h, "slot", "confirm"); assert.equal(h.ui.bench.arm, 1);
+  INTENTS.bench.intent(h, "slot", "room:home"); assert.equal(h.ui.bench.arm, 0, "a key but ✓ clears it"); INTENTS.bench.intent(h, "slot", "confirm"); assert.equal(h.ui.bench.arm, 1);
+  INTENTS.bench.intent(h, "slot", "back"); assert.deepEqual([h.ui.bench.arm, h.ui.home.f, h.went.at(-1)], [0, "probe", "home"]);
+  INTENTS.bench.focus(h, "switch"); assert.equal(h.ui.bench.f, "switch");
+});
+test("the Dock key on the bench: lifted, the ring on the plates moves to the switch and the arm clears; docked, the ring stays", () => {
+  const st = world(); st.dock = { docked: true, at: T0 }; st.probe = { shield: 2, smax: 3, tier: 1, seq: 1 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], with: null, tier: 1, shield: 3 }, h = host(st, sv);
+  h.ui.screen = "bench"; h.ui.bench.f = "plates"; h.ui.bench.arm = 1; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, false); assert.deepEqual([h.ui.bench.f, h.ui.bench.arm], ["switch", 0]);
+  h.ui.bench.f = "slot"; INTENTS.frame.dock(h); assert.equal(h.st.dock.docked, true); assert.equal(h.ui.bench.f, "slot", "away to docked: the ring stays");
 });

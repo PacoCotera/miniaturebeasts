@@ -22,7 +22,7 @@ export function intent(h, target, verb) {
   else if (target === "cargo") h.goto("cargo");
   else if (target === "pods") toPods(h);
   else if (target === "incubator") h.goto("incubator");
-  else if (target === "probe") { ui.bench.f = 0; h.goto("bench"); }
+  else if (target === "probe") { ui.bench.f = null; h.goto("bench"); }
   else if (target === "library") toLibrary(h);
   else if (target === "knob") {   // the rest: the knob settles (ms 200), the stage dithers to Idle (the second step), and the hold (380) ends on Idle; with reduced motion the event is a cut and Idle comes on the frame of the key
     h.pendingRoom = null;   // a room key kept during an earlier wake never fires at the end of this rest
