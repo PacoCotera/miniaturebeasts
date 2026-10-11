@@ -37,11 +37,11 @@ document says so in its **Not designed yet** section.
 | **Caddy** | The shared dock: charging, quiet summaries, printing |
 | **partner** | The grown mibi that comes on an expedition with the Probe |
 | **pod** | A sealed seed found in the world that holds a new mibi |
-| **crate** | One expedition's cargo, sealed when the player heads home |
+| **crate** | One expedition's cargo, sealed when the expedition ends |
 | **bay** | The Companion's sealed bay, which holds the crates until the Station opens them |
-| **expedition** | One trip out with the Probe, from its start cell until the player heads home or the Shield breaks |
+| **expedition** | One trip out with the Probe, from its start cell until the player ends it or the Shield breaks |
 | **Shield** | How many hits the Probe can still take |
-| **outpost** | A hut that, once lit for Energy, lets the player head home, mend the Shield and shelter |
+| **outpost** | A hut that, once lit for Energy, lets the player end the expedition, mend the Shield and shelter |
 | **beacon** | A post that, once lit for Energy, reveals the land around it |
 | **species** | An established kind of mibi. It sets what can vary and keeps every result a recognizable, viable pet |
 | **sample** | Material found in the world that holds one complete, hidden genome of one species |

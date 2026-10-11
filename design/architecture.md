@@ -52,7 +52,7 @@ If the confirmation is lost, the Station still has the crate exactly once, and
 the Companion shows "delivery unknown" and asks again with the same request.
 Waiting never unlocks the cargo. Where Head home may be used, and what a broken
 Probe loses, are game rules: [game.md](game.md) and the
-[play manual](play-manual.md#8-going-home-head-home-the-sealed-bay-and-the-station).
+[play manual](play-manual.md#8-ending-an-expedition-the-sealed-bay-and-the-station).
 
 ## Operations that survive interruption
 
