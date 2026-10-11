@@ -2966,5 +2966,39 @@
   "pacific_day": "2026-10-10",
   "time": "2026-10-11T00:50:21Z",
   "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "terrain-grass-scene-a1 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193592,
+  "mxn": 3.8718,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:20:07Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 916,
+   "candidatesTokenCount": 1359,
+   "thoughtsTokenCount": 239,
+   "totalTokenCount": 2514
+  }
+ },
+ {
+  "tag": "terrain-grass-scene-a2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.212494,
+  "mxn": 4.2499,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:20:42Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 887,
+   "candidatesTokenCount": 1479,
+   "thoughtsTokenCount": 277,
+   "totalTokenCount": 2643
+  }
  }
 ]
