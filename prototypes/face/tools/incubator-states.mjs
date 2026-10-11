@@ -31,8 +31,8 @@ const TIMED = {
   "hatch-1100": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, want: "hatch" },
   "hatch-1500": { scene: "ready", go: () => window.__st.press("confirm"), at: 1500, want: "hatch" },
   "hatch-2000": { scene: "ready", go: () => window.__st.press("confirm"), at: 2000, want: "hatch" },
-  // Station M1 §2.5: the hatch with S01's moving set on its stand-in close cells, under the developer switch
-  ...Object.fromEntries([1090, 2500, 5440, 5840].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
+  // Station M1 §2.5: the hatch with S01's moving set on its stand-in close cells, under the developer switch; 2720 (the R2 cut point) is taken last so the others keep their mibis
+  ...Object.fromEntries([1090, 2500, 5440, 5840, 2720].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
   "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "ready" },
 };
