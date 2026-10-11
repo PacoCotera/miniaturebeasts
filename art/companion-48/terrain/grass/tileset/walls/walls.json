@@ -560,6 +560,140 @@
     16
    ],
    "variant": 4
+  },
+  {
+   "name": "meadow/side/side-w-1",
+   "file": "side-w-1.png",
+   "kind": "side",
+   "side": "w",
+   "px": [
+    32,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 1
+  },
+  {
+   "name": "meadow/side/side-w-2",
+   "file": "side-w-2.png",
+   "kind": "side",
+   "side": "w",
+   "px": [
+    32,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 2
+  },
+  {
+   "name": "meadow/side/side-w-3",
+   "file": "side-w-3.png",
+   "kind": "side",
+   "side": "w",
+   "px": [
+    32,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 3
+  },
+  {
+   "name": "meadow/side/side-w-top",
+   "file": "side-w-top.png",
+   "kind": "side-end",
+   "side": "w",
+   "px": [
+    32,
+    24
+   ],
+   "end": "top"
+  },
+  {
+   "name": "meadow/side/side-w-foot",
+   "file": "side-w-foot.png",
+   "kind": "side-end",
+   "side": "w",
+   "px": [
+    32,
+    24
+   ],
+   "end": "foot"
+  },
+  {
+   "name": "meadow/side/side-e-1",
+   "file": "side-e-1.png",
+   "kind": "side",
+   "side": "e",
+   "px": [
+    20,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 1
+  },
+  {
+   "name": "meadow/side/side-e-2",
+   "file": "side-e-2.png",
+   "kind": "side",
+   "side": "e",
+   "px": [
+    20,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 2
+  },
+  {
+   "name": "meadow/side/side-e-3",
+   "file": "side-e-3.png",
+   "kind": "side",
+   "side": "e",
+   "px": [
+    20,
+    48
+   ],
+   "cells": [
+    0,
+    1
+   ],
+   "variant": 3
+  },
+  {
+   "name": "meadow/side/side-e-top",
+   "file": "side-e-top.png",
+   "kind": "side-end",
+   "side": "e",
+   "px": [
+    20,
+    24
+   ],
+   "end": "top"
+  },
+  {
+   "name": "meadow/side/side-e-foot",
+   "file": "side-e-foot.png",
+   "kind": "side-end",
+   "side": "e",
+   "px": [
+    20,
+    24
+   ],
+   "end": "foot"
   }
  ]
 }

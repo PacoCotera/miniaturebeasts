@@ -16,6 +16,8 @@ Pieces used:
                 open ends; the plateau's turf hangs 6-26 px over the wall's top in lumps and lobes, with hanging blades; moss and
                 roots on the faces; a foot
                 piece on every cell of a run's bottom edge, and small boulders and ferns along it
+  side faces    tileset/walls/side-*: a rock column (32 px west, 20 px east) down each plateau's west and east sides, in the lower cell's
+                place, lit on the west, shaded on the east, with rounded top and foot ends
   stairs        b1's stairs (one level 2 x 2 cells, two levels 2 x 4, each with its landing row): not yet cut pieces
   pond, stream  tileset/water: two flat tones, a continuous foam line with breaks, the wet line, a sand bank; a lobe's outer
                 corners are macro pieces (2 x 2 cells, radius 60)
@@ -232,6 +234,37 @@ for r in range(R):
         Yb = (r + 2) * 48                                         # the cast shadow on the cell under the face: one flat step, 8 px
         if Yb < HPX and not FACE[min(R - 1, r + 2), c0]:
             band = img[Yb:Yb + 8, c0 * 48:c * 48]; img[Yb:Yb + 8, c0 * 48:c * 48] = np.where(mat[band] == "grass", DARK[band], band)
+# side faces (tileset/walls/side-*): on every plateau's west and east sides a 20 px rock column in the lower cell's place,
+# from under the plateau's north corner down to its south face (or a foot where no face ends it); an east side casts an 8 px
+# shadow on the ground beside it
+SIDE = {k: to_idx(Image.open(os.path.join(walls_d, f"side-{k}.png"))) for k in
+        [f"{s_}-{n}" for s_ in "we" for n in (1, 2, 3)] + [f"{s_}-{e}" for s_ in "we" for e in ("top", "foot")]}
+rngs = np.random.RandomState(77)
+def blit(p, Y, X):
+    h_, w_ = p.shape; y0, y1 = max(0, Y), min(HPX, Y + h_)
+    if y1 > y0: img[y0:y1, X:X + w_] = np.where(p[y0 - Y:y1 - Y] >= 0, p[y0 - Y:y1 - Y], img[y0:y1, X:X + w_])
+STAIRC_ = set((r + k, c + j) for r, c, n in STAIRS for k in range(-1, 2 * n) for j in (0, 1))
+for L_ in (1, 2, 3):
+    top = ((H >= L_) | (FLV >= L_)) & ~WAT
+    for side, dc in (("w", -1), ("e", 1)):
+        for c in range(Cn):
+            cn = c + dc
+            if not (0 <= cn < Cn): continue
+            r = 0
+            while r < R:
+                if not (top[r, c] and not top[r, cn] and not FACE[r, c] and (r, cn) not in STAIRC_): r += 1; continue
+                r0 = r
+                while r < R and top[r, c] and not top[r, cn] and not FACE[r, c]: r += 1
+                SW = SIDE[f"{side}-1"].shape[1]; X = c * 48 - SW if side == "w" else (c + 1) * 48
+                ystart = r0 * 48 + (20 if (r0 == 0 or not top[r0 - 1, c]) else 0)
+                yend = r * 48 + (24 if r < R and FACE[r, c] else 0)            # down into the face's turf, where a cap meets it
+                y = ystart
+                while y < yend:
+                    blit(SIDE[f"{side}-{rngs.randint(1, 4)}"][:yend - y], y, X); y += 48
+                if ystart > r0 * 48 or r0 == 0: blit(SIDE[f"{side}-top"], ystart, X)
+                if not (r < R and FACE[r, c]): blit(SIDE[f"{side}-foot"], yend - 24, X)
+                if side == "e":
+                    sh_ = img[ystart:yend, X + SW:X + SW + 8]; g_ = mat[sh_] == "grass"; sh_[g_] = DARK[sh_[g_]]
 # moss and roots on the faces (b1's walls are about half rock): moss where a slow field runs high, most near the top, as the
 # lawn's dark green with a lit upper edge; roots hang from the top every 25-60 px, a dark wavering line 12-40 px long
 yy3, xx3 = np.mgrid[0:HPX, 0:WPX]
