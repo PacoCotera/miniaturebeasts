@@ -1,7 +1,7 @@
 {
  "rules": [],
  "lip_joins": 0,
- "face_join": 0,
+ "face_join": 0.963,
  "seam": 1.134,
  "seam_joins": 45,
  "repeat": 0.016,

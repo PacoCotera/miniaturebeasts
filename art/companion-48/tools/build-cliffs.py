@@ -12,7 +12,8 @@ seeded, tile-periodic detail so every piece joins its neighbours.
   stairs.png, stairs-top.png  the stair in a face cell and its landing on the plateau cell above
   bridge-ew-w|m|e.png, bridge-ns-n|m|s.png   deck overlays on water / bank cells
 
-usage: python3 -I build-cliffs.py OUT_DIR"""
+usage: python3 -I build-cliffs.py OUT_DIR [MATERIALS_DIR]
+(with MATERIALS_DIR the faces take the Retro Diffusion rock and the decks the Retro Diffusion planks; without it, both are scripted)"""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -21,6 +22,8 @@ import pal
 
 P = pal.load(); C = P.index
 out = sys.argv[1]; os.makedirs(out, exist_ok=True)
+MAT = sys.argv[2] if len(sys.argv) > 2 else None      # terrain-materials.py output: the paid rock and planks, when given
+def mat(n): return np.asarray(Image.open(os.path.join(MAT, n + ".png")).convert("RGBA")) if MAT else None
 T = -1; SH = -2
 B4 = np.array(pal.BAYER4)
 
@@ -166,8 +169,25 @@ def face_body(seed, variant=0):
         for y in range(d): f[y, x] = C["leaf"] if y < d - 1 else C["forest"]
     return f
 
+def from_rgba(a):
+    import quant
+    return quant.quantize(a)
+
 def face(left, right, variant=0):
     f = face_body(11 + variant, variant)
+    if MAT:
+        f = from_rgba(mat("face-rock2" if variant else "face-rock"))
+        if variant > 1:                                                                    # the variant: the same rock (so it joins), its own cracks
+            rv = rng(70 + variant)
+            for _ in range(3):
+                x = rv.randint(5, 42); y0 = rv.randint(12, 30)
+                for y in range(y0, y0 + rv.randint(4, 9)):
+                    f[y, x] = C["night"]
+                    if f[y, x + 1] != C["night"]: f[y, x + 1] = C["rockL"] if (y - y0) % 3 else f[y, x + 1]
+                    x += rv.choice([0, 0, 1, -1])
+        for y in range(40, 48):                                                       # occlusion toward the foot, as the scripted face
+            for x in range(48):
+                if B4[y % 4, x % 4] < (y - 39) * 2 and f[y, x] != C["night"]: f[y, x] = P.dark[f[y, x]]
     if left == "e":     # open west end: lit edge, rounded foot
         for y in range(4, 48): f[y, 0] = C["night"]; f[y, 1] = C["rockL"]; f[y, 2] = C["rock"] if f[y, 2] != C["night"] else f[y, 2]
         for y in range(0, 4): f[y, 0] = C["soil"]
@@ -238,17 +258,18 @@ top[40:48, X0 - 2] = C["night"]; top[40:48, X1 + 1] = C["night"]; top[41:48, X0 
 save("stairs-top", top)
 
 # ---------------------------------------------------------------- the bridge (plank decks over water, posts at the ends)
+PLANKS = from_rgba(mat("planks")) if MAT else None          # planks running left to right
 def deck_ew(posts):
     b = np.full((48, 48), T, dtype=np.int64)
-    Y0, Y1 = 14, 34
+    Y0, Y1 = 11, 37
     for x in range(48):
         for y in range(Y0, Y1):
             k = x % 6
-            b[y, x] = C["soil"] if k == 5 else (C["clay"] if k in (0, 1) else C["bark"])
+            b[y, x] = PLANKS.T[y, x] if MAT else (C["soil"] if k == 5 else (C["clay"] if k in (0, 1) else C["bark"]))
         b[Y0 - 2, x] = C["sand"]; b[Y0 - 1, x] = C["bark"]; b[Y1, x] = C["bark"]; b[Y1 + 1, x] = C["soil"]
         for y in range(Y1 + 2, Y1 + 6):
             if B4[y % 4, x % 4] < (14, 10, 6, 3)[y - Y1 - 2]: b[y, x] = SH
-        if x % 6 == 2: b[Y0 + 3, x] = C["soil"]; b[Y1 - 4, x] = C["soil"]                      # nail heads
+        if x % 6 == 2 and not MAT: b[Y0 + 3, x] = C["soil"]; b[Y1 - 4, x] = C["soil"]          # nail heads
     for px in posts:
         for y0 in (Y0 - 6, Y1 - 4):
             b[y0:y0 + 8, px:px + 5] = C["bark"]; b[y0, px:px + 5] = C["sand"]; b[y0 + 1, px:px + 5] = C["clay"]
@@ -259,15 +280,15 @@ def deck_ew(posts):
     return b
 def deck_ns(posts):
     b = np.full((48, 48), T, dtype=np.int64)
-    X0, X1 = 14, 34
+    X0, X1 = 11, 37
     for y in range(48):
         for x in range(X0, X1):
             k = y % 6
-            b[y, x] = C["soil"] if k == 5 else (C["clay"] if k in (0, 1) else C["bark"])
+            b[y, x] = PLANKS[y, x] if MAT else (C["soil"] if k == 5 else (C["clay"] if k in (0, 1) else C["bark"]))
         b[y, X0 - 2] = C["sand"]; b[y, X0 - 1] = C["bark"]; b[y, X1] = C["bark"]; b[y, X1 + 1] = C["soil"]
         for x in range(X1 + 2, X1 + 6):
             if B4[y % 4, x % 4] < (14, 10, 6, 3)[x - X1 - 2]: b[y, x] = SH
-        if y % 6 == 2: b[y, X0 + 3] = C["soil"]; b[y, X1 - 4] = C["soil"]
+        if y % 6 == 2 and not MAT: b[y, X0 + 3] = C["soil"]; b[y, X1 - 4] = C["soil"]
     for py in posts:
         for x0 in (X0 - 6, X1 + 1):
             b[py:py + 8, x0:x0 + 5] = C["bark"]; b[py, x0:x0 + 5] = C["sand"]; b[py + 1, x0:x0 + 5] = C["clay"]

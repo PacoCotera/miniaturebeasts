@@ -1,6 +1,9 @@
-# Terrain, grass biome: the scripted pass
+# Terrain, grass biome: the first slice
 
-**A candidate, not signed.** These are the cliff, stair and bridge pieces for the grass biome, and a new grass ground. They are drawn by script on the [signed 48 colours](../../palette/README.md). The water and sand are the review place's; the shore is cut again from the new grass. No generated material is in this pass; the painted material pass comes next.
+**A candidate, not signed.** These are the cliff, stair and bridge pieces for the grass biome, and a new grass ground. Everything is on the [signed 48 colours](../../palette/README.md).
+- **Paid materials:** the rock, the planks and the water come from one Gemini painting and Retro Diffusion tiles (see Materials).
+- **Scripted:** the edges, the joins and the shapes.
+- **The review place's:** the sand. The shore is cut again from the new grass.
 
 ![The test map, clear, at 1×](proof/testmap-clear-1x.png)
 
@@ -16,6 +19,24 @@ The review place's grass tiles keep their tuft patches 12 px clear of the edges,
   - The page can place them the same way.
 - **Shore.** The shore set is cut again from `body1`.
 
+## Materials (`materials/`, made by `tools/terrain-materials.py` from `sources/`)
+
+Every input is project-owned: our own meadow still and our own test map. No third-party image was used.
+
+| Source | Made by | Used for |
+| --- | --- | --- |
+| `sources/terrain-grass-cliffs-a1.jpg` | Gemini Pro, 1K: our test map repainted in the meadow still's style | water bodies `water1`–`water3`, and the crops fed to Retro Diffusion |
+| `sources/t-rock-rd.png`, `t-rock2-rd.png` | Retro Diffusion `rd_tile__single_tile`, 48 px, img2img from two rock crops of the painting, with `palette.png` as the palette | the faces: `face-rock`, `face-rock2` |
+| `sources/t-planks-rd.png` | the same, from the painting's bridge | the bridge decks |
+| `sources/t-waterA-rd.png`, `t-waterB-rd.png` | the same, from the painting's stream | **not used**: both came back as one flat colour |
+
+How the sources are made usable:
+- **Rock:** made to repeat left to right by cross-fading each tile with itself rolled by half a tile. The second rock's 10 px edge bands fade into the first rock's edges, so the two join in any order.
+- **Planks:** made to repeat both ways.
+- **Water:** three painting crops, area-averaged to 48 px and made to repeat both ways. They are calm, so their life comes from the review place's ripple sprites and short dark streaks, placed by a seeded rule on a 31 px grid that shares no period with the tiles, as the meadow decals are.
+
+Each source's sidecar `.json` holds its prompt, input hash and cost.
+
 ## Pieces (`pieces/`, made by `tools/build-cliffs.py`)
 
 - **Cliff lip quarters, 24×24.** There are four corners (nw, ne, se, sw) in five states: fill, edgeh, edgev, outer and inner. They are overlays on the plateau's grass.
@@ -25,7 +46,8 @@ The review place's grass tiles keep their tuft patches 12 px clear of the edges,
   - The south edge is the turf overhang above the face.
   - Every edge's ragged turf line is the same 24 px pattern, so quarters and tiles join.
 - **Faces, 48×48.** A face is drawn on the cell below a plateau's south edge.
-  - Its rock is laid in courses that lean, each piece lit at its top and left and shaded at its foot and right. There is soil under the turf and occlusion toward the foot.
+  - With `materials/`, the rock is `face-rock`, and `face-rock2` on the variant, with occlusion toward the foot.
+  - Without `materials/`, the script lays its own rock: courses that lean, each piece lit at its top and left and shaded at its foot and right.
   - The name gives each side's state: `e` is an open end, `c` continues into the next face or against the plateau's side. So the faces are `ee`, `ec`, `ce` and `cc`, with `cc-v` as a variant of the middle.
   - The courses are 0 at both tile edges, so any face joins any other.
 - **Shadows and foam.**
@@ -53,14 +75,15 @@ The review place's grass tiles keep their tuft patches 12 px clear of the edges,
 | The test map obeys the junction rules | no breaks | yes |
 | Off-palette or semi-transparent pixels, all pieces and maps (`check.py`) | 0 | yes |
 | Rim class across every join between two plateau cells, over all 256 neighbourhoods | 0 px | yes |
-| Rim class across every face-to-face join | 0 px | yes |
+| Luminance step across every face-to-face join, against the step inside | 0.96 | yes (≤ 1.25) |
 | Luminance step across plain-grass joins, against the step inside the tiles | 1.13 | yes (≤ 1.25) |
 | Repeat: autocorrelation at 48 px, minus the mean at nearby lags, on plain grass | 0.016 | yes (≤ 0.10) |
 
 **The repeat check, before and after.** On the review place's grass tiles the repeat scores 0.387 (the current tiles 0.319, round 10's 0.319, round 8's 0.377). Bodies with decals score 0.016.
 
 **Still open:**
-- The water tile repeats visibly (the dark patches in the stream). That waits for the material pass's water variants.
-- The rock and the planks are scripted.
+- A long cliff wall alternates the two rocks, so a faint two-tile rhythm shows at 2×.
+- The plateaus' north, east and west sides are 6 px rock strips. The painting casts a broad shadow there that this pass does not have.
+- The stairs are scripted.
 
 `proof/` holds the test map at 1× and 3×, under the clear, rain and fog tables, and in four greys.

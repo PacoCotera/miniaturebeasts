@@ -1,0 +1,25 @@
+{
+ "id": "t-waterB",
+ "tool": "retro-diffusion",
+ "style": "rd_tile__single_tile",
+ "size": "48x48",
+ "prompt": "seamless calm clear blue stream water seen from above, soft light ripples, no rings, pixel art",
+ "seed": 52,
+ "input_image": {
+  "file": "in-waterB.png",
+  "sha256": "601e55ae9fee0e7e619af49cecb3640fcf2d9e990c558b0d580302c9c9eebf9c",
+  "strength": 0.5
+ },
+ "time": "2026-10-11T00:47:41Z",
+ "result": {
+  "http": 202,
+  "cost_usd": 0.06,
+  "credit_cost": null,
+  "remaining_balance": null,
+  "task_id": "c51c0b12-3d51-4f64-b894-61acf336d342",
+  "status": "succeeded",
+  "file": "t-waterB-rd.png",
+  "sha256": "2f3008c3a2813dda08a51e06ec9083dc7948f982399c0fa391ad800d3b2c1900",
+  "recovered_from": "GET /v2/inferences/tasks"
+ }
+}

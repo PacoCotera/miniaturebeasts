@@ -1,0 +1,25 @@
+{
+ "id": "t-rock",
+ "tool": "retro-diffusion",
+ "style": "rd_tile__single_tile",
+ "size": "48x48",
+ "prompt": "seamless cliff rock face texture, large layered cool grey stone blocks, top edges lit from the top left, few dark cracks, pixel art",
+ "seed": 48,
+ "input_image": {
+  "file": "in-rock.png",
+  "sha256": "9c018cf4ac8b0b22febb7c9bfb536e765a58bc181abcec1901e4d53e06ce161d",
+  "strength": 0.5
+ },
+ "time": "2026-10-11T00:47:39Z",
+ "result": {
+  "http": 202,
+  "cost_usd": 0.06,
+  "credit_cost": null,
+  "remaining_balance": null,
+  "task_id": "8982a61c-0164-47c4-a515-738a2f74ac20",
+  "status": "succeeded",
+  "file": "t-rock-rd.png",
+  "sha256": "90ad32aa5635870417c2e50415641126f4d91d9144800a3637e016c7cefea4b7",
+  "recovered_from": "GET /v2/inferences/tasks"
+ }
+}

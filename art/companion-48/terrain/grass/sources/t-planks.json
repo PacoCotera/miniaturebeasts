@@ -1,0 +1,25 @@
+{
+ "id": "t-planks",
+ "tool": "retro-diffusion",
+ "style": "rd_tile__single_tile",
+ "size": "48x48",
+ "prompt": "seamless weathered wooden bridge planks seen from above, planks running left to right, dark gaps, warm brown, pixel art",
+ "seed": 48,
+ "input_image": {
+  "file": "in-planks.png",
+  "sha256": "8a8fd0a50f7c2e974ec5436331720abd0c48ccf23b93eaf19ce2ba94373d2f61",
+  "strength": 0.5
+ },
+ "time": "2026-10-11T00:47:40Z",
+ "result": {
+  "http": 202,
+  "cost_usd": 0.06,
+  "credit_cost": null,
+  "remaining_balance": null,
+  "task_id": "5150ef79-3644-46a8-96b8-eef26621775f",
+  "status": "succeeded",
+  "file": "t-planks-rd.png",
+  "sha256": "c07bc9fd0fd92229c28ec3e8fc340301ec1980569e410f764db6e1498f15fc07",
+  "recovered_from": "GET /v2/inferences/tasks"
+ }
+}
