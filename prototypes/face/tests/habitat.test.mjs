@@ -50,7 +50,7 @@ async function start(b, { motion = true, t0 = 0 } = {}) {
 }
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
-const dirtyOf = (f, real = false) => { const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) if (!(real && a[i * 4] === 0 && a[i * 4 + 1] === 0)) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };   // `real`: without the rectangle at the origin LVGL invalidates for a node it has just created (the 0,0 box it is made in)
+const dirtyOf = (f) => { const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };   // raw: every rectangle LVGL says it redraws
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
 const withFocus = (f, cur) => { if (f.build.props.overlay) f.build.props.overlay.focus.cur = cur; else f.build.props.focus.cur = cur; assert.equal(push(f, f.build), 0, f.errors().join("; ")); frames(f); };
 
@@ -67,8 +67,7 @@ const SCENES = {
 };
 for (const [name, o] of Object.entries(SCENES)) {
   test(`one mibi up close, ${name}: draws without an error or a refusal inside the budgets, with no region departing from habitat.json`, { skip }, async () => {
-    if (o.focus?.startsWith("tile:")) { /* the tile of the nth mibi */ }
-    const b = scene({ ...o, focus: o.focus?.startsWith("tile:") ? undefined : o.focus }); if (o.focus?.startsWith("tile:")) { b.props.focus.cur = "tile." + b.st.mibis[+o.focus.slice(5)].id; b.props.focus.resolve["tile.shown"] = b.props.focus.resolve["tile.shown"]; }
+    const b = scene({ ...o, focus: o.focus?.startsWith("tile:") ? undefined : o.focus }); if (o.focus?.startsWith("tile:")) { b.props.focus.cur = "tile." + b.st.mibis[+o.focus.slice(5)].id; }
     const f = await start(b); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
     const lg = logOf(f); assert.deepEqual(departures(lg, spec, namerSpec, b.props.state, b.props.focus.cur, b.props.regions.tiles.items.length, !!b.props.overlay), []);
     const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
@@ -89,22 +88,23 @@ test("the departure check bites: the card moved, a plate off its pitch, a module
   assert.match(bad((c) => { c.regions.find((r) => r.id === "panel" && r.layer === "chrome").rect[2] += 40; })[0], /panel/);
 });
 
-test("the namer opens and closes as cuts: the dirty area of the opening and of the closing refresh under the architect's ceilings (panel with its shadow, the ribbon and the tag, the feet ring, the bottom line), a cut moment on the opening ✓ adds the resident's lifted box; the named flash frames stay under a quarter of the screen; the nodes are gone when it closes", { skip }, async () => {
+test("the namer opens and closes as cuts: the raw dirty area of the opening and of the closing is under the architect's ceilings (panel with its shadow, the ribbon and the tag, the feet ring, the bottom line); opening on a cut moment adds the resident's lifted box; the named flash frames stay under a quarter of the screen; the nodes are gone when it closes", { skip }, async () => {
   const CEIL = 178_486 + 12_160 + 7_680 + 38_912, WITH_MOMENT = CEIL + 96_064;
-  const b0 = scene({ meet: true, focus: "resident" }), f = await start(b0); const objects0 = f.objects(), order0 = logOf(f).regions.map((r) => r.id + "/" + r.layer).join();
-  const b1 = scene({ meet: true, namer: true }); frames(f); dirtyOf(f);   // the settled meet: nothing dirty
-  assert.equal(push(f, b1), 0, f.errors().join("; ")); frames(f, 1); const open = dirtyOf(f, true); const opened = f.objects(); assert.ok(opened > objects0 && opened <= 400, `${opened} objects open`);
-  assert.ok(open <= CEIL, `the opening ✓ redraws ${open} px, over ${CEIL}`); console.log(`# the opening ✓: ${open} px dirty (ceiling ${CEIL}); with the moment cut: ${open + 96_064} (ceiling ${WITH_MOMENT})`);
+  const b0 = scene({ meet: true, focus: "resident" }), f = await start(b0); const objects0 = f.objects();
+  const b1 = scene({ meet: true, namer: true }); frames(f); assert.equal(dirtyOf(f), 0, "the settled meet: nothing dirty");
+  assert.equal(push(f, b1), 0, f.errors().join("; ")); frames(f, 1); const open = dirtyOf(f), opened = f.objects(); assert.ok(opened > objects0 && opened <= 400, `${opened} objects open`);
+  assert.ok(open <= CEIL, `the opening ✓ redraws ${open} px, over ${CEIL}`); console.log(`# the opening ✓: ${open} px dirty (ceiling ${CEIL}), ${opened} objects`);
   const b2 = scene({ meet: false, focus: "resident" }); b2.props.regions.nameTag.text = b0.shown.name; frames(f); dirtyOf(f);
-  assert.equal(push(f, { ...b2, props: { ...b2.props, state: "rest" } }), 0, f.errors().join("; ")); frames(f, 1); const close = dirtyOf(f, true);
+  assert.equal(push(f, { ...b2, props: { ...b2.props, state: "rest" } }), 0, f.errors().join("; ")); frames(f, 1); const close = dirtyOf(f);
   assert.ok(close <= CEIL, `the closing redraws ${close} px, over ${CEIL}`); console.log(`# the closing: ${close} px dirty (ceiling ${CEIL})`);
-  assert.equal(f.objects(), objects0 - 0 + (f.objects() - objects0), "the count is the screen's own"); const after = logOf(f); void after;
-  const lg = logOf(f) ?? { regions: [] }; void lg;
   // the namer's nodes are gone: the same screen with no overlay has as many objects as the settled rest drew before it opened
-  const f2 = await start(b2); assert.equal(f.objects(), f2.objects(), "the namer's nodes are gone with it"); assert.ok(!logOf(f2) || true);
+  const f2 = await start(b2); assert.equal(f.objects(), f2.objects(), "the namer's nodes are gone with it");
+  // the opening ✓ of a meet whose moment is still playing: the key cuts the moment, so the resident's lifted box is redrawn with the panel
+  const g = await start(scene({ meet: true, focus: "resident" })); g.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 0, cut: true }); frames(g, 10); dirtyOf(g);
+  g.send({ t: "key", k: "confirm" }); assert.equal(push(g, scene({ meet: true, namer: true })), 0, g.errors().join("; ")); frames(g, 1); const withMoment = dirtyOf(g);
+  assert.ok(withMoment <= WITH_MOMENT, `the opening ✓ on a moment redraws ${withMoment} px, over ${WITH_MOMENT}`); console.log(`# the opening ✓ cutting a moment: ${withMoment} px dirty (ceiling ${WITH_MOMENT})`);
   // the named flash: the tag takes the frame's flash for 240 ms; each of its frames is a tag's area, far under a quarter of the screen
   f.send({ t: "event", kind: "flash", target: "nameTag", ms: 240, hold: 240 }); let worst = 0; for (let i = 0; i < 20; i++) { frames(f, 1, 16); worst = Math.max(worst, dirtyOf(f)); } assert.ok(worst <= 153_600, `the flash redraws ${worst} px`); console.log(`# the named flash: worst frame ${worst} px`);
-  void order0;
 });
 
 test("habitat's node order is unchanged by the namer: the regions in the log before it opens and after it closes are the same list", { skip }, async () => {
@@ -132,11 +132,10 @@ test("while the namer is open its graph is the only one: the pad walks the keys,
 });
 
 test("the events: the moment's two hops lift the creature by the spec's table (the box, the tag and the ring stay), the read prints the stamp row by row, the swap cross-dithers the resident, the flash turns the tag over", { skip }, async () => {
-  const b = scene({ focus: "resident" }), f = await start(b, { t0: 1000 }), P = spec.events.moment.placeholder, rect = R.resident.rect, resRect = () => { const lg = logOf(f); return lg?.regions.find((r) => r.id === "resident" && r.layer !== "chrome" && r.rect[2] === rect[2])?.rect; };
+  const b = scene({ focus: "resident" }), f = await start(b, { t0: 1000 }), rect = R.resident.rect, resRect = () => { const lg = logOf(f); return lg?.regions.find((r) => r.id === "resident" && r.layer !== "chrome" && r.rect[2] === rect[2])?.rect; };
   frames(f, 1); logOf(f); const base = resRect()?.[1] ?? rect[1] - 4;
   f.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true }); const T = f.t, lifts = []; let now = T; for (const ms of [30, 110, 180, 260, 420, 700, 930, 1040, 1100, 1260, 1500]) { while (now < T + ms) f.frame(now = Math.min(now + 10, T + ms)); lifts.push([ms, base - (resRect()?.[1] ?? base)]); }   // 10 ms steps: the clock clamps a long step
   assert.deepEqual(lifts, [[30, 1], [110, 3], [180, 4], [260, 2], [420, 0], [700, 0], [930, 1], [1040, 3], [1100, 3], [1260, 0], [1500, 0]], "the lift of each instant: up 1 px every 50 ms to 4 at 150, down to 0 at 350; the second hop at 900; still from 1250");
-  void P;
   // the read: the stamp's rows print over 300 ms from the top
   const b2 = scene({ focus: "plate.0" }), g = await start(b2, { t0: 5000 }); g.send({ t: "event", kind: "read", target: "plate.0", ms: 300, hold: 300 }); g.frame(5100); const lg1 = logOf(g), cl = lg1.regions.find((r) => r.id === "stamp" && r.layer === "painted"); assert.ok(cl, "the stamp is drawn while it prints"); g.frame(5400); assert.equal(g.poll("done")?.kind, "read");
   // the swap: a dither on the resident from the old picture's id draws the old and the new mibi (a composed picture), ending in the new one

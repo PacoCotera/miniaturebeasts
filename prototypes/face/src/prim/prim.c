@@ -20,7 +20,7 @@ extern const lv_font_t face_inter_16, face_inter_20, face_inter_28;
 typedef struct {
   uint32_t id, parent;          /* parent: the id of the clip this node sits in, 0 at the root */
   lv_obj_t *obj; lv_obj_t *part[NINE_PARTS];
-  int kind, seen, fresh, layer, region, child_k, nchild;
+  int kind, seen, fresh, born, layer, region, child_k, nchild;
   int x, y, w, h; uint32_t rgb; int a, b;
   lv_image_dsc_t crop;
   uint8_t *composed; lv_image_dsc_t cdsc; uint32_t ops_hash;
@@ -28,6 +28,7 @@ typedef struct {
 static node_t g_o[MAX_OBJ];
 static int g_n, g_unknown, g_nseq, g_pass = 3;
 static uint32_t g_seq[MAX_OBJ];
+static lv_obj_t *g_nursery;
 static char g_text[1024];
 static char g_ops[OPS_CAP];   /* the ops of a composed picture, JSON: their own buffer, 128 KiB (the splice's wires and ticks are thousands of ops, a text run at most 1 KiB) */
 typedef struct { int w, h, layer; uint32_t src_key; uint8_t *px; lv_image_dsc_t dsc; lv_image_dsc_t view[NINE_PARTS]; uint32_t view_key; } asset_t;
@@ -43,7 +44,7 @@ static pal_t g_pal[256];
 static int g_npal;
 static uint32_t g_hash[1024];   /* rgb + 1, open addressing */
 
-void prim_init(void) { g_n = 0; g_unknown = 0; g_nreg = 1; strcpy(g_reg[0], "?"); g_region = 0; g_layer = LAYER_CHROME; g_pass = 3; }
+void prim_init(void) { g_n = 0; g_unknown = 0; g_nreg = 1; strcpy(g_reg[0], "?"); g_region = 0; g_layer = LAYER_CHROME; g_pass = 3; g_nursery = NULL; }
 char *prim_text(void) { return g_text; }
 char *prim_ops(void) { return g_ops; }
 int prim_ops_size(void) { return (int)sizeof g_ops; }
@@ -215,6 +216,11 @@ static void plain(lv_obj_t *o) {
   lv_obj_remove_style_all(o);
   lv_obj_set_clickable(o, false); lv_obj_set_scrollable(o, false);
 }
+/* A new object is sized and placed at its parent's origin, and LVGL invalidates there (lv_obj_class_init_obj, lv_obj_refr_size, lv_obj_refr_pos): a real redraw of a box nobody sees. A root node is therefore made on an unloaded screen of the display's size, given its place and size there, and moved onto the active screen at the end of the frame. */
+static lv_obj_t *nursery(void) {
+  if (!g_nursery) { lv_display_t *d = lv_display_get_default(); g_nursery = lv_obj_create(NULL); lv_obj_remove_style_all(g_nursery); lv_obj_set_size(g_nursery, lv_display_get_horizontal_resolution(d), lv_display_get_vertical_resolution(d)); }
+  return g_nursery;
+}
 static node_t *find_node(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return &g_o[i]; return NULL; }
 static int find(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return i; return -1; }
 static lv_obj_t *make(node_t *n, int a, lv_obj_t *parent) {
@@ -272,7 +278,7 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (i >= 0 && (g_o[i].kind != kind || g_o[i].parent != parent)) { drop(i); i = -1; }
   if (i < 0) {
     if (g_n >= MAX_OBJ) REFUSE();
-    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].obj = make(&g_o[i], a, pobj);
+    i = g_n++; memset(&g_o[i], 0, sizeof g_o[i]); g_o[i].id = id; g_o[i].kind = kind; g_o[i].parent = parent; g_o[i].fresh = 1; g_o[i].born = !parent; g_o[i].obj = make(&g_o[i], a, parent ? pobj : nursery());
   }
   node_t *n = &g_o[i]; lv_obj_t *o = n->obj; n->seen = 1; g_seq[g_nseq++] = id; n->layer = g_layer; n->region = g_region;
   if ((kind == FN_SPRITE || kind == FN_NINE) && a >= 0 && a < MAX_ASSET && g_a[a].layer) n->layer = g_a[a].layer;   /* a picture takes its layer from its asset (lvgl-switch.md §2.1); words choose a layer only for rects, text and composed pictures */
@@ -332,6 +338,8 @@ static void move_to(lv_obj_t *obj, int32_t idx) {
 }
 void prim_end(void) {
   for (int again = 1; again;) { again = 0; for (int i = 0; i < g_n; i++) if (!g_o[i].seen) { drop(i); again = 1; break; } }
+  { int any = 0; for (int i = 0; i < g_n; i++) if (g_o[i].born) any = 1;   /* the new root nodes have their places and sizes: they join the screen, and only now is anything invalidated */
+    if (any) { lv_obj_update_layout(nursery()); for (int i = 0; i < g_n; i++) if (g_o[i].born) { lv_obj_set_parent(g_o[i].obj, lv_screen_active()); g_o[i].born = 0; } } }
   /* draw order is child order: put each object at its place in the sequence the page sent, among its siblings (the screen's, or its clip's) */
   int root = 0; for (int i = 0; i < g_n; i++) g_o[i].child_k = 0;
   for (int k = 0; k < g_nseq; k++) {
