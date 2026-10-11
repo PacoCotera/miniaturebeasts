@@ -58,3 +58,5 @@ The flipbooks are re-rendered. Each strip shows stand, crouch, the first hop's a
 - Only the legs and the tail differ between the two keys. Numbers are in `guides/torso-lock.json`.
 
 **The sheet's `pass` can't be the lock's source.** It is the three-quarter stand: short-bodied and front-facing, a different body from the side-on steps. Copying its torso onto the step legs would change the animal. For the lock and M8, the cycle is stepA ↔ stepB, both with stepA's head and torso. A true side-on `pass` needs a repaint: 1 Pro edit of the sheet, only on the programme lead's go.
+
+**Fringe fix (the animator's measure, 16:02).** The first lock copied only stepA's fully opaque pixels, so 204 px above the seam still differed, mostly stepB's own outline fringe. Above row 236, stepB is now stepA exactly, every pixel and its alpha (the tail included), and stepA's soft outline is copied inside the zone too. **Measured: 0 changed px above row 236.**

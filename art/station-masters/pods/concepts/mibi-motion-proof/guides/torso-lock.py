@@ -38,8 +38,10 @@ lock = ba & zone
 out = B2.copy()
 out[zone] = 0
 out[lock] = A[lock]
+out[:R0] = A[:R0]                                                         # above row 236 stepB IS stepA, every pixel and its alpha (the animator, 16:02): no fringe of its own
+out[zone & (A[..., 3] > 0)] = A[zone & (A[..., 3] > 0)]                  # stepA's soft outline inside the zone too
 Image.fromarray(out).save(f'{K}/juv-S05-stepB-locked-304x312.png'); Image.fromarray(A).save(f'{K}/juv-S05-stepA-locked-304x312.png')
-same = int(((out[..., :4] != A[..., :4]).any(-1) & zone).sum())
+same = int(((out[..., :4] != A[..., :4]).any(-1) & zone).sum()); above = int((out[:R0] != A[:R0]).any(-1).sum())
 Image.fromarray(((zone & (yy >= cut[None, :] - 1)) * 255).astype(np.uint8)).save(f'{K}/../guides/torso-lock-seam.png')
-json.dump({'stepB shift': [int(dx), int(dy)], 'locked px': int(lock.sum()), 'zone px differing stepA vs stepB-locked': same}, open(f'{K}/../guides/torso-lock.json', 'w'), indent=1)
-print('shift', dx, dy, 'locked', int(lock.sum()), 'differing in zone', same)
+json.dump({'stepB shift': [int(dx), int(dy)], 'locked px': int(lock.sum()), 'zone px differing stepA vs stepB-locked': same, 'px differing above row 236': above}, open(f'{K}/../guides/torso-lock.json', 'w'), indent=1)
+print('shift', dx, dy, 'locked', int(lock.sum()), 'differing in zone', same, 'above 236', above)
