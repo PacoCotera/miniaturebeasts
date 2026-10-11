@@ -251,7 +251,7 @@ const notchExp = (calls, o = {}) => Object.assign({ n: 5, pos: 0, trail: [0], ca
   abUsed: 1, pt: { id: 1 }, tripPlaces: ["meadow"] }, o);
 const notchSave = () => save({ carried: [1], expN: 5, shield: 3, hist: [], bay: [], hold: null, ui: {}, visited: [] });
 const NOTCH_LINE = "Dot gains a skill notch";
-test("notch: a bonded partner digs, makes no Call, Head home: notches unchanged, no notch line", () => {
+test("notch: a bonded partner digs, makes no Call, End expedition: notches unchanged, no notch line", () => {
   const S = notchSave(), dot = S.mibis[0]; dot.bonded = true; dot.notches = 1;
   S.exp = notchExp(0); ending(S, S.exp, "home");
   assert.equal(dot.notches, 1); assert.ok(S.report.waited, "nothing explored");
@@ -638,7 +638,7 @@ function sealed(rep, lines, bay = 1) {
   vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
-test("Head home: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
+test("End expedition: the notch is its own row under the outcome's last 2× line, the crates move down 28, no world line repeats it", () => {
   const W = ["The Loikas moved north.", "The outpost in the wood burns low.", "A storm charged stones in the east."];
   const y = { data: 6, tier: 3, moments: 2 };
   let d = sealed({ sealed: { id: "c0", pods: [1, 2] }, yield: y, notch: { id: 1, name: "Pip", sp: 0 } }, W);
@@ -658,7 +658,7 @@ test("Head home: the notch is its own row under the outcome's last 2× line, the
   assert.equal(sealed({ waited: true, notch: { id: 1, name: "Pip", sp: 0 } }, W).faces.length, 0, "nothing explored: no notch row");
   assert.equal(sealed({ waited: true }, W).crates[0].y, 138);
 });
-test("Head home: world lines draw only while their foot stays on or above row 476; the first that fails ends the list", () => {
+test("End expedition: world lines draw only while their foot stays on or above row 476; the first that fails ends the list", () => {
   const wrap = l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], long = "x".repeat(60), short = "A storm charged stones.";
   const rows = vm.runInContext(source("worldLineRows") + "\n" + source("WORLD_FOOT") + ";worldLineRows", vm.createContext({}));
   assert.deepEqual(plain(rows([long, long, short], 380, wrap).map(r => [r.y, r.foot])), [[380, 417], [426, 463]], "a break with a notch, two wrapped lines: the third, at 472, is cut");

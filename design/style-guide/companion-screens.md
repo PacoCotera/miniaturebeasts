@@ -57,16 +57,16 @@ That leaves 11 rows of ink between the rule and the capitals, and 6 under the de
 
 | Screen | Rule | The result |
 | --- | --- | --- |
-| Reach view | Already placed from the view's top: +6 | Tier 1 (5×5 at 78 px): the reach on rows 36–425, its dashes on rows 34–35 and 426–427. The band at y 434: the flag at (12, 436), the head-home words at (30, 438), the survey line at (12, 462). The inset (6 px a cell, 96×120) at (344, 437), its frame (341, 434, 102, 126): its last row is 559. Tier 2 (9×9 at 48 px): the reach on rows 36–467, the band at y 476, the inset (4 px a cell, 64×80) at (376, 479), its frame (373, 476, 70, 86), last row 561. A message in the band keeps the band's width and ends by row 547: up to five lines at tier 1, three at tier 2 |
+| Reach view | Already placed from the view's top: +6 | Tier 1 (5×5 at 78 px): the reach on rows 36–425, its dashes on rows 34–35 and 426–427. The band at y 434: the flag at (12, 436), the end-expedition words at (30, 438), the survey line at (12, 462). The inset (6 px a cell, 96×120) at (344, 437), its frame (341, 434, 102, 126): its last row is 559. Tier 2 (9×9 at 48 px): the reach on rows 36–467, the band at y 476, the inset (4 px a cell, 64×80) at (376, 479), its frame (373, 476, 70, 86), last row 561. A message in the band keeps the band's width and ends by row 547: up to five lines at tier 1, three at tier 2 |
 | Full map, start map, Full map from the expedition choice | A new rect, see [Map tiles](#map-tiles) | The ink frame (13, 34, 424, 528), the map (17, 38, 416, 520): +2, not +6 |
 | Place | Placed from the view (the camera keeps the pawn in the middle third of 532 rows) | No fixed rows to move. The pod-swap chooser is placed up from the foot: (6, 460, 438, 98), was 462. The hit frame and the Wait ripple run on the view's edges, rows 32–563. Name tags keep to x 6–444, y 38–558, as set in [Place](#place) |
 | Menu | +6, and the menu starts below a top message box | Over the field: rows 44 high, 250 wide, 8 px from the side away from the pawn: x 192 when the pawn's screen x is 225 or less, x 8 when it is more. Six rows make it 284 high (rows × 44 + 20). Over a place: the card (192 or 8, 40, 250, 284), rows 40–323, its shadow to 327, while the message box is at the foot or no message shows; while the box is at the top, the card starts 8 px under the box's foot, y 60 + lines × 20: (·, 80, 250, 284) under one line, (·, 100, 250, 284) under two, (·, 120, 250, 284) under three, last row 403. The box never moves for the menu. Over the map: the card (192 or 8, 40, 250, 284), rows 40–323, always; the message there is in the reach view's band (y 434 at tier 1, 476 at tier 2), below the card. Everywhere else: the card (60, 116, 330, rows × 62 + 20), was y 110; five rows end at 446. The darkening fills rows 32–563 |
 | Probe | +6 | "Probe" at y 40; plates (12×22) at (24, 64); the two lines at y 60 and 82; Energy row at y 108; the tier 2 note panel (18, 130, 414, 26); "On the map" at y 172; legend rows from y 190 at an 18 px pitch, the 14th ending on row 440; the four stone tiles 34×34 at y 442, labels at 479; "Field guide" at y 500; species tokens (24 + 138*i*, 518, 130, 40), last row 557, 6 px over the line |
-| Cargo, in the field | +6 | Counters (22 + 138*i*, 42, 130, 40); "Pods" at y 94; pod panels (24 + 130*i*, 114, 122, 36); "This expedition" at y 162; met tiles 42×42 at y 182, and the moments line at (180, 196) beside them; with no creature met, `No creatures met yet` at (24, 186) and the moments line under it at (24, 208), see [Faults the care build fixes](#faults-the-care-build-fixes); the reach line at y 238; the Head home card (95, 268, 260, 50); the seal preview from y 332 at a 22 px pitch; "The sealed bay" at y 406; crates (24 + 140*i*, 428, 130, 66); the foot line at y 510 |
-| Cargo, at home | +6 | "In the hold" at y 42; counters at y 62; pod panels at y 110; "The sealed bay" at y 166; crates at y 190; the bay line at y 272; the Probe line at y 316; docked or away at y 342; the note from y 386 at 22; the world turn at y 476 |
+| Cargo, in the field | +6 | Counters (22 + 138*i*, 42, 130, 40); "Pods" at y 94; pod panels (24 + 130*i*, 114, 122, 36); "This expedition" at y 162; met tiles 42×42 at y 182, and the moments line at (180, 196) beside them; with no creature met, `No creatures met yet` at (24, 186) and the moments line under it at (24, 208), see [Faults the care build fixes](#faults-the-care-build-fixes); the reach line at y 238; the End expedition card (95, 268, 260, 50); the seal preview from y 332 at a 22 px pitch; "The sealed bay" at y 406; crates (24 + 140*i*, 428, 130, 66); the foot line at y 510 |
+| Cargo, between expeditions | +6 | "In the hold" at y 42; counters at y 62; pod panels at y 110; "The sealed bay" at y 166; crates at y 190; the bay line at y 272; the Probe line at y 316; docked or away at y 342; the note from y 386 at 22; the world turn at y 476 |
 | Mibis (the list as built) | +6 | The first card (20, 42, 410, 64), a 72 px pitch. The scroll keeps the focused card's foot at y 526, 38 px over the line, as before, and the roster keeps that rule (see [Mibis (the roster)](#mibis-the-roster)). The roster in [Care and the carried set](#care-and-the-carried-set) replaces this list with its own rects, which are already on this frame |
 | Active mibi | The rects in [The active mibi screen, with care](#the-active-mibi-screen-with-care), now | Stage (24, 40, 402, 280), was (24, 36, 402, 276); the mibi's box at (97, 52), was 44; its shadow 180×22 at (135, 296), was 280; ◀ ▶ at y 172, was 166; name at y 332, was 324; the stage chip at y 331; species and ability at y 370; status at y 396, a 22 px pitch; page dots at y 452, the ring 10×10 at y 450. The species moments move with the mibi's box (+8): the Tuikis glow at (75, 60), the Loika's paws at y 78, the Untuva's puffs centred on (225, 178), the Tuikis sparks and the chirp +8 (the chirp's top at y 100) |
-| Head home | +6, and every line clipped | The outcome at y 46; the lines below keep their steps (34 after the outcome, 24 a line, 34 after a group, 84 for the bay). Every line is clipped at 410 px, so nothing passes x 432. A skill notch is a row of the outcome block, not a world-turn line, and moves everything below it down 28 px. World-turn lines draw only while a line's foot stays on or above row 476, 8 px over the highest top the message box can take (484); this replaces the old cut at y 506 (was 500). Every row top is in [Head home with the carried set](#head-home-with-the-carried-set). The bay-full and Probe-broke lines are fixed below |
+| Expedition ended | +6, and every line clipped | The outcome at y 46; the lines below keep their steps (34 after the outcome, 24 a line, 34 after a group, 84 for the bay). Every line is clipped at 410 px, so nothing passes x 432. A skill notch is a row of the outcome block, not a world-turn line, and moves everything below it down 28 px. World-turn lines draw only while a line's foot stays on or above row 476, 8 px over the highest top the message box can take (484); this replaces the old cut at y 506 (was 500). Every row top is in [End expedition with the carried set](#end-expedition-with-the-carried-set). The bay-full and Probe-broke lines are fixed below |
 | Expedition choice | +6, and the message box rule below | The strip at y 40; Weather (20, 64, 410, 84); Deep ground (20, 158, 410, 84); the partner card (20, 252, 410, 92); the inset 96×120 at (24, 360); the words beside it at y 362, 386, 410, the last-start flag at (136, 436), the at-home line at y 464. Docked: the panel (70, 512, 310, 26), its words at y 517. Away with crates sealed: the panel (70, 494, 310, 48), its words at y 500 and 520 |
 | New world | +6 | The question at y 136; the warning at y 182 and 204; the two choices (75, 266, 300, 54) and (75, 346, 300, 54), the brackets 7 px outside |
 | No mibi yet | +6 | The dotted pod centred on (225, 196); "No mibi yet" at y 276; the two lines at y 320 and 342; the bay line at y 378 |
@@ -82,9 +82,9 @@ The reach view's 78 px and 48 px cells and both insets fit as given above. In a 
 
 #### Faults the move fixes
 
-- **Head home, bay full.** "A break would lose them · dock to free the bay." runs from x 22 off the screen's right edge (measured to x 449, no margin). The line now reads `A break would lose them.` (x 22–243). The amber bay line under the crates already says to dock. Every Head home line is clipped at 410 px, as above.
+- **Expedition ended, bay full.** "A break would lose them · dock to free the bay." runs from x 22 off the screen's right edge (measured to x 449, no margin). The line now reads `A break would lose them.` (x 22–243). The amber bay line under the crates already says to dock. Every line on Expedition ended is clipped at 410 px, as above.
 - **Menu over a place, message at the top.** With the pawn low the message box goes to the top, (21, 40, 408, 52) for two lines, and the menu card (192, 40, 250, 284) under it loses its first entry, Leave this place. The card now starts 8 px under the box (Menu, above): (192, 100, 250, 284) under two lines.
-- **Head home, the Probe broke.** `Dock at the Station: it mends the Probe free.` is 414 px and the 410 px clip cuts it. The line reads `Docking mends the Probe free.` (272 px, x 22–293), the copy already taken on the care branch: the Companion docks in the Caddy, never at the Station.
+- **Expedition ended, the Probe broke.** `Dock at the Station: it mends the Probe free.` is 414 px and the 410 px clip cuts it. The line reads `Docking mends the Probe free.` (272 px, x 22–293), the copy already taken on the care branch: the Companion docks in the Caddy, never at the Station.
 - **Expedition choice, docked.** Pressing ✓ while docked writes a two-line message (`Docked · lift the Companion at the Station to explore`) whose box, rows 506–557 on the old frame, covers the "Docked · lift at the Station" panel (rows 506–531) whole. While a message shows on the expedition choice, neither the docked panel nor the sealed-crates panel is drawn: the message box takes the view's foot as on every screen (rows 504–555 for two lines), and the panel comes back with the next press. The message says the same thing, and the strip and the bottom line keep the rest.
 
 **Pass when**
@@ -172,12 +172,16 @@ The reach view's 78 px and 48 px cells and both insets fit as given above. In a 
 
 **Purpose.** Walk the Probe's reach. The default map in an expedition. **Reads first:** the pawn and the cell it faces.
 
-- **Composition.** The 5×5 reach at 78 px a cell (390 px), centred; 9×9 at 48 px at tier 2. Only explored and seen cells show ground, cut from the place's real tiles. Everything else is one cloud bank of large heaps, lapping unevenly over the island's edge. A band below the reach: the flag with the way home and "Explored N of M in reach" at the left, the whole-world inset at the right.
+- **Composition.** The 5×5 reach at 78 px a cell (390 px), centred; 9×9 at 48 px at tier 2. Only explored and seen cells show ground, cut from the place's real tiles. Everything else is one cloud bank of large heaps, lapping unevenly over the island's edge. A band below the reach: the flag with where to end the expedition and "Explored N of M in reach" at the left, the whole-world inset at the right.
 - **Lively / quiet.** Lively: the rain sheet, the cloud's lit rim, the pawn, flames. Quiet: ground, band, inset.
 - **Light and weather.** The island sits in a bright clearing; cloud lit on the side facing it, shaded below. Rain is one clean diagonal sheet of pale streaks with a straight soft edge, no cells drawn under it.
 - **Palette.** Lavender-grey cloud from the violet and cool neutral ramps; ground in its own ramps; seen cells faded; unsurveyed quarters under the Bayer dot.
 - **Type.** Nothing on the cells. The band in 2×.
 - **Chrome.** Dashes frame the reach; orange brackets on the pawn's cell.
+- **Grid.** No line is drawn through a cell's centre: no dotted cross, at either tier, so a cell's centre never reads as a corner. Surveyed quarters show by the dither only. The pawn stays centred in its cell.
+- **Pawn-cell brackets.** Orange (#f2671b), 2 px thick, static, drawn after the pawn, at the four corners of the pawn's cell on its outer 2 px rows and columns. Arms L = 10 px at tier 1 (78 px cells) and L = 6 px at tier 2 (48 px cells). The top-left bracket is the rects (x, y, L, 2) and (x, y, 2, L); the other three mirror it. 144 px of orange at tier 1, 80 px at tier 2.
+- **Pending outline.** A reach cell not yet explored blinks its fog outline: 1 px dots inset 2, every 3 px (k = 2, 5, 8 … < cs − 2). On the pawn's cell only, a dot at offset k is drawn only when L + 2 ≤ k ≤ cs − L − 3, so no outline dot touches a bracket (tier 1 keeps k = 14 … 65, tier 2 keeps k = 8 … 38). Other cells keep the full outline.
+- **Sign slots.** Signs sit in the cell's corner slots at pad 4 (was 3): the start flag first, top-left. The flag's sprite stays 2 px clear of the top-left bracket.
 - **Motion.** Clouds drift 1 px per action; rain leans with the storm's heading; the pawn walks 3 frames.
 
 **Pass when**
@@ -276,14 +280,14 @@ The reach view's 78 px and 48 px cells and both insets fit as given above. In a 
 
 ## Cargo
 
-**Purpose.** What the hold carries, what Head home will seal, and the bay. **Reads first:** the pods carried.
+**Purpose.** What the hold carries, what End expedition will seal, and the bay. **Reads first:** the pods carried.
 
 - **Composition.** "Cargo" at 3×. The hold: each pod as a 64 px HiBit shell in its place colour, with where it came from in 2× ("from a hole"); empty slots as outlines. The three counters with icons. The bay: three sealed crates side by side (about 120×96), each stamped with its expedition number and its contents as icons; an empty place is a dashed outline. At the foot: "Explored N of M · fully surveyed K" with the reach dot grid.
 - **Lively / quiet.** Quiet. The pods glint once on opening.
 - **Light and weather.** Indoors; no weather. Objects lit from the top left.
 - **Palette.** Ink panel. Pod shells in place colours; crates in cool neutrals and teal with an orange seal tag.
 - **Type.** 3× title; 2× everything else.
-- **Chrome.** In the field `✓ Head home · ← close` where it is allowed; at home read-only, no ✓ cap.
+- **Chrome.** In the field `✓ End expedition · ← close` where it is allowed; between expeditions read-only, no ✓ cap.
 - **Motion.** None but the glint, 2 frames.
 
 **Pass when**
@@ -478,7 +482,7 @@ The section [Companion mode / active mibi](#companion-mode--active-mibi) above s
 | Page dots | centred, y 452 | 6×6 at a 16 px pitch; a mibi with you ringed (10×10 `amber`); docked, 16 px more between the last mibi with you and the first at home |
 | Message box | centred, foot at 556 | As built: up to three 2× lines; never reaches the dots (its top is at least 484) |
 
-Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words the Vivarium uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Vivarium card; on the Companion it is named only when a notch is earned at Head home, `‹name› gains a skill notch`, with no count, as its own row of the outcome block, see [Head home with the carried set](#head-home-with-the-carried-set)), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
+Status lines: `with you · leads the Probe` (the partner), `with you · can lead the Probe` (grown, not the partner), `with you · too young for the Probe` (an unbonded juvenile), `with you · grows with care` (a bonded juvenile), `at home`, `at home · grows on the Companion` (a bonded juvenile at home, the words the Vivarium uses). The status line is exactly one of these, with nothing appended: no world turns left to grow up (a countdown on the clock would make growing up a thing to wait for, beside a bonded juvenile that shows none), no skill count (skill is drawn only as filled notches on the Station's Vivarium card; on the Companion it is named only when a notch is earned when an expedition ends, `‹name› gains a skill notch`, with no count, as its own row of the outcome block, see [End expedition with the carried set](#end-expedition-with-the-carried-set)), no "walked this turn" (the ✓ already says whether the Walk is there) and no "docked" (the link states say it). The longest, `with you · too young for the Probe`, is 314 px at 2× in the 390 px line.
 
 **The ✓ on a mibi with you,** the first that applies:
 
@@ -508,7 +512,7 @@ Input is held to the end. Under reduced motion the heart stands at (362, 60) for
 
 **The grow-up line** ([12](wireframes/companion-care/12-active-grow.png)). A bonded juvenile grows up at the first Tend or Walk after its bond (never at the same press). After the action's moment the view is on that mibi's page (several in carried order, 1200 ms apart), the art cuts from the juvenile to the adult, the chip changes, and the message box takes `‹name› is grown · it leads the Probe now` when it is now the partner, or else `‹name› is grown · it can lead the Probe`. Nothing rises and nothing else plays: the line is the event. Timing: one cut per mibi that grew, in carried order, 1200 ms apart, from the end of the action's moment. Bonds play first, 2400 ms each. Input is held until 300 ms after the last cut; reduced motion gets the same cuts.
 
-Lines the world turn writes stay on the Head home screen, as built, worded for the carried set: a juvenile grown on the clock `‹name› is grown · it leads the Probe now` (with you and now the partner), `‹name› is grown · it can lead the Probe` (with you), `‹name› is grown · at home` (at home). The elder line is unchanged.
+Lines the world turn writes stay on the Expedition ended screen, as built, worded for the carried set: a juvenile grown on the clock `‹name› is grown · it leads the Probe now` (with you and now the partner), `‹name› is grown · it can lead the Probe` (with you), `‹name› is grown · at home` (at home). The elder line is unchanged.
 
 **Message box order** after one press: the action's line, then bond lines, then grow-up lines, in carried order; three lines at most, the rest on the next action (as built).
 
@@ -579,9 +583,9 @@ The heart is the same object as the Vivarium's enamel heart, drawn for the Compa
 
 ---
 
-## Send home (Head home)
+## End expedition
 
-The menu entry and screen read **Head home**: it seals the hold into the bay.
+The menu entry reads **End expedition**; the screen it opens reads **Expedition N ended**. It ends this expedition only: the hold is sealed into the bay (or stays unsealed when the bay is full), the world turns, and you can set out again at once, Walk or Tend, or dock when you like.
 
 **Purpose.** End the expedition and seal the hold. **Reads first:** the outcome: Sealed, Bay full, Nothing explored, or The Probe broke.
 
@@ -593,7 +597,7 @@ The menu entry and screen read **Head home**: it seals the hold into the bay.
 - **Chrome.** `✓ Next expedition · ← menu`.
 - **Motion.** The slide in 170 ms, the seal stamp in 110 ms; still under reduced motion.
 
-### Head home with the carried set
+### End expedition with the carried set
 
 Measured on the frame at 1× (HUD rows 0–31, view 32–563, bottom line 564–599). Every y is a top row; a 2× line is 18 rows tall (capitals 14, descenders 4), a 3× line 27.
 
@@ -608,7 +612,7 @@ Wireframes, 450×600 at 1×: [17 sealed with the notch row](wireframes/companion
 | Sealed, no yield line | 80 | 106 | 104 · (22, 101, 24, 24) · 134 |
 | Bay full, with the yield line | 80, 104, 128 | 162 | 152 · (22, 149, 24, 24) · 190 |
 | Bay full, no yield line | 80, 104 | 138 | 128 · (22, 125, 24, 24) · 166 |
-| Home, hold empty | 80 | 114 | 104 · (22, 101, 24, 24) · 142 |
+| Hold empty | 80 | 114 | 104 · (22, 101, 24, 24) · 142 |
 | Nothing explored | 80, 104 | 138 | no notch, no world-turn lines (as built) |
 
 The outcome is at y 46 (3×) in every case. Below the crates the steps are as built, from the crates' y (*c*): the bay line at *c* + 84, the dock line at *c* + 108, `Meanwhile, the world turned` at *c* + 142, the turn line at *c* + 164, the first world line at *c* + 190. The latest first world line is 380 (a break or a full bay with a notch).
