@@ -4,7 +4,7 @@
 # head and torso are pass's; below the seam the legs are the step's own. usage: torso-lock-b.py keys_dir
 import sys, json, numpy as np
 from PIL import Image
-K = sys.argv[1]; R0, R1 = 236, 275
+K = sys.argv[1]; BELLY = 262; R0, R1 = BELLY - 6, BELLY + 7          # the animator 16:04: head and torso down to the belly line, the seam within +-6 px of it (pass: the belly at row 262)
 S = np.asarray(Image.open(f'{K}/juv-S05-pass-304x312.png')).copy(); bs = S[..., 3] == 255
 log = {}
 for k in ['stepA', 'stepB']:
@@ -26,6 +26,6 @@ for k in ['stepA', 'stepB']:
     zone = np.arange(312)[:, None] < cut[None, :]
     out = T2.copy(); out[zone] = S[zone]                                   # above the seam: pass exactly (every pixel, alpha included)
     Image.fromarray(out).save(f'{K}/juv-S05-{k}-locked-304x312.png')
-    log[k] = {'shift': [int(dx), int(dy)], 'px differing from pass above row 236': int((out[:R0] != S[:R0]).any(-1).sum()), 'px differing above the seam': int((out[zone] != S[zone]).any(-1).sum())}
+    log[k] = {'shift': [int(dx), int(dy)], 'px differing from pass above row 256 (belly - 6)': int((out[:R0] != S[:R0]).any(-1).sum()), 'px differing rows 236 to the belly line': int((out[236:BELLY] != S[236:BELLY]).any(-1)[zone[236:BELLY]].sum()), 'px differing above the seam': int((out[zone] != S[zone]).any(-1).sum())}
 Image.fromarray(S).save(f'{K}/juv-S05-pass-locked-304x312.png')
 json.dump(log, open(f'{K}/torso-lock-b.json', 'w'), indent=1); print(json.dumps(log))

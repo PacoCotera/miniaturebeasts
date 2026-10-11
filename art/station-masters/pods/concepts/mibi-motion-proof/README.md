@@ -70,3 +70,5 @@ The flipbooks are re-rendered. Each strip shows stand, crouch, the first hop's a
 - **Lock** (`guides/torso-lock-b.py`): each step is aligned to pass (stepA +3, 0; stepB +2, +2). Above row 236 the step **is** pass, every pixel and its alpha. Down to a least-difference seam (rows 236–274) the head and torso are pass's. Below it the legs are the step's own.
   - **Measured: 0 px differing from pass above row 236 and above the seam,** on both steps (`keys-b/torso-lock-b.json`). 1×: `keys-b/s05-locked-1x.png`.
 - The old `keys/juv-S05-*` and `-locked` keys from the first sheet are superseded by `keys-b/`. Signed by the art director.
+
+**Lock to the belly line (the animator, 16:04).** The seam now runs within ±6 px of the belly line (pass: row 262), at the leg roots. Above row 256 each step is pass exactly. **Measured: 0 px differing from pass above the seam and between row 236 and the belly line, on both steps.** Flag for the animator's 1× judgement: on stepA, a small lighter patch where pass's torso meets the raised hind thigh.

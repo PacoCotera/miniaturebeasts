@@ -4,7 +4,8 @@
    3,
    0
   ],
-  "px differing from pass above row 236": 0,
+  "px differing from pass above row 256 (belly - 6)": 0,
+  "px differing rows 236 to the belly line": 0,
   "px differing above the seam": 0
  },
  "stepB": {
@@ -12,7 +13,8 @@
    2,
    2
   ],
-  "px differing from pass above row 236": 0,
+  "px differing from pass above row 256 (belly - 6)": 0,
+  "px differing rows 236 to the belly line": 0,
   "px differing above the seam": 0
  }
 }
