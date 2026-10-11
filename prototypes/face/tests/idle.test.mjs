@@ -25,7 +25,8 @@ const settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 20 }, T0 = 1
 
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; st.firstMibi = false; st.dock = { docked: true, at: T0 }; return st; };
 function scene(o = {}) {
-  const st = world(); for (let left = o.adults ?? 4, seed = 5; left > 0; left -= 6, seed += 100) S.seedAdults(st, "S01", seed, Math.min(6, left), settings);   // at most six a call for (const m of st.mibis) m.paint = { state: "landed" };
+  const st = world(); for (let left = o.adults ?? 4, seed = 5; left > 0; left -= 6, seed += 100) S.seedAdults(st, "S01", seed, Math.min(6, left), settings);   // at most six a call
+  for (const m of st.mibis) m.paint = { state: "landed" };
   if (o.young) { S.seedAdults(st, "S01", 77, o.young, settings); for (const m of st.mibis.slice(-o.young)) { m.born = st.turn; m.paint = { state: "landed" }; } }
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };
   if (o.away) st.dock = { docked: false, at: T0 }; if (o.bud) st.bud = { kind: "founder", species: "S01", start: Date.now(), minutes: 5 };
@@ -55,6 +56,7 @@ for (const [name, o] of Object.entries(SCENES)) test(`Idle, ${name}: draws witho
   const lg = logOf(f); assert.deepEqual(departures(lg, frameSpec), []);
   const st = f.stats(); assert.ok(st.pictures <= 200, `${st.pictures} pictures`); assert.ok(f.objects() <= 400, `${f.objects()} objects`);
   assert.ok(JSON.stringify(b.props).length < 32 * 1024);
+  if (name === "waiting lamps") assert.equal(b.props.regions.residents.filter((r) => r.waiting).length, 2, "the two whose paintings are on their way show the lamp, the other two have landed");
 });
 test("the departure check bites: a resident leaving the walk ground, the strip moved, a ring and a frame word are each found", { skip }, async () => {
   const f = await start(scene({ adults: 3, crates: 1 })), lg = logOf(f), bad = (fn) => { const c = JSON.parse(JSON.stringify(lg)); fn(c); return departures(c, frameSpec); };
