@@ -3,7 +3,8 @@
 // and size (boards/mibi-motion/tier2-method.md §1 T2, §2, the animator's rulings on Q-A and the architect's harness answers). Deterministic: a thin-plate spline through the
 // constraints, rounded to whole px; refuses a field outside the bounds or the gradient with the pixel named. Nothing here touches painted pixels.
 //   node prototypes/ui/tools/warp-field.mjs --landmarks file.json --size 104x112 --out dir [--picture name]
-//        [overrides, each marks the run `override` and gives no verdict: --head-mask png --shadow-rows y0-y1 --belly-y N --amplitude k]
+//        [overrides, each marks the run `override` and gives no verdict: --head-mask png --shadow-rows y0-y1 --belly-y N --amplitude k]   (--stand png gives the ink for the domain)
+// The domain D is the key's ink (alpha > 0, `ink`) dilated by the size's bound B (Chebyshev); the field is written 0 outside D, so a sample can never reach ink from beyond the bound.
 // Constraints (before the interpolation, never a mask after it): every `fixed` landmark at d = 0; fixed points at d = 0 every 8 px along the top edge of fieldZeroRows; each moving
 // landmark fitted at its DESTINATION p + d with value d. The head adds no constraint (the nape is released). After the fit: below the belly line a column takes the displacement
 // of the line at that x (legs move only with their root), and the zero rows win.
@@ -17,7 +18,7 @@ import { fileURLToPath } from "node:url";
 import { decodePNG } from "../png.mjs";
 
 export const BOUNDS = { "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 };   // px, |d|
-export const GRADIENT_MAX = 0.25, GRADIENT_WINDOW = 4;                           // px per px, measured over a 4 px window: a doubled or dropped pixel at most every 4 px
+export const GRADIENT_STRETCH = 0.25, GRADIENT_SHEAR = 0.5, GRADIENT_WINDOW = 4;  // px per px over a 4 px window: stretch (dx along x, dy along y) doubles or drops pixels, shear (dy along x, dx along y) only bends an outline
 export const HEAD_ZONE = 6;                                                      // Chebyshev px around the head mask where the gradient limit does not apply
 export const BASE_SIZE = [304, 312];
 export const rha = (v) => Math.sign(v) * Math.floor(Math.abs(v) + 0.5);          // round half away from zero (Math.round is not symmetric)
@@ -100,7 +101,7 @@ function tps(pts) {
 
 // The field toward `end` at w×h. opts: { picture, overrides: { headMask: {mask}, shadowRows: [[y0,y1]], bellyY: N, amplitude: k, noCheck: true } }. Returns the field, or throws with the reason.
 // field: { w, h, size, end, dx, dy: Int8Array, headMask: Uint8Array|null, headSource, zeroRows, bellyY: Int32Array|null, maxD, maxGradient, gradientAt, picture, overrides: [names] }
-export function buildField(landmarks, end, w, h, { picture = null, overrides = {} } = {}) {
+export function buildField(landmarks, end, w, h, { picture = null, overrides = {}, ink = null } = {}) {
   if (BOUNDS[`${w}x${h}`] == null) throw new Error(`no displacement bound for ${w}x${h} (bounds: ${Object.keys(BOUNDS).join(", ")})`);
   const { pic, scaleX, scaleY, name } = pickPicture(landmarks, w, h, picture), amp = overrides.amplitude ?? 1, used = [];
   const sx = (x) => rha(x * scaleX), sy = (y) => rha(y * scaleY), polyAt = (p) => p.map(([x, y]) => [x * scaleX, y * scaleY]);
@@ -130,28 +131,47 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   if (overrides.headMask) { headMask = overrides.headMask.mask; headSource = "override"; used.push("head-mask"); }
   else if (pic.headMask?.path) { const buf = readFileSync(pic.headMask.path); if (sha256(buf) !== pic.headMask.sha256) throw new Error("the signed head mask does not match its sha256"); headMask = headMaskFrom(buf).mask; headSource = "signed mask " + pic.headMask.sha256.slice(0, 12); }
   else if (pic.headMaskPolygon) { headMask = rasterPolygon(polyAt(pic.headMaskPolygon), w, h); headSource = "polygon"; }
-  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, picture: name, overrides: used };
+  // the domain: 0 outside the ink dilated by the bound (never the 6 px of the head zone: the head is drawn unwarped anyway)
+  if (ink) { const D = fieldDomain(ink, w, h, BOUNDS[`${w}x${h}`]); for (let i = 0; i < w * h; i++) if (!D[i]) { dxI[i] = 0; dyI[i] = 0; } }
+  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, picture: name, overrides: used, ink };
   if (overrides.noCheck) used.push("no-check"); else checkField(field);
   return field;
 }
 
-// The loader's refusals (§2 and the harness answers). Throws an Error naming the rule and the pixel. Bounds: every pixel outside the head mask, the 6 px zone included.
-// Gradient: |d(p) − d(p + 4e)| ≤ 1 px on the final field (0.25 px per px over 4 px), skipping pixels within 6 px of the head mask (Chebyshev). Zero rows: 0 on them.
+// The two domains, in one place. The field domain D: the ink dilated by the size's bound. The check domain: the pixels that are ink in the source or in the warped output (t = 1),
+// each dilated by 1 px, minus the head zone (the head mask dilated by 6 px). Without ink both are the whole picture.
+export const fieldDomain = (ink, w, h, bound) => dilate(ink, w, h, bound);
+export function checkDomain(f) {
+  const { w, h } = f, all = new Uint8Array(w * h).fill(1);
+  const skip = f.headMask ? dilate(f.headMask, w, h, HEAD_ZONE) : null; let C = all;
+  if (f.ink) {
+    const both = new Uint8Array(f.ink);
+    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = y * w + x; if (f.headMask?.[i]) continue; const sx = x - f.dx[i], sy = y - f.dy[i]; if (sx >= 0 && sy >= 0 && sx < w && sy < h && f.ink[sy * w + sx]) both[i] = 1; }
+    C = dilate(both, w, h, 1);
+  }
+  if (!skip) return C; const out = new Uint8Array(w * h); for (let i = 0; i < w * h; i++) out[i] = C[i] && !skip[i] ? 1 : 0; return out;
+}
+// The loader's refusals (§2 and the harness answers). Throws an Error naming the rule and the pixel. Bounds: every pixel outside the head mask. Gradient, on the stored integer map at
+// t = 1 over 4 px windows with both ends in the check domain: stretch |dx(x+4,y) − dx(x,y)| ≤ 1 and |dy(x,y+4) − dy(x,y)| ≤ 1 (0.25 px per px); shear |dy(x+4,y) − dy(x,y)| ≤ 2 and
+// |dx(x,y+4) − dx(x,y)| ≤ 2 (0.5). Zero rows: 0 on them.
 export function checkField(f) {
   const { w, h } = f, size = f.size ?? `${w}x${h}`, bound = BOUNDS[size]; if (bound == null) throw new Error(`field refused: no bound for ${size}`);
-  f.maxD = 0; f.maxGradient = 0; f.gradientAt = null;
+  f.maxD = 0;
   for (let i = 0; i < w * h; i++) {
     if (f.headMask?.[i]) continue; const d = Math.hypot(f.dx[i], f.dy[i]); if (d > f.maxD) f.maxD = d;
     if (d > bound) throw new Error(`field refused: |d| ${d.toFixed(2)} px at (${i % w}, ${(i / w) | 0}) is over the ${bound} px bound at ${size}`);
   }
-  const skip = f.headMask ? dilate(f.headMask, w, h, HEAD_ZONE) : null;
+  const C = checkDomain(f); f.maxStretch = 0; f.maxShear = 0; let first = null;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) for (const [ex, ey] of [[1, 0], [0, 1]]) {
     const x2 = x + ex * GRADIENT_WINDOW, y2 = y + ey * GRADIENT_WINDOW; if (x2 >= w || y2 >= h) continue;
-    const i = y * w + x, j = y2 * w + x2; if (skip && (skip[i] || skip[j])) continue;
-    const g = Math.max(Math.abs(f.dx[i] - f.dx[j]), Math.abs(f.dy[i] - f.dy[j])) / GRADIENT_WINDOW;
-    if (g > f.maxGradient) { f.maxGradient = g; f.gradientAt = [x, y]; }
+    const i = y * w + x, j = y2 * w + x2; if (!C[i] || !C[j]) continue;
+    const stretch = Math.abs(ex ? f.dx[j] - f.dx[i] : f.dy[j] - f.dy[i]) / GRADIENT_WINDOW, shear = Math.abs(ex ? f.dy[j] - f.dy[i] : f.dx[j] - f.dx[i]) / GRADIENT_WINDOW;
+    f.maxStretch = Math.max(f.maxStretch, stretch); f.maxShear = Math.max(f.maxShear, shear);
+    if (!first && stretch > GRADIENT_STRETCH + 1e-9) first = `stretch ${stretch.toFixed(3)} px/px is over ${GRADIENT_STRETCH}`;
+    if (!first && shear > GRADIENT_SHEAR + 1e-9) first = `shear ${shear.toFixed(3)} px/px is over ${GRADIENT_SHEAR}`;
+    if (first && !f.gradientAt) f.gradientAt = [x, y, x2, y2];
   }
-  if (f.maxGradient > GRADIENT_MAX + 1e-9) throw new Error(`field refused: gradient ${f.maxGradient.toFixed(3)} px/px is over ${GRADIENT_MAX} at ${size}, at pixel (${f.gradientAt.join(", ")})`);
+  if (first) throw new Error(`field refused: ${first} at ${size}, window (${f.gradientAt[0]}, ${f.gradientAt[1]})-(${f.gradientAt[2]}, ${f.gradientAt[3]})`);
   for (const [y0, y1] of f.zeroRows ?? []) for (let y = y0; y <= Math.min(y1, h - 1); y++) for (let x = 0; x < w; x++) if (f.dx[y * w + x] || f.dy[y * w + x]) throw new Error(`field refused: not 0 on the feet/shadow row ${y} at x ${x}`);
   return true;
 }
@@ -171,10 +191,11 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     if (arg("head-mask")) overrides.headMask = headMaskFrom(readFileSync(arg("head-mask")));
     if (arg("shadow-rows")) overrides.shadowRows = [arg("shadow-rows").split("-").map(Number)];
     if (arg("belly-y")) overrides.bellyY = +arg("belly-y"); if (arg("amplitude")) overrides.amplitude = +arg("amplitude"); if (process.argv.includes("--no-check")) overrides.noCheck = true;
+    let ink = null; if (arg("stand")) { const p = decodePNG(readFileSync(arg("stand"))); ink = new Uint8Array(p.width * p.height); for (let i = 0; i < ink.length; i++) ink[i] = p.data[i * 4 + 3] > 0 ? 1 : 0; }
     mkdirSync(out, { recursive: true });
     for (const end of Object.keys(landmarks.ends ?? { down: 0, up: 0 })) {
-      const f = buildField(landmarks, end, w, h, { picture: arg("picture"), overrides }), file = path.join(out, `field-${landmarks.blend ?? "blend"}-${end}-${w}x${h}.png`), bytes = encodeField(f);
-      writeFileSync(file, bytes); console.log(`${file}  sha256 ${sha256(bytes).slice(0, 12)}  max |d| ${f.maxD.toFixed(2)} px, gradient ${f.maxGradient.toFixed(3)} (from ${f.picture}; head ${f.headSource})${f.overrides.length ? "  OVERRIDE " + f.overrides.join(",") : ""}`);
+      const f = buildField(landmarks, end, w, h, { picture: arg("picture"), overrides, ink }), file = path.join(out, `field-${landmarks.blend ?? "blend"}-${end}-${w}x${h}.png`), bytes = encodeField(f);
+      writeFileSync(file, bytes); console.log(`${file}  sha256 ${sha256(bytes).slice(0, 12)}  max |d| ${f.maxD.toFixed(2)} px, stretch ${f.maxStretch.toFixed(3)}, shear ${f.maxShear.toFixed(3)} (from ${f.picture}; head ${f.headSource})${f.overrides.length ? "  OVERRIDE " + f.overrides.join(",") : ""}`);
     }
   } catch (e) { console.error(e.message); process.exit(1); }
 }

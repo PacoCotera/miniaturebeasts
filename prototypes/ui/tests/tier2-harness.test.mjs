@@ -4,8 +4,8 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
-import { buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk } from "../tools/warp-field.mjs";
-import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep } from "../tools/tier2-test.mjs";
+import { buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain } from "../tools/warp-field.mjs";
+import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
 const A = [200, 120, 60, 255], B = [150, 90, 40, 255], C = [240, 220, 160, 255], D = [90, 60, 30, 255];
@@ -25,7 +25,7 @@ const landmarks = {
     moving: { withers: { pos: [42, 38], down: [0, 1], up: [0, -1] }, "mid-back": { pos: [52, 38], down: [0, 2], up: [0, -2] }, croup: { pos: [62, 38], down: [0, 1], up: [0, -1] } },
     headMaskPolygon: [[80, 38], [100, 38], [100, 62], [80, 62]], bellyLine: [[20, 76], [100, 76]] } },
   breathPair: { holdsMs: { b0: 880, b1: 240, b2: 800, b1back: 480 }, offsetMs: 1040 },
-  pairs: [{ id: "FX-stand-b1", a: standFile, b: { bake: "b1" }, sha256: [sha256(standBytes), null], band: [34, 76] }],
+  pairs: [{ id: "FX-stand-b1", a: standFile, b: { bake: "b1" }, sha256: [sha256(standBytes), null] }],
 };
 writeFileSync(lmFile, JSON.stringify(landmarks));
 const set = { name: "fixture", stand: standFile, landmarks: lmFile };
@@ -42,7 +42,7 @@ test("the same inputs give the same bytes twice, and the harness's own two runs 
     assert.equal(decodePNG(apng).width, 2 * 104 + 3 * 16);
   }
   assert.ok(r.files.get("fixture/mibi-juvenile-FX-stand-map-head-104x112.png"), "the head mask is written as a picture");
-  assert.equal(r.rows.find((x) => x.measure === "run").result, "no verdict", "a baked step is provisional until its rule is given");
+  assert.equal(r.rows.find((x) => x.measure === "run").result, "ok");
 });
 test("the warp moves existing pixels only (M2) and draws the head unwarped over the body", () => {
   const img = fixture(), f = buildField(landmarks, "up", 104, 112), stats = { clampMisses: 0 }, out = warp(img, [{ field: f, t: 1 }], { headMask: f.headMask, stats });
@@ -62,7 +62,7 @@ test("the field is 0 on the feet and shadow rows, whole px, fitted at the destin
   for (const end of ["down", "up"]) {
     const f = buildField(landmarks, end, 104, 112);
     for (let y = 96; y < 112; y++) for (let x = 0; x < 104; x++) assert.equal(f.dx[y * 104 + x] | f.dy[y * 104 + x], 0, `(${x}, ${y})`);
-    assert.ok(f.maxD <= 4 && f.maxD > 0 && f.maxGradient <= 0.25);
+    assert.ok(f.maxD <= 4 && f.maxD > 0 && f.maxStretch <= 0.25 && f.maxShear <= 0.5);
     assert.ok(f.dx instanceof Int8Array);
     assert.deepEqual([...decodeField(encodeField(f)).dy], [...f.dy]);
     for (let y = 77; y < 96; y++) assert.equal(f.dy[y * 104 + 30], f.dy[76 * 104 + 30], "below the belly line a column takes the line's displacement");
@@ -75,8 +75,11 @@ test("a field outside the bounds is refused, with a message; so are colour chunk
   const empty = () => ({ w: 104, h: 112, size: "104x112", dx: new Int8Array(104 * 112), dy: new Int8Array(104 * 112), zeroRows: [[96, 111]] });
   const big = empty(); big.dy[50 * 104 + 50] = 5;
   assert.throws(() => checkField(big), /over the 4 px bound at 104x112/);
-  const steep = empty(); for (let x = 20; x < 30; x++) for (let y = 20; y < 30; y++) steep.dy[y * 104 + x] = x > 24 ? 2 : 0;
-  assert.throws(() => checkField(steep), /gradient 0\.500 px\/px is over 0\.25 at 104x112, at pixel \(\d+, \d+\)/);
+  const stretch = empty(); for (let y = 20; y < 40; y++) for (let x = 0; x < 104; x++) stretch.dy[y * 104 + x] = y > 29 ? 2 : 0;
+  assert.throws(() => checkField(stretch), /stretch 0\.500 px\/px is over 0\.25 at 104x112, window \(\d+, \d+\)-\(\d+, \d+\)/);
+  const shear = empty(); for (let y = 20; y < 40; y++) for (let x = 0; x < 104; x++) shear.dx[y * 104 + x] = y > 29 ? 3 : 0;
+  assert.throws(() => checkField(shear), /shear 0\.750 px\/px is over 0\.5/);
+  const shearOk = empty(); for (let y = 20; y < 40; y++) for (let x = 0; x < 104; x++) shearOk.dx[y * 104 + x] = y > 29 ? 2 : 0; assert.ok(checkField(shearOk), "a shear of 0.5 is allowed");
   const onFeet = empty(); onFeet.dy[100 * 104 + 3] = 1; assert.throws(() => checkField(onFeet), /not 0 on the feet\/shadow row 100/);
   assert.throws(() => buildField(landmarks, "down", 104, 112, { overrides: { amplitude: 10 } }), /field refused/);
   assert.throws(() => buildField({ pictures: {} }, "down", 100, 100), /no displacement bound/);
@@ -110,13 +113,34 @@ test("M8: the changed pixels outside the moving band do not grow under a torso-l
     assert.ok(w <= plain, `${end}: ${w} > ${plain}`);
   }
   const r = runAll([set]), m8 = r.rows.filter((x) => x.measure === "M8" && /changed outside/.test(x.item));
-  assert.equal(m8.length, 2); assert.ok(m8.every((x) => x.result === "pass"));
-  assert.equal(bakeStep(fixture(), 1, [34, 76]).data.length, 104 * 112 * 4);
-  assert.equal(newColours(fixture(), bakeStep(fixture(), 2, [34, 76])), 0, "a baked step moves existing pixels only");
+  assert.equal(m8.length, 4, "stand-b1 and stand-b2, down and up"); assert.ok(m8.every((x) => x.result === "pass"));
+  const yb = new Int32Array(104).fill(76);
+  assert.equal(newColours(fixture(), bakeStep(fixture(), 2, yb)), 0, "a baked step moves existing pixels only");
+  assert.equal(changedOutside(fixture(), bakeStep(fixture(), 2, yb), aboveBellyBand(104, 112, yb)), 0, "legs and feet are fixed");
 });
 test("the breathing pair: out-of-phase segments tile the 10 s", () => {
   const s = breathSegments([880, 240, 800, 480], 1040, 10000); assert.equal(s[0].t0, 0); assert.equal(s.at(-1).t1, 10000);
   for (let i = 1; i < s.length; i++) assert.equal(s[i].t0, s[i - 1].t1);
   assert.notEqual(s[0].frame, breathSegments([880, 240, 800, 480], 0, 10000)[0].frame);
   assert.ok(s.slice(0, -1).every((x) => (x.t1 - x.t0) % 80 === 0), "every delay is a multiple of 80 ms");
+});
+test("the breath bake is the animator's row-copy rule, per column, integers only", () => {
+  const col = blank(3, 30); for (let y = 0; y < 30; y++) for (let x = 0; x < 3; x++) if (y >= 2) col.data.set([y, x, 7, 255], (y * 3 + x) * 4);   // row y has colour y; ink from row 2
+  const yb = new Int32Array(3).fill(20), rowsOf = (im) => Array.from({ length: 30 }, (_, y) => (im.data[(y * 3 + 1) * 4 + 3] ? im.data[(y * 3 + 1) * 4] : null));
+  const b1 = rowsOf(bakeStep(col, 1, yb)), b2 = rowsOf(bakeStep(col, 2, yb));
+  for (let y = 0; y < 19; y++) assert.equal(b1[y], y + 1 >= 2 ? y + 1 : null, `b1 row ${y}`);
+  assert.equal(b1[19], 19, "row yb - 1 keeps itself: the doubled row at the belly line");
+  for (let y = 20; y < 30; y++) assert.equal(b1[y], y, "rows at and below the belly line are fixed");
+  // ytop 2, yb 20: ym = round(11) = 11, 9 px above yb: rows above ym lift 2, row 11 is doubled
+  for (let y = 0; y <= 9; y++) assert.equal(b2[y], y + 2, `b2 row ${y}`);
+  assert.equal(b2[10], 11); assert.equal(b2[11], 12); assert.equal(b2[18], 19); assert.equal(b2[19], 19);
+  const noInk = blank(3, 30), same = bakeStep(noInk, 2, yb); assert.deepEqual([...same.data], [...noInk.data], "a column with no ink is unchanged");
+});
+test("the field is written 0 outside the ink dilated by the bound, and the gradient is checked over ink in the source or the output", () => {
+  const img = fixture(), ink = new Uint8Array(104 * 112); for (let i = 0; i < ink.length; i++) ink[i] = img.data[i * 4 + 3] > 0 ? 1 : 0;
+  const f = buildField(landmarks, "up", 104, 112, { ink }), D = fieldDomain(ink, 104, 112, 4), free = buildField(landmarks, "up", 104, 112);
+  let inside = 0; for (let i = 0; i < ink.length; i++) { if (!D[i]) assert.equal(f.dx[i] | f.dy[i], 0, `outside D at ${i}`); else if (f.dy[i]) inside++; }
+  assert.ok(inside > 0, "inside D the field is the spline's");
+  assert.deepEqual([...f.dy.slice(52 * 104, 53 * 104)].some(Boolean), [...free.dy.slice(52 * 104, 53 * 104)].some(Boolean));
+  assert.ok(f.maxStretch <= 0.25 && f.maxShear <= 0.5);
 });
