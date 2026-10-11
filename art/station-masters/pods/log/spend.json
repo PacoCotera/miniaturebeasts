@@ -3630,5 +3630,22 @@
    "thoughtsTokenCount": 309,
    "totalTokenCount": 2264
   }
+ },
+ {
+  "tag": "motion-S01-adult-crouch-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.183006,
+  "mxn": 3.6601,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:16:18Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 483,
+   "candidatesTokenCount": 1310,
+   "thoughtsTokenCount": 207,
+   "totalTokenCount": 2000
+  }
  }
 ]
