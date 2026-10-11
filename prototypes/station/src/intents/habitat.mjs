@@ -4,6 +4,7 @@ import * as S from "../state.mjs";
 import { frameOf } from "../genome.mjs";
 import { habitatShown, watchFrame } from "../trickle.mjs";
 import { openNamer } from "./namer.mjs";
+import { openBook } from "./library.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 // The mibi up close: the chosen one, else the first the Companion does not carry, else the first.
@@ -38,7 +39,7 @@ export function intent(h, target, verb) {
     play(h, "moment");   // Greet: the species' moment, the placeholder's two hops until a moving set lands; nothing rewarded, nothing said
   }
   else if (target === "name") openNamer(h, m, "rename");
-  else if (target === "species") h.goto("library");   // the guide (frame.json navigation.jumps): not built yet, a slot of its own
+  else if (target === "species") { openBook(h, S.speciesOf(m)); h.ui.lib.f = "guide"; h.goto("library"); }   // the species' guide (frame.json navigation.jumps): not built yet, a slot of its own; ← reads Library
   else if (target.startsWith("plate.")) {
     const ch = chapterAt(m, target); if (!ch) return;
     const r = S.readMibi(h.st, m, ch.id, h.settings);

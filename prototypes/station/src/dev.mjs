@@ -62,14 +62,14 @@ export function buildDevPanel(container, hooks) {
     h("button", { class: "btn", type: "button", onclick: () => { if (!G.st.bud) { note("no bud growing"); return; } S.skipBud(G.st, G.settings, "mid"); save(); note("the bud is half grown"); } }, "Mid-bud"),
     h("button", { class: "btn", type: "button", onclick: () => { if (!G.st.bud) { note("no bud growing"); return; } S.skipBud(G.st, G.settings, "ready"); save(); note("the bud is ready to open"); } }, "Ready to open")),
     h("p", { class: "dev-note" }, "The pod under the beam on Pods is the one skipped. Shaped, mid-bud, ready, adults, a full guide and a sitting's crate come with their milestones."));
-  // The sitting and the Library, as plain text rows until their screens exist (placeholder: no art, no layout)
+  // The sitting and the Library's Book, as plain text rows until their screens exist (placeholder: no art, no layout)
   const first = () => G.st.mibis.find((m) => !m.released) || null, btn = (label, fn) => h("button", { class: "btn", type: "button", onclick: () => { const m = fn(); save(); if (m) note(typeof m === "string" ? m : (m.msg || JSON.stringify(m))); } }, label);
   group("Sitting and Library (text rows, placeholder)",
     h("div", { class: "dev-row" }, btn("Hold a sitting", () => T.devGrantSitting(G.st)), btn("Pay the research moments", () => T.collectMoments(G.st, G.settings).map((r) => r.key + (r.ok ? " → held" : r.lost ? " → lost" : "")).join(", ") || "none earned"), btn("Welcome sitting", () => T.checkWelcome(G.st)),
       btn("First mibi: watch dig, walk to the wood", () => { const m = first(); if (!m) return "no mibi"; T.recordHabit(G.st, m, "dig"); T.recordWalk(G.st, m, "wood"); return m.name + " has dug and walked"; })),
     h("div", { class: "dev-row" }, btn("Begin the first mibi's sitting", () => { const m = first(); if (!m) return "no mibi"; return T.beginSitting(G.st, m, T.habitsOf(m)[0], T.placesOf(m).slice(-1)[0], G.settings, Date.now(), G.sv); }), btn("Land the painting", () => { const c = G.st.sittingCrates[0]; return c ? T.landPortrait(G.st, c.id) : "no crate"; }), btn("Open the sitting's crate", () => { const c = G.st.sittingCrates[0]; return c ? T.openSittingCrate(G.st, c.id, G.settings) : "no crate"; }),
       btn("Show", () => { show(sittingText()); return ""; })),
-    h("p", { class: "dev-note" }, "Rules only (M5 and M6); the Home slot, the ceremony, the bay's crate and the Library's spread have no screens yet."));
+    h("p", { class: "dev-note" }, "Rules only (M5 and M6); the Home slot, the ceremony and the bay's crate have no screens yet."));
   // Inspect
   out = h("pre", { class: "dev-out" });
   const show = (t) => { out.textContent = t; };

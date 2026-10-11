@@ -19,6 +19,11 @@ export const PLACEHOLDERS = [
   { id: "page", what: "the chapter page: a deep pane with frost where nothing is known", until: "the research bench master" },
   { id: "home-glass-by-light", what: "Home's glass (640×488, home-glass-<light>) and Idle's Vivarium (1024×568, idle-vivarium-<light>) and the with-you bed (192×56, home-bed-<light>): one slot a light (dawn, day, dusk, night) from frame.json light and the picture maps; the flat plates of the colours show only while a light's slot is empty (all four lights have their masters today)", until: "the masters of a light, if one is not placed" },
   { id: "home-rack-pod-24x32", what: "a pod in the Pods module's rack: a PH plate at well + (4,0); the 32×32 wells are left empty", until: "the rack pod and the well master" },
+  { id: "library-stage-spread-1024x522", what: "the Library spread's stage, 1024×522 at (0, 40): flat, labelled \"spread stage, placeholder\" in the margin: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat, the caption rules in clay, the marker and the margin bands as dashed clay outlines", until: "the spread stage master" },
+  { id: "spread-plate-S01..S16-80x96", what: "a found species' plate, 80×96: the code rig's type specimen (speciesArt), for all sixteen", until: "the sixteen spread plate masters" },
+  { id: "spread-study-S01..S16-80x96", what: "a met species' study, 80×96: the same specimen reduced to its 1 px outline in stone, transparent inside", until: "the sixteen spread study masters" },
+  { id: "spread-gilt-corner-16x16", what: "the gilt corner of a portrayed species: a 16×16 clay L, 4 px thick, along the top and right edges", until: "the gilt corner master" },
+  { id: "spread-seal-16x16", what: "the seal of a complete guide: a 16×16 sand disc with a 1 px bark edge", until: "the seal master" },
   { id: "home-journal", what: "the Library module's journal, 104×72: no master, nothing is drawn", until: "the journal master" },
   { id: "cargo-bay-992x320", what: "Cargo's bay, 992×320, open and shut: the panel component (panel fill, a bevel top, a hairline edge, a ground inside, no rim and no seals drawn); shut, a PH plate (cargo-bay-shut-976x304) over its inside with no label", until: "the bay masters (open and shut)" },
   { id: "crate-sealed-256x176", what: "a sealed crate in Cargo's bay: a PH plate; a sitting crate (crate-sitting-256x176) is left out until the portrait's reveal is designed", until: "the crate masters" },
@@ -80,6 +85,37 @@ export function mibiArt(frame, genome, w, h, view = "portrait", flip = false) {
 }
 // The species' face: its type specimen (the frame's typical body) in the placeholder.
 export function speciesArt(frame, w, h, view = "portrait") { return frame.typeSpecimen?.genome ? mibiArt(frame, frame.typeSpecimen.genome, w, h, view) : blobArt(w, h); }
+
+// ---------- The Library spread's placeholders (library.json spread.placeholders): the stage, the gilt corner, the seal and a species' study ----------
+// A 5 × 7 lettering for the stage's label alone (the letters of "spread stage, placeholder"): a label is lettering, not a picture; the face never draws type into a picture.
+const LETTERS = { s: "01111 10000 10000 01110 00001 00001 11110", p: "11110 10001 10001 11110 10000 10000 10000", r: "10110 11001 10000 10000 10000 10000 10000", e: "01110 10001 10001 11111 10000 10000 01110", a: "00000 00000 01110 00001 01111 10001 01111", d: "00001 00001 01101 10011 10001 10001 01111", t: "01000 01000 11110 01000 01000 01001 00110", g: "00000 01111 10001 10001 01111 00001 01110", ",": "00000 00000 00000 00000 00110 00100 01000", c: "00000 00000 01110 10001 10000 10001 01110", h: "10000 10000 10110 11001 10001 10001 10001", o: "00000 00000 01110 10001 10001 10001 01110", l: "01100 00100 00100 00100 00100 00100 01110", " ": "00000 00000 00000 00000 00000 00000 00000" };
+function labelPB(pb, text, x, y, c) { for (const ch of text) { const g = (LETTERS[ch] || LETTERS[" "]).split(" "); for (let j = 0; j < 7; j++) for (let i = 0; i < 5; i++) if (g[j][i] === "1") pb.set(x + i, y + j, c); x += 6; } }
+const dashRect = (pb, x, y, w, h, c) => { for (let i = 0; i < w; i += 4) { pb.rect(x + i, y, Math.min(2, w - i), 1, c); pb.rect(x + i, y + h - 1, Math.min(2, w - i), 1, c); } for (let j = 0; j < h; j += 4) { pb.rect(x, y + j, 1, Math.min(2, h - j), c); pb.rect(x + w - 1, y + j, 1, Math.min(2, h - j), c); } };
+// The stage, flat and labelled: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat and a paper inside, the caption rules in clay, the cloth marker and the margin bands as dashed clay outlines.
+// Coordinates are the spec's (library.json spread.regions.stage.parts, leftPage and rightPage places), taken off the stage's origin (0, 40).
+export function spreadStageArt(spec) {
+  const R = spec.spread.regions, oy = R.stage.rect[1], cl = spec.spread.colours, pb = new PB(R.stage.rect[2], R.stage.rect[3]), at = (r) => [r[0], r[1] - oy, r[2], r[3]], col = (n) => C[n];
+  const box = (x, y, w, h, c) => { pb.rect(x, y, w, 1, c); pb.rect(x, y + h - 1, w, 1, c); pb.rect(x, y, 1, h, c); pb.rect(x + w - 1, y, 1, h, c); };   // a solid 1 px edge
+  pb.rect(0, 0, pb.w, pb.h, col("ground")); { const [x, y, w, h] = at(R.stage.parts.boards); pb.rect(x, y, w, h, col(cl.placeholderBoards)); }
+  for (const pg of R.stage.parts.pages) { const [x, y, w, h] = at(pg); pb.rect(x, y, w, h, col(cl.placeholderPaper)); box(x, y, w, h, col(cl.placeholderEdge)); }
+  for (const key of ["leftPage", "rightPage"]) for (const r of R[key].rects) {
+    const [x, y, w, h] = at(r);
+    pb.rect(x, y, w, h, col(cl.placeholderMat)); pb.rect(x + 8, y + 8, 80, 96, col(cl.placeholderPaper)); box(x, y, w, h, col(cl.placeholderFrame));
+    pb.rect(x, y + 144, 96, 1, col(cl.placeholderEdge));   // the caption rule, 144 px under the frame's top (y 256 and 440 on the screen)
+  }
+  dashRect(pb, ...at(R.stage.parts.marker), col(cl.placeholderEdge)); for (const m of R.stage.parts.marginLife) dashRect(pb, ...at(m), col(cl.placeholderEdge));
+  { const [x, y] = at(R.stage.parts.marginLife[0]); labelPB(pb, "spread stage, placeholder", x + 8, y + 32, col(cl.placeholderStudy)); }
+  return pb;
+}
+// The gilt corner: a 16 × 16 clay L, 4 px thick, along the top and right edges. The seal: a 16 × 16 sand disc with a 1 px bark edge.
+export function spreadGiltArt(spec) { const pb = new PB(16, 16), c = C[spec.spread.colours.placeholderGilt]; pb.rect(0, 0, 16, 4, c); pb.rect(12, 0, 4, 16, c); return pb; }
+export function spreadSealArt(spec) { const pb = new PB(16, 16), cl = spec.spread.colours; pb.ell(8, 8, 8, 8, C[cl.placeholderFrame]); pb.ell(8, 8, 7, 7, C[cl.placeholderSeal]); return pb; }
+// A met species' study: the type specimen at 80 × 96 reduced to its 1 px outline in stone, transparent inside.
+export function speciesStudyArt(frame, spec) {
+  return art("study" + frame.species.id + ":80x96", () => { const base = speciesArt(frame, 80, 96), pb = new PB(80, 96), stone = C[spec.spread.colours.placeholderStudy];
+    for (let y = 0; y < 96; y++) for (let x = 0; x < 80; x++) if (base.get(x, y) >= 0 && (base.get(x - 1, y) < 0 || base.get(x + 1, y) < 0 || base.get(x, y - 1) < 0 || base.get(x, y + 1) < 0)) pb.set(x, y, stone);
+    return pb; });
+}
 
 // ---------- Trait pictures: a close-up of this pod's mibi around the part the trait names ----------
 const PART_OF = [

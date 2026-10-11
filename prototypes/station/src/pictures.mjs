@@ -7,7 +7,7 @@ import { assetEntry, placeMaster, registerSlot, asset as assetOf, registerAsset,
 import { PB, C, HEX, art, fromRGBA, bay } from "./pixels.mjs";
 import { podFromLayers, layersPlaced, figureFromLayers, podStatus, figureStatus } from "./podmasters.mjs";
 import { SPECS } from "./game.mjs";
-import { emblemArt, ICON, beamArt, mibiArt, mistyArt, ghostArt } from "./art.mjs";
+import { emblemArt, ICON, beamArt, mibiArt, mistyArt, ghostArt, speciesArt, speciesStudyArt, spreadStageArt, spreadGiltArt, spreadSealArt } from "./art.mjs";
 import { stampGenome, stampSizing } from "./genome.mjs";
 import { stampGeometry, rasterize } from "../../genome-stamp/src/stamp.mjs";
 
@@ -73,6 +73,8 @@ export function registerPictures(reqs, env) {
       case "ph": put(r.id, r.size[0], r.size[1], r.until, () => { const pb = new PB(r.size[0], r.size[1]), [w, h] = r.size; const edge = r.hollow ? C.stone : C.mist; if (!r.hollow) pb.rect(0, 0, w, h, C.stone); pb.rect(0, 0, w, 1, edge); pb.rect(0, h - 1, w, 1, edge); pb.rect(0, 0, 1, h, edge); pb.rect(w - 1, 0, 1, h, edge); return pb; }); break;   // the PH look: a stone plate with a 1 px mist edge inside, or a 1 px stone edge with no fill
       case "mibi": put(r.id, r.size[0], r.size[1], "the painted mibis (the painting once landed)", () => mibiArt(env.frameOf(r.species), env.mibiGenome(r.mibi), r.size[0], r.size[1], "three-quarter")); break;
       case "icon": put(r.id, r.px, r.px, "the icon set", () => ICON[r.name](r.px)); break;
+      case "spread": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread masters (library.json masters)", () => (r.part === "stage" ? spreadStageArt(SPECS.library) : r.part === "gilt" ? spreadGiltArt(SPECS.library) : spreadSealArt(SPECS.library))); break;   // the stage, the gilt corner, the seal: the signed master when placed, else the labelled stand-in
+      case "species": putOrMaster(r.id, r.id, r.size[0], r.size[1], "the spread's species masters (library.json masters)", () => (r.look === "plate" ? speciesArt(env.frameOf(r.species), r.size[0], r.size[1]) : speciesStudyArt(env.frameOf(r.species), SPECS.library))); break;   // a found plate (the type specimen) or a met study (its outline)
       default: throw new Error("unknown picture kind " + r.kind);
     }
   }

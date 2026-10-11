@@ -112,12 +112,17 @@ test("the incubator: Choose a pod (empty), Grow now (growing, growNow with the l
   const h2 = host(world()); h2.moving = false; h2.specs.incubator = incubatorSpec; { const st2 = h2.st, p2 = pod(st2, "S01", chapters("S01")); S.grow(st2, p2, {}, settings, T0); st2.bud.early = true; INTENTS.incubator.intent(h2, "bud", "confirm"); assert.deepEqual([h2.went.at(-1), h2.played.length, h2.timers.length], ["habitat", 0, 0], "a cut: the meet on the frame of ✓"); }
 });
 
-test("the Library: ✓ on a known or met species opens its book, on an empty frame says so; in the book ← returns to the spread and ✓ visits", () => {
-  const st = world(), h = host(st); st.knownIds.push("S01");
-  INTENTS.library.intent(h, "sp:S02", "confirm"); assert.equal(h.said.at(-1), "Nothing is known of this frame yet"); assert.equal(h.ui.lib.f, "spread");
-  INTENTS.library.intent(h, "sp:S01", "confirm"); assert.deepEqual([h.ui.lib.f, h.ui.lib.sp], ["book", "S01"]);
-  INTENTS.library.intent(h, "book", "back"); assert.equal(h.ui.lib.f, "spread"); INTENTS.library.intent(h, "sp:S01", "back"); assert.equal(h.went.at(-1), "home");
-  S.seedAdults(st, "S01", 5, 2, settings); INTENTS.library.openBook(h, "S01"); INTENTS.library.intent(h, "book", "confirm"); assert.equal(h.went.at(-1), "habitat"); assert.ok(h.ui.hab.id != null);
+test("the Library's spread: the ring's frame is kept; ✓ on a found frame opens its Book, on a met or an unmet frame says its plate and opens nothing; in the Book ← returns to the spread with the ring on that species and ✓ visits; ← on the spread is Home with the ring on the Library module", () => {
+  const st = world(), h = host(st); h.specs.library = J("library"); const Sg = h.specs.library.spread.strings; st.knownIds.push("S01"); st.metIds.push("S03");
+  INTENTS.library.focus(h, "frame.S02"); assert.equal(h.ui.lib.i, 1, "the face said the ring moved: the Library keeps it"); INTENTS.library.focus(h, "frame.S16"); assert.equal(h.ui.lib.i, 15); INTENTS.library.focus(h, "tile.1"); assert.equal(h.ui.lib.i, 15, "not a frame: kept");
+  INTENTS.library.intent(h, "frame.S02", "confirm"); assert.equal(h.said.at(-1), Sg.unmet); assert.equal(h.ui.lib.f, "spread", "an unmet frame opens nothing"); assert.equal(h.ui.lib.i, 1);
+  INTENTS.library.intent(h, "frame.S03", "confirm"); assert.equal(h.said.at(-1), Sg.met); assert.equal(h.ui.lib.f, "spread", "a met frame opens nothing");
+  INTENTS.library.intent(h, "sp:S01", "confirm"); assert.equal(h.ui.lib.f, "spread", "only frame.<SNN> is a target"); h.said.length = 0;
+  INTENTS.library.intent(h, "frame.S01", "confirm"); assert.deepEqual([h.ui.lib.f, h.ui.lib.sp, h.ui.lib.i, h.said.length], ["book", "S01", 0, 0]);
+  INTENTS.library.intent(h, "screen", "back"); assert.deepEqual([h.ui.lib.f, h.ui.lib.i], ["spread", 0], "the Book's ← is the spread, the ring on that species (a cut)");
+  INTENTS.library.intent(h, "frame.S01", "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "library"]);
+  S.seedAdults(st, "S01", 5, 2, settings); INTENTS.library.openBook(h, "S01"); INTENTS.library.intent(h, "screen", "confirm"); assert.equal(h.went.at(-1), "habitat"); assert.ok(h.ui.hab.id != null);
+  INTENTS.habitat.intent(h, "species", "confirm"); assert.deepEqual([h.ui.lib.f, h.ui.lib.sp, h.went.at(-1)], ["guide", "S01", "library"], "the card's species word reaches the species' guide (not built yet), ← reads Library");
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, the gate arms on the first ✓ and acts on the second, any other key disarms, ← goes to the whole with the ring on this mibi", () => {
