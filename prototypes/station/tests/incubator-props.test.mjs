@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
 import { incubatorBuild } from "../src/views/incubator-props.mjs";
+import { habitatBuild } from "../src/views/habitat-props.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
@@ -63,4 +64,19 @@ test("every state is plain JSON, names no rectangle, and fits the 32 KiB budget"
   const hatch = { mibi: o.mibi.id, species: o.mibi.species, code: o.mibi.code, read: o.mibi.read, kind: "founder", parents: null };
   const h = build(st, { inc: { hatch } }, now, "painting");
   assert.deepEqual(validate(h.props, schema), [], "hatch validates"); assert.equal(h.props.state, "hatch"); assert.equal(h.line.ok, null); assert.ok(h.props.regions.juvenile.picture); assert.ok(JSON.stringify(h.props).length < 24_000);
+});
+
+// L3: the hatch draws the mibi at the stage it has now, and the meet after it draws the same picture (one id, one request), whatever the world's adult turns
+test("the hatch's juvenile and the meet's resident are one picture, for adultTurns 2 (a juvenile) and 0 (an adult already)", () => {
+  const frameSpec = J("frame.json"), habSpec = J("habitat.json"), home = J("home.json");
+  for (const adultTurns of [2, 0]) {
+    const cfg = { ...settings, adultTurns }, { st, p } = world(); const r = S.grow(st, p, {}, cfg, T0); assert.ok(r.ok);
+    const now = T0 + st.bud.minutes * 60_000 + 10_000, o = S.openBud(st, {}, cfg, now); assert.ok(o.ok);
+    const hatch = { mibi: o.mibi.id, species: o.mibi.species, code: o.mibi.code, read: o.mibi.read, kind: "founder", parents: null };
+    const inc = incubatorBuild({ st, settings: cfg, now, ui: { inc: { hatch } }, lamp: "" }, spec, pods), sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
+    const hab = habitatBuild({ st, sv, settings: cfg, docked: S.docked(st), light: "day", focus: null, habId: o.mibi.id, meetId: o.mibi.id, armed: false }, habSpec, frameSpec, home);
+    assert.equal(S.mibiStage(st, o.mibi, cfg), adultTurns === 2 ? "juvenile" : "adult", "the stage of the world");
+    assert.equal(inc.props.regions.juvenile.picture, hab.props.regions.resident.picture, `adultTurns ${adultTurns}: one picture id`);
+    const a = inc.requests.find((x) => x.id === inc.props.regions.juvenile.picture), b = hab.requests.find((x) => x.id === hab.props.regions.resident.picture); assert.deepEqual(a, b, "one request");
+  }
 });

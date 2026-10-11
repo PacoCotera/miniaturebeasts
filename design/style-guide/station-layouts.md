@@ -2739,8 +2739,8 @@ The face's Inter 16, 20 and 28 hold every allowed character in both cases, with 
 the vivarium's own spec carries these; the namer depends on them.
 
 - **The living window left of x 584.** The namer covers x 592 to 1008, y 48 to 472.
-- **The meet.** The ring lands on the new mibi (the Incubator's hand-off), and the first ✓ is `✓ Name Fig`, opening the namer. Any other key ends the meet with the default name kept, and does what it does. When the namer closes, the meet is over, and the closing props' `focus.set` puts the ring on the mibi.
-- **Rename.** the vivarium's name tag is the focus target `name`, ring round, in the vivarium's pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props' `focus.set` puts the ring back on that target.
+- **The meet.** The ring lands on the new mibi (the Incubator's hand-off), and the first ✓ is `✓ Name Fig`, opening the namer. Any other key ends the meet with the default name kept, and does what it does. When the namer closes, the meet is over, and the closing props carry habitat's `focus.cur` (`focus.entry.namerClosed`), the ring on the mibi.
+- **Rename.** the vivarium's name tag is the focus target `name`, ring round, in the vivarium's pad order: `✓ Rename Fig` opens the namer on any mibi at home, bonded or with you. When the namer closes, the closing props carry habitat's `focus.cur` (`focus.entry.namerClosed`), the ring back on that target.
 - **The `named` flash.** The regions that show the name (its name, the meet ribbon while it shows) take the frame's 240 ms flash when a name is saved.
 - **The name boxes.** the vivarium's name boxes follow the name label's rule above.
 

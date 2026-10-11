@@ -79,15 +79,6 @@ const props = () => page.evaluate(() => window.__st.props);
 const line = async () => (await props()).frame?.line ?? {};   // the bottom line the host sent the face: what the screen says
 const intent = (m, ms = 120) => page.evaluate((m) => window.__st.intent(m), m).then(() => page.waitForTimeout(ms));
 const expect = (cond, what) => { if (!cond) fail(what); };
-// One mibi up close reached and walked by the pad (Q2): the mibi is chosen as the Vivarium's ✓ would choose it (the page names it), the ring then walks by the keys to the module; ✓ ✓ on the Wild gate returns an adult.
-const habWalk = async (id, target) => {
-  await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "resident"; u.meet = null; u.hab.wildArm = 0; window.__st.goto("habitat"); }, id); await page.waitForTimeout(700);
-  const at = async () => (await props()).focus?.cur, go = async (k) => { await press(k, 160); return at(); };
-  await go("right"); await go("right"); let c = await at(); for (let i = 0; i < 8 && c !== "door"; i++) c = await go("down");
-  if (target === "wild") { c = await go("down"); if (c !== "wild") c = await go("right"); if (c !== "wild") c = await go("down"); }
-  return c;
-};
-const gateByKeys = async (id) => { const c = await habWalk(id, "wild"); await press("confirm", 200); const armed = (await props()).focus?.armed === "wild"; await press("confirm", 700); return { c, armed }; };
 const S_stage = (s, m) => { const age = s.turn - (m.born || 0); return age < 2 ? "juvenile" : "adult"; };
 const ui = () => page.evaluate(() => { const u = window.__st.UI; return { screen: u.screen, view: u.pods.view, cmp: !!u.pods.cmp, lib: u.lib.f, hab: u.hab.f, habId: u.hab.id, home: u.home.f, viv: u.viv.f, idle: u.idle, msg: window.__st.msg }; });
 // The type through the face: every string it set is Inter at 16, 20 or 28 px, nothing refused, no error sent.
@@ -495,9 +486,9 @@ s = await st(); expect(s.mibis.filter((m) => !m.released).length === 6, "six bay
 { const e2 = s.e, r = await page.evaluate((id) => { const p = window.__st.podById(id); return { msg: window.__st.grow(id, {}).msg ?? "", paid: window.__st.ST.bud }; }, loika2.id);
   expect(/no bay free/.test(r.msg) && !r.paid && (await st()).e === e2, "a full vivarium refuses before payment, nothing paid, nothing grown: " + JSON.stringify(r)); }
 const adult = s.mibis.find((m) => m.name !== "Moss" && m.name !== "Dot");
-const s2 = (await st()).s; { const g = await gateByKeys(adult.id); expect(g.c === "wild" && g.armed, "the Wild gate by keys: the pad reaches it and the first ✓ arms it: " + JSON.stringify(g)); }
+const s2 = (await st()).s; await page.evaluate((id) => window.__st.returnMibi(id), adult.id);   // the rule, to free a bay for what follows; the gate by keys is vivarium-card
 s = await st(); expect(s.s === s2 + 2 && s.mibis.find((m) => m.id === adult.id).released && s.releases.at(-1).id === adult.id, "returned for +2 Essence and released");
-let msgBefore; { const c = await habWalk(fig.id, "wild"); msgBefore = await page.evaluate(() => window.__st.msg); expect(c === "wild", "the pad reaches the Wild gate on a juvenile (disabled, still a stop): " + c); if (c === "wild") { await press("confirm", 200); await press("confirm", 300); } } expect((await page.evaluate(() => window.__st.msg)) === msgBefore && !(await st()).mibis.find((m) => m.id === fig.id).released, "a juvenile stays, and the intent says nothing (the block is the Wild module's context): " + (await page.evaluate(() => window.__st.msg)));
+{ const msgBefore = await page.evaluate(() => window.__st.msg), r = await page.evaluate((id) => window.__st.returnMibi(id), fig.id); expect(!r.ok && (await page.evaluate(() => window.__st.msg)) === msgBefore && !(await st()).mibis.find((m) => m.id === fig.id).released, "a juvenile stays by the rule, and says nothing (the block is the Wild module's context; the keys are vivarium-card): " + JSON.stringify(r)); }
 await press("home", 200);
 // 13. the service stops: Grow still works, the genome waits in the outbox and the lamp says waiting for the cloud; the service returns and the painting lands
 caddyUp = false;
@@ -519,7 +510,7 @@ await press("home", 300);
 expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), later.sha)), "the second painting landed after the service returned");
 // M4. Cross: free a bay, pair Dot with an unrelated adult Loika, see four seeds for the switches and a range for the blends at kinship 0; then siblings at a quarter
 s = await st(); const adult2 = s.mibis.find((m) => !m.released && m.name !== "Dot" && m.name !== "Moss" && m.name !== "Pebble" && S_stage(s, m) === "adult");
-await gateByKeys(adult2.id);
+await page.evaluate((id) => window.__st.returnMibi(id), adult2.id);   // the rule, to free a bay
 s = await st(); expect(s.mibis.find((m) => m.id === adult2.id).released, "a second adult returned to free a bay");
 const dot = s.mibis.find((m) => m.name === "Dot"), adult3 = s.mibis.find((m) => !m.released && m.id !== dot.id && S_stage(s, m) === "adult");
 await page.evaluate((id) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "cross"; }, dot.id);
@@ -560,10 +551,26 @@ const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.fin
   const d3 = (await st()).d; r = await hp("confirm", 900); s = await st();
   expect(s.mibis.find((m) => m.id === child.id).read.length === child.read.length + 1 && s.d <= d3 && r.p.regions.plates.items[chIndex].state === "read", "vivarium-card: ✓ read the child's chapter, its plate turns read: " + JSON.stringify([s.d, d3, r.p.regions.plates.items[chIndex].state]));
   r = await hp("left", 200); expect(r.p.focus.cur !== "plate." + chIndex || chIndex === 0, "vivarium-card: ◀ walks back along the plates");
-  // the door by keys (the resident goes with the Companion): the pad walks to it, ✓ queues the request for the set; a second ✓ waits for the Companion. The request is cleared after, the step leaves the world as it found it.
-  { const c = await habWalk(child.id, "door"); r = { p: await props() }; expect(c === "door" && /^(Take|Bring)/.test(r.p.frame.line.ok ?? ""), "vivarium-card: the pad reaches the Companion module, ✓ Take it with you: " + JSON.stringify([c, r.p.frame.line])); cur.push({ walk: "door", ring: c, ok: r.p.frame.line.ok });
+  // the door and the gate by keys, the ring walking on from where it is (the pad's graph: plates ▼ door ▼ cross ▶ wild ▼ tiles). The door asks for the resident to go with the Companion (the request is cleared after, the step leaves the world as it found it);
+  // the gate: on the juvenile ✓ ✓ releases nothing and says nothing; on an adult ✓ arms and ✓ returns it for +2 Essence.
+  const toward = async (target, route) => { for (let i = 0; i < 14; i++) { const c = (await props()).focus?.cur; if (c === target) return c; const k = route(c); if (!k) break; await hp(k, 220); } return (await props()).focus?.cur; };
+  const toWild = (c) => c === "wild" ? null : c === "resident" || c === "name" ? "right" : c === "species" ? "down" : /^plate\./.test(c) ? "down" : c === "door" ? "down" : c === "cross" || c === "portrait" ? "right" : /^tile\./.test(c) ? "up" : null;
+  { const c = await toward("door", (c) => (/^plate\./.test(c) ? "down" : c === "species" ? "down" : c === "resident" || c === "name" ? "right" : null)); r = { p: await props() }; expect(c === "door" && /^(Take|Bring)/.test(r.p.frame.line.ok ?? ""), "vivarium-card: the pad reaches the Companion module, ✓ Take it with you: " + JSON.stringify([c, r.p.frame.line])); cur.push({ walk: "door", ring: c, ok: r.p.frame.line.ok });
     r = await hp("confirm", 600); const q = await st(); expect(q.carryReqs.some((x) => x.id === child.id), "vivarium-card: ✓ on the door asks for the resident to go with the Companion: " + JSON.stringify(q.carryReqs));
     await page.evaluate((id) => { const t = window.__st.ST; t.carryReqs = t.carryReqs.filter((x) => x.id !== id); }, child.id); }
+  { const c = await toward("wild", toWild); expect(c === "wild", "vivarium-card: the pad walks on to the Wild gate: " + c);
+    const was = await st(), msg0 = await page.evaluate(() => window.__st.msg), kid = was.mibis.find((m) => m.id === child.id); expect(S_stage(was, kid) === "juvenile", "vivarium-card: the child is a juvenile: " + S_stage(was, kid));
+    await hp("confirm", 250); await hp("confirm", 500); const now = await st();
+    expect(!now.mibis.find((m) => m.id === child.id).released && now.s === was.s && (await page.evaluate(() => window.__st.msg)) === msg0, "vivarium-card: ✓ ✓ on a juvenile releases nothing and says nothing: " + JSON.stringify([now.s, was.s]));
+    cur.push({ gate: "juvenile", released: false, essence: now.s - was.s }); }
+  { const was = await st(), away = await sv().then((v) => [...(v.carried ?? []), ...(v.with != null ? [v.with] : [])]), adultM = was.mibis.find((m) => !m.released && !m.bonded && m.id !== child.id && S_stage(was, m) === "adult" && !away.includes(m.id) && !(was.carryReqs ?? []).some((x) => x.id === m.id));   // one the rules let go: not bonded, not carried, no request waiting
+    expect(!!adultM, "vivarium-card: an adult is at home to return");
+    await hp("down", 300); const tileKey = "tile." + adultM.id; let c = (await props()).focus?.cur; for (const dir of ["right", "left"]) for (let i = 0; i < 14 && c !== tileKey; i++) { await hp(dir, 300); const n = (await props()).focus?.cur; if (n === c) break; c = n; }   // along the strip one way to its end, then the other
+    expect(c === tileKey, "vivarium-card: ▼ then ◀ ▶ along the strip lands on the adult's tile: " + c);
+    await hp("up", 300); const w = await toward("wild", toWild); expect(w === "wild", "vivarium-card: the pad walks back to the Wild gate with the adult shown: " + w);
+    r = await hp("confirm", 500); expect(r.p.focus.armed === "wild", "vivarium-card: the first ✓ arms the gate: " + JSON.stringify([r.p.focus.armed, r.p.focus.cur, r.p.frame.line])); r = await hp("confirm", 800); const now = await st();
+    expect(now.s === was.s + 2 && now.mibis.find((m) => m.id === adultM.id).released, "vivarium-card: the second ✓ returns the adult for +2 Essence: " + JSON.stringify([now.s, was.s]));
+    cur.push({ gate: "adult", released: true, essence: now.s - was.s }); }
   await press("home", 300); }
 // the bench trickle's watch: a resident on the Vivarium for the dev timer's 5 s earns +1 Data once (after the dev panel's New bench day)
 { stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.settings.trickleCap = 2; window.__st.ST.bench = null; });   // a new bench day (the dev button's reset)
@@ -673,7 +680,7 @@ await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitFor
 // Q1, the fresh-world loop on the face (lvgl-switch.md §4 V): from no save, the sandbox has no Companion walking, so the one crate is the developer panel's seed (seedCrate); everything after is keys. Home, Dock, Cargo opens the crate,
 // Pods identifies the pod, Create grows the founder (nothing read: all of it stays a surprise), the Incubator's bud is grown now and opened, the hatch lands in the meet, the first ✓ opens the namer, Done keeps the name, ← is the whole, ← is Home.
 { const loop = async (k, what, until) => { await page.evaluate((k) => window.__st.act(k), k); await page.waitForTimeout(120); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); if (until) await page.waitForFunction(until, null, { timeout: 12000 }).catch(() => fail("fresh-loop: " + what + " (never happened): ")); await page.waitForTimeout(150); };
-  await page.evaluate(() => { window.__st.UI.pods.cur = null; window.__st.goto("home"); }); await page.waitForTimeout(300);
+  await press("home", 300);
   await page.evaluate(() => window.__st.seedCrate("S01", 1, 4242));
   await loop("dock", "the Dock key docks and the crate waits in the bay", () => window.__st.ST.dock.docked && window.__st.props?.regions?.cargo?.state === "crates");
   await loop("confirm", "Home's ✓ opens Cargo", () => window.__st.UI.screen === "cargo");

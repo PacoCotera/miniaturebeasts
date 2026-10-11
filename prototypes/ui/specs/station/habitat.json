@@ -220,8 +220,8 @@
     "docked": "each mibi's painting or placeholder at 48",
     "away": "the same: the carried mibis drawn at 48, so the set reads while they are out; the outline glyph says they are out",
     "waiting": "an add request waiting: its picture at 48 with frame-lamp-8-stone at the place's (40, 0)",
-   "lampAt": [40, 0],
-   "recess": "each place's box, [648|712|776, 312, 48, 48], filled colours.door.recess (ground), no edge; the picture over it at 48; a free place adds the dash outline 1 px inside; no recess round the row; chrome, no master",
+    "lampAt": [40, 0],
+    "recess": "each place's box, [648|712|776, 312, 48, 48], filled colours.door.recess (ground), no edge; the picture over it at 48; a free place adds the dash outline 1 px inside; no recess round the row; chrome, no master",
     "free": "a place the set does not fill: a composed `dash` outline 1 px inside the place's box, 1 px `hairline`, dash [2, 2], as the strip's free bay, so the three places read with no figure"
    },
    "states": {"docked": "the solid glyph and the three places", "away": "the outline glyph and the three places", "none": "nobody carried: the glyph and three free places"}

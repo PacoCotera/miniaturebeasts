@@ -262,14 +262,14 @@ test("a sitting is refused for want of a pose, and separately for want of a walk
 });
 
 // W1, W2: calm is felt in the field, never watched; every habit of a frame has its words in habitat.json
-import { readFileSync as readSpec, readdirSync as listFrames } from "node:fs";
 test("W2 a lone Loika watched on three days records shake-dry, then sleep-curled, then nothing; calm comes only from a dock whose habitsDone holds it", () => {
-  const st = bench(), [m] = st.mibis, day = (n) => new Date(2026, 9, 9 + n, 12, 0).getTime();
+  const st = fresh(); S.seedAdults(st, "S01", 3, 1, settings); st.d = 0; const [m] = st.mibis, day = (n) => new Date(2026, 9, 9 + n, 12, 0).getTime();
   const once = (n) => { S.benchWatch(st, sv0, m, 250, settings, day(n)); watchFor(st, m, 60000, settings, day(n)); return [...(m.habits || [])]; };
   assert.deepEqual(once(0), ["shake-dry"]); assert.deepEqual(once(1), ["shake-dry", "sleep-curled"]); assert.deepEqual(once(2), ["shake-dry", "sleep-curled"], "nothing left to watch");
-  const mm = S.mibiById(st, m.id); mm.outings = 0; S.mergeCare(st, { mibis: [{ id: m.id, outings: 1, habitsDone: ["calm"] }], trips: [] }); assert.deepEqual(m.habits, ["shake-dry", "sleep-curled", "calm"], "calm from the dock");
+  m.outings = 0; S.mergeCare(st, { mibis: [{ id: m.id, outings: 1, habitsDone: [] }], trips: [] }); assert.deepEqual(m.habits, ["shake-dry", "sleep-curled"], "a walk that did no habit records no calm");
+  m.outings = 0; S.mergeCare(st, { mibis: [{ id: m.id, outings: 1, habitsDone: ["calm"] }], trips: [] }); assert.deepEqual(m.habits, ["shake-dry", "sleep-curled", "calm"], "calm from the dock");
 });
 test("W1 every habit of every frame has its words in habitat.json strings.watchHabits", () => {
-  const here2 = new URL(".", import.meta.url).pathname, words = JSON.parse(readSpec(here2 + "../../ui/specs/station/habitat.json", "utf8")).strings.watchHabits;
-  for (const f of listFrames(here2 + "../../workbench/frames").filter((x) => x.startsWith("species-"))) for (const hb of JSON.parse(readSpec(here2 + "../../workbench/frames/" + f, "utf8")).habits || []) assert.ok(words[hb], `${f}: the habit ${hb} has no words in strings.watchHabits`);
+  const words = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/habitat.json"), "utf8")).strings.watchHabits;
+  for (const f of readdirSync(fdir).filter((x) => x.startsWith("species-"))) for (const hb of JSON.parse(readFileSync(path.join(fdir, f), "utf8")).habits || []) assert.ok(words[hb], `${f}: the habit ${hb} has no words in strings.watchHabits`);
 });

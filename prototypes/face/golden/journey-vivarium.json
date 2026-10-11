@@ -440,6 +440,74 @@
     "back": "Vivarium"
    },
    {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "name"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "ok": "Rename Pip",
+    "price": null,
+    "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "species"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "species",
+    "ok": "Open the guide",
+    "price": null,
+    "subject": "every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": null,
+    "price": null,
+    "subject": "Coat, read",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "door"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "door",
+    "ok": "Take Pip with you",
+    "price": null,
+    "subject": "goes with you now",
+    "back": "Vivarium"
+   },
+   {
     "walk": "door",
     "ring": "door",
     "ok": "Take Pip with you"
@@ -461,6 +529,275 @@
     "price": null,
     "subject": "goes with you now",
     "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "cross"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "cross",
+    "ok": null,
+    "price": null,
+    "subject": "crosses once adult",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "wild"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": null,
+    "price": null,
+    "subject": "not until it is adult",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "wild",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": null,
+    "price": null,
+    "subject": "not until it is adult",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "wild",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": null,
+    "price": null,
+    "subject": "not until it is adult",
+    "back": "Vivarium"
+   },
+   {
+    "gate": "juvenile",
+    "released": false,
+    "essence": 0
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.8"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "tile.8",
+    "ok": "Greet Pip",
+    "price": null,
+    "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "tile.5"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "tile.5",
+    "ok": "Greet Tuft",
+    "price": null,
+    "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "resident"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "ok": "Greet Tuft",
+    "price": null,
+    "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "name"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "name",
+    "ok": "Rename Tuft",
+    "price": null,
+    "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "species"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "species",
+    "ok": "Open the guide",
+    "price": null,
+    "subject": "every Loika",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "plate.0"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "plate.0",
+    "ok": null,
+    "price": null,
+    "subject": "Coat, read",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "door"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "door",
+    "ok": "Take Tuft with you",
+    "price": null,
+    "subject": "goes with you now",
+    "back": "Vivarium"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "cross"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "cross",
+    "ok": "Cross Tuft",
+    "price": null,
+    "subject": "two Loika to pair with",
+    "back": "Vivarium"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "habitat",
+      "target": "wild"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Return Tuft",
+    "price": "❀ +2",
+    "subject": "goes back to the wild",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "wild",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "wild",
+    "ok": "Again: return Tuft",
+    "price": "❀ +2",
+    "subject": "never taken back",
+    "back": "Vivarium"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "wild",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "resident",
+    "ok": "Greet Dot",
+    "price": null,
+    "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "gate": "adult",
+    "released": true,
+    "essence": 2
    }
   ],
   "vivarium-trickle": [
