@@ -1,7 +1,7 @@
 // The seeded world of the Companion: the map, the places and the RNG. Pure: it never reads the page's state, the DOM,
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
-export const NEW_GEN = 1;          // the generator newWorld gives a new world
+export const NEW_GEN = 2;          // the generator newWorld gives a new world (old saves keep theirs)
 export const GENS = [1, 2];        // the generators the page can play
 
 export const MW = 16, MH = 20;                       // world map, cells

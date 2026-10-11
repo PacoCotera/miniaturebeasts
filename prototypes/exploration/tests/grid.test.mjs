@@ -1,5 +1,5 @@
 // The reach view's grid (the UI designer's ruling, the art director's signed "fix" variant): no dotted centre cross,
-// orange brackets on the pawn's cell (2 px, arms 10 at tier 1 and 6 at tier 2), the pending outline skipping the dots
+// orange brackets on the pawn's cell (2 px, arms 9 at tier 1 and 6 at tier 2), the pending outline skipping the dots
 // under the arms on the pawn's cell only, and the signs at pad 4. Read from the source of drawReachView in index.html.
 import { test } from "node:test";
 import assert from "node:assert/strict";
@@ -29,8 +29,8 @@ test("the reach view draws no dotted cross through a cell's centre", () => {
   assert.doesNotMatch(code, /R\(x \+ h,[^)]*C\.ink\)/);
 });
 
-test("the pawn's cell has orange 2 px brackets, arms 10 at tier 1 and 6 at tier 2, drawn after the pawn", () => {
-  assert.match(code, /L = q\.big \? 10 : 6/);
+test("the pawn's cell has orange 2 px brackets, arms 9 at tier 1 and 6 at tier 2, drawn after the pawn", () => {
+  assert.match(code, /L = q\.big \? 9 : 6/);
   const pawn = code.indexOf("blit(pawn,"), br = code.indexOf("R(bx, by, L, 2, C.orange)");
   assert.ok(pawn > 0 && br > pawn, "the top-left bracket's arm (x, y, L, 2) is drawn after the pawn");
   assert.match(code, /R\(bx, by, 2, L, C\.orange\)/);
@@ -42,7 +42,7 @@ test("the pending outline skips the dots under the arms on the pawn's cell only"
   assert.match(code, /if \(onPawn && \(k < L \+ 2 \|\| k > q\.cs - L - 3\)\) continue;/);
   // the kept range at each tier: L + 2 <= k <= cs - L - 3
   const kept = (cs, L) => { const o = []; for (let k = 2; k < cs - 2; k += 3) if (!(k < L + 2 || k > cs - L - 3)) o.push(k); return o; };
-  assert.deepEqual([kept(78, 10)[0], kept(78, 10).at(-1)], [14, 65]);
+  assert.deepEqual([kept(72, 9)[0], kept(72, 9).at(-1)], [11, 59]);
   assert.deepEqual([kept(48, 6)[0], kept(48, 6).at(-1)], [8, 38]);
 });
 

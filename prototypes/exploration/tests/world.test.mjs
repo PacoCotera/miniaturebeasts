@@ -21,7 +21,7 @@ const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
 const IMPORT = /^import \{([^}]*)\} from "\.\/src\/world\.mjs";$/m;
 const BINDINGS = MODULE.match(IMPORT)[1].split(",").map(s => s.trim().split(/\s+as\s+/));
 const SCRIPT = MODULE.replace(IMPORT, "");
-// `search` is the page's query string (?gen=2); the page's elements record their listeners (els[id].on.click).
+// `search` is the page's query string; the page's elements record their listeners (els[id].on.click).
 function page(store = {}, search) {
   const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
     apply: () => any, construct: () => any, set: () => true });
@@ -69,12 +69,12 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; the page plays generators 1 and 2, and new worlds still take generator 1", () => {
+test("unknown generators are refused; the page plays generators 1 and 2, and new worlds take generator 2", () => {
   assert.throws(() => W.genWorld(1, 3), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
   assert.deepEqual(W.GENS, [1, 2]);
   assert.equal(W.genWorld(1, 2).gen, 2);
-  assert.equal(W.NEW_GEN, 1);
+  assert.equal(W.NEW_GEN, 2);
 });
 
 test("a save without gen loads as generator 1 and is saved without gen", () => {
@@ -87,14 +87,15 @@ test("a save without gen loads as generator 1 and is saved without gen", () => {
   assert.equal("gen" in JSON.parse(p.store[p.KEY]), false);
 });
 
-test("a new world writes gen 1, and its world and first place match the vectors", () => {
+test("a new world writes gen 2, and its world and first place match generator 2's vectors", () => {
   const p = page();
   p.run("newWorld(42)");
-  assert.equal(p.run("S.gen"), 1);
-  assert.match(p.store[p.KEY], /"seed":42,"gen":1,/);
-  const want = vectorOf(42);
-  assert.deepEqual(worldDigest(API, p.run("G")), withoutMemo(want.world));
-  assert.deepEqual(placeDigest(API, p.run("layout(String(G.spawns[0]))")), want.places[0]);
+  assert.equal(p.run("S.gen"), 2);
+  assert.match(p.store[p.KEY], /"seed":42,"gen":2,/);
+  const want = VECTORS.gens["2"].seeds.find(s => s.seed === 42), G = p.run("G");
+  assert.deepEqual(Object.assign(worldDigest(API2, G), { beacons: [...W.beaconCells(G, 42)], depots: [...W.depotCells(G, 42)] }), want.world);
+  assert.equal(want.places[0].key, String(G.spawns[0]));
+  assert.deepEqual(placeDigest(API2, p.run("layout(String(G.spawns[0]))"), 2), want.places[0]);
 });
 
 test("a save from a newer generator (gen 3) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
@@ -359,11 +360,11 @@ test("canStepIn on hand-built worlds", () => {
 });
 
 // ---- generator 2 in play (page harness) ----
-// A ?gen=2 world on a vector seed, calm, with an expedition set out at `cell` (map in view).
+// A new (generator 2) world on a vector seed, calm, with an expedition set out at `cell` (map in view).
 function g2At(seed, cell) {
-  const p = page({}, "?gen=2");
+  const p = page();
   p.run(`TEST.calm = true; newWorld(${seed}); startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.range = 4; FX.lockUntil = 0;`);
-  assert.equal(p.run("S.gen"), 2, "?gen=2 gives a generator 2 world");
+  assert.equal(p.run("S.gen"), 2, "a new world takes generator 2");
   return p;
 }
 // Every edge of a generator 2 world: a (the cell the step starts from), dir, kind, facing (the way the drop faces) and up (into the higher cell).
@@ -464,12 +465,12 @@ test("generator 2 play: Ahead names the edge, the edge word alone comes before h
   assert.ok(ctx[0].includes("Ahead: " + o.run("landWord(S.exp.pos + 1)")), ctx[0]); assert.equal(ctx.length, 5, "no edge word");
 });
 
-test("generator 2 play: a save without gen is generator 1, canStep is passable everywhere it reaches; ?gen=2 only takes a generator the page plays", () => {
+test("generator 2 play: a save without gen is generator 1, canStep is passable everywhere it reaches; new worlds take generator 2 whatever the address says", () => {
   const fx = FIXTURE(), p = page({ "mb-save-v8": JSON.stringify(fx) });
   assert.equal(p.run("S.gen"), undefined); assert.equal(p.run("G.gen"), undefined);
   for (let c = 0; c < NC; c++) for (const [dir, dx, dy] of SIDE4) { const x = c % MW + dx, y = ((c / MW) | 0) + dy; if (!onMap(x, y)) continue;
     assert.equal(p.run(`canStep(${c}, ${JSON.stringify(dir)})`), p.run(`passable(${y * MW + x})`), `${c} ${dir}`); }
-  for (const [q, gen] of [["?gen=2", 2], ["?gen=3", 1], ["?gen=x", 1], ["?seed=5&gen=2", 2]]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), gen, q); assert.equal(r.run("G.gen || 1"), gen, q); }
+  for (const q of ["?gen=1", "?gen=2", "?gen=3", "?seed=5&gen=1"]) { const r = page({}, q); r.run("newWorld(5)"); assert.equal(r.run("S.gen"), 2, q); assert.equal(r.run("G.gen"), 2, q); }
 });
 
 test("generator 2 play: stairs and aprons take no pods, creatures or slabs; places draw every piece on the palette", () => {
@@ -500,7 +501,7 @@ test("generator 2 play: a SHADOW tile draws its own base tile (its own variant a
 });
 
 test("generator 2 play: the side tail draws no ink on its high-side column; a plain SIDE tile keeps it", () => {
-  const p = page({}, "?gen=2"); p.run("newWorld(1)");
+  const p = page(); p.run("newWorld(1)");
   const ink = p.run("C.ink"), col = (pb, x) => Array.from({ length: 32 }, (_, y) => pb.p[y * 32 + x]);
   for (const [east, x] of [[1, 0], [0, 31]]) {
     for (const m of [16 | east, 16 | 4 | east]) { const pb = p.run(`buildTile(T.FACE, T.GRASS, TERR.SIDE, ${m}, 0, {})`);

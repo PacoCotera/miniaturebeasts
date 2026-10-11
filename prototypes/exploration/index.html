@@ -644,12 +644,10 @@ function carryApply(S, st) {
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
-// Developer setting until generator 2 is given to new worlds: ?gen=2 makes New world use it (only a generator the page plays).
-function urlGen() { try { const v = new URLSearchParams(location.search).get('gen'); return v && /^\d+$/.test(v) && GENS.includes(+v) ? +v : null; } catch (e) { return null; } }
 function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
-  const gen = urlGen() || NEW_GEN;
+  const gen = NEW_GEN;
   G = genWorld(seed, gen);
   S = { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
@@ -2162,6 +2160,8 @@ const DARK = PALETTE.map(([n]) => C[DARK_OF[n]]);
 const LIGHT = PALETTE.map(([n]) => C[LIGHT_OF[n]]);
 const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l) ? c : l);   // one step lighter, never into the reserved orange, amber or white
 const DARK2 = DARK.map(i => DARK[i]);
+const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
+function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
 function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
 function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b]) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t)); }
 const FOGLUT = mixLUT('bone', .62),   // fog whitens and washes out: pale, low contrast
@@ -2753,6 +2753,7 @@ function buildMapPB() {
         if (y > 0 && G.land[c - MW] !== L.CLIFF) { pb.rect(px, py, CELL, 3, C.grass); pb.rect(px, py + 3, CELL, 1, C.sand); }
         break;
     }
+    if (G.level) tintLevel(pb, px, py, CELL, CELL, G.level[c]);   // generator 2: the level tint, baked with the ground (the marks never are)
   }
   for (let c = 0; c < MW * MH; c++) {
     const { x, y } = cxy(c), px = x * CELL, py = y * CELL, l = G.land[c];
@@ -2868,8 +2869,8 @@ function viewBg(col) {
 }
 
 // ===================== 12. World map =====================
-let mapCv = null, mapCvDark = null, mapCvFade = null, fogCv = null, fogCvDark = null, mapSeed = null;
-function ensureMap() { const mk = G.seed + ':' + (S.gen || 1); if (!mapCv || mapSeed !== mk) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); mapCvFade = pb.canvas(4); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = mk; } }   // keyed by generator too
+let mapCv = null, mapCvDark = null, mapCvFade = null, fogCv = null, fogCvDark = null, mapSeed = null, mapPB = null;
+function ensureMap() { const mk = G.seed + ':' + (S.gen || 1); if (!mapCv || mapSeed !== mk) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapPB = pb; mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); mapCvFade = pb.canvas(4); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = mk; } }   // keyed by generator too
 // What one start glint promises: a sign genuinely in its 3x3 (slow beat, tracks, rings). Where a glint has
 // more than one, it shows the one the other glints show least, so the starts read differently.
 const spawnSignCache = new Map();
@@ -2934,19 +2935,21 @@ function drawSign(kind, s, px, py, fr) {
   else if (kind === 'depot') blit(ICON.depot(s.lit, fr), px + 6, py + 3);
 }
 // The reach view: in an expedition the map shows only the Probe's reach, drawn at its own scale (not a blow-up
-// of the 26 px map): 78 px cells at tier 1 (5×5), 48 px at tier 2 (9×9). Each cell shows its land as a patch of
+// of the 26 px map): 72 px cells at tier 1 (5×5), 48 px at tier 2 (9×9). Each cell shows its land as a patch of
 // the place's real 32 px tiles, its quarters (dotted while unsurveyed), its signs at 1× or 2× in corner slots,
 // pending outlines, the pawn at 2×; fog cells show the map's fog texture. Below: where to end the expedition, the count, and a
 // small inset of the whole world. "Full map" in the menu switches to the whole map at 26 px.
 const INSET = { w: MW * 6, h: MH * 6 };
 function reachGeom() {
-  const ex = S.exp, r = ex.range, n = r * 2 + 1, cs = n <= 5 ? 78 : 48, size = n * cs, s0 = cxy(ex.start);
+  const ex = S.exp, r = ex.range, n = r * 2 + 1, cs = n <= 5 ? 72 : 48, size = n * cs, s0 = cxy(ex.start);
   return { r, n, cs, size, s0, dx: Math.round((SCR_W - size) / 2), dy: VIEW_Y + 4, big: n <= 5 };
 }
 // A cell's land: the middle of its place, 3×3 of the real tiles cropped to the cell. Seen-but-not-visited cells
 // take the fade table, cells under the storm the dark table, as on the map.
-function landPatch(c, cs, rm, fr) {
-  return art('rv' + c + ':' + cs + ':' + rm + ':' + fr + ':' + S.seed + ':' + (S.gen || 1), () => {
+// Generator 2: one step lighter per level (TINT, LEVEL_LIGHT held at lime), on the map and the reach view; places are not tinted.
+function landPatch(c, cs, rm, fr) { return landPatchPB(c, cs, fr).canvas(rm); }
+function landPatchPB(c, cs, fr) {
+  return art('rv' + c + ':' + cs + ':' + fr + ':' + S.seed + ':' + (S.gen || 1), () => {
     const pb = new PB(cs, cs);
     if (!passable(c)) {   // wide water or cliff: no place to borrow tiles from
       const water = G.land[c] === L.WATER, base = water ? C.sea : C.slate, hi = water ? C.river : C.stone;
@@ -2955,7 +2958,8 @@ function landPatch(c, cs, rm, fr) {
     const lay = layout(String(c)), off = Math.round((96 - cs) / 2);
     for (let ty = 0; ty < 3; ty++) for (let tx = 0; tx < 3; tx++) { const t = tilePB(lay, (15 + ty) * PW + 13 + tx, fr);
       for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const X = tx * 32 + x - off, Y = ty * 32 + y - off; if (X < 0 || Y < 0 || X >= cs || Y >= cs) continue; const v = t.p[y * 32 + x]; if (v >= 0) pb.set(X, Y, v); } }
-    return pb; }).canvas(rm);
+    tintLevel(pb, 0, 0, cs, cs, G.level ? G.level[c] : 0);
+    return pb; });
 }
 const up2 = (key, pb) => upArt('s2' + key, pb, 2);
 function signSprite(kind, s, fr, big) {
@@ -2983,6 +2987,7 @@ function drawReachView(t) {
   const ex = S.exp, q = reachGeom(), fr = motion() ? Math.floor(t * 2) % 2 : 0, blink = !motion() || Math.floor(t / .9) % 2 === 0;
   R(0, VIEW_Y, SCR_W, VIEW_H, C.ink);
   const signs = new Map(mapSigns().map(e => [e.c, e.list]));
+  // pass 1: every cell's ground or fog, and its quarters
   for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
     const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
     if (X < 0 || Y < 0 || X >= MW || Y >= MH) { R(x, y, q.cs, q.cs, C.void); continue; }
@@ -2995,14 +3000,28 @@ function drawReachView(t) {
     if (S.visited[c] && passable(c)) {   // quarters: unsurveyed under the dither, 75% lighter; no line between them
       const m = S.svy[c] || 0, mf = svyFull(c), h = q.cs / 2;
       for (let k = 0; k < 4; k++) if (!((mf >> k) & 1)) ditherFill(x + (k & 1) * h, y + (k >> 1) * h, h, h, 'night', (m >> k) & 1 ? 2 : 7); }
+  }
+  // pass 2: the strike highlight and the pending outline
+  for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
+    const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
+    if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+    const c = Y * MW + X; if (!S.revealed[c]) continue;
     if (ex.mstrike && ex.mstrike.c === c) { ditherFill(x, y, q.cs, q.cs, 'yellow', 6); blit(q.big ? up2('bolt', ICON.bolt()) : ICON.bolt(), x + q.cs / 2 - (q.big ? 12 : 6), y + q.cs / 2 - (q.big ? 16 : 8)); }
     // the pending outline; on the pawn's cell it skips the dots under the bracket arms (L + 2 <= k <= cs - L - 3)
-    const onPawn = c === ex.pos, L = q.big ? 10 : 6;
+    const onPawn = c === ex.pos, L = q.big ? 9 : 6;
     if (!explored(c) && !gatedCell(c) && ex.reach.includes(c) && blink) for (let k = 2; k < q.cs - 2; k += 3) { if (onPawn && (k < L + 2 || k > q.cs - L - 3)) continue;
       R(x + k, y + 2, 1, 1, C.fog); R(x + k, y + q.cs - 3, 1, 1, C.fog); R(x + 2, y + k, 1, 1, C.fog); R(x + q.cs - 3, y + k, 1, 1, C.fog); }
-    // signs in corner slots: the start flag first, then the cell's signs in their usual order
+  }
+  // pass 3: the edge marks (they cover the pending dots under them)
+  drawEdgeMarks(q);
+  // pass 4: signs in corner slots: the start flag first, then the cell's signs in their usual order
+  for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) {
+    const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j, x = q.dx + i * q.cs, y = q.dy + j * q.cs;
+    if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+    const c = Y * MW + X; if (!S.revealed[c]) continue;
     const list = (c === ex.start ? [{ kind: 'flag' }] : []).concat((signs.get(c) || []).slice().sort((a, b) => SIGN_ORDER.indexOf(a.kind) - SIGN_ORDER.indexOf(b.kind)));
-    list.slice(0, 4).forEach((sg, n) => { const a = signSprite(sg.kind, sg, fr, q.big); if (!a) return; const pad = 4;
+    const small = q.big && c === ex.pos;   // on the pawn's own cell at tier 1 the outpost and the burrow sign draw at 1×, clear of the pawn
+    list.slice(0, 4).forEach((sg, n) => { const a = signSprite(sg.kind, sg, fr, q.big && !(small && (sg.kind === 'depot' || sg.kind === 'burrow'))); if (!a) return; const pad = 4;
       const sx = n & 1 ? x + q.cs - pad - a.w : x + pad, sy = n & 2 ? y + q.cs - pad - a.h : y + pad; blit(a, sx, sy, sg.rm || 0); });
   }
   // the storm's heading at the band's leading edge, if it is in the reach
@@ -3012,8 +3031,8 @@ function drawReachView(t) {
   const pawn = q.big ? playerArt(ex.face || 'down', 'stand', 0) : ICON.pawn(ex.face || 'down');   // tier 1: the place pawn itself; tier 2: the small one
   const jx = NOW - FX.bumpAt < 160 && motion() ? (Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1) : 0;   // a refused press jitters the pawn only: the brackets and RT.plScr stay put
   blit(pawn, Math.round(px - pawn.w / 2) + jx, Math.round(py - pawn.h / 2)); RT.plScr = { x: px, y: py };
-  { // brackets on the pawn's cell: orange, 2 px, static, on the cell's outer 2 px; arms 10 at tier 1, 6 at tier 2
-    const L = q.big ? 10 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
+  { // brackets on the pawn's cell: orange, 2 px, static, on the cell's outer 2 px; arms 9 at tier 1, 6 at tier 2
+    const L = q.big ? 9 : 6, bx = Math.round(px - q.cs / 2), by = Math.round(py - q.cs / 2), e = q.cs - L, f = q.cs - 2;
     R(bx, by, L, 2, C.orange); R(bx, by, 2, L, C.orange); R(bx + e, by, L, 2, C.orange); R(bx + f, by, 2, L, C.orange);
     R(bx, by + f, L, 2, C.orange); R(bx, by + e, 2, L, C.orange); R(bx + e, by + f, L, 2, C.orange); R(bx + f, by + e, 2, L, C.orange); }
   for (let k = 0; k < q.size; k += 8) { R(q.dx + k, q.dy - 2, 4, 2, C.amber); R(q.dx + k, q.dy + q.size, 4, 2, C.amber); R(q.dx - 2, q.dy + k, 2, 4, C.amber); R(q.dx + q.size, q.dy + k, 2, 4, C.amber); }
@@ -3021,11 +3040,72 @@ function drawReachView(t) {
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
   const tw = ix - 22;
   if (FX.msg) {   // a message takes the band's text space for one action, so nothing covers the reach or the inset
-    const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20)), h = lines.length * 20 + 12;
+    const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
   else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
     text(clipText(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
   drawInset(ix, iy, t, u);
+}
+// Edge marks (generator 2): cliff and stair edges drawn in code on the reach view (72 and 48 px) and the full map (26 px),
+// never baked into mapCv and never in the band inset. Every CLIFF and RAMP edge whose two cells are revealed, plus the
+// pawn's four edges always. A mark's parts each belong to one cell and take that cell's light table (fog: the fog table,
+// with no lip and no shadow). Draw order: faces, lips, ink lines, shadows, wedges.
+const EDGE_MARK = {
+  72: { face: 12, stone: [4, 8, 11], lip: 2, shadow: 4, s0: 24, w: 24, depth: 12, p: 3, wall: 2 },
+  48: { face: 8, stone: [4, 7], lip: 2, shadow: 3, s0: 16, w: 16, depth: 8, p: 2, wall: 1 },
+  26: { face: 4, stone: [3], lip: 1, shadow: 2, s0: 9, w: 8, depth: 4, p: 2, wall: 0 },
+};
+// One cell's marks, as an overlay at the cell's own size: -1 where nothing is drawn. sides: [dir, kind, the neighbour is higher].
+// ground(x, y) is the cell's own ground (null in fog); parity is the screen parity of the cell's origin, for the shadow's checkerboard.
+function edgeMarkPB(cs, sides, ground, parity) {
+  const P = EDGE_MARK[cs], pb = new PB(cs, cs), lit = new Uint8Array(cs * cs), dk = new Uint8Array(cs * cs);
+  const cur = (x, y) => { const v = pb.get(x, y); return v >= 0 ? v : ground(x, y); };
+  const span = a => a >= P.s0 && a < P.s0 + P.w;
+  const wedge = (x0, y0, w, h, dOf, aOf) => { for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const d = dOf(x, y), a = aOf(x, y) - P.s0;
+    pb.set(x, y, a < P.wall || a >= P.w - P.wall || d % P.p === P.p - 1 ? C.stone : C.rockL); } };
+  // faces: a south-facing drop's face in the lower cell's top rows, the whole width
+  for (const [dir, , hi] of sides) if (dir === 'up' && hi) for (let y = 0; y < P.face; y++) pb.rect(0, y, cs, 1, y === 0 ? C.ink : P.stone.includes(y) ? C.stone : C.rock);
+  // lips: the high cell's rim, each ground pixel remapped once through LEVEL_LIGHT
+  if (ground) for (const [dir, kind, hi] of sides) { if (hi) continue; const ramp = kind === EDGE.RAMP;
+    const px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = cur(x, y); if (v >= 0) pb.set(x, y, LEVEL_LIGHT[v]); };
+    if (dir === 'up') for (let y = 0; y < P.lip; y++) for (let x = 0; x < cs; x++) px(x, y);
+    else if (dir === 'left') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = 0; x < P.lip; x++) px(x, y); }
+    else if (dir === 'right') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = cs - P.lip; x < cs; x++) px(x, y); } }
+  // ink lines: on the lower cell's side of the edge
+  for (const [dir, kind, hi] of sides) { if (!hi) continue; const ramp = kind === EDGE.RAMP;
+    for (let k = 0; k < cs; k++) { if (ramp && span(k) && dir !== 'up') continue;
+      if (dir === 'up') pb.set(k, 0, C.ink); else if (dir === 'down') pb.set(k, cs - 1, C.ink); else if (dir === 'left') pb.set(0, k, C.ink); else pb.set(cs - 1, k, C.ink); } }
+  // shadows: east-facing drops only (the light comes from the top left), on the screen's checkerboard, each pixel through DARK once
+  if (ground) for (const [dir, kind, hi] of sides) { if (dir !== 'left' || !hi) continue;
+    for (let y = 0; y < cs; y++) { if (kind === EDGE.RAMP && span(y)) continue;
+      for (let x = 1; x <= P.shadow; x++) { const i = y * cs + x; if (((x + y + parity) & 1) || dk[i]) continue; dk[i] = 1; const v = cur(x, y); if (v >= 0) pb.set(x, y, DARK[v]); } } }
+  // wedges: the stair, centred on the edge; treads rockL, risers and side walls stone; d = 0 at the edge
+  for (const [dir, kind, hi] of sides) { if (kind !== EDGE.RAMP) continue;
+    if (dir === 'up') wedge(P.s0, 0, P.w, P.depth, (x, y) => y, (x, y) => x);                              // south (lower cell) or north (upper cell)
+    else if (dir === 'left' && hi) wedge(0, P.s0, P.depth, P.w, (x, y) => x, (x, y) => y);                  // east-facing, in the lower cell
+    else if (dir === 'right' && hi) wedge(cs - P.depth, P.s0, P.depth, P.w, (x, y) => cs - 1 - x, (x, y) => y); }   // west-facing, in the lower cell
+  return pb;
+}
+// q: the reach geometry from reachGeom(), or the full map's { map: true, cs: 26, ox, oy, rmOf }.
+function drawEdgeMarks(q) {
+  if (!G.edge) return;
+  const ex = S.exp, pawn = ex ? ex.pos : -1, cs = q.cs, cells = [];
+  if (q.map) for (let c = 0; c < MW * MH; c++) cells.push([c, q.ox + (c % MW) * CELL, q.oy + ((c / MW) | 0) * CELL]);
+  else for (let j = 0; j < q.n; j++) for (let i = 0; i < q.n; i++) { const X = q.s0.x - q.r + i, Y = q.s0.y - q.r + j; if (X >= 0 && Y >= 0 && X < MW && Y < MH) cells.push([Y * MW + X, q.dx + i * cs, q.dy + j * cs]); }
+  for (const [c, x, y] of cells) {
+    const sides = [];
+    for (const dir of ['up', 'down', 'left', 'right']) { const [dx, dy] = DIRS[dir], X = c % MW + dx, Y = ((c / MW) | 0) + dy; if (X < 0 || Y < 0 || X >= MW || Y >= MH) continue;
+      const n = Y * MW + X, kind = edgeKind(c, dir); if (kind !== EDGE.CLIFF && kind !== EDGE.RAMP) continue;
+      if (!(S.revealed[c] && S.revealed[n]) && c !== pawn && n !== pawn) continue;
+      sides.push([dir, kind, G.level[n] > G.level[c]]); }
+    if (!sides.length) continue;
+    const fog = !S.revealed[c], parity = (x + y) & 1, rm = fog ? 3 : q.map ? q.rmOf(c) : (!S.visited[c] ? 4 : (ex.storm && stormCovers(c % MW)) ? 1 : 0);
+    const key = 'em' + cs + ':' + c + ':' + sides.map(sd => sd[0][0] + sd[1]).join('') + ':' + (fog ? 1 : 0) + parity + ':' + S.seed + ':' + (S.gen || 1);
+    const pb = art(key, () => {
+      const gp = fog ? null : q.map ? mapPB : landPatchPB(c, cs, 0), gx = q.map ? (c % MW) * CELL : 0, gy = q.map ? ((c / MW) | 0) * CELL : 0;
+      return edgeMarkPB(cs, sides, gp && ((X, Y) => gp.get(gx + X, gy + Y)), parity); });
+    blit(pb, x, y, rm);
+  }
 }
 function drawInset(x, y, t, u) {
   const ex = S.exp; u = u || 6; ensureMap(); const W = MW * u, H = MH * u, d = Math.max(2, u - 2), o = Math.floor((u - d) / 2);
@@ -3075,6 +3155,8 @@ function drawMap(mode, t) {
   for (let c = 0; c < MW * MH; c++) { if (!S.visited[c] || !passable(c)) continue; const { x, y } = cxy(c), px = ox + x * CELL, py = oy + y * CELL, m = S.svy[c] || 0, mf = svyFull(c);
     for (let q = 0; q < 4; q++) if (!((mf >> q) & 1)) { const qx = px + (q & 1) * 13, qy = py + (q >> 1) * 13; blit((m >> q) & 1 ? quarterAlmost(qx & 3, qy & 3) : quarterVeil(qx & 3, qy & 3), qx, qy); }   // 75%+: a lighter "almost" tint
   }   // no per-item pips: the map marks only what is worth coming back for (pods left behind, found Energy)
+  // the edge marks at 26 px, after the fog and the quarters, before the signs; each cell in the light it is drawn in
+  drawEdgeMarks({ map: true, cs: CELL, ox, oy, rmOf: c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : !S.visited[c] ? 4 : 0 });
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
     for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
   if (S.opened[G.gate] && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
@@ -3988,6 +4070,7 @@ function placeReason(c) {
   if (firstPlacement()) return 'Pick a glint';
   if (!S.revealed[c]) return 'Not seen yet';
   if (G.island[c]) return 'Out of reach';
+  if (G.gen && passable(c) && !G.comp[c]) return 'No stairs out · can’t start';   // generator 2's sealed plateau (the fallback's)
   return G.land[c] === L.CLIFF ? 'Cliff · can’t start' : 'Wide water · can’t start';
 }
 const SIGN_ORDER = ['skull', 'depot', 'b', 'pod', 't', 'k', 'kw', 'pin', 'beacon', 'burrow', 'water', 'deep'];
