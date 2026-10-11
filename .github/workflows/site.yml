@@ -89,7 +89,7 @@ jobs:
         timeout-minutes: 12   # the step takes about 2.5 minutes; a hang fails fast instead of holding the runner for the job's six hours
         # The Station's rules and the Caddy service in Node, and the Station's browser journey on the face with the service
         # in mock mode beside it (a fixture save, a seeded pod, dock, the crates opened, Pods by keys, the rules of the screens that are
-        # not built yet through their intents, the painting landing, the service down and back, every not-built screen, Idle); station-build.md §5.
+        # not built yet through their intents, Grow and Cross painting nothing, every not-built screen, Idle); station-build.md §5.
         # The milestones whose screens are not on the face are listed from prototypes/station/tools/journey-pending/ on every run.
         run: |
           set -euo pipefail

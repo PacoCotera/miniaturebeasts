@@ -146,3 +146,10 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   assert.deepEqual(grown.map((id) => id.replace(/:adult:\d+x\d+$/, "")), young.map((id) => id.replace(/:juvenile:\d+x\d+$/, "")));
   assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
+
+test("a mibi with no painting changes nothing on Home: the Incubator is empty with its lamp off and nobody waits (Grow paints nothing)", () => {
+  const { st, sv } = scenes().docked; assert.ok(st.mibis.every((m) => !m.paint), "no mibi has a painting");
+  const r = build(st, sv).props.regions;
+  assert.equal(r.incubator.state, "empty"); assert.equal(r.incubator.lamp, "off");
+  assert.ok(r.residents.every((p) => p.waiting === false) && r.bed.sleepers.every((p) => p.waiting === false), "no person has waiting: true");
+});
