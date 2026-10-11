@@ -88,7 +88,7 @@ export function speciesArt(frame, w, h, view = "portrait") { return frame.typeSp
 
 // ---------- The Library spread's placeholders (library.json spread.placeholders): the stage, the gilt corner, the seal and a species' study ----------
 const dashRect = (pb, x, y, w, h, c) => { for (let i = 0; i < w; i += 4) { pb.rect(x + i, y, Math.min(2, w - i), 1, c); pb.rect(x + i, y + h - 1, Math.min(2, w - i), 1, c); } for (let j = 0; j < h; j += 4) { pb.rect(x, y + j, 1, Math.min(2, h - j), c); pb.rect(x + w - 1, y + j, 1, Math.min(2, h - j), c); } };
-// The stage, flat and labelled: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat and a paper inside, the caption rules in clay, the cloth marker and the margin bands as dashed clay outlines.
+// The stage, flat: the ground, the boards in bark, two pages in paper edged in clay, sixteen frames each a bark outline round an 8 px sand mat and a paper inside, the caption rules in clay, the cloth marker and the margin bands as dashed clay outlines.
 // Coordinates are the spec's (library.json spread.regions.stage.parts, leftPage and rightPage places), taken off the stage's origin (0, 40).
 export function spreadStageArt(spec) {
   const R = spec.spread.regions, oy = R.stage.rect[1], cl = spec.spread.colours, pb = new PB(R.stage.rect[2], R.stage.rect[3]), at = (r) => [r[0], r[1] - oy, r[2], r[3]], col = (n) => C[n];
