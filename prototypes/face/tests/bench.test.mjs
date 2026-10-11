@@ -30,16 +30,16 @@ function scene({ docked = true, shield = 2, tier = 1, e = 14, d = 6, mendFull = 
   return { ...benchBuild({ st, sv, settings, docked, ui: { f, arm, install } }, spec, frameSpec), st };
 }
 const SCENES = {
-  "docked, tier 1, two plates of three, the ring on the plates, the switch off (wireframe 11)": { f: "plates" },
-  "the upgrade armed, the ring on the slot, the switch on (11b)": { f: "slot", arm: 1, mendFull: true },
-  "away, the switch off, the ring on the switch (11c)": { docked: false, shield: 3, f: "switch" },
-  "the upgrade fitted: four plates, the ring on the slot, the switch on (11d)": { tier: 2, shield: 4, f: "slot", mendFull: true },
+  "docked, tier 1, two plates of three, the ring on the plates, the switch off": { f: "plates" },
+  "the upgrade armed, the ring on the slot, the switch on": { f: "slot", arm: 1, mendFull: true },
+  "away, the switch off, the ring on the switch": { docked: false, shield: 3, f: "switch" },
+  "the upgrade fitted: four plates, the ring on the slot, the switch on": { tier: 2, shield: 4, f: "slot", mendFull: true },
   "docked, tier 1, every plate whole, the ring on the switch": { shield: 3 },
   "short of ⚡: the dimmed cap on the plates, the slot dim": { e: 0, d: 0, f: "plates" },
   "a fresh world: no Probe, away": { docked: false, noProbe: true },
   "docked, tier 2, the switch off, the ring on the plates": { tier: 2, shield: 3, f: "plates" },
 };
-const frameProps = (line = {}) => ({ top: { screen: "bench", title: "Probe", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" } });
+const frameProps = (line = {}, over = {}) => ({ top: { screen: "bench", title: "Probe", turn: 4, turnFlash: false, materials: { e: 9, d: 9, s: 9 }, flash: {}, companion: { docked: true, withMibi: null } }, line: { back: "Home", need: "", ...line }, plate: { text: "" }, ...over });
 const hash = (s) => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
 function standIn(id, [w, h]) { const dd = new Uint8ClampedArray(w * h * 4), k = hash(id); for (let i = 0; i < w * h; i++) { dd[i * 4] = 70 + (k & 127); dd[i * 4 + 1] = 70 + ((k >> 7) & 127); dd[i * 4 + 2] = 70 + ((k >> 14) & 127); dd[i * 4 + 3] = 255; } return { w, h, data: dd }; }
 async function start(b, { motion = true, t0 = 1000, fixedLine = false } = {}) {   // fixedLine: the frame's bottom line stays as it was, so a refresh is the bench's own (the architect's ceilings are the bench's objects)
@@ -57,7 +57,7 @@ const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; 
 const boxOf = (f) => (id) => f.nodeBox(id)?.box ?? null;
 const area = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
 const rects = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); const o = []; for (let i = 0; i < n; i++) o.push(Array.from(a.subarray(i * 4, i * 4 + 4))); return o; };
-const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) { if (m.t === "log") f.lastLog = m; else if (m.t === "focus" || m.t === "intent") out.push(m); } return out; };
+const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) { if (m.t === "log") f.lastLog = m; else if (m.t === "done") (f.done ??= []).push(m.kind); else if (m.t === "focus" || m.t === "intent") out.push(m); } return out; };
 const play = (f, e) => f.send({ t: "event", ...e });
 
 for (const [name, o] of Object.entries(SCENES)) {
@@ -73,7 +73,7 @@ test("the plates per tier: tier 1 on 232, 280, 328 and tier 2 on 208, 256, 304, 
   let f = await start(scene({ f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[232, 424, 32, 64], [280, 424, 32, 64], [328, 424, 32, 64], [352, 424, 0, 0]]);
   f = await start(scene({ tier: 2, shield: 4, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 424, 32, 64], [256, 424, 32, 64], [304, 424, 32, 64], [352, 424, 32, 64]]);
   f = await start(scene({ f: "plates" })); assert.deepEqual(boxOf(f)("plates.0"), [232, 422, 32, 64], "the ring on the plates lifts them 2 px");
-  f = await start(scene({ docked: false, shield: 3, f: "switch" })); assert.equal(f.nodeBox("plates.0"), null, "away: no plates");
+  f = await start(scene({ docked: false, shield: 3, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`).slice(2)), [[0, 0], [0, 0], [0, 0], [0, 0]], "away: the four plate nodes stay, with no size (hidden, not destroyed)"); assert.equal(f.nodeBox("plates.seat"), null);
   const idle = await start(scene({ f: "switch" })), armed = await start(scene({ f: "slot", arm: 0 })), armed2 = await start(scene({ f: "slot", arm: 1 }));
   assert.equal(boxOf(idle)("slot.part")[1], 248 + 64, "ready: seated"); assert.equal(boxOf(armed2)("slot.part")[1], 248 - 2 + 56, "armed: 56 in the module (the module lifted 2 with the ring)"); assert.equal(boxOf(armed)("slot.part")[1], 248 - 2 + 64);
   const armedNoRing = await start(scene({ f: "switch", arm: 1 })); assert.equal(boxOf(armedNoRing)("slot.part")[1], 248 + 56, "armed: y + 56");
@@ -86,7 +86,6 @@ test("the per-part check fails on a moved part: the plate, the knob, the part an
     const moved = JSON.parse(JSON.stringify(spec)); patch(moved); assert.equal(f.send({ t: "spec", screen: "bench", json: moved }), 0);
     const c = f.build.props.focus.cur; f.build.props.focus.cur = "plates"; setProps(f, f.build); frames(f); f.build.props.focus.cur = c; setProps(f, f.build); frames(f);
     const d = partDepartures(boxOf(f), spec, b.props, "switch"); assert.ok(d.some((m) => m.startsWith(id + " ")), `a departure naming ${id}: ${JSON.stringify(d.slice(0, 3))}`);
-    const lg = departures(logOf(f), spec, b.props, "switch"); assert.ok(lg.length >= 0);
   }
 });
 
@@ -100,29 +99,30 @@ test("keys: ✓ ← and the room keys say their intent on the ring's target; the
 
 // ---- the events ----
 const knobX = (f) => boxOf(f)("switch.knob")[0];
-test("the mend: the plate that seats goes gone to whole by a 16-level dither over 300 ms (a node of its own from 0 to 300, gone at the end), nothing else moves, the event holds input for 300 ms and says done at its end", { skip }, async () => {
-  const before = scene({ f: "plates" }), f = await start(before, { fixedLine: true }), t0 = f.t, after = scene({ shield: 3, f: "plates" }); play(f, { kind: "mend", target: "plates", ms: EV.mend.ms, hold: EV.mend.hold, from: 2, to: 3 }); setProps(f, after);   // the host's order: the event, then the props that carry its end state
+test("the mend: the plate that seats goes gone to whole by a 16-level dither over 300 ms (a node of its own from 0 to 300, gone at the end), the ring stays where it is, the event holds input for 300 ms and says done at its end", { skip }, async () => {
+  const before = scene({ f: "plates" }), f = await start(before, { fixedLine: true }), t0 = f.t, ring0 = boxOf(f)("focus"), after = scene({ shield: 3, f: "plates" }); play(f, { kind: "mend", target: "plates", ms: EV.mend.ms, hold: EV.mend.hold, from: 2, to: 3 }); setProps(f, after);   // the host's order: the event, then the props that carry its end state
   f.frame(t0 + 20); assert.deepEqual(boxOf(f)("plates.seat"), [328, 422, 32, 64], "the seating plate, over its place (lifted with the ring)");
-  f.frame(t0 + 170); assert.deepEqual(boxOf(f)("plates.seat"), [328, 422, 32, 64]); assert.deepEqual(boxOf(f)("plates.0"), [232, 422, 32, 64]);
+  f.frame(t0 + 170); assert.deepEqual(boxOf(f)("plates.seat"), [328, 422, 32, 64]); assert.deepEqual(boxOf(f)("plates.0"), [232, 422, 32, 64]); assert.deepEqual(boxOf(f)("focus"), ring0, "through the hold the ring stays where it is, with its lift");
   assert.deepEqual(key(f, "confirm"), [], "held: ✓ says nothing"); assert.deepEqual(key(f, "left"), [], "held: the pad moves nothing"); assert.deepEqual(key(f, "library").map((x) => x.verb), ["room:library"], "held: a room key is said");
   f.f = f.frame(t0 + 330); frames(f, 1, 16); assert.equal(f.nodeBox("plates.seat"), null, "at 300 the dither is over"); assert.deepEqual(f.errors(), []);
-  const done = []; for (let m; (m = f.poll());) if (m.t === "done") done.push(m.kind); void done;
+  for (let m; (m = f.poll());) if (m.t === "done") (f.done ??= []).push(m.kind); assert.ok(f.done.includes("mend"), "the face says done when the mend ends");
   assert.deepEqual(departures(logOf(f), spec, after.props, "plates"), [], "the end state is the props'");
 });
 test("the switch: the knob slides from x 16 to 56 over 200 ms in whole pixels (and back), over the track it started on; the plates of the meaning picture and the lamp change at the end; no hold", { skip }, async () => {
   const off = scene({ f: "switch", mendFull: false }), f = await start(off, { fixedLine: true }), t0 = f.t, on = scene({ f: "switch", mendFull: true }); play(f, { kind: "switch", target: "switch", ms: EV.switch.ms, hold: 0, from: 0, to: 1 }); setProps(f, on);
-  const x = []; for (const dt of [20, 100, 180]) { f.frame(t0 + dt + 16); x.push(knobX(f) - 584); } assert.ok(x[0] > 16 && x[0] < x[1] && x[1] < x[2] && x[2] < 56 && x.every(Number.isInteger), `the knob slides in whole pixels: ${x}`);
+  const colour = (id) => Array.from(standIn(id, [1, 1]).data.slice(0, 3)), at = (px, py, id, what) => assert.deepEqual(f.pixel(px, py), colour(id), what), TG = spec.regions.switch.toggle, MN = spec.regions.switch.meaning;
+  const x = []; for (const dt of [20, 100, 180]) { f.frame(t0 + dt + 16); x.push(knobX(f) - 584); if (dt === 100) { at(604, 178, TG.track.off, "mid-slide: the track is still the off one"); at(792, 178, MN.plates.gone, "mid-slide: the third meaning plate still gone (the off state)"); at(946, 120, "home-lamp-hairline-12x12", "mid-slide: the lamp still off"); } } assert.ok(x[0] > 16 && x[0] < x[1] && x[1] < x[2] && x[2] < 56 && x.every(Number.isInteger), `the knob slides in whole pixels: ${x}`);
   assert.deepEqual(key(f, "confirm").map((m) => m.verb), ["confirm"], "a switch holds nothing: ✓ is said at once");
-  f.frame(t0 + 260); frames(f, 1); assert.equal(knobX(f), 584 + 56, "at 200 the knob is at x 56"); assert.deepEqual(departures(logOf(f), spec, on.props, "switch"), []);
+  f.frame(t0 + 260); frames(f, 1); assert.equal(knobX(f), 584 + 56, "at 200 the knob is at x 56"); at(604, 178, TG.track.on, "at 200 the track is the on one"); at(792, 178, MN.plates.whole, "at 200 the third plate is whole"); at(946, 120, "home-lamp-sprout-12x12", "at 200 the lamp is on"); assert.deepEqual(departures(logOf(f), spec, on.props, "switch"), []);
   // and back
   const back = scene({ f: "switch", mendFull: false }); const t1 = f.t; play(f, { kind: "switch", target: "switch", ms: EV.switch.ms, hold: 0, from: 1, to: 0 }); setProps(f, back);
   f.frame(t1 + 100); const mid = knobX(f) - 584; assert.ok(mid < 56 && mid > 16, `back: the knob is ${mid}`); f.frame(t1 + 260); frames(f, 1); assert.equal(knobX(f), 584 + 16);
 });
 test("the install: 0 to 300 the armed part drops 8 px (y 56 to 64 in the module) and the cradle, the plates and the picture count are tier 1; at 300 they cut to tier 2 (plates on 208, 256, 304 and the fourth gone at 352, the count 4); 300 to 600 the fourth plate seats; 600 to 900 the adds dither; held 900 ms", { skip }, async () => {
-  const armed = scene({ f: "slot", arm: 1, mendFull: true, shield: 2, install: true }), f = await start(armed, { fixedLine: true }), t0 = f.t, fitted = scene({ f: "slot", tier: 2, shield: 4, mendFull: true, install: true }); play(f, { kind: "install", target: "slot", ms: EV.install.ms, hold: EV.install.hold, from: 2, to: 4 }); setProps(f, fitted);
+  const armed = scene({ f: "slot", arm: 1, mendFull: true, shield: 2, install: true }), f = await start(armed, { fixedLine: true }), t0 = f.t, ring0 = boxOf(f)("focus"), fitted = scene({ f: "slot", tier: 2, shield: 4, mendFull: true, install: true }); play(f, { kind: "install", target: "slot", ms: EV.install.ms, hold: EV.install.hold, from: 2, to: 4 }); setProps(f, fitted);
   const nb = (id) => boxOf(f)(id), partY = () => nb("slot.part")[1] - (248 - 2);   // the module lifted 2: the part's y in the module
   f.frame(t0 + 20); assert.equal(partY(), 56, "0: the part still at the armed height (a whole pixel of the first frame)"); assert.deepEqual([0, 1, 2, 3].map((i) => nb(`plates.${i}`)?.slice(0, 1)[0]), [232, 280, 328, 352], "0: tier-1 places"); assert.equal(nb("plates.3")[2], 0, "0: the fourth place has no size");
-  f.frame(t0 + 170); const mid = partY(); assert.ok(mid > 56 && mid < 64 && Number.isInteger(mid), `150: the part drops in whole pixels: ${mid}`); assert.equal(nb("switch.plate.3")[2], 0, "the picture count is still 3");
+  f.frame(t0 + 170); assert.deepEqual(boxOf(f)("focus"), ring0, "through the hold the ring stays where it is"); const mid = partY(); assert.ok(mid > 56 && mid < 64 && Number.isInteger(mid), `150: the part drops in whole pixels: ${mid}`); assert.equal(nb("switch.plate.3")[2], 0, "the picture count is still 3");
   f.frame(t0 + 316); assert.equal(partY(), 64, "300: seated"); assert.deepEqual([0, 1, 2, 3].map((i) => nb(`plates.${i}`)[0]), [208, 256, 304, 352], "300: tier-2 places"); assert.equal(nb("switch.plate.3")[2], 16, "the picture count cuts to 4"); assert.ok(nb("plates.seat"), "the fourth plate seats");
   f.frame(t0 + 466); assert.ok(nb("plates.seat"), "450: still seating"); f.frame(t0 + 616); assert.equal(f.nodeBox("plates.seat"), null, "600: seated"); assert.ok(f.nodeBox("slot.pod.2.dither") && f.nodeBox("slot.reach.dither") && f.nodeBox("slot.deep.dither") && f.nodeBox("slot.plate.3.dither"), "600 to 900: the adds dither from their -new slices");
   assert.deepEqual(key(f, "confirm"), [], "held"); assert.deepEqual(key(f, "home").map((x) => x.verb), ["room:home"]);
@@ -132,18 +132,23 @@ test("the install: 0 to 300 the armed part drops 8 px (y 56 to 64 in the module)
 // ---- the dirty area ----
 const worst = (f, t0, from, until, step = 16) => { let w = 0; for (let t = from; t < until; t += step) { f.frame(t0 + t); w = Math.max(w, area(f)); } return w; };
 test("no refresh of the events redraws more than the architect's ceilings: mend ≤ 8,192; switch end ≤ 7,568; install 0 to 300 ≤ 23,552, 300 to 600 ≤ 8,192, 600 to 900 ≤ 10,112", { skip }, async () => {
-  { const f = await start(scene({ shield: 1, f: "plates" }), { fixedLine: true }), t0 = f.t; const t1 = f.t; play(f, { kind: "mend", target: "plates", ms: 300, hold: 300, from: 1, to: 2 }); setProps(f, scene({ shield: 2, f: "plates" }));
-    let w = 0; for (let t = 16; t < 300; t += 16) { f.frame(t1 + t); const a = area(f); if (process.env.DBG && a > 8192) console.log("MEND", t, a, JSON.stringify(rects(f))); w = Math.max(w, a); } assert.ok(w <= 8192, `mend: dirty ${w}`); console.log(`# the mend: worst refresh ${w} px`); void t0; }
+  { const f = await start(scene({ shield: 1, f: "plates" }), { fixedLine: true }); const t1 = f.t; play(f, { kind: "mend", target: "plates", ms: 300, hold: 300, from: 1, to: 2 }); setProps(f, scene({ shield: 2, f: "plates" }));
+    let w = 0; for (let t = 16; t < 300; t += 16) { f.frame(t1 + t); const a = area(f); w = Math.max(w, a); } assert.ok(w <= 8192, `mend: dirty ${w}`); console.log(`# the mend: worst refresh ${w} px`); }
   { const f = await start(scene({ f: "switch" }), { fixedLine: true }); const t1 = f.t; play(f, { kind: "switch", target: "switch", ms: 200, hold: 0, from: 0, to: 1 }); setProps(f, scene({ f: "switch", mendFull: true }));
     const w = worst(f, t1, 16, 190), end = (() => { f.frame(t1 + 208); return area(f); })(); assert.ok(end <= 7568, `switch end: dirty ${end}`); console.log(`# the switch: worst slide frame ${w} px, the end ${end} px`); }
   { const f = await start(scene({ f: "slot", arm: 1, mendFull: true, install: true }), { fixedLine: true }); const t1 = f.t; play(f, { kind: "install", target: "slot", ms: 900, hold: 900, from: 2, to: 4 }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true, install: true }));
-    let a = 0; for (let t = 16; t < 300; t += 16) { f.frame(t1 + t); const q = area(f); if (process.env.DBG && q > 23552) console.log("INST", t, q, JSON.stringify(rects(f))); a = Math.max(a, q); } f.frame(t1 + 304); const cut = area(f); const b = worst(f, t1, 320, 600), c = worst(f, t1, 616, 916); void cut; assert.ok(a <= 23552, `install 0 to 300: ${a}`); assert.ok(b <= 8192, `install 300 to 600: ${b}`); assert.ok(c <= 10112, `install 600 to 900: ${c}`); console.log(`# the install: 0-300 ${a} px · 300-600 ${b} px · 600-900 ${c} px`); }
+    let a = 0; for (let t = 16; t < 300; t += 16) { f.frame(t1 + t); const q = area(f); a = Math.max(a, q); } f.frame(t1 + 304); const b = worst(f, t1, 320, 600), c = worst(f, t1, 616, 916); assert.ok(a <= 23552, `install 0 to 300: ${a}`); assert.ok(b <= 8192, `install 300 to 600: ${b}`); assert.ok(c <= 10112, `install 600 to 900: ${c}`); console.log(`# the install: 0-300 ${a} px · 300-600 ${b} px · 600-900 ${c} px`); }
 });
 test("the cuts: the install step at t = 300 jumped from 0 ≤ 173,056 px; the install key frame with motion off ≤ 191,040 px; the Dock key on the bench away to docked, the key frame printed and ≤ 221,264 px", { skip }, async () => {
   { const f = await start(scene({ f: "slot", arm: 1, mendFull: true, install: true }), { fixedLine: true }); const t1 = f.t; play(f, { kind: "install", target: "slot", ms: 900, hold: 900, from: 2, to: 4 }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true, install: true }));
-    f.frame(t1 + 316); const a = area(f); if (process.env.DBG) console.log("RECTS", JSON.stringify(rects(f))); assert.ok(a <= 173056, `install at 300 from 0: ${a}`); console.log(`# the install step at 300 jumped from 0: ${a} px`); }
-  { const f = await start(scene({ f: "slot", arm: 1, mendFull: true }), { motion: false, fixedLine: true }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true })); f.frame((f.t += 16)); const a = area(f); assert.ok(a <= 191040, `install key frame, motion off: ${a}`); console.log(`# the install key frame (motion off): ${a} px`); }
-  { const f = await start(scene({ docked: false, shield: 3, f: "switch" }), { fixedLine: true }); setProps(f, scene({ shield: 3, f: "switch" })); f.frame((f.t += 16)); const a = area(f); assert.ok(a <= 221264, `Dock, away to docked: ${a}`); console.log(`# the Dock key on the bench, away to docked: ${a} px`); }
+    f.frame(t1 + 316); const a = area(f); assert.ok(a <= 173056, `install at 300 from 0: ${a}`); console.log(`# the install step at 300 jumped from 0: ${a} px`); }
+  // the key frames with the real frame: the after-props come with their own bottom line, and the Dock key with the companion docked and its message on the plate
+  { const f = await start(scene({ f: "slot", arm: 1, mendFull: true }), { motion: false }); setProps(f, scene({ f: "slot", tier: 2, shield: 4, mendFull: true })); f.frame((f.t += 16)); const a = area(f); assert.ok(a <= 191040, `install key frame, motion off: ${a}`); console.log(`# the install key frame (motion off): ${a} px (${(100 * a / 614400).toFixed(1)}%)`); }
+  { const lifted = scene({ docked: false, shield: 3, f: "switch" }), f = await start(lifted), sv0 = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3 };
+    const r = S.dockKey(lifted.st, sv0, settings, T0 + 5); assert.ok(r.ok, "the Dock key docks"); const after = benchBuild({ st: lifted.st, sv: sv0, settings, docked: true, ui: { f: "switch", arm: 0, install: false } }, spec, frameSpec);
+    f.build = after; give(f, after); play(f, { kind: "plate", target: "msg", ms: 4000 });
+    assert.equal(f.props({ screen: "bench", ...after.props, motion: true, frame: frameProps(after.line, { plate: { text: r.msg, timed: true } }) }), 0, f.errors().join("; ")); f.frame((f.t += 16));
+    const a = area(f); assert.ok(a <= 221264, `Dock, away to docked: ${a}`); console.log(`# the Dock key on the bench, away to docked (the real frame, the plate "${r.msg.slice(0, 24)}"): ${a} px (${(100 * a / 614400).toFixed(1)}%) in ${rects(f).length} rects: ${JSON.stringify(rects(f))}`); }
 });
 test("the short case: the dimmed cap on the plates draws without an error and the ring is where it was", { skip }, async () => {
   const b = scene({ e: 0, d: 0, f: "plates" }); assert.equal(b.line.dim, true); const f = await start(b); assert.deepEqual(f.errors(), []); assert.deepEqual(departures(logOf(f), spec, b.props, "plates"), []);

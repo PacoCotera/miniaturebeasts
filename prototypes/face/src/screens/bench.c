@@ -17,7 +17,6 @@
 #include <string.h>
 
 #define S "bench"
-#define MAXPLATES 4
 static int bi(const char *p, int d) { return spec_int(S, p, d); }
 static int bk(const char *base, int k) { return spec_int(S, v_fmt("%s.%d", base, k), 0); }
 static void brect(const char *p, int r[4]) { if (!v_spec_rect(S, p, r)) r[0] = r[1] = r[2] = r[3] = 0; }
@@ -28,6 +27,15 @@ static void bs(const char *path, char out[96]) { out[0] = 0; spec_str(S, path, o
 static void ps(const char *path, char out[96]) { snprintf(out, 96, "%s", v_pstr(path)); }
 /* how far an event on `target` has got (-1: not playing, or motion off: the end state shows) */
 static int played(int kind, const char *target, anim_state_t *t) { return v_pbool("motion", 1) && anim_get(kind, target, t) && t->ms > 0 ? t->elapsed : -1; }
+/* the longest table of places (the highest tier's): the number of stable plate nodes, and the places a tier that lacks one keeps its hidden node at */
+static int longest(int *tier) {
+  int best = 0, bt = 1; for (int t = 1; t <= 8; t++) { int n = spec_len(S, v_fmt("regions.plates.places.%d", t)); if (n > best) { best = n; bt = t; } }
+  if (tier) *tier = bt; return best;
+}
+static void hidden_plate(int i, int dy, const char *asset) {   /* a place with no plate: the node of no size, at the place the longest table gives it, so showing it later invalidates nothing of its own at the corner */
+  int bt; longest(&bt); char id[24]; snprintf(id, sizeof id, "plates.%d", i);
+  int hx = spec_int(S, v_fmt("regions.plates.places.%d.%d.0", bt, i), 0), hy = spec_int(S, v_fmt("regions.plates.places.%d.%d.1", bt, i), 0) + dy; v_name("plates"); v_sprite_hidden(id, asset, hx, hy);
+}
 static int lift_of(const char *id, const char *cur) { return strcmp(id, cur) == 0 ? bi(v_fmt("focus.targets.%s.lift", id), 2) : 0; }
 
 /* the node of a picture the host may not have sent, or a place with nothing: the same node with no size, so the order of the screen's nodes never changes */
@@ -53,20 +61,19 @@ static void build_cradle(void) {
 
 /* ---- shieldPlates: one sprite a place, the places a table by the tier, read as written ---- */
 static void build_plates(int docked, const char *cur) {
-  if (!docked) return;   /* away: no plates */
+  int most = longest(NULL); char sw[96], sg[96]; bs("regions.plates.slices.whole", sw); bs("regions.plates.slices.gone", sg);
+  if (!docked) { for (int i = 0; i < most; i++) hidden_plate(i, 0, sw); return; }   /* away: no plates drawn, every node kept (hidden, not destroyed) */
   int tier = v_pint("regions.plates.tier", 1), whole = v_pint("regions.plates.whole", 0), seat = -1, level = 16;
   anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t), mend = played(ANIM_MEND, "plates", &t);
   if (inst >= 0) { anim_get(ANIM_INSTALL, "slot", &t);
-    if (inst < 300) { tier = 1; whole = t.from; } else if (inst < 600) { whole = 3; seat = 3; level = 16 * (inst - 300) / 300; } else whole = MAXPLATES; }
+    if (inst < 300) { tier = 1; whole = t.from; } else if (inst < 600) { whole = 3; seat = 3; level = 16 * (inst - 300) / 300; } else whole = most; }
   else if (mend >= 0) { anim_get(ANIM_MEND, "plates", &t); seat = t.to - 1; level = 16 * mend / t.ms; if (seat >= whole) seat = -1; }
   char tp[48]; snprintf(tp, sizeof tp, "regions.plates.places.%d", tier); int n = spec_len(S, tp);
-  if (n <= 0 || n > MAXPLATES || whole < 0 || whole > n) { v_error("word shieldPlates: the tier has no table of places, or whole is above its length"); return; }
-  char sw[96], sg[96]; bs("regions.plates.slices.whole", sw); bs("regions.plates.slices.gone", sg);
+  if (n <= 0 || whole < 0 || whole > n) { v_error("word shieldPlates: the tier has no table of places, or whole is above its length"); return; }
   int pw = bk("regions.plates.plate", 0), ph = bk("regions.plates.plate", 1), dy = -lift_of("plates", cur);
-  for (int i = 0; i < MAXPLATES; i++) {
+  for (int i = 0; i < most; i++) {
     char id[24]; snprintf(id, sizeof id, "plates.%d", i);
-    if (i >= n) {   /* the tier lacks this place: its node stays with no size, at the place the larger table gives it (so a tier that has it later invalidates nothing of its own at the corner) */
-      int hx = spec_int(S, v_fmt("regions.plates.places.2.%d.0", i), 0), hy = spec_int(S, v_fmt("regions.plates.places.2.%d.1", i), 0) + dy; v_name("plates"); v_sprite_hidden(id, sw, hx, hy); continue; }
+    if (i >= n) { hidden_plate(i, dy, sw); continue; }   /* the tier lacks this place */
     int x = spec_int(S, v_fmt("%s.%d.0", tp, i), 0), y = spec_int(S, v_fmt("%s.%d.1", tp, i), 0) + dy;
     int goneNow = i >= whole || i == seat;
     pic("plates", id, goneNow ? sg : sw, x, y, pw, ph, sw);
@@ -78,7 +85,7 @@ static void build_plates(int docked, const char *cur) {
 static void build_switch(const char *cur, int cnt_cap) {
   int r[4]; brect("regions.switch.rect", r); int dy = -lift_of("switch", cur), mx = r[0], my = r[1] + dy;
   char state[96], lamp[96]; ps("regions.switch.state", state); ps("regions.switch.lamp", lamp);
-  int on = strcmp(state, "on") == 0, count = v_pint("regions.switch.count", 3), whole = v_pint("regions.switch.whole", 0), floor_ = bi("regions.switch.meaning.plates.offWhole", 2);
+  int on = strcmp(state, "on") == 0, count = v_pint("regions.switch.count", 3), whole = v_pint("regions.switch.whole", 0), floor_ = bi("regions.switch.meaning.plates.offWhole", 0);
   if (count > cnt_cap) count = cnt_cap; if (whole > count) whole = count;
   anim_state_t t; int sw = played(ANIM_SWITCH, "switch", &t), kx = 0; int xoff = bi("regions.switch.toggle.knob.x.off", 16), xon = bi("regions.switch.toggle.knob.x.on", 56);
   kx = on ? xon : xoff;
@@ -93,7 +100,7 @@ static void build_switch(const char *cur, int cnt_cap) {
   pic("switch", "switch.knob", kn, mx + kx, my + bi("regions.switch.toggle.knob.y", 56), bk("regions.switch.toggle.knob.size", 0), bk("regions.switch.toggle.knob.size", 1), kn);
   pic("switch", "switch.dock", dk, mx + bk("regions.switch.meaning.dock.at", 0), my + bk("regions.switch.meaning.dock.at", 1), bk("regions.switch.meaning.dock.size", 0), bk("regions.switch.meaning.dock.size", 1), dk);
   int ax = mx + bk("regions.switch.meaning.plates.at", 0), ay = my + bk("regions.switch.meaning.plates.at", 1), pitch = bi("regions.switch.meaning.plates.pitch", 24), iw = bk("regions.switch.meaning.plates.icon", 0), ih = bk("regions.switch.meaning.plates.icon", 1);
-  for (int i = 0; i < MAXPLATES; i++) {
+  for (int i = 0, most = longest(NULL); i < most; i++) {
     char id[24]; snprintf(id, sizeof id, "switch.plate.%d", i);
     if (i >= count) { v_name("switch"); v_sprite_hidden(id, ws, ax + i * pitch, ay); continue; }
     pic("switch", id, i < whole ? ws : gs, ax + i * pitch, ay, iw, ih, ws);
@@ -155,7 +162,7 @@ static void build_ring(const char *cur) {
 void bench_words(void) {
   char cur[48]; snprintf(cur, sizeof cur, "%s", v_focus_cur());
   int docked = strcmp(v_pstr("state"), "docked") == 0;
-  int cap = MAXPLATES; { anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) cap = spec_len(S, "regions.plates.places.1"); }   /* the meaning picture's count cuts 3 → 4 at 300 */
+  int cap = longest(NULL); { anim_state_t t; int inst = played(ANIM_INSTALL, "slot", &t); if (inst >= 0 && inst < 300) cap = spec_len(S, "regions.plates.places.1"); }   /* the meaning picture's count cuts 3 → 4 at 300 */
   build_stage(); build_cradle(); build_plates(docked, cur); build_switch(cur, cap); build_slot(cur); build_ring(cur);
 }
 

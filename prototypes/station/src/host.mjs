@@ -121,14 +121,14 @@ export function habitatBody(light = lightNow()) {
   return body;
 }
 
-// ---- The Library's spread ----
-// Sixteen frames, one a species in its own place; the ring is the face's (library.json spread.focus.graph) and the host keeps the frame it says in UI.lib.i (intents/library.mjs focus).
 // ---- the Probe bench ----
 // The Probe in its cradle with its plates, the mend switch and the upgrade slot; the Probe and the dock are the rules', the ring, the slot's arm and the install's hold the UI's (UI.bench).
 export function benchBody() {
   return benchBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI.bench }, SPECS.bench, SPECS.frame);
 }
 
+// ---- The Library's spread ----
+// Sixteen frames, one a species in its own place; the ring is the face's (library.json spread.focus.graph) and the host keeps the frame it says in UI.lib.i (intents/library.mjs focus).
 export function libraryBody() {
   return libraryBuild({ st: G.st, settings: G.settings, ui: UI.lib }, SPECS.library, SPECS.frame);
 }

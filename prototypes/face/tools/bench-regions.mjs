@@ -12,8 +12,10 @@ export function expected(spec, props, cur) {
   const R = spec.regions, T = spec.focus.targets, lift = (id) => (cur === id ? T[id].lift : 0), docked = props.state === "docked", out = { parts: {} };
   const at = (o, a) => [o[0] + a[0], o[1] + a[1], a[2], a[3]];
   // the plates
-  if (docked) { const P = R.plates, tier = props.regions.plates.tier, whole = props.regions.plates.whole, places = P.places[tier]; if (!places) throw new Error("no table for tier " + tier); if (whole > places.length) throw new Error("whole above the table");
-    for (let i = 0; i < 4; i++) out.parts[`plates.${i}`] = i < places.length ? [places[i][0], places[i][1] - lift("plates"), P.plate[0], P.plate[1]] : [0, 0, 0, 0]; }
+  const P = R.plates, most = Math.max(...Object.values(P.places).map((t) => t.length));   // the stable plate nodes: as many as the longest table; away every one stays, with no size
+  if (docked) { const tier = props.regions.plates.tier, whole = props.regions.plates.whole, places = P.places[tier]; if (!places) throw new Error("no table for tier " + tier); if (whole > places.length) throw new Error("whole above the table");
+    for (let i = 0; i < most; i++) out.parts[`plates.${i}`] = i < places.length ? [places[i][0], places[i][1] - lift("plates"), P.plate[0], P.plate[1]] : [0, 0, 0, 0]; }
+  else for (let i = 0; i < most; i++) out.parts[`plates.${i}`] = [0, 0, 0, 0];
   // the Mend module
   const sw = R.switch, m = [sw.rect[0], sw.rect[1] - lift("switch")], SW = props.regions.switch, on = SW.state === "on", T0 = sw.toggle;
   out.switchPanel = [sw.rect[0], sw.rect[1] - lift("switch"), sw.rect[2], sw.rect[3]]; out.switchLamp = [m[0] + sw.lamp[0], m[1] + sw.lamp[1], 12, 12];
@@ -41,7 +43,7 @@ export function departures(log, spec, props, cur) {
   for (const r of [...got("bench", "art"), ...got("bench", "painted")]) must(eq(r.rect, R.bench.rect), `the stage picture ${r.rect} is not ${R.bench.rect}`);
   must(got("cradle", "art").length + got("cradle", "painted").length >= 1 && eq(pic("cradle"), R.cradle.rect), `the cradle ${pic("cradle")} is not ${R.cradle.rect}`);
   if (props.state === "docked") must(eq(pic("plates") ?? [], union(Object.entries(E.parts).filter(([k]) => k.startsWith("plates.")).map(([, v]) => (v[2] ? v : null))) ?? []), `the plates ${pic("plates")} are not the tier's places`);
-  else must(!got("plates").length, "no plates away");
+  else must(!got("plates", "art").length && !got("plates", "painted").length, "no plates drawn away");
   for (const [mod, panel, lampBox, keys] of [["switch", E.switchPanel, E.switchLamp, (k) => k.startsWith("switch.")], ["slot", E.slotPanel, E.slotLamp, (k) => k.startsWith("slot.")]]) {
     const pan = got(mod, "chrome"); must(pan.length === 1 && eq(pan[0].rect, panel), `${mod}'s panel ${pan[0]?.rect} is not ${panel}`);
     const lamp = got(mod + ".lamp"); must(lamp.length >= 1 && lamp.every((r) => eq(r.rect, lampBox)), `${mod}'s lamp ${lamp.map((r) => r.rect)} is not ${lampBox}`);
