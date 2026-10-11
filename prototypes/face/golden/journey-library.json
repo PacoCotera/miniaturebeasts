@@ -1,0 +1,365 @@
+{
+ "_note": "The Library spread, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen, the state and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "library-spread": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "library",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S01",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "frame.S01",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "library",
+    "ok": "Open the Library",
+    "subject": "the journal is empty",
+    "back": null
+   }
+  ],
+  "library-spread-found": [
+   {
+    "key": "library",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "room",
+      "verb": "room:library"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S01",
+    "ok": "Open its Book",
+    "subject": "Loika",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S02"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S02",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S03",
+    "ok": "Open its Book",
+    "subject": "Tuikis",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S07"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S07",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S03",
+    "ok": "Open its Book",
+    "subject": "Tuikis",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S02"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S02",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S01"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S01",
+    "ok": "Open its Book",
+    "subject": "Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S01",
+    "ok": "Open its Book",
+    "subject": "Loika",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S02"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S02",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S03"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S03",
+    "ok": "Open its Book",
+    "subject": "Tuikis",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S04"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S04",
+    "ok": null,
+    "subject": "Hiljan, only seen",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S09"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S09",
+    "ok": "Open its Book",
+    "subject": "Belatz",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "library",
+      "target": "frame.S04"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S04",
+    "ok": null,
+    "subject": "Hiljan, only seen",
+    "back": "Home"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "frame.S04",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "library",
+    "ok": "Open the Library",
+    "subject": "the field journal",
+    "back": null
+   },
+   {
+    "key": "library",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "library",
+      "verb": "room:library"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S04",
+    "ok": null,
+    "subject": "Hiljan, only seen",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "frame.S04",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S04",
+    "ok": null,
+    "subject": "Hiljan, only seen",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "frame.S05",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S05",
+    "ok": null,
+    "subject": "an empty frame",
+    "back": "Home"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "frame.S03",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "library",
+    "state": "notBuilt",
+    "focus": "library",
+    "ok": null,
+    "subject": "",
+    "back": "Library"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "library",
+    "state": "spread",
+    "focus": "frame.S03",
+    "ok": "Open its Book",
+    "subject": "Tuikis",
+    "back": "Home"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "library",
+      "target": "frame.S03",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "state": "home",
+    "focus": "library",
+    "ok": "Open the Library",
+    "subject": "the field journal",
+    "back": null
+   }
+  ]
+ }
+}
