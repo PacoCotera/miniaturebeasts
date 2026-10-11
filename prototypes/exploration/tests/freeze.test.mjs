@@ -7,9 +7,13 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 import { freshSt, dockKey } from "../../station/src/state.mjs";
+import * as W from "../src/world.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
-const SCRIPT = PAGE.match(/<script>([\s\S]*?)<\/script>/)[1];
+const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
+const IMPORT = /^import \{([^}]*)\} from "\.\/src\/world\.mjs";$/m;
+const BINDINGS = MODULE.match(IMPORT)[1].split(",").map(s => s.trim().split(/\s+as\s+/));
+const SCRIPT = MODULE.replace(IMPORT, "");
 
 // The page in a sandbox: every DOM and canvas call lands on an inert stub; localStorage is `store`.
 function page(store = {}) {
@@ -20,7 +24,7 @@ function page(store = {}) {
     matchMedia: () => ({ matches: true }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
+  ctx.window = ctx; for (const [from, to = from] of BINDINGS) ctx[to] = W[from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
   const run = src => vm.runInContext(src, ctx);
   const KEY = run("SAVE_KEY");
   const p = {
