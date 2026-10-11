@@ -1,0 +1,61 @@
+set,size,measure,item,value,limit,result
+s04-304x312,304x312,M3,stand,"9 comp, 27 holes, 6 orphans",info,
+s04-304x312,304x312,M4,stand irregular,471,,info
+s04-304x312,304x312,M2,warped-down,0,0,pass
+s04-304x312,304x312,M3,warped-down,"9 comp, 27 holes, 6 orphans","1 comp, 0 holes, 0 orphans",FAIL
+s04-304x312,304x312,M3,warped-down not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
+s04-304x312,304x312,M4,warped-down irregular,470,494,pass
+s04-304x312,304x312,M5,warped-down vs painted,no painted end given,,n/a
+s04-304x312,304x312,M2,warped-up,0,0,pass
+s04-304x312,304x312,M3,warped-up,"9 comp, 27 holes, 6 orphans","1 comp, 0 holes, 0 orphans",FAIL
+s04-304x312,304x312,M3,warped-up not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
+s04-304x312,304x312,M4,warped-up irregular,482,494,pass
+s04-304x312,304x312,M5,warped-up vs painted,no painted end given,,n/a
+s04-304x312,304x312,M6,only at 104x112,,,n/a
+s04-304x312,304x312,M7,warp ms per picture (down),1.5437,,info
+s04-304x312,304x312,M7,warp ms per picture (up),1.4596,,info
+s04-304x312,304x312,pair,holds b0/b1/b2 ms (PLACEHOLDER until ruled),700/350/700,,info
+s04-304x312,304x312,pair,phase offset ms (PLACEHOLDER until ruled),1050,,info
+s04-304x312,304x312,pair,b1/b2,not given: the pair holds the stand,,note
+s04-304x312,304x312,M1,"two runs, same bytes (PNGs, maps, APNG)",e1b8d60c0331,equal,pass
+s04-104x112,104x112,M3,stand,"4 comp, 5 holes, 0 orphans",info,
+s04-104x112,104x112,M4,stand irregular,155,,info
+s04-104x112,104x112,M2,warped-down,0,0,pass
+s04-104x112,104x112,M3,warped-down,"4 comp, 5 holes, 0 orphans","1 comp, 0 holes, 0 orphans",FAIL
+s04-104x112,104x112,M3,warped-down not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
+s04-104x112,104x112,M4,warped-down irregular,153,162,pass
+s04-104x112,104x112,M5,warped-down vs painted,no painted end given,,n/a
+s04-104x112,104x112,M2,warped-up,0,0,pass
+s04-104x112,104x112,M3,warped-up,"4 comp, 5 holes, 0 orphans","1 comp, 0 holes, 0 orphans",FAIL
+s04-104x112,104x112,M3,warped-up not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
+s04-104x112,104x112,M4,warped-up irregular,158,162,pass
+s04-104x112,104x112,M5,warped-up vs painted,no painted end given,,n/a
+s04-104x112,104x112,M6,warped down-stand,0.3725,2,FAIL
+s04-104x112,104x112,M6,warped stand-up,0.4118,2,FAIL
+s04-104x112,104x112,M6,warped down-up,0.7843,2,FAIL
+s04-104x112,104x112,M6,painted,no painted ends given,,n/a
+s04-104x112,104x112,M7,warp ms per picture (down),0.1531,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (up),0.1532,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,pair,holds b0/b1/b2 ms (PLACEHOLDER until ruled),700/350/700,,info
+s04-104x112,104x112,pair,phase offset ms (PLACEHOLDER until ruled),1050,,info
+s04-104x112,104x112,pair,b1/b2,not given: the pair holds the stand,,note
+s04-104x112,104x112,M1,"two runs, same bytes (PNGs, maps, APNG)",80ff390492df,equal,pass
+s04-96x88,96x88,M3,stand,"2 comp, 5 holes, 1 orphans",info,
+s04-96x88,96x88,M4,stand irregular,118,,info
+s04-96x88,96x88,M2,warped-down,0,0,pass
+s04-96x88,96x88,M3,warped-down,"2 comp, 5 holes, 1 orphans","1 comp, 0 holes, 0 orphans",FAIL
+s04-96x88,96x88,M3,warped-down not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
+s04-96x88,96x88,M4,warped-down irregular,116,123,pass
+s04-96x88,96x88,M5,warped-down vs painted,no painted end given,,n/a
+s04-96x88,96x88,M2,warped-up,0,0,pass
+s04-96x88,96x88,M3,warped-up,"2 comp, 5 holes, 1 orphans","1 comp, 0 holes, 0 orphans",FAIL
+s04-96x88,96x88,M3,warped-up not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
+s04-96x88,96x88,M4,warped-up irregular,117,123,pass
+s04-96x88,96x88,M5,warped-up vs painted,no painted end given,,n/a
+s04-96x88,96x88,M6,only at 104x112,,,n/a
+s04-96x88,96x88,M7,warp ms per picture (down),0.1098,,info
+s04-96x88,96x88,M7,warp ms per picture (up),0.1113,,info
+s04-96x88,96x88,pair,holds b0/b1/b2 ms (PLACEHOLDER until ruled),700/350/700,,info
+s04-96x88,96x88,pair,phase offset ms (PLACEHOLDER until ruled),1050,,info
+s04-96x88,96x88,pair,b1/b2,not given: the pair holds the stand,,note
+s04-96x88,96x88,M1,"two runs, same bytes (PNGs, maps, APNG)",cfdbf9a26985,equal,pass
