@@ -712,7 +712,7 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
   assert.match(source("lineFor"), /!carriedMibis\(\)\.length \? CARE_TEXT\.noOneWith : g === 1 \? CARE_TEXT\.onlyGrown : CARE_TEXT\.noOneGrown/);
 });
 
-// ---- X1: a Station species the Companion does not know (plans/companion/x1-unknown-species.md) ----
+// ---- X1: a Station species the Companion does not know (design/proposals/station-build.md §2.3, spName) ----
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
 // (sp -1 on the Station: a species beyond the Companion's three), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
