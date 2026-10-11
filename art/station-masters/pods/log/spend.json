@@ -3154,5 +3154,39 @@
    "thoughtsTokenCount": 317,
    "totalTokenCount": 2526
   }
+ },
+ {
+  "tag": "meadow-src-walls-a2 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19676,
+  "mxn": 3.9352,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T02:12:00Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 760,
+   "candidatesTokenCount": 1334,
+   "thoughtsTokenCount": 293,
+   "totalTokenCount": 2387
+  }
+ },
+ {
+  "tag": "meadow-src-walls-a3 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191626,
+  "mxn": 3.8325,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T02:12:38Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 773,
+   "candidatesTokenCount": 1359,
+   "thoughtsTokenCount": 225,
+   "totalTokenCount": 2357
+  }
  }
 ]
