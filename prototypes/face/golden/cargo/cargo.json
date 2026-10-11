@@ -26,15 +26,15 @@
    "png": "cargo-bay-waiting.png"
   },
   "cargo-report": {
-   "hash": "bb2ce14c",
+   "hash": "cad8ceec",
    "png": "cargo-report.png"
   },
   "cargo-report-small": {
-   "hash": "80062fc0",
+   "hash": "1785fb70",
    "png": "cargo-report-small.png"
   },
   "cargo-report-waiting": {
-   "hash": "0d165b42",
+   "hash": "de367b8a",
    "png": "cargo-report-waiting.png"
   },
   "cargo-opening-0": {
@@ -66,7 +66,7 @@
    "png": "cargo-opening-1650.png"
   },
   "cargo-opening-end": {
-   "hash": "09e63a11",
+   "hash": "c885a0e8",
    "png": "cargo-opening-end.png"
   },
   "cargo-crates-arriving": {

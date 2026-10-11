@@ -477,7 +477,7 @@ test("the Probe bench spec file agrees with the bench wireframes, region by regi
   const TG = { plates: { group: "plates", box: R.plates.rect }, switch: { group: "module", box: R.switch.rect }, slot: { group: "module", box: R.slot.rect } }, AWAY = { switch: TG.switch, slot: TG.slot };
   for (const v of be.focus.vectors) { if (v.intent) continue; assert.equal(focusMove(be.focus.graph, v.state === "away" ? AWAY : TG, v.from, v.key), v.to, `${v.from} ${v.key} → ${v.to}`); }
   assert.ok(!JSON.stringify(be.colours).includes("amber"), "no amber on the bench"); assert.equal(be.events.install.hold, Math.max(...be.events.install.steps.map((s) => s.at + (s.ms ?? 0))));
-  assert.equal(R.bench.until, "room-bench-stage-collection"); assert.deepEqual(paletteBad(be.colours), []);
+  assert.equal(R.bench.until, undefined, "signed: no stand-in slice"); assert.deepEqual(paletteBad(be.colours), []);
 });
 
 test("the sitting spec file agrees with its wireframes, region by region; Habitat's half stays where it stood; its focus graphs play their vectors", () => {
@@ -743,13 +743,13 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   assert.ok(S.masters["spread-plate-{SNN}-80x96"] && S.masters["spread-study-{SNN}-80x96"] && S.masters["library-stage-spread-1024x522"]);
 });
 
-test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 48 pitch, centred on the cradle's axis 296, every place at y 424 inside the plates' box", async () => {
+test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 48 pitch, centred on the cradle's axis 296, every place at y 440 inside the plates' box", async () => {
   const { TIER } = await import("../../station/src/state.mjs"), be = JSON.parse(readFileSync(new URL("../specs/station/bench.json", import.meta.url), "utf8")), P = be.regions.plates, axis = be.regions.cradle.axis;
   assert.deepEqual(Object.keys(P.places).sort(), Object.keys(TIER).sort(), "a table for every tier");
   assert.equal(be.regions.switch.meaning.plates.offWhole, (await import("../../station/src/state.mjs")).DOCK_MEND_FLOOR, "the switch off leaves the plates the dock mends free: state.mjs DOCK_MEND_FLOOR");
   for (const [t, places] of Object.entries(P.places)) {
     assert.equal(places.length, TIER[t].shield, `tier ${t}: a place for each of its ${TIER[t].shield} plates`);
-    places.forEach((pl, i) => { assert.equal(pl[1], 424, `tier ${t} place ${i} at y 424`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 48 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
+    places.forEach((pl, i) => { assert.equal(pl[1], 440, `tier ${t} place ${i} at y 440`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 48 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
     assert.equal(places[0][0] + (places.at(-1)[0] + P.plate[0] - places[0][0]) / 2, axis, `tier ${t} centred on ${axis}`);
   }
 });

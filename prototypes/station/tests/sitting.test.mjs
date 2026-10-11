@@ -62,7 +62,7 @@ test("one slot, one frame: a sitting is held, and a second earned meanwhile is n
 
 test("the research moments: a sealed chapter read, then the guide filled with the sealed chapter's looks, then a deep line; each found when true and paid once", () => {
   const id = ["S02", "S09", "S11", "S15", "S16"].find((s) => frameOf(s).chapters.some((c) => c.sealed)), fr = frameOf(id), sealed = fr.chapters.find((c) => c.sealed);
-  const st = world(1); st.knownIds.push(id);
+  const st = world(1); st.doorAt = T0; st.knownIds.push(id);
   assert.deepEqual(T.collectMoments(st, settings, T0), [], "nothing earned yet");
   for (const ch of fr.chapters) for (const t of ch.traits) if (ch !== sealed) S.guideAdd(st, id, t.id, L.possibleLooks(fr, t));
   assert.ok(!L.fieldGuide(st, id, settings).complete, "the guide is not complete while the sealed chapter's looks are unseen"); assert.deepEqual(T.collectMoments(st, settings, T0), []);
@@ -71,7 +71,7 @@ test("the research moments: a sealed chapter read, then the guide filled with th
   assert.deepEqual(T.collectMoments(st, settings, T0 + 1).map((x) => [x.key, x.ok]), [["guide:" + id, true]], "the guide's comes after"); assert.deepEqual(T.collectMoments(st, settings, T0 + 2), [], "paid once");
   assert.deepEqual(T.momentsEarned(st, settings).map((m) => m.kind), ["sealed", "guide"], "in that order");
   // a deep line: four crosses on the longest path of a mibi's recorded tree
-  const s3 = world(1), chain = []; for (let i = 0; i < T.DEEP_LINE + 1; i++) chain.push({ id: 100 + i, name: "m" + i, species: "S01", parents: i === 0 ? null : [{ id: 100 + i - 1 }, { id: 9 }], genome: {}, read: [] });
+  const s3 = world(1), chain = []; s3.doorAt = T0; for (let i = 0; i < T.DEEP_LINE + 1; i++) chain.push({ id: 100 + i, name: "m" + i, species: "S01", parents: i === 0 ? null : [{ id: 100 + i - 1 }, { id: 9 }], genome: {}, read: [] });
   s3.mibis.push(...chain); assert.equal(T.lineDepth(s3, chain[T.DEEP_LINE]), T.DEEP_LINE); assert.equal(T.lineDepth(s3, chain[T.DEEP_LINE - 1]), T.DEEP_LINE - 1);
   const r3 = T.collectMoments(s3, settings, T0); assert.deepEqual(r3.filter((x) => x.kind === "line").map((x) => x.mibi), [chain[T.DEEP_LINE].id]);
   chain[T.DEEP_LINE - 1].released = true; assert.equal(T.lineDepth(s3, chain[T.DEEP_LINE]), T.DEEP_LINE, "released ancestors count");
@@ -79,7 +79,7 @@ test("the research moments: a sealed chapter read, then the guide filled with th
 });
 
 test("the warnings, before the act that pays a moment, only while a sitting is held: a guide one look short, the first read of a sealed chapter, a cross that completes a deep line", () => {
-  const st = world(2), [a, b] = st.mibis; st.knownIds.push("S01"); const fr = frameOf("S01");
+  const st = world(2), [a, b] = st.mibis; st.doorAt = T0; st.knownIds.push("S01"); const fr = frameOf("S01");
   assert.deepEqual(T.sittingWarning(st, settings), []); assert.equal(T.readWarning(st, "S09", "x"), ""); assert.equal(T.crossWarning(st, a, b), "");
   T.devGrantSitting(st, T0);
   for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, "S01", t.id, L.possibleLooks(fr, t));
@@ -183,7 +183,7 @@ test("an older save loads: the sitting's fields default; a mibi has no habits, n
 });
 
 test("a deep line pays once: siblings at depth four, and every later child of the line, earn one moment between them", () => {
-  const st = world(1), mk = (id, parents) => ({ id, name: "m" + id, species: "S01", parents, genome: {}, read: [] });
+  const st = world(1), mk = (id, parents) => ({ id, name: "m" + id, species: "S01", parents, genome: {}, read: [] }); st.doorAt = T0;
   st.mibis.push(mk(201, null), mk(202, null));   // the two founders of the line
   let prev = [{ id: 201 }, { id: 202 }]; const gens = [];
   for (let g = 1; g <= T.DEEP_LINE - 1; g++) { const m = mk(210 + g, prev); st.mibis.push(m); gens.push(m); prev = [{ id: m.id }, { id: 202 }]; }
@@ -199,7 +199,7 @@ test("a deep line pays once: siblings at depth four, and every later child of th
 });
 
 test("an act that would earn two moments at once warns first, held or not: S02's sealed read that also fills the guide", () => {
-  const id = "S02", fr = frameOf(id), sealed = fr.chapters.find((c) => c.sealed), st = S.freshSt("w1", 3, T0); S.normalize(st);
+  const id = "S02", fr = frameOf(id), sealed = fr.chapters.find((c) => c.sealed), st = S.freshSt("w1", 3, T0); S.normalize(st); st.doorAt = T0;
   const x = S.seedAdults(st, id, 11, 1, settings).mibis[0]; st.sitting = null; st.moments = {};
   for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, id, t.id, L.possibleLooks(fr, t));
   for (const [t, ls] of chapterLooks(fr, sealed, x.genome)) st.guide[id][t] = st.guide[id][t].filter((l) => !ls.includes(l));
@@ -207,7 +207,7 @@ test("an act that would earn two moments at once warns first, held or not: S02's
   assert.equal(T.readWarning(st, id, sealed.id, x, settings), T.WARNING, "no sitting held: the sealed read and the guide would both pay, and the slot holds one");
   st.sitting = { source: "dev", key: null, at: T0 }; assert.equal(T.readWarning(st, id, sealed.id, x, settings), T.WARNING, "held: both would be lost");
   st.readOnce[id] = [sealed.id]; st.sitting = null; assert.equal(T.readWarning(st, id, sealed.id, x, settings), "", "already read: nothing to pay");
-  const lone = S.freshSt("w1", 3, T0); S.normalize(lone); assert.equal(T.readWarning(lone, id, sealed.id, x, settings), "", "a lone sealed read with nothing held: one moment, no loss");
+  const lone = S.freshSt("w1", 3, T0); S.normalize(lone); lone.doorAt = T0; assert.equal(T.readWarning(lone, id, sealed.id, x, settings), "", "a lone sealed read with nothing held: one moment, no loss");
 });
 
 test("a painted portrait is never 'waiting for the cloud', and a released mibi cannot sit", () => {
@@ -216,4 +216,35 @@ test("a painted portrait is never 'waiting for the cloud', and a released mibi c
   assert.equal(T.crateState(c, offline, T0 + 3 * H), "waiting for the cloud", "not painted, Caddy unreachable");
   T.landPortrait(st, c.id); assert.equal(T.crateState(c, offline, T0 + 3 * H), "ready", "painted: the Caddy no longer matters"); assert.equal(T.crateLamp(c, offline, T0 + 3 * H), 1);
   const g = world(1), r = walked(g, g.mibis[0]); r.released = true; T.devGrantSitting(g, T0); assert.equal(T.portraitBlock(g, r), "back in the wild"); assert.ok(!T.beginSitting(g, r, "calm", "wood", settings, T0).ok);
+});
+
+// X21 behind a shut door (the-portrait.md §8): until the sitting's door opens no moment is paid and none is lost; when it opens, every moment earned is owed and given one at a time.
+const sealedSpecies = () => { const id = ["S02", "S09", "S11", "S15", "S16"].find((s) => frameOf(s).chapters.some((c) => c.sealed)); return { id, fr: frameOf(id), sealed: frameOf(id).chapters.find((c) => c.sealed) }; };
+const earnBoth = (st) => { const { id, fr, sealed } = sealedSpecies(); st.knownIds.push(id); st.readOnce[id] = [sealed.id]; for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, id, t.id, L.possibleLooks(fr, t)); return ["sealed:" + id + ":" + sealed.id, "guide:" + id]; };
+test("X21 behind a shut door: nothing paid, nothing lost, no warning; the door opens: owed in earned order, given one at a time after the welcome", () => {
+  const st = world(2), [a, b] = st.mibis; walked(st, a); walked(st, b);
+  assert.equal(st.doorAt, null, "a fresh save: the door is shut"); assert.deepEqual(st.owed, []);
+  assert.ok(T.checkWelcome(st, T0, [a.id]).ok); assert.equal(st.sitting.source, "welcome");
+  const keys = earnBoth(st), { id, sealed } = sealedSpecies();
+  assert.deepEqual(T.collectMoments(st, settings, T0), [], "behind the shut door nothing is paid");
+  assert.ok(!Object.keys(st.moments).some((k) => /^(sealed|guide):/.test(k)), "and nothing enters the ledger");
+  assert.equal(T.readWarning(st, id, sealed.id), ""); assert.equal(T.crossWarning(st, a, b), ""); assert.deepEqual(T.sittingWarning(st, settings), []);
+  T.openSittingDoor(st, settings, T0 + 1);
+  assert.deepEqual(st.owed.map((o) => o.key), T.momentsEarned(st, settings).map((m) => m.key)); assert.deepEqual(st.owed.map((o) => o.key), keys, "sealed, then guide");
+  for (const k of keys) assert.equal(st.moments[k], T0 + 1); assert.equal(st.sitting.source, "welcome", "the welcome stays held");
+  const once = JSON.stringify(st); assert.ok(T.openSittingDoor(st, settings, T0 + 2).again); assert.equal(JSON.stringify(st), once, "a second open changes nothing");
+  const r1 = T.beginSitting(st, a, "calm", "wood", settings, T0 + 3); assert.ok(r1.ok && r1.owed.ok); assert.equal(st.sitting.key, keys[0]); assert.equal(st.owed.length, 1);
+  const r2 = T.beginSitting(st, b, "calm", "wood", settings, T0 + 4); assert.ok(r2.ok && r2.owed.ok); assert.equal(st.sitting.key, keys[1]); assert.deepEqual(st.owed, []);
+  assert.deepEqual(T.collectMoments(st, settings, T0 + 5), [], "paid once");
+});
+
+test("X21 a waiting welcome comes before the owed sittings; after the door a moment earned while one is held is lost (§7.2 unchanged)", () => {
+  const h = world(1), m = h.mibis[0]; walked(h, m); earnBoth(h); T.devGrantSitting(h, T0);
+  assert.equal(T.openSittingDoor(h, settings, T0).ok, false, "a sitting is held: nothing given yet"); assert.equal(h.owed.length, 2);
+  assert.ok(T.checkWelcome(h, T0, [m.id]).waits && h.welcomePending);
+  const r = T.beginSitting(h, m, "calm", "wood", settings, T0 + 1); assert.ok(r.welcome.ok); assert.equal(r.owed, null); assert.equal(h.sitting.source, "welcome"); assert.equal(h.owed.length, 2, "the owed wait their turn");
+  const s = world(1); T.openSittingDoor(s, settings, T0); assert.deepEqual(s.owed, []); T.devGrantSitting(s, T0);
+  const chain = []; for (let i = 0; i < T.DEEP_LINE + 1; i++) chain.push({ id: 100 + i, name: "m" + i, species: "S01", parents: i === 0 ? null : [{ id: 100 + i - 1 }, { id: 9 }], genome: {}, read: [] });
+  s.mibis.push(...chain);
+  const line = T.collectMoments(s, settings, T0 + 1).find((x) => x.kind === "line"); assert.ok(line && line.lost, "a new deep line while one is held is lost"); assert.deepEqual(s.owed, []);
 });

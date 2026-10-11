@@ -29,7 +29,7 @@
  "initial": "by the save: the Companion docked, docked; else away",
  "stateRule": "docked: the Probe in its cradle with its plates; tier 1 or tier 2 and the slot's arm are props of this state (regions.plates.tier, regions.slot.state; focus.armed \"slot\"). away: the Probe out with the Companion; the cradle empty, no plates. A region with `inStates` exists only in those states",
  "regions": {
-  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-probe", "until": "room-bench-stage-collection", "note": "the section's ground: the work tray, field tools and small gauges in the device's housing and light; until it lands, room-bench-stage-collection" },
+  "bench": { "rect": [0, 40, 1024, 522], "component": "frame", "part": "stage", "slice": "room-bench-stage-probe", "note": "the section's ground: the work tray, field tools and small gauges in the device's housing and light (room-bench-stage-probe, signed)" },
   "cradle": {
    "rect": [56, 104, 480, 288], "component": "specimen", "focal": true, "axis": 296,
    "pictures": { "tier1": "bench-probe-t1-480x288", "tier2": "bench-probe-t2-480x288", "away": "bench-cradle-empty-480x288" },
@@ -37,17 +37,17 @@
   },
   "plates": {
    "rect": [192, 416, 208, 80], "build": "shieldPlates", "inStates": ["docked"],
-   "plate": [32, 64],
-   "places": { "1": [[232, 424], [280, 424], [328, 424]], "2": [[208, 424], [256, 424], [304, 424], [352, 424]] },
+   "plate": [32, 32],
+   "places": { "1": [[232, 440], [280, 440], [328, 440]], "2": [[208, 440], [256, 440], [304, 440], [352, 440]] },
    "pitch": 48,
-   "slices": { "whole": "bench-plate-whole-32x64", "gone": "bench-plate-gone-32x64" },
+   "slices": { "whole": "bench-plate-whole-32x32", "gone": "bench-plate-gone-32x32" },
    "states": { "whole": "the whole plate, `white`", "gone": "its outline, `bevel`" },
-   "note": "the region is the focus target's box; one sprite a place, 8 px inside its top; nothing else is drawn"
+   "note": "the region is the focus target's box; one sprite a place, centred in it, 24 px inside its top and bottom; nothing else is drawn"
   },
   "switch": {
    "rect": [584, 104, 384, 128], "component": "panel", "build": "module", "word": [16, 12], "lamp": [356, 12, 12, 12],
    "toggle": { "at": [16, 56], "size": [80, 40], "track": { "off": "bench-switch-track-off-80x40", "on": "bench-switch-track-on-80x40" }, "knob": { "slice": "bench-switch-knob-40x40", "size": [40, 40], "x": { "off": 16, "on": 56 }, "y": 56, "move": "x 16 → 56 (and back) over 200 ms in whole pixels" } },
-   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 60], "icon": [16, 32], "pitch": 24, "count": "the tier's (3 or 4)", "whole": "icon-shield-16x32", "gone": "icon-shield-gone-16x32", "off": "the first two whole, the rest gone", "offWhole": 2, "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
+   "meaning": { "dock": { "slice": "mark-dock-24x24", "at": [112, 64], "size": [24, 24] }, "plates": { "at": [152, 68], "icon": [16, 16], "pitch": 24, "count": "the tier's (3 or 4)", "whole": "icon-shield-16", "gone": "icon-shield-gone-16", "off": "the first two whole, the rest gone", "offWhole": 2, "on": "all whole" }, "rule": "the switch's meaning as a picture: the dock, then the plates it leaves whole" },
    "states": { "off": "the knob left, the lamp off", "on": "the knob right, the lamp well" }
   },
   "slot": {
@@ -56,7 +56,7 @@
    "part": { "at": [32, 64], "size": [128, 128], "armedAt": [32, 56], "slices": { "dim": "bench-part-t2-dim-128", "ready": "bench-part-t2-ready-128", "fitted": "bench-part-t2-fitted-128" } },
    "adds": {
     "pods": { "at": [200, 64], "icon": [16, 16], "pitch": 24, "count": 3, "new": 1, "slice": "icon-pod-16", "newSlice": "icon-pod-16-new" },
-    "plates": { "at": [200, 104], "icon": [16, 32], "pitch": 24, "count": 4, "new": 1, "slice": "icon-shield-16x32", "newSlice": "icon-shield-16x32-new" },
+    "plates": { "at": [200, 112], "icon": [16, 16], "pitch": 24, "count": 4, "new": 1, "slice": "icon-shield-16", "newSlice": "icon-shield-16-new" },
     "reach": { "at": [200, 160], "size": [40, 40], "slice": "bench-reach-t2-40", "newSlice": "bench-reach-t2-40-new" },
     "deep": { "at": [256, 160], "size": [40, 40], "slice": "bench-deep-t2-40", "newSlice": "bench-deep-t2-40-new" },
     "rule": "what the upgrade adds, as pictures with no digits: three pods carried, four Shield plates, a wider reach, the deep read; the one each adds over tier 1 drawn in its `new` slice; through the install they hold their `-new` slices until the 600 dither; dim, ready and armed draw the plain slices plus the `new` slice on the third pod, the fourth plate, reach and deep; fitted draws them all plain; the adds are never dimmed"
@@ -141,7 +141,7 @@
  },
  "masters": {
   "note": "every master the bench names, at the size it is shown; none is drawn by the build. No new id; the stage and the three Probe pictures follow the Probe section's look: the work tray in daylight, the Probe lying on it being mended, never a needle, never a lab",
-  "list": ["room-bench-stage-probe 1024×522", "bench-probe-t1-480x288", "bench-probe-t2-480x288", "bench-cradle-empty-480x288 (rows 0 to 3 empty)", "bench-plate-whole-32x64", "bench-plate-gone-32x64", "bench-switch-track-off-80x40", "bench-switch-track-on-80x40", "bench-switch-knob-40x40", "mark-dock-24x24", "icon-shield-16x32", "icon-shield-16x32-new", "icon-shield-gone-16x32", "icon-pod-16", "icon-pod-16-new", "bench-socket-160", "bench-part-t2-dim-128", "bench-part-t2-ready-128", "bench-part-t2-fitted-128", "bench-reach-t2-40", "bench-reach-t2-40-new", "bench-deep-t2-40", "bench-deep-t2-40-new", "home-lamp-sprout-12x12, home-lamp-hairline-12x12 (signed, placed)"]
+  "list": ["room-bench-stage-probe 1024×522", "bench-probe-t1-480x288", "bench-probe-t2-480x288", "bench-cradle-empty-480x288 (rows 0 to 3 empty)", "bench-plate-whole-32x32", "bench-plate-gone-32x32", "bench-switch-track-off-80x40", "bench-switch-track-on-80x40", "bench-switch-knob-40x40", "mark-dock-24x24", "icon-shield-16 (shared with Cargo's report)", "icon-shield-16-new", "icon-shield-gone-16", "icon-pod-16 (shared with Cargo's report)", "icon-pod-16-new", "bench-socket-160", "bench-part-t2-dim-128", "bench-part-t2-ready-128", "bench-part-t2-fitted-128", "bench-reach-t2-40", "bench-reach-t2-40-new", "bench-deep-t2-40", "bench-deep-t2-40-new", "home-lamp-sprout-12x12, home-lamp-hairline-12x12 (signed, placed)"]
  },
  "strings": {
   "title": "Probe",
@@ -167,7 +167,7 @@
   "as the Probe section: the title Probe after the Research key's icon, the frame's three face places and its 88 px way back; the layout, the states, the focus and the words stand",
   "screens/bench.mjs draw(): the lamp pool and the drawn cradle ellipse (100, 300, 340×80) with probeArt at 172, 120 become the painted cradle picture 56, 104, 480×288, one a tier, and the empty cradle while away",
   "\"The Probe is away\" and \"with the Companion\" in 28 and 20 px on the stage go: the empty cradle says it, the context names it",
-  "the plates (64×36 at 270 − n·37 + 74i, y 392) become 32×64 standing plates on the tier's places at y 424; the line \"tier 1 · 2 of 3 plates\" goes",
+  "the plates (64×36 at 270 − n·37 + 74i, y 392) become 32×32 plates on the tier's places at y 440; the line \"tier 1 · 2 of 3 plates\" goes",
   "the switch panel (520, 120, 420×90 with two lines of words) becomes the Mend module 584, 104, 384×128: the word, the switch, the picture of its meaning and the lamp; its words go to the bottom line",
   "the tier 2 slot (520, 260, 420×160, `focus` fill when lit, with three lines of words and the price) becomes the Upgrade module 584, 248, 384×248: the socket and part, what it adds as pictures, the lamp; the price and \"armed · ✓ again installs\" go to the bottom line",
   "the legacy amber ring round benchTargets becomes the frame's focus ring; benchTargets and navSpatial are replaced by focus.graph",
