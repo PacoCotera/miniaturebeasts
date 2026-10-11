@@ -1,0 +1,117 @@
+[
+ {
+  "id": "bench-cradle-empty-480x288",
+  "size": "480x288",
+  "sha256": "e9d3dbf171cbfb9e86f4cbb081e11939a6d0d25f22833ad80b6882de65bb32f5"
+ },
+ {
+  "id": "bench-deep-t2-40-new",
+  "size": "40x40",
+  "sha256": "2e7676d0c5740548993512e51d9bd7ddd1e03a9412827a7529cb1ce6a04ffe3f"
+ },
+ {
+  "id": "bench-deep-t2-40",
+  "size": "40x40",
+  "sha256": "2e7676d0c5740548993512e51d9bd7ddd1e03a9412827a7529cb1ce6a04ffe3f"
+ },
+ {
+  "id": "bench-part-t2-dim-128",
+  "size": "128x128",
+  "sha256": "a5139019bfe8189ce3ced7a767693e7a50eda8d95e5514c39a5095f3fba1c39b"
+ },
+ {
+  "id": "bench-part-t2-fitted-128",
+  "size": "128x128",
+  "sha256": "5141db874be126c2e70726705f0cd7f674e6ad14d836d8dd0516fbb2a2d5bce8"
+ },
+ {
+  "id": "bench-part-t2-ready-128",
+  "size": "128x128",
+  "sha256": "42c7f22c9d87ed92d816e5f20aef80f2aada901a708ea48bc577614c9bd57715"
+ },
+ {
+  "id": "bench-plate-gone-32x64",
+  "size": "32x64",
+  "sha256": "20f2a0a04511db8bcb64ebfdef144d8b7bed70495bd0206a01816a845396d02f"
+ },
+ {
+  "id": "bench-plate-whole-32x64",
+  "size": "32x64",
+  "sha256": "46b06bd3ba86a18199c283ab4e475626ed8e8441ac299f4210515bbf5eed4d53"
+ },
+ {
+  "id": "bench-probe-t1-480x288",
+  "size": "480x288",
+  "sha256": "7a511778d522893f1e82c8ab910ab0becd931cb279109a19abd9bb8458b93003"
+ },
+ {
+  "id": "bench-probe-t2-480x288",
+  "size": "480x288",
+  "sha256": "93a7b84f9da1f2cd073cfd1e2520a60b3e5b14abd582db3d9354c4be12d64d50"
+ },
+ {
+  "id": "bench-reach-t2-40-new",
+  "size": "40x40",
+  "sha256": "92d234d158bb5b5f76b7e627d74ece604ddc6faac6ecea5ba32102618dc37782"
+ },
+ {
+  "id": "bench-reach-t2-40",
+  "size": "40x40",
+  "sha256": "92d234d158bb5b5f76b7e627d74ece604ddc6faac6ecea5ba32102618dc37782"
+ },
+ {
+  "id": "bench-socket-160",
+  "size": "160x160",
+  "sha256": "428cc0d385d6eaf9cd25271c36c25eeb7c20bbddaa16c8f4d84eca170d876c7c"
+ },
+ {
+  "id": "bench-switch-knob-40x40",
+  "size": "40x40",
+  "sha256": "f9aa296cca62208518c973ff986f2bac4da7ad8aed9137152f50711ed7ba4c27"
+ },
+ {
+  "id": "bench-switch-track-off-80x40",
+  "size": "80x40",
+  "sha256": "80db1c5f1e03eedd4f949ed8314d05a59c4de985879bd928db1a34b6895f4412"
+ },
+ {
+  "id": "bench-switch-track-on-80x40",
+  "size": "80x40",
+  "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3"
+ },
+ {
+  "id": "icon-pod-16-new",
+  "size": "16x16",
+  "sha256": "632059ff058401602c2126b596649e05ace53e810b68cf771558a3b9c0d14271"
+ },
+ {
+  "id": "icon-pod-16",
+  "size": "16x16",
+  "sha256": "632059ff058401602c2126b596649e05ace53e810b68cf771558a3b9c0d14271"
+ },
+ {
+  "id": "icon-shield-16x32-new",
+  "size": "16x32",
+  "sha256": "91526187648fef98012935162245854079725650f61cadba95c13fbfa0af5cec"
+ },
+ {
+  "id": "icon-shield-16x32",
+  "size": "16x32",
+  "sha256": "91526187648fef98012935162245854079725650f61cadba95c13fbfa0af5cec"
+ },
+ {
+  "id": "icon-shield-gone-16x32",
+  "size": "16x32",
+  "sha256": "f56b5f17aabdf7a0a4ea1398e1f85db4509e59072696724710babe602de9875a"
+ },
+ {
+  "id": "mark-dock-24x24",
+  "size": "24x24",
+  "sha256": "70c9f0f94bc6c104587d7788d57d1646778118ecd20d75c1a06e17295090eb06"
+ },
+ {
+  "id": "room-bench-stage-probe",
+  "size": "1024x522",
+  "sha256": "2fbc562fdb7a95379ffb19976e5704ce5b7273ed02f2828b6e6b26ae63b6e6a6"
+ }
+]
