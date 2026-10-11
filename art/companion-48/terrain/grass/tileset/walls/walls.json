@@ -629,6 +629,21 @@
    "end": "foot"
   },
   {
+   "name": "meadow/side/side-w-tail",
+   "file": "side-w-tail.png",
+   "kind": "side-end",
+   "side": "w",
+   "px": [
+    32,
+    96
+   ],
+   "end": "tail",
+   "cells": [
+    0,
+    2
+   ]
+  },
+  {
    "name": "meadow/side/side-e-1",
    "file": "side-e-1.png",
    "kind": "side",
@@ -694,6 +709,21 @@
     24
    ],
    "end": "foot"
+  },
+  {
+   "name": "meadow/side/side-e-tail",
+   "file": "side-e-tail.png",
+   "kind": "side-end",
+   "side": "e",
+   "px": [
+    20,
+    96
+   ],
+   "end": "tail",
+   "cells": [
+    0,
+    2
+   ]
   }
  ]
 }

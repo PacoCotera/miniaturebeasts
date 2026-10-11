@@ -5,8 +5,9 @@ Each strip is one cell (48 px) tall, 32 px wide on a west side (in the light, as
 (tileset/walls, their 3-wide pieces, rows clear of the turf), so its stones are the walls' own; it is made seamless top to bottom
 by cross-fading its last 10 rows into its first, then snapped to the meadow palette. A west side faces the light (top left) and
 is lifted 12 %; an east side is in shade, 22 % down. The outer edge is cut on a lumpy 1-4 px profile with a dark outline.
-End pieces: side-<w|e>-top (the strip's top rounded on 8 px, under the plateau's rim) and side-<w|e>-foot (its foot rounded
-on 12 px, with a dark base line). Three variants per side.
+End pieces: side-<w|e>-top (the strip's top rounded on 8 px, under the plateau's rim), side-<w|e>-foot (its foot rounded
+on 12 px, with a dark base line) and side-<w|e>-tail (the side's last two rows beside a face's outer end, 96 px, ending on
+the face's foot line: stone, then a dark base; phase 6 name face/side-e-tail, face/side-w-tail). Three variants per side.
 Writes tileset/walls/side-<w|e>-<n>.png, -top.png, -foot.png and adds them to walls.json.
 usage: python3 -I build-side-faces.py PALETTE_JSON WALLS_DIR"""
 import json, os, sys
@@ -60,4 +61,12 @@ for side, gain in (("w", 1.12), ("e", .78)):
     for y in range(12): prof[23 - y] = 2 + int(round(12 - np.sqrt(max(0, 144 - (12 - y) ** 2))))
     foot = outline(foot, side, prof); foot[-1][foot[-1] >= 0] = OUTL
     save(foot, f"side-{side}-foot", "side-end", side, {"end": "foot"})
-json.dump(wj, open(os.path.join(wd, "walls.json"), "w"), indent=1); print("side faces: 6 strips, 4 ends")
+    # the tail: the side's last two rows beside a face's outer end (an outer corner), 96 px, ending on the face's 2 px foot line
+    t1 = np.asarray(Image.open(os.path.join(wd, f"side-{side}-1.png")).convert("RGBA")); t2 = np.asarray(Image.open(os.path.join(wd, f"side-{side}-2.png")).convert("RGBA"))
+    tail = np.vstack([t1, t2]); a = np.full(tail.shape[:2], -1, int); m = tail[..., 3] > 0
+    a[m] = (((tail[..., :3][m][:, None].astype(int) - PAL[None]) ** 2).sum(-1)).argmin(1)
+    stone = int(np.argmin(((PAL - np.array((0x5d, 0x59, 0x74))) ** 2).sum(1)))
+    for y in (2 * Hh - 2, 2 * Hh - 1): a[y][a[y] >= 0] = stone
+    a[2 * Hh - 1][a[2 * Hh - 1] >= 0] = OUTL
+    save(a, f"side-{side}-tail", "side-end", side, {"end": "tail", "cells": [0, 2]})
+json.dump(wj, open(os.path.join(wd, "walls.json"), "w"), indent=1); print("side faces: 6 strips, 6 ends")
