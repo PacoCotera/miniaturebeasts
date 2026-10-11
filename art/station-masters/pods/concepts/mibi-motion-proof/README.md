@@ -72,3 +72,5 @@ The flipbooks are re-rendered. Each strip shows stand, crouch, the first hop's a
 - The old `keys/juv-S05-*` and `-locked` keys from the first sheet are superseded by `keys-b/`. Signed by the art director.
 
 **Lock to the belly line (the animator, 16:04).** The seam now runs within ±6 px of the belly line (pass: row 262), at the leg roots. Above row 256 each step is pass exactly. **Measured: 0 px differing from pass above the seam and between row 236 and the belly line, on both steps.** Flag for the animator's 1× judgement: on stepA, a small lighter patch where pass's torso meets the raised hind thigh.
+
+**Leg fringe (the animator, 16:09).** A 1 px grey line of half-transparent shadow ink ran along the lower legs and showed at 1×. The S05 cut now keeps only the solid body and the shadow's own blob (thin low-alpha lines are opened away). Re-cut, then re-locked from pass. **Measured: 0 thin low-alpha px on any outline, 0 magenta, lock unchanged** (0 px differing above the seam).

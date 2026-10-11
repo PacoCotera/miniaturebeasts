@@ -22,6 +22,8 @@ for i, k in enumerate(['pass', 'stepA', 'stepB', 'crouch', 'curl']):
         body = pa[..., 3] >= 200; ring = body & ~nd.binary_erosion(body)
         r_, g_, b_ = [pa[..., i].astype(int) for i in range(3)]
         pa[ring & (b_ >= g_ - 5)] = 0
+    low = (pa[..., 3] > 0) & (pa[..., 3] < 255)                           # the leg fringe (the animator 16:09): keep only the shadow's own blob
+    pa[low & ~nd.binary_opening(low, iterations=2)] = 0
     c = Image.new('RGBA', (304, 312), (0, 0, 0, 0)); c.alpha_composite(Image.fromarray(pa), (round(CX - cx * SC), round(305 - ground * SC)))
     c.save(f'{K}/juv-S05-{k}-304x312.png')
     a = np.asarray(c).astype(int); r, g, b, al = a[..., 0], a[..., 1], a[..., 2], a[..., 3]
