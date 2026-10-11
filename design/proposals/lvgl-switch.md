@@ -318,8 +318,8 @@ The Station is built breadth first: every section's overview level goes on the f
 | **B4b** | `face_sdl`, `face_drm`, the aarch64 hash under qemu-user, `station/host/` on `face_sdl` (§4, L2.0) | — | part of L2.0 | After P, so the three-build check (gate check 6) runs once over every overview slot |
 | **7. Cross with the splice** | Cross, under one mibi | `cross.json` | about 1 × L2 | The heaviest screen (1,772 nodes in the JavaScript layer). It needs the composed pictures from L2.0, the rail from Pods and the door from one mibi up close (V) |
 | **8. The Book and the field guide** | The Book's face spread, the guide spread, the detail band | `library.json` | about 0.75 × L2 | Its spec carries nine rulings, and its rules exist |
-| **9. The Sitting** | Under one mibi: pose, place, look and confirm | `sitting.json` | about 0.75 × L2 | It waits for its art |
-| **10. The Vivarium's remaining states** | Compact, offline and painted | `habitat.json` | about 0.25 × L2 | States outside the loop's first pass |
+| **9. The Sitting** | Under one mibi: pose, place, look and confirm; up close, the portrait on its way and the portrayed mibi | `sitting.json` | about 0.75 × L2 | It waits for its art |
+| **10. The Vivarium's remaining states** | Compact tiles | `habitat.json` | about 0.1 × L2 | States outside the loop's first pass |
 | **L3 Close-out** | — | — | — | Every screen on the face: goldens for each, the budgets failing CI, the Node host playing the whole journey |
 
 **The spec dependency.** Each slot's spec is ready one slot ahead of its build. A slot without its spec waits; it is never built from an old screen's numbers. `home.json`, `cargo.json` and `frame.json` `idle` are ready for L2.2; `create.json` and `incubator.json` for R; `vivarium.json` (the Vivarium's whole), `habitat.json` (one mibi up close) and `namer.json` for V; `library.json`'s spread for L; `bench.json` for P. `cross.json`, `library.json`'s Book and guide, and `sitting.json` are checked against the screen map before their slots.
@@ -392,7 +392,7 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 - **Scope.** The Vivarium's whole, the `vivarium` screen, from its spec: every mibi at home at its size in one full-width window, the bays along the foot, ✓ on a resident or a bay tile to that mibi up close, ← to Home with the ring on the panel. One mibi up close (`habitat.json`) in rest and meet: the resident large, card, stamp, the carried set's door, the card's heart (a state, never a target), the bays strip, the meet with its placeholder, and the targets that lead to Cross, the Sitting and the guide, which draw "not built yet" until their slots. The compositions `module` (with `lamp: null` on the Vivarium's modules), `nameTag`, `chapterPlates` and `bayStrip`, and `listPitch`'s forms (§2.2, §2.3). The Vivarium's graph as data: named edges, `nearestIn` with `ahead`, ordered lists, the strip's `axis`, in place of `nav.mjs` `habitatMove`. The namer (`namer.json`) as an overlay on the top layer (§2.2, §2.6); the meet's first ✓ opens it.
 - **Acceptance.** The gate. `page-vivarium`, `page-vivarium-away`, `page-vivarium-empty` (a fresh world's), `page-mibi-out`, `page-habitat`, `page-meet` and `page-namer` captured on the face. From a fresh world the loop plays end to end on the face (§4).
 - **Journey steps.** From `journey-pending/V.mjs`: `vivarium-pad`, `vivarium-card`, `vivarium-meet` and `vivarium-trickle`. New: `vivarium-whole` (Home's panel opens the whole; a resident opens that mibi up close; ← from up close is the whole, ← from the whole is Home) and `vivarium-namer` (the meet's first ✓ opens the namer; Done names the mibi and hands the ring back).
-- **Later.** `page-habitat-compact`, `page-painted` and `page-offline` (slot 10); Cross (slot 7); the guide from the card's species word (slot 8); the Sitting (slot 9).
+- **Later.** `page-habitat-compact` (slot 10); Cross (slot 7); the guide from the card's species word (slot 8); the Sitting, with the portrait's up-close states (slot 9).
 - **Tests.** The whole's, `habitat.json`'s and `namer.json`'s `focus` as focus vectors (`focus.json`); the hatch's landing in the meet and the namer's open and close as timeline tests.
 - **CI gates.** The gate for `vivarium`, `habitat` and `namer`.
 
@@ -432,15 +432,15 @@ The depth slots pass the same gate, check 6 included, with check 2's signatures 
 
 ### 9. The Sitting (size: about 0.75 × L2)
 
-- **Scope.** `sitting.json` in the states pose, place, confirm and begin: choice cards, step tiles, the gilt part, the backdrop dither and the gilt's dither out. It is built when its art is placed.
-- **Acceptance.** The gate. `page-sitting-pose`, `page-sitting-place` and `page-sitting-armed` captured on the face. The Sitting has no JavaScript twin: it is held to checks 1, 3 and 4 and to the designer's signed wireframe, as the field guide is.
+- **Scope.** `sitting.json` in the states pose, place, confirm and begin: choice cards, step tiles, the gilt part, the backdrop dither and the gilt's dither out. Up close, the portrait on its way (online and offline) and the portrayed mibi. It is built when its art is placed.
+- **Acceptance.** The gate. `page-sitting-pose`, `page-sitting-place`, `page-sitting-armed`, `page-portrait-waiting`, `page-portrait-offline` and `page-portrayed` captured on the face. The Sitting has no JavaScript twin: it is held to checks 1, 3 and 4 and to the designer's signed wireframe, as the field guide is.
 - **Journey steps.** All of `journey-pending/slot-9-sitting.mjs`: `sitting-first-screen`.
 - **CI gates.** The gate for `sitting`.
 
-### 10. The Vivarium's remaining states (size: about 0.25 × L2)
+### 10. The Vivarium's remaining states (size: about 0.1 × L2)
 
-- **Scope.** One mibi up close compact, offline and painted, and the placeholder-to-painting landing in the meet.
-- **Acceptance.** The gate. `page-habitat-compact`, `page-painted` and `page-offline` captured on the face; `page-meet`, `page-meet-placeholder` and `page-painted` differ from one another.
+- **Scope.** One mibi up close with compact tiles (seven to twelve mibis).
+- **Acceptance.** The gate. `page-habitat-compact` captured on the face: the journey's capture of the state the golden habitat-twelve holds.
 - **CI gates.** The gate for `habitat`.
 
 ### L3 Close-out
