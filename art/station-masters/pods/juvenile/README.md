@@ -50,9 +50,9 @@ Round 1 total: 11.23 MXN of the 15.5 planned, with no retries. The set is at 11.
 
 ## S02 redo and the sign (owner 09:49: the set approved; redo S02 once to match its adult's colours)
 
-- **S02:** redone as  (3.89 MXN), with the adult's own colours named: an ochre-tan cap with sand and
-  peach highlights, a warm chestnut body, a peach blush. The first S02 (, coral) is superseded.
-   shows the adult, the coral first try and the redo.
+- **S02:** redone as `mibi-juvenile-S02-b` (3.89 MXN), with the adult's own colours named: an ochre-tan cap with sand and
+  peach highlights, a warm chestnut body, a peach blush. The first S02 (`-a`, coral) is superseded.
+  `S02-before-after-1x.png` shows the adult, the coral first try and the redo.
 - **The set:** 68.14 MXN of the 115 cap, across 18 Pro requests (16 species, S16 and S02 redone once each).
-- **Signed** by the Station art director at 1×, 2026-10-11, all 64 files.  carries each id, size and sha256.
+- **Signed** by the Station art director at 1×, 2026-10-11, all 64 files. `manifest.json` carries each id, size and sha256.
   Placement follows slot Q, with place-masters.
