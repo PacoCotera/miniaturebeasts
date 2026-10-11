@@ -1,0 +1,514 @@
+{
+ "mibi-juvenile-S01-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "a365b5f5966e2511c487139c1e48d3e2e636c3fca24e5afd1e07c8b255dbfe5f",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S01-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "5e4a0f8811acb6982c4d6781d74f88fd5d50af394f52631d8f19bea5307c9fb4",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S01-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "c15b498df7ce6eb2d57e948e9d4a9a1d42f1da73ea83db18fd05b501e44b6ed9",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S01-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "f0cfd504aca7d7659e7d4a33653f1fa8f83798c43575302644ff2327b1ef0e1a",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S02-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "5b596b56dc2ad164972c1276bf2b753ef014db10b2bbcb57e33ee71dc82e4963",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S02-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "c7a9eed96d40afd37c8138aaec2966144e4b804d6c290e4b0994554a44540f3d",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S02-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "bc79fc4e046ae8ae7c042dccdb8a820a609d0a9caa54b4e5842bd6b26a5f6d7e",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S02-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "12fba7c548f818b101f8be5e46dbc02d9a1392c13ffc8ff1a7eaf09ce680a6c3",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S03-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "4e713c24e24ce01bf92b5b7b25127c2062e847e206bfe5f64d41c6054f35ef75",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S03-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "53d664866437dfcb2964d2388b62c8a4bc7bc5dbe7b333e7488e63643df86d9d",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S03-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "4084c6704cec68ac9054cf2cb4a724239b28295b520571989c52559b2b95375c",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S03-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "1c37d9ab03f2c5a79c2ad9d61c92cf9b1e5ddffc5b9eafe68bc459f25df8696b",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S04-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "5142737dbd7392134008bf0993c7704a5c98a409c701dd6a81b401316f34589a",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S04-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "caf4caaa4d078ba58840b57a8772dc8a372cd6af22763bd42c452581eb98c138",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S04-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "75ad9bfa3ead3f988198f018bee8af83eb2542738469236a6c65390df43cb29c",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S04-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "5592449ea2bbe43cb9ef9ec88c39b9a94eea40a9dced4dfcc894aa01672f7719",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S05-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "6ce564f592728984a45370efce639c7fedb5b4f7278f502e57f0e11699593dd2",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S05-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "ed2cf54a732e7beea82084bfe0eb09f8127f8c33770139643564134171b4854e",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S05-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "bd513ad489fed372ec8013a667528923d7e54362bc17e26adb4fcf79ee7a63d3",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S05-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "74344c13469ed970ced3af33e6ab7033b43fb813f6f68e8263b167a52968b292",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S06-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "a8611d59cfb1bb990e7719597105e435a411a36672819f26539a5e2963c5db85",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S06-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "0c44c540f52fcb636c75957d81cae0579a4d6c1bf3222901a67dcc09d473dc9a",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S06-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "31504b3b74bf73282abdf352751621c5b80c0c665646a7879881bb9ab4130096",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S06-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "7cbc9bd7fb8f3799cdcd9d2529579cdd3c360366148f24a680d41c9a32dbe56b",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S07-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "ab58084b48f53945006ff94402636d2660ec012746f477601d29686c887d65a6",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S07-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "9fe038552cdcfb145772fac3164c64c381336f7c60a6f3232f28ce0d5d355516",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S07-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "9128fad0fe61867dfa856c477b6dd8c11e64693f0fbdaa1b95cccacdcba025bf",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S07-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "9df03c650e03c9d87fdfa00defe9ea1e45003c94e902b461de0e5f1537972011",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S08-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "520c7c192dd3d3587767dd7eaecff7f5214b2cebcd1f058dda68c13a160a8c1e",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S08-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "c3ea688d1b3883706799a08bf7fa8e1c2e40a0bc501b8272eeac3e47d9057873",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S08-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "d005e72af3250d5a121eb4aa9f07bec418d0ec9ea2326c0f32067b2c45ce58f8",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S08-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "25bd52690b0e81bb4a7fe914262ee13f5335f5bafb7e8f463cea04c4dfb3d968",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S09-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "a5881a3b9dafa7db93b954c76fb27295ec4023878d676db549da85a28dfb9f06",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S09-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "9ee17b90a802c17ecd627eb846dab502cc11895f333bd29eea91f3702f9633df",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S09-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "707f50a23cb3969ea34a19f7d9e34b0c636e41ac9ba836e6d57d32deb02e388a",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S09-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "655ed7bb9493ec13ad82222beeb094f44e2f526629067c4c9dd68ce5252209de",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S10-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "3fbaecaa6587feefb74c9b1e74f7add48946cd53fecaceecd6687abb09206e34",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S10-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "3271e7e7fe45d3b7485b5647786f6251d30cd7f7c38ec58c9d20b646615396e4",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S10-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "d4b73b70e1d2cda539baf0807fce29495ce0346bfd17646543369152743e2755",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S10-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "020400f57648d306e2bbf256355d711b60bfe9b4b647a888293181defc93d873",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S11-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "958b437af4f844ab1c58c4f9c0184e30fcd3ef756dca197b9154ef164ad80813",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S11-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "d43d186e05c2abbc9dd1ebb5e1d0b7a2b6d7bb03be74baeff701a6d83b778540",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S11-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "5efbe5ed9b7f0a64cd58877f8310a84047564768372803fccfe4640a691c93fc",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S11-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "cb5f0653dd981dd4fd696af1a9c72b6568d7981c7fb10532d5800a94171b7cba",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S12-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "acd97a354d69fa26d985d06d29dee745f523a889fcc85dc5ffc16dd6035b1667",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S12-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "dc9cb4788570294f4510e414865fdbe91bef68df18c1a04cf64ce53929581edd",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S12-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "3cf5c1034bd623b43633521ee2df1904d21bae229371673266c01b7eaa42065c",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S12-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "4e22a942549848068a55449f7e38e63e33c1b4fe035177d4d51274cd810572ac",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S13-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "c885f79abe6e01cc07ee759aabc5b528947de9e63382522c7adcbad724300b6b",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S13-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "039eba8de86f5007197f37324f57bb970795aaaf4fce44046ed4ceb82a07f966",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S13-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "c392feaa36ef54bc36ac841a2eddac832d6c460cdcca4b04f81a1374dc2894b1",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S13-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "451234cb9be04647811a322ddcf6b604ab9d6d2bc476cee33d870a36a40f51fc",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S14-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "feb47fd4c4429f459eba3080e2f68a347f403c4428de923bc5423f556c3826f8",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S14-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "92eac58cff597d38e90e226cffd70b374c6f99b132e4c55269ee372fe3893e54",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S14-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "d04d45c8f3ba0b89da35fd8e10ecaa18b4fdab09c27f2aeb425ed0d29cb118f9",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S14-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "88bfc790c3ab101707040955472d6e7e3d3e44d364f2601e475006a89cbc2ff6",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S15-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "96ae2e6f51fc8a8aa84cbba1b23bdf44fd6eee202fa6866e4f546aa8e9cb4d1d",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S15-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "1a5674c96a49f30b7229ea9d4ab7e2cec3574d3b94e2fb2ace0cf92695d3d3f1",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S15-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "5450f4911f85c49be16cab549facd984c72cd77202ccc46b1c20d4731a6a6140",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S15-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "2a57af262e6418f4eb9d774c262a3abb345765d7fbe3f9269ffe08cd1b52eae2",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S16-104x112": {
+  "size": [
+   104,
+   112
+  ],
+  "sha256": "014180b242b7060df283fe616fde3daf6f1633ff52be4f69818c52550018c359",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S16-304x312": {
+  "size": [
+   304,
+   312
+  ],
+  "sha256": "505dbe06ddba3a7f47a7bda11ea510198eea1ff7d3485ab55fe68b49cfb20829",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S16-48x48": {
+  "size": [
+   48,
+   48
+  ],
+  "sha256": "eda1ca25299d2b44dcee6411ddde6616c9d41f9098427de5a5231d98b311a585",
+  "signed_in": "pending the owner's look"
+ },
+ "mibi-juvenile-S16-96x88": {
+  "size": [
+   96,
+   88
+  ],
+  "sha256": "578898ae3add654f932676fea1fc45ea1f1c50fa4d16af3f1e5fa52d5f742f27",
+  "signed_in": "pending the owner's look"
+ }
+}

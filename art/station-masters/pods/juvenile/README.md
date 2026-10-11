@@ -1,4 +1,4 @@
-# Juvenile stand-ins, round 1 (Oct 11)
+# Juvenile stand-ins, all 16 species (Oct 11)
 
 By internal `boards/station-juvenile-studio-brief.md` (b349a00). The owner approved up to 115 MXN (decisions.md 10-11 08:49,
 and in the art director's session at 09:00). The programme lead's go was given at 09:02 (run here). Round 1 covers S01 Loika,
@@ -27,3 +27,23 @@ Round 1 total: 11.23 MXN of the 15.5 planned, with no retries. The set is at 11.
   - S10's rendering is a little glossier than S01's matte.
   - S10 is small at 104×112 (its adult is low and long).
 - Not signed and not placed. The owner sees round 1 before round 2.
+
+## S16 redo and round 2 (owner 09:33: redo S16 once, closer to its adult; then the other 13)
+
+- **S16:** redone as `mibi-juvenile-S16-b` (3.68 MXN). It is now the adult's own plan: an upright spindle on splayed fins,
+  a short stalk neck and a round head. The first S16 (`-a`) is superseded.
+- **Round 2:** S02–S09 and S11–S15, one Pro request each (`mibi-juvenile-SXX-a`), 13 requests, no retries, 49.34 MXN.
+  - The same method, with each prompt naming its adult's own plan.
+  - References: each adult's rig render at 304×312 (`guides/`) and its signed halo. Never an earlier juvenile.
+- **The set:** 64 files (16 species × 4 sizes). Total 64.25 MXN of the 115 cap (round 1 11.23, S16 redo 3.68, round 2 49.34).
+- **Re-cut:** all 16 species were re-cut to fix a keying fault. The first cut filled enclosed magenta pockets between legs
+  (S03, S06, S07). Now only non-magenta holes are filled.
+- **Proofs:**
+  - `juvenile-sheet-1x.png`: each species as its adult, its juvenile at 304×312, then 104×112, 96×88 and 48×48.
+  - `juvenile-48-row-1x.png`: the 16 at 48×48 in a row.
+- **Manifest:** `manifest.json` lists every id with its size and sha256, for place-masters once signed.
+- **Read at 1×:**
+  - Every juvenile reads as its species and as young.
+  - S13 is the smallest and darkest at 48. S02's cap is coral where the adult's is orange-brown.
+  - The rendering is not perfectly even across the set: some are glossier, e.g. S10, S11.
+- Not placed. The owner sees the full sheet first, and the art director signs after.
