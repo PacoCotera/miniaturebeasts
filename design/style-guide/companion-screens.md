@@ -569,6 +569,49 @@ Lines the world turn writes stay on the Expedition ended screen, as built, worde
 
 Bottom line: `✓ Open Mibis · ← menu` (as built) (Mibis opens on the Lead card), context `Partner: ‹name› · ‹ability›` (as built), `no one grown yet` or `no one with you`. The built "take one at the Station · N at home" becomes `dock to take one along`, without the count.
 
+With only juveniles carried the card shows the rider instead of `No partner`: see [The juvenile with you on an expedition](#the-juvenile-with-you-on-an-expedition).
+
+---
+
+### The juvenile with you on an expedition
+
+A juvenile rides in the Companion and never joins the Probe. When the expedition has no partner, the **rider** is the first mibi with you in carried order, fixed at set-out; it is always a juvenile. It has no field token, no field marker, no name tag, no ability, no notch and opens no gate. **Reads first:** the partner's place shows the rider, and a mark that is not the partner's says it is with you, not in the field. The teal ring stays the partner's alone; the rider's mark is a window, because it rides in the device.
+
+**HUD, the partner's slot.** Drawn when there is no partner, there is a rider and `x + 14 < rx`, x computed as for the partner:
+
+| Element | x, y, w, h | Contents |
+| --- | --- | --- |
+| Window | x − 2, 8, 16, 16 | A composed panel: 1 px `slate` border with cut corners, `night` fill. No teal ring |
+| Mini | x, 10, 12, 12 | The rider's 12 px mini. No flinch bubble |
+| Name | x + 17, 9, 2× | `fog`, never `amber`; clipped to `rx − 4`; nothing when the room is under 30 px |
+
+**The expedition choice's partner card,** only juveniles carried:
+
+| Region | x, y, w, h | Contents |
+| --- | --- | --- |
+| Face | 28, 264, 64, 64 | The rider's sprite at 2×, the partner's size and place. No ring, no dashed circle |
+| Name | 112, 260 | 3× `ink`, clipped at 220 px; heart 16×16 8 px after it, y 266, when bonded |
+| Stage chip | 112, 292, h 22 | `juvenile`, `teal` fill, `bone` label |
+| Line | 112, 320 | 2× `stone`, clipped at 306 px: `grows in time in the Companion`, or `grows with care in the Companion` when bonded |
+| With you | 338, 366, 394; y 262; 24×24 each | As above, every ring `stone` |
+
+No `No partner` headline, no ability line, no count of turns.
+
+**Lines.** At set-out, once per expedition, the message box: `‹name› rides along until it’s grown` (on the first move when the first expedition's intro fills the box). Mid-expedition, the menu with the Mibis row focused: context `‹name› rides along`; the Lead card's context: `no one grown yet`. In a place and on the map the middle of the bottom line stays where you are; at the burrow the gate reads as for no partner.
+
+**The stage mid-expedition, undocked,** for a juvenile with you: awake, always, the two breath frames at (97, 52), never asleep, dimmed or absent. It looks out: `alert` frame 0 at (97, 58) for 960 ms, every 5000–8000 ms (start to start, seeded per mibi), counted from the page opening; a Call answer or a page change starts the count again. Every second look-out is mirrored, and the mibi keeps facing that way in its idle until the next look-out turns it back. No chirp marks. Reduced motion: idle frame 0, no look-out. The species line for a juvenile is `‹Species› · ‹ability› once grown`; a species with no ability text keeps `no field ability yet`.
+
+**The Walk with one juvenile:** `‹name› walks the ‹place›` (`· the path` with no place), naming no field result its stage cannot have.
+
+**Placeholder plates.** A mibi's `c-face-24` plate carries its 12 px mini centred (x + 6, y + 6); its `c-token-48` plate carries its 32 px sprite at 1× (x + 8, y + 8) with the screen's breath frame; the hearts are the plain `red` plate. A plate's label is drawn only while the Observer panel is open: a player sees the plate and the mibi's existing picture, no words.
+
+**Pass when**
+- [ ] The rider never wears the teal ring and its name is never `amber`.
+- [ ] No headline says there is no partner above the juvenile on the card, and no screen counts turns until it grows up.
+- [ ] Undocked mid-expedition the juvenile on the stage is awake in every frame.
+- [ ] No `face`, `token`, `heart`, `h`, `mibi` or `m` letters on screen with the Observer closed.
+- [ ] The rider's line never pushes out the "where you are" context in the field.
+
 ---
 
 ### Faults the care build fixes
