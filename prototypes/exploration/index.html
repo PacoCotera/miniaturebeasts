@@ -2592,7 +2592,7 @@ function groundInto(pb, base, h) {
   else { pb.rect(0, 0, 32, 32, C.grass); for (let i = 0; i < 24; i++) pb.set(R.int(32), R.int(32), R.pick([C.sprout, C.leaf, C.leaf])); for (let i = 0; i < 4; i++) { const x = 1 + R.int(30), y = 2 + R.int(28); pb.rect(x, y, 1, 2, C.leaf); pb.set(x, y - 1, C.sprout); } }
 }
 function buildTile(t, base, v, mask, fr, terr) {
-  if (terr) return buildTerrTile(t, base, v, mask, fr);
+  if (terr) return buildTerrTile(t, base, v, mask, fr, terr.bv, terr.bm);
   const pb = new PB(32, 32), h = hash('tile', t, base, v), R = makeRng(h);
   switch (t) {
     case T.GRASS: groundInto(pb, T.GRASS, h); break;
@@ -2646,10 +2646,10 @@ function buildTile(t, base, v, mask, fr, terr) {
 // Generator 2's place pieces at 32 px (terrain layer kind v, mask m): code-drawn placeholders until the phase 6 atlas, each
 // registered under its TERR name. Faces, sides and stair cheeks in rock and stone; the lip a light remap of the ground with
 // the ink line outermost; the trodden aprons in sand.
-function buildTerrTile(t, base, v, m, fr) {
+function buildTerrTile(t, base, v, m, fr, bv, bm) {
   const h = hash('tile', t, base, v);
   if (v === TERR.SHADOW) {   // low ground under a north-facing rim: the tile as drawn today, darkened on a checkerboard at its foot
-    const pb = buildTile(t, base, v, m, fr);
+    const pb = buildTile(t, base, bv, bm, fr);   // the tile's own variant and mask
     for (let y = 28; y <= 31; y++) for (let x = 0; x <= 31; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < 8) pb.set(x, y, DARK[pb.get(x, y)]);
     return pb; }
   const pb = new PB(32, 32);
@@ -2668,7 +2668,8 @@ function buildTerrTile(t, base, v, m, fr) {
     pb.rect(lo, 0, 1, 32, C.stone);                                              // the low side's stone edge
     pb.rect(hi, 0, 1, 32, C.ink);                                                // the high side's ink
     if (m & 2) pb.rect(x0, 0, 16, 1, C.ink);                                     // north end: the ink turns across the top
-    if ((m & 4) && !(m & 8)) pb.rect(east ? 1 : 16, 30, 15, 2, C.stone);         // south end: the foot (none where a face follows)
+    if ((m & 16) && (m & 4)) pb.rect(east ? 0 : 16, 30, 16, 2, C.stone);          // the side tail's foot: the face's foot line across the whole column
+    else if ((m & 4) && !(m & 8)) pb.rect(east ? 1 : 16, 30, 15, 2, C.stone);    // south end: the foot (none where a face follows)
   } else if (v === TERR.LIP) {
     groundInto(pb, base, h);
     const on = b => (m >> b) & 1, lit = new Uint8Array(32 * 32), mark = (x, y) => { lit[y * 32 + x] = 1; };
@@ -2710,14 +2711,14 @@ function tileKeys(lay) {
     else if (t === T.CWALL) { if (nb[2] === T.CFLOOR) m |= 4; }
     else if (t === T.ISLE) { if (nb[2] === T.DEEP) m |= 4; }
     tk[y * PW + x] = { t, v: (t === T.GRASS || t === T.DARK || t === T.SAND || t === T.CFLOOR || t === T.TALL) ? v : v & 1, m, anim: t === T.WATER || t === T.STEP || t === T.DEEP };
-    const i = y * PW + x; if (lay.terr && lay.terr[i]) tk[i] = { t, v: lay.terr[i], m: lay.tmask[i], anim: false, terr: true };   // generator 2's terrain layer: the piece kind and its mask
+    const i = y * PW + x; if (lay.terr && lay.terr[i]) { const b = tk[i]; tk[i] = { t, v: lay.terr[i], m: lay.tmask[i], anim: false, terr: true }; if (lay.terr[i] === TERR.SHADOW) { tk[i].bv = b.v; tk[i].bm = b.m; } }   // generator 2: the piece kind and its mask; SHADOW keeps the tile's own variant and mask
   }
   return (lay.tk = tk);
 }
-function tileKey(lay, i, fr) { const k = tileKeys(lay)[i]; return 't' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + (k.anim ? fr : 0) + (k.terr ? '.g' : ''); }
+function tileKey(lay, i, fr) { const k = tileKeys(lay)[i]; return 't' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + (k.anim ? fr : 0) + (k.terr ? '.g' + (k.bv != null ? '.' + k.bv + '.' + k.bm : '') : ''); }
 function tilePB(lay, i, fr) {
   const k = tileKeys(lay)[i], f = k.anim ? fr : 0;
-  return art(tileKey(lay, i, fr), () => buildTile(k.t, lay.base, k.v, k.m, f, k.terr));
+  return art(tileKey(lay, i, fr), () => buildTile(k.t, lay.base, k.v, k.m, f, k.terr && { bv: k.bv, bm: k.bm }));
 }
 function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light); }
 

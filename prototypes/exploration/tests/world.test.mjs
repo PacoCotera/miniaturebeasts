@@ -325,7 +325,10 @@ test("generator 2 places, on seeds 0–99: bands, stairs, solid borders, sides a
           for (const y of [0, 1]) { is(wl.terr[I(ex, y)], TERR.FACE, () => `seed ${s} cell ${c} face beside the tail`);
             ok(wl.tmask[I(ex, y)] & (x === 0 ? 4 : 2), () => `seed ${s} cell ${c} the face's outer end`); }
           is(lay.tmask[I(x, 1)] & 4, 4, () => "the tail's foot"); }
+        for (const y of [0, 1]) is(lay.terr[I(x, y)] === TERR.SIDE && (lay.tmask[I(x, y)] & 16) !== 0, tail, () => `seed ${s} cell ${c} bit 4 at ${x},${y}`);   // both tail tiles carry bit 4
       }
+      for (let i = 0; i < PW * PH; i++) if (lay.terr[i] === TERR.SIDE && (lay.tmask[i] & 16)) { const x = i % PW, y = (i / PW) | 0;   // and no other tile does
+        ok((x === 0 || x === PW - 1) && y <= 1 && onMap(cx + (x ? 1 : -1), cy) && G.level[cy * MW + cx + (x ? 1 : -1)] === G.level[c], () => `seed ${s} cell ${c} bit 4 only on a tail, ${x},${y}`); }
     }
   }
   console.log(`# generator 2: ${places} places and ${stairsN} stairs checked in ${Date.now() - t0} ms`);
@@ -483,4 +486,15 @@ test("generator 2 play: stairs and aprons take no pods, creatures or slabs; plac
   // each piece is in the register, under its TERR name, as a 32 px stand-in
   const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32).map(a => a.id).join()");
   assert.equal(reg, Object.keys(TERR).filter(k => k !== "NONE").join());
+});
+
+test("generator 2 play: a SHADOW tile draws its own base tile (its own variant and mask), darkened at its foot", () => {
+  const f = CROSSINGS["N down"], p = g2At(f.seed, f.a); p.run(`act(${JSON.stringify(f.dir)}); FX.lockUntil = 0; act('confirm')`);
+  const lay = p.run("layout(S.exp.patch.key)"); let n = 0; const vs = new Set();
+  for (let x = 0; x < PW; x++) { const i = (PH - 1) * PW + x; if (lay.terr[i] !== TERR.SHADOW) continue; n++;
+    const k = p.run(`tileKeys(layout(S.exp.patch.key))[${i}]`), own = p.run(`(() => { const L = layout(S.exp.patch.key), t = L.terr; L.terr = null; L.tk = null; const k = tileKeys(L)[${i}]; L.terr = t; L.tk = null; return k; })()`);
+    assert.equal(k.bv, own.v, `variant ${x}`); assert.equal(k.bm, own.m, `mask ${x}`); vs.add(k.bv);
+    const got = p.run(`tilePB(layout(S.exp.patch.key), ${i}, 0)`), base = p.run(`buildTile(${k.t}, layout(S.exp.patch.key).base, ${own.v}, ${own.m}, 0)`);
+    for (let y = 0; y < 32; y++) for (let xx = 0; xx < 32; xx++) { const b = base.p[y * 32 + xx]; assert.equal(got.p[y * 32 + xx], y >= 28 && p.run(`BAYER[${(y & 3) * 4 + (xx & 3)}]`) < 8 ? p.run(`DARK[${b}]`) : b); } }
+  assert.ok(n > 0 && vs.size > 1, "a shadow row with more than one variant");
 });
