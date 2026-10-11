@@ -150,3 +150,51 @@ test("the events: the moment's two hops lift the creature by the spec's table (t
   const t = await start(scene({ focus: "resident" }), { t0: 9000 }); const h0 = t.hash(); t.send({ t: "event", kind: "flash", target: "nameTag", ms: 240, hold: 240 }); t.frame(t.t + 10); const h1 = t.hash(); t.frame(t.t + 130); const h2 = t.hash(); t.frame(t.t + 250); const h3 = t.hash();
   assert.notEqual(h1, h0, "the flash is on"); assert.equal(h2, h1, "and still on at +130"); assert.equal(h3, h0, "and gone at +250");
 });
+
+// ---- Station M1 §3: one mibi up close with a moving set (the close atlas synthesized at 304 × 312; moving-scene.mjs) ----
+import { MOVING as MSETS, sendMoving, atlasPicture, VIV_RULES } from "./moving-scene.mjs";
+import { setMoving } from "../../station/src/moving.mjs";
+setMoving(MSETS);
+async function upClose(o = {}) {
+  const settings = cfg(8), st = S.freshSt("w1", 3, T0); S.normalize(st); st.firstMibi = false; st.dock = { docked: true, at: T0 };
+  S.seedAdults(st, "S01", 5, 2, settings); for (const m of st.mibis) m.paint = { state: "landed" }; if (o.juvenile) st.mibis[0].born = st.turn;
+  const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [], tier: 1, shield: 3, carryReqs: [] };
+  const b = habitatBuild({ st, sv, settings, docked: true, light: "day", focus: o.focus ?? "name", habId: st.mibis[0].id, meetId: null, armed: false, time: o.time ?? 12 * 3600, restRules: VIV_RULES.rest, motionSets: true }, spec, frameSpec, homeSpec);
+  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["habitat", spec], ["namer", namerSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0, f.errors().join("; "));
+  assert.equal(sendMoving(f), 0, f.errors().join("; "));
+  for (const id of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${id}:16`, withPolicy((i) => standIn(i, [16, 16])));
+  for (const r of b.requests) if (r.kind === "moving") f.handleOf(r.id, withPolicy((i) => atlasPicture(i)));
+  f.t = 5000; f.motion = o.motion ?? true; f.build = b; assert.equal(push(f, b), 0, f.errors().join("; ")); frames(f); dirty(f, { fullCut: true });
+  return { f, b };
+}
+const closeCells = (stage) => MSETS.S01[stage].close.cells;
+const cellOf = (f, stage) => { const c = f.M._face_test_close_cell(); return c < 0 ? `dither ${-1 - c}` : closeCells(stage)[c]; };
+const traceClose = (f, stage, ms, step = 20) => { const out = []; let last = null; for (let t = 0; t <= ms; t += step) { f.frame((f.t += step)); const k = cellOf(f, stage) + "/" + f.M._face_test_close_lift(); if (k !== last) { out.push({ t, cell: cellOf(f, stage), lift: f.M._face_test_close_lift() }); last = k; } } return out; };
+test("up close (M1 §2.4, §3): the resident from its close atlas breathes on its own 80 ms ticks (+0/+1/+2), every frame inside 153,600 px", { skip }, async () => {
+  const { f, b } = await upClose(); assert.ok(b.props.regions.resident.moving, "the resident names its close atlas"); assert.ok(f.M._face_test_close_cell() >= 0);
+  let worst = 0; const seen = new Set(), changes = [];
+  for (let t = 0; t < 8000; t += 16) { f.frame((f.t += 16)); worst = Math.max(worst, dirty(f)); const c = cellOf(f, "adult"); if (!seen.has(c) || changes.at(-1)?.c !== c) changes.push({ t, c }); seen.add(c); }
+  for (const c of ["stand", "stand-b1", "stand-b2"]) assert.ok(seen.has(c), "the breath shows " + c); assert.ok([...seen].every((c) => ["stand", "stand-b1", "stand-b2", "blink"].includes(c)), [...seen].join()); assert.ok(worst <= 153600, `${worst} px`);
+  for (let k = 1; k < changes.length; k++) assert.ok((changes[k].t + 16) % 80 < 32, `a change at ${changes[k].t} ms is on an 80 ms tick`);   // the face's tick from the screen's first frame, seen by 16 ms frames
+});
+test("Greet up close with a moving set (M1 §2.4, override 4): hops at 0 and 900 ms, each crouch 160, air 400 on [8, 20, 24, 20, 8], crouch 160, then stand", { skip }, async () => {
+  const { f } = await upClose({ focus: "resident" }); f.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 300, cut: true });
+  const tr = traceClose(f, "adult", 1900), lifts = tr.filter((x) => x.cell === "air").map((x) => x.lift);
+  assert.deepEqual(lifts.slice(0, 5), [8, 20, 24, 20, 8], "the first hop's lift"); assert.deepEqual(lifts.slice(5, 10), [8, 20, 24, 20, 8], "the second hop's");
+  const air1 = tr.find((x) => x.cell === "air"), air2 = tr.filter((x) => x.cell === "air")[5]; assert.ok(Math.abs(air2.t - air1.t - 900) <= 20, `the hops 900 ms apart: ${air2.t - air1.t}`);
+  assert.equal(tr.at(-1).cell, "stand");
+});
+test("a sleeper's Greet (M1 §2.4): wake (16-level dither in 180 ms, crouch 400, stand), the hops, crouch 320, dither 180, curl: 2,880 ms", { skip }, async () => {
+  const { f, b } = await upClose({ time: 23 * 3600, focus: "resident" }); assert.equal(b.props.regions.resident.rest, "asleep"); assert.match(cellOf(f, "adult"), /^curl/);
+  f.send({ t: "event", kind: "moment", target: "resident", ms: 2880, hold: 300, cut: true });
+  const tr = traceClose(f, "adult", 2900, 10), dithers = tr.filter((x) => x.cell.startsWith("dither"));
+  const first = dithers.filter((x) => x.t < 200).map((x) => +x.cell.slice(7)), last = dithers.filter((x) => x.t > 2000).map((x) => +x.cell.slice(7));
+  assert.ok(first.length >= 12 && first.every((v, i) => i === 0 || v >= first[i - 1]), "the wake's dither climbs its levels within 180 ms: " + first); assert.ok(last.length >= 12, "the curl's dither: " + last);
+  assert.ok(tr.filter((x) => x.cell === "air").length >= 10, "the hops"); assert.match(tr.at(-1).cell, /^curl/, "it ends curled"); assert.ok(tr.find((x) => x.cell === "crouch"));
+});
+test("motion off up close: stand, or curl asleep; the moment plays nothing", { skip }, async () => {
+  const a = await upClose({ motion: false }); assert.equal(cellOf(a.f, "adult"), "stand");
+  const b = await upClose({ motion: false, time: 23 * 3600 }); assert.equal(cellOf(b.f, "adult"), "curl");
+  let worst = 0; for (let t = 0; t < 4000; t += 16) { a.f.frame((a.f.t += 16)); worst = Math.max(worst, dirty(a.f)); } assert.equal(worst, 0);
+});

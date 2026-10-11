@@ -16,6 +16,7 @@ const SCENES = {
   "growing":      { want: "growing", set: (w) => { w.adults(2); w.budAt(2); } },
   "growing-late": { want: "growing", set: (w) => { w.adults(2); w.budAt(13.2); } },
   "ready":        { want: "ready",   set: (w) => { w.adults(2); w.bud(true); } },
+  "ready-moving": { want: "ready", timedOnly: true, set: (w) => { w.adults(2); w.bud(true); const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "12:00"; } },
 };
 const WORLDS = (page) => page.evaluate((src) => { window.__world = Object.assign(eval(src[0])(), eval(src[1])()); }, [`(${WORLD.toString()})`, `(${INC.toString()})`]);
 async function apply(page, sc) {
@@ -30,6 +31,8 @@ const TIMED = {
   "hatch-1100": { scene: "ready", go: () => window.__st.press("confirm"), at: 1100, want: "hatch" },
   "hatch-1500": { scene: "ready", go: () => window.__st.press("confirm"), at: 1500, want: "hatch" },
   "hatch-2000": { scene: "ready", go: () => window.__st.press("confirm"), at: 2000, want: "hatch" },
+  // Station M1 §2.5: the hatch with S01's moving set on its stand-in close cells, under the developer switch
+  ...Object.fromEntries([1090, 2500, 5440, 5840].map((at) => [`hatch-moving-${at}`, { scene: "ready-moving", go: () => window.__st.press("confirm"), at, want: "hatch" }])),
   "growNow-200": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 200, want: "growing" },
   "growNow-420": { scene: "growing-late", go: () => window.__st.press("confirm"), at: 420, want: "ready" },
 };
@@ -42,6 +45,7 @@ async function still(visit) {
   await WORLDS(page);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
+      if (sc.timedOnly) continue;
       await apply(page, sc); await step(400);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state })); if (u.screen !== "incubator" || u.props !== sc.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
       await visit("incubator-" + name, page, fail);
@@ -59,7 +63,8 @@ async function timedStates(visit) {
       await page.evaluate(tp.go); await step(tp.at);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, props: window.__st.props?.state }));
       if (u.screen !== "incubator" || u.props !== tp.want) fail(`incubator-${name}: on ${u.screen}, props ${u.props}`);
-      await visit("incubator-" + name, page, fail); await step(3000);
+      await visit("incubator-" + name, page, fail); await step(/moving/.test(name) ? 7000 : 3000);
+      await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = null; });
     }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }

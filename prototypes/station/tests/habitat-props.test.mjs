@@ -157,3 +157,11 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   w.st.turn += w.settings.adultTurns ?? S.JUVENILE_TURNS; for (const x of m) assert.equal(S.mibiStage(w.st, x, w.settings), "adult");
   assert.deepEqual(ids(build(w, sv)), young.map((id) => id.replace(":juvenile:", ":adult:")));
 });
+
+// ---- Station M1 §2.6: one mibi up close with its moving set (close and its shadow), its seed and its rest ----
+import { setMoving } from "../src/moving.mjs";
+{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+test("up close, the resident's seed, moving (the close atlas and its shadow) and rest fit habitat.props.json", () => {
+  for (const name of ["rest", "juvenile"]) { const { w, sv } = scenes()[name], b = build(w, sv, { time: 23 * 3600, restRules: spec.rules?.rest ?? J("vivarium.json").rules.rest, motionSets: true }), r = b.props.regions.resident;
+    assert.deepEqual(validate(b.props, schema), [], name); assert.ok(Number.isInteger(r.seed)); assert.match(r.moving.close, /^moving:(juvenile|adult):S01:close:304x312:species$/); assert.match(r.moving.shadow, /:shadow:304x24$/); assert.equal(r.rest, "asleep"); }
+});

@@ -220,3 +220,19 @@ test("a light change is a cut: Home redraws the whole of its glass at most (312,
     const a = dirty(f); assert.ok(a <= 312320, `${from} to ${to}: dirty ${a}`); assert.deepEqual(f.errors(), []);
   }
 });
+
+// ---- Station M1 §3: Home's glass with moving sets (moving-scene.mjs: stand-in atlases synthesized at the slot sizes) ----
+import { movingScene, bootScene, runFrames } from "./moving-scene.mjs";
+for (const cadence of [[16, 0, 0], [16, 5, 120]]) {
+  test(`MOVING (M1 §3): Home's glass with twelve moving residents and three bed sleepers, 30 s of frames every ${cadence[0]} ms${cadence[2] ? " (every 63rd 120 ms late)" : ""}, the top bar live: no frame over 153,600 px, no overflow, at most six changed in a frame, nothing off a group tick, no tick over 148,000 px`, { skip }, async () => {
+    const f = await bootScene(movingScene("home", { adults: 6, juveniles: 5, s05: 1, sleepers: 3 })); assert.deepEqual(f.errors(), []); assert.equal(f.refused(), 0);
+    const r = runFrames(f, 30000, { cadence, top: true });
+    assert.ok(r.worst <= 153600, `a frame redrew ${r.worst} px`); assert.ok(r.steps <= 6, `${r.steps} changed in a frame`); assert.equal(r.offgroup, 0); assert.ok(r.worstTick <= 148000, `a tick of ${r.worstTick} px`); assert.equal(f.invOverflows(), 0);
+    console.log(`# Home (moving, cadence ${cadence.join("/")}): worst frame ${r.worst} px, worst tick ${r.worstTick} px, ${r.deferred} deferred`);
+  });
+}
+test("determinism and motion off on Home's glass (M1 §3): two faces walk alike; with motion off nothing is redrawn over 10 s", { skip }, async () => {
+  const run = async () => { const f = await bootScene(movingScene("home", { adults: 6, juveniles: 5, s05: 1 })); runFrames(f, 8000); return f.hash(); };
+  assert.equal(await run(), await run());
+  const f = await bootScene(movingScene("home", { adults: 6, juveniles: 5, s05: 1 }), { motion: false }); assert.equal(runFrames(f, 10000).worst, 0);
+});

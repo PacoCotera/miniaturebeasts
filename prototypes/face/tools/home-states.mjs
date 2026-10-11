@@ -76,6 +76,8 @@ async function timedStates(visit) {
   } finally { await close(); }
   return { fails };
 }
+// Station M1: one resident focused asleep in place, on its stand-in cells under the developer switch, the Station time 23:00 (reduced motion: the curl, no dither)
+const MOVING_ASLEEP = { f: "resident:0", set: (w) => { w.adults(2); w.young(1); const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "23:00"; } };
 async function staticStates(visit, { motion }) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate(`(${WORLD.toString()})`).catch(() => {});
@@ -92,6 +94,10 @@ async function staticStates(visit, { motion }) {
       if (u.screen !== "home" || u.idle) fail(`home-${name}: on ${u.screen}${u.idle ? " (idle)" : ""}`);
       await visit("home-" + name, page, fail);
     }
+    if (!motion) { await apply("moving-asleep", MOVING_ASLEEP); await page.waitForTimeout(900);
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, rest: (window.__st.props?.regions?.residents ?? []).map((r) => (r.moving ? r.rest : "still")) }));
+      if (u.screen !== "home" || u.rest.some((r) => r !== "asleep")) fail("home-moving-asleep: " + JSON.stringify(u));
+      await visit("home-moving-asleep", page, fail); await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = null; }); }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };

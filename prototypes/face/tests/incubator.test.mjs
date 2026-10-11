@@ -196,3 +196,34 @@ test("the rail refuses a pip that is not 6 × 6: the composed marks are defined 
   f.props({ screen: "incubator", ...b2.props, motion: true, frame: frameProps(b2.line) }); frames(f);
   assert.match(f.errors().join("; "), /a rail pip is 6 × 6/); assert.ok(f.refused() > 0, "the screen is refused");
 });
+
+// ---- Station M1 §2.5, §3: the hatch with a moving set (the close atlas synthesized at 304 × 312; moving-scene.mjs) ----
+import { MOVING as MSETS, sendMoving, atlasPicture } from "./moving-scene.mjs";
+import { setMoving } from "../../station/src/moving.mjs";
+setMoving(MSETS);
+async function hatchMoving({ motion = true } = {}) {
+  const st = world(), id = "S01"; S.seedPodFromGenome(st, podGenome(frameOf(id), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); S.read(st, p, frameOf(id).chapters[0].id, settings);
+  assert.ok(S.grow(st, p, {}, settings, T0).ok); const now = T0 + 30 * 60000, r = S.openBud(st, {}, settings, now); assert.ok(r.ok);
+  const b = incubatorBuild({ st, settings, now, ui: { inc: { hatch: { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null } } }, lamp: "", motionSets: true }, incSpec, podsSpec);
+  assert.ok(b.props.regions.juvenile.moving, "the juvenile names its close atlas");
+  const f = await bootFace(pathToFileURL(dist + "/"), { test: true });
+  f.send({ t: "palette", name: "station", colours: palette }); for (const [n, j] of [["frame", frameSpec], ["pods", podsSpec], ["incubator", incSpec]]) assert.equal(f.send({ t: "spec", screen: n, json: j }), 0); assert.equal(sendMoving(f), 0, f.errors().join("; "));
+  for (const i of ["energy", "data", "essence", "cross"]) f.handleOf(`icon:${i}:16`, withPolicy((x) => standIn(x, [16, 16])));
+  for (const q of PINNED) f.handleOf(q.id, withPolicy((x) => standIn(x, [q.w, q.h])));
+  for (const q of b.requests) f.handleOf(q.id, withPolicy((x) => (q.kind === "moving" ? atlasPicture(x) : standIn(x, sizeOf(q), hollowOf(q)))));
+  f.t = 5000; f.motion = motion; f.build = b;
+  assert.equal(f.props({ screen: "incubator", ...b.props, motion, frame: frameProps(b.line) }), 0, f.errors().join("; ")); frames(f); dirty(f, { fullCut: true });
+  const ev = EV.hatch.moving; f.send({ t: "event", kind: "hatch", target: "room", ms: ev.ms, hold: ev.hold, cut: true }); return f;
+}
+const hatchCell = (f) => { const c = f.M._face_test_hatch_cell(), cells = MSETS.S01.juvenile.close.cells; return c === -50 ? "none" : c < 0 ? "dither" : cells[c]; };
+test("the hatch with a moving set (M1 §2.5, R2): the table by face_test_cell: nothing to 1000, the curl's dither-in to 1180, curl, curl·b1 at 1500, the dither to crouch at 2140, crouch at 2320, stand at 2720 and its breath, the first hop at 5120 on [6, 14, 17, 14, 6], stand at 5840; every frame inside 153,600 px", { skip }, async () => {
+  const f = await hatchMoving(), seen = []; let worst = 0, last = null;
+  for (let t = 16; t <= 6400; t += 16) { f.frame((f.t += 16)); worst = Math.max(worst, dirty(f)); const c = hatchCell(f); if (c !== last) { seen.push([t, c]); last = c; } }
+  const at = (ms) => { let c = "none"; for (const [t, x] of seen) if (t <= ms) c = x; return c; };
+  for (const [ms, want] of [[900, "none"], [1090, "dither"], [1300, "curl"], [1800, "curl-b1"], [2200, "dither"], [2500, "crouch"], [2800, "stand"], [3700, "stand-b1"], [4000, "stand-b2"], [5150, "crouch"], [5440, "air"], [5700, "crouch"], [5900, "stand"]]) assert.equal(at(ms), want, `at ${ms} ms: ${JSON.stringify(seen)}`);
+  assert.ok(worst <= 153600, `${worst} px`);
+  console.log(`# the hatch with a moving set: worst frame ${worst} px; ${seen.map(([t, c]) => t + " " + c).join(", ")}`);
+});
+test("the hatch with a moving set, motion off: the cut to its end (the stand)", { skip }, async () => {
+  const f = await hatchMoving({ motion: false }); frames(f); assert.equal(hatchCell(f), "stand");
+});

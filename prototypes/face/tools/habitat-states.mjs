@@ -43,7 +43,28 @@ async function enter(page, sc) {
     for (const k of spec.keys ?? []) { const [t, v] = k.startsWith("x:") ? ["act.done", k.slice(2)] : [k, "confirm"]; S.intent({ screen: "namer", target: t, verb: v }); }
   }, [sc.set.toString(), { shown: sc.shown, f: sc.f, meet: !!sc.meet, light: sc.light ?? null, arm: !!sc.arm, open: sc.open ?? null, keys: sc.keys ?? null }]);
 }
-export async function habitatStates(visit) {
+// Station M1: Greet up close on S01's stand-in close cells under the developer switch, on the virtual clock at 0, 450, 900 and 1350 ms of the moment
+async function moments(visit) {
+  const { page, fails, fail, step, close } = await openStation({ motion: true, clock: true });
+  await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
+  try {
+    for (const at of [0, 450, 900, 1350]) {
+      await page.evaluate(() => { const S = window.__st; S.settings.motionSets = true; S.settings.stationTime = "12:00"; });
+      await enter(page, SCENES.rest); await step(1200);
+      await page.evaluate(() => window.__st.intent({ screen: "habitat", target: "resident", verb: "confirm" })); await step(at || 1);   // at 0: the moment's first frame (a frame must run for the face to draw it)
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, moving: !!window.__st.props?.regions?.resident?.moving })); if (u.screen !== "habitat" || !u.moving) fail(`habitat-moment-S01-${at}: ` + JSON.stringify(u));
+      await visit("habitat-moment-S01-" + at, page, fail); await step(2500);
+    }
+    await page.evaluate(() => { const S = window.__st; S.settings.motionSets = false; S.settings.stationTime = null; });
+    const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
+  } finally { await close(); }
+  return { fails };
+}
+export async function habitatStates(visit, { motion = false, timed = true } = {}) {
+  const r = await stillStates(visit); if (motion || !timed) return r;
+  const t = await moments(visit); return { fails: [...r.fails, ...t.fails] };
+}
+async function stillStates(visit) {
   const { page, fails, fail, close } = await openStation({ motion: false });
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
   try {

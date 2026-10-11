@@ -221,3 +221,70 @@ test("motion off (M1 §3): every moving resident stands (curls when asleep), and
     const r = runFrames(f, 10000); assert.equal(r.worst, 0, "dirty 0"); void I;
   }
 });
+// the cell names of a resident's walk atlas (painted, then mirrors)
+const cellName = (sc, i, c) => { const r = sc.props.regions.residents[i], w = MOVING_SETS[r.moving.set][r.stage === "juvenile" ? "juvenile" : "adult"].walk; return c < 0 ? `dither ${-1 - c}` : c < w.cells.length ? w.cells[c] : w.mirror[c - w.cells.length] + "*"; };
+// sample resident i once a group tick (40 ms frames), recording every change of its cell, until `until` returns true or `ms` pass
+const watch = (f, i, ms, until = () => false) => { const out = []; let last = null; for (let t = 0; t < ms; t += 40) { f.frame((f.t += 40)); const c = f.M._face_test_cell(i), s = STATE(f.M._face_test_state(i)); const k = c + ":" + s.clip; if (k !== last) { out.push({ t, c, clip: s.clip, dy: f.M._face_test_mv(i, 4) }); last = k; } if (until(s, c)) break; } return out; };
+// a resident's clip, phase, cell, dy and dither level once a group tick, recording each change
+const trace = (f, i, ms) => { const out = []; let last = null; for (let t = 0; t < ms; t += 40) { f.frame((f.t += 40)); const s = STATE(f.M._face_test_state(i)), row = { t, clip: s.clip, phase: s.phase, cell: cellName(f.sc, i, f.M._face_test_cell(i)), dy: f.M._face_test_mv(i, 4), level: f.M._face_test_mv(i, 5) }, k = JSON.stringify({ ...row, t: 0 }); if (k !== last) { out.push(row); last = k; } } return out; };
+test("rest change (M1 §3, game designer R1; UI/UX asleep in place): awake → asleep by props: crouch 4 ticks lowered 1 px a tick for 2, the dither at levels 4, 8, 12, 16 on four own ticks, curl, the asleep loop 800 ms after; then the wake in reverse", { skip }, async () => {
+  const f = await bootScene(movingScene("vivarium", { adults: 1, focus: "tile:0" })); runFrames(f, 3000);
+  f.sc.props.regions.residents[0].rest = "asleep"; resend(f);
+  watch(f, 0, 20000, (s) => s.clip === CLIP.curl);   // a traveller finishes its trip first
+  const tr = trace(f, 0, 2500), crouch = tr.filter((x) => x.clip === CLIP.curl && x.phase === 0), dither = tr.filter((x) => x.clip === CLIP.curl && x.phase === 1), curl = tr.find((x) => x.clip === CLIP.curl && x.phase === 2), asleep = tr.find((x) => x.clip === CLIP.asleep);
+  assert.ok(crouch.every((x) => x.cell.replace("*", "") === "crouch"), JSON.stringify(crouch));   // in its facing (a mirror when it faces against its painted way) assert.equal(crouch.at(-1).dy, 2, "lowered 2 px by the end of the crouch");
+  assert.deepEqual(dither.map((x) => x.level), [4, 8, 12, 16], "the four levels"); assert.deepEqual(dither.map((x) => x.t - dither[0].t), [0, 80, 160, 240], "one level an own tick (80 ms)");
+  assert.equal(curl.cell, "curl"); assert.equal(curl.t - dither[0].t, 320, "curl after the four levels"); assert.equal(asleep.t - curl.t, 800, "the asleep loop 800 ms after the curl");
+  f.sc.props.regions.residents[0].rest = "awake"; resend(f);
+  const w = trace(f, 0, 2500), wd = w.filter((x) => x.clip === CLIP.wake && x.phase === 0), cr = w.find((x) => x.clip === CLIP.wake && x.phase === 1), st = w.find((x) => x.clip === CLIP.rest);
+  assert.deepEqual(wd.map((x) => x.level), [4, 8, 12, 16], "the wake's dither, curl to crouch"); assert.equal(cr.cell.replace("*", ""), "crouch"); assert.equal(cr.dy, 2); assert.equal(st.t - cr.t, 400, "the crouch held 400 ms"); assert.equal(st.cell.replace("*", ""), "stand", "then stand, breathing from b0"); assert.equal(st.dy, 0, "risen to its line");
+});
+test("asleep in place (UI/UX, M1): a focused sleeper's ring is the feet form on its ink box [x + w/2 − 56, feet − 12, 112, 24], its tag's top feet − 120, and neither moves nor changes over 45 s while stirs fall due (they go to the other sleeper)", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 2, time: 23 * 3600, focus: "resident:0" }), f = await bootScene(sc);
+  const x = f.M._face_test_mv(0, 0), feet = f.M._face_test_mv(0, 1), w = 144;
+  f.frame((f.t += 40)); let lg = null; for (let m; (m = f.poll("log"));) lg = m; const ring = lg.regions.find((r) => r.id === "focus" && r.layer === "chrome").rect, tag = lg.regions.find((r) => r.id === "nameTag" && r.layer === "chrome").rect;
+  assert.deepEqual(ring, [x + w / 2 - 56, feet - 12, 112, 24], "the ring on the ink box"); assert.equal(tag[1], feet - 120, "the tag over the ink, no lift");
+  let stirs1 = 0, prev1 = 0;
+  for (let t = 0; t < 45000; t += 40) { f.frame((f.t += 40)); const s0 = STATE(f.M._face_test_state(0)), s1 = STATE(f.M._face_test_state(1)); assert.notEqual(s0.clip, CLIP.stir, "no stir begins on the focused sleeper"); assert.equal(s0.clip, CLIP.asleep); if (s1.clip === CLIP.stir && prev1 !== CLIP.stir) stirs1++; prev1 = s1.clip; }
+  assert.ok(stirs1 >= 1, "the due stirs went to the other sleeper: " + stirs1);
+  f.poll(); f.sc.props.frame.plate = { text: "" }; resend(f); f.frame((f.t += 40));
+  assert.equal(f.M._face_test_mv(0, 0), x); assert.equal(f.M._face_test_mv(0, 1), feet, "its ground point holds");
+});
+test("focus holds rest changes (game designer R4): a resident focused across its flip shows no curl until focus leaves, then curls on its next own tick; focused 60 s past the flip it curls under the ring; the other's flip is not moved", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 2, focus: "resident:0" }), f = await bootScene(sc); runFrames(f, 3000);
+  for (const r of sc.props.regions.residents) r.rest = "asleep"; resend(f);
+  let curled1 = -1;
+  for (let t = 0; t < 5000; t += 40) { f.frame((f.t += 40)); assert.ok([CLIP.rest, CLIP.ack, CLIP.hop].includes(STATE(f.M._face_test_state(0)).clip), "no curl under the ring"); if (curled1 < 0 && STATE(f.M._face_test_state(1)).clip === CLIP.curl) curled1 = t; }
+  assert.ok(curled1 >= 0, "the other resident curled at its own time");
+  sc.props.focus.cur = "tile." + f.sc.st.mibis[0].id; resend(f);
+  let curled0 = -1; for (let t = 0; t < 2000 && curled0 < 0; t += 40) { f.frame((f.t += 40)); if (STATE(f.M._face_test_state(0)).clip === CLIP.curl) curled0 = t; }
+  assert.ok(curled0 >= 0 && curled0 <= 480, `focus left: it curls on its next own tick (after an acknowledge under way): ${curled0} ms`);
+  // focused for 60 s past the flip: it curls at the flip + 60 s, under the ring
+  const sc2 = movingScene("vivarium", { adults: 2, focus: "resident:0" }), f2 = await bootScene(sc2); runFrames(f2, 3000);
+  sc2.props.regions.residents[0].rest = "asleep"; resend(f2); let at = -1;
+  for (let t = 0; t < 62000 && at < 0; t += 40) { f2.frame((f2.t += 40)); if (STATE(f2.M._face_test_state(0)).clip === CLIP.curl) at = t; }
+  assert.ok(at >= 60000 && at <= 60200, `under the ring it curls 60 s after its flip: ${at} ms`); assert.ok(STATE(f2.M._face_test_state(0)).focused);
+});
+test("G10 (M1 §3): twelve awake for 120 s: from 2.0 s on, at every frame, ⌈N/3⌉ ≤ travelling ≤ max(4, ⌈N/2⌉), at most 2 in the air, each resident travels in every 20 s window, no trip ends off its waypoint", { skip }, async () => {
+  const sc = movingScene("vivarium", { adults: 6, juveniles: 5, s05: 1, focus: "tile:0" }), f = await bootScene(sc), M = f.M, N = 12, floor = Math.ceil(N / 3), cap = Math.max(4, Math.ceil(N / 2));
+  const last = Array(N).fill(0), was = Array(N).fill(false); let minT = 99, maxT = 0, maxAir = 0, gap = 0, ends = 0;
+  runFrames(f, 120000, { each: (t) => {
+    let trav = 0, air = 0;
+    for (let i = 0; i < N; i++) { const s = STATE(M._face_test_state(i)); if (s.travelling) { trav++; last[i] = t; } if (s.airborne) air++;
+      if (was[i] && !s.travelling) { ends++; assert.deepEqual([M._face_test_mv(i, 0), M._face_test_mv(i, 1)], [M._face_test_mv(i, 8), M._face_test_mv(i, 9)], `resident ${i}'s trip ended off its waypoint at ${t}`); }
+      was[i] = s.travelling; if (t > 20000) gap = Math.max(gap, t - last[i]); }
+    if (t >= 2000) { minT = Math.min(minT, trav); maxT = Math.max(maxT, trav); } maxAir = Math.max(maxAir, air);
+  } });
+  assert.ok(minT >= floor, `travelling fell to ${minT} (floor ${floor})`); assert.ok(maxT <= cap, `travelling rose to ${maxT} (cap ${cap})`); assert.ok(maxAir <= 2, `${maxAir} in the air`); assert.ok(gap <= 20000, `a resident rested ${gap} ms`); assert.ok(ends > 100, ends + " trips");
+  console.log(`# G10 over 120 s: travelling ${minT} to ${maxT}, at most ${maxAir} in the air, the longest rest ${gap} ms, ${ends} trips`);
+});
+test("facing (M1 §1.2): a native-left set shows the mirrored walk cells when facing right and the painted ones when facing left; the curl is never mirrored", { skip }, async () => {
+  const left = JSON.parse(JSON.stringify(MOVING_SETS)); left.S01.native = "left";
+  for (const [sets, native] of [[MOVING_SETS, 1], [left, 0]]) {
+    const sc = movingScene("vivarium", { adults: 3, focus: "tile:0" }), f = await bootScene(sc, { moving: sets }), nb = MOVING_SETS.S01.adult.walk.cells.length, curl = MOVING_SETS.S01.adult.walk.cells.indexOf("curl"); let seen = 0;
+    runFrames(f, 20000, { each: () => { for (let i = 0; i < 3; i++) { const c = f.M._face_test_cell(i), fr = f.M._face_test_mv(i, 2); if (c < 0) continue; const mirrored = c >= nb; assert.equal(mirrored, fr !== native, `resident ${i}: cell ${c} facing ${fr ? "right" : "left"} (native ${native ? "right" : "left"})`); seen++; } } });
+    assert.ok(seen > 100);
+    sc.props.regions.residents.forEach((r) => (r.rest = "asleep")); resend(f); runFrames(f, 15000);
+    for (let i = 0; i < 3; i++) assert.ok([curl, curl + 1].includes(f.M._face_test_cell(i)), "asleep: the curl as painted");
+  }
+});

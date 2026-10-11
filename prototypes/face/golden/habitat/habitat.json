@@ -92,6 +92,22 @@
   "habitat-namer-full": {
    "hash": "50973418",
    "png": "habitat-namer-full.png"
+  },
+  "habitat-moment-S01-0": {
+   "hash": "05e0aa16",
+   "png": "habitat-moment-s01-0.png"
+  },
+  "habitat-moment-S01-450": {
+   "hash": "60ae6e85",
+   "png": "habitat-moment-s01-450.png"
+  },
+  "habitat-moment-S01-900": {
+   "hash": "535fbb77",
+   "png": "habitat-moment-s01-900.png"
+  },
+  "habitat-moment-S01-1350": {
+   "hash": "c6bff81e",
+   "png": "habitat-moment-s01-1350.png"
   }
  }
 }

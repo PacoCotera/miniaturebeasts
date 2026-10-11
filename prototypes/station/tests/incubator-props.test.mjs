@@ -81,3 +81,14 @@ test("the hatch's juvenile and the meet's resident are one picture, for adultTur
     const a = inc.requests.find((x) => x.id === inc.props.regions.juvenile.picture), b = hab.requests.find((x) => x.id === hab.props.regions.resident.picture); assert.deepEqual(a, b, "one request");
   }
 });
+
+// ---- Station M1 §2.6: the hatch's juvenile with its moving set ----
+import { setMoving } from "../src/moving.mjs";
+{ const J2 = (f) => JSON.parse(readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../ui/specs/station"), f), "utf8")), ix = J2("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J2(`moving/${id}.json`); setMoving(sets); }
+test("the hatch's juvenile names its close atlas and shadow when its set may play, and fits incubator.props.json", () => {
+  const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = 99; st.d = 99; st.s = 99; S.seedPodFromGenome(st, podGenome(frameOf("S01"), 3), settings, T0); const p = st.tray[0]; S.skipIdentify(st, p); assert.ok(S.grow(st, p, {}, settings, T0).ok);
+  const r = S.openBud(st, {}, settings, T0 + 3600000); assert.ok(r.ok); const hatch = { mibi: r.mibi.id, species: r.mibi.species, code: r.mibi.code, read: r.mibi.read, kind: "founder", parents: null };
+  const b = incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: true }, spec, pods);
+  assert.deepEqual(validate(b.props, schema), []); assert.deepEqual(b.props.regions.juvenile.moving, { set: "S01", close: "moving:juvenile:S01:close:304x312:species", shadow: "moving:juvenile:S01:shadow:304x24" });
+  assert.equal(incubatorBuild({ st, settings, now: T0, ui: { inc: { hatch } }, lamp: "", motionSets: false }, spec, pods).props.regions.juvenile.moving, undefined, "the play gate shut: none");
+});

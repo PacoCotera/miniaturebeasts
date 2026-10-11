@@ -52,6 +52,10 @@
   "vivarium-walk-8000ms": {
    "hash": "8f72eaf3",
    "png": "vivarium-walk-8000ms.png"
+  },
+  "vivarium-moving-8000ms": {
+   "hash": "613da9aa",
+   "png": "vivarium-moving-8000ms.png"
   }
  }
 }

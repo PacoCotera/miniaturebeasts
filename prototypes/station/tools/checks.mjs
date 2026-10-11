@@ -114,6 +114,21 @@ for (const pt of ["page-home", "home-docked"]) if (!rec.shots.some((x) => x.name
 for (const screen of ["cross"]) if (!rec.shots.some((x) => x.name === "notbuilt-" + screen && x.check.props?.state === "notBuilt")) fail(`no screenshot point records ${screen} as not built`);
 if (!rec.shots.some((x) => x.name === "page-idle" && x.check.idle)) fail("no screenshot point records Idle");
 for (const [pt, state] of [["page-bench", "docked"], ["page-bench-armed", "docked"], ["page-bench-away", "away"], ["page-bench-tier2", "docked"], ["page-library-empty", "spread"], ["page-library-spread", "spread"], ["page-vivarium", "rest"], ["page-vivarium-away", "rest"], ["page-vivarium-away-night", "rest"], ["page-mibi-out", "rest"], ["page-vivarium-empty", "empty"], ["page-habitat", "rest"], ["page-meet", "meet"], ["page-meet-placeholder", "meet"], ["page-namer", "rest"], ["page-create", "shape"], ["page-create-grow", "grow"], ["page-incubator", "growing"], ["page-incubator-empty", "empty"], ["page-hatch", "hatch"]]) if (!rec.shots.some((x) => x.name === pt && x.check.props?.state === state)) fail(`no screenshot point records ${pt} in state ${state}`);
+// the moving sets (Station M1 §3, vivarium-regions): every resident's drawn box, at every cell's lift and dy (the hop's lift, a pass's rise, the crouch lowered 2 px), stays inside its window on the whole, Home's glass and Idle; up close and in the hatch
+// the up-close hop scales down to fit when the rect leaves less above the figure, so it never clips (the animator's closeHop note)
+{ const MV = path.join(ui, "specs/station/moving"), ix = JSON.parse(readFileSync(path.join(MV, "index.json"), "utf8")), sets = Object.fromEntries(ix.sets.map((id) => [id, JSON.parse(readFileSync(path.join(MV, id + ".json"), "utf8"))]));
+  const windows = [["the whole", vivariumSpec.regions.resident, vivariumSpec.regions.window.rect], ["Home's glass", home.regions.resident, home.regions.glass.rect], ["Idle", frame.idle.regions.resident, frame.idle.regions.vivarium.rect]];
+  let n = 0;
+  for (const [sid, set] of Object.entries(sets)) for (const stage of ["juvenile", "adult", "elder"]) {
+    const s = stage === "elder" ? (set.elder ? { ...set.adult, hop: { ...set.adult.hop, lift: set.elder.lift ?? set.adult.hop?.lift } } : null) : set[stage]; if (!s) continue;
+    const lift = Math.max(0, ...(s.hop?.lift ?? []), s.walk.passRise ?? 0), [w, h] = s.walk.size;
+    for (const [name, R, win] of windows) { const size = R[stage === "juvenile" ? "juvenile" : "adult"]; if (size[0] !== w || size[1] !== h) continue; const g = R.walk.ground;
+      const box = [g[0], g[1] - h - lift, g[2], (g[1] + g[3] - 1 + 2) - (g[1] - h - lift)]; n++;
+      if (!within(box, win)) fail(`moving ${sid} ${stage} on ${name}: a drawn box ${box} (lift ${lift}, dy 2) leaves the window ${win}`); }
+    const cl = Math.max(0, ...((stage === "elder" ? set.elder?.closeHop?.lift : null) ?? s.closeHop?.lift ?? [])), rr = habitatSpec.regions.resident.rect, glass = habitatSpec.regions.glass.rect; n++;
+    if (cl > rr[1] - glass[1]) console.log(`moving ${sid} ${stage} up close: the hop's apex ${cl} px passes the ${rr[1] - glass[1]} px above the rect: it is scaled down to fit (never clipped)`);
+  }
+  regionsChecked += n; console.log(`moving: ${n} drawn boxes of the moving sets inside their windows`); }
 console.log(`regions: ${regionsChecked} boxes compared with the spec files`);
 
 // ---- 5. ink: where each frame region's ink lies in the frame's pixels, against the spec

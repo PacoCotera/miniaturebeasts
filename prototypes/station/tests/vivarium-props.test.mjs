@@ -108,3 +108,12 @@ test("a mibi that grows up changes every picture id from :juvenile: to :adult: w
   assert.deepEqual(grown.map((id) => id.replace(/:adult:\d+x\d+$/, "")), young.map((id) => id.replace(/:juvenile:\d+x\d+$/, "")));
   assert.ok(young.some((id) => id.endsWith(":104x112")) && young.some((id) => id.endsWith(":96x88")), young.join(" ")); grown.forEach((id, i) => assert.equal(id, young[i].replace(":juvenile:", ":adult:").replace(/:104x112$/, ":144x152"), `${young[i]} → ${id}`));
 });
+
+// ---- Station M1 §2.6: residents with moving sets and their rest fit vivarium.props.json ----
+import { setMoving } from "../src/moving.mjs";
+{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+test("the whole's residents with moving sets fit vivarium.props.json: moving and rest (asleep at 23:00, awake at 12:00); with the play gate shut, none", () => {
+  const { w, sv } = scenes().docked, rules = spec.rules.rest;
+  for (const [time, want] of [[23 * 3600, "asleep"], [12 * 3600, "awake"]]) { const b = build(w, sv, { time, restRules: rules, motionSets: true }); assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving?.walk && r.moving?.shadow && r.rest === want)); assert.ok(b.requests.some((q) => q.kind === "moving")); }
+  assert.ok(build(w, sv, { time: 12 * 3600, restRules: rules, motionSets: false }).props.regions.residents.every((r) => !r.moving));
+});

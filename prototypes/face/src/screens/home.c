@@ -576,7 +576,7 @@ void home_words(void) {
     if (v_spec_rect("frame", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
   word_livingWindow("home", "glass", "regions.bezel", "regions.glass", "colours.glass", v_pstr("regions.glass.picture"), 0, 0);
   glass_group(cur);
-  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(sp(), "regions.glass", g_e[i].name, g_e[i].sleeper ? g_e[i].draw : g_e[i].asleep ? g_e[i].ink : g_e[i].box, g_e[i].sleeper || g_e[i].asleep ? 0 : hi("regions.resident.lift", 4), tag);   /* asleep in place: over the ink, no lift (UI/UX item 4) */ }
+  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; g_tagOver = g_e[i].asleep; build_nameTag(sp(), "regions.glass", g_e[i].name, g_e[i].sleeper ? g_e[i].draw : g_e[i].asleep ? g_e[i].ink : g_e[i].box, g_e[i].sleeper || g_e[i].asleep ? 0 : hi("regions.resident.lift", 4), tag); g_tagOver = 0;   /* asleep in place: over the ink, no lift (UI/UX item 4) */ }
   build_restKnob(strcmp(cur, "knob") == 0);
   for (int m = 0; m < 5; m++) {
     int dy = strcmp(cur, MODULES[m]) == 0 ? -hi(v_fmt("focus.targets.%s.lift", MODULES[m]), 2) : 0;
@@ -658,7 +658,7 @@ void vivarium_words(void) {
     if (v_spec_rect("vivarium", "regions.stage.rect", st)) { v_region("stage", LAYER_CHROME); v_rect("stage.ground", st[0], st[1], st[2], st[3], ground); } }
   word_livingWindow("vivarium", "window", NULL, "regions.window", "colours.window", v_pstr("regions.window.picture"), 0, spec_int("vivarium", "regions.window.painting.rows.0", 0));   /* rows 120 to 560 of Idle's painting of the light, 1:1, at the window */
   glass_group(cur);   /* the bed in the empty state too (no resident, no sleeper): the nest, and its mark while away */
-  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; build_nameTag(sp(), "regions.window", g_e[i].name, g_e[i].sleeper ? g_e[i].draw : g_e[i].asleep ? g_e[i].ink : g_e[i].box, g_e[i].sleeper || g_e[i].asleep ? 0 : hi("regions.resident.lift", 4), tag);   /* asleep in place: over the ink, no lift (UI/UX item 4) */ }
+  for (int i = 0; i < g_ne; i++) if (ent_focused(&g_e[i], cur)) { int tag[4]; g_tagOver = g_e[i].asleep; build_nameTag(sp(), "regions.window", g_e[i].name, g_e[i].sleeper ? g_e[i].draw : g_e[i].asleep ? g_e[i].ink : g_e[i].box, g_e[i].sleeper || g_e[i].asleep ? 0 : hi("regions.resident.lift", 4), tag); g_tagOver = 0;   /* asleep in place: over the ink, no lift (UI/UX item 4) */ }
   { int box[4]; build_bayStrip("vivarium", cur, box);
     if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding()) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, "vivarium", "focus.targets.tile.ring", frame_ring()); } }
   g_viv = 0;

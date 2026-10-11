@@ -65,3 +65,12 @@ test("the line's one fact comes from the rule (state.mjs idleKey) and its order 
   assert.deepEqual(seen, order, "each key shows only when the ones before it do not hold"); assert.deepEqual(S.idleKey(st, sv0(), settings), null);
   assert.deepEqual(S.idleKey(st, sv, settings), { key: "out", n: 1, name: st.mibis[0].name });
 });
+
+// ---- Station M1 §2.6: Idle's residents with moving sets fit idle.props.json ----
+import { setMoving } from "../src/moving.mjs";
+{ const ix = J("moving/index.json"), sets = {}; for (const id of ix.sets) sets[id] = J(`moving/${id}.json`); setMoving(sets); }
+test("Idle's residents with moving sets fit idle.props.json: moving and rest; the bed's sleepers their nap set", () => {
+  const st = world(); adults(st, 4); const sv = sv0({ carried: [st.mibis[0].id] }), rules = J("vivarium.json").rules.rest;
+  const b = idleBuild({ st, sv, settings, docked: true, light: "night", time: 23 * 3600, restRules: rules, motionSets: true }, frame);
+  assert.deepEqual(validate(b.props, schema), []); assert.ok(b.props.regions.residents.every((r) => r.moving && r.rest === "asleep")); assert.ok(b.props.regions.bed.sleepers.every((s) => s.moving?.nap));
+});
