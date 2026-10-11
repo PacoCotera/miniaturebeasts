@@ -409,7 +409,7 @@ test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
   assert.deepEqual(vv.regions.tiles.forms, hab.regions.tiles.forms, "the whole's strip is one mibi up close's: the same forms"); lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
   for (const set of [B, A, E]) { is(R.window.rect, "window", set); is(R.strip.rect, "strip", set); }
-  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); assert.ok(!E.has(R.bed.rect.join(",")), "no bed drawn on the empty whole");
+  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); is(R.bed.rect, "the bed on the empty whole (the nest alone, docked)", E); assert.ok(!E.has(R.bed.markRect.join(",")), "no Companion mark on the empty whole while docked");
   // the same place as Idle, 80 px higher; the strip where one mibi up close has it
   const I = frame.idle.regions, off = I.vivarium.theWhole.rows[0] - I.vivarium.theWhole.at[1];
   assert.deepEqual(R.window.rect, I.vivarium.theWhole.at); assert.deepEqual(R.window.ground, [I.vivarium.ground[0], I.vivarium.ground[1] - off, ...I.vivarium.ground.slice(2)]);
