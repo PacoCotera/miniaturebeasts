@@ -116,7 +116,7 @@
   "bay": "992×320 panel; the lid enamel with deepTeal seals",
   "pod": "88×112, the collection class",
   "ribbon": "608×40, the ribbon word",
-  "icon-pod-16": "the report's Pod icon, 16×16: a PH plate",
-  "icon-shield-16": "the report's Shield icon, 16×16: a PH plate, one per plate mended (a lost plate is not shown); never Home's 12×24 Shield placeholder"
+  "icon-pod-16": "the report's Pod icon, 16×16: the signed master, shared with the Probe bench (masters-pods 5f04d417)",
+  "icon-shield-16": "the report's Shield icon, 16×16, one per plate mended (a lost plate is not shown): the signed master, shared with the Probe bench (masters-pods 5f04d417)"
  }
 }
