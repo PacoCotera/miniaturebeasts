@@ -45,6 +45,9 @@ LOOKS = [   # (sheet, species, trait, look, portrait window (centre, height), la
     ('trait-S02-flecks-fluff-a', 'S02', 'flecks', 'spots', (626, 210), 400, (626, 200), 400),
     ('trait-S02-flecks-fluff-a', 'S02', 'fluff', 'short-straight', (205, 634), 400, (205, 624), 400),
     ('trait-S02-flecks-fluff-a', 'S02', 'fluff', 'long-swept', (626, 634), 400, (626, 624), 400),
+    ('floor/S04/stripes/stripes-sheet', 'S04', 'stripes', 'faint', (150, 205), 150, (150, 205), 180),
+    ('floor/S04/stripes/stripes-sheet', 'S04', 'stripes', 'between', (454, 205), 150, (454, 205), 180),
+    ('floor/S04/stripes/stripes-sheet', 'S04', 'stripes', 'bold', (758, 205), 150, (758, 205), 180),
 ]
 def keyed(src):
     a = src.astype(float); r, g, b = a[..., 0], a[..., 1], a[..., 2]
@@ -80,7 +83,7 @@ rows = []
 only = sys.argv[2:]                                              # species to cut (all when none named)
 for sh, sp, trait, look, (cx, cy), hs, (lx, ly), lw in LOOKS:
     if only and sp not in only: continue
-    sheet = Image.open(f'{ROOT}/source/raw/{sh}.jpg').convert('RGB')
+    sheet = Image.open(f'{ROOT}/{sh}.png' if '/' in sh else f'{ROOT}/source/raw/{sh}.jpg').convert('RGB')
     for W, H in SIZES:
         box = cut(sheet, cx, cy, hs, W, H, f'{ROOT}/slices/trait-{sp}-{trait}-{look}-{W}x{H}.png') if W / H < 1.2 else cut(sheet, lx, ly, lw, W, H, f'{ROOT}/slices/trait-{sp}-{trait}-{look}-{W}x{H}.png'); rows.append((sp, trait, look, W, H, box))
     box = cut(sheet, lx, ly, lw, *ROLL, f'{ROOT}/slices/roll-{sp}-{trait}-{look}-128x72.png'); rows.append((sp, trait, look, *ROLL, box))

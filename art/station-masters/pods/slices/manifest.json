@@ -13678,5 +13678,239 @@
   "status": "signed",
   "signed_in": "art director, trait wave 1 extras, 10-11",
   "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S04-stripes-faint-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "5d6c62dd006fe82ed7353ebc55039a366164fb4f7a7e416760944d1ecdac52f2",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-faint-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "a2a1da1f17d526620b3291ab24c04380a9b464c13c8dfda2565813cb2d9f757f",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-faint-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "c3831118441274901ded5ad7a6168bbc8f45a3a70f82ee0e702a5901dc7cae60",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-faint-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "bc1116483c4b729d26ed2c8eaf6aa931e2c47acddcb84fe30e5fc77263db0392",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-faint-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "f3f3aea9822b70c71d6803f7e7f1f52eded993c38edda5348275a5941c62f3a0",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "roll-S04-stripes-faint-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'faint' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "bec781f0c15f375cad720ea21945953eee9853562b5c89077b752955cd5d5937",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "9aced9cfb0cba60d31a3eae77d2d5eb50be542157accca87c93b8ce9970117b8",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "c2da16d224cd6ae78de32cbb2a766b6c436b44e2cac9e7cf157e9f1fd3886245",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "293f9a295349222db7361fc8b1eda14e31788d4edf0aea36dd722f18b17b26fe",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "ff1a4763e0fdb8a199aaf9f11607cebde3fa6e90d7849ebf77db20a16950c292",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "f0c18db87d63a57893eae643f3161e6778d8d3c134fa0e4220519b0315925268",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "roll-S04-stripes-between-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "45d34ef001461552f81b6864ad848803d850b0f4e1c8c43a47c466d18169533f",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-bold-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "b3687c1da5f9ce4b0a33bcef7868c65946e3324344815f38af75344e3df1932a",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-bold-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "cedef3a34e228595f350bd46ab79becdf419005b67f03db36ac398be77438e20",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-bold-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "e1f8902fe8c8ad03277944258a7d6e499dfb2c423491eeeda97b08366886af40",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-bold-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "924ddef1aaa777ac7efe0a329e7362b3eeeb30722287aa94292b1486473a6b54",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "trait-S04-stripes-bold-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "5acd32bb5ed8064b387ad88d070fbf18f0e3f1c3796696679c8f6dadd76ddffc",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "roll-S04-stripes-bold-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "floor/S04/stripes/stripes-sheet.png (the signed S04 stripe keys at 304x312, on the cell ground)",
+  "made": "stripe contrast 'bold' cut by tools/traitcut.py (window reduced into the centred 75 percent, 12 px fade)",
+  "sha256": "971a7f1abf74799291f8feb7be69572b200d62cb33f97df074cdadde2f77f908",
+  "status": "signed",
+  "signed_in": "art director, 10-11",
+  "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
  }
 }
