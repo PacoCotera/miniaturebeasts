@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
 import { buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping, pickPicture } from "../tools/warp-field.mjs";
-import { warp, blank, png, runAll, safeName, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
+import { warp, blank, png, runAll, safeName, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, movingBandFromBlock, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
 const A = [200, 120, 60, 255], B = [150, 90, 40, 255], C = [240, 220, 160, 255], D = [90, 60, 30, 255];
@@ -254,4 +254,14 @@ test("a held-key pair needs no lock; only a cycled pair (belly-down) is gated on
   assert.ok(rows.length >= 2 && rows.every((x) => x.result === "pass" || x.result === "FAIL"), "a held pair gets a verdict without a lock flag");
   assert.equal(safeName("../../etc/x y"), "__.._etc_x_y"); assert.equal(safeName("s04-304x312"), "s04-304x312");
   const out = runAll([{ name: "../evil", stand: standFile, landmarks: lmFile }]).files; assert.ok([...out.keys()].every((k) => !k.includes("..")), "no path escapes the output folder");
+});
+test("the counting rule: moving band is y >= bellyLine(x) - 12 or the tail box; a pair may reference it; the compare is exact RGBA at every alpha", () => {
+  const m = movingBandFromBlock(104, 112, { bellyLine: [[20, 76], [100, 76]], tail: [2, 30, 4, 3] });
+  assert.equal(m[63 * 104 + 50], 0); assert.equal(m[64 * 104 + 50], 1, "yb - 12 is in the band"); assert.equal(m[31 * 104 + 3], 1, "the tail box"); assert.equal(m[29 * 104 + 3], 0);
+  const a = fixture(), b = fixture(); b.data[(50 * 104 + 40) * 4 + 3] = 254;                                      // one pixel differs only in alpha, by 1
+  const af = path.join(tmp, "cnt-a.png"), bf = path.join(tmp, "cnt-b.png"); writeFileSync(af, png(a)); writeFileSync(bf, png(b));
+  const j = structuredClone(landmarks); j.phaseA = { blk: { bellyLine: [[20, 76], [100, 76]], tail: [2, 30, 4, 3], countingRule: { movingBand: "text" } } };
+  j.pairs = [{ id: "FX-cnt", a: af, b: bf, band: "phaseA.blk.countingRule.movingBand", locked: true, sha256: [sha256(png(a)), sha256(png(b))] }]; const lf = path.join(tmp, "cnt.json"); writeFileSync(lf, JSON.stringify(j));
+  const rows = runAll([{ name: "cnt", stand: standFile, landmarks: lf }]).rows, abs = rows.find((x) => /FX-cnt absolute/.test(x.item));
+  assert.equal(abs.value, "1", "an alpha difference of 1 counts"); assert.equal(abs.result, "FAIL");
 });

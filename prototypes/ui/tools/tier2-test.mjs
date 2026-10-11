@@ -208,6 +208,14 @@ export function bellyDownBand(w, h, bellyLine, tail) {
   if (tail) for (let y = tail[1]; y < Math.min(h, tail[1] + tail[3]); y++) for (let x = tail[0]; x < Math.min(w, tail[0] + tail[2]); x++) m[y * w + x] = 1;
   return m;
 }
+// The agreed counting rule for §0 and M8 on cycled pairs (landmarks `countingRule`): exact RGBA (every channel, every alpha level, no resize, no premultiply); a pixel is in the moving band if
+// y >= bellyLine(x) - 12 (the block's belly line, linear between points, flat beyond the ends) or it is in the block's tail box [x, y, w, h].
+export function movingBandFromBlock(w, h, block) {
+  const m = new Uint8Array(w * h), yb = bellyColumns(block.bellyLine, w);
+  for (let x = 0; x < w; x++) for (let y = Math.max(0, yb[x] - 12); y < h; y++) m[y * w + x] = 1;
+  if (block.tail) { const [tx, ty, tw, th] = block.tail; for (let y = ty; y < Math.min(h, ty + th); y++) for (let x = tx; x < Math.min(w, tx + tw); x++) m[y * w + x] = 1; }
+  return m;
+}
 export function warpMs(img, field, headMask, runs = 15) { const t = [], L = [{ field, t: 1 }]; warp(img, L, { headMask }); for (let r = 0; r < runs; r++) { const t0 = process.hrtime.bigint(); warp(img, L, { headMask }); t.push(Number(process.hrtime.bigint() - t0) / 1e6); } t.sort((x, y) => x - y); return t[t.length >> 1]; }
 
 // ---- output
@@ -391,12 +399,13 @@ export function runSet(set0, opts = {}) {
       let bandMask; const spec = ov.band ? ov.band.split("-").map(Number) : p.band;
       if (Array.isArray(spec)) bandMask = rowsBand(a.w, a.h, spec);
       else if (spec === "belly-down") { const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null; bandMask = bellyDownBand(a.w, a.h, from?.bellyLine ?? Object.values(lm.pictures).find((q) => q.bellyLine)?.bellyLine, p.tail ?? from?.tail); }
+      else if (typeof spec === "string" && spec.endsWith(".countingRule.movingBand")) { const block = spec.split(".").slice(0, -2).reduce((o, k) => o?.[k], lm); if (!block?.bellyLine) throw new Error(`${p.id}: band ${spec} has no block with a bellyLine`); bandMask = movingBandFromBlock(a.w, a.h, block); }
       else if (spec?.mask) bandMask = headMaskFrom(readFileSync(spec.mask)).mask;
       else throw new Error(`${p.id}: no band`);
       const bBuf = readSource(p.b); expectSha(bBuf, p.sha256?.[1], `${p.id} b`); if (!p.sha256?.[1] && !isRef(p.b)) unpinned.push(`${p.id} b`); const b = decodeImage(bBuf); row(size, "M8", `${p.id} a / b sha256`, `${sha256(aBuf).slice(0, 12)} / ${sha256(bBuf).slice(0, 12)}`, "", "info");
       const plain = changedOutside(a, b, bandMask);
       // a cycled pair is signed only on the locked cut (motion-spec §0 points 5-6): `locked: true` on the pair (or on its bellyFrom block) in the landmarks; otherwise the counts are kept and there is no verdict
-      const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null, locked = (p.locked ?? from?.locked) === true, cycled = p.band === "belly-down" || p.cycle === true, verdict = (ok) => (!cycled || locked ? (ok ? "pass" : "FAIL") : "unlocked: no verdict");   // the lock gate is for cycled pairs only; a held-key pair needs none
+      const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null, locked = (p.locked ?? from?.locked) === true, cycled = p.band === "belly-down" || (typeof p.band === "string" && p.band.endsWith(".countingRule.movingBand")) || p.cycle === true, verdict = (ok) => (!cycled || locked ? (ok ? "pass" : "FAIL") : "unlocked: no verdict");   // the lock gate is for cycled pairs only; a held-key pair needs none
       if (cycled && !locked) status.push("unlocked pair: no verdict");
       row(size, "M8", `${p.id} absolute §0 test (unwarped): changed outside the band (only legs and tail change)`, plain, 0, verdict(plain === 0));
       for (const e of live) { const L = [{ field: fields[e], t: 1 }], w2 = changedOutside(warp(a, L, { headMask }), warp(b, L, { headMask }), bandMask); row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, verdict(w2 <= plain)); }
