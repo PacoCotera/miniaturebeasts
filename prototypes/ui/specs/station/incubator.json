@@ -176,7 +176,7 @@
   ],
   "carried": [
    { "id": "bud-shape-S01-112x112 to bud-shape-S16-112x112", "size": [112, 112], "region": "bud.shape", "why": "the species' silhouette, creature art; an empty slot, nothing drawn until placed" },
-   { "id": "the juvenile: the new mibi's painting or its placeholder", "size": [304, 312], "region": "juvenile", "why": "creature art" },
+   { "id": "the juvenile: the new mibi's painting, else its signed juvenile stand-in (mibi-juvenile-<species>-304x312)", "size": [304, 312], "region": "juvenile", "why": "creature art" },
    { "id": "the waiting lamp, home-lamp-sky-12x12", "size": [12, 12], "region": "base.lamp", "why": "the kit's lamp" },
    { "id": "the stamp label, the ribbon, the rail's tab fills", "size": null, "region": "stamp, ribbon, rail", "why": "the frame's and the kit's" }
   ]

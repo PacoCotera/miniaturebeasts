@@ -242,7 +242,7 @@
   "look": "A PH plate is a `stone` fill with a 1 px `mist` edge inside the rect. A PH hollow is a 1 px `stone` edge with no fill. No text, shape or shading. Each id is in the register with status placeholder.",
   "mibi": {
    "region": "residents and sleepers",
-   "show": "the register `mibi` placeholder, standing, unmirrored: a resident at its box size (144×152 or 104×112), a sleeper fitted inside 96×88, centred on footX and bottom-aligned at y 512"
+   "show": "the register `mibi` placeholder, standing, unmirrored: a resident at its box size (144×152 or 104×112), a sleeper fitted inside 96×88, centred on footX and bottom-aligned at y 512; a juvenile is the art director's signed stand-in instead, at the same places, standing and unmirrored: mibi-juvenile-<species>-104x112 as a resident, mibi-juvenile-<species>-96x88 as a sleeper"
   },
   "home-rack-pod-24x32": {
    "region": "pods",

@@ -6,11 +6,11 @@
    "png": "home-fresh.png"
   },
   "home-docked": {
-   "hash": "b0bb5d64",
+   "hash": "df2913cc",
    "png": "home-docked.png"
   },
   "home-away": {
-   "hash": "779f83bb",
+   "hash": "444ca2b0",
    "png": "home-away.png"
   },
   "home-waiting": {
@@ -90,7 +90,7 @@
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "26dce2f1",
+   "hash": "06a6a38a",
    "png": "home-crates-arriving.png"
   }
  }

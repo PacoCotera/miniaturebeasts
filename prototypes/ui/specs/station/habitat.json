@@ -84,7 +84,7 @@
    "axis": 296,
    "feet": 392,
    "clip": "glass",
-   "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile drawn at the same 304×312 as the hatch, reading young by its proportions inside the box, never scaled down",
+   "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile, until its painting lands, is the art director's signed stand-in mibi-juvenile-<species>-304x312, drawn at the same 304×312 as the hatch, reading young by its proportions inside the box, never scaled down",
    "lamp": {
     "rect": [436, 80, 12, 12],
     "slice": "home-lamp-sky-12x12",
