@@ -79,8 +79,8 @@
    24
   ],
   "src": "typed by hand (source/original.py)",
-  "made": "the Research sandbox key icon, the title mark's alpha in the key ink (#f6f1e6), from the original concept glyph",
-  "sha256": "b406792f7b6950096746563adc76ff32490f627e66e17c36b7b9ed0b6589a136",
+  "made": "the Research sandbox key icon, the title mark's alpha in the key ink (#ffffff), from the original concept glyph",
+  "sha256": "0390ecda305347452e1e402d1882828a60689790481cc5d3760eba081dbad372",
   "status": "signed"
  },
  "shell-key-library-24": {
@@ -89,8 +89,8 @@
    24
   ],
   "src": "typed by hand (source/original.py)",
-  "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f6f1e6), from the original concept glyph",
-  "sha256": "b6dd26ff25918a5e40573a47d5c62d11eae76895e7e1d07b7e41d67ff79367ae",
+  "made": "the Library sandbox key icon, the title mark's alpha in the key ink (#f4f1ec), from the original concept glyph",
+  "sha256": "22a4059f45993884a22c66e834fe11fffa364aba635a980a060c4c022eac4bfe",
   "status": "signed"
  },
  "shell-key-vivarium-24": {

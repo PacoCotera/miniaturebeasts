@@ -18,7 +18,7 @@ Every button on the Station, the Companion and the Caddy carries an icon and no 
 
 ## Title marks
 
-`marks/slices/frame-room-{home,vivarium,research,library}-24.png` (with `marks/slices/manifest.json`): the Station's on-screen title marks, 24 × 24, hand-placed pixel by pixel from the same four drawings, each in one Station palette colour that matches its key (Home `#ffd441`, Research `#3084d8`, Library `#dbc0ff`, Vivarium `#5cbb4c`), with the sandbox key icons `shell-key-*-24` in the same alpha, inked for their keys (`#2f2b28` on Home and Vivarium, `#f6f1e6` on Research and Library). `frame-room-vivarium-24` replaces the habitat mark. Proofs at 1× and 8× on the bar's slate are beside them.
+`marks/slices/frame-room-{home,vivarium,research,library}-24.png` (with `marks/slices/manifest.json`): the Station's on-screen title marks, 24 × 24, hand-placed pixel by pixel from the same four drawings, each in one Station palette colour that matches its key (Home `#ffd441`, Research `#3084d8`, Library `#dbc0ff`, Vivarium `#5cbb4c`), with the sandbox key icons `shell-key-*-24` in the same alpha, inked for their keys (`#2f2b28` on Home and Vivarium, `#ffffff` on Research, `#f4f1ec` on Library: the signed cap inks). `frame-room-vivarium-24` replaces the habitat mark. Proofs at 1× and 8× on the bar's slate are beside them.
 
 ## Source
 

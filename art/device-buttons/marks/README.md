@@ -11,7 +11,7 @@ The Station's title marks, 24 × 24 at (16, 8) in the top bar: the icon of the d
 | `frame-room-research-24` | Research: the test tube | `#3084d8` |
 | `frame-room-library-24` | Library: the open book | `#dbc0ff` |
 
-The sandbox key icons `shell-key-{home,research,library,vivarium}-24` share each mark's alpha in their key's ink (`#2f2b28` on Home and Vivarium, `#f6f1e6` on Research and Library). Every mark inks only inside the 20 × 20 live area at inset 2.
+The sandbox key icons `shell-key-{home,research,library,vivarium}-24` share each mark's alpha in their key's ink (`#2f2b28` on Home and Vivarium, `#ffffff` on Research and `#f4f1ec` on Library, the signed cap inks). Every mark inks only inside the 20 × 20 live area at inset 2.
 
 ![The four marks at 8×](marks-proof-8x.png)
 

@@ -184,8 +184,8 @@ VIVARIUM = """
 def grid(art):
     rows = [r for r in art.strip('\n').split('\n')]; assert len(rows) == 24 and all(len(r) == 24 for r in rows)
     return rows
-MARKS = {'home': (HOME, '#ffd441', '#2f2b28'), 'research': (RESEARCH, '#3084d8', '#f6f1e6'),
-         'library': (LIBRARY, '#dbc0ff', '#f6f1e6'), 'vivarium': (VIVARIUM, '#5cbb4c', '#2f2b28')}
+MARKS = {'home': (HOME, '#ffd441', '#2f2b28'), 'research': (RESEARCH, '#3084d8', '#ffffff'),
+         'library': (LIBRARY, '#dbc0ff', '#f4f1ec'), 'vivarium': (VIVARIUM, '#5cbb4c', '#2f2b28')}
 def paint(rows, col):
     rgb = hexrgb(col); im = Image.new('RGBA', (24, 24), (0, 0, 0, 0))
     for y, r in enumerate(rows):
