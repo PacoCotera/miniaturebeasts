@@ -3681,5 +3681,73 @@
    "thoughtsTokenCount": 207,
    "totalTokenCount": 2232
   }
+ },
+ {
+  "tag": "trait-S01-crown-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.198572,
+  "mxn": 3.9714,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:23:46Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 526,
+   "candidatesTokenCount": 1351,
+   "thoughtsTokenCount": 295,
+   "totalTokenCount": 2172
+  }
+ },
+ {
+  "tag": "trait-S01-eyes-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.191864,
+  "mxn": 3.8373,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:24:12Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 532,
+   "candidatesTokenCount": 1330,
+   "thoughtsTokenCount": 260,
+   "totalTokenCount": 2122
+  }
+ },
+ {
+  "tag": "trait-S01-markings-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.189462,
+  "mxn": 3.7892,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:24:38Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 771,
+   "candidatesTokenCount": 1344,
+   "thoughtsTokenCount": 222,
+   "totalTokenCount": 2337
+  }
+ },
+ {
+  "tag": "trait-S01-markings-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.184758,
+  "mxn": 3.6952,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:25:10Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 759,
+   "candidatesTokenCount": 1320,
+   "thoughtsTokenCount": 207,
+   "totalTokenCount": 2286
+  }
  }
 ]

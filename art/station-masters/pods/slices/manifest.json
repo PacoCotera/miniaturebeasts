@@ -7313,12 +7313,12 @@
    160
   ],
   "rect": null,
-  "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 128x160 from a 270x338 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 270x338 window, reduced and never enlarged, on the cell tone ground #162a37); 128x160 (pass 60): the ground is only what the border reaches (487 enclosed background px restored from the painting, the edge colour taken from the solid pixels beside it), a keyed fade (smoothstep, 12 px, finished inside the box) on the straight cut edges: [{'edge': 'top', 'run_px': 30}, {'edge': 'bottom', 'run_px': 71}, {'edge': 'left', 'run_px': 76}, {'edge': 'right', 'run_px': 70}]; pass 61: the same 12 px smoothstep along the hard polygon silhouette segments [[(19, 51), (31, 41), (84, 37)]]",
-  "sha256": "3dce76216eda4ae4f87f4dc8376d2f281b90746bf0e708e99a5ea289d06fb218",
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "6edb22d9daa417831dc615144b7c799a2391f3621cb6b3f7a26bcfb3e7ee866c",
   "status": "signed",
-  "signed_in": "pass 61 verdict",
-  "status_note": "the 128x160 crop at 75 percent, the cut edges and polygon runs faded, the wing closed (translucency), the bee's cast shadow keyed to ground (S12)"
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the pass 61 verdict crop so the looks match"
  },
  "trait-S01-markings-plain-144x176": {
   "size": [
@@ -7326,12 +7326,12 @@
    176
   ],
   "rect": null,
-  "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 144x176 from a 270x330 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 270x330 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "69d906a5e09b0c41340423798ecac272fe01539d598c6e63c6f9bc348d39b615",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "f81181478e18cbe2ed4fe218b0601483b1b1f59f6c3422a017e0d767d85c90ea",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-markings-plain-104x160": {
   "size": [
@@ -7339,12 +7339,12 @@
    160
   ],
   "rect": null,
-  "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x160 from a 270x416 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 270x416 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "7d404a64c1ee72b6bbc50668b4027e10d49194de1a49d9f87071941d0ec24bad",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "852c63b0c8a0bb6011b1d4eab82e35c84c9bd2ebc0a85512217069844c9e836b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-markings-plain-104x96": {
   "size": [
@@ -7352,12 +7352,12 @@
    96
   ],
   "rect": null,
-  "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x96 from a 270x250 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 270x250 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "826839c602e9bc4c6de189e557d5f671b12abcf6424668c48665d79d6bf63a1c",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "baac0d1234f5bb53c4e067ab62dea4f825298f44c4e6e6553aa7574bf61f02b5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-markings-plain-104x64": {
   "size": [
@@ -7365,12 +7365,12 @@
    64
   ],
   "rect": null,
-  "src": "S01 standard painting, region [100, 300, 370, 480] of 600x620",
-  "made": "the Markings of the S01 individual (plain) as a crop of the standard painting re-framed to 104x64 from a 292x180 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 292x180 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "5d2d115179cb4898e4d7b4679cfa9a0e806615bf47841268909c430e24896aae",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "22b7858d6fad76f2de60e02b2b5b9cd8286462ee7c0a90e643de46a0cb77e616",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-crown-leaf-crest-128x160": {
   "size": [
@@ -7378,12 +7378,12 @@
    160
   ],
   "rect": null,
-  "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 128x160 from a 170x212 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 96x120 at (16, 20) from a 170x212 window, reduced and never enlarged, on the cell tone ground #162a37); 128x160 (pass 60): the ground is only what the border reaches (487 enclosed background px restored from the painting, the edge colour taken from the solid pixels beside it), a keyed fade (smoothstep, 12 px, finished inside the box) on the straight cut edges: [{'edge': 'bottom', 'run_px': 90}, {'edge': 'right', 'run_px': 22}]",
-  "sha256": "6342f0e32e187c98092aeca0911e76a1dbe2660e14ba7b7fefa761f55dc35353",
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "929e9474da7a44c171c784c1781c0f842e99945d41ecb4b8b3fb735784dbddea",
   "status": "signed",
-  "signed_in": "pass 60 verdict",
-  "status_note": "the 128x160 crop at 75 percent with the keyed fade on its cut edges"
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the pass 60 verdict crop so the looks match"
  },
  "trait-S01-crown-leaf-crest-144x176": {
   "size": [
@@ -7391,12 +7391,12 @@
    176
   ],
   "rect": null,
-  "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 144x176 from a 170x208 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 108x132 at (18, 22) from a 170x208 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "18a163cb2a8f7d98db14ae54112f0b371176577117fa62ecff2875b7a873cc79",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "e91b978f11c10367bf1bdaf3635c848878c5c2b16277d4b65fe709108c100f3d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-crown-leaf-crest-104x160": {
   "size": [
@@ -7404,12 +7404,12 @@
    160
   ],
   "rect": null,
-  "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x160 from a 170x262 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x120 at (13, 20) from a 170x262 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "a135a009ac3e8a4c6b6882c410f74aacd7be4583e27ba0235b9c644f993daa56",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "f33fa2946756c4914fd7f11c6d63d5ffd07bee5334e9ce9495b7594f3438d10a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-crown-leaf-crest-104x96": {
   "size": [
@@ -7417,12 +7417,12 @@
    96
   ],
   "rect": null,
-  "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x96 from a 170x156 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x72 at (13, 12) from a 170x156 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "d163453d2723f249a8209be31780a42a52e59da00eea58e7afabea5676c82ca4",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "ac2b02a9ad5d29903469c57e35896f8541354674e9ad8cd56f897ad3d58e5eb1",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-crown-leaf-crest-104x64": {
   "size": [
@@ -7430,12 +7430,12 @@
    64
   ],
   "rect": null,
-  "src": "S01 standard painting, region [275, 50, 445, 170] of 600x620",
-  "made": "the Crown of the S01 individual (leaf crest) as a crop of the standard painting re-framed to 104x64 from a 196x120 window (reduced, never enlarged), paper ground keyed to the deep ground (pass 59: re-cut by the 75 percent rule: the content in the centred 78x48 at (13, 8) from a 196x120 window, reduced and never enlarged, on the cell tone ground #162a37)",
-  "sha256": "3a55004a949cde0626bbc53c8c2e1afb78a35dcee18270d093cd566e205ec564",
-  "status": "new",
-  "signed_in": null,
-  "status_note": "pass 59: re-cut by the owner's 75 percent rule: the content inside the centred 75 percent of the cell (96x120 in 128x160), reduced and never enlarged, on the cell tone `ground`; awaiting verdict (the signed crop stays placed until then)"
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "9252289fc4c0c8f53a9045a4bb14936bf235f49f30bd9fcf90c3d4a469da1348",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing; replaces the None crop so the looks match"
  },
  "trait-S01-eyes-between-small-and-large-128x160": {
   "size": [
@@ -10922,5 +10922,421 @@
   "signed_in": "art director, hand recut (pass 138)",
   "status_note": "signed (art director) at 1x, opaque pixels: L* 50.7, mean R-B 14.8, 3.3 percent above L* 70; one object with the sitting crate and Cargo's crates, beside the open bay (pass 137)",
   "replaces": "home-crate-48x40 sha256 87d9a930ffd6 on main (art/station-masters/home-hand/slices, #116, signed): a walk crate typed by hand (source/home_marks.py), flat pixel work that read as another hand beside the painted bay and crates"
+ },
+ "trait-S01-crown-bare-head-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "b2a6b6ccd974c7bae8d2e553f4450d2789c6c3b3f231a53d3d1d512105401c63",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-crown-bare-head-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "1426c8d1f60dc962f24283108c6df5e35b8709ff53a6c1f4746cd270b04a6ae5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-crown-bare-head-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "56f8ef485b62a17b4952b898e35d22c1d160c2ac19673ca567e8ea4ddaf231cb",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-crown-bare-head-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "2d38fe4ca83d0ab7f2becd86c08dd4d3cdb39a4972a6e225e435473501e618f0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-crown-bare-head-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "8f8cf08c8132f44969bf52dad57e4f12aa2fcffb022f392924e42adf1ecd1ad4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-crown-bare-head-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'bare-head' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "137d78bcf5e7d69417a28e4e042be10c1870c3a14da8fe6a01516f5d3c3437b4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-crown-leaf-crest-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-crown-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the crown look 'leaf-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "bda637863e7d47e4c5c5514c8e7ee0dabe8afa130d175bc2e5f9512092cdfd4f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-thin-rings-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "f59a399310857d1fff9d48728ccefda268804186933df25e9be54800892fca0b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-thin-rings-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "962b4b9443832d558ea7999ab814c06048a9e6348e1a0b05c9aafe98fb075d49",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-thin-rings-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "38f08c44ae9f368036685f16d73ec9fa06efd6c6f6cf22fb71436f52e9438385",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-thin-rings-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0a5a052849be4ac20a04243ca528b5bfdc8edb05b26b41b7d1257c411dfd032e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-thin-rings-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "44e0b06f2bb5ca31c04cef12dff9235986134d0b54e2d901efea12ed38fc419d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-eyes-thin-rings-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'thin-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "714c2ad8e456aa315f4cee67018a0a352d333b7cae0146a41e71994abc4fee16",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "8647c306ed4b81582168477ec5d86906b642d07a309ad22764277f2a4cfb0a03",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "a065d9d4949ffe64efc127bf0b420ac6a1a9c74ddebf4609b76dbf826386c558",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "bddfd98922a3bd466de1184996f3c401979275bd17381a3e6a03073d9b50a6bc",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "b35deb3ac9ec5823cb0a316737990f2894e82eb4110aca93ddc8d0ea8da41937",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "a540b7ca72c721808620abfd79b013fb84095e3980f0a41fb95e9acf6646c550",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-eyes-between-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "f07d59175805e756d45047706c1b080e37aa5e58245e28344ef14ac11365bf4d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-wide-pale-rings-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "a8f59e2801e1bd0d340dc15488ffb994386a68b81ccb2b7125496147e2f6e597",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-wide-pale-rings-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "dacd6adfb8af320c643a76f5d21c721aa7053da22cd8ba4b4e89920694871a37",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-wide-pale-rings-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "a7bc217a3b7db6a9931153e8cfce0b7378e4b8be0ce9d11132d09953620da44e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-wide-pale-rings-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "d53a451b03ac1fc27edb0534ffdfe074af7ac13e6d6de1cd77482697486afa53",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-eyes-wide-pale-rings-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "6342fde30a6cce41b95cfd602eb93704fff069b375abfbe49031b95a94c58327",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-eyes-wide-pale-rings-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-eyes-a.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the eyes look 'wide-pale-rings' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "1b6220c30453e9d0fd1269ebec4bda5b8cc1ddb39a8c221c0e20c52547716483",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-markings-plain-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "fa4acb15aff24472cceb5de3001193905cc4271dc5283324cdaec6e573462381",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-markings-pale-patches-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "e903e53bde8d987e69fc671cd5adfd359ea4ee4c69b40b9a0e7d37701345d656",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-markings-pale-patches-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "e7270b42e771c88dd48c8fd898ad7b9b4b18f1de2942078e8eb111d2e51db76d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-markings-pale-patches-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0a73f396b59ce3fcb95c14a5f70c86875f34693eba05a752c1453e67ced4efc4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-markings-pale-patches-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "efe19418c1745aa59bf4ad1858441b75b65746c6542260007be01d2403c6a22f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S01-markings-pale-patches-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "36c42d41b7ecd1fe3ff6fd68ecd04298e17c7f407b4cbb9528d8f31cc1fd53ce",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S01-markings-pale-patches-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S01-markings-b.jpg (trait wave 1, Pip's accepted art as the only reference)",
+  "made": "the markings look 'pale-patches' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "b361e807e7a4432aee3fa2effaf30af611f75abd970757482c35b531d582ed85",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
  }
 }

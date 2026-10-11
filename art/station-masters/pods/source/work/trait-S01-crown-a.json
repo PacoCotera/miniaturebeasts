@@ -1,0 +1,13 @@
+[
+{
+"name": "trait-S01-crown-a",
+"model": "gemini-3-pro-image",
+"aspect": "16:9",
+"size": "1K",
+"tries": 1,
+"refs": [
+["art/miniature-lives/assets/rich-plain-source.png", "Our accepted adult S01, Pip (project-owned): the creature, exactly. Its leaf crest is the 'leaf crest' look."]
+],
+"prompt": "Paint TWO square panels side by side, a small gap between them, on plain flat solid magenta (#FF00FF) everywhere, no borders, no text. Both panels show the SAME creature as the reference (same charcoal skin, cream belly and muzzle, large orange eyes with cream rings, same brush and matte painterly light from the top left), in the SAME framing: a medium close-up of the head and the top of the shoulders, three-quarter view facing left as in the reference, the head large and filling most of the panel, the top of the head well inside the panel with clear magenta above it. LEFT panel, 'bare head': exactly the same head with NO crest at all: no leaves, no stalk, no bud, no scar; the crown of the head is smooth, round, unbroken charcoal skin with a soft highlight. RIGHT panel, 'leaf crest': exactly the same head wearing the reference's crest of three leaves. Only the crest differs between the panels; face, eyes, pose, size and light are identical. No props, no ground, no shadow, no glow."
+}
+]
