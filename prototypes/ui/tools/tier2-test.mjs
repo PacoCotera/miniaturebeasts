@@ -389,7 +389,11 @@ export function runSet(set, opts = {}) {
       else throw new Error(`${p.id}: no band`);
       const bBuf = readSource(p.b); expectSha(bBuf, p.sha256?.[1], `${p.id} b`); const b = decodeImage(bBuf); row(size, "M8", `${p.id} a / b sha256`, `${sha256(aBuf).slice(0, 12)} / ${sha256(bBuf).slice(0, 12)}`, "", "info");
       const plain = changedOutside(a, b, bandMask);
-      for (const e of live) { const L = [{ field: fields[e], t: 1 }], w2 = changedOutside(warp(a, L, { headMask }), warp(b, L, { headMask }), bandMask); row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL"); }
+      // a cycled pair is signed only on the locked cut (motion-spec §0 points 5-6): `locked: true` on the pair (or on its bellyFrom block) in the landmarks; otherwise the counts are kept and there is no verdict
+      const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null, locked = (p.locked ?? from?.locked) === true, verdict = (ok) => (locked ? (ok ? "pass" : "FAIL") : "unlocked: no verdict");
+      if (!locked) status.push("unlocked pair: no verdict");
+      row(size, "M8", `${p.id} absolute §0 test (unwarped): changed outside the band (only legs and tail change)`, plain, 0, verdict(plain === 0));
+      for (const e of live) { const L = [{ field: fields[e], t: 1 }], w2 = changedOutside(warp(a, L, { headMask }), warp(b, L, { headMask }), bandMask); row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, verdict(w2 <= plain)); }
     } catch (err) { if (err.unreadable) row(size, "M8", p.id, err.message, "", "n/a"); else throw err; }
   }
   // the Vivarium pair: the animator's holds and offset from the landmarks (overrides only by flag); b1 and b2 baked from each warped stand

@@ -232,3 +232,12 @@ test("a belly-moving blend stretches the legs linearly down to the feet rows, wh
   assert.throws(() => checkField(hand), /leg stretch 0\.300 at column 0 \(\|db\| 6\.00 px over 20 px of leg\) is over 0\.25 at 104x112/);
   hand.legDb.fill(5); assert.ok(checkField(hand), "a quarter of the leg span is allowed");
 });
+test("a cycled pair is signed only when its keys are locked; unlocked pairs keep their counts and read no verdict", () => {
+  const a = fixture(), b = fixture(); for (let y = 44; y < 50; y++) b.data.set(C, (y * 104 + 40) * 4);          // a change above the belly line: not only legs and tail
+  const af = path.join(tmp, "cyc-a.png"), bf = path.join(tmp, "cyc-b.png"); writeFileSync(af, png(a)); writeFileSync(bf, png(b));
+  const mk = (locked) => { const j = structuredClone(landmarks), p = { id: "FX-cycle", a: af, b: bf, band: "belly-down", bellyFrom: "phaseA.pass", tail: [0, 0, 1, 1], sha256: [sha256(png(a)), sha256(png(b))] }; if (locked !== undefined) p.locked = locked; j.phaseA = { pass: { bellyLine: [[20, 76], [100, 76]] } }; j.pairs = [p]; const lf = path.join(tmp, `cyc-${locked}.json`); writeFileSync(lf, JSON.stringify(j)); return { name: "cyc", stand: standFile, landmarks: lf }; };
+  const unlocked = runAll([mk(undefined)]).rows.filter((x) => /FX-cycle/.test(x.item) && x.measure === "M8" && /changed outside/.test(x.item));
+  assert.ok(unlocked.length >= 3 && unlocked.every((x) => x.result === "unlocked: no verdict"), "counts kept, no verdict");
+  const locked = runAll([mk(true)]).rows.filter((x) => /FX-cycle/.test(x.item) && x.measure === "M8" && /changed outside/.test(x.item));
+  assert.equal(locked.find((x) => /absolute/.test(x.item)).result, "FAIL", "locked: the absolute §0 test counts the change above the belly line");
+});
