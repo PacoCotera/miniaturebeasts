@@ -647,7 +647,7 @@ function newWorld(seed) {
 // The Station's part as last stored, if it belongs to this world.
 function storedSt() { try { const o = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); return o && o.v === SAVE_V && o.st && o.st.wid === S.wid ? o.st : null; } catch (e) { return null; } }
 function save() {
-  if (window.__mbResetting) return;   // a reset is reloading: nothing may write the save back
+  if (window.__mbResetting || RT.readOnly) return;   // a reset is reloading, or the save is from a newer page: nothing may write it
   if (S.exp) S.shield = S.exp.shield;   // the Probe's Shield as it is now: a dock mid-expedition mends from here
   const st = storedSt(); if (st) S.st = st; else delete S.st;   // the Station's part stays as the Station wrote it
   if (fieldFrozen() && FX.shieldAtDock == null) FX.shieldAtDock = S.exp.shield;   // the Shield as docked, before the cradle mends it
@@ -679,7 +679,7 @@ function load() {
     let raw = localStorage.getItem(SAVE_KEY), s = raw ? JSON.parse(raw) : null;
     if (!s || s.v !== SAVE_V) { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } }
     if (!s || s.v !== SAVE_V || typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return false;   // a Station-only save: a new world starts (and a fresh Station with it)
-    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return false;
+    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten
     S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     layoutCache.clear(); G = genWorld(S.seed, gen); indexCreatures(); return true;
@@ -3991,7 +3991,9 @@ function lineFor() {
   return L1('', '', '');
 }
 function render(t) {
-  g.setTransform(1, 0, 0, 1, 0, 0); RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null;
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  if (RT.readOnly) { drawNewer(); vctx.drawImage(scr, 0, 0); return; }   // S is null here: nothing that reads it runs
+  RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
@@ -4020,7 +4022,7 @@ function frame(t) {
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
   if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
-  if (S.exp && S.exp.beaconView && !FX.reveal && NOW - (FX.beaconAt || 0) > 1700) { beaconBack(); save(); }   // the sweep done: back beside the beacon
+  if (S && S.exp && S.exp.beaconView && !FX.reveal && NOW - (FX.beaconAt || 0) > 1700) { beaconBack(); save(); }   // the sweep done: back beside the beacon
   requestAnimationFrame(frame);
 }
 
@@ -4075,6 +4077,7 @@ function refuseFrozen() {
   const held = FX.held || []; FX.notes = []; fxMsg(FX.dockSaid ? DOCK_TEXT.again : DOCK_TEXT.first, 3); FX.held = held; FX.dockSaid = 1;   // held notes wait for the first action after Lift
 }
 function act(k, mode) {
+  if (RT.readOnly) return;   // a save from a newer page: input is ignored
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
@@ -4346,7 +4349,15 @@ copyBtn.addEventListener('click', () => {
 });
 
 // ===================== 18. Boot =====================
-if (!load()) newWorld(urlSeed());
+// A save from a newer page stays as stored: the page reads nothing from it, writes nothing and ignores input.
+function readOnlyNewer() { RT.readOnly = true; }
+function drawNewer() {
+  R(0, 0, 450, 32, C.ink); R(0, 31, 450, 1, C.night);
+  viewBg();
+  text('This page is out of date · reload to play', 225, 289, C.bone, 2, 'center');
+  R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
+}
+const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
 // The side panel's two sections start collapsed on every load.
 for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
@@ -4356,8 +4367,7 @@ for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
   no.addEventListener('click', back);
   yes.addEventListener('click', () => { try { for (const k of [SAVE_KEY, V7_KEY].concat(OLD_SAVE_KEYS)) localStorage.removeItem(k); } catch (e) { }
     window.__mbResetting = true; location.reload(); }); }
-if (S.exp && S.exp.shield <= 0) endExpedition('break');
-if (S.phase === 'station') S.phase = 'setup';
+if (!RT.readOnly) { if (S.exp && S.exp.shield <= 0) endExpedition('break'); if (S.phase === 'station') S.phase = 'setup'; }
 // The Station page wrote the shared save: take its part (dock, accepted crates, mibis, the Probe) and keep ours.
 // A reset there (the save erased) reloads this page too.
 window.addEventListener('storage', e => {
@@ -4368,7 +4378,7 @@ window.addEventListener('storage', e => {
   save();   // save() re-reads the Station's part, syncs, and writes ours back unchanged otherwise
 });
 save();
-if (S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
+if (!RT.readOnly && S.phase === 'patch' && (!S.exp || !S.exp.patch)) S.phase = S.exp ? 'map' : 'setup';
 try { if (localStorage.getItem('mb-observer') === '1') setObserver(true); } catch (e) { }
 try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(true); } catch (e) { }   // ?dev=1 opens the Observer, the page's developer panel
 fit();

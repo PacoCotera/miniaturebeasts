@@ -92,10 +92,24 @@ test("a new world writes gen 1, and its world and first place match the vectors"
   assert.deepEqual(placeDigest(API, p.run("layout(String(G.spawns[0]))")), want.places[0]);
 });
 
-test("a save with an unknown gen does not load", () => {
-  const p = page();
-  p.store[p.KEY] = JSON.stringify(Object.assign(FIXTURE(), { gen: 2 }));
-  assert.equal(p.run("load()"), false);
+test("a save from a newer generator (gen 3) is read-only: load() says 'newer', boot writes nothing, input does nothing", () => {
+  const raw = JSON.stringify(Object.assign(FIXTURE(), { gen: 3 })), writes = [];
+  const store = new Proxy({ "mb-save-v8": raw }, { set: (o, k, v) => { writes.push(k); o[k] = v; return true; }, deleteProperty: (o, k) => { if (!/^mb-exploration-v[1-6]$/.test(k)) writes.push(k); delete o[k]; return true; } });   // load() still clears the saves before v7, as on every boot
+  const p = page(store);
+  assert.equal(p.store[p.KEY], raw, "the stored JSON is byte-identical after boot");
+  assert.deepEqual(writes, [], "boot wrote nothing");
+  assert.equal(p.run("RT.readOnly"), true);
+  assert.equal(p.run("S"), null, "nothing was read into the page");
+  assert.equal(p.run("load()"), "newer");
+  p.run("var saves = 0; const save0 = save; save = function () { saves++; return save0.apply(this, arguments); };");
+  for (const k of ["up", "down", "left", "right", "confirm", "back", "call"]) { p.run(`FX.lockUntil = 0; act(${JSON.stringify(k)}); press(${JSON.stringify(k)}); release(${JSON.stringify(k)})`); }
+  p.run("render(1); frame(1000)");
+  assert.equal(p.run("saves"), 0, "nothing called save()");
+  assert.equal(p.run("S"), null, "input started no world");
+  p.run("save0()");
+  assert.equal(p.store[p.KEY], raw, "save() returns at once while read-only");
+  assert.deepEqual(writes, [], "nothing was written");
+  for (const gen of [2, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 
 test("the Station's save reader adopts the save and keeps gen as it is (absent, 1, 2)", async () => {
