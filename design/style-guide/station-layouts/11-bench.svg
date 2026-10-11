@@ -1,63 +1,90 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="ui-monospace, Menlo, Consolas, monospace">
-<title>Probe bench, docked: tier 1 with one plate gone, the ring on the plates, Mend a plate. 1024×600 at 1×, measured. Layout only, no art.</title>
-<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern></defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 600" width="1024" height="600" font-family="Inter, sans-serif">
+<title>Probe bench, docked: tier 1, two plates of three whole, the ring on the plates (lifted 2 px), the switch off, ✓ Mend a plate ⚡ 1. 1024×600 at 1×, measured. Layout only, no art.</title>
+<defs><pattern id="g8" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M8 0H0V8" fill="none" stroke="#efefef" stroke-width="0.5"/></pattern><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2b6cb0"/></marker></defs>
 <rect width="1024" height="600" fill="#ffffff"/><rect width="1024" height="600" fill="url(#g8)"/>
 <rect x="0.5" y="40.5" width="1023" height="521" fill="none" stroke="#ddd" stroke-width="1" stroke-dasharray="1 3"/>
-<rect x="56.5" y="104.5" width="479" height="287" fill="#eef2f5" stroke="#3c4b57" stroke-width="1.5"/><text x="62" y="118" font-size="10" fill="#333">the Probe in its cradle, tier 1 · 56,104 480×288</text>
-<rect x="152.5" y="144.5" width="287" height="191" fill="none" stroke="#5a6672" stroke-dasharray="4 3"/><text x="296" y="244" font-size="11" fill="#5a6672" text-anchor="middle">Probe (painted)</text>
+<text x="1012" y="556" font-size="7" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">stage 0,40 1024×522: room-bench-stage-probe (until it lands, room-bench-stage-collection)</text>
+<rect x="56.5" y="104.5" width="479" height="287" fill="#eef2f5" stroke="#3c4b57" stroke-width="1.5"/>
+<text x="62" y="118" font-size="8" fill="#333" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">cradle 56,104 480×288: bench-probe-t1-480x288 (painted)</text>
+<rect x="152.5" y="144.5" width="287" height="191" fill="none" stroke="#5a6672" stroke-dasharray="4 3"/>
+<text x="296" y="244" font-size="11" fill="#5a6672" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">the Probe, tier 1</text>
 <line x1="296.5" y1="104" x2="296.5" y2="496" stroke="#c9d2da" stroke-dasharray="2 4"/>
-<text x="64" y="351" font-size="10" fill="#2b6cb0">Docked, tier 1: three plates, one gone.</text>
-<text x="64" y="364" font-size="10" fill="#2b6cb0">The bench opens on the plates when one</text>
-<text x="64" y="377" font-size="10" fill="#2b6cb0">is gone, else on the switch.</text>
-<rect x="192.5" y="416.5" width="207" height="79" fill="none" stroke="#bbb" stroke-width="1" stroke-dasharray="1 3"/>
-<rect x="232.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="280.5" y="424.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="328.5" y="424.5" width="31" height="63" fill="#f0f0f0" stroke="#5a6672" stroke-width="1" stroke-dasharray="3 2"/>
-<text x="408" y="460" font-size="9" fill="#777">plates 32×64, 48 pitch</text>
-<rect x="188" y="410" width="216" height="88" fill="none" stroke="#d9a21b" stroke-width="2" rx="6"/>
-<rect x="584.5" y="104.5" width="383" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="600" y="132" font-size="13" fill="#717c86">Mend</text><rect x="940.5" y="116.5" width="11" height="11" fill="#3c4b57" stroke="#444" stroke-width="1"/>
-<rect x="600.5" y="160.5" width="79" height="39" fill="#d5dbe0" stroke="#444" stroke-width="1" rx="4"/><rect x="600.5" y="160.5" width="39" height="39" fill="#9aa3ab" stroke="#444" stroke-width="1" rx="3"/>
-<rect x="696.5" y="168.5" width="23" height="23" fill="#f1ebdf" stroke="#444" stroke-width="1"/><text x="708" y="204" font-size="8" fill="#777" text-anchor="middle">dock</text>
+<rect x="192.5" y="416.5" width="207" height="79" fill="none" stroke="#9aa3ab" stroke-width="1" stroke-dasharray="2 3"/>
+<rect x="232.5" y="424.5" width="31" height="63" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="232.5" y="422.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="280.5" y="424.5" width="31" height="63" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="280.5" y="422.5" width="31" height="63" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="328.5" y="424.5" width="31" height="63" fill="none" stroke="#c9d2da" stroke-width="1" stroke-dasharray="1 2"/>
+<rect x="328.5" y="422.5" width="31" height="63" fill="#f3f3f3" stroke="#444" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="408" y="440" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">plates 32×64, 48 pitch</text>
+<text x="408" y="450" font-size="7" fill="#555" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">tier 1: x 232, 280, 328, y 424</text>
+<text x="408" y="464" font-size="7" fill="#d9a21b" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">focused: lifted 2 (y 422);</text>
+<text x="408" y="474" font-size="7" fill="#d9a21b" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">the region box dashed</text>
+<rect x="584.5" y="104.5" width="383" height="127" fill="#eceef1" stroke="#444" stroke-width="1"/>
+<text x="600" y="132" font-size="16" fill="#8a947b">Mend</text>
+<rect x="940.5" y="116.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
+<image x="940" y="116" width="12" height="12" style="image-rendering:pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAeklEQVR4nKWSIQ7AIAxF20qCQsExJrm/qOQYTKEIlimS0g0Qq+vnPdJQEFRZ47rsaysoe9TgFeN0QWKeRNrBMhsMyYMQPITglxIAAFnjugxyvl/CkKxxnWS4gmXRkfgt1FZwPN2uEjPUVpBksIOnkcZSviS9ONTA6Ws8Y6k3Fgll/P4AAAAASUVORK5CYII="/>
+<text x="962" y="226" font-size="6" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">584,104 384×128</text>
+<rect x="600.5" y="160.5" width="79" height="39" fill="#ffffff" stroke="#444" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="600.5" y="160.5" width="39" height="39" fill="#9aa3ab" stroke="#444" stroke-width="1"/>
+<text x="600" y="212" font-size="6" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">track off 80×40, knob x 16</text>
+<rect x="696.5" y="168.5" width="23" height="23" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<text x="708" y="202" font-size="6" fill="#777" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">dock</text>
 <rect x="736.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
 <rect x="760.5" y="164.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="164.5" width="15" height="31" fill="#f0f0f0" stroke="#5a6672" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="816" y="184" font-size="9" fill="#777">the dock mends two</text><text x="600" y="226" font-size="8" fill="#777">switch: track 80×40, knob x 16 → 56</text><text x="962" y="226" font-size="8" fill="#999" text-anchor="end">584,104 384×128</text>
-<rect x="584.5" y="248.5" width="383" height="247" fill="#eceef1" stroke="#444" stroke-width="1"/><text x="600" y="276" font-size="13" fill="#717c86">Upgrade</text><rect x="940.5" y="260.5" width="11" height="11" fill="#98d85c" stroke="#444" stroke-width="1"/>
-<rect x="600.5" y="296.5" width="159" height="159" fill="#dfe4e8" stroke="#444" stroke-width="1"/><text x="604" y="452" font-size="9" fill="#777">socket 160</text>
-<rect x="616.5" y="312.5" width="127" height="127" fill="#c7d2da" stroke="#444" stroke-width="1"/><text x="680" y="380" font-size="9" fill="#555" text-anchor="middle">part 128</text>
-<rect x="784.5" y="312.5" width="15" height="15" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
-<rect x="808.5" y="312.5" width="15" height="15" fill="#f1ebdf" stroke="#444" stroke-width="1"/>
-<rect x="832.5" y="312.5" width="15" height="15" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="808.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="832.5" y="352.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="856.5" y="352.5" width="15" height="31" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="408.5" width="39" height="39" fill="#e3f4d0" stroke="#444" stroke-width="1"/><rect x="840.5" y="408.5" width="39" height="39" fill="#e3f4d0" stroke="#444" stroke-width="1"/>
-<text x="880" y="328" font-size="9" fill="#777">three pods</text><text x="896" y="376" font-size="9" fill="#777">four plates</text><text x="888" y="432" font-size="9" fill="#777">reach, deep</text><text x="784" y="476" font-size="9" fill="#777">what it adds, as pictures</text>
-<text x="962" y="490" font-size="8" fill="#999" text-anchor="end">584,248 384×248</text>
+<rect x="784.5" y="164.5" width="15" height="31" fill="#f3f3f3" stroke="#444" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="840" y="184" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">the dock leaves two whole</text>
+<rect x="584.5" y="248.5" width="383" height="247" fill="#eceef1" stroke="#444" stroke-width="1"/>
+<text x="600" y="276" font-size="16" fill="#8a947b">Upgrade</text>
+<rect x="940.5" y="260.5" width="11" height="11" fill="none" stroke="none" stroke-width="0"/>
+<image x="940" y="260" width="12" height="12" style="image-rendering:pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAAgklEQVR4nGNkQAM8XEL/kflfvr1jROYzoivsOeeFYkCJ0TYUjUz4FCOLwdQwIUvYSKky2Eip4tTEwMDAwMTDJfQfWeDIs9sYGmCaeLiE/jMhC+JSjAyYCKqgWMOXb+8YYUGHD5QYbWP48u0dIxOyAD7FKE6CRQo2TegRx4iugFDSAAB7KTcWhQLmsAAAAABJRU5ErkJggg=="/>
+<text x="962" y="490" font-size="6" fill="#999" text-anchor="end" font-family="DejaVu Sans Mono, ui-monospace, monospace">584,248 384×248</text>
+<rect x="600.5" y="296.5" width="159" height="159" fill="#ffffff" stroke="#444" stroke-width="1" stroke-dasharray="3 2"/>
+<text x="604" y="452" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">socket 160</text>
+<rect x="616.5" y="312.5" width="127" height="127" fill="#c8d0d8" stroke="#444" stroke-width="1"/>
+<text x="680" y="374" font-size="8" fill="#333" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">part ready</text>
+<text x="680" y="386" font-size="7" fill="#555" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">seated (y 64)</text>
+<rect x="784.5" y="312.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="312.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="832.5" y="312.5" width="15" height="15" fill="#dcefc9" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="352.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="352.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="832.5" y="352.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="856.5" y="352.5" width="15" height="31" fill="#dcefc9" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="408.5" width="39" height="39" fill="#dcefc9" stroke="#444" stroke-width="1"/>
+<rect x="840.5" y="408.5" width="39" height="39" fill="#dcefc9" stroke="#444" stroke-width="1"/>
+<text x="880" y="324" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">three pods</text>
+<text x="888" y="372" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">four plates</text>
+<text x="888" y="432" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">reach, deep</text>
+<text x="784" y="466" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">what it adds; the one each adds</text>
+<text x="784" y="476" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">in its -new slice (green), never dim</text>
+<rect x="189" y="411" width="214" height="86" fill="none" stroke="#d9a21b" stroke-width="2" rx="6"/>
+<text x="188" y="407" font-size="7" fill="#d9a21b" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">ring 188,410 216×88: 4 px outside the lifted box; stays drawn through holds</text>
+<text x="64" y="352" font-size="9" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">Docked, tier 1: three plates, one gone.</text>
+<text x="64" y="365" font-size="9" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">The bench opens on the plates when one is gone,</text>
+<text x="64" y="378" font-size="9" fill="#2b6cb0" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">else on the switch. The ring's target lifts 2 px.</text>
 <rect x="0.5" y="0.5" width="1023" height="39" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<rect x="16.5" y="8.5" width="231" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="16.5" y="8.5" width="23" height="23" fill="#dcdcdc" stroke="#666" stroke-width="1"/>
-<text x="48" y="26" font-size="16" fill="#222" font-weight="600">Probe</text>
-<line x1="256.5" y1="8" x2="256.5" y2="32" stroke="#888" stroke-width="1"/><line x1="888.5" y1="8" x2="888.5" y2="32" stroke="#888" stroke-width="1"/>
-<rect x="384.5" y="8.5" width="255" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="512" y="25" font-size="12" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 9</text>
-<rect x="816.5" y="8.5" width="63" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="816.5" y="8.5" width="15" height="23" fill="#9a96ae" stroke="#666" stroke-width="1"/>
-<rect x="836.5" y="16.5" width="7" height="7" fill="#7fd8a6" stroke="#444" stroke-width="1"/>
+<image x="16" y="8" width="24" height="24" style="image-rendering:pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAArklEQVR4nO1UyQ2AMAwLLNLhmIBJmKDDdZLyQgrgJE4FDyQs8UA57ERxRb6OyQqUunWvsC2rWasxjzRnc0TABLrQUsnkHDhNwBbqWDQJXBFqXurWjy8SAAk8JZFKL36b4KrsWqzjzBRwRRbYtdAEmWuhCdBKmHMNCVATVrWX97qTTwSsgdjmIsZjl2nQlnXyjoF2MsqxHK//h04PwTJkymgerBfgMQJE8hoyR/JDdj1ramvW3GfvAAAAAElFTkSuQmCC"/>
+<text x="48" y="27" font-size="20" fill="#222" font-weight="500">Probe</text>
+<text x="113" y="18" font-size="6" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">mark frame-room-research-24</text>
+<text x="113" y="27" font-size="6" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">(Research key)</text>
+<path d="M256 8h1v24h-1z" fill="#888"/>
+<path d="M888 8h1v24h-1z" fill="#888"/>
+<text x="512" y="26" font-size="16" fill="#222" text-anchor="middle">⚡ 14   ◆ 6   ❀ 0</text>
+<image x="816" y="8" width="16" height="24" style="image-rendering:pixelated" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAYCAYAAADzoH0MAAADe0lEQVR42oWTO29cRRTHf+fM3L13H/bGSezEhDyg4RGJAqR0USw66CjyFSgoaChDh8Qn4FOYFIgCiYoIhTRAESGIYhRiAY4TG4h3N9nHvTPnUGwi2UvBkUajGen89f+dhwBcu/bB+Y8/fP/Tquq+C2akJuPJAMPMcXNUDcHJeVRPxl+XF658BCAAD+5888X6av8dZuPd6SxNQoxZlYxlRMWR4I4L2TyIdTBDzr/9CkAEWD/z4hVGezufX//ys29/3Lr5xksv1Jc3Lh/015Yc2pQtt9lwX9OsTCdPVVfareoah8MHdwf177duv/fWq+v8T/g/9875n7e+f/7WZ9+WciOXLr3ZdvfW1tZXpftmcHfd3JzfP+zsdDYfea8ejE7g2Y8KqIAn+WX71wg0dX3Ob7AqN0BXr16VG9u0Hrfbxc9rmPRKRbBFBzg4lIiI7+/v24SNAMT6IWW68LiMKyJPQBAvDiPFeb7ghpuZAKxubOgUwghUTxMqVnR3dxR7LQzzArMFBMcVrL/cy+6uQ/4Iv+2hCUIeDMLuLjGMRY4FVKQVwBcQDBew1eMrCSgO6BTn1tDRzjDubfcjQOz1pDdCAZkTH0YQHHFbOda32xCXiOHeXUKOy1p18CBIkPnQgQi+6GCukftn12uAxw/6QQpCFyiX0XKKBkFafSTlJIjnhRo4ImLLyz37CUIzQcsOXoZ5YujOT1vQWFaOSP7PIAUNafXCRVcIdJ/QA6qTeLcLQRCbTkK5hCaSIKQFB5aDkM6vLhdroP1eT6aCTMdz7pkg7Xab4VMUKQQzO1rElDPmubfUD80I7U7R1jNvjSCBsQymIrPcFiQJ7otdUCOE+iB26ieAdfDZeM4NMPaOkbFHDY1XRQ2aF9vYmDedU9P7Z14/9fL2ymTS7iyJJpEyNU2UiiAi0j7ZrdsP90/j06MOzKYzhaIbwycXH373NylH8qxBROebFpQYAwdkbNrBXY4IqCiI1mhYIqcKS1OQLjknxAxNwmw8JBRdQ1VjWS8skwogTJ8eYHYA1kHjBI0dEKEZ7wEVbrVKq0LFFyfRcIeUJqgcp+xeRKMi4og4OTXE1msU7bNoYXZoG+c1SJNaLde0On3Qp2S2EK1wS2YJYnWCurmjKhUhtNR9dMTBcDC8SYgANZIqvFbcGhBXCY4WqkVZ4nViNhow/Ov+c4F/AQ9TslvL4Zv6AAAAAElFTkSuQmCC"/>
+<circle cx="840" cy="20" r="4" fill="#adf6e0"/>
 <circle cx="868" cy="20" r="11" fill="#eee" stroke="#1f9d8f" stroke-width="2"/>
-<rect x="904.5" y="8.5" width="103" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<text x="1006" y="25" font-size="12" fill="#222" text-anchor="end">☀ 6</text>
-<line x1="0" y1="561.5" x2="1024" y2="561.5" stroke="#444" stroke-width="1"/>
+<text x="1008" y="26" font-size="16" fill="#222" text-anchor="end">☀ 5</text>
 <rect x="0.5" y="562.5" width="1023" height="37" fill="#e6e6e2" stroke="#444" stroke-width="1"/>
-<rect x="16.5" y="570.5" width="375" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="408.5" y="570.5" width="207" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="624.5" y="570.5" width="279" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<rect x="928.5" y="570.5" width="79" height="23" fill="none" stroke="#999" stroke-width="1" stroke-dasharray="2 2"/>
-<line x1="404.5" y1="571" x2="404.5" y2="591" stroke="#888" stroke-width="1"/><line x1="620.5" y1="571" x2="620.5" y2="591" stroke="#888" stroke-width="1"/>
-<circle cx="24" cy="582" r="8" fill="#f2671b"/><text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
-<text x="36" y="587" font-size="14" fill="#c4500f">Mend a plate</text>
-<text x="160.8" y="587" font-size="14" fill="#222">⚡ 1</text>
-<text x="512" y="587" font-size="13" fill="#6b6880" text-anchor="middle">one plate to mend</text>
-<circle cx="962.4" cy="582" r="8" fill="#5d5974"/><text x="962.4" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text><text x="1006" y="587" font-size="14" fill="#6b6880" text-anchor="end">Home</text>
+<path d="M404 571h1v20h-1z" fill="#888"/>
+<path d="M620 571h1v20h-1z" fill="#888"/>
+<circle cx="24" cy="582" r="8" fill="#f2671b"/>
+<text x="24" y="586" font-size="11" fill="#fff" text-anchor="middle">✓</text>
+<text x="36" y="588" font-size="16" fill="#c4500f">Mend a plate</text>
+<text x="156" y="588" font-size="16" fill="#8a6a1e">⚡ 1</text>
+<text x="512" y="588" font-size="16" fill="#6b6880" text-anchor="middle">one plate to mend</text>
+<text x="512" y="598" font-size="6" fill="#999" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">134 px of 208</text>
+<circle cx="951" cy="582" r="8" fill="#9a9a9a"/>
+<text x="951" y="586" font-size="11" fill="#fff" text-anchor="middle">←</text>
+<text x="1008" y="588" font-size="16" fill="#555" text-anchor="end">Home</text>
 </svg>
