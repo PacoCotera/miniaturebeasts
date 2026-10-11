@@ -3120,5 +3120,22 @@
   "pacific_day": "2026-10-10",
   "time": "2026-10-11T01:30:06Z",
   "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "terrain-grass-scene-b1 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.194302,
+  "mxn": 3.886,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:50:28Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 1091,
+   "candidatesTokenCount": 1365,
+   "thoughtsTokenCount": 236,
+   "totalTokenCount": 2692
+  }
  }
 ]
