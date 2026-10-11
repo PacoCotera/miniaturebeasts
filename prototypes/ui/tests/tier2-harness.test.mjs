@@ -193,3 +193,13 @@ test("the warp's input is the cut key: body binarised, the shadow split off, not
   assert.equal(flat(out).data[(4 * 10 + 4) * 4 + 3], 255, "the body moved down 2 px"); assert.equal(flat(out).data[(2 * 10 + 4) * 4 + 3], 0);
   assert.equal(newColours(flat(k), flat(out)), 0);
 });
+test("a signed cut key (body 0/255 and its shadow, each its own file) is used as it is, with no provisional prep; the shadow is not warped", () => {
+  const body = fixture(), shadow = blank(104, 112); for (let x = 20; x < 80; x++) shadow.data.set([30, 26, 34, 110], (100 * 104 + x) * 4);
+  const bf = path.join(tmp, "level-body.png"), sf = path.join(tmp, "level-shadow.png"); writeFileSync(bf, png(body)); writeFileSync(sf, png(shadow));
+  const r = runAll([{ name: "cut", stand: bf, "stand-shadow": sf, landmarks: lmFile, "painted-down": bf, "painted-down-shadow": sf }]);
+  assert.match(r.rows.find((x) => x.measure === "prep").item, /signed cut key/);
+  assert.equal(r.rows.find((x) => x.measure === "run").result, "ok", "nothing provisional: a verdict-shaped run");
+  assert.ok(r.rows.some((x) => x.item === "stand shadow sha256") && r.rows.some((x) => x.item === "painted-down shadow sha256"), "every file's sha256 is in the CSV");
+  const out = decodePNG(r.files.get("cut/104x112-warped-up.png")).data, at = (x, y) => [...out.slice((y * 104 + x) * 4, (y * 104 + x) * 4 + 4)];
+  assert.deepEqual(at(50, 100), [30, 26, 34, 110], "the shadow stays under the warped body");
+});

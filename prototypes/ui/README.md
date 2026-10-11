@@ -22,6 +22,8 @@ node prototypes/ui/tools/warp-field.mjs --landmarks lm.json --stand stand.png --
 
 ## `tools/tier2-test.mjs`: the matrix and its measures
 
+**A signed cut key is used as it is.** `--stand body.png --stand-shadow shadow.png` (and `--painted-down` / `--painted-down-shadow`, `--painted-up` / `--painted-up-shadow`): the body has alpha 0 or 255, the painted shadow is its own file, never warped, drawn unwarped under the warped body. Each file's SHA-256 goes in the CSV and nothing is provisional. Without `--stand-shadow` the tool prepares a master itself, as follows.
+
 **The warp's input is the cut key** (the art director's ruling): the body alpha binarised (255 or 0), the painted shadow split off into its own layer, which is not warped and stays on the ground under the warped feet. The rule is `cut-motion.py`'s final remap in masters-pods (alpha ≥ 200 is body, 60..199 is shadow kept at min(alpha, 110), the rest 0), applied to a finished master with the shadow taken from the rows at and below the first zero row; above them a partial alpha is the body's own fringe and is dropped. Every run prints it (`prep`) and is marked `provisional input prep` until the art director confirms the split for a master that is not a raw cut. M3's and every other reference is the prepared stand.
 
 ```
@@ -56,4 +58,4 @@ Also printed: clamp misses (should be 0), and the leg compression, the largest |
 
 The breath bake is the animator's `breathBake`: row copies per column, no resampling. yb(x) is the belly line; rows at and below it are fixed. b1: out(y) = in(y + 1) for y < yb − 1, row yb − 1 keeps itself. b2 adds a second lift for the rows above ym = round((ytop + yb) / 2), ytop the column's first ink row, ym at most yb − 8. Rows shifted in from above the figure are transparent.
 
-`tools/samples/matrix/` holds the dry run on the signed S04 stand at 304x312, 104x112 and 96x88 with the animator's provisional topline landmarks (the landmarks file itself is not in this repository): the 1x PNGs (stand, warped down, warped up), the field maps, the head masks, the contact sheets, the breathing pairs as APNGs and `measures.csv`. The painted ends are not in it: they are raw sheets in masters-pods and wait for the art director's cut. It is not a verdict.
+`tools/samples/matrix/` holds the dry run on the signed S04 stand at 304x312, 104x112 and 96x88 with the animator's provisional topline landmarks (the landmarks file itself is not in this repository): the 1x PNGs (stand, warped down, warped up), the field maps, the head masks, the contact sheets, the breathing pairs as APNGs and `measures.csv`. The inputs are the signed cut keys in masters-pods (level, dipping, arched; body and shadow at each size); every file's SHA-256 is in the CSV. It is not a verdict: the landmarks are the animator's provisional ones.

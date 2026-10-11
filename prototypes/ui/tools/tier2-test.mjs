@@ -269,9 +269,16 @@ export function runSet(set, opts = {}) {
   let zeroY = standRaw.h;
   if (ov.shadowRows) zeroY = ov.shadowRows[0][0];
   else if (info?.pic.fieldZeroRows) zeroY = info.derived && mapping ? mapping.ty0 + rha((info.pic.fieldZeroRows[0] - mapping.by0) * mapping.sy) : info.pic.fieldZeroRows[0];
-  const stand = prepareKey(standRaw, zeroY), ink = inkMask(stand);
-  row(size, "prep", `cut key: body alpha>=${BODY_ALPHA} -> 255, shadow alpha ${SHADOW_ALPHA}..${BODY_ALPHA - 1} from row ${zeroY} down kept at <=${SHADOW_MAX} and not warped, rest 0`, `${stand.prep.body} body, ${stand.prep.shadow} shadow, ${stand.prep.dropped} dropped px`, "", "provisional");
-  status.push("provisional input prep");
+  let stand;
+  if (set["stand-shadow"]) {                                      // a signed cut key: body (alpha 0 or 255) and its painted shadow, each its own file; nothing to prepare
+    const sb = readSource(set["stand-shadow"]); stand = standRaw; stand.shadow = decodeImage(sb);
+    let nb = 0, ns = 0, odd = 0; for (let i = 0; i < stand.w * stand.h; i++) { const a = stand.data[i * 4 + 3]; if (a === 255) nb++; else if (a) odd++; if (stand.shadow.data[i * 4 + 3]) ns++; }
+    stand.prep = { body: nb, shadow: ns, dropped: 0 }; row(size, "input", "stand shadow sha256", sha256(sb), "", "info");
+    row(size, "prep", "signed cut key: body alpha 0/255, shadow its own layer, never warped", `${nb} body, ${ns} shadow px${odd ? `, ${odd} PARTIAL-ALPHA body px` : ""}`, "", odd ? "FAIL" : "info");
+  } else stand = prepareKey(standRaw, zeroY);
+  const ink = inkMask(stand);
+  if (!set["stand-shadow"]) row(size, "prep", `cut key: body alpha>=${BODY_ALPHA} -> 255, shadow alpha ${SHADOW_ALPHA}..${BODY_ALPHA - 1} from row ${zeroY} down kept at <=${SHADOW_MAX} and not warped, rest 0`, `${stand.prep.body} body, ${stand.prep.shadow} shadow, ${stand.prep.dropped} dropped px`, "", "provisional");
+  if (!set["stand-shadow"]) status.push("provisional input prep");
   for (const e of ENDS) {
     try {
       if (set[`field-${e}`]) {                                      // a map given by path; the head and rows still come from the landmarks when there are some
@@ -293,7 +300,7 @@ export function runSet(set, opts = {}) {
   if (headMask) { const hb = encodeMask(headMask, stand.w, stand.h); files.set(`${set.name}/${idBase}-map-head-${size}.png`, hb); row(size, "head", "mask png sha256", sha256(hb), "", "info"); }
   const painted = {}, warped = {}, wbody = {}, stats = { clampMisses: 0 };
   for (const e of ENDS) {
-    if (set[`painted-${e}`]) { const b = readSource(set[`painted-${e}`]); painted[e] = decodeImage(b); row(size, "input", `painted-${e} sha256`, sha256(b), "", "info"); }
+    if (set[`painted-${e}`]) { const b = readSource(set[`painted-${e}`]); painted[e] = decodeImage(b); row(size, "input", `painted-${e} sha256`, sha256(b), "", "info"); if (set[`painted-${e}-shadow`]) { const sb = readSource(set[`painted-${e}-shadow`]); painted[e].shadow = decodeImage(sb); row(size, "input", `painted-${e} shadow sha256`, sha256(sb), "", "info"); } }
     if (!fields[e]) continue;
     warped[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, stats });
     wbody[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, drawHead: false });
@@ -364,7 +371,7 @@ export function runSet(set, opts = {}) {
       const aBuf = readSource(p.a); expectSha(aBuf, p.sha256?.[0], `${p.id} a`);
       if (p.b?.bake) {
         if (decodeImage(aBuf).w !== stand.w) { row(size, "M8", p.id, `a is not ${size}`, "", "n/a"); continue; }
-        if (sha256(aBuf) !== sha256(standBuf)) throw new Error(`${p.id}: a is not this set's stand; the run stops`);
+        if (sha256(aBuf) !== sha256(standBuf)) { if (!set["stand-shadow"]) throw new Error(`${p.id}: a is not this set's stand; the run stops`); row(size, "M8", `${p.id} a is the signed stand (sha256 ${sha256(aBuf).slice(0, 12)}), not this set's level key; the stand-b rows above run on the level key`, "", "", "info"); continue; }
         row(size, "M8", `${p.id} a is this stand (sha256 ${sha256(aBuf).slice(0, 12)}); the stand-b rows above run on it`, "", "", "info"); continue;
       }
       const a = decodeImage(aBuf);
