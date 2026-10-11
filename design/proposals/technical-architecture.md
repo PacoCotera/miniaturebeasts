@@ -9,7 +9,7 @@ This is the software structure every Station, Companion and Caddy build follows,
 - The hardware: ESP32 for the Companion and the Caddy, a Raspberry Pi 4 for the Station, and each screen's resolution and colour depth. The Pi 4 is the ceiling, and everything is built for underpowered hardware. The toolkit and the language are chosen within these limits.
 - **First define the loop**, honouring each device's pixels and colours; once the loop and the interactions are stable, **port**. Hardware prototyping starts once the loop is complete in software.
 - The Station at 1024×600 at 1× with Inter at 16, 20 and 28 px, anti-aliased, and painted full-colour art; the Companion at 450×600 in 8-bit indexed colour (up to 256 entries, in per-biome sets) with 48 px tiles, HUD 32, view 532, bottom line 36, and the Mibi 7×9 bitmap type; the Caddy in four grays.
-- The kit plays standalone with no internet; cargo moves only on docking; the Caddy brokers paintings over Wi-Fi from the Station.
+- The kit plays standalone with no internet; cargo moves only on docking; the Caddy brokers the portrait at the sitting over Wi-Fi from the Station.
 - Genome, rig and stamp are imported from `prototypes/workbench` and `prototypes/genome-stamp`, never copied.
 - Routine play uses the depicted keys only. The developer-tools mode is a build requirement. No MicroPython or Arduino.
 
@@ -69,7 +69,7 @@ Arithmetic from the reference hardware ([devices.md](../devices.md)), to be meas
 | --- | --- | --- | --- |
 | Panel | 450×600 AMOLED, RM690B0 controller over quad SPI, 16-bit colour in | 792×272 e-paper, four grays; 58 mm printer, 384 dots a line | 1024×600 over HDMI, drawn in software to the kernel's display (DRM) |
 | One frame | 270 KB as palette indexes (PSRAM); 540 KB as 16-bit; a 60-row strip to the panel is 54 KB | 54 KB at 2 bits a pixel; one printer line is 48 bytes | 2.4 MB at 32 bits; two buffers 4.8 MB |
-| Assets | One byte a pixel: a 48 px tile is 2.3 KB, a 280×300 resident 84 KB. v1's 942 KB of RGBA art would be about 235 KB | Four-gray sets; paintings on the SD card | Paintings at full colour, 372 KB each at 300×310 decoded; the rig, rasteriser, validator and derivation run here (art pipeline §11) |
+| Assets | One byte a pixel: a 48 px tile is 2.3 KB, a 280×300 resident 84 KB. v1's 942 KB of RGBA art would be about 235 KB | Four-gray sets; paintings on the SD card | The layers and the bake run here (art pipeline §11) |
 | Lesson from v1 | The 1.4 MB image was 1.1 MB of flash data, mostly RGBA art and anti-aliased font tables. Indexed assets and bitmap type remove most of it | 470 KB Caddy UI compiled | Never ran on a Pi |
 
 The Companion's pixel model (8-bit indexed colour: a palette of up to 256 entries in per-biome sets, indexes in memory, a lookup to 16-bit on the way to the panel) is the same model the sandbox uses. The device enforces the palette for free.
@@ -78,7 +78,7 @@ The Companion's pixel model (8-bit indexed colour: a palette of up to 256 entrie
 
 Native C on ESP-IDF, with **LVGL 9** for chrome, lists and menus, and an indexed renderer of our own for the Companion's world view (tile map and sprites) inside it. The world view is a game renderer, not a widget. LVGL is MIT-licensed, proven on the S3 in v1, and drives an e-paper through a custom flush. The Caddy firmware is mostly service work (Wi-Fi, TLS, SD storage, a small HTTP server for the Station, the printer) with a quiet four-gray UI, so its service contract matters more than the toolkit. Both start when the loop is stable. **Fallback: Slint** (GPLv3 or a paid licence on embedded, and younger on the S3 than LVGL).
 
-**Wi-Fi between Station and Caddy:** the Caddy brokers over Wi-Fi, and the four HTTP routes of the Caddy service are the contract. The Station's client queues in `outbox`, so the kit plays on when the Caddy is unreachable.
+**Wi-Fi between Station and Caddy:** the Caddy brokers the portrait at the sitting over Wi-Fi, and the four HTTP routes of the Caddy service are the contract. The Station's client queues in `outbox`, so the kit plays on when the Caddy is unreachable.
 
 ### 4.3 The Station's runtime, within the Pi 4
 

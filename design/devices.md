@@ -53,7 +53,9 @@ frames and Caddy four-grey from it. The **Caddy brokers** every mibi's standard
 painting at Grow, not only the portrait, keeps the queue and the daily grow cap, and
 **stores** every painting forever on its card; so the Caddy must be reachable from
 the Station over Wi-Fi and connected for a mibi to get its painting. The Companion
-still renders nothing and calls nothing.
+still renders nothing and calls nothing. Superseded 2026-10-11 (14:17): the Caddy
+brokers and stores the portrait only, made at the sitting; the Station draws every
+mibi from its layers.
 
 **Open:** display technology, final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
