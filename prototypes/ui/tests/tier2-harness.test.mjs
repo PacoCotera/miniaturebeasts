@@ -36,6 +36,7 @@ test("the same inputs give the same bytes twice, and the harness's own two runs 
   const r = runAll([set]), r2 = runAll([set]);
   for (const [k, v] of r.files) if (k !== "measures.csv") assert.ok(v.equals(r2.files.get(k)), k);   // the CSV carries a clock reading (M7)
   assert.equal(r.rows.find((x) => x.measure === "M1").result, "pass");
+  assert.ok(r.rows.filter((x) => x.measure === "feet").length === 2 && r.rows.filter((x) => x.measure === "feet").every((x) => x.result === "pass"), "the feet and shadow rows are identical to the stand");
   assert.ok(r.files.has("contact-sheet.png") && r.files.has("measures.csv"));
   for (const pair of ["down-middle", "middle-up", "down-up"]) {
     const apng = r.files.get(`fixture/vivarium-pair-104x112-${pair}.apng`); assert.ok(apng.includes(Buffer.from("acTL")), pair);

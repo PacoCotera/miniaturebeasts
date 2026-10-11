@@ -333,6 +333,7 @@ export function runSet(set, opts = {}) {
     if (fresh.length) files.set(`${set.name}/${size}-warped-${e}-new-regions.png`, png(outlineBoxes(flat(warped[e]), fresh.map((r) => r.box))));
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
+    if (fields[e].zeroRows?.length) { const z = fields[e].zeroRows[0][0], a = flat(stand), b = flat(warped[e]); let n = 0; for (let i = z * stand.w * 4; i < stand.w * stand.h * 4; i++) if (a.data[i] !== b.data[i]) n++; row(size, "feet", `changed pixel values in the feet and shadow rows (row ${z} down), warped vs stand (${e})`, n, 0, n === 0 ? "pass" : "FAIL"); }
     const ls = legStrain(fields[e]), lsFixed = fields[e].bellyFixed; row(size, "legs", `leg strain (max |db| / (z0 - yb)) (${e})`, ls, lsFixed ? 0 : 0.25, lsFixed ? (ls === 0 ? "pass" : "FAIL") : (ls <= 0.25 + 1e-9 ? "pass" : "FAIL"));
     row(size, "field", `${e} max |d| px / stretch / shear`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxStretch.toFixed(3)} / ${fields[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
     const notApplied = typeof info?.pic.M5a === "string" && info.pic.M5a.startsWith("not applied"), prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;

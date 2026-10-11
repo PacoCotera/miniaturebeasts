@@ -22,6 +22,7 @@ s04-304x312,304x312,M3,warped-down alpha>0 counts,alpha>0 1/7/0 (components/hole
 s04-304x312,304x312,M3,warped-down body layer alpha>0 counts,alpha>0 2/7/1 (components/holes/orphans),the unwarped 1/7/0,report
 s04-304x312,304x312,M4,warped-down irregular,389,395,pass
 s04-304x312,304x312,clamp,"misses (down, final)",0,0,pass
+s04-304x312,304x312,feet,"changed pixel values in the feet and shadow rows (row 278 down), warped vs stand (down)",0,0,pass
 s04-304x312,304x312,legs,leg strain (max |db| / (z0 - yb)) (down),0,0,pass
 s04-304x312,304x312,field,down max |d| px / stretch / shear,6.00 / 0.250 / 0.500,12 / 0.25 / 0.5,pass
 s04-304x312,304x312,M5a,"down top edge vs the measured profile, 11 columns x <= 141","max 1.00 (x 116), mean 0.36",1.5 / 1,pass
@@ -38,6 +39,7 @@ s04-304x312,304x312,M3,warped-up alpha>0 counts,alpha>0 1/7/0 (components/holes/
 s04-304x312,304x312,M3,warped-up body layer alpha>0 counts,alpha>0 2/7/1 (components/holes/orphans),the unwarped 1/7/0,report
 s04-304x312,304x312,M4,warped-up irregular,393,395,pass
 s04-304x312,304x312,clamp,"misses (up, final)",0,0,pass
+s04-304x312,304x312,feet,"changed pixel values in the feet and shadow rows (row 278 down), warped vs stand (up)",0,0,pass
 s04-304x312,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
 s04-304x312,304x312,field,up max |d| px / stretch / shear,9.00 / 0.250 / 0.500,12 / 0.25 / 0.5,pass
 s04-304x312,304x312,M5a,"up top edge vs the measured profile, 11 columns x <= 141","max 1.00 (x 112), mean 0.36",1.5 / 1,pass
@@ -47,8 +49,8 @@ s04-304x312,304x312,M5,profile columns warped-up vs painted,"139 matched, 0 unma
 s04-304x312,304x312,M3,painted-up,"1 comp, 0 holes, 0 orphans",info,info
 s04-304x312,304x312,M4,painted-up irregular,379,,info
 s04-304x312,304x312,M6,only at 104x112,,,n/a
-s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),4.8426,,info
-s04-304x312,304x312,M7,warp ms per picture (up; a clock reading),6.0554,,info
+s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),3.8889,,info
+s04-304x312,304x312,M7,warp ms per picture (up; a clock reading),3.4935,,info
 s04-304x312,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -80,6 +82,7 @@ s04-104x112,104x112,M3,warped-down alpha>0 counts,alpha>0 1/3/0 (components/hole
 s04-104x112,104x112,M3,warped-down body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-104x112,104x112,M4,warped-down irregular,139,143,pass
 s04-104x112,104x112,clamp,"misses (down, final)",0,0,pass
+s04-104x112,104x112,feet,"changed pixel values in the feet and shadow rows (row 96 down), warped vs stand (down)",0,0,pass
 s04-104x112,104x112,legs,leg strain (max |db| / (z0 - yb)) (down),0,0,pass
 s04-104x112,104x112,field,down max |d| px / stretch / shear,2.00 / 0.250 / 0.250,4 / 0.25 / 0.5,pass
 s04-104x112,104x112,M5a,"down top edge vs the mapped profile, 8 columns x <= 44","max 0.70 (x 41), mean 0.35",1.1 / 0.5,pass
@@ -96,6 +99,7 @@ s04-104x112,104x112,M3,warped-up alpha>0 counts,alpha>0 1/3/0 (components/holes/
 s04-104x112,104x112,M3,warped-up body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-104x112,104x112,M4,warped-up irregular,140,143,pass
 s04-104x112,104x112,clamp,"misses (up, final)",0,0,pass
+s04-104x112,104x112,feet,"changed pixel values in the feet and shadow rows (row 96 down), warped vs stand (up)",0,0,pass
 s04-104x112,104x112,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
 s04-104x112,104x112,field,up max |d| px / stretch / shear,3.00 / 0.250 / 0.500,4 / 0.25 / 0.5,pass
 s04-104x112,104x112,M5a,"up top edge vs the mapped profile, 8 columns x <= 44","max 0.89 (x 42), mean 0.47",1.1 / 0.5,pass
@@ -112,8 +116,8 @@ s04-104x112,104x112,M6,painted columns the field moves,18,,info
 s04-104x112,104x112,M6,painted down-stand (mean over the moved columns),1.1111,2,info (below the bar; only down-up gates)
 s04-104x112,104x112,M6,painted stand-up (mean over the moved columns),1.9444,2,info (below the bar; only down-up gates)
 s04-104x112,104x112,M6,painted down-up (mean over the moved columns),2.8333,2,pass
-s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.3416,5,pass (this machine; confirm on the CI runner)
-s04-104x112,104x112,M7,warp ms per picture (up; a clock reading),0.3369,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.6918,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (up; a clock reading),0.6018,5,pass (this machine; confirm on the CI runner)
 s04-104x112,104x112,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -145,6 +149,7 @@ s04-96x88,96x88,M3,warped-down alpha>0 counts,alpha>0 1/3/0 (components/holes/or
 s04-96x88,96x88,M3,warped-down body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-96x88,96x88,M4,warped-down irregular,108,110,pass
 s04-96x88,96x88,clamp,"misses (down, final)",0,0,pass
+s04-96x88,96x88,feet,"changed pixel values in the feet and shadow rows (row 79 down), warped vs stand (down)",0,0,pass
 s04-96x88,96x88,legs,leg strain (max |db| / (z0 - yb)) (down),0,0,pass
 s04-96x88,96x88,field,down max |d| px / stretch / shear,1.00 / 0.250 / 0.250,3 / 0.25 / 0.5,pass
 s04-96x88,96x88,M5a,"down top edge vs the mapped profile, 8 columns x <= 41","max 0.45 (x 39), mean 0.26",1.5 / 0.6,pass
@@ -161,6 +166,7 @@ s04-96x88,96x88,M3,warped-up alpha>0 counts,alpha>0 1/3/0 (components/holes/orph
 s04-96x88,96x88,M3,warped-up body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-96x88,96x88,M4,warped-up irregular,108,110,pass
 s04-96x88,96x88,clamp,"misses (up, final)",0,0,pass
+s04-96x88,96x88,feet,"changed pixel values in the feet and shadow rows (row 79 down), warped vs stand (up)",0,0,pass
 s04-96x88,96x88,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
 s04-96x88,96x88,field,up max |d| px / stretch / shear,2.00 / 0.250 / 0.250,3 / 0.25 / 0.5,pass
 s04-96x88,96x88,M5a,"up top edge vs the mapped profile, 8 columns x <= 41","max 0.89 (x 39), mean 0.38",1.5 / 0.6,pass
@@ -170,8 +176,8 @@ s04-96x88,96x88,M5,profile columns warped-up vs painted,"40 matched, 0 unmatched
 s04-96x88,96x88,M3,painted-up,"1 comp, 1 holes, 0 orphans",info,info
 s04-96x88,96x88,M4,painted-up irregular,107,,info
 s04-96x88,96x88,M6,only at 104x112,,,n/a
-s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.4475,,info
-s04-96x88,96x88,M7,warp ms per picture (up; a clock reading),0.4381,,info
+s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.2922,,info
+s04-96x88,96x88,M7,warp ms per picture (up; a clock reading),0.3728,,info
 s04-96x88,96x88,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -198,6 +204,7 @@ s04-104x112-exaggerated,104x112,M3,warped-down alpha>0 counts,alpha>0 1/3/0 (com
 s04-104x112-exaggerated,104x112,M3,warped-down body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-104x112-exaggerated,104x112,M4,warped-down irregular,140,143,pass
 s04-104x112-exaggerated,104x112,clamp,"misses (down, final)",0,0,pass
+s04-104x112-exaggerated,104x112,feet,"changed pixel values in the feet and shadow rows (row 96 down), warped vs stand (down)",0,0,pass
 s04-104x112-exaggerated,104x112,legs,leg strain (max |db| / (z0 - yb)) (down),0,0,pass
 s04-104x112-exaggerated,104x112,field,down max |d| px / stretch / shear,4.00 / 0.250 / 0.500,4 / 0.25 / 0.5,pass
 s04-104x112-exaggerated,104x112,M5a,down,not applied: this field is deliberately beyond the painted ends,,n/a
@@ -210,6 +217,7 @@ s04-104x112-exaggerated,104x112,M3,warped-up alpha>0 counts,alpha>0 1/3/0 (compo
 s04-104x112-exaggerated,104x112,M3,warped-up body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-104x112-exaggerated,104x112,M4,warped-up irregular,139,143,pass
 s04-104x112-exaggerated,104x112,clamp,"misses (up, final)",0,0,pass
+s04-104x112-exaggerated,104x112,feet,"changed pixel values in the feet and shadow rows (row 96 down), warped vs stand (up)",0,0,pass
 s04-104x112-exaggerated,104x112,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
 s04-104x112-exaggerated,104x112,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.500,4 / 0.25 / 0.5,pass
 s04-104x112-exaggerated,104x112,M5a,up,not applied: this field is deliberately beyond the painted ends,,n/a
@@ -219,8 +227,8 @@ s04-104x112-exaggerated,104x112,M6,warped down-stand (mean over the moved column
 s04-104x112-exaggerated,104x112,M6,warped stand-up (mean over the moved columns),2.3529,2,info (above the bar; only down-up gates)
 s04-104x112-exaggerated,104x112,M6,warped down-up (mean over the moved columns),4.5294,2,pass
 s04-104x112-exaggerated,104x112,M6,painted,ends not available,,n/a
-s04-104x112-exaggerated,104x112,M7,warp ms per picture (down; a clock reading),0.3218,5,pass (this machine; confirm on the CI runner)
-s04-104x112-exaggerated,104x112,M7,warp ms per picture (up; a clock reading),0.3099,5,pass (this machine; confirm on the CI runner)
+s04-104x112-exaggerated,104x112,M7,warp ms per picture (down; a clock reading),0.4029,5,pass (this machine; confirm on the CI runner)
+s04-104x112-exaggerated,104x112,M7,warp ms per picture (up; a clock reading),0.5104,5,pass (this machine; confirm on the CI runner)
 s04-104x112-exaggerated,104x112,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112-exaggerated,104x112,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112-exaggerated,104x112,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -247,6 +255,7 @@ s04-96x88-exaggerated,96x88,M3,warped-down alpha>0 counts,alpha>0 1/3/0 (compone
 s04-96x88-exaggerated,96x88,M3,warped-down body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-96x88-exaggerated,96x88,M4,warped-down irregular,109,110,pass
 s04-96x88-exaggerated,96x88,clamp,"misses (down, final)",0,0,pass
+s04-96x88-exaggerated,96x88,feet,"changed pixel values in the feet and shadow rows (row 79 down), warped vs stand (down)",0,0,pass
 s04-96x88-exaggerated,96x88,legs,leg strain (max |db| / (z0 - yb)) (down),0,0,pass
 s04-96x88-exaggerated,96x88,field,down max |d| px / stretch / shear,3.00 / 0.250 / 0.500,3 / 0.25 / 0.5,pass
 s04-96x88-exaggerated,96x88,M5a,down,not applied: deliberately beyond the painted ends,,n/a
@@ -259,13 +268,14 @@ s04-96x88-exaggerated,96x88,M3,warped-up alpha>0 counts,alpha>0 1/3/0 (component
 s04-96x88-exaggerated,96x88,M3,warped-up body layer alpha>0 counts,alpha>0 1/3/0 (components/holes/orphans),the unwarped 1/3/0,report
 s04-96x88-exaggerated,96x88,M4,warped-up irregular,110,110,pass
 s04-96x88-exaggerated,96x88,clamp,"misses (up, final)",0,0,pass
+s04-96x88-exaggerated,96x88,feet,"changed pixel values in the feet and shadow rows (row 79 down), warped vs stand (up)",0,0,pass
 s04-96x88-exaggerated,96x88,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
 s04-96x88-exaggerated,96x88,field,up max |d| px / stretch / shear,3.00 / 0.250 / 0.250,3 / 0.25 / 0.5,pass
 s04-96x88-exaggerated,96x88,M5a,up,not applied: deliberately beyond the painted ends,,n/a
 s04-96x88-exaggerated,96x88,M5,warped-up vs painted,no painted end given,,n/a
 s04-96x88-exaggerated,96x88,M6,only at 104x112,,,n/a
-s04-96x88-exaggerated,96x88,M7,warp ms per picture (down; a clock reading),0.3774,,info
-s04-96x88-exaggerated,96x88,M7,warp ms per picture (up; a clock reading),0.3149,,info
+s04-96x88-exaggerated,96x88,M7,warp ms per picture (down; a clock reading),0.2264,,info
+s04-96x88-exaggerated,96x88,M7,warp ms per picture (up; a clock reading),0.1765,,info
 s04-96x88-exaggerated,96x88,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88-exaggerated,96x88,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88-exaggerated,96x88,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
