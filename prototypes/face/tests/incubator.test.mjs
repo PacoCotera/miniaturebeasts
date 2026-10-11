@@ -177,7 +177,7 @@ test("growNow with reduced motion is one cut on the key's frame: the leaves, the
   const b2 = incubatorBuild({ st, settings, now: after.now, ui: { inc: {} }, lamp: "" }, incSpec, podsSpec);
   for (const r of b2.requests) f.handleOf(r.id, withPolicy((i) => standIn(i, sizeOf(r), hollowOf(r))));
   assert.equal(b2.props.state, "ready"); assert.equal(f.props({ screen: "incubator", ...b2.props, motion: false, frame: frameProps(b2.line, { materials: { e: 9, d: 6, s: 9 }, flash: { d: true } }) }), 0, f.errors().join("; ")); f.frame((f.t += 16)); const a = area(f), n = f.M._face_dirty_count();
-  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# the Incubator's growNow cut (motion off, ◆ 10→6 and the flash), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%) in ${n} areas, ${f.invOverflows()} overflows`); assert.ok(a <= 162432, `dirty ${a}`);
+  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# the Incubator's growNow cut (motion off, ◆ 10→6 and the flash), the key's frame: ${a} px (${(100 * a / 614400).toFixed(1)}%) in ${n} flushes, ${f.invOverflows()} overflows`); assert.ok(a <= 162432, `dirty ${a}`);
 });
 
 test("growNow with motion on: the props show the bud as it was until 400, then the ready state lands on one refresh of at most 153,600 px", { skip }, async () => {

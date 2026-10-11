@@ -158,12 +158,12 @@ test("a late frame steps one group, and the walk after it is the walk, later", {
 test("a late walk frame with the top bar live (counters and their flashes changing) stays inside 153,600 px and LVGL's invalid-area buffer", { skip }, async () => {
   const f = await start(scene({ adults: 12, carry: [] }), { t0: 5000 }), M = f.M, base = f.build; let worst = 0, areas = 0, k = 0;
   const MAT = [{ e: 14, d: 16, s: 10 }, { e: 2, d: 6, s: 9 }], top = (m) => ({ ...frameProps().top, materials: m, flash: { e: true, d: true, s: true } });
-  for (let t = 40; t < 20000; t += 40, k++) {
+  for (let t = 21; t < 30000; t += 16, k++) {   // the brief's cadence: 16 ms frames, every 63rd 120 ms late, 30 s
     const late = k % 63 === 62; if (late) { t += 120; assert.equal(f.props({ screen: "home", ...base.props, motion: true, frame: { ...frameProps(base.line), top: top(MAT[(k / 63 | 0) % 2]) } }), 0, f.errors().join("; ")); }
-    f.frame(5000 + t); const s = dirty(f), n = M._face_dirty_count(); assert.ok(s <= 153600, `${late ? "late " : ""}frame at ${t}: ${s} px`); assert.ok(n <= M._face_inv_cap(), `${n} areas`);
+    f.frame(5000 + t); const s = dirty(f), n = M._face_dirty_count(); assert.ok(s <= 153600, `${late ? "late " : ""}frame at ${t}: ${s} px`); assert.ok(n <= M._face_inv_cap(), `${n} flushes outside the cap`);
     if (late && s > worst) { worst = s; areas = n; }
   }
-  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# Home's late frame with the top bar live: worst ${worst} px in ${areas} areas, ${f.invOverflows()} overflows`);
+  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# Home's late frame with the top bar live: worst ${worst} px in ${areas} flushes, ${f.invOverflows()} overflows`);
 });
 // the dirty area of a refresh (the sum of the rectangles the face redraws) is at most a quarter of the screen over two minutes of walking, at 40 ms frames and at 16 ms frames
 const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [40096, 38822, 31967, 8729, 50383, 36459, 27280, 21938, 4359, 48741, 64056, 12788] } };
