@@ -1508,7 +1508,7 @@ function lightBeacon(f) {
   if (n && S.exp && !S.exp.ending) { // show it: back on the map, the fog lifts outward from the beacon
     const p0 = cxy(cell); FX.reveal = { at: NOW + 200, cells: [] };
     for (let c = 0; c < MW * MH; c++) if (S.revealed[c] && !was[c]) FX.reveal.cells.push({ c, d: cheb(cxy(c), p0) });
-    ex.beaconView = 1; FX.beaconAt = NOW; S.phase = 'map'; }   // the map shows the sweep; the place (and where you stand) stays as it was
+    ex.beaconView = 1; FX.beaconAt = NOW; setTimeout(beaconDone, BEACON_MS); S.phase = 'map'; }   // the map shows the sweep; the place (and where you stand) stays as it was
   fxMsg((n ? 'The beacon lights the land around · ' + n + ' cell' + (n > 1 ? 's' : '') + ' revealed' : 'The beacon burns · nothing new in sight') + ' · −1 Energy', 2);
 }
 // Pods, named for the player: the species if identified, and one tag that tells two pods apart (where it came from).
@@ -1689,12 +1689,15 @@ function dig() {
   if (ex.pt.elder && !ex.digProg) { ex.digProg = 1; fxMsg(ex.pt.name + ' is digging · slow but sure', 1); advance('patch', { noise: 'act' }); return; }
   ex.digProg = 0; ex.abUsed = 1;
   FX.dig = { at: NOW, x: g.x, y: g.y };
-  lockInput(950);
+  lockInput(DIG_MS + 50);
   S.opened[G.gate] = 1; S.pins = S.pins.filter(p => !(p.c === G.gate && p.k === 'burrow'));
   logEv(ex.pt.name + ' dug the burrow open');
   advance('patch', { noise: 'act' });
-  setTimeout(() => { FX.dig = null; if (S.exp && S.exp.patch) enterCave(); }, 900);
+  ex.caveDue = 1; save(); setTimeout(digDone, DIG_MS);
 }
+// the dug burrow's entry, DIG_MS after the press: held in the save (caveDue) so a reload in that window still completes it
+const DIG_MS = 900;
+function digDone() { const ex = S && S.exp; if (!ex || !ex.caveDue) return; delete ex.caveDue; FX.dig = null; if (ex.patch) enterCave(); }
 
 function patchTick(info) {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = ex.live[key];
@@ -2074,6 +2077,7 @@ function careLines(first, evs, dur) {
   for (const e of evs) if (e.grown) fxMsg((partnerMibi() === e.m ? CARE_TEXT.grownLeads : CARE_TEXT.grownCanLead)(e.m.name), 3);
   const q = careQueue(evs, dur);
   FX.cuts = q.cuts.map(c => Object.assign({}, c, { at: NOW + c.at, done: 0 })); lockInput(q.lock);
+  for (const c of FX.cuts) setTimeout(() => { if (!c.done) { c.done = 1; S.ui.aId = c.id; } }, c.at - NOW);   // each bond and grow-up takes the view to its mibi, in turn
 }
 // The events after a Tend or a Walk, in ms from the press: the bonds first, in carried order, one every BOND_MS from the end of
 // the action's moment; then one grow-up cut per mibi, in carried order, every GROW_MS. Each moves the view to its mibi's page.
@@ -3977,9 +3981,13 @@ const haloArt = () => art('halo', () => { const pb = new PB(300, 220); pb.ell(15
 // The active mibi screen: the Companion's screen between expeditions. The mibi large, its name, stage, ability and status.
 // Call: it answers. Confirm: the Walk or Tend (or, docked, take a mibi at home). Pad: the others. ←: up to Mibis.
 // A page gone (a mibi released at the dock): the view goes to the page now at that index, or the last.
+// The shown page reads only (render calls it); syncShown() makes its choice the state, from input.
 function shownMibi() { const list = rosterList(); let i = list.findIndex(m => m.id === S.ui.aId);
+  if (i < 0 && list.length) i = Math.min(S.ui.aIdx | 0, list.length - 1);
+  return i >= 0 ? list[i] : null; }
+function syncShown() { const list = rosterList(); let i = list.findIndex(m => m.id === S.ui.aId);
   if (i < 0 && list.length) { i = Math.min(S.ui.aIdx | 0, list.length - 1); S.ui.aId = list[i].id; }
-  if (i >= 0) S.ui.aIdx = i; return i >= 0 ? list[i] : null; }
+  if (i >= 0) S.ui.aIdx = i; }
 function activeStatus(m) {
   if (!isCarried(m)) return m.bonded && !isAdult(m) ? CARE_TEXT.stHomeBonded : CARE_TEXT.stHome;
   if (m === partnerMibi()) return CARE_TEXT.stLeads;
@@ -3997,7 +4005,6 @@ function drawNoOneWith() {
 const TEND_MS = 1800, WALK_MS = 2400, BOND_MS = 2400;   // the action's moment; the bond after it: the moment again (900), the heart's rise (600) and hold (900)
 function drawActive(t) {
   viewBg(); drawHomeTop();
-  for (const c of FX.cuts || []) if (!c.done && NOW >= c.at) { c.done = 1; S.ui.aId = c.id; }   // each bond and grow-up takes the view to its mibi, in turn
   const m = shownMibi(); if (!m) { if (liveMibis().length) drawNoOneWith(); else drawNoMibi(); return; }
   const list = rosterList(), isW = isCarried(m), mo = motion();
   const cuts = FX.cuts || [], growing = cuts.some(c => c.kind === 'grow' && c.id === m.id && NOW < c.at), st = growing ? 'juvenile' : mibiStage(m);   // the cut to the adult comes at its turn
@@ -4259,11 +4266,14 @@ function frame(t) {
   FX.rings = FX.rings.filter(r => NOW - r.at < 1000); FX.strikes = FX.strikes.filter(s => NOW - s.at < 600); FX.bolts = FX.bolts.filter(b => NOW - b.at < 400);
   if (FX.pulse && NOW - FX.pulse.at > CALL_MS + 400) FX.pulse = null;
   if (FX.reveal && NOW - FX.reveal.at > 1200) FX.reveal = null;
-  if (S && S.exp && S.exp.beaconView && !FX.reveal && NOW - (FX.beaconAt || 0) > 1700) { beaconBack(); save(); }   // the sweep done: back beside the beacon
+  if (FX.dig && NOW - FX.dig.at > 900) FX.dig = null;
   requestAnimationFrame(frame);
 }
 
 // ===================== 16. Input: Companion controls =====================
+// the sweep done (the reveal ends at +1400 ms): back beside the beacon, from a timer the beacon's press set, never from a frame
+const BEACON_MS = 1700;
+function beaconDone() { if (S && S.exp && S.exp.beaconView) { beaconBack(); save(); } }
 function beaconBack() { const ex = S.exp; if (!ex || !ex.beaconView) return; delete ex.beaconView; if (ex.patch) { S.phase = 'patch'; transition(); } }
 function openMenu() { S.ui.from = S.phase; S.ui.menuSel = 0; S.ui.nwArm = 0; S.ui.waiting = 0; S.phase = 'menu';
   if (S.ui.from === 'map' && S.exp && S.exp.saidDone) S.ui.menuSel = Math.max(0, menuItems().findIndex(i => i.id === 'send'));   // focus on End expedition once the reach is done
@@ -4318,6 +4328,7 @@ function act(k, mode) {
   const refused = frozenRefuses(k);
   if (k !== 'confirm' && S && S.ui && !refused) S.ui.depotArm = 0;
   NOW = performance.now(); if (NOW < FX.lockUntil) return;
+  if (S.exp && S.exp.caveDue) digDone();   // a dug burrow's entry still due completes before the press (a press inside the lock is ignored, as before)
   if (S.exp && S.exp.beaconView) { beaconBack(); save(); return; }   // any press: back beside the beacon
   if (refused) { refuseFrozen(); return; }   // frozen while docked: nothing is written, nothing saved
   if (k === 'call' && !['map', 'patch', 'mibis', 'active'].includes(S.phase)) return;   // Call's slot is empty here: it does nothing
@@ -4386,7 +4397,7 @@ function act(k, mode) {
         else if (isCarried(m)) { S.phase = 'active'; S.ui.aId = m.id; transition(); }
         else if (takePress(m)) S.ui.rSel = rosterList().indexOf(m) + 1; }   // the player stays on Mibis
       break; }
-    case 'active': { const list = rosterList(), m = shownMibi();
+    case 'active': { syncShown(); const list = rosterList(), m = shownMibi();
       if ((k === 'left' || k === 'right') && list.length > 1) { const i = list.indexOf(m), n = list.length; S.ui.aId = list[(i + (k === 'right' ? 1 : n - 1)) % n].id; }
       else if (k === 'back') { if (!m) openMenu(); else { S.phase = 'mibis'; S.ui.rSel = list.indexOf(m) + 1; S.ui.rFrom = 'active'; } }
       else if (k === 'call') callWith();
@@ -4610,6 +4621,8 @@ function drawNewer() {
   R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
+if (ld === true && S.exp && S.exp.beaconView) setTimeout(beaconDone, 0);   // reloaded mid-sweep: back beside the beacon
+if (ld === true && S.exp && S.exp.caveDue) setTimeout(digDone, 0);   // reloaded before the dug burrow's entry: into the cave
 // The side panel's two sections start collapsed on every load.
 for (const id of ['howTo', 'whatTry']) document.getElementById(id).open = false;
 // Reset game (page chrome, not a device control): ask once, then erase every save version and start a new world.
