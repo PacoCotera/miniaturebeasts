@@ -420,14 +420,48 @@ await said(); for (const k of ["up", "left", "confirm", "back"]) await press(k, 
 await page.waitForTimeout(2200);
 s = await st(); const fig = s.mibis.at(-1);
 expect(!s.bud && s.mibis.length === 2 && fig.name === "Moss" && fig.bay === 1 && fig.read.length === 4, "Moss opened into bay 2, fully read");
-{ const u = await ui(), p = await props(); cur.push({ screen: u.screen, hab: u.hab, habId: u.habId }); expect(u.screen === "habitat" && u.habId === fig.id && u.hab === "resident", "after the hatch the mibi is met on the Vivarium (not built), the ring on the resident: " + JSON.stringify([u.screen, u.habId, u.hab, p.state])); }
-await shot("page-meet", true);
+{ const u = await ui(), p = await props(); cur.push({ screen: u.screen, hab: u.hab, habId: u.habId }); expect(u.screen === "habitat" && u.habId === fig.id && u.hab === "resident", "after the hatch the mibi is met up close, the ring on the resident: " + JSON.stringify([u.screen, u.habId, u.hab, p.state])); }
+{ stepOf("vivarium-meet");
+  const u = await ui(), p = await props(), l = p.frame.line;
+  cur.push({ screen: u.screen, state: p.state, ring: p.focus.cur, ribbon: p.regions.meetRibbon.text, tag: p.focus.targets.some((t) => t.id === "name"), ok: l.ok, subject: l.subject, back: l.back, waiting: p.regions.resident.waiting });
+  expect(p.screen === "habitat" && p.state === "meet" && p.focus.cur === "resident" && p.regions.meetRibbon.text === "Meet Moss" && !p.focus.targets.some((t) => t.id === "name"), "vivarium-meet: the hatch lands in the meet up close: the ribbon in the tag's place (not a target), the ring on the resident: " + JSON.stringify([p.state, p.focus.cur, p.regions.meetRibbon.text]));
+  expect(l.ok === "Name Moss" && l.back === "Vivarium", "vivarium-meet: ✓ Name Moss, ← Vivarium: " + JSON.stringify(l));
+  { const was = await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id), w = m.paint; m.paint = { state: "sent" }; return w; }, fig.id); await page.waitForTimeout(500);   // its painting on its way: the placeholder and its waiting lamp (the mock may already have painted it)
+    const q = await props(); expect(q.regions.resident.waiting === true && q.frame.line.subject === "its painting is on its way", "vivarium-meet: while its painting is on its way the placeholder shows with its lamp, the context says so: " + JSON.stringify([q.regions.resident.waiting, q.frame.line.subject]));
+    await frameShot("page-meet-placeholder", true); await page.evaluate(([id, w]) => { window.__st.ST.mibis.find((x) => x.id === id).paint = w; }, [fig.id, was]); await page.waitForTimeout(300); } }
 // the mock paints within a second; the page polls and fetches the set; it lands at a fresh draw (a screen change), never mid-draw
 for (let i = 0; i < 40 && caddy.state.jobs[0].state !== "done"; i++) await page.waitForTimeout(200);
 expect(caddy.state.jobs[0].state === "done", "the mock painted the set: " + caddy.state.jobs[0].state);
 await page.evaluate(() => window.__st.caddy.poll()); await page.waitForTimeout(500);
 const fetched = await page.evaluate((sha) => ({ pending: window.__st.caddy.pending().includes(sha), landed: window.__st.caddy.landed(sha) }), fig.sha);
 expect(fetched.pending || fetched.landed, "the set is fetched: " + JSON.stringify(fetched));
+// the meet again (a fresh draw: the painting lands there, never mid-draw), the painting landed: page-meet differs from page-meet-placeholder; then the namer over it
+{ await page.evaluate((id) => { const U = window.__st.UI; U.meet = id; U.hab.id = id; U.hab.f = "resident"; window.__st.goto("vivarium"); window.__st.goto("habitat"); }, fig.id); await page.waitForTimeout(600);
+  const p = await props(); expect(p.state === "meet" && p.regions.resident.waiting === false, "page-meet: the meet with its painting landed: " + JSON.stringify([p.state, p.regions.resident.waiting])); await frameShot("page-meet", true); }
+const npress = async (k, ms = 250) => { await said(); await press(k, ms); const m = await said(), u = await ui(), p = await props(), o = p.overlay, l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state, ring: o ? o.focus.cur : p.focus.cur, field: o ? o.regions.field.name + "|" + o.regions.field.state : null, page: o ? o.regions.keys.page : null, ok: l.ok ?? null, back: l.back ?? null }); return { u, p, o }; };
+const nint = async (target, verb = "confirm", ms = 150) => { await said(); await intent({ screen: "namer", target, verb }, ms); const m = await said(), p = await props(), o = p.overlay; cur.push({ intent: target + ":" + verb, said: m, state: p.state, field: o ? o.regions.field.name + "|" + o.regions.field.state : null, say: o ? o.regions.say.text + "|" + o.regions.say.tone : null }); return { p, o }; };
+{ stepOf("vivarium-namer");
+  let r = await npress("confirm", 400);   // the meet's first ✓: the namer opens over the right column, the ribbon goes and the tag shows, the ring on Done
+  expect(r.o?.id === "namer" && r.o.focus.cur === "act.done" && r.o.regions.field.name === "Moss" && r.o.regions.field.state === "selected" && r.p.state === "rest" && r.p.regions.meetRibbon.text === "" && r.p.frame.line.ok === "Keep Moss" && r.p.frame.line.back === "Clear", "vivarium-namer: the meet's first ✓ opens the namer: Moss selected, the ring on Done, ✓ Keep Moss: " + JSON.stringify([r.o?.focus?.cur, r.o?.regions?.field, r.p.state, r.p.frame.line]));
+  await frameShot("page-namer", true);
+  r = await npress("up", 200); expect(r.o.focus.cur === "mod.page", "vivarium-namer: ▲ from Done is the page key: " + r.o.focus.cur);
+  r = await npress("confirm", 200); expect(r.o.regions.keys.page === "accents" && r.o.regions.keys.labels[0] === "Á" && r.o.regions.keys.labels[6] === null && r.o.focus.cur === "mod.page", "vivarium-namer: ✓ on the page key turns to the accents, the ring stays: " + JSON.stringify([r.o.regions.keys.page, r.o.regions.keys.labels.slice(0, 7)]));
+  r = await npress("confirm", 200); expect(r.o.regions.keys.page === "letters", "vivarium-namer: and back to the letters");
+  r = await npress("down", 200); r = await npress("left", 200); expect(r.o.focus.cur === "act.suggest", "vivarium-namer: ▼ then ◀ from the page key is Suggest: " + r.o.focus.cur);
+  r = await npress("confirm", 200); const sug = r.o.regions.field.name; expect(r.o.regions.field.state === "selected" && sug && sug !== "Moss" && r.p.frame.line.ok === "Another name", "vivarium-namer: ✓ Suggest puts the pool's next name in the field, selected: " + sug);
+  r = await npress("right", 200); expect(r.o.focus.cur === "act.done", "vivarium-namer: ▶ is Done");
+  r = await npress("confirm", 700); r = { p: await props(), o: (await props()).overlay };
+  expect(!r.o && r.p.state === "rest" && r.p.focus.cur === "resident" && r.p.regions.nameTag.text === sug && (await st()).mibis.find((m) => m.id === fig.id).name === sug && (await ui()).screen === "habitat", "vivarium-namer: Done names the mibi, the namer closes and the ring is back on the resident: " + JSON.stringify([!!r.o, r.p.focus.cur, r.p.regions.nameTag.text]));
+  // the name tag is a target: ✓ Rename; the name is typed back (a name nobody holds), and ← on an empty field closes the namer writing nothing
+  r = await npress("right", 200); expect(r.p.focus.cur === "name" && r.p.frame.line.ok === "Rename " + sug, "vivarium-namer: ▶ from the resident is its name, ✓ Rename: " + JSON.stringify([r.p.focus.cur, r.p.frame.line.ok]));
+  r = await npress("confirm", 400); expect(r.o?.focus.cur === "act.done", "vivarium-namer: ✓ Rename opens the namer on the name");
+  r = await npress("back", 200); expect(r.o.regions.field.state === "empty", "vivarium-namer: ← clears a selection"); r = await npress("back", 300); { const p = await props(); expect(!p.overlay && p.focus.cur === "name" && (await st()).mibis.find((m) => m.id === fig.id).name === sug, "vivarium-namer: ← on an empty field closes it writing nothing, the ring on the name: " + JSON.stringify([!!p.overlay, p.focus.cur])); }
+  r = await npress("confirm", 400); r = await npress("back", 200);
+  for (const t of ["key.12", "key.14", "key.18", "key.18"]) await nint(t);   // M o s s: a capital first, then small letters
+  { const p = await props(); expect(p.overlay.regions.field.name === "Moss" && p.overlay.regions.field.state === "typed" && p.overlay.regions.done.dim === false, "vivarium-namer: typed M o s s, a name nobody holds: Done is not dimmed: " + JSON.stringify([p.overlay.regions.field, p.overlay.regions.done])); }
+  await nint("act.done", "confirm", 700);
+  { const p = await props(); expect(!p.overlay && p.regions.nameTag.text === "Moss" && p.focus.cur === "name", "vivarium-namer: the name stands (Moss, as the rest of the journey knows it), the ring on the name: " + JSON.stringify([!!p.overlay, p.regions.nameTag.text, p.focus.cur])); }
+  await press("home", 300); }
 await press("home", 400);
 expect((await page.evaluate((sha) => window.__st.caddy.landed(sha), fig.sha)), "landed at the next fresh draw (Home)");
 // the empty Incubator offers ✓ Choose a pod (a pod in the rack and a bay free): a jump to Pods' collection with the ring on the first identified pod in rack order, else the first pod
@@ -508,14 +542,23 @@ expect(child.parents && child.parents.length === 2 && child.parents[1].genome, "
 expect(child.read.length < 4, "the child is known only where the switch parents matched: " + child.read.join(","));
 expect((await page.evaluate(([a, b]) => window.__st.kinshipOf(a, b), [child.id, dot.id])) === 0.25, "child and parent: kinship a quarter");
 // reading the child on the Vivarium's card
-await page.evaluate(() => window.__st.goto("habitat")); await page.waitForTimeout(300);   // the card is not on the face yet (slot V's second PR): the rules are driven through its intents
 const chIndex = await page.evaluate((id) => { const m = window.__st.ST.mibis.find((x) => x.id === id), fr = window.__st.frameOf(m.species); return fr.chapters.findIndex((c) => !m.read.includes(c.id)); }, child.id);
-await page.evaluate(([id, i]) => { const u = window.__st.UI; u.hab.id = id; u.hab.f = "ch" + i; }, [child.id, chIndex]);
-const d3 = (await st()).d; await intent({ screen: "habitat", target: "ch" + chIndex, verb: "confirm" }, 300);
-s = await st(); expect(s.mibis.find((m) => m.id === child.id).read.length === child.read.length + 1 && s.d <= d3, "the child's chapter read");
+{ stepOf("vivarium-card");
+  await page.evaluate((id) => { const U = window.__st.UI; U.hab.id = id; U.meet = null; U.viv.f = null; window.__st.goto("home"); }, child.id); await page.waitForTimeout(300);   // the child's meet ended with a first press, off this step
+  const hp = async (k, ms = 250) => { await said(); await press(k, ms); const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, ok: l.ok ?? null, price: l.price ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p }; };
+  let r = await hp("habitat", 500); expect(r.u.screen === "vivarium" && r.p.focus.cur === "resident." + child.id, "vivarium-card: the Vivarium key opens the whole with the ring on the mibi last seen up close: " + JSON.stringify([r.u.screen, r.p.focus.cur]));
+  r = await hp("confirm", 700); expect(r.u.screen === "habitat" && r.p.state === "rest" && r.p.focus.cur === "resident" && r.u.habId === child.id, "vivarium-card: ✓ on its resident looks at it up close: " + JSON.stringify([r.u.screen, r.p.state, r.p.focus.cur]));
+  r = await hp("right", 200); r = await hp("right", 200); expect(r.p.focus.cur === "species" && r.p.frame.line.ok === "Open the guide", "vivarium-card: ▶ ▶ is the species word, ✓ Open the guide: " + JSON.stringify([r.p.focus.cur, r.p.frame.line.ok]));
+  r = await hp("down", 200); for (let i = 0; i < chIndex; i++) r = await hp("right", 200);
+  { const pl = r.p.regions.plates.items; expect(r.p.focus.cur === "plate." + chIndex && pl[chIndex].state === "unread" && /^Read /.test(r.p.frame.line.ok) && r.p.frame.line.price.startsWith("◆") || r.p.frame.line.price === "", "vivarium-card: ▼ then ▶ walks the plates to the unread one, ✓ Read it with its price: " + JSON.stringify([r.p.focus.cur, pl.map((x) => x.state), r.p.frame.line])); }
+  const d3 = (await st()).d; r = await hp("confirm", 900); s = await st();
+  expect(s.mibis.find((m) => m.id === child.id).read.length === child.read.length + 1 && s.d <= d3 && r.p.regions.plates.items[chIndex].state === "read", "vivarium-card: ✓ read the child's chapter, its plate turns read: " + JSON.stringify([s.d, d3, r.p.regions.plates.items[chIndex].state]));
+  r = await hp("left", 200); expect(r.p.focus.cur !== "plate." + chIndex || chIndex === 0, "vivarium-card: ◀ walks back along the plates");
+  await press("home", 300); }
 // the bench trickle's watch: a resident on the Vivarium for the dev timer's 5 s earns +1 Data once (after the dev panel's New bench day)
-{ await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.settings.trickleCap = 2; window.__st.ST.bench = null; }); await page.evaluate(() => window.__st.goto("habitat")); await page.waitForTimeout(300);   // a new bench day (the dev button's reset)
-  const watched = await page.evaluate(() => { const st = window.__st.ST, w = window.__st.SV.with, m = st.mibis.find((x) => !x.released && x.id !== w && !(st.bench?.watched || []).includes(x.id)); window.__st.UI.hab.id = m.id; return m.id; });
+{ stepOf("vivarium-trickle"); await page.evaluate(() => { window.__st.settings.watchMs = 5000; window.__st.settings.trickleCap = 2; window.__st.ST.bench = null; });   // a new bench day (the dev button's reset)
+  const watched = await page.evaluate(() => { const st = window.__st.ST, sv = window.__st.SV, c = sv.carried ?? (sv.with != null ? [sv.with] : []), m = st.mibis.find((x) => !x.released && !c.includes(x.id) && !(st.bench?.watched || []).includes(x.id)); window.__st.UI.hab.id = m.id; window.__st.UI.viv.f = null; window.__st.goto("home"); return m.id; });
+  await said(); await press("habitat", 500); await press("confirm", 700); { const u = await ui(), p = await props(); cur.push({ screen: u.screen, state: p.state, ring: p.focus?.cur ?? null, habId: u.habId }); expect(u.screen === "habitat" && u.habId === watched && p.state === "rest", "vivarium-trickle: the Vivarium key, then ✓ on its resident: up close on the mibi to watch: " + JSON.stringify([u.screen, u.habId, p.state])); }
   const dW = (await st()).d; await page.waitForTimeout(5800); const after = await st();
   expect(after.d === dW + 1 && after.bench.watched.includes(watched), "a resident watched for 5 s on the Vivarium earns +1 Data once: " + JSON.stringify([dW, after.d, after.bench]));
   await page.waitForTimeout(1500); expect((await st()).d === after.d, "and no more from the same resident that day"); }
@@ -550,7 +593,7 @@ const vpress = async (k, ms = 200) => { await said(); await press(k, ms); const 
 { stepOf("vivarium-whole");
   let r = await vpress("confirm", 700); const mid = (await ui()).habId;
   expect(r.u.screen === "habitat" && mid != null, "vivarium-whole: ✓ on a resident looks at that mibi up close: " + JSON.stringify([r.u.screen, mid]));
-  { const p = await props(); expect(p.screen === "habitat" && p.state === "notBuilt" && p.frame.top.title === "Vivarium" && p.frame.line.back === "Vivarium", "vivarium-whole: up close is not built yet, titled Vivarium, ← reads Vivarium: " + JSON.stringify([p.state, p.frame.top.title, p.frame.line.back])); }
+  { const p = await props(); cur.push({ screen: p.screen, state: p.state, ring: p.focus.cur, title: p.frame.top.title, back: p.frame.line.back }); expect(p.screen === "habitat" && p.state === "rest" && p.focus.cur === "resident" && p.frame.top.title === "Vivarium" && p.frame.line.back === "Vivarium", "vivarium-whole: up close is the mibi, titled Vivarium, ← reads Vivarium: " + JSON.stringify([p.state, p.focus.cur, p.frame.top.title, p.frame.line.back])); await frameShot("page-habitat", true); }
   r = await vpress("back", 700); expect(r.u.screen === "vivarium" && (r.ring === "resident." + mid || r.ring === "tile." + mid), "vivarium-whole: ← from up close is the whole with the ring on that mibi: " + JSON.stringify([r.u.screen, r.ring, mid]));
   r = await vpress("back", 500); expect(r.u.screen === "home" && r.u.home === "vivarium", "vivarium-whole: ← from the whole is Home with the ring on the panel: " + JSON.stringify([r.u.screen, r.u.home]));
   await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitForTimeout(500);
@@ -569,7 +612,7 @@ await page.emulateMedia({ reducedMotion: "no-preference" }); await page.evaluate
 const NAV = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/frame.json"), "utf8")).navigation.screens;
 const placeOf = (screen) => ({ bench: "probe" }[screen] || screen), screenOfPlace = (pl) => ({ probe: "bench" }[pl.split(".")[0]] || pl.split(".")[0]);
 {
-  const SCREENS = ["library", "habitat", "bench", "cross"];
+  const SCREENS = ["library", "bench", "cross"];
   for (const name of SCREENS) {
     await page.evaluate((n) => window.__st.goto(n), name); await page.waitForTimeout(500);
     const p = await props(), c = await page.evaluate(() => window.__st.check()), nav = NAV[placeOf(name)];
