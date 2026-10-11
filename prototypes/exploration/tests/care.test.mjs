@@ -697,8 +697,9 @@ test("careQueue: bonds first in carried order, 2400 ms each; then one grow-up cu
   r = q([ev(1, { bonded: true })], 1800); assert.deepEqual(plain(r.cuts), [{ kind: "bond", id: 1, at: 1800 }]); assert.equal(r.lock, 4200);
   r = q([ev(1, { grown: true })], 1800); assert.equal(r.lock, 2100, "one grow: 300 ms after its cut");
   assert.equal(q([ev(1)], 1800).cuts.length, 0); assert.equal(q([ev(1)], 1800).lock, 300);
-  // the page applies them in turn: each cut moves the view; a mibi shows juvenile until its own cut
-  assert.match(source("drawActive"), /for \(const c of FX\.cuts \|\| \[\]\) if \(!c\.done && NOW >= c\.at\) \{ c\.done = 1; S\.ui\.aId = c\.id; \}/);
+  // the page applies them in turn, each from a timer the press set (never from a frame): each cut moves the view; a mibi shows juvenile until its own cut
+  assert.match(source("careLines"), /for \(const c of FX\.cuts\) setTimeout\(\(\) => \{ if \(!c\.done\) \{ c\.done = 1; S\.ui\.aId = c\.id; \} \}, c\.at - NOW\);/);
+  assert.doesNotMatch(source("drawActive"), /S\.ui\.aId =/, "the render reads the shown page only");
   assert.match(source("careLines"), /careQueue\(evs, dur\)/);
 });
 test("the docking copy (c7cbfa4): the Companion docks; it is never told to go to the Station", () => {
