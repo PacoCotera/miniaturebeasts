@@ -124,7 +124,7 @@
    "min": 48,
    "max": 176,
    "w": "the name's width + 16, rounded up to 8, at least 48; the widest name (160 px at 16) gives 176",
-   "y": "top at feet + 24, 12 px under the feet ring; if its bottom would pass y 472 (8 px inside the window), it sits over the resident: top = box.y − 4 − 32; a sleeper's tag is always over it: top = box.y − 32",
+   "y": "top at feet + 24, 12 px under the feet ring; if its bottom would pass y 472 (8 px inside the window), it sits over the resident: top = box.y − 4 − 32; a sleeper's tag is always over its nap ink: top = footY − ink.max[1] − 8 − h (456 − 88 − 32 = 336)",
    "x": "centred on the resident's box, slid to stay 8 px inside the window (8 to 1016)",
    "words": "the name only",
    "lift": 0,
@@ -288,7 +288,7 @@
   "window": {"back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
   "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist"},
-  "nameTag": {"fill": "panel", "edge": "hairline", "name": "bone"},
+  "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "strip": {"fill": "ground", "edge": "hairline"},
   "tile": {"fill": "panel", "free": "hairline"},
   "stageGround": "ground"

@@ -313,6 +313,23 @@ void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, 
   if (kind == FN_CLIP) { g_clip_id = id; g_clip_left = a; g_clip_x = x; g_clip_y = y; n->nchild = a; }
   n->fresh = 0; n->x = px; n->y = py; n->w = w; n->h = h; n->rgb = rgb; n->a = a; n->b = b; show(n);
 }
+/* lv_obj_move_to_index without its whole-parent invalidation: only where the object and the siblings it passes overlap is redrawn (the picture of two
+   residents that cross in depth is redrawn where they meet, nowhere else) */
+static void move_to(lv_obj_t *obj, int32_t idx) {
+  lv_obj_t *par = lv_obj_get_parent(obj); if (!par) return;
+  int32_t old = (int32_t)lv_obj_get_index(obj), cnt = (int32_t)lv_obj_get_child_count(par);
+  if (idx < 0 || idx >= cnt || idx == old) return;
+  lv_obj_update_layout(obj);
+  int32_t lo = idx < old ? idx : old, hi = idx < old ? old : idx;
+  for (int32_t i = lo; i <= hi; i++) {
+    lv_obj_t *s = par->spec_attr->children[i]; lv_area_t a;
+    if (s != obj && lv_area_intersect(&a, &obj->coords, &s->coords)) lv_obj_invalidate_area(par, &a);
+  }
+  if (idx < old) for (int32_t i = old; i > idx; i--) par->spec_attr->children[i] = par->spec_attr->children[i - 1];
+  else for (int32_t i = old; i < idx; i++) par->spec_attr->children[i] = par->spec_attr->children[i + 1];
+  par->spec_attr->children[idx] = obj;
+  lv_obj_send_event(par, LV_EVENT_CHILD_CHANGED, NULL);
+}
 void prim_end(void) {
   for (int again = 1; again;) { again = 0; for (int i = 0; i < g_n; i++) if (!g_o[i].seen) { drop(i); again = 1; break; } }
   /* draw order is child order: put each object at its place in the sequence the page sent, among its siblings (the screen's, or its clip's) */
@@ -322,7 +339,7 @@ void prim_end(void) {
     int idx;
     if (n->parent) { node_t *c = find_node(n->parent); if (!c) continue; idx = c->child_k++; } else idx = root++;
     /* a nine-slice's own parts are not siblings: they are not in the sequence */
-    if ((int)lv_obj_get_index(n->obj) != idx) lv_obj_move_to_index(n->obj, idx);
+    if ((int)lv_obj_get_index(n->obj) != idx) move_to(n->obj, idx);
   }
 }
 

@@ -30,7 +30,7 @@ function scene(o = {}) {
   if (o.young) S.seedAdults(st, "S01", 77, o.young, settings);
   for (const m of st.mibis) m.paint = { state: "landed" };
   for (const m of st.mibis.slice(0, o.waiting ?? 0)) m.paint = { state: "sent" };   // its painting is on its way: the waiting lamp
-  for (const m of st.mibis.slice(-(o.young ?? 0))) m.born = st.turn;
+  for (const m of (o.young ? st.mibis.slice(-o.young) : [])) m.born = st.turn;
   const sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: (o.carry ?? []).map((i) => st.mibis[i].id), tier: 1, shield: 3 };
   const b = vivariumBuild({ st, sv, settings, docked: S.docked(st), light: o.light ?? "day", focus: o.focus ? (/^(resident|tile)\./.test(o.focus) ? o.focus : o.focus.replace(/^(\w+):(\d+)$/, (_, k, i) => k + "." + st.mibis[+i].id)) : null, seen: null }, spec, frameSpec, homeSpec);
   return { ...b, st };
@@ -112,18 +112,18 @@ test("an empty whole has no ring, no ✓ cap and no pad; ← and the room keys s
   for (const k of ["up", "down", "left", "right"]) assert.deepEqual(key(f, k), [], k);
   assert.deepEqual(key(f, "back").map((x) => [x.target, x.verb]), [["room", "back"]]);
 });
-const WALKS = { "twelve adults": { bays: 12, adults: 12 }, "six adults and six juveniles": { bays: 12, adults: 6, young: 6 }, "twelve, one focused": { bays: 12, adults: 12, focus: "resident:5" }, "twelve, three waiting": { bays: 12, adults: 12, waiting: 3 }, "twelve adults, the ring on a tile": { bays: 12, adults: 12, focus: "tile:3" }, "twelve, two asleep on the bed": { bays: 12, adults: 12, carry: [0, 1] } };
+const WALKS = { "twelve adults": { bays: 12, adults: 12 }, "six adults and six juveniles": { bays: 12, adults: 6, young: 6 }, "twelve, one focused": { bays: 12, adults: 12, focus: "resident:5" }, "twelve, three waiting": { bays: 12, adults: 12, waiting: 3 }, "twelve adults, the ring on a tile": { bays: 12, adults: 12, focus: "tile:3" }, "twelve, two asleep on the bed": { bays: 12, adults: 12, carry: [0, 1] }, "twelve, one focused, seeds whose feet cross": { bays: 12, adults: 12, focus: "resident:5", seeds: [34119, 26635, 8785, 28417, 26937, 32410, 63799, 50225, 48616, 53264, 63772, 28531] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
-  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six adult boxes' worth`, { skip }, async () => {
-    const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0;
+  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
+    const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
+    const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0;
     for (let t = step + off; t < 120000; t += step) {
       f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
       for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3];
-      area = Math.max(area, s); if (n) moved++;
+      area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, M._face_test_steps());
     }
-    assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
-    if (!o.young) assert.ok(area <= 6 * 146 * 152, `${area} px: more than six adult boxes moved (a box that steps 2 px redraws 146 × 152 at most; seven would be 155,344)`);   // the log names a region, not a box: the area is the count
-    console.log(`# the Vivarium's walk, ${name}, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);
+    assert.ok(steps <= 6, `${steps} residents stepped in one frame`); assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
+    console.log(`# the Vivarium's walk, ${name}, frames every ${step} ms: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen) dirty, worst ${steps} steps`);
   });
 }
 test("a walking resident keeps its box in 16..1008 and its feet in the band 296..471, never stops short of the ground, steps 2 px at a time, and a focused one stands still", { skip }, async () => {

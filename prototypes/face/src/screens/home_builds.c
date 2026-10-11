@@ -59,7 +59,7 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   if (y + h > gy + gh - 8) y = box[1] - lift - 8 - h;   /* the window's bottom less 8: below it the tag goes over the box */
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
-  const char *ink = scol(sp, "colours.nameTag.text"); if (!*ink) ink = scol(sp, "colours.nameTag.name");   /* Home calls the name's colour `text`, the whole `name` */
+  const char *ink = scol(sp, "colours.nameTag.text");
   v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge"));
   v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), y + 5, tw, px, ink);
 }

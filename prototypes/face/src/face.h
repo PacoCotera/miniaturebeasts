@@ -64,6 +64,7 @@ int face_event_count(void);
 int face_spec_int(const char *screen, const char *path, int dflt);
 /* Test mode (hello with test: true): which layers show (1 chrome, 2 chrome and art, 3 all), and the pixels of the last frame outside the palette. */
 void face_test_pass(int pass);
+int face_test_steps(void);
 int face_test_offpalette(void);
 int face_test_ring(const char *form_json, int x, int y, int w, int h, const char *colour);   /* one focus ring word on a box (the checks of the word alone); the nodes refused */
 #ifdef __cplusplus

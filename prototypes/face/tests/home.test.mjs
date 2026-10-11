@@ -144,17 +144,18 @@ test("the walk is deterministic: the same props on the same clock give the same 
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200), "idle for the first two seconds, then they walk");
 });
 // the dirty area of a refresh (the sum of the rectangles the face redraws) is at most a quarter of the screen over two minutes of walking, at 40 ms frames and at 16 ms frames
-const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 } };
+const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [15919, 22375, 36357, 57857, 43192, 33264, 43279, 40882, 38152, 34193, 32486, 2075] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
-  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen`, { skip }, async () => {
-    const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0;
+  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
+    const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
+    const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0;
     for (let t = step + off; t < 120000; t += step) {
       f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
       for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3];
-      area = Math.max(area, s); if (n) moved++;
+      area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, M._face_test_steps());
     }
-    assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
-    console.log(`# Home's walk, ${name}, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);
+    assert.ok(steps <= 6, `${steps} residents stepped in one frame`); assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
+    console.log(`# Home's walk, ${name}, frames every ${step} ms: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen) dirty, worst ${steps} steps`);
   });
 }
 
