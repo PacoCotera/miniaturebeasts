@@ -1,0 +1,18 @@
+{
+ "stepA": {
+  "shift": [
+   3,
+   0
+  ],
+  "px differing from pass above row 236": 0,
+  "px differing above the seam": 0
+ },
+ "stepB": {
+  "shift": [
+   2,
+   2
+  ],
+  "px differing from pass above row 236": 0,
+  "px differing above the seam": 0
+ }
+}

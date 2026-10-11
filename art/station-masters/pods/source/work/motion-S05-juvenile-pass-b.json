@@ -1,0 +1,16 @@
+[
+ {
+  "name": "motion-S05-juvenile-pass-b",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/motion-S05-juvenile-a.jpg",
+    "Our signed S05 key sheet (project-owned): edit THIS sheet."
+   ]
+  ],
+  "prompt": "Edit this key sheet. Keep cells 2 to 6 exactly as they are. Repaint ONLY cell 1 (top left): the SAME creature as in cells 2 and 3, in the SAME side-on three-quarter view, the same body length, head height and angle, ears, tail, size and place in the cell, and the same feet line, but in the walk's PASSING pose: all four feet on the ground under the body, the legs nearly upright and passing each other (the near front and near hind legs straight below the body), the body level, the head and torso exactly as in cells 2 and 3. Same colours, light from the top left, brush and soft contact shadow. Plain flat magenta background in the cell, no text, no borders, no glow."
+ }
+]

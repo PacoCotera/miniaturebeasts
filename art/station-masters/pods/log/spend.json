@@ -4038,5 +4038,22 @@
    "thoughtsTokenCount": 168,
    "totalTokenCount": 1844
   }
+ },
+ {
+  "tag": "motion-S05-juvenile-pass-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182108,
+  "mxn": 3.6422,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T22:03:39Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 454,
+   "candidatesTokenCount": 1308,
+   "thoughtsTokenCount": 202,
+   "totalTokenCount": 1964
+  }
  }
 ]

@@ -60,3 +60,13 @@ The flipbooks are re-rendered. Each strip shows stand, crouch, the first hop's a
 **The sheet's `pass` can't be the lock's source.** It is the three-quarter stand: short-bodied and front-facing, a different body from the side-on steps. Copying its torso onto the step legs would change the animal. For the lock and M8, the cycle is stepA ↔ stepB, both with stepA's head and torso. A true side-on `pass` needs a repaint: 1 Pro edit of the sheet, only on the programme lead's go.
 
 **Fringe fix (the animator's measure, 16:02).** The first lock copied only stepA's fully opaque pixels, so 204 px above the seam still differed, mostly stepB's own outline fringe. Above row 236, stepB is now stepA exactly, every pixel and its alpha (the tail included), and stepA's soft outline is copied inside the zone too. **Measured: 0 changed px above row 236.**
+
+## S05 true side-on pass and the re-lock (the animator's b99b015; programme lead's go 16:03)
+
+- **Edit:** `source/raw/motion-S05-juvenile-pass-b.jpg`, 1 Pro request, 3.64 MXN, no retry. The proof line is at 23.24 of 24.5 (raised from 22.5 for this edit).
+- The edit repainted every cell, not only cell 1. So the whole S05 set is taken from it (`keys-b/`, `guides/cut-s05b.py`): pass, stepA, stepB, crouch and curl are one rendering, at the old sheet's scale 0.405, feet on row 305.
+  - Keyed with the adult cut's method, plus an outline defringe: on the outer 2 px, a pixel with blue at or above green is magenta's tint, since the orange fur keeps blue well below green.
+  - **Measured: 0 magenta px and 0 tinted outline px on all five.** 1× sheet: `keys-b/s05-set-1x.png`.
+- **Lock** (`guides/torso-lock-b.py`): each step is aligned to pass (stepA +3, 0; stepB +2, +2). Above row 236 the step **is** pass, every pixel and its alpha. Down to a least-difference seam (rows 236–274) the head and torso are pass's. Below it the legs are the step's own.
+  - **Measured: 0 px differing from pass above row 236 and above the seam,** on both steps (`keys-b/torso-lock-b.json`). 1×: `keys-b/s05-locked-1x.png`.
+- The old `keys/juv-S05-*` and `-locked` keys from the first sheet are superseded by `keys-b/`. Signed by the art director.
