@@ -10,6 +10,7 @@ import * as S from "./state.mjs";
 import * as Lib from "./library.mjs";
 import { lightAt } from "./views/home-props.mjs";
 import { setMoving } from "./moving.mjs";
+import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from "./motion-scene.mjs";
 import { setFrames, frameOf, frameIds, stampGenome, podGenome } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
@@ -71,6 +72,7 @@ function frame(t) {
   clock.now = t; const dt = lastT == null ? 0 : t - lastT; lastT = t;
   if (G.ready && FACE) {
     watchHabitat(H, dt);   // the bench trickle (before the Idle check: Idle watches nothing): one mibi up close, rest or meet, not carried (habitat.json rules.watch)
+    sceneTick(t);   // the motion proof's scene, when one plays (motion-scene.mjs)
     frameIntents.idleTick(H, t, IDLE_MS);   // frame.json idle.enter: a minute without a press, never in a hold, an arrival or Cargo's report card
     try { render(); H.frame(); } catch (e) { renderErrors.push(String(e && e.message || e)); if (errN++ < 20) console.error(e); }   // never swallowed: every throw is kept for the checks to read
     updateCaddy();
@@ -175,13 +177,15 @@ const ready = Promise.all([loadFrames(), bootAssets()]).then(async ([info]) => {
   await faceBoot();
   loadSettings(); load();
   UI.lastInput = performance.now(); G.ready = true;
-  buildDevPanel($("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); } });
+  buildDevPanel($("devPanel"), { changed: refreshDev, openCrates: () => { H.goto("cargo"); cargo.openBay(H); }, motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()) });
   caddy.startClient();
   if (new URLSearchParams(location.search).has("dev")) showDev(true);
   if (bootEl) bootEl.textContent = info.n + " species frames · catalogue " + info.catalogue.id + "@" + info.catalogue.version;
   return info;
 }).catch((e) => { bootText("the Station did not start: " + e.message); console.error(e); throw e; });
 
+// The motion proof's scene drives the page as a player would (keys, intents, the host's goto) from the frame loop's clock.
+const sceneHost = () => ({ act, goto: (s) => H.goto(s), settings: G.settings, intent: (m) => onFaceMessage(H, { t: "intent", seq: 0, ...m }), now: () => clock.now });
 // Test hooks (not part of play). `openBay` is the rule alone, for the tests that need pods in the wells at once; Cargo plays the opening through its own ✓.
 const podsGo = (id, f = "pod", view, ci) => { const u = UI.pods; u.cur = id; if (ci != null) u.ci = ci; u.view = view ?? (f.startsWith("rail.") ? "chapter" : f.startsWith("place.") ? "collection" : "overview"); if (f.startsWith("rail.")) u.ci = +f.slice(5); u.cmp = null; u.focusView = null; u.focus.set(f); if (UI.screen !== "pods") H.goto("pods"); };
 window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pendingRoom: () => H.pendingRoom ?? null, get props() { return lastProps ? JSON.parse(lastProps) : null; }, caddy: { state: caddy.state, status: caddy.status, flush: caddy.flush, poll: caddy.poll, land: caddy.land, anyWaiting: caddy.anyWaiting, landed: (sha) => caddy.state.landed.has(sha), pending: () => [...caddy.state.pending.keys()] }, get SV() { return G.sv; }, get ST() { return G.st; }, get UI() { return UI; }, get settings() { return G.settings; }, get FX() { return FX; },
@@ -196,7 +200,9 @@ window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pen
   forecastOf: (aId, bId) => S.forecastOf(G.st, mibiById(aId), mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
-  podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); }, growCost: (choices) => S.growCost(G.st, choices || {}, G.settings),
+  podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); },
+  motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()), scene: () => ({ t: sceneTime(clock.now), beat: sceneBeat(clock.now), ms: SCENE_MS }),
+  redraw: () => { const M = FACE.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let px = 0; for (let i = 0; i < n; i++) px += a[i * 4 + 2] * a[i * 4 + 3]; let trav = 0, air = 0; for (let i = 0; i < 12; i++) { const s = M._face_test_state(i); if (s >= 0) { if (s & 16) trav++; if (s & 32) air++; } } return { px, areas: n, tick: M._face_test_tick_area(), deferred: M._face_test_deferred(), travelling: trav, airborne: air, steps: M._face_test_steps() }; },   // the motion proof's CSV: the last frame's redraw growCost: (choices) => S.growCost(G.st, choices || {}, G.settings),
   openBud: () => { const r = S.openBud(G.st, G.sv, G.settings, Date.now()); save(); return r; }, skipBud: (how) => { S.skipBud(G.st, G.settings, how); save(); }, fillGuide: (id, share) => { G.st.guide[id] = {}; delete G.st.readOnce[id]; if (share >= 1) G.st.readOnce[id] = frameOf(id).chapters.map((c) => c.id); const g = Lib.fieldGuide(G.st, id, G.settings), want = Math.ceil(share * (g.found + g.unseen)); let n = g.found; for (const ch of g.chapters) { if (ch.sealed) continue; for (const t of ch.traits) for (const l of t.possible) { if (n >= want) break; if (!S.guideLooks(G.st, id, t.id).includes(l)) { S.guideAdd(G.st, id, t.id, [l]); n++; } } } save(); return Lib.fieldGuide(G.st, id, G.settings).found; }, returnMibi: (id) => { const m = S.mibiById(G.st, id), r = m ? S.returnMibi(G.st, G.sv, m, G.settings) : { ok: false }; if (r.ok) save(); return r; }, seedAdults: (species, seed, n) => { const r = S.seedAdults(G.st, species, seed, n, G.settings); save(); return r; }, seedSiblings: (species, seed) => { const r = S.seedSiblings(G.st, species, seed, G.settings); save(); return r; },
   openCreate: (podId) => create.openCreate(H, podById(podId)), readSome: (podId, n) => { const p = podById(podId); S.skipIdentify(G.st, p); const fr = frameOf(S.speciesOf(p)); fr.chapters.slice(0, n).forEach((c) => S.read(G.st, p, c.id, G.settings)); save(); },
   seedPod: (species, gs) => { const r = S.seedPodFromGenome(G.st, podGenome(frameOf(species), gs), G.settings, Date.now()); save(); return r; },

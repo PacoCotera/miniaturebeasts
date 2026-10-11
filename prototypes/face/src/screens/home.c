@@ -211,7 +211,7 @@ static void mv_step(mv_t *m, long j, int air_ok) {
     if (m->phase == 0) { if (++m->pt > 4) { m->phase = 1; m->pt = 1; m->dl = 0; m->cell = cr; m->dy = 2; } else m->dl = 4 * m->pt; return; }
     if (++m->pt > t80(S->wake_crouch)) {   /* stand, risen to its line; then breathe from b0 */
       mv_to_rest(m, 1);
-      if (m->wander) { m->wander_wps = 1 + (int)(mr(m) % 2u); if (!mv_trip(m, 200)) m->wander_wps = 0; else m->wander_wps--; }
+      if (m->wander) { m->wander_wps = 1 + (int)(mr(m) % 2u); if (!mv_trip(m, vrule("rules.night.reach", 200))) m->wander_wps = 0; else m->wander_wps--; }
     }
     return;
   case C_STIR:
@@ -278,7 +278,7 @@ static int mv_household(long j) {
     mv_t *m = &g_m[i]; if (m->group != grp) continue;
     mv_t c = *m; int leaving = mv_airborne(m) && m->pt >= m->S->hop_nlift; if (leaving) air--;
     int ok = air < amax; int wasAir = mv_airborne(&c); mv_step(&c, j, ok); if (!wasAir && mv_airborne(&c)) air++;
-    if (c.clip == C_REST && m->wander && c.wander && m->clip != C_REST) { /* arrived on a wanderer's waypoint: the next, or rest */ if (c.wander_wps > 0 && mv_trip(&c, 200)) c.wander_wps--; }
+    if (c.clip == C_REST && m->wander && c.wander && m->clip != C_REST) { /* arrived on a wanderer's waypoint: the next, or rest */ if (c.wander_wps > 0 && mv_trip(&c, vrule("rules.night.reach", 200))) c.wander_wps--; }
     at[i] = np; pr[np].i = i; pr[np].n = c; np++;
   }
   trav = 0; for (int i = 0; i < g_nm; i++) if (at[i] >= 0 ? mv_travelling(&pr[at[i]].n) : mv_travelling(&g_m[i])) trav++;

@@ -175,6 +175,7 @@ test("up close (M1 §2.4, §3): the resident from its close atlas breathes on it
   const { f, b } = await upClose(); assert.ok(b.props.regions.resident.moving, "the resident names its close atlas"); assert.ok(f.M._face_test_close_cell() >= 0);
   let worst = 0; const seen = new Set(), changes = [];
   for (let t = 0; t < 8000; t += 16) { f.frame((f.t += 16)); worst = Math.max(worst, dirty(f)); const c = cellOf(f, "adult"); if (!seen.has(c) || changes.at(-1)?.c !== c) changes.push({ t, c }); seen.add(c); }
+  console.log(`# up close (moving): worst frame ${worst} px`);
   for (const c of ["stand", "stand-b1", "stand-b2"]) assert.ok(seen.has(c), "the breath shows " + c); assert.ok([...seen].every((c) => ["stand", "stand-b1", "stand-b2", "blink"].includes(c)), [...seen].join()); assert.ok(worst <= 153600, `${worst} px`);
   for (let k = 1; k < changes.length; k++) assert.ok((changes[k].t + 16) % 80 < 32, `a change at ${changes[k].t} ms is on an 80 ms tick`);   // the face's tick from the screen's first frame, seen by 16 ms frames
 });
