@@ -1,31 +1,33 @@
 #!/usr/bin/env node
-// Tier 2 test harness (boards/mibi-motion/tier2-method.md §3, §4, Q-A3): renders the matrix {painted down, warped down, stand, warped up, painted up} per size from
-// masters and field maps given as paths, measures M1–M8, and writes 1× PNGs, a contact sheet, a CSV of every measure and the Vivarium pair as an APNG.
-// The warp only moves existing pixels (backward mapping, nearest sample, no blending); a pixel the field points outside the picture becomes transparent.
-// Nothing is placed in the Station and nothing is drawn: it reads files and writes to --out.
+// Tier 2 test harness (boards/mibi-motion/tier2-method.md §3, §4, Q-A3, the architect's harness answers): renders the matrix {painted down, warped down, stand, warped up, painted up}
+// per size from masters and the landmarks JSON given by path, measures M1–M8, and writes 1× PNGs, a contact sheet, a CSV of every measure and the Vivarium pair as APNGs.
+// The warp moves existing pixels only (backward mapping, nearest sample, no blending); the head is a separate layer drawn unwarped over the warped body. Nothing is placed in the
+// Station and nothing is drawn: it reads files and writes to --out. Every per-picture fact is in the landmarks JSON; a flag only OVERRIDES one for a trial, and then the run is
+// marked `override` and gives no verdict.
 //
-//   node prototypes/ui/tools/tier2-test.mjs --out dir
-//     --set s04-304 --stand stand.png [--painted-down d.png] [--painted-up u.png] (--field-down f.png --field-up g.png | --landmarks lm.json [--picture name] [--amplitude k])
-//           [--head-mask m.png] [--shadow-rows y0-y1] [--belly-y N] [--b1 b1.png] [--b2 b2.png] [--band y0-y1] [--pair label=a.png,b.png ...]
-//     --set s04-104 ...                       (one --set per size; the options after a --set belong to it)
-//     [--holds 700,350,700] [--phase-ms 1050] [--seconds 10] [--bg D6CEBE]
-// Measures (the definitions are in prototypes/ui/README.md): M1 determinism, M2 palette, M3 silhouette, M4 outline, M5 fit to the painted end, M6 readable at walker size,
-// M7 warp time, M8 motion (changed pixels outside the moving band, with and without the warp).
+//   node prototypes/ui/tools/tier2-test.mjs --out dir [--pods-dir dir]
+//     --set s04-304 --stand <path|ref@sha:path> --landmarks lm.json [--picture name] [--painted-down p] [--painted-up p] [--field-down f.png --field-up g.png] [--pair-ids a,b]
+//     --set s04-104 ...                                    (one --set per size; the options after a --set belong to it)
+//     overrides: --head-mask png  --shadow-rows y0-y1  --belly-y N  --amplitude k  --no-check  --band y0-y1  --holds b0,b1,b2,b1back  --phase-ms N  --seconds N
+//   A source is a file path, or `<ref>@<sha>:<path>` read read-only with `git show` (a `masters-pods` ref reads from --pods-dir). Each source's SHA-256 goes in the CSV and must match the JSON's.
+// Measures (the definitions are in prototypes/ui/README.md): M1 determinism, M2 palette, M3 silhouette, M4 outline, M5 fit to the painted end and M5a to the measured profile,
+// M6 readable at walker size, M7 warp time, M8 motion (changed pixels outside the moving band, with and without the warp).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { deflateSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { encodePNG, decodePNG } from "../png.mjs";
-import { buildField, decodeField, headMaskFrom, checkField } from "./warp-field.mjs";
+import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legCompression, bellyColumns, rha, quantT, sha256, chunk } from "./warp-field.mjs";
 
 export const OPAQUE = 110;                                 // alpha > 110 is opaque (the animator's measure for the topline)
 export const M5_LIMITS = { "304x312": { iou: 0.95, profile: 2 }, "104x112": { iou: 0.93, profile: 1 } };
-export const M6_MIN = 2, M7_MAX_MS = 5, M4_SLACK = 0.05;
-// Open rulings (the programme lead's placeholders), each behind one name so a ruling changes one place.
-export const DEFAULT_HOLDS_MS = [700, 350, 700];           // b0, b1, b2 holds: PLACEHOLDER until the animator gives the set's holds
-export function breathSegments(holds, phaseMs, totalMs) {  // the breathing cycle b0 → b1 → b2 → b1 (PLACEHOLDER order), shifted by phaseMs; [{ t0, t1, frame }] over 0..totalMs
-  const seq = [[0, holds[0]], [1, holds[1]], [2, holds[2]], [1, holds[1]]], cycle = seq.reduce((a, s) => a + s[1], 0), out = [];
+export const M5A = { column: 1.5, mean: 1 }, M6_MIN = 2, M7_MAX_MS = 5, M4_SLACK = 0.05, SECONDS = 10;
+
+// The breathing cycle b0 → b1 → b2 → b1 (the animator's `breathPair`: holds b0, b1, b2, b1back in ms), shifted by phaseMs; [{ t0, t1, frame }] over 0..totalMs.
+export function breathSegments(holds, phaseMs, totalMs) {
+  const seq = [[0, holds[0]], [1, holds[1]], [2, holds[2]], [1, holds[3]]], cycle = seq.reduce((a, s) => a + s[1], 0), out = [];
   let t = 0;
   while (t < totalMs) {
     let pos = (t + phaseMs) % cycle, acc = 0;
@@ -34,27 +36,58 @@ export function breathSegments(holds, phaseMs, totalMs) {  // the breathing cycl
   return out;
 }
 
+// ---- sources: a path, or <ref>@<sha>:<path> read with `git show` (a masters-pods ref from --pods-dir); never written, never copied.
+export function readSource(spec, { podsDir = null } = {}) {
+  const m = /^([\w.-]+)@([0-9a-f]{6,40}):(.+)$/.exec(spec);
+  if (!m) return readFileSync(spec);
+  const [, ref, sha, p] = m;
+  if (ref === "masters-pods") { if (!podsDir) throw Object.assign(new Error(`${spec}: a masters-pods source needs --pods-dir`), { unreadable: true }); return readFileSync(path.join(podsDir, p)); }
+  try { return execFileSync("git", ["show", `${sha}:${p}`], { maxBuffer: 1 << 28, stdio: ["ignore", "pipe", "ignore"] }); }
+  catch { throw Object.assign(new Error(`${ref}@${sha.slice(0, 8)}:${p} is not readable in this checkout`), { unreadable: true }); }
+}
+const expectSha = (buf, want, what) => { if (want && sha256(buf) !== want) throw new Error(`${what}: sha256 ${sha256(buf)} is not the JSON's ${want}; the run stops (a verdict names the exact pixels it judged)`); };
+
 // ---- pictures: { w, h, data: Uint8ClampedArray RGBA }
-export const loadImage = (file) => { const p = decodePNG(readFileSync(file)); return { w: p.width, h: p.height, data: new Uint8ClampedArray(p.data) }; };
+export const decodeImage = (buf) => { const p = decodePNG(buf); return { w: p.width, h: p.height, data: new Uint8ClampedArray(p.data) }; };
 export const blank = (w, h) => ({ w, h, data: new Uint8ClampedArray(w * h * 4) });
 const opaqueMask = (img) => { const m = new Uint8Array(img.w * img.h); for (let i = 0; i < m.length; i++) m[i] = img.data[i * 4 + 3] > OPAQUE ? 1 : 0; return m; };
 
-// The warp: layers [{ field, t }] add before the one sample (never a warp of a warp). out(x, y) = img(x − Σ t·dx, y − Σ t·dy), nearest, outside → transparent.
-export function warp(img, layers) {
+// The warp with the head layer. layers [{ field, t }] add their r(t·d) before the one sample (never a warp of a warp), t in 1/16 steps; out(x, y) = img(x − Σ r(t·dx), y − Σ r(t·dy)).
+// A source outside the picture is transparent; a source inside the head mask takes the first non-head pixel below it in that column, else the nearest above, else transparent
+// (a clamp miss, counted in stats.clampMisses). With drawHead the head is then drawn unwarped: out = img wherever the mask is set. drawHead false gives the body layer alone.
+export function warp(img, layers, { headMask = null, drawHead = true, stats = null } = {}) {
   const { w, h } = img, out = blank(w, h), src = img.data, dst = out.data;
   for (const l of layers) if (l.field.w !== w || l.field.h !== h) throw new Error(`field ${l.field.w}x${l.field.h} does not fit the picture ${w}x${h}`);
+  const ts = layers.map((l) => quantT(l.t)), copy = (i, j) => { dst[i] = src[j]; dst[i + 1] = src[j + 1]; dst[i + 2] = src[j + 2]; dst[i + 3] = src[j + 3]; };
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
-    const i = y * w + x; let ox = 0, oy = 0;
-    for (const l of layers) { ox += l.t * l.field.dx[i]; oy += l.t * l.field.dy[i]; }
-    const sx = Math.floor(x - ox + 0.5), sy = Math.floor(y - oy + 0.5);
+    const i = y * w + x;
+    if (drawHead && headMask && headMask[i]) { copy(i * 4, i * 4); continue; }
+    let ox = 0, oy = 0; layers.forEach((l, k) => { ox += rha(ts[k] * l.field.dx[i]); oy += rha(ts[k] * l.field.dy[i]); });
+    const sx = x - ox; let sy = y - oy;
     if (sx < 0 || sy < 0 || sx >= w || sy >= h) continue;
-    const j = (sy * w + sx) * 4; dst[i * 4] = src[j]; dst[i * 4 + 1] = src[j + 1]; dst[i * 4 + 2] = src[j + 2]; dst[i * 4 + 3] = src[j + 3];
+    if (headMask && headMask[sy * w + sx]) {
+      let yy = sy; while (yy < h && headMask[yy * w + sx]) yy++;
+      if (yy >= h) { yy = sy; while (yy >= 0 && headMask[yy * w + sx]) yy--; }
+      if (yy < 0) { if (stats) stats.clampMisses++; continue; }
+      sy = yy;
+    }
+    copy(i * 4, (sy * w + sx) * 4);
   }
   return out;
 }
 
+// The b-step bake. PROVISIONAL until the animator/architect give the motion-spec rule: the rows from the figure's ink top to the band's last row are stretched so the top rises n px,
+// feet and everything below the band fixed (nearest row, existing pixels only).
+export function bakeStep(img, n, band) {
+  const { w, h } = img, out = { w, h, data: new Uint8ClampedArray(img.data) }, m = opaqueMask(img); let top = 0;
+  while (top < h && !m.subarray(top * w, (top + 1) * w).some(Boolean)) top++;
+  const y1 = band[1]; if (top >= y1) return out;
+  for (let y = Math.max(0, top - n); y <= y1; y++) { const sy = Math.min(y1, Math.floor(top + ((y - (top - n)) * (y1 - top)) / (y1 - top + n) + 0.5)); for (let x = 0; x < w; x++) for (let c = 0; c < 4; c++) out.data[(y * w + x) * 4 + c] = img.data[(sy * w + x) * 4 + c]; }
+  return out;
+}
+
 // ---- measures
-// M2: the colours of the output (alpha > 0) that are not colours of the input.
+// M2: the number of colours (alpha > 0) of the output that are not colours of the input.
 export function newColours(input, output) {
   const key = (d, i) => (d[i] << 24 | d[i + 1] << 16 | d[i + 2] << 8 | d[i + 3]) >>> 0, have = new Set(); let n = 0;
   for (let i = 0; i < input.data.length; i += 4) if (input.data[i + 3]) have.add(key(input.data, i));
@@ -73,7 +106,7 @@ export function silhouette(img) {
   for (let i = 0; i < w * h; i++) if (m[i]) { const x = i % w, y = (i / w) | 0; let any = false; for (const [dx, dy] of N8) { const nx = x + dx, ny = y + dy; if (nx >= 0 && ny >= 0 && nx < w && ny < h && m[ny * w + nx]) { any = true; break; } } if (!any) orphans++; }
   return { components, holes, orphans };
 }
-// M4: outline pixels = opaque with a 4-neighbour that is transparent or outside; irregular = outline pixels whose count of outline 4-neighbours is not 2 (8 would flag a clean square's edge pixels beside its corners) (stairs, spurs).
+// M4: outline pixels = opaque with a 4-neighbour that is transparent or outside; irregular = outline pixels whose count of outline 4-neighbours is not 2 (8 would flag a clean square's edge pixels beside its corners).
 export function outlineIrregular(img) {
   const { w, h } = img, m = opaqueMask(img), edge = new Uint8Array(w * h), at = (x, y) => (x >= 0 && y >= 0 && x < w && y < h ? m[y * w + x] : 0);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (m[y * w + x] && !(at(x - 1, y) && at(x + 1, y) && at(x, y - 1) && at(x, y + 1))) edge[y * w + x] = 1;
@@ -88,14 +121,28 @@ export function outlineIrregular(img) {
 export function iou(a, b) { const ma = opaqueMask(a), mb = opaqueMask(b); let i = 0, u = 0; for (let k = 0; k < ma.length; k++) { i += ma[k] & mb[k]; u += ma[k] | mb[k]; } return u ? i / u : 1; }
 export function profile(img) { const m = opaqueMask(img), p = new Int32Array(img.w).fill(-1); for (let x = 0; x < img.w; x++) for (let y = 0; y < img.h; y++) if (m[y * img.w + x]) { p[x] = y; break; } return p; }
 export function profileDelta(a, b) { const pa = profile(a), pb = profile(b); let s = 0, n = 0, only = 0; for (let x = 0; x < pa.length; x++) { if (pa[x] >= 0 && pb[x] >= 0) { s += Math.abs(pa[x] - pb[x]); n++; } else if (pa[x] !== pb[x]) only++; } return { mean: n ? s / n : 0, columns: n, unmatched: only }; }
-// M8: pixels that differ between two frames outside the rows of the moving band [y0, y1].
-export function changedOutside(a, b, band) { let n = 0; for (let y = 0; y < a.h; y++) { if (y >= band[0] && y <= band[1]) continue; for (let x = 0; x < a.w; x++) { const i = (y * a.w + x) * 4; if (a.data[i] !== b.data[i] || a.data[i + 1] !== b.data[i + 1] || a.data[i + 2] !== b.data[i + 2] || a.data[i + 3] !== b.data[i + 3]) n++; } } return n; }
-export function warpMs(img, field, runs = 15) { const t = []; warp(img, [{ field, t: 1 }]); for (let r = 0; r < runs; r++) { const t0 = process.hrtime.bigint(); warp(img, [{ field, t: 1 }]); t.push(Number(process.hrtime.bigint() - t0) / 1e6); } t.sort((x, y) => x - y); return t[t.length >> 1]; }
+// M5a: the warped stand's top edge at the animator's measured columns against stand top + the measured end displacement; columns at x ≤ headEdge − 6 only.
+export function profileFit(stand, warped, prof, end, headEdgeX) {
+  const ps = profile(stand), pw = profile(warped), d = [];
+  prof.x.forEach((x, i) => { if (x > headEdgeX - 6 || ps[x] < 0 || pw[x] < 0) return; d.push({ x, delta: Math.abs(pw[x] - (ps[x] + prof[end][i])) }); });
+  return { columns: d.length, max: Math.max(0, ...d.map((c) => c.delta)), mean: d.length ? d.reduce((a, c) => a + c.delta, 0) / d.length : 0, worst: d.sort((a, b) => b.delta - a.delta)[0]?.x };
+}
+// M8: pixels that differ between two frames outside the band (a Uint8Array w*h, 1 = in the moving band).
+export function changedOutside(a, b, band) { let n = 0; for (let i = 0; i < a.w * a.h; i++) { if (band[i]) continue; const k = i * 4; if (a.data[k] !== b.data[k] || a.data[k + 1] !== b.data[k + 1] || a.data[k + 2] !== b.data[k + 2] || a.data[k + 3] !== b.data[k + 3]) n++; } return n; }
+export const rowsBand = (w, h, [y0, y1]) => { const m = new Uint8Array(w * h); for (let y = Math.max(0, y0); y <= Math.min(h - 1, y1); y++) m.fill(1, y * w, (y + 1) * w); return m; };
+// "belly-down": the rows below the belly line yb(x), plus the tail box [x, y, w, h].
+export function bellyDownBand(w, h, bellyLine, tail) {
+  const m = new Uint8Array(w * h), yb = bellyColumns(bellyLine, w);
+  for (let x = 0; x < w; x++) for (let y = yb[x] + 1; y < h; y++) m[y * w + x] = 1;
+  if (tail) for (let y = tail[1]; y < Math.min(h, tail[1] + tail[3]); y++) for (let x = tail[0]; x < Math.min(w, tail[0] + tail[2]); x++) m[y * w + x] = 1;
+  return m;
+}
+export function warpMs(img, field, headMask, runs = 15) { const t = [], L = [{ field, t: 1 }]; warp(img, L, { headMask }); for (let r = 0; r < runs; r++) { const t0 = process.hrtime.bigint(); warp(img, L, { headMask }); t.push(Number(process.hrtime.bigint() - t0) / 1e6); } t.sort((x, y) => x - y); return t[t.length >> 1]; }
 
 // ---- output
 const hex = (s) => [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
 export const png = (img) => encodePNG(img.w, img.h, img.data);
-function over(surface, img, ox, oy, bg) {                   // alpha-composite img onto an opaque surface (presentation only: the contact sheet and the APNG)
+function over(surface, img, ox, oy) {                      // alpha-composite img onto an opaque surface (presentation only: the contact sheet and the APNG)
   for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) {
     const i = (y * img.w + x) * 4, a = img.data[i + 3] / 255, j = ((oy + y) * surface.w + ox + x) * 4; if (!a) continue;
     for (let c = 0; c < 3; c++) surface.data[j + c] = Math.round(surface.data[j + c] * (1 - a) + img.data[i + c] * a);
@@ -105,12 +152,10 @@ const filled = (w, h, bg) => { const c = blank(w, h); for (let i = 0; i < w * h;
 export function contactSheet(rows, bg, gap = 8) {          // rows: arrays of pictures-or-null, left to right; each row's cells are as high as its tallest
   const cellW = Math.max(...rows.flat().filter(Boolean).map((i) => i.w)), rowH = rows.map((r) => Math.max(...r.filter(Boolean).map((i) => i.h), 0));
   const cols = Math.max(...rows.map((r) => r.length)), W = gap + cols * (cellW + gap), H = gap + rowH.reduce((a, h) => a + h + gap, 0), sheet = filled(W, H, bg);
-  let y = gap; rows.forEach((r, ri) => { r.forEach((img, ci) => { if (img) over(sheet, img, gap + ci * (cellW + gap) + ((cellW - img.w) >> 1), y + rowH[ri] - img.h, bg); }); y += rowH[ri] + gap; });
+  let y = gap; rows.forEach((r, ri) => { r.forEach((img, ci) => { if (img) over(sheet, img, gap + ci * (cellW + gap) + ((cellW - img.w) >> 1), y + rowH[ri] - img.h); }); y += rowH[ri] + gap; });
   return sheet;
 }
-// APNG from full-surface frames [{ img, ms }]: the first frame is the default image, the rest are fdAT; loops forever.
-const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
-const chunk = (type, data) => { const len = Buffer.alloc(4); len.writeUInt32BE(data.length); const body = Buffer.concat([Buffer.from(type, "ascii"), data]); let c = 0xffffffff; for (const b of body) c = CRC[(c ^ b) & 255] ^ (c >>> 8); const crc = Buffer.alloc(4); crc.writeUInt32BE((c ^ 0xffffffff) >>> 0); return Buffer.concat([len, body, crc]); };
+// APNG from full-canvas frames [{ img, ms }]: the first frame is the default image, the rest are fdAT; loops forever.
 const idatOf = (img) => { const raw = Buffer.alloc((img.w * 4 + 1) * img.h); for (let y = 0; y < img.h; y++) Buffer.from(img.data.buffer, img.data.byteOffset + y * img.w * 4, img.w * 4).copy(raw, y * (img.w * 4 + 1) + 1); return deflateSync(raw, { level: 9 }); };
 export function encodeAPNG(frames) {
   const { w, h } = frames[0].img, u32 = (...v) => { const b = Buffer.alloc(4 * v.length); v.forEach((x, i) => b.writeUInt32BE(x >>> 0, i * 4)); return b; };
@@ -123,110 +168,160 @@ export function encodeAPNG(frames) {
   });
   parts.push(chunk("IEND", Buffer.alloc(0))); return Buffer.concat(parts);
 }
-// The pair: two copies of the picture sets (the down and the up end), breathing out of phase, on the background, at 1×. Returns APNG bytes.
-export function vivariumPair(copyA, copyB, { holds, phaseMs, totalMs, bg }) {
+// Two copies (each a [b0, b1, b2] picture set), side by side on the background, copy B offsetMs into its cycle, at 1×. Each frame lasts until the next change of either copy.
+export function vivariumPair(copyA, copyB, { holds, offsetMs, totalMs, bg }) {
   const w = copyA[0].w, h = copyA[0].h, gap = 16, W = 2 * w + 3 * gap, H = h + 2 * gap;
-  const sa = breathSegments(holds, 0, totalMs), sb = breathSegments(holds, phaseMs, totalMs);
-  const cuts = [...new Set([...sa, ...sb].flatMap((s) => [s.t0, s.t1]))].sort((a, b) => a - b), frames = [];
-  const at = (segs, t) => segs.find((s) => t >= s.t0 && t < s.t1).frame;
+  const sa = breathSegments(holds, 0, totalMs), sb = breathSegments(holds, offsetMs, totalMs);
+  const cuts = [...new Set([...sa, ...sb].flatMap((s) => [s.t0, s.t1]))].sort((a, b) => a - b), frames = [], at = (segs, t) => segs.find((s) => t >= s.t0 && t < s.t1).frame;
   for (let k = 0; k + 1 < cuts.length; k++) {
-    const t = cuts[k], fa = at(sa, t), fb = at(sb, t), prev = frames[frames.length - 1];
+    const t = cuts[k], fa = at(sa, t), fb = at(sb, t), prev = frames.at(-1);
     if (prev && prev.fa === fa && prev.fb === fb) { prev.ms += cuts[k + 1] - t; continue; }
-    const c = filled(W, H, bg); over(c, copyA[fa], gap, gap, bg); over(c, copyB[fb], 2 * gap + w, gap, bg); frames.push({ img: c, ms: cuts[k + 1] - t, fa, fb });
+    const c = filled(W, H, bg); over(c, copyA[fa], gap, gap); over(c, copyB[fb], 2 * gap + w, gap); frames.push({ img: c, ms: cuts[k + 1] - t, fa, fb });
   }
-  return encodeAPNG(frames);
+  return { bytes: encodeAPNG(frames), delays: frames.map((f) => f.ms) };
 }
 
 // ---- one set (one size)
-const ENDS = ["down", "up"], fmt = (v) => (typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(4)) : String(v));
+const ENDS = ["down", "up"], SIDE = { down: "min", up: "max" }, fmt = (v) => (typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(4)) : String(v));
 export function runSet(set, opts = {}) {
   const rows = [], row = (size, measure, item, value, limit = "", result = "") => rows.push({ set: set.name, size, measure, item, value: fmt(value), limit: fmt(limit), result });
-  const stand = loadImage(set.stand), size = `${stand.w}x${stand.h}`, files = new Map(), bg = opts.bg ?? hex("D6CEBE");
-  const mask = set["head-mask"] ? headMaskFrom(readFileSync(set["head-mask"])) : null, zeroRows = set["shadow-rows"] ? [set["shadow-rows"].split("-").map(Number)] : [];
-  const fields = {};
+  const ov = opts.overrides ?? {}, overrideNames = Object.keys(ov).filter((k) => ov[k] != null), files = new Map(), bg = opts.bg ?? hex("D6CEBE"), src = { podsDir: opts.podsDir };
+  const standBuf = readSource(set.stand, src), stand = decodeImage(standBuf), size = `${stand.w}x${stand.h}`;
+  const lm = set.landmarks ? JSON.parse(readFileSync(set.landmarks, "utf8")) : null;
+  row(size, "input", "stand sha256", sha256(standBuf), "", "info");
+  const idBase = lm ? `mibi-${lm.stage}-${lm.species}-stand` : "stand", blendId = lm?.blend ?? "blend";
+  const status = [], fields = {}, refused = {};
   for (const e of ENDS) {
-    if (set[`field-${e}`]) fields[e] = decodeField(readFileSync(set[`field-${e}`]), e);
-    else if (set.landmarks) fields[e] = buildField(JSON.parse(readFileSync(set.landmarks, "utf8")), e, stand.w, stand.h, { picture: set.picture ?? null, headMask: mask, shadowRows: zeroRows, bellyY: set["belly-y"] != null ? +set["belly-y"] : null, amplitude: set.amplitude != null ? +set.amplitude : 1 });
-    else throw new Error(`set ${set.name}: give --field-${e} or --landmarks`);
-    checkField(fields[e], { headMask: mask });             // the loader's refusals, for maps read from files too
+    try {
+      if (set[`field-${e}`]) {                                      // a map given by path; the head and rows still come from the landmarks when there are some
+        const f = decodeField(readFileSync(set[`field-${e}`]), e);
+        if (lm) { const facts = buildField(lm, e, stand.w, stand.h, { picture: set.picture ?? null, overrides: { ...ov, noCheck: true } }); Object.assign(f, { headMask: facts.headMask, headSource: facts.headSource, zeroRows: facts.zeroRows, bellyY: facts.bellyY, overrides: ["field-map"] }); }
+        else Object.assign(f, { headMask: null, headSource: "none", zeroRows: [], bellyY: null, overrides: ["field-map"] });
+        if (!ov.noCheck) checkField(f); fields[e] = f;
+      } else if (lm) fields[e] = buildField(lm, e, stand.w, stand.h, { picture: set.picture ?? null, overrides: ov });
+      else throw new Error(`set ${set.name}: give --landmarks or --field-${e}`);
+    } catch (err) { refused[e] = err.message; row(size, "field", e, err.message, "", "FAIL (refused)"); }
   }
-  const painted = Object.fromEntries(ENDS.map((e) => [e, set[`painted-${e}`] ? loadImage(set[`painted-${e}`]) : null]));
-  const warped = Object.fromEntries(ENDS.map((e) => [e, warp(stand, [{ field: fields[e], t: 1 }])]));
-  const matrix = [painted.down, warped.down, stand, warped.up, painted.up], names = ["painted-down", "warped-down", "stand", "warped-up", "painted-up"];
+  const live = ENDS.filter((e) => fields[e]), headMask = live.length ? fields[live[0]].headMask : null, headSource = live.length ? fields[live[0]].headSource : "none";
+  if (Object.keys(refused).length) status.push("field refused: " + Object.keys(refused).join(", "));
+  if (!headMask) status.push("head unmasked");
+  if (overrideNames.length || live.some((e) => fields[e].overrides.length)) status.push("override: " + [...new Set([...overrideNames, ...live.flatMap((e) => fields[e].overrides)])].join(", "));
+  row(size, "head", "mask source", headSource, "", "info");
+  if (headMask) { const hb = encodeMask(headMask, stand.w, stand.h); files.set(`${set.name}/${idBase}-map-head-${size}.png`, hb); row(size, "head", "mask png sha256", sha256(hb), "", "info"); }
+  const painted = {}, warped = {}, wbody = {}, stats = { clampMisses: 0 };
+  for (const e of ENDS) {
+    if (set[`painted-${e}`]) { const b = readSource(set[`painted-${e}`], src); painted[e] = decodeImage(b); row(size, "input", `painted-${e} sha256`, sha256(b), "", "info"); }
+    if (!fields[e]) continue;
+    warped[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, stats });
+    wbody[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, drawHead: false });
+    const fb = encodeField(fields[e]); files.set(`${set.name}/${idBase}-map-warp-${blendId}-${SIDE[e]}-${size}.png`, fb); row(size, "field", `${e} map sha256`, sha256(fb), "", "info");
+  }
+  const matrix = [painted.down ?? null, warped.down ?? null, stand, warped.up ?? null, painted.up ?? null], names = ["painted-down", "warped-down", "stand", "warped-up", "painted-up"];
   matrix.forEach((img, i) => { if (img) files.set(`${set.name}/${size}-${names[i]}.png`, png(img)); });
-  for (const e of ENDS) files.set(`${set.name}/${size}-field-${e}.png`, encodeFieldBytes(fields[e]));
 
-  // M2, M3, M4 on the warped ends against the stand
-  const sil0 = silhouette(stand), out0 = outlineIrregular(stand);
+  const sil0 = silhouette(stand), out0 = outlineIrregular(stand), headEdge = headMask ? (() => { for (let x = 0; x < stand.w; x++) for (let y = 0; y < stand.h; y++) if (headMask[y * stand.w + x]) return x; return stand.w; })() : stand.w;
   row(size, "M3", "stand", `${sil0.components} comp, ${sil0.holes} holes, ${sil0.orphans} orphans`, "info");
   row(size, "M4", "stand irregular", out0.irregular, "", "info");
-  for (const e of ENDS) {
+  const L5 = M5_LIMITS[size], sil = (s) => `${s.components} comp, ${s.holes} holes, ${s.orphans} orphans`;
+  for (const e of live) {
     const nc = newColours(stand, warped[e]); row(size, "M2", `warped-${e}`, nc, 0, nc === 0 ? "pass" : "FAIL");
-    const s = silhouette(warped[e]); row(size, "M3", `warped-${e}`, `${s.components} comp, ${s.holes} holes, ${s.orphans} orphans`, "1 comp, 0 holes, 0 orphans", s.components === 1 && s.holes === 0 && s.orphans === 0 ? "pass" : "FAIL");
+    const s = silhouette(warped[e]), sb = silhouette(wbody[e]);
+    row(size, "M3", `warped-${e} (head drawn)`, sil(s), "1 comp, 0 holes, 0 orphans", s.components === 1 && s.holes === 0 && s.orphans === 0 ? "pass" : "FAIL");
     row(size, "M3", `warped-${e} not worse than the stand`, `${s.components - sil0.components} comp, ${s.holes - sil0.holes} holes, ${s.orphans - sil0.orphans} orphans`, "<= 0 each", s.components <= sil0.components && s.holes <= sil0.holes && s.orphans <= sil0.orphans ? "pass" : "FAIL");
+    row(size, "M3", `warped-${e} body layer alone`, sil(sb), "info", "info");
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
-    if (painted[e]) { const q = silhouette(painted[e]), po = outlineIrregular(painted[e]); row(size, "M3", `painted-${e}`, `${q.components} comp, ${q.holes} holes, ${q.orphans} orphans`, "info"); row(size, "M4", `painted-${e} irregular`, po.irregular, "", "info"); }
-    // M5
-    const L = M5_LIMITS[size];
+    row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
+    const lc = legCompression(fields[e], stand); row(size, "legs", `leg compression px (${e})`, lc, "", "info");
+    row(size, "field", `${e} max |d| px / gradient`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxGradient.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25`, "pass");
+    if (lm?.toplineProfile && size === "304x312" && headMask) { const p = profileFit(stand, warped[e], lm.toplineProfile, e, headEdge); row(size, "M5a", `${e} top edge vs the measured profile, ${p.columns} columns x <= ${headEdge - 6}`, `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`, `${M5A.column} / ${M5A.mean}`, p.max <= M5A.column && p.mean <= M5A.mean ? "pass" : "FAIL"); }
+    else row(size, "M5a", e, size === "304x312" ? "no toplineProfile or head mask" : "only at 304x312", "", "n/a");
     if (painted[e]) {
       const j = iou(warped[e], painted[e]), pd = profileDelta(warped[e], painted[e]);
-      row(size, "M5", `iou warped-${e} vs painted`, j, L ? L.iou : "", L ? (j >= L.iou ? "pass" : "FAIL") : "n/a at this size");
-      row(size, "M5", `profile mean abs d warped-${e} vs painted`, pd.mean, L ? L.profile : "", L ? (pd.mean <= L.profile ? "pass" : "FAIL") : "n/a at this size");
+      row(size, "M5", `iou warped-${e} vs painted`, j, L5 ? L5.iou : "", L5 ? (j >= L5.iou ? "pass" : "FAIL") : "n/a at this size");
+      row(size, "M5", `profile mean abs d warped-${e} vs painted`, pd.mean, L5 ? L5.profile : "", L5 ? (pd.mean <= L5.profile ? "pass" : "FAIL") : "n/a at this size");
       row(size, "M5", `profile columns warped-${e} vs painted`, `${pd.columns} matched, ${pd.unmatched} unmatched`, "", "info");
+      const q = silhouette(painted[e]), po = outlineIrregular(painted[e]); row(size, "M3", `painted-${e}`, sil(q), "info", "info"); row(size, "M4", `painted-${e} irregular`, po.irregular, "", "info");
     } else row(size, "M5", `warped-${e} vs painted`, "no painted end given", "", "n/a");
   }
   // M6 at walker size: pairwise mean profile difference of the three bins
   if (size === "104x112") for (const [kind, ends] of [["warped", [warped.down, stand, warped.up]], ["painted", [painted.down, stand, painted.up]]]) {
-    if (ends.some((x) => !x)) { row(size, "M6", kind, "no painted ends given", "", "n/a"); continue; }
+    if (ends.some((x) => !x)) { row(size, "M6", kind, "ends not available", "", "n/a"); continue; }
     for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDelta(ends[a], ends[b]).mean; row(size, "M6", `${kind} ${label}`, d, M6_MIN, d >= M6_MIN ? "pass" : "FAIL"); }
   } else row(size, "M6", "only at 104x112", "", "", "n/a");
   // M7
-  for (const e of ENDS) { const ms = warpMs(stand, fields[e]); row(size, "M7", `warp ms per picture (${e})`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }
-  // M8
-  const band = set.band ? set.band.split("-").map(Number) : null, pairs = [].concat(set.pair ?? []);
-  if (set.b1) pairs.unshift(`stand-b1=${set.stand},${set.b1}`);
-  for (const spec of pairs) {
-    const [label, files2] = [spec.slice(0, spec.indexOf("=")), spec.slice(spec.indexOf("=") + 1).split(",")];
-    if (!band) { row(size, "M8", label, "no --band given", "", "n/a"); continue; }
-    const a = loadImage(files2[0]), b = loadImage(files2[1]), plain = changedOutside(a, b, band);
-    for (const e of ENDS) { const w2 = changedOutside(warp(a, [{ field: fields[e], t: 1 }]), warp(b, [{ field: fields[e], t: 1 }]), band); row(size, "M8", `${label} ${e}: outside rows ${band.join("-")}, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL"); }
+  for (const e of live) { const ms = warpMs(stand, fields[e], headMask); row(size, "M7", `warp ms per picture (${e}; a clock reading)`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }
+  // M8 and the b-steps
+  let stepBand = null;
+  const pairs = lm ? (lm.pairs ?? []).filter((p) => (opts.pairIds ?? set["pair-ids"]?.split(",")) ? (opts.pairIds ?? set["pair-ids"].split(",")).includes(p.id) : p.id.startsWith(lm.species + "-")) : [];
+  for (const p of pairs) {
+    try {
+      const aBuf = readSource(p.a, src); expectSha(aBuf, p.sha256?.[0], `${p.id} a`); const a = decodeImage(aBuf);
+      if (a.w !== stand.w || a.h !== stand.h) { row(size, "M8", p.id, `a is ${a.w}x${a.h}, not this set's ${size}`, "", "n/a"); continue; }
+      row(size, "M8", `${p.id} a sha256`, sha256(aBuf), "", "info");
+      let bandMask, bake = null, b = null;
+      const spec = ov.band ? ov.band.split("-").map(Number) : p.band;
+      if (Array.isArray(spec)) bandMask = rowsBand(a.w, a.h, spec);
+      else if (spec === "belly-down") { const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null; bandMask = bellyDownBand(a.w, a.h, from?.bellyLine ?? lm.pictures[Object.keys(lm.pictures).find((k) => k.endsWith(size))]?.bellyLine, p.tail ?? from?.tail); }
+      else if (spec?.mask) { const mb = readFileSync(spec.mask); bandMask = headMaskFrom(mb).mask; }
+      else throw new Error("no band");
+      if (p.b?.bake) { bake = +p.b.bake.slice(1); if (!Array.isArray(spec)) throw new Error("a baked step needs rows for its band"); stepBand = stepBand ?? spec; status.push("provisional bake"); }
+      else { const bBuf = readSource(p.b, src); expectSha(bBuf, p.sha256?.[1], `${p.id} b`); b = decodeImage(bBuf); row(size, "M8", `${p.id} b sha256`, sha256(bBuf), "", "info"); }
+      const plain = changedOutside(a, bake ? bakeStep(a, bake, spec) : b, bandMask);
+      for (const e of live) {
+        const L = [{ field: fields[e], t: 1 }], wa = warp(a, L, { headMask }), wb = bake ? bakeStep(wa, bake, spec) : warp(b, L, { headMask }), w2 = changedOutside(wa, wb, bandMask);
+        row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL");
+      }
+    } catch (err) { if (err.unreadable) row(size, "M8", p.id, err.message, "", "n/a"); else throw err; }
   }
-  // the Vivarium pair: down and up copies, b0/b1/b2 warped by the same field (reused by id), out of phase
-  const frames = (e) => [stand, set.b1 ? loadImage(set.b1) : stand, set.b2 ? loadImage(set.b2) : stand].map((img) => warp(img, [{ field: fields[e], t: 1 }]));
-  const holds = opts.holds ?? DEFAULT_HOLDS_MS, cycle = holds[0] + 2 * holds[1] + holds[2], phase = opts.phaseMs ?? cycle / 2, totalMs = (opts.seconds ?? 10) * 1000;
-  files.set(`${set.name}/vivarium-pair-${size}.apng`, vivariumPair(frames("down"), frames("up"), { holds, phaseMs: phase, totalMs, bg }));
-  row(size, "pair", "holds b0/b1/b2 ms (PLACEHOLDER until ruled)", holds.join("/"), "", "info"); row(size, "pair", "phase offset ms (PLACEHOLDER until ruled)", phase, "", "info");
-  if (!set.b1 || !set.b2) row(size, "pair", "b1/b2", "not given: the pair holds the stand", "", "note");
+  // the Vivarium pair: the animator's holds and offset from the landmarks (overrides only by flag); the b-steps baked from each warped stand
+  const bp = lm?.breathPair, holds = ov.holds ? ov.holds.split(",").map(Number) : bp ? [bp.holdsMs.b0, bp.holdsMs.b1, bp.holdsMs.b2, bp.holdsMs.b1back] : null, offsetMs = ov.phaseMs ?? bp?.offsetMs, totalMs = (ov.seconds ?? SECONDS) * 1000;
+  if (!holds || offsetMs == null) row(size, "pair", "breathPair", "not in the landmarks: no APNG", "", "n/a");
+  else {
+    row(size, "pair", "holds b0/b1/b2/b1back ms, offset ms, seconds", `${holds.join("/")}, ${offsetMs}, ${totalMs / 1000}`, "", "info");
+    if (!stepBand) { row(size, "pair", "b-steps", "no pair with a baked step and rows: the pair holds the stand", "", "note"); }
+    else status.push("provisional bake");
+    const set3 = (img) => stepBand ? [img, bakeStep(img, 1, stepBand), bakeStep(img, 2, stepBand)] : [img, img, img], copy = { down: warped.down && set3(warped.down), middle: set3(stand), up: warped.up && set3(warped.up) };
+    for (const [l, r] of [["down", "middle"], ["middle", "up"], ["down", "up"]]) if (copy[l] && copy[r]) {
+      const v = vivariumPair(copy[l], copy[r], { holds, offsetMs, totalMs, bg }); files.set(`${set.name}/vivarium-pair-${size}-${l}-${r}.apng`, v.bytes);
+      if (v.delays.some((d) => d % 80)) row(size, "pair", `${l}|${r} frame delays`, "not all multiples of 80 ms", "", "note");
+    }
+  }
   files.set(`${set.name}/contact-${size}.png`, png(contactSheet([matrix], bg)));
+  const uniq = [...new Set(status)];
+  row(size, "run", "status", uniq.length ? uniq.join("; ") + " (no verdict)" : "verdict-shaped (a verdict also needs the animator's re-signed landmarks and the painted ends)", "", uniq.length ? "no verdict" : "ok");
   return { rows, files, sheetRow: matrix, size };
 }
-const encodeFieldBytes = (f) => { const rgba = new Uint8Array(f.w * f.h * 4); for (let i = 0; i < f.w * f.h; i++) rgba.set([f.dx[i] + 128, f.dy[i] + 128, 0, 255], i * 4); return encodePNG(f.w, f.h, rgba); };
 
 export const csv = (rows) => ["set,size,measure,item,value,limit,result", ...rows.map((r) => [r.set, r.size, r.measure, r.item, r.value, r.limit, r.result].map((v) => (/[",\n]/.test(v) ? `"${String(v).replace(/"/g, '""')}"` : v)).join(","))].join("\n") + "\n";
 
-// Runs every set twice (M1: the same inputs give the same bytes), returns { rows, files }. Timing rows (M7) are values of the clock and are not part of the bytes compared.
+// Runs every set twice (M1: the same inputs give the same bytes), returns { rows, files }. Clock readings (M7) are in the CSV, not in the bytes compared.
 export function runAll(sets, opts = {}) {
   const a = sets.map((s) => runSet(s, opts)), b = sets.map((s) => runSet(s, opts)), rows = [], files = new Map();
   const digest = (r) => createHash("sha256").update([...r.files].sort(([x], [y]) => x.localeCompare(y)).map(([k, v]) => k + createHash("sha256").update(v).digest("hex")).join("\n")).digest("hex");
   const sheet = contactSheet(a.map((r) => r.sheetRow), opts.bg ?? hex("D6CEBE"));
-  sets.forEach((s, i) => { const same = digest(a[i]) === digest(b[i]); rows.push(...a[i].rows, { set: s.name, size: a[i].size, measure: "M1", item: "two runs, same bytes (PNGs, maps, APNG)", value: digest(a[i]).slice(0, 12), limit: "equal", result: same ? "pass" : "FAIL" }); for (const [k, v] of a[i].files) files.set(k, v); });
+  sets.forEach((s, i) => { const same = digest(a[i]) === digest(b[i]); rows.push(...a[i].rows, { set: s.name, size: a[i].size, measure: "M1", item: "two runs, same bytes (PNGs, maps, APNGs)", value: digest(a[i]).slice(0, 12), limit: "equal", result: same ? "pass" : "FAIL" }); for (const [k, v] of a[i].files) files.set(k, v); });
   files.set("contact-sheet.png", png(sheet)); files.set("measures.csv", Buffer.from(csv(rows)));
   return { rows, files };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const argv = process.argv.slice(2), g = {}, sets = []; let cur = null;
+  const argv = process.argv.slice(2), g = {}, ov = {}, sets = []; let cur = null;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]; if (!a.startsWith("--")) { console.error(`unexpected "${a}"`); process.exit(2); }
-    const k = a.slice(2), v = argv[++i];
+    const k = a.slice(2);
+    if (k === "no-check") { ov.noCheck = true; continue; }
+    const v = argv[++i];
     if (k === "set") { cur = { name: v }; sets.push(cur); }
-    else if (["out", "holds", "phase-ms", "seconds", "bg"].includes(k)) g[k] = v;
-    else if (!cur) { console.error(`--${k} comes after a --set`); process.exit(2); }
-    else if (k === "pair") (cur.pair ??= []).push(v); else cur[k] = v;
+    else if (["out", "pods-dir", "bg"].includes(k)) g[k] = v;
+    else if (k === "head-mask") ov.headMask = headMaskFrom(readFileSync(v));
+    else if (k === "shadow-rows") ov.shadowRows = [v.split("-").map(Number)];
+    else if (k === "belly-y") ov.bellyY = +v; else if (k === "amplitude") ov.amplitude = +v;
+    else if (k === "band") ov.band = v; else if (k === "holds") ov.holds = v; else if (k === "phase-ms") ov.phaseMs = +v; else if (k === "seconds") ov.seconds = +v;
+    else if (!cur) { console.error(`--${k} comes after a --set`); process.exit(2); } else cur[k] = v;
   }
-  if (!g.out || !sets.length || sets.some((s) => !s.stand)) { console.error("usage: tier2-test.mjs --out dir --set name --stand stand.png (--field-down f --field-up g | --landmarks lm.json) [options]; see the header of this file"); process.exit(2); }
+  if (!g.out || !sets.length || sets.some((s) => !s.stand)) { console.error("usage: tier2-test.mjs --out dir --set name --stand src --landmarks lm.json [options]; see the header of this file"); process.exit(2); }
   try {
-    const { rows, files } = runAll(sets, { holds: g.holds ? g.holds.split(",").map(Number) : undefined, phaseMs: g["phase-ms"] ? +g["phase-ms"] : undefined, seconds: g.seconds ? +g.seconds : undefined, bg: g.bg ? hex(g.bg) : undefined });
+    const { rows, files } = runAll(sets, { overrides: ov, podsDir: g["pods-dir"], bg: g.bg ? hex(g.bg) : undefined });
     for (const [k, v] of files) { const f = path.join(g.out, k); mkdirSync(path.dirname(f), { recursive: true }); writeFileSync(f, v); }
     for (const r of rows) console.log(`${r.set} ${r.size} ${r.measure} ${r.item}: ${r.value}${r.limit !== "" ? ` (limit ${r.limit})` : ""} ${r.result}`);
     console.log(`wrote ${files.size} files to ${g.out}`);
