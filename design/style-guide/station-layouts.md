@@ -1849,7 +1849,7 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | --- | --- |
 | Pad | Moves the ring by the bench's focus (below) |
 | ✓ on the plates | A plate gone: `✓ Mend a plate   ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap. Every plate whole: no ✓ cap, "every plate whole" |
-| ✓ on the switch | `✓ Switch on` or `✓ Switch off`, no price: the knob slides from x 16 to 56 (200 ms), the picture's plates and the lamp change; the context "the dock mends all" (on) or "the dock mends two, free" (off). Set at any time, docked or away |
+| ✓ on the switch | `✓ Switch on` or `✓ Switch off`, no price: the knob slides from x 16 to 56 (200 ms), the picture's plates and the lamp change; the context "two free, the rest ⚡ 1 each" (on; "the dock mends all, free" when a plate costs nothing) or "the dock mends two, free" (off). Set at any time, docked or away |
 | ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade   ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "the upgrade is fitted" |
 | Any key but ✓ | Clears the arm |
 | ← | Home, the ring on the Probe module |
@@ -1873,8 +1873,8 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Event | Hold | What plays |
 | --- | --- | --- |
 | `mend` (300 ms) | 300 ms | The first gone plate seats, gone → whole (a 16-level dither between its two pictures); the counter ticks the price |
-| `switch` (200 ms) | 0 | The knob slides from x 16 to 56 (or back) over 200 ms in whole pixels; the picture's plates and the lamp change at the end |
-| `install` (900 ms) | 900 ms | 0 to 300: the part drops 8 px into the socket; the counters tick. 300: the cradle's picture cuts to tier 2 and the plates move to the tier-2 places, whole. 300 to 600: the fourth plate seats. 600 to 900: what it adds draws full; the lamp steadies |
+| `switch` (200 ms) | 0 | The knob slides from x 16 to 56 (or back) over 200 ms in whole pixels, over the track it starts on; at 200 the track slice, the picture's plates and the lamp change together |
+| `install` (900 ms) | 900 ms | 0 to 300: the armed part drops 8 px into the socket (y 56 → 64 in the module); the counters tick. 300: the part cuts to its fitted picture, the cradle's picture cuts to tier 2 and the plates cut to the tier-2 places, whole, the fourth appearing gone; the Mend module's picture count cuts 3 → 4. 300 to 600: the fourth plate seats. 600 to 900: the adds dither from their `-new` slices to plain (the lamp never animates) |
 
 With `motion: false` every event jumps to its end.
 
@@ -1892,13 +1892,9 @@ With `motion: false` every event jumps to its end.
 | `bench-socket-160` | 160×160 |
 | `bench-part-t2-dim-128`, `bench-part-t2-ready-128`, `bench-part-t2-fitted-128` | 128×128 |
 | `bench-reach-t2-40`, `bench-reach-t2-40-new`, `bench-deep-t2-40`, `bench-deep-t2-40-new` | 40×40 |
-| The lamps, on (`sprout`) and off | 12×12 |
+| The lamps, on (`home-lamp-sprout-12x12`) and off (`home-lamp-hairline-12x12`): signed, placed | 12×12 |
 
 Where the build departs from this layout is listed in `bench.json` `buildChanges`.
-
-### Not designed yet
-
-- The journey has no capture of the bench; the gate's region and pixel checks need one for each state.
 
 ---
 

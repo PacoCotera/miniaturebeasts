@@ -9,7 +9,7 @@ import { fileURLToPath } from "node:url";
 import { listPitch } from "../../ui/specs/derive.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(here, "../tests/vectors/focus.json"), specs = path.resolve(here, "../../ui/specs/station");
-const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["create", "incubator", "vivarium", "habitat", "namer", "library"];
+const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["create", "incubator", "vivarium", "habitat", "namer", "library", "bench"];
 const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
 const TARGETS = {
   incubator: (state, spec) => [{ id: "room", rect: spec.focus.roomAt, group: "room" }],   // one subject: the room, no ring drawn
@@ -29,6 +29,8 @@ const TARGETS = {
     return out; },
   // the Library spread: sixteen frames, frame.S01 to S16 in frame order, the left page's eight then the right page's, each its place by listPitch with no forms (n = 8 a page)
   library: (state, spec) => { const R = spec.spread.regions, out = []; [R.leftPage, R.rightPage].forEach((pg, p) => { for (let k = 0; k < 8; k++) out.push({ id: "frame.S" + String(p * 8 + k + 1).padStart(2, "0"), rect: listPitch(pg.places, 8, k), group: "frame" }); }); return out; },
+  // the Probe bench: the plates (docked only), then the switch and the slot, each its region's rectangle; one graph for both states
+  bench: (state, spec) => { const R = spec.regions; return [...(state === "away" ? [] : [{ id: "plates", rect: R.plates.rect, group: "plates" }]), { id: "switch", rect: R.switch.rect, group: "module" }, { id: "slot", rect: R.slot.rect, group: "module" }]; },
   create: (state, spec) => (state === "shape" ? [{ id: "roll", rect: spec.regions.roll.forms.roll.pictures[1], group: "roll" }] : []),   // the chosen picture's rectangle: the middle one stands for it
 };
 const cases = [];
