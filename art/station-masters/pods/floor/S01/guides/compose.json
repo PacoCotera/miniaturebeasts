@@ -1,0 +1,49 @@
+{
+ "F1": [
+  {
+   "cell": 5,
+   "scale": 1.6639,
+   "at": [
+    486,
+    519
+   ],
+   "size": [
+    291,
+    314
+   ]
+  }
+ ],
+ "F2": [
+  {
+   "cell": 2,
+   "scale": 0.4256,
+   "at": [
+    457,
+    145
+   ],
+   "size": [
+    348,
+    259
+   ]
+  },
+  {
+   "cell": 6,
+   "scale": 0.5159,
+   "at": [
+    876,
+    443
+   ],
+   "size": [
+    353,
+    385
+   ]
+  }
+ ],
+ "compose-juvenile.png": "75db6083856e206e1ce57500a62050d6d86750f6f102cb1fb6a3b8b889440389",
+ "compose-adult.png": "69704fe892163d629fcabc1ead8779bd213d6d16165d589c29305d8287b6126d",
+ "foot rows": {
+  "P1 cell 1": 408,
+  "P2 cell 1": 403
+ },
+ "P2 anchor belly px": 325
+}

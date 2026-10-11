@@ -3749,5 +3749,39 @@
    "thoughtsTokenCount": 207,
    "totalTokenCount": 2286
   }
+ },
+ {
+  "tag": "floor-S01-juvenile-bare-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182344,
+  "mxn": 3.6469,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:35:27Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 452,
+   "candidatesTokenCount": 1287,
+   "thoughtsTokenCount": 225,
+   "totalTokenCount": 1964
+  }
+ },
+ {
+  "tag": "floor-S01-adult-bare-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.193864,
+  "mxn": 3.8773,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T20:35:50Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 452,
+   "candidatesTokenCount": 1320,
+   "thoughtsTokenCount": 288,
+   "totalTokenCount": 2060
+  }
  }
 ]

@@ -19,7 +19,8 @@ def cut(a):
     mx = a.max(-1)
     sha = (~mag) & (np.abs(r - b) < 60) & (g < 0.75 * np.minimum(r, b)) & (mx < bg.max() - 15)
     lab, n = nd.label(sha); sz = nd.sum(sha, lab, range(1, n + 1)); sha = np.isin(lab, 1 + np.where(sz > 200)[0])
-    dark = (mx < 40) & (np.abs(r - b) < 30)                       # cell borders
+    edge = np.zeros(mx.shape, bool); edge[:12] = edge[-12:] = True; edge[:, :12] = edge[:, -12:] = True
+    dark = (mx < 40) & (np.abs(r - b) < 30) & edge                # cell borders: only in the crop's edge band (Pip's charcoal is as dark)
     body0 = ~(mag | sha | dark)
     lab, n = nd.label(body0); sz = nd.sum(body0, lab, range(1, n + 1))
     if n == 0 or sz.max() < 2000: return None

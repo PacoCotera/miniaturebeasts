@@ -1,0 +1,57 @@
+{
+ "juvenile-anchor": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 1.0,
+  "mean_rgb_diff": 2.0
+ },
+ "juvenile-crouch": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 1.0,
+  "mean_rgb_diff": 3.3
+ },
+ "juvenile-air": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 1.0,
+  "mean_rgb_diff": 2.1
+ },
+ "juvenile-curl": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 1.0,
+  "mean_rgb_diff": 2.4
+ },
+ "juvenile-stand": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 2.0,
+  "mean_rgb_diff": 2.1
+ },
+ "adult-anchor": {
+  "outline_px_p95": 1.4,
+  "outline_px_max": 2.2,
+  "mean_rgb_diff": 2.8
+ },
+ "adult-crouch": {
+  "outline_px_p95": 2.0,
+  "outline_px_max": 8.1,
+  "mean_rgb_diff": 3.8
+ },
+ "adult-air": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 2.2,
+  "mean_rgb_diff": 3.1
+ },
+ "adult-curl": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 2.2,
+  "mean_rgb_diff": 3.1
+ },
+ "adult-blink": {
+  "outline_px_p95": 1.0,
+  "outline_px_max": 4.0,
+  "mean_rgb_diff": 2.7
+ },
+ "adult-stand": {
+  "outline_px_p95": 2.2,
+  "outline_px_max": 4.2,
+  "mean_rgb_diff": 3.4
+ }
+}
