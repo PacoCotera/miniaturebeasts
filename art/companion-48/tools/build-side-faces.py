@@ -25,7 +25,7 @@ def snap(rgb):
     X = lab(rgb.reshape(-1, 3)); return ((X[:, None] - PL[None]) ** 2).sum(-1).argmin(1).reshape(rgb.shape[:2])
 wj = json.load(open(os.path.join(wd, "walls.json"))); wj["pieces"] = [p for p in wj["pieces"] if p.get("kind") not in ("side", "side-end")]
 faces = sorted(p["file"] for p in wj["pieces"] if p.get("kind") == "face" and p["cells"][0] == 3)
-Hh, FW = 48, 10; WID = {"w": 44, "e": 28}   # chunky pillars, as b1's top-left column (~45 px)
+Hh, FW = 48, 10; WID = {"w": 44, "e": 36}   # chunky pillars, as b1's top-left column (~45 px)
 rng = np.random.RandomState(2020)
 def save(a, name, kind, side, extra=None):
     rgba = np.zeros(a.shape + (4,), np.uint8); m = a >= 0; rgba[m, :3] = PAL[a[m]]; rgba[m, 3] = 255
@@ -48,7 +48,7 @@ for side, gain in (("w", 1.12), ("e", .78)):
         rgb = np.clip(strip[:Hh] * gain, 0, 255); a = snap(rgb)
         yy_ = np.arange(Hh)                                            # boulders: 2-3 rounded bulges a cell, 0 at the ends (tiles)
         k_ = (2, 3, 2)[n]; bump = np.abs(np.sin(np.pi * k_ * yy_ / Hh))
-        prof = np.clip(np.round(1 + 7 * (1 - bump) ** 1.5), 1, 8).astype(int)
+        prof = np.clip(np.round(1 + 6 * bump ** 2), 1, 7).astype(int)   # boulders bulge between joins; the joins sit full width, so strips never gap
         save(outline(a, side, prof), f"side-{side}-{n + 1}", "side", side, {"cells": [0, 1], "variant": n + 1})
     base = snap(np.clip(np.asarray(Image.open(os.path.join(wd, faces[0])).convert("RGB")).astype(float)[22:70, 40:40 + W] * gain, 0, 255))
     top = base[:24].copy(); prof = np.full(24, 2)

@@ -712,6 +712,114 @@
    "frame": 2
   },
   {
+   "name": "meadow/shore/water-beach-n-f1",
+   "file": "beach-n-f1.png",
+   "kind": "shore-beach",
+   "px": [
+    96,
+    88
+   ],
+   "side": "n",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-beach-n-f2",
+   "file": "beach-n-f2.png",
+   "kind": "shore-beach",
+   "px": [
+    96,
+    88
+   ],
+   "side": "n",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-beach-s-f1",
+   "file": "beach-s-f1.png",
+   "kind": "shore-beach",
+   "px": [
+    96,
+    88
+   ],
+   "side": "s",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-beach-s-f2",
+   "file": "beach-s-f2.png",
+   "kind": "shore-beach",
+   "px": [
+    96,
+    88
+   ],
+   "side": "s",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-beach-w-f1",
+   "file": "beach-w-f1.png",
+   "kind": "shore-beach",
+   "px": [
+    88,
+    96
+   ],
+   "side": "w",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-beach-w-f2",
+   "file": "beach-w-f2.png",
+   "kind": "shore-beach",
+   "px": [
+    88,
+    96
+   ],
+   "side": "w",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-beach-e-f1",
+   "file": "beach-e-f1.png",
+   "kind": "shore-beach",
+   "px": [
+    88,
+    96
+   ],
+   "side": "e",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-beach-e-f2",
+   "file": "beach-e-f2.png",
+   "kind": "shore-beach",
+   "px": [
+    88,
+    96
+   ],
+   "side": "e",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-bend-se-f1",
+   "file": "bend-se-f1.png",
+   "kind": "shore-bend",
+   "cells": [
+    3,
+    2
+   ],
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-bend-se-f2",
+   "file": "bend-se-f2.png",
+   "kind": "shore-bend",
+   "cells": [
+    3,
+    2
+   ],
+   "frame": 2
+  },
+  {
    "name": "meadow/band/fill-body",
    "file": "fill-body.png",
    "kind": "band",

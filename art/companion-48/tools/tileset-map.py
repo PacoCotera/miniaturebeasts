@@ -314,13 +314,16 @@ for r, c0, c1, stack, L_ in RUNS:
     if stack: continue
     Y = r * 48; up = gstep(BASE, LTONE[L_]); ph = rngr.rand() * 6
     xs = np.arange(c0 * 48, c1 * 48)
-    lobe = 16 * np.maximum(0, np.sin(xs / 31.0 + ph)) ** 3                 # turf lobes that come down over the face, as b1's do
-    dd = np.clip(np.round(8 + lobe + 2 * np.sin(xs / 5.3 + 2 * ph) + rngr.randint(-1, 2, len(xs))), 6, 26).astype(int)   # the top line steps and curves
-    dd = dd + 6                                                   # the rim spills over the rock as b1's: 12-32 px of turf
-    for x, d in zip(xs, dd):                                      # turf lumps and lobes: the lawn's tone, a lit lip along its lower contour, a dark line
-        img[Y:Y + d, x] = up; img[Y + d - 4:Y + d - 1, x] = LIGHT1[up]; img[Y + d - 1, x] = GS[-1][up]; img[Y + d, x] = OUTL
-        if rngr.rand() < .18:
-            for t in range(1, rngr.randint(2, 5)): img[Y + d + t, x] = GS[-1][up] if t < 3 else OUTL
+    lobe = 22 * np.maximum(0, np.sin(xs / 27.0 + ph)) ** 2 + 8 * np.maximum(0, np.sin(xs / 11.0 + 2 * ph)) ** 2   # lobes of turf, big and small
+    dd = np.clip(np.round(12 + lobe + rngr.randint(-1, 2, len(xs))), 10, 40).astype(int)          # the rim spills 10-40 px over the rock
+    for x, d in zip(xs, dd):
+        # the spill is the lawn itself carried over the edge (its own texture and bands, mirrored down), so no line marks the wall's top
+        src = img[max(0, Y - d):Y, x][::-1].copy()
+        img[Y:Y + len(src), x] = src
+        img[Y + d - 4:Y + d - 1, x] = LIGHT1[img[Y + d - 4:Y + d - 1, x]]      # a lit lip along the lower contour
+        img[Y + d - 1, x] = GS[-2][up]; img[Y + d, x] = OUTL                    # its shaded underside and the dark line
+        if rngr.rand() < .35:                                                   # blades hanging past it, b1's ragged fringe
+            for t in range(1, rngr.randint(2, 7)): img[Y + d + t, x] = GS[-1][up] if t < 3 else OUTL
 
 # ---- water: each water cell's four quarters by its land neighbours (water runs on past the map's edge), frame 1
 WD = os.path.join(os.path.dirname(walls_d), "water")
@@ -355,15 +358,32 @@ LOBE = {(sd, t): to_idx(Image.open(os.path.join(WD, f"lobe-{sd}-{t}-f1.png"))) f
 QS = lambda r, c: {q: wstate(r, c, q) for q in ("nw", "ne", "sw", "se")}
 WANT = {"n": {"nw": "edgeh", "ne": "edgeh", "sw": "fill", "se": "fill"}, "s": {"sw": "edgeh", "se": "edgeh", "nw": "fill", "ne": "fill"},
         "w": {"nw": "edgev", "sw": "edgev", "ne": "fill", "se": "fill"}, "e": {"ne": "edgev", "se": "edgev", "nw": "fill", "sw": "fill"}}
-used = set(); k_l = 0
+used = set(); k_l = 0; BEACHED = []
+BEACH = {sd: to_idx(Image.open(os.path.join(WD, f"beach-{sd}-f1.png"))) for sd in "nswe"}
 for sd in "nswe":
     for r in range(R):
         for c in range(Cn):
             r2, c2 = (r, c + 1) if sd in "ns" else (r + 1, c)
             if not (r2 < R and c2 < Cn) or (r, c) in used or (r2, c2) in used or (r, c) in inmac or (r2, c2) in inmac: continue
             if not (WAT[r, c] and WAT[r2, c2] and QS(r, c) == WANT[sd] and QS(r2, c2) == WANT[sd]): continue
-            pz = LOBE[(sd, ("out", "in")[k_l % 2])]; k_l += 1; Y, X = r * 48, c * 48; hh, ww = pz.shape
-            img[Y:Y + hh, X:X + ww] = np.where(pz >= 0, pz, img[Y:Y + hh, X:X + ww]); used |= {(r, c), (r2, c2)}
+            beach_here = sd == "s" and not BEACHED and c < Cn // 2 and not WAT[min(R - 1, r + 1), c] and r == max(i for i in range(R) if WAT[i, c])                       # the first south shore from the left takes the beach, as b1's lower-left
+            if beach_here:
+                pz = BEACH["s"]; Y, X = r * 48, c * 48; hh, ww = pz.shape; BEACHED.append((r, c))
+            else:
+                pz = LOBE[(sd, ("out", "in")[k_l % 2])]; k_l += 1; Y, X = r * 48, c * 48; hh, ww = pz.shape
+            hh = min(hh, HPX - Y); img[Y:Y + hh, X:X + ww] = np.where(pz[:hh] >= 0, pz[:hh], img[Y:Y + hh, X:X + ww]); used |= {(r, c), (r2, c2)}
+# the stream's bends: where a 2-wide stream steps one cell sideways between two rows, one S-curve piece (3 x 2 cells) in place
+# of the quarters; under its banks the lawn of the level beside it
+BEND = to_idx(Image.open(os.path.join(WD, "bend-se-f1.png")))
+for r in range(R - 1):
+    for c in range(Cn - 2):
+        a_ = WAT[r, c] and WAT[r, c + 1] and not WAT[r, c + 2] and not WAT[r + 1, c] and WAT[r + 1, c + 1] and WAT[r + 1, c + 2]
+        b_ = WAT[r + 1, c] and WAT[r + 1, c + 1] and not WAT[r + 1, c + 2] and not WAT[r, c] and WAT[r, c + 1] and WAT[r, c + 2]
+        if not (a_ or b_): continue
+        pz = BEND if a_ else BEND[::-1]; Y, X = r * 48, c * 48
+        reg = img[Y:Y + 96, X:X + 144]; under = np.vectorize(lambda L: lt(L, 0))(LV[Y:Y + 96, X:X + 144])
+        wat_cells = np.kron(WAT[r:r + 2, c:c + 3], np.ones((48, 48), bool))
+        reg[:] = np.where(pz >= 0, pz, np.where(wat_cells, under, reg))
 # ---- stairs: the stair pieces (tileset/stairs, tools/cut-stairs.py): a wide2x1 per level of drop, the landing on the row above,
 #      the foot on the row below
 SD = os.path.join(os.path.dirname(walls_d), "stairs")

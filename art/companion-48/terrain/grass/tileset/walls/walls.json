@@ -649,7 +649,7 @@
    "kind": "side",
    "side": "e",
    "px": [
-    28,
+    36,
     48
    ],
    "cells": [
@@ -664,7 +664,7 @@
    "kind": "side",
    "side": "e",
    "px": [
-    28,
+    36,
     48
    ],
    "cells": [
@@ -679,7 +679,7 @@
    "kind": "side",
    "side": "e",
    "px": [
-    28,
+    36,
     48
    ],
    "cells": [
@@ -694,7 +694,7 @@
    "kind": "side-end",
    "side": "e",
    "px": [
-    28,
+    36,
     24
    ],
    "end": "top"
@@ -705,7 +705,7 @@
    "kind": "side-end",
    "side": "e",
    "px": [
-    28,
+    36,
     24
    ],
    "end": "foot"
@@ -716,7 +716,7 @@
    "kind": "side-end",
    "side": "e",
    "px": [
-    28,
+    36,
     96
    ],
    "end": "tail",

@@ -79,22 +79,24 @@ def macro(quad, frame, RM):
     return q
 
 from scipy import ndimage as nd
-def render(land, frame):
+def render(land, frame, beach=None):
     """the bank and bands for any land mask with a 16 px margin round the piece (the quarters' rules, distances by transform)"""
     dw = nd.distance_transform_edt(land); dl = nd.distance_transform_edt(~land)    # land px: distance to water; water px: to land
     hh, ww = land.shape[0] - 32, land.shape[1] - 32; q = np.full((hh, ww), BODY, int)
     yy, xx = np.mgrid[16:16 + hh, 16:16 + ww]
     L = land[16:16 + hh, 16:16 + ww]; d1 = np.floor(dw[16:16 + hh, 16:16 + ww]).astype(int); d2 = np.floor(dl[16:16 + hh, 16:16 + ww]).astype(int)
-    q[L] = np.where(d1[L] > 12, -1, np.where(d1[L] >= 11, EDGE, np.where(d1[L] >= 3, SAND, SAND2)))
+    bw = np.full(d1.shape, 12) if beach is None else beach[16:16 + hh, 16:16 + ww]   # the bank's width here (a beach widens it)
+    q[L] = np.where(d1[L] > bw[L], -1, np.where(d1[L] >= bw[L] - 1, EDGE, np.where(d1[L] >= 3, SAND, SAND2)))
     W_ = ~L; foam = W_ & (d2 <= 2); q[foam] = np.where(((xx[foam] + yy[foam] + 4 * frame) % 23 < 7) & (d2[foam] <= 1), FOAM, WET)
     q[W_ & (d2 == 3)] = WET; q[W_ & (d2 > 3) & (d2 <= 9)] = SHAL
     return q
 AMP = 10                                                            # the lobe's bulge: 10 px at the middle of two cells, 0 at its ends
-def edge_macro(side, sign, frame):
+def edge_macro(side, sign, frame, beach_=False):
     """a straight shore two cells long (96 px) as one curve: the bank bulges out (sign +1) or bays in (-1) on a half sine"""
-    U, V = np.meshgrid(np.arange(-16, 112), np.arange(-16, 64)); u = np.clip(U, 0, 96)
-    land = V < INSET + sign * AMP * np.sin(np.pi * u / 96)       # the land to the north, normalised
-    q = render(land, frame)                                       # 96 x 48, land north
+    U, V = np.meshgrid(np.arange(-16, 112), np.arange(-16, 64 + (40 if beach_ else 0))); u = np.clip(U, 0, 96)
+    land = V < INSET + (40 if beach_ else 0) + sign * AMP * np.sin(np.pi * u / 96)   # the land to the north (a beach piece starts 24 px up, in the land cell)
+    bw = 12 + (34 * np.sin(np.pi * u / 96) ** 1.2 + 5 * np.sin(np.pi * u / 23) if beach_ else 0)   # a beach: a wide sand tongue, its edge irregular
+    q = render(land, frame, np.round(bw).astype(int) if beach_ else None)   # 96 x 48, land north
     return {"n": q, "s": np.flipud(q), "w": q.T, "e": np.fliplr(q.T)}[side]
 
 atlas = []
@@ -118,6 +120,17 @@ for side in "nswe":
         for f in (1, 2):
             nm = f"lobe-{side}-{tag}-f{f}"; save(edge_macro(side, sign, f - 1), nm)
             atlas.append({"name": f"meadow/shore/water-{nm}", "file": nm + ".png", "kind": "shore-lobe", "cells": [2, 1] if side in "ns" else [1, 2], "side": side, "bulge": tag, "frame": f})
+for side in "nswe":                                                 # beach lobes: the piece overhangs its cell by 40 px on the land side
+    for f in (1, 2):
+        nm = f"beach-{side}-f{f}"; q = edge_macro(side, -1, f - 1, beach_=True); save(q, nm)
+        atlas.append({"name": f"meadow/shore/water-{nm}", "file": nm + ".png", "kind": "shore-beach", "px": list(q.shape[::-1]), "side": side, "frame": f})
+# the stream's bend: a 2-wide stream stepping one cell sideways over two rows, as one S-curve (144 x 96)
+def bend(frame):
+    U, V = np.meshgrid(np.arange(-16, 160), np.arange(-16, 112)); v = np.clip(V, 0, 96) / 96.0
+    left = INSET + 48 * (v * v * (3 - 2 * v)); land = (U < left) | (U > left + 96 - 2 * INSET)
+    return render(land, frame)
+for f in (1, 2):
+    save(bend(f - 1), f"bend-se-f{f}"); atlas.append({"name": f"meadow/shore/water-bend-se-f{f}", "file": f"bend-se-f{f}.png", "kind": "shore-bend", "cells": [3, 2], "frame": f})
 save(np.full((48, 48), BODY, int), "fill-body"); atlas.append({"name": "meadow/band/fill-body", "file": "fill-body.png", "kind": "band", "cells": [1, 1]})
 json.dump({"biome": "meadow", "tile": 48, "quarter": 24, "tones": {"body": cols[BODY]["hex"], "shallow": cols[SHAL]["hex"]}, "pieces": atlas},
           open(os.path.join(out, "water.json"), "w"), indent=1)
