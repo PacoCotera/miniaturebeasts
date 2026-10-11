@@ -48,3 +48,13 @@ The animator signed `juv-S05-walk-curl`. On the three hoppers, every air key sti
 - The ground shadow is a soft ellipse in the shadow colour (alpha ≤ 110) spanning the stand's feet (`{n}-air-shadow`). It stays on the ground and fades to 75 % at the apex.
 
 The flipbooks are re-rendered. Each strip shows stand, crouch, the first hop's apex and asleep.
+
+## S05 head and torso lock (tier 2 phase A′), 0 MXN
+
+`guides/torso-lock.py` produces `keys/juv-S05-stepA-locked-304x312.png` and `keys/juv-S05-stepB-locked-304x312.png`.
+- stepB is aligned to stepA by its head and torso, a whole-pixel shift of (0, +1).
+- stepA's head and torso are laid into stepB pixel for pixel: 4,146 px.
+- The join with stepB's own legs follows a least-difference seam in rows 236–274 (`guides/torso-lock-seam.png`), so no straight cut shows at 1×.
+- Only the legs and the tail differ between the two keys. Numbers are in `guides/torso-lock.json`.
+
+**The sheet's `pass` can't be the lock's source.** It is the three-quarter stand: short-bodied and front-facing, a different body from the side-on steps. Copying its torso onto the step legs would change the animal. For the lock and M8, the cycle is stepA ↔ stepB, both with stepA's head and torso. A true side-on `pass` needs a repaint: 1 Pro edit of the sheet, only on the programme lead's go.
