@@ -74,7 +74,7 @@ static void build_tag(void) {
   v_region("meetRibbon", LAYER_CHROME);
   word_ribbon("meetRibbon", rib, meet ? words : "", hi("regions.meetRibbon.px", 20), hi("regions.meetRibbon.pad", 0), flash ? fcol("colours.flash") : colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), flash ? fcol("colours.flashInk") : colr("colours.ribbon.text"));
   if (!meet) { g_tagFlash = flash; build_nameTag(S, "regions.glass", name, box, hi("regions.resident.lift", 4), g_tag); g_tagFlash = 0; }
-  else { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", 0, 0, 0, 0, colr("colours.nameTag.fill"), NULL); v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", "", 0, 0, 0, hi("regions.nameTag.px", 20), colr("colours.nameTag.text")); }   /* the same nodes with no size */
+  else { g_tagSlot = 1; build_nameTag(S, "regions.glass", name, box, hi("regions.resident.lift", 4), g_tag); g_tagSlot = 0; memset(g_tag, 0, sizeof g_tag); }   /* the same nodes with no size, at the tag's place: the opening redraws nothing at the origin */
 }
 
 /* ---- the card ---- */

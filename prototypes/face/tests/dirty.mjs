@@ -11,3 +11,9 @@ export function dirty(f, { fullCut = false } = {}) {
   if (s === FULL && !fullCut) throw new Error(`the frame redrew the whole screen (${FULL} px) and is not declared a full cut`);
   return s;
 }
+// the rectangles the last frame redrew, [x, y, w, h] each (a suite asserting where a frame drew, not only how much)
+export const dirtyRects = (f) => {
+  const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4), out = [];
+  for (let i = 0; i < n; i++) out.push([a[i * 4], a[i * 4 + 1], a[i * 4 + 2], a[i * 4 + 3]]);
+  return out;
+};
