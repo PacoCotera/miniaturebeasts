@@ -17,6 +17,8 @@ export const RACK = 6, BAYS = 6;
 // The rack: the wells in play (the developer setting, else the six of the Station)
 export const rackSize = (settings = DEFAULT_SETTINGS) => settings.rack || RACK;
 export const TIER = { 1: { shield: 3 }, 2: { shield: 4 } };
+// The plates the dock leaves whole when it does not mend every plate (the bench's switch off): two, free; the switch on mends all at the price.
+export const DOCK_MEND_FLOOR = 2;
 // What Probe tier 2 gains, as data the bench shows (the fourth is reading the deep "?"). PLACEHOLDER wording; the copywriter's lists replace the strings.
 export const TIER2_GAINS = [{ id: "reach", text: "reaches 4 cells" }, { id: "pods", text: "carries 3 pods" }, { id: "plates", text: "4 plates" }, { id: "deep", text: "reads the deep" }];
 export const JUVENILE_TURNS = 2, ELDER_TURNS = 6, CARRY_MAX = 3;
@@ -320,7 +322,7 @@ export function dockKey(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (docked(st)) { st.dock = { docked: false, at: now }; logEv(st, "Companion lifted"); return { ok: true, lifted: true, msg: "Lifted · the Companion can set out" }; }
   st.dock = { docked: true, at: now }; st.dockN = (st.dockN || 0) + 1;
   st.turn = Math.max(st.turn, (sv && sv.turn) || 0);
-  const pr = probeNow(st, sv), broke = pr.shield <= 0, floor = Math.min(2, pr.smax);
+  const pr = probeNow(st, sv), broke = pr.shield <= 0, floor = Math.min(DOCK_MEND_FLOOR, pr.smax);
   let sh = pr.shield, free = 0; if (broke) { free = pr.smax; sh = pr.smax; } else if (sh < floor) { free = floor - sh; sh = floor; }
   st.probe = { shield: sh, smax: pr.smax, tier: pr.tier, seq: (st.probe ? st.probe.seq : 0) + 1 };
   const paid = st.mendFull ? payMend(st, settings) : 0;
@@ -507,6 +509,8 @@ export function returnPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) 
 }
 
 // --- residents and the Probe (as built) --------------------------------------------------------------
+// The bench's switch: whether the dock mends every plate at its price (on) or only brings it to the floor, free (off). Nothing else sets it.
+export function setMendFull(st, on) { st.mendFull = !!on; logEv(st, st.mendFull ? "The dock mends every plate" : "The dock mends two plates, free"); }
 export function mendPlate(st, settings = DEFAULT_SETTINGS) {
   const pr = st.probe; if (!docked(st) || !pr || pr.shield >= pr.smax) return { ok: false };
   const cost = price(PRICE.mend, settings); if (st.e < cost) return { ok: false, msg: "Mend a plate · " + shortText(st, cost, 0, 0) };

@@ -112,7 +112,7 @@
    "pods.compare": {"parent": "pods.overview", "back": "{pod}"},
    "create": {"parent": "pods.overview", "back": "{pod}"},
    "incubator": {"parent": "home", "back": "Home"},
-   "probe": {"parent": "home", "back": "Home"},
+   "probe": {"parent": "home", "back": "Home", "states": ["docked", "away"], "spec": "bench.json"},
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"},
    "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},

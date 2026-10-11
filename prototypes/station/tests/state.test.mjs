@@ -568,3 +568,16 @@ test("naming: what stops a name (short, full, marks, a species, a clan, a holder
   assert.deepEqual([r.ok, r.kept, r.name, r.old], [true, false, "Mo-Mo", old]); assert.equal(a.name, "Mo-Mo"); assert.deepEqual(b.from.of, ["Mo-Mo", "Zed"], "the origin follows"); assert.equal(b.parents[0].name, "Mo-Mo", "the parents follow"); assert.ok(st.namesUsed.includes("momo"));
   assert.equal(S.renameMibi(st, a, "MO-MO").ok, true, "a change of case only is a rename"); assert.equal(a.name, "MO-MO");
 });
+
+test("the bench's switch: setMendFull sets whether the dock mends every plate and logs it; DOCK_MEND_FLOOR is the plates the dock leaves whole free; nothing else sets it", () => {
+  assert.equal(S.DOCK_MEND_FLOOR, 2);
+  const { sv, st } = world([]); S.normalize(st); st.e = 50;
+  S.setMendFull(st, false); assert.equal(st.mendFull, false); assert.match(st.log.at(-1), /two plates, free/);
+  S.setMendFull(st, true); assert.equal(st.mendFull, true); assert.match(st.log.at(-1), /every plate/);
+  // docked with the switch off: the dock leaves the Probe at the floor, free (a broken Probe is mended whole); on: every plate at the price
+  const lift = () => { st.dock = { docked: false, at: 1 }; };
+  sv.shield = 0; st.probe = null; S.setMendFull(st, false); lift(); const e0 = st.e; S.dockKey(st, sv, settings, 10); assert.equal(st.probe.shield, 3, "a broken Probe is whole again, free");
+  assert.equal(st.e, e0, "free");
+  lift(); st.probe.shield = 1; S.dockKey(st, sv, settings, 11); assert.equal(st.probe.shield, S.DOCK_MEND_FLOOR, "switch off: brought to the floor, nothing paid for more"); assert.equal(st.e, e0);
+  S.setMendFull(st, true); lift(); st.probe.shield = 1; S.dockKey(st, sv, settings, 12); assert.equal(st.probe.shield, 3, "switch on: every plate at its price"); assert.equal(st.e, e0 - 1);
+});

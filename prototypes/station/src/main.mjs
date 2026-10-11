@@ -152,7 +152,7 @@ const rgbOfName = (name) => { const hex = PALETTE.find(([n]) => n === name)?.[1]
 // The spec files the face takes (frame, pods, home, cargo, create, incubator, vivarium, habitat, namer and library), the signed masters and the generated stand-ins; the pictures are made from them when a screen asks.
 const bootAssets = async () => {
   const spec = async (f) => (await fetch(new URL("../../ui/specs/station/" + f, import.meta.url), { cache: "no-store" })).json();
-  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "library"]) SPECS[k] = await spec(k + ".json");
+  for (const k of ["frame", "pods", "home", "cargo", "create", "incubator", "vivarium", "habitat", "namer", "library", "bench"]) SPECS[k] = await spec(k + ".json");
   await loadMasters(new URL("../../ui/assets/masters/", import.meta.url));   // the signed masters take their stand-ins' ids before any screen registers them
   await loadPodSprites(new URL("../../ui/assets/placeholders/pod/", import.meta.url));
   setEnv({ rgb: rgbOfName });
@@ -202,7 +202,7 @@ window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pen
 function checkSnapshot() {
   const pod = podById(UI.pods.cur), fr = pod ? frameOf(S.speciesOf(pod)) : null, f = FACE;
   const pr = lastProps ? JSON.parse(lastProps) : null;
-  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length } : null, lib: pr?.screen === "library" && pr.state === "spread" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: !!pr.overlay } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
+  return { screen: UI.screen, idle: UI.idle, homeFocus: pr?.state === "home" ? pr.focus.cur : null, viv: pr?.screen === "vivarium" ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length } : null, bench: pr?.screen === "bench" ? { props: pr, cur: pr.focus.cur } : null, lib: pr?.screen === "library" && pr.state === "spread" ? { props: pr, cur: pr.focus.cur } : null, hab: pr?.screen === "habitat" && pr.regions ? { state: pr.state, cur: pr.focus.cur, n: pr.regions.tiles.items.length, open: !!pr.overlay } : null, props: pr && { screen: pr.screen, state: pr.state ?? (pr.idle ? "idle" : null) }, cells: pr?.regions?.page?.cells?.length ?? null, railTabs: pr?.regions?.rail?.tabs?.length ?? null, size: f.size, page: [vis.width, vis.height], log: lastLog, refused: f.refused(), objects: f.objects(), errors: faceErrors.slice(),
     pod: pod ? { id: pod.id, idd: !!pod.idd, chapters: fr && pod.idd ? fr.chapters.length : 0, species: S.speciesOf(pod) } : null, focus: UI.pods.focus.cur, view: UI.pods.view, cmp: !!UI.pods.cmp, mode: UI.screen === "pods" ? (UI.pods.cmp ? "compare" : UI.pods.view) : null,
     placeholders: manifestOf().filter((e) => NOT_FINAL.includes(e.status)).length };
 }

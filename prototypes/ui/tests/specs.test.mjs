@@ -156,7 +156,8 @@ test("the Station frame's language: the zones of the top bar and the bottom line
 
 // The wireframe's measured boxes, as the Home test reads them: each <rect> back to [x, y, w, h].
 const boxesOf = (file) => new Set([...readFileSync(new URL("../../../design/style-guide/station-layouts/" + file, import.meta.url), "utf8").matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"/g)].map((m) => [Math.round(m[1] - 0.5), Math.round(m[2] - 0.5), Math.round(+m[3] + 1), Math.round(+m[4] + 1)].join(",")));
-const paletteBad = (colours) => { const names = new Set(palette.colours.map(([n]) => n)), bad = []; (function walk(o, up = "") { for (const [k, v] of Object.entries(o)) { if (k === "note" || (k === "floor" && up === "plaque") || (k === "plate" && typeof v === "string" && v.startsWith("painted"))) continue; if (typeof v === "string") { if (!names.has(v)) bad.push(v); } else if (v && typeof v === "object") walk(v, k); } })(colours); return bad; };
+const frameRef = (ref) => ref.slice("frame.json ".length).split(".").reduce((o, k) => (o == null ? o : o[k]), JSON.parse(readFileSync(new URL("../specs/station/frame.json", import.meta.url), "utf8")));
+const paletteBad = (colours) => { const names = new Set(palette.colours.map(([n]) => n)), bad = []; (function walk(o, up = "") { for (const [k, v] of Object.entries(o)) { if (k === "note" || (k === "floor" && up === "plaque") || (k === "plate" && typeof v === "string" && v.startsWith("painted"))) continue; if (typeof v === "string") { if (!names.has(v) && !(/^frame\.json regions\.marks\./.test(v) && frameRef(v) !== undefined)) bad.push(v); }   /* a lamp is a signed picture of frame.json, named by its path there (it must resolve), not a colour */ else if (v && typeof v === "object") walk(v, k); } })(colours); return bad; };
 // the closed vocabulary and the closed list of derived rules (station-layouts.md, The vocabulary (closed); leaves and leafArc: architect, 2026-10-09 13:24)
 const WORDS = new Set(["frame", "topBar", "bottomLine", "messagePlate", "focusRing", "panel", "stampLabel", "chapterRail", "chapterPage", "list", "specimen", "livingWindow", "ribbon", "text", "leaves"]);
 const LAYOUT_RULES = new Set(["railCompaction", "slantTabs", "pageGrid", "platePosition", "listPitch", "splicePlan", "guideColumns", "pipGroups", "leafArc"]);
@@ -469,8 +470,9 @@ test("the Probe bench spec file agrees with the bench wireframes, region by regi
   const AD = R.slot.adds; assert.ok(AD.deep.at[0] >= AD.reach.at[0] + AD.reach.size[0] + 16 && AD.deep.at[0] + AD.deep.size[0] <= R.slot.rect[2] - 16, "the deep beside the reach");
   const S = R.slot; assert.ok(inside([S.part.at[0], S.part.at[1], ...S.part.size], [S.socket.at[0], S.socket.at[1], ...S.socket.size])); assert.equal(S.part.at[1] - S.part.armedAt[1], 8, "the armed part lifted 8 px");
   // the focus graph and its vectors
-  const groups = new Set(Object.keys(be.focus.graph));
-  for (const [g, e] of Object.entries(be.focus.graph)) { assert.ok(!(e.order && e.axis)); for (const k of STEP_KEYS) if (k in e) assert.ok(edgeOk(e[k], groups), `${g}.${k}`); }
+  assert.equal(be.focus.graph.fallback, "none", "a move to nothing stays: the graph's fallback is none");
+  const groups = new Set(Object.keys(be.focus.graph).filter((k) => k !== "fallback"));
+  for (const [g, e] of Object.entries(be.focus.graph).filter(([k]) => k !== "fallback")) { assert.ok(!(e.order && e.axis)); for (const k of STEP_KEYS) if (k in e) assert.ok(edgeOk(e[k], groups), `${g}.${k}`); }
   for (const [k, t] of Object.entries(be.focus.targets)) assert.ok(t.ring === "round" && !("shape" in t), k + ": the round ring");
   const TG = { plates: { group: "plates", box: R.plates.rect }, switch: { group: "module", box: R.switch.rect }, slot: { group: "module", box: R.slot.rect } }, AWAY = { switch: TG.switch, slot: TG.slot };
   for (const v of be.focus.vectors) { if (v.intent) continue; assert.equal(focusMove(be.focus.graph, v.state === "away" ? AWAY : TG, v.from, v.key), v.to, `${v.from} ${v.key} → ${v.to}`); }
@@ -739,4 +741,15 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   // the masters: each at its size, a placeholder for each
   for (const id of Object.keys(S.masters).filter((k) => k !== "_note")) { const [w, h] = id.match(/(\d+)x(\d+)$/).slice(1).map(Number); assert.ok(w > 0 && h > 0, id); assert.ok(id in S.placeholders, "a placeholder for " + id); }
   assert.ok(S.masters["spread-plate-{SNN}-80x96"] && S.masters["spread-study-{SNN}-80x96"] && S.masters["library-stage-spread-1024x522"]);
+});
+
+test("the Probe bench's plate places, a table a tier: as many as the tier's Shield plates (state.mjs TIER), a 48 pitch, centred on the cradle's axis 296, every place at y 424 inside the plates' box", async () => {
+  const { TIER } = await import("../../station/src/state.mjs"), be = JSON.parse(readFileSync(new URL("../specs/station/bench.json", import.meta.url), "utf8")), P = be.regions.plates, axis = be.regions.cradle.axis;
+  assert.deepEqual(Object.keys(P.places).sort(), Object.keys(TIER).sort(), "a table for every tier");
+  assert.equal(be.regions.switch.meaning.plates.offWhole, (await import("../../station/src/state.mjs")).DOCK_MEND_FLOOR, "the switch off leaves the plates the dock mends free: state.mjs DOCK_MEND_FLOOR");
+  for (const [t, places] of Object.entries(P.places)) {
+    assert.equal(places.length, TIER[t].shield, `tier ${t}: a place for each of its ${TIER[t].shield} plates`);
+    places.forEach((pl, i) => { assert.equal(pl[1], 424, `tier ${t} place ${i} at y 424`); if (i) assert.equal(pl[0] - places[i - 1][0], P.pitch, "the 48 pitch"); assert.ok(inside([pl[0], pl[1], ...P.plate], P.rect), `tier ${t} place ${i} inside the plates' box`); });
+    assert.equal(places[0][0] + (places.at(-1)[0] + P.plate[0] - places[0][0]) / 2, axis, `tier ${t} centred on ${axis}`);
+  }
 });

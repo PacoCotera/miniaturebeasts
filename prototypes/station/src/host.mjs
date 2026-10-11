@@ -12,6 +12,7 @@ import { homeBuild } from "./views/home-props.mjs";
 import { vivariumBuild } from "./views/vivarium-props.mjs";
 import { habitatBuild } from "./views/habitat-props.mjs";
 import { namerBuild } from "./views/namer-props.mjs";
+import { benchBuild } from "./views/bench-props.mjs";
 import { libraryBuild } from "./views/library-props.mjs";
 import { idleBuild } from "./views/idle-props.mjs";
 import { cargoBuild } from "./views/cargo-props.mjs";
@@ -28,7 +29,7 @@ import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
 // The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library"];
+export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library", "bench"];
 export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
@@ -120,6 +121,12 @@ export function habitatBody(light = lightNow()) {
   return body;
 }
 
+// ---- the Probe bench ----
+// The Probe in its cradle with its plates, the mend switch and the upgrade slot; the Probe and the dock are the rules', the ring, the slot's arm and the install's hold the UI's (UI.bench).
+export function benchBody() {
+  return benchBuild({ st: G.st, sv: G.sv, settings: G.settings, docked: docked(), ui: UI.bench }, SPECS.bench, SPECS.frame);
+}
+
 // ---- The Library's spread ----
 // Sixteen frames, one a species in its own place; the ring is the face's (library.json spread.focus.graph) and the host keeps the frame it says in UI.lib.i (intents/library.mjs focus).
 export function libraryBody() {
@@ -159,7 +166,7 @@ export function screenProps(plate) {
   }
   const top = topFor(screen), pl = { text: plate || "", timed: true };
   if (!isBuilt(screen) || (screen === "library" && UI.lib.f !== "spread")) return { msg: { screen, state: "notBuilt", frame: { top, line: notBuiltLine(screen === "library" ? "book" : screen), plate: pl } }, ids: [], light };   // the Book (and its guide) is a state of the library screen: not built yet, ← reads Library
-  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
+  const body = screen === "home" ? homeBody(light) : screen === "cargo" ? cargoBody() : screen === "create" ? createBody() : screen === "incubator" ? incubatorBody() : screen === "vivarium" ? vivariumBody(light) : screen === "habitat" ? habitatBody(light) : screen === "library" ? libraryBody() : screen === "bench" ? benchBody() : podsBody(), reqs = [...body.requests, ...iconRequests()];
   registerPictures(reqs, { podById: (id) => (screen === "create" && id === UI.create.podId ? createPod(G.st, UI.create) : podById(id)), frameOf, mibiGenome: (id) => mibiById(id)?.genome, budGenome: () => G.st.bud?.genome, founderGenome: S.founderGenome });
   const ids = new Set(reqs.map((r) => r.id)); walk(body.props, ids);
   if (screen === "habitat" && UI.hab.prev) ids.add(UI.hab.prev);   // the mibi the swap's dither starts from stays on the face until the event ends
@@ -183,7 +190,7 @@ export const pinned = () => pinnedPictures(SPECS.pods, SPECS.frame);
 // h = { st, sv, settings, ui, specs, now, motion, say, goto, play, at, holding, save }. A Dock key pressed during a hold is kept (pendingDock; two presses cancel) and `onDock` runs when the hold ends, before a kept room key; the room key waits out the wake's own dither. Effects reach the face as events: the Dock's crates sliding into the Cargo module (arrival/cargo) and the rest (held, then Idle) are Home's;
 // the Dock's crates sliding into the bay (arrival/crates) and the crates opening (arrival/crate) are Cargo's. An event's `hold` is whole ms of held input from its start, independent of its `ms` (lvgl-switch.md §2.1): the host and the face each hold until the
 // latest start + hold on their own clocks. What follows an event's end is scheduled with `at(ms, fn)` and run by `frame()`; it never waits for the face's `done`.
-const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "moment", "read"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
+const PLAYS = new Set(["seal", "wipe", "ribbon", "plate", "dither", "hatch", "rest", "grow", "growNow", "moment", "read", "mend", "switch", "install"]), ARRIVALS = new Set(["cargo", "crates", "crate"]);
 // The light of the moment, read once for both screens that show it (the Vivarium by the clock: Home's glass and bed, Idle's painting): the host's, so a view never reads a clock.
 let lightNow = () => { throw new Error("the host has no light: createHost({ light }) names it"); };
 export function createHost({ send, nowMs, light, afterSave = () => {}, motion = () => true, onDock = (h) => INTENTS.frame.dock(h) }) {
@@ -234,6 +241,7 @@ export function onFaceMessage(h, m) {
   if (m.t === "focus") {
     if (m.screen === "namer") { if (UI.screen === "habitat" && UI.hab.namer) UI.hab.namer.f = m.target; return; }   // a namer message after it closed is dropped
     if (m.screen === "habitat") { if (UI.screen === "habitat" && !UI.hab.namer) habitatFocus(h, m.target); return; }   // and habitat's while the namer is open
+    if (m.screen === "bench") { if (UI.screen === "bench") INTENTS.bench.focus(h, m.target); return; }
     if (m.screen === "library") { if (UI.screen === "library" && UI.lib.f === "spread") INTENTS.library.focus(h, m.target); return; }
     if (m.screen === "pods" && UI.screen === "pods") UI.pods.focus.set(m.target); else if (m.screen === "home" && UI.screen === "home") UI.home.f = m.target; else if (m.screen === "vivarium" && UI.screen === "vivarium") UI.viv.f = m.target; return;
   }

@@ -1757,7 +1757,7 @@ Where the build departs from this layout is listed in `habitat.json` and `vivari
 
 The Probe section: the one screen whose subject is a machine, the Probe on its work tray. Home's Probe module opens it, and it takes the whole stage with the frame kept; its title is Probe, under the Research mark, and ← goes Home with the ring on the Probe module.
 
-**As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×64, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Its wireframes predate the frame's three face places and 88 px way back, which the frame draws on every screen. Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
+**As a section, the layout stands.** A section comes closer level by level from the whole to one item; the Probe section holds one item, the Probe, so its whole is that item and it has one level. A closer level (one plate, the part) would show nothing the bench does not already show at its size: the plates read whole or gone at 32×64, and the upgrade's adds are pictures in its module. Its regions, states, focus, events and words below are unchanged. What changes is its look, to the Station's one device: the work tray in the device's daylight, the Probe lying on it being mended among field tools and small gauges, never a lab and never a needle (the Station world brief). Its masters keep their ids and sizes; their brief follows that look (`bench.json` `masters`). Wireframes, 1×: [11-bench](station-layouts/11-bench.svg), [11b-bench-armed](station-layouts/11b-bench-armed.svg), [11c-bench-away](station-layouts/11c-bench-away.svg), [11d-bench-tier2](station-layouts/11d-bench-tier2.svg) and the map [11e-bench-nav](station-layouts/11e-bench-nav.svg), each with its PNG. The numbers live in `prototypes/ui/specs/station/bench.json`.
 
 <img src="station-layouts/11-bench.png" width="1024" alt="Probe bench, docked">
 
@@ -1811,13 +1811,13 @@ The cradle and the column form one group centred on x 512, from 56 to 968.
 - **Room:** the device's work tray: the Probe lies on it among field tools and small gauges, in the device's matte housing and warm daylight, one soft key light from the top left, as on every section; the Probe is the brightest object. No lab: no cool light, glass or clean-room machine.
 - **The Probe** is the same device the Companion draws, as the project's Probe art draws it, never a needle, painted at the bench's size, one picture a tier. Away, the cradle on the tray is drawn empty, so the Probe reads as out, never missing.
 - **Plates** read as the Companion's Shield plates: white when whole, an outline when gone.
-- **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`sprout`) or off.
+- **No amber:** a worn plate or an affordable upgrade is a choice, not a need. The lamps are on (`home-lamp-sprout-12x12`) or off (`home-lamp-hairline-12x12`).
 
 **Colour roles** (the one home is `bench.json` `colours`; every object is a painted master, `bench.json` `masters`):
 
 | Region | Roles | Why |
 | --- | --- | --- |
-| Modules | `panel` fill, `hairline` edge, `bevel` top, the word `metal`; lamps off `hairline`, on `sprout`, rim `void` | Home's modules |
+| Modules | `panel` fill, `hairline` edge, `bevel` top, the word `metal`; the lamps `frame.json` `marks.lamp12`: off `home-lamp-hairline-12x12`, on `home-lamp-sprout-12x12` | Home's modules |
 | Plates, switch, socket, part, the pictures of what it adds | Painted masters, each at its size | Never drawn by the build |
 
 ### 5. Composition
@@ -1848,9 +1848,9 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Input | What happens, and how it shows |
 | --- | --- |
 | Pad | Moves the ring by the bench's focus (below) |
-| ✓ on the plates | A plate gone: `✓ Mend a plate   ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap. Every plate whole: no ✓ cap, "every plate whole" |
-| ✓ on the switch | `✓ Switch on` or `✓ Switch off`, no price: the knob slides from x 16 to 56 (200 ms), the picture's plates and the lamp change; the context "the dock mends all" (on) or "the dock mends two, free" (off). Set at any time, docked or away |
-| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade   ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "the upgrade is fitted" |
+| ✓ on the plates | A plate gone: `✓ Mend a plate   ⚡ 1`, the context "one plate to mend": the first gone plate from the left seats (300 ms, held). Short: the frame's dimmed cap; ✓ says “needs more ⚡” on the message plate, nothing spent. Every plate whole: no ✓ cap, "every plate whole" |
+| ✓ on the switch | `✓ Switch on` or `✓ Switch off`, no price: the knob slides from x 16 to 56 (200 ms), the picture's plates and the lamp change; the context "two free, the rest ⚡ 1 each" (on; "the dock mends all, free" when a plate costs nothing) or "the dock mends two, free" (off). Set at any time, docked or away |
+| ✓ ✓ on the slot | Docked, tier 1, affordable: `✓ Fit the upgrade   ⚡ 12 ◆ 4`, "the Probe reaches further": the first ✓ arms (the part lifts 8 px, `Again: fit the upgrade`), the second fits it (900 ms, held). Short: the dimmed cap; ✓ says “needs more ⚡ ◆” (what is short), nothing spent. Away: no ✓ cap, "dock the Probe first". Fitted: no ✓ cap, "the upgrade is fitted" |
 | Any key but ✓ | Clears the arm |
 | ← | Home, the ring on the Probe module |
 
@@ -1863,7 +1863,7 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | `plates` | none | `nearestIn: module` (the slot, the row nearest) | none | none |
 | `module` (`order: [switch, slot]`) | `plates`, else none | none | the previous in the order | the next in the order |
 
-**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift. **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends).
+**Opens on** the plates when the Probe is docked and a plate is gone, else the switch. **Rings:** round, 4 px outside each region, with the 2 px chrome lift (the rings: plates 188, 410, 216×88; switch 580, 98, 392×136; slot 580, 242, 392×256). **Held:** while a mend or the install holds, the face moves no focus and sends no intent but `room:<x>` (kept by the host and dispatched when the hold ends); the ring stays drawn where it is, with its lift, through the hold; it is not redrawn.
 
 ### The bench's states and events
 
@@ -1873,8 +1873,8 @@ Each module's objects start 8 px or more under its word's baseline (y + 28).
 | Event | Hold | What plays |
 | --- | --- | --- |
 | `mend` (300 ms) | 300 ms | The first gone plate seats, gone → whole (a 16-level dither between its two pictures); the counter ticks the price |
-| `switch` (200 ms) | 0 | The knob slides from x 16 to 56 (or back) over 200 ms in whole pixels; the picture's plates and the lamp change at the end |
-| `install` (900 ms) | 900 ms | 0 to 300: the part drops 8 px into the socket; the counters tick. 300: the cradle's picture cuts to tier 2 and the plates move to the tier-2 places, whole. 300 to 600: the fourth plate seats. 600 to 900: what it adds draws full; the lamp steadies |
+| `switch` (200 ms) | 0 | The knob slides from x 16 to 56 (or back) over 200 ms in whole pixels, over the track it starts on; at 200 the track slice, the picture's plates and the lamp change together |
+| `install` (900 ms) | 900 ms | 0 to 300: the armed part drops 8 px into the socket (y 56 → 64 in the module); the counters tick. 300: the part cuts to its fitted picture, the cradle's picture cuts to tier 2 and the plates cut to the tier-2 places, whole, the fourth appearing gone; the Mend module's picture count cuts 3 → 4. 300 to 600: the fourth plate seats. 600 to 900: the adds dither from their `-new` slices to plain (the lamp never animates) |
 
 With `motion: false` every event jumps to its end.
 
@@ -1892,13 +1892,9 @@ With `motion: false` every event jumps to its end.
 | `bench-socket-160` | 160×160 |
 | `bench-part-t2-dim-128`, `bench-part-t2-ready-128`, `bench-part-t2-fitted-128` | 128×128 |
 | `bench-reach-t2-40`, `bench-reach-t2-40-new`, `bench-deep-t2-40`, `bench-deep-t2-40-new` | 40×40 |
-| The lamps, on (`sprout`) and off | 12×12 |
+| The lamps, on (`home-lamp-sprout-12x12`) and off (`home-lamp-hairline-12x12`): signed, placed | 12×12 |
 
 Where the build departs from this layout is listed in `bench.json` `buildChanges`.
-
-### Not designed yet
-
-- The journey has no capture of the bench; the gate's region and pixel checks need one for each state.
 
 ---
 
