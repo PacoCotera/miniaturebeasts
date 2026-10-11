@@ -38,24 +38,7 @@ been built or measured yet.
 **Working rule:** docking, charging or tapping never accepts cargo, transfers a
 mibi or awards anything.
 
-**Decided 2026-10-08** ([art pipeline](proposals/art-pipeline.md) v2): the Station
-renders every mibi's standard look from the rig and derives the Companion and
-Caddy versions; the Companion never renders or calls out. The Caddy brokers the
-unique cloud-painted render that a mibi earns as a prize, keeps every render
-forever and syncs it, which asks the reference Caddy for storage (an SD card,
-**Proposal**). The last open question below ("where does creature rendering run")
-is answered: the Station only.
-
-**Decided 2026-10-08** (the standard painting, [art pipeline](proposals/art-pipeline.md)
-§1.1): the split is restated. The **Station** renders the control passes and the
-placeholder, validates the painting and derives the Companion resident, token,
-frames and Caddy four-grey from it. The **Caddy brokers** every mibi's standard
-painting at Grow, not only the portrait, keeps the queue and the daily grow cap, and
-**stores** every painting forever on its card; so the Caddy must be reachable from
-the Station over Wi-Fi and connected for a mibi to get its painting. The Companion
-still renders nothing and calls nothing. Superseded: the Caddy
-brokers and stores the portrait only, made at the sitting; the Station draws every
-mibi from its layers.
+**Who draws, who brokers** ([art pipeline](proposals/art-pipeline.md)). The Station draws every mibi from its species' painted keys and its trait layers, and derives the Companion and Caddy versions; the Companion never renders or calls out. The Caddy brokers a mibi's portrait, painted at its sitting, and keeps every portrait forever on its card (an SD card) and syncs it, so a sitting needs the Caddy reachable from the Station over Wi-Fi. Creature rendering runs on the Station only.
 
 **Open:** display technology, final controls, sensors, battery and charging, the
 printer, the reader (NFC, QR or none), dimensions and enclosures.
