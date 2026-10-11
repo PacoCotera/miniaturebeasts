@@ -197,7 +197,7 @@ The style guide's measured checks run in CI. The face's test mode makes them exa
 - [ ] Colours by palette name; the art layer at 0 off palette.
 - [ ] Fonts bundled; no network fetch at load except the Caddy client.
 - [ ] Genome, rig and stamp imported from their homes; gaps fixed there.
-- [ ] Save changes carry a schema number, a forward-only migration and a fixture.
+- [ ] Save changes carry a schema number, a forward-only migration and a fixture. An optional field may be added under the same version when every reader ignores keys it does not know and a missing field has a default: `S.gen` is added under save version 8, and a save without it is generator 1 (§6).
 - [ ] Developer settings outside the shared save.
 - [ ] The journey extended; the style guide's checks green; departures listed.
 

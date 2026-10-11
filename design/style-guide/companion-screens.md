@@ -186,7 +186,7 @@ The reach view's 78 px and 48 px cells and both insets fit as given above. In a 
 
 **Pass when**
 - [ ] Reads like the concept at arm's length: a lit island in soft, layered cloud.
-- [ ] Signs are 24 px, large and simple, in corner slots; never over the pawn.
+- [ ] Signs are large and simple, in corner slots; never over the pawn. The outpost's corner sign measures 40×44 and the burrow's 32×28, at 2×.
 - [ ] The pawn is 48 px with a 2 px dark silhouette and reads on every ground.
 - [ ] Only explored and seen cells show terrain.
 - [ ] The cloud is built from drawn pieces, not circles.
