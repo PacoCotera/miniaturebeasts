@@ -189,9 +189,12 @@ way can take a service's place without changing the game.
 
 1. **The Station loop and UI**, the first piece of phase 3: the loop's rules are
    decided and run headless in CI; the Station's screens are drawn by its LVGL
-   face, the only face in the sandbox. Pods is built on it and Home, Cargo and
-   Idle are being built; the other sections follow in the order of
-   `design/proposals/lvgl-switch.md` and show "not built yet" until then.
+   face, the only face in the sandbox. Every section's main screen is built on
+   it: Home and Idle, Cargo, Pods, Create and the Incubator, the Vivarium, the
+   Library and the Probe bench, most of them still on placeholder pictures until
+   the finished art is drawn. The Cross, each species' Book and the portrait
+   sitting come next, in the order of `design/proposals/lvgl-switch.md`, and
+   show "not built yet" until then.
 2. **The cloud layer**, later: the optional, gated enhancements on top of the
    standalone kit.
 
