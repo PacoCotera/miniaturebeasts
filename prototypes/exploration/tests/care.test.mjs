@@ -549,7 +549,7 @@ test("the expedition choice never names a mibi at home: no list, no count, no di
   assert.ok(!/take ' \+ d\.name/.test(PAGE), "the digger at home is never named on a refusal");
 });
 test("the page's help: the carried set, Walk together and Tend; no Spend time and no Habitat", () => {
-  const help = PAGE.slice(0, PAGE.indexOf("<script"));
+  const help = PAGE.slice(0, PAGE.indexOf("<script type=\"module\">"));   // the page before its script (the ?embed line in <head> is a classic script)
   assert.match(help, /Up to three mibis are <b>with you<\/b>/); assert.match(help, /<b>Tend<\/b> each one once a day/);
   assert.ok(!/spends time|One mibi is|Habitat/.test(PAGE), "retired words");
 });
