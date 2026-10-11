@@ -9,3 +9,16 @@ The host drops an intent while an event holds input (`TL.holding()`, lvgl-switch
 ## Library (`library.mjs`)
 
 Targets are `frame.<SNN>` only; the host sets `ui.lib.i` from the face's `focus` message (`focus(h, target)`). On the spread (`ui.lib.f === "spread"`): ✓ focuses the frame, then a found frame opens its Book (`openBook`: `lib.f = "book"`, which the host draws as "not built yet"), a met frame says `spread.strings.met` and an unmet frame `spread.strings.unmet`; ← sets Home's ring on the Library module and goes Home. In the Book: ← is the spread with the ring on that species. Habitat's species word opens the Book's guide (`openBook(h, id); lib.f = "guide"`).
+
+## Probe bench (`bench.mjs`)
+
+Targets: `plates`, `switch`, `slot`; the host sets `ui.bench.f` from the face's `focus` message (`focus(h, target)`). Any key but ✓ clears the arm (`ui.bench.arm`). ← is Home with the ring on the Probe module.
+
+| ✓ on | Does | Plays (numbers from `bench.json` `events`) |
+| --- | --- | --- |
+| `plates` | `state.mendPlate`: the first gone plate is whole for ⚡ 1; short, `strings.short` on the message plate and nothing spent | `mend` (from the whole before, to one more), held 300 ms (0 with reduced motion) |
+| `switch` | `state.setMendFull(st, !mendFull)`: the dock mends every plate at its price, or two, free | `switch` (from 0/1 to 1/0), no hold |
+| `slot` | Docked and tier 1: short says so and spends nothing; the first ✓ arms; the second `state.installTier2` | `install` (from the whole plates before, to 4), held 900 ms; `ui.bench.install` is set until it ends (the tier-1 cradle picture stays on the face) and not set with reduced motion |
+
+The Dock key on the bench is a cut: lifted, a ring on the plates moves to the switch and the arm clears; docked, the ring stays and the plates show as the dock left them.
+
