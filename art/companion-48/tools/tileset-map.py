@@ -8,8 +8,7 @@ Pieces used:
                 rounded cap at an open end; a lower face under another (a stack) has its turf replaced by its own rock
   stairs        a macro piece cut from b1's lower stair, two cells wide and three tall (its landing on the plateau cell above)
   bridge, props macro pieces cut from b1 (the plank bridge, a bush, a boulder), placed on whole cells by the props rule
-  pond          PLACEHOLDER until the water pieces are approved: the two flat tones with b1's foam line and wet line, drawn at
-                pixel level from the cell mask
+  pond          the water pieces (tileset/water, tools/build-water-quarters.py): two flat tones, foam and wet line, a sand bank
 Writes test-map-1x.png, -3x.png and beside-b1-1x.png (the test map and b1's own screen at the same size).
 usage: python3 -I tileset-map.py B1_DIR PIECES_DIR WALLS_DIR OUT_DIR"""
 import json, os, sys
@@ -23,9 +22,13 @@ PAL = np.array([hx(c["hex"]) for c in cols]); NC = len(PAL)
 CORE_G = ["pine", "forest", "leaf", "grass", "sprout", "lime"]
 mat = np.array([c.get("material", "grass" if c.get("name") in CORE_G else "core") for c in cols])
 lum = 0.2126 * PAL[:, 0] + 0.7152 * PAL[:, 1] + 0.0722 * PAL[:, 2]
-G_ORDER = sorted([i for i in range(NC) if mat[i] == "grass"], key=lambda i: lum[i])
+import colorsys
+sat_ = np.array([colorsys.rgb_to_hsv(*(PAL[i] / 255))[1] for i in range(NC)]); hue_ = np.array([colorsys.rgb_to_hsv(*(PAL[i] / 255))[0] for i in range(NC)])
+G_ORDER = sorted([i for i in range(NC) if mat[i] == "grass" and sat_[i] > .35 and .18 < hue_[i] < .40], key=lambda i: lum[i])   # the lawn's own ramp: saturated greens only
 def gstep(i, k):
-    if mat[i] != "grass": return i
+    if i not in G_ORDER:
+        if mat[i] != "grass": return i
+        i = min(G_ORDER, key=lambda g: abs(lum[g] - lum[i]))               # a grey-green steps along the lawn's ramp from its nearest
     j = G_ORDER.index(i); return G_ORDER[max(0, min(len(G_ORDER) - 1, j + k))]
 def to_idx(rgba):
     a = np.asarray(rgba.convert("RGBA")); rgb = a[..., :3].reshape(-1, 1, 3).astype(int)
@@ -40,7 +43,9 @@ def cut(x0, y0, w, h, key_grass=False):
 # clover and flowers: each connected group of non-base pixels inside b1's lawn, 4 to 60 px, cut out whole. They are scattered off
 # the tile grid by a seeded rule, as the earlier meadow decals were, so the fills are flat and seamless.
 lawn = (mat[B1] == "grass")
-vals, cnts = np.unique(B1[lawn], return_counts=True); BASE = int(vals[cnts.argmax()])
+vals, cnts = np.unique(B1[lawn], return_counts=True)
+medl = np.median(lum[B1[lawn]]); lit_ = [(c_, v_) for v_, c_ in zip(vals, cnts) if lum[v_] > medl]
+BASE = int(max(lit_)[1])                                   # b1's lit lawn tone
 fills = [np.full((48, 48), BASE, int)]
 det = lawn & (B1 != BASE)
 inner = lawn.copy()
@@ -101,11 +106,11 @@ HM = ["22222222221111",
       "00000000000000",
       "00000000000000",
       "00000000000000",
-      "000wwwwwwwww00",
-      "00wwwwwwwwwww0",
-      "00www0wwwwwww0",
-      "00wwwwwwwwwww0",
-      "000wwwwwwwww00",
+      "0000wwww000000",
+      "00wwwwwwwwww00",
+      "0wwww0wwwwwww0",
+      "0wwwwwwwwwww00",
+      "00wwww0wwww000",
       "00000000000000"]
 STAIRS = [(5, 4), (12, 6)]           # (first face row, left cell)
 BRIDGE = (14, 9)                     # top-left cell of the 2 x 6 bridge piece
@@ -175,16 +180,33 @@ for L_ in (1, 2):
     for c in range(Cn):
         for r in range(R):
             if FACE[r, c] and H[r, c] >= L_ and not (r >= 1 and H[r - 1, c] > H[r, c]) and not (r >= 2 and FACE[r - 1, c]): pass
-    m = rounded(top, 20)
+    m0 = np.kron(top.astype(float), np.ones((48, 48))); k_ = 20
+    pad_ = np.pad(m0, k_, mode="edge"); cs_ = pad_.cumsum(0).cumsum(1)
+    bx = ((cs_[2 * k_:, 2 * k_:] - cs_[:-2 * k_, 2 * k_:] - cs_[2 * k_:, :-2 * k_] + cs_[:-2 * k_, :-2 * k_]) / (2 * k_) ** 2)[:m0.shape[0], :m0.shape[1]]
+    yy2, xx2 = np.mgrid[0:m0.shape[0], 0:m0.shape[1]]
+    wob = .10 * np.sin(xx2 / 13.0 + L_) * np.cos(yy2 / 17.0) + .07 * np.sin((xx2 + 2 * yy2) / 9.0)
+    m = bx > .5 + wob                                        # an organic outline, not the cell's box
     south_face = np.kron(FACE.astype(float), np.ones((48, 48))) > 0
-    edge_out = grow(m, 2) & ~m & ~south_face & ~grow(south_face, 2); img[edge_out] = OUTL
-    rim = m & ~np.roll(np.roll(m, 2, 0), 0, 1) | (m & ~np.roll(m, 2, 1)) | (m & ~np.roll(m, -2, 1))
-    rim &= ~grow(south_face, 3)
-    img[rim] = np.array([gstep(i, 2) for i in img[rim]]) if rim.any() else img[rim]
-    beyond = grow(m, 9) & ~grow(m, 2) & ~south_face & ~m
-    img[beyond] = DARK[img[beyond]]
-    near_ = grow(m, 5) & ~grow(m, 2) & ~south_face & ~m
-    img[near_] = DARK[img[near_]]
+    sf = grow(south_face, 3)
+    beyond = grow(m, 12) & ~grow(m, 2) & ~south_face & ~m & ~sf
+    img[beyond] = DARK[img[beyond]]                          # the ground in the plateau's shadow, one flat step
+    near2 = grow(m, 5) & ~grow(m, 2) & ~south_face & ~m & ~sf
+    img[near2] = DARK[img[near2]]                            # and a second step close under the edge
+    outl = grow(m, 2) & ~m & ~sf; img[outl] = OUTL           # the dark line under the overhang
+    rim = m & ~(np.roll(m, 4, 0) & np.roll(m, 4, 1) & np.roll(m, -4, 1)) & ~sf
+    img[rim] = np.array([gstep(i, 2) for i in img[rim]]) if rim.any() else img[rim]      # the lit rim, 4 px
+    edge1 = m & ~(np.roll(m, 1, 0) & np.roll(m, 1, 1) & np.roll(m, -1, 1)) & ~sf
+    img[edge1] = np.array([gstep(i, 1) for i in img[edge1]]) if edge1.any() else img[edge1]
+    # grass blades over the edge: from 35 % of the rim's outer pixels, 2-4 px outward, lit tip
+    ry, rx = np.where(rim & ~np.roll(m, 1, 0) | rim & ~np.roll(m, 1, 1) | rim & ~np.roll(m, -1, 1))
+    rngb = np.random.RandomState(7 + L_)
+    for yb, xb in zip(ry, rx):
+        if rngb.rand() > .35: continue
+        dy = -1 if not m[max(0, yb - 1), xb] else 0; dx = (-1 if not m[yb, max(0, xb - 1)] else (1 if not m[yb, min(m.shape[1] - 1, xb + 1)] else 0))
+        if dy == 0 and dx == 0: continue
+        for t in range(1, rngb.randint(2, 5)):
+            y3, x3 = yb + dy * t, xb + dx * t
+            if 0 <= y3 < img.shape[0] and 0 <= x3 < img.shape[1] and not sf[y3, x3]: img[y3, x3] = gstep(BASE, 2 if t > 1 else 1)
 # 3. walls: runs along each top face row
 rng = np.random.RandomState(48)
 for r in range(R):
@@ -202,36 +224,36 @@ for r in range(R):
             opts = [f for f in FACES if WALL[f][1]["cells"][0] <= left and f != last]
             f = opts[rng.randint(len(opts))]; seq.append(f); last = f; left -= WALL[f][1]["cells"][0]
         if open_e: seq.append(rng.choice(CAPE))
-        x = c0 * 48
+        x = c0 * 48; joins = []
         for f in seq:
             p = WALL[f][0].copy()
             if stack: p[:12] = np.where(p[12:24] >= 0, p[24:36], p[:12])     # a stacked lower face: rock up to its top, no turf
             hh, ww = p.shape; Y = r * 48
-            img[Y:Y + hh, x:x + ww] = over(img[Y:Y + hh, x:x + ww], p); x += ww
+            img[Y:Y + hh, x:x + ww] = over(img[Y:Y + hh, x:x + ww], p); x += ww; joins.append(x)
+        for jx in joins[:-1]:                                   # break each join: rows shift by -2..2 px within 3 px of it
+            Y = r * 48
+            for yy in range(Y + 12, Y + 94):
+                sh_ = rng.randint(-2, 3)
+                if sh_: img[yy, jx - 3:jx + 3] = img[yy, jx - 3 + sh_:jx + 3 + sh_]
         # the cast shadow under the run: one flat DARK step, 8 px, on the cell row under the face
         Yb = (r + 2) * 48
         if Yb < img.shape[0]:
             band = img[Yb:Yb + 8, c0 * 48:c * 48]; img[Yb:Yb + 8, c0 * 48:c * 48] = DARK[band]
-# 4. the pond, PLACEHOLDER: cell mask, rounded at pixel level, two flat tones, foam and wet line, a sand bank with a dark edge
-up = np.kron(WAT.astype(float), np.ones((48, 48)))
-k = 22; pad = np.pad(up, k, mode="edge"); cs = pad.cumsum(0).cumsum(1)
-box = (cs[2 * k:, 2 * k:] - cs[:-2 * k, 2 * k:] - cs[2 * k:, :-2 * k] + cs[:-2 * k, :-2 * k]) / (2 * k) ** 2
-yy_, xx_ = np.mgrid[0:up.shape[0], 0:up.shape[1]]
-wave = .12 * np.sin(xx_ / 23.0 + 1.3) * np.cos(yy_ / 31.0) + .08 * np.sin((xx_ + yy_) / 17.0)   # bays and points along the bank
-wm = box[:up.shape[0], :up.shape[1]] > .5 + wave
-def grow(m, n):
-    m = m.copy()
-    for _ in range(n): m[1:] |= m[:-1]; m[:-1] |= m[1:]; m[:, 1:] |= m[:, :-1]; m[:, :-1] |= m[:, 1:]
-    return m
-d_in = np.zeros(wm.shape, int) + 99; cur = ~wm
-for kk in range(1, 9): nxt = grow(cur, 1); d_in[nxt & ~cur & wm] = kk; cur = nxt
-d_out = np.zeros(wm.shape, int) + 99; cur = wm.copy()
-for kk in range(1, 6): nxt = grow(cur, 1); d_out[nxt & ~cur] = kk; cur = nxt
+# 4. the pond, from the water pieces (tileset/water): each water cell's four quarters by its land neighbours, frame 1
+WD = os.path.join(os.path.dirname(walls_d), "water")
+WQ = {(q, st_): to_idx(Image.open(os.path.join(WD, f"q-{q}-{st_}-f1.png"))) for q in ("nw", "ne", "se", "sw") for st_ in ("fill", "edgeh", "edgev", "outer", "inner")}
+def wstate(r, c, q):
+    land = lambda dr, dc: not (0 <= r + dr < R and 0 <= c + dc < Cn) or not WAT[r + dr, c + dc]
+    vy = -1 if q in ("nw", "ne") else 1; vx = -1 if q in ("nw", "sw") else 1
+    a_, b_, d_ = land(vy, 0), land(0, vx), land(vy, vx)
+    return "outer" if a_ and b_ else ("edgeh" if a_ else ("edgev" if b_ else ("inner" if d_ else "fill")))
 nearest = lambda rgb: int(((PAL - np.array(rgb)) ** 2).sum(1).argmin())
-BODY, SHAL, FOAM, WET = nearest((29, 104, 136)), nearest((34, 121, 147)), nearest((255, 255, 255)), nearest((219, 238, 229))
-SAND, EDGE = nearest((196, 170, 110)), nearest((70, 55, 40))
-img[wm] = BODY; img[wm & (d_in <= 7)] = SHAL; img[wm & (d_in <= 2)] = WET; img[wm & (d_in == 1)] = FOAM
-img[~wm & (d_out <= 3)] = SAND; img[~wm & (d_out == 4)] = EDGE
+BODY, SHAL = nearest((29, 104, 136)), nearest((34, 121, 147))
+for r in range(R):
+    for c in range(Cn):
+        if not WAT[r, c]: continue
+        for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "sw": (24, 0), "se": (24, 24)}.items():
+            Y, X = r * 48 + y, c * 48 + x; pq = WQ[(q, wstate(r, c, q))]; img[Y:Y + 24, X:X + 24] = np.where(pq >= 0, pq, img[Y:Y + 24, X:X + 24])
 # 5. stairs: b1's lower stair, 2 cells wide, 3 tall (landing row above the face)
 st = B1[460:622, 262:370]; st = np.asarray(Image.fromarray(st.astype(np.uint8)).resize((96, 144), Image.NEAREST)).astype(int)
 for (r, c) in STAIRS:
@@ -243,7 +265,7 @@ keep = (mat[br[:hh]] != "grass") & ~((br[:hh] == BODY) | (br[:hh] == SHAL))   # 
 img[Yb:Yb + hh, Xb:Xb + 96] = np.where(keep, br[:hh], img[Yb:Yb + hh, Xb:Xb + 96])
 PROP = {"bush": B1[570:628, 424:492], "boulder": B1[628:668, 462:528]}
 for name, r, c in PROPS:
-    p = PROP[name]; m = mat[p] != "grass"; ph, pw = p.shape
+    p = PROP[name]; m = np.isin(mat[p], ["rock", "earth", "wood", "accent"]) | (lum[p] > 150) & (mat[p] != "grass"); ph, pw = p.shape
     Y, X = r * 48 + 48 - ph, c * 48 + (48 - pw) // 2
     if Y >= 0 and X >= 0: img[Y:Y + ph, X:X + pw] = np.where(m, p, img[Y:Y + ph, X:X + pw])
 im = Image.fromarray(PAL[np.clip(img, 0, None)].astype(np.uint8))

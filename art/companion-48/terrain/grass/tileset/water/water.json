@@ -1,0 +1,340 @@
+{
+ "biome": "meadow",
+ "tile": 48,
+ "quarter": 24,
+ "tones": {
+  "body": "#1d6888",
+  "shallow": "#227993"
+ },
+ "pieces": [
+  {
+   "name": "meadow/shore/water-nw-fill-f1",
+   "file": "q-nw-fill-f1.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "fill",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-nw-fill-f2",
+   "file": "q-nw-fill-f2.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "fill",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-nw-edgeh-f1",
+   "file": "q-nw-edgeh-f1.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgeh",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-nw-edgeh-f2",
+   "file": "q-nw-edgeh-f2.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgeh",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-nw-edgev-f1",
+   "file": "q-nw-edgev-f1.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgev",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-nw-edgev-f2",
+   "file": "q-nw-edgev-f2.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "edgev",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-nw-outer-f1",
+   "file": "q-nw-outer-f1.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "outer",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-nw-outer-f2",
+   "file": "q-nw-outer-f2.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "outer",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-nw-inner-f1",
+   "file": "q-nw-inner-f1.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "inner",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-nw-inner-f2",
+   "file": "q-nw-inner-f2.png",
+   "kind": "shore",
+   "quad": "nw",
+   "state": "inner",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-ne-fill-f1",
+   "file": "q-ne-fill-f1.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "fill",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-ne-fill-f2",
+   "file": "q-ne-fill-f2.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "fill",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-ne-edgeh-f1",
+   "file": "q-ne-edgeh-f1.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgeh",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-ne-edgeh-f2",
+   "file": "q-ne-edgeh-f2.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgeh",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-ne-edgev-f1",
+   "file": "q-ne-edgev-f1.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgev",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-ne-edgev-f2",
+   "file": "q-ne-edgev-f2.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "edgev",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-ne-outer-f1",
+   "file": "q-ne-outer-f1.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "outer",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-ne-outer-f2",
+   "file": "q-ne-outer-f2.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "outer",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-ne-inner-f1",
+   "file": "q-ne-inner-f1.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "inner",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-ne-inner-f2",
+   "file": "q-ne-inner-f2.png",
+   "kind": "shore",
+   "quad": "ne",
+   "state": "inner",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-se-fill-f1",
+   "file": "q-se-fill-f1.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "fill",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-se-fill-f2",
+   "file": "q-se-fill-f2.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "fill",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-se-edgeh-f1",
+   "file": "q-se-edgeh-f1.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgeh",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-se-edgeh-f2",
+   "file": "q-se-edgeh-f2.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgeh",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-se-edgev-f1",
+   "file": "q-se-edgev-f1.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgev",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-se-edgev-f2",
+   "file": "q-se-edgev-f2.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "edgev",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-se-outer-f1",
+   "file": "q-se-outer-f1.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "outer",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-se-outer-f2",
+   "file": "q-se-outer-f2.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "outer",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-se-inner-f1",
+   "file": "q-se-inner-f1.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "inner",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-se-inner-f2",
+   "file": "q-se-inner-f2.png",
+   "kind": "shore",
+   "quad": "se",
+   "state": "inner",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-sw-fill-f1",
+   "file": "q-sw-fill-f1.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "fill",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-sw-fill-f2",
+   "file": "q-sw-fill-f2.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "fill",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-sw-edgeh-f1",
+   "file": "q-sw-edgeh-f1.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgeh",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-sw-edgeh-f2",
+   "file": "q-sw-edgeh-f2.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgeh",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-sw-edgev-f1",
+   "file": "q-sw-edgev-f1.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgev",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-sw-edgev-f2",
+   "file": "q-sw-edgev-f2.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "edgev",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-sw-outer-f1",
+   "file": "q-sw-outer-f1.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "outer",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-sw-outer-f2",
+   "file": "q-sw-outer-f2.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "outer",
+   "frame": 2
+  },
+  {
+   "name": "meadow/shore/water-sw-inner-f1",
+   "file": "q-sw-inner-f1.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "inner",
+   "frame": 1
+  },
+  {
+   "name": "meadow/shore/water-sw-inner-f2",
+   "file": "q-sw-inner-f2.png",
+   "kind": "shore",
+   "quad": "sw",
+   "state": "inner",
+   "frame": 2
+  },
+  {
+   "name": "meadow/band/fill-body",
+   "file": "fill-body.png",
+   "kind": "band",
+   "cells": [
+    1,
+    1
+   ]
+  }
+ ]
+}
