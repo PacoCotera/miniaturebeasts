@@ -266,6 +266,12 @@ at 20 carried; Essence never turns into Energy (**Built**).
   Untuva after a full meal, a Tuikis that feels safe, a Loika shaking dry)
   (**Built**). A full hold offers a swap; the pod left behind stays and the map
   remembers it (**Built**).
+- **The first expedition finds pods.** The first expedition of a new world finds
+  at least two buried pods in tier 1 reach of the glint the player picks, with no
+  partner and no trick: a Loika's next to the glint and, when the reach still
+  holds fewer than two, a Tuikis's at the reach's edge. They are added once, at
+  the first placement, without changing the world's own pods; they are found by
+  walking and Calling (**Built**).
 
 ## Partners and gates
 

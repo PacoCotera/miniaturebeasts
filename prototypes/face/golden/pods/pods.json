@@ -2,35 +2,35 @@
  "_note": "Pods' goldens: the hash of the 1024×600 framebuffer drawn by the C words (WebAssembly), with the PNG for review. An unsigned record: it moves with the masters. Written by tools/goldens.mjs; never edited by hand.",
  "states": {
   "collection": {
-   "hash": "3a5d0fa1",
+   "hash": "393961ae",
    "png": "pods-collection.png"
   },
   "overview, unidentified": {
-   "hash": "098bfb61",
+   "hash": "4b8af71e",
    "png": "pods-overview-unidentified.png"
   },
   "overview, identified, pod focused": {
-   "hash": "11234e16",
+   "hash": "a4b4c019",
    "png": "pods-overview-identified-pod-focused.png"
   },
   "overview, kin focused": {
-   "hash": "898d1b17",
+   "hash": "66a39ec0",
    "png": "pods-overview-kin-focused.png"
   },
   "overview, hatch focused": {
-   "hash": "3abdd369",
+   "hash": "0cf26b22",
    "png": "pods-overview-hatch-focused.png"
   },
   "overview, a rail tab focused": {
-   "hash": "897fdf26",
+   "hash": "b18d8759",
    "png": "pods-overview-a-rail-tab-focused.png"
   },
   "chapter page": {
-   "hash": "fb6bba82",
+   "hash": "b1674be9",
    "png": "pods-chapter-page.png"
   },
   "compare": {
-   "hash": "34eeced9",
+   "hash": "348e13f2",
    "png": "pods-compare.png"
   }
  }
