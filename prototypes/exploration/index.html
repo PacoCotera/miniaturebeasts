@@ -2682,7 +2682,7 @@ function buildTerrTile(t, base, v, m, fr, bv, bm) {
       if (on(a) && on(b)) { outer.push([px, py]); mark(px, py); }
       else if (on(d) && !on(a) && !on(b)) { inner.push([px, py]); for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) if (bx + i !== px || by + j !== py) mark(bx + i, by + j); }
     }
-    for (let i = 0; i < 1024; i++) if (lit[i]) { const x = i & 31, y = i >> 5; pb.set(x, y, LEVEL_LIGHT[pb.get(x, y)]); }   // each pixel once
+    for (let i = 0; i < 1024; i++) if (lit[i]) { const x = i & 31, y = i >> 5; pb.set(x, y, TINT[pb.get(x, y)]); }   // each pixel once, through TINT (lime stays lime)
     for (const b of [0, 2, 4, 6]) if (on(b)) { const [x, y, w, hh] = edge[b]; for (let j = 0; j < hh; j++) for (let i = 0; i < w; i++) if (!outer.some(([ox, oy]) => ox === x + i && oy === y + j)) pb.set(x + i, y + j, C.ink); }
     for (const [x, y] of inner) pb.set(x, y, C.ink);                             // inner corners meet square; outer corners keep the 1 px chamfer
   } else if (v === TERR.STAIR) {
@@ -2765,7 +2765,7 @@ function buildMapPB() {
     if (l === L.CLIFF && y + 1 < MH && G.land[c + MW] !== L.CLIFF) { // the shadow a cliff throws on the cell below
       pb.rect(px, py + CELL, CELL, 2, C.soil); for (let i = 0; i < CELL; i++) if (i % 2 === 0) pb.set(px + i, py + CELL + 2, C.soil);
     }
-    if (c === G.mouth) { pb.ell(px + 13, py + CELL, 7, 15, C.bark, { clip: (X, Y) => Y < py + CELL }); pb.ell(px + 13, py + CELL + 1, 5, 13, C.void, { clip: (X, Y) => Y < py + CELL }); }
+    if (c === G.mouth && !G.gen) { pb.ell(px + 13, py + CELL, 7, 15, C.bark, { clip: (X, Y) => Y < py + CELL }); pb.ell(px + 13, py + CELL + 1, 5, 13, C.void, { clip: (X, Y) => Y < py + CELL }); }
   }
   return pb;
 }
@@ -3065,9 +3065,9 @@ function edgeMarkPB(cs, sides, ground, parity) {
     pb.set(x, y, a < P.wall || a >= P.w - P.wall || d % P.p === P.p - 1 ? C.stone : C.rockL); } };
   // faces: a south-facing drop's face in the lower cell's top rows, the whole width
   for (const [dir, , hi] of sides) if (dir === 'up' && hi) for (let y = 0; y < P.face; y++) pb.rect(0, y, cs, 1, y === 0 ? C.ink : P.stone.includes(y) ? C.stone : C.rock);
-  // lips: the high cell's rim, each ground pixel remapped once through LEVEL_LIGHT
+  // lips: the high cell's rim, each ground pixel remapped once through TINT (lime stays lime; there the ink line alone carries the edge)
   if (ground) for (const [dir, kind, hi] of sides) { if (hi) continue; const ramp = kind === EDGE.RAMP;
-    const px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = cur(x, y); if (v >= 0) pb.set(x, y, LEVEL_LIGHT[v]); };
+    const px = (x, y) => { const i = y * cs + x; if (lit[i]) return; lit[i] = 1; const v = cur(x, y); if (v >= 0) pb.set(x, y, TINT[v]); };
     if (dir === 'up') for (let y = 0; y < P.lip; y++) for (let x = 0; x < cs; x++) px(x, y);
     else if (dir === 'left') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = 0; x < P.lip; x++) px(x, y); }
     else if (dir === 'right') for (let y = 0; y < cs; y++) { if (ramp && span(y)) continue; for (let x = cs - P.lip; x < cs; x++) px(x, y); } }
@@ -3156,7 +3156,12 @@ function drawMap(mode, t) {
     for (let q = 0; q < 4; q++) if (!((mf >> q) & 1)) { const qx = px + (q & 1) * 13, qy = py + (q >> 1) * 13; blit((m >> q) & 1 ? quarterAlmost(qx & 3, qy & 3) : quarterVeil(qx & 3, qy & 3), qx, qy); }   // 75%+: a lighter "almost" tint
   }   // no per-item pips: the map marks only what is worth coming back for (pods left behind, found Energy)
   // the edge marks at 26 px, after the fog and the quarters, before the signs; each cell in the light it is drawn in
-  drawEdgeMarks({ map: true, cs: CELL, ox, oy, rmOf: c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : !S.visited[c] ? 4 : 0 });
+  const rmOf = c => (!preview && (c % MW) * CELL >= bx0 && (c % MW) * CELL < bx1) ? 1 : !S.visited[c] ? 4 : 0;
+  drawEdgeMarks({ map: true, cs: CELL, ox, oy, rmOf });
+  // generator 2: the burrow hole on the gate cell's face, drawn each frame (never baked), base on the face's foot line, rising into the mouth cell
+  if (G.gen && S.revealed[G.gate] && S.revealed[G.mouth]) { const p = cxy(G.gate), px = ox + p.x * CELL, py = oy + p.y * CELL;
+    blit(art('g2hole', () => { const pb = new PB(CELL, CELL + 4), clip = { clip: (X, Y) => Y < CELL + 4 };   // local origin (px, py - CELL)
+      pb.ell(13, CELL + 4, 7, 15, C.bark, clip); pb.ell(13, CELL + 5, 5, 13, C.void, clip); return pb; }), px, py - CELL, rmOf(G.gate)); }
   for (const e of signs) { const { x, y } = cxy(e.c), px = ox + x * CELL, py = oy + y * CELL;
     for (const s of e.list) if (s.kind !== 'pin') drawSign(s.kind, s, px, py, fr); }
   if (S.opened[G.gate] && S.revealed[G.gate]) { const p = cxy(G.gate); blit(ICON.burrow(1), ox + p.x * CELL + 5, oy + p.y * CELL + 6); }
@@ -3665,6 +3670,8 @@ function drawSetup(t) {
   const all = MW * MH; let seen = 0, done = 0; for (let c = 0; c < all; c++) { if (S.revealed[c]) seen++; if (explored(c)) done++; }
   text('Your world', 136, iy + 2, C.mist); text('Explored ' + done + ' of ' + all + ' cells', 136, iy + 26, C.bone); text('Seen ' + seen + ' · fog ' + (all - seen), 136, iy + 50, C.fog);
   if (S.ui.lastPos != null) { blit(ICON.flag(), 136, iy + 76); text('last start', 154, iy + 78, C.fog); }
+  // generator 1 worlds: a standing hint that a New world brings the terrain (plain text, not focusable)
+  if (S.phase === 'setup' && !S.exp && (S.gen == null ? 1 : S.gen) === 1) text(clipText('Flat world · New world has stairs', 306, 2), 136, 462, C.sand);
 }
 function emptyPodSmall(cx, cy) { for (let a = 0; a < 6.28; a += .2) R(cx + Math.round(Math.cos(a) * 18), cy + Math.round(Math.sin(a) * 24), 2, 2, C.stone); }
 // The whole world small, between expeditions: fog, seen land faded, visited land in colour, pins, outposts, skulls, the last start.

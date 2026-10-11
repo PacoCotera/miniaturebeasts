@@ -21,19 +21,38 @@ const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
 const IMPORT = /^import \{([^}]*)\} from "\.\/src\/world\.mjs";$/m;
 const BINDINGS = MODULE.match(IMPORT)[1].split(",").map(s => s.trim().split(/\s+as\s+/));
 const SCRIPT = MODULE.replace(IMPORT, "");
-// `search` is the page's query string; the page's elements record their listeners (els[id].on.click).
-function page(store = {}, search) {
+// A canvas that keeps palette indices (-1 transparent): fillRect, drawImage (2, 4 and 8 arguments, nearest), image data; clips are ignored.
+function fakeCanvas(look) {
+  const t = { width: 0, height: 0 }; let p = null;
+  const buf = () => { if (!p || p.length !== t.width * t.height) p = new Int16Array(t.width * t.height).fill(-1); return p; };
+  const put = (x, y, v) => { x = Math.floor(x); y = Math.floor(y); if (x >= 0 && y >= 0 && x < t.width && y < t.height) buf()[y * t.width + x] = v; };
+  const ctx = { fillStyle: "", imageSmoothingEnabled: false, save() {}, restore() {}, beginPath() {}, rect() {}, clip() {}, setTransform() {},
+    fillRect(x, y, w, h) { const v = look.hex(this.fillStyle); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) put(x + i, y + j, v); },
+    drawImage(src, ...a) { const sp = src.px(); let [sx, sy, sw, sh] = [0, 0, src.width, src.height], dx, dy, dw, dh;
+      if (a.length === 2) [dx, dy, dw, dh] = [a[0], a[1], sw, sh]; else if (a.length === 4) [dx, dy, dw, dh] = a; else [sx, sy, sw, sh, dx, dy, dw, dh] = a;
+      for (let j = 0; j < dh; j++) for (let i = 0; i < dw; i++) { const v = sp[(sy + Math.floor(j * sh / dh)) * src.width + sx + Math.floor(i * sw / dw)]; if (v >= 0) put(dx + i, dy + j, v); } },
+    createImageData: (w, h) => ({ width: w, height: h, data: new Uint8ClampedArray(w * h * 4) }),
+    putImageData(id, x, y) { for (let j = 0; j < id.height; j++) for (let i = 0; i < id.width; i++) { const o = (j * id.width + i) * 4; put(x + i, y + j, id.data[o + 3] ? look.rgb(id.data[o], id.data[o + 1], id.data[o + 2]) : -1); } },
+    getImageData(x, y, w, h) { const d = new Uint8ClampedArray(w * h * 4); for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { const v = buf()[(y + j) * t.width + x + i];
+      if (v >= 0) { const c = look.rgbOf(v), o = (j * w + i) * 4; d[o] = c[0]; d[o + 1] = c[1]; d[o + 2] = c[2]; d[o + 3] = 255; } } return { width: w, height: h, data: d }; } };
+  return Object.assign(t, { getContext: () => ctx, px: buf, style: {}, toDataURL: () => "" });
+}
+// `search` is the page's query string; the page's elements record their listeners (els[id].on.click). opts.canvas: canvases are
+// fakeCanvas, so a drawing can be read back (p.run("scr").px()).
+function page(store = {}, search, opts = {}) {
   const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
     apply: () => any, construct: () => any, set: () => true });
   const els = {}, elStub = () => { const on = {}; return new Proxy(function () {}, { get: (t, k) => k === "addEventListener" ? (e, f) => { on[e] = f; } : k === "on" ? on : any[k], apply: () => any, set: () => true }); };
-  const document = new Proxy(any, { get: (t, k) => k === "getElementById" ? id => els[id] || (els[id] = elStub()) : any[k] });
+  let run = null, pal = null; const P = () => pal || (pal = { hex: new Map(run("HEX").map((h, i) => [h, i])), rgb: run("RGB"), of: new Map(run("RGB").map((c, i) => [c[0] << 16 | c[1] << 8 | c[2], i])) });
+  const look = { hex: h => P().hex.get(h) ?? -2, rgbOf: v => P().rgb[v], rgb: (r, g, b) => P().of.get(r << 16 | g << 8 | b) ?? -2 };
+  const document = new Proxy(any, { get: (t, k) => k === "getElementById" ? id => els[id] || (els[id] = elStub()) : k === "createElement" && opts.canvas ? tag => tag === "canvas" ? fakeCanvas(look) : any : any[k] });
   const clock = { t: 1000, timers: [] };
   const ctx = { console, URLSearchParams, Date, fetch: () => new Promise(() => {}), document, location: search ? { search, reload() {} } : any, navigator: any,
     matchMedia: () => ({ matches: true }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [from, to = from] of BINDINGS) ctx[to] = W[from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
-  const run = src => vm.runInContext(src, ctx);
+  ctx.window = ctx; for (const [from, to = from] of BINDINGS) ctx[to] = W[from]; vm.createContext(ctx);
+  run = src => vm.runInContext(src, ctx); run(SCRIPT);
   return { run, store, els, KEY: run("SAVE_KEY") };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
@@ -512,4 +531,86 @@ test("generator 2 play: the side tail draws no ink on its high-side column; a pl
   // and on a real place: seed 1, cell 73 has a tail at (0, 0..1)
   const lay = p.run("layout('73')"), I = (x, y) => y * PW + x;
   for (const y of [0, 1]) { assert.ok(lay.tmask[I(0, y)] & 16, "a tail tile"); assert.ok(!col(p.run(`tilePB(layout('73'), ${I(0, y)}, 0)`), 0).includes(ink), `tail ${y}: no ink`); }
+});
+
+// ---- M3 final pass: the lip through TINT, generator 2's map burrow hole, the generator 1 hint ----
+const fnSrc = name => { const i = PAGE.indexOf("\nfunction " + name + "("); assert.ok(i >= 0, name); return PAGE.slice(i, PAGE.indexOf("\nfunction ", i + 1)); };
+const fnv = a => { let h = 2166136261; for (const v of a) { h ^= v & 0xffff; h = Math.imul(h, 16777619) >>> 0; } return h; };
+// main's generator 1 map, captured from main's page with this harness (seed 7 saved without gen, no pods, creatures or signs, every cell seen, the gate and the mouth visited)
+const MAIN_G1 = { mapCv: 2730365212, frame: 3568652280 };   // main 5e287081
+// a save written without gen, as every save before generators: a world started, then saved with its gen dropped
+const g1Save = () => { const m = page(); m.run("newWorld(7); delete S.gen; save();"); assert.ok(!("gen" in JSON.parse(m.store[m.KEY]))); return { [m.KEY]: m.store[m.KEY] }; };
+// one page per generator, shared by the tests below (each sets the state it reads), so the map and fog are built once
+let G1P = null, G2P = null;
+const g1Page = () => G1P || (G1P = page(g1Save(), undefined, { canvas: true }));
+const g2Page = () => { if (!G2P) { G2P = page({}, undefined, { canvas: true }); G2P.run("newWorld(1)"); } return G2P; };
+const g1Map = () => { const p = g1Page();
+  p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {}; S.pods = []; S.cr = []; S.signs = {}; S.skulls = {}; for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } mapCv = null; drawMap('view', 0);");
+  return p; };
+
+test("M3: the lip on lime ground stays lime, in the edge marks at 72, 48 and 26 and in the place lip at 32 (no cream pixel)", () => {
+  const p = page(); p.run("newWorld(1)");
+  const lime = p.run("C.lime"), cream = p.run("C.cream"), grass = p.run("C.grass"), ink = p.run("C.ink");
+  for (const cs of [72, 48, 26]) for (const dir of ["up", "left", "right"]) {
+    const pb = p.run(`edgeMarkPB(${cs}, [[${JSON.stringify(dir)}, EDGE.CLIFF, false]], () => C.lime, 0)`), lit = [...pb.p].filter(v => v >= 0);
+    assert.ok(lit.length > 0 && lit.every(v => v === lime), `${cs} ${dir}: the lip keeps lime`); assert.ok(!lit.includes(cream), `${cs} ${dir}: no cream`);
+    const g = p.run(`edgeMarkPB(${cs}, [[${JSON.stringify(dir)}, EDGE.CLIFF, false]], () => C.grass, 0)`);
+    assert.ok([...g.p].filter(v => v >= 0).every(v => v === p.run(`TINT[C.grass]`) && v !== grass), `${cs} ${dir}: other ground still steps lighter`);
+  }
+  // the place lip (32 px, all four edges and every corner) on all-lime ground: lime bands, ink edges, no cream
+  p.run("const __g0 = groundInto; groundInto = (pb, base, h) => { __g0(pb, base, h); pb.rect(0, 0, 32, 32, C.lime); };");
+  for (const m of [0x55, 0xaa, 0xff, 0x01, 0x04]) { const pb = p.run(`buildTile(T.FACE, T.GRASS, TERR.LIP, ${m}, 0, {})`);
+    assert.ok(!pb.p.includes(cream), `place lip mask ${m}: no cream`); assert.ok([...pb.p].every(v => v === lime || v === ink), `place lip mask ${m}: lime and ink only`); }
+});
+
+test("M3: generator 2's burrow hole draws on the gate cell's face each frame, through the gate's light, never baked", () => {
+  const p = g2Page(); p.run("S.exp = null; S.phase = 'setup'; S.pins = []; S.opened = {};");
+  const G = { gate: p.run("G.gate"), mouth: p.run("G.mouth") }, CELL = p.run("CELL"), ox = p.run("MAP_X"), oy = p.run("MAP_Y"), C = p.run("C");
+  assert.equal(G.mouth, G.gate - MW);
+  const px = ox + (G.gate % MW) * CELL, py = oy + ((G.gate / MW) | 0) * CELL;
+  const inE = (X, Y, cx, cy, rx, ry) => ((X + .5 - cx) / rx) ** 2 + ((Y + .5 - cy) / ry) ** 2 <= 1;
+  const want = (X, Y) => Y >= py + 4 ? -1 : inE(X, Y, px + 13, py + 5, 5, 13) ? C.void : inE(X, Y, px + 13, py + 4, 7, 15) ? C.bark : -1;
+  const frame = setup => { p.run(`for (let c = 0; c < MW * MH; c++) { S.revealed[c] = 1; S.visited[c] = c === G.gate || c === G.mouth ? 1 : 0; } ${setup}; ensureMap(); scr.px().fill(-1); drawMap('view', 0);`); return p.run("scr").px(); };
+  const W_ = p.run("SCR_W");
+  const check = (f, lut, label) => { let n = 0, rows = new Set();
+    for (let Y = py - CELL; Y < py + CELL; Y++) for (let X = px; X < px + CELL; X++) { const w = want(X, Y); if (w < 0) continue; n++; rows.add(Y); assert.equal(f[Y * W_ + X], lut ? lut[w] : w, `${label} (${X}, ${Y})`); }
+    return { n, top: Math.min(...rows), bottom: Math.max(...rows) }; };
+  const a = check(frame(""), null, "visited");
+  assert.equal(a.bottom, py + 3, "its base on the face's foot row (row 3)"); assert.equal(a.top, py - 11, "rising 11 rows into the mouth cell");
+  check(frame("S.visited[G.gate] = 0"), p.run("REMAP[4]"), "the gate seen, not visited: the gate's light, the mouth part too");
+  // not drawn unless both cells are seen: with the mouth in fog the gate's top rows show the face, not the hole
+  const f = frame("S.revealed[G.mouth] = 0");
+  let holes = 0; for (let Y = py; Y < py + 4; Y++) for (let X = px; X < px + CELL; X++) if (want(X, Y) === C.void && f[Y * W_ + X] === C.void) holes++;
+  assert.equal(holes, 0, "the mouth unseen: no hole");
+  // never baked: the map image (which the inset reads) holds no void pixel anywhere
+  assert.ok(!p.run("mapPB").p.includes(C.void), "no hole in mapPB");
+  for (const f of ["drawInset", "drawWorldInset", "buildMapPB"]) assert.ok(!fnSrc(f).includes("g2hole"), f + " draws no generator 2 hole");
+});
+
+test("M3: generator 1's map and its burrow hole are unchanged, pixel for pixel against main", () => {
+  const p = g1Map();
+  assert.equal(p.run("G.gen"), undefined);
+  assert.equal(fnv(p.run("mapCv").px()), MAIN_G1.mapCv, "the baked map, hole included");
+  assert.equal(fnv(p.run("scr").px()), MAIN_G1.frame, "the drawn full map");
+  assert.equal(p.run("ART.has('g2hole')"), false, "no per-frame hole on generator 1");
+});
+
+test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never on generator 2 or during an expedition", () => {
+  const sandIn = (p, setup) => { p.run(`${setup}; ensureMap(); scr.px().fill(-1); drawSetup(0);`); const f = p.run("scr").px(), W_ = p.run("SCR_W"), sand = p.run("C.sand"); let n = 0, x1 = 0;
+    for (let y = 462; y < 482; y++) for (let x = 136; x < 442; x++) if (f[y * W_ + x] === sand) { n++; x1 = Math.max(x1, x); } return { n, x1 }; };
+  const g1 = g1Page();
+  assert.equal(g1.run("S.gen"), undefined);
+  const hint = "Flat world · New world has stairs", w = g1.run(`textW(${JSON.stringify(hint)}, 2)`);
+  assert.ok(w <= 306, "fits 306 at 2×");
+  const shown = sandIn(g1, "S.exp = null; S.phase = 'setup'; FX.msg = ''");
+  assert.ok(shown.n > 0 && shown.x1 < 136 + w, "the hint in sand at (136, 462)");
+  // the same pixels as the text alone
+  g1.run("scr.px().fill(-1); text(" + JSON.stringify(hint) + ", 136, 462, C.sand);"); const alone = g1.run("scr").px(), sand = g1.run("C.sand");
+  assert.equal([...alone].filter(v => v === sand).length, shown.n, "exactly the hint's pixels");
+  assert.equal(sandIn(g1, "S.gen = 1; S.exp = null; S.phase = 'setup'").n, shown.n, "gen 1 written out: still shown");
+  assert.equal(sandIn(g1, "delete S.gen; S.phase = 'setup'; S.exp = { pos: 0 }").n, 0, "during an expedition: none");
+  assert.equal(sandIn(g1, "S.exp = null; S.phase = 'menu'").n, 0, "another phase: none");
+  const g2 = g2Page();
+  assert.equal(sandIn(g2, "S.exp = null; S.phase = 'setup'").n, 0, "generator 2: none");
+  assert.doesNotMatch(fnSrc("menuItems"), /Flat world/, "not a menu entry: plain text, not focusable");
 });
