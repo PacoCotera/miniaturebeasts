@@ -21,7 +21,7 @@ more: a buried pod glints, an Untuva comes closer, a Loika hides. They shake a
 bush, set the fruit down and back off; the Untuva eats it (+2 Data, the first
 time). A storm moves in. A warned strike charges a stone in the open: +2 Energy.
 One more charge is a gamble on the Shield. They dig up the pod, walk off the
-wood's edge onto the next cell, and head back to the start flag to send home. At
+wood's edge onto the next cell, and head back to the start flag to end the expedition. At
 the Station the pod is identified and hatches; then the world turns once.
 
 ## The world
@@ -78,11 +78,11 @@ the Station the pod is identified and hatches; then the world turns once.
 - **The field clock counts actions, not seconds.** The world moves only when the
   player moves or acts; no timers and no time sinks in the field (**Decided**).
   No day/night cycle and no day-part light (**Decided**).
-- **Sending home** works only from the expedition's start cell (a flag on the
-  map) or a lit outpost in reach (**Decided**). Elsewhere Send home is dimmed and
-  the line names the nearest send point, "Start · about 2 cells" (**Built**).
-  Cargo previews what the Station will do first (**Built**). Sending from an
-  outpost ends the expedition exactly as from the start: no banking (**Decided**).
+- **End expedition** works only on the expedition's start cell (a flag on the
+  map) or a lit outpost in reach. Elsewhere it is dimmed and the line names the
+  nearest place to end it, "Start · about 2 cells". Cargo previews what the
+  Station will do first. Ending at an outpost ends the expedition exactly as at
+  the start: no banking.
 - **What ends an expedition** is the player's choice, pushed by a full hold, a
   fully explored reach, nothing refilling, the risk to what is carried, and a pod
   waiting at the Station (**Decided** as direction). Gathering is open-ended and
@@ -163,8 +163,8 @@ the Station the pod is identified and hatches; then the world turns once.
   (**Decided**). No ruins and no new outposts for now (**Decided**). The light left
   shows as a flame in three sizes, then a dark hut (**Decided**); the world-turn
   lines say when one burns low or goes out (**Built**).
-- **While lit** an outpost lets the player send home from its cell, mend the
-  Shield, and gives shelter from storms (**Decided**). Mending costs 1 Energy a bar;
+- **While lit** an outpost lets the player end the expedition from its cell, mend
+  the Shield, and gives shelter from storms. Mending costs 1 Energy a bar;
   shelter covers 3 tiles around it (**Built**). It reveals no land (**Decided**).
 
 ## Weather
@@ -285,7 +285,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
 - The first samples are reachable with a new player's tools; no rare-drop luck
   gates essential progress, and no checklist of places to visit.
 - No real-world travel, hazard or phone required; field events can be fiction.
-- The Station sees only what was sent home, never the map while the Probe is out.
+- The Station sees only what the Companion brings to the dock, never the map while the Probe is out.
 
 ## Open
 
