@@ -107,7 +107,7 @@ for L_ in (1, 2, 3):
 LV = np.zeros((HPX, WPX), int)
 for L_ in (1, 2, 3): LV[LVLM[L_]] = L_
 img = np.zeros((HPX, WPX), int)
-LTONE = [-2, 0, 1, 2]                                             # depth: each level up a step lighter on b1's ramp (O3), the basin two down
+LTONE = [-2, -1, 0, 1]                                            # depth: each level a step lighter on b1's ramp (O3); the top stays a saturated green, never the pale top of the ramp
 vv, cc = np.unique(B1[lawn], return_counts=True)
 LRAMP = sorted(vv[np.argsort(-cc)[:7]], key=lambda i: lum[i])     # b1's own lawn ramp: its seven commonest lawn tones, dark to light
 LB = LRAMP.index(BASE)
@@ -145,7 +145,8 @@ for by in range(0, HPX, 96):
         hh, ww = min(96, HPX - by), min(96, WPX - bx)
         for L_ in range(4):
             m_ = gm[by:by + hh, bx:bx + ww] & (LV[by:by + hh, bx:bx + ww] == L_)
-            k_ = np.clip(LB + LTONE[L_] + BAND[by:by + hh, bx:bx + ww] + f[:hh, :ww], 0, len(LRAMP) - 1)
+            k_ = LB + LTONE[L_] + BAND[by:by + hh, bx:bx + ww] + f[:hh, :ww]; TOPK = len(LRAMP) - 2
+            k_ = np.clip(np.where(k_ > TOPK, 2 * TOPK - k_, k_), 0, TOPK)   # never the ramp's pale top; above it the flecks fold back down, so the lit grass keeps its texture and saturation
             img[by:by + hh, bx:bx + ww][m_] = np.array(LRAMP)[k_[m_]]
 
 # ---- tufts: clustered, never alone. Sites ~40 px apart; each a cluster of 2-4 tufts within 9 px; clover rarely

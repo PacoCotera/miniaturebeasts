@@ -31,10 +31,10 @@
   - The bridge is turned to run north to south and is two cells wide.
   - Its posts are redrawn upright in b1's 3/4 view: an oval cap, a round shaded front and a dark outline. The sheet drew them as side-view logs.
   - The posts' contact shadows are in `props/shade/`.
-- **`proof/`** (made by `tools/tileset-map.py`): test map 11, built from tiles only on b1's own layout, beside b1 at the same size (`beside-b1-1x.png`).
+- **`proof/`** (made by `tools/tileset-map.py`): test map 12, built from tiles only on b1's own layout, beside b1 at the same size (`beside-b1-1x.png`).
   - The layout is b1's, read off its materials and snapped to the cell grid.
     - b1's upper steps are about 60 px, where one level here is 96 px. Its plateaus' south rims therefore sit up to a cell from b1's.
-  - Depth: each level up is a step lighter on b1's lawn ramp (O3), the low basin two steps down.
+  - Depth: each level up is a step lighter on b1's lawn ramp (O3), the low basin a step under level 1. The ramp's pale top tone is never used; flecks past the top fold back down, so the high lawn keeps its saturation and texture.
   - The lawn is on b1's own seven-tone ramp: a band layer from a smooth field (broad, irregular, never cut by the tile grid) plus one fleck tile (b1's lawn less its bands), mirrored so it has no seams.
     - On top: clustered tufts, clover and sparse flowers.
   - The turf spills 10–40 px over each wall in lobes: the lawn itself carried over the edge, a lit lip and a ragged fringe of blades, in lumps and lobes. The faces carry moss and roots. A stacked face's top gives way to the face above, and the line between them is broken.
@@ -42,7 +42,7 @@
   - Foot pieces sit along every wall's bottom edge, with small boulders and ferns.
   - Props stand on contact shadows. b1's island is used as a macro piece.
   - The pond's lobes round on macro corners.
-  - **Test map 11 is not signed.**
+  - **Test map 12 is not signed.**
     - Holds at 1× beside b1: the pond, the lawn, the props, the wall feet and ends.
     - The gaps:
       - The pond's lobes are rounded rectangles, where b1's are free curves.
