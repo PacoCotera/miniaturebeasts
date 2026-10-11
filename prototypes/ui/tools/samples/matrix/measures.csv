@@ -8,10 +8,10 @@ s04-304x312,304x312,points,figure-bbox mapping from the 304 set,"sx 0.9789, sy 0
 s04-304x312,304x312,head,mask png sha256,26c3e30dc172dfef243dd33e3d93c72a289181d3a145d4c6f34c4ddf1857d5d0,,info
 s04-304x312,304x312,input,painted-down sha256,0d876b232b59ca14c581f1487b341ef3dd83293998db28a584968b1fab787b81,,info
 s04-304x312,304x312,input,painted-down shadow sha256,fd4fd54933d9bd452bae96a0c9003099ffb85a03b65af143bd9b786c999e9211,,info
-s04-304x312,304x312,field,down map sha256,bff6cb720cafd36ccf5b68367cac7370f9cec12c2f3c44147b86bf29711c77f0,,info
+s04-304x312,304x312,field,down map sha256,7c6e4cf9f6887c7e11066a20b1580615f0b4766ece64dce3ae9efb9a28d441fb,,info
 s04-304x312,304x312,input,painted-up sha256,80990e617087cbb41b5a9fd4f14136bc61531ab8da3a2b6549ff94e45ac56904,,info
 s04-304x312,304x312,input,painted-up shadow sha256,7ce4d1140095058758349f9956023f5c93243138c9fd61d92cf72723ecfb86ec,,info
-s04-304x312,304x312,field,up map sha256,cbc8186ce1de9e1d9177073fbe43a59a23a3e61e56367c871ed8ea2ae85cc95e,,info
+s04-304x312,304x312,field,up map sha256,97204ee065d45e1f746ba9100a6c1940acf65febc6f33bab4e6c18bf095a2fc8,,info
 s04-304x312,304x312,M3,stand strict counts,"1 comp, 0 holes, 0 orphans",info,
 s04-304x312,304x312,M4,stand irregular,377,,info
 s04-304x312,304x312,M2,warped-down,0,0,pass
@@ -20,12 +20,12 @@ s04-304x312,304x312,M3,warped-down not worse than its own unwarped picture (alph
 s04-304x312,304x312,M3,"warped-down body layer alone, not worse than the unwarped body layer (alpha>110 gates)",alpha>110 1/0/0 (components/holes/orphans),<= the unwarped 1/0/0,pass
 s04-304x312,304x312,M3,warped-down alpha>0 counts,alpha>0 1/7/0 (components/holes/orphans),the unwarped 1/7/0,report
 s04-304x312,304x312,M3,warped-down body layer alpha>0 counts,alpha>0 2/7/1 (components/holes/orphans),the unwarped 1/7/0,report
-s04-304x312,304x312,M4,warped-down irregular,388,395,pass
+s04-304x312,304x312,M4,warped-down irregular,389,395,pass
 s04-304x312,304x312,clamp,"misses (down, final)",0,0,pass
 s04-304x312,304x312,legs,leg compression px (down),0,0,pass
 s04-304x312,304x312,field,down max |d| px / stretch / shear,6.00 / 0.250 / 0.500,12 / 0.25 / 0.5,pass
 s04-304x312,304x312,M5a,"down top edge vs the measured profile, 10 columns x <= 141","max 1.10 (x 112), mean 0.47",1.5 / 1,pass
-s04-304x312,304x312,M5,iou warped-down vs painted,0.9881,0.9500,pass
+s04-304x312,304x312,M5,iou warped-down vs painted,0.9879,0.9500,pass
 s04-304x312,304x312,M5,profile mean abs d warped-down vs painted,0.4245,2,pass
 s04-304x312,304x312,M5,profile columns warped-down vs painted,"139 matched, 0 unmatched",,info
 s04-304x312,304x312,M3,painted-down,"1 comp, 0 holes, 0 orphans",info,info
@@ -40,15 +40,15 @@ s04-304x312,304x312,M4,warped-up irregular,393,395,pass
 s04-304x312,304x312,clamp,"misses (up, final)",0,0,pass
 s04-304x312,304x312,legs,leg compression px (up),0,0,pass
 s04-304x312,304x312,field,up max |d| px / stretch / shear,9.00 / 0.250 / 0.500,12 / 0.25 / 0.5,pass
-s04-304x312,304x312,M5a,"up top edge vs the measured profile, 10 columns x <= 141","max 2.20 (x 108), mean 0.79",1.5 / 1,FAIL
-s04-304x312,304x312,M5,iou warped-up vs painted,0.9885,0.9500,pass
-s04-304x312,304x312,M5,profile mean abs d warped-up vs painted,0.4101,2,pass
+s04-304x312,304x312,M5a,"up top edge vs the measured profile, 10 columns x <= 141","max 2.20 (x 112), mean 1.07",1.5 / 1,FAIL
+s04-304x312,304x312,M5,iou warped-up vs painted,0.9873,0.9500,pass
+s04-304x312,304x312,M5,profile mean abs d warped-up vs painted,0.4604,2,pass
 s04-304x312,304x312,M5,profile columns warped-up vs painted,"139 matched, 0 unmatched",,info
 s04-304x312,304x312,M3,painted-up,"1 comp, 0 holes, 0 orphans",info,info
 s04-304x312,304x312,M4,painted-up irregular,379,,info
 s04-304x312,304x312,M6,only at 104x112,,,n/a
-s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),3.6330,,info
-s04-304x312,304x312,M7,warp ms per picture (up; a clock reading),3.6129,,info
+s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),3.9476,,info
+s04-304x312,304x312,M7,warp ms per picture (up; a clock reading),3.6703,,info
 s04-304x312,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -56,7 +56,7 @@ s04-304x312,304x312,M8,"stand-b2 up: changed outside the rows above the belly li
 s04-304x312,304x312,M8,"S04-stand-b1 a is the signed stand (sha256 caf4caaa4d07), not this set's level key; the stand-b rows above run on the level key",,,info
 s04-304x312,304x312,pair,"holds b0/b1/b2/b1back ms, offset ms, seconds","880/240/800/480, 1040, 10",,info
 s04-304x312,304x312,run,status,verdict-shaped (a verdict also needs the animator's re-signed landmarks and the painted ends),,ok
-s04-304x312,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",64409b76d26a,equal,pass
+s04-304x312,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",9509a1a7b383,equal,pass
 s04-104x112,104x112,input,stand sha256,69e1407756add36ea8223c031b9e0aef9c583c2fef828e3074b65202bcb2e47f,,info
 s04-104x112,104x112,input,stand shadow sha256,3d0ea336fe19a050a67a5b03b61cf39d8a91b4c6c0a6cb25b642c8ae97da63ca,,info
 s04-104x112,104x112,prep,"signed cut key: body alpha 0/255, shadow its own layer, never warped","1518 body, 178 shadow px",,info
@@ -104,14 +104,16 @@ s04-104x112,104x112,M5,profile mean abs d warped-up vs painted,0.2400,1,pass
 s04-104x112,104x112,M5,profile columns warped-up vs painted,"50 matched, 0 unmatched",,info
 s04-104x112,104x112,M3,painted-up,"1 comp, 1 holes, 0 orphans",info,info
 s04-104x112,104x112,M4,painted-up irregular,140,,info
-s04-104x112,104x112,M6,warped down-stand,0.3800,2,FAIL
-s04-104x112,104x112,M6,warped stand-up,0.5000,2,FAIL
-s04-104x112,104x112,M6,warped down-up,0.8800,2,FAIL
-s04-104x112,104x112,M6,painted down-stand,0.4000,2,FAIL
-s04-104x112,104x112,M6,painted stand-up,0.7000,2,FAIL
-s04-104x112,104x112,M6,painted down-up,1.0200,2,FAIL
-s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.3346,5,pass (this machine; confirm on the CI runner)
-s04-104x112,104x112,M7,warp ms per picture (up; a clock reading),0.2777,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M6,warped columns the field moves,15,,info
+s04-104x112,104x112,M6,warped down-stand (mean over the moved columns),1.2667,2,FAIL
+s04-104x112,104x112,M6,warped stand-up (mean over the moved columns),1.6667,2,FAIL
+s04-104x112,104x112,M6,warped down-up (mean over the moved columns),2.9333,2,pass
+s04-104x112,104x112,M6,painted columns the field moves,18,,info
+s04-104x112,104x112,M6,painted down-stand (mean over the moved columns),1.1111,2,FAIL
+s04-104x112,104x112,M6,painted stand-up (mean over the moved columns),1.9444,2,FAIL
+s04-104x112,104x112,M6,painted down-up (mean over the moved columns),2.8333,2,pass
+s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.5195,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (up; a clock reading),0.3565,5,pass (this machine; confirm on the CI runner)
 s04-104x112,104x112,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
@@ -168,8 +170,8 @@ s04-96x88,96x88,M5,profile columns warped-up vs painted,"40 matched, 0 unmatched
 s04-96x88,96x88,M3,painted-up,"1 comp, 1 holes, 0 orphans",info,info
 s04-96x88,96x88,M4,painted-up irregular,107,,info
 s04-96x88,96x88,M6,only at 104x112,,,n/a
-s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.2666,,info
-s04-96x88,96x88,M7,warp ms per picture (up; a clock reading),0.2618,,info
+s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.2915,,info
+s04-96x88,96x88,M7,warp ms per picture (up; a clock reading),0.2496,,info
 s04-96x88,96x88,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass

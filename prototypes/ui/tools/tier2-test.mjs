@@ -187,6 +187,9 @@ export function outlineIrregular(img) {
 export function iou(a, b) { const ma = opaqueMask(a), mb = opaqueMask(b); let i = 0, u = 0; for (let k = 0; k < ma.length; k++) { i += ma[k] & mb[k]; u += ma[k] | mb[k]; } return u ? i / u : 1; }
 export function profile(img) { const m = opaqueMask(img), p = new Int32Array(img.w).fill(-1); for (let x = 0; x < img.w; x++) for (let y = 0; y < img.h; y++) if (m[y * img.w + x]) { p[x] = y; break; } return p; }
 export function profileDelta(a, b) { const pa = profile(a), pb = profile(b); let s = 0, n = 0, only = 0; for (let x = 0; x < pa.length; x++) { if (pa[x] >= 0 && pb[x] >= 0) { s += Math.abs(pa[x] - pb[x]); n++; } else if (pa[x] !== pb[x]) only++; } return { mean: n ? s / n : 0, columns: n, unmatched: only }; }
+// M6's columns: where the blend's field moves the topline, i.e. any column where either end's profile differs from the stand's (and all three have ink). The mean is taken over these only.
+export function movedColumns(down, stand, up) { const pd = profile(down), ps = profile(stand), pu = profile(up), cols = []; for (let x = 0; x < ps.length; x++) if (pd[x] >= 0 && ps[x] >= 0 && pu[x] >= 0 && (pd[x] !== ps[x] || pu[x] !== ps[x])) cols.push(x); return cols; }
+export function profileDeltaOver(a, b, cols) { const pa = profile(a), pb = profile(b); let s = 0, n = 0; for (const x of cols) if (pa[x] >= 0 && pb[x] >= 0) { s += Math.abs(pa[x] - pb[x]); n++; } return { mean: n ? s / n : 0, columns: n }; }
 // M5a: the warped stand's top edge at the animator's measured columns against stand top + the measured end displacement; columns at x ≤ headEdge − 6 only.
 export function profileFit(stand, warped, prof, end, headEdgeX) {
   const ps = profile(stand), pw = profile(warped), d = [];
@@ -350,7 +353,8 @@ export function runSet(set, opts = {}) {
   // M6 at walker size: pairwise mean profile difference of the three bins
   if (size === "104x112") for (const [kind, ends] of [["warped", [warped.down, stand, warped.up]], ["painted", [painted.down, stand, painted.up]]]) {
     if (ends.some((x) => !x)) { row(size, "M6", kind, "ends not available", "", "n/a"); continue; }
-    for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDelta(ends[a], ends[b]).mean; row(size, "M6", `${kind} ${label}`, d, M6_MIN, d >= M6_MIN ? "pass" : "FAIL"); }
+    const cols = movedColumns(ends[0], ends[1], ends[2]); row(size, "M6", `${kind} columns the field moves`, cols.length, "", "info");
+    for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDeltaOver(ends[a], ends[b], cols).mean; row(size, "M6", `${kind} ${label} (mean over the moved columns)`, d, M6_MIN, d >= M6_MIN ? "pass" : "FAIL"); }
   } else row(size, "M6", "only at 104x112", "", "", "n/a");
   // M7
   for (const e of live) { const ms = warpMs(stand, fields[e], headMask); row(size, "M7", `warp ms per picture (${e}; a clock reading)`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }

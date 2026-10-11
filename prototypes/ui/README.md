@@ -50,7 +50,7 @@ Opaque means alpha > 110.
 | M4 | outline pixels (opaque, with a 4-neighbour transparent or outside) whose count of outline 4-neighbours is not 2 | ≤ stand's + 5 % |
 | M5 | silhouette IoU against the painted end; mean abs difference of the topline profile (highest opaque row per column, columns where both have one) | 304x312: ≥ 0.95, ≤ 2 px; 104x112: ≥ 0.93, ≤ 1 px |
 | M5a | the warped stand's top edge at the animator's measured columns (x ≤ head edge − 6) against stand top + the measured end displacement (`toplineProfile`); a check, never an input. At another size the profile is mapped (x by the bbox mapping, dy × sy; needs `--base-stand`). The one tolerance is the landmarks' `rules.M5aTolerance`, by size (no fallback) | per column ≤ max and mean ≤ mean of that rule: 304x312 1.5 / 1.0, 104x112 and 144x152 1.1 / 0.5 (1.5 x sy with that floor), a figure scale below 0.30 (the nap) 1.5 / 0.6 |
-| M6 | at 104x112, pairwise mean profile difference of the three bins (warped; painted when both ends are given) | ≥ 2 px |
+| M6 | at 104x112, pairwise mean profile difference of the three bins (warped; painted when both ends are given), over the columns the blend's field moves only (any column where either end's profile differs from the stand's); a pre-check | ≥ 2 px |
 | M7 | median warp time of one picture on this machine | ≤ 5 ms at 104x112 (confirm on the CI runner) |
 | M8 | stand ↔ baked b1 and b2, always, with the band derived (in each column the rows above the belly line), and each cycle pair in the JSON (`band`: `belly-down` with the tail box, rows, or a mask picture; `a`, `b` paths with SHA-256): changed pixels outside the band, without and with the warp (the same field and head mask by id) | with ≤ without |
 

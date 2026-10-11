@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
 import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping } from "../tools/warp-field.mjs";
-import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat } from "../tools/tier2-test.mjs";
+import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
 const A = [200, 120, 60, 255], B = [150, 90, 40, 255], C = [240, 220, 160, 255], D = [90, 60, 30, 255];
@@ -202,4 +202,11 @@ test("a signed cut key (body 0/255 and its shadow, each its own file) is used as
   assert.ok(r.rows.some((x) => x.item === "stand shadow sha256") && r.rows.some((x) => x.item === "painted-down shadow sha256"), "every file's sha256 is in the CSV");
   const out = decodePNG(r.files.get("cut/104x112-warped-up.png")).data, at = (x, y) => [...out.slice((y * 104 + x) * 4, (y * 104 + x) * 4 + 4)];
   assert.deepEqual(at(50, 100), [30, 26, 34, 110], "the shadow stays under the warped body");
+});
+test("M6 measures the mean over the columns the field moves, not every opaque column", () => {
+  const mk = (tops) => { const im = blank(6, 10); tops.forEach((t, x) => { for (let y = t; y < 10; y++) im.data.set([9, 9, 9, 255], (y * 6 + x) * 4); }); return im; };
+  const stand = mk([4, 4, 4, 4, 4, 4]), down = mk([4, 6, 6, 4, 4, 4]), up = mk([4, 2, 2, 3, 4, 4]);
+  assert.deepEqual(movedColumns(down, stand, up), [1, 2, 3], "a column where either end differs from the stand");
+  assert.equal(profileDeltaOver(down, up, [1, 2, 3]).mean, (4 + 4 + 3) / 3); assert.equal(profileDeltaOver(down, up, [1, 2, 3]).columns, 3);
+  assert.ok(profileDeltaOver(down, up, [0, 1, 2, 3, 4, 5]).mean < 3, "over every column the mean would be diluted");
 });
