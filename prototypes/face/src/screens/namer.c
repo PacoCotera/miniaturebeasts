@@ -28,10 +28,14 @@ static void target_rect(const char *id, int r[4]) {
 }
 static const char *cur(void) { return v_focus_cur_at("overlay.focus.cur"); }
 
-/* one key: a panel (fill, bevel top, hairline edge), its label centred, lifted 2 px while the ring is on it */
+/* one key: a panel (fill, bevel top, hairline edge) as one composed picture (the same ops are the same picture: kept once, by size and colours), its label centred, lifted 2 px while the ring is on it. Twenty-eight keys of seven nodes each
+   would put the namer over the object budget; a key is two. */
 static void key_face(const char *id, const char *region, const int r[4], int focused, const char *fill, const char *label, const char *ink) {
-  int lift = focused ? ni("focus.targets.key.lift", 2) : 0, y = r[1] - lift, px = ni("regions.keys.label.px", 16), w = v_measure(label, px);
-  v_region(region, LAYER_CHROME); word_panel(id, r[0], y, r[2], r[3], fill, ncol("colours.key.edge")); v_rect(v_fmt("%s.top", id), r[0] + 1, y + 1, r[2] - 2, 1, ncol("colours.key.top"));
+  int lift = focused ? ni("focus.targets.key.lift", 2) : 0, y = r[1] - lift, px = ni("regions.keys.label.px", 16), w = v_measure(label, px), kw = r[2], kh = r[3];
+  const char *edge = ncol("colours.key.edge"), *top = ncol("colours.key.top"); char *o = prim_ops(); int cap = prim_ops_size(), n = snprintf(o, (size_t)cap, "[");
+  for (int j = 0; j < kh; j++) n += snprintf(o + n, (size_t)(cap - n), "%s[\"h\",0,%d,%d,\"%s\"]", j ? "," : "", j, kw, fill);
+  snprintf(o + n, (size_t)(cap - n), ",[\"h\",0,0,%d,\"%s\"],[\"h\",0,%d,%d,\"%s\"],[\"v\",0,0,%d,\"%s\"],[\"v\",%d,0,%d,\"%s\"],[\"h\",1,1,%d,\"%s\"]]", kw, edge, kh - 1, kw, edge, kh, edge, kw - 1, kh, edge, kw - 2, top);
+  v_region(region, LAYER_CHROME); prim_node(v_id(id), FN_COMPOSED, r[0], y, kw, kh, 0, 0, 0);
   v_region(region, LAYER_TYPE); v_text(v_fmt("%s.label", id), label, r[0] + v_half(r[2] - w), y + ni("regions.keys.label.lineTop", 10) + v_fdiv(20 - v_cap(px), 2), w, px, ink);
 }
 static void build_panel(void) {
