@@ -3,4 +3,5 @@
 export const milestone = "slot 9 (The Sitting)";
 export const steps = [
   { id: "sitting-first-screen", what: "the Sitting's first screen, when its spec lands" },
+  { id: "sitting-door-owed", what: "the first load with the sitting's door open, on a save carrying a held welcome and one earned moment: the welcome held, one owed (X21)" },
 ]

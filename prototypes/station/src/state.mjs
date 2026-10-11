@@ -2,7 +2,7 @@
 // function over it. No drawing, no DOM: the tests run this in Node. Screens call these and read
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
-// accepted, dockN, known, probe, carryReqs, returned (with species), and each mibi's id, name, sp, species, spName, born, from, bonded.
+// accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
@@ -61,7 +61,7 @@ export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 export function freshSt(wid, turn, now = Date.now()) {
   return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, readEver: false, freeId: false, firstMibi: true,
-    mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, wish: {}, face: {}, sittingCrates: [], outbox: [],
+    mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: true, returned: [], log: [] };
 }
 export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
@@ -123,7 +123,8 @@ export function migrate(st, now = Date.now(), sv = null) {
 }
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
-  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed"]) if (!Array.isArray(st[k])) st[k] = [];
+  if (st.doorAt === undefined) st.doorAt = null;   /* the sitting's door: null until it first opens on this save (sitting.mjs openSittingDoor); additive, no schema bump */
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
   for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
