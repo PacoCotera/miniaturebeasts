@@ -207,7 +207,7 @@ function lineOf(m, spec, p, chapters, ci, view) {
   if (!p) return { back: "Home" };
   const back = view.mode === "chapter" ? S.cap(S.spName(p)) : "Pods", glintPod = glintOf(p);
   if (f === "pod") {
-    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "⚡"), dim: st.e < cost, back, subject: state(p), need: st.e < cost ? fill(Sg.needMore, { icons: "⚡" }) : null }; }
+    if (!p.idd) { const cost = S.identifyCost(st, settings); return { ok: "Identify", price: priceOf(cost, "◆"), dim: st.d < cost, back, subject: state(p), need: st.d < cost ? fill(Sg.needMore, { icons: "◆" }) : null }; }
     const b = S.growBlock(st, p, {}, settings, []); return { ok: "Shape a founder", price: "", dim: !!b, back, subject: state(p), need: blockNeed(b, Sg) ?? glintPod };
   }
   if (f && f.startsWith("rail.")) {

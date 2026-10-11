@@ -47,14 +47,16 @@ export class Player {
     this.sv.carried = m ? [m.id] : []; if (m) this.sv.trips.push({ v: 1, n: this.walks, partner: m.id, places: ["wood"], storm: false, carried: [m.id] });
     if (S.docked(this.st)) S.dockKey(this.st, this.sv, this.settings, this.now);   // lift, so the next dock docks
     const d = T.dock(this.st, this.sv, this.settings, this.now), o = S.openBay(this.st, this.sv, this.settings, this.now);
-    let tier2 = null; if (this.probe && S.tier2Ready(this.st, this.settings)) { const a = [this.st.e, this.st.d, this.st.s]; S.installTier2(this.st, this.settings); tier2 = { e: this.st.e - a[0], d: this.st.d - a[1], s: this.st.s - a[2] }; }   // bought at the dock
+    let tier2 = null; if (this.probe && S.tier2Ready(this.st, this.settings) && S.canPay(this.st, S.price(S.PRICE.tier2E, this.settings) + this.fieldSpendNow(), S.price(S.PRICE.tier2D, this.settings), 0)) { const a = [this.st.e, this.st.d, this.st.s]; S.installTier2(this.st, this.settings); tier2 = { e: this.st.e - a[0], d: this.st.d - a[1], s: this.st.s - a[2] }; }   // bought at the dock
     S.dockKey(this.st, this.sv, this.settings, this.now);   // lift again: the Companion sets out
     return { ok: d.ok && o.ok, pod: this.st.tray.concat(this.st.waiting).find((p) => p.id === crate.id + ":p0"), welcome: d.welcome, tier2 };
   }
+  // What this walk will spend in the field (charged right after the dock, as in play): the Probe is bought only when its price is left over after it.
+  fieldSpendNow() { const f = this.field; return Math.floor(f.calls * FIELD.call + f.beacons * FIELD.beacon + f.patches * FIELD.patch + this.carry + 1e-9); }
   // A walk as a step, with what it spent in the field, the welcome if it came, and the Probe if it was bought.
   takeWalk(label = "a walk (" + this.species + ")") {
     const r = this.step(this.with != null ? label + " with " + S.mibiById(this.st, this.with).name : label, () => this.walk()), walkRow = this.steps[this.steps.length - 1];
-    const f = this.field, owed = f.calls * FIELD.call + f.beacons * FIELD.beacon + f.patches * FIELD.patch + this.carry, spend = Math.floor(owed + 1e-9);   // a half beacon is one every other walk: the remainder carries to the next walk
+    const f = this.field, owed = f.calls * FIELD.call + f.beacons * FIELD.beacon + f.patches * FIELD.patch + this.carry, spend = this.fieldSpendNow();   // a half beacon is one every other walk: the remainder carries to the next walk
     this.carry = owed - spend;
     if (spend) this.step("the field: " + [f.calls && f.calls + " Call" + (f.calls > 1 ? "s" : ""), f.beacons && (f.beacons < 1 ? "a beacon" : f.beacons + " beacon"), f.patches && f.patches + " patch"].filter(Boolean).join(", "), () => { this.st.e -= spend; return { ok: this.st.e >= 0 }; });
     if (r.welcome && r.welcome.ok) { this.mark("welcome"); this.step("the welcome sitting", () => ({ ok: true })); }
@@ -65,7 +67,7 @@ export class Player {
   }
   // Take walks until the stock covers a price (the player's patience, counted in walks).
   afford(e = 0, d = 0, s = 0) { let n = 0; while (!S.canPay(this.st, e, d, s) && n < 40) { this.takeWalk(); n++; } return n; }
-  identify(p) { this.afford(S.identifyCost(this.st, this.settings)); return this.step("identify " + p.id, () => S.identify(this.st, p, this.settings)); }
+  identify(p) { this.afford(0, S.identifyCost(this.st, this.settings)); return this.step("identify " + p.id, () => S.identify(this.st, p, this.settings)); }
   read(p, ch) { this.afford(0, S.readCost(this.st, p, ch, this.settings) || 0); return this.step("read " + ch + " on " + p.id, () => S.read(this.st, p, ch, this.settings)); }
   // Shape one read trait of the pod to a look it can carry that it does not show, if there is one.
   shape(p) { for (const t of S.shapeableTraits(p)) { const o = S.rollOptions(p, t.id); const alt = o.find((x) => x.choice && x.look !== o[0].look); if (alt) return { [t.id]: alt.choice }; } return {}; }
