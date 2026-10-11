@@ -60,10 +60,11 @@ export function pickPicture(landmarks, w, h, name = null) {
   if (!baseName || !pics[baseName]) throw new Error(`no landmark picture for ${w}x${h}${name ? ` (asked for "${name}")` : ""}`);
   return { pic: pics[baseName], derived: true, name: baseName };
 }
-// The figure bbox of a picture: the pixels with alpha > 110 in the rows above its first zero row, as [x0, y0, x1, y1] with y1 the row just above that row.
-export function figureBbox(img, zeroY) {
-  let x0 = img.w, x1 = -1, y0 = img.h; for (let y = 0; y < Math.min(zeroY, img.h); y++) for (let x = 0; x < img.w; x++) if (img.data[(y * img.w + x) * 4 + 3] > 110) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); }
-  return [x0, y0, x1, zeroY - 1];
+// The figure bbox of a picture: the full ink (alpha > 110, every row, feet included) as [x0, y0, x1, y1] with x1 and y1 exclusive. A picture block's `figureBox` wins when the
+// shadow or anything else at alpha > 110 widens the box beyond the figure.
+export function figureBbox(img) {
+  let x0 = img.w, x1 = -1, y0 = img.h, y1 = -1; for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) if (img.data[(y * img.w + x) * 4 + 3] > 110) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  return [x0, y0, x1 + 1, y1 + 1];
 }
 // The mapping from the 304 set to another picture, each axis on its own: p' = t0 + r((p - b0) * s), d' = r(d * s).
 export const bboxMapping = (base, target) => ({ sx: (target[2] - target[0]) / (base[2] - base[0]), sy: (target[3] - target[1]) / (base[3] - base[1]), bx0: base[0], by0: base[1], tx0: target[0], ty0: target[1], base, target });
@@ -111,7 +112,6 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   if (BOUNDS[`${w}x${h}`] == null) throw new Error(`no displacement bound for ${w}x${h} (bounds: ${Object.keys(BOUNDS).join(", ")})`);
   const { pic, derived, name } = pickPicture(landmarks, w, h, picture), amp = overrides.amplitude ?? 1, used = [];
   if (derived) {
-    if (!pic.fieldZeroRows && !overrides.shadowRows) throw new Error(`no fieldZeroRows for ${w}x${h}`);
     if (!mapping) throw new Error(`${w}x${h} has no picture block of its own: give the 304 stand and this stand for the figure-bbox mapping (--base-stand)`);
   }
   const M = derived ? mapping : { sx: 1, sy: 1, bx0: 0, by0: 0, tx0: 0, ty0: 0 };
@@ -124,7 +124,7 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
     add(sx(m.pos[0]) + dx, sy(m.pos[1]) + dy, dx, dy, nm);       // fitted at the destination p + d, so the landmark lands on p + d
   }
   if (overrides.amplitude != null) used.push("amplitude");
-  let rows = pic.fieldZeroRows && !derived ? [[pic.fieldZeroRows[0], Math.min(h - 1, pic.fieldZeroRows[1])]] : [];
+  let rows = pic.fieldZeroRows ? [derived ? [sy(pic.fieldZeroRows[0]), Math.min(h - 1, sy(pic.fieldZeroRows[1]))] : [pic.fieldZeroRows[0], Math.min(h - 1, pic.fieldZeroRows[1])]] : [];   // at a derived size the zero rows map with the same transform
   if (overrides.shadowRows) { rows = overrides.shadowRows; used.push("shadow-rows"); }
   for (const [y0] of rows) { for (let x = 0; x < w; x += 8) add(x, y0, 0, 0, "zero-row"); if ((w - 1) % 8) add(w - 1, y0, 0, 0, "zero-row"); }
   // topline: the belly stays put (rules.bellyFixed), so d = 0 points every 8 px along the belly line join the constraints before the fit

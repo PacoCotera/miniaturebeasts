@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
 import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping } from "../tools/warp-field.mjs";
-import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes } from "../tools/tier2-test.mjs";
+import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
 const A = [200, 120, 60, 255], B = [150, 90, 40, 255], C = [240, 220, 160, 255], D = [90, 60, 30, 255];
@@ -42,7 +42,7 @@ test("the same inputs give the same bytes twice, and the harness's own two runs 
     assert.equal(decodePNG(apng).width, 2 * 104 + 3 * 16);
   }
   assert.ok(r.files.get("fixture/mibi-juvenile-FX-stand-map-head-104x112.png"), "the head mask is written as a picture");
-  assert.equal(r.rows.find((x) => x.measure === "run").result, "ok");
+  assert.match(r.rows.find((x) => x.measure === "run").item, /status/); assert.equal(r.rows.find((x) => x.measure === "run").result, "no verdict", "the input prep is provisional until the art director confirms it");
 });
 test("the warp moves existing pixels only (M2) and draws the head unwarped over the body", () => {
   const img = fixture(), f = buildField(landmarks, "up", 104, 112), stats = { clampMisses: 0 }, out = warp(img, [{ field: f, t: 1 }], { headMask: f.headMask, stats });
@@ -173,13 +173,23 @@ test("M3 gates at alpha > 110 and reports alpha > 0 with the boxes of new region
   const marked = outlineBoxes(b, [[16, 16, 16, 16]]); assert.deepEqual([...marked.data.slice((15 * 20 + 15) * 4, (15 * 20 + 15) * 4 + 4)], [255, 0, 0, 255]);
   assert.deepEqual([...b.data.slice((15 * 20 + 15) * 4, (15 * 20 + 15) * 4 + 4)], [0, 0, 0, 0], "the original is untouched");
 });
-test("a derived size is mapped by the figure bbox, each axis on its own, and refused without fieldZeroRows or the mapping", () => {
-  const img = fixture(), base = figureBbox(img, 96), m = bboxMapping(base, [10, 20, 10 + (base[2] - base[0]) * 2, 20 + (base[3] - base[1]) * 3]);
-  assert.deepEqual(base, [24, 38, 99, 95]); assert.equal(m.sx, 2); assert.equal(m.sy, 3);
+test("a derived size is mapped by the full ink bbox, each axis on its own, zero rows included; a figureBox is the caller's to override", () => {
+  const img = fixture(), base = figureBbox(img), m = bboxMapping(base, [10, 20, 10 + (base[2] - base[0]) * 2, 20 + (base[3] - base[1]) * 3]);
+  assert.deepEqual(base, [24, 38, 100, 100], "alpha > 110, every row, x1 and y1 exclusive"); assert.equal(m.sx, 2); assert.equal(m.sy, 3);
   const only304 = { rules: landmarks.rules, pictures: { "stand-304x312": structuredClone(landmarks.pictures["stand-104x112"]) } };
-  const noRows = structuredClone(only304); delete noRows.pictures["stand-304x312"].fieldZeroRows;
-  assert.throws(() => buildField(noRows, "down", 144, 152, { mapping: m }), /no fieldZeroRows for 144x152/);
   assert.throws(() => buildField(only304, "down", 144, 152), /no picture block of its own/);
-  const sizes = buildField(noRows, "down", 144, 152, { mapping: bboxMapping(base, [34, 53, 34 + 76 * 1.4, 53 + 58 * 1.4]), overrides: { shadowRows: [[140, 151]] } });
-  assert.equal(sizes.pointsFrom, "mapped"); assert.equal(sizes.size, "144x152");
+  const f = buildField(only304, "down", 144, 152, { mapping: bboxMapping(base, [34, 53, 34 + 76 * 1.4, 53 + 62 * 1.4]) });
+  assert.equal(f.pointsFrom, "mapped"); assert.equal(f.size, "144x152"); assert.deepEqual(f.zeroRows[0], [134, 151], "the zero rows map with the same transform");
+});
+test("the warp's input is the cut key: body binarised, the shadow split off, not warped, and left under the warped feet", () => {
+  const img = blank(10, 12), put = (x, y, a, c = [90, 60, 30]) => img.data.set([...c, a], (y * 10 + x) * 4);
+  for (let x = 2; x < 8; x++) for (let y = 2; y < 6; y++) put(x, y, 255); put(1, 3, 150); put(8, 3, 70);               // a body with a soft fringe
+  for (let x = 2; x < 8; x++) put(x, 9, 130, [30, 26, 34]); put(5, 10, 40, [30, 26, 34]);                            // a painted shadow on the zero rows 9 and below
+  const k = prepareKey(img, 9);
+  assert.deepEqual(k.prep, { body: 24, shadow: 6, dropped: 3 }, "alpha >= 200 is body; 60..199 from the zero row down is shadow; the rest is dropped");
+  assert.ok([...k.data].every((v, i) => i % 4 !== 3 || v === 0 || v === 255), "the body alpha is 255 or 0");
+  const f = { w: 10, h: 12, dx: new Int8Array(120), dy: new Int8Array(120).fill(2) }, out = warp(k, [{ field: f, t: 1 }]);
+  assert.deepEqual([...flat(out).data.slice((9 * 10 + 4) * 4, (9 * 10 + 4) * 4 + 4)], [30, 26, 34, 110], "the shadow stays where it was, flat at <= 110");
+  assert.equal(flat(out).data[(4 * 10 + 4) * 4 + 3], 255, "the body moved down 2 px"); assert.equal(flat(out).data[(2 * 10 + 4) * 4 + 3], 0);
+  assert.equal(newColours(flat(k), flat(out)), 0);
 });

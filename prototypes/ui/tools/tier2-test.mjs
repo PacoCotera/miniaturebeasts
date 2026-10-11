@@ -75,7 +75,7 @@ export function warp(img, layers, { headMask = null, drawHead = true, stats = nu
     }
     copy(i * 4, (sy * w + sx) * 4);
   }
-  return out;
+  out.shadow = img.shadow ?? null; return out;
 }
 
 // The b-step bake (the animator's `breathBake`): row copies per column, no resampling, no new pixels. yb(x) is the belly line at x (Int32Array), rows y >= yb unchanged.
@@ -83,7 +83,7 @@ export function warp(img, layers, { headMask = null, drawHead = true, stats = nu
 // ytop = the column's first ink row (alpha > 0) of the picture being baked (the warped stand for a warped step); ym is never within 8 px of yb (ym = min(ym, yb - 8)). Rows shifted in
 // from above the figure are transparent. A column with no ink is unchanged.
 export function bakeStep(img, n, yb) {
-  const { w, h } = img, out = { w, h, data: new Uint8ClampedArray(img.data) };
+  const { w, h } = img, out = { w, h, data: new Uint8ClampedArray(img.data), shadow: img.shadow ?? null };
   for (let x = 0; x < w; x++) {
     let ytop = -1; for (let y = 0; y < h; y++) if (img.data[(y * w + x) * 4 + 3] > 0) { ytop = y; break; }
     if (ytop < 0) continue;
@@ -99,6 +99,27 @@ export function bakeStep(img, n, yb) {
 }
 // The breath pair's band is derived, never given: in each column the rows above the belly line.
 export const aboveBellyBand = (w, h, yb) => { const m = new Uint8Array(w * h); for (let x = 0; x < w; x++) for (let y = 0; y < Math.min(h, yb[x]); y++) m[y * w + x] = 1; return m; };
+
+// The warp's input is the cut key: the body alpha binarised (255 or 0), the painted shadow split off into its own layer, which is not warped and stays on the ground under the warped feet.
+// The rule is cut-motion.py's final remap in masters-pods (alpha >= 200 is body, 255; 60..199 is shadow, kept at min(alpha, 110); the rest is 0), applied to a finished master: the shadow is
+// taken from the rows at and below the first zero row only (above them the field moves the body, and a partial alpha there is the body's own fringe, dropped). PROVISIONAL until the art director confirms
+// it for a master that is not a raw cut. Returns the body picture, carrying `.shadow`; `flat` composes both.
+export const BODY_ALPHA = 200, SHADOW_ALPHA = 60, SHADOW_MAX = 110;
+export function prepareKey(img, zeroY = img.h) {
+  const { w, h } = img, body = blank(w, h), shadow = blank(w, h), n = { body: 0, shadow: 0, dropped: 0 };
+  for (let i = 0; i < w * h; i++) {
+    const a = img.data[i * 4 + 3], y = (i / w) | 0; if (!a) continue;
+    if (a >= BODY_ALPHA) { body.data.set([img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2], 255], i * 4); n.body++; }
+    else if (y >= zeroY && a >= SHADOW_ALPHA) { shadow.data.set([img.data[i * 4], img.data[i * 4 + 1], img.data[i * 4 + 2], Math.min(a, SHADOW_MAX)], i * 4); n.shadow++; }
+    else n.dropped++;
+  }
+  body.shadow = shadow; body.prep = n; return body;
+}
+export function flat(img) {
+  if (!img.shadow) return img; const out = { w: img.w, h: img.h, data: new Uint8ClampedArray(img.shadow.data) };
+  for (let i = 0; i < img.w * img.h; i++) if (img.data[i * 4 + 3]) out.data.set(img.data.subarray(i * 4, i * 4 + 4), i * 4);
+  return out;
+}
 
 // ---- measures
 // M2: the number of colours (alpha > 0) of the output that are not colours of the input.
@@ -186,8 +207,9 @@ export function warpMs(img, field, headMask, runs = 15) { const t = [], L = [{ f
 
 // ---- output
 const hex = (s) => [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
-export const png = (img) => encodePNG(img.w, img.h, img.data);
-function over(surface, img, ox, oy) {                      // alpha-composite img onto an opaque surface (presentation only: the contact sheet and the APNG)
+export const png = (img) => { const f = flat(img); return encodePNG(f.w, f.h, f.data); };
+function over(surface, img0, ox, oy) {                     // alpha-composite img onto an opaque surface (presentation only: the contact sheet and the APNG)
+  const img = flat(img0);
   for (let y = 0; y < img.h; y++) for (let x = 0; x < img.w; x++) {
     const i = (y * img.w + x) * 4, a = img.data[i + 3] / 255, j = ((oy + y) * surface.w + ox + x) * 4; if (!a) continue;
     for (let c = 0; c < 3; c++) surface.data[j + c] = Math.round(surface.data[j + c] * (1 - a) + img.data[i + c] * a);
@@ -231,17 +253,25 @@ const ENDS = ["down", "up"], SIDE = { down: "min", up: "max" }, fmt = (v) => (ty
 export function runSet(set, opts = {}) {
   const rows = [], row = (size, measure, item, value, limit = "", result = "") => rows.push({ set: set.name, size, measure, item, value: fmt(value), limit: fmt(limit), result });
   const ov = opts.overrides ?? {}, overrideNames = Object.keys(ov).filter((k) => ov[k] != null), files = new Map(), bg = opts.bg ?? hex("D6CEBE"), src = null;
-  const standBuf = readSource(set.stand), stand = decodeImage(standBuf), size = `${stand.w}x${stand.h}`;
+  const standBuf = readSource(set.stand), standRaw = decodeImage(standBuf), size = `${standRaw.w}x${standRaw.h}`;
   const lm = set.landmarks ? JSON.parse(readFileSync(set.landmarks, "utf8")) : null;
   row(size, "input", "stand sha256", sha256(standBuf), "", "info");
   const idBase = lm ? `mibi-${lm.stage}-${lm.species}-stand` : "stand", blendId = lm?.blend ?? "blend";
-  const status = [], fields = {}, refused = {}, ink = inkMask(stand);
-  // the figure-bbox mapping from the 304 set to this picture (derived sizes, and M5a's profile at a placed size): needs the 304 stand (--base-stand) and this picture's zero rows
-  let mapping = null;
+  const status = [], fields = {}, refused = {};
+  // the figure-bbox mapping from the 304 set to this picture (a derived size, and M5a's profile at a placed size): the full ink bbox (alpha > 110, feet included), a picture block's figureBox wins; needs --base-stand
+  let mapping = null, info = null;
+  if (lm) info = pickPicture(lm, standRaw.w, standRaw.h, set.picture ?? null);
   if (lm && set["base-stand"]) {
-    const info = pickPicture(lm, stand.w, stand.h, set.picture ?? null), baseKey = Object.keys(lm.pictures).find((k) => k.endsWith("-304x312")), tz = info.derived ? ov.shadowRows?.[0][0] : info.pic.fieldZeroRows?.[0];
-    if (tz != null && lm.pictures[baseKey].fieldZeroRows) { const bImg = decodeImage(readSource(set["base-stand"])); mapping = bboxMapping(figureBbox(bImg, lm.pictures[baseKey].fieldZeroRows[0]), figureBbox(stand, tz)); }
+    const baseKey = Object.keys(lm.pictures).find((k) => k.endsWith("-304x312")), bImg = decodeImage(readSource(set["base-stand"]));
+    mapping = bboxMapping(lm.pictures[baseKey].figureBox ?? figureBbox(bImg), (info.derived ? null : info.pic.figureBox) ?? figureBbox(standRaw));
   }
+  // the first zero row of this picture: where the shadow layer starts
+  let zeroY = standRaw.h;
+  if (ov.shadowRows) zeroY = ov.shadowRows[0][0];
+  else if (info?.pic.fieldZeroRows) zeroY = info.derived && mapping ? mapping.ty0 + rha((info.pic.fieldZeroRows[0] - mapping.by0) * mapping.sy) : info.pic.fieldZeroRows[0];
+  const stand = prepareKey(standRaw, zeroY), ink = inkMask(stand);
+  row(size, "prep", `cut key: body alpha>=${BODY_ALPHA} -> 255, shadow alpha ${SHADOW_ALPHA}..${BODY_ALPHA - 1} from row ${zeroY} down kept at <=${SHADOW_MAX} and not warped, rest 0`, `${stand.prep.body} body, ${stand.prep.shadow} shadow, ${stand.prep.dropped} dropped px`, "", "provisional");
+  status.push("provisional input prep");
   for (const e of ENDS) {
     try {
       if (set[`field-${e}`]) {                                      // a map given by path; the head and rows still come from the landmarks when there are some
@@ -272,23 +302,23 @@ export function runSet(set, opts = {}) {
   const matrix = [painted.down ?? null, warped.down ?? null, stand, warped.up ?? null, painted.up ?? null], names = ["painted-down", "warped-down", "stand", "warped-up", "painted-up"];
   matrix.forEach((img, i) => { if (img) files.set(`${set.name}/${size}-${names[i]}.png`, png(img)); });
 
-  const standS0 = silhouette(stand, 0), standS1 = silhouette(stand, OPAQUE), sil0 = standS1, out0 = outlineIrregular(stand), headEdge = headMask ? (() => { for (let x = 0; x < stand.w; x++) for (let y = 0; y < stand.h; y++) if (headMask[y * stand.w + x]) return x; return stand.w; })() : stand.w;
+  const standS0 = silhouette(flat(stand), 0), standS1 = silhouette(stand, OPAQUE), sil0 = standS1, out0 = outlineIrregular(stand), headEdge = headMask ? (() => { for (let x = 0; x < stand.w; x++) for (let y = 0; y < stand.h; y++) if (headMask[y * stand.w + x]) return x; return stand.w; })() : stand.w;
   row(size, "M3", "stand strict counts", `${sil0.components} comp, ${sil0.holes} holes, ${sil0.orphans} orphans`, "info");
   row(size, "M4", "stand irregular", out0.irregular, "", "info");
   const L5 = M5_LIMITS[size], sil = (s) => `${s.components} comp, ${s.holes} holes, ${s.orphans} orphans`;
   for (const e of live) {
-    const nc = newColours(stand, warped[e]); row(size, "M2", `warped-${e}`, nc, 0, nc === 0 ? "pass" : "FAIL");
+    const nc = newColours(flat(stand), flat(warped[e])); row(size, "M2", `warped-${e}`, nc, 0, nc === 0 ? "pass" : "FAIL");
     const s = silhouette(warped[e]), sb = silhouette(wbody[e]);
     row(size, "M3", `warped-${e} strict counts (head drawn)`, sil(s), "1 comp, 0 holes, 0 orphans: information only", "info");
     // M3: alpha > 110 gates (components, holes, orphans each <= the unwarped picture's); alpha > 0 informs, with the box of every region new against the unwarped picture
     const gate = (img, base, what) => { const c = silhouette(img, OPAQUE), ok = c.components <= base.components && c.holes <= base.holes && c.orphans <= base.orphans; row(size, "M3", what, `alpha>110 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `<= the unwarped ${base.components}/${base.holes}/${base.orphans}`, ok ? "pass" : "FAIL"); };
     gate(warped[e], standS1, `warped-${e} not worse than its own unwarped picture (alpha>110 gates)`);
     gate(wbody[e], standS1, `warped-${e} body layer alone, not worse than the unwarped body layer (alpha>110 gates)`);
-    const report = (img, what) => { const c = silhouette(img, 0); row(size, "M3", what, `alpha>0 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `the unwarped ${standS0.components}/${standS0.holes}/${standS0.orphans}`, "report"); };
+    const report = (img, what) => { const c = silhouette(flat(img), 0); row(size, "M3", what, `alpha>0 ${c.components}/${c.holes}/${c.orphans} (components/holes/orphans)`, `the unwarped ${standS0.components}/${standS0.holes}/${standS0.orphans}`, "report"); };
     report(warped[e], `warped-${e} alpha>0 counts`); report(wbody[e], `warped-${e} body layer alpha>0 counts`);
-    const fresh = [["alpha>0", 0], ["alpha>110", OPAQUE]].flatMap(([lab, thr]) => newRegions(silhouetteRegions(stand, thr), silhouetteRegions(warped[e], thr), Math.ceil(fields[e].maxD) + 1).map((r) => ({ ...r, lab })));
+    const fresh = [["alpha>0", 0], ["alpha>110", OPAQUE]].flatMap(([lab, thr]) => newRegions(silhouetteRegions(flat(stand), thr), silhouetteRegions(flat(warped[e]), thr), Math.ceil(fields[e].maxD) + 1).map((r) => ({ ...r, lab })));
     fresh.forEach((r) => row(size, "M3", `warped-${e} new ${r.kind} at ${r.lab}`, r.box.join(","), "x0,y0,x1,y1", "report"));
-    if (fresh.length) files.set(`${set.name}/${size}-warped-${e}-new-regions.png`, png(outlineBoxes(warped[e], fresh.map((r) => r.box))));
+    if (fresh.length) files.set(`${set.name}/${size}-warped-${e}-new-regions.png`, png(outlineBoxes(flat(warped[e]), fresh.map((r) => r.box))));
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
     const lc = legCompression(fields[e], stand), lcFixed = fields[e].bellyFixed; row(size, "legs", `leg compression px (${e})`, lc, lcFixed ? 0 : "", lcFixed ? (lc === 0 ? "pass" : "FAIL") : "info");
@@ -297,7 +327,11 @@ export function runSet(set, opts = {}) {
     if (lm?.toplineProfile && headMask && (prof304 || scaled)) {
       const P = lm.toplineProfile, prof = prof304 ? P : { x: P.x.map((x) => mapping.tx0 + rha((x - mapping.bx0) * mapping.sx)), down: P.down.map((d) => d * mapping.sy), up: P.up.map((d) => d * mapping.sy) };
       const colTol = prof304 ? M5A.column : Math.max(1, Math.ceil(M5A.column * mapping.sy)), meanTol = prof304 ? M5A.mean : Math.ceil(M5A.mean * mapping.sy * 2) / 2;   // scaled by sy, rounded up to 1 px and 0.5 px
-      const p = profileFit(stand, warped[e], prof, e, headEdge); row(size, "M5a", `${e} top edge vs the ${prof304 ? "measured" : "mapped"} profile, ${p.columns} columns x <= ${headEdge - 6}`, `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`, `${colTol} / ${meanTol}`, p.max <= colTol && p.mean <= meanTol ? "pass" : "FAIL");
+      const p = profileFit(stand, warped[e], prof, e, headEdge), what = `${e} top edge vs the ${prof304 ? "measured" : "mapped"} profile, ${p.columns} columns x <= ${headEdge - 6}`, val = `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`;
+      const fb = info?.pic.M5aTolerance, small = !prof304 && Math.max(mapping.sx, mapping.sy) < 0.30;           // the animator's fallback below a figure scale of 0.30, used only if the standard tolerance misses
+      if (p.max <= colTol && p.mean <= meanTol) row(size, "M5a", what, val, `${colTol} / ${meanTol}`, "pass");
+      else if (fb && small) row(size, "M5a", what, val, `${colTol} / ${meanTol} missed; fallback ${fb.max} / ${fb.mean}`, p.max <= fb.max && p.mean <= fb.mean ? "pass (fallback tolerance)" : "FAIL");
+      else row(size, "M5a", what, val, `${colTol} / ${meanTol}`, "FAIL");
     } else row(size, "M5a", e, "no toplineProfile, head mask or --base-stand mapping", "", "n/a");
     if (painted[e]) {
       const j = iou(warped[e], painted[e]), pd = profileDelta(warped[e], painted[e]);
