@@ -46,3 +46,15 @@ off, docked tier 2 with the switch on, and away. The module panels there are a p
 - **Note for the UI designer:** the approved plate is close to square. The 32×64 and 16×32 boxes hold it at 28×30 and 15×16.
   The shield icons read as small white chips. Either tighten the boxes to the plate (32×32, 16×16), or accept the chips.
 - **Signed** by the Station art director at 1×, 2026-10-11, 0 MXN for every hand piece.
+
+## The boxes tightened (UI/UX ruling, internal boards/station-bench-boxes-ruling.md, ae23abd)
+
+The plates and shield icons are re-exported, cropped and centred only, with no repaint:
+- `bench-plate-whole-32x32`: ink 30×32.
+- `bench-plate-gone-32x32`: ink 28×30. The seat's measured 35 rows were 30 rows of ink plus resampling dust at alpha ≤ 4.
+  Only the dust was dropped.
+- `icon-shield-16` and `icon-shield-16-new`: ink 15×16.
+- `icon-shield-gone-16`: ink 14×14.
+
+`bench-plate-*-32x64` and `icon-shield-*16x32` retire. `bench-pages-1x.png` is re-proved at the new places: plates 32×32 at
+y 440, the switch icons at [152,68] and the slot's plate icons at [200,112]. `slices/index.json` is updated (23 ids).

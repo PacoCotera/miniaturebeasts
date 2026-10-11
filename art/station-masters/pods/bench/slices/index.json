@@ -30,14 +30,14 @@
   "sha256": "42c7f22c9d87ed92d816e5f20aef80f2aada901a708ea48bc577614c9bd57715"
  },
  {
-  "id": "bench-plate-gone-32x64",
-  "size": "32x64",
-  "sha256": "20f2a0a04511db8bcb64ebfdef144d8b7bed70495bd0206a01816a845396d02f"
+  "id": "bench-plate-gone-32x32",
+  "size": "32x32",
+  "sha256": "a6e66e3621481c0c5a56a781b637d4c9bfa6ac6d07ee518abce69e726603bdc4"
  },
  {
-  "id": "bench-plate-whole-32x64",
-  "size": "32x64",
-  "sha256": "46b06bd3ba86a18199c283ab4e475626ed8e8441ac299f4210515bbf5eed4d53"
+  "id": "bench-plate-whole-32x32",
+  "size": "32x32",
+  "sha256": "a6fb19925510e664dfe2704da40dacbce3cc2b44cea128572001504870c68000"
  },
  {
   "id": "bench-probe-t1-480x288",
@@ -90,19 +90,19 @@
   "sha256": "632059ff058401602c2126b596649e05ace53e810b68cf771558a3b9c0d14271"
  },
  {
-  "id": "icon-shield-16x32-new",
-  "size": "16x32",
-  "sha256": "91526187648fef98012935162245854079725650f61cadba95c13fbfa0af5cec"
+  "id": "icon-shield-16-new",
+  "size": "16x16",
+  "sha256": "b2c11bd10db96d0a20f7f4834950e05018ca596d75afc4e25ab5a1f711eb6d3a"
  },
  {
-  "id": "icon-shield-16x32",
-  "size": "16x32",
-  "sha256": "91526187648fef98012935162245854079725650f61cadba95c13fbfa0af5cec"
+  "id": "icon-shield-16",
+  "size": "16x16",
+  "sha256": "b2c11bd10db96d0a20f7f4834950e05018ca596d75afc4e25ab5a1f711eb6d3a"
  },
  {
-  "id": "icon-shield-gone-16x32",
-  "size": "16x32",
-  "sha256": "f56b5f17aabdf7a0a4ea1398e1f85db4509e59072696724710babe602de9875a"
+  "id": "icon-shield-gone-16",
+  "size": "16x16",
+  "sha256": "313188842cf353a44a70004b17a7357dd38e51e4776b98a19f4a06d0311f2d8e"
  },
  {
   "id": "mark-dock-24x24",
