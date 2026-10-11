@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
-import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping, pickPicture } from "../tools/warp-field.mjs";
+import { buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping, pickPicture } from "../tools/warp-field.mjs";
 import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
@@ -155,7 +155,7 @@ test("bellyFixed: d = 0 points along the belly line, so the legs do not stretch 
   const img = fixture(), free = JSON.parse(JSON.stringify(landmarks)); free.rules.bellyFixed.value = false;
   for (const end of ["down", "up"]) {
     const f = buildField(landmarks, end, 104, 112, { ink: new Uint8Array(img.data.filter((_, i) => i % 4 === 3).map((a) => (a > 0 ? 1 : 0))) });
-    assert.equal(f.bellyFixed, true); assert.equal(legCompression(f, img), 0);
+    assert.equal(f.bellyFixed, true); assert.equal(f.legStrain, 0, "leg strain is 0 for a bellyFixed blend");
     for (let x = 20; x <= 100; x += 8) assert.equal(f.dy[76 * 104 + x], 0, `belly line pin at x ${x}`);
   }
   assert.equal(buildField(free, "down", 104, 112).bellyFixed, false);
@@ -218,4 +218,17 @@ test("a named variant block for the size (an -exaggerated one) is a placed pictu
   const r = runAll([{ name: "exag", stand: standFile, landmarks: lf, picture: "stand-104x112-exaggerated" }]);
   assert.deepEqual([...r.files.keys()].filter((k) => k.endsWith(".apng")), ["exag/vivarium-pair-104x112-exaggerated-down-up.apng"]);
   assert.ok(r.rows.filter((x) => x.measure === "M5a").every((x) => x.result === "n/a"));
+});
+test("a belly-moving blend stretches the legs linearly down to the feet rows, which never move; the strain is bounded at 0.25", () => {
+  const girth = structuredClone(landmarks); girth.rules.bellyFixed.value = false;
+  girth.pictures["stand-104x112"].moving["belly-low"] = { pos: [43, 77], down: [0, 1], up: [0, -1] };
+  const img = fixture(), ink = new Uint8Array(img.data.filter((_, i) => i % 4 === 3).map((a) => (a > 0 ? 1 : 0))), f = buildField(girth, "down", 104, 112, { ink });
+  const yb = f.bellyY[30], z0 = f.z0, db = f.legDb[30];
+  assert.equal(z0, 96); assert.ok(Math.abs(db) > 0 && Math.abs(db) < 2);
+  for (let y = yb + 1; y < z0; y++) assert.equal(f.dy[y * 104 + 30], rha(db * (z0 - y) / (z0 - yb)), `row ${y}`);
+  for (let y = z0; y < 112; y++) assert.equal(f.dy[y * 104 + 30], 0, "the feet rows never move");
+  assert.ok(f.legStrain > 0 && f.legStrain <= 0.25);
+  const hand = { w: 104, h: 112, size: "104x112", dx: new Int8Array(104 * 112), dy: new Int8Array(104 * 112), zeroRows: [[96, 111]], bellyY: new Int32Array(104).fill(76), legDb: new Float64Array(104).fill(6), z0: 96 };
+  assert.throws(() => checkField(hand), /leg stretch 0\.300 at column 0 \(\|db\| 6\.00 px over 20 px of leg\) is over 0\.25 at 104x112/);
+  hand.legDb.fill(5); assert.ok(checkField(hand), "a quarter of the leg span is allowed");
 });

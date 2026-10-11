@@ -141,8 +141,14 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   let bellyY = null;
   if (overrides.bellyY != null) { bellyY = new Int32Array(w).fill(overrides.bellyY); used.push("belly-y"); }
   else if (bellyLine) bellyY = bellyColumns(bellyLine, w);
-  const inZero = (y) => rows.some(([a, b]) => y >= a && y <= b);
-  if (bellyY) for (let x = 0; x < w; x++) for (let y = bellyY[x] + 1; y < h; y++) if (!inZero(y)) { dxI[y * w + x] = dxI[bellyY[x] * w + x]; dyI[y * w + x] = dyI[bellyY[x] * w + x]; }
+  // the legs: below the belly line a column is stretched or compressed linearly down to the first zero row, so the feet never move: d(x, y) = db * (z0 - y) / (z0 - yb) for yb < y < z0, with db the fit's
+  // displacement at the line (0 for a bellyFixed blend, so the legs get 0). The whole field is then stored rounded; the zero rows win.
+  const z0 = rows.length ? rows[0][0] : h, legDb = new Float64Array(w);
+  if (bellyY) for (let x = 0; x < w; x++) {
+    const yb = bellyY[x], span = z0 - yb; if (span <= 0) continue;
+    const dbx = bellyFixed ? 0 : fx(x, yb), dby = bellyFixed ? 0 : fy(x, yb); legDb[x] = dby;
+    for (let y = yb + 1; y < z0; y++) { const k = (z0 - y) / span; dxI[y * w + x] = rha(dbx * k); dyI[y * w + x] = rha(dby * k); }
+  }
   for (const [a, b] of rows) for (let y = a; y <= b; y++) for (let x = 0; x < w; x++) { dxI[y * w + x] = 0; dyI[y * w + x] = 0; }
   // the head: an override mask, else the signed mask file, else the polygon rasterised once
   let headMask = null, headSource = "none";
@@ -151,7 +157,7 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   else if (pic.headMaskPolygon) { headMask = rasterPolygon(polyAt(pic.headMaskPolygon), w, h); headSource = "polygon"; }
   // the domain: 0 outside the ink dilated by the bound (never the 6 px of the head zone: the head is drawn unwarped anyway)
   if (ink) { const D = fieldDomain(ink, w, h, BOUNDS[`${w}x${h}`]); for (let i = 0; i < w * h; i++) if (!D[i]) { dxI[i] = 0; dyI[i] = 0; } }
-  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, bellyFixed, picture: name, overrides: used, ink, pointsFrom: derived ? "mapped" : "placed", mapping: derived ? mapping : null };
+  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, bellyFixed, legDb, z0, picture: name, overrides: used, ink, pointsFrom: derived ? "mapped" : "placed", mapping: derived ? mapping : null };
   if (overrides.noCheck) used.push("no-check"); else checkField(field);
   return field;
 }
@@ -191,15 +197,18 @@ export function checkField(f) {
     if (first && !f.gradientAt) f.gradientAt = [x, y, x2, y2];
   }
   if (first) throw new Error(`field refused: ${first} at ${size}, window (${f.gradientAt[0]}, ${f.gradientAt[1]})-(${f.gradientAt[2]}, ${f.gradientAt[3]})`);
+  f.legStrain = 0;
+  if (f.legDb && f.bellyY) for (let x = 0; x < w; x++) {                    // the leg rows' vertical stretch |db| / (z0 - yb), per leg column, against 0.25
+    const span = f.z0 - f.bellyY[x]; if (span <= 0) continue;
+    if (f.ink) { let leg = false; for (let y = f.bellyY[x] + 1; y < f.z0 && !leg; y++) if (f.ink[y * w + x]) leg = true; if (!leg) continue; }
+    const strain = Math.abs(f.legDb[x]) / span; f.legStrain = Math.max(f.legStrain, strain);
+    if (strain > GRADIENT_STRETCH + 1e-9) throw new Error(`field refused: leg stretch ${strain.toFixed(3)} at column ${x} (|db| ${Math.abs(f.legDb[x]).toFixed(2)} px over ${span} px of leg) is over ${GRADIENT_STRETCH} at ${size}`);
+  }
   for (const [y0, y1] of f.zeroRows ?? []) for (let y = y0; y <= Math.min(y1, h - 1); y++) for (let x = 0; x < w; x++) if (f.dx[y * w + x] || f.dy[y * w + x]) throw new Error(`field refused: not 0 on the feet/shadow row ${y} at x ${x}`);
   return true;
 }
-// The stretch the leg rule and the fixed feet force: the largest |d(x, yb(x))| over the columns that have ink below the belly line (above the zero rows).
-export function legCompression(f, img) {
-  if (!f.bellyY) return 0; let m = 0; const y1 = f.zeroRows?.[0]?.[0] ?? f.h;
-  for (let x = 0; x < f.w; x++) { let leg = false; for (let y = f.bellyY[x] + 1; y < y1 && !leg; y++) if (img.data[(y * f.w + x) * 4 + 3] > 110) leg = true; if (leg) m = Math.max(m, Math.hypot(f.dx[f.bellyY[x] * f.w + x], f.dy[f.bellyY[x] * f.w + x])); }
-  return m;
-}
+// Leg strain: the largest |db| / (z0 - yb) over the leg columns (the columns that have ink below the belly line, above the first zero row); 0 for a bellyFixed blend.
+export function legStrain(f) { return f.legStrain ?? 0; }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const arg = (k) => { const i = process.argv.indexOf("--" + k); return i > 0 ? process.argv[i + 1] : null; };

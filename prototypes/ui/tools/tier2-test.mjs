@@ -19,7 +19,7 @@ import { deflateSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { encodePNG, decodePNG } from "../png.mjs";
-import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legCompression, bellyColumns, rha, quantT, sha256, chunk, pickPicture, figureBbox, bboxMapping } from "./warp-field.mjs";
+import { buildField, decodeField, encodeField, encodeMask, headMaskFrom, checkField, legStrain, bellyColumns, rha, quantT, sha256, chunk, pickPicture, figureBbox, bboxMapping } from "./warp-field.mjs";
 
 export const OPAQUE = 110;                                 // alpha > 110 is opaque (the animator's measure for the topline)
 export const M5_LIMITS = { "304x312": { iou: 0.95, profile: 2 }, "104x112": { iou: 0.93, profile: 1 } };
@@ -98,6 +98,8 @@ export function bakeStep(img, n, yb) {
   return out;
 }
 // The breath pair's band is derived, never given: in each column the rows above the belly line.
+// The warped belly line for a breath bake on a belly-moving warp: yb'(x) = yb(x) + r(t * db(x)) at t = 1 (the same line for a bellyFixed blend).
+export const warpedBelly = (yb, f) => yb.map((v, x) => v + rha(f.legDb?.[x] ?? 0));
 export const aboveBellyBand = (w, h, yb) => { const m = new Uint8Array(w * h); for (let x = 0; x < w; x++) for (let y = 0; y < Math.min(h, yb[x]); y++) m[y * w + x] = 1; return m; };
 
 // The warp's input is the cut key: the body alpha binarised (255 or 0), the painted shadow split off into its own layer, which is not warped and stays on the ground under the warped feet.
@@ -331,7 +333,7 @@ export function runSet(set, opts = {}) {
     if (fresh.length) files.set(`${set.name}/${size}-warped-${e}-new-regions.png`, png(outlineBoxes(flat(warped[e]), fresh.map((r) => r.box))));
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
-    const lc = legCompression(fields[e], stand), lcFixed = fields[e].bellyFixed; row(size, "legs", `leg compression px (${e})`, lc, lcFixed ? 0 : "", lcFixed ? (lc === 0 ? "pass" : "FAIL") : "info");
+    const ls = legStrain(fields[e]), lsFixed = fields[e].bellyFixed; row(size, "legs", `leg strain (max |db| / (z0 - yb)) (${e})`, ls, lsFixed ? 0 : 0.25, lsFixed ? (ls === 0 ? "pass" : "FAIL") : (ls <= 0.25 + 1e-9 ? "pass" : "FAIL"));
     row(size, "field", `${e} max |d| px / stretch / shear`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxStretch.toFixed(3)} / ${fields[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
     const notApplied = typeof info?.pic.M5a === "string" && info.pic.M5a.startsWith("not applied"), prof304 = size === "304x312", scaled = !prof304 && mapping && lm?.toplineProfile;
     if (notApplied) row(size, "M5a", e, info.pic.M5a, "", "n/a");
@@ -366,7 +368,7 @@ export function runSet(set, opts = {}) {
     const band = aboveBellyBand(stand.w, stand.h, yb);
     for (const n of [1, 2]) {
       const plain = changedOutside(stand, bakeStep(stand, n, yb), band);
-      for (const e of live) { const wa = warp(stand, [{ field: fields[e], t: 1 }], { headMask }), w2 = changedOutside(wa, bakeStep(wa, n, yb), band); row(size, "M8", `stand-b${n} ${e}: changed outside the rows above the belly line, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL"); }
+      for (const e of live) { const wa = warp(stand, [{ field: fields[e], t: 1 }], { headMask }), ybw = warpedBelly(yb, fields[e]), w2 = changedOutside(wa, bakeStep(wa, n, ybw), aboveBellyBand(stand.w, stand.h, ybw)); row(size, "M8", `stand-b${n} ${e}: changed outside the rows above the belly line, no warp / warp`, `${plain} / ${w2}`, plain, w2 <= plain ? "pass" : "FAIL"); }
     }
   } else row(size, "M8", "stand-b1, stand-b2", "no belly line in the landmarks", "", "n/a");
   const pairs = lm ? (lm.pairs ?? []).filter((p) => (set["pair-ids"] ? set["pair-ids"].split(",").includes(p.id) : p.id.startsWith(lm.species + "-"))) : [];
@@ -396,7 +398,7 @@ export function runSet(set, opts = {}) {
   else if (!yb) row(size, "pair", "b-steps", "no belly line: no APNG", "", "n/a");
   else {
     row(size, "pair", "holds b0/b1/b2/b1back ms, offset ms, seconds", `${holds.join("/")}, ${offsetMs}, ${totalMs / 1000}`, "", "info");
-    const set3 = (img) => [img, bakeStep(img, 1, yb), bakeStep(img, 2, yb)], copy = { down: warped.down && set3(warped.down), middle: set3(stand), up: warped.up && set3(warped.up) };
+    const set3 = (img, line) => [img, bakeStep(img, 1, line), bakeStep(img, 2, line)], copy = { down: warped.down && set3(warped.down, warpedBelly(yb, fields.down)), middle: set3(stand, yb), up: warped.up && set3(warped.up, warpedBelly(yb, fields.up)) };
     const exag = /exaggerated/.test(info?.name ?? "");                                  // a variant block: one extra pair, down against up
     for (const [l, r] of exag ? [["down", "up"]] : [["down", "middle"], ["middle", "up"], ["down", "up"]]) if (copy[l] && copy[r]) {
       const v = vivariumPair(copy[l], copy[r], { holds, offsetMs, totalMs, bg }); files.set(`${set.name}/vivarium-pair-${size}-${exag ? "exaggerated-" : ""}${l}-${r}.apng`, v.bytes);
