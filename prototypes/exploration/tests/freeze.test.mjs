@@ -348,3 +348,27 @@ test("Expedition ended, docked: the bay lines say the Companion is in the Caddy"
   p.run("S.bay = []; __t = []; drawSealed(0);");
   assert.ok(p.run("__t").includes("In the Caddy"), "an empty bay: In the Caddy alone");
 });
+
+// ---- the game designer's ruling on hints while docked (QA D1) ----
+test("docked: no one-time hint shows or is spent; after Lift the first press shows the Call hint and spends it", () => {
+  const CALL = "The teal CALL button pulses: it lifts the veil and finds things";
+  const { p, st } = begin();
+  p.key("right"); p.key("down"); p.key("right");
+  let inPlace = false;
+  for (const d of ["", "right", "down", "left", "up"]) {
+    if (d) { p.run("if (S.exp.patch) leavePatch(); S.phase = 'map';"); p.key(d); }
+    p.key("confirm"); if (p.S.phase === "patch") { inPlace = true; break; }
+  }
+  assert.ok(inPlace, "in a place");
+  assert.equal(p.S.found.includes("callplace"), false, "the Call hint not yet spent");
+  dock(p, st);
+  p.key("back"); assert.equal(p.S.phase, "menu");
+  p.run("S.ui.menuSel = menuItems().findIndex(i => i.id === 'cargo');"); p.key("confirm"); assert.equal(p.S.phase, "cargo");
+  p.key("back"); p.key("back"); assert.equal(p.S.phase, "patch");
+  assert.equal(p.S.found.includes("callplace"), false, "not spent while docked");
+  assert.notEqual(p.run("FX.msg"), CALL, "the Call hint does not show while docked");
+  lift(p, st);
+  p.key("left"); assert.equal(p.S.phase, "patch");
+  assert.equal(p.run("FX.msg"), CALL, "the first press after Lift shows the Call hint");
+  assert.equal(p.S.found.includes("callplace"), true, "and spends it");
+});

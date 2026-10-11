@@ -4523,8 +4523,7 @@ function act(k, mode) {
       break;
   }
   if (S.exp && S.exp.patch == null && S.phase === 'patch') S.phase = 'map';
-  noteSigns(); noteHud();
-  settleOnce();
+  if (!fieldFrozen()) { noteSigns(); noteHud(); settleOnce(); }   // docked mid-expedition: no one-time hint shows or is spent (each shows on the first press after Lift if it still holds)
   save();
 }
 
