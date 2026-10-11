@@ -13912,5 +13912,31 @@
   "status": "signed",
   "signed_in": "art director, 10-11",
   "status_note": "0 magenta px; the trait slug 'stripes' is provisional until the copywriter names the trait (one word, the Create line limit)"
+ },
+ "bud-shape-S01-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "floor/S01/keys/mibi-juvenile-S01-base-stand-304x312.png (the bare base)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "f4dcc5bef3677ed501e285c15d1542d59e8735049b98d3f9870b2bdf4ffd92b3",
+  "status": "signed",
+  "signed_in": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)",
+  "status_note": "bare head: a bare-headed founder never shows a crest"
+ },
+ "bud-shape-S03-112x112": {
+  "size": [
+   112,
+   112
+  ],
+  "rect": null,
+  "src": "juvenile/mibi-juvenile-S03-304x312.png (the signed stand-in, figure alone)",
+  "made": "flat silhouette in bark #7d5435, the 96x96 ink box centred in 112x112, reduced only, soft 2 px edge (bud/cut-bud-shapes.py)",
+  "sha256": "8750760d90d245b729c6a15c49a946cf28c406543e0ad65b95a76cf5d338a764",
+  "status": "signed",
+  "signed_in": "art director at 1x, 10-11 15:55 (masters-pods 8c3b6a7b)",
+  "status_note": "the thin head stalk falls away at this size"
  }
 }
