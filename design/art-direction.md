@@ -78,7 +78,6 @@ varies from pod to pod.
 - **Species designs:** each species' body plan and cute envelope, with body
   plans that vary within each species.
 - **Animation:** idle, movement and reactions; growth stages that keep identity.
-- **World art:** tiles, objects, creatures in the world and the map's look at
-  450×600. This depends on the exploration design.
-- **A UI kit:** frames, focus, icons, typography, including the typeface.
+- **World art beyond the meadow:** the biomes after the first terrain slice
+  (grass with cliffs, water, a bridge and stairs).
 - **Caddy and paper:** four-gray and print versions of the same mibi.
