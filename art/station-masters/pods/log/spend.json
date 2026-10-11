@@ -2899,5 +2899,72 @@
    "thoughtsTokenCount": 384,
    "totalTokenCount": 3888
   }
+ },
+ {
+  "tag": "terrain-grass-cliffs-a1 try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.185628,
+  "mxn": 3.7126,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T00:46:43Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 774,
+   "candidatesTokenCount": 1339,
+   "thoughtsTokenCount": 195,
+   "totalTokenCount": 2308
+  }
+ },
+ {
+  "tag": "t-rock",
+  "tool": "retro-diffusion rd_tile__single_tile",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T00:47:39Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "t-planks",
+  "tool": "retro-diffusion rd_tile__single_tile",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T00:47:40Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "t-waterA",
+  "tool": "retro-diffusion rd_tile__single_tile",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T00:47:41Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "t-waterB",
+  "tool": "retro-diffusion rd_tile__single_tile",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T00:47:42Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "t-rock2",
+  "tool": "retro-diffusion rd_tile__single_tile",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T00:50:21Z",
+  "evidence": "charged before the call at the price check_cost returned"
  }
 ]
