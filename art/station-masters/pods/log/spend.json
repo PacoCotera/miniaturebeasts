@@ -3545,5 +3545,22 @@
    "thoughtsTokenCount": 209,
    "totalTokenCount": 2336
   }
+ },
+ {
+  "tag": "mibi-juvenile-S02-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.19445,
+  "mxn": 3.889,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T15:50:40Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 865,
+   "candidatesTokenCount": 1346,
+   "thoughtsTokenCount": 260,
+   "totalTokenCount": 2471
+  }
  }
 ]
