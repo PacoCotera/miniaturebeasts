@@ -29,7 +29,7 @@ static int has(const char *asset) { return asset && *asset && wire_has_asset(ass
 #define STEP_MS 40
 /* ---- the residents' walk (home.json regions.resident.walk, the UI/UX designer's ruling): integers only ----
    Resident k (props order, sleepers left out) is in group g = k mod 2 and steps at t = 80 m + 40 g ms of the face's time since the screen's first frame, 2 px along the major axis of its path (the minor axis by
-   Bresenham), so at most half of the boxes change in a frame of 40 ms or less. Its own 32-bit LCG runs from its seed. A focused resident stands on its pixel and its idle and walk freeze; with motion off it stands
+   Bresenham), and at most one group tick is applied a frame (a later frame drops the time past it by moving the walk's origin later in whole ticks), so at most half of the boxes change in any frame. Its own 32-bit LCG runs from its seed. A focused resident stands on its pixel and its idle and walk freeze; with motion off it stands
    at its start. The walk state lives while the screen shows and starts again from the seeds when Home is shown again; a new id starts from its own seed, a props change with the same seed keeps the state. */
 static int g_kx, g_ky, g_xlo, g_xhi, g_flo, g_fn;   /* home.json regions.resident.walk, read at each draw: the keep-out zone's corner, the box.x range 8 px inside the glass, the feet's rows of the ground band */
 static void walk_load(void) {
