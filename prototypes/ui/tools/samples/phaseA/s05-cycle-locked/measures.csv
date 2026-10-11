@@ -34,9 +34,9 @@ s05-stepA,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0,0,pass
 s05-stepA,304x312,field,up max |d| px / stretch / shear,5.00 / 0.250 / 0.500,12 / 0.25 / 0.5,pass
 s05-stepA,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
 s05-stepA,304x312,M5,warped-up vs painted,no painted end given,,n/a
-s05-stepA,304x312,M6,only at 104x112,,,n/a
-s05-stepA,304x312,M7,warp ms per picture (down; a clock reading),4.6091,,info
-s05-stepA,304x312,M7,warp ms per picture (up; a clock reading),5.6697,,info
+s05-stepA,304x312,M6,only at 104x112 and 144x152,,,n/a
+s05-stepA,304x312,M7,warp ms per picture (down; a clock reading),3.9022,,info
+s05-stepA,304x312,M7,warp ms per picture (up; a clock reading),3.3556,,info
 s05-stepA,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s05-stepA,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s05-stepA,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass

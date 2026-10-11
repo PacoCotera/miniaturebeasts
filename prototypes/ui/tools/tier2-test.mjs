@@ -255,10 +255,15 @@ export function vivariumPair(copyA, copyB, { holds, offsetMs, totalMs, bg }) {
 
 // ---- one set (one size)
 const ENDS = ["down", "up"], SIDE = { down: "min", up: "max" }, fmt = (v) => (typeof v === "number" ? (Number.isInteger(v) ? String(v) : v.toFixed(4)) : String(v));
-export function runSet(set, opts = {}) {
+const isRef = (spec) => /^([\w.-]+)@([0-9a-f]{6,40}):(.+)$/.test(spec);
+export const safeName = (n) => String(n).replace(/[^\w.-]/g, "_").replace(/^\.+/, "_") || "set";
+export function runSet(set0, opts = {}) {
+  const set = { ...set0, name: safeName(set0.name) };
   const rows = [], row = (size, measure, item, value, limit = "", result = "") => rows.push({ set: set.name, size, measure, item, value: fmt(value), limit: fmt(limit), result });
   const ov = opts.overrides ?? {}, overrideNames = Object.keys(ov).filter((k) => ov[k] != null), files = new Map(), bg = opts.bg ?? hex("D6CEBE"), src = null;
-  const standBuf = readSource(set.stand), standRaw = decodeImage(standBuf), size = `${standRaw.w}x${standRaw.h}`;
+  // an input given as a plain path is not pinned to anything: it is hashed but never checked, so a verdict needs an expected sha256 (--<option>-sha256); ref@sha:path sources are pinned by the sha
+  const unpinned = [], load = (opt) => { const spec = set[opt], buf = readSource(spec); if (set[`${opt}-sha256`]) expectSha(buf, set[`${opt}-sha256`], opt); else if (!isRef(spec)) unpinned.push(opt); return buf; };
+  const standBuf = load("stand"), standRaw = decodeImage(standBuf), size = `${standRaw.w}x${standRaw.h}`;
   const lm = set.landmarks ? JSON.parse(readFileSync(set.landmarks, "utf8")) : null;
   row(size, "input", "stand sha256", sha256(standBuf), "", "info");
   const idBase = lm ? `mibi-${lm.stage}-${lm.species}-stand` : "stand", blendId = lm?.blend ?? "blend";
@@ -267,7 +272,7 @@ export function runSet(set, opts = {}) {
   let mapping = null, info = null;
   if (lm) info = pickPicture(lm, standRaw.w, standRaw.h, set.picture ?? null);
   if (lm && set["base-stand"]) {
-    const baseKey = Object.keys(lm.pictures).find((k) => k.endsWith("-304x312")), bImg = decodeImage(readSource(set["base-stand"]));
+    const baseKey = Object.keys(lm.pictures).find((k) => k.endsWith("-304x312")), bImg = decodeImage(load("base-stand"));
     mapping = bboxMapping(lm.pictures[baseKey].figureBox ?? figureBbox(bImg), (info.derived ? null : info.pic.figureBox) ?? figureBbox(standRaw));
   }
   // the first zero row of this picture: where the shadow layer starts
@@ -276,7 +281,7 @@ export function runSet(set, opts = {}) {
   else if (info?.pic.fieldZeroRows) zeroY = info.derived && mapping ? mapping.ty0 + rha((info.pic.fieldZeroRows[0] - mapping.by0) * mapping.sy) : info.pic.fieldZeroRows[0];
   let stand;
   if (set["stand-shadow"]) {                                      // a signed cut key: body (alpha 0 or 255) and its painted shadow, each its own file; nothing to prepare
-    const sb = readSource(set["stand-shadow"]); stand = standRaw; stand.shadow = decodeImage(sb);
+    const sb = load("stand-shadow"); stand = standRaw; stand.shadow = decodeImage(sb);
     let nb = 0, ns = 0, odd = 0; for (let i = 0; i < stand.w * stand.h; i++) { const a = stand.data[i * 4 + 3]; if (a === 255) nb++; else if (a) odd++; if (stand.shadow.data[i * 4 + 3]) ns++; }
     stand.prep = { body: nb, shadow: ns, dropped: 0 }; row(size, "input", "stand shadow sha256", sha256(sb), "", "info");
     row(size, "prep", "signed cut key: body alpha 0/255, shadow its own layer, never warped", `${nb} body, ${ns} shadow px${odd ? `, ${odd} PARTIAL-ALPHA body px` : ""}`, "", odd ? "FAIL" : "info");
@@ -305,7 +310,7 @@ export function runSet(set, opts = {}) {
   if (headMask) { const hb = encodeMask(headMask, stand.w, stand.h); files.set(`${set.name}/${idBase}-map-head-${size}.png`, hb); row(size, "head", "mask png sha256", sha256(hb), "", "info"); }
   const painted = {}, warped = {}, wbody = {}, stats = { clampMisses: 0 };
   for (const e of ENDS) {
-    if (set[`painted-${e}`]) { const b = readSource(set[`painted-${e}`]); painted[e] = decodeImage(b); row(size, "input", `painted-${e} sha256`, sha256(b), "", "info"); if (set[`painted-${e}-shadow`]) { const sb = readSource(set[`painted-${e}-shadow`]); painted[e].shadow = decodeImage(sb); row(size, "input", `painted-${e} shadow sha256`, sha256(sb), "", "info"); } }
+    if (set[`painted-${e}`]) { const b = load(`painted-${e}`); painted[e] = decodeImage(b); row(size, "input", `painted-${e} sha256`, sha256(b), "", "info"); if (set[`painted-${e}-shadow`]) { const sb = load(`painted-${e}-shadow`); painted[e].shadow = decodeImage(sb); row(size, "input", `painted-${e} shadow sha256`, sha256(sb), "", "info"); } }
     if (!fields[e]) continue;
     warped[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, stats });
     wbody[e] = warp(stand, [{ field: fields[e], t: 1 }], { headMask, drawHead: false });
@@ -355,11 +360,11 @@ export function runSet(set, opts = {}) {
     } else row(size, "M5", `warped-${e} vs painted`, "no painted end given", "", "n/a");
   }
   // M6 at walker size: pairwise mean profile difference of the three bins
-  if (size === "104x112") for (const [kind, ends] of [["warped", [warped.down, stand, warped.up]], ["painted", [painted.down, stand, painted.up]]]) {
+  if (size === "104x112" || size === "144x152") for (const [kind, ends] of [["warped", [warped.down, stand, warped.up]], ["painted", [painted.down, stand, painted.up]]]) {
     if (ends.some((x) => !x)) { row(size, "M6", kind, "ends not available", "", "n/a"); continue; }
     const cols = movedColumns(ends[0], ends[1], ends[2]); row(size, "M6", `${kind} columns the field moves`, cols.length, "", "info");
     for (const [a, b, label] of [[0, 1, "down-stand"], [1, 2, "stand-up"], [0, 2, "down-up"]]) { const d = profileDeltaOver(ends[a], ends[b], cols).mean; row(size, "M6", `${kind} ${label} (mean over the moved columns)`, d, M6_MIN, label === "down-up" ? (d >= M6_MIN ? "pass" : "FAIL") : `info (${d >= M6_MIN ? "above" : "below"} the bar; only down-up gates)`); }
-  } else row(size, "M6", "only at 104x112", "", "", "n/a");
+  } else row(size, "M6", "only at 104x112 and 144x152", "", "", "n/a");
   // M7
   for (const e of live) { const ms = warpMs(stand, fields[e], headMask); row(size, "M7", `warp ms per picture (${e}; a clock reading)`, ms, size === "104x112" ? M7_MAX_MS : "", size === "104x112" ? (ms <= M7_MAX_MS ? "pass (this machine; confirm on the CI runner)" : "FAIL (this machine; confirm on the CI runner)") : "info"); }
   // M8. A breath pair (stand and its baked b1 / b2) needs no band in the JSON: the band is derived, the rows above the belly line in each column. The baked step is baked from the warped
@@ -375,7 +380,7 @@ export function runSet(set, opts = {}) {
   const pairs = lm ? (lm.pairs ?? []).filter((p) => (set["pair-ids"] ? set["pair-ids"].split(",").includes(p.id) : p.id.startsWith(lm.species + "-"))) : [];
   for (const p of pairs) {
     try {
-      const aBuf = readSource(p.a); expectSha(aBuf, p.sha256?.[0], `${p.id} a`);
+      const aBuf = readSource(p.a); expectSha(aBuf, p.sha256?.[0], `${p.id} a`); if (!p.sha256?.[0] && !isRef(p.a)) unpinned.push(`${p.id} a`);
       if (p.b?.bake) {
         if (decodeImage(aBuf).w !== stand.w) { row(size, "M8", p.id, `a is not ${size}`, "", "n/a"); continue; }
         if (sha256(aBuf) !== sha256(standBuf)) { if (!set["stand-shadow"]) throw new Error(`${p.id}: a is not this set's stand; the run stops`); row(size, "M8", `${p.id} a is the signed stand (sha256 ${sha256(aBuf).slice(0, 12)}), not this set's level key; the stand-b rows above run on the level key`, "", "", "info"); continue; }
@@ -388,11 +393,11 @@ export function runSet(set, opts = {}) {
       else if (spec === "belly-down") { const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null; bandMask = bellyDownBand(a.w, a.h, from?.bellyLine ?? Object.values(lm.pictures).find((q) => q.bellyLine)?.bellyLine, p.tail ?? from?.tail); }
       else if (spec?.mask) bandMask = headMaskFrom(readFileSync(spec.mask)).mask;
       else throw new Error(`${p.id}: no band`);
-      const bBuf = readSource(p.b); expectSha(bBuf, p.sha256?.[1], `${p.id} b`); const b = decodeImage(bBuf); row(size, "M8", `${p.id} a / b sha256`, `${sha256(aBuf).slice(0, 12)} / ${sha256(bBuf).slice(0, 12)}`, "", "info");
+      const bBuf = readSource(p.b); expectSha(bBuf, p.sha256?.[1], `${p.id} b`); if (!p.sha256?.[1] && !isRef(p.b)) unpinned.push(`${p.id} b`); const b = decodeImage(bBuf); row(size, "M8", `${p.id} a / b sha256`, `${sha256(aBuf).slice(0, 12)} / ${sha256(bBuf).slice(0, 12)}`, "", "info");
       const plain = changedOutside(a, b, bandMask);
       // a cycled pair is signed only on the locked cut (motion-spec §0 points 5-6): `locked: true` on the pair (or on its bellyFrom block) in the landmarks; otherwise the counts are kept and there is no verdict
-      const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null, locked = (p.locked ?? from?.locked) === true, verdict = (ok) => (locked ? (ok ? "pass" : "FAIL") : "unlocked: no verdict");
-      if (!locked) status.push("unlocked pair: no verdict");
+      const from = p.bellyFrom ? p.bellyFrom.split(".").reduce((o, k) => o?.[k], lm) : null, locked = (p.locked ?? from?.locked) === true, cycled = p.band === "belly-down" || p.cycle === true, verdict = (ok) => (!cycled || locked ? (ok ? "pass" : "FAIL") : "unlocked: no verdict");   // the lock gate is for cycled pairs only; a held-key pair needs none
+      if (cycled && !locked) status.push("unlocked pair: no verdict");
       row(size, "M8", `${p.id} absolute §0 test (unwarped): changed outside the band (only legs and tail change)`, plain, 0, verdict(plain === 0));
       for (const e of live) { const L = [{ field: fields[e], t: 1 }], w2 = changedOutside(warp(a, L, { headMask }), warp(b, L, { headMask }), bandMask); row(size, "M8", `${p.id} ${e}: changed outside the band, no warp / warp`, `${plain} / ${w2}`, plain, verdict(w2 <= plain)); }
     } catch (err) { if (err.unreadable) row(size, "M8", p.id, err.message, "", "n/a"); else throw err; }
@@ -410,7 +415,9 @@ export function runSet(set, opts = {}) {
       if (v.delays.some((d) => d % 80)) row(size, "pair", `${l}|${r} frame delays`, "not all multiples of 80 ms", "", "note");
     }
   }
+  if (lm?.species === "S01") row(size, "hop", "the hop's lift table unchanged", "the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it", "", "satisfied by construction");
   files.set(`${set.name}/contact-${size}.png`, png(contactSheet([matrix], bg)));
+  if (unpinned.length) status.push(`unpinned input (plain path, no expected sha256): ${unpinned.join(", ")}`);
   const uniq = [...new Set(status)];
   row(size, "run", "status", uniq.length ? uniq.join("; ") + " (no verdict)" : "verdict-shaped (a verdict also needs the animator's re-signed landmarks and the painted ends)", "", uniq.length ? "no verdict" : "ok");
   return { rows, files, sheetRow: matrix, size };

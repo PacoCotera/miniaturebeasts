@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
 import { buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain, figureBbox, bboxMapping, pickPicture } from "../tools/warp-field.mjs";
-import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
+import { warp, blank, png, runAll, safeName, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand, silhouetteRegions, newRegions, outlineBoxes, prepareKey, flat, movedColumns, profileDeltaOver } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
 const A = [200, 120, 60, 255], B = [150, 90, 40, 255], C = [240, 220, 160, 255], D = [90, 60, 30, 255];
@@ -197,7 +197,11 @@ test("the warp's input is the cut key: body binarised, the shadow split off, not
 test("a signed cut key (body 0/255 and its shadow, each its own file) is used as it is, with no provisional prep; the shadow is not warped", () => {
   const body = fixture(), shadow = blank(104, 112); for (let x = 20; x < 80; x++) shadow.data.set([30, 26, 34, 110], (100 * 104 + x) * 4);
   const bf = path.join(tmp, "level-body.png"), sf = path.join(tmp, "level-shadow.png"); writeFileSync(bf, png(body)); writeFileSync(sf, png(shadow));
-  const r = runAll([{ name: "cut", stand: bf, "stand-shadow": sf, landmarks: lmFile, "painted-down": bf, "painted-down-shadow": sf }]);
+  const pins = { "stand-sha256": sha256(png(body)), "stand-shadow-sha256": sha256(png(shadow)), "painted-down-sha256": sha256(png(body)), "painted-down-shadow-sha256": sha256(png(shadow)) };
+  const unpinnedRun = runAll([{ name: "cut", stand: bf, "stand-shadow": sf, landmarks: lmFile }]).rows.find((x) => x.measure === "run");
+  assert.match(unpinnedRun.value, /unpinned input \(plain path, no expected sha256\): stand, stand-shadow/); assert.equal(unpinnedRun.result, "no verdict");
+  assert.throws(() => runAll([{ name: "cut", stand: bf, "stand-sha256": "00", "stand-shadow": sf, landmarks: lmFile }]), /stand: sha256 .* is not the JSON's 00/);
+  const r = runAll([{ name: "cut", stand: bf, "stand-shadow": sf, landmarks: lmFile, "painted-down": bf, "painted-down-shadow": sf, ...pins }]);
   assert.match(r.rows.find((x) => x.measure === "prep").item, /signed cut key/);
   assert.equal(r.rows.find((x) => x.measure === "run").result, "ok", "nothing provisional: a verdict-shaped run");
   assert.ok(r.rows.some((x) => x.item === "stand shadow sha256") && r.rows.some((x) => x.item === "painted-down shadow sha256"), "every file's sha256 is in the CSV");
@@ -241,4 +245,13 @@ test("a cycled pair is signed only when its keys are locked; unlocked pairs keep
   assert.ok(unlocked.length >= 3 && unlocked.every((x) => x.result === "unlocked: no verdict"), "counts kept, no verdict");
   const locked = runAll([mk(true)]).rows.filter((x) => /FX-cycle/.test(x.item) && x.measure === "M8" && /changed outside/.test(x.item));
   assert.equal(locked.find((x) => /absolute/.test(x.item)).result, "FAIL", "locked: the absolute §0 test counts the change above the belly line");
+});
+test("a held-key pair needs no lock; only a cycled pair (belly-down) is gated on it; set names are sanitised for output paths", () => {
+  const a = fixture(), b = fixture(); for (let y = 44; y < 50; y++) b.data.set(C, (y * 104 + 40) * 4);
+  const af = path.join(tmp, "held-a.png"), bf = path.join(tmp, "held-b.png"); writeFileSync(af, png(a)); writeFileSync(bf, png(b));
+  const j = structuredClone(landmarks); j.pairs = [{ id: "FX-held", a: af, b: bf, band: [40, 76], sha256: [sha256(png(a)), sha256(png(b))] }]; const lf = path.join(tmp, "held.json"); writeFileSync(lf, JSON.stringify(j));
+  const rows = runAll([{ name: "held", stand: standFile, landmarks: lf }]).rows.filter((x) => /FX-held/.test(x.item) && /changed outside/.test(x.item));
+  assert.ok(rows.length >= 2 && rows.every((x) => x.result === "pass" || x.result === "FAIL"), "a held pair gets a verdict without a lock flag");
+  assert.equal(safeName("../../etc/x y"), "__.._etc_x_y"); assert.equal(safeName("s04-304x312"), "s04-304x312");
+  const out = runAll([{ name: "../evil", stand: standFile, landmarks: lmFile }]).files; assert.ok([...out.keys()].every((k) => !k.includes("..")), "no path escapes the output folder");
 });

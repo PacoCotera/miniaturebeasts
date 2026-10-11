@@ -34,14 +34,15 @@ s01-stand,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0.1448,0.2500,pass
 s01-stand,304x312,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
 s01-stand,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
 s01-stand,304x312,M5,warped-up vs painted,no painted end given,,n/a
-s01-stand,304x312,M6,only at 104x112,,,n/a
-s01-stand,304x312,M7,warp ms per picture (down; a clock reading),2.9107,,info
-s01-stand,304x312,M7,warp ms per picture (up; a clock reading),2.7706,,info
+s01-stand,304x312,M6,only at 104x112 and 144x152,,,n/a
+s01-stand,304x312,M7,warp ms per picture (down; a clock reading),3.0935,,info
+s01-stand,304x312,M7,warp ms per picture (up; a clock reading),2.6229,,info
 s01-stand,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-stand,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-stand,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-stand,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-stand,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s01-stand,304x312,hop,the hop's lift table unchanged,the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it,,satisfied by construction
 s01-stand,304x312,run,status,provisional input prep (no verdict),,no verdict
 s01-stand,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",a79bd1d5cd43,equal,pass
 s01-crouch,304x312,input,stand sha256,2635ea55c604abff63e46902ec788be4fe5e71e90dd2f5e3318e412f86324ad4,,info
@@ -79,14 +80,15 @@ s01-crouch,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0.1859,0.2500,pas
 s01-crouch,304x312,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
 s01-crouch,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
 s01-crouch,304x312,M5,warped-up vs painted,no painted end given,,n/a
-s01-crouch,304x312,M6,only at 104x112,,,n/a
-s01-crouch,304x312,M7,warp ms per picture (down; a clock reading),3.1041,,info
-s01-crouch,304x312,M7,warp ms per picture (up; a clock reading),3.0588,,info
+s01-crouch,304x312,M6,only at 104x112 and 144x152,,,n/a
+s01-crouch,304x312,M7,warp ms per picture (down; a clock reading),2.5093,,info
+s01-crouch,304x312,M7,warp ms per picture (up; a clock reading),2.4547,,info
 s01-crouch,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-crouch,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-crouch,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-crouch,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-crouch,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s01-crouch,304x312,hop,the hop's lift table unchanged,the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it,,satisfied by construction
 s01-crouch,304x312,run,status,provisional input prep (no verdict),,no verdict
 s01-crouch,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",df9a59cd5194,equal,pass
 s01-air,304x312,input,stand sha256,f984fc49cb5f1b4ac28053bdb4688ae03248eb12194240c51f5f611381320937,,info
@@ -124,13 +126,14 @@ s01-air,304x312,legs,leg strain (max |db| / (z0 - yb)) (up),0.1654,0.2500,pass
 s01-air,304x312,field,up max |d| px / stretch / shear,4.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
 s01-air,304x312,M5a,up,"no toplineProfile, head mask or --base-stand mapping",,n/a
 s01-air,304x312,M5,warped-up vs painted,no painted end given,,n/a
-s01-air,304x312,M6,only at 104x112,,,n/a
-s01-air,304x312,M7,warp ms per picture (down; a clock reading),2.7541,,info
-s01-air,304x312,M7,warp ms per picture (up; a clock reading),2.7077,,info
+s01-air,304x312,M6,only at 104x112 and 144x152,,,n/a
+s01-air,304x312,M7,warp ms per picture (down; a clock reading),3.0496,,info
+s01-air,304x312,M7,warp ms per picture (up; a clock reading),2.9644,,info
 s01-air,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-air,304x312,M8,"stand-b1 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-air,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-air,304x312,M8,"stand-b2 up: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s01-air,304x312,pair,breathPair,not in the landmarks: no APNG,,n/a
+s01-air,304x312,hop,the hop's lift table unchanged,the face applies the lift at draw time as a whole-pixel cell offset and the warp never reads it,,satisfied by construction
 s01-air,304x312,run,status,provisional input prep (no verdict),,no verdict
 s01-air,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",7e8c459ac9a8,equal,pass
