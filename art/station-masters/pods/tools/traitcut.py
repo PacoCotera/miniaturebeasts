@@ -7,14 +7,28 @@ from PIL import Image
 ROOT = sys.argv[1]; GROUND = np.array([0x16, 0x2a, 0x37], float)
 SIZES = [(144, 176), (128, 160), (104, 160), (104, 96), (104, 64)]; ROLL = (128, 72)
 # (sheet, trait slug, look slug, window centre in sheet px, base window height)
-LOOKS = [   # (sheet, trait, look, portrait window (centre, height), landscape window (centre, width))
-    ('trait-S01-crown-a', 'crown', 'bare-head', (373, 215), 430, (373, 200), 520),
-    ('trait-S01-crown-a', 'crown', 'leaf-crest', (1030, 215), 430, (1030, 200), 520),
-    ('trait-S01-eyes-a', 'eyes', 'thin-rings', (340, 300), 440, (340, 300), 420),
-    ('trait-S01-eyes-a', 'eyes', 'between', (845, 300), 440, (845, 300), 420),
-    ('trait-S01-eyes-a', 'eyes', 'wide-pale-rings', (1355, 300), 440, (1355, 300), 420),
-    ('trait-S01-markings-b', 'markings', 'plain', (520, 440), 420, (520, 470), 400),
-    ('trait-S01-markings-b', 'markings', 'pale-patches', (1170, 440), 420, (1170, 470), 400),
+LOOKS = [   # (sheet, species, trait, look, portrait window (centre, height), landscape window (centre, width))
+    ('trait-S01-crown-a', 'S01', 'crown', 'bare-head', (373, 215), 430, (373, 200), 520),
+    ('trait-S01-crown-a', 'S01', 'crown', 'leaf-crest', (1030, 215), 430, (1030, 200), 520),
+    ('trait-S01-eyes-a', 'S01', 'eyes', 'thin-rings', (340, 300), 440, (340, 300), 420),
+    ('trait-S01-eyes-a', 'S01', 'eyes', 'between', (845, 300), 440, (845, 300), 420),
+    ('trait-S01-eyes-a', 'S01', 'eyes', 'wide-pale-rings', (1355, 300), 440, (1355, 300), 420),
+    ('trait-S01-markings-b', 'S01', 'markings', 'plain', (520, 440), 420, (520, 470), 400),
+    ('trait-S01-markings-b', 'S01', 'markings', 'pale-patches', (1170, 440), 420, (1170, 470), 400),
+    ('trait-S03-markings-a', 'S03', 'markings', 'plain', (330, 290), 400, (340, 310), 380),
+    ('trait-S03-markings-a', 'S03', 'markings', 'stripes', (930, 290), 400, (940, 310), 380),
+    ('trait-S03-markings-a', 'S03', 'markings', 'spots', (330, 740), 400, (340, 760), 380),
+    ('trait-S03-markings-a', 'S03', 'markings', 'stripes-and-spots', (930, 740), 400, (940, 760), 380),
+    ('trait-S03-crest-a', 'S03', 'crest', 'low-crest', (300, 165), 320, (300, 150), 420),
+    ('trait-S03-crest-a', 'S03', 'crest', 'between', (830, 165), 320, (830, 150), 420),
+    ('trait-S03-crest-a', 'S03', 'crest', 'tall-crest', (1360, 165), 320, (1360, 150), 420),
+    ('trait-S02-spots-a', 'S02', 'spots', 'bare', (300, 230), 400, (300, 230), 460),
+    ('trait-S02-spots-a', 'S02', 'spots', 'bands', (900, 230), 400, (900, 230), 460),
+    ('trait-S02-spots-a', 'S02', 'spots', 'spots', (300, 670), 400, (300, 670), 460),
+    ('trait-S02-spots-a', 'S02', 'spots', 'bands-and-spots', (900, 670), 400, (900, 670), 460),
+    ('trait-S02-span-a', 'S02', 'span', 'small-cap', (272, 320), 500, (272, 320), 500),
+    ('trait-S02-span-a', 'S02', 'span', 'between', (790, 320), 500, (790, 320), 500),
+    ('trait-S02-span-a', 'S02', 'span', 'wide-cap', (1308, 320), 500, (1308, 320), 500),
 ]
 def keyed(src):
     a = src.astype(float); r, g, b = a[..., 0], a[..., 1], a[..., 2]
@@ -45,9 +59,11 @@ def cut(sheet, cx, cy, hs, W, H, out):
     Image.fromarray(np.clip(cell, 0, 255).round().astype(np.uint8)).save(out)
     return box
 rows = []
-for sh, trait, look, (cx, cy), hs, (lx, ly), lw in LOOKS:
+only = sys.argv[2:]                                              # species to cut (all when none named)
+for sh, sp, trait, look, (cx, cy), hs, (lx, ly), lw in LOOKS:
+    if only and sp not in only: continue
     sheet = Image.open(f'{ROOT}/source/raw/{sh}.jpg').convert('RGB')
     for W, H in SIZES:
-        box = cut(sheet, cx, cy, hs, W, H, f'{ROOT}/slices/trait-S01-{trait}-{look}-{W}x{H}.png') if W / H < 1.2 else cut(sheet, lx, ly, lw, W, H, f'{ROOT}/slices/trait-S01-{trait}-{look}-{W}x{H}.png'); rows.append((trait, look, W, H, box))
-    box = cut(sheet, lx, ly, lw, *ROLL, f'{ROOT}/slices/roll-S01-{trait}-{look}-128x72.png'); rows.append((trait, look, *ROLL, box))
+        box = cut(sheet, cx, cy, hs, W, H, f'{ROOT}/slices/trait-{sp}-{trait}-{look}-{W}x{H}.png') if W / H < 1.2 else cut(sheet, lx, ly, lw, W, H, f'{ROOT}/slices/trait-{sp}-{trait}-{look}-{W}x{H}.png'); rows.append((sp, trait, look, W, H, box))
+    box = cut(sheet, lx, ly, lw, *ROLL, f'{ROOT}/slices/roll-{sp}-{trait}-{look}-128x72.png'); rows.append((sp, trait, look, *ROLL, box))
 for r in rows: print(*r)

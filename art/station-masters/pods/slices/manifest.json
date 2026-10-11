@@ -11338,5 +11338,1097 @@
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
   "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-plain-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "09db89cbc2b1430ebdf95b626e12603b59ecce85b0496e63406b2144acde3101",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-plain-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "2d8aed807ad45a3f674d0f8b7269c12b1c329bd76f603746a7a0ee31d0c67267",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-plain-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "cf25ea27e644ee2b30622f2b2eb4ca445499e99f93ebfaf84c0e51dcfde164b0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-plain-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "03aeed72a2af8a25cd77c538b2bf67bf1c67385b8eeb39bef9c212cc330dfa93",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-plain-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "ae9084298e344c584e27ebd78ec70c34171de31bd44d34f1e42168c17f18ac6a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-markings-plain-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'plain' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "5557d8224c7a5473c5464fa6547390dcc5c93ac297f9a03e2364ab87ef4276a8",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "c9b9bbdccd0b562dc4504d8c243cfad5f0cbbec3b70de56020cb701738d387a1",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "4edc6337f6573fbe3428452acc2d103de54a0826863a2d4d8a2f55f6ed129975",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "e7e6b80004ceeadfa91fa1e59f5934d975072492dbf22aeedb7db3795dd50393",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "9042c19d559d30c6923a3a8f93ad36650886e567a542fa68ac366494401b27ee",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "bf9938d595e834f7be991f73ed42aded7573149702d311921881073f1884baa3",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-markings-stripes-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "8a32b778b07d7ae54ada35bc78ede4721ba062b73063ab2349f0a5628fcb3197",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-spots-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "3a6776a8df50184101c43b83a48a8a9fa81827a5f26d675aa2dea97913fa02df",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-spots-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "498c5a9cd8fd33a693eb2f61bc888def5c01a48c40a188556a68eb921f636b64",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-spots-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "318c59c152a6eeb1abbb0be9a861228f50e4e4968086eaba7065626359825863",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-spots-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0173b8fb96843b283c4f6a0683f25f785e7b6984da6ae21e8aceb421e635784b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-spots-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "2239c1c3e945d1ea83b12e38344a739d375df8c9f95cb31ae623ab7b64084c41",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-markings-spots-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "b70472b3c21ddb827e0c178943f8aec72f0918caa3208d64b9a38046a22d377b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-and-spots-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "1b8cd830ca5a678a2d67232354f555ea6d83ba9e1e2702b0ae0b55148abe248e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-and-spots-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0bdb5ed6473fa65afecd8c2e350d8de54a29af8cbe55dae7165d24f23e9bdc8f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-and-spots-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "447d8865ac53e67662a33887c769940c83f0a4e2b0c9b62e007b3bb1aed056bb",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-and-spots-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "76807f6d8e1891239a80ee83c28da4539ac3d587a0eb00d843b81b2f0a695d97",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-markings-stripes-and-spots-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "039c92559b4310efa2e3e46ec812c77cf24037f545cb6cbe17b9d93eb996199b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-markings-stripes-and-spots-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-markings-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the markings look 'stripes-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "c369bf8a07daba2cb367c84c508d00a1326af7143fd219fcbb569ad364bab94f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-low-crest-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "8ac1dc04275d44195ce961c0b26f582eb2d7c0eb2659ec78e8d8baa527fd0bcc",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-low-crest-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "1d61a35921f3f6e53a9c4181a11c2c31c64539f624eceb331c57b278a60f1e10",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-low-crest-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "9b57c98640d1b61a8c58e332cdb0d2d64ae05904e830abe1e18037fd1cdf3825",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-low-crest-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "5529cfe93ae2917adcd427eb3c7101edf2c90e942a5067c865bb32f457070dd4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-low-crest-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "7383d474e78644c080b9d274bd5910085bdd948a04a857874daf97af193a7f10",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-crest-low-crest-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'low-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "4f79c031d1e600033cb87bbcc3e8ebd09d5de8de68c62e7abfcc02090d91a7b5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "a684cb682106f70979eab953715df6af41fdf13f5c9bfe6bfd06b29d1bd7fd11",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "131f18dbd8acb2797d836fde79c42bd0d00a6c57e86af728bd9fe841a2940654",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "2c9d282367e76eb43519b92e769f9aa322c5ede7b903250969c175c2a6e57aca",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "bdda4e03434dff547fd67ae927f8338b8d60d2b4cfb436f0af896f3e1b23af02",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "8d539837a1d6c721f56c415831b5d700ae1caf1f8f66fcbc2a9cd9d217e1693d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-crest-between-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0b21e7b35d4b8b0761b627af91b9ed64e11417222cb50d08cf2448e40c513600",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-tall-crest-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "702d749d5033c4972932e78a6a3bfea4bbc77a9e9ddfb651360ceb4bdc796abc",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-tall-crest-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0cba1cec81b9500046fd7710ae89ae346a1fcac3ec5afbf13b8a63968b012839",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-tall-crest-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "c7e3321007bc0821cabbfa6717227c86da3eff8666712199bd69678dd332c15e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-tall-crest-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "f2e04f510b06e7ec3846c2187a656a0c294ad96568e95a66ec023363adca3b2e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-crest-tall-crest-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "fc8a9fa6d596dba0ea762e9bd744eca2c514343f3630c1ebef87ce54d5dd47c6",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S03-crest-tall-crest-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-crest-a.jpg (trait wave 1, the signed young S03 stand-in as the only reference)",
+  "made": "the crest look 'tall-crest' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "dab4c05811a5c8f6a7f98381c665a0ab1be80ca5fcdbd29162fa2221f6f9af32",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bare-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "857e4c9280191d89979df767d1760ad499c1706370a151746e9a16fedb81bdf1",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bare-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "bc7ecdfb958cbfe6611e693ae99dc2af9df7722c127cc1421ce5c05c5f9325fa",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bare-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "c5cfffd952989f8f00f0243658bccfd6b946ba39867e929ea6544f83cff4abfd",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bare-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "5563c6214d81adbe3dc65f67479b5081f5532b81d60ef3133515903a9932f4a6",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bare-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "c4b1768134590c42e78dedb06bcec78d4fea1be237ececd15e24fca4b1c88d2a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-spots-bare-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bare' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0fa5b759152e45bb384c67c8964bf9101b664aff9e0df96bf14dc730823d6f10",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "2ce18dc6249f7c31d2c70b7231da2ad667024a1e07ad8dc6e6d91fffb356a801",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "24193766ba0dca06e7bea14f6b77acb4d4735fe847a717a09f572efe4c9832d6",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "1cf66378fe732dbf83de11472d79acf094bea34e2d510b013faaad145952d202",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "6f55757ba21a20949412d503da1d747485193ba559b7cd2937faf820baa38843",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "f2b888b815504999b6766b19cd79db169ec4654a9db0ffdc0331d00124946f8c",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-spots-bands-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "ac1d672484d28915637b1f14bafef5f0cd10076fcb090c770edcd5ac29700d76",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-spots-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "5e4a87c0d93149f1ed80954a20ed8929524939f37579420b5a008f8d652bb231",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-spots-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "09aed602276ec35994a94dd117357bf9025f0825ea37636dfbd57b87875147ef",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-spots-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "458de39f2bac65856f2cc232abd5d55c9e2eb33824c6c152c30c7b86a7735d0d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-spots-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "c255529bb193b937bb94b1f260b133419373ab6d8d3b035c4900cea59bfc6406",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-spots-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "92237a61e5672d9ed74233160f3c019f8bf8beb229cf04079b4da435fd4be8cd",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-spots-spots-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "9ce46f180deefa47ad8e48dfbb01208df072d9454feda96c197aee5e985d8a6f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-and-spots-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "cfa42339cb3f6826ea03d228b024132dbaca70c928b673225c9e63145455fc86",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-and-spots-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "80c2a6b160483d2d5da030ae369b2ff91bad33e55080aebb5e4b58d79b6412b0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-and-spots-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "d9d2d402a686f782e752ef51d8beb94004508a32e70ff46413de8934adb6d0d5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-and-spots-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "d2d98da281aed5dbd6439c86e0b0b72d29b686069be503cb4b4f4ea625edf0c3",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-spots-bands-and-spots-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "ab732b882d669f745651e552fc3f0d9d1c385756d4c6e17d80fa1c1c9c8cee45",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-spots-bands-and-spots-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-spots-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the spots look 'bands-and-spots' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "cd76ae65f7182906a62f9373723eb7a9ed018cbbf3029f946425c722412f377b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-small-cap-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "9a74b5d7fe364a4b8de908a2d0e5c490b8431281f08eb4deea88a1832d70aefa",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-small-cap-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "cd88ec9c5ed2f0ea8387c94be33fa20597199890354e0fc6acb7ce8a9546f45e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-small-cap-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "03edb6667af75e5a570a3970ca1150150583ffdc330daef7e388bec1890407e2",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-small-cap-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "349fdc13b5e2e152093f83f768b51e85f0ca1a475c1899a956e6b9f3474b04f9",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-small-cap-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "426a936901361519eb505d2ed54f1a6d3235c0b208dc3b4d61b2fe640853f199",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-span-small-cap-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'small-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "15cdf855a77535964c859a973fb88b47c60a64cf53a4c46581c13beed918f3b9",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "9162e0305e9345199ed5342f8b1c6207a592ad7f6fae1e4280d2a7cf31f77dc2",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "3b6e3c9ccaf2c26bde857caf2b6be0310e1a8ca375b3210ee74afbde1946b081",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "7640fa964e38fcf49de6f1a10f7c09d375de1cca3498fe071e67241654c1c802",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "ef98cb932d20875f268da414593b2d2b78654af521ce1389a83ea0c393453cbc",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "e2a6b18b4831640d114e67ef284f6cd2af6a26e067a5f27a27354349886507ed",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-span-between-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'between' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "7ad74f057084613386b0ae3c482e33baf3180b2db85851c6583c4ebda24d0cb9",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-wide-cap-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "310f29a47306d11a491bd4c8a2bdb2371a6680b2f839fa5818d1c41300739ad7",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-wide-cap-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "2ef7a569f3f9d2bf7e0d06624a007dd93ba89a9a6b23d51074957a1122ae870e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-wide-cap-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "ce367eed3d40283678ac05471991eb8b271157135cb0216a4da8a00ec98ba873",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-wide-cap-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "3b0d7faa70ba6b9f023ca4c042f188b0dd6f665a0c6ab9b510a106d1b738a231",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S02-span-wide-cap-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "5eb613d180bce318fabcd1d1e6418a3131ac02724bb5cd48da14bcbabd78344b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "roll-S02-span-wide-cap-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-span-a.jpg (trait wave 1, the signed young S02 stand-in as the only reference)",
+  "made": "the span look 'wide-cap' cut by tools/traitcut.py: a hand-set window reduced (never enlarged) into the centred 75 percent of the cell, magenta keyed to the cell tone ground #162a37, a 12 px smoothstep fade on the content box's edges",
+  "sha256": "0e1514dc3157fc503db7838c47be2262026470b002f37bcaeb3558367427d9c0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1, 10-11",
+  "status_note": "one sheet per trait: every look in the same framing"
  }
 }
