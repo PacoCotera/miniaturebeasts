@@ -3273,5 +3273,39 @@
    "thoughtsTokenCount": 250,
    "totalTokenCount": 2315
   }
+ },
+ {
+  "tag": "bench-cradle-empty-b try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.180624,
+  "mxn": 3.6125,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T15:11:37Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 792,
+   "candidatesTokenCount": 1285,
+   "thoughtsTokenCount": 207,
+   "totalTokenCount": 2284
+  }
+ },
+ {
+  "tag": "room-bench-stage-probe-a try 1",
+  "tool": "gemini gemini-3-pro-image",
+  "usd": 0.182216,
+  "mxn": 3.6443,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-11",
+  "time": "2026-10-11T15:13:06Z",
+  "model": "gemini-3-pro-image",
+  "http_status": 200,
+  "usage": {
+   "promptTokenCount": 748,
+   "candidatesTokenCount": 1280,
+   "thoughtsTokenCount": 226,
+   "totalTokenCount": 2254
+  }
  }
 ]
