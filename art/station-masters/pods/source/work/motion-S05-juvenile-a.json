@@ -1,0 +1,16 @@
+[
+{
+"name": "motion-S05-juvenile-a",
+"model": "gemini-3-pro-image",
+"aspect": "3:2",
+"size": "1K",
+"tries": 1,
+"refs": [
+[
+"scratch:ref-mibi-juvenile-S05-304x312.png",
+"Our signed juvenile S05 stand-in (project-owned): the creature to repeat."
+]
+],
+"prompt": "Paint a KEY POSE SHEET of the creature in the first reference: the SAME creature in every cell (same species, same face, eyes, markings, colours, leaf count, proportions, size and brush), only its pose changes. Layout: a grid of 3 columns by 2 rows of equal cells, each cell holds one full figure, centred, never touching the cell edges, all at the same scale, feet on one shared ground line in every row (except where the pose is in the air). Three-quarter view from the front left, facing the viewer, light from the top left, a soft flat contact shadow under each grounded pose. Matte painterly rendering exactly as the reference. Plain flat solid magenta (#FF00FF) background everywhere, no cell borders, no grid lines, no numbers, no text, no props, no ground, no glow. It is a trotting four-legged creature. Cells, left to right, top row then bottom row: 1 the passing pose of a trot, legs under the body, standing as the reference (the anchor); 2 stepA, mid-trot, front-left and back-right legs reaching forward, the others back; 3 stepB, mid-trot, the opposite pair forward; 4 crouch, body low, legs bent; 5 curl, asleep, curled in a ball on the ground, eyes shut, tail around it; cell 6 empty magenta."
+}
+]
