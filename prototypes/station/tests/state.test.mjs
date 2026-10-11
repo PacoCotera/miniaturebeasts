@@ -158,7 +158,7 @@ test("compare: the traits read on both pods that differ; return a pod for +1 Ess
   for (const id of d) assert.notEqual(lineOf(a, id), lineOf(b, id), `${id}: marked only where the two read differently`);
   const s0 = st.s, r = S.returnPod(st, t, settings, 1);
   assert.equal(r.ok, true); assert.equal(st.s, s0 + 1); assert.equal(st.tray.length, 2);
-  assert.deepEqual(st.returned.at(-1), { id: t.id, sp: 1, g: "rock", k: "12" });
+  assert.deepEqual(st.returned.at(-1), { id: t.id, sp: 1, species: "S03", g: "rock", gs: t.gs >>> 0, k: "12" });
 });
 
 test("the migration: pods keep their seeds and get genomes, studies start again, mibis become fully read founders, the Companion's part is byte-identical", () => {
@@ -174,7 +174,8 @@ test("the migration: pods keep their seeds and get genomes, studies start again,
   assert.equal(st.readEver, true, "a study was paid once, so the free first read is spent");
   assert.ok(Object.keys(st.guide.S01).length >= 1, "the guide holds the founder's looks");
   assert.equal(st.bays, 6); assert.equal(st.bud, null); assert.deepEqual(st.outbox, []);
-  for (const k of ["accepted", "dockN", "probe", "returned"]) assert.deepEqual(st[k], raw.st[k]);
+  for (const k of ["accepted", "dockN", "probe"]) assert.deepEqual(st[k], raw.st[k]);
+  assert.deepEqual(st.returned, [{ id: "xw2n9c-2:q4", sp: 2, g: "pond", k: "31", species: "S02" }], "a returned entry gains its species, nothing else");
   assert.deepEqual(st.carryReqs, [], "its request (seq 1) was applied (withSeen 1): nothing to carry over"); assert.equal(st.carrySeq, 0); assert.equal("withReq" in st, false, "the request field is gone");
   assert.match(st.log.at(-1), /migrated/);
   assert.equal(JSON.stringify({ ...raw, st: undefined }), before, "the Companion's part is untouched");
@@ -580,4 +581,53 @@ test("the bench's switch: setMendFull sets whether the dock mends every plate an
   assert.equal(st.e, e0, "free");
   lift(); st.probe.shield = 1; S.dockKey(st, sv, settings, 11); assert.equal(st.probe.shield, S.DOCK_MEND_FLOOR, "switch off: brought to the floor, nothing paid for more"); assert.equal(st.e, e0);
   S.setMendFull(st, true); lift(); st.probe.shield = 1; S.dockKey(st, sv, settings, 12); assert.equal(st.probe.shield, 3, "switch on: every plate at its price"); assert.equal(st.e, e0 - 1);
+});
+
+test("a species beyond the Companion's three: each mibi carries its species name in the save (normalize, idempotent)", () => {
+  const { st } = world([]); S.normalize(st);
+  S.seedAdults(st, "S05", 3, 2, settings); S.seedAdults(st, "S10", 4, 2, settings);
+  S.normalize(st);
+  assert.equal(st.mibis.length, 4);
+  for (const m of st.mibis) { assert.equal(m.sp, -1); assert.equal(m.spName, frameOf(m.species).species.name); }
+  assert.deepEqual(st.mibis.map((m) => m.spName), ["Tepor", "Tepor", "Igara", "Igara"]);
+  const once = JSON.stringify(st); S.normalize(st); assert.equal(JSON.stringify(st), once, "a second normalize changes nothing");
+});
+
+test("a returned pod of a species beyond three keeps its species and opens from a Companion crate", () => {
+  const { sv, st } = world([]); S.normalize(st);
+  S.seedCrate(st, "S05", 1, 9, 1000); S.dockKey(st, sv, settings, 1000); S.openBay(st, sv, settings, 1000);
+  const p = st.tray[0]; assert.equal(p.species, "S05"); assert.equal(p.sp, -1);
+  S.returnPod(st, p, settings, 1000);
+  const r = st.returned.at(-1); assert.equal(r.species, "S05");
+  // the Companion's record of it, as index.html seeds, takes and crates it (with species carried, §3)
+  const q = { id: "r1", sp: r.sp, ...(r.species ? { species: r.species } : {}), g: r.g, how: "ground", gs: 12345, k: "12" };
+  sv.bay.push(crate(5, [q]));
+  S.dockKey(st, sv, settings, 2000); S.dockKey(st, sv, settings, 2000);
+  const o = S.openBay(st, sv, settings, 2000);
+  assert.deepEqual(o.plays[0].ids, ["x5:r1"]); assert.equal(st.tray.find((t) => t.id === "x5:r1")?.species, "S05");
+});
+
+test("an older save: returned entries gain their species from sp (none for -1); a crate pod of no species is not lost silently", () => {
+  const { sv, st } = world([crate(6, [{ id: "r9", sp: -1, g: "cave", how: "ground", gs: 7, k: "3" }, loikaPod(1, 11)])]);
+  st.returned = [{ id: "a", sp: 2, g: "pond", k: "31" }, { id: "b", sp: -1, g: "cave", k: "4" }];
+  S.normalize(st);
+  assert.deepEqual(st.returned.map((r) => r.species), ["S02", null]);
+  const once = JSON.stringify(st.returned); S.normalize(st); assert.equal(JSON.stringify(st.returned), once);
+  S.dockKey(st, sv, settings, 1000); const o = S.openBay(st, sv, settings, 1000);
+  assert.deepEqual(o.plays[0].ids, ["x6:p1"]); assert.deepEqual(o.plays[0].skipped, ["r9"]);
+  assert.match(st.log.at(-1), /1 pod ·/); assert.match(st.log.at(-1), /r9/);
+});
+
+test("a returned pod is the same individual: from a Companion crate it lands with the genome it left with, as a new find", () => {
+  const { sv, st } = world([]); S.normalize(st);
+  S.seedCrate(st, "S05", 1, 9, 1000); S.dockKey(st, sv, settings, 1000); S.openBay(st, sv, settings, 1000);
+  const p = st.tray[0], genome = structuredClone(p.genome);
+  S.returnPod(st, p, settings, 1000);
+  const r = st.returned.at(-1); assert.equal(r.gs, p.gs >>> 0);
+  const q = { id: "r1", sp: r.sp, ...(r.species ? { species: r.species } : {}), g: r.g, how: "ground", gs: r.gs, k: "12" };
+  sv.bay.push(crate(5, [q]));
+  S.dockKey(st, sv, settings, 2000); S.dockKey(st, sv, settings, 2000);
+  S.openBay(st, sv, settings, 2000);
+  const back = st.tray.find((t) => t.id === "x5:r1");
+  assert.deepEqual(back.genome, genome); assert.equal(back.idd, 0); assert.deepEqual(back.read, []);
 });

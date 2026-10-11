@@ -2,7 +2,7 @@
 // function over it. No drawing, no DOM: the tests run this in Node. Screens call these and read
 // the results; presentation events come back as return values, never as side effects on a renderer.
 // The Companion page owns every top-level field of the save and reads these fields of `st`:
-// accepted, dockN, known, probe, carryReqs, returned, and each mibi's id, name, sp, born, from, bonded.
+// accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
@@ -61,7 +61,7 @@ export const cap = (s) => (s ? s[0].toUpperCase() + s.slice(1) : s);
 export function freshSt(wid, turn, now = Date.now()) {
   return { schema: ST_SCHEMA, wid: wid == null ? null : wid, at: now, turn: turn || 0, e: 0, d: 0, s: 0,
     tray: [], waiting: [], accepted: [], devBay: [], known: [], met: [], knownIds: [], metIds: [], readOnce: {}, guide: {}, readEver: false, freeId: false, firstMibi: true,
-    mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, wish: {}, face: {}, sittingCrates: [], outbox: [],
+    mibis: [], nextMibi: 1, nameN: 0, namesUsed: [], bud: null, bays: BAYS, sitting: null, moments: {}, welcomeGiven: false, owed: [], doorAt: null, wish: {}, face: {}, sittingCrates: [], outbox: [],
     dock: { docked: false, at: now }, dockN: 0, carryReqs: [], carrySeq: 0, carryRefusedSeen: 0, probe: null, mendFull: true, returned: [], log: [] };
 }
 export function logEv(st, t) { st.log.push("T" + (st.turn + 1) + " · " + t); if (st.log.length > 60) st.log.splice(0, st.log.length - 60); }
@@ -123,11 +123,13 @@ export function migrate(st, now = Date.now(), sv = null) {
 }
 // What a record may lack after an older write.
 export function normalize(st, now = Date.now()) {
-  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates"]) if (!Array.isArray(st[k])) st[k] = [];
+  for (const k of ["tray", "waiting", "accepted", "devBay", "known", "met", "knownIds", "metIds", "mibis", "returned", "log", "outbox", "releases", "sittingCrates", "owed"]) if (!Array.isArray(st[k])) st[k] = [];
+  if (st.doorAt === undefined) st.doorAt = null;   /* the sitting's door: null until it first opens on this save (sitting.mjs openSittingDoor); additive, no schema bump */
   for (const k of ["readOnce", "guide", "moments", "wish", "guideNotes", "face"]) if (!st[k] || typeof st[k] !== "object") st[k] = {};
   st.dock = st.dock || { docked: false, at: now }; if (!st.bays) st.bays = BAYS;
+  for (const r of st.returned) if (r && r.species === undefined) r.species = speciesId(r.sp);   /* a returned pod from before it carried its species: 0-2 resolve, -1 stays null; additive, no schema bump */
   for (const p of st.tray.concat(st.waiting)) { p.species = speciesOf(p); if (!Array.isArray(p.read)) p.read = []; if (!Array.isArray(p.first)) p.first = [];   /* p.first (the traits whose look this pod showed first) is optional in a save: an older pod loads with none and shows no mark; no schema bump, the default is the migration */ const fr = frameFor(p); if (fr && !p.genome) p.genome = podGenome(fr, p.gs >>> 0); }
-  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
+  for (const m of st.mibis) { m.species = speciesOf(m); const fr = frameFor(m); m.spName = fr ? fr.species.name : null; if (fr && !m.genome) Object.assign(m, mibiFromGenome(fr, podGenome(fr, m.gs >>> 0))); if (fr) m.genome = quantizeGenome(fr, m.genome);   /* blends on the step (2026-10-09): idempotent; m.sha (the painting key) and m.code stay */ if (!m.from) m.from = { n: 0, g: "", how: "" }; if (!Array.isArray(m.habits)) m.habits = []; if (!Array.isArray(m.walked)) m.walked = []; if (m.portrait === undefined) m.portrait = null;
     m.care = m.care > 0 ? m.care | 0 : 0; m.tends = m.tends > 0 ? m.tends | 0 : 0; if (m.grownTurn === undefined) m.grownTurn = null;
     if (m.bonded && m.bondCare == null) { m.bondCare = m.care || 0; if (m.grownTurn == null && st.turn - (m.born || 0) >= JUVENILE_TURNS) m.grownTurn = (m.born || 0) + JUVENILE_TURNS; } }   /* a bond made on the Station before the care rules: the marker is bonded with no bondCare, only old bonds match, and after this it is false (idempotent) */
   if (!Array.isArray(st.carryReqs)) st.carryReqs = []; if (!(st.carrySeq >= 0)) st.carrySeq = 0; if (!(st.carryRefusedSeen >= 0)) st.carryRefusedSeen = 0;
@@ -341,10 +343,10 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
     st.accepted.push(c.id); if (st.accepted.length > 60) st.accepted.splice(0, st.accepted.length - 60);
     const top = settings.economy === "loose" && !c.dev ? settings.topUp || DEFAULT_SETTINGS.topUp : { e: 0, d: 0, s: 0 };
     st.e += (c.e | 0) + top.e; st.d += (c.d | 0) + top.d; st.s += (c.s | 0) + top.s;
-    const ids = [];
+    const ids = [], skipped = [];
     for (const q of c.pods || []) {
       const species = q.species ?? speciesId(q.sp), fr = frameOf(species);
-      if (!fr) continue;   // a malformed record never breaks the bay
+      if (!fr) { skipped.push(q.id); continue; }   // a malformed record never breaks the bay; it is named, never dropped silently
       const pod = { id: c.id + ":" + q.id, sp: q.sp ?? speciesIndex(species), species, g: q.g, how: q.how, gs: q.gs >>> 0, k: q.k ?? null, n: c.n, idd: 0, newSp: 0, read: [], fresh: 1, genome: q.genome && !checkGenome(fr, q.genome).length ? q.genome : podGenome(fr, q.gs >>> 0) };
       if (st.tray.length < rack) st.tray.push(pod); else st.waiting.push(pod);
       ids.push(pod.id);
@@ -353,8 +355,8 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
     const before = st.turn; st.turn = Math.max(st.turn, c.turn | 0);
     const paid = st.mendFull && st.probe ? payMend(st, settings) : 0;
     const gained = { e: (c.e | 0) + top.e, d: (c.d | 0) + top.d, s: (c.s | 0) + top.s };   // what the crate brought, the top-up with it; the plates it paid for cost `spent` Energy
-    plays.push({ c, ids, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
-    logEv(st, "Crate " + c.n + " opened · " + plural((c.pods || []).length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence");
+    plays.push({ c, ids, skipped, paid, spent: paid * price(PRICE.mend, settings), gained, turnFrom: before, turnTo: st.turn, top });
+    logEv(st, "Crate " + c.n + " opened · " + plural(ids.length, "pod") + " · +" + gained.e + " Energy +" + gained.d + " Data +" + gained.s + " Essence" + (skipped.length ? " · not opened, no species: " + skipped.join(", ") : ""));
   }
   st.devBay = st.devBay.filter((c) => !st.accepted.includes(c.id));
   syncKnown(st);
@@ -503,7 +505,7 @@ export const canCompare = (st, a, b) => compareDiff(st, a, b) !== null;
 export function returnPod(st, p, settings = DEFAULT_SETTINGS, now = Date.now()) {
   if (!st.tray.includes(p)) return { ok: false };
   st.tray = st.tray.filter((q) => q !== p); st.s += PRICE.wild;
-  st.returned.push({ id: p.id, sp: p.sp, g: p.g, k: p.k || null }); if (st.returned.length > 30) st.returned.shift();
+  st.returned.push({ id: p.id, sp: p.sp, species: speciesOf(p), g: p.g, gs: p.gs >>> 0, k: p.k || null }); if (st.returned.length > 30) st.returned.shift();
   logEv(st, "Returned " + aAn(podName(p)) + " to the wild · +1 Essence"); fillWells(st, settings, now);
   return { ok: true, msg: "Back to the " + (PLACE_WORD[p.g] || "wild") + " · " + gainText(1) + " · the Companion learns at the next dock" };
 }

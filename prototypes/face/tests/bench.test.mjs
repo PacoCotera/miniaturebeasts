@@ -70,11 +70,11 @@ for (const [name, o] of Object.entries(SCENES)) {
   });
 }
 
-test("the plates per tier: tier 1 on 232, 280, 328 and tier 2 on 208, 256, 304, 352 at y 424 (lifted 2 while the ring is on them), the tier's missing place a node of no size, away the four nodes stay with no size; the armed part stands 8 px out of its socket", { skip }, async () => {
-  let f = await start(scene({ f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[232, 424, 32, 64], [280, 424, 32, 64], [328, 424, 32, 64], [352, 424, 0, 0]]);
-  f = await start(scene({ tier: 2, shield: 4, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 424, 32, 64], [256, 424, 32, 64], [304, 424, 32, 64], [352, 424, 32, 64]]);
-  f = await start(scene({ f: "plates" })); assert.deepEqual(boxOf(f)("plates.0"), [232, 422, 32, 64], "the ring on the plates lifts them 2 px");
-  f = await start(scene({ docked: false, shield: 3, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 424, 0, 0], [256, 424, 0, 0], [304, 424, 0, 0], [352, 424, 0, 0]], "away: the four plate nodes stay, with no size (hidden, not destroyed)"); assert.equal(f.nodeBox("plates.seat"), null);
+test("the plates per tier: tier 1 on 232, 280, 328 and tier 2 on 208, 256, 304, 352 at y 440 (lifted 2 while the ring is on them), the tier's missing place a node of no size, away the four nodes stay with no size; the armed part stands 8 px out of its socket", { skip }, async () => {
+  let f = await start(scene({ f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[232, 440, 32, 32], [280, 440, 32, 32], [328, 440, 32, 32], [352, 440, 0, 0]]);
+  f = await start(scene({ tier: 2, shield: 4, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 440, 32, 32], [256, 440, 32, 32], [304, 440, 32, 32], [352, 440, 32, 32]]);
+  f = await start(scene({ f: "plates" })); assert.deepEqual(boxOf(f)("plates.0"), [232, 438, 32, 32], "the ring on the plates lifts them 2 px");
+  f = await start(scene({ docked: false, shield: 3, f: "switch" })); assert.deepEqual([0, 1, 2, 3].map((i) => boxOf(f)(`plates.${i}`)), [[208, 440, 0, 0], [256, 440, 0, 0], [304, 440, 0, 0], [352, 440, 0, 0]], "away: the four plate nodes stay, with no size (hidden, not destroyed)"); assert.equal(f.nodeBox("plates.seat"), null);
   const idle = await start(scene({ f: "switch" })), armed = await start(scene({ f: "slot", arm: 0 })), armed2 = await start(scene({ f: "slot", arm: 1 }));
   assert.equal(boxOf(idle)("slot.part")[1], 248 + 64, "ready: seated"); assert.equal(boxOf(armed2)("slot.part")[1], 248 - 2 + 56, "armed: 56 in the module (the module lifted 2 with the ring)"); assert.equal(boxOf(armed)("slot.part")[1], 248 - 2 + 64);
   const armedNoRing = await start(scene({ f: "switch", arm: 1 })); assert.equal(boxOf(armedNoRing)("slot.part")[1], 248 + 56, "armed: y + 56");
@@ -102,8 +102,8 @@ test("keys: ✓ ← and the room keys say their intent on the ring's target; the
 const knobX = (f) => boxOf(f)("switch.knob")[0];
 test("the mend: the plate that seats goes gone to whole by a 16-level dither over 300 ms (a node of its own from 0 to 300, gone at the end), the ring stays where it is, the event holds input for 300 ms and says done at its end", { skip }, async () => {
   const before = scene({ f: "plates" }), f = await start(before, { fixedLine: true }), t0 = f.t, ring0 = boxOf(f)("focus"), after = scene({ shield: 3, f: "plates" }); play(f, { kind: "mend", target: "plates", ms: EV.mend.ms, hold: EV.mend.hold, from: 2, to: 3 }); setProps(f, after);   // the host's order: the event, then the props that carry its end state
-  f.frame(t0 + 20); assert.deepEqual(boxOf(f)("plates.seat"), [328, 422, 32, 64], "the seating plate, over its place (lifted with the ring)");
-  f.frame(t0 + 170); assert.deepEqual(boxOf(f)("plates.seat"), [328, 422, 32, 64]); assert.deepEqual(boxOf(f)("plates.0"), [232, 422, 32, 64]); assert.deepEqual(boxOf(f)("focus"), ring0, "through the hold the ring stays where it is, with its lift");
+  f.frame(t0 + 20); assert.deepEqual(boxOf(f)("plates.seat"), [328, 438, 32, 32], "the seating plate, over its place (lifted with the ring)");
+  f.frame(t0 + 170); assert.deepEqual(boxOf(f)("plates.seat"), [328, 438, 32, 32]); assert.deepEqual(boxOf(f)("plates.0"), [232, 438, 32, 32]); assert.deepEqual(boxOf(f)("focus"), ring0, "through the hold the ring stays where it is, with its lift");
   assert.deepEqual(key(f, "confirm"), [], "held: ✓ says nothing"); assert.deepEqual(key(f, "left"), [], "held: the pad moves nothing"); assert.deepEqual(key(f, "library").map((x) => x.verb), ["room:library"], "held: a room key is said");
   f.f = f.frame(t0 + 330); frames(f, 1, 16); assert.equal(f.nodeBox("plates.seat"), null, "at 300 the dither is over"); assert.deepEqual(f.errors(), []);
   for (let m; (m = f.poll());) if (m.t === "done") (f.done ??= []).push(m.kind); assert.ok(f.done.includes("mend"), "the face says done when the mend ends");

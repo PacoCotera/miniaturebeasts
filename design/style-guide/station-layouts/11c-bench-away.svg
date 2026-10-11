@@ -18,9 +18,9 @@
 <text x="600" y="210" font-size="6" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">track off 80×40, knob x 16</text>
 <rect x="696.5" y="166.5" width="23" height="23" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <text x="708" y="200" font-size="6" fill="#777" text-anchor="middle" font-family="DejaVu Sans Mono, ui-monospace, monospace">dock</text>
-<rect x="736.5" y="162.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="760.5" y="162.5" width="15" height="31" fill="#ffffff" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="162.5" width="15" height="31" fill="#f3f3f3" stroke="#444" stroke-width="1" stroke-dasharray="3 2"/>
+<rect x="736.5" y="170.5" width="15" height="15" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="760.5" y="170.5" width="15" height="15" fill="#ffffff" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="170.5" width="15" height="15" fill="#f3f3f3" stroke="#444" stroke-width="1" stroke-dasharray="3 2"/>
 <text x="840" y="182" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">the dock leaves two whole</text>
 <rect x="584.5" y="248.5" width="383" height="247" fill="#eceef1" stroke="#444" stroke-width="1"/>
 <text x="600" y="276" font-size="16" fill="#8a947b">Upgrade</text>
@@ -35,10 +35,10 @@
 <rect x="784.5" y="312.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <rect x="808.5" y="312.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
 <rect x="832.5" y="312.5" width="15" height="15" fill="#dcefc9" stroke="#444" stroke-width="1"/>
-<rect x="784.5" y="352.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="808.5" y="352.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="832.5" y="352.5" width="15" height="31" fill="#f2ece0" stroke="#444" stroke-width="1"/>
-<rect x="856.5" y="352.5" width="15" height="31" fill="#dcefc9" stroke="#444" stroke-width="1"/>
+<rect x="784.5" y="360.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="808.5" y="360.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="832.5" y="360.5" width="15" height="15" fill="#f2ece0" stroke="#444" stroke-width="1"/>
+<rect x="856.5" y="360.5" width="15" height="15" fill="#dcefc9" stroke="#444" stroke-width="1"/>
 <rect x="784.5" y="408.5" width="39" height="39" fill="#dcefc9" stroke="#444" stroke-width="1"/>
 <rect x="840.5" y="408.5" width="39" height="39" fill="#dcefc9" stroke="#444" stroke-width="1"/>
 <text x="880" y="324" font-size="7" fill="#777" text-anchor="start" font-family="DejaVu Sans Mono, ui-monospace, monospace">three pods</text>
