@@ -2079,9 +2079,9 @@ The Library's whole, its overview level ([The screen map](#the-screen-map)): Hom
 
 *20a. The journal empty (a fresh world): the stage alone, the ring on the first frame, no ✓ cap; the message plate a press shows. 1×, measured ([SVG](station-layouts/20a-library-spread-empty.svg)).*
 
-<img src="station-layouts/20b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows">
+<img src="station-layouts/20b-library-spread-nav.png" width="1024" alt="The Library spread's pad: along a row, across the gutter, between the rows; the ring on Belatz over its gilt corner and seal">
 
-*20b. The pad, ✓, ← and the keys. 1×, measured ([SVG](station-layouts/20b-library-spread-nav.svg)).*
+*20b. The pad, ✓, ← and the keys; the ring on a portrayed, complete frame (Belatz), drawn last over its gilt corner and seal. 1×, measured ([SVG](station-layouts/20b-library-spread-nav.svg)).*
 
 ### 1. Purpose
 
@@ -2202,8 +2202,8 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The code rig's type specimen at 80×96 for all sixteen |
 | `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
 | `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `clay` L, 4 px thick, along the top and right edges |
-| `clan-roundel-<Cnn>-12x12` | 12×12 | Sixteen: the clan's roundel beside its rule, in the clan's colour | A disc in the clan's colour, edged `bark` |
-| `spread-progress-full-8x8`, `spread-progress-empty-8x8` | 8×8 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it | An 8×8 `bark` disc; an 8×8 `clay` outline |
+| `clan-roundel-<Cnn>-12x12` | 12×12 | Sixteen: the clan's roundel beside its rule, in the clan's colour; signed, placed in L | A disc in the clan's colour, edged `bark` |
+| `spread-progress-full-8x8`, `spread-progress-empty-8x8` | 8×8 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it; signed and placed | An 8×8 `bark` disc; an 8×8 `clay` outline |
 | `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `sand` disc edged `bark` |
 
 ### Not designed yet

@@ -222,6 +222,10 @@ static lv_obj_t *nursery(void) {
   return g_nursery;
 }
 static node_t *find_node(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return &g_o[i]; return NULL; }
+#ifdef FACE_NODE_API
+/* a node's box as the scene holds it (the test build's per-part region check): its kind, or -1 when no node has the id */
+int prim_node_box(uint32_t id, int out[4]) { node_t *n = find_node(id); if (!n) return -1; out[0] = n->x; out[1] = n->y; out[2] = n->w; out[3] = n->h; return n->kind; }
+#endif
 static int find(uint32_t id) { for (int i = 0; i < g_n; i++) if (g_o[i].id == id) return i; return -1; }
 static lv_obj_t *make(node_t *n, int a, lv_obj_t *parent) {
   lv_obj_t *o;

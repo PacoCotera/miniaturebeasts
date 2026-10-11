@@ -20,6 +20,9 @@ void prim_tag(int layer, const char *region);
    composed: the ops as JSON in the text buffer (see prim_compose), drawn into a w x h picture of the face's own once per change.
    The text is read from prim_text() for a text node. */
 void prim_node(uint32_t id, int kind, int x, int y, int w, int h, uint32_t rgb, int a, int b);
+#ifdef FACE_NODE_API
+int prim_node_box(uint32_t id, int out[4]);   /* test build: the box and kind of a node by id (-1 when absent) */
+#endif
 void prim_end(void);
 char *prim_ops(void);           /* a 128 KiB buffer for the ops of a composed node (JSON), filled before the node */
 int prim_ops_size(void);

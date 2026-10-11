@@ -49,6 +49,7 @@ static void build_frame(int page, int k) {
   /* the clan's flat ink rule over the frame, and its roundel before it */
   int rx = f[0] + lk("spread.item.clanRule.at", 0), ry = f[1] + lk("spread.item.clanRule.at", 1), rw = lk("spread.item.clanRule.at", 2), rh = lk("spread.item.clanRule.at", 3);
   snprintf(id, sizeof id, "frame.%s.rule", sid); v_region(reg, LAYER_CHROME);
+  /* a frame that shows no rule is a rect of no size: its colour (the ring's, a stand-in) is never drawn */
   v_rect(id, rx, ry, known && *clan ? rw : 0, known && *clan ? rh : 0, known && *clan ? lcol(v_fmt("spread.clanColours.%s", clan)) : lcol("spread.colours.ring"));
   int qx = f[0] + lk("spread.item.roundel.at", 0), qy = f[1] + lk("spread.item.roundel.at", 1);
   snprintf(id, sizeof id, "frame.%s.roundel", sid); v_name(reg);
@@ -82,7 +83,7 @@ static void build_pages(void) {
 
 /* ---- the focus: sixteen targets `frame.<SNN>`, each its frame's place; the ring is the last thing drawn ---- */
 int library_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
-  snprintf(graph_key, (size_t)gcap, "graph");
+  snprintf(graph_key, (size_t)gcap, "spread.focus.graph");
   int n = v_plen("focus.targets"), k = 0; if (n > cap) n = cap;
   for (int i = 0; i < n; i++) {
     focus_target_t *t = &out[k]; memset(t, 0, sizeof *t); snprintf(t->id, sizeof t->id, "%s", v_pstr(v_fmt("focus.targets.%d.id", i))); snprintf(t->group, sizeof t->group, "%s", v_pstr(v_fmt("focus.targets.%d.group", i)));
@@ -95,7 +96,7 @@ int library_focus(focus_target_t *out, int cap, char *graph_key, int gcap) {
 }
 static void build_ring(void) {
   char c[48]; snprintf(c, sizeof c, "%s", cur()); if (!*c) return;   /* a copy: v_pstr below reuses the buffer */
-  focus_target_t t[40]; char gk[16]; int n = library_focus(t, 40, gk, sizeof gk), box[4] = { 0, 0, 0, 0 };
+  focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk), box[4] = { 0, 0, 0, 0 };
   for (int i = 0; i < n; i++) if (strcmp(t[i].id, c) == 0) { box[0] = t[i].x; box[1] = t[i].y; box[2] = t[i].w; box[3] = t[i].h; }
   if (box[2] <= 0) return;
   v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, "spread.focus.targets.frame.ring", fcol("focus.ring.onPaper"));
@@ -108,7 +109,7 @@ void library_key(int code) {
   const char *verb = code == 10 ? "confirm" : code == 27 ? "back" : code == 2 ? "room:home" : code == 114 ? "room:research" : code == 108 ? "room:library" : code == 98 ? "room:habitat" : NULL;
   if (verb) { screens_say("intent", c, verb); return; }
   int dir = code == 17 ? FOCUS_UP : code == 18 ? FOCUS_DOWN : code == 20 ? FOCUS_LEFT : code == 19 ? FOCUS_RIGHT : -1; if (dir < 0) return;
-  focus_target_t t[40]; char gk[16]; int n = library_focus(t, 40, gk, sizeof gk); int glen; const char *graph = spec_raw(S, "spread.focus.graph", &glen); char err[200];
+  focus_target_t t[40]; char gk[32]; int n = library_focus(t, 40, gk, sizeof gk); int glen; const char *graph = spec_raw(S, "spread.focus.graph", &glen); char err[200];
   focus_graph_t *g = graph ? focus_graph_parse(graph, glen, err, sizeof err) : NULL; if (!g) return;
   int roomAt[4] = { 0, 0, 0, 0 }; char to[48]; int step = focus_move(g, t, n, c, dir, NULL, 0, roomAt, to, sizeof to); focus_graph_free(g);
   if (step || strcmp(to, c) == 0) return;

@@ -43,6 +43,7 @@ void face_background(uint32_t rgb);   /* the screen's ground under the scene */
 /* Tags for the scene nodes sent after this call (a region id in face_region(), 47 bytes, and a layer: 0 chrome, 1 art, 2 painted, 3 type). */
 char *face_region(void);
 void face_node_tag(int layer);
+int face_test_node_box(const char *id, int *out);   /* a node by its id string: its kind (-1 when absent) and box x, y, w, h in out[0..3] */
 char *face_ops(void);   /* the buffer for a composed node's ops (128 KiB) */
 int face_ops_size(void);
 void face_selftest_scene(void);   /* a fixed scene for the parity check (selftest.c) */

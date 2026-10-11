@@ -85,7 +85,7 @@
      "const": "frame"
     },
     "enabled": {
-     "type": "boolean"
+     "const": true
     }
    }
   }

@@ -684,7 +684,7 @@ await page.evaluate(() => { window.__st.goto("vivarium"); }); await page.waitFor
 // The focus the face says and the intents are held to prototypes/face/golden/journey-library.json (lvgl-switch.md §4, gate check 5).
 const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await page.waitForFunction(() => !window.__st.holding(), null, { timeout: 15000 }); const m = await said(), u = await ui(), p = await props(), l = p.frame?.line ?? {}; cur.push({ key: k, said: m, screen: u.screen, state: p.state ?? null, focus: u.screen === "library" && p.state === "spread" ? p.focus.cur : u.home, ok: l.ok ?? null, subject: l.subject ?? null, back: l.back ?? null }); return { u, p, ring: p.focus?.cur }; };
 { stepOf("library-spread");
-  await page.evaluate(() => { const U = window.__st.UI; U.home.f = "library"; U.lib.f = "spread"; U.lib.i = 0; window.__st.goto("home"); }); await page.waitForTimeout(400);
+  await page.evaluate(() => { const U = window.__st.UI; U.home.f = "library"; U.lib.f = "spread"; window.__st.goto("home"); }); await page.waitForTimeout(400);
   let r = await lpress("confirm", 500);
   expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S01" && r.p.regions.leftPage.items.every((x) => x.status === "unmet") && r.p.regions.rightPage.items.every((x) => x.status === "unmet"), "library-spread: a fresh world: Home's Library module opens the spread, sixteen empty frames, the ring on S01: " + JSON.stringify([r.u.screen, r.p.state, r.ring]));
   await frameShot("page-library-empty", true);
@@ -713,7 +713,7 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   await loop("back", "← from the whole is Home", () => window.__st.UI.screen === "home");
   { const u = await ui(); expect(u.screen === "home" && u.home === "vivarium", "fresh-loop: the loop ends on Home with the ring on the Vivarium: " + JSON.stringify([u.screen, u.home])); } }
 { stepOf("library-spread-found");
-  await page.evaluate(() => { const S = window.__st, st = S.ST; st.knownIds = ["S01", "S03", "S09"]; st.metIds = ["S04"]; S.fillGuide("S03", 0.55); S.fillGuide("S09", 1); S.UI.home.f = "room"; S.UI.lib.f = "spread"; S.UI.lib.i = 0; S.goto("home"); }); await page.waitForTimeout(400);
+  await page.evaluate(() => { const S = window.__st, st = S.ST; st.knownIds = ["S01", "S03", "S09"]; st.metIds = ["S04"]; S.fillGuide("S03", 0.55); S.fillGuide("S09", 1); S.UI.home.f = "room"; S.UI.lib.f = "spread"; S.goto("home"); }); await page.waitForTimeout(400);
   let r = await lpress("library", 500);
   expect(r.u.screen === "library" && r.p.state === "spread" && r.ring === "frame.S01", "library-spread: the Library key opens the spread, the ring on S01: " + JSON.stringify([r.u.screen, r.ring]));
   r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S03", "library-spread: ▶ walks the frames in order: " + r.ring);
@@ -722,13 +722,13 @@ const lpress = async (k, ms = 300) => { await said(); await press(k, ms); await 
   r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("left", 250); expect(r.ring === "frame.S01", "library-spread: ◀ stops at the page's edge: " + r.ring);
   r = await lpress("right", 250); r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S04", "library-spread: ▶ three times from S01 is S04: " + r.ring);
   r = await lpress("right", 250); expect(r.ring === "frame.S09", "library-spread: ▶ from the last frame of the left page is the first of the right: " + r.ring);
-  r = await lpress("left", 250); r = await lpress("back", 300); r = await lpress("library", 400);
-  await page.evaluate(() => { window.__st.UI.lib.i = 3; }); await page.waitForTimeout(300);
+  r = await lpress("left", 250); r = await lpress("back", 300); r = await lpress("library", 400);   // the ring was left on S04, a met frame: the Library key lands there by itself
   { const p = await props(); expect(p.focus.cur === "frame.S04" && !p.frame.line.ok && /Hiljan/.test(JSON.stringify(p.frame.line) + JSON.stringify(p.regions.leftPage.items[3])), "library-spread: a met frame (S04): the ring on it, no ✓ cap: " + JSON.stringify([p.focus.cur, p.frame.line])); }
-  r = await lpress("confirm", 300); expect(r.u.screen === "library" && r.p.state === "spread" && /\S/.test(r.p.frame?.line?.subject ?? "") === true && !!(await page.evaluate(() => window.__st.msg)), "library-spread: ✓ on a met frame shows its message plate and nothing opens: " + JSON.stringify([r.u.screen, r.p.state]));
-  await page.evaluate(() => { window.__st.UI.lib.i = 4; }); await page.waitForTimeout(300);
-  r = await lpress("confirm", 300); expect(r.u.screen === "library" && r.p.state === "spread" && !r.p.frame.line.ok && !!(await page.evaluate(() => window.__st.msg)), "library-spread: ✓ on an unmet frame shows its message plate, no ✓ cap: " + JSON.stringify([r.u.screen, r.p.frame.line]));
-  await page.evaluate(() => { window.__st.UI.lib.i = 2; }); await page.waitForTimeout(300);
+  const LS = JSON.parse(readFileSync(path.join(here, "../../ui/specs/station/library.json"), "utf8")).spread.strings, plate = () => page.evaluate(() => window.__st.msg);
+  r = await lpress("confirm", 300); { const m = await plate(); cur.push({ plate: m }); expect(r.u.screen === "library" && r.p.state === "spread" && m === LS.met, "library-spread: ✓ on a met frame shows strings.met and nothing opens: " + JSON.stringify([r.u.screen, r.p.state, m])); }
+  r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("left", 250); r = await lpress("down", 250); expect(r.ring === "frame.S05" && r.p.regions.leftPage.items[4].status === "unmet", "library-spread: ◀ ◀ ◀ ▼ reach S05, an unmet frame: " + r.ring);
+  r = await lpress("confirm", 300); { const m = await plate(); cur.push({ plate: m }); expect(r.u.screen === "library" && r.p.state === "spread" && !r.p.frame.line.ok && m === LS.unmet, "library-spread: ✓ on an unmet frame shows strings.unmet, no ✓ cap: " + JSON.stringify([r.u.screen, r.p.frame.line, m])); }
+  r = await lpress("up", 250); r = await lpress("right", 250); r = await lpress("right", 250); expect(r.ring === "frame.S03", "library-spread: ▲ ▶ ▶ reach S03, a found frame: " + r.ring);
   { const p = await props(); expect(p.focus.cur === "frame.S03" && p.frame.line.ok === "Open its Book", "library-spread: a found frame offers ✓ Open its Book: " + JSON.stringify(p.frame.line)); }
   r = await lpress("confirm", 500); expect(r.u.screen === "library" && r.p.state === "notBuilt" && r.p.frame.top.title === "Library" && r.p.frame.line.back === "Library", "library-spread: ✓ on a found frame is the Book, not built yet, titled Library, ← Library: " + JSON.stringify([r.u.screen, r.p.state, r.p.frame?.top?.title, r.p.frame?.line?.back]));
   await frameShot("page-library-book", true);

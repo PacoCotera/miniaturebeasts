@@ -73,8 +73,9 @@ test("the progress is four integer steps of the share of looks found; complete s
   assert.equal(at().progress, 1, "none found: 1"); findLooks(st, "S02", Math.ceil(T / 4)); assert.equal(at().progress, 2, "a quarter: 2");
   findLooks(st, "S02", Math.ceil(T / 4)); assert.ok(at().progress >= 3, "a half: 3"); findLooks(st, "S02", Math.ceil(T / 4)); assert.equal(at().progress, 4, "three quarters: 4"); assert.equal(at().complete, false);
   findLooks(st, "S02", T); assert.deepEqual([at().progress, at().complete], [4, true], "every look found: four and the seal");
-  // the steps are exact on the boundary: found 1 of 4 is the second step, found 3 of 4 the fourth
-  for (const [f, u, want] of [[0, 8, 1], [1, 7, 1], [2, 6, 2], [3, 5, 2], [4, 4, 3], [5, 3, 3], [6, 2, 4], [8, 0, 4]]) assert.equal(Math.min(4, Math.floor((4 * f) / (f + u)) + 1), want, `${f} of ${f + u}`);
+  // the steps are exact on every boundary, through the view: one look more at a time from none to all, the step read from the props against a quarter, a half and three quarters of the total
+  { const sx = world(); sx.knownIds = ["S02"]; const Tx = total(sx, "S02"), fx = () => items(build(sx)).find((i) => i.id === "S02");
+    for (let f = 0; f <= Tx; f++) { if (f > 0) findLooks(sx, "S02", 1); const want = 4 * f < Tx ? 1 : 2 * f < Tx ? 2 : 4 * f < 3 * Tx ? 3 : 4; assert.equal(fx().progress, want, `${f} of ${Tx} looks found`); } }
 });
 
 test("the gilt corner: any delivered portrait of a mibi of the species, a released mibi's included; none otherwise", () => {

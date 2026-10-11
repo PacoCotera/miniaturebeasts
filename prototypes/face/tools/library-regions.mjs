@@ -33,3 +33,26 @@ export function departures(log, spec, props, cur) {
     if (rings.length === 1 && target >= 0) { const f = listPitch(R[target < 8 ? "leftPage" : "rightPage"].places, 8, target % 8), want = [f[0] - 4, f[1] - 4, f[2] + 8, f[3] + 8]; must(eq(rings[0].rect, want), `the ring ${rings[0].rect} is not ${want} (the frame outset 4)`); } }
   return out;
 }
+
+// Check 1 per part (the node check beside the per-page union): the box of every frame's every node as the face holds it, against spread.item at the frame's place.
+// boxOf(id): the node's [x, y, w, h] by its id string, or null when no node has the id (face_test_node_box, the test build); spec: library.json; props: the spread's props.
+// A part the status gives is at its place + at exactly (a picture, a rule, a roundel, a gilt corner, a seal, a seed 8 × 8); a part the status does not give is a node of no size (hidden, never destroyed);
+// every part lies inside its page's rectangle. Returns the list of departures, empty when none.
+export function partDepartures(boxOf, spec, props) {
+  const out = [], R = spec.spread.regions, I = spec.spread.item, must = (ok, m) => { if (!ok) out.push(m); };
+  for (const [key] of [["leftPage"], ["rightPage"]]) {
+    const page = R[key];
+    props.regions[key].items.forEach((it, k) => {
+      const f = listPitch(page.places, 8, k), found = it.status === "found", known = it.status !== "unmet", at = (a) => [f[0] + a[0], f[1] + a[1], a[2], a[3]];
+      const parts = [["picture", known, at(I.plate.at)], ["rule", known, at(I.clanRule.at)], ["roundel", known, at(I.roundel.at)], ["gilt", found && !!it.portrayed, at(I.gilt.at)], ["seal", found && !!it.complete, at(I.seal.at)]];
+      for (let n = 0; n < I.progress.places.length; n++) parts.push([`seed.${n}`, found && it.progress > 0, [f[0] + I.progress.places[n][0], f[1] + I.progress.places[n][1], I.progress.seed[0], I.progress.seed[1]]]);
+      for (const [part, given, want] of parts) {
+        const id = `frame.${it.id}.${part}`, b = boxOf(id);
+        if (!b) { out.push(`${id}: no node (an absent part is hidden, never destroyed)`); continue; }
+        if (given) { must(eq(b, want), `${id} is at ${b}, not ${want} (the frame's place plus its offset)`); must(within(b, page.rect), `${id} ${b} leaves the page ${page.rect}`); }
+        else must(b[2] === 0 && b[3] === 0, `${id} is not given by status ${it.status} and has a size ${b[2]} × ${b[3]}`);
+      }
+    });
+  }
+  return out;
+}
