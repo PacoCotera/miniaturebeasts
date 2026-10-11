@@ -120,7 +120,7 @@ Every source is an act you choose. Each caps at 20 carried.
 
 - **Four bubbles**, one at a time, each explained once the first time it shows in view: **!** startled ("stop, or it runs"), **?** curious ("it will come closer"), **fruit** (a red fruit on blush: "it eats what you carry · offer it, or put it down and back off"), **…** settling, with four pips under the creature that fill as it settles ("keep still with ✓ Wait"). The fruit bubble shows on every eater of an identified species in view while you carry fruit. The partner-calm tilde from round 2 is kept.
 - **Diet before you offer.** Facing a creature of a species you have identified, the line names it and its diet: "Loika · eats fruit", "Tuikis · doesn’t eat fruit · settles when you keep still". An unidentified creature reads "Unknown creature · watch what it does", and Confirm reads only "Unknown creature" (dimmed, nothing offered), whatever it eats. The fruit bubble shows only on eaters of identified species. For an identified eater with fruit in hand, Confirm reads "Offer fruit"; for an identified non-eater "Doesn't eat fruit" (dimmed), and a press names only identified eaters ("Tuikis don’t eat fruit · Loikas do") and spends nothing.
-- A shaken bush names only identified eaters you can see: "A fruit drops · Loikas eat these"; "no one here eats fruit" when every creature in sight is identified and none eats it; otherwise "watch who comes for it". Hidden creatures and those beyond fog sight don't count. Putting fruit down explains itself once ("Fruit down · eaters come when you back off").
+- A shaken bush names only identified eaters you can see: "A fruit drops · Loikas eat these"; "no one here eats fruit" when every creature in sight is identified and none eats it; otherwise "watch who comes for it". Hidden creatures and those beyond fog sight don't count. Putting fruit down explains itself once ("Fruit down · eaters come when you back off"). The first time you hold fruit with an Untuva in sight, the line says once "A well-fed Untuva may drop a pod · put the fruit down, back off three tiles" ("a well-fed round creature" before the Untuva is identified).
 - Creeping never startles a creature unless you step right next to it. A startled creature flees 3 tiles, never off-screen, then watches; after 3 quiet actions it goes back to its routine.
 
 ## Fog bank
@@ -179,6 +179,7 @@ The words and the layout are those of [`companion-screens.md`](../../design/styl
 
 ## Pods and the swap
 
+- The first expedition of a new world finds two buried pods in reach of the start glint: a Loika's next to it and, when needed, a Tuikis's at the edge of the reach (firstPods).
 - With a full hold, Confirm on a pod ("✓ Swap the pod") opens a two-line chooser over the bottom line: **Hold** lists each pod you carry (shell, "Loika pod" if its species is identified or "Unknown pod", and where it came from: "from a hole", "under rain", "under a slab", "cave", "shed, shaking dry", …), the one to leave framed; **Ground** names the pod you face. Pad left/right picks, ✓ "Leave Loika" (the framed pod; the middle names the one you take, "take Untuva"), ← keeps. Nothing is spent until you swap.
 - After the swap the dropped pod lies there with its dotted outline, the HUD slot flashes with the new shell, and the line says "Swapped · Loika pod left here".
 
