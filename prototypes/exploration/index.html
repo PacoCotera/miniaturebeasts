@@ -416,8 +416,8 @@ function genLife(seed) {
   return { cr, pods };
 }
 function groundName(land, cave) { return cave ? 'cave' : ['meadow', 'pond', 'rock', 'wood', 'pond', 'rock'][land]; }
-// The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (game designer's X2 first-pod
-// ruling, plans/companion/x2-first-pod.md): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
+// The first expedition of a new world finds two buried pods in tier 1 reach of the start glint (design/world-and-exploration.md,
+// Pods, "The first expedition finds pods"): pod A, a Loika's, at distance 1 unless a buried Loika pod is already there; pod B,
 // a Tuikis's, at the reach's edge while the reach holds fewer than 2. Pure: reads G, never S, and never mutates `pods`;
 // its own seed, so genLife's seven world pods stay where they are. startExpedition adds them on the first placement only.
 function firstPods(seed, cell, pods) {
