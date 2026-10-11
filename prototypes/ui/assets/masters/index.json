@@ -3591,28 +3591,28 @@
    "w": 544,
    "h": 408,
    "sha256": "0703870e003ccd936a5b44b00504ddffbcb495bf3ccfb656b8be25346568ca1a",
-   "signed": "named with --ids"
+   "signed": "art director, light verdict (eb64c0d6)"
   },
   "vivarium-near-day-544x408": {
    "file": "vivarium/vivarium-near-day-544x408.png",
    "w": 544,
    "h": 408,
    "sha256": "6f0c2e64a96226810a45c6b6fdab0d5c86f4dd9e81f72d1e1442d72fa4fa6bc6",
-   "signed": "named with --ids"
+   "signed": "art director, near Vivarium verdict (57490118)"
   },
   "vivarium-near-dusk-544x408": {
    "file": "vivarium/vivarium-near-dusk-544x408.png",
    "w": 544,
    "h": 408,
    "sha256": "25e14dfbfa9efa2d7992bad4f066485a1501db818944540ce3354b718c8f1ce5",
-   "signed": "named with --ids"
+   "signed": "art director, near Vivarium verdict (57490118)"
   },
   "vivarium-near-night-544x408": {
    "file": "vivarium/vivarium-near-night-544x408.png",
    "w": 544,
    "h": 408,
    "sha256": "f5ac46fcd6618a41f1a078ab08391fad817678cd9834233cbedebc464b772ab8",
-   "signed": "named with --ids"
+   "signed": "art director, verdict (night pair grade)"
   }
  }
 }

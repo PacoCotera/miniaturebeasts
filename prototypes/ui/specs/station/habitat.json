@@ -84,7 +84,7 @@
    "axis": 296,
    "feet": 392,
    "clip": "glass",
-   "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile at its own proportions inside the same box",
+   "asset": "the mibi's standard painting at 304×312 if it has landed, else its placeholder (the stylised rig pass); a juvenile drawn at the same 304×312 as the hatch, reading young by its proportions inside the box, never scaled down",
    "lamp": {
     "rect": [436, 80, 12, 12],
     "slice": "home-lamp-sky-12x12",
@@ -220,6 +220,8 @@
     "docked": "each mibi's painting or placeholder at 48",
     "away": "the same: the carried mibis drawn at 48, so the set reads while they are out; the outline glyph says they are out",
     "waiting": "an add request waiting: its picture at 48 with frame-lamp-8-stone at the place's (40, 0)",
+   "lampAt": [40, 0],
+   "recess": "each place's box, [648|712|776, 312, 48, 48], filled colours.door.recess (ground), no edge; the picture over it at 48; a free place adds the dash outline 1 px inside; no recess round the row; chrome, no master",
     "free": "a place the set does not fill: a composed `dash` outline 1 px inside the place's box, 1 px `hairline`, dash [2, 2], as the strip's free bay, so the three places read with no figure"
    },
    "states": {"docked": "the solid glyph and the three places", "away": "the outline glyph and the three places", "none": "nobody carried: the glyph and three free places"}
@@ -392,7 +394,7 @@
    "hold": 0,
    "do": "the first draw of one mibi up close after a refusal: the message plate strings.carryRefused, once a refusal (state.seenCarryRefusal)"
   },
-  "named": {"kind": "flash", "target": "nameTag", "ms": 240, "hold": 0, "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash"}
+  "named": {"kind": "flash", "target": "nameTag", "ms": 240, "hold": 240, "reduced": "no flash, hold 0 (namer.json notes.motion)", "do": "the namer saved a name: the tag (or the meet ribbon while it shows) takes the frame's flash"}
  },
  "focus": {
   "initial": "resident; in state out, name",
@@ -706,7 +708,8 @@
   "wildBlocks": {"bonded": "a bonded mibi stays", "young": "not until it is adult", "withYou": "already with you", "waiting": "goes at the next dock"},
   "releasePlate": "{name} goes back to the {place}",
   "watchPlate": "{name} is seen {habit}",
-  "watchPlateExamples": ["Fig is seen digging", "Moss is seen sleeping curled"],
+  "watchPlateExamples": ["Fig is seen digging", "Moss is seen curled up asleep"],
+  "watchHabits": { "shake-dry": "shaking itself dry", "calm": "calming a creature", "sleep-curled": "curled up asleep", "sniff": "sniffing", "puff": "puffing out its down", "dig": "digging", "glow": "glowing" },
   "out": "out with the Companion",
   "modules": { "door": "Companion", "portrait": "Portrait", "cross": "Cross", "wild": "Wild", "note": "the engraved words of the four modules, as the wireframe 19 draws them" },
   "names": "every box that sets a name holds ten of the widest letter at its size: 160 px at 16, 200 at 20, 296 at 28 (NAME_MAX 10); a name is never clipped",

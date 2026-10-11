@@ -38,8 +38,8 @@ export function namerBuild(m, spec) {
   labels.forEach((c, i) => { if (c != null) targets.push({ id: "key." + i, enabled: !isFull }); });
   targets.push({ id: "mod.shift", enabled: ui.fs === "typed" }, { id: "mod.space", enabled: !isFull }, { id: "mod.page", enabled: true }, { id: "act.done", enabled: !problem }, { id: "act.suggest", enabled: names.length > 0 });
   const cur = ui.f && targets.some((t) => t.id === ui.f) ? ui.f : "act.done";
-  // the bottom line (namer.json bottomLine): the action and the context of the ring's target, the way back by the field's state
-  const back = ui.fs === "selected" ? Sg.backClear : ui.fs === "typed" ? Sg.backDelete : Sg.backLeave, ctx = fill(Sg.context, { Species: species });
+  // the bottom line (namer.json bottomLine): the action and the context of the ring's target, the way back by the field's state (an empty field leaves with the mibi's saved name; the frame reads Back when it does not fit, frame.json nameBack)
+  const back = ui.fs === "selected" ? Sg.backClear : ui.fs === "typed" ? Sg.backDelete : fill(Sg.backLeave, { name: mibi.name }), ctx = fill(Sg.context, { Species: species });
   let line = { ok: null, subject: ctx, back, need: null };
   if (cur.startsWith("key.")) { const c = labels[+cur.slice(4)], word = c === " " ? Sg.typeSpace : c === "-" ? Sg.typeDash : c === "’" ? Sg.typeApostrophe : fill(Sg.type, { c }); line = { ok: word, ...(isFull ? { dim: true } : {}), subject: ctx, back, need: null }; }
   else if (cur === "mod.shift") line = startOfName ? { ok: null, subject: Sg.startCapital, back, need: null } : { ok: caps ? Sg.smallLetters : Sg.capitals, subject: ctx, back, need: null };

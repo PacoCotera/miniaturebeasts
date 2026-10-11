@@ -2670,7 +2670,7 @@ The focused key lifts 2 px, the chrome lift, and its ring stands 4 px outside th
 | --- | --- | --- | --- | --- |
 | Selected (as opened, or a suggestion) | The name on the `tealD` selection, no caret | Replaces the name | Clears it: the field is empty | `← Clear` |
 | Typed | The caret after the last character | Appends | Deletes the last character | `← Delete` |
-| Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← Vivarium` |
+| Empty | The caret at x 652 | Types the first letter, a capital | Closes the namer, writing nothing | `← {name}` (frame.json nameBack: "Back" when wider than 68 px) |
 
 **Refusals, in words.** Nothing is refused silently and nothing is refused by a message plate (a plate would cover the mibi). While the name in the field cannot be saved, the say line gives the reason in `mist` and Done's cap dims. A refused press (a key or Done) turns the reason `amber` for 4 s, the message plate's time; then it returns.
 
@@ -2716,7 +2716,7 @@ The notice is the frame's. Measured at Inter 16 with the widest ten-letter name:
 
 ### The overlay on the face
 
-The namer is a spec of kind `overlay`, drawn on the face's top layer over the screen it opens from. The focus ring and the message plate are on the top layer too, in the order overlay, ring, plate, so the ring stands over the namer's keys and a plate over both. While the namer is open its graph is the only one and the screen beneath takes no key. It closes with props whose `focus.set` hands the ring back to the screen beneath. Props that name an overlay whose `over` does not list the current screen are refused.
+The namer is a spec of kind `overlay`, drawn after the screen's words and before `frame_words`, over the screen it opens from. The focus ring and the message plate come after it, in the order overlay, ring, plate, so the ring stands over the namer's keys and a plate over both. While the namer is open its graph is the only one and the screen beneath takes no key. It closes with props that carry habitat's `focus.cur` (`focus.entry.namerClosed`): the resident after the meet, the name after a rename. Props that name an overlay whose `over` does not list the current screen are refused.
 
 ### The name label's limit
 

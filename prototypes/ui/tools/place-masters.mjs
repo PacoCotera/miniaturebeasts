@@ -43,7 +43,7 @@ export function place({ from, ids = [], group, dryRun = false, root = dest, head
   const flags = new Map(), statuses = new Map();
   if (byStatus) { const st = JSON.parse(readFileSync(path.join(from, "slices/status.json"), "utf8"));
     for (const [id, e] of Object.entries(st)) if (manifest[id] && ["signed", "placeholder", "held", "new"].includes(e.status)) { want.set(id, `signed (${by ?? "the studio's record"})`); statuses.set(id, e.status); if (e.status !== "signed") flags.set(id, `${e.status} (${by ?? "the studio's record"}), not final`); } }
-  for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, "named with --ids"); }
+  for (const id of ids) { if (!manifest[id]) throw new Error(`${id} is not in ${from}/slices/manifest.json`); want.set(id, manifest[id].signed_in || "named with --ids"); }
   const idxFile = path.join(root, "index.json"), index = existsSync(idxFile) ? JSON.parse(readFileSync(idxFile, "utf8")) : { schema: "mb-masters/1", masters: {} };
   const placed = [], skipped = [];
   for (const id of skip) want.delete(id);   // named by --skip: not placed (a slice the studio's own folder does not hold consistently), listed as skipped

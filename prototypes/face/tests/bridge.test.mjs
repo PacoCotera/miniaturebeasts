@@ -283,7 +283,7 @@ test("an overlay is refused whole, the previous props stay: not an object, no id
   const props = (overlay, extra = {}) => f.send({ t: "props", seq: 1 + (f.s = (f.s ?? 0) + 1), screen: "habitat", state: "rest", regions: {}, overlay, ...extra });
   assert.equal(props({ id: "namer", state: "open" }), 0, f.errors().join("; ")); const n = M._face_props_count();
   const refused = (overlay, re, extra) => { assert.equal(props(overlay, extra), -1); assert.match(f.errors()[0], re); assert.equal(M._face_props_count(), n, "the previous props stay"); };
-  refused("open", /overlay must be an object/); refused({ state: "open" }, /overlay\.id is required/); refused({ id: "namer" }, /needs a screen drawn with words/, { idle: true }); refused({ id: "namer" }, /needs a screen drawn with words/, { state: "notBuilt" });
+  refused("open", /overlay must be an object/); refused(null, /overlay must be an object/); refused({ state: "open" }, /overlay\.id is required/); refused({ id: "namer" }, /needs a screen drawn with words/, { idle: true }); refused({ id: "namer" }, /needs a screen drawn with words/, { state: "notBuilt" });
   refused({ id: "absent" }, /the overlay absent has no spec loaded/); refused({ id: "plain" }, /the spec plain is not an overlay/); refused({ id: "nolist" }, /the overlay nolist does not list the screen habitat/);
   spec("home", { regions: {} }); refused({ id: "namer" }, /the overlay namer does not list the screen home/, { screen: "home" });
   spec("both", { kind: "overlay", over: ["habitat"], regions: {} }); refused({ id: "both" }, /the screen habitat does not list the overlay both/);

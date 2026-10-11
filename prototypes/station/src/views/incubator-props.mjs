@@ -63,7 +63,7 @@ export function incubatorBuild(m, spec, pods) {
   }
   if (state === "hatch") {
     const [jw, jh] = R.juvenile.rect.slice(2);
-    regions.juvenile = { picture: req({ kind: "mibi", id: `mibi:${mb.id}:${jw}x${jh}`, mibi: mb.id, species, size: [jw, jh] }) };
+    regions.juvenile = { picture: req({ kind: "mibi", id: `mibi:${mb.id}:juvenile:${jw}x${jh}`, mibi: mb.id, stage: "juvenile", species, size: [jw, jh] }) };
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
 

@@ -4,7 +4,6 @@
 // Runs in Node, tested there (tests/habitat-props.test.mjs); the shape is habitat.props.json.
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), habId (the mibi up close), meetId (the new mibi whose meet is on), armed (the Wild gate), offline }
 import * as S from "../state.mjs";
-import * as T from "../sitting.mjs";
 import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
@@ -32,7 +31,7 @@ export function habitatBuild(m, spec, frame, home) {
   regions.glass = { picture: slot(`${spec.light.pictures[m.light]}-${spec.light.size.join("x")}`, spec.light.size, "the near Vivarium master (the light)") };
   regions.resident = out
     ? { id: sid, name: shown.name, stage, picture: "", waiting: false, out: slot("mark-out-with-companion-64x96", R.resident.out.rect.slice(2), "the out mark") }
-    : { id: sid, name: shown.name, stage, picture: req({ kind: "mibi", id: `mibi:${shown.id}:${R.resident.rect[2]}x${R.resident.rect[3]}`, mibi: shown.id, species: S.speciesOf(shown), size: R.resident.rect.slice(2) }), waiting, out: "" };
+    : { id: sid, name: shown.name, stage, picture: req({ kind: "mibi", id: `mibi:${shown.id}:${stage}:${R.resident.rect[2]}x${R.resident.rect[3]}`, mibi: shown.id, stage, species: S.speciesOf(shown), size: R.resident.rect.slice(2) }), waiting, out: "" };
   regions.nameTag = { text: shown.name };
   regions.meetRibbon = { text: meet ? fill(Sg.meet, { name: shown.name }) : "" };
 
@@ -52,7 +51,7 @@ export function habitatBuild(m, spec, frame, home) {
   const sealedShut = (c) => !!c.sealed && !settings.sealedOpen && !(shown.read || []).includes(c.id);
   const plates = (fr?.chapters ?? []).slice(0, R.plates.places.max).map((c) => {
     const st2 = (shown.read || []).includes(c.id) ? "read" : sealedShut(c) ? "sealed" : "unread";
-    return { id: c.id, state: st2, ground: slot(`chapter-plate-${st2}-40x40`, [40, 40], "the chapter plate master"), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
+    return { id: c.id, state: st2, ground: req({ kind: "ph", id: `chapter-plate-${st2}-40x40`, size: [40, 40], hollow: false, until: "the chapter plate master (not signed)" }), emblem: req({ kind: "emblem", id: `emblem:${c.id}:${st2}:24`, chapter: c.id, state: st2 }) };
   });
   regions.plates = { items: plates };
 
@@ -63,7 +62,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Portrait module
   const pst = shown.portrait ? (shown.portrait.state === "delivered" ? "portrayed" : "painting") : st.sitting ? "held" : "none";
-  regions.portrait = { state: pst, frame: slot(`sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-32x48`, [32, 48], "the sitting frame master") };
+  regions.portrait = { state: pst, frame: req({ kind: "ph", id: `sitting-frame-${pst === "none" ? "empty" : pst === "portrayed" ? "portrait" : "held"}-32x48`, size: [32, 48], hollow: false, until: "the sitting frame master (not signed)" }) };
 
   // the Cross module: one face a partner, an adult or an elder of its species; a partner out with the Companion while it is away is dimmed
   const partners = S.isAdult(st, shown, settings) ? S.crossPartners(st, sv, shown, settings) : [], pickable = partners.filter((p) => !p.away);
@@ -72,7 +71,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the Wild module: shut at rest, ajar once armed
   const wildBlock = S.returnMibiBlock(st, sv, shown), armed = !!m.armed && !wildBlock;
-  regions.wild = { state: armed ? "armed" : "shut", gate: slot(`gate-wild-${armed ? "open" : "shut"}-48x48`, [48, 48], "the gate master") };
+  regions.wild = { state: armed ? "armed" : "shut", gate: req({ kind: "ph", id: `gate-wild-${armed ? "open" : "shut"}-48x48`, size: [48, 48], hollow: false, until: "the gate master (not signed)" }) };
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);

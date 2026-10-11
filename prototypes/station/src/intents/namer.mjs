@@ -52,6 +52,6 @@ export function intent(h, target, verb) {
     if (why) { const R = spec.strings.refuse; refuse(h, n, fill(R[why.key], { holder: why.holder ?? "" })); return; }
     const r = S.renameMibi(h.st, m, n.text); if (!r.ok) return;
     closeNamer(h);
-    if (!r.kept) { h.save(); const e = h.specs.namer.events.named; h.play({ kind: e.kind, target: "nameTag", ms: e.ms, hold: h.motion() ? e.hold : 0 }); }   // the name stands with the frame's 240 ms flash behind it; reduced motion: no flash
+    if (!r.kept) { h.save(); const e = h.specs.namer.events.named; h.play({ kind: e.kind, target: h.specs.habitat.events.named.target, ms: e.ms, hold: h.motion() ? e.hold : 0 }); }   // the name stands with the frame's 240 ms flash behind it; reduced motion: no flash
   }
 }

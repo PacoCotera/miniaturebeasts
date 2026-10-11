@@ -15,11 +15,11 @@ import { validate } from "./habitat-props.test.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
 setFrames(readdirSync(framesDir).filter((f) => f.startsWith("species-")).map((f) => JSON.parse(readFileSync(path.join(framesDir, f), "utf8"))));
-const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("namer.json"), frameSpec = J("frame.json"), schema = J("namer.props.json");
+const J = (f) => JSON.parse(readFileSync(path.join(specs, f), "utf8")), spec = J("namer.json"), frameSpec = J("frame.json"), schema = J("namer.props.json"), habitatSpec = J("habitat.json");
 const T0 = 1_000_000, settings = { ...S.DEFAULT_SETTINGS, economy: "decided", bays: 8 };
 const world = () => { const st = S.freshSt("w1", 3, T0); S.normalize(st); st.e = st.d = st.s = 99; st.firstMibi = false; S.seedAdults(st, "S01", 5, 3, settings); return st; };
 function host(st) {
-  const h = { st, sv: { v: 8, carried: [], carryReqs: [] }, settings, ui: { hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, screen: "habitat" }, specs: { namer: spec, frame: frameSpec }, said: [], played: [], timers: [], saved: 0, now: () => T0, moving: true };
+  const h = { st, sv: { v: 8, carried: [], carryReqs: [] }, settings, ui: { hab: { id: null, f: "resident", wildArm: 0, namer: null, prev: null }, screen: "habitat" }, specs: { namer: spec, frame: frameSpec, habitat: habitatSpec }, said: [], played: [], timers: [], saved: 0, now: () => T0, moving: true };
   Object.assign(h, { motion: () => h.moving, say: (t) => h.said.push(t), goto: () => {}, play: (e) => h.played.push(e), at: (ms, fn) => h.timers.push({ ms, fn }), save: () => { h.saved++; } });
   return h;
 }
@@ -80,6 +80,6 @@ test("the bottom line follows the ring: ✓ Type c (the mark's words), Capitals 
   assert.equal(L("key.0").ok, "Type A"); assert.equal(L("mod.space").ok, "Type a space"); assert.equal(L("mod.shift").ok, null); assert.equal(L("mod.shift").subject, "a name starts with a capital");
   assert.equal(L("mod.page").ok, "Accents"); assert.equal(L("act.suggest").ok, "Suggest a name"); n.sugg = 0; assert.equal(L("act.suggest").ok, "Another name");
   Object.assign(n, { fs: "typed", text: "Zinnia" }); assert.equal(L("act.done").ok, "Name it Zinnia"); assert.equal(L("act.done").back, "Delete"); assert.equal(L("mod.shift").ok, "Capitals"); n.shift = true; assert.equal(L("mod.shift").ok, "Small letters");
-  Object.assign(n, { fs: "typed", text: "A" }); assert.equal(L("act.done").dim, true, "the name cannot be saved"); Object.assign(n, { fs: "empty", text: "" }); assert.equal(L("act.done").back, spec.strings.backLeave);
+  Object.assign(n, { fs: "typed", text: "A" }); assert.equal(L("act.done").dim, true, "the name cannot be saved"); Object.assign(n, { fs: "empty", text: "" }); assert.equal(L("act.done").back, spec.strings.backLeave.replace("{name}", m.name));
   Object.assign(n, { fs: "typed", text: "Wwwwwwwwww" }); assert.equal(L("key.1").dim, true, "a full field dims the letter's ✓ cap");
 });

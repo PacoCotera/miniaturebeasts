@@ -224,7 +224,7 @@
     "field": "|empty",
     "page": "letters",
     "ok": "Name it ",
-    "back": "Habitat"
+    "back": "Bean"
    },
    {
     "key": "back",
@@ -278,7 +278,7 @@
     "field": "|empty",
     "page": "letters",
     "ok": "Name it ",
-    "back": "Habitat"
+    "back": "Bean"
    },
    {
     "intent": "key.12:confirm",
@@ -437,6 +437,29 @@
     "ok": "Greet Pip",
     "price": null,
     "subject": "its painting is on its way",
+    "back": "Vivarium"
+   },
+   {
+    "walk": "door",
+    "ring": "door",
+    "ok": "Take Pip with you"
+   },
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "door",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "state": "rest",
+    "ring": "door",
+    "ok": null,
+    "price": null,
+    "subject": "goes with you now",
     "back": "Vivarium"
    }
   ],

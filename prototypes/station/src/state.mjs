@@ -363,6 +363,8 @@ export function openBay(st, sv, settings = DEFAULT_SETTINGS, now = Date.now()) {
 // A habit is one of the species' routine acts (the frame's `habits`). It is recorded when a resident is kept in focus for a minute of its routine (`watchResident`, the bench),
 // and at the dock for what the mibi with the player did on the walk; a place is recorded once for every place the mibi entered while with the player (`recordWalk`, at the dock).
 export const WATCH_MS = 60000;   // the default of settings.watchMs
+// A habit only seen in the field: the bench's watch never records it (calm is felt, not watched); it is recorded at the dock from the habits the Companion's mibi did (mergeCare).
+export const FIELD_ONLY_HABITS = ["calm"];
 export const habitsOf = (m) => (Array.isArray(m.habits) ? m.habits : []);
 // The places a mibi has been: where its pod came from, and every place it walked to.
 // A founder keeps its pod's place first, then the walk order; a bred mibi's places are only the ones it walked to (its "from.g" is its parent's).
@@ -412,7 +414,7 @@ export function benchWatch(st, sv, m, dtMs, settings = DEFAULT_SETTINGS, now = D
   const dt = Math.max(0, Math.min(250, +dtMs || 0)); L.watchMs[m.id] = (L.watchMs[m.id] || 0) + dt;
   if (L.watchMs[m.id] < need) return { ok: true, earned: 0, full: L.d >= (settings.trickleCap ?? 2) };
   L.watched.push(m.id);
-  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !habitsOf(m).includes(h)); if (habit) recordHabit(st, m, habit);   // the first unseen habit, in frame order
+  const fr = frameFor(m), habit = fr && (fr.habits || []).find((h) => !FIELD_ONLY_HABITS.includes(h) && !habitsOf(m).includes(h)); if (habit) recordHabit(st, m, habit);   // the first unseen habit, in frame order
   const r = settings.trickleCap === 0 ? { earned: 0, full: false } : benchEarn(st, L, settings, "watched " + m.name);
   return { ok: true, earned: r.earned, full: r.full, habit: habit ?? null };
 }

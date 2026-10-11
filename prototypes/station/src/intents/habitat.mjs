@@ -16,6 +16,7 @@ export function openCross(h, a) { h.ui.cross = { aId: a.id, bId: null, state: 0,
 const chapterAt = (m, target) => frameOf(S.speciesOf(m))?.chapters[+target.slice(6)];
 // A way into one mibi up close (the whole's resident or tile, the hatch, Home's ✓ Meet): the first draw after a refusal at the dock says it once (events.refused).
 export function enter(h) {
+  const sh = shown(h); if (sh && h.ui.meet != null && String(h.ui.meet) === String(sh.id)) play(h, "moment", { hold: 0 });   // the meet plays its moment once (habitat.json events.meet); input is not held
   const r = S.seenCarryRefusal(h.st, h.sv); if (!r) return;
   const m = S.mibiById(h.st, r.id); if (m) { h.say(fill(h.specs.habitat.strings.carryRefused, { name: m.name })); h.save(); }
 }
@@ -69,7 +70,8 @@ export function watch(h, dt) {
   const m = shown(h), d0 = h.st.d;
   const w = watchFrame({ st: h.st, sv: h.sv, settings: h.settings, screen: h.ui.screen, idle: h.ui.idle, habId: h.ui.hab.id, dt, now: h.now() });
   if (!w || !m) return null;
-  if (w.habit) h.say(fill(h.specs.habitat.strings.watchPlate, { name: m.name, habit: String(w.habit).replace(/-/g, " ") }));
+  const habit = w.habit ? h.specs.habitat.strings.watchHabits[w.habit] : null;   // a habit with no words shows no plate (it is still recorded, the tick counts)
+  if (habit) h.say(fill(h.specs.habitat.strings.watchPlate, { name: m.name, habit }));
   if (w.earned || w.habit || h.st.d !== d0) h.save();
   return w;
 }

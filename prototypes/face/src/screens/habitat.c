@@ -69,7 +69,7 @@ static void build_resident(const char *cur) {
 static void build_tag(void) {
   int box[4], rib[4]; hrect("regions.resident.rect", box); hrect("regions.meetRibbon.rect", rib);
   const char *name = v_pstr("regions.nameTag.text"), *words = v_pstr("regions.meetRibbon.text"); int meet = strcmp(v_pstr("state"), "meet") == 0 && *words;
-  anim_state_t t; int flash = v_pbool("motion", 1) && anim_get(ANIM_FLASH, "nameTag", &t) && (t.elapsed / 120) % 2 == 0;   /* the frame's flash: on 120 ms, off 120, twice in 240 */
+  anim_state_t t; int flash = v_pbool("motion", 1) && anim_get(ANIM_FLASH, "nameTag", &t);   /* the frame's flash, solid for the event's 240 ms as a counter's (frame.c) */
   memset(g_tag, 0, sizeof g_tag);
   v_region("meetRibbon", LAYER_CHROME);
   word_ribbon("meetRibbon", rib, meet ? words : "", hi("regions.meetRibbon.px", 20), hi("regions.meetRibbon.pad", 0), flash ? fcol("colours.flash") : colr("colours.ribbon.fill"), colr("colours.ribbon.edge"), flash ? fcol("colours.flashInk") : colr("colours.ribbon.text"));
@@ -80,7 +80,7 @@ static void build_tag(void) {
 /* ---- the card ---- */
 static void card_sprite(const char *id, const char *pic, int x, int y, int w, int h) { v_name("card"); if (has(pic)) v_sprite(id, pic, x, y, w, h); else v_sprite_hidden(id, v_pstr("regions.glass.picture"), x, y); }
 static void build_card(void) {
-  int c[4], ca = 0; hrect("regions.card.rect", c); (void)ca;
+  int c[4]; hrect("regions.card.rect", c);
   v_region("card", LAYER_CHROME); word_panel("card", c[0], c[1], c[2], c[3], colr("colours.card.fill"), colr("colours.card.edge")); v_rect("card.top", c[0] + 1, c[1] + 1, c[2] - 2, 1, colr("colours.card.top"));
   card_sprite("card.heart", v_pstr("regions.card.heart"), c[0] + hk("regions.card.heart.at", 0), c[1] + hk("regions.card.heart.at", 1), hk("regions.card.heart.size", 0), hk("regions.card.heart.size", 1));
   int n = v_pint("regions.card.notches.count", 0); if (n > 3) n = 3; const char *np = v_pstr("regions.card.notches.picture"); int nw = hk("regions.card.notches.notch", 0), nh = hk("regions.card.notches.notch", 1);
@@ -113,7 +113,7 @@ static void build_stamp(void) {
 
 /* ---- the plates: one a chapter in ring order, left-aligned from x 608: the signed ground and the rail's 24 x 24 emblem at (8, 8) ---- */
 static void plate_rect(int n, int i, int out[4]) { layout_list_pitch(S, "regions.plates.places", n, i, out); }
-static void build_plates(const char *cur) {
+static void build_chapterPlates(const char *cur) {
   int n = v_plen("regions.plates.items"); if (n > MAXP) n = MAXP; if (n < 0) n = 0;
   int ex = hk("regions.plates.plate.emblem.at", 0), ey = hk("regions.plates.plate.emblem.at", 1);
   for (int i = 0; i < MAXP; i++) {
@@ -129,10 +129,10 @@ static void build_plates(const char *cur) {
 
 /* ---- the modules: the one `module` build with no lamp (build_module), and each module's objects, lifted with it ---- */
 static void dash_box(const char *id, int x, int y, int w, int h, int free_, const char *col) {
-  char ops[300]; int k;
-  if (free_) k = snprintf(ops, sizeof ops, "[[\"dash\",1,1,%d,\"h\",2,2,\"%s\"],[\"dash\",1,%d,%d,\"h\",2,2,\"%s\"],[\"dash\",1,1,%d,\"v\",2,2,\"%s\"],[\"dash\",%d,1,%d,\"v\",2,2,\"%s\"]]", w - 2, col, h - 2, w - 2, col, h - 2, col, w - 2, h - 2, col);
-  else k = snprintf(ops, sizeof ops, "[]");
-  (void)k; snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);   /* the same node a free place or not: empty ops are a clear picture */
+  char ops[300];
+  if (free_) snprintf(ops, sizeof ops, "[[\"dash\",1,1,%d,\"h\",2,2,\"%s\"],[\"dash\",1,%d,%d,\"h\",2,2,\"%s\"],[\"dash\",1,1,%d,\"v\",2,2,\"%s\"],[\"dash\",%d,1,%d,\"v\",2,2,\"%s\"]]", w - 2, col, h - 2, w - 2, col, h - 2, col, w - 2, h - 2, col);
+  else snprintf(ops, sizeof ops, "[]");
+  snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0);   /* the same node a free place or not: empty ops are a clear picture */
 }
 static void door_objects(int dy) {
   int r[4]; hrect("regions.door.rect", r); int pw = hk("regions.door.places.size", 0), ph = hk("regions.door.places.size", 1), gx = hk("regions.door.glyph.at", 0), gy = hk("regions.door.glyph.at", 1), gw = hk("regions.door.glyph.size", 0), gh = hk("regions.door.glyph.size", 1);
@@ -144,7 +144,7 @@ static void door_objects(int dy) {
     const char *pic = some ? v_pstr(v_fmt("%s.picture", P)) : "";
     v_region("door", LAYER_CHROME); v_rect(v_fmt("door.recess.%d", i), x, y, pw, ph, colr("colours.door.recess"));   /* the place's recess: a ground the mibi stands in, or nothing in it */
     v_name("door"); if (has(pic)) v_sprite(v_fmt("door.place.%d", i), pic, x, y, pw, ph); else v_sprite_hidden(v_fmt("door.place.%d", i), glyph[0] ? glyph : v_pstr("regions.glass.picture"), x, y);
-    v_name("door"); if (some && v_pbool(v_fmt("%s.waiting", P), 0) && has(lampPic)) v_sprite(v_fmt("door.lamp.%d", i), lampPic, x + hk("regions.door.places.lamp.at", 0), y + hk("regions.door.places.lamp.at", 1), 8, 8); else v_sprite_hidden(v_fmt("door.lamp.%d", i), v_pstr("regions.glass.picture"), x, y);
+    v_name("door"); if (some && v_pbool(v_fmt("%s.waiting", P), 0) && has(lampPic)) v_sprite(v_fmt("door.lamp.%d", i), lampPic, x + hk("regions.door.places.lampAt", 0), y + hk("regions.door.places.lampAt", 1), 8, 8); else v_sprite_hidden(v_fmt("door.lamp.%d", i), v_pstr("regions.glass.picture"), x, y);
     v_region("door", LAYER_CHROME); dash_box(v_fmt("door.free.%d", i), x, y, pw, ph, !some, colr("colours.tile.free"));
   }
 }
@@ -156,10 +156,10 @@ static void cross_objects(int dy) {
   int r[4]; hrect("regions.cross.rect", r); int n = v_plen("regions.cross.faces"); if (n > MAXF) n = MAXF; if (n < 0) n = 0;
   int w = hk("regions.cross.faces.size", 0), h = hk("regions.cross.faces.size", 1), pitch = hi("regions.cross.faces.pitch", 32), per = hi("regions.cross.faces.perRow", 7);
   for (int i = 0; i < MAXF; i++) {
-    int x = 0, y = 0, shown = i < n; char id[32], P[48];
-    if (shown) { int row = n > per ? i / per : 0, col = n > per ? i % per : i; x = r[0] + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 0) + col * pitch; y = r[1] + dy + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 1); }
-    snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = shown ? v_pstr(v_fmt("%s.picture", P)) : ""; int away = shown && v_pbool(v_fmt("%s.away", P), 0);
-    if (!shown) continue;
+    if (i >= n) continue;
+    char id[32], P[48]; int row = n > per ? i / per : 0, col = n > per ? i % per : i;
+    int x = r[0] + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 0) + col * pitch, y = r[1] + dy + hk(n > per ? v_fmt("regions.cross.faces.twoRows.%d", row) : "regions.cross.faces.oneRow", 1);
+    snprintf(P, sizeof P, "regions.cross.faces.%d", i); const char *pic = v_pstr(v_fmt("%s.picture", P)); int away = v_pbool(v_fmt("%s.away", P), 0);
     snprintf(id, sizeof id, "cross.face.%d", i); v_name("cross");
     if (has(pic)) v_sprite(id, pic, x, y, w, h); else { v_layer(LAYER_ART); char ops[96]; snprintf(ops, sizeof ops, "[[\"ring\",\"ellipse\",0,0,%d,%d,%d,0,\"%s\"]]", w, h, spec_int("frame", "focus.ring.width", 2), away ? colr("colours.faceRingAway") : colr("colours.faceRing")); snprintf(prim_ops(), (size_t)prim_ops_size(), "%s", ops); prim_node(v_id(id), FN_COMPOSED, x, y, w, h, 0, 0, 0); }   /* until the face is painted, the ring alone, as the top bar's */
   }
@@ -217,7 +217,7 @@ void habitat_words(void) {
   build_resident(cur);
   build_tag();
   build_card(); build_speciesLine(); build_story(); build_code(); build_stamp();
-  build_plates(cur);
+  build_chapterPlates(cur);
   build_modules(cur);
   { int box[4]; build_bayStrip(S, cur, box); if (strncmp(cur, "tile.", 5) == 0 && box[2] > 0 && !anim_holding() && spec_len("props", "overlay") < 0) { v_region("focus", LAYER_CHROME); word_focusRing("focus", box, S, "focus.targets.tile.ring", fcol("colours.ring")); } }
   build_ring(cur);

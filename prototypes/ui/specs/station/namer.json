@@ -8,9 +8,9 @@
  "wireframes": ["design/style-guide/station-layouts/12-namer-open.png", "design/style-guide/station-layouts/12b-namer-typing.png", "design/style-guide/station-layouts/12c-namer-accents.png", "design/style-guide/station-layouts/12d-namer-refused.png", "design/style-guide/station-layouts/12e-namer-nav.png"],
  "note": "The one home of the namer's numbers, transcribed from station-layouts.md (The namer) and its wireframes 12 to 12e. Rectangles are [x, y, w, h] in screen pixels. The namer gives one mibi a name with the six keys alone. It stands over Habitat's right column (the card and the modules) and leaves Habitat's living window and the mibi in it uncovered, so the player names what they see.",
  "overlay": {
-  "layer": "the face's top layer, over the screen it opens from. The focusRing object and the message plate are on the top layer too, in the order overlay, ring, plate: the ring over the namer's keys, a plate over both",
+  "layer": "drawn after the screen's words and before frame_words, over the screen it opens from. The focus ring and the message plate come after it, in the order overlay, ring, plate: the ring over the namer's keys, a plate over both",
   "beneath": "the screen beneath keeps drawing (its living window plays) and takes no key; its regions do not move",
-  "focus": "while the namer is open its own graph (focus below) is the only one; on close the host hands focus back with the closing props' `focus.set`: the resident after the meet, the rename target after a rename",
+  "focus": "while the namer is open its own graph (focus below) is the only one; on close the props carry habitat's focus.cur (habitat.json focus.entry.namerClosed): the resident after the meet, the name after a rename",
   "refused": "props naming an overlay whose `over` does not list the current screen are refused",
   "uncovered": "Habitat's living window and its resident: the namer starts at x 592, 16 px right of the window's bezel",
   "uncoveredRect": [16, 48, 560, 424],
@@ -195,7 +195,7 @@
   "noSuggest": "no names left to suggest",
   "backClear": "Clear",
   "backDelete": "Delete",
-  "backLeave": "Habitat",
+  "backLeave": "{name}",
   "keys": { "shift": "Aa", "space": "space", "accents": "àéñ", "letters": "abc", "suggest": "Suggest", "done": "Done" },
   "refuse": {
    "short": "A name needs two letters",

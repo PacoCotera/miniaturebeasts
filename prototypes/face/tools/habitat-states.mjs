@@ -31,7 +31,7 @@ const SCENES = {
   "namer-accents": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.3", "mod.page"], set: (w) => { w.bays(8); w.adults(4); } },
   "namer-refused": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.0", "act.done"], set: (w) => { w.bays(8); w.adults(4); } },
   "namer-empty": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back"], set: (w) => { w.bays(8); w.adults(4); } },
-  "namer-full": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", ...Array(10).fill("key.22")], set: (w) => { w.bays(8); w.adults(4); } },
+  "namer-full": { shown: 0, f: "resident", state: "rest", open: "rename", keys: ["x:back", "key.22", ...Array(9).fill(["mod.shift", "key.22"]).flat()], set: (w) => { w.bays(8); w.adults(4); } },
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, spec]) => {

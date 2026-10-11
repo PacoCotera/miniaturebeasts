@@ -215,7 +215,7 @@ function habitatFocus(h, target) {
   const a = UI.hab; a.f = target; endMeet(h);
   if (!target.startsWith("tile.")) return;
   const id = +target.slice(5), was = S.mibiById(G.st, a.id), now = S.mibiById(G.st, id); if (!now || id === a.id) return;
-  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? `mibi:${mb.id}:${SPECS.habitat.regions.resident.rect[2]}x${SPECS.habitat.regions.resident.rect[3]}` : "");
+  const px = (mb) => (mb && !S.isAway(G.st, G.sv, mb) ? `mibi:${mb.id}:${S.mibiStage(G.st, mb, G.settings)}:${SPECS.habitat.regions.resident.rect[2]}x${SPECS.habitat.regions.resident.rect[3]}` : "");
   const from = px(was); a.id = id;
   if (from && px(now)) { const e = SPECS.habitat.events.swap; a.prev = from; h.play({ kind: e.kind, target: e.target, from, ms: e.ms, hold: h.motion() ? e.hold : 0 }); h.at(e.ms, () => { if (a.prev === from) a.prev = null; }); }
 }

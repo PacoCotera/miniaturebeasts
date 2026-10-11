@@ -141,7 +141,7 @@ test("the events: the moment's two hops lift the creature by the spec's table (t
   // the swap: a dither on the resident from the old picture's id draws the old and the new mibi (a composed picture), ending in the new one
   const b3 = scene({ focus: "resident" }), h = await start(b3, { t0: 8000 }), from = b3.props.regions.resident.picture, other = scene({ shown: 1, focus: "resident" }); assert.equal(push(h, other), 0); h.send({ t: "event", kind: "dither", target: "resident", from, ms: 200, hold: 0 }); h.frame(8100); const mid = logOf(h);
   assert.ok(mid.regions.some((r) => r.id === "resident" && r.rect[2] === rect[2] && r.rect[3] === rect[3]), "the dither is drawn over the resident's box"); h.frame(8300);
-  // the flash: the tag takes the frame's flash on, off, on
+  // the flash: the tag takes the frame's flash, solid for the event's 240 ms as a counter's (on at +10 and +130, gone at +250)
   const t = await start(scene({ focus: "resident" }), { t0: 9000 }); const h0 = t.hash(); t.send({ t: "event", kind: "flash", target: "nameTag", ms: 240, hold: 240 }); t.frame(t.t + 10); const h1 = t.hash(); t.frame(t.t + 130); const h2 = t.hash(); t.frame(t.t + 250); const h3 = t.hash();
-  assert.notEqual(h1, h0, "the flash is on"); assert.notEqual(h2, h1, "and off"); assert.equal(h3, h0, "and gone at 240 ms (on 120, off 120)");
+  assert.notEqual(h1, h0, "the flash is on"); assert.equal(h2, h1, "and still on at +130"); assert.equal(h3, h0, "and gone at +250");
 });
