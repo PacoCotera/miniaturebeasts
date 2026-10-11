@@ -14,6 +14,7 @@ import { setFrames, frameOf, podGenome } from "../../station/src/genome.mjs";
 import * as S from "../../station/src/state.mjs";
 import { homeBuild } from "../../station/src/views/home-props.mjs";
 import { departures } from "../tools/home-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), homeSpec = J("home");
@@ -143,19 +144,42 @@ test("the walk is deterministic: the same props on the same clock give the same 
   const run = async (t) => { const f = await start(scene({ adults: 4, carry: [0] }), { t0: 5000 }); for (let ms = 40; ms <= t; ms += 40) f.frame(5000 + ms); return f.hash(); };
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200), "idle for the first two seconds, then they walk");
 });
+// one group tick a frame at most: a late frame steps the next group only, and the time past that tick is dropped by moving the walk's origin later in whole ticks
+test("a late frame steps one group, and the walk after it is the walk, later", { skip }, async () => {
+  const run = async (L) => {
+    const f = await start(scene({ adults: 12, carry: [] }), { t0: 5000 }); for (let t = 40; t <= 4000; t += 40) f.frame(5000 + t);   // the walk is under way (they idle for the first two seconds)
+    f.frame(5000 + 4000 + L); const steps = f.M._face_test_steps(), a = dirty(f); for (let i = 1; i <= 50; i++) f.frame(5000 + 4000 + L + 40 * i);
+    return { steps, a, hash: f.hash() };
+  };
+  const base = await run(40);
+  for (const L of [80, 120, 1000]) { const r = await run(L); assert.ok(r.steps <= 6, `a frame ${L} ms late stepped ${r.steps} residents`); assert.ok(r.a <= 153600, `a frame ${L} ms late redrew ${r.a} px`); assert.equal(r.hash, base.hash, `${L} ms late: fifty frames on, the walk is the walk (one tick a frame), later`); console.log(`# Home's late frame (${L} ms): ${r.steps} steps, ${r.a} px`); }
+});
+// the top bar live on a late frame: the counters change and flash on the frame that is late, which is the worst case for the number of areas LVGL lists
+test("a late walk frame with the top bar live (counters and their flashes changing) stays inside 153,600 px and LVGL's invalid-area buffer", { skip }, async () => {
+  const f = await start(scene({ adults: 12, carry: [] }), { t0: 5000 }), M = f.M, base = f.build; let worst = 0, areas = 0, k = 0;
+  const MAT = [{ e: 14, d: 16, s: 10 }, { e: 2, d: 6, s: 9 }], top = (m) => ({ ...frameProps().top, materials: m, flash: { e: true, d: true, s: true } });
+  for (let t = 21; t < 30000; t += 16, k++) {   // the brief's cadence: 16 ms frames, every 63rd 120 ms late, 30 s
+    const late = k % 63 === 62; if (late) { t += 120; assert.equal(f.props({ screen: "home", ...base.props, motion: true, frame: { ...frameProps(base.line), top: top(MAT[(k / 63 | 0) % 2]) } }), 0, f.errors().join("; ")); }
+    f.frame(5000 + t); const s = dirty(f), n = M._face_dirty_count(); assert.ok(s <= 153600, `${late ? "late " : ""}frame at ${t}: ${s} px`); assert.ok(n <= M._face_inv_cap(), `${n} flushes outside the cap`);
+    if (late && s > worst) { worst = s; areas = n; }
+  }
+  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# Home's late frame with the top bar live: worst ${worst} px in ${areas} flushes, ${f.invOverflows()} overflows`);
+});
 // the dirty area of a refresh (the sum of the rectangles the face redraws) is at most a quarter of the screen over two minutes of walking, at 40 ms frames and at 16 ms frames
 const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [40096, 38822, 31967, 8729, 50383, 36459, 27280, 21938, 4359, 48741, 64056, 12788] } };
-for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
-  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
+for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) {
+  test(`the walk, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
-    const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0;
-    for (let t = step + off; t < 120000; t += step) {
-      f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
-      for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3];
-      area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, M._face_test_steps());
+    const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0, lateArea = 0, ordinary = 0;
+    for (let t = step + off, k = 0; t < 120000; t += step, k++) {
+      const isLate = late && k % 63 === 62; if (isLate) t += late;   // a frame that comes `late` ms after the one before it, the clock going on from there
+      f.frame(5000 + t); const n = M._face_dirty_count(), s = dirty(f), st = M._face_test_steps();
+      area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, st); if (isLate) lateArea = Math.max(lateArea, s); else ordinary = Math.max(ordinary, s);
+      assert.ok(st <= 6, `${st} residents stepped in the frame at ${t}${isLate ? " (late)" : ""}`);
     }
     assert.ok(steps <= 6, `${steps} residents stepped in one frame`); assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
     console.log(`# Home's walk, ${name}, frames every ${step} ms: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen) dirty, worst ${steps} steps`);
+    if (late) console.log(`# Home's walk, ${name}: the worst late frame ${lateArea} px, the worst ordinary one ${ordinary} px`);
   });
 }
 
@@ -187,7 +211,6 @@ test("Home's filling leaf: the empty leaf whole, over it the full picture clippe
 });
 
 // a light change (the developer's, or the hour) is a cut, like a screen change: the glass, the bed and the residents' sprites take the next light on one refresh, under its own ceiling (the glass 640 × 488), not the 153,600 of an animation
-const dirty = (f) => { const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
 test("a light change is a cut: Home redraws the whole of its glass at most (312,320 px), every pair of lights", { skip }, async () => {
   const LIGHTS = ["dawn", "day", "dusk", "night"];
   for (const from of LIGHTS) for (const to of LIGHTS) if (from !== to) {

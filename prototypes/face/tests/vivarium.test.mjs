@@ -15,6 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { vivariumBuild } from "../../station/src/views/vivarium-props.mjs";
 import { departures } from "../tools/vivarium-regions.mjs";
 import { listPitch } from "../../ui/specs/derive.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("vivarium"), homeSpec = J("home");
@@ -112,18 +113,41 @@ test("an empty whole has no ring, no ✓ cap and no pad; ← and the room keys s
   for (const k of ["up", "down", "left", "right"]) assert.deepEqual(key(f, k), [], k);
   assert.deepEqual(key(f, "back").map((x) => [x.target, x.verb]), [["room", "back"]]);
 });
+// one group tick a frame at most: a late frame steps the next group only, and the time past that tick is dropped by moving the walk's origin later in whole ticks
+test("a late frame steps one group, and the walk after it is the walk, later", { skip }, async () => {
+  const run = async (L) => {
+    const f = await start(scene({ bays: 12, adults: 12 }), { t0: 5000 }); for (let t = 40; t <= 4000; t += 40) f.frame(5000 + t);   // the walk is under way (they idle for the first two seconds)
+    f.frame(5000 + 4000 + L); const steps = f.M._face_test_steps(), a = dirty(f); for (let i = 1; i <= 50; i++) f.frame(5000 + 4000 + L + 40 * i);
+    return { steps, a, hash: f.hash() };
+  };
+  const base = await run(40);
+  for (const L of [80, 120, 1000]) { const r = await run(L); assert.ok(r.steps <= 6, `a frame ${L} ms late stepped ${r.steps} residents`); assert.ok(r.a <= 153600, `a frame ${L} ms late redrew ${r.a} px`); assert.equal(r.hash, base.hash, `${L} ms late: fifty frames on, the walk is the walk (one tick a frame), later`); console.log(`# the Vivarium's late frame (${L} ms): ${r.steps} steps, ${r.a} px`); }
+});
+// the top bar live on a late frame: the counters change and flash on the frame that is late, which is the worst case for the number of areas LVGL lists
+test("a late walk frame with the top bar live (counters and their flashes changing) stays inside 153,600 px and LVGL's invalid-area buffer", { skip }, async () => {
+  const f = await start(scene({ bays: 12, adults: 12 }), { t0: 5000 }), M = f.M, base = f.build; let worst = 0, areas = 0, k = 0;
+  const MAT = [{ e: 14, d: 16, s: 10 }, { e: 2, d: 6, s: 9 }], top = (m) => ({ ...frameProps().top, materials: m, flash: { e: true, d: true, s: true } });
+  for (let t = 21; t < 30000; t += 16, k++) {   // the brief's cadence: 16 ms frames, every 63rd 120 ms late, 30 s
+    const late = k % 63 === 62; if (late) { t += 120; assert.equal(f.props({ screen: "vivarium", ...base.props, motion: true, frame: { ...frameProps(base.line), top: top(MAT[(k / 63 | 0) % 2]) } }), 0, f.errors().join("; ")); }
+    f.frame(5000 + t); const s = dirty(f), n = M._face_dirty_count(); assert.ok(s <= 153600, `${late ? "late " : ""}frame at ${t}: ${s} px`); assert.ok(n <= M._face_inv_cap(), `${n} flushes outside the cap`);
+    if (late && s > worst) { worst = s; areas = n; }
+  }
+  assert.equal(f.invOverflows(), 0, "no overflow of LVGL's invalid areas"); console.log(`# the Vivarium's late frame with the top bar live: worst ${worst} px in ${areas} flushes, ${f.invOverflows()} overflows`);
+});
 const WALKS = { "twelve adults": { bays: 12, adults: 12 }, "six adults and six juveniles": { bays: 12, adults: 6, young: 6 }, "twelve, one focused": { bays: 12, adults: 12, focus: "resident:5" }, "twelve, three waiting": { bays: 12, adults: 12, waiting: 3 }, "twelve adults, the ring on a tile": { bays: 12, adults: 12, focus: "tile:3" }, "twelve, two asleep on the bed": { bays: 12, adults: 12, carry: [0, 1] }, "twelve, one focused, seeds whose feet cross": { bays: 12, adults: 12, focus: "resident:5", seeds: [64845, 5640, 43497, 5522, 42627, 49915, 953, 51488, 15488, 10859, 36680, 51651] } };
-for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
-  test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
+for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) {
+  test(`the walk, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
-    const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0;
-    for (let t = step + off; t < 120000; t += step) {
-      f.frame(5000 + t); const n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0;
-      for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3];
-      area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, M._face_test_steps());
+    const f = await start(b, { t0: 5000 }), M = f.M; let area = 0, moved = 0, steps = 0, lateArea = 0, ordinary = 0;
+    for (let t = step + off, k = 0; t < 120000; t += step, k++) {
+      const isLate = late && k % 63 === 62; if (isLate) t += late;   // a frame that comes `late` ms after the one before it, the clock going on from there
+      f.frame(5000 + t); const n = M._face_dirty_count(), s = dirty(f), st = M._face_test_steps();
+      area = Math.max(area, s); if (n) moved++; steps = Math.max(steps, st); if (isLate) lateArea = Math.max(lateArea, s); else ordinary = Math.max(ordinary, s);
+      assert.ok(st <= 6, `${st} residents stepped in the frame at ${t}${isLate ? " (late)" : ""}`);
     }
     assert.ok(steps <= 6, `${steps} residents stepped in one frame`); assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
     console.log(`# the Vivarium's walk, ${name}, frames every ${step} ms: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen) dirty, worst ${steps} steps`);
+    if (late) console.log(`# the Vivarium's walk, ${name}: the worst late frame ${lateArea} px, the worst ordinary one ${ordinary} px`);
   });
 }
 test("a walking resident keeps its box in 16..1008 and its feet in the band 296..471, never meets the keep-out zone, never stops short of the ground, steps 2 px at a time, and a focused one stands still", { skip }, async () => {

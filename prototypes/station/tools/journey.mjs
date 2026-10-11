@@ -86,7 +86,8 @@ const assertFace = async (when) => {
   const c = await page.evaluate(() => window.__st.check()), bad = (c.log?.type ?? []).filter((r) => ![16, 20, 28].includes(r.px) || !r.text);
   for (const r of bad.slice(0, 3)) fail(`type (${when}): "${r.text}" at ${r.px} px, not Inter at 16, 20 or 28`);
   if (c.refused) fail(`face (${when}): ${c.refused} nodes refused`); if (c.errors.length) fail(`face (${when}): ${c.errors.slice(0, 3).join("; ")}`);
-  console.log(`face (${when}): ${(c.log?.type ?? []).length} strings, ${bad.length} off-spec, ${c.refused} refused, ${c.errors.length} errors`);
+  const ov = await page.evaluate(() => window.__st.face.invOverflows()); if (ov) fail(`face (${when}): LVGL's invalid-area buffer overflowed ${ov} time${ov > 1 ? "s" : ""}: a frame redrew the whole screen`);
+  console.log(`face (${when}): ${(c.log?.type ?? []).length} strings, ${bad.length} off-spec, ${c.refused} refused, ${c.errors.length} errors, ${ov} invalid-area overflows`);
 };
 
 // 1. the fixture migrated: pods carry genomes from their seeds, the mibi keeps its id and name, the Companion's part is byte-identical

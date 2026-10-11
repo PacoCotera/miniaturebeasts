@@ -87,6 +87,8 @@ export async function bootFace(base = new URL("../../face/dist/", import.meta.ur
     stats: () => ({ frames, copiedPixels: copied, keys: M._face_key_count(), lastKey: M._face_last_key(), dirty: M._face_dirty_count(), pictures: handles.size, props: M._face_props_count(), events: M._face_event_count() }),
     pixel: (x, y) => { const p = M._face_fb() + (y * W + x) * 4; return [M.HEAPU8[p + 2], M.HEAPU8[p + 1], M.HEAPU8[p]]; },
     // test mode: the layers a pass shows (1 chrome; 2 chrome and art; 3 all), the pixels outside the palette on the last frame
+    // LVGL keeps a fixed number of invalid areas a refresh and redraws the whole screen on one more: the overflows so far (monotonic), and the cap
+    invOverflows: () => M._face_inv_overflows() >>> 0, invCap: () => M._face_inv_cap(),
     pass: (n) => M._face_test_pass(n), offPalette: () => M._face_test_offpalette(),
     // the test build only (face_wasm_node): a node of the last scene by its id string, { kind, box: [x, y, w, h] }, or null when no node has the id
     nodeBox: M._face_test_node_box ? (id) => { const b = enc.encode(id + "\0"), s = M._malloc(b.length), o = M._malloc(16); M.HEAPU8.set(b, s); const kind = M._face_test_node_box(s, o), v = new Int32Array(M.HEAPU8.buffer, o, 4), box = Array.from(v); M._free(s); M._free(o); return kind < 0 ? null : { kind, box }; } : null,

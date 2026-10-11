@@ -15,6 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { habitatBuild } from "../../station/src/views/habitat-props.mjs";
 import { namerBuild } from "../../station/src/views/namer-props.mjs";
 import { departures } from "../tools/habitat-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("habitat"), namerSpec = J("namer"), homeSpec = J("home");
@@ -50,7 +51,7 @@ async function start(b, { motion = true, t0 = 0 } = {}) {
 }
 const frames = (f, n = 2, dt = 16) => { for (let i = 0; i < n; i++) f.frame((f.t += dt)); };
 const logOf = (f) => { let lg = null; for (let m; (m = f.poll("log"));) lg = m; return lg; };
-const dirtyOf = (f) => { const M = f.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };   // raw: every rectangle LVGL says it redraws
+const dirtyOf = (f, o) => dirty(f, o);   // raw: every rectangle LVGL says it redraws
 const key = (f, k) => { f.send({ t: "key", k }); frames(f); const out = []; for (let m; (m = f.poll());) if (m.t === "focus" || m.t === "intent") out.push(m); return out; };
 const withFocus = (f, cur) => { if (f.build.props.overlay) f.build.props.overlay.focus.cur = cur; else f.build.props.focus.cur = cur; assert.equal(push(f, f.build), 0, f.errors().join("; ")); frames(f); };
 

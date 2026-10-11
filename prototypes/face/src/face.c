@@ -17,6 +17,18 @@ static uint8_t g_fb[FACE_W * FACE_H * 4];
 static lv_display_t *g_disp;
 static int32_t g_dirty[FACE_MAX_DIRTY * 4];
 static int g_ndirty;
+_Static_assert(FACE_MAX_DIRTY >= LV_INV_BUF_SIZE, "the face lists every area LVGL flushes");
+/* LVGL's invalid-area list as lv_inv_area keeps it, kept here by the same rule so an overflow (the 33rd area at the old cap: the list becomes the whole screen) is counted */
+static lv_area_t g_inv[LV_INV_BUF_SIZE]; static int g_inv_p; static unsigned g_inv_overflows;
+static void inv_cb(lv_event_t *e) {
+  const lv_area_t *a = lv_event_get_invalidated_area(e);
+  for (int i = 0; i < g_inv_p; i++) if (a->x1 >= g_inv[i].x1 && a->y1 >= g_inv[i].y1 && a->x2 <= g_inv[i].x2 && a->y2 <= g_inv[i].y2) return;   /* contained in a kept area: not kept */
+  if (g_inv_p >= LV_INV_BUF_SIZE) { g_inv_overflows++; g_inv_p = 0; g_inv[0].x1 = 0; g_inv[0].y1 = 0; g_inv[0].x2 = FACE_W - 1; g_inv[0].y2 = FACE_H - 1; g_inv_p = 1; return; }   /* no place: the list is the screen alone, as LVGL's */
+  g_inv[g_inv_p++] = *a;
+}
+static void inv_ready_cb(lv_event_t *e) { (void)e; g_inv_p = 0; }
+unsigned face_inv_overflows(void) { return g_inv_overflows; }
+int face_inv_cap(void) { return LV_INV_BUF_SIZE; }
 #define KEYQ 64
 static struct { int code; int down; } g_keys[KEYQ];
 static int g_kh, g_kt, g_kcount, g_klast;
@@ -44,6 +56,7 @@ void face_init(void) {
   lv_display_set_color_format(g_disp, LV_COLOR_FORMAT_ARGB8888);
   lv_display_set_buffers(g_disp, g_fb, NULL, sizeof g_fb, LV_DISPLAY_RENDER_MODE_DIRECT);
   lv_display_set_flush_cb(g_disp, flush_cb);
+  lv_display_add_event_cb(g_disp, inv_cb, LV_EVENT_INVALIDATE_AREA, NULL); lv_display_add_event_cb(g_disp, inv_ready_cb, LV_EVENT_REFR_READY, NULL);
   lv_timer_set_period(lv_display_get_refr_timer(g_disp), 1);   /* one refresh per face_frame: LVGL's default period (33 ms) would carry two steps of the walk in one refresh at a frame of 16 ms */
   lv_indev_t *kp = lv_indev_create();
   lv_indev_set_type(kp, LV_INDEV_TYPE_KEYPAD);

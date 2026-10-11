@@ -52,6 +52,7 @@ if (f) {
   console.log(`page load: wasm fetched, compiled and initialised in ${fast.loadMs} ms; a frame with nothing changed ${fast.idleMsPerFrame} ms; a full 1024×600 frame copied to the canvas ${fast.fullFrameCopyMs} ms`);
   console.log(`CPU throttled 4× (a phone's stand-in): load ${slow.loadMs} ms; idle frame ${slow.idleMsPerFrame} ms; full-frame copy ${slow.fullFrameCopyMs} ms (a 60 Hz frame is 16.7 ms)`);
 }
+{ const ov = await page.evaluate(() => window.__st.face.invOverflows()); expect(ov === 0, "LVGL's invalid-area buffer never overflowed (a frame that did redraws the whole screen): " + ov + " overflows"); console.log(`invOverflows ${ov}`); }
 expect(errors.length === 0, "no page errors: " + errors.join(" | "));
 await browser.close(); server.close();
 if (fails.length) { console.error("face check failed"); process.exit(1); }

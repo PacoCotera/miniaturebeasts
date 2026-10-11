@@ -15,6 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { createBuild, reviewTraits } from "../../station/src/views/create-props.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 import { departures } from "../tools/create-regions.mjs";
+import { dirty } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), podsSpec = J("pods"), createSpec = J("create");
@@ -201,7 +202,7 @@ test("grow with reduced motion is its end at once: the stamp whole, the code pri
   assert.deepEqual(departures(lg, createSpec, frameSpec, "grow"), []); assert.equal(region(lg, "stamp", "painted").rect[3], b.props.regions.stamp.size); assert.equal(lg.type.filter((t) => t.region === "code" && t.text).length, 1); assert.deepEqual(region(lg, "travel", "painted").rect, [804, 144, 120, 152]);
 });
 test("no refresh redraws more than a quarter of the screen while the pod travels (frames every 16 ms) or the founder dithers, the frame of the key that starts each included", { skip }, async () => {
-  const area = (f) => { const n = f.M._face_dirty_count(), a = f.M.HEAP32.subarray(f.M._face_dirty_rects() >> 2, (f.M._face_dirty_rects() >> 2) + n * 4); let s = 0; for (let i = 0; i < n; i++) s += a[i * 4 + 2] * a[i * 4 + 3]; return s; };
+  const area = (f, o) => dirty(f, o);
   const worst = (f, t0, until, step) => { let w = 0; for (let t = step; t < until; t += step) { f.frame(t0 + t); w = Math.max(w, area(f)); } return w; };
   const { f, t0 } = await growing(); const g = worst(f, t0, 900, 16); assert.ok(g <= 153600, `grow: dirty area ${g} (${(100 * g / 614400).toFixed(1)}%)`); console.log(`# Create's grow: worst refresh ${(100 * g / 614400).toFixed(1)}% of the screen dirty`);
   const r = await rolled(); const d = worst(r.f, r.t0, 200, 16); assert.ok(d <= 153600, `dither: dirty area ${d} (${(100 * d / 614400).toFixed(1)}%)`); console.log(`# Create's roll dither: worst refresh ${(100 * d / 614400).toFixed(1)}% of the screen dirty`);
