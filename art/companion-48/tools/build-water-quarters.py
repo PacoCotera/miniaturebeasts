@@ -4,8 +4,8 @@ Water cells carry the whole bank, so the lawn cells beside them stay plain lawn.
 five states each (fill, edgeh, edgev, outer, inner: the same 47-blob scheme as the plateau lips), on the same geometry: on every
 side that meets land the water's edge sits INSET px inside the cell, outer corners are cut on R_OUT, inner corners on R_IN, and the
 straight runs waver by a 24-periodic offset that is 0 at the quarter's ends. Then by distance from that edge:
-  land side (the inset margin)   a sand bank, its outermost pixel a dark edge where it meets the lawn
-  water side                     2 px foam (a continuous line, broken every 23 px), 1 px wet line, a shallow band to 9 px, then the body
+  land side (the inset margin)   a 10 px sand beach, its outermost 2 px a dark edge where it meets the lawn
+  water side                     a 2-3 px wet edge with foam flecks (7 px in 23), no drawn border, a shallow band to 9 px, then the body
 Two frames: frame 2 moves the foam along the edge (the foam animates; nothing else does).
 Macro outer corners (2 x 2 cells, radius 60 or 42) round a pond's lobes as b1's do; their straight ends join the edge quarters.
 Lobe pieces (2 cells along a straight shore) curve the bank out or in by 10 px on a half sine, so a pond's sides are free curves.
@@ -47,10 +47,10 @@ def quarter(quad, state, frame):
             u = x if west else 23 - x; v = y if north else 23 - y; gu, gv = u + 16, v + 16
             if land[gv, gu]:
                 d = int(np.sqrt(((wp - [gv, gu]) ** 2).sum(1).min()))     # distance to the water
-                q[y, x] = -1 if d > 8 else (EDGE if d >= 7 else (SAND if d >= 3 else SAND2))   # a 6 px bank, then the lawn shows
+                q[y, x] = -1 if d > 12 else (EDGE if d >= 11 else (SAND if d >= 3 else SAND2))   # a 10 px beach, then the lawn shows
             else:
                 d = int(np.sqrt(((lp - [gv, gu]) ** 2).sum(1).min()))
-                if d <= 2: q[y, x] = WET if (gu + gv + 4 * frame) % 23 < 3 else FOAM   # a 2 px foam line, broken every 23 px, moving in frame 2
+                if d <= 2: q[y, x] = FOAM if (gu + gv + 4 * frame) % 23 < 7 and d <= 1 else WET   # a 2 px foam line, broken every 23 px, moving in frame 2
                 elif d == 3: q[y, x] = WET
                 elif d <= 9: q[y, x] = SHAL
                 else: q[y, x] = BODY
@@ -69,11 +69,11 @@ def macro(quad, frame, RM):
             u = x if west else 95 - x; v = y if north else 95 - y; gu, gv = u + 16, v + 16
             if land[gv, gu]:
                 d = int(np.sqrt(((wp - [gv, gu]) ** 2).sum(1).min()))
-                q[y, x] = -1 if d > 8 else (EDGE if d >= 7 else (SAND if d >= 3 else SAND2))
+                q[y, x] = -1 if d > 12 else (EDGE if d >= 11 else (SAND if d >= 3 else SAND2))
             else:
                 d = int(np.sqrt(((lp - [gv, gu]) ** 2).sum(1).min()))
                 if d > 10: continue
-                if d <= 2: q[y, x] = WET if (gu + gv + 4 * frame) % 23 < 3 else FOAM
+                if d <= 2: q[y, x] = FOAM if (gu + gv + 4 * frame) % 23 < 7 and d <= 1 else WET
                 elif d == 3: q[y, x] = WET
                 elif d <= 9: q[y, x] = SHAL
     return q
@@ -85,8 +85,8 @@ def render(land, frame):
     hh, ww = land.shape[0] - 32, land.shape[1] - 32; q = np.full((hh, ww), BODY, int)
     yy, xx = np.mgrid[16:16 + hh, 16:16 + ww]
     L = land[16:16 + hh, 16:16 + ww]; d1 = np.floor(dw[16:16 + hh, 16:16 + ww]).astype(int); d2 = np.floor(dl[16:16 + hh, 16:16 + ww]).astype(int)
-    q[L] = np.where(d1[L] > 8, -1, np.where(d1[L] >= 7, EDGE, np.where(d1[L] >= 3, SAND, SAND2)))
-    W_ = ~L; foam = W_ & (d2 <= 2); q[foam] = np.where((xx[foam] + yy[foam] + 4 * frame) % 23 < 3, WET, FOAM)
+    q[L] = np.where(d1[L] > 12, -1, np.where(d1[L] >= 11, EDGE, np.where(d1[L] >= 3, SAND, SAND2)))
+    W_ = ~L; foam = W_ & (d2 <= 2); q[foam] = np.where(((xx[foam] + yy[foam] + 4 * frame) % 23 < 7) & (d2[foam] <= 1), FOAM, WET)
     q[W_ & (d2 == 3)] = WET; q[W_ & (d2 > 3) & (d2 <= 9)] = SHAL
     return q
 AMP = 10                                                            # the lobe's bulge: 10 px at the middle of two cells, 0 at its ends

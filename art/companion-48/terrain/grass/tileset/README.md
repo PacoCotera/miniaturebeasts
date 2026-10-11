@@ -19,7 +19,7 @@
   - Quarters for water cells, in the lips' 47-blob scheme, two frames each, plus the body fill.
   - Macro outer corners (2 × 2 cells, radius 60 or 42) round a pond's lobes, as b1's do.
   - Lobe pieces (2 cells along a straight shore, `lobe-<side>-<out|in>`) bulge the bank 10 px out or in on a half sine, so a pond's sides are curves. The shore swells 1 px per quarter, so mirrored quarters can't zigzag.
-  - The bank is inset 18 px, with corners rounded to 26 and 18 px and a wavering edge. Inside it: a 2 px foam line (continuous, broken every 23 px), the wet line, the shallow band and the body.
+  - The bank is inset 18 px, with corners rounded to 26 and 18 px and a wavering edge. A 10 px sand beach; inside it a 2–3 px wet edge with foam flecks, the shallow band and the body.
 - **`stairs/`** (made by `tools/cut-stairs.py`): the phase 1 stair pieces, under the spec's §6.1 names. They are cut from b1's own lower stair and its trodden earth.
   - `wide2x1-1`, `-2`: the south stair, 2 × 2 cells (one level). It is rebuilt from 7 of b1's 11 steps at b1's own pitch, between b1's stringers.
   - `landing-l/r`, `foot-l/r`: the earth at the stair's head and foot.
@@ -30,17 +30,17 @@
   - The bridge is turned to run north to south and is two cells wide.
   - Its posts are redrawn upright in b1's 3/4 view: an oval cap, a round shaded front and a dark outline. The sheet drew them as side-view logs.
   - The posts' contact shadows are in `props/shade/`.
-- **`proof/`** (made by `tools/tileset-map.py`): test map 8, built from tiles only on b1's own layout, beside b1 at the same size (`beside-b1-1x.png`).
+- **`proof/`** (made by `tools/tileset-map.py`): test map 9, built from tiles only on b1's own layout, beside b1 at the same size (`beside-b1-1x.png`).
   - The layout is b1's, read off its materials and snapped to the cell grid.
     - b1's upper steps are about 60 px, where one level here is 96 px. Its plateaus' south rims therefore sit up to a cell from b1's.
-  - The lawn is on b1's own seven-tone ramp: the band layer (b1's own bands) plus fleck tiles (b1's lawn less its bands, three 96 px variants).
+  - The lawn is on b1's own seven-tone ramp: a band layer from a smooth field (broad, irregular, never cut by the tile grid) plus one fleck tile (b1's lawn less its bands), mirrored so it has no seams.
     - On top: clustered tufts, clover and sparse flowers.
-  - The turf hangs 6–26 px over each wall, in lumps and lobes. The faces carry moss and roots. A stacked face's top gives way to the face above, and the line between them is broken.
+  - The turf spills 12–32 px over each wall, with a lit lip along its lower contour, in lumps and lobes. The faces carry moss and roots. A stacked face's top gives way to the face above, and the line between them is broken.
   - The pond is two lobes, with a pinch at the bridge. The bridge lands on b1's own trodden earth at both ends.
   - Foot pieces sit along every wall's bottom edge, with small boulders and ferns.
   - Props stand on contact shadows. b1's island is used as a macro piece.
   - The pond's lobes round on macro corners.
-  - **Test map 8 is not signed.**
+  - **Test map 9 is not signed.**
     - Holds at 1× beside b1: the pond, the lawn, the props, the wall feet and ends.
     - The gaps:
       - The pond's lobes are rounded rectangles, where b1's are free curves.

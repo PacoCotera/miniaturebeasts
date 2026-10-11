@@ -5,10 +5,10 @@ grid that the pieces live on. b1 is a painting and is not consistent in scale: i
 two cells (96 px) here, so the plateaus' south rims sit up to a cell from b1's. Any other difference is the tiles.
 
 Pieces used:
-  lawn          b1's own lawn ramp: the band layer's step plus a fleck tile (b1's lawn less its bands, -2..+2 steps, three
-                96 px variants), the basin one step down
-  light layer   b1's own light and shade bands (its lawn's value averaged over 13 px, cut at three levels), as flat steps up or
-                down of the same grass: a layer, not baked into tiles
+  lawn          b1's own lawn ramp: the band layer's step plus a fleck tile (b1's lawn less its bands, -2..+2 steps, one 96 px tile
+                mirrored so it has no seams), the basin one step down
+  light layer   broad irregular light and shade bands from a smooth field (b1's shares: ~23% lit, ~23% shade), as flat steps
+                up or down of the same grass: a layer, not baked into tiles, never cut by the tile grid
   tufts         clustered tufts (3-5 blades: a dark side, a body one step down, a lit tip two steps up) and sparse clover,
                 at seeded sites ~30 px apart, none alone
   plateau edges on north, west and east: a rounded outline, a lit rim, a dark line under it, blades over it, two flat shadow steps
@@ -118,7 +118,13 @@ def boxavg(a, k):
     p = np.pad(a, k, mode="edge"); cs = p.cumsum(0).cumsum(1); cs = np.pad(cs, ((1, 0), (1, 0)))
     n = 2 * k + 1; return (cs[n:, n:] - cs[:-n, n:] - cs[n:, :-n] + cs[:-n, :-n]) / n ** 2
 b1l = boxavg(np.where(lawn, lum[B1], lum[BASE]).astype(float), 6)      # b1's lawn value, averaged over 13 px: its bands, not its flecks
-lit = majority(b1l > 155, 2); shd = majority(b1l < 127, 2); shd2 = majority(b1l < 114, 2)
+# the bands, laid by their own field (not b1's layout, whose straight cliff edges cut them into rectangles): broad, irregular,
+# off the tile grid, at b1's shares of lit and shaded lawn
+from scipy import ndimage as nd_
+rngb_ = np.random.RandomState(31)
+fld_ = sum(w * nd_.gaussian_filter(rngb_.normal(0, 1, (HPX, WPX)), sg, mode="wrap") for sg, w in ((70, 1.0), (32, .45), (12, .12)))
+fld_ = (fld_ - fld_.mean()) / fld_.std()
+lit = fld_ > 0.75; shd = fld_ < -0.75; shd2 = fld_ < -1.45
 # the lawn's fleck tiles: b1's lawn, less its bands. Each pixel's step on b1's ramp minus the 13 px average of those steps, kept to
 # -2..+2, from 96 px windows of b1 that are lawn throughout; three variants, one per 96 px block by a seeded rule
 RI = np.full(B1.shape, np.nan); 
@@ -135,7 +141,8 @@ BAND = np.zeros((HPX, WPX), int); BAND[lit] = 1; BAND[shd] = -2; BAND[shd2] = -4
 gm = mat[img] == "grass"
 for by in range(0, HPX, 96):
     for bx in range(0, WPX, 96):
-        f = FLECK[rngl.randint(len(FLECK))][0]; hh, ww = min(96, HPX - by), min(96, WPX - bx)
+        f0 = FLECK[0][0]; f = f0[:, ::-1] if (bx // 96) % 2 else f0; f = f[::-1] if (by // 96) % 2 else f   # one tile, mirrored: no seams
+        hh, ww = min(96, HPX - by), min(96, WPX - bx)
         for L_ in range(4):
             m_ = gm[by:by + hh, bx:bx + ww] & (LV[by:by + hh, bx:bx + ww] == L_)
             k_ = np.clip(LB + LTONE[L_] + BAND[by:by + hh, bx:bx + ww] + f[:hh, :ww], 0, len(LRAMP) - 1)
@@ -309,8 +316,9 @@ for r, c0, c1, stack, L_ in RUNS:
     xs = np.arange(c0 * 48, c1 * 48)
     lobe = 16 * np.maximum(0, np.sin(xs / 31.0 + ph)) ** 3                 # turf lobes that come down over the face, as b1's do
     dd = np.clip(np.round(8 + lobe + 2 * np.sin(xs / 5.3 + 2 * ph) + rngr.randint(-1, 2, len(xs))), 6, 26).astype(int)   # the top line steps and curves
-    for x, d in zip(xs, dd):                                      # turf lumps and lobes, 6-26 px: the lawn's own tone, a darker underside, a dark line
-        img[Y:Y + d, x] = up; img[Y + d - 2:Y + d, x] = GS[-1][up]; img[Y + d, x] = OUTL
+    dd = dd + 6                                                   # the rim spills over the rock as b1's: 12-32 px of turf
+    for x, d in zip(xs, dd):                                      # turf lumps and lobes: the lawn's tone, a lit lip along its lower contour, a dark line
+        img[Y:Y + d, x] = up; img[Y + d - 4:Y + d - 1, x] = LIGHT1[up]; img[Y + d - 1, x] = GS[-1][up]; img[Y + d, x] = OUTL
         if rngr.rand() < .18:
             for t in range(1, rngr.randint(2, 5)): img[Y + d + t, x] = GS[-1][up] if t < 3 else OUTL
 
