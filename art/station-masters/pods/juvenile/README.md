@@ -59,11 +59,11 @@ Round 1 total: 11.23 MXN of the 15.5 planned, with no retries. The set is at 11.
 
 ## Re-export: shadows and magenta specks (after #139's in-scene check)
 
-All 64 files are re-cut from the same paintings (no new request) by :
+All 64 files are re-cut from the same paintings (no new request) by `guides/cut-juveniles.py`:
 - **The ground** is each picture's own magenta, read from its border. Before, one fixed threshold took the darker magenta of
   S15's and S16's painted shadows for ground, so they had none.
 - **The painted shadow** is a darker magenta than the ground (or, for S03 only, a neutral grey), under the figure's lower part.
   It is kept as a flat translucent shadow (alpha 110) in every species. S03's grey shadow had come out opaque, part of the body.
 - **Magenta specks:** body pixels with the ground's magenta cast are removed on the edge and repainted from their neighbours
   inside. What remains of magenta hue is the creatures' own colour (S03's pink pads, S16's lavender).
--  carries the new hashes. Signed again at 1×.
+- `manifest.json` carries the new hashes. Signed again at 1×.
