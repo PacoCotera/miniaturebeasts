@@ -16,6 +16,7 @@
 - **The snap.** The scene is area-averaged so a tile is 48 px, and each pixel takes the nearest colour in Lab.
   - **No soft gradients.** On lawn and water, a pixel takes the most common colour of its 3×3 neighbourhood when that colour holds 5 of the 9 and is the same material. Gradients become hard-edged bands; tuft and clover clusters, rock, wood, outlines and flowers stay as drawn.
   - Mean colour error against the repaint: 4.5.
+- **The pond in two flat tones** (`tools/b1-water.py`; owner, 2026-10-10 20:05: "1-2 colors, no need for so many shades"): the body `#1d6888` and a shallow band `#227993` within 7 px of a bank. The foam line and the wet line stay as edge detail, not as shades of the water.
 - **The hand pass** (`tools/b1-hand.py`). The wooden sign the repaint put on the island is painted out, regrown from the island's own greens.
 - **Checks.**
   - Both screens use only the 96 colours: the cliffs 65, the pond 78.
