@@ -1,0 +1,186 @@
+{
+ "bench-cradle-empty-480x288": {
+  "size": [
+   480,
+   288
+  ],
+  "sha256": "e9d3dbf171cbfb9e86f4cbb081e11939a6d0d25f22833ad80b6882de65bb32f5",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-deep-t2-40-new": {
+  "size": [
+   40,
+   40
+  ],
+  "sha256": "2e7676d0c5740548993512e51d9bd7ddd1e03a9412827a7529cb1ce6a04ffe3f",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-deep-t2-40": {
+  "size": [
+   40,
+   40
+  ],
+  "sha256": "2e7676d0c5740548993512e51d9bd7ddd1e03a9412827a7529cb1ce6a04ffe3f",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-part-t2-dim-128": {
+  "size": [
+   128,
+   128
+  ],
+  "sha256": "a5139019bfe8189ce3ced7a767693e7a50eda8d95e5514c39a5095f3fba1c39b",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-part-t2-fitted-128": {
+  "size": [
+   128,
+   128
+  ],
+  "sha256": "5141db874be126c2e70726705f0cd7f674e6ad14d836d8dd0516fbb2a2d5bce8",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-part-t2-ready-128": {
+  "size": [
+   128,
+   128
+  ],
+  "sha256": "42c7f22c9d87ed92d816e5f20aef80f2aada901a708ea48bc577614c9bd57715",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-plate-gone-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "sha256": "a6e66e3621481c0c5a56a781b637d4c9bfa6ac6d07ee518abce69e726603bdc4",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-plate-whole-32x32": {
+  "size": [
+   32,
+   32
+  ],
+  "sha256": "a6fb19925510e664dfe2704da40dacbce3cc2b44cea128572001504870c68000",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-probe-t1-480x288": {
+  "size": [
+   480,
+   288
+  ],
+  "sha256": "7a511778d522893f1e82c8ab910ab0becd931cb279109a19abd9bb8458b93003",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-probe-t2-480x288": {
+  "size": [
+   480,
+   288
+  ],
+  "sha256": "93a7b84f9da1f2cd073cfd1e2520a60b3e5b14abd582db3d9354c4be12d64d50",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-reach-t2-40-new": {
+  "size": [
+   40,
+   40
+  ],
+  "sha256": "92d234d158bb5b5f76b7e627d74ece604ddc6faac6ecea5ba32102618dc37782",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-reach-t2-40": {
+  "size": [
+   40,
+   40
+  ],
+  "sha256": "92d234d158bb5b5f76b7e627d74ece604ddc6faac6ecea5ba32102618dc37782",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-socket-160": {
+  "size": [
+   160,
+   160
+  ],
+  "sha256": "428cc0d385d6eaf9cd25271c36c25eeb7c20bbddaa16c8f4d84eca170d876c7c",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-switch-knob-40x40": {
+  "size": [
+   40,
+   40
+  ],
+  "sha256": "f9aa296cca62208518c973ff986f2bac4da7ad8aed9137152f50711ed7ba4c27",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-switch-track-off-80x40": {
+  "size": [
+   80,
+   40
+  ],
+  "sha256": "80db1c5f1e03eedd4f949ed8314d05a59c4de985879bd928db1a34b6895f4412",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "bench-switch-track-on-80x40": {
+  "size": [
+   80,
+   40
+  ],
+  "sha256": "49942512dfb4a7f287a003b6ef8356ed96fd5f2839cbbdb754164b8805c962e3",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "icon-pod-16-new": {
+  "size": [
+   16,
+   16
+  ],
+  "sha256": "632059ff058401602c2126b596649e05ace53e810b68cf771558a3b9c0d14271",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "icon-pod-16": {
+  "size": [
+   16,
+   16
+  ],
+  "sha256": "632059ff058401602c2126b596649e05ace53e810b68cf771558a3b9c0d14271",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "icon-shield-16-new": {
+  "size": [
+   16,
+   16
+  ],
+  "sha256": "b2c11bd10db96d0a20f7f4834950e05018ca596d75afc4e25ab5a1f711eb6d3a",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "icon-shield-16": {
+  "size": [
+   16,
+   16
+  ],
+  "sha256": "b2c11bd10db96d0a20f7f4834950e05018ca596d75afc4e25ab5a1f711eb6d3a",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "icon-shield-gone-16": {
+  "size": [
+   16,
+   16
+  ],
+  "sha256": "313188842cf353a44a70004b17a7357dd38e51e4776b98a19f4a06d0311f2d8e",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "mark-dock-24x24": {
+  "size": [
+   24,
+   24
+  ],
+  "sha256": "70c9f0f94bc6c104587d7788d57d1646778118ecd20d75c1a06e17295090eb06",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ },
+ "room-bench-stage-probe": {
+  "size": [
+   1024,
+   522
+  ],
+  "sha256": "2fbc562fdb7a95379ffb19976e5704ce5b7273ed02f2828b6e6b26ae63b6e6a6",
+  "signed_in": "art director, Probe bench set (5f04d417)"
+ }
+}
