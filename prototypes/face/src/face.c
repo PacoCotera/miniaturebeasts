@@ -53,7 +53,9 @@ void face_init(void) {
   lv_obj_set_style_bg_opa(lv_screen_active(), LV_OPA_COVER, 0);
   prim_init(); wire_init();
 }
+extern int g_home_steps;
 void face_frame(uint32_t ms) {
+  g_home_steps = 0;
   static uint32_t last; static int started;
   if (!started) { started = 1; last = ms; }
   lv_tick_inc(ms - last); last = ms;
@@ -120,6 +122,7 @@ static char g_region[48];
 char *face_region(void) { return g_region; }
 void face_node_tag(int layer) { prim_tag(layer, g_region); }
 #endif
+int face_test_steps(void) { return g_home_steps; }   /* the residents that stepped in the last face_frame */
 void face_test_pass(int pass) { prim_set_pass(pass); lv_refr_now(g_disp); }   /* now, not on the next refresh tick: a pass is measured at once */
 int face_test_offpalette(void) {
   int bad = 0;

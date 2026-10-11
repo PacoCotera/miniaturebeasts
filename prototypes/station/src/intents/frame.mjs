@@ -5,8 +5,8 @@ import * as T from "../sitting.mjs";
 import { roomTop, ROOM_KEYS } from "../nav.mjs";
 import { closeReport } from "./cargo.mjs";
 
-const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "habitat" };
-// A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Habitat: the stage).
+const SCREEN_OF = { home: "home", research: "pods", library: "library", habitat: "vivarium" };
+// A room key: the unpaid choices of Create and Cross are dropped, and the room's own top opens (Pods: the collection with the ring on the pod that most needs the player; Library: the spread; Vivarium: the whole, the ring per vivarium.json focus.entry.vivariumKey).
 export function roomKey(h, key) {
   if (!roomTop(key)) return false;
   const ui = h.ui; ui.create = null; ui.cross = null;
@@ -14,7 +14,7 @@ export function roomKey(h, key) {
   if (key === "home") ui.home.f = "room";
   else if (key === "research") { const p = ui.pods; p.cmp = null; p.wildArm = 0; const q = S.neediestPod(h.st); if (q) p.cur = q.id; p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? "place." + Math.max(0, h.st.tray.findIndex((x) => x.id === q.id)) : null); }
   else if (key === "library") { const l = ui.lib; if (l.page == null) { l.page = 0; l.i = 0; } l.f = "spread"; }
-  else if (key === "habitat") { const a = ui.hab; a.f = "stage"; a.wildArm = 0; }
+  else if (key === "habitat") { ui.viv.f = null; ui.hab.wildArm = 0; }   // the Vivarium key: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.vivariumKey)
   h.goto(SCREEN_OF[key]);
   return true;
 }

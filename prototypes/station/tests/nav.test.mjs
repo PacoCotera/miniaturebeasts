@@ -17,36 +17,24 @@ const nav = JSON.parse(readFileSync(path.resolve(here, "../../ui/specs/station/f
 test("the tree: every screen's parent is in the tree, Home alone has none, and ← is the parent whichever way you came", () => {
   const places = Object.keys(nav.screens);
   for (const p of places) { const up = N.upFrom(nav, p); if (p === "home") assert.equal(up, null); else assert.ok(places.includes(up), p + " has a parent"); }
-  assert.equal(N.upFrom(nav, "incubator"), "home", "after Grow the Incubator reads ← Home"); assert.equal(N.upFrom(nav, "habitat"), "home", "after the Book's Visit Habitat reads ← Home");
-  assert.equal(N.upFrom(nav, "cross"), "habitat"); assert.equal(N.upFrom(nav, "book"), "library"); assert.equal(N.upFrom(nav, "pods.chapter"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.compare"), "pods.overview");
+  assert.equal(N.upFrom(nav, "incubator"), "home", "after Grow the Incubator reads ← Home"); assert.equal(N.upFrom(nav, "habitat"), "vivarium", "one mibi up close is under the whole"); assert.equal(N.upFrom(nav, "vivarium"), "home", "the whole is under Home");
+  assert.equal(N.upFrom(nav, "cross"), "habitat"); assert.equal(N.upFrom(nav, "sitting"), "habitat"); assert.equal(N.upFrom(nav, "book"), "library"); assert.equal(N.upFrom(nav, "pods.chapter"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.compare"), "pods.overview");
   assert.equal(N.upFrom(nav, "create"), "pods.overview"); assert.equal(N.upFrom(nav, "pods.overview"), "pods.collection"); assert.equal(N.upFrom(nav, "pods.collection"), "home");
   assert.equal(N.placeOf({ screen: "bench" }), "probe", "the live Probe bench screen is the tree's probe"); assert.equal(N.placeOf({ screen: "pods", podsView: "chapter" }), "pods.chapter"); assert.equal(N.placeOf({ screen: "pods", podsView: "overview", compare: true }), "pods.compare");
 });
 
 test("the back words: Home none, the titles, the pod's label under the overview, and Back when the name will not fit", () => {
   assert.equal(N.backWord(nav, "home"), null, "no ← cap on Home");
-  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["habitat", "Home"], ["cross", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
+  for (const [p, w] of [["pods.collection", "Home"], ["pods.overview", "Pods"], ["incubator", "Home"], ["probe", "Home"], ["library", "Home"], ["book", "Library"], ["vivarium", "Home"], ["habitat", "Vivarium"]]) assert.equal(N.backWord(nav, p), w, p);
+  assert.equal(N.backWord(nav, "cross", "Bean"), "Bean", "← from Cross names the mibi"); assert.equal(N.backWord(nav, "sitting", "Bean"), "Bean"); assert.equal(N.backWord(nav, "cross", "", () => true), "Back"); assert.equal(N.backWord(nav, "cross", "Bean Bean Bean", () => false), "Back", "a name that does not fit reads Back");
   for (const p of ["pods.chapter", "pods.compare", "create"]) { assert.equal(N.backWord(nav, p, "Loika"), "Loika", p); assert.equal(N.backWord(nav, p, "Wideishname", () => false), "Back", "wider than the room reads Back"); }
 });
 
 test("the room keys open the top of their room, Create and Cross are the places whose unpaid choices a room key drops", () => {
   assert.deepEqual(Object.keys(nav.roomKeys).sort(), Object.keys(N.ROOM_KEYS).sort());
-  assert.equal(N.roomTop("research"), "pods.collection"); assert.equal(N.roomTop("library"), "library"); assert.equal(N.roomTop("habitat"), "habitat"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
+  for (const k of Object.keys(nav.roomKeys)) assert.equal(N.roomTop(k), [nav.roomKeys[k].screen, nav.roomKeys[k].state].filter(Boolean).join("."), "the room key " + k + " opens what frame.json says");
+  assert.equal(N.roomTop("research"), "pods.collection"); assert.equal(N.roomTop("library"), "library.spread"); assert.equal(N.roomTop("habitat"), "vivarium"); assert.equal(N.roomTop("home"), "home"); assert.equal(N.roomTop("confirm"), null);
   assert.deepEqual(N.DROPS_ON_ROOM_KEY, ["create", "cross"]);
-});
-
-test("Habitat's pad is a fixed order: the stage, the chapter plates, Cross, the door row, then the strip; Cross is reached directly", () => {
-  const rows = N.habitatRows({ chapters: 5, adult: true, bays: [7, 9] }), m = (c, d, shown = 7) => N.habitatMove(rows, c, d, shown);
-  assert.deepEqual(rows, [["stage"], ["ch0", "ch1", "ch2", "ch3"], ["ch4"], ["cross"], ["door", "wild"], ["s7", "s9"]]);
-  assert.equal(m("stage", "right"), "ch0"); assert.equal(m("ch0", "left"), "stage"); assert.equal(m("stage", "down"), "s7"); assert.equal(m("stage", "up"), "stage");
-  assert.equal(m("ch1", "right"), "ch2"); assert.equal(m("ch3", "right"), "ch3"); assert.equal(m("ch1", "down"), "ch4", "the next row, the column kept as near as it can"); assert.equal(m("ch4", "down"), "cross");
-  assert.equal(m("cross", "down"), "door"); assert.equal(m("door", "up"), "cross", "Cross is one ▲ from the door row"); assert.equal(m("wild", "up"), "cross"); assert.equal(m("cross", "up"), "ch4");
-  assert.equal(m("door", "right"), "wild"); assert.equal(m("wild", "right"), "wild"); assert.equal(m("wild", "left"), "door"); assert.equal(m("heart", "left"), "heart", "the heart is a state, never a target"); assert.equal(m("door", "left"), "stage");
-  assert.equal(m("wild", "down"), "s7"); assert.equal(m("s7", "right"), "s9"); assert.equal(m("s9", "left"), "s7"); assert.equal(m("s7", "up"), "door", "the strip goes up to the door row"); assert.equal(m("s9", "up"), "wild");
-  const walk = (c, d, n) => { for (let i = 0; i < n; i++) c = m(c, d); return c; };
-  assert.equal(walk("ch0", "down", 2), "cross", "from the first plate: two ▼"); assert.equal(walk("ch0", "down", 3), "door"); assert.equal(walk("stage", "right", 1), "ch0");
-  const juv = N.habitatRows({ chapters: 2, adult: false, bays: [7] }); assert.ok(!juv.flat().includes("cross"), "a juvenile has no Cross"); assert.equal(N.habitatMove(juv, "ch1", "down", 7), "wild", "the door row, the column kept");
-  assert.deepEqual(N.habitatRows({ chapters: 0, adult: false, bays: [] }), [["stage"], ["door", "wild"]]);
 });
 
 test("the Book's Visit goes to a housed mibi of the species: its face if one is chosen, else the first, none when there is none", () => {

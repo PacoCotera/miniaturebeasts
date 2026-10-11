@@ -505,10 +505,10 @@
       "verb": "back"
      }
     ],
-    "screen": "home",
+    "screen": "vivarium",
     "focus": "resident.1",
     "ok": "Look at Dot",
-    "subject": "an adult Loika, asleep",
+    "subject": "its painting is on its way",
     "idle": false
    },
    {

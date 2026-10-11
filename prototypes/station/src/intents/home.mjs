@@ -17,7 +17,7 @@ export function intent(h, target, verb) {
   if (verb !== "confirm") return;
   const ui = h.ui;
   if (target === "room") doNeed(h, S.needKey(h.st, h.sv, h.settings, ui));
-  else if (target === "vivarium") toVivarium(h, ui.hab.id ?? S.homeMibis(h.st, h.sv)[0]?.id ?? null);
+  else if (target === "vivarium") h.goto("vivarium");   // the whole: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.homePanel)
   else if (typeof target === "string" && target.startsWith("resident.")) toVivarium(h, +target.slice(9));
   else if (target === "cargo") h.goto("cargo");
   else if (target === "pods") toPods(h);

@@ -2,6 +2,7 @@
 // the developer settings, the focus state per screen (UI, never saved) and the presentation events
 // the renderer reads (FX). Screens import this; the rules live in state.mjs.
 import * as S from "./state.mjs";
+import * as T from "./sitting.mjs";
 import { clock } from "./pixels.mjs";
 import { createTimeline } from "../../ui/timeline.mjs";
 import { createFramePresenter } from "./present.mjs";
@@ -10,7 +11,7 @@ import { createFocus } from "../../ui/focus.mjs";
 export const G = { sv: null, st: null, settings: { ...S.DEFAULT_SETTINGS }, ready: false, resetting: false };
 export const FX = { msg: "", msgAt: -1e9, arr: null, id: null, read: null, mend: null, moment: null, crateIn: -1e9, wake: 0, transAt: -1e9, restAt: 0, stamp: null, hatch: null, meetId: null };
 export const UI = { screen: "home", prev: [], home: { f: "room" }, pods: { view: null, cur: null, ci: 0, cmp: null, wildArm: 0, focus: createFocus({}, null), get f() { return this.focus.cur; }, set f(id) { this.focus.set(id); } },
-  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, bench: { f: 0, arm: 0 },
+  create: null, cross: null, inc: {}, lib: { sp: null, f: "spread", li: 0 }, hab: { id: null, f: "stage", wildArm: 0 }, viv: { f: null }, bench: { f: 0, arm: 0 },
   cargo: { state: "bay", crate: 0, at: 0, mend: null, run: null, shown: null }, meet: null, lastInput: 0, idle: false };
 // The timeline: presentation events on its own clock and the input holds of the screens on the layer.
 export const TL = createTimeline();
@@ -39,8 +40,8 @@ function adopt(sv) {
   const migrated = sv.st.schema !== S.ST_SCHEMA;
   sv.st = S.normalize(S.migrate(sv.st, Date.now(), sv));
   G.sv = sv; G.st = sv.st;
-  if (S.docked(G.st)) S.mergeCare(G.st, G.sv);   // docked: the care the Companion earned since
-  if (migrated) save();
+  const home = S.docked(G.st) ? T.mergeHome(G.st, G.sv).home : [];   // docked: the care the Companion earned since, and the welcome
+  if (migrated || home.length) save();
 }
 export function load() {
   const o = readStored();
@@ -65,7 +66,7 @@ export function storageChanged() {
   if (!cur) { G.sv = { v: S.SAVE_V, wid: null, st: S.freshSt(null, 0) }; G.st = G.sv.st; goScreen("home"); changed(); return; }
   if (cur.wid !== G.st.wid) { adopt(cur); goScreen("home"); save(); return; }
   const mine = G.st; G.sv = cur; G.sv.st = mine;
-  if (S.docked(mine)) S.mergeCare(mine, cur);   // docked: the care the Companion earned since
+  if (S.docked(mine) && T.mergeHome(mine, cur).home.length) { save(); return; }   // docked: the care and the welcome; save() calls changed()
   changed();
 }
 export function resetSave() {
@@ -91,6 +92,7 @@ export function goScreen(name) {
   UI.screen = name;
   if (fresh) for (const fn of screenListeners) { try { fn(name); } catch { /* a listener never breaks a press */ } } UI.pods.wildArm = 0; UI.hab.wildArm = 0; UI.bench.arm = 0; UI.pods.cmp = null; if (name !== "habitat") FX.meetId = null; if (name !== "cross") UI.cross = null;
   if (SCREENS[name]?.enter) SCREENS[name].enter();
+  if (fresh && name === "vivarium") UI.viv.f = null;   // the way in puts the ring on the mibi last seen up close (vivarium.json focus.entry)
   if (name === "habitat" && UI.meet != null && UI.hab.id === UI.meet) UI.meet = null;
 }
 export const need = () => S.need(G.st, G.sv, G.settings, UI);

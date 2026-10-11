@@ -78,7 +78,7 @@
    "png": "home-resident-focused.png"
   },
   "home-sleeper-focused": {
-   "hash": "af897c58",
+   "hash": "2b924693",
    "png": "home-sleeper-focused.png"
   },
   "home-knob-pressed": {
@@ -86,11 +86,11 @@
    "png": "home-knob-pressed.png"
   },
   "home-walk-8000ms": {
-   "hash": "cfc10a0b",
+   "hash": "fe29431b",
    "png": "home-walk-8000ms.png"
   },
   "home-crates-arriving": {
-   "hash": "90c413da",
+   "hash": "26dce2f1",
    "png": "home-crates-arriving.png"
   }
  }

@@ -41,7 +41,7 @@
   "state": "props.idle = true: the whole 1024×600 is Idle's composition. The top bar, the bottom line, the message plate and the focus ring are not drawn, and the screen under Idle keeps its state and focus unseen",
   "regions": {
    "vivarium": { "rect": [0, 0, 1024, 568], "component": "livingWindow", "part": "inside", "frame": false, "ground": [0, 376, 1024, 176], "foot": [0, 552, 1024, 16], "theWhole": { "rows": [120, 560], "at": [0, 40, 1024, 440], "rule": "the Vivarium's whole shows rows 120 to 560 of this painting in its window (0, 40, 1024, 440), 1:1: a resident at y on Idle stands at y − 80 on the whole, and its ground band (0, 296, 1024, 176) is this band. One painting a light (dawn, day, dusk, night), never cropped and enlarged" } },
-   "resident": { "component": "livingWindow", "part": "residents", "clip": "vivarium", "order": "draw order of the residents and the bed: by their feet's y, lower in front (drawn later), left first on a tie; the bed, its mark and its sleepers sort as one, at the bed's foot (y 552)", "adult": [144, 152], "juvenile": [104, 112], "walk": { "ground": [16, 376, 992, 176], "box": "box.x 16..1008−w, feetY 376..551", "keepOut": [792, 448, 192, 104], "step": "2 px along the major axis (Bresenham), at t = 80m + 40·(k mod 2) ms, k the props index; at most 6 of 12 change in any frame up to 40 ms", "idle": "25 + (r mod 38) steps (2000..4960 ms)", "waypoint": "box.x 16 + r mod (993 − w), feetY 376 + r mod 176; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "start": "the same draw, the point only; fallback box.x 16", "facing": "sign of dx, kept at 0; initial r & 1; a mibi picture is never mirrored: facing is tracked for the walk frames to come, the picture drawn as is", "motion": "false: stands at its start", "lcg": "s·1664525 + 1013904223 mod 2^32, r = s >> 16", "dirty": "at most 25% of the screen (153,600 px) per refresh; worst measured 23.1% (two residents swapping depth redraw a box that did not step)" }, "lamp": [12, 12], "lift": 0, "focus": null, "moves": "awake: each walks, rests and plays its species' idle on the seed the face steps, as on Home and the whole" },
+   "resident": { "component": "livingWindow", "part": "residents", "clip": "vivarium", "order": "draw order of the residents and the bed: by their feet's y, lower in front (drawn later), left first on a tie; the bed, its mark and its sleepers sort as one, at the bed's foot (y 552)", "adult": [144, 152], "juvenile": [104, 112], "walk": { "ground": [16, 376, 992, 176], "box": "box.x 16..1008−w, feetY 376..551", "keepOut": [792, 448, 192, 104], "step": "2 px along the major axis (Bresenham), at t = 80m + 40·(k mod 2) ms, k the props index; at most 6 of 12 change in any frame up to 40 ms", "idle": "25 + (r mod 38) steps (2000..4960 ms)", "waypoint": "box.x 16 + r mod (993 − w), feetY 376 + r mod 176; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "start": "the same draw, the point only; fallback box.x 16", "facing": "sign of dx, kept at 0; initial r & 1; a mibi picture is never mirrored: facing is tracked for the walk frames to come, the picture drawn as is", "motion": "false: stands at its start", "lcg": "s·1664525 + 1013904223 mod 2^32, r = s >> 16", "dirty": "at most 25% of the screen (153,600 px) per refresh; worst measured 21.5%" }, "lamp": [12, 12], "lift": 0, "focus": null, "moves": "awake: each walks, rests and plays its species' idle on the seed the face steps, as on Home and the whole" },
    "bed": { "rect": [792, 496, 192, 56], "component": "livingWindow", "build": "withYouBed", "clip": "vivarium", "mark": [16, 24], "markAt": [88, 16], "markRect": [880, 512, 16, 24], "markPicture": "home-bed-mark-16x24", "sleepers": { "max": 3, "pose": "nap", "pitch": 48, "footY": 536, "centre": 888, "places": { "1": [888], "2": [864, 912], "3": [840, 888, 936] }, "adult": { "size": [144, 152], "box": "[footX − 72, 384, 144, 152]" }, "juvenile": { "size": [104, 112], "box": "[footX − 52, 424, 104, 112]" }, "ink": { "max": [96, 88], "rule": "the nap pose's ink is at most 96 wide and 88 tall, centred on footX and bottom-aligned on footY in its box: at most [footX − 48, 448, 96, 88]; three sit on the 192 px bed", "rects": { "3": [[792, 448, 96, 88], [840, 448, 96, 88], [888, 448, 96, 88]] } }, "mark": null, "markNote": "no mark on a sleeper: the nap pose says it", "lift": 0, "moves": "the nap pose breathing, nothing else" }, "states": { "docked": "the carried set asleep, one to three, in carried order", "away": "the bed empty, its mark (home-bed-mark-16x24) 1:1 at markRect over it; docked and none: no mark", "none": "the nest alone" } },
    "strip": { "rect": [0, 568, 1024, 32], "component": "panel", "build": "idleLine", "rule": "top", "binding": "idleLine is a composition in the frame's binding table, not a word" },
    "line": { "rect": [16, 568, 992, 32], "component": "text", "build": "idleLine", "props": "props.frame.idle.line, one string", "px": 16, "weight": 400, "align": "centre", "centre": 512, "middle": 584, "lines": 1, "words": 6, "noDigits": true }
@@ -101,7 +101,7 @@
    "home": {"screen": "home", "focus": "room"},
    "research": {"screen": "pods", "state": "collection", "focus": "the pod that most needs the player"},
    "library": {"screen": "library", "state": "spread", "focus": "the current frame"},
-   "habitat": {"screen": "habitat", "mibi": "the one last seen", "focus": "the resident"}
+   "habitat": {"screen": "vivarium", "focus": "vivarium.json focus.entry.vivariumKey"}
   },
   "screens": {
    "home": {"parent": null, "back": null},
@@ -116,16 +116,18 @@
    "idle": {"parent": "home", "back": null, "wake": "the first press only wakes"},
    "library": {"parent": "home", "back": "Home"},
    "book": {"parent": "library", "back": "Library", "spreads": ["face", "guide"], "turn": "◀ ▶ past the spread's edge; ← reads Library on both (library.json spreads)"},
-   "habitat": {"parent": "home", "back": "Home"},
-   "cross": {"parent": "habitat", "back": "Vivarium"},
-   "sitting": {"parent": "habitat", "back": "Vivarium", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to the Vivarium (sitting.json keys.back)"}
+   "vivarium": {"parent": "home", "back": "Home", "spec": "vivarium.json"},
+   "habitat": {"parent": "vivarium", "back": "Vivarium"},
+   "cross": {"parent": "habitat", "back": "{name}"},
+   "sitting": {"parent": "habitat", "back": "{name}", "steps": "inside the sitting ← goes back a step (place to pose, look and confirm to place); from the pose step it goes to the Vivarium (sitting.json keys.back)"}
   },
   "podBack": "{pod} is the pod's label (\"Loika\"); a name wider than the way back's 68 px for its word reads \"Back\"",
+  "nameBack": "{name} is the shown mibi's name; a name wider than the way back's 68 px for its word reads \"Back\"",
   "jumps": [
    {"from": "cargo", "state": "report", "action": "See the new pods", "to": "pods", "view": "collection", "focus": "the pod that most needs the player", "when": "a new pod landed in the rack"},
    {"from": "create", "action": "Grow it", "to": "incubator"},
    {"from": "cross", "action": "Cross them", "to": "incubator"},
-   {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident"},
+   {"from": "incubator", "action": "Open", "to": "habitat", "state": "meet", "focus": "the resident: the new mibi"},
    {"from": "incubator", "state": "empty", "action": "Choose a pod", "to": "pods", "view": "collection", "focus": "the first identified pod in rack order, else the first pod", "when": "the rack holds a pod and a bay is free"},
    {"from": "book", "action": "Visit {mibi}", "to": "habitat"},
    {"from": "pods.overview", "target": "figure", "action": "Open the guide", "to": "book", "spread": "guide", "pending": "slot 8"},

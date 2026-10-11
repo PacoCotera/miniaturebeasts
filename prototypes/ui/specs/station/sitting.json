@@ -104,7 +104,7 @@
   "room": "as everywhere (frame.json navigation.roomKeys); leaving drops every choice and nothing is spent, as on Create and Cross"
  },
  "bottomLine": {
-  "pose": { "action": "strings.thisPose", "context": "the focused habit's words (strings.habits)", "back": "Habitat", "capX": 934 },
+  "pose": { "action": "strings.thisPose", "context": "the focused habit's words (strings.habits)", "back": "{name}", "capX": 934 },
   "place": { "action": "strings.thisPlace", "context": "the focused place's words (strings.places)", "back": "strings.steps.pose", "capX": 950 },
   "confirm": { "action": "strings.portray, armed strings.portrayAgain", "price": null, "context": "strings.once", "back": "strings.steps.place", "capX": 946 },
   "begin": { "action": null, "context": null, "back": null },

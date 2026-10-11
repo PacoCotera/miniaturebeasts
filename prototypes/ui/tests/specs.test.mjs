@@ -407,9 +407,9 @@ test("one mibi up close (habitat.json) agrees with its wireframes, region by reg
 test("the Vivarium's whole (vivarium.json) agrees with its wireframes; the strip is one mibi up close's; its focus graph plays its vectors with ui/focus.mjs", () => {
   const vv = rd("../specs/station/vivarium.json"), hab = rd("../specs/station/habitat.json"), R = vv.regions, B = boxesOf("18-vivarium-whole.svg"), A = boxesOf("18a-vivarium-whole-away.svg"), E = boxesOf("18b-vivarium-whole-empty.svg");
   const is = (r, what, set = B) => assert.ok(set.has(r.join(",")), `${what} ${r.join(",")} is not in the wireframe`);
-  lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
+  assert.deepEqual(vv.regions.tiles.forms, hab.regions.tiles.forms, "the whole's strip is one mibi up close's: the same forms"); lintRegions(rectsOnly(vv)); assert.deepEqual(vv.states, ["rest", "empty"]); assert.deepEqual(vv.rules.needed, []); assert.deepEqual([vv.section, vv.level, vv.strings.title, vv.strings.back], ["vivarium", "whole", "Vivarium", "Home"]);
   for (const set of [B, A, E]) { is(R.window.rect, "window", set); is(R.strip.rect, "strip", set); }
-  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); assert.ok(!E.has(R.bed.rect.join(",")), "no bed drawn on the empty whole");
+  is(R.bed.rect, "bed"); is(R.bed.rect, "bed", A); is(R.bed.markRect, "the Companion mark", A); is(R.bed.rect, "the bed on the empty whole (the nest alone, docked)", E); assert.ok(!E.has(R.bed.markRect.join(",")), "no Companion mark on the empty whole while docked");
   // the same place as Idle, 80 px higher; the strip where one mibi up close has it
   const I = frame.idle.regions, off = I.vivarium.theWhole.rows[0] - I.vivarium.theWhole.at[1];
   assert.deepEqual(R.window.rect, I.vivarium.theWhole.at); assert.deepEqual(R.window.ground, [I.vivarium.ground[0], I.vivarium.ground[1] - off, ...I.vivarium.ground.slice(2)]);
@@ -505,7 +505,7 @@ test("the sitting spec file agrees with its wireframes, region by region; Habita
   for (const s of steps) { is(s, "step tile"); assert.ok(inside(s, R.strip.rect)); } assert.deepEqual([steps[0][0], steps[2][0] + steps[2][2]], [32, 984], "the steps span Habitat's strip");
   assert.ok(R.steps.tile.thumb.at[0] + R.steps.tile.thumb.size[0] <= S.first[2] - 8, "the chosen picture inside its tile");
   // frame.json: the sitting under Habitat, ← Habitat, the Vivarium mark
-  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "Vivarium", "Vivarium", si.strings.title]);
+  assert.deepEqual([frame.navigation.screens.sitting.parent, frame.navigation.screens.sitting.back, frame.regions.title.marks.sitting, frame.strings.titles.sitting], ["habitat", "{name}", "Vivarium", si.strings.title]);   // ← from the Sitting names the mibi it was opened on (station-layouts.md, the screen map)
   assert.match(hab.bottomLine.portrait.held.opens, /sitting/, "Habitat's Portrait module opens the sitting");
   // focus: well formed; the vectors played on five cards (pose and place) and on the room (confirm)
   const g = si.focus.pose.graph, groups = new Set(Object.keys(g)); for (const k of STEP_KEYS) assert.ok(edgeOk(g.card[k], groups), "card." + k);

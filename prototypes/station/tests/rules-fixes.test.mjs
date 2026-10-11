@@ -258,5 +258,5 @@ test("a sitting is refused for want of a pose, and separately for want of a walk
   const st = fresh(); S.seedAdults(st, "S01", 5, 2, settings); const m = st.mibis[0]; T.devGrantSitting(st, T0);
   m.habits = []; m.walked = []; m.from = { ...m.from, g: null };
   assert.match(T.portraitBlock(st, m), /no pose seen yet/); S.recordHabit(st, m, S.frameFor(m).habits[0]);
-  assert.match(T.portraitBlock(st, m), new RegExp(m.name + " needs a walk first"));
+  assert.match(T.portraitBlock(st, m), /no expedition yet/);
 });

@@ -32,7 +32,6 @@ export function pageGrid(page, n) {
   return { cells: g.cells.slice(0, n).map((c) => [px + c[0], py + c[1], c[2], c[3]]), picture: g.picture.slice(), overflow: false };
 }
 // A rack place (collection.places) and a kin ring (a kin region): the template offset by the pitch.
-export const placeRect = (L, i) => [L.places.first[0] + L.places.pitch[0] * (i % L.places.grid[0]), L.places.first[1] + L.places.pitch[1] * Math.floor(i / L.places.grid[0]), L.places.first[2], L.places.first[3]];
 export const kinRect = (K, i) => [K.first[0] + K.pitch[0] * i, K.first[1] + K.pitch[1] * i, K.first[2], K.first[3]];
 // The name plate's width: the name and its padding, rounded up to the series' step, between its least and its most. `textWidth` is the name's width at the plate's size.
 export const plateWidth = (N, textWidth) => Math.min(N.plate.max, Math.max(N.plate.min, Math.ceil((textWidth + 2 * N.plate.pad) / N.plate.round) * N.plate.round));
@@ -81,6 +80,7 @@ export function evaluate(rule, node, args) {
     case "platePosition": out.push(...platePosition(node, args[0], args[1], args[2] ? args.slice(3, 7) : null)); break;
     case "stampCell": out.push(stampCell(args[0], args[1], args[2])); break;
     case "leafArc": { let boxes = null; try { boxes = leafArc(node, args[0]); } catch { /* refused */ } out.push(+!boxes, boxes ? boxes.length : 0); for (const b of boxes ?? []) out.push(...b); break; }
+    case "listPitch": { let f = null, r = null; try { f = listForm(node, args[0]); r = listPitch(node, args[0], args[1]); } catch { /* refused */ } out.push(+!r, r ? f.upTo : 0, ...(r ?? [0, 0, 0, 0])); break; }
     case "plateIndex": out.push(plateSeries(node).indexOf(`${node.plate.series}-${plateWidth(node, args[0])}x${node.plate.h}`), plateSeries(node).length); break;
     default: throw new Error("unknown rule " + rule);
   }
@@ -89,6 +89,26 @@ export function evaluate(rule, node, args) {
 
 // The Incubator's leaves on their arcs (incubator.json regions.leaves; lvgl-switch.md §2.3): n leaves fill the inner arc first, left to right, then the outer, each run centred on its arc's table:
 // the k leaves of a run take the slots perArc − k + 2j, j = 0 … k − 1, of the arc's table of 2·perArc − 1 positions. Returns the boxes [x, y, w, h]; more than 2 × perArc is refused.
+// A list's pitch (rule listPitch): item i of a grid stands at first + pitch · (column, row), row-major; with forms (`{ <name>: { upTo, first, pitch, grid } }`) n items take the form with the smallest upTo at least n. A form with no upTo, two forms with one
+// upTo, or a grid shorter than its upTo is refused (at load); an n no form holds, and an i outside 0..n−1, are refused. `placeRect` is the Pods rack's, the same rule with no forms.
+export const pitchRect = (t, i) => [t.first[0] + t.pitch[0] * (i % t.grid[0]), t.first[1] + t.pitch[1] * Math.floor(i / t.grid[0]), t.first[2], t.first[3]];
+export const placeRect = (L, i) => pitchRect(L.places, i);
+export function listForm(L, n) {
+  if (!L.forms) return { name: null, upTo: 0, first: L.first, pitch: L.pitch, grid: L.grid };
+  const forms = Object.entries(L.forms).map(([name, f]) => ({ name, ...f })), seen = new Set();
+  for (const f of forms) {
+    if (!Number.isInteger(f.upTo) || f.upTo < 1) throw new Error(`listPitch: form ${f.name} has no upTo`);
+    if (seen.has(f.upTo)) throw new Error(`listPitch: two forms with upTo ${f.upTo}`); seen.add(f.upTo);
+    if (!Array.isArray(f.grid) || f.grid[0] * f.grid[1] < f.upTo) throw new Error(`listPitch: form ${f.name} has a grid shorter than its upTo`);
+  }
+  const f = forms.sort((a, b) => a.upTo - b.upTo).find((x) => x.upTo >= n);
+  if (!Number.isInteger(n) || n < 0 || !f) throw new Error(`listPitch: ${n} items; no form holds them`);
+  return f;
+}
+export function listPitch(L, n, i) {
+  const f = listForm(L, n); if (!Number.isInteger(i) || i < 0 || i >= n) throw new Error(`listPitch: item ${i} of ${n}`);
+  return pitchRect(f, i);
+}
 export function leafArc(R, n) {
   const L = R.leafArc, [lw, lh] = R.leaf;
   if (!Number.isInteger(n) || n < 0 || n > 2 * L.perArc) throw new Error(`leafArc: ${n} leaves; the arcs hold ${2 * L.perArc}`);

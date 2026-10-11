@@ -21,7 +21,7 @@ void word_focusRingCircle(const char *id, const int box[4], int radius, int cx, 
 void word_focusRingFor(const char *id, const int box[4], const char *group, const char *colour);
 void word_rail(const char *marksSpec);    /* the chapter rail (frame spec) with the ring on its focused tab; `marksSpec` names the spec whose colours.rail the marked pips take (NULL: the screen has no marked pips) */
 /* station/ (Home) */
-void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture);   /* the living window: the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
+void word_livingWindow(const char *spec, const char *region, const char *bezel, const char *glass, const char *colours, const char *glassPicture, int sx, int sy);   /* the living window (the picture is shown from source (sx, sy): the whole shows rows 120 to 560 of Idle's painting): the bezel (NULL: none, the part inside) and the glass, flat plates until the glass master, the master over them */
 void word_leaves(const char *spec, const char *base, const char *emptyPic, const char *fullPic, int total, int rows, int full, int dy, int slots, int filling);   /* the leaves word, grid form: the screen spec and the region's path in it; `filling`: rows 0 to 19 of the filling leaf, -1 for a screen whose leaves never fill */
 /* station/ (the Incubator) */
 void word_leavesArc(const char *spec, const char *region, const char *emptyPic, const char *fullPic, int total, int full, int rows);   /* the leaves word, arc form (leafArc): the filling leaf and growNow */

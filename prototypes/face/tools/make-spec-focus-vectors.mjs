@@ -8,10 +8,12 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), file = path.resolve(here, "../tests/vectors/focus.json"), specs = path.resolve(here, "../../ui/specs/station");
-const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["create", "incubator"];
+const check = process.argv.includes("--check"), want = process.argv.slice(2).filter((a) => !a.startsWith("--")), screens = want.length ? want : ["create", "incubator", "vivarium"];
 const V = JSON.parse(readFileSync(file, "utf8")), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8"));
 const TARGETS = {
   incubator: (state, spec) => [{ id: "room", rect: spec.focus.roomAt, group: "room" }],   // one subject: the room, no ring drawn
+  // the wireframe 18's targets (focus.layout), in the order the view lists them: the residents, then the tiles; a mibi `away` (out with the Companion) is a tile and no resident
+  vivarium: (state, spec, v) => (state === "empty" ? [] : Object.entries(spec.focus.layout).filter(([id]) => !(id.startsWith("resident.") && (v.away ?? []).includes(id.slice(9)))).filter(([id]) => id !== "note").map(([id, rect]) => ({ id, rect, group: id.slice(0, id.indexOf(".")), ...(id.startsWith("tile.") ? { index: Object.keys(spec.focus.layout).filter((k) => k.startsWith("tile.")).indexOf(id) } : {}) }))),
   create: (state, spec) => (state === "shape" ? [{ id: "roll", rect: spec.regions.roll.forms.roll.pictures[1], group: "roll" }] : []),   // the chosen picture's rectangle: the middle one stands for it
 };
 const cases = [];
@@ -19,7 +21,12 @@ for (const screen of screens) {
   const spec = J(screen);
   for (const v of spec.focus.vectors) {
     if (v.intent && !/^step:/.test(v.intent)) continue;   // ✓ and ← are intents on the target, not moves
-    const st = v.state ? spec.focus[v.state] : spec.focus, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec), from: v.from, key: v.key, to: v.to };
+    const st = v.state && spec.focus[v.state]?.graph ? spec.focus[v.state] : spec.focus, c = { name: `${screen}: ${v.state ? v.state + ", " : ""}${v.from} ${v.key}${v.away ? " (away: " + v.away.join(", ") + ")" : ""}${v.intent ? " says " + v.intent : ""}`, graph: st.graph, targets: TARGETS[screen](v.state, spec, v), from: v.from, key: v.key, to: v.to };
+    if (screen === "vivarium") {   // the view's selectors for the ring where it stands (views/vivarium-props.mjs): the focused resident's own tile; the focused tile's resident, null when it is out; the empty state's ring is on the room
+      const resolve = {}, here = (id) => c.targets.some((t) => t.id === id);
+      if (v.from.startsWith("resident.")) resolve["tile.of"] = "tile." + v.from.slice(9); if (v.from.startsWith("tile.")) resolve["resident.of"] = here("resident." + v.from.slice(5)) ? "resident." + v.from.slice(5) : "";
+      if (Object.keys(resolve).length) c.resolve = resolve; if (v.from === "room") c.roomAt = spec.focus.roomAt;
+    }
     if (v.intent) c.verb = v.intent; cases.push(c);
   }
 }

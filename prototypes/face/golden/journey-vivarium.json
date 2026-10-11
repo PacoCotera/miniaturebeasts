@@ -1,0 +1,218 @@
+{
+ "_note": "The Vivarium's whole, journey on the face (lvgl-switch.md §2.8, gate check 5): per step, each key (or intent) and the focus and intents the face said, the screen and the ring after it. Written by tools/journey.mjs with JOURNEY_GOLDEN=write; never edited by hand.",
+ "steps": {
+  "vivarium-pad": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "home",
+      "target": "vivarium",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "up",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "resident.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "right",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.2"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.2",
+    "ok": "Look at Moss",
+    "subject": "a young Loika",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [
+     {
+      "t": "focus",
+      "screen": "vivarium",
+      "target": "tile.1"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "left",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "down",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "habitat",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "tile.1",
+      "verb": "room:habitat"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   }
+  ],
+  "vivarium-whole": [
+   {
+    "key": "confirm",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "resident.1",
+      "verb": "confirm"
+     }
+    ],
+    "screen": "habitat",
+    "focus": "vivarium",
+    "ok": null,
+    "subject": "",
+    "back": "Vivarium"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "habitat",
+      "target": "screen",
+      "verb": "back"
+     }
+    ],
+    "screen": "vivarium",
+    "focus": "resident.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   },
+   {
+    "key": "back",
+    "said": [
+     {
+      "t": "intent",
+      "screen": "vivarium",
+      "target": "resident.1",
+      "verb": "back"
+     }
+    ],
+    "screen": "home",
+    "focus": "vivarium",
+    "ok": "Open the Vivarium",
+    "subject": "the mibis at home",
+    "back": null
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "out with the Companion",
+    "back": "Home"
+   },
+   {
+    "key": "dock",
+    "said": [],
+    "screen": "vivarium",
+    "focus": "tile.1",
+    "ok": "Look at Dot",
+    "subject": "its painting is on its way",
+    "back": "Home"
+   }
+  ]
+ }
+}

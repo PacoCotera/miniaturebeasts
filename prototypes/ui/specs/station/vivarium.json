@@ -34,7 +34,7 @@
   "dock": "Dock while the whole shows: the bed's Companion mark goes and the carried set lies down on it; their tiles' outline glyphs become thumbnails. Lifted: the reverse. Both on the frame of the world event, with no animation"
  },
  "initial": "by the save: no housed mibi, empty; else rest",
- "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window, the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
+ "stateRule": "rest: at least one housed mibi (at home or out with the Companion). empty: no housed mibi; the window with the bed (the nest alone while docked, the nest and its mark while away, as Home and Idle), the strip's free bays and the frame. A region with `inStates` exists only in those states; docked and away are conditions of both",
  "regions": {
   "stage": {
    "rect": [0, 40, 1024, 522],
@@ -69,7 +69,7 @@
    "inStates": ["rest"],
    "adult": [144, 152],
    "juvenile": [104, 112],
-   "walk": {"ground": [16, 296, 992, 176], "rule": "each walks with its feet in the band, as on Idle 80 px higher"},
+   "walk": {"ground": [16, 296, 992, 176], "keepOut": [752, 320, 256, 152], "box": "box.x 16..1008−w, feetY 296..471", "keepOutRule": "a box meets K exactly when box.x + w > 752 and feetY > 320, in every bed state; K is the sleepers' tags and nap ink: left 840 − 88 (the widest tag on the leftmost place), top 336 − 16 (the sleepers' tag top, less 16 so a walker's tag, feet + 24 to + 48, stays above the nap ink at 368)", "start": "box.x 16 + r mod (993 − w), feetY 296 + r mod 176; redrawn while it meets keepOut, up to 8 draws; fallback box.x 16 with the last feetY", "waypoint": "the same draw; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "rule": "each walks with its feet in the band, as on Idle 80 px higher; its keep-out reaches the sleepers' tags (Idle shows none)"},
    "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
    "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
    "lift": 4,
@@ -81,6 +81,7 @@
    "build": "withYouBed",
    "clip": "window",
    "mark": [16, 24],
+   "markPicture": "home-bed-mark-16x24",
    "markAt": [88, 16],
    "markRect": [880, 432, 16, 24],
    "sleepers": {
@@ -103,8 +104,8 @@
    },
    "states": {
     "docked": "the nest, then one to three sleepers, the carried set in carried order",
-    "away": "the nest, then the Companion mark at markRect",
-    "none": "docked with nobody carried: the nest drawn empty at the bed's rect (its rim `bark`, hollow `soil`, lit rim `sand`), no sleeper and no mark; not a target"
+    "away": "the nest, then its mark (home-bed-mark-16x24) 1:1 at markRect, as Home and Idle",
+    "none": "docked with nobody carried: the nest drawn empty at the bed's rect (its rim `bark`, hollow `soil`, lit rim `sand`), no sleeper and no mark; not a target; also the empty state while docked"
    },
    "note": "Idle's bed (frame.json idle.regions.bed) 80 px higher: the same place in the same painting"
   },
@@ -123,7 +124,7 @@
    "min": 48,
    "max": 176,
    "w": "the name's width + 16, rounded up to 8, at least 48; the widest name (160 px at 16) gives 176",
-   "y": "top at feet + 24, 12 px under the feet ring; if its bottom would pass y 472 (8 px inside the window), it sits over the resident: top = box.y − 4 − 32; a sleeper's tag is always over it: top = box.y − 32",
+   "y": "top at feet + 24, 12 px under the feet ring; if its bottom would pass y 472 (8 px inside the window), it sits over the resident: top = box.y − 4 − 32; a sleeper's tag is always over its nap ink: top = footY − ink.max[1] − 8 − h (456 − 88 − 32 = 336)",
    "x": "centred on the resident's box, slid to stay 8 px inside the window (8 to 1016)",
    "words": "the name only",
    "lift": 0,
@@ -287,7 +288,7 @@
   "window": {"back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
   "bed": {"rim": "bark", "hollow": "soil", "light": "sand", "mark": "mist"},
-  "nameTag": {"fill": "panel", "edge": "hairline", "name": "bone"},
+  "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
   "strip": {"fill": "ground", "edge": "hairline"},
   "tile": {"fill": "panel", "free": "hairline"},
   "stageGround": "ground"
@@ -297,8 +298,9 @@
   "list": [
    "Idle's painting 1024×568, dawn, day, dusk and night (frame.json idle; rows 120 to 560 shown here)",
    "the residents at 144×152 and 104×112, and the nap poses (as on Home and Idle)",
-   "the bed 192×56",
-   "frame-companion-outline-16x24 (the bed's mark and the out tile's glyph)",
+   "home-bed-<light>-192x56 (the bed, as on Home and Idle)",
+   "home-bed-mark-16x24 (the bed's mark, away)",
+   "frame-companion-outline-16x24 (the out tile's glyph, frame.json marks.companion.away)",
    "the thumbnails 48×48 (the painting or placeholder rendered at that size)",
    "home-lamp-sky-12x12"
   ]
@@ -313,7 +315,7 @@
   "out": "out with the Companion",
   "empty": "nobody lives here yet",
   "measured": "16 px Inter, the face's metrics (prototypes/face/tests/vectors/metrics.json), a name as ten of the widest letter (160): look 220 in the action's 356; in the context's 208: painting 176, sleeper 174 (\"an elder Untuva, asleep\"), empty 160, out 177; back 45 in its 68; title 85 at 20 px",
-  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer, a context of six or fewer; Home's words where Home says the same thing (home.json strings.actions.resident, strings.subjects)"
+  "note": "the frame's zones (station-layouts.md, The frame): a verb phrase of four words or fewer, a context of six or fewer; Home's words where Home says the same thing (home.json strings.actions.resident, strings.subjects, strings.stages)"
  },
  "buildChanges": [
   "frame.json navigation: a new place `vivarium` (parent home, back Home) for the whole; `habitat` (one mibi up close) moves under it (parent vivarium, back Vivarium); the Vivarium key (roomKeys.habitat) opens `vivarium`, not `habitat`; Home's ✓ Open the Vivarium opens `vivarium`. nav.mjs, nav.test.mjs and the journey follow",

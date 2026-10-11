@@ -564,7 +564,7 @@
     "context": "strings.portrayContext",
     "opens": "the sitting, its own screen under one mibi up close (parent habitat, ← {name}; sitting.json)"
    },
-   "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.portrayed; out, strings.portraitOut"},
+   "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed; out, strings.portraitOut"},
    "painting": {"action": null, "context": "strings.portraitOnWay"},
    "portrayed": {"action": null, "context": "strings.portrayed"}
   },
@@ -686,6 +686,7 @@
   "portray": "Portray {name}",
   "portrayContext": "one sitting each, ever",
   "noPose": "no pose seen yet",
+  "noPlace": "no expedition yet",
   "portraitOnWay": "its portrait is on its way",
   "portrayed": "already portrayed",
   "cross": "Cross {name}",
@@ -707,7 +708,7 @@
   "portraitOut": "sits when you dock",
   "crossOut": "crosses when you dock",
   "crossAway": "pairs when you dock",
-  "measuredOut": "16 px, the face's metrics: out 177, crossOut 176, crossAway 155, portraitOut 143, all in the context's 208"
+  "measuredOut": "16 px, the face's metrics: out 177, crossOut 176, crossAway 155, portraitOut 143, noPose 126, noPlace 129, all in the context's 208"
  },
  "buildChanges": [
   "the level is the Vivarium's closest: frame.json navigation.screens.habitat moves under the new `vivarium` (the whole; parent vivarium, back Vivarium); ← lands on the whole with the ring on this mibi, never on Home (vivarium.json buildChanges)",
