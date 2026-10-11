@@ -69,7 +69,7 @@
    "inStates": ["rest"],
    "adult": [144, 152],
    "juvenile": [104, 112],
-   "walk": {"ground": [16, 296, 992, 176], "rule": "each walks with its feet in the band, as on Idle 80 px higher"},
+   "walk": {"ground": [16, 296, 992, 176], "keepOut": [752, 320, 256, 152], "box": "box.x 16..1008−w, feetY 296..471", "keepOutRule": "a box meets K exactly when box.x + w > 752 and feetY > 320, in every bed state; K is the sleepers' tags and nap ink: left 840 − 88 (the widest tag on the leftmost place), top 336 − 16 (the sleepers' tag top, less 16 so a walker's tag, feet + 24 to + 48, stays above the nap ink at 368)", "start": "box.x 16 + r mod (993 − w), feetY 296 + r mod 176; redrawn while it meets keepOut, up to 8 draws; fallback box.x 16 with the last feetY", "waypoint": "the same draw; rejected if max(|dx|,|dy|) < 32 or the path meets keepOut; after 8 rejections, idle again", "rule": "each walks with its feet in the band, as on Idle 80 px higher; its keep-out reaches the sleepers' tags (Idle shows none)"},
    "order": "by the feet's y, lower in front (drawn later), left first on a tie; the bed and its sleepers sort as one, at the bed's foot (y 472)",
    "lamp": {"size": [12, 12], "slice": "home-lamp-sky-12x12", "at": "the box's top right", "when": "while the placeholder is drawn"},
    "lift": 4,

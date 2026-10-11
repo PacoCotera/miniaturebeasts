@@ -12,7 +12,7 @@ const SCENES = {
   empty:   { f: null, state: "empty", set: (w) => { w.bays(6); } },
   tile:    { f: "tile:3", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   sleeper: { f: "resident:1", state: "rest", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
-  twelve:  { f: null, state: "rest", set: (w) => { w.bays(12); w.adults(12); window.__st.ST.mibis.forEach((m, i) => { m.id = [1075, 188, 479, 7, 191, 2808, 2, 2135, 198, 2232, 83, 1944][i]; }); } },   // ids whose start seeds (hash(id)) put the twelve across the 992 px walk band, 79 px apart
+  twelve:  { f: null, state: "rest", set: (w) => { w.bays(12); w.adults(12); window.__st.ST.mibis.forEach((m, i) => { m.id = [1075, 188, 479, 7, 191, 2808, 2, 2135, 3151, 5426, 5138, 2486][i]; }); } },   // ids whose start seeds (hash(id)) put the twelve across the 992 px walk band, 79 px apart
   "empty-away": { f: null, state: "empty", set: (w) => { w.bays(6); w.away(); } },
   "docked-dawn":  { f: null, state: "rest", light: "dawn",  set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-day":   { f: null, state: "rest", light: "day",   set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },

@@ -112,7 +112,7 @@ test("an empty whole has no ring, no ✓ cap and no pad; ← and the room keys s
   for (const k of ["up", "down", "left", "right"]) assert.deepEqual(key(f, k), [], k);
   assert.deepEqual(key(f, "back").map((x) => [x.target, x.verb]), [["room", "back"]]);
 });
-const WALKS = { "twelve adults": { bays: 12, adults: 12 }, "six adults and six juveniles": { bays: 12, adults: 6, young: 6 }, "twelve, one focused": { bays: 12, adults: 12, focus: "resident:5" }, "twelve, three waiting": { bays: 12, adults: 12, waiting: 3 }, "twelve adults, the ring on a tile": { bays: 12, adults: 12, focus: "tile:3" }, "twelve, two asleep on the bed": { bays: 12, adults: 12, carry: [0, 1] }, "twelve, one focused, seeds whose feet cross": { bays: 12, adults: 12, focus: "resident:5", seeds: [34119, 26635, 8785, 28417, 26937, 32410, 63799, 50225, 48616, 53264, 63772, 28531] } };
+const WALKS = { "twelve adults": { bays: 12, adults: 12 }, "six adults and six juveniles": { bays: 12, adults: 6, young: 6 }, "twelve, one focused": { bays: 12, adults: 12, focus: "resident:5" }, "twelve, three waiting": { bays: 12, adults: 12, waiting: 3 }, "twelve adults, the ring on a tile": { bays: 12, adults: 12, focus: "tile:3" }, "twelve, two asleep on the bed": { bays: 12, adults: 12, carry: [0, 1] }, "twelve, one focused, seeds whose feet cross": { bays: 12, adults: 12, focus: "resident:5", seeds: [64845, 5640, 43497, 5522, 42627, 49915, 953, 51488, 15488, 10859, 36680, 51651] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
   test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
@@ -126,14 +126,14 @@ for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0
     console.log(`# the Vivarium's walk, ${name}, frames every ${step} ms: worst refresh ${area} px (${(100 * area / (1024 * 600)).toFixed(1)}% of the screen) dirty, worst ${steps} steps`);
   });
 }
-test("a walking resident keeps its box in 16..1008 and its feet in the band 296..471, never stops short of the ground, steps 2 px at a time, and a focused one stands still", { skip }, async () => {
-  const G = R.resident.walk.ground;
+test("a walking resident keeps its box in 16..1008 and its feet in the band 296..471, never meets the keep-out zone, never stops short of the ground, steps 2 px at a time, and a focused one stands still", { skip }, async () => {
+  const G = R.resident.walk.ground, K = R.resident.walk.keepOut;
   for (let seed = 1; seed <= 12; seed++) {
     const b = scene({ adults: 1, focus: "tile:0" }); b.props.regions.residents[0].seed = seed * 7919;
     const f = await start(b, { t0: 5000 }); let last = null, jump = 0, moved = 0;
     for (let ms = 40; ms <= 30000; ms += 40) {
       f.frame(5000 + ms); const lg = logOf(f), r = lg?.regions.find((x) => x.id === "resident" && x.layer !== "chrome")?.rect; if (!r) continue;
-      const [x, y, w, h] = r, feet = y + h; assert.ok(x >= G[0] && x + w <= G[0] + G[2] && feet >= G[1] && feet <= G[1] + G[3], `seed ${seed} at ${ms}: ${r}`);
+      const [x, y, w, h] = r, feet = y + h; assert.ok(x >= G[0] && x + w <= G[0] + G[2] && feet >= G[1] && feet <= G[1] + G[3], `seed ${seed} at ${ms}: ${r}`); assert.ok(!(x + w > K[0] && feet > K[1]), `seed ${seed} at ${ms}: ${r} meets the keep-out zone`);
       if (last && (last[0] !== x || last[1] !== y)) { moved++; jump = Math.max(jump, Math.abs(last[0] - x), Math.abs(last[1] - y)); } last = [x, y];
     }
     assert.ok(jump <= 2, `seed ${seed}: a step is 2 px on an axis, not ${jump}`); if (seed === 1) assert.ok(moved > 20, "it walks: " + moved);

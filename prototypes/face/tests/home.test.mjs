@@ -144,7 +144,7 @@ test("the walk is deterministic: the same props on the same clock give the same 
   assert.equal(await run(8000), await run(8000)); assert.notEqual(await run(8000), await run(1200), "idle for the first two seconds, then they walk");
 });
 // the dirty area of a refresh (the sum of the rectangles the face redraws) is at most a quarter of the screen over two minutes of walking, at 40 ms frames and at 16 ms frames
-const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [15919, 22375, 36357, 57857, 43192, 33264, 43279, 40882, 38152, 34193, 32486, 2075] } };
+const WALKS = { "twelve adults": { adults: 12, carry: [] }, "six adults and six juveniles": { adults: 6, young: 6, carry: [] }, "twelve, one focused": { adults: 12, carry: [], focus: "resident.5" }, "twelve, three waiting": { adults: 12, carry: [], waiting: 3 }, "twelve, one focused, seeds whose feet cross": { adults: 12, carry: [], focus: "resident.5", seeds: [40096, 38822, 31967, 8729, 50383, 36459, 27280, 21938, 4359, 48741, 64056, 12788] } };
 for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) {
   test(`the walk, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
     const b = scene(o); (o.seeds ?? []).forEach((sd, i) => { b.props.regions.residents[i].seed = sd; });
