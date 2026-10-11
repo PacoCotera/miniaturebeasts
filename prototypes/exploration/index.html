@@ -264,7 +264,7 @@ kbd{font: 500 12px/1 var(--font-ui); background:var(--chip); border:1px solid va
 </main>
 <script type="module">
 "use strict";
-import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
+import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -378,6 +378,8 @@ let G = null;     // static world generated from the seed (never saved)
 let S = null;     // everything that changes (saved)
 
 function passable(c) { return passableIn(G, c); }
+function canStep(a, dir) { return canStepIn(G, a, dir); }   // a step from cell a toward dir: the target has land and the edge between is open or a stair
+function edgeKind(a, dir) { return edgeKindIn(G, a, dir); }
 
 
 function genLife(seed) {
@@ -508,6 +510,8 @@ const CARE_TEXT = {
 };
 // Assets the care screens name that have no master yet: registered here, and drawn only as a labelled placeholder (a flat
 // plate at the asset's exact size, outlined, with its name where it fits), never as code-drawn art. A master replaces it by id.
+// The stand-ins (status 'stand-in') are built code-drawn pieces that play until their masters land: the care moments, and
+// generator 2's place pieces, each under its TERR name.
 const CARE_ASSETS = [
   { id: 'c-heart-24', what: 'the bond’s heart: the active mibi’s name row, and at 2× in the bond event', until: 'the art director’s master', w: 24, h: 24, status: 'placeholder' },
   { id: 'c-heart-16', what: 'the bond’s heart, small: roster rows, the Lead card, the expedition choice’s partner card', until: 'the art director’s master', w: 16, h: 16, status: 'placeholder' },
@@ -519,6 +523,14 @@ const CARE_ASSETS = [
   { id: 'c-moment-walk-S01-280x300', what: 'the Loika walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-walk-S02-280x300', what: 'the Untuva walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
   { id: 'c-moment-walk-S03-280x300', what: 'the Tuikis walk moment on the stage, frames f0–f7, 8 at 300 ms (2.4 s)', until: 'the art director’s master (the built code-drawn moment stands in)', w: 280, h: 300, status: 'stand-in' },
+  { id: 'LIP', what: 'the rim of the higher ground at a steep edge in a generator 2 place, by its 8-neighbour mask (lip/<47-blob index>)', until: 'the phase 6 atlas, meadow/lip (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'FACE', what: 'the south face, two rows under the higher ground, with its foot, ends and inner corners (face/face3x2, face2x2, face1x2, corner-out-sw/-se, corner-in-w/-e)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'SIDE', what: 'the east or west side face, one column, with its ends; the side tail beside a south face’s outer end uses it too (face/side-e, face/side-w)', until: 'the phase 6 atlas, meadow/face (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'SHADOW', what: 'the low ground under a north-facing rim, walkable (lip/shadow-n)', until: 'the phase 6 atlas, meadow/lip (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'STAIR', what: 'the stair down a steep edge: south and north 2 wide, east and west 2×2 (stair/wide2x1, top2x1, side2x2-e, side2x2-w)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'LANDING', what: 'the landing above a stair, on the higher ground (stair/landing)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'FOOT', what: 'the foot below a stair, on the lower ground (stair/foot)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
+  { id: 'APRON_TOP', what: 'the tile inside a north-facing stair top (stair/apron-top)', until: 'the phase 6 atlas, meadow/stair (the built code-drawn 32 px piece stands in)', w: 32, h: 32, status: 'stand-in' },
 ];
 const PLATE = { 'c-heart-24': ['red', ['heart', 'h']], 'c-heart-16': ['red', ['heart', 'h']], 'c-face-24': ['stone', ['face', 'f']], 'c-token-48': ['stone', ['token', 't']] };   // each placeholder's plate colour and labels, longest first
 const CARRY_MAX = 3, BOND_TENDS = 3;   // the carry cap; the bond: three Tends (rule, game designer)
@@ -632,11 +644,14 @@ function carryApply(S, st) {
 const tierOf = () => TIER[S.tier] || TIER[1];
 
 function urlSeed() { try { const v = new URLSearchParams(location.search).get('seed'); return v && /^\d+$/.test(v) ? (+v >>> 0) : null; } catch (e) { return null; } }
+// Developer setting until generator 2 is given to new worlds: ?gen=2 makes New world use it (only a generator the page plays).
+function urlGen() { try { const v = new URLSearchParams(location.search).get('gen'); return v && /^\d+$/.test(v) && GENS.includes(+v) ? +v : null; } catch (e) { return null; } }
 function newWorld(seed) {
   if (seed == null) seed = (Math.floor(Math.random() * 4294967295) >>> 0);
   layoutCache.clear(); RT.reachSet = null; RT.reachKey = null;
-  G = genWorld(seed, NEW_GEN);
-  S = { v: SAVE_V, seed, gen: NEW_GEN, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
+  const gen = urlGen() || NEW_GEN;
+  G = genWorld(seed, gen);
+  S = { v: SAVE_V, seed, gen, turn: 0, expN: 1, trips: [], revealed: new Array(MW * MH).fill(0), visited: new Array(MW * MH).fill(0), signs: {}, pins: [], cells: {}, pods: [], cr: [],
     veil: {}, svy: {}, called: {}, known: [], found: [], met: [], firsts: {}, mibis: [], carried: [], lead: null, carrySeen: 0, carryRefused: [], opened: {}, tier: 1, deepRead: 0,
     bay: [], hold: null, wid: 'w' + (seed >>> 0).toString(36) + Date.now().toString(36), walkTurn: -1, probeSeen: 0, retSeen: [],
     phase: 'setup', ui: { sel: 0, menuSel: 0, from: 'setup', cur: null, stPage: 0, nw: 0, rSel: 0, rFrom: 'menu', aId: null },
@@ -674,16 +689,16 @@ function migrate7(o) {
   return s;
 }
 function load() {
-  try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { }   // saves before v7 are discarded
+  const dropOld = () => { try { for (const k of OLD_SAVE_KEYS) localStorage.removeItem(k); } catch (e) { } };   // saves before v7 are discarded (not while read-only)
   try {
     let raw = localStorage.getItem(SAVE_KEY), s = raw ? JSON.parse(raw) : null;
     if (!s || s.v !== SAVE_V) { const old = localStorage.getItem(V7_KEY); if (old) { const o = JSON.parse(old); if (o && o.v === 7 && typeof o.seed === 'number') { s = migrate7(o); localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } localStorage.removeItem(V7_KEY); } }
-    if (!s || s.v !== SAVE_V || typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) return false;   // a Station-only save: a new world starts (and a fresh Station with it)
-    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten
-    S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
+    if (!s || s.v !== SAVE_V || typeof s.seed !== 'number' || !Array.isArray(s.cr) || !Array.isArray(s.mibis)) { dropOld(); return false; }   // a Station-only save: a new world starts (and a fresh Station with it)
+    const gen = s.gen == null ? 1 : s.gen; if (!GENS.includes(gen)) return 'newer';   // a newer page's world: kept as stored, never overwritten, nothing removed
+    dropOld(); S = s; if (!Array.isArray(S.bay)) S.bay = []; if (!S.wid) S.wid = 'w' + (S.seed >>> 0).toString(36); if (!Array.isArray(S.retSeen)) S.retSeen = []; if (!Array.isArray(S.trips)) S.trips = [];
     migrateCarried(S); normalizeCare(S);
     layoutCache.clear(); G = genWorld(S.seed, gen); indexCreatures(); return true;
-  } catch (e) { return false; }
+  } catch (e) { dropOld(); return false; }
 }
 // ---- The Station, as the Companion sees it: only through the shared save, and only what the dock carries ----
 const stPart = () => S && S.st && S.st.wid === S.wid ? S.st : null;
@@ -911,8 +926,8 @@ function inRange(c) { const ex = S.exp; return !!ex && cheb(cxy(c), cxy(ex.start
 function reachCells(start, range) {
   const s0 = cxy(start), seen = new Set([start]), q = [start];
   while (q.length) { const c = q.shift(), p = cxy(c);
-    for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const d = y * MW + x; if (seen.has(d) || !passable(d) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
+    for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
+      const d = y * MW + x; if (seen.has(d) || !canStep(c, dir) || G.island[d] || Math.max(Math.abs(x - s0.x), Math.abs(y - s0.y)) > range) continue; seen.add(d); q.push(d); } }
   return [...seen];
 }
 // The one place the map's numbers are counted.
@@ -1116,8 +1131,7 @@ function mapStep(dir) {
   if (x < 0 || y < 0 || x >= MW || y >= MH) { FX.bumpAt = NOW; return; }
   const c = y * MW + x;
   if (!inRange(c)) { FX.bumpAt = NOW; fxMsg(S.tier < 2 ? 'Edge of the Probe’s range · tier 2 reaches further' : 'Edge of the Probe’s range'); return; }
-  if (!passable(c)) { revealCell(c); FX.bumpAt = NOW;
-    fxMsg(G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross'); save(); return; }
+  if (!canStep(ex.pos, dir)) { revealCell(c); FX.bumpAt = NOW; fxMsg(crossReason(ex.pos, dir)); save(); return; }   // land you can't stand on, or a steep edge between
   ex.pos = c; ex.lastDir = dir; S.visited[c] = 1; if (ex.trail[ex.trail.length - 1] !== c) ex.trail.push(c);
   advance('map');
 }
@@ -1132,6 +1146,8 @@ function callMap() {
 }
 
 // ===================== 7. Patch rules =====================
+// Tiles nothing but the pawn and the partner stands on: stepping stones, stairs and their aprons (pods, creatures, slabs and tufts never).
+const NOSTAND = t => t === T.STEP || t === T.STAIR || t === T.APRON;
 function curLay() { return layout(S.exp.patch.key); }
 function curLive() { return S.exp.live[S.exp.patch.key]; }
 function featAt(lay, key, x, y) {
@@ -1157,7 +1173,7 @@ function freeSpot(key, R, avoid, pred) {
   const lay = layout(key);
   for (let t = 0; t < 200; t++) {
     const x = 1 + R.int(PW - 2), y = 1 + R.int(PH - 2), i = y * PW + x;
-    if (!lay.reach[i] || lay.tiles[i] === T.STEP) continue;
+    if (!lay.reach[i] || NOSTAND(lay.tiles[i])) continue;
     if (avoid && man({ x, y }, lay.spawnPt) < avoid) continue;
     if (pred && !pred(x, y)) continue;
     if (!occupant(key, x, y) && !podAt(key, x, y, true)) return { x, y };
@@ -1185,12 +1201,24 @@ function ensureLive(key) {
   }
   return live;
 }
+const OPPOSITE = { up: 'down', down: 'up', left: 'right', right: 'left' };
 function entryPoint(lay, key, dir) {
+  // Up or down a stair (the edge just crossed is a ramp): its entry tile, or the nearest free tile that is not the stair itself.
+  const from = lay.stairs && lay.stairs.length && dir ? stepCell(lay.cell, OPPOSITE[dir]) : -1;
+  if (from >= 0 && edgeKind(from, dir) === EDGE.RAMP) {
+    const st = lay.stairs.find(q => q.dir === OPPOSITE[dir]);
+    if (st) { const e = st.entry; if (!occupant(key, e.x, e.y, 'player')) return { x: e.x, y: e.y };
+      let best = null, bd = 1e9;
+      for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) { const i = y * PW + x;
+        if (!lay.reach[i] || lay.tiles[i] === T.STAIR || T_BLOCK[lay.tiles[i]] || occupant(key, x, y, 'player')) continue;
+        const d = (x - e.x) ** 2 + (y - e.y) ** 2; if (d < bd) { bd = d; best = { x, y }; } }   // ties keep the lower tile index
+      if (best) return best; }
+  }
   const tx = dir === 'right' ? 0 : dir === 'left' ? PW - 1 : PW / 2, ty = dir === 'down' ? 0 : dir === 'up' ? PH - 1 : dir ? PH / 2 : PH - 3;
-  let best = null, bd = 1e9;
+  let best = null, bd = 1e9; const sq = !!G.gen;   // generator 2 places: squared distance, ties by tile index
   for (let y = 0; y < PH; y++) for (let x = 0; x < PW; x++) {
     if (!lay.reach[y * PW + x] || occupant(key, x, y, 'player')) continue;
-    const d = Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
+    const d = sq ? (x - tx) ** 2 + (y - ty) ** 2 : Math.hypot(x - tx, y - ty); if (d < bd) { bd = d; best = { x, y }; }
   }
   return best || lay.spawnPt;
 }
@@ -1255,19 +1283,29 @@ function patchStep(dir, mode) {
   P.x = x; P.y = y; walkLift();
   advance('patch', { noise: mode, moved: true });
 }
-// Why the Probe can't step onto map cell c (-1: off the map), or null if it can.
-function crossReason(c) {
+// The refusal at a steep edge (a cliff between two levels), on the map, in the reach view and at a place's border.
+const EDGE_REFUSAL_CLIFF = 'Steep edge · look for stairs';
+const RANGE_TEXT = () => S.tier < 2 ? 'Edge of the Probe’s range · tier 2 reaches further' : 'Edge of the Probe’s range';
+// The map cell one step from cell a toward dir, or -1 off the map.
+function stepCell(a, dir) { const p = cxy(a), [dx, dy] = DIRS[dir], X = p.x + dx, Y = p.y + dy; return X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : Y * MW + X; }
+// Why the Probe can't step from cell a toward dir, or null if it can.
+function crossReason(a, dir) {
+  const c = stepCell(a, dir);
   if (c < 0) return 'Edge of the map';
-  if (!inRange(c)) return S.tier < 2 ? 'Edge of the Probe’s range · tier 2 reaches further' : 'Edge of the Probe’s range';
+  if (!inRange(c)) return RANGE_TEXT();
+  if (edgeKind(a, dir) === EDGE.CLIFF) return EDGE_REFUSAL_CLIFF;
   if (!passable(c) || G.island[c]) return G.land[c] === L.CLIFF ? 'Cliff · too steep to climb' : nextToIsland(c) ? 'Fast water · needs a swimmer' : 'Wide water · too deep to cross';
   return null;
 }
 // Walking off a place's edge steps onto the next map cell that way (one map action), map in view and facing
 // that way; one Confirm goes down into it from the matching side. Otherwise you stay put with the reason.
+// Across a stair edge only the stair's two tiles cross; anywhere else along that side is the steep edge.
 function crossEdge(dir) {
-  const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[dir], X = p.x + dx, Y = p.y + dy, c = X < 0 || Y < 0 || X >= MW || Y >= MH ? -1 : Y * MW + X;
-  const why = crossReason(c);
-  if (why) { FX.bumpAt = NOW; if (c >= 0 && !passable(c)) revealCell(c); fxMsg(why); save(); return; }
+  const ex = S.exp, c = stepCell(ex.pos, dir);
+  const why = crossReason(ex.pos, dir);
+  if (why) { FX.bumpAt = NOW; if (c >= 0 && why !== RANGE_TEXT()) revealCell(c); fxMsg(why); save(); return; }
+  if (edgeKind(ex.pos, dir) === EDGE.RAMP) { const P = ex.patch, st = (layout(P.key).stairs || []).find(q => q.dir === dir), k = dir === 'up' || dir === 'down' ? P.x : P.y;
+    if (!st || (k !== st.s && k !== st.s + 1)) { FX.bumpAt = NOW; fxMsg(EDGE_REFUSAL_CLIFF); return; } }
   ex.patch = null; S.phase = 'map'; recordSigns(ex.pos); transition();
   ex.stats.crossings = (ex.stats.crossings || 0) + 1;
   mapStep(dir);
@@ -1347,7 +1385,7 @@ function patchAction() {
 function freeAround(key, x, y, prefer) {
   const ds = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]];
   if (prefer) ds.sort((a, b) => man({ x: x + a[0], y: y + a[1] }, prefer) - man({ x: x + b[0], y: y + b[1] }, prefer));
-  for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && layout(key).tiles[Y * PW + X] !== T.STEP) return { x: X, y: Y }; }
+  for (const [dx, dy] of ds) { const X = x + dx, Y = y + dy; if (!occupant(key, X, Y) && !podAt(key, X, Y, true) && !NOSTAND(layout(key).tiles[Y * PW + X])) return { x: X, y: Y }; }
   return null;
 }
 // Materials carried cap at 20 each. Returns how much was taken.
@@ -1388,7 +1426,7 @@ function pressFruit() {
 function takeTuft(tf) { const live = curLive(); live.tf = live.tf.filter(q => q !== tf); addMat('s', 1, tf.x, tf.y); fxOnce('tuft', '+1 Essence · a tuft of shed fur', 1); advance('patch', { noise: 'act' }); }
 function pushSlab(f) {
   const ex = S.exp, key = ex.patch.key, pos = featPos(key, f), [dx, dy] = DIRS[ex.patch.dir], tx = pos.x + dx, ty = pos.y + dy;
-  if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || layout(key).tiles[ty * PW + tx] === T.STEP) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
+  if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(layout(key).tiles[ty * PW + tx])) { fxMsg('The slab won’t budge that way'); FX.bumpAt = NOW; return; }
   const first = !fs(key, f.id).moved;
   setFS(key, f.id, { moved: 1, x: tx, y: ty });
   if (first && f.under === 'pod') { // something was hiding under it
@@ -1404,7 +1442,7 @@ function pushSlab(f) {
 function slabPushable(key, f) { const pos = featPos(key, f), lay = layout(key), P = S.exp && S.exp.patch;
   return Object.values(DIRS).some(([dx, dy]) => { const tx = pos.x + dx, ty = pos.y + dy, sx = pos.x - dx, sy = pos.y - dy;
     if (tx < 1 || ty < 1 || tx >= PW - 1 || ty >= PH - 1 || sx < 0 || sy < 0 || sx >= PW || sy >= PH) return false;
-    if (occupant(key, tx, ty) || podAt(key, tx, ty, true) || lay.tiles[ty * PW + tx] === T.STEP) return false;
+    if (occupant(key, tx, ty) || podAt(key, tx, ty, true) || NOSTAND(lay.tiles[ty * PW + tx])) return false;
     const o = occupant(key, sx, sy, 'player'); return !o || o.type === 'pt' || o.type === 'cr' || (P && P.key === key && P.x === sx && P.y === sy); }); }
 function takeDew(f) { const ex = S.exp; setFS(ex.patch.key, f.id, { full: false, at: ex.actions }); addMat('s', 1, f.x, f.y); advance('patch', { noise: 'act' }); }
 function takeCharge(f) {
@@ -1672,7 +1710,7 @@ function pickStrike(X) {
 }
 
 // ===================== 8. Creatures and the partner =====================
-function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && X.lay.tiles[y * PW + x] !== T.STEP; }
+function canStand(X, x, y, who) { return !occupant(X.key, x, y, who) && !NOSTAND(X.lay.tiles[y * PW + x]); }
 function stepToward(X, who, tgt, n) {
   for (let k = 0; k < (n || 1); k++) {
     let best = null, bd = man(who, tgt);
@@ -2035,7 +2073,8 @@ function placePhrase(cells) {
   let sx = 0, sy = 0; for (const c of cells) { const p = cxy(c); sx += p.x; sy += p.y; }
   const m = { x: Math.round(sx / cells.length), y: Math.round(sy / cells.length) };
   let cliff = false, river = false;
-  for (let c = 0; c < MW * MH; c++) { const d = cheb(cxy(c), m); if (G.land[c] === L.CLIFF && d <= 2) cliff = true; if (G.land[c] === L.WATER && !G.ford[c] && d <= 1) river = true; }
+  const steep = c => Object.keys(DIRS).some(dir => { const k = stepCell(c, dir) >= 0 ? edgeKind(c, dir) : EDGE.OPEN; return k === EDGE.CLIFF || k === EDGE.RAMP; });   // a cliff or stair side
+  for (let c = 0; c < MW * MH; c++) { const d = cheb(cxy(c), m); if ((G.land[c] === L.CLIFF || steep(c)) && d <= 2) cliff = true; if (G.land[c] === L.WATER && !G.ford[c] && d <= 1) river = true; }
   if (cliff) return 'near the cliff';
   if (river) return 'by the river';
   const counts = [0, 0, 0, 0]; for (const c of cells) if (G.land[c] < 4) counts[G.land[c]]++;
@@ -2052,8 +2091,8 @@ function worldTurn(pending) {
     if (w.sp === 1 && w.c === G.gate) { if (R.chance(.3)) w.cv = 1; continue; }
     if (!R.chance(.45)) continue;
     const p = cxy(w.c), opts = [];
-    for (const [dx, dy] of Object.values(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
-      const c = y * MW + x; if (passable(c) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
+    for (const [dir, [dx, dy]] of Object.entries(DIRS)) { const x = p.x + dx, y = p.y + dy; if (x < 0 || y < 0 || x >= MW || y >= MH) continue;
+      const c = y * MW + x; if (canStep(w.c, dir) && G.land[c] !== L.WATER && G.island[c] === G.island[w.c]) opts.push(c); }
     const good = opts.filter(c => SPECIES[w.sp].hab.includes(G.land[c]));
     const pick = (good.length && R.chance(.8)) ? R.pick(good) : opts.length ? R.pick(opts) : -1;
     if (pick >= 0) { const q = cxy(pick); mv[w.sp].dx += q.x - p.x; mv[w.sp].dy += q.y - p.y; mv[w.sp].n++; w.c = pick; }
@@ -2121,6 +2160,7 @@ const HEX = PALETTE.map(p => p[1]);
 const RGB = HEX.map(h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)]);
 const DARK = PALETTE.map(([n]) => C[DARK_OF[n]]);
 const LIGHT = PALETTE.map(([n]) => C[LIGHT_OF[n]]);
+const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l) ? c : l);   // one step lighter, never into the reserved orange, amber or white
 const DARK2 = DARK.map(i => DARK[i]);
 function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
 function mixLUT(target, t) { const [tr, tg, tb] = RGB[C[target]]; return RGB.map(([r, g, b]) => nearestPal(r + (tr - r) * t, g + (tg - g) * t, b + (tb - b) * t)); }
@@ -2551,7 +2591,8 @@ function groundInto(pb, base, h) {
   else if (base === T.CFLOOR) { pb.rect(0, 0, 32, 32, C.night); for (let i = 0; i < 18; i++) pb.set(R.int(32), R.int(32), R.pick([C.slate, C.ink, C.plumD])); }
   else { pb.rect(0, 0, 32, 32, C.grass); for (let i = 0; i < 24; i++) pb.set(R.int(32), R.int(32), R.pick([C.sprout, C.leaf, C.leaf])); for (let i = 0; i < 4; i++) { const x = 1 + R.int(30), y = 2 + R.int(28); pb.rect(x, y, 1, 2, C.leaf); pb.set(x, y - 1, C.sprout); } }
 }
-function buildTile(t, base, v, mask, fr) {
+function buildTile(t, base, v, mask, fr, terr) {
+  if (terr) return buildTerrTile(t, base, v, mask, fr, terr.bv, terr.bm);
   const pb = new PB(32, 32), h = hash('tile', t, base, v), R = makeRng(h);
   switch (t) {
     case T.GRASS: groundInto(pb, T.GRASS, h); break;
@@ -2602,6 +2643,60 @@ function buildTile(t, base, v, mask, fr) {
   }
   return pb;
 }
+// Generator 2's place pieces at 32 px (terrain layer kind v, mask m): code-drawn placeholders until the phase 6 atlas, each
+// registered under its TERR name. Faces, sides and stair cheeks in rock and stone; the lip a light remap of the ground with
+// the ink line outermost; the trodden aprons in sand.
+function buildTerrTile(t, base, v, m, fr, bv, bm) {
+  const h = hash('tile', t, base, v);
+  if (v === TERR.SHADOW) {   // low ground under a north-facing rim: the tile as drawn today, darkened on a checkerboard at its foot
+    const pb = buildTile(t, base, bv, bm, fr);   // the tile's own variant and mask
+    for (let y = 28; y <= 31; y++) for (let x = 0; x <= 31; x++) if (BAYER[(y & 3) * 4 + (x & 3)] < 8) pb.set(x, y, DARK[pb.get(x, y)]);
+    return pb; }
+  const pb = new PB(32, 32);
+  if (v === TERR.FACE) {
+    pb.rect(0, 0, 32, 32, C.rock);
+    for (const sy of [8, 17, 26]) for (let x = 0; x < 32; x++) pb.set(x, sy + (hash(h, x >> 3, sy) % 3) - 1, C.stone);   // strata
+    if (m & 1) pb.rect(0, 30, 32, 2, C.stone);                                   // the foot
+    if (m & 8) pb.rect(0, 0, 4, 32, C.stone); if (m & 16) pb.rect(28, 0, 4, 32, C.stone);   // inner corners: the stone column, no ink
+    if (m & 2) { pb.rect(1, 0, 4, 32, C.stone); pb.rect(0, 0, 1, 32, C.ink); }  // outer ends: the stone column, ink down its open side
+    if (m & 4) { pb.rect(27, 0, 4, 32, C.stone); pb.rect(31, 0, 1, 32, C.ink); }
+    if (!(m & 1)) pb.rect(0, 0, 32, 1, C.ink);                                   // the top row's ink, corners square
+  } else if (v === TERR.SIDE) {
+    const east = m & 1, x0 = east ? 0 : 16, hi = east ? 0 : 31, lo = east ? 15 : 16;
+    groundInto(pb, base, h);
+    pb.rect(x0, 0, 16, 32, C.rock);
+    pb.rect(lo, 0, 1, 32, C.stone);                                              // the low side's stone edge
+    if (!(m & 16)) pb.rect(hi, 0, 1, 32, C.ink);                                 // the high side's ink (none on the side tail: the face's end ink is the corner)
+    if (m & 2) pb.rect(x0, 0, 16, 1, C.ink);                                     // north end: the ink turns across the top
+    if ((m & 16) && (m & 4)) pb.rect(east ? 0 : 16, 30, 16, 2, C.stone);          // the side tail's foot: the face's foot line across the whole column
+    else if ((m & 4) && !(m & 8)) pb.rect(east ? 1 : 16, 30, 15, 2, C.stone);    // south end: the foot (none where a face follows)
+  } else if (v === TERR.LIP) {
+    groundInto(pb, base, h);
+    const on = b => (m >> b) & 1, lit = new Uint8Array(32 * 32), mark = (x, y) => { lit[y * 32 + x] = 1; };
+    const band = { 0: [0, 1, 32, 2], 2: [29, 0, 2, 32], 4: [0, 29, 32, 2], 6: [1, 0, 2, 32] }, edge = { 0: [0, 0, 32, 1], 2: [31, 0, 1, 32], 4: [0, 31, 32, 1], 6: [0, 0, 1, 32] };
+    // corners: [pixel x, y, the two bits beside it, the diagonal bit, the 3×3 block's origin]
+    const corners = [[31, 0, 0, 2, 1, 29, 0], [31, 31, 2, 4, 3, 29, 29], [0, 31, 4, 6, 5, 0, 29], [0, 0, 6, 0, 7, 0, 0]];
+    for (const b of [0, 2, 4, 6]) if (on(b)) { const [x, y, w, hh] = band[b]; for (let j = 0; j < hh; j++) for (let i = 0; i < w; i++) mark(x + i, y + j); }
+    const outer = [], inner = [];
+    for (const [px, py, a, b, d, bx, by] of corners) {
+      if (on(a) && on(b)) { outer.push([px, py]); mark(px, py); }
+      else if (on(d) && !on(a) && !on(b)) { inner.push([px, py]); for (let j = 0; j < 3; j++) for (let i = 0; i < 3; i++) if (bx + i !== px || by + j !== py) mark(bx + i, by + j); }
+    }
+    for (let i = 0; i < 1024; i++) if (lit[i]) { const x = i & 31, y = i >> 5; pb.set(x, y, LEVEL_LIGHT[pb.get(x, y)]); }   // each pixel once
+    for (const b of [0, 2, 4, 6]) if (on(b)) { const [x, y, w, hh] = edge[b]; for (let j = 0; j < hh; j++) for (let i = 0; i < w; i++) if (!outer.some(([ox, oy]) => ox === x + i && oy === y + j)) pb.set(x + i, y + j, C.ink); }
+    for (const [x, y] of inner) pb.set(x, y, C.ink);                             // inner corners meet square; outer corners keep the 1 px chamfer
+  } else if (v === TERR.STAIR) {
+    const part = m & 3, facing = (m >> 4) & 3, R4 = [[0, 6], [8, 6], [16, 6], [24, 6]];
+    if (facing < 2) {   // south or north: horizontal treads, cheeks on the left and right
+      for (const [a, n] of R4) { pb.rect(0, a, 32, n, C.rockL); pb.rect(0, a + n, 32, 2, C.stone); }
+      if (part === 0 || part === 2) pb.rect(0, 0, 3, 32, C.stone); else pb.rect(29, 0, 3, 32, C.stone);
+    } else {            // east or west: vertical treads, cheeks on the north and south
+      for (const [a, n] of R4) { pb.rect(a, 0, n, 32, C.rockL); pb.rect(a + n, 0, 2, 32, C.stone); }
+      if (part < 2) pb.rect(0, 0, 32, 3, C.stone); else pb.rect(0, 29, 32, 3, C.stone);
+    }
+  } else groundInto(pb, T.SAND, h);   // LANDING, FOOT, APRON_TOP: one worn earth; their place tells them apart
+  return pb;
+}
 // Per-layout tile keys: type, ground, variant and neighbour mask, computed once.
 function tileKeys(lay) {
   if (lay.tk) return lay.tk;
@@ -2616,13 +2711,14 @@ function tileKeys(lay) {
     else if (t === T.CWALL) { if (nb[2] === T.CFLOOR) m |= 4; }
     else if (t === T.ISLE) { if (nb[2] === T.DEEP) m |= 4; }
     tk[y * PW + x] = { t, v: (t === T.GRASS || t === T.DARK || t === T.SAND || t === T.CFLOOR || t === T.TALL) ? v : v & 1, m, anim: t === T.WATER || t === T.STEP || t === T.DEEP };
+    const i = y * PW + x; if (lay.terr && lay.terr[i]) { const b = tk[i]; tk[i] = { t, v: lay.terr[i], m: lay.tmask[i], anim: false, terr: true }; if (lay.terr[i] === TERR.SHADOW) { tk[i].bv = b.v; tk[i].bm = b.m; } }   // generator 2: the piece kind and its mask; SHADOW keeps the tile's own variant and mask
   }
   return (lay.tk = tk);
 }
-function tileKey(lay, i, fr) { const k = tileKeys(lay)[i]; return 't' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + (k.anim ? fr : 0); }
+function tileKey(lay, i, fr) { const k = tileKeys(lay)[i]; return 't' + k.t + '.' + lay.base + '.' + k.v + '.' + k.m + '.' + (k.anim ? fr : 0) + (k.terr ? '.g' + (k.bv != null ? '.' + k.bv + '.' + k.bm : '') : ''); }
 function tilePB(lay, i, fr) {
   const k = tileKeys(lay)[i], f = k.anim ? fr : 0;
-  return art(tileKey(lay, i, fr), () => buildTile(k.t, lay.base, k.v, k.m, f));
+  return art(tileKey(lay, i, fr), () => buildTile(k.t, lay.base, k.v, k.m, f, k.terr && { bv: k.bv, bm: k.bm }));
 }
 function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light); }
 
@@ -2773,7 +2869,7 @@ function viewBg(col) {
 
 // ===================== 12. World map =====================
 let mapCv = null, mapCvDark = null, mapCvFade = null, fogCv = null, fogCvDark = null, mapSeed = null;
-function ensureMap() { if (!mapCv || mapSeed !== G.seed) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); mapCvFade = pb.canvas(4); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = G.seed; } }
+function ensureMap() { const mk = G.seed + ':' + (S.gen || 1); if (!mapCv || mapSeed !== mk) { const pb = buildMapPB(), fp = buildFogPB(G.seed); mapCv = pb.canvas(0); mapCvDark = pb.canvas(1); mapCvFade = pb.canvas(4); fogCv = fp.canvas(0); fogCvDark = fp.canvas(1); mapSeed = mk; } }   // keyed by generator too
 // What one start glint promises: a sign genuinely in its 3x3 (slow beat, tracks, rings). Where a glint has
 // more than one, it shows the one the other glints show least, so the starts read differently.
 const spawnSignCache = new Map();
@@ -2850,7 +2946,7 @@ function reachGeom() {
 // A cell's land: the middle of its place, 3×3 of the real tiles cropped to the cell. Seen-but-not-visited cells
 // take the fade table, cells under the storm the dark table, as on the map.
 function landPatch(c, cs, rm, fr) {
-  return art('rv' + c + ':' + cs + ':' + rm + ':' + fr + ':' + S.seed, () => {
+  return art('rv' + c + ':' + cs + ':' + rm + ':' + fr + ':' + S.seed + ':' + (S.gen || 1), () => {
     const pb = new PB(cs, cs);
     if (!passable(c)) {   // wide water or cliff: no place to borrow tiles from
       const water = G.land[c] === L.WATER, base = water ? C.sea : C.slate, hi = water ? C.river : C.stone;
@@ -3887,7 +3983,7 @@ function turnLine() { const l = outpostLights(); return 'World turn ' + wTurn() 
 
 // ===================== 15. Screen dispatch =====================
 function firstPlacement() { return !S.revealed.some(v => v); }
-function placeValid(c) { if (firstPlacement()) return G.spawns.includes(c); return !!S.revealed[c] && passable(c) && !G.island[c]; }
+function placeValid(c) { if (firstPlacement()) return G.spawns.includes(c); return !!S.revealed[c] && passable(c) && !G.island[c] && (!G.gen || !!G.comp[c]); }   // never on a sealed plateau
 function placeReason(c) {
   if (firstPlacement()) return 'Pick a glint';
   if (!S.revealed[c]) return 'Not seen yet';
@@ -3906,10 +4002,16 @@ function aheadCell() { const ex = S.exp, p = cxy(ex.pos), [dx, dy] = DIRS[ex.fac
 function mapContext() {
   const ex = S.exp, here = landWord(ex.pos) + (gatedCell(ex.pos) ? ' · cave needs a digger' : S.visited[ex.pos] && passable(ex.pos) ? ' · ' + surveyWord(ex.pos) : ''), hs = signWords(ex.pos), a = aheadCell();
   const toTake = c => S.visited[c] && passable(c) && leftTotal(c) ? ' · ' + leftTotal(c) + ' to take' : '';
-  const there = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · needs a digger' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
+  // the edge you face, named even when the cell beyond is fog (your own four edges always show): a steep edge or stairs
+  const ek = a >= 0 && inRange(a) ? edgeKind(ex.pos, ex.face || 'down') : EDGE.OPEN;
+  const es = ek === EDGE.CLIFF ? 'steep edge' : ek === EDGE.RAMP ? (G.level[a] > G.level[ex.pos] ? 'stairs up' : 'stairs down') : '';
+  const beyond = a < 0 ? 'edge of the map' : !inRange(a) ? 'edge of range' : !S.revealed[a] ? 'fog' : gatedCell(a) ? 'cave · needs a digger' : landWord(a) + toTake(a), as = a >= 0 && inRange(a) && S.revealed[a] && !gatedCell(a) ? signWords(a) : [];
+  const there = es ? es + ' · ' + beyond : beyond, AS = 'Ahead: ' + (es || there);   // the short forms cut the cell beyond first, never the edge
   const H = here + (hs.length ? ' · ' + hs.join(', ') : ''), A = 'Ahead: ' + there + (as.length ? ' · ' + as.join(', ') : '');
-  // where you stand comes first when it has a sign; otherwise what you face
-  return hs.length ? [H + ' · ' + A, H + ' · Ahead: ' + there, H, here + ' · ' + A, A, here] : [here + ' · ' + A, A, here + ' · Ahead: ' + there, 'Ahead: ' + there, here];
+  // where you stand comes first when it has a sign; otherwise what you face; the edge word alone is the last before here
+  const list = hs.length ? [H + ' · ' + A, H + ' · ' + AS, H, here + ' · ' + A, A, here] : [here + ' · ' + A, A, here + ' · ' + AS, AS, here];
+  if (es) list.splice(list.length - 1, 0, es);
+  return list;
 }
 // The first time the line names a sign, its one-line explanation shows once (only if it actually fits the message box).
 
@@ -4340,6 +4442,7 @@ function notesText() {
 const copyBtn = document.getElementById('copyNotes'), copyMsg = document.getElementById('copyMsg'), notesTa = document.getElementById('notesFallback');
 copyBtn.addEventListener('click', () => {
   copyBtn.blur();   // Enter goes back to the game, not to this button
+  if (RT.readOnly) return;   // a newer page's save: no world was read, so there are no notes
   const t = notesText();
   const fallback = () => { notesTa.hidden = false; notesTa.value = t; notesTa.focus(); notesTa.select(); copyMsg.textContent = 'Selected. Press Ctrl+C or ⌘C to copy.'; };
   try {
@@ -4386,7 +4489,7 @@ requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
 window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
-  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, TEST,
+  sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
   offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();

@@ -2,7 +2,7 @@
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
 export const NEW_GEN = 1;          // the generator newWorld gives a new world
-export const GENS = [1];           // the generators the page can play
+export const GENS = [1, 2];        // the generators the page can play
 
 export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
@@ -750,8 +750,8 @@ function g2Bands(G, cell, tiles, terr, tmask) {
       if (y === 0 && !(N === l && hiN > l)) b |= 2;
       if (y === PH - 1 && !(S === l && hiS > l)) { b |= 4; if (S === l && onMap(west ? -1 : 1, 1) && hiS === l) b |= 8; }
       set(x, y, TERR.SIDE, b, T.FACE); continue; }
-    if (y <= 1 && x === 0 && NW > l && N === l && onMap(-1, 0) && W === l) { set(x, y, TERR.SIDE, 1 | (y === 1 ? 4 : 0), T.FACE); continue; }
-    if (y <= 1 && x === PW - 1 && NE > l && N === l && onMap(1, 0) && E === l) { set(x, y, TERR.SIDE, y === 1 ? 4 : 0, T.FACE); continue; }
+    if (y <= 1 && x === 0 && NW > l && N === l && onMap(-1, 0) && W === l) { set(x, y, TERR.SIDE, 1 | 16 | (y === 1 ? 4 : 0), T.FACE); continue; }   // bit 4: the side tail
+    if (y <= 1 && x === PW - 1 && NE > l && N === l && onMap(1, 0) && E === l) { set(x, y, TERR.SIDE, 16 | (y === 1 ? 4 : 0), T.FACE); continue; }
     if (y === PH - 1 && S > l) set(x, y, TERR.SHADOW, 0, -1);
   }
 }
