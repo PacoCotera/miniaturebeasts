@@ -5,6 +5,7 @@
                    rock, grass and earth ramps
   face-rock2.png   a second Retro Diffusion rock (sources/t-rock2-rd.png), its edge bands faded into the first rock's edges so either
                    joins the other
+  side-rock.png    16x48: the second rock's bare rows, made to repeat top to bottom, for the plateaus' east and west sides
   planks.png       the Retro Diffusion planks (sources/t-planks-rd.png), made to repeat both ways
   water1..3.png    crops of the Gemini painting's stream (sources/terrain-grass-cliffs-a1.jpg), area-averaged to 48 px, made to
                    repeat both ways, restricted to the B ramp. The two Retro Diffusion water tiles came back as one flat colour
@@ -39,6 +40,10 @@ for i in range(10):
     rock2[:, i] = rock[:, i] * (1 - t) + rock2[:, i] * t
     rock2[:, 47 - i] = rock[:, 47 - i] * (1 - t) + rock2[:, 47 - i] * t
 save(snap(rock2, "NKGW"), "face-rock2")
+# the side strip: the second rock's bare rock rows (below its turf), stretched to 48 rows and made to repeat top to bottom, so the
+# plateaus' east and west sides show the same rock as the faces, in a strip that runs any length
+side = np.asarray(Image.fromarray(np.clip(rock2[10:48, 0:16], 0, 255).astype(np.uint8)).resize((16, 48), Image.NEAREST)).astype(np.float64)
+save(snap(wrap(side, 0), "NK"), "side-rock")
 pl = wrap(wrap(rgb(os.path.join(src, "t-planks-rd.png")), 1), 0); save(snap(pl, "W"), "planks")
 paint = Image.open(os.path.join(src, "terrain-grass-cliffs-a1.jpg")).convert("RGB")
 for i, (x, y) in enumerate(((290, 790), (470, 800), (640, 820)), 1):          # stream crops clear of the bank, bridge and foam

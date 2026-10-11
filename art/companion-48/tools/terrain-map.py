@@ -25,12 +25,15 @@ pieces, ground, shore, out = sys.argv[1:5]; os.makedirs(out, exist_ok=True)
 decal_dir = sys.argv[5] if len(sys.argv) > 5 else None
 mat_dir = sys.argv[6] if len(sys.argv) > 6 else None          # terrain-materials.py output: the water bodies
 ripple_dir = sys.argv[7] if len(sys.argv) > 7 else None       # the review place's ripple sprites, frame 1
-T, SH = -1, -2
+T, SH, LT, SH2 = -1, -2, -3, -4
 
 def load(p, shade=True):
     a = quant.quantize(np.asarray(Image.open(p).convert("RGBA")))
     sp = os.path.join(os.path.dirname(p), "shade", os.path.basename(p))
-    if shade and os.path.exists(sp): a = np.where(np.asarray(Image.open(sp)) > 0, SH, a)
+    if shade and os.path.exists(sp):
+        m = np.asarray(Image.open(sp)); a = np.where(m > 200, SH2, np.where(m > 0, SH, a))
+    lp = os.path.join(os.path.dirname(p), "light", os.path.basename(p))
+    if shade and os.path.exists(lp): a = np.where(np.asarray(Image.open(lp)) > 0, LT, a)
     return a
 def piece(n): return load(os.path.join(pieces, n + ".png"))
 GN = ("body1", "body2", "body3", "body4") if decal_dir else ("grass1", "grass2", "grass3", "grass4", "flowers1", "flowers2")
@@ -49,12 +52,14 @@ if mat_dir:
 S = {m: load(os.path.join(shore, f"shore-{m:02d}-1.png"), False) for m in range(16)}
 D = {n: load(os.path.join(shore, f"shore-diag-{n}-1.png"), False) for n in ("ne", "se", "sw", "nw")}
 LIP = {(q, s): piece(f"lip-{q}-{s}") for q in ("nw", "ne", "se", "sw") for s in ("fill", "edgeh", "edgev", "outer", "inner")}
-FACE = {k: piece("face-" + k) for k in ("ee", "ec", "ce", "cc", "cc-v")}
+FACE = {k: piece("face-" + k) for k in ("ee", "ec", "ce", "cc", "cc-v", "cc-v2", "cc-v3")}
 
 def over(base, o):
     """overlay o on base: transparent keeps base, shade darkens base one DARK step."""
     b = base.copy(); dark = np.array(P.dark)
     b = np.where(o == SH, dark[np.clip(b, 0, None)], b)
+    b = np.where(o == SH2, np.array(P.dark2)[np.clip(b, 0, None)], b)
+    b = np.where(o == LT, np.array(P.light)[np.clip(b, 0, None)], b)
     return np.where(o >= 0, o, b)
 
 # ------------------------------------------------------------------ the test map
@@ -155,11 +160,14 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
             if not lips_only and is_face(H, r, c):
                 cont = lambda cc: is_face(H, r, cc) or h(H, r, cc, -1) > H[r, c]
                 k = ("c" if cont(c - 1) else "e") + ("c" if cont(c + 1) else "e")
-                if k == "cc" and (r + c) % 2: k = "cc-v"
+                if k == "cc": k = ("cc", "cc-v", "cc-v2", "cc-v3")[(c * 7 + r * 3 + (c * c) % 5) % 4]   # no two-tile rhythm along a wall
                 t = over(t, piece("stairs") if (r, c) in stairs else FACE[k])
             if not lips_only and (r, c) in [(sr - 1, sc) for sr, sc in stairs]: t = over(t, piece("stairs-top"))
             if not lips_only and c > 0 and not is_face(H, r, c) and not Wt[r, c] and (is_face(H, r, c - 1) or H[r, c - 1] > H[r, c]):
                 t = over(t, piece("side-shadow-e"))
+            if not lips_only and r > 0 and c > 0 and is_face(H, r - 1, c - 1) and not is_face(H, r - 1, c) and not is_face(H, r, c - 1) \
+                    and not is_face(H, r, c) and not Wt[r, c] and not (H[r, c - 1] > H[r, c]) and not (H[r - 1, c] > H[r, c]):
+                t = over(t, piece("corner-shadow-se"))
             if not lips_only and r > 0 and is_face(H, r - 1, c) and not is_face(H, r, c):
                 t = over(t, piece("foot-foam-1") if Wt[r, c] else piece("foot-shadow"))
             img[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = t
@@ -186,7 +194,7 @@ q = np.clip((lum / 256 * 4).astype(int), 0, 3); g = np.array([24, 96, 168, 240],
 Image.fromarray(g, "L").save(os.path.join(out, "testmap-4gray.png"))
 
 # lip joins: all 256 neighbourhoods of a plateau cell (height 1) among height 0/1, lips only
-RIM = {C[n] for n in ("night", "slate", "stone", "rock", "rockL")}
+RIM = {C[n] for n in ("void", "ink", "night", "slate", "stone", "mist", "fog", "bone", "white", "rock", "rockL")}
 cls = np.vectorize(lambda v: 1 if v in RIM else 0)
 off = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
 bad = 0
@@ -215,8 +223,8 @@ res["lip_joins"] = bad
 # face joins: every face tile beside every other (continuing sides); the luminance step across the join against the step inside
 def lumi(a): q = P.rgb[np.clip(a, 0, None)]; return 0.2126 * q[..., 0] + 0.7152 * q[..., 1] + 0.0722 * q[..., 2]
 jj, ii = [], []
-for a in ("ec", "cc", "cc-v"):
-    for b in ("cc", "cc-v", "ce"):
+for a in ("ec", "cc", "cc-v", "cc-v2", "cc-v3"):
+    for b in ("cc", "cc-v", "cc-v2", "cc-v3", "ce"):
         pair = np.hstack([lumi(FACE[a]), lumi(FACE[b])]); d = np.abs(np.diff(pair, axis=1))
         jj.append(d[:, 47].mean()); ii.append(np.delete(d, 47, axis=1).mean())
 res["face_join"] = round(float(np.mean(jj) / np.mean(ii)), 3)
