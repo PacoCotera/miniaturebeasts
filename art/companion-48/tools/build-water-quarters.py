@@ -95,7 +95,7 @@ def edge_macro(side, sign, frame, beach_=False):
     """a straight shore two cells long (96 px) as one curve: the bank bulges out (sign +1) or bays in (-1) on a half sine"""
     U, V = np.meshgrid(np.arange(-16, 112), np.arange(-16, 64 + (40 if beach_ else 0))); u = np.clip(U, 0, 96)
     land = V < INSET + (40 if beach_ else 0) + sign * AMP * np.sin(np.pi * u / 96)   # the land to the north (a beach piece starts 24 px up, in the land cell)
-    bw = 12 + (34 * np.sin(np.pi * u / 96) ** 1.2 + 5 * np.sin(np.pi * u / 23) if beach_ else 0)   # a beach: a wide sand tongue, its edge irregular
+    bw = 12 + (26 * np.sin(np.pi * u / 96) ** 0.45 + 3 * np.sin(np.pi * u / 31) if beach_ else 0)   # a broad soft fan, flat across its middle, no point   # a beach: a wide sand tongue, its edge irregular
     q = render(land, frame, np.round(bw).astype(int) if beach_ else None)   # 96 x 48, land north
     return {"n": q, "s": np.flipud(q), "w": q.T, "e": np.fliplr(q.T)}[side]
 

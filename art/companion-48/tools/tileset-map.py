@@ -107,7 +107,7 @@ for L_ in (1, 2, 3):
 LV = np.zeros((HPX, WPX), int)
 for L_ in (1, 2, 3): LV[LVLM[L_]] = L_
 img = np.zeros((HPX, WPX), int)
-LTONE = [-1, 0, 0, 0]                                             # b1's levels share one lawn; the basin a step down
+LTONE = [-2, 0, 1, 2]                                             # depth: each level up a step lighter on b1's ramp (O3), the basin two down
 vv, cc = np.unique(B1[lawn], return_counts=True)
 LRAMP = sorted(vv[np.argsort(-cc)[:7]], key=lambda i: lum[i])     # b1's own lawn ramp: its seven commonest lawn tones, dark to light
 LB = LRAMP.index(BASE)
@@ -366,9 +366,9 @@ for sd in "nswe":
             r2, c2 = (r, c + 1) if sd in "ns" else (r + 1, c)
             if not (r2 < R and c2 < Cn) or (r, c) in used or (r2, c2) in used or (r, c) in inmac or (r2, c2) in inmac: continue
             if not (WAT[r, c] and WAT[r2, c2] and QS(r, c) == WANT[sd] and QS(r2, c2) == WANT[sd]): continue
-            beach_here = sd == "s" and not BEACHED and c < Cn // 2 and not WAT[min(R - 1, r + 1), c] and r == max(i for i in range(R) if WAT[i, c])                       # the first south shore from the left takes the beach, as b1's lower-left
+            beach_here = sd == "w" and not BEACHED and r >= R // 2 and r2 >= max(i_ for i_ in range(R) if WAT[i_, c]) - 2   # the pond's lowest west shore clear of its corner piece: b1's lower-left beach
             if beach_here:
-                pz = BEACH["s"]; Y, X = r * 48, c * 48; hh, ww = pz.shape; BEACHED.append((r, c))
+                pz = BEACH["w"]; Y, X = r * 48, c * 48 - 40; hh, ww = pz.shape; BEACHED.append((r, c))   # the fan reaches 40 px west into the land
             else:
                 pz = LOBE[(sd, ("out", "in")[k_l % 2])]; k_l += 1; Y, X = r * 48, c * 48; hh, ww = pz.shape
             hh = min(hh, HPX - Y); img[Y:Y + hh, X:X + ww] = np.where(pz[:hh] >= 0, pz[:hh], img[Y:Y + hh, X:X + ww]); used |= {(r, c), (r2, c2)}
