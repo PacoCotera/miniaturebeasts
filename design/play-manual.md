@@ -216,7 +216,7 @@ You can carry up to 20 of each. Essence never turns into Energy.
 | Material | Where it comes from | What it buys |
 | --- | --- | --- |
 | **Energy** | Storm-charged stones (+2, or +3 at the peak) and warm stones (+1) | Pins (1), lighting a beacon (1), lighting or relighting an outpost (1), mending at an outpost (1 a bar), Shield patches (3 a bar), identifying a pod (1), growing a mibi (2), mending the Shield at the Station (1 a bar), the tier 2 Probe (12) |
-| **Data** | Creature moments you cause (+1, or +2 for a first), and a walk with your mibi (+1, once a world turn) | Studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
+| **Data** | Creature moments you cause (+1, or +2 for a first) | Studying a window (2), each change when you shape a mibi (2), the tier 2 Probe (4) |
 | **Essence** | Dew (+1), pressing fruit (+2), tufts of fur (+1), returning a pod to the wild (+1) | Growing a mibi (4) |
 
 ## 8. Ending an expedition: the sealed bay and the Station
