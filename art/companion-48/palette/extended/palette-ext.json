@@ -1,0 +1,498 @@
+{
+ "proposal": true,
+ "base": "palette/palette.json (the signed 48, unchanged, first)",
+ "count": 77,
+ "colours": [
+  {
+   "index": 0,
+   "name": "void",
+   "hex": "#0c0a12",
+   "ramp": "N"
+  },
+  {
+   "index": 1,
+   "name": "ink",
+   "hex": "#1a1725",
+   "ramp": "N"
+  },
+  {
+   "index": 2,
+   "name": "night",
+   "hex": "#29253a",
+   "ramp": "rock"
+  },
+  {
+   "index": 3,
+   "name": "slate",
+   "hex": "#3d3954",
+   "ramp": "rock"
+  },
+  {
+   "index": 4,
+   "name": "stone",
+   "hex": "#5d5974",
+   "ramp": "rock"
+  },
+  {
+   "index": 5,
+   "name": "mist",
+   "hex": "#8d8aa6",
+   "ramp": "rock"
+  },
+  {
+   "index": 6,
+   "name": "fog",
+   "hex": "#c6c4d8",
+   "ramp": "rock"
+  },
+  {
+   "index": 7,
+   "name": "bone",
+   "hex": "#f1ebdf",
+   "ramp": "N"
+  },
+  {
+   "index": 8,
+   "name": "white",
+   "hex": "#ffffff",
+   "ramp": "N"
+  },
+  {
+   "index": 9,
+   "name": "paper",
+   "hex": "#f5e6c4",
+   "ramp": "earth"
+  },
+  {
+   "index": 10,
+   "name": "sand",
+   "hex": "#e6c98c",
+   "ramp": "earth"
+  },
+  {
+   "index": 11,
+   "name": "clay",
+   "hex": "#bf9157",
+   "ramp": "earth"
+  },
+  {
+   "index": 12,
+   "name": "bark",
+   "hex": "#7d5435",
+   "ramp": "earth"
+  },
+  {
+   "index": 13,
+   "name": "soil",
+   "hex": "#4b3023",
+   "ramp": "earth"
+  },
+  {
+   "index": 14,
+   "name": "pine",
+   "hex": "#173b2d",
+   "ramp": "grass"
+  },
+  {
+   "index": 15,
+   "name": "forest",
+   "hex": "#23623c",
+   "ramp": "grass"
+  },
+  {
+   "index": 16,
+   "name": "leaf",
+   "hex": "#329245",
+   "ramp": "grass"
+  },
+  {
+   "index": 17,
+   "name": "grass",
+   "hex": "#5cbb4c",
+   "ramp": "grass"
+  },
+  {
+   "index": 18,
+   "name": "sprout",
+   "hex": "#98d85c",
+   "ramp": "grass"
+  },
+  {
+   "index": 19,
+   "name": "lime",
+   "hex": "#d4f281",
+   "ramp": "grass"
+  },
+  {
+   "index": 20,
+   "name": "deep",
+   "hex": "#142650",
+   "ramp": "water"
+  },
+  {
+   "index": 21,
+   "name": "sea",
+   "hex": "#1e5196",
+   "ramp": "water"
+  },
+  {
+   "index": 22,
+   "name": "river",
+   "hex": "#3084d8",
+   "ramp": "water"
+  },
+  {
+   "index": 23,
+   "name": "sky",
+   "hex": "#5bb9f3",
+   "ramp": "water"
+  },
+  {
+   "index": 24,
+   "name": "ice",
+   "hex": "#a9e6ff",
+   "ramp": "water"
+  },
+  {
+   "index": 25,
+   "name": "tealD",
+   "hex": "#0f4c50",
+   "ramp": "T"
+  },
+  {
+   "index": 26,
+   "name": "teal",
+   "hex": "#1f9d8f",
+   "ramp": "T"
+  },
+  {
+   "index": 27,
+   "name": "aqua",
+   "hex": "#45d8be",
+   "ramp": "T"
+  },
+  {
+   "index": 28,
+   "name": "mint",
+   "hex": "#adf6e0",
+   "ramp": "T"
+  },
+  {
+   "index": 29,
+   "name": "plumD",
+   "hex": "#3c1e6c",
+   "ramp": "V"
+  },
+  {
+   "index": 30,
+   "name": "plum",
+   "hex": "#6f41c6",
+   "ramp": "V"
+  },
+  {
+   "index": 31,
+   "name": "lilac",
+   "hex": "#a87bf3",
+   "ramp": "V"
+  },
+  {
+   "index": 32,
+   "name": "lavender",
+   "hex": "#dbc0ff",
+   "ramp": "V"
+  },
+  {
+   "index": 33,
+   "name": "wine",
+   "hex": "#6b1e33",
+   "ramp": "R"
+  },
+  {
+   "index": 34,
+   "name": "red",
+   "hex": "#c93440",
+   "ramp": "R"
+  },
+  {
+   "index": 35,
+   "name": "coral",
+   "hex": "#ff5f57",
+   "ramp": "R"
+  },
+  {
+   "index": 36,
+   "name": "peach",
+   "hex": "#ffa67c",
+   "ramp": "R"
+  },
+  {
+   "index": 37,
+   "name": "blush",
+   "hex": "#ffd4bf",
+   "ramp": "R"
+  },
+  {
+   "index": 38,
+   "name": "rust",
+   "hex": "#a6420c",
+   "ramp": "O"
+  },
+  {
+   "index": 39,
+   "name": "orange",
+   "hex": "#f2671b",
+   "ramp": "O"
+  },
+  {
+   "index": 40,
+   "name": "amber",
+   "hex": "#ffa83f",
+   "ramp": "O"
+  },
+  {
+   "index": 41,
+   "name": "gold",
+   "hex": "#d89b14",
+   "ramp": "Y"
+  },
+  {
+   "index": 42,
+   "name": "yellow",
+   "hex": "#ffd441",
+   "ramp": "Y"
+  },
+  {
+   "index": 43,
+   "name": "cream",
+   "hex": "#fff4a6",
+   "ramp": "Y"
+  },
+  {
+   "index": 44,
+   "name": "magenta",
+   "hex": "#c3387e",
+   "ramp": "P"
+  },
+  {
+   "index": 45,
+   "name": "pink",
+   "hex": "#ff80c0",
+   "ramp": "P"
+  },
+  {
+   "index": 46,
+   "name": "rock",
+   "hex": "#847fa8",
+   "ramp": "rock"
+  },
+  {
+   "index": 47,
+   "name": "rockL",
+   "hex": "#bab6d4",
+   "ramp": "rock"
+  },
+  {
+   "index": 48,
+   "name": "earth1",
+   "hex": "#2a130e",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 49,
+   "name": "earth2",
+   "hex": "#3c2019",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 50,
+   "name": "earth3",
+   "hex": "#693f25",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 51,
+   "name": "earth4",
+   "hex": "#a2703d",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 52,
+   "name": "earth5",
+   "hex": "#d4ac6c",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 53,
+   "name": "earth6",
+   "hex": "#f2d799",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 54,
+   "name": "earth7",
+   "hex": "#fff3d7",
+   "ramp": "earth",
+   "new": true
+  },
+  {
+   "index": 55,
+   "name": "grass8",
+   "hex": "#001d18",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 56,
+   "name": "grass9",
+   "hex": "#012c24",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 57,
+   "name": "grass10",
+   "hex": "#005031",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 58,
+   "name": "grass11",
+   "hex": "#007c37",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 59,
+   "name": "grass12",
+   "hex": "#38a840",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 60,
+   "name": "grass13",
+   "hex": "#7aca53",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 61,
+   "name": "grass14",
+   "hex": "#b4e664",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 62,
+   "name": "grass15",
+   "hex": "#fbf997",
+   "ramp": "grass",
+   "new": true
+  },
+  {
+   "index": 63,
+   "name": "rock16",
+   "hex": "#040a1d",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 64,
+   "name": "rock17",
+   "hex": "#14182b",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 65,
+   "name": "rock18",
+   "hex": "#332f49",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 66,
+   "name": "rock19",
+   "hex": "#4d4965",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 67,
+   "name": "rock20",
+   "hex": "#706b93",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 68,
+   "name": "rock21",
+   "hex": "#a3a0bd",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 69,
+   "name": "rock22",
+   "hex": "#d8d1e2",
+   "ramp": "rock",
+   "new": true
+  },
+  {
+   "index": 70,
+   "name": "water23",
+   "hex": "#000d2c",
+   "ramp": "water",
+   "new": true
+  },
+  {
+   "index": 71,
+   "name": "water24",
+   "hex": "#001b3f",
+   "ramp": "water",
+   "new": true
+  },
+  {
+   "index": 72,
+   "name": "water25",
+   "hex": "#003b7d",
+   "ramp": "water",
+   "new": true
+  },
+  {
+   "index": 73,
+   "name": "water26",
+   "hex": "#166abc",
+   "ramp": "water",
+   "new": true
+  },
+  {
+   "index": 74,
+   "name": "water27",
+   "hex": "#13a0f1",
+   "ramp": "water",
+   "new": true
+  },
+  {
+   "index": 75,
+   "name": "water28",
+   "hex": "#62d2ff",
+   "ramp": "water",
+   "new": true
+  },
+  {
+   "index": 76,
+   "name": "water29",
+   "hex": "#bcf4ff",
+   "ramp": "water",
+   "new": true
+  }
+ ]
+}

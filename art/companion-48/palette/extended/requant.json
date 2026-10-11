@@ -1,0 +1,18 @@
+{
+ "screen-pond-ext": {
+  "meanDE": 4.73,
+  "colours_used": 62
+ },
+ "screen-pond-48": {
+  "meanDE": 5.1,
+  "colours_used": 33
+ },
+ "screen-cliffs-ext": {
+  "meanDE": 5.25,
+  "colours_used": 47
+ },
+ "screen-cliffs-48": {
+  "meanDE": 5.57,
+  "colours_used": 27
+ }
+}
