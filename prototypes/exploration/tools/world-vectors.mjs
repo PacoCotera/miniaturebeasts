@@ -1,7 +1,9 @@
-// Golden vectors for the seeded world: per seed, a digest of the world (genWorld) and of up to 11 places (genPlace), hashed with
-// the game's own hash(). Not a suite: CI runs tests/world.test.mjs, which checks src/world.mjs against tests/world-vectors.json.
-//   node prototypes/exploration/tools/world-vectors.mjs                         digests from ../src/world.mjs, JSON to stdout
-//   node prototypes/exploration/tools/world-vectors.mjs --page <index.html>     digests from that page's own script, run in a vm
+// Golden vectors for the seeded world: per generator and seed, a digest of the world (genWorld) and of its places (genPlace), hashed
+// with the game's own hash(). Generator 1 has up to 11 places a seed; generator 2 up to 16 more, one per terrain side (placeKeys2).
+// Not a suite: CI runs tests/world.test.mjs, which checks src/world.mjs against tests/world-vectors.json.
+//   node prototypes/exploration/tools/world-vectors.mjs                         the whole file from ../src/world.mjs, JSON to stdout:
+//        gens["1"] is checked against the stored file and never re-captured (exits non-zero if it differs); gens["2"] is captured
+//   node prototypes/exploration/tools/world-vectors.mjs --page <index.html>     generator 1 from that page's own script, run in a vm
 //   node prototypes/exploration/tools/world-vectors.mjs --compare <index.html> [--seeds N]
 //        both, for the 16 vector seeds and seeds 0..N-1 (default 1000); exits non-zero on any difference. The page mode is slow.
 import { readFileSync } from "node:fs";
@@ -14,6 +16,7 @@ const HASH_NOTE = "hash() of src/world.mjs: FNV-1a 32 + murmur3 finaliser; H(nam
 const FEAT_EXTRA = ["full", "ch", "under"];
 
 const hex = h => (h >>> 0).toString(16).padStart(8, "0");
+const VECTORS_FILE = new URL("../tests/world-vectors.json", import.meta.url);
 
 // The places of a world, in the fixed order; repeats and missing ones are dropped.
 export function placeKeys(G, L, beacons, depots) {
@@ -35,17 +38,39 @@ export function placeKeys(G, L, beacons, depots) {
   return keys;
 }
 
+// Generator 2's extra places, after placeKeys: for each facing S, N, E, W, the lowest lower-side cell of a RAMP edge of that
+// facing, then the lowest upper-side one; then the same for CLIFF edges. A drop faces where its lower side lies.
+export function placeKeys2(G, L, beacons, depots, EDGE) {
+  const keys = placeKeys(G, L, beacons, depots), W = 16;
+  const add = c => { if (c != null && !keys.includes(String(c))) keys.push(String(c)); };
+  for (const kind of [EDGE.RAMP, EDGE.CLIFF]) for (const facing of ["S", "N", "E", "W"]) {
+    let lo = null, hi = null;
+    for (let i = 0; i < G.edge.length; i++) {
+      if (G.edge[i] !== kind) continue;
+      const a = i >> 1, b = (i & 1) ? a + W : a + 1, f = (i & 1) ? (G.level[a] > G.level[b] ? "S" : "N") : (G.level[a] > G.level[b] ? "E" : "W");
+      if (f !== facing) continue;
+      const low = G.level[a] < G.level[b] ? a : b, high = low === a ? b : a;
+      if (lo == null || low < lo) lo = low; if (hi == null || high < hi) hi = high;
+    }
+    add(lo); add(hi);
+  }
+  return keys;
+}
+
 // api: { hash, L, genWorld(seed) -> G, genPlace(G, seed, key) -> layout, beaconCells(G, seed) -> Set, depotCells(G, seed) -> Set }
 export function worldDigest(api, G) {
   const H = (name, values) => hex(api.hash(name, ...values));
-  return {
-    keys: Object.keys(G).filter(k => k !== "beacons" && k !== "depots").join(","),
+  const d = {
+    keys: G.gen === 2 ? Object.keys(G).join(",") : Object.keys(G).filter(k => k !== "beacons" && k !== "depots").join(","),
     land: H("land", G.land), ford: H("ford", G.ford), island: H("island", G.island), comp: H("comp", G.comp),
     gate: G.gate, mouth: G.mouth, deep: G.deep === undefined ? null : G.deep, swim: G.swim,
     swimDir: G.swimDir == null ? null : G.swimDir, spawns: [...G.spawns], glow: [...G.glow],
   };
+  if (G.gen === 2) Object.assign(d, { gen: G.gen, attempt: G.attempt, orient: G.orient, level: H("level", G.level), edge: H("edge", G.edge),
+    cross: G.cross.map(e => e.c + ":" + e.side + ":" + e.kind) });
+  return d;
 }
-export function placeDigest(api, lay) {
+export function placeDigest(api, lay, gen = 1) {
   const H = (name, values) => hex(api.hash(name, ...values));
   const stream = [];
   for (const f of lay.feats) {
@@ -64,6 +89,8 @@ export function placeDigest(api, lay) {
     key: lay.key, cell: lay.cell, cave: lay.cave, land: lay.land, base: lay.base, spawnPt: [lay.spawnPt.x, lay.spawnPt.y],
     tiles: H("tiles", lay.tiles), shelter: H("shelter", lay.shelter), reach: H("reach", lay.reach), sdist: H("sdist", lay.sdist),
     feats: lay.feats.length, featsHash: H("feats", stream),
+    ...(gen === 2 ? { terr: H("terr", lay.terr || new Uint8Array(lay.tiles.length)), tmask: H("tmask", lay.tmask || new Uint8Array(lay.tiles.length)),
+      stairs: lay.stairs || [] } : {}),
   };
 }
 export function seedDigest(api, seed) {
@@ -71,13 +98,14 @@ export function seedDigest(api, seed) {
   const world = worldDigest(api, G);
   world.beacons = [...api.beaconCells(G, seed)];
   world.depots = [...api.depotCells(G, seed)];
-  const places = placeKeys(G, api.L, world.beacons, world.depots).map(key => placeDigest(api, api.genPlace(G, seed, key)));
+  const keys = api.gen === 2 ? placeKeys2(G, api.L, world.beacons, world.depots, api.EDGE) : placeKeys(G, api.L, world.beacons, world.depots);
+  const places = keys.map(key => placeDigest(api, api.genPlace(G, seed, key), api.gen || 1));
   return { seed, world, places };
 }
 
-export async function moduleApi() {
+export async function moduleApi(gen = 1) {
   const W = await import(new URL("../src/world.mjs", import.meta.url));
-  return { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
+  return { gen, hash: W.hash, L: W.L, EDGE: W.EDGE, genWorld: s => W.genWorld(s, gen), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
 }
 // The page's whole script in a vm with the browser stubbed (the stub of freeze.test.mjs's page()); its own genWorld,
 // genPatch, genCave, beaconCells and depotCells, which read the page's globals G and S.
@@ -103,12 +131,13 @@ export function pageApi(file) {
   };
 }
 
-// One seed object per line; inside it, one line per place.
-export function format(seedObjs, capturedFrom) {
+// One seed object per line; inside it, one line per place. capturedFrom is generator 1's; generator 2 carries its own.
+export function format(seedObjs, capturedFrom, gen2 = null) {
   const seedLine = d => "{ \"seed\": " + JSON.stringify(d.seed) + ", \"world\": " + JSON.stringify(d.world) + ", \"places\": [\n" +
     d.places.map(p => "  " + JSON.stringify(p)).join(",\n") + " ] }";
   return "{ \"format\": 1, \"hash\": " + JSON.stringify(HASH_NOTE) + ",\n  \"capturedFrom\": " + JSON.stringify(capturedFrom) +
-    ", \"gens\": { \"1\": { \"seeds\": [\n" + seedObjs.map(seedLine).join(",\n") + "\n] } } }\n";
+    ", \"gens\": { \"1\": { \"seeds\": [\n" + seedObjs.map(seedLine).join(",\n") + "\n] }" +
+    (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " } }\n";
 }
 
 function headCommit() {
@@ -129,8 +158,12 @@ async function main(argv) {
     process.exitCode = bad.length ? 1 : 0;
     return;
   }
-  const api = opt("--page") ? pageApi(opt("--page")) : await moduleApi();
-  process.stdout.write(format(SEEDS.map(s => seedDigest(api, s)), headCommit()));
+  if (opt("--page")) { process.stdout.write(format(SEEDS.map(s => seedDigest(pageApi(opt("--page")), s)), headCommit())); return; }
+  // Generator 1 is never re-captured: the module's digests must equal the stored ones, which are kept with their capturedFrom.
+  const stored = JSON.parse(readFileSync(VECTORS_FILE, "utf8")), api1 = await moduleApi(1), g1 = SEEDS.map(s => seedDigest(api1, s));
+  if (JSON.stringify(g1) !== JSON.stringify(stored.gens["1"].seeds)) { console.error("generator 1 differs from tests/world-vectors.json; it is never re-captured"); process.exitCode = 1; return; }
+  const api2 = await moduleApi(2);
+  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: headCommit(), seeds: SEEDS.map(s => seedDigest(api2, s)) }));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) await main(process.argv.slice(2));
