@@ -2139,22 +2139,22 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 | Pages (in the slice) | 24, 56, 480, 488 and 520, 56, 480, 488 | — | Gutter 504 to 520 |
 | Margin life (in the slice) | 40, 464, 448, 72 and 536, 464, 400, 72 | — | Never over a frame, a rule, a name or a mark |
 | Cloth marker (in the slice) | 500, 48, 24, 264 | — | Centred on x 512, 4 px off the grid as a centred region may be |
-| Left page's frames | 40, 96, 464, 352 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
-| Right page's frames | 536, 96, 464, 352 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
+| Left page's frames | 40, 88, 464, 368 | `list` by `listPitch`, composition `spreadPage` | Places from (48, 112, 96, 112), pitch (112, 184), grid 4 × 2: items 0 to 7 |
+| Right page's frames | 536, 88, 464, 368 | `list` by `listPitch`, composition `spreadPage` | Places from (544, 112, 96, 112), the same pitch and grid: items 8 to 15 |
 | Frame columns | x 48, 160, 272, 384; 544, 656, 768, 880 | | Rows y 112 and 296 |
 | **Found plate (focal)** | frame + (8, 8), 80×96 | sprite `spread-plate-<SNN>-80x96` | In the 8 px mat; rendered or downsampled, never enlarged |
 | Met study | frame + (8, 8), 80×96 | sprite `spread-study-<SNN>-80x96` | |
-| Clan roundel | frame + (0, −16), 12×12 | sprite `clan-roundel-<Cnn>-12x12` | Centred on the rule's line (y 102 and 286); found and met only |
-| Clan rule | frame + (16, −12), 80×4 | rect in the clan's colour | y 100 and 284, 4 px after the roundel; found and met only |
+| Clan roundel | frame + (0, −18), 12×12 | sprite `clan-roundel-<Cnn>-12x12` | Centred on the rule's line (y 100 and 284); found and met only |
+| Clan rule | frame + (16, −14), 80×4 | rect in the clan's colour | y 98 to 102 and 282 to 286, 4 px after the roundel, 10 px of paper above the frame; found and met only |
 | Name | frame + (0, 120), 96×20 | text, 16 px, centred | y 232 and 416, on the caption rule at y 256 and 440 (the slice's). Widest today: Untuva, 53 px |
 | Gilt corner | frame + (88, −8), 16×16 | sprite `spread-gilt-corner-16x16` | Centred on the frame's top right corner; found and portrayed |
 | Progress | frame + (26, 152), 44×8 | four sprites, `spread-progress-full-8x8` or `spread-progress-empty-8x8`, 8×8 on a 12 pitch | y 264 and 448, centred on the frame, 8 px under the caption rule, 8 px over the next row's roundel and the margin life; found only |
 | Seal | frame + (88, 104), 16×16 | sprite `spread-seal-16x16` | Centred on the frame's bottom right corner; found and complete |
-| Focus | frame outset 4, radius 6: 104×120 | the ring | `rust` on paper; nothing lifts |
+| Focus | frame outset 4, radius 6: 104×120 | the ring | `rust` on paper; nothing lifts; drawn last, over the gilt corner and the seal (their offsets stand) |
 | Page-turn corner | 968, 512, 24, 24 | sprite `book-corner-turn-24x24`, part of `spreadPage` | Its own region, never in the stage slice; only with a second spread |
 | Message plate | centred on x 512, bottom at y 550 | the frame's | 225×36 for "Nothing is known here yet" (193 px of text and 2 × 16 padding); 271×36 for "Its Book needs its pod identified" (239 px) |
 
-`spreadPage` is a composition, not a word: a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is the ring's `rust` (C01 is `tealD`).
+`spreadPage` is a composition, not a word (the region does not clip; every part lies inside the region rect): a `list` by `listPitch` whose items are the frame's parts above (three sprites, four seed sprites, one rect, one text), each drawn only when its status gives it, plus the page-turn corner. The clan's colour comes from the frame's own clan id (`taxonomy.clan`) through the art director's table, `library.json` `spread.clanColours`; never from a pod pigment, which clans share. No clan colour is the ring's `rust` (C01 is `tealD`).
 
 ### 6. Interactions
 
@@ -2173,7 +2173,7 @@ The volume fills the stage. Each page holds a 4 × 2 grid of frames, 96×112 on 
 
 **Events:** none of its own (`spread.events` is empty). ✓ on a found frame is a cut to the Book (`spread.keys.confirm`); ← from the Book is a cut back with the ring on that species (`spread.keys.library`); the screen change is the host's, as everywhere.
 
-**Bound to the rules:** the frames are `spread(st, ids)` over `frameIds()`, sixteen to a spread; the status is `speciesStatus`; the gilt corner is any delivered portrait of a mibi of the species, released or not (`book(st, id).faceChoices` not empty), whether or not it was made the face; the seal is `fieldGuide(st, id).complete`; the progress is `min(4, floor(4 × found / (found + unseen)) + 1)` of `fieldGuide(st, id)`: under a quarter one seed, then two, three, and four from three quarters (complete shows four and the seal); the item's props are `{ id, status, name, clan, portrayed, complete, progress }`; the ring's frame is the Library's UI state (`ui.lib.i`, `intents/library.mjs`). Nothing is new state.
+**Bound to the rules:** the frames are `spread(st, ids)` over `frameIds()`, sixteen to a spread; the status is `speciesStatus`; the gilt corner is any delivered portrait of a mibi of the species, released or not (`book(st, id).faceChoices` not empty), whether or not it was made the face; the seal is `fieldGuide(st, id).complete`; the progress is `min(4, floor(4 × found / (found + unseen)) + 1)` of `fieldGuide(st, id)`: under a quarter one seed, then two, three, and four from three quarters (complete shows four and the seal); the item's props are `{ id, status, name, clan, portrayed, complete, progress, picture, roundel }`; the ring's frame is the Library's UI state (`ui.lib.i`, `intents/library.mjs`). Nothing is new state.
 
 Where the build changes what the sandbox reads today (`frame.json` `navigation.screens.library` gains its states and spec) is listed in `library.json` `spread.buildChanges`, and lands with slot 5's build.
 
@@ -2199,12 +2199,12 @@ Placed 1:1 at these sizes, never scaled or recoloured; the art director signs th
 | Id | Size | What | Placeholder |
 | --- | --- | --- | --- |
 | `library-stage-spread-1024x522` | 1024×522 | The stage: the journal open in the device's panel, boards, pages, the sixteen empty frames with mats, caption rules, margin life, marker. No plates, no clan rules, no words | Flat: `ground`, boards `bark`, pages `paper` edged `clay`, frames edged `bark` with a `sand` mat line, rules `clay`, the bands and marker dashed `clay`, labelled |
-| `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The species' placeholder render, downsampled; the accepted Pip for S01 |
+| `spread-plate-<SNN>-80x96` | 80×96 | Sixteen: the found plate, the species' type tipped in | The code rig's type specimen at 80×96 for all sixteen |
 | `spread-study-<SNN>-80x96` | 80×96 | Sixteen: the met pencil study | The index pass in `stone` line on `paper` |
-| `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `gold` L, 4 px |
+| `spread-gilt-corner-16x16` | 16×16 | The portrayed species' gilt corner | A `clay` L, 4 px thick, along the top and right edges |
 | `clan-roundel-<Cnn>-12x12` | 12×12 | Sixteen: the clan's roundel beside its rule, in the clan's colour | A disc in the clan's colour, edged `bark` |
 | `spread-progress-full-8x8`, `spread-progress-empty-8x8` | 8×8 | A step of the guide reached (a pressed seed, inked) and not yet (the seed in outline); the form is the UI designer's, the art director confirms it | An 8×8 `bark` disc; an 8×8 `clay` outline |
-| `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `rust` disc edged `bark` |
+| `spread-seal-16x16` | 16×16 | A complete guide, kin to `guide-seal-32` | A `sand` disc edged `bark` |
 
 ### Not designed yet
 
