@@ -3,7 +3,7 @@ import * as S from "../state.mjs";
 
 export const toPods = (h) => { const p = S.neediestPod(h.st); if (p) h.ui.pods.cur = p.id; h.ui.pods.view = "collection"; h.ui.pods.focus.set(null); h.goto("pods"); };
 const toVivarium = (h, id) => { const ui = h.ui; if (id != null && S.mibiById(h.st, id)) ui.hab.id = id; ui.hab.f = "resident"; h.goto("habitat"); };   // the ring on the resident; a new mibi opens in its meet (ui.meet), ended by the first press there
-const toLibrary = (h) => { const l = h.ui.lib; if (l.page == null) { l.page = 0; l.i = 0; } l.f = "spread"; h.goto("library"); };
+const toLibrary = (h) => { h.ui.lib.f = "spread"; h.goto("library"); };
 // The room's ✓: what needs the player (the notice's own action).
 export function doNeed(h, nd) {
   if (!nd) return;

@@ -459,8 +459,8 @@
     ],
     "screen": "library",
     "focus": "library",
-    "ok": null,
-    "subject": "",
+    "ok": "Open its Book",
+    "subject": "Loika",
     "idle": false
    },
    {
@@ -469,7 +469,7 @@
      {
       "t": "intent",
       "screen": "library",
-      "target": "screen",
+      "target": "frame.S01",
       "verb": "back"
      }
     ],

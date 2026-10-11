@@ -15,6 +15,7 @@ import { createStates } from "./create-states.mjs";
 import { incubatorStates } from "./incubator-states.mjs";
 import { vivariumStates } from "./vivarium-states.mjs";
 import { habitatStates } from "./habitat-states.mjs";
+import { libraryStates } from "./library-states.mjs";
 
 const golden = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../golden"), check = process.argv.includes("--check");
 const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' goldens" }, home: { states: homeStates, prefix: "", note: "Home's goldens: every capture point (the four states, one for each other state a region lists, the timed ones)" },
@@ -23,6 +24,7 @@ const SCREENS = { pods: { states: podsStates, prefix: "pods-", note: "Pods' gold
   incubator: { states: incubatorStates, prefix: "", note: "The Incubator's goldens: empty, growing (early, late), ready, the hatch at seven instants and growNow at two" },
   habitat: { states: habitatStates, prefix: "", note: "One mibi up close: rest, the meet (and its placeholder), out with the Companion, the card, a plate focused, the Companion module (a request waiting, away), Cross, Portrait, the Wild gate armed, a tile focused, twelve compact tiles, the four lights and the namer over it (opened, typed, the accents page, a refusal, empty, full)" },
   vivarium: { states: vivariumStates, prefix: "", note: "The Vivarium's whole: docked (the carried two asleep), away, an out mibi's tile focused, empty, a housed tile and a sleeper focused, twelve residents, and the walk 8000 ms in" },
+  library: { states: libraryStates, prefix: "", note: "The Library spread: the wireframe scene (ring on a found frame), a fresh world, the ring over a portrayed and complete frame (gilt and seal), and the Book not built after a tick on a found frame" },
   idle: { states: idleStates, prefix: "", note: "Idle's goldens: the whole screen with the carried set asleep, the Companion away, the nest alone, no line, and twelve residents 8000 ms into the walk" } };
 const want = process.argv.slice(2).filter((a) => SCREENS[a]), run = want.length ? want : Object.keys(SCREENS);
 const slug = (n) => n.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "").toLowerCase();

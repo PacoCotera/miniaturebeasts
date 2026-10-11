@@ -13,7 +13,7 @@ export function roomKey(h, key) {
   closeReport(h);   // a room key on Cargo's report closes the card and opens its section
   if (key === "home") ui.home.f = "room";
   else if (key === "research") { const p = ui.pods; p.cmp = null; p.wildArm = 0; const q = S.neediestPod(h.st); if (q) p.cur = q.id; p.view = "collection"; p.focusView = "collection"; p.focus.set(q ? "place." + Math.max(0, h.st.tray.findIndex((x) => x.id === q.id)) : null); }
-  else if (key === "library") { const l = ui.lib; if (l.page == null) { l.page = 0; l.i = 0; } l.f = "spread"; }
+  else if (key === "library") ui.lib.f = "spread";
   else if (key === "habitat") { ui.viv.f = null; ui.hab.wildArm = 0; }   // the Vivarium key: the ring on the mibi last seen up close, its resident else its tile (vivarium.json focus.entry.vivariumKey)
   h.goto(SCREEN_OF[key]);
   return true;

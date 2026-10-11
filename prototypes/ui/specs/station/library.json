@@ -42,17 +42,17 @@
      "markerNote": "the cloth marker over the gutter, centred on x 512, 4 px off the grid as a region centred on an axis may be",
      "around": "the 8 px between the stage's edge and the boards: the device's own panel the volume is held in (art director)"
     },
-    "keepClear": "nothing painted in the slice crosses a frame's place, its clan rule's row (y 100 to 104 and 284 to 288), its name's box, the corner and seal places or the turn region (968, 512, 24, 24): the margin life and the marker keep to their rects"
+    "keepClear": "nothing painted in the slice crosses a frame's place, its clan rule's row (y 98 to 102 and 282 to 286), its name's box, the corner and seal places or the turn region (968, 512, 24, 24): the margin life and the marker keep to their rects"
    },
    "leftPage": {
-    "rect": [40, 96, 464, 352], "component": "list", "layout": ["listPitch"], "build": "spreadPage",
+    "rect": [40, 88, 464, 368], "component": "list", "layout": ["listPitch"], "build": "spreadPage", "clip": "the region does not clip; every part lies inside the region rect",
     "places": { "first": [48, 112, 96, 112], "pitch": [112, 184], "grid": [4, 2] },
     "items": "spread items 0 to 7",
     "rects": [[48, 112, 96, 112], [160, 112, 96, 112], [272, 112, 96, 112], [384, 112, 96, 112], [48, 296, 96, 112], [160, 296, 96, 112], [272, 296, 96, 112], [384, 296, 96, 112]]
    },
    "turn": { "rect": [968, 512, 24, 24], "build": "spreadPage", "part": "turn", "slice": "book-corner-turn-24x24", "when": "another spread follows (more than sixteen species); never with sixteen, so not drawn in slot L", "note": "its own sprite, never painted into the stage slice: it shows only when the save has another spread" },
    "rightPage": {
-    "rect": [536, 96, 464, 352], "component": "list", "layout": ["listPitch"], "build": "spreadPage",
+    "rect": [536, 88, 464, 368], "component": "list", "layout": ["listPitch"], "build": "spreadPage", "clip": "the region does not clip; every part lies inside the region rect",
     "places": { "first": [544, 112, 96, 112], "pitch": [112, 184], "grid": [4, 2] },
     "items": "spread items 8 to 15",
     "rects": [[544, 112, 96, 112], [656, 112, 96, 112], [768, 112, 96, 112], [880, 112, 96, 112], [544, 296, 96, 112], [656, 296, 96, 112], [768, 296, 96, 112], [880, 296, 96, 112]]
@@ -67,13 +67,13 @@
    "_note": "one frame of spreadPage, offsets from its place (x, y, 96, 112). The ruled frame and its mat are the stage's; the build adds only what the status gives, in this order",
    "plate": { "at": [8, 8, 80, 96], "when": "found", "slice": "spread-plate-{SNN}-80x96", "note": "the focal thing: the only colour on the page" },
    "study": { "at": [8, 8, 80, 96], "when": "met", "slice": "spread-study-{SNN}-80x96" },
-   "clanRule": { "at": [16, -12, 80, 4], "when": "found or met", "draw": "rect", "colour": "derived.clan", "note": "the clan's flat ink rule over the frame (decided 2026-10-08; clanColours): y 100 to 104 on row 1, 284 to 288 on row 2, from x + 16 to the frame's right edge, beside the roundel; 8 px of paper between it and the frame. Never on an unmet frame" },
-   "roundel": { "at": [0, -16, 12, 12], "when": "found or met", "slice": "clan-roundel-{Cnn}-12x12", "note": "the clan's roundel mark beside the rule, so colour never carries the clan alone (the art director's table): its centre on the rule's centre line (y 102 and 286), 4 px of paper before the rule; 2 px clear of the ring's top edge; never on an unmet frame" },
-   "name": { "at": [0, 120, 96, 20], "when": "found or met", "px": 16, "weight": 400, "align": "centre", "lines": 1, "colour": { "found": "ink", "met": "stone" }, "text": "derived.name", "fit": "the widest of the sixteen, Untuva, is 53 px at 16: 21 px clear a side. A wider name comes back to the UI designer; never clipped, never shrunk", "note": "on the caption rule: y 232 to 252 on row 1, 416 to 436 on row 2; the rule at y 256 and 440 is the stage's" },
+   "clanRule": { "at": [16, -14, 80, 4], "when": "found or met", "draw": "rect", "colour": "derived.clan", "note": "the clan's flat ink rule over the frame (decided 2026-10-08; clanColours): y 98 to 102 on row 1, 282 to 286 on row 2, from x + 16 to the frame's right edge, beside the roundel; 10 px of paper between it and the frame. Never on an unmet frame" },
+   "roundel": { "at": [0, -18, 12, 12], "when": "found or met", "slice": "clan-roundel-{Cnn}-12x12", "note": "the clan's roundel mark beside the rule, so colour never carries the clan alone (the art director's table): its centre on the rule's centre line (y 100 and 284), 4 px of paper before the rule; 2 px clear of the ring's top edge; never on an unmet frame" },
+   "name": { "at": [0, 120, 96, 20], "when": "found or met", "px": 16, "weight": 400, "align": "centre", "lines": 1, "colour": { "found": "ink", "met": "stone" }, "text": "derived.name", "noDigits": true, "fit": "the widest of the sixteen, Untuva, is 53 px at 16: 21 px clear a side. A wider name comes back to the UI designer; never clipped, never shrunk", "note": "on the caption rule: y 232 to 252 on row 1, 416 to 436 on row 2; the rule at y 256 and 440 is the stage's" },
    "gilt": { "at": [88, -8, 16, 16], "when": "found and derived.portrayed", "slice": "spread-gilt-corner-16x16", "note": "centred on the frame's top right corner; it meets the clan rule's end and the plate's corner, overlapping neither" },
    "progress": { "at": [26, 152, 44, 8], "when": "found", "count": 4, "pitch": 12, "seed": [8, 8], "places": [[26, 152], [38, 152], [50, 152], [62, 152]], "slices": { "full": "spread-progress-full-8x8", "empty": "spread-progress-empty-8x8" }, "rule": "four seeds in a row, left to right: the first `derived.progress` full, the rest empty; a picture, never a figure or a word", "note": "under the caption rule, centred on the frame's axis (x + 48): y 264 to 272 on row 1 and 448 to 456 on row 2, 8 px under the caption rule, 8 px over the next row's roundel and 8 px over the margin life; clear of the gilt corner, the seal, the name, the rule and the roundel. The form is the UI designer's; the art director confirms it" },
    "seal": { "at": [88, 104, 16, 16], "when": "found and derived.complete", "slice": "spread-seal-16x16", "note": "centred on the frame's bottom right corner; clear of the plate and of the name's box, 8 px from the next frame" },
-   "props": "per item { id, status, name, clan, portrayed, complete, progress }: status found | met | unmet; clan the clan id (C01 to C16) or null; portrayed and complete booleans, false unless found; progress 1 to 4 when found, else null (derived)",
+   "props": "per item { id, status, name, clan, portrayed, complete, progress, picture, roundel }: status found | met | unmet; clan the clan id (C01 to C16) or null; portrayed and complete booleans, false unless found; progress 1 to 4 when found, else null (derived)",
    "met": "the study, its clan rule and roundel, its name in stone; no gilt corner, no seal, no progress",
    "unmet": "nothing: the stage's empty frame alone, no name, no rule, no roundel, no mark, no progress, no cue of what waits (decisions.md 2026-10-08)",
    "lift": 0,
@@ -81,7 +81,7 @@
   },
   "focus": {
    "initial": "derived.lastOn; with nothing kept (a fresh world), frame.S01, the first frame",
-   "targets": { "frame": { "group": "frame", "id": "frame.<SNN>", "ring": "round", "box": "the frame's place (leftPage or rightPage rects)", "ringBox": "[x − 4, y − 4, 104, 120]", "colour": "frame.json focus.ring.onPaper (rust)", "every": "all sixteen frames, found, met or unmet: an empty frame is a place too, and the ring walks the grid without holes", "lift": 0, "enabled": "all sixteen; ✓ on an unmet frame reaches the intent table, which shows strings.unmet; the cap is dropped by line.unmet.action null" } },
+   "targets": { "frame": { "group": "frame", "id": "frame.<SNN>", "ring": "round", "box": "the frame's place (leftPage or rightPage rects)", "ringBox": "[x − 4, y − 4, 104, 120]", "colour": "frame.json focus.ring.onPaper (rust)", "every": "all sixteen frames, found, met or unmet: an empty frame is a place too, and the ring walks the grid without holes", "lift": 0, "ringOrder": "the ring draws last, over the gilt corner and the seal; their offsets stand", "enabled": "all sixteen; ✓ on an unmet frame reaches the intent table, which shows strings.unmet; the cap is dropped by line.unmet.action null" } },
    "graph": {
     "fallback": "none",
     "frame": { "left": { "nearestIn": "frame", "ahead": true }, "right": { "nearestIn": "frame", "ahead": true }, "up": { "nearestIn": "frame", "ahead": true }, "down": { "nearestIn": "frame", "ahead": true } }
@@ -118,7 +118,7 @@
    "met": { "action": null, "subject": "strings.subjects.met", "need": "the frame's notice", "back": "strings.back" },
    "unmet": { "action": null, "subject": "strings.subjects.unmet", "need": "the frame's notice", "back": "strings.back" }
   },
-  "colours": { "nameFound": "ink", "nameMet": "stone", "ring": "rust", "placeholderPaper": "paper", "placeholderEdge": "clay", "placeholderFrame": "bark", "placeholderMat": "sand", "placeholderBoards": "bark", "placeholderGilt": "gold", "placeholderSeal": "rust", "placeholderStudy": "stone" },
+  "colours": { "nameFound": "ink", "nameMet": "stone", "ring": "rust", "placeholderPaper": "paper", "placeholderEdge": "clay", "placeholderFrame": "bark", "placeholderMat": "sand", "placeholderBoards": "bark", "placeholderGilt": "clay", "placeholderSeal": "sand", "placeholderStudy": "stone" },
   "strings": {
    "_note": "the copywriter's slots. Today's words come from the old spread section (Open, an empty frame) and from intents/library.mjs (the plate); the copywriter signed open, subjects.met, met and unmet on 2026-10-10 02:16; found, the unmet subject and back are unchanged. Slot rules: the action a verb phrase of four words or fewer, the subject six words or fewer with no digits, the plate one sentence",
    "title": "Library",
@@ -138,21 +138,21 @@
    "spread-plate-{SNN}-80x96": "new, sixteen (S01 to S16). The found plate: the species' type, tipped in, painted at Pip's craft, rendered at 80×96 or downsampled, never enlarged",
    "spread-study-{SNN}-80x96": "new, sixteen. The met study: a pencil field study of the species, grey line on the paper",
    "spread-gilt-corner-16x16": "new. The gilt corner of a portrayed species, centred on the frame's top right corner",
-   "spread-progress-full-8x8": "new. One step of a found species' guide progress: a pressed seed, inked full",
-   "spread-progress-empty-8x8": "new. A step not yet reached: the same seed in outline on the paper",
-   "clan-roundel-{Cnn}-12x12": "new, sixteen (C01 to C16). The clan's roundel mark beside its rule, in the clan's colour (clanColours), at 12×12",
+   "spread-progress-full-8x8": "new. One step of a found species' guide progress: a pressed seed, inked full. Signed and placed",
+   "spread-progress-empty-8x8": "new. A step not yet reached: the same seed in outline on the paper. Signed and placed",
+   "clan-roundel-{Cnn}-12x12": "new, sixteen (C01 to C16). The clan's roundel mark beside its rule, in the clan's colour (clanColours), at 12×12. Signed, placed in L",
    "spread-seal-16x16": "new. The seal of a complete guide at the spread's size, kin to guide-seal-32 (painted at 16 or downsampled from it, never enlarged)"
   },
   "placeholders": {
    "_note": "labelled stand-ins the build places until each master is signed; entered in the placeholder register at these sizes",
-   "library-stage-spread-1024x522": "flat: the stage in `ground`, the boards in `bark`, each page `paper` with a 1 px `clay` edge, each frame a 1 px `bark` outline with a `sand` mat band 8 px inside, the caption rules 1 px `clay`; the margin bands and the marker as 1 px dashed `clay` outlines; labelled \"spread stage, placeholder\" in the bottom margin",
-   "spread-plate-{SNN}-80x96": "the species' placeholder render (the type specimen), downsampled to 80×96; the accepted Pip for S01",
+   "library-stage-spread-1024x522": "flat: the stage in `ground`, the boards in `bark`, each page `paper` with a 1 px `clay` edge, each frame a 1 px `bark` outline with a `sand` mat band 8 px inside, the caption rules 1 px `clay`; the margin bands and the marker as 1 px dashed `clay` outlines",
+   "spread-plate-{SNN}-80x96": "the code rig's type specimen at 80×96 for all sixteen",
    "spread-study-{SNN}-80x96": "the index pass in `stone` line on `paper`",
-   "spread-gilt-corner-16x16": "a 16×16 `gold` L, 4 px thick, along the top and right edges",
+   "spread-gilt-corner-16x16": "a 16×16 `clay` L, 4 px thick, along the top and right edges",
    "spread-progress-full-8x8": "an 8×8 `bark` disc",
    "spread-progress-empty-8x8": "an 8×8 disc outline, 1 px `clay`, paper inside",
    "clan-roundel-{Cnn}-12x12": "a 12×12 disc in the clan's colour (clanColours) with a 1 px `bark` edge",
-   "spread-seal-16x16": "a 16×16 `rust` disc with a 1 px `bark` edge"
+   "spread-seal-16x16": "a 16×16 `sand` disc with a 1 px `bark` edge"
   },
   "buildChanges": [
    { "file": "prototypes/ui/specs/station/frame.json", "key": "navigation.screens.library", "now": {"parent": "home", "back": "Home"}, "becomes": {"parent": "home", "back": "Home", "states": ["spread"], "spec": "library.json"}, "when": "slot 5, L: the Library spread, in the build's own change: the sandbox reads frame.json navigation (nav.mjs parentOf and backWord, host.mjs), so the spec PR leaves it as it is" },
