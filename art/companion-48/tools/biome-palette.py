@@ -10,7 +10,8 @@ wood, accent). Colours in the teal band (hue 160-215, chroma over 20) are tagged
 lightness and chroma turned to blue-violet (hue 255), so the band can be swapped if the owner says no to teal.
 Writes biome-meadow.json and biome-meadow.png (the set by material, dark to light), then the scene at 1x snapped to core + biome,
 its two screens (1x, 3x), and the swap version of each screen.
-usage: python3 -I biome-palette.py PAINTING OUT_DIR"""
+usage: python3 -I biome-palette.py PAINTING OUT_DIR [--flat]
+(--flat: the owner's flat ramps, fewer wider steps per material and lawn and water banded hard, no soft gradients)"""
 import json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import numpy as np
@@ -40,7 +41,9 @@ def material(c):
     m[(ch > 40) & ((h >= 300) | (h < 40))] = "accent"
     m[(ch >= 14) & (ch <= 40) & ((h >= 300) | (h < 40))] = "wood"
     return m
-BUDGET = {"grass": 24, "earth": 10, "wood": 8, "rock": 16, "water": 16, "accent": 6}   # 80 biome colours by material
+FLAT = "--flat" in sys.argv
+BUDGET = ({"grass": 12, "earth": 8, "wood": 6, "rock": 12, "water": 12, "accent": 6} if FLAT       # flat ramps: fewer, wider steps
+          else {"grass": 24, "earth": 10, "wood": 8, "rock": 16, "water": 16, "accent": 6})
 mS = material(S); C = []
 for mat, k in BUDGET.items():
     Sm = S[mS == mat]
@@ -85,6 +88,21 @@ sw.resize((sw.width * 2, sw.height * 2), Image.NEAREST).save(os.path.join(out, "
 # the scene snapped to core + biome (nearest in Lab), and the teal swap
 PAL = np.array([hx(c["hex"]) for c in cols]); PL = lab(PAL)
 idx = np.concatenate([((X[s:s + 20000, None] - PL[None]) ** 2).sum(-1).argmin(1) for s in range(0, len(X), 20000)]).reshape(A.shape[:2])
+if FLAT:
+    # no soft gradients (owner): on lawn and water, each pixel takes the most common colour of its 3x3 neighbourhood when that
+    # colour holds 5 of the 9 and is of the same material, once (speckle goes, tuft and clover clusters stay); a gradient becomes hard-edged bands, and rock, wood, outlines and flowers are left as drawn
+    matc = np.array([c.get("material", "core") for c in cols])
+    for _ in range(1):
+        nb = idx.copy(); Hh, Ww = idx.shape
+        for y in range(1, Hh - 1):
+            row = idx[y]
+            for x in range(1, Ww - 1):
+                m = matc[row[x]]
+                if m not in ("grass", "water"): continue
+                v, c = np.unique(idx[y - 1:y + 2, x - 1:x + 2], return_counts=True)
+                best = v[c.argmax()]
+                if matc[best] == m and c.max() >= 5: nb[y, x] = best
+        idx = nb
 ALT = PAL.copy()
 for k, c in enumerate(cols):
     if c.get("teal"): ALT[k] = hx(c["alt"])

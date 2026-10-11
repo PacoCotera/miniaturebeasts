@@ -2,7 +2,7 @@
  "proposal": true,
  "depth": "8-bit indexed, up to 256",
  "core": 48,
- "biome": 71,
+ "biome": 48,
  "colours": [
   {
    "index": 0,
@@ -294,441 +294,299 @@
   },
   {
    "index": 48,
-   "hex": "#887153",
+   "hex": "#857541",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 49,
-   "hex": "#857641",
+   "hex": "#8a7456",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 50,
-   "hex": "#98704a",
+   "hex": "#9a734b",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 51,
-   "hex": "#a08a65",
+   "hex": "#a68d65",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 52,
-   "hex": "#ac8b55",
+   "hex": "#a78f4c",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 53,
-   "hex": "#a59049",
+   "hex": "#c2a376",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 54,
-   "hex": "#c1a070",
+   "hex": "#cbbc56",
    "set": "meadow",
    "material": "earth"
   },
   {
    "index": 55,
-   "hex": "#c1aa83",
+   "hex": "#243e23",
    "set": "meadow",
-   "material": "earth"
+   "material": "grass"
   },
   {
    "index": 56,
-   "hex": "#ccbd56",
+   "hex": "#345d34",
    "set": "meadow",
-   "material": "earth"
+   "material": "grass"
   },
   {
    "index": 57,
-   "hex": "#213c21",
+   "hex": "#3a773b",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 58,
-   "hex": "#275529",
+   "hex": "#418338",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 59,
-   "hex": "#316822",
+   "hex": "#727f3d",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 60,
-   "hex": "#476544",
+   "hex": "#4f913a",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 61,
-   "hex": "#3a773d",
+   "hex": "#619d3b",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 62,
-   "hex": "#3c7e3a",
+   "hex": "#819c76",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 63,
-   "hex": "#717c3d",
+   "hex": "#6ca838",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 64,
-   "hex": "#438836",
+   "hex": "#85b43f",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 65,
-   "hex": "#538e42",
+   "hex": "#84b666",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 66,
-   "hex": "#51933b",
+   "hex": "#a6ba44",
    "set": "meadow",
    "material": "grass"
   },
   {
    "index": 67,
-   "hex": "#599831",
+   "hex": "#18211a",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 68,
-   "hex": "#749532",
+   "hex": "#332c38",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 69,
-   "hex": "#79926e",
+   "hex": "#41322d",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 70,
-   "hex": "#629e3f",
+   "hex": "#2b3b34",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 71,
-   "hex": "#6fa161",
+   "hex": "#49414d",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 72,
-   "hex": "#6da63c",
+   "hex": "#5c564b",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 73,
-   "hex": "#6aa936",
+   "hex": "#635967",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 74,
-   "hex": "#80b33d",
+   "hex": "#7a717e",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 75,
-   "hex": "#8bb13c",
+   "hex": "#828176",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 76,
-   "hex": "#a2b042",
+   "hex": "#a4999f",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 77,
-   "hex": "#87bc65",
+   "hex": "#dbeee5",
    "set": "meadow",
-   "material": "grass"
+   "material": "rock"
   },
   {
    "index": 78,
-   "hex": "#acc344",
+   "hex": "#032f54",
    "set": "meadow",
-   "material": "grass"
+   "material": "water"
   },
   {
    "index": 79,
-   "hex": "#9ecc5b",
+   "hex": "#123149",
    "set": "meadow",
-   "material": "grass"
+   "material": "water"
   },
   {
    "index": 80,
-   "hex": "#b9d19d",
-   "set": "meadow",
-   "material": "grass"
-  },
-  {
-   "index": 81,
-   "hex": "#1e1812",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 82,
-   "hex": "#182823",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 83,
-   "hex": "#2e2832",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 84,
-   "hex": "#313529",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 85,
-   "hex": "#43322d",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 86,
-   "hex": "#403745",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 87,
-   "hex": "#2f443d",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 88,
-   "hex": "#454046",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 89,
-   "hex": "#564d5c",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 90,
-   "hex": "#615a4f",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 91,
-   "hex": "#6d6472",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 92,
-   "hex": "#837b86",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 93,
-   "hex": "#848377",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 94,
-   "hex": "#a69ba1",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 95,
-   "hex": "#dbefe6",
-   "set": "meadow",
-   "material": "rock"
-  },
-  {
-   "index": 96,
-   "hex": "#071937",
-   "set": "meadow",
-   "material": "water"
-  },
-  {
-   "index": 97,
-   "hex": "#033054",
-   "set": "meadow",
-   "material": "water"
-  },
-  {
-   "index": 98,
-   "hex": "#133951",
-   "set": "meadow",
-   "material": "water"
-  },
-  {
-   "index": 99,
    "hex": "#1d473f",
    "set": "meadow",
    "material": "water"
   },
   {
-   "index": 100,
-   "hex": "#0c4872",
+   "index": 81,
+   "hex": "#0c4972",
    "set": "meadow",
    "material": "water"
   },
   {
-   "index": 101,
-   "hex": "#1f4e3f",
+   "index": 82,
+   "hex": "#1f4f40",
    "set": "meadow",
    "material": "water",
    "teal": true,
-   "alt": "#1f4a65"
+   "alt": "#204a65"
   },
   {
-   "index": 102,
-   "hex": "#104f75",
+   "index": 83,
+   "hex": "#135375",
    "set": "meadow",
    "material": "water"
   },
   {
-   "index": 103,
-   "hex": "#1c6586",
+   "index": 84,
+   "hex": "#1d6888",
    "set": "meadow",
    "material": "water"
   },
   {
-   "index": 104,
-   "hex": "#227893",
+   "index": 85,
+   "hex": "#227993",
    "set": "meadow",
    "material": "water"
   },
   {
-   "index": 105,
-   "hex": "#31929e",
+   "index": 86,
+   "hex": "#3d9ba6",
    "set": "meadow",
    "material": "water",
    "teal": true,
-   "alt": "#528cb4"
+   "alt": "#5c95bd"
   },
   {
-   "index": 106,
-   "hex": "#35a9a7",
+   "index": 87,
+   "hex": "#38ada7",
    "set": "meadow",
    "material": "water",
    "teal": true,
-   "alt": "#58a0d1"
+   "alt": "#58a4d6"
   },
   {
-   "index": 107,
-   "hex": "#42b2a5",
+   "index": 88,
+   "hex": "#6cbaa3",
    "set": "meadow",
    "material": "water",
    "teal": true,
-   "alt": "#5aa9dd"
+   "alt": "#74b2e0"
   },
   {
-   "index": 108,
-   "hex": "#67ba9f",
+   "index": 89,
+   "hex": "#a7e4de",
    "set": "meadow",
    "material": "water",
    "teal": true,
-   "alt": "#6cb2e3"
+   "alt": "#b7ddfe"
   },
   {
-   "index": 109,
-   "hex": "#75bac8",
-   "set": "meadow",
-   "material": "water"
-  },
-  {
-   "index": 110,
-   "hex": "#7ebead",
-   "set": "meadow",
-   "material": "water",
-   "teal": true,
-   "alt": "#88b7dc"
-  },
-  {
-   "index": 111,
-   "hex": "#b0ece4",
-   "set": "meadow",
-   "material": "water",
-   "teal": true,
-   "alt": "#bfe5ff"
-  },
-  {
-   "index": 112,
-   "hex": "#3d2411",
+   "index": 90,
+   "hex": "#3f2811",
    "set": "meadow",
    "material": "wood"
   },
   {
-   "index": 113,
+   "index": 91,
    "hex": "#3e3248",
    "set": "meadow",
    "material": "wood"
   },
   {
-   "index": 114,
-   "hex": "#4c4020",
+   "index": 92,
+   "hex": "#5f4631",
    "set": "meadow",
    "material": "wood"
   },
   {
-   "index": 115,
-   "hex": "#604331",
-   "set": "meadow",
-   "material": "wood"
-  },
-  {
-   "index": 116,
+   "index": 93,
    "hex": "#655970",
    "set": "meadow",
    "material": "wood"
   },
   {
-   "index": 117,
-   "hex": "#755b44",
+   "index": 94,
+   "hex": "#6c5c36",
    "set": "meadow",
    "material": "wood"
   },
   {
-   "index": 118,
-   "hex": "#706137",
+   "index": 95,
+   "hex": "#7a583d",
    "set": "meadow",
    "material": "wood"
   }
