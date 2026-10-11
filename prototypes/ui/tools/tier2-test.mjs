@@ -10,7 +10,7 @@
 //     --set s04-104 ...                                    (one --set per size; the options after a --set belong to it)
 //     overrides: --head-mask png  --shadow-rows y0-y1  --belly-y N  --amplitude k  --no-check  --band y0-y1  --holds b0,b1,b2,b1back  --phase-ms N  --seconds N
 //   A source is a file path, or `<ref>@<sha>:<path>` read read-only with `git show` (masters-pods is a branch of this repository: `git fetch origin masters-pods` first). Each source's SHA-256 goes in the CSV and must match the JSON's.
-// Measures (the definitions are in prototypes/ui/README.md): M1 determinism, M2 palette, M3 silhouette, M4 outline, M5 fit to the painted end and M5a to the measured profile,
+// Measures (the definitions are in prototypes/ui/README.md): M1 determinism, M2 palette, M3 silhouette (relative, two thresholds), M4 outline, M5 fit to the painted end and M5a to the measured profile,
 // M6 readable at walker size, M7 warp time, M8 motion (changed pixels outside the moving band, with and without the warp).
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
@@ -50,14 +50,15 @@ const expectSha = (buf, want, what) => { if (want && sha256(buf) !== want) throw
 export const decodeImage = (buf) => { const p = decodePNG(buf); return { w: p.width, h: p.height, data: new Uint8ClampedArray(p.data) }; };
 export const blank = (w, h) => ({ w, h, data: new Uint8ClampedArray(w * h * 4) });
 const inkMask = (img) => { const m = new Uint8Array(img.w * img.h); for (let i = 0; i < m.length; i++) m[i] = img.data[i * 4 + 3] > 0 ? 1 : 0; return m; };
-const opaqueMask = (img) => { const m = new Uint8Array(img.w * img.h); for (let i = 0; i < m.length; i++) m[i] = img.data[i * 4 + 3] > OPAQUE ? 1 : 0; return m; };
+const opaqueMask = (img, thr = OPAQUE) => { const m = new Uint8Array(img.w * img.h); for (let i = 0; i < m.length; i++) m[i] = img.data[i * 4 + 3] > thr ? 1 : 0; return m; };
 
 // The warp with the head layer. layers [{ field, t }] add their r(t·d) before the one sample (never a warp of a warp), t in 1/16 steps; out(x, y) = img(x − Σ r(t·dx), y − Σ r(t·dy)).
-// A source outside the picture is transparent; a source inside the head mask takes the first non-head pixel below it in that column, else the nearest above, else transparent
+// A source outside the picture is transparent; a destination above the head's top in the sampled column that samples into the head is transparent; any other source inside the head mask takes the first non-head pixel below it in that column, else the nearest above, else transparent
 // (a clamp miss, counted in stats.clampMisses). With drawHead the head is then drawn unwarped: out = img wherever the mask is set. drawHead false gives the body layer alone.
 export function warp(img, layers, { headMask = null, drawHead = true, stats = null } = {}) {
   const { w, h } = img, out = blank(w, h), src = img.data, dst = out.data;
   for (const l of layers) if (l.field.w !== w || l.field.h !== h) throw new Error(`field ${l.field.w}x${l.field.h} does not fit the picture ${w}x${h}`);
+  let headTop = null; if (headMask) { headTop = new Int32Array(w).fill(h); for (let x = 0; x < w; x++) for (let y = 0; y < h; y++) if (headMask[y * w + x]) { headTop[x] = y; break; } }
   const ts = layers.map((l) => quantT(l.t)), copy = (i, j) => { dst[i] = src[j]; dst[i + 1] = src[j + 1]; dst[i + 2] = src[j + 2]; dst[i + 3] = src[j + 3]; };
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
     const i = y * w + x;
@@ -66,6 +67,7 @@ export function warp(img, layers, { headMask = null, drawHead = true, stats = nu
     const sx = x - ox; let sy = y - oy;
     if (sx < 0 || sy < 0 || sx >= w || sy >= h) continue;
     if (headMask && headMask[sy * w + sx]) {
+      if (y < headTop[sx]) continue;                           // above the head's top in this column: sky the unwarped head would have covered, transparent
       let yy = sy; while (yy < h && headMask[yy * w + sx]) yy++;
       if (yy >= h) { yy = sy; while (yy >= 0 && headMask[yy * w + sx]) yy--; }
       if (yy < 0) { if (stats) stats.clampMisses++; continue; }
@@ -107,8 +109,8 @@ export function newColours(input, output) {
   return n;
 }
 // M3: opaque 8-connected components, enclosed transparent holes (4-connected transparent regions that never reach the border), orphan pixels (opaque, no opaque 8-neighbour).
-export function silhouette(img) {
-  const { w, h } = img, m = opaqueMask(img), label = new Int32Array(w * h);
+export function silhouette(img, thr = OPAQUE) {
+  const { w, h } = img, m = opaqueMask(img, thr), label = new Int32Array(w * h);
   const flood = (start, want, nb) => { const stack = [start]; label[start] = 1; let touches = false; while (stack.length) { const i = stack.pop(), x = i % w, y = (i / w) | 0; if (x === 0 || y === 0 || x === w - 1 || y === h - 1) touches = true; for (const [dx, dy] of nb) { const nx = x + dx, ny = y + dy; if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue; const j = ny * w + nx; if (m[j] === want && !label[j]) { label[j] = 1; stack.push(j); } } } return touches; };
   const N8 = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]], N4 = [[0, -1], [-1, 0], [1, 0], [0, 1]];
   let components = 0, holes = 0, orphans = 0;
@@ -231,19 +233,20 @@ export function runSet(set, opts = {}) {
   const matrix = [painted.down ?? null, warped.down ?? null, stand, warped.up ?? null, painted.up ?? null], names = ["painted-down", "warped-down", "stand", "warped-up", "painted-up"];
   matrix.forEach((img, i) => { if (img) files.set(`${set.name}/${size}-${names[i]}.png`, png(img)); });
 
-  const sil0 = silhouette(stand), out0 = outlineIrregular(stand), headEdge = headMask ? (() => { for (let x = 0; x < stand.w; x++) for (let y = 0; y < stand.h; y++) if (headMask[y * stand.w + x]) return x; return stand.w; })() : stand.w;
-  row(size, "M3", "stand", `${sil0.components} comp, ${sil0.holes} holes, ${sil0.orphans} orphans`, "info");
+  const standS0 = silhouette(stand, 0), standS1 = silhouette(stand, OPAQUE), sil0 = standS1, out0 = outlineIrregular(stand), headEdge = headMask ? (() => { for (let x = 0; x < stand.w; x++) for (let y = 0; y < stand.h; y++) if (headMask[y * stand.w + x]) return x; return stand.w; })() : stand.w;
+  row(size, "M3", "stand strict counts", `${sil0.components} comp, ${sil0.holes} holes, ${sil0.orphans} orphans`, "info");
   row(size, "M4", "stand irregular", out0.irregular, "", "info");
   const L5 = M5_LIMITS[size], sil = (s) => `${s.components} comp, ${s.holes} holes, ${s.orphans} orphans`;
   for (const e of live) {
     const nc = newColours(stand, warped[e]); row(size, "M2", `warped-${e}`, nc, 0, nc === 0 ? "pass" : "FAIL");
     const s = silhouette(warped[e]), sb = silhouette(wbody[e]);
-    row(size, "M3", `warped-${e} (head drawn)`, sil(s), "1 comp, 0 holes, 0 orphans", s.components === 1 && s.holes === 0 && s.orphans === 0 ? "pass" : "FAIL");
-    row(size, "M3", `warped-${e} not worse than the stand`, `${s.components - sil0.components} comp, ${s.holes - sil0.holes} holes, ${s.orphans - sil0.orphans} orphans`, "<= 0 each", s.components <= sil0.components && s.holes <= sil0.holes && s.orphans <= sil0.orphans ? "pass" : "FAIL");
-    row(size, "M3", `warped-${e} body layer alone`, sil(sb), "info", "info");
+    row(size, "M3", `warped-${e} strict counts (head drawn)`, sil(s), "1 comp, 0 holes, 0 orphans: information only", "info");
+    const rel = (img, base0, base110, what) => { const c0 = silhouette(img, 0), c1 = silhouette(img, OPAQUE), ok = c0.components <= base0.components && c0.holes <= base0.holes && c0.orphans <= base0.orphans && c1.components <= base110.components && c1.holes <= base110.holes && c1.orphans <= base110.orphans; row(size, "M3", what, `alpha>0 ${c0.components}/${c0.holes}/${c0.orphans}, alpha>110 ${c1.components}/${c1.holes}/${c1.orphans} (components/holes/orphans)`, `<= the unwarped: alpha>0 ${base0.components}/${base0.holes}/${base0.orphans}, alpha>110 ${base110.components}/${base110.holes}/${base110.orphans}`, ok ? "pass" : "FAIL"); };
+    rel(warped[e], standS0, standS1, `warped-${e} not worse than its own unwarped picture`);
+    rel(wbody[e], standS0, standS1, `warped-${e} body layer alone, not worse than the unwarped body layer`);
     const o = outlineIrregular(warped[e]), lim = Math.floor(out0.irregular * (1 + M4_SLACK)); row(size, "M4", `warped-${e} irregular`, o.irregular, lim, o.irregular <= lim ? "pass" : "FAIL");
     row(size, "clamp", `misses (${e}, final)`, stats.clampMisses, 0, stats.clampMisses === 0 ? "pass" : "FAIL"); stats.clampMisses = 0;
-    const lc = legCompression(fields[e], stand); row(size, "legs", `leg compression px (${e})`, lc, "", "info");
+    const lc = legCompression(fields[e], stand), lcFixed = fields[e].bellyFixed; row(size, "legs", `leg compression px (${e})`, lc, lcFixed ? 0 : "", lcFixed ? (lc === 0 ? "pass" : "FAIL") : "info");
     row(size, "field", `${e} max |d| px / stretch / shear`, `${fields[e].maxD.toFixed(2)} / ${fields[e].maxStretch.toFixed(3)} / ${fields[e].maxShear.toFixed(3)}`, `${fmt(({ "304x312": 12, "144x152": 6, "104x112": 4, "96x88": 3 })[size] ?? "")} / 0.25 / 0.5`, "pass");
     if (lm?.toplineProfile && size === "304x312" && headMask) { const p = profileFit(stand, warped[e], lm.toplineProfile, e, headEdge); row(size, "M5a", `${e} top edge vs the measured profile, ${p.columns} columns x <= ${headEdge - 6}`, `max ${p.max.toFixed(2)} (x ${p.worst}), mean ${p.mean.toFixed(2)}`, `${M5A.column} / ${M5A.mean}`, p.max <= M5A.column && p.mean <= M5A.mean ? "pass" : "FAIL"); }
     else row(size, "M5a", e, size === "304x312" ? "no toplineProfile or head mask" : "only at 304x312", "", "n/a");
@@ -276,7 +279,11 @@ export function runSet(set, opts = {}) {
   for (const p of pairs) {
     try {
       const aBuf = readSource(p.a); expectSha(aBuf, p.sha256?.[0], `${p.id} a`);
-      if (p.b?.bake) { if (decodeImage(aBuf).w === stand.w && sha256(aBuf) !== sha256(standBuf)) throw new Error(`${p.id}: a is not this set's stand; the run stops`); row(size, "M8", `${p.id} a sha256 (the stand-b rows above run on it)`, sha256(aBuf), "", "info"); continue; }
+      if (p.b?.bake) {
+        if (decodeImage(aBuf).w !== stand.w) { row(size, "M8", p.id, `a is not ${size}`, "", "n/a"); continue; }
+        if (sha256(aBuf) !== sha256(standBuf)) throw new Error(`${p.id}: a is not this set's stand; the run stops`);
+        row(size, "M8", `${p.id} a is this stand (sha256 ${sha256(aBuf).slice(0, 12)}); the stand-b rows above run on it`, "", "", "info"); continue;
+      }
       const a = decodeImage(aBuf);
       if (a.w !== stand.w || a.h !== stand.h) { row(size, "M8", p.id, `a is ${a.w}x${a.h}, not this set's ${size}`, "", "n/a"); continue; }
       let bandMask; const spec = ov.band ? ov.band.split("-").map(Number) : p.band;

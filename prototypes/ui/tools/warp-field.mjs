@@ -116,13 +116,19 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   let rows = pic.fieldZeroRows ? [[sy(pic.fieldZeroRows[0]), Math.min(h - 1, sy(pic.fieldZeroRows[1]))]] : [];
   if (overrides.shadowRows) { rows = overrides.shadowRows; used.push("shadow-rows"); }
   for (const [y0] of rows) { for (let x = 0; x < w; x += 8) add(x, y0, 0, 0, "zero-row"); if ((w - 1) % 8) add(w - 1, y0, 0, 0, "zero-row"); }
+  // topline: the belly stays put (rules.bellyFixed), so d = 0 points every 8 px along the belly line join the constraints before the fit
+  const bellyLine = pic.bellyLine?.map(([x, y]) => [x * scaleX, y * scaleY]), bellyFixed = landmarks.rules?.bellyFixed?.value === true;
+  if (bellyFixed && bellyLine) {
+    const yb = bellyColumns(bellyLine, w), xs = bellyLine.map((p) => p[0]), x0 = Math.ceil(Math.min(...xs)), x1 = Math.floor(Math.max(...xs));
+    for (let x = x0; x <= x1; x += 8) if (!pxs.some((p) => p.x === x && p.y === yb[x])) add(x, yb[x], 0, 0, "belly-fixed");
+  }
   const seen = new Set(); for (const p of pxs) { const k = p.x + "," + p.y; if (seen.has(k)) throw new Error(`landmarks "${p.nm}" collide at ${k} at ${w}x${h}`); seen.add(k); }
   const fx = tps(pxs), fy = tps(pys), dxI = new Int8Array(w * h), dyI = new Int8Array(w * h);
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { dxI[y * w + x] = rha(fx(x, y)); dyI[y * w + x] = rha(fy(x, y)); }
   // the belly line: below it a column takes the line's displacement; the zero rows win
   let bellyY = null;
   if (overrides.bellyY != null) { bellyY = new Int32Array(w).fill(overrides.bellyY); used.push("belly-y"); }
-  else if (pic.bellyLine) bellyY = bellyColumns(pic.bellyLine.map(([x, y]) => [x * scaleX, y * scaleY]), w);
+  else if (bellyLine) bellyY = bellyColumns(bellyLine, w);
   const inZero = (y) => rows.some(([a, b]) => y >= a && y <= b);
   if (bellyY) for (let x = 0; x < w; x++) for (let y = bellyY[x] + 1; y < h; y++) if (!inZero(y)) { dxI[y * w + x] = dxI[bellyY[x] * w + x]; dyI[y * w + x] = dyI[bellyY[x] * w + x]; }
   for (const [a, b] of rows) for (let y = a; y <= b; y++) for (let x = 0; x < w; x++) { dxI[y * w + x] = 0; dyI[y * w + x] = 0; }
@@ -133,7 +139,7 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   else if (pic.headMaskPolygon) { headMask = rasterPolygon(polyAt(pic.headMaskPolygon), w, h); headSource = "polygon"; }
   // the domain: 0 outside the ink dilated by the bound (never the 6 px of the head zone: the head is drawn unwarped anyway)
   if (ink) { const D = fieldDomain(ink, w, h, BOUNDS[`${w}x${h}`]); for (let i = 0; i < w * h; i++) if (!D[i]) { dxI[i] = 0; dyI[i] = 0; } }
-  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, picture: name, overrides: used, ink };
+  const field = { w, h, size: `${w}x${h}`, end, dx: dxI, dy: dyI, headMask, headSource, zeroRows: rows, bellyY, bellyFixed, picture: name, overrides: used, ink };
   if (overrides.noCheck) used.push("no-check"); else checkField(field);
   return field;
 }

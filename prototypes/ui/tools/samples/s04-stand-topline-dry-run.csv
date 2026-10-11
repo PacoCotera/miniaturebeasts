@@ -3,75 +3,75 @@ s04-304x312,304x312,input,stand sha256,caf4caaa4d078ba58840b57a8772dc8a372cd6af2
 s04-304x312,304x312,field,up,"field refused: |d| 14.00 px at (142, 146) is over the 12 px bound at 304x312",,FAIL (refused)
 s04-304x312,304x312,head,mask source,polygon,,info
 s04-304x312,304x312,head,mask png sha256,26c3e30dc172dfef243dd33e3d93c72a289181d3a145d4c6f34c4ddf1857d5d0,,info
-s04-304x312,304x312,field,down map sha256,7862d9919fa64a78b7842fdf85d40c790c4243dd15b51f86af58636f1b82041a,,info
-s04-304x312,304x312,M3,stand,"9 comp, 27 holes, 6 orphans",info,
+s04-304x312,304x312,field,down map sha256,65da2ea958ee0db98e969a1bc59cf6051b45007ee975a660303cb4ce9b322536,,info
+s04-304x312,304x312,M3,stand strict counts,"9 comp, 27 holes, 6 orphans",info,
 s04-304x312,304x312,M4,stand irregular,471,,info
 s04-304x312,304x312,M2,warped-down,0,0,pass
-s04-304x312,304x312,M3,warped-down (head drawn),"10 comp, 27 holes, 6 orphans","1 comp, 0 holes, 0 orphans",FAIL
-s04-304x312,304x312,M3,warped-down not worse than the stand,"1 comp, 0 holes, 0 orphans",<= 0 each,FAIL
-s04-304x312,304x312,M3,warped-down body layer alone,"9 comp, 27 holes, 6 orphans",info,info
-s04-304x312,304x312,M4,warped-down irregular,480,494,pass
+s04-304x312,304x312,M3,warped-down strict counts (head drawn),"9 comp, 27 holes, 6 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s04-304x312,304x312,M3,warped-down not worse than its own unwarped picture,"alpha>0 8/165/1, alpha>110 9/27/6 (components/holes/orphans)","<= the unwarped: alpha>0 8/161/1, alpha>110 9/27/6",FAIL
+s04-304x312,304x312,M3,"warped-down body layer alone, not worse than the unwarped body layer","alpha>0 7/116/1, alpha>110 9/27/6 (components/holes/orphans)","<= the unwarped: alpha>0 8/161/1, alpha>110 9/27/6",pass
+s04-304x312,304x312,M4,warped-down irregular,477,494,pass
 s04-304x312,304x312,clamp,"misses (down, final)",0,0,pass
-s04-304x312,304x312,legs,leg compression px (down),1,,info
+s04-304x312,304x312,legs,leg compression px (down),0,0,pass
 s04-304x312,304x312,field,down max |d| px / stretch / shear,6.00 / 0.250 / 0.250,12 / 0.25 / 0.5,pass
 s04-304x312,304x312,M5a,"down top edge vs the measured profile, 10 columns x <= 141","max 1.10 (x 112), mean 0.47",1.5 / 1,pass
 s04-304x312,304x312,M5,warped-down vs painted,no painted end given,,n/a
 s04-304x312,304x312,M6,only at 104x112,,,n/a
-s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),2.8640,,info
+s04-304x312,304x312,M7,warp ms per picture (down; a clock reading),4.6163,,info
 s04-304x312,304x312,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-304x312,304x312,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
-s04-304x312,304x312,M8,S04-stand-b1 a sha256 (the stand-b rows above run on it),caf4caaa4d078ba58840b57a8772dc8a372cd6af22763bd42c452581eb98c138,,info
+s04-304x312,304x312,M8,S04-stand-b1 a is this stand (sha256 caf4caaa4d07); the stand-b rows above run on it,,,info
 s04-304x312,304x312,pair,"holds b0/b1/b2/b1back ms, offset ms, seconds","880/240/800/480, 1040, 10",,info
 s04-304x312,304x312,run,status,field refused: up (no verdict),,no verdict
-s04-304x312,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",5491f0c07892,equal,pass
+s04-304x312,304x312,M1,"two runs, same bytes (PNGs, maps, APNGs)",1c0ea06da43e,equal,pass
 s04-104x112,104x112,input,stand sha256,5142737dbd7392134008bf0993c7704a5c98a409c701dd6a81b401316f34589a,,info
 s04-104x112,104x112,field,up,"field refused: |d| 9.00 px at (46, 49) is over the 4 px bound at 104x112",,FAIL (refused)
 s04-104x112,104x112,head,mask source,polygon,,info
 s04-104x112,104x112,head,mask png sha256,ea908dadf3b616475112d22720885ca7660c7c3e8df0c6676e55e2eb5b34a8be,,info
-s04-104x112,104x112,field,down map sha256,ae826aaac2ab35d7240fe775410bedc566a6781fbc30da0db0d12245aff14e25,,info
-s04-104x112,104x112,M3,stand,"4 comp, 5 holes, 0 orphans",info,
+s04-104x112,104x112,field,down map sha256,428a7e12432585f1ae1090bf10ca7542f8aab452e3a732b6b335ab223ba5764b,,info
+s04-104x112,104x112,M3,stand strict counts,"4 comp, 5 holes, 0 orphans",info,
 s04-104x112,104x112,M4,stand irregular,155,,info
 s04-104x112,104x112,M2,warped-down,0,0,pass
-s04-104x112,104x112,M3,warped-down (head drawn),"6 comp, 5 holes, 0 orphans","1 comp, 0 holes, 0 orphans",FAIL
-s04-104x112,104x112,M3,warped-down not worse than the stand,"2 comp, 0 holes, 0 orphans",<= 0 each,FAIL
-s04-104x112,104x112,M3,warped-down body layer alone,"5 comp, 5 holes, 0 orphans",info,info
-s04-104x112,104x112,M4,warped-down irregular,157,162,pass
+s04-104x112,104x112,M3,warped-down strict counts (head drawn),"5 comp, 5 holes, 0 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s04-104x112,104x112,M3,warped-down not worse than its own unwarped picture,"alpha>0 3/43/1, alpha>110 5/5/0 (components/holes/orphans)","<= the unwarped: alpha>0 2/47/1, alpha>110 4/5/0",FAIL
+s04-104x112,104x112,M3,"warped-down body layer alone, not worse than the unwarped body layer","alpha>0 3/34/1, alpha>110 5/5/0 (components/holes/orphans)","<= the unwarped: alpha>0 2/47/1, alpha>110 4/5/0",FAIL
+s04-104x112,104x112,M4,warped-down irregular,155,162,pass
 s04-104x112,104x112,clamp,"misses (down, final)",0,0,pass
-s04-104x112,104x112,legs,leg compression px (down),0,,info
+s04-104x112,104x112,legs,leg compression px (down),0,0,pass
 s04-104x112,104x112,field,down max |d| px / stretch / shear,2.00 / 0.250 / 0.250,4 / 0.25 / 0.5,pass
 s04-104x112,104x112,M5a,down,only at 304x312,,n/a
 s04-104x112,104x112,M5,warped-down vs painted,no painted end given,,n/a
 s04-104x112,104x112,M6,warped,ends not available,,n/a
 s04-104x112,104x112,M6,painted,ends not available,,n/a
-s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.4026,5,pass (this machine; confirm on the CI runner)
+s04-104x112,104x112,M7,warp ms per picture (down; a clock reading),0.4109,5,pass (this machine; confirm on the CI runner)
 s04-104x112,104x112,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-104x112,104x112,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
-s04-104x112,104x112,M8,S04-stand-b1 a sha256 (the stand-b rows above run on it),caf4caaa4d078ba58840b57a8772dc8a372cd6af22763bd42c452581eb98c138,,info
+s04-104x112,104x112,M8,S04-stand-b1,a is not 104x112,,n/a
 s04-104x112,104x112,pair,"holds b0/b1/b2/b1back ms, offset ms, seconds","880/240/800/480, 1040, 10",,info
 s04-104x112,104x112,run,status,field refused: up (no verdict),,no verdict
-s04-104x112,104x112,M1,"two runs, same bytes (PNGs, maps, APNGs)",6ab41ed62838,equal,pass
+s04-104x112,104x112,M1,"two runs, same bytes (PNGs, maps, APNGs)",d3522d076945,equal,pass
 s04-96x88,96x88,input,stand sha256,5592449ea2bbe43cb9ef9ec88c39b9a94eea40a9dced4dfcc894aa01672f7719,,info
-s04-96x88,96x88,field,up,"field refused: |d| 4.00 px at (47, 41) is over the 3 px bound at 96x88",,FAIL (refused)
+s04-96x88,96x88,field,up,"field refused: |d| 4.00 px at (51, 41) is over the 3 px bound at 96x88",,FAIL (refused)
 s04-96x88,96x88,head,mask source,polygon,,info
 s04-96x88,96x88,head,mask png sha256,9a1abf87f607e1dfc3b6a8638eb25b30a376dd8ca88d8e033c177963846db859,,info
-s04-96x88,96x88,field,down map sha256,b2a8dad08b6bc51b1bac8da5141d1bfffcd68feee3edf00f02a095397e7cdfe5,,info
-s04-96x88,96x88,M3,stand,"2 comp, 5 holes, 1 orphans",info,
+s04-96x88,96x88,field,down map sha256,fca4d66c94f2881b3a0e96e34588a1a8bddd5cc8bc2345063635850317640226,,info
+s04-96x88,96x88,M3,stand strict counts,"2 comp, 5 holes, 1 orphans",info,
 s04-96x88,96x88,M4,stand irregular,118,,info
 s04-96x88,96x88,M2,warped-down,0,0,pass
-s04-96x88,96x88,M3,warped-down (head drawn),"2 comp, 5 holes, 1 orphans","1 comp, 0 holes, 0 orphans",FAIL
-s04-96x88,96x88,M3,warped-down not worse than the stand,"0 comp, 0 holes, 0 orphans",<= 0 each,pass
-s04-96x88,96x88,M3,warped-down body layer alone,"2 comp, 5 holes, 1 orphans",info,info
+s04-96x88,96x88,M3,warped-down strict counts (head drawn),"2 comp, 5 holes, 1 orphans","1 comp, 0 holes, 0 orphans: information only",info
+s04-96x88,96x88,M3,warped-down not worse than its own unwarped picture,"alpha>0 1/31/0, alpha>110 2/5/1 (components/holes/orphans)","<= the unwarped: alpha>0 1/31/0, alpha>110 2/5/1",pass
+s04-96x88,96x88,M3,"warped-down body layer alone, not worse than the unwarped body layer","alpha>0 1/25/0, alpha>110 2/5/1 (components/holes/orphans)","<= the unwarped: alpha>0 1/31/0, alpha>110 2/5/1",pass
 s04-96x88,96x88,M4,warped-down irregular,118,123,pass
 s04-96x88,96x88,clamp,"misses (down, final)",0,0,pass
-s04-96x88,96x88,legs,leg compression px (down),0,,info
+s04-96x88,96x88,legs,leg compression px (down),0,0,pass
 s04-96x88,96x88,field,down max |d| px / stretch / shear,2.00 / 0.250 / 0.250,3 / 0.25 / 0.5,pass
 s04-96x88,96x88,M5a,down,only at 304x312,,n/a
 s04-96x88,96x88,M5,warped-down vs painted,no painted end given,,n/a
 s04-96x88,96x88,M6,only at 104x112,,,n/a
-s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.3607,,info
+s04-96x88,96x88,M7,warp ms per picture (down; a clock reading),0.6342,,info
 s04-96x88,96x88,M8,"stand-b1 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
 s04-96x88,96x88,M8,"stand-b2 down: changed outside the rows above the belly line, no warp / warp",0 / 0,0,pass
-s04-96x88,96x88,M8,S04-stand-b1 a sha256 (the stand-b rows above run on it),caf4caaa4d078ba58840b57a8772dc8a372cd6af22763bd42c452581eb98c138,,info
+s04-96x88,96x88,M8,S04-stand-b1,a is not 96x88,,n/a
 s04-96x88,96x88,pair,"holds b0/b1/b2/b1back ms, offset ms, seconds","880/240/800/480, 1040, 10",,info
 s04-96x88,96x88,run,status,field refused: up (no verdict),,no verdict
-s04-96x88,96x88,M1,"two runs, same bytes (PNGs, maps, APNGs)",a9e6d65a97b7,equal,pass
+s04-96x88,96x88,M1,"two runs, same bytes (PNGs, maps, APNGs)",b27e0c84a20c,equal,pass

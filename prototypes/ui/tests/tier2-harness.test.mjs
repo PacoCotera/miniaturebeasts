@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { decodePNG } from "../png.mjs";
-import { buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain } from "../tools/warp-field.mjs";
+import { legCompression, buildField, checkField, encodeField, decodeField, encodeMask, headMaskFrom, rha, rasterPolygon, bellyColumns, sha256, chunk, fieldDomain } from "../tools/warp-field.mjs";
 import { warp, blank, png, runAll, newColours, silhouette, outlineIrregular, changedOutside, rowsBand, breathSegments, bakeStep, aboveBellyBand } from "../tools/tier2-test.mjs";
 
 // A synthetic 104x112 body of flat colours (never an asset): a body, a back on top of it, a head on its right, two legs ending on the feet row 99; the shadow rows are 96..111.
@@ -19,7 +19,7 @@ const standFile = path.join(tmp, "stand.png"), lmFile = path.join(tmp, "lm.json"
 writeFileSync(standFile, standBytes);
 // the shape of the animator's landmarks file, with synthetic values
 const landmarks = {
-  species: "FX", stage: "juvenile", blend: "topline", ends: { down: { value: -0.55 }, up: { value: 0.55 } },
+  species: "FX", stage: "juvenile", blend: "topline", rules: { bellyFixed: { value: true } }, ends: { down: { value: -0.55 }, up: { value: 0.55 } },
   pictures: { "stand-104x112": {
     fieldZeroRows: [96, 111], fixed: { "foot-a": [30, 99], "foot-b": [72, 99], "tail-root": [24, 46] },
     moving: { withers: { pos: [42, 38], down: [0, 1], up: [0, -1] }, "mid-back": { pos: [52, 38], down: [0, 2], up: [0, -2] }, croup: { pos: [62, 38], down: [0, 1], up: [0, -1] } },
@@ -143,4 +143,20 @@ test("the field is written 0 outside the ink dilated by the bound, and the gradi
   assert.ok(inside > 0, "inside D the field is the spline's");
   assert.deepEqual([...f.dy.slice(52 * 104, 53 * 104)].some(Boolean), [...free.dy.slice(52 * 104, 53 * 104)].some(Boolean));
   assert.ok(f.maxStretch <= 0.25 && f.maxShear <= 0.5);
+});
+test("a destination above the head's top that samples into the head is transparent; below it the clamp takes the first body pixel below", () => {
+  const img = fixture(); for (let y = 62; y <= 70; y++) for (let x = 80; x < 100; x++) img.data.set(A, (y * 104 + x) * 4);   // a body under the chin
+  const f = buildField(landmarks, "up", 104, 112), up = { w: 104, h: 112, dx: new Int8Array(104 * 112), dy: new Int8Array(104 * 112).fill(-6) };
+  const body = warp(img, [{ field: up, t: 1 }], { headMask: f.headMask, drawHead: false }), at = (x, y) => [...body.data.slice((y * 104 + x) * 4, (y * 104 + x) * 4 + 4)];
+  assert.deepEqual(at(85, 34), [0, 0, 0, 0], "sky above the head is not painted from the chest");
+  assert.deepEqual(at(85, 45), A, "under the head's top the column clamp takes the body pixel below the head");
+});
+test("bellyFixed: d = 0 points along the belly line, so the legs do not stretch (leg compression 0)", () => {
+  const img = fixture(), free = JSON.parse(JSON.stringify(landmarks)); free.rules.bellyFixed.value = false;
+  for (const end of ["down", "up"]) {
+    const f = buildField(landmarks, end, 104, 112, { ink: new Uint8Array(img.data.filter((_, i) => i % 4 === 3).map((a) => (a > 0 ? 1 : 0))) });
+    assert.equal(f.bellyFixed, true); assert.equal(legCompression(f, img), 0);
+    for (let x = 20; x <= 100; x += 8) assert.equal(f.dy[76 * 104 + x], 0, `belly line pin at x ${x}`);
+  }
+  assert.equal(buildField(free, "down", 104, 112).bellyFixed, false);
 });
