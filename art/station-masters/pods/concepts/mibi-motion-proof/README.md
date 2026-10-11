@@ -31,3 +31,12 @@ Total 15.94 MXN of the 22.5 hard stop. `sheets-overview.png` puts the four side 
   - Walk sizes: 104×112 for the young (feet row 105, the stand-ins' scale) and 144×152 for the adults (feet row 145). The bed curl is at 96×88.
   - The flipbooks above were made before the bake. They show the master keys without breath.
 - **Still open:** the head lock is untested (S05's cycle is in place only); the stride measure on S05 (motion-spec.md §2.2); HiBit frames (the pixel artist's).
+
+## Flipbooks re-cut after the animator's timing review (14:21), 0 MXN
+
+- **Air keys grounded** (`guides/ground.py`): the body sat 33 / 37 / 41 px over its shadow (young S01, Pip, the individual). It now sits on the feet row, and only the spec's arc lifts it. Measured: crouch → first air tick lifts the feet 4 px (young S01) and 8 px (Pip), within the 12 px limit.
+- **Breath in every stand hold** on one clock (juvenile 2.40 s, adult 2.88 s); the top moves 1–2 whole px.
+- **Crouch → curl** is a 16-level ordered dither over 180 ms; asleep breathes curl / curl·b1 on 4.8 s.
+- **Young S05** plays the quick class: pass 80, steps 160 (in place; no stride measure yet).
+- The individual's air and curl face its stand's way. The light flips with the mirror; at 1× the key light reads from the top right on those two keys. I accept it for the proof, and the roster sheets are painted in one facing.
+- Crouch-a (Pip's failed crouch) is withdrawn from the flipbooks.
