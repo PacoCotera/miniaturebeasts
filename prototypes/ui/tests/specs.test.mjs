@@ -691,7 +691,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   const at = (f, a) => [f[0] + a[0], f[1] + a[1], a[2], a[3]];
   for (const [i, f] of all.entries()) {
     const progress = at(f, I.progress.at), roundel = at(f, I.roundel.at), plate = at(f, I.plate.at), rule = at(f, I.clanRule.at), name = at(f, I.name.at), gilt = at(f, I.gilt.at), seal = at(f, I.seal.at);
-    assert.deepEqual(plate, [f[0] + 8, f[1] + 8, 80, 96]); assert.deepEqual(I.study.at, I.plate.at); assert.equal(f[1] - (rule[1] + rule[3]), 8);
+    assert.deepEqual(plate, [f[0] + 8, f[1] + 8, 80, 96]); assert.deepEqual(I.study.at, I.plate.at); assert.equal(f[1] - (rule[1] + rule[3]), 10);
     assert.equal(name[1], f[1] + f[3] + 8); assert.equal(name[2], f[2]); assert.deepEqual([gilt[0] + 8, gilt[1] + 8], [f[0] + f[2], f[1]]); assert.equal(rule[0] - (roundel[0] + roundel[2]), 4, "the roundel beside the rule"); assert.equal(roundel[1] + roundel[3] / 2, rule[1] + rule[3] / 2, "on the rule's centre line"); assert.ok(apart(roundel, gilt) && roundel[1] + roundel[3] <= f[1] - 4, "clear of the ring"); assert.deepEqual([seal[0] + 8, seal[1] + 8], [f[0] + f[2], f[1] + f[3]]);
     for (const m of [gilt, seal]) { assert.ok(apart(m, plate) && apart(m, name), "a mark clear of the plate and the name"); assert.ok(all.every((g) => g === f || gapOk(m, g, 8)), "8 px from the next frame"); }
     assert.ok(all.every((g) => g === f || apart(name, at(g, I.name.at))), "the names apart"); for (const b of P.marginLife) assert.ok(apart(b, f) && apart(b, name) && apart(b, seal), "the margin life clear");
@@ -702,7 +702,8 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   }
   // in 20: four found (S01 portrayed, S09 complete), S04 met; the plate or study, rule and name where the spec puts them; nothing on the eleven empty frames; in 20a nothing at all
   const shown = { 0: "found", 1: "found", 2: "found", 3: "met", 8: "found" };
-  for (const [i, f] of all.entries()) for (const a of [I.plate.at, I.clanRule.at, I.roundel.at, I.name.at, ...(shown[i] === "met" ? [] : [I.progress.at])]) { const r = at(f, a); assert.equal(B.has(r.join(",")), i in shown, `frame ${i} ${r}`); assert.ok(!E.has(r.join(",")), "20a draws no part"); }
+  for (const [i, f] of all.entries()) for (const a of [I.plate.at, I.name.at, ...(shown[i] === "met" ? [] : [I.progress.at])]) { const r = at(f, a); assert.equal(B.has(r.join(",")), i in shown, `frame ${i} ${r}`); assert.ok(!E.has(r.join(",")), "20a draws no part"); }
+  // the clan rule and the roundel moved with the art director's clan table (spec lines of slot L): the wireframes still draw them at their older place, so the spec alone places them (reported to the programme lead)
   is(at(all[0], I.gilt.at), "gilt corner"); is(at(all[8], I.seal.at), "seal"); assert.ok(!B.has(at(all[3], I.progress.at).join(",")), "no progress on a met frame"); assert.ok(!B.has(at(all[1], I.gilt.at).join(",")) && !B.has(at(all[1], I.seal.at).join(",")));
   assert.equal(I.lift, 0); assert.ok(I.name.fit.includes("Untuva"));
   // the names fit their 96 px at 16 (the widest of the sixteen frames, by the face's metrics when the table is built)
@@ -718,7 +719,7 @@ test("the Library spread agrees with its wireframes: sixteen frames, two pages o
   for (const v of S.focus.vectors) assert.equal(moveFocus(G, T, v.from, v.key).to, v.to, `${v.from} ${v.key} → ${v.to}`);
   assert.ok(S.focus.vectors.some((v) => v.from === "frame.S04" && v.to === "frame.S09"), "across the gutter"); assert.ok(S.focus.vectors.length >= 12);
   // the frame: the title and its mark, the way back, the room key, the jumps; Home's Library module opens it
-  assert.equal(frame.strings.titles.library, S.strings.title); assert.equal(frame.regions.title.marks.library, S.title.mark); assert.deepEqual(frame.navigation.screens.library, { parent: "home", back: "Home" }, "the sandbox's tree unchanged before the build"); const BC = S.buildChanges.find((c) => c.key === "navigation.screens.library"); assert.deepEqual(BC.now, frame.navigation.screens.library); assert.deepEqual(BC.becomes, { ...BC.now, states: S.states, spec: "library.json" });
+  assert.equal(frame.strings.titles.library, S.strings.title); assert.equal(frame.regions.title.marks.library, S.title.mark); const BC = S.buildChanges.find((c) => c.key === "navigation.screens.library"); assert.deepEqual(BC.now, { parent: "home", back: "Home" }); assert.deepEqual(frame.navigation.screens.library, BC.becomes, "the build made the change: the tree names the spread and its spec"); assert.deepEqual(BC.becomes, { ...BC.now, states: S.states, spec: "library.json" });
   assert.equal(frame.navigation.roomKeys.library.state, "spread"); assert.equal(frame.navigation.screens.book.back, "Library"); assert.equal(S.strings.back, frame.navigation.screens.library.back);
   const home = rd("../specs/station/home.json"); assert.equal(home.strings.actions.library, "Open the Library"); assert.ok(/spread/.test(home.keys.library));
   // the words: an action of four words or fewer, contexts of six or fewer, no digits; no ✓ cap on an empty frame
