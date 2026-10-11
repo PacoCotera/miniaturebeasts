@@ -5,6 +5,7 @@
 // accepted, dockN, known, probe, carryReqs, returned (with species, gs), and each mibi's id, name, sp, species, spName, born, from, bonded.
 // The care fields of a mibi (care, tends, bondCare, grownTurn, notches, outings, bonded) are the Companion's; the Station mirrors them at the dock (mergeCare) and never writes one, except normalize's additive defaults and the idempotent legacy-bond back-fill (the same values the Companion computes).
 // Those keep their shape (station-build.md §2.3).
+import { traitLooks } from "../../workbench/framework/describe.mjs";
 import { frameOf, frameIds, speciesIndex, speciesId, podGenome, chapterOf, chapterLooks, chapterSeal, genomeSha, nameCode, stampCode, checkGenome, genomeDigest, traitOf, traitState, shapeTrait, genomeProblems, quantizeGenome } from "./genome.mjs";
 
 export const ST_SCHEMA = 3;
@@ -593,6 +594,18 @@ export function idleKey(st, sv, settings = DEFAULT_SETTINGS) {
   return null;
 }
 
+// A species' field guide is complete when no look is unseen and a chapter that is open has traits: the same rule as library.mjs fieldGuide(...).complete, kept here so state.mjs never imports library.mjs
+// (library.mjs imports state.mjs); tests/economy-x10.test.mjs holds the two equal.
+export function guideComplete(st, id, settings = DEFAULT_SETTINGS) {
+  const fr = frameOf(id); if (!fr) return false;
+  let unseen = 0, open = false;
+  for (const ch of fr.chapters) {
+    const shut = !!ch.sealed && !settings.sealedOpen && !(st.readOnce[id] || []).includes(ch.id);
+    if (!shut && ch.traits.length > 0) open = true;
+    for (const t of ch.traits) { const seen = guideLooks(st, id, t.id); unseen += traitLooks(fr, t).filter((l) => !seen.includes(l)).length; }
+  }
+  return unseen === 0 && open;
+}
 // --- the next goal (station-x10-economy.md ruling 4) ---------------------------------------------------
 // Where a short price has to come from: "field" (a walk brings ⚡ and ❀), "bench" (the Probe bench's trickle and the mibis' watching bring ◆), "fieldOrPod" (❀ alone, with a pod in a well to return) or
 // "fieldAndBench" (◆ and ⚡ or ❀); null when nothing is short. The one rule growBlockKey, needMore (Pods, Create) and goalKey's short step share.
@@ -623,6 +636,18 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
   const speciesIn = (m) => speciesOf(m), members = (sp) => living.filter((m) => speciesIn(m) === sp);
   const unreadOf = (m) => { const fr = frameFor(m); return fr ? fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)) : null; };
   const readStep = (m) => { const ch = unreadOf(m), cost = mibiReadCost(st, m, ch.id, settings) || 0; return st.d >= cost ? { key: "read", name: m.name } : short(0, cost, 0); };
+  // the guide's step for one species: a read on a pod of it in a well (a glinting chapter first, else the cheapest unread), else identify one, else find one
+  const guideStep = (sp) => {
+    const cand = [];
+    for (const p of st.tray) { if (!p.idd || speciesOf(p) !== sp) continue; const fr = frameOf(sp); if (!fr) continue;
+      for (const ch of fr.chapters) { if (p.read.includes(ch.id) || (ch.sealed && !settings.sealedOpen)) continue; const cost = readCost(st, p, ch.id, settings); if (cost == null) continue; cand.push({ pod: p, chapter: ch.id, glint: glint(st, p, ch.id), cost }); } }
+    cand.sort((a, b) => (b.glint ? 1 : 0) - (a.glint ? 1 : 0) || a.cost - b.cost);
+    if (cand[0]) { const c = cand[0]; return st.d >= c.cost ? { key: "readPod", species: sp, pod: c.pod.id, chapter: c.chapter, glint: c.glint, cost: c.cost } : short(0, c.cost, 0); }
+    if (docked(st) && cs.length) return { key: "openBay" };
+    const fresh = st.tray.find((p) => !p.idd && speciesOf(p) === sp);
+    if (fresh) { const c = identifyCost(st, settings); return canPay(st, 0, c, 0) ? { key: "identify", species: sp } : short(0, c, 0); }
+    return { key: "findPod", species: sp };
+  };
   let g = null;
   if (!living.length && !bud && !st.tray.length && !st.waiting.length && !cs.length) g = { key: "firstPod", step: { key: "goOut" } };
   else if (!living.length) g = { key: "firstMibi", step: bud ? budStep() : chain(st.tray[0] ? speciesOf(st.tray[0]) : null) };
@@ -644,7 +669,7 @@ export function goalKey(st, sv, settings = DEFAULT_SETTINGS, doors) {
         g = { key: "cross", names: [a.name, b.name], step: why ? { key: "blocked", why } : canPay(st, c.e, c.d, c.s) ? { key: "cross" } : short(c.e, c.d, c.s) }; break; }
     }
     if (!g && crossOpen) { const child = living.find((m) => m.from && m.from.how === "cross" && unreadOf(m)); if (child) g = { key: "readChild", name: child.name, step: readStep(child) }; }
-    if (!g) { const m = living.find((x) => unreadOf(x)); if (m) g = { key: "guide", species: speciesIn(m), step: readStep(m) }; }
+    if (!g) { const sp = spOrder.find((x) => !guideComplete(st, x, settings)); if (sp) g = { key: "guide", species: sp, step: guideStep(sp) }; }
   }
   if (!g) return null;
   // the second goal, from growUp onward while the Probe is below tier 2
@@ -673,6 +698,7 @@ export function goalSpendWarn(st, sv, settings = DEFAULT_SETTINGS, price = {}, a
   else if (step.key === "cross") { if (act.key === "cross") return null; next = crossCost(settings); who = { name: g.names[0] }; }
   else if (step.key === "read") { const m = g.key === "readChild" || g.key === "guide" ? st.mibis.find((x) => x.name === step.name && !x.released) : null; if (!m) return null; if (act.key === "read" && act.mibi && act.mibi.id === m.id) return null;
     const fr = frameFor(m), ch = fr && fr.chapters.find((c) => !m.read.includes(c.id) && (!c.sealed || settings.sealedOpen)); if (!ch) return null; next = { e: 0, d: mibiReadCost(st, m, ch.id, settings) || 0, s: 0 }; who = { name: m.name }; }
+  else if (step.key === "readPod") { if (act.key === "read" && act.pod && speciesOf(act.pod) === step.species) return null; next = { e: 0, d: step.cost, s: 0 }; who = {}; key = "read"; }
   else if (step.key === "fit") { if (act.key === "fit") return null; next = { e: price_(PRICE.tier2E, settings), d: price_(PRICE.tier2D, settings), s: 0 }; who = {}; }
   else return null;
   if (!canPay(st, next.e, next.d, next.s)) return null;   // it cannot be paid now: the act's own short or the step's own short says so

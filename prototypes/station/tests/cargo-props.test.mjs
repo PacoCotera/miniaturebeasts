@@ -8,6 +8,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome, speciesIndex } from "../src/genome.mjs";
+import { traitLooks } from "../../workbench/framework/describe.mjs";
 import * as S from "../src/state.mjs";
 import { cargoBuild, reachWord, ribbonOf } from "../src/views/cargo-props.mjs";
 import { INTENTS } from "../src/intents/index.mjs";
@@ -183,6 +184,6 @@ test("the report's goal row names the next step after the crates; the meanwhile 
   // a step that is not a wait (identify): a goal row and no meanwhile row
   const st3 = world(), [d3] = S.seedAdults(st3, "S01", 5, 1, settings).mibis; d3.name = "Dot"; const r3 = reported(st3, sv0([crate(1, 1)])).props.regions.report;
   assert.equal(r3.goal.text, "identify the Loika pod"); assert.equal(r3.meanwhile, null);
-  // no goal: no row (two adults, the guide read, nothing named)
-  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); assert.equal(S.goalKey(st4, sv0()), null); assert.equal(reported(st4, sv0([crate(1, 0)])).props.regions.report.goal, null);
+  // no goal: no row (two adults, the guide complete, nothing named)
+  const st4 = world(); S.seedAdults(st4, "S01", 5, 2, settings); { const fr = frameOf("S01"); st4.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st4, "S01", t.id, traitLooks(fr, t)); } assert.equal(S.goalKey(st4, sv0()), null); assert.equal(reported(st4, sv0([crate(1, 0)])).props.regions.report.goal, null);
 });

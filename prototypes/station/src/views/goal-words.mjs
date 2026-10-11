@@ -10,8 +10,8 @@ const article = (w) => S.aAn(w).split(" ")[0];
 export function goalWords(goal, docked, frame) {
   const G = frame.strings.goal, st = goal.step, name = goal.names ? goal.names[0] : goal.name ?? st.name, vals = { name, species: speciesWord(goal.species ?? st.species), a: article(speciesWord(goal.species ?? st.species)) };
   const out = (text, plain = "", icons = "") => ({ text, icons, plain });
-  // away, a goOut (or findPod) step reads the aim: what the Companion is out for
-  if (!docked && (st.key === "goOut" || st.key === "findPod") && G.aim[goal.key]) {
+  // away, a goOut step reads the aim: what the Companion is out for
+  if (!docked && st.key === "goOut" && G.aim[goal.key]) {
     const nameless = { growUp: G.aim.growUpNoName, readChild: G.aim.readChildNoName }[goal.key];
     return out(fill(G.aim[goal.key], vals), nameless ? fill(nameless, vals) : "");
   }
@@ -20,6 +20,7 @@ export function goalWords(goal, docked, frame) {
     return out(goal.walks <= 1 ? G.step.growUp.one : G.step.growUp.more);
   }
   if (st.key === "short") return out(fill(G.step.short[st.from] ?? G.step.short.field, { icons: "" }).trim(), "", st.icons);
+  if (st.key === "readPod") { const fr = frameOf(st.species), ch = fr && fr.chapters.find((c) => c.id === st.chapter); return out(fill(G.step.readPod, { chapter: ch ? ch.name : st.chapter, species: speciesWord(st.species) })); }
   if (st.key === "read") return out(fill(G.step.read, vals), G.step.readNoName);
   if (st.key === "findPod" && !vals.species) return out(G.step.goOut);
   const t = G.step[st.key]; if (typeof t !== "string") return null;

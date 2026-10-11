@@ -6,7 +6,9 @@ import assert from "node:assert/strict";
 import { readFileSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { setFrames, frameOf } from "../src/genome.mjs";
+import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
+import { traitLooks } from "../../workbench/framework/describe.mjs";
+import * as L from "../src/library.mjs";
 import * as S from "../src/state.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames");
@@ -93,8 +95,28 @@ test("goalKey while Cross is shut: no doors (or cross false) skips cross and rea
   // growUp is still named while shut, and the probe goal is unchanged
   const w = fresh(); const [c, d] = adults(w, 2); named([c, d], ["Dot", "Moss"], [1, 2]); w.turn = 2; w.dock = { docked: false, at: 1 }; w.probe = { tier: 1, shield: 3, smax: 3 };
   const g = S.goalKey(w, sv0(), settings, { cross: false }); assert.equal(g.key, "growUp"); assert.equal(g.walks, 2); assert.equal(g.probe.key, "save");
-  // nothing left to name: the guide is complete
-  const z = fresh(); adults(z, 2); assert.equal(S.goalKey(z, sv0()), null, "complete guide: no goal");
+  // nothing left to name: every guide is complete
+  const z = fresh(); adults(z, 2); fillGuide(z, "S01"); assert.equal(S.goalKey(z, sv0()), null, "complete guide: no goal");
+});
+
+// ---- the guide rung: the first living species whose field guide is not complete ----
+const fillGuide = (st, id) => { const fr = frameOf(id); st.readOnce[id] = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st, id, t.id, traitLooks(fr, t)); };
+test("guideComplete is the Library's own complete, for a fresh, a half-filled and a filled guide", () => {
+  const st = fresh(); assert.equal(S.guideComplete(st, "S01"), L.fieldGuide(st, "S01").complete);
+  const fr = frameOf("S01"), t = fr.chapters[0].traits[0]; S.guideAdd(st, "S01", t.id, traitLooks(fr, t)); assert.equal(S.guideComplete(st, "S01"), L.fieldGuide(st, "S01").complete); assert.equal(S.guideComplete(st, "S01"), false);
+  fillGuide(st, "S01"); assert.equal(S.guideComplete(st, "S01"), true); assert.equal(L.fieldGuide(st, "S01").complete, true);
+});
+test("the guide rung names the first living species with an incomplete guide and walks read, then identify, then find; null when every guide is complete", () => {
+  const st = fresh(); st.e = 9; st.s = 9; st.d = 9; st.dock = { docked: false, at: 1 }; st.probe = { tier: 2, shield: 3, smax: 3 };
+  adults(st, 2); S.seedAdults(st, "S04", 41, 1, settings); fillGuide(st, "S01");
+  let g = S.goalKey(st, sv0()); assert.equal(g.key, "guide"); assert.equal(g.species, "S04", "S01's guide is complete, S04's is not"); assert.deepEqual(g.step, { key: "findPod", species: "S04" }, "no pod of it: find one");
+  const r = S.seedPodFromGenome(st, podGenome(frameOf("S04"), 7), settings, 1000); assert.equal(r.ok, true);
+  g = S.goalKey(st, sv0()); assert.equal(g.step.key, "identify"); assert.equal(g.step.species, "S04");
+  const pod = st.tray.find((p) => S.speciesOf(p) === "S04"); S.skipIdentify(st, pod);
+  g = S.goalKey(st, sv0()); assert.equal(g.step.key, "readPod"); assert.equal(g.step.pod, pod.id); assert.ok(frameOf("S04").chapters.some((c) => c.id === g.step.chapter));
+  st.d = 0; const cost = S.readCost(st, pod, g.step.chapter, settings); g = S.goalKey(st, sv0());
+  if (cost > 0) { assert.equal(g.step.key, "short"); assert.equal(g.step.icons, "◆"); }
+  fillGuide(st, "S04"); assert.equal(S.goalKey(st, sv0()), null, "every guide complete");
 });
 test("goalKey: the meanwhile read, the probe goal (save, fit) and its outranking", () => {
   const st = fresh(); const [a, b] = adults(st, 2); named([a, b], ["Dot", "Moss"], [1, 2]); st.turn = 2; st.dock = { docked: false, at: 1 }; st.readEver = true; st.d = 5;

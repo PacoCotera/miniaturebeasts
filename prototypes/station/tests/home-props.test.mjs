@@ -8,6 +8,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setFrames, frameOf, podGenome } from "../src/genome.mjs";
 import * as S from "../src/state.mjs";
+import { traitLooks } from "../../workbench/framework/describe.mjs";
 import { homeBuild, lightAt, wordsOf } from "../src/views/home-props.mjs";
 import { goalWords } from "../src/views/goal-words.mjs";
 
@@ -160,13 +161,13 @@ test("the goal: a soft need gives its notice to the goal, the room's ✓ keeps t
   // a new pod (first group): the notice as now, no goal
   const st2 = world(); dock(st2); S.seedAdults(st2, "S01", 5, 1, settings); pod(st2, "S01", 5, false);
   const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod waits"); assert.equal(c.line.goal, undefined);
-  // no goal: the soft need as now (two adults, everything read, a bud growing)
-  const st3 = world(); dock(st3); S.seedAdults(st3, "S01", 5, 2, settings); st3.bud = { kind: "founder", species: "S03", start: Date.now(), minutes: 5 };
+  // no goal: the soft need as now (two adults, the guide complete, a bud growing)
+  const st3 = world(); dock(st3); S.seedAdults(st3, "S01", 5, 2, settings); { const fr = frameOf("S01"); st3.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st3, "S01", t.id, traitLooks(fr, t)); } st3.bud = { kind: "founder", species: "S03", start: Date.now(), minutes: 5 };
   const d = build(st3, sv0()); assert.equal(S.goalKey(st3, sv0()), null); assert.equal(d.line.need, "a bud is growing"); assert.equal(d.line.goal, undefined);
 });
 test("the goal away reads the aim, growUp counts the walks in words, and the Probe's context follows its goal", () => {
   const st = world(); dock(st, false); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
-  assert.deepEqual(build(st, sv0()).line.goal, { text: "a partner for Dot", icons: "", plain: "" }, "away, the pair's step is the Companion's errand");
+  assert.equal(S.goalKey(st, sv0()).step.key, "findPod"); assert.deepEqual(build(st, sv0()).line.goal, { text: "find a Loika pod", icons: "", plain: "" }, "away, pair, findPod: only goOut reads the aim, so the step's own words show");
   const w = world(); dock(w, false); const [a, b2] = S.seedAdults(w, "S01", 5, 2, settings).mibis; a.name = "Dot"; b2.name = "Moss"; a.born = 1; b2.born = 2; w.turn = 2;
   assert.equal(build(w, sv0()).line.goal.text, "walks grow Dot up"); assert.equal(build(w, sv0()).line.goal.plain, "walks grow the pair up");
   dock(w, true); w.turn = 2; assert.equal(build(w, sv0()).line.goal.text, "more walks grow the pair"); w.turn = 3; assert.equal(build(w, sv0()).line.goal.text, "one more walk grows the pair");
@@ -178,6 +179,8 @@ test("the goal away reads the aim, growUp counts the walks in words, and the Pro
 test("goalWords: a name too wide falls back to the nameless sibling of the four keys that have one; the other keys have none", () => {
   const face = (goal, docked = true) => goalWords(goal, docked, frameSpec);
   assert.deepEqual(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: true, step: { key: "goOut" } }), { text: "Dot grows with care", icons: "", plain: "the young mibi grows with care" });
+  assert.equal(face({ key: "guide", species: "S01", step: { key: "readPod", species: "S01", pod: "p", chapter: frameOf("S01").chapters[0].id, cost: 1 } }).text, `read ${frameOf("S01").chapters[0].name} on the Loika pod`);
+  assert.equal(face({ key: "guide", species: "S01", step: { key: "findPod", species: "S01" } }, false).text, "find a Loika pod", "away, a findPod step reads its own words, not the aim");
   assert.deepEqual(face({ key: "guide", species: "S01", step: { key: "read", name: "Dot" } }), { text: "read Dot's chapters", icons: "", plain: "read the new mibi's chapters" });
   assert.equal(face({ key: "growUp", names: ["Dot", "Moss"], walks: 2, bondedWaits: false, step: { key: "goOut" } }, false).plain, "walks grow the pair up");
   assert.equal(face({ key: "readChild", name: "Dot", step: { key: "goOut" } }, false).plain, "read the new mibi's chapters");
