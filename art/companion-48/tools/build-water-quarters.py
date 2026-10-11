@@ -5,9 +5,10 @@ five states each (fill, edgeh, edgev, outer, inner: the same 47-blob scheme as t
 side that meets land the water's edge sits INSET px inside the cell, outer corners are cut on R_OUT, inner corners on R_IN, and the
 straight runs waver by a 24-periodic offset that is 0 at the quarter's ends. Then by distance from that edge:
   land side (the inset margin)   a sand bank, its outermost pixel a dark edge where it meets the lawn
-  water side                     1 px foam, 1 px wet line, a shallow band to 7 px, then the body
+  water side                     2 px foam (a continuous line, broken every 23 px), 1 px wet line, a shallow band to 9 px, then the body
 Two frames: frame 2 moves the foam along the edge (the foam animates; nothing else does).
-Writes water/q-<quad>-<state>-f<n>.png, water/fill-body.png and water.json.
+Macro outer corners (2 x 2 cells, radius RM) round a pond's lobes as b1's do; their straight ends join the edge quarters.
+Writes water/q-<quad>-<state>-f<n>.png, water/macro-<quad>-outer-f<n>.png, water/fill-body.png and water.json.
 usage: python3 -I build-water-quarters.py PALETTE_JSON OUT_DIR"""
 import json, os, sys
 import numpy as np
@@ -18,7 +19,7 @@ near = lambda rgb: int(((PAL - np.array(rgb)) ** 2).sum(1).argmin())
 BODY, SHAL, FOAM, WET = near((29, 104, 136)), near((34, 121, 147)), near((255, 255, 255)), near((219, 238, 229))
 SAND, SAND2, EDGE = near((196, 170, 110)), near((166, 140, 90)), near((60, 48, 36))
 INSET, R_OUT, R_IN = 18, 26, 18
-WAVE = [0, 1, 2, 2, 1, -1, -2, -2, 0, 2, 3, 2, 0, -2, -3, -1, 1, 3, 2, 0, -2, -2, -1, 0]
+WAVE = [0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 1, 1, 1, 0, 0, -1, -1, -1, -2, -2, -1, -1, 0, 0]   # slow: a step of at most 1 px per pixel, so the foam runs smooth
 
 def land_mask(state):
     """normalised quarter (corner of the cell at u=v=0, extended -16..39): True where it is land (the bank's side)"""
@@ -48,10 +49,32 @@ def quarter(quad, state, frame):
                 q[y, x] = -1 if d > 8 else (EDGE if d >= 7 else (SAND if d >= 3 else SAND2))   # a 6 px bank, then the lawn shows
             else:
                 d = int(np.sqrt(((lp - [gv, gu]) ** 2).sum(1).min()))
-                if d <= 1: q[y, x] = FOAM if ((x + y) // 3 + frame) % 5 else WET   # a continuous foam line with small breaks, moving in frame 2
-                elif d == 2: q[y, x] = WET
-                elif d <= 7: q[y, x] = SHAL
+                if d <= 2: q[y, x] = WET if (gu + gv + 4 * frame) % 23 < 3 else FOAM   # a 2 px foam line, broken every 23 px, moving in frame 2
+                elif d == 3: q[y, x] = WET
+                elif d <= 9: q[y, x] = SHAL
                 else: q[y, x] = BODY
+    return q
+
+RM = 60                                                            # the macro corner's radius: b1's pond lobes turn on about 60-70 px
+def macro(quad, frame):
+    """a 2 x 2 cell outer corner (96 px), on the same bank and bands as the quarters, so its straight ends join edge quarters"""
+    north = quad in ("nw", "ne"); west = quad in ("nw", "sw")
+    U, V = np.meshgrid(np.arange(-16, 112), np.arange(-16, 112)); w = np.array(WAVE)
+    cx = cy = INSET + RM
+    land = (V < INSET + w[np.mod(U, 24)]) | (U < INSET + w[np.mod(V, 24)]) | ((U < cx) & (V < cy) & ((U - cx) ** 2 + (V - cy) ** 2 > RM ** 2))
+    lp = np.argwhere(land); wp = np.argwhere(~land); q = np.full((96, 96), BODY, int)
+    for y in range(96):
+        for x in range(96):
+            u = x if west else 95 - x; v = y if north else 95 - y; gu, gv = u + 16, v + 16
+            if land[gv, gu]:
+                d = int(np.sqrt(((wp - [gv, gu]) ** 2).sum(1).min()))
+                q[y, x] = -1 if d > 8 else (EDGE if d >= 7 else (SAND if d >= 3 else SAND2))
+            else:
+                d = int(np.sqrt(((lp - [gv, gu]) ** 2).sum(1).min()))
+                if d > 10: continue
+                if d <= 2: q[y, x] = WET if (gu + gv + 4 * frame) % 23 < 3 else FOAM
+                elif d == 3: q[y, x] = WET
+                elif d <= 9: q[y, x] = SHAL
     return q
 
 atlas = []
@@ -63,6 +86,10 @@ for quad in ("nw", "ne", "se", "sw"):
         for f in (1, 2):
             save(quarter(quad, st, f - 1), f"q-{quad}-{st}-f{f}")
             atlas.append({"name": f"meadow/shore/water-{quad}-{st}-f{f}", "file": f"q-{quad}-{st}-f{f}.png", "kind": "shore", "quad": quad, "state": st, "frame": f})
+for quad in ("nw", "ne", "se", "sw"):
+    for f in (1, 2):
+        save(macro(quad, f - 1), f"macro-{quad}-outer-f{f}")
+        atlas.append({"name": f"meadow/shore/water-macro-{quad}-outer-f{f}", "file": f"macro-{quad}-outer-f{f}.png", "kind": "shore-macro", "cells": [2, 2], "quad": quad, "frame": f})
 save(np.full((48, 48), BODY, int), "fill-body"); atlas.append({"name": "meadow/band/fill-body", "file": "fill-body.png", "kind": "band", "cells": [1, 1]})
 json.dump({"biome": "meadow", "tile": 48, "quarter": 24, "tones": {"body": cols[BODY]["hex"], "shallow": cols[SHAL]["hex"]}, "pieces": atlas},
           open(os.path.join(out, "water.json"), "w"), indent=1)
