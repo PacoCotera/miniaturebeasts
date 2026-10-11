@@ -1,0 +1,309 @@
+{
+ "biome": "meadow",
+ "tile": 48,
+ "sources": [
+  "meadow-src-walls-a1.jpg",
+  "meadow-src-walls-a2.jpg",
+  "meadow-src-walls-a3.jpg"
+ ],
+ "pieces": [
+  {
+   "name": "meadow/cap/wall-cap-w-a",
+   "file": "wall-cap-w-a.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "w",
+   "variant": "a"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-a",
+   "file": "wall-cap-e-a.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "e",
+   "variant": "a"
+  },
+  {
+   "name": "meadow/face/wall-2x1-a0",
+   "file": "wall-2x1-a0.png",
+   "kind": "face",
+   "cells": [
+    2,
+    1
+   ],
+   "variant": "a0"
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-b",
+   "file": "wall-cap-w-b.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "w",
+   "variant": "b"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-b",
+   "file": "wall-cap-e-b.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "e",
+   "variant": "b"
+  },
+  {
+   "name": "meadow/face/wall-3x1-b0",
+   "file": "wall-3x1-b0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "b0"
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-c",
+   "file": "wall-cap-w-c.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "w",
+   "variant": "c"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-c",
+   "file": "wall-cap-e-c.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "e",
+   "variant": "c"
+  },
+  {
+   "name": "meadow/face/wall-2x1-c0",
+   "file": "wall-2x1-c0.png",
+   "kind": "face",
+   "cells": [
+    2,
+    1
+   ],
+   "variant": "c0"
+  },
+  {
+   "name": "meadow/cap/wall-cap-w-d",
+   "file": "wall-cap-w-d.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "w",
+   "variant": "d"
+  },
+  {
+   "name": "meadow/cap/wall-cap-e-d",
+   "file": "wall-cap-e-d.png",
+   "kind": "cap",
+   "cells": [
+    1,
+    1
+   ],
+   "side": "e",
+   "variant": "d"
+  },
+  {
+   "name": "meadow/face/wall-3x1-d0",
+   "file": "wall-3x1-d0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "d0"
+  },
+  {
+   "name": "meadow/face/wall-3x1-d3",
+   "file": "wall-3x1-d3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "d3"
+  },
+  {
+   "name": "meadow/face/wall-3x1-e0",
+   "file": "wall-3x1-e0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "e0"
+  },
+  {
+   "name": "meadow/face/wall-3x1-e3",
+   "file": "wall-3x1-e3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "e3"
+  },
+  {
+   "name": "meadow/face/wall-2x1-e6",
+   "file": "wall-2x1-e6.png",
+   "kind": "face",
+   "cells": [
+    2,
+    1
+   ],
+   "variant": "e6"
+  },
+  {
+   "name": "meadow/face/wall-1x1-e8",
+   "file": "wall-1x1-e8.png",
+   "kind": "face",
+   "cells": [
+    1,
+    1
+   ],
+   "variant": "e8"
+  },
+  {
+   "name": "meadow/face/wall-3x1-f0",
+   "file": "wall-3x1-f0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "f0"
+  },
+  {
+   "name": "meadow/face/wall-3x1-f3",
+   "file": "wall-3x1-f3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "f3"
+  },
+  {
+   "name": "meadow/face/wall-1x1-f6",
+   "file": "wall-1x1-f6.png",
+   "kind": "face",
+   "cells": [
+    1,
+    1
+   ],
+   "variant": "f6"
+  },
+  {
+   "name": "meadow/face/wall-3x1-g0",
+   "file": "wall-3x1-g0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "g0"
+  },
+  {
+   "name": "meadow/face/wall-3x1-g3",
+   "file": "wall-3x1-g3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "g3"
+  },
+  {
+   "name": "meadow/face/wall-1x1-g6",
+   "file": "wall-1x1-g6.png",
+   "kind": "face",
+   "cells": [
+    1,
+    1
+   ],
+   "variant": "g6"
+  },
+  {
+   "name": "meadow/face/wall-3x1-h0",
+   "file": "wall-3x1-h0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "h0"
+  },
+  {
+   "name": "meadow/face/wall-3x1-h3",
+   "file": "wall-3x1-h3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "h3"
+  },
+  {
+   "name": "meadow/face/wall-1x1-h6",
+   "file": "wall-1x1-h6.png",
+   "kind": "face",
+   "cells": [
+    1,
+    1
+   ],
+   "variant": "h6"
+  },
+  {
+   "name": "meadow/face/wall-3x1-i0",
+   "file": "wall-3x1-i0.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "i0"
+  },
+  {
+   "name": "meadow/face/wall-3x1-i3",
+   "file": "wall-3x1-i3.png",
+   "kind": "face",
+   "cells": [
+    3,
+    1
+   ],
+   "variant": "i3"
+  },
+  {
+   "name": "meadow/face/wall-1x1-i6",
+   "file": "wall-1x1-i6.png",
+   "kind": "face",
+   "cells": [
+    1,
+    1
+   ],
+   "variant": "i6"
+  }
+ ]
+}
