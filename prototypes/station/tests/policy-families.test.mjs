@@ -11,7 +11,7 @@ import * as S from "../src/state.mjs";
 import { podsProps } from "../src/views/pods-props.mjs";
 import { registerPictures, iconRequests } from "../src/pictures.mjs";
 import { SPECS } from "../src/game.mjs";
-import { assetEntry, placeMaster } from "../../ui/assets.mjs";
+import { assetEntry, placeMaster, dropAsset } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), framesDir = path.resolve(here, "../../workbench/frames"), specs = path.resolve(here, "../../ui/specs/station");
@@ -58,4 +58,19 @@ test("every picture Pods asks for, in every state of every species, is in a laye
 test("the bed of a light is a painted picture; the one bed of old is in no family", () => {
   for (const l of ["dawn", "day", "dusk", "night"]) assert.equal(policyOf(`home-bed-${l}-192x56`, "master"), "painted");
   assert.throws(() => policyOf("home-bed-192x56"), /no layer family/);
+});
+
+test("a juvenile mibi takes the art director's juvenile stand-in at its size when one is placed, else the rig; an adult always builds the rig; the stand-in is a painted master", () => {
+  const MASTER = "mibi-juvenile-S01-304x312", env = { podById: () => null, frameOf, mibiGenome: () => podGenome(frameOf("S01"), 3) };
+  const ask = (id, stage, [w, h] = [304, 312]) => ({ kind: "mibi", id: `mibi:${id}:${stage}:${w}x${h}`, mibi: id, stage, species: "S01", size: [w, h] });
+  const ids = ["juvenile", "adult"].flatMap((st) => [1, 2].flatMap((n) => [`mibi:${n}:${st}:304x312`, `mibi:${n}:${st}:144x152`]));   // 144×152: a size with no juvenile master in the real index
+  const clear = () => { for (const id of ids) dropAsset(id); dropAsset(MASTER); };
+  clear(); registerPictures([ask(1, "juvenile", [144, 152]), ask(1, "adult", [144, 152])], env);
+  assert.equal(assetEntry("mibi:1:juvenile:144x152").file, null, "no stand-in placed at this size: the juvenile builds the rig"); assert.match(assetEntry("mibi:1:juvenile:144x152").until, /juvenile stand-in/);
+  placeMaster({ id: MASTER, w: 304, h: 312, file: "mibi-juvenile-S01-304x312.png", hash: "0".repeat(64), signed: "2026-10-11", status: "master" }, { w: 304, h: 312, rgba: () => new Uint8ClampedArray(304 * 312 * 4) });
+  registerPictures([ask(2, "juvenile"), ask(2, "adult")], env);
+  const j = assetEntry("mibi:2:juvenile:304x312"), a = assetEntry("mibi:2:adult:304x312");
+  assert.equal(j.file, "mibi-juvenile-S01-304x312.png"); assert.equal(j.hash, "0".repeat(64)); assert.equal(a.file, null, "the adult is the painted mibi, never the stand-in");
+  assert.equal(policyOf("mibi:2:juvenile:304x312", "master"), "painted"); assert.equal(policyOf(MASTER, "master"), "painted");
+  clear();
 });

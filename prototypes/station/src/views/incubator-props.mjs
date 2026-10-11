@@ -7,6 +7,7 @@ import * as S from "../state.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot, maxTraits } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
+import { mibiReq } from "./home-props.mjs";
 
 const fill = (t, o) => t.replace(/\{([^}]+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
 
@@ -62,8 +63,8 @@ export function incubatorBuild(m, spec, pods) {
     regions.code = codeText(hatch ? hatch.code : B.code);
   }
   if (state === "hatch") {
-    const [jw, jh] = R.juvenile.rect.slice(2), stage = S.mibiStage(st, mb, settings);   // the stage the mibi has now: the meet draws the same picture
-    regions.juvenile = { picture: req({ kind: "mibi", id: `mibi:${mb.id}:${stage}:${jw}x${jh}`, mibi: mb.id, stage, species, size: [jw, jh] }) };
+    const [jw, jh] = R.juvenile.rect.slice(2);   // the stage the mibi has now is in the id: the meet draws the same picture
+    regions.juvenile = { picture: mibiReq(req, st, mb, [jw, jh], settings) };
     regions.ribbon = fill(spec.strings.hatchRibbon, { Name: mb.name, Species: S.cap(S.spName(mb)) });
   }
 
