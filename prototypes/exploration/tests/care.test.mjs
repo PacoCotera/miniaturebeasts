@@ -780,14 +780,14 @@ test("X1 2: every screen renders with S05 and S10 mibis carried and leading; Ten
   render("menu");
   d = render("setup"); assert.ok(d.includes("c-sprite-other-32@28,264x2"), "the partner card: the plate at 2×: " + d);
   assert.doesNotThrow(() => p.run("tendPress(mibiById(1))"));
-  assert.match(p.run("FX.notes.map(n => n.text).join('\\n')"), /^Dot leans in close · it hasn’t been out yet$/m, "Tend's line takes tendMomentOther");
+  assert.match(p.run("FX.notes.map(n => n.text).join('\\n')"), /^Dot settles · it hasn’t been out yet$/m, "Tend's line takes tendMomentOther");
   p.pass(3000); assert.doesNotThrow(() => p.run("tendPress(mibiById(3))"));
   assert.equal(p.run("mibiSpName(mibiById(1))"), "Tepor"); assert.equal(p.run("mibiSpName(mibiById(3))"), "Igara");
   // lift, Walk with Dot alone, then an expedition
   assert.ok(ST.dockKey(st, p.sv()).lifted); p.putSt(st); p.run("save()");
   p.run("S.carried = [1]; S.walkTurn = -1;");
   assert.doesNotThrow(() => p.run("walk(mibiById(1))"));
-  assert.match(p.run("FX.notes.map(n => n.text).join('\\n') + S.log.join('\\n')"), /Dot walks along the path/, "the Walk line takes walkedOther");
+  assert.match(p.run("FX.notes.map(n => n.text).join('\\n') + S.log.join('\\n')"), /Dot walks the path/, "the Walk line takes walkedOther");
   p.run("S.carried = [1, 3]; S.phase = 'setup';");
   p.key("confirm"); p.key("confirm"); assert.ok(p.S.exp, "an expedition started with Dot leading");
   assert.equal(p.run("S.exp.pt && S.exp.pt.sp"), -1);
@@ -833,6 +833,9 @@ test("X1 4: the round trip: a fresh page saves the same string; the Station stil
 test("X1 5: with no spName in the save (a Station save from before it), the name is CARE_TEXT.spOther", () => {
   const { p } = X1.docked({ oldSave: true }); p.run("save()");
   assert.equal(p.run("CARE_TEXT.spOther"), "a Station species");
+  // the copywriter's signed strings (2026-10-11 14:42)
+  assert.equal(p.run("CARE_TEXT.abOther"), "no field ability yet"); assert.equal(p.run("CARE_TEXT.tendMomentOther"), "settles");
+  assert.equal(p.run("CARE_TEXT.walkedOther('Dot', 'meadow')"), "Dot walks the meadow"); assert.equal(p.run("CARE_TEXT.walkedOther('Dot', null)"), "Dot walks the path");
   assert.deepEqual(plain(p.run("S.mibis.map(mibiSpName)")), Array(4).fill("a Station species"));
   assert.ok(p.S.log.some(l => /Dot \(a Station species\) is home at the Station/.test(l)));
 });
