@@ -717,9 +717,12 @@ test("the Lead card's context: docked with no one carried reads 'no one with you
 // The whole page script in a sandbox (as freeze.test.mjs runs it), with the Station's real code and frames: seedAdults S05 and S10
 // (sp -1 on the Station: a species beyond the Companion's three), then dockKey, then the Companion reads the save.
 const X1 = await (async () => {
-  const W = await import("../src/world.mjs"), { frameOf } = await import("../../station/src/genome.mjs");
-  const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1], IMPORT = /^import \{([^}]*)\} from "\.\/src\/world\.mjs";$/m;
-  const BINDINGS = MODULE.match(IMPORT)[1].split(",").map(s => s.trim().split(/\s+as\s+/)), SCRIPT = MODULE.replace(IMPORT, "");
+  const W = await import("../src/world.mjs"), A = await import("../src/atlas.mjs"), { frameOf } = await import("../../station/src/genome.mjs");
+  // every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
+  const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1], MODS = { world: W, atlas: A };
+  const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
+  const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
+  const SCRIPT = MODULE.replace(IMPORT_RE, "");
   function page(store = {}) {
     const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
       apply: () => any, construct: () => any, set: () => true });
@@ -728,7 +731,7 @@ const X1 = await (async () => {
       matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
       performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
       localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-    ctx.window = ctx; for (const [from, to = from] of BINDINGS) ctx[to] = W[from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
+    ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
     const run = src => vm.runInContext(src, ctx), KEY = run("SAVE_KEY");
     const p = { run, store, KEY, get S() { return run("S"); },
       pass(ms) { const end = clock.t + ms; for (;;) { clock.timers.sort((a, b) => a.at - b.at); const n = clock.timers[0]; if (!n || n.at > end) break; clock.timers.shift(); clock.t = n.at; n.f(); } clock.t = end; },

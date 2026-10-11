@@ -7,12 +7,15 @@ import { readFileSync } from "node:fs";
 import { createHash } from "node:crypto";
 import vm from "node:vm";
 import * as W from "../src/world.mjs";
+import * as A from "../src/atlas.mjs";
 
 const PAGE = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 const MODULE = PAGE.match(/<script type="module">([\s\S]*?)<\/script>/)[1];
-const IMPORT = /^import \{([^}]*)\} from "\.\/src\/world\.mjs";$/m;
-const BINDINGS = MODULE.match(IMPORT)[1].split(",").map(s => s.trim().split(/\s+as\s+/));
-const SCRIPT = MODULE.replace(IMPORT, "");
+// every `import { … } from "./src/<module>.mjs"` line of the page, bound to that module's exports (view.mjs joins MODS in C2a M2)
+const MODS = { world: W, atlas: A };
+const IMPORT_RE = /^import \{([^}]*)\} from "\.\/src\/(\w+)\.mjs";$/gm;
+const BINDINGS = [...MODULE.matchAll(IMPORT_RE)].flatMap(m => m[1].split(",").map(s => s.trim().split(/\s+as\s+/)).map(([f, t = f]) => [m[2], f, t]));
+const SCRIPT = MODULE.replace(IMPORT_RE, "");
 
 function page(store = {}) {
   const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
@@ -22,7 +25,7 @@ function page(store = {}) {
     matchMedia: () => ({ matches: true, addEventListener() {}, removeEventListener() {} }), requestAnimationFrame: () => 0, addEventListener: () => {}, innerWidth: 450, innerHeight: 600,
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
-  ctx.window = ctx; for (const [from, to = from] of BINDINGS) ctx[to] = W[from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
+  ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx); vm.runInContext(SCRIPT, ctx);
   const run = src => vm.runInContext(src, ctx);
   const p = {
     run, store,
