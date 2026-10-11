@@ -119,8 +119,8 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   // topline: the belly stays put (rules.bellyFixed), so d = 0 points every 8 px along the belly line join the constraints before the fit
   const bellyLine = pic.bellyLine?.map(([x, y]) => [x * scaleX, y * scaleY]), bellyFixed = landmarks.rules?.bellyFixed?.value === true;
   if (bellyFixed && bellyLine) {
-    const yb = bellyColumns(bellyLine, w), xs = bellyLine.map((p) => p[0]), x0 = Math.ceil(Math.min(...xs)), x1 = Math.floor(Math.max(...xs));
-    for (let x = x0; x <= x1; x += 8) if (!pxs.some((p) => p.x === x && p.y === yb[x])) add(x, yb[x], 0, 0, "belly-fixed");
+    const yb = bellyColumns(bellyLine, w);                      // the line extended flat to the picture edges, so a leg beyond its last vertex is fixed too
+    for (let x = 0; x < w; x += 8) if (!pxs.some((p) => p.x === x && p.y === yb[x])) add(x, yb[x], 0, 0, "belly-fixed");
   }
   const seen = new Set(); for (const p of pxs) { const k = p.x + "," + p.y; if (seen.has(k)) throw new Error(`landmarks "${p.nm}" collide at ${k} at ${w}x${h}`); seen.add(k); }
   const fx = tps(pxs), fy = tps(pys), dxI = new Int8Array(w * h), dyI = new Int8Array(w * h);
@@ -144,30 +144,31 @@ export function buildField(landmarks, end, w, h, { picture = null, overrides = {
   return field;
 }
 
-// The two domains, in one place. The field domain D: the ink dilated by the size's bound. The check domain: the pixels that are ink in the source or in the warped output (t = 1),
-// each dilated by 1 px, minus the head zone (the head mask dilated by 6 px). Without ink both are the whole picture.
+// The domains, in one place. The field domain D: the ink dilated by the size's bound (the field is written 0 outside it). The check domain, where the field has an effect: the pixels that are
+// ink in the source or in the warped output (t = 1), each dilated by 1 px, minus the head mask (inside it the field is never used). The gradient also skips the 6 px head zone (zone: true).
+// Without ink the check domain is the whole picture.
 export const fieldDomain = (ink, w, h, bound) => dilate(ink, w, h, bound);
-export function checkDomain(f) {
-  const { w, h } = f, all = new Uint8Array(w * h).fill(1);
-  const skip = f.headMask ? dilate(f.headMask, w, h, HEAD_ZONE) : null; let C = all;
+export function checkDomain(f, { zone = false } = {}) {
+  const { w, h } = f; let C = new Uint8Array(w * h).fill(1);
   if (f.ink) {
     const both = new Uint8Array(f.ink);
     for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = y * w + x; if (f.headMask?.[i]) continue; const sx = x - f.dx[i], sy = y - f.dy[i]; if (sx >= 0 && sy >= 0 && sx < w && sy < h && f.ink[sy * w + sx]) both[i] = 1; }
     C = dilate(both, w, h, 1);
   }
+  const skip = f.headMask ? (zone ? dilate(f.headMask, w, h, HEAD_ZONE) : f.headMask) : null;
   if (!skip) return C; const out = new Uint8Array(w * h); for (let i = 0; i < w * h; i++) out[i] = C[i] && !skip[i] ? 1 : 0; return out;
 }
-// The loader's refusals (§2 and the harness answers). Throws an Error naming the rule and the pixel. Bounds: every pixel outside the head mask. Gradient, on the stored integer map at
+// The loader's refusals (§2 and the harness answers). Throws an Error naming the rule and the pixel. Bounds: over the check domain (outside the head mask). Gradient, on the stored integer map at
 // t = 1 over 4 px windows with both ends in the check domain: stretch |dx(x+4,y) − dx(x,y)| ≤ 1 and |dy(x,y+4) − dy(x,y)| ≤ 1 (0.25 px per px); shear |dy(x+4,y) − dy(x,y)| ≤ 2 and
 // |dx(x,y+4) − dx(x,y)| ≤ 2 (0.5). Zero rows: 0 on them.
 export function checkField(f) {
   const { w, h } = f, size = f.size ?? `${w}x${h}`, bound = BOUNDS[size]; if (bound == null) throw new Error(`field refused: no bound for ${size}`);
-  f.maxD = 0;
+  f.maxD = 0; const B = checkDomain(f);
   for (let i = 0; i < w * h; i++) {
-    if (f.headMask?.[i]) continue; const d = Math.hypot(f.dx[i], f.dy[i]); if (d > f.maxD) f.maxD = d;
+    if (!B[i]) continue; const d = Math.hypot(f.dx[i], f.dy[i]); if (d > f.maxD) f.maxD = d;
     if (d > bound) throw new Error(`field refused: |d| ${d.toFixed(2)} px at (${i % w}, ${(i / w) | 0}) is over the ${bound} px bound at ${size}`);
   }
-  const C = checkDomain(f); f.maxStretch = 0; f.maxShear = 0; let first = null;
+  const C = checkDomain(f, { zone: true }); f.maxStretch = 0; f.maxShear = 0; let first = null;
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) for (const [ex, ey] of [[1, 0], [0, 1]]) {
     const x2 = x + ex * GRADIENT_WINDOW, y2 = y + ey * GRADIENT_WINDOW; if (x2 >= w || y2 >= h) continue;
     const i = y * w + x, j = y2 * w + x2; if (!C[i] || !C[j]) continue;
