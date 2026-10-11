@@ -66,10 +66,11 @@ test("purity, by source: no page state, DOM, storage, clock, randomness, drawing
   for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /import /]) assert.doesNotMatch(code, re);
 });
 
-test("unknown generators are refused; generator 2 is built, new worlds stay on generator 1", () => {
+test("unknown generators are refused; generator 2 is built, the page plays generator 1 only", () => {
   assert.throws(() => W.genWorld(1, 3), RangeError);
   assert.throws(() => W.genWorld(1, 0), RangeError);
-  assert.deepEqual(W.GENS, [1, 2]);
+  assert.deepEqual(W.GENS, [1]);
+  assert.equal(W.genWorld(1, 2).gen, 2);
   assert.equal(W.NEW_GEN, 1);
 });
 
@@ -110,7 +111,7 @@ test("a save from a newer generator (gen 3) is read-only: load() says 'newer', b
   p.run("save0()");
   assert.equal(p.store[p.KEY], raw, "save() returns at once while read-only");
   assert.deepEqual(writes, [], "nothing was written");
-  for (const gen of [3, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
+  for (const gen of [2, 3, 0, "1"]) { const q = page({ "mb-save-v8": JSON.stringify(Object.assign(FIXTURE(), { gen })) }); assert.equal(q.run("load()"), "newer", `gen ${JSON.stringify(gen)} is not in GENS`); }
 });
 
 test("the Station's save reader adopts the save and keeps gen as it is (absent, 1, 2)", async () => {

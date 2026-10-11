@@ -2,7 +2,7 @@
 // storage, the clock or Math.random, and never draws. Generator 1 is frozen; a new generator is added beside it, never in its place.
 
 export const NEW_GEN = 1;          // the generator newWorld gives a new world
-export const GENS = [1, 2];        // the generators this module can build
+export const GENS = [1];           // the generators the page can play
 
 export const MW = 16, MH = 20;                       // world map, cells
 export const PW = 28, PH = 32;
