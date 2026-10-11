@@ -11,6 +11,9 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + 
 const hash = (n) => (Math.imul(n + 1, 2654435761) >>> 0) % 65521;
 // A painting that has not landed is on its way: the waiting lamp of a resident, and the Incubator's.
 const paintWaiting = (mibi) => !mibi.paint || ["queued", "painting", "capped", "sent"].includes(mibi.paint.state);
+// A mibi's picture id carries its stage (a juvenile takes the art director's stand-in at its size when one is placed): mibi:<id>:<juvenile|adult|elder>:<w>x<h>
+export const mibiPictureId = (id, stage, [w, h]) => `mibi:${id}:${stage}:${w}x${h}`;
+export const mibiReq = (req, st, mb, size, settings) => { const stage = S.mibiStage(st, mb, settings); return req({ kind: "mibi", id: mibiPictureId(mb.id, stage, size), mibi: mb.id, stage, species: S.speciesOf(mb), size }); };
 const WORD_STAGE = (spec, st) => spec.strings.stages[st] ?? st;
 
 // m: { st, sv, settings, docked, ui: { meet }, focus: id | null, spec home.json, frame frame.json }; the need is state.mjs's needKey, the words are home.json's
@@ -37,7 +40,7 @@ export function livingOf(m, R, req, ph, L) {
   const { st, sv, settings } = m, docked = !!m.docked, carried = S.carriedIds(st, sv), here = S.homeMibis(st, sv);
   const stageOf = (mb) => S.mibiStage(st, mb, settings);
   const sizeOf = (mb) => R.resident[stageOf(mb) === "juvenile" ? "juvenile" : "adult"];
-  const pic = (mb, size) => req({ kind: "mibi", id: `mibi:${mb.id}:${size.join("x")}`, mibi: mb.id, species: S.speciesOf(mb), size });
+  const pic = (mb, size) => mibiReq(req, st, mb, size, settings);
   const person = (mb, extra = {}) => { const size = extra.nap ? R.bed.sleepers.ink.max : sizeOf(mb); delete extra.nap; return { id: String(mb.id), name: mb.name, stage: stageOf(mb), picture: pic(mb, size), waiting: paintWaiting(mb), ...extra }; };
   const residents = here.map((mb) => person(mb, { seed: hash(mb.id) }));
   const sleepers = docked ? carried.slice(0, R.bed.sleepers.max).map((id) => S.mibiById(st, id)).filter(Boolean).map((mb) => person(mb, { seed: 0, nap: true })) : [];

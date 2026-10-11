@@ -15,7 +15,7 @@ import * as S from "../../station/src/state.mjs";
 import { habitatBuild } from "../../station/src/views/habitat-props.mjs";
 import { namerBuild } from "../../station/src/views/namer-props.mjs";
 import { departures } from "../tools/habitat-regions.mjs";
-import { dirty } from "./dirty.mjs";
+import { dirty, dirtyRects } from "./dirty.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url)), dist = path.resolve(here, "../dist"), built = existsSync(path.join(dist, "face.mjs")), skip = !built && "face not built (prototypes/face/build.sh)";
 const specs = path.resolve(here, "../../ui/specs/station"), J = (n) => JSON.parse(readFileSync(path.join(specs, n + ".json"), "utf8")), frameSpec = J("frame"), spec = J("habitat"), namerSpec = J("namer"), homeSpec = J("home");
@@ -93,7 +93,7 @@ test("the namer opens and closes as cuts: the raw dirty area of the opening and 
   const CEIL = 178_486 + 12_160 + 7_680 + 38_912, WITH_MOMENT = CEIL + 96_064;
   const b0 = scene({ meet: true, focus: "resident" }), f = await start(b0); const objects0 = f.objects();
   const b1 = scene({ meet: true, namer: true }); frames(f); assert.equal(dirtyOf(f), 0, "the settled meet: nothing dirty");
-  assert.equal(push(f, b1), 0, f.errors().join("; ")); frames(f, 1); const open = dirtyOf(f), opened = f.objects(); assert.ok(opened > objects0 && opened <= 400, `${opened} objects open`);
+  assert.equal(push(f, b1), 0, f.errors().join("; ")); frames(f, 1); const openRects = dirtyRects(f), open = dirtyOf(f), opened = f.objects(); assert.ok(!openRects.some(([x, y]) => x === 0 && y === 0), `the opening redraws nothing at the origin: ${JSON.stringify(openRects.filter(([x, y]) => x === 0 && y === 0))}`); assert.ok(opened > objects0 && opened <= 400, `${opened} objects open`);
   assert.ok(open <= CEIL, `the opening ✓ redraws ${open} px, over ${CEIL}`); console.log(`# the opening ✓: ${open} px dirty (ceiling ${CEIL}), ${opened} objects`);
   const b2 = scene({ meet: false, focus: "resident" }); b2.props.regions.nameTag.text = b0.shown.name; frames(f); dirtyOf(f);
   assert.equal(push(f, { ...b2, props: { ...b2.props, state: "rest" } }), 0, f.errors().join("; ")); frames(f, 1); const close = dirtyOf(f);
@@ -102,8 +102,12 @@ test("the namer opens and closes as cuts: the raw dirty area of the opening and 
   const f2 = await start(b2); assert.equal(f.objects(), f2.objects(), "the namer's nodes are gone with it");
   // the opening ✓ of a meet whose moment is still playing: the key cuts the moment, so the resident's lifted box is redrawn with the panel
   const g = await start(scene({ meet: true, focus: "resident" })); g.send({ t: "event", kind: "moment", target: "resident", ms: 1800, hold: 0, cut: true }); frames(g, 10); dirtyOf(g);
-  g.send({ t: "key", k: "confirm" }); assert.equal(push(g, scene({ meet: true, namer: true })), 0, g.errors().join("; ")); frames(g, 1); const withMoment = dirtyOf(g);
+  g.send({ t: "key", k: "confirm" }); assert.equal(push(g, scene({ meet: true, namer: true })), 0, g.errors().join("; ")); frames(g, 1); const momentRects = dirtyRects(g), withMoment = dirtyOf(g); assert.ok(!momentRects.some(([x, y]) => x === 0 && y === 0), "the opening on a cut moment redraws nothing at the origin");
   assert.ok(withMoment <= WITH_MOMENT, `the opening ✓ on a moment redraws ${withMoment} px, over ${WITH_MOMENT}`); console.log(`# the opening ✓ cutting a moment: ${withMoment} px dirty (ceiling ${WITH_MOMENT})`);
+  // a meet that rests without the namer: the tag's slot (no size) becomes the tag, and nothing is redrawn at the origin
+  const h = await start(scene({ meet: true, focus: "resident" })); frames(h); dirtyOf(h);
+  assert.equal(push(h, scene({ focus: "resident" })), 0, h.errors().join("; ")); frames(h, 1); const restRects = dirtyRects(h); dirtyOf(h);
+  assert.ok(!restRects.some(([x, y]) => x === 0 && y === 0), "meet → rest redraws nothing at the origin"); console.log(`# meet → rest: ${restRects.reduce((a, [, , w, hh]) => a + w * hh, 0)} px dirty`);
   // the named flash: the tag takes the frame's flash for 240 ms; each of its frames is a tag's area, far under a quarter of the screen
   f.send({ t: "event", kind: "flash", target: "nameTag", ms: 240, hold: 240 }); let worst = 0; for (let i = 0; i < 20; i++) { frames(f, 1, 16); worst = Math.max(worst, dirtyOf(f)); } assert.ok(worst <= 153_600, `the flash redraws ${worst} px`); console.log(`# the named flash: worst frame ${worst} px`);
 });

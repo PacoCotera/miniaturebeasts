@@ -4,7 +4,7 @@
 // Runs in Node, tested there (tests/vivarium-props.test.mjs); the shape is vivarium.props.json.
 //   m: { st, sv, settings, docked, light, focus (the ring: a target id, or null for the way in), seen (the mibi last seen up close, or null) }
 import * as S from "../state.mjs";
-import { livingOf } from "./home-props.mjs";
+import { livingOf, mibiReq } from "./home-props.mjs";
 import { paintingOf } from "./idle-props.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -23,7 +23,7 @@ export function vivariumBuild(m, spec, frame, home) {
     tiles: { glyph: frame.regions.marks.companion.away, items: [] },   // an out mibi's tile shows the Companion's outline glyph (the top bar's away mark)
   };
   // a tile a bay: the housed mibis in bay order, then the free bays; a housed one shows its thumbnail, one out with the Companion its glyph
-  const n = S.bayCount(st, settings), tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", picture: out(mb) ? "" : req({ kind: "mibi", id: `mibi:${mb.id}:48x48`, mibi: mb.id, species: S.speciesOf(mb), size: [48, 48] }) }));
+  const n = S.bayCount(st, settings), tiles = housed.slice(0, n).map((mb) => ({ id: String(mb.id), state: out(mb) ? "out" : "housed", picture: out(mb) ? "" : mibiReq(req, st, mb, [48, 48], settings) }));
   while (tiles.length < n) tiles.push({ id: "", state: "free", picture: "" });
   regions.tiles.items = tiles;
   // the focus: the residents in bay order (a sleeper in its bay's place), then the tiles in bay order; the ring on the target the way in names

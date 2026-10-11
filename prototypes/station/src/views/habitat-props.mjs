@@ -7,6 +7,7 @@ import * as S from "../state.mjs";
 import { frameFor } from "../state.mjs";
 import { stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { habitatShown } from "../trickle.mjs";
+import { mibiReq } from "./home-props.mjs";
 import { habitsOf, placesOf } from "../state.mjs";
 
 const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + k + "}"));
@@ -31,7 +32,7 @@ export function habitatBuild(m, spec, frame, home) {
   regions.glass = { picture: slot(`${spec.light.pictures[m.light]}-${spec.light.size.join("x")}`, spec.light.size, "the near Vivarium master (the light)") };
   regions.resident = out
     ? { id: sid, name: shown.name, stage, picture: "", waiting: false, out: slot("mark-out-with-companion-64x96", R.resident.out.rect.slice(2), "the out mark") }
-    : { id: sid, name: shown.name, stage, picture: req({ kind: "mibi", id: `mibi:${shown.id}:${stage}:${R.resident.rect[2]}x${R.resident.rect[3]}`, mibi: shown.id, stage, species: S.speciesOf(shown), size: R.resident.rect.slice(2) }), waiting, out: "" };
+    : { id: sid, name: shown.name, stage, picture: mibiReq(req, st, shown, R.resident.rect.slice(2), settings), waiting, out: "" };
   regions.nameTag = { text: shown.name };
   regions.meetRibbon = { text: meet ? fill(Sg.meet, { name: shown.name }) : "" };
 
@@ -56,7 +57,7 @@ export function habitatBuild(m, spec, frame, home) {
   regions.plates = { items: plates };
 
   // the Companion module: the set as it will be, in its order; an add request waiting shows its lamp
-  const places = proj.slice(0, 3).map((id) => { const mb = S.mibiById(st, id); return mb ? { picture: req({ kind: "mibi", id: `mibi:${mb.id}:48x48`, mibi: mb.id, species: S.speciesOf(mb), size: [48, 48] }), waiting: !carried.includes(id) } : null; });
+  const places = proj.slice(0, 3).map((id) => { const mb = S.mibiById(st, id); return mb ? { picture: mibiReq(req, st, mb, [48, 48], settings), waiting: !carried.includes(id) } : null; });
   while (places.length < 3) places.push(null);
   regions.door = { state: !proj.length ? "none" : docked ? "docked" : "away", glyph: docked ? frame.regions.marks.companion.docked : frame.regions.marks.companion.away, places, lamp: frame.regions.marks.lamp8.away };
 
@@ -75,7 +76,7 @@ export function habitatBuild(m, spec, frame, home) {
 
   // the strip: one tile a bay, the housed mibis in bay order then the free bays; the mibi up close is the shown tile
   const housed = S.housed(st).slice().sort((a, b) => a.bay - b.bay), n = S.bayCount(st, settings);
-  const tiles = housed.slice(0, n).map((mb) => { const away = S.isAway(st, sv, mb); return { id: String(mb.id), state: away ? "out" : "housed", shown: mb.id === shown.id, picture: away ? "" : req({ kind: "mibi", id: `mibi:${mb.id}:48x48`, mibi: mb.id, species: S.speciesOf(mb), size: [48, 48] }) }; });
+  const tiles = housed.slice(0, n).map((mb) => { const away = S.isAway(st, sv, mb); return { id: String(mb.id), state: away ? "out" : "housed", shown: mb.id === shown.id, picture: away ? "" : mibiReq(req, st, mb, [48, 48], settings) }; });
   while (tiles.length < n) tiles.push({ id: "", state: "free", shown: false, picture: "" });
   regions.tiles = { glyph: frame.regions.marks.companion.away, items: tiles };
 

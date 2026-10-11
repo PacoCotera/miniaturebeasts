@@ -51,6 +51,7 @@ void build_module(const char *sp, const char *key, int dy, const char *lampState
   v_region(key, LAYER_TYPE); v_text(v_fmt("%s.word", key), w, x + word[0], y + word[1] + 5, v_measure(w, 16), 16, scol(sp, "colours.module.word"));   /* a 24 px zone: the cap top 5 below its top */
 }
 
+int g_tagSlot;   /* the name tag is a slot (the meet ribbon stands in its place): the same nodes at the tag's place with no size */
 int g_tagFlash;   /* the name tag takes the frame's flash (the namer saved a name): the frame's `flash` fill and `flashInk` ink while set */
 /* the name tag, for the screen whose spec is `sp` and whose window (Home's glass, the whole's window) is the region `glass`: a panel and the name, h tall (regions.nameTag); its width the name's plus twice the pad rounded up to the 8 px grid, 48 at least,
    the widest the spec's max; centred on the box, 12 px under the ring (top at feet + 24), over the box (top = box.y − lift − 8 − h) when its bottom would pass 8 px above the window's bottom, slid to stay 8 px inside the window. `lift`: the box is the resident's
@@ -64,10 +65,11 @@ void build_nameTag(const char *sp, const char *glass, const char *name, const in
   if (x < gx + 8) x = gx + 8; if (x + w > gx + gw - 8) x = gx + gw - 8 - w;
   out[0] = x; out[1] = y; out[2] = w; out[3] = h;
   const char *ink = g_tagFlash ? scol("frame", "colours.flashInk") : scol(sp, "colours.nameTag.text");
-  v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, g_tagFlash ? scol("frame", "colours.flash") : scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge"));
+  if (g_tagSlot) { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, 0, 0, scol(sp, "colours.nameTag.fill"), NULL); }
+  else { v_region("nameTag", LAYER_CHROME); word_panel("nameTag", x, y, w, h, g_tagFlash ? scol("frame", "colours.flash") : scol(sp, "colours.nameTag.fill"), scol(sp, "colours.nameTag.edge")); }
   /* the name's cap top: 5 px under the tag's top (the 24 px tag), or from the spec's line top (regions.nameTag.lineTop in the tag's rectangle: one mibi up close's 32 px tag at 20 px) on the type's line pitch (20 at 16, 28 at 20, 36 at 28) */
   int ty = y + 5; if (spec_int(sp, "regions.nameTag.lineTop", 0) > 0) { int pitch = px == 16 ? 20 : px == 20 ? 28 : 36; ty = y + (spec_int(sp, "regions.nameTag.lineTop", 0) - sk(sp, "regions.nameTag.rect", 1)) + v_fdiv(pitch - v_cap(px), 2); }
-  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", name, x + v_half(w - tw), ty, tw, px, ink);
+  v_region("nameTag", LAYER_TYPE); v_text("nameTag.text", g_tagSlot ? "" : name, x + v_half(w - tw), ty, g_tagSlot ? 0 : tw, px, ink);
 }
 
 /* the rest knob on the bezel's bottom rail: 32 x 6, at rest at y 546, lifted to 544 while focused; settling from the lift while the `rest` event plays. A flat plate in the knob's three roles. */
