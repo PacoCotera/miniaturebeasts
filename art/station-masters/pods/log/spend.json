@@ -3000,5 +3000,125 @@
    "thoughtsTokenCount": 277,
    "totalTokenCount": 2643
   }
+ },
+ {
+  "tag": "px-cliffs-00",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:27:23Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-cliffs-01",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:27:37Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-cliffs-02",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:27:55Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-cliffs-10",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:28:09Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-cliffs-11",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:28:22Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-cliffs-12",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:28:36Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-pond-00",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:28:50Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-pond-01",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:29:03Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-pond-02",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:29:17Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-pond-10",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:29:35Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-pond-11",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:29:48Z",
+  "evidence": "charged before the call at the price check_cost returned"
+ },
+ {
+  "tag": "px-pond-12",
+  "tool": "retro-diffusion rd_plus__topdown_map",
+  "usd": 0.06,
+  "mxn": 1.2,
+  "mxn_per_usd": 20.0,
+  "pacific_day": "2026-10-10",
+  "time": "2026-10-11T01:30:06Z",
+  "evidence": "charged before the call at the price check_cost returned"
  }
 ]
