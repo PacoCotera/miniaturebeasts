@@ -1,0 +1,14 @@
+[
+{
+"name": "cargo-bay-shut-a",
+"model": "gemini-3-pro-image",
+"aspect": "21:9",
+"size": "1K",
+"tries": 1,
+"refs": [
+["art/station-masters/pods/source/raw/cargo-bay-open-a.jpg", "Our cargo bay, open (project-owned): edit THIS picture."],
+["art/station-masters/pods/slices/home-bay-shut-176x72.png", "Our signed small bay, shut (project-owned): the sage material and moulded latches of the closed look."]
+],
+"prompt": "Edit the first picture: close the bay. A sage moulded roller door, made of plain horizontal slats of even height, now fills the whole opening inside the rim, from the top inner edge down to the front lip, so no back wall and no floor show. Keep the outer rim, the picture's edges, framing, size, camera and light from the top left exactly as they are, pixel for pixel; only the opening changes. The door is matte, the same sage as the rim, slightly darker, with a soft shadow under the top inner edge and two small moulded latches at the bottom left and bottom right, in the style of the second reference. No text, no numbers, no lights, no glow, no crates, no props."
+}
+]
