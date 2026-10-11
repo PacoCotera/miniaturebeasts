@@ -29,10 +29,28 @@ LOOKS = [   # (sheet, species, trait, look, portrait window (centre, height), la
     ('trait-S02-span-a', 'S02', 'span', 'small-cap', (272, 320), 500, (272, 320), 500),
     ('trait-S02-span-a', 'S02', 'span', 'between', (790, 320), 500, (790, 320), 500),
     ('trait-S02-span-a', 'S02', 'span', 'wide-cap', (1308, 320), 500, (1308, 320), 500),
+    ('trait-S03-tail-carriage-a', 'S03', 'tail', 'short-thin', (230, 212), 400, (215, 230), 400),
+    ('trait-S03-tail-carriage-a', 'S03', 'tail', 'between', (651, 212), 400, (636, 230), 400),
+    ('trait-S03-tail-carriage-a', 'S03', 'tail', 'long-thick', (1072, 212), 400, (1057, 230), 400),
+    ('trait-S03-tail-carriage-a', 'S03', 'carriage', 'hangs', (230, 636), 400, (215, 654), 400),
+    ('trait-S03-tail-carriage-a', 'S03', 'carriage', 'straight', (651, 636), 400, (636, 654), 400),
+    ('trait-S03-tail-carriage-a', 'S03', 'carriage', 'curls-up', (1072, 636), 400, (1057, 654), 400),
+    ('trait-S03-claws-scales-a', 'S03', 'claws', 'round-feet', (210, 200), 300, (210, 230), 380),
+    ('trait-S03-claws-scales-a', 'S03', 'claws', 'pads', (631, 200), 300, (631, 230), 380),
+    ('trait-S03-claws-scales-a', 'S03', 'claws', 'digging-wedges', (1052, 200), 300, (1052, 230), 380),
+    ('trait-S03-claws-scales-a', 'S03', 'scales', 'few-fine', (210, 604), 300, (210, 604), 380),
+    ('trait-S03-claws-scales-a', 'S03', 'scales', 'between', (631, 604), 300, (631, 604), 380),
+    ('trait-S03-claws-scales-a', 'S03', 'scales', 'many-coarse', (1052, 604), 300, (1052, 604), 380),
+    ('trait-S02-flecks-fluff-a', 'S02', 'flecks', 'bare', (205, 210), 400, (205, 200), 400),
+    ('trait-S02-flecks-fluff-a', 'S02', 'flecks', 'spots', (626, 210), 400, (626, 200), 400),
+    ('trait-S02-flecks-fluff-a', 'S02', 'fluff', 'short-straight', (205, 634), 400, (205, 624), 400),
+    ('trait-S02-flecks-fluff-a', 'S02', 'fluff', 'long-swept', (626, 634), 400, (626, 624), 400),
 ]
 def keyed(src):
     a = src.astype(float); r, g, b = a[..., 0], a[..., 1], a[..., 2]
-    mag = np.clip((np.minimum(r, b) - g - 80) / 50, 0, 1)            # magenta ground, soft at the fringe
+    mag = np.clip((np.minimum(r, b) - g - 60) / 40, 0, 1)
+    spill = np.clip((np.minimum(r, b) - g - 25) / 35, 0, 1) * (np.abs(r - b) < 70)   # the painted shadow's magenta cast
+    mag = np.maximum(mag, spill)            # magenta ground, soft at the fringe
     white = np.clip((a.min(-1) - 225) / 20, 0, 1)                     # the white outside the crown sheet's panels
     pink = np.clip((np.minimum(r, b) - 200) / 30, 0, 1) * np.clip((np.minimum(r, b) - g - 40) / 30, 0, 1)   # the fringe where they meet
     white = np.maximum(white, pink)

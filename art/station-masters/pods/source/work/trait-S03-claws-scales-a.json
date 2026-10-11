@@ -1,0 +1,16 @@
+[
+ {
+  "name": "trait-S03-claws-scales-a",
+  "model": "gemini-3-pro-image",
+  "aspect": "3:2",
+  "size": "1K",
+  "tries": 1,
+  "refs": [
+   [
+    "art/station-masters/pods/source/raw/mibi-juvenile-S03-a.jpg",
+    "Our signed young S03, Tuikis (project-owned): the creature, exactly. Its tail, carriage, feet and skin are the middle looks."
+   ]
+  ],
+  "prompt": "Paint SIX panels in a 3 by 2 grid, equal size, small gaps. TOP ROW: a close-up of the creature's front FEET and lower legs standing, the same pose in each: left 'round feet' (soft round toes), middle 'pads' (rounded feet with clear pale pads), right 'digging wedges' (broad flat wedge-shaped claws for digging). BOTTOM ROW: a close-up of the creature's pale flank skin with its teal spots, the same framing in each: left 'few, fine' (a few fine small scales, barely there), middle 'between' (small scales clearly visible), right 'many, coarse' (many larger coarse scales over the whole skin). Plain flat solid magenta (#FF00FF) background everywhere, no borders, no text, no numbers. Same brush and soft painterly light from the top left as the reference in every panel; only the named look changes. No props, no ground, no shadow, no glow."
+ }
+]

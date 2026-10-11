@@ -12430,5 +12430,1253 @@
   "status": "signed",
   "signed_in": "art director, trait wave 1, 10-11",
   "status_note": "one sheet per trait: every look in the same framing"
+ },
+ "trait-S03-tail-short-thin-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "87f94e1456d53c35430901457ca8f13c893e16601708d49f01f744fd50d0bbeb",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-short-thin-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "a5c229750c1ca8238c1e386ab54c9c28109c8f10e45e265d6e4cdd9f1255a8f7",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-short-thin-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "68387169f39d54a3c1a6998ed630c6976f9f9ab8279e0cabfb438a5e95db0a8b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-short-thin-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "76a262936167ffa7ade8fbcfd9a032622e2e44129150542cfbc9cadc58606969",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-short-thin-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "6f03684063bbf6b5d8b10059c4998a0070b29d827d46be4784653536dc61d3ae",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-tail-short-thin-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'short-thin' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "8aba6fdb5cf973eabf443011a85d026e3e950cc22a5dc1713797d38af3e430a5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "d681a9a6515fc095a72c295a6f996f22316774ae7183c643101b2621bac2c5bb",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "6b8e8ffba2a5e5d0e56fb59c82eba9dd26fa2f5d931370676f99f87ec65dc362",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "33c67331150ef9e924781741ac6d794b29e660e4abbd510c778a899b662129de",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "42a2c88d5d38653a54d1a919a1217de63cb50b1fc495a642d8a4a5cb46484d29",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "46ea6f62f189999a79d6b257584fc3655e57d91aa3e6901fae2f6b5046af1c31",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-tail-between-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b185c3de600ed524c4bd8d1dabcafc244c102d2927ec9c59c25ec2d0f75e4ebf",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-long-thick-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "47deaf4b6d430c970cdb8e2ab2c2b61ed97eb5acc127993d6df3ef6d003ed94a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-long-thick-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "c1bad8ef1d3c178588c82eb8a28a42a6c24b24f3dfbc6637edb3c6b117e491b5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-long-thick-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "28ff16cf2b7439bcaf5d0a18c5b222e4854f162b882872192f270e41a96cc807",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-long-thick-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "0f9c73ac0ceef1fa23397ea00aa4d3a309a09bf0eb0b8389a4cf6623447cefd4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-tail-long-thick-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "a257c55b0e9c98d64adb00d822c4027f3eb92fa451297858ae2cb0bf6f4c87c8",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-tail-long-thick-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the tail look 'long-thick' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "e94d49123c408607af878eac4ccef1700c6c5db054920aeaa2b1bd18937695c8",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-hangs-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "c61ae045acf95d3600a2d514d4bca6c8e94901e2af1a1bbfb398989a6901daec",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-hangs-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "c71b9d3decb4080ba20ebe959ae98191d5eaa7510b408db48a0ad13f98a3eabb",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-hangs-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "0a41f8595e67bde8357a567ed61c491463a47bfb68165a4b30f78f3fdd79ca54",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-hangs-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "4e0acfd56beb5679c63b57ed5769dd769e67dcadeeb6d2e252cc81c83193cd56",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-hangs-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "4e5ca641533d0af664ec42fc8e9200cab3b91d36414fc301fa968170cafde865",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-carriage-hangs-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'hangs' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b5aa2aa24d8edb2bde41af7e7e0982b39882d182673d56ac7a30fe723d27c695",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-straight-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "0af0d44ecdbe709da84f7ae615d2af6b7d3c3c802af726b35484c1868608077d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-straight-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "273b1607c4b7400afea0bb332441657ecfae2920bb55e62f6765825059b257b7",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-straight-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "d159f94b3dff2a8fb1341c6d715c5b610896cdbcd2bab88772fc04b45d6a5ca0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-straight-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "975038f5af361442193ff8710597e682d6a6196be4fe6b2d1c6de96c71b64c68",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-straight-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "54ab6c0dd96924cd3962ad1c84549359867133ceeb0abb838b3a41eb575f4cb0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-carriage-straight-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "c7add2bf4f6d12a7b20e8173a851caf6a450e78ab8a69569acd8427fea467a44",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-curls-up-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b0e9496720fb7a98005f518abf8e31a8268c68be88ddaa9bcb7fda348997068d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-curls-up-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "be8ac39312192d1a6ea73f16a2fc6fbca2e6beea2a4d29285149de8ae0d37990",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-curls-up-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "c0e1fe2b919278d45a9f29b2f40e83065e804d2d33b8be395a4e2d21ed281fa6",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-curls-up-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "85dcc255712b72755665f37f5299a60ea81aa06ec499ed2af11a78ab2cf8dbd4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-carriage-curls-up-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "443287895a306cd77c3a44a7a5ca2ad0f6a743a246adcab5f353ddc3a200f2ec",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-carriage-curls-up-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-tail-carriage-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the carriage look 'curls-up' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "9b4db8bce979afc9e3e54c8ac56bd508dab3a13de6d3b8d2e90582eb2477dd9f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-round-feet-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "0ea68b23ee003a5307eb9db18695653cd109591e7fc6eec5ba95e6c664ffc7ca",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-round-feet-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "078775db23d4e03edc7669cf98ab8de9b4a1a9366a553c711a88729cb13b768d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-round-feet-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "71f39fb48bb2edda18f500f7b6c638bbc9e51a1ed8eaa2429020af84c67ee78b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-round-feet-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "80126cf32f9ff013eba07bb862345c24893df3bd9a20980e67bf1ba06ec9e8bf",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-round-feet-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "00282f7de943e397bb59c62388673721a56b48d4ecc88645e2dd602830addd4c",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-claws-round-feet-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'round-feet' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "51e7157e4b142164cdb743b173f022f0dd05fd86b511dad1c715be3e743a0493",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-pads-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "4856c7ea58156af3e5cdabbb23b71b4f0a21a70009ec121c782b96cabe07585d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-pads-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "515d2dc650092e22222ea4fd72c7c733215b4df41e94d11c8b9758062b5ce248",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-pads-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b7971035aedb8a896ab3b6bfd0001e1210bfee917c467b31a8656a3c70ca8533",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-pads-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "be3ef9792f56c8280b356aed7dcd75ad48e7e7f1fd654d840e0a81b798c48ee6",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-pads-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "2803567e9f22cc45328d129fd40f0f2161d7dccc24bb3daa1d4992575e4ddb91",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-claws-pads-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'pads' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "498a0c59fe0c3a85bda92f60eb0a9e42a03b509bf13dc6e0c73da921a5107f86",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-claws-digging-wedges-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "61a9dcfc0f847c6a4da60b39ed32184d868d93fc8c2367e2137fd33685f50ed4",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
+ },
+ "trait-S03-claws-digging-wedges-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "cce67fac57fe49b071734705971678cd3e7c9dfb9afad99efd9532708ef74109",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
+ },
+ "trait-S03-claws-digging-wedges-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "16da24b3e30b8f0b815201ae8830dc21f1afa8dbc4104ae4952decd8d1373755",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
+ },
+ "trait-S03-claws-digging-wedges-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "30d1c713ecad64b6ffb2a3eddbe4e539223847309894274f30ae1f287f9c947c",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
+ },
+ "trait-S03-claws-digging-wedges-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b8cd9ecac9007bcb4ccb2823e76c07863d4c546d8409091d732f7420cc86314d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
+ },
+ "roll-S03-claws-digging-wedges-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the claws look 'digging-wedges' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "ab2b1576f16eec7bd24c611d6851784c6aeb07dc05c45c79d3541b8f31fa3a8a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing; drawn as pointed digging claws, not broad wedges (accepted for now)"
+ },
+ "trait-S03-scales-few-fine-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "c1ee43c15646cc57a652463cf1bcd8654b7c64e4ffa6992e0a6b18b7e4f2984a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-few-fine-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "98e365e34de411d72fe3f9cbf648f4f244275178ae97dbec675868bdbd553701",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-few-fine-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "d804490708314ceb6036033e158511ebfa44f9d5b46f80c3b670c48591592f99",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-few-fine-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "d37b081190c5fa418276626e3d4dade84e4cd4d743ad7a0222e7e65702b8fb5f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-few-fine-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "22e9cafebf0f93e8f2cb6ae45cafd7c2e7e22a84741a0bde56f41d937075c7e0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-scales-few-fine-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'few-fine' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "fba41618786ab3e95779cd64d5834d81c28abc3ce1cec8216ae14f305805d608",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-between-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "3c39593a2c88a7edf96467bbcb8cb2956ff579063a4c9972fb4f69de673a527a",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-between-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b4a1aaf6459159f88c891ab9c85147ecf04cf4c9315e95b9bcd89cc71a041b80",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-between-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "f73a6360ebaa43b87ecd39d5485dc938c4581ae490910176871be09a0ea81a66",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-between-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "61fb78635421ce6219c46a1f44fd096bdab980ee65412270b5e838b608fa8ea8",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-between-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "018f7814983a39bb9d2c7dc7c6f9d592ab4b1a4078d8e7049a72788d7205464c",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-scales-between-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'between' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "8a8a29f38dfea3cef0d907879b90846a574d8add6e75134efe50415e8b5332ed",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-many-coarse-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "a96d1380d3ca7ff12cb92fedd35db1cf51dcf32bc489862aa380ebf24777e4d3",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-many-coarse-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "7ae760f0b07f4b3c239a456ed60e32833e2142493b7bbea158edd16a9152385d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-many-coarse-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "93e0aa6ec8c5aa48ad01f0a703e30a0991508d95bbd4b3bfa576e34725a5b817",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-many-coarse-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "440defcf10d2b89f4799998bc666e43686efd2b04533a164727f03a9c5858084",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S03-scales-many-coarse-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "ccce10d1d348fda6e802e58b753c4d65a12378fc6db398ce2483d4ed1104aa6f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S03-scales-many-coarse-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S03-claws-scales-a.jpg (trait wave 1 extras, the signed young S03 stand-in as the only reference)",
+  "made": "the scales look 'many-coarse' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "a1b745cdfd084eb5623dc3a7bc3f970c05472f2030bcf31ad55865c3574e2bb5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-bare-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "552905d090e82f4ebb8610b7381bc14aa3cc7e5eb5c4d99d9a94944cd3abf452",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-bare-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "9739e161c4a7958a06a149d4cbcc2646d43eff95c936a12e3b0ad37519cf8d90",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-bare-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "5cd695011675a57861b3f9ac11100612048409a5b030fc9f0c6a8632e705b528",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-bare-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "8b6cdd8d8085002d4f3a30e0384c82ea36f031fa7d56a7af5691315a383130ab",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-bare-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "93dd1ee8e2cac88ec23cd60253724553705c99b3e3939dcf2a51b55d985a79c8",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S02-flecks-bare-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'bare' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "6f1a9d1ae21be207c5ca64ce1a310bea75297e1e97b940466ae1789c13487769",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-spots-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "e558401576c49039545a4cf526dfc78eb318452d34eb4f55491b479d7d2fc3d3",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-spots-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "3926a2acd5d55447ac62aea86efcc7db50d68bf1499f5772a6ceb76ec04eedc5",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-spots-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "cb97cc4311f36283dd1cec1a505ba764fcba92aafbc435ed14668382dd49b5ef",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-spots-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "adf3ac1b84593af5b25978c4375136370c32f51e174479b0ec2d058e480e16d1",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-flecks-spots-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "b94a689fb8918d0ad96dd019c16bca62bfc6adadd37120a162e10861479f5a72",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S02-flecks-spots-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the flecks look 'spots' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "fd48aefd2998a5688513f6653b561fd09cffad5fe38551fe9f4c4df639548e76",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-short-straight-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "2bc97bad7fb07f99bc70ace9c552596df6d5a5578c036f263dd11593e7fcb56e",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-short-straight-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "ef958326c51fc27418f24ad69766ab936b2ba2f4487d461c9e610232a3eb1ef3",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-short-straight-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "ec1a62eff2023213732dc72f38659382d4a72996de4228508016060f6953e53b",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-short-straight-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "bf001630bc9ffd4ade430204eb06eb7c9d5b329b4134cebf0f141d2bcf4378d8",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-short-straight-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "98db9953b0623beb884ff68f69ef31993f52c9afb9ea84196dea44f4f285fd9c",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S02-fluff-short-straight-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'short-straight' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "bc38a1bcf622344fff0a78ac940697fc9fb49b04021415f3e2fa04d3a9082b5f",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-long-swept-144x176": {
+  "size": [
+   144,
+   176
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "8ca83dad82f46894e34fe513a6117b24150a16b55e89e7ac71a46b4e8a19360d",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-long-swept-128x160": {
+  "size": [
+   128,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "911f69b938df36e3700caacdae59b8b846ffdd0c20dc2d67cf7ceaa30e1d1a76",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-long-swept-104x160": {
+  "size": [
+   104,
+   160
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "fd368a8516249dd98a633c7afe2967c510e51de48b5034cffed661759c8813d0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-long-swept-104x96": {
+  "size": [
+   104,
+   96
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "81ee557727407a7a563148e34b9a620177709c3882cdc47fdef0f03c108ad4fc",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "trait-S02-fluff-long-swept-104x64": {
+  "size": [
+   104,
+   64
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "8ad844c9537b4e145499c73ed0f471148b1173b3748049f5f2a6839a5fb4a6f9",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
+ },
+ "roll-S02-fluff-long-swept-128x72": {
+  "size": [
+   128,
+   72
+  ],
+  "rect": null,
+  "src": "source/raw/trait-S02-flecks-fluff-a.jpg (trait wave 1 extras, the signed young S02 stand-in as the only reference)",
+  "made": "the fluff look 'long-swept' cut by tools/traitcut.py (window reduced into the centred 75 percent, keyed with despill to #162a37, 12 px fade)",
+  "sha256": "ceffab3fedf93ee6fd7e88141d44ecfe116b7c14ec1ec3ca77cdd1ecd79b07d0",
+  "status": "signed",
+  "signed_in": "art director, trait wave 1 extras, 10-11",
+  "status_note": "one sheet per pair of traits: every look in the same framing"
  }
 }
