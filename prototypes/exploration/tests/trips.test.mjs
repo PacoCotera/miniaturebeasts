@@ -197,7 +197,7 @@ test("End expedition while docked at the start", () => {
 });
 
 // ?embed (the play page's frame; station-w1-x3-ready.md §3.1, C1): the screen alone, sized to whole physical pixels.
-test("?embed shows the screen alone and fit() stands aside", () => {
+test("?embed shows the screen alone, fit() stands aside and the width follows a dpr change", () => {
   assert.ok(PAGE.includes('<title>Companion Field Test</title>\n<script>if (new URLSearchParams(location.search).has("embed")) document.documentElement.classList.add("embed");</script>'));
   for (const rule of [
     "html.embed, html.embed body{background:none; min-height:0; overflow:hidden; margin:0}",
@@ -208,17 +208,45 @@ test("?embed shows the screen alone and fit() stands aside", () => {
   assert.equal(source("EMBED"), "const EMBED = document.documentElement.classList.contains('embed');");
   assert.match(source("fit"), /^function fit\(\) \{\n  if \(EMBED\) return;\n/);
 
-  // fit() under embed touches nothing; embedFit() sets --embed-w to 450·k/dpr px
+  // fit() under embed touches nothing; setEmbedW() sets --embed-w to 450·k/dpr px at full precision
+  assert.equal(source("EMBED_W"), "const EMBED_W = 450;");
+  assert.ok(PAGE.includes("\nlet dprQuery = null;\n"));
+  assert.equal(source("armDpr"), "function armDpr() {\n  if (dprQuery) dprQuery.removeEventListener('change', onDpr);\n  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);\n  dprQuery.addEventListener('change', onDpr);\n}");
+  assert.equal(source("onDpr"), "function onDpr() { setEmbedW(); armDpr(); }");
+  assert.ok(PAGE.includes("\nif (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }\n"));
   const touch = new Proxy({}, { get() { throw new Error("fit() ran under embed"); } });
-  for (const [dpr, want] of [[1, "450px"], [2, "450px"], [1.25, "360px"], [3, "450px"]]) {
+  for (const [dpr, want] of [[1, "450px"], [2, "450px"], [1.25, "360px"], [3, "450px"], [1.5, "300px"]]) {
     const set = {};
-    const t = load(["fit", "embedFit"], {
+    const t = load(["fit", "EMBED_W", "setEmbedW"], {
       EMBED: true, fitEl: touch, deviceEl: touch, matchMedia: touch,
       window: { devicePixelRatio: dpr, innerHeight: 600 },
       document: { documentElement: { clientWidth: 450, style: { setProperty: (k, v) => { set[k] = v; } } } },
     });
     t.fit();
-    t.embedFit();
+    t.setEmbedW(); t.setEmbedW();
     assert.deepEqual(set, { "--embed-w": want }, "dpr " + dpr);
   }
+
+  // a dpr change with no resize: the query for the old dpr fires, the width follows, the old listener goes and a new query is armed
+  const set = [], queries = [], win = { devicePixelRatio: 1 };
+  win.matchMedia = q => {
+    const mq = { q, on: new Set(), addEventListener(e, f) { assert.equal(e, "change"); this.on.add(f); }, removeEventListener(e, f) { assert.equal(e, "change"); this.on.delete(f); } };
+    queries.push(mq); return mq;
+  };
+  const t = load(["EMBED_W", "setEmbedW", "armDpr", "onDpr"], {
+    window: win, dprQuery: null,
+    document: { documentElement: { style: { setProperty: (k, v) => { assert.equal(k, "--embed-w"); set.push(v); } } } },
+  });
+  t.setEmbedW(); t.armDpr();
+  for (const dpr of [1.25, 2, 1]) {
+    const live = queries.at(-1);
+    win.devicePixelRatio = dpr;
+    for (const f of [...live.on]) f();
+    assert.equal(live.on.size, 0, "old listener removed at " + dpr);
+    assert.equal(queries.at(-1).q, `(resolution: ${dpr}dppx)`);
+    assert.equal(queries.at(-1).on.size, 1);
+  }
+  assert.deepEqual(queries.map(m => m.q), ["(resolution: 1dppx)", "(resolution: 1.25dppx)", "(resolution: 2dppx)", "(resolution: 1dppx)"]);
+  assert.deepEqual(queries.map(m => m.on.size), [0, 0, 0, 1], "listeners never pile up");
+  assert.deepEqual(set, ["450px", "360px", "450px", "450px"]);
 });

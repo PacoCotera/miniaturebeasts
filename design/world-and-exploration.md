@@ -271,7 +271,7 @@ at 20 carried; Essence never turns into Energy (**Built**).
   partner and no trick: a Loika's next to the glint and, when the reach still
   holds fewer than two, a Tuikis's at the reach's edge. They are added once, at
   the first placement, without changing the world's own pods; they are found by
-  walking and Calling.
+  walking and Calling (**Built**).
 
 ## Partners and gates
 

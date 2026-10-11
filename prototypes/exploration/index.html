@@ -4478,11 +4478,17 @@ function fit() {
 }
 window.addEventListener('resize', fit);
 // ?embed (the play page's frame): the screen alone, at a whole number of physical pixels per device pixel; the class is set in <head>.
-function embedFit() {
-  const dpr = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(dpr));
-  document.documentElement.style.setProperty('--embed-w', (450 * k / dpr) + 'px');
+// One function sets the width; a media query on the current dpr re-arms itself on every change, so a dpr change without a resize still lands.
+const EMBED_W = 450;
+const setEmbedW = () => { const d = window.devicePixelRatio || 1, k = Math.max(1, Math.floor(d)); document.documentElement.style.setProperty('--embed-w', (EMBED_W * k / d) + 'px'); };
+let dprQuery = null;
+function armDpr() {
+  if (dprQuery) dprQuery.removeEventListener('change', onDpr);
+  dprQuery = window.matchMedia(`(resolution: ${window.devicePixelRatio || 1}dppx)`);
+  dprQuery.addEventListener('change', onDpr);
 }
-if (EMBED) { window.addEventListener('resize', embedFit); embedFit(); }
+function onDpr() { setEmbedW(); armDpr(); }
+if (EMBED) { setEmbedW(); armDpr(); window.addEventListener('resize', setEmbedW); }
 
 const stampEl = document.getElementById('stamp');
 fetch('../../build.json', { cache: 'no-store' }).then(r => { if (!r.ok) throw new Error('no build'); return r.json(); }).then(j => {
