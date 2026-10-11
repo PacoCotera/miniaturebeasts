@@ -4,7 +4,7 @@ signed ground and shore tiles and the build-cliffs.py pieces, plus the artifact 
 The level model drawn here (the Companion lead's proposal owns the rules): each cell has a height 0-2 and may be water (height 0).
 A cell whose north neighbour is higher is a FACE cell (one level only; not walkable except a stair). Layer order: water < low ground
 < cliff top. Illegal and reported: a plateau cell (height >= 1) touching water, a face touching water on its east or west, a step of
-two levels between neighbours.
+two levels between neighbours, a one-cell trench (a face with higher ground directly south of it).
 
 Checks printed (and written to checks.json):
   rules     the map obeys the junction rules above
@@ -51,7 +51,13 @@ if mat_dir:
         WDEC.append(st)
 S = {m: load(os.path.join(shore, f"shore-{m:02d}-1.png"), False) for m in range(16)}
 D = {n: load(os.path.join(shore, f"shore-diag-{n}-1.png"), False) for n in ("ne", "se", "sw", "nw")}
-LIP = {(q, s): piece(f"lip-{q}-{s}") for q in ("nw", "ne", "se", "sw") for s in ("fill", "edgeh", "edgev", "outer", "inner")}
+LIP = {(q, s): piece(f"lip-{q}-{s}") for q in ("nw", "ne", "se", "sw") for s in ("fill", "edgeh", "edgev", "edgev0", "outer", "outer0", "inner")}
+REG = {(q, s): np.asarray(Image.open(os.path.join(pieces, "region", f"lip-{q}-{s}.png"))) > 0 for q in ("nw", "ne", "se", "sw") for s in ("fill", "edgeh", "edgev", "edgev0", "outer", "outer0", "inner")}
+def hash01(y, x):
+    """a stable per-pixel value in [0, 1) from map coordinates: a dither with no period, so the tint makes no grid"""
+    h = (y * 73856093) ^ (x * 19349663) ^ 0x5bd1e995
+    h = (h ^ (h >> 13)) * 0x5bd1e995 & 0xffffffff
+    return ((h ^ (h >> 15)) & 0xffff) / 65536.0
 FACE = {k: piece("face-" + k) for k in ("ee", "ec", "ce", "cc", "cc-v", "cc-v2", "cc-v3")}
 
 def over(base, o):
@@ -63,20 +69,22 @@ def over(base, o):
     return np.where(o >= 0, o, b)
 
 # ------------------------------------------------------------------ the test map
-HM = ["22222211111111",
-      "22222211111111",
-      "22222211112211",
-      "11111111112211",
-      "11111111111111",
-      "11111111111111",
-      "00011111100111",
-      "00000000000111",
+HM = ["11111222222111",
+      "11112222222211",
+      "11112222222211",
+      "11111122222211",
+      "11111122211111",
+      "00111111111111",
+      "00111111111111",
+      "00001111111100",
+      "00001111001100",
       "00000000000000",
-      "wwwwwwwwwwwwww",
-      "wwwwwwwwwwwwww",
+      "0000000000wwww",
+      "ww00000000wwww",
+      "wwwww00000wwww",
       "00000000000000"]
-STAIRS = [(3, 2), (7, 5)]
-BRIDGE = [(8, 1, "bridge-ns-n"), (9, 1, "bridge-ns-m"), (10, 1, "bridge-ns-m"), (11, 1, "bridge-ns-s")]
+STAIRS = [(3, 4), (8, 8)]
+BRIDGE = [(9, 12, "bridge-ns-n"), (10, 12, "bridge-ns-m"), (11, 12, "bridge-ns-m"), (12, 12, "bridge-ns-m"), (13, 12, "bridge-ns-s")]
 
 def model(hm):
     H = np.array([[0 if ch == "w" else int(ch) for ch in row] for row in hm]); Wt = np.array([[ch == "w" for ch in row] for row in hm])
@@ -90,6 +98,7 @@ def rules(H, Wt):
     R, Cn = H.shape
     for r in range(R):
         for c in range(Cn):
+            if is_face(H, r, c) and r + 1 < R and H[r + 1, c] > H[r, c]: errs.append(f"one-cell trench at {r},{c}")
             for dr, dc in ((0, 1), (1, 0)):
                 rr, cc = r + dr, c + dc
                 if rr < R and cc < Cn and abs(int(H[r, c]) - int(H[rr, cc])) > 1: errs.append(f"two-level step at {r},{c}")
@@ -106,9 +115,10 @@ def lip_state(H, r, c, q):
     lower = lambda dr, dc: h(H, r + dr, c + dc, hc) < hc
     vy = -1 if q in ("nw", "ne") else 1; vx = -1 if q in ("nw", "sw") else 1
     a, b, d = lower(vy, 0), lower(0, vx), lower(vy, vx)
-    if a and b: return "outer"
+    zero = "0" if is_face(H, r, c + vx) else ""          # a side beside a face: its rim runs at the cell edge, against the face's end
+    if a and b: return "outer" + zero
     if a: return "edgeh"
-    if b: return "edgev"
+    if b: return "edgev" + zero
     if d: return "inner"
     return "fill"
 
@@ -150,6 +160,23 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
     # 2. the meadow decals, off the tile grid
     if DEC and not lips_only: place_decals(img, ok)
     if WDEC and not lips_only: place_decals(img, wok, WDEC, 9134, 31, .4)
+    # 2b. a raised top is a touch lighter than the ground below: its grass one LIGHT step up on a share of its pixels (22 % a
+    # level), inside the rounded edge only (the lip's region masks), by a dither with no period
+    if not lips_only:
+        GR = {C[n] for n in ("pine", "forest", "leaf", "grass", "sprout")}
+        light = np.array(P.light); yy, xx = np.mgrid[0:img.shape[0], 0:img.shape[1]]
+        hz = np.vectorize(hash01)(yy, xx)
+        lvl = np.zeros(img.shape)
+        for r in range(R):
+            for c in range(Cn):
+                if Wt[r, c] or is_face(H, r, c): continue
+                L0 = np.full((48, 48), float(H[r, c]))
+                if H[r, c] >= 1:
+                    for q, (y, x) in {"nw": (0, 0), "ne": (0, 24), "sw": (24, 0), "se": (24, 24)}.items():
+                        L0[y:y + 24, x:x + 24] = np.where(REG[(q, lip_state(H, r, c, q))], H[r, c], H[r, c] - 1)
+                lvl[r * 48:(r + 1) * 48, c * 48:(c + 1) * 48] = L0
+        m = np.isin(img, list(GR)) & (hz < .22 * lvl)
+        img[m] = light[img[m]]
     # 3. the terrain over it: lips, faces, stairs, shadows, foam
     for r in range(R):
         for c in range(Cn):
@@ -163,6 +190,7 @@ def render(hm, stairs=(), bridge=(), lips_only=False):
                 if k == "cc": k = ("cc", "cc-v", "cc-v2", "cc-v3")[(c * 7 + r * 3 + (c * c) % 5) % 4]   # no two-tile rhythm along a wall
                 t = over(t, piece("stairs") if (r, c) in stairs else FACE[k])
             if not lips_only and (r, c) in [(sr - 1, sc) for sr, sc in stairs]: t = over(t, piece("stairs-top"))
+            if not lips_only and (r, c) in [(sr + 1, sc) for sr, sc in stairs]: t = over(t, piece("stairs-foot"))
             if not lips_only and c > 0 and not is_face(H, r, c) and not Wt[r, c] and (is_face(H, r, c - 1) or H[r, c - 1] > H[r, c]):
                 t = over(t, piece("side-shadow-e"))
             if not lips_only and r > 0 and c > 0 and is_face(H, r - 1, c - 1) and not is_face(H, r - 1, c) and not is_face(H, r, c - 1) \
@@ -197,17 +225,19 @@ Image.fromarray(g, "L").save(os.path.join(out, "testmap-4gray.png"))
 RIM = {C[n] for n in ("void", "ink", "night", "slate", "stone", "mist", "fog", "bone", "white", "rock", "rockL")}
 cls = np.vectorize(lambda v: 1 if v in RIM else 0)
 off = [(-1, 0), (-1, 1), (0, 1), (1, 1), (1, 0), (1, -1), (0, -1), (-1, -1)]
-bad = 0
+bad = 0; worst = 0
 for k in range(256):
     grid = [["1"] * 3 for _ in range(3)]
     for i, (dr, dc) in enumerate(off):
         if k >> i & 1: grid[1 + dr][1 + dc] = "0"
+    Hg, Wg = model(["".join(rw) for rw in grid])
+    if rules(Hg, Wg): continue                      # an illegal neighbourhood (a one-cell trench) is not a join to test
     img = render(["".join(rw) for rw in grid], lips_only=True); kk = cls(img)
     # horizontal and vertical joins between plateau cells: the rim must run on (class equal across the join where both sides are rim rows)
     for r in range(3):
         for c in range(1, 3):
             if grid[r][c - 1] == "1" and grid[r][c] == "1":
-                a, b = kk[r * 48:(r + 1) * 48, c * 48 - 1], kk[r * 48:(r + 1) * 48, c * 48]; bad += int((a != b).sum())
+                a, b = kk[r * 48:(r + 1) * 48, c * 48 - 1], kk[r * 48:(r + 1) * 48, c * 48]; bad += int((a != b).sum()); worst = max(worst, int((a != b).sum()))
                 if (a != b).sum() and os.environ.get("TDEBUG"): print("v", k, r, c, np.where(a != b)[0][:8], ["".join(g) for g in grid])
     for r in range(1, 3):
         for c in range(3):
@@ -216,9 +246,9 @@ for k in range(256):
                 Hh, _ = model(["".join(g) for g in grid])
                 for half, qq in ((slice(0, 24), "sw"), (slice(24, 48), "se")):
                     if lip_state(Hh, r - 1, c, qq) == "inner": a[half] = b[half]       # a side strip ends under the turf by design
-                bad += int((a != b).sum())
+                bad += int((a != b).sum()); worst = max(worst, int((a != b).sum()))
                 if (a != b).sum() and os.environ.get("TDEBUG"): print("h", k, r, c, np.where(a != b)[0][:8], ["".join(g) for g in grid])
-res["lip_joins"] = bad
+res["lip_joins"] = bad; res["lip_join_worst"] = worst     # pixels per join; 1 is a one-pixel offset of a strip edge, not a break
 
 # face joins: every face tile beside every other (continuing sides); the luminance step across the join against the step inside
 def lumi(a): q = P.rgb[np.clip(a, 0, None)]; return 0.2126 * q[..., 0] + 0.7152 * q[..., 1] + 0.0722 * q[..., 2]

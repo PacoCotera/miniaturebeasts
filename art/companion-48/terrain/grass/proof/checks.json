@@ -1,9 +1,10 @@
 {
  "rules": [],
- "lip_joins": 0,
- "face_join": 0.933,
- "seam": 1.1,
- "seam_joins": 45,
- "repeat": 0.015,
+ "lip_joins": 350,
+ "lip_join_worst": 19,
+ "face_join": 0.801,
+ "seam": 1.108,
+ "seam_joins": 53,
+ "repeat": 0.072,
  "repeat_note": "autocorrelation at 48 px minus the mean at 30-43 and 53-66 px; <= 0.10 passes"
 }
