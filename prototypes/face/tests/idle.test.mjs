@@ -98,13 +98,16 @@ test("the same props on the same clock give the same hash; with motion off the r
 });
 // the bays hold twelve in all, so with three asleep on the bed at most nine walk
 const WALKS = { "twelve adults": { adults: 12 }, "six adults and six juveniles": { adults: 6, young: 6 }, "twelve, three waiting": { adults: 12, waiting: 3 }, "nine adults, three asleep": { adults: 12, carry: [9, 10, 11] }, "three adults and six juveniles, three asleep": { adults: 6, young: 6, carry: [3, 4, 5] }, "nine, three waiting, three asleep": { adults: 12, waiting: 3, carry: [9, 10, 11] } };
-for (const [name, o] of Object.entries(WALKS)) for (const [step, off] of [[40, 0], [16, 5]]) test(`the walk on Idle, ${name}, frames every ${step} ms for 120 s: no refresh redraws more than a quarter of the screen`, { skip }, async () => {
-  const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0;
-  for (let t = step + off; t < 120000; t += step) {
-    f.frame(5000 + t); const n = M._face_dirty_count(), s = dirty(f); area = Math.max(area, s); if (n) moved++;
+for (const [name, o] of Object.entries(WALKS)) for (const [step, off, late = 0] of [[40, 0], [16, 5], [16, 5, 120]]) test(`the walk on Idle, ${name}, frames every ${step} ms${late ? ` (every 63rd ${late} ms late)` : ""} for 120 s: no refresh redraws more than a quarter of the screen, and no more than six residents step in one`, { skip }, async () => {
+  const f = await start(scene(o), { t0: 5000 }), M = f.M; let area = 0, moved = 0, lateArea = 0, ordinary = 0;
+  for (let t = step + off, k = 0; t < 120000; t += step, k++) {
+    const isLate = late && k % 63 === 62; if (isLate) t += late;   // a frame that comes `late` ms after the one before it, the clock going on from there
+    f.frame(5000 + t); const n = M._face_dirty_count(), s = dirty(f), st = M._face_test_steps(); area = Math.max(area, s); if (n) moved++; if (isLate) lateArea = Math.max(lateArea, s); else ordinary = Math.max(ordinary, s);
+    assert.ok(st <= 6, `${st} residents stepped in the frame at ${t}${isLate ? " (late)" : ""}`);
   }
   assert.ok(moved > 500, "the residents walk: " + moved + " frames redrawn"); assert.ok(area <= 153600, `dirty area ${area} of ${1024 * 600} (${(100 * area / (1024 * 600)).toFixed(1)}%)`);
   console.log(`# Idle's walk, ${name}, frames every ${step} ms: worst refresh ${(100 * area / (1024 * 600)).toFixed(1)}% of the screen dirty`);
+  if (late) console.log(`# Idle's walk, ${name}: the worst late frame ${lateArea} px, the worst ordinary one ${ordinary} px`);
 });
 
 // a light change is a cut, like a screen change: the painting (1024 × 568) is redrawn on one refresh, under its own ceiling, not the 153,600 of an animation

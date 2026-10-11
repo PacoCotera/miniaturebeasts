@@ -45,6 +45,7 @@ static void walk_load(void) {
 }
 typedef struct { char id[24]; unsigned seed, s; int w, h, x, feet, facing, walking, idle, wx, wy, x0, y0, nstep, step; long done; int live; } wk_t;
 static wk_t g_w[MAXR]; static int g_nw; static uint32_t g_t0; static int g_have_t0;
+static long g_wticks;   /* the walk's group ticks applied since its origin g_t0: tick j is at 40 j ms and steps group j mod 2 */
 static int g_ctx = -1;   /* the walk's last context (0 Home, 1 Idle): it starts again from the seeds when the other shows */
 void home_hidden(void) { g_have_t0 = 0; g_ctx = -1; }
 static unsigned wr(wk_t *k) { k->s = k->s * 1664525u + 1013904223u; return k->s >> 16; }
@@ -87,7 +88,6 @@ static void wk_step(wk_t *k) {   /* one step of this resident's own time */
 /* ---- what the last draw put where (the focus reads these boxes) ---- */
 typedef struct { char id[24]; char name[40]; char pic[96]; int juvenile, waiting, sleeper, box[4], draw[4]; unsigned seed; } ent_t;   /* box: the focus target's; draw: where the picture goes */
 static ent_t g_e[MAXR + MAXS]; static int g_ne;
-static int g_last_tick = -1;
 int g_home_steps;   /* test hook: the residents that stepped since face_frame began (face_test_steps) */
 
 static int ent_focused(const ent_t *e, const char *cur);
@@ -95,7 +95,12 @@ static int ent_load(const char *cur) {
   g_ne = 0; walk_load();
   int motion = v_pbool("motion", 1); uint32_t now = anim_now(), frozen_to = 0; (void)frozen_to;
   { int ctx = g_viv ? 2 : g_idle; if (g_ctx != ctx) { g_have_t0 = 0; g_ctx = ctx; } }
-  if (!g_have_t0) { g_nw = 0; g_t0 = now; g_have_t0 = 1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
+  if (!g_have_t0) { g_nw = 0; g_t0 = now; g_wticks = 0; g_have_t0 = 1; }   /* Home shown again (home_hidden ran in between): the walks start from their seeds */
+  if (motion) {   /* one group tick a frame: a late frame steps the next group only, and the time past that tick is dropped by moving the walk's origin later by whole ticks */
+    long due = (long)((now - g_t0) / STEP_MS) + 1;
+    if (due > g_wticks + 1) { g_t0 += (uint32_t)(due - g_wticks - 1) * STEP_MS; due = g_wticks + 1; }
+    g_wticks = due;
+  }
   int nres = v_plen("regions.residents"); if (nres > MAXR) nres = MAXR;
   uint32_t rel = now - g_t0; wk_t kept[MAXR]; int nk = 0;   /* the walk state is kept per resident id: found by id, a new id or a new seed starts from its seed, one that is gone is dropped */
   for (int i = 0; i < nres; i++) {
@@ -293,7 +298,7 @@ void home_key(int code) {
 int home_tick(uint32_t now) {
   int idle = v_pbool("idle", 0);
   if ((strcmp(v_pstr("screen"), "home") != 0 && strcmp(v_pstr("screen"), "vivarium") != 0 && !idle) || !spec_has(idle ? "frame" : strcmp(v_pstr("screen"), "vivarium") == 0 ? "vivarium" : H) || !v_pbool("motion", 1) || v_plen("regions.residents") <= 0) return 0;
-  int t = (int)((now - g_t0) / STEP_MS); if (t == g_last_tick) return 0; g_last_tick = t; return 1;
+  return (long)((now - g_t0) / STEP_MS) + 1 > g_wticks;   /* a group tick is due that the walk has not applied */
 }
 
 /* ---- Idle (frame.json idle, station-layouts.md Idle): the whole 1024 x 600 with no frame: the Vivarium's painting (until its master the flat plates of idle.colours), the residents walking, the bed and the carried set asleep,
