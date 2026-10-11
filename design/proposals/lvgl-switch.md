@@ -140,7 +140,7 @@ The focus ring is composed by the face. Its pictures are generated palette geome
 - **Resident at boot:** 10 plate pictures (145,920 B), 7 tab pictures (four 152×40, 97,280 B; three 72×40, 34,560 B), up to 3 rings.
 
 - **Words.** Each word of the closed vocabulary (`station-layouts.md` "The vocabulary (closed)") is one C module with a constructor (a region's object tree, built from the spec) and an update (props in, objects changed only where the props differ). A word never reads the save, never measures from outside, and never decides content.
-- **Profiles for the other devices.** Words take their palette, fonts and colour format from a `face_profile`: Station 1024×600 ARGB8888 with Inter; Companion 450×600 on the 48-colour palette with Mibi 7×9 and anti-aliasing off; Caddy 792×272 in four grays. The `common/` words compile for all three. Station-only words stay in `station/`. A new word still goes to the UI designer and the architect first (technical-architecture.md §5.4 step 3).
+- **Profiles for the other devices.** Words take their palette, fonts and colour format from a `face_profile`: Station 1024×600 ARGB8888 with Inter; Companion 450×600 in 8-bit indexed colour (up to 256 entries, in per-biome sets) with Mibi 7×9 and anti-aliasing off; Caddy 792×272 in four grays. The `common/` words compile for all three. Station-only words stay in `station/`. A new word still goes to the UI designer and the architect first (technical-architecture.md §5.4 step 3).
 - **Budgets the library enforces** (counted in CI, §2.7): at most 400 LVGL objects on a Station screen (the table holds 1,024, so a breach is measured rather than refused); at most 200 pictures resident; a text run of at most 1 KiB.
 
 ### 2.3 How the spec files bind to LVGL objects

@@ -40,7 +40,7 @@ and the screens say which one they show.
 The Companion works away from the Caddy and the Station with no connection
 between the devices. Cargo moves only on docking.
 
-1. **Head home** seals the hold as one crate in the Companion's bay, three
+1. **End expedition** seals the hold as one crate in the Companion's bay, three
    crates at most, and ends the expedition. Sealed cargo can't be spent. The
    player may set out again at once, with the crates sealed aboard.
 2. **On docking, the Station accepts each crate once**, by its id. A pod with
@@ -50,9 +50,9 @@ between the devices. Cargo moves only on docking.
 
 If the confirmation is lost, the Station still has the crate exactly once, and
 the Companion shows "delivery unknown" and asks again with the same request.
-Waiting never unlocks the cargo. Where Head home may be used, and what a broken
+Waiting never unlocks the cargo. Where End expedition may be used, and what a broken
 Probe loses, are game rules: [game.md](game.md) and the
-[play manual](play-manual.md#8-going-home-head-home-the-sealed-bay-and-the-station).
+[play manual](play-manual.md#8-ending-an-expedition-the-sealed-bay-and-the-station).
 
 ## Operations that survive interruption
 

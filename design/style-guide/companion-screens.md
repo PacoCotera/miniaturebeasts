@@ -579,11 +579,11 @@ Left to the field screens' next pass; the care build does not touch these screen
 
 | Asset | Size | Where |
 | --- | --- | --- |
-| `c-heart-24` | 24×24, HiBit, the 48 colours | The active mibi's name row; at 2× in the bond event |
+| `c-heart-24` | 24×24, HiBit, the Companion's palette | The active mibi's name row; at 2× in the bond event |
 | `c-heart-16` | 16×16, HiBit, its own drawing (not the 24 shrunk) | Roster rows, the Lead card, the expedition choice's partner card |
 | `c-moment-tend-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f5, 6 at 300 ms (1.8 s); the bond replay plays f2–f4 (900 ms) | Tend and the bond (the built code-drawn moments stand in until it lands) |
 | `c-moment-walk-S0n-280x300`, one per species (S01, S02, S03) | the 280×300 stage, HiBit; frames f0–f7, 8 at 300 ms (2.4 s) | The Walk (the built walk moment stands in) |
-| `c-face-24` | 24×24, derived per mibi: a head crop of its standard painting, to the 48 colours | The HUD ring face (the ring is composed in code): the partner card's With you, rows |
+| `c-face-24` | 24×24, derived per mibi: a head crop of its standard painting, to the Companion's palette | The HUD ring face (the ring is composed in code): the partner card's With you, rows |
 | `c-token-48` | 48×48, 2 idle frames at 4 Hz, derived per mibi from its standard painting | The field token: the walk |
 | Faces at 64 | as listed in [Companion mode / active mibi](#companion-mode--active-mibi) | Lead card, partner card |
 
