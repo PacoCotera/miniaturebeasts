@@ -110,7 +110,7 @@ Every pod comes from **one renderer**, the way every creature comes from its gen
 
 This is a brief for the art director: the art director draws the renderer's masters and the engineers only wire the parameters (engineers do not do art).
 
-## 7. The genome fingerprint as a code: the genome ring
+## 7. The genome fingerprint: the genome stamp
 
 The fingerprint is the genome stamp, a scannable code of the real copies. Its layout and reading rules are in [creatures and genomics](../creatures-and-genomics.md#the-genome-stamp), and its codes in [Codes](../creatures-and-genomics.md#codes).
 

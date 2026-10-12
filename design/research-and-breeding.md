@@ -247,6 +247,8 @@ Every mibi has a stamp, which can be printed and scanned
 
 - A scanned stamp shows everything its keeper has read, hidden and sleeping
   copies included. Unread and sealed chapters are never in a stamp.
+- A scanned stamp can be set beside one of the player's own mibis of its species,
+  as Compare does: the traits read on both that differ pulse.
 - A scan only shows a mibi. It never creates or moves one.
 - A scan never teaches the scanner's Station anything. It adds no look to the
   field guide, counts toward no wish, lowers no read price and makes no glint.

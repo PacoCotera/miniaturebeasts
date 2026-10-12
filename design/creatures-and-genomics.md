@@ -350,6 +350,11 @@ decoding.
 A child's stamp repeats one of the mother's copies and one of the father's at
 every switch locus, so a family lines up on paper.
 
+The Station can check a child's stamp against its parents': at every switch
+locus it holds one of each parent's copies, and at a blended trait its two equal
+copies sit between its parents'. Certified lineage needs the cloud (see Not
+designed yet).
+
 ![A Tuikis mother, child and father](../prototypes/genome-stamp/img/family.png)
 *A Tuikis mother, child and father: at each switch locus, the child's upper cells repeat one of the mother's copies and its lower cells one of the father's.*
 
@@ -388,3 +393,4 @@ never rewrites a living mibi. A child is built on its species' current frame.
   or metabolism.
 - A scanned stamp opening the mibi's public page, and certified lineage
   through the cloud.
+- The stamp's printed size on the Caddy's paper.

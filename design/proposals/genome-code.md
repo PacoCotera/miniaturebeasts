@@ -1,6 +1,6 @@
 # Genome code: options for the fingerprint's form
 
-Options for the genome ring's form: is it future-proof as loci, layers and species grow, and does a pixelated circle limit us against a stamp, QR or randomart form? The concept stands, a scannable code of the real genome; the circle is what is in question. The genome code is the stamp (option b); there is no QR. The other forms below are the options that were weighed. Drawings and numbers come from scripts in [genome-code/](genome-code/), which run the [genome-ring prototype](../../prototypes/genome-ring/)'s codec, renderer, decoder and distortion harness unchanged on the real [species frames](species-frames.md) and on synthetic future species.
+Options for the genome ring's form: is it future-proof as loci, layers and species grow, and does a pixelated circle limit us against a stamp, QR or randomart form? The concept stands, a scannable code of the real genome; the circle is what is in question. The genome code is the stamp (option b): a scannable code of the real genome, with no QR. This page weighs the forms considered (the ring, a QR, a randomart and a grid) against the needs below. Drawings and numbers come from scripts in [genome-code/](genome-code/), which run the [genome-ring prototype](../../prototypes/genome-ring/)'s codec, renderer, decoder and distortion harness unchanged on the real [species frames](species-frames.md) and on synthetic future species.
 
 ## 1. Requirements
 

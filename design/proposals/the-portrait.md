@@ -48,7 +48,7 @@ It comes **when the first mibi comes home from its first walk**, the first momen
 
 ## 3. Trading and breeding
 
-**Only portrayed mibis travel between players.** A trade needs proof that a mibi is real and one of a kind; the signed postmark is that proof, and the portrait is when a mibi is signed and archived to the account, so its art, stamp and lineage go with it. A plain mibi's stamp shows a mibi and grants nothing ([the genome stamp](../creatures-and-genomics.md#the-genome-stamp)). 
+**Only portrayed mibis travel between players.** A trade needs proof that a mibi is real and one of a kind; the signed postmark is that proof, and the portrait is when a mibi is signed and archived to the account, so its art, stamp and lineage go with it. A plain mibi's stamp shows a mibi and grants nothing ([the genome stamp](../creatures-and-genomics.md#the-genome-stamp)).  Before a trade, a scan of the offered mibi's stamp shows exactly what would come, as far as its keeper has read it.
 **Every mibi breeds.** Breeding is the core verb, and it must never wait on a prize: the vivarium is stocked by plain mibis, and the cross reads genomes, not art. A child of a portrayed mibi is born plain; the portrait is the parent's, not the line's.
 
 ## 4. Naming
