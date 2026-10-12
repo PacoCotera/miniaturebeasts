@@ -9,7 +9,8 @@
 //   from that manifest's own folder (a missing file refuses that manifest) and checks it with paletteTable (the core 48 with their
 //   names, colours and tables as on the page, no gap in i, no repeated hex, every table index in range, dark2 the dark of its dark
 //   (dark[dark[i]]), at most 256 entries). Every palette found must be the same (name and entries), whatever the order of the
-//   manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its tRNS-0 slot included.
+//   manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its tRNS-0 slot included, and a
+//   levelTone that uses light or dark needs at least one palette entry with mat "grass".
 // - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
@@ -164,6 +165,9 @@ export function check(files, log = console.log, { drop = false } = {}) {
   else if (pal.errors) { log("REFUSED palette " + pal.name + " (" + path.basename(pal.file) + "): " + pal.errors.join("; ")); refused++; pal = loadPalette(null); }
   else log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
   const RGB = pal.rgb, of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
+  // --drop: a level tone that lifts or darkens a level needs grass in the palette, or it would do nothing
+  if (drop) for (const m of used) { const lt = Array.isArray(m.man.levelTone) ? m.man.levelTone : [];
+    if (lt.some(t => t === "light" || t === "dark") && !(pal.table && pal.table.mat.some(x => x === "grass"))) { log("REFUSED manifest " + m.f + ": levelTone " + JSON.stringify(lt) + " uses light or dark, and no palette entry has mat \"grass\""); refused++; } }
   const image = file => {
     if (!images.has(file)) {
       let img; try { img = decodePNG(readFileSync(file)); } catch (e) { img = { err: e.message }; }

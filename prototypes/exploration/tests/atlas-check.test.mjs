@@ -247,3 +247,19 @@ test("--drop: the tRNS-0 slot's PLTE colour must be in the palette too", () => {
   assert.match(run2(offSlot, true).out, /REFUSED \S*t\.png: 1 PLTE entry not in the palette \(0 #010203\)/);
   assert.equal(run2(inSlot, true).refused, 0, "--drop: core 44 as the transparent slot passes");
 });
+test("palette: mat 'grass' gives the grass-only tables; elsewhere they are the identity", () => {
+  const withMat = { biome: "meadow", entries: PAL.entries.map(e => e.i === 48 || e.i === 49 ? Object.assign({}, e, { mat: "grass" }) : e.i === 50 ? Object.assign({}, e, { mat: "rock" }) : e) };
+  const t = paletteTable(RGB, TABLES, withMat); assert.equal(t.errors, undefined, String(t.errors));
+  assert.equal(t.lightGrass[48], PAL.entries[48].light); assert.equal(t.darkGrass[49], PAL.entries[49].dark);
+  assert.equal(t.lightGrass[50], 50, "rock stays"); assert.equal(t.darkGrass[51], 51, "no mat stays"); assert.equal(t.lightGrass[3], 3, "the core without mat stays");
+  { const t0 = paletteTable(RGB, TABLES, PAL), id = PAL.entries.map(e => e.i); assert.deepEqual([t0.lightGrass.length, t0.lightGrass.filter((v, i) => v !== id[i])], [id.length, []], "no mat at all: the identity"); }
+});
+test("--drop: a levelTone that uses light or dark needs a palette entry with mat 'grass'", () => {
+  const tone = (pal, levelTone, drop) => { const d = dir(); writeFileSync(path.join(d, "s.png"), MEADOW_SHEET()); writeFileSync(path.join(d, "meadow-palette.json"), JSON.stringify(pal));
+    writeFileSync(path.join(d, "meadow.json"), JSON.stringify({ palette: "meadow", levelTone, sheets: { s: "s.png" }, pieces: CORE })); const q = quiet(); return Object.assign(check([path.join(d, "meadow.json")], q.log, { drop }), { out: q.lines.join("\n") }); };
+  const grass = { biome: "meadow", entries: PAL.entries.map(e => e.i === 48 ? Object.assign({}, e, { mat: "grass" }) : e) };
+  assert.match(tone(PAL, ["dark", "none", "light"], true).out, /REFUSED manifest \S+: levelTone \["dark","none","light"\] uses light or dark, and no palette entry has mat "grass"/);
+  assert.equal(tone(PAL, ["dark", "none", "light"], false).refused, 0, "only under --drop");
+  assert.equal(tone(PAL, ["none", "none", "none"], true).refused, 0, "no tone used");
+  assert.equal(tone(grass, ["dark", "none", "light"], true).refused, 0, "grass marked");
+});

@@ -2231,6 +2231,7 @@ const DARK = PALETTE.map(([n]) => C[DARK_OF[n]]);
 const LIGHT = PALETTE.map(([n]) => C[LIGHT_OF[n]]);
 const LEVEL_LIGHT = LIGHT.map((l, c) => [C.orange, C.amber, C.white].includes(l) ? c : l);   // one step lighter, never into the reserved orange, amber or white
 const DARK2 = DARK.map(i => DARK[i]);
+const LIGHT_GRASS = PALETTE.map((_, i) => i), DARK_GRASS = PALETTE.map((_, i) => i);   // the level tone's grass-only steps: identity until a biome palette marks its grass
 const TINT = LEVEL_LIGHT.map((l, c) => c === C.lime ? c : l);   // the level tint's step: LEVEL_LIGHT capped at lime, so green never steps on to cream
 function tintLevel(pb, x0, y0, w, h, lv) { for (let k = 0; k < lv; k++) for (let y = y0; y < y0 + h; y++) for (let x = x0; x < x0 + w; x++) { const v = pb.get(x, y); if (v >= 0) pb.set(x, y, TINT[v]); } }
 function nearestPal(r, g, b) { let best = 0, bd = 1e9; RGB.forEach(([R, G2, B], i) => { const d = (R - r) ** 2 * 3 + (G2 - g) ** 2 * 4 + (B - b) ** 2 * 2; if (d < bd) { bd = d; best = i; } }); return best; }
@@ -2830,9 +2831,11 @@ async function loadAtlas() {
 // the manifest's levelTone. The page's colour and lookup arrays grow from index 48 by the table; 0–47 never change.
 function atlasInstall(list, table, levelTone) {
   for (const a of [RGB, HEX, DARK, LIGHT, DARK2, FOGLUT, FADE, TINT, LEVEL_LIGHT]) a.length = CORE_N;
+  for (let i = 0; i < CORE_N; i++) { LIGHT_GRASS[i] = table ? table.lightGrass[i] : i; DARK_GRASS[i] = table ? table.darkGrass[i] : i; } LIGHT_GRASS.length = DARK_GRASS.length = CORE_N;
   if (table) for (let i = CORE_N; i < table.rgb.length; i++) {
     RGB[i] = table.rgb[i].slice(); HEX[i] = '#' + table.rgb[i].map(v => v.toString(16).padStart(2, '0')).join('');
-    DARK[i] = table.dark[i]; LIGHT[i] = table.light[i]; DARK2[i] = table.dark2[i]; FOGLUT[i] = table.fog[i]; FADE[i] = table.fade[i]; TINT[i] = i; LEVEL_LIGHT[i] = i; }
+    DARK[i] = table.dark[i]; LIGHT[i] = table.light[i]; DARK2[i] = table.dark2[i]; FOGLUT[i] = table.fog[i]; FADE[i] = table.fade[i]; TINT[i] = i; LEVEL_LIGHT[i] = i;
+    LIGHT_GRASS[i] = table.lightGrass[i]; DARK_GRASS[i] = table.darkGrass[i]; }
   ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
   for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
 }
@@ -2846,7 +2849,7 @@ function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ?
 const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
 const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
 function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : ''); }
-// A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone, the 32 px stand-ins, then the dark of
+// A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone (grass colours only), the 32 px stand-ins, then the dark of
 // a wood place. Identical tiles share one buffer (and one canvas per light level).
 function tile48(lay, i, fr) {
   const key = tile48Key(lay, i, fr); let pb = ART.get(key); if (pb) return pb;
@@ -2854,7 +2857,7 @@ function tile48(lay, i, fr) {
   const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
   for (const l of t.layers) {
     if (l.stand) { const s32 = stand32(l.stand, lay.base); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
-    const pc = ART48.pieces.get(l.id), lut = l.tone === 'light' ? LIGHT : l.tone === 'dark' ? DARK : null; if (!pc) continue;
+    const pc = ART48.pieces.get(l.id), lut = l.tone === 'light' ? LIGHT_GRASS : l.tone === 'dark' ? DARK_GRASS : null; if (!pc) continue;   // the level tone moves grass only
     for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) { let c = pc.px[(l.sy + y) * pc.w + l.sx + x]; if (c < 0) continue; if (lut) c = lut[c]; pb.p[(l.dy + y) * 48 + l.dx + x] = c; }
   }
   if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
@@ -4804,7 +4807,7 @@ window.__mb = { get S() { return S; }, get G() { return G; }, get ART48() { retu
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
-  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.phase === 'patch' && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only in a place drawn at 48
+  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.exp && S.exp.patch && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only while a 48 px place is on screen (under a menu or Cargo too)
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
     return { colours: new Set(Array.from({ length: d.length / 4 }, (_, i) => (d[i * 4] << 16) | (d[i * 4 + 1] << 8) | d[i * 4 + 2])).size, bad: [...bad.entries()].slice(0, 8) }; } };
 </script>

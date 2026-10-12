@@ -9,7 +9,7 @@ import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
-import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, fnv as fnvStr } from "../tools/world-vectors.mjs";
+import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, NO_MACRO, PROOF_GRID, proofStates, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
 const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
@@ -59,7 +59,7 @@ function page(store = {}, search, opts = {}) {
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
   ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx);
   run = src => vm.runInContext(src, ctx); run(SCRIPT);
-  return { run, store, els, KEY: run("SAVE_KEY") };
+  return { run, store, els, ctx, KEY: run("SAVE_KEY") };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
 
@@ -224,17 +224,41 @@ test("atlas: every vector place's layers match their digests, both water frames"
     assert.equal(fnvStr(JSON.stringify(A.placeLayers(p.lay, p.seed, cat, 0, p.level))), w.fr0, p.gen + "/" + p.seed + "/" + p.key + " fr 0");
     assert.equal(fnvStr(JSON.stringify(A.placeLayers(p.lay, p.seed, cat, 1, p.level))), w.fr1, p.gen + "/" + p.seed + "/" + p.key + " fr 1"); }
 });
+test("atlas: the digests captured before the shore macros and the face and water tones still hold under their own conditions", () => {
+  assert.deepEqual(VECTORS.atlas.noMacro, NO_MACRO);
+  const cat = A.catalogue(VECTORS.atlas.catalogue.filter(q => q.kind !== NO_MACRO.without), NO_MACRO.levelTone), want = new Map(VECTORS.atlas.placesNoMacro.map(p => [p.gen + "/" + p.seed + "/" + p.key, p]));
+  for (const p of vecPlaces()) { const w = want.get(p.gen + "/" + p.seed + "/" + p.key);
+    assert.equal(fnvStr(JSON.stringify(A.placeLayers(p.lay, p.seed, cat, 0, p.level, NO_MACRO.rules))), w.fr0, p.key + " fr 0");
+    assert.equal(fnvStr(JSON.stringify(A.placeLayers(p.lay, p.seed, cat, 1, p.level, NO_MACRO.rules))), w.fr1, p.key + " fr 1"); }
+  const changed = VECTORS.atlas.places.filter((p, i) => p.fr0 !== VECTORS.atlas.placesNoMacro[i].fr0).length; assert.ok(changed > 0, "the new rules change some places");
+});
+test("atlas: shore macros take their four tiles, drop the water quarters and sit on the base's lawn; the other radius stands in", () => {
+  const cat = SYN(); let n = 0;
+  for (const p of vecPlaces()) { const r = A.placeLayers(p.lay, p.seed, cat, 1, p.level), mac = A.shoreMacros((x, y) => p.lay.tiles[y * W.PW + x], W.PW, W.PH);
+    for (const m of mac) { n++; for (let j = 0; j < 4; j++) { const i = (m.y + (j >> 1)) * W.PW + m.x + (j & 1), L = r.tiles[i].layers;
+      assert.ok(!L.some(l => /^t\/water\//.test(l.id)), "no quarters"); const sl = L.find(l => /^t\/macro\//.test(l.id));
+      assert.equal(sl.id, "t/macro/" + m.q + "-r" + m.radius + "-f2", "frame 2 at fr 1"); assert.deepEqual([sl.sx, sl.sy], [(j & 1) * 48, (j >> 1) * 48]);
+      assert.ok(/^t\/(lawn|sand)\//.test(L[0].id), "the ground under it"); } } }
+  assert.ok(n > 0, "macros among the vector places");
+  const r60 = A.catalogue(VECTORS.atlas.catalogue.filter(q => !(q.kind === "shore-macro" && q.radius === 60)), VECTORS.atlas.levelTone);
+  const p = vecPlaces().find(p => A.shoreMacros((x, y) => p.lay.tiles[y * W.PW + x], W.PW, W.PH).some(m => m.radius === 60));
+  if (p) assert.ok(A.placeLayers(p.lay, p.seed, r60, 0, p.level).tiles.some(t => t.layers.some(l => /-r42-f1$/.test(l.id))), "radius 42 stands in for a missing 60");
+});
 test("atlas: on every vector place no tile shares a lawn variant with its four neighbours; every layer lies in the tile", () => {
   for (const p of vecPlaces()) { const v = A.lawnVariants(p.lay, p.seed, 4);
     for (let i = 0; i < W.PW * W.PH; i++) { const x = i % W.PW, y = (i / W.PW) | 0;
       for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < W.PW && Y < W.PH) assert.notEqual(v[i], v[Y * W.PW + X], p.key + " " + x + "," + y); } }
     for (const t of A.placeLayers(p.lay, p.seed, SYN(), 0, p.level).tiles) for (const l of t.layers) if (l.stand == null) assert.ok(l.dx >= 0 && l.dy >= 0 && l.w > 0 && l.h > 0 && l.dx + l.w <= 48 && l.dy + l.h <= 48, p.key); }
 });
-test("atlas: level tone: on every level-2 vector place the lawn and tall-grass layers are 'light' and every other layer null", () => {
-  const cat = SYN(), lawn = new Set(cat.lawn.concat(cat.decal.tall).map(q => q.name)); let n = 0;
-  for (const p of vecPlaces()) { if (p.level !== 2) continue; n++;
-    for (const t of A.placeLayers(p.lay, p.seed, cat, 0, p.level).tiles) for (const l of t.layers) if (l.stand == null) assert.equal(l.tone, lawn.has(l.id) ? "light" : null, p.key + " " + l.id); }
-  assert.ok(n > 0, "level-2 places among the vectors");
+test("atlas: level tone: every layer's tone follows the rule on every vector place", () => {
+  const cat = SYN(), tone = L => { const t = L == null ? null : SYNTH_TONE[L]; return t === "light" || t === "dark" ? t : null; }, seen = new Set();
+  for (const p of vecPlaces()) { if (p.level == null) continue; seen.add(p.level);
+    A.placeLayers(p.lay, p.seed, cat, 0, p.level).tiles.forEach((t, i) => { const face = p.lay.terr && p.lay.terr[i] === W.TERR.FACE;
+      for (const l of t.layers) { if (l.stand != null) continue;
+        const want = /^t\/(lawn|decal\/tall|shadow)/.test(l.id) || /^t\/(water|macro|sandshore)\//.test(l.id) || (/^t\/deep\//.test(l.id) && l.w === 24) ? tone(p.level)
+          : /^t\/lip\//.test(l.id) ? tone(p.level - 1) : face && /^t\/(face|cap)\//.test(l.id) ? tone(p.level + 1) : null;
+        assert.equal(l.tone, want, p.key + " " + l.id); } }); }
+  assert.deepEqual([...seen].sort(), [0, 1, 2], "every level among the vectors");
   for (const p of vecPlaces().filter(p => p.level === null)) for (const t of A.placeLayers(p.lay, p.seed, cat, 0, null).tiles) for (const l of t.layers) if (l.stand == null) assert.equal(l.tone, null, "generator 1: no tone");
 });
 test("atlas: a blocking tile never draws as lawn; without its own pieces it takes the rock stand-in; without the stand-in the place stays at 32", () => {
@@ -699,4 +723,119 @@ test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never 
   const g2 = g2Page();
   assert.equal(sandIn(g2, "S.exp = null; S.phase = 'setup'").n, 0, "generator 2: none");
   assert.doesNotMatch(fnSrc("menuItems"), /Flat world/, "not a menu entry: plain text, not focusable");
+});
+
+// ---- 48 px places: the compose step on a synthetic set (each piece a known fill), a synthetic palette with a grass ramp ----
+// Indices: 48–51 a grass ramp (mat grass; dark one step down, light one up), 52 rock, 53 water. The lawn, lips and tall grass are
+// grass 50; a face or cap is grass 50 over the top half of each cell row and rock below; a water quarter is grass 50 on its west half (the margin)
+// and water east; a macro is transparent above its diagonal, grass 50 then water below; every other piece one core colour.
+const G2_ = 50, ROCK_ = 52, WATER_ = 53;
+function synthPalette(p) {
+  const names = p.run("PALETTE.map(q => q[0])"), hex = p.run("HEX.slice(0, 48)"), t = p.run("({ dark: DARK.slice(0, 48), light: LIGHT.slice(0, 48), dark2: DARK2.slice(0, 48), fog: FOGLUT.slice(0, 48), fade: FADE.slice(0, 48) })");
+  const entries = names.slice(0, 48).map((name, i) => ({ i, name, hex: hex[i], dark: t.dark[i], light: t.light[i], dark2: t.dark2[i], fog: t.fog[i], fade: t.fade[i] }));
+  const add = (hx, mat, dark, light) => entries.push({ i: entries.length, name: mat + "-" + entries.length, hex: hx, mat, dark, light, dark2: 0, fog: 0, fade: 0 });
+  add("#203a20", "grass", 48, 49); add("#2c5a2c", "grass", 48, 50); add("#3a7a3a", "grass", 49, 51); add("#4c9c4c", "grass", 50, 51); add("#6a6a70", "rock", 52, 52); add("#1d5a88", "water", 53, 53);
+  for (const e of entries) if (e.i >= 48) e.dark2 = entries[e.dark].dark;
+  return { biome: "meadow", entries };
+}
+function synthFill(q) {
+  const px = new Array(q.w * q.h);
+  for (let y = 0; y < q.h; y++) for (let x = 0; x < q.w; x++) { let c;
+    if (q.kind === "ground" && q.set !== "lawn") c = q.set === "deep" ? WATER_ : 6;
+    else if (q.kind === "ground" || q.kind === "lip" || q.kind === "decal") c = G2_;
+    else if (q.kind === "face" || q.kind === "cap") c = y % 48 < 24 ? G2_ : ROCK_;
+    else if (q.kind === "shore") c = x < 12 ? G2_ : q.set === "sand" ? 6 : WATER_;
+    else if (q.kind === "shadow") c = (x + y) % 2 ? -1 : 48;
+    else if (q.kind === "shore-macro") c = x + y < 72 ? -1 : x + y < 96 ? G2_ : WATER_;
+    else if (q.kind === "material") c = ROCK_;
+    else c = 4 + (W.hash(q.name) % 40);
+    px[y * q.w + x] = c; }
+  return px;
+}
+function page48(seed = 7, levelTone = ["dark", "none", "light"]) {
+  const p = page({}, undefined, { canvas: true }); p.run("newWorld(" + seed + ")");
+  const RGB = p.run("RGB.slice(0, 48)"), core = p.run("({ names: PALETTE.slice(0, 48).map(q => q[0]), dark: DARK.slice(0, 48), light: LIGHT.slice(0, 48), dark2: DARK2.slice(0, 48), fog: FOGLUT.slice(0, 48), fade: FADE.slice(0, 48) })");
+  const table = A.paletteTable(RGB, core, synthPalette(p)); assert.equal(table.errors, undefined, String(table.errors));
+  p.ctx.__syn = { list: VECTORS.atlas.catalogue.map(q => Object.assign({}, q, { px: synthFill(q) })), table, levelTone };
+  p.run("atlasInstall(__syn.list, __syn.table, __syn.levelTone)"); assert.equal(p.run("ART48.ready"), true);
+  p.level = (key, L) => p.run(`(() => { const lay = layout('${key}'); G.level[lay.cell] = ${L}; lay.l48 = null; for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); })()`);
+  p.tile = (key, i, fr = 0) => p.run(`Array.from(tile48(layout('${key}'), ${i}, ${fr}).p)`);
+  p.layers = (key, fr = 0) => p.run(`JSON.parse(JSON.stringify(layers48(layout('${key}'), ${fr})))`);
+  return p;
+}
+const T_ = W.T, TERR_ = W.TERR, PW_ = W.PW;
+const findTile = (p, key, pred) => { const lay = p.run(`(() => { const l = layout('${key}'); return { tiles: Array.from(l.tiles), terr: l.terr ? Array.from(l.terr) : null, tmask: l.tmask ? Array.from(l.tmask) : null }; })()`), L = p.layers(key);
+  for (let i = 0; i < PW_ * W.PH; i++) if (pred(i, lay, L.tiles[i])) return i; return -1; };
+const plainLawn = (i, lay, t) => lay.tiles[i] === T_.GRASS && (!lay.terr || !lay.terr[i]) && t.layers.length === 1;
+test("48 px compose, level tone: lawn, tall grass, lips, faces and water margins take their level's tone, grass colours only", () => {
+  const p = page48(), LIGHTG = p.run("LIGHT_GRASS"), DARKG = p.run("DARK_GRASS");
+  assert.deepEqual([LIGHTG[G2_], DARKG[G2_], LIGHTG[ROCK_], DARKG[WATER_], LIGHTG[5]], [51, 49, ROCK_, WATER_, 5], "the grass-only tables");
+  // level 2 (a lip place lifted to 2): the lawn light, a lip's lower lawn raw (tone(1) none)
+  p.level("7", 2); let i = findTile(p, "7", plainLawn); assert.ok(i >= 0); assert.ok(p.tile("7", i).every(c => c === 51), "level 2: lawn LIGHT");
+  i = findTile(p, "7", (i, lay, t) => lay.terr[i] === TERR_.LIP); assert.ok(i >= 0); assert.ok(p.tile("7", i).filter(c => c >= 48).every(c => c === G2_), "level 2: lip raw");
+  // level 1: the lawn raw, lips DARK (tone(0)), a face's grass LIGHT (tone(2)) and its rock raw
+  p.level("34", 1); i = findTile(p, "34", plainLawn); assert.ok(p.tile("34", i).every(c => c === G2_), "level 1: lawn raw");
+  p.level("7", 1); i = findTile(p, "7", (i, lay, t) => lay.terr[i] === TERR_.LIP); assert.ok(p.tile("7", i).filter(c => c >= 48).every(c => c === 49), "level 1: lip DARK");
+  i = findTile(p, "34", (i, lay) => lay.terr[i] === TERR_.FACE); assert.ok(i >= 0); let px = p.tile("34", i);
+  assert.ok(px.slice(0, 48 * 24).every(c => c === 51) && px.slice(48 * 24).every(c => c === ROCK_), "level 1: face grass LIGHT, rock raw");
+  assert.ok(px.filter(c => c === ROCK_).length > 0 && px.filter(c => c === 51).length > 0 && !px.includes(G2_), "level 1: no raw grass on a face");
+  // level 0: the lawn DARK, a face's grass raw (tone(1))
+  p.level("34", 0); i = findTile(p, "34", plainLawn); assert.ok(p.tile("34", i).every(c => c === 49), "level 0: lawn DARK");
+  i = findTile(p, "34", (i, lay) => lay.terr[i] === TERR_.FACE); px = p.tile("34", i); assert.ok(px.filter(c => c >= 48 && c !== ROCK_).every(c => c === G2_), "level 0: face grass raw");
+  // level 2 water: the margin LIGHT, the water raw; a macro's grass LIGHT where it shows, the water raw
+  p.level("9", 2); i = findTile(p, "9", (i, lay, t) => lay.tiles[i] === T_.WATER && t.layers.length === 4 && t.layers.every(l => /^t\/water\//.test(l.id)));
+  assert.ok(i >= 0); px = p.tile("9", i); assert.ok(px.every((c, k) => c === ((k % 48) % 24 < 12 ? 51 : WATER_)), "level 2: water margin LIGHT, water raw");
+  i = findTile(p, "9", (i, lay, t) => t.layers.some(l => /^t\/macro\//.test(l.id))); assert.ok(i >= 0); px = p.tile("9", i);
+  assert.ok(px.every(c => c === 51 || c === WATER_), "level 2: a macro tile shows toned lawn, toned grass and raw water only");
+  // sides, stairs and the rock stand-in are never toned
+  for (const L of [0, 1, 2]) { p.level("34", L); const lay = p.layers("34");
+    for (const [k, t] of lay.tiles.entries()) for (const l of t.layers) if (/^t\/(side|stair|landing|foot|apron|rock)/.test(l.id)) assert.equal(l.tone, null, "level " + L + " " + l.id); }
+});
+test("48 px compose, shore macros: a macro tile shows the slice where it is opaque and the lawn where it is clear; the frames alternate", () => {
+  const p = page48(); p.level("9", 1);
+  const i = findTile(p, "9", (i, lay, t) => t.layers.some(l => /^t\/macro\//.test(l.id))); const L = p.layers("9", 0).tiles[i].layers, sl = L.find(l => /^t\/macro\//.test(l.id));
+  const piece = VECTORS.atlas.catalogue.find(q => q.name === sl.id), fill = synthFill(piece), px = p.tile("9", i, 0);
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const s = fill[(sl.sy + y) * 96 + sl.sx + x]; assert.equal(px[y * 48 + x], s >= 0 ? s : G2_, x + "," + y); }
+  assert.match(sl.id, /-f1$/); assert.match(p.layers("9", 1).tiles[i].layers.find(l => /^t\/macro\//.test(l.id)).id, /-f2$/);
+});
+
+test("cast shadow: the rule gives the art director's proof states on the proof's grid", () => {
+  const { grid, states } = VECTORS.atlas.shadowGrid; assert.deepEqual(grid, PROOF_GRID); assert.deepEqual(states, proofStates(PROOF_GRID));
+  const at = (x, y) => (y >= 0 && y < grid.length && x >= 0 && x < grid[0].length ? grid[y][x] : null), raised = (x, y) => at(x, y) === "1" || at(x, y) === "F", foot = (x, y) => at(x, y) === "F";
+  let n = 0; for (let y = 0; y < grid.length; y++) for (let x = 0; x < grid[0].length; x++) { if (grid[y][x] !== ".") continue; n++;
+    const st = A.castState(raised, foot, x, y); assert.equal(st === null ? "-" : st === "es" ? "B" : st, states[y][x], x + "," + y); }
+  assert.ok(n > 100);
+});
+test("cast shadow: a lawn tile takes its state's piece over the ground, toned, the lawn showing through its clear pixels", () => {
+  const p = page48(); p.level("34", 1); const lay = p.run("(() => { const l = layout('34'); return { tiles: Array.from(l.tiles), terr: Array.from(l.terr) }; })()"), L = p.layers("34");
+  const seen = new Set();
+  L.tiles.forEach((t, i) => { const sl = t.layers.find(l => /^t\/shadow\//.test(l.id)); if (!sl) return; seen.add(sl.id);
+    assert.ok(t.layers.indexOf(sl) === 1, "right after the ground"); assert.equal(sl.tone, null, "level 1: tone none");
+    const px = p.tile("34", i), ground = t.layers[0];
+    if (/lawn/.test(ground.id) && t.layers.length === 2) for (let k = 0; k < 48 * 48; k++) assert.equal(px[k], ((k % 48) + ((k / 48) | 0)) % 2 ? G2_ : 48, "pixel " + k); });
+  assert.ok(seen.size > 0, "shadow tiles on a place under a face");
+  // receivers are lawn-ground tiles only: never terrain, water or sand
+  L.tiles.forEach((t, i) => { if (t.layers.some(l => /^t\/shadow\//.test(l.id))) assert.ok(!lay.terr[i] && [T_.GRASS, T_.TALL, T_.FLOWERS, T_.ROCK, T_.TRUNK, T_.REEDS].includes(lay.tiles[i]), "a receiver"); });
+});
+test("generator 1's band as runs, reeds staggered, the sand shore", () => {
+  const cat = SYN(), g1 = vecPlaces().filter(p => p.gen === 1);
+  for (const p of g1) { const r = A.placeLayers(p.lay, p.seed, cat, 0, null);
+    for (let y = 1; y < W.PH; y++) { const ids = [...Array(W.PW).keys()].map(x => { const i = y * W.PW + x; return p.lay.tiles[i] === T_.CLIFF && p.lay.tiles[i - W.PW] !== T_.CLIFF ? (r.tiles[i].layers.find(l => /^t\/(face|cap)\//.test(l.id)) || {}).id : null; });
+      for (let x = 0; x + 1 < W.PW; x++) if (ids[x] && ids[x + 1] && /\/w1\//.test(ids[x]) && /\/w1\//.test(ids[x + 1])) assert.fail(p.key + " row " + y + ": two w1 side by side at " + x); } }
+  let reeds = 0, drawn = 0;
+  for (const p of vecPlaces()) { const r = A.placeLayers(p.lay, p.seed, cat, 0, p.level); reeds += p.lay.tiles.filter(t => t === T_.REEDS).length;
+    for (const s2 of r.sprites) { drawn++; assert.equal(s2.sortY, s2.ty * 48 + 2, "a reed sorts before anything standing on its row (creatures +4, the pawn +5) or below"); const off = s2.x - (s2.tx * 48 + 24 - (VECTORS.atlas.catalogue.find(q => q.name === s2.id).w >> 1)); assert.ok(off >= -8 && off <= 8, "offset " + off); } }
+  assert.ok(reeds > 20 && drawn > reeds * 0.3 && drawn < reeds * 0.7, "about half the reeds: " + drawn + " of " + reeds);
+  // the sand shore: next to lawn, edge quarters; beside water only, fill (kept as plain sand); with no pieces, plain sand
+  const sandy = vecPlaces().find(p => p.lay.base === T_.SAND && p.lay.tiles.some((t, i) => t === T_.SAND && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => { const x = i % W.PW + dx, y = ((i / W.PW) | 0) + dy; return x >= 0 && y >= 0 && x < W.PW && y < W.PH && [T_.GRASS, T_.TALL, T_.FLOWERS].includes(p.lay.tiles[y * W.PW + x]); })));
+  assert.ok(sandy, "a sand place with lawn beside sand");
+  const r = A.placeLayers(sandy.lay, sandy.seed, cat, 0, sandy.level), none = A.placeLayers(sandy.lay, sandy.seed, A.catalogue(VECTORS.atlas.catalogue.filter(q => !(q.kind === "shore" && q.set === "sand")), VECTORS.atlas.levelTone), 0, sandy.level);
+  let edged = 0; r.tiles.forEach((t, i) => { if (sandy.lay.tiles[i] !== T_.SAND) return; const q = t.layers.filter(l => /^t\/sandshore\//.test(l.id));
+    if (q.length) { edged++; assert.equal(q.length, 4); assert.ok(q.some(l => !/-fill$/.test(l.id)), "not all fill"); }
+    assert.ok(!none.tiles[i].layers.some(l => /sandshore/.test(l.id)), "no pieces: plain sand"); });
+  assert.ok(edged > 0, "sand tiles beside lawn take edge quarters");
+  // beside water only: water counts as sand, so every quarter is fill and the tile stays plain sand
+  r.tiles.forEach((t, i) => { if (sandy.lay.tiles[i] !== T_.SAND) return; const x = i % W.PW, y = (i / W.PW) | 0;
+    const other = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= W.PW || Y >= W.PH) return false; const n = sandy.lay.tiles[Y * W.PW + X]; return ![T_.SAND, T_.WATER, T_.STEP, T_.DEEP].includes(n) && !(n === T_.REEDS && sandy.lay.base === T_.SAND); });
+    if (!other) assert.ok(!t.layers.some(l => /sandshore/.test(l.id)), "no other ground near: plain sand"); });
 });

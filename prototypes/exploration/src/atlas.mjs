@@ -30,14 +30,14 @@ const two = () => [[], []];
 // The pieces grouped by their manifest fields; each list sorted by variant, then name (water by frame). A piece no key takes
 // (the wall foot strips, the shore macros, lobes, beaches and bends: catalogued but unused in v1) is listed in `other`.
 export function catalogue(pieces, levelTone = null) {
-  const water = {}, lip = { shadowN: [] };
-  for (const q of QUADS) { water[q] = {}; for (const s of SHORE_STATES) water[q][s] = []; lip[q] = {}; for (const s of LIP_STATES) lip[q][s] = []; }
+  const water = {}, lip = { shadowN: [] }, waterMacro = {}, sandShore = {}, shadow = { e: [], s: [], es: [], c: [] };
+  for (const q of QUADS) { water[q] = {}; for (const s of SHORE_STATES) water[q][s] = []; lip[q] = {}; for (const s of LIP_STATES) lip[q][s] = []; waterMacro[q] = { 42: [], 60: [] }; sandShore[q] = {}; for (const s of SHORE_STATES) sandShore[q][s] = []; }
   const sideOf = () => ({ mid: [], top: [], foot: [], tail: [] });
   const cat = {
-    lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [] }, water, lip,
+    lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [] }, water, waterMacro, lip,
     face: { w3: [], w2: [], w1: [] }, cap: { w: [], e: [] }, cornerIn: { w: [], e: [] }, side: { e: sideOf(), w: sideOf() },
     stair: { S: [], N: [], E: [], W: [] }, landing: two(), foot2: two(), apronTop: two(),
-    prop: { boulder: [], reeds: [], flowers: [] }, other: [],
+    prop: { boulder: [], reeds: [], flowers: [] }, sandShore, shadow, other: [],
   };
   const LT = Array.isArray(levelTone) ? levelTone : [];
   const levelToneOut = [0, 1, 2].map(k => (LT[k] === 'light' || LT[k] === 'dark' ? LT[k] : 'none'));
@@ -49,7 +49,9 @@ export function catalogue(pieces, levelTone = null) {
       case 'ground': ok = p.set === 'lawn' || p.set === 'sand' || p.set === 'deep' ? put(cat[p.set], p) : false; break;
       case 'material': ok = p.set === 'rock' && put(cat.material.rock, p); break;
       case 'decal': ok = (p.set === 'tall' || p.set === 'flowers') && put(cat.decal[p.set], p); break;
-      case 'shore': ok = p.set === 'water' && QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && (p.frame === 1 || p.frame === 2) && put(water[p.quad][p.state], p); break;
+      case 'shadow': ok = p.set === 'cast' && p.state in shadow && put(shadow[p.state], p); break;
+      case 'shore': ok = p.set === 'sand' ? QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && put(sandShore[p.quad][p.state], p) : p.set === 'water' && QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && (p.frame === 1 || p.frame === 2) && put(water[p.quad][p.state], p); break;
+      case 'shore-macro': ok = QUADS.includes(p.quad) && (p.radius === 42 || p.radius === 60) && (p.frame === 1 || p.frame === 2) && cellsAre(p, 2, 2) && put(waterMacro[p.quad][p.radius], p); break;
       case 'lip': ok = p.set === 'shadow-n' ? put(lip.shadowN, p) : QUADS.includes(p.quad) && LIP_STATES.includes(p.state) && put(lip[p.quad][p.state], p); break;
       case 'face': ok = cellsAre(p, 3, 2) ? put(cat.face.w3, p) : cellsAre(p, 2, 2) ? put(cat.face.w2, p) : cellsAre(p, 1, 2) ? put(cat.face.w1, p) : false; break;
       case 'cap': ok = (p.side === 'w' || p.side === 'e') && put(cat.cap[p.side], p); break;
@@ -66,7 +68,7 @@ export function catalogue(pieces, levelTone = null) {
   }
   const sortAll = o => { if (Array.isArray(o)) { if (o.length && !Array.isArray(o[0])) o.sort(sortKey); else o.forEach(sortAll); } else for (const k in o) sortAll(o[k]); };
   sortAll(cat);
-  for (const q of QUADS) for (const s of SHORE_STATES) water[q][s].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name));
+  for (const q of QUADS) { for (const s of SHORE_STATES) water[q][s].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); for (const r of [42, 60]) waterMacro[q][r].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); }
   Object.defineProperty(cat, 'levelTone', { value: levelToneOut, enumerable: false });   // the manifest's level tones (not a piece list)
   return cat;
 }
@@ -97,6 +99,7 @@ export function paletteTable(coreRGB, coreTables, file) {
   if (n < core) errors.push(n + ' entries: the core ' + core + ' are not all there');
   const rgb = [], seen = new Map(), out = { rgb };
   for (const f of TABLE_FIELDS) out[f] = [];
+  out.mat = [];
   for (let k = 0; k < n; k++) {
     const e = entries[k] || {};
     if (e.i !== k) errors.push('entry ' + k + ': i is ' + JSON.stringify(e.i) + ' (a gap or out of order)');
@@ -106,6 +109,7 @@ export function paletteTable(coreRGB, coreTables, file) {
       if (seen.has(hex)) errors.push('entry ' + k + ': hex ' + hex + ' repeats entry ' + seen.get(hex)); else seen.set(hex, k);
       rgb.push([parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]);
     }
+    out.mat.push(typeof e.mat === 'string' ? e.mat : null);
     for (const f of TABLE_FIELDS) {
       const v = e[f]; out[f].push(v);
       if (!Number.isInteger(v) || v < 0 || v >= n) errors.push('entry ' + k + ': ' + f + ' ' + JSON.stringify(v) + ' outside 0 … ' + (n - 1));
@@ -121,7 +125,10 @@ export function paletteTable(coreRGB, coreTables, file) {
     const d = out.dark[k], dd = Number.isInteger(d) && d >= 0 && d < n ? out.dark[d] : undefined;
     if (dd !== undefined && out.dark2[k] !== dd) errors.push('entry ' + k + ': dark2 ' + JSON.stringify(out.dark2[k]) + ' is not dark[dark[' + k + ']] (' + dd + ')');
   }
-  return errors.length ? { errors } : out;
+  if (errors.length) return { errors };
+  out.lightGrass = out.light.map((v, i) => (out.mat[i] === 'grass' ? v : i));   // the level tone's tables: only grass-material colours move
+  out.darkGrass = out.dark.map((v, i) => (out.mat[i] === 'grass' ? v : i));
+  return out;
 }
 
 // ---- the per-tile layers of a 48 px place ----
@@ -182,16 +189,36 @@ export function faceRunSplit(cat, seed, key, a, b, maskA, maskB) {
   return out.sort((p, q) => p.x - q.x);
 }
 
-const GRASSY = [T.GRASS, T.TALL, T.FLOWERS];
 const WETT = t => t === T.WATER || t === T.STEP || t === T.DEEP;
+// The shore macros: 2 × 2 blocks of open water whose outer corner meets land on its five outer tiles, scanned row by row; the first
+// quarter (nw, ne, sw, se) that matches wins and its four tiles are taken. at(x, y) gives the tile code (off the grid counts as
+// water). Returns [{ x, y, q, radius }] with the radius by the parity rule.
+const MACRO_Q = [['nw', -1, -1], ['ne', -1, 1], ['sw', 1, -1], ['se', 1, 1]];
+export function shoreMacros(at, w, h) {
+  const out = [], used = new Set(), land = (x, y) => x >= 0 && y >= 0 && x < w && y < h && !WETT(at(x, y)), water = (x, y) => x >= 0 && y >= 0 && x < w && y < h && at(x, y) === T.WATER;
+  for (let y = 0; y <= h - 2; y++) for (let x = 0; x <= w - 2; x++) {
+    const four = [[x, y], [x + 1, y], [x, y + 1], [x + 1, y + 1]];
+    if (!four.every(([a, b]) => water(a, b) && !used.has(b * w + a))) continue;
+    for (const [q, dy, dx] of MACRO_Q) { const ro = dy < 0 ? y - 1 : y + 2, co = dx < 0 ? x - 1 : x + 2;
+      if (land(x, ro) && land(x + 1, ro) && land(co, y) && land(co, y + 1) && land(co, ro)) {
+        out.push({ x, y, q, radius: (7 * y + 3 * x) & 1 ? 42 : 60 }); for (const [a, b] of four) used.add(b * w + a); break; } }
+  }
+  return out;
+}
+// The cast shadow's state of a lawn tile, as the art director's proof picks it: e when the west tile is raised, s when the north tile
+// is a face's foot, es for both, else c when the north-west tile is raised, else none. Off the place is never raised.
+export function castState(raised, foot, x, y) { const e = raised(x - 1, y), s = foot(x, y - 1); return e && s ? 'es' : e ? 'e' : s ? 's' : raised(x - 1, y - 1) ? 'c' : null; }
+const GRASSY = [T.GRASS, T.TALL, T.FLOWERS];
 // placeLayers(lay, seed, cat, fr, level): every tile's layers ({ id, sx, sy, w, h, dx, dy, tone } from a piece, or { stand, dx, dy }
 // for a 32 px code stand-in) over its ground, with dark: 1 for dark lawn, and the pieces taller than a cell as foot-anchored sprites.
 // level is the place's height level (generator 2, 0–2) or null; the catalogue's levelTone lifts the lawn and its tall-grass decals of
 // a level ('light' or 'dark'), and lip quarters take the tone of the level below. { ok: false } when a blocking tile needs the rock
 // stand-in and face.w1 or material.rock is empty: that place stays at 32.
-export function placeLayers(lay, seed, cat, fr, level = null) {
+// The rules in effect: shore macros, and the face and water tones. Only the vectors' check of digests captured before them turns them off.
+export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true };
+export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULES) {
   const toneOf = L => { const t = L == null || !cat.levelTone ? null : cat.levelTone[L]; return t === 'light' || t === 'dark' ? t : null; };
-  const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1);
+  const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1), faceTone = rules.faceTone && level != null ? toneOf(level + 1) : null, waterTone = rules.waterTone ? lawnTone : null;
   const key = lay.key, N = PW * PH, tiles = new Array(N), sprites = [], at = (x, y) => (x < 0 || y < 0 || x >= PW || y >= PH ? -1 : lay.tiles[y * PW + x]);
   const terr = lay.terr || null, tmask = lay.tmask || null, frame = fr ? 1 : 0;
   const lv = lawnVariants(lay, seed, cat.lawn.length);
@@ -201,31 +228,68 @@ export function placeLayers(lay, seed, cat, fr, level = null) {
     for (const c of faceRunSplit(cat, seed, key, x, b, tmask[x], tmask[b])) faceAt.set(c.x, c); x = b + 1;
   }
   const sideMid = { e: [], w: [] };   // the side mid chosen per row, per column side
+  const macroAt = new Map();   // tile → its macro slice layer (falls back to the other radius, else the quarter rule)
+  if (rules.macros) for (const mc of shoreMacros(at, PW, PH)) {
+    const list = cat.waterMacro[mc.q], p = (list[mc.radius] || [])[frame] || (list[mc.radius === 60 ? 42 : 60] || [])[frame];
+    if (p) for (let j = 0; j < 4; j++) { const tx = mc.x + (j & 1), ty = mc.y + (j >> 1); macroAt.set(ty * PW + tx, Object.assign(cellLayer(p, tx - mc.x, ty - mc.y), { tone: waterTone })); }
+  }
+  // generator 1's cliff bands, laid as runs: the top row and the foot row split like the faces, rock between, open sides
+  const g1 = new Map(), isCliff = (x, y) => at(x, y) === T.CLIFF, onP = (x, y) => at(x, y) !== -1;
+  if (!terr && rules.g1Runs) {
+    const top = (x, y) => isCliff(x, y) && onP(x, y - 1) && !isCliff(x, y - 1), foot = (x, y) => isCliff(x, y) && onP(x, y + 1) && !isCliff(x, y + 1);
+    for (let y = 0; y < PH; y++) for (const [rowOf, sy] of [[top, 0], [(x, yy) => foot(x, yy) && !top(x, yy), 1]]) for (let x = 0; x < PW;) {
+      if (!rowOf(x, y)) { x++; continue; } let b = x; while (b + 1 < PW && rowOf(b + 1, y)) b++;
+      for (const c of faceRunSplit(cat, seed, key + '|g1|' + y, x, b, x > 0 ? 2 : 0, b < PW - 1 ? 4 : 0)) g1.set(y * PW + c.x, { piece: c.piece, j: c.j, sy });
+      x = b + 1; }
+  }
+  // the cast shadow's state of a lawn tile: e (raised to the west), s (a face's foot to the north), es, or c (raised only to the north-west)
+  const raised = (x, y) => { const t = at(x, y); return terr ? t === T.FACE : t === T.CLIFF; };
+  const footAt = (x, y) => terr ? at(x, y) === T.FACE && terr[y * PW + x] === TERR.FACE && (tmask[y * PW + x] & 1) === 1 : isCliff(x, y) && onP(x, y + 1) && !isCliff(x, y + 1);
+  const shadowState = (x, y) => castState(raised, footAt, x, y);
+  const lawnBase = lay.base === T.GRASS || lay.base === T.DARK;
   for (let i = 0; i < N; i++) {
     const x = i % PW, y = (i / PW) | 0, t = lay.tiles[i], kind = terr ? terr[i] : 0, m = tmask ? tmask[i] : 0;
     const L = [], tile = { layers: L, dark: 0 }; tiles[i] = tile;
     // ground: lawn (dark lawn on a dark base), sand, or none for water
-    const g = kind === TERR.SHADOW ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces sit on the place's base
+    const mac = macroAt.get(i) || null;
+    const g = kind === TERR.SHADOW || mac ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces and shore macros sit on the place's base
     if (g === T.SAND) { const p = pick(cat.sand, hash(seed, 'sd', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
     else if (g !== -1) { const p = cat.lawn[lv[i]]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
+    const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS);
+    if (sandGround && rules.sandShore) {   // the sand shore: quarters toward other ground (water counts as sand; off the place too)
+      const sandish = (xx, yy) => { const n = at(xx, yy); return n === -1 || WETT(n) || n === T.SAND || (n === T.REEDS && lay.base === T.SAND); };
+      let sm = 0; [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].forEach(([dx, dy], b) => { if (!sandish(x + dx, y + dy)) sm |= 1 << b; });
+      const st = QUADS.map(q => shoreState(sm, q)), ps = QUADS.map((q, k) => pick(cat.sandShore[q][st[k]], 0));
+      if (st.some(v => v !== 'fill') && ps.every(Boolean)) QUADS.forEach((q, k) => L.push(quarterLayer(ps[k], q, 0, 0, waterTone)));
+    }
+    if (rules.shadow && !kind && (GRASSY.includes(t) || ((t === T.ROCK || t === T.TRUNK || t === T.REEDS) && lawnBase))) {
+      const sh = shadowState(x, y), p = sh ? pick(cat.shadow[sh], 0) : null; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone }));
+    }
     const ground = L.length;
     // by tile code
     if (t === T.TALL) for (let k = 0; k < 2; k++) { const p = pick(cat.decal.tall, hash(seed, 'td', key, x, y, k));
       if (p) { const l = atLayer(p, hash(seed, 'tx', key, x, y, k) % (49 - Math.min(p.w, 48)), hash(seed, 'ty', key, x, y, k) % (49 - Math.min(p.h, 48))); if (l) L.push(Object.assign(l, { tone: lawnTone })); } }
     else if (t === T.FLOWERS) { const p = pick(cat.prop.flowers, hash(seed, 'pf', key, x, y)); if (p) { const l = atLayer(p, (TS48 - p.w) >> 1, TS48 - p.h); if (l) L.push(l); } }
     else if (t === T.ROCK) { const p = pick(cat.prop.boulder.filter(q => q.w <= TS48 && q.h <= TS48), hash(seed, 'pb', key, x, y)); if (p) { const l = atLayer(p, (TS48 - p.w) >> 1, TS48 - p.h); if (l) L.push(l); } }
-    else if (t === T.REEDS) { const p = pick(cat.prop.reeds, hash(seed, 'pr', key, x, y));
-      if (p) sprites.push({ id: p.name, tx: x, ty: y, x: x * TS48 + (TS48 >> 1) - (p.w >> 1), y: y * TS48 + TS48 - p.h, sortY: y * TS48 + 2 }); }
+    else if (t === T.REEDS) { const p = pick(cat.prop.reeds, hash(seed, 'pr', key, x, y)), on = !rules.reedStagger || (hash(seed, 'rk', key, x, y) & 1), off = rules.reedStagger ? (hash(seed, 'rx', key, x, y) % 17) - 8 : 0;
+      if (p && on) sprites.push({ id: p.name, tx: x, ty: y, x: x * TS48 + (TS48 >> 1) - (p.w >> 1) + off, y: y * TS48 + TS48 - p.h, sortY: y * TS48 + 2 }); }
     else if (t === T.TRUNK) L.push({ stand: 'trunk', dx: 8, dy: 16 });
+    else if (mac) L.push(mac);
     else if (WETT(t)) {
       let wm = 0; [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].forEach(([dx, dy], b) => { const n = at(x + dx, y + dy); if (n !== -1 && !WETT(n)) wm |= 1 << b; });
       const deepP = t === T.DEEP ? pick(cat.deep, hash(seed, 'dp', key, x, y)) : null;
       for (const q of QUADS) { const st = shoreState(wm, q);
-        if (deepP && st === 'fill') L.push(quarterLayer(deepP, q, QE[q] * Q, QS[q] * Q));
-        else { const p = (cat.water[q][st] || [])[frame]; if (p) L.push(quarterLayer(p, q)); } }
+        if (deepP && st === 'fill') L.push(quarterLayer(deepP, q, QE[q] * Q, QS[q] * Q, waterTone));
+        else { const p = (cat.water[q][st] || [])[frame]; if (p) L.push(quarterLayer(p, q, 0, 0, waterTone)); } }
       if (t === T.STEP) L.push({ stand: 'step', dx: 8, dy: 16 });
     }
-    else if (t === T.CLIFF && !terr) {   // generator 1's cliff band: the band's top and foot from face.w1, its middle rock
+    else if (t === T.CLIFF && !terr && rules.g1Runs) {   // generator 1's band: its runs' slices on the top and foot rows, rock between
+      const r = g1.get(i);
+      if (r) { const l = cellLayer(r.piece, r.j, r.sy); if (l) L.push(l); }
+      else { const p = pick(cat.material.rock, hash(seed, 'g1r', key, x, y)); if (p) L.push(cellLayer(p, 0, 0));
+        for (const [dx, sd] of [[1, 'e'], [-1, 'w']]) if (onP(x + dx, y) && !isCliff(x + dx, y)) { const sp = pick(cat.side[sd].mid, hash(seed, 'sv', key + '|g1', x, y)); if (sp) { const l = cellLayer(sp.offset ? sp : Object.assign({}, sp, { offset: sd === 'e' ? [0, 0] : [TS48 - sp.w, 0] }), 0, 0); if (l) L.push(l); } } }
+    }
+    else if (t === T.CLIFF && !terr) {   // (before runs) the band's top and foot from face.w1, its middle rock
       const top = at(x, y - 1) !== T.CLIFF && at(x, y - 1) !== -1, foot = at(x, y + 1) !== T.CLIFF && at(x, y + 1) !== -1;
       if (top || foot) { const p = pick(cat.face.w1, hash(seed, 'g1c', key, x)); if (p) { const l = cellLayer(p, 0, top ? 0 : 1); if (l) L.push(l); } }
       else { const p = pick(cat.material.rock, hash(seed, 'g1r', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
@@ -233,7 +297,7 @@ export function placeLayers(lay, seed, cat, fr, level = null) {
     // by terrain kind (generator 2)
     if (kind === TERR.LIP) for (const q of QUADS) {
       const zero = at(x + (QE[q] ? 1 : -1), y) === T.FACE, p = pick(cat.lip[q][lipState(m, q, zero)], 0); if (p) L.push(quarterLayer(p, q, 0, 0, lipTone)); }
-    else if (kind === TERR.FACE) { const c = faceAt.get(x); if (c) { const l = cellLayer(c.piece, c.j, y); if (l) L.push(l); } }
+    else if (kind === TERR.FACE) { const c = faceAt.get(x); if (c) { const l = cellLayer(c.piece, c.j, y); if (l) L.push(Object.assign(l, { tone: faceTone })); } }
     else if (kind === TERR.SIDE) {
       const s = m & 1 ? 'e' : 'w', SD = cat.side[s], dflt = p => p.offset ? p : Object.assign({}, p, { offset: s === 'e' ? [0, 0] : [TS48 - p.w, 0] });
       const tail = m & 16 ? pick(first(SD.tail, SD.mid), 0) : null;

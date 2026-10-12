@@ -143,7 +143,8 @@ export function format(seedObjs, capturedFrom, gen2 = null, view = null, atlas =
     (gen2 ? ",\n  \"2\": { \"capturedFrom\": " + JSON.stringify(gen2.capturedFrom) + ", \"seeds\": [\n" + gen2.seeds.map(seedLine).join(",\n") + "\n] }" : "") + " }" +
     (view ? ",\n  \"view\": [\n" + view.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n]" : "") +
     (atlas ? ",\n  \"atlas\": { \"levelTone\": " + JSON.stringify(atlas.levelTone) + ",\n  \"catalogue\": [\n" + atlas.catalogue.map(c => "  " + JSON.stringify(c)).join(",\n") +
-      "\n],\n  \"cases\": [\n" + atlas.cases.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n],\n  \"places\": [\n" + atlas.places.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n] }" : "") + " }\n";
+      "\n],\n  \"cases\": [\n" + atlas.cases.map(c => "  " + JSON.stringify(c)).join(",\n") + "\n],\n  \"places\": [\n" + atlas.places.map(c => "  " + JSON.stringify(c)).join(",\n") +
+      "\n],\n  \"shadowGrid\": " + JSON.stringify(atlas.shadowGrid) + ",\n  \"noMacro\": " + JSON.stringify(atlas.noMacro) + ",\n  \"placesNoMacro\": [\n" + (atlas.placesNoMacro || []).map(c => "  " + JSON.stringify(c)).join(",\n") + "\n] }" : "") + " }\n";
 }
 
 // src/view.mjs's cases: a `view` argument is viewOf's five arguments, a `box` is the module's named box; the output is captured.
@@ -196,9 +197,16 @@ export function syntheticPieces() {
   out.push(SP("t/prop/flowers-1", "prop", 43, 35, { type: "flowers" }), SP("t/prop/flowers-2", "prop", 46, 48, { type: "flowers" }));
   for (let i = 0; i < 2; i++) out.push(SP("t/decal/tall" + i, "decal", 12, 14, { set: "tall", variant: String(i) }));
   for (let i = 0; i < 2; i++) out.push(SP("t/rock/" + i, "material", 48, 48, { set: "rock", variant: String(i) }));
+  for (const q of ["nw", "ne", "se", "sw"]) for (const r of [42, 60]) for (const f of [1, 2]) out.push(SP("t/macro/" + q + "-r" + r + "-f" + f, "shore-macro", 96, 96, { cells: [2, 2], quad: q, radius: r, frame: f }));
+  for (const st of ["e", "s", "es", "c"]) out.push(SP("t/shadow/" + st, "shadow", 48, 48, { set: "cast", state: st }));
+  for (const q of ["nw", "ne", "se", "sw"]) for (const st of ["fill", "edgeh", "edgev", "outer", "inner"]) out.push(SP("t/sandshore/" + q + "-" + st, "shore", 24, 24, { set: "sand", quad: q, state: st }));
   return out;
 }
-export const SYNTH_TONE = ["none", "none", "light"];
+export const SYNTH_TONE = ["dark", "none", "light"];
+// The digests captured before the shore macros, the face and water tones, the cast shadow, the reeds' stagger, generator 1's runs
+// and the sand shore, kept checkable under the conditions they were
+// captured with: the catalogue without its macro pieces, the old tone table, and those rules off.
+export const NO_MACRO = { levelTone: ["none", "none", "light"], rules: { macros: false, faceTone: false, waterTone: false, shadow: false, reedStagger: false, g1Runs: false, sandShore: false }, without: "shore-macro" };
 export const fnv = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16).padStart(8, "0"); };
 // The literal cases: quarter states by mask, the lawn variants' top-left 4 × 3, the FACE run split for lengths 1–9 with both caps,
 // and the exact decode.
@@ -206,14 +214,23 @@ export const ATLAS_CASES = [
   ...[[1, false], [0x41, false], [0x80, false], [0x14, false], [0x14, true]].flatMap(([m, z]) => ["nw", "ne", "se", "sw"].map(q => ({ name: "lipState " + m + " " + q + (z ? " zero" : ""), fn: "lipState", args: [m, q, z] }))),
   ...[1, 0x41, 0x80, 0x14].flatMap(m => ["nw", "ne", "se", "sw"].map(q => ({ name: "shoreState " + m + " " + q, fn: "shoreState", args: [m, q] }))),
   ...[4, 3, 2].map(n => ({ name: "lawnVariants top-left 4×3, n " + n, fn: "lawnVariants", args: [{ key: "hand" }, 1, n], crop: [4, 3] })),
+  ...[
+    ["a 4×4 water square in a 6×6 lawn grid", 6, 6, [[1, 1, 4, 4, 5]]],
+    ["a 2×2 pond", 4, 4, [[1, 1, 2, 2, 5]]],
+    ["a 4×4 square touching the grid's border", 6, 6, [[0, 0, 4, 4, 5]]],
+    ["a block with a stepping stone", 4, 4, [[1, 1, 2, 2, 5], [2, 2, 1, 1, 12]]],
+    ["a block with deep water", 4, 4, [[1, 1, 2, 2, 5], [1, 1, 1, 1, 13]]],
+  ].map(([name, w, h, rects]) => ({ name: "shoreMacros " + name, fn: "shoreMacros", args: [{ grid: [w, h, rects] }, w, h] })),
   ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map(len => ({ name: "faceRunSplit length " + len + " with both caps", fn: "faceRunSplit", args: [{ cat: true }, 7, "run", 0, len - 1, 2, 4] })),
   { name: "decodeExact one off-palette pixel", fn: "decodeExact", args: [[0, 0, 0, 255, 9, 9, 9, 255, 255, 0, 0, 255, 0, 0, 0, 0], 2, 2, [[0, 0, 0], [255, 0, 0]]] },
   { name: "decodeExact alpha 128", fn: "decodeExact", args: [[0, 0, 0, 128, 0, 0, 0, 255, 255, 0, 0, 255, 0, 0, 0, 0], 2, 2, [[0, 0, 0], [255, 0, 0]]] },
   { name: "decodeExact all exact", fn: "decodeExact", args: [[0, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 0, 0, 0, 0], 2, 2, [[0, 0, 0], [255, 0, 0]]] },
 ];
+// A hand grid for the macro cases: lawn (0), with rects [x, y, w, h, code] laid over it in order.
+const gridAt = ([w, h, rects]) => { const g = new Array(w * h).fill(0); for (const [x0, y0, rw, rh, code] of rects) for (let y = y0; y < y0 + rh; y++) for (let x = x0; x < x0 + rw; x++) g[y * w + x] = code; return (x, y) => g[y * w + x]; };
 // A case's output, as the vectors store it: plain data, piece objects by name.
 export function atlasCaseOut(A, cat, c) {
-  const args = c.args.map(a => a && a.cat ? cat : a), r = A[c.fn](...(c.fn === "decodeExact" ? [Uint8Array.from(args[0]), ...args.slice(1)] : args));
+  const args = c.args.map(a => a && a.cat ? cat : a && a.grid ? gridAt(a.grid) : a), r = A[c.fn](...(c.fn === "decodeExact" ? [Uint8Array.from(args[0]), ...args.slice(1)] : args));
   if (c.fn === "lawnVariants") { const [w, h] = c.crop; return Array.from({ length: h }, (_, y) => r.slice(y * 28, y * 28 + w)); }
   if (c.fn === "faceRunSplit") return r.map(o => [o.x, o.piece.name, o.j]);
   if (c.fn === "decodeExact") return { px: [...r.px], bad: r.bad };
@@ -228,12 +245,26 @@ export function atlasPlaces(W) {
   }
   return out;
 }
-export function atlasVectors(A, W) {
+// The art director's proof place (meadow-drop-place.py on art-terrain-grass at ef80488e): its layout ('1' plateau, 'F' face, '.' lawn,
+// 'w' water) and, for every '.' cell, the shadow state the script picks (its lines 50–57: raised is '1' or 'F'; s when the north cell
+// is 'F'; c when only the north-west is raised), transcribed here.
+export const PROOF_GRID = ["..................", "...1111111........", "..111111111....11.", "..111111111...111.", "..FF1111111...FFF.", "..FF1111111...FFF.",
+  "....11111FF.......", "....FFFFF.........", "....FFFFF.....www.", "........wwwwwwwww.", "........wwwwwwwww.", "........wwwwwwwww."];
+export function proofStates(grid) {
+  const at = (r, c) => (r >= 0 && r < grid.length && c >= 0 && c < grid[0].length ? grid[r][c] : null), raised = (r, c) => at(r, c) === "1" || at(r, c) === "F", out = [];
+  for (let r = 0; r < grid.length; r++) { let row = ""; for (let c = 0; c < grid[0].length; c++) {
+    if (grid[r][c] !== ".") { row += " "; continue; } const e = raised(r, c - 1), s = at(r - 1, c) === "F";
+    const st = e && s ? "es" : e ? "e" : s ? "s" : raised(r - 1, c - 1) ? "c" : null; row += st === null ? "-" : st === "es" ? "B" : st; } out.push(row); }
+  return out;   // per cell: e, s, B (es), c, - (none), space (not a lawn cell)
+}
+export function atlasVectors(A, W, stored) {
   const catalogue = syntheticPieces(), cat = A.catalogue(catalogue, SYNTH_TONE);
   const cases = ATLAS_CASES.map(c => ({ ...c, out: atlasCaseOut(A, cat, c) }));
   const places = atlasPlaces(W).map(({ gen, seed, key, G }) => { const lay = W.genPlace(G, seed, key), level = G.level ? G.level[lay.cell] : null;
     return { gen, seed, key, level, fr0: fnv(JSON.stringify(A.placeLayers(lay, seed, cat, 0, level))), fr1: fnv(JSON.stringify(A.placeLayers(lay, seed, cat, 1, level))) }; });
-  return { levelTone: SYNTH_TONE, catalogue, cases, places };
+  // the digests from before the macros and the face and water tones: kept as stored (with their conditions), never recaptured
+  const placesNoMacro = stored && stored.atlas && (stored.atlas.placesNoMacro || stored.atlas.places);
+  return { levelTone: SYNTH_TONE, catalogue, cases, places, noMacro: NO_MACRO, placesNoMacro, shadowGrid: { grid: PROOF_GRID, states: proofStates(PROOF_GRID) } };
 }
 
 function headCommit() {
@@ -261,7 +292,7 @@ async function main(argv) {
   // generator 2 keeps its stored capture (and its capturedFrom) while the module still gives the same digests
   const api2 = await moduleApi(2), g2 = SEEDS.map(s => seedDigest(api2, s)), same2 = stored.gens["2"] && JSON.stringify(g2) === JSON.stringify(stored.gens["2"].seeds);
   const V = await import(new URL("../src/view.mjs", import.meta.url)), A = await import(new URL("../src/atlas.mjs", import.meta.url)), W = await import(new URL("../src/world.mjs", import.meta.url));
-  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? stored.gens["2"].capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W)));
+  process.stdout.write(format(g1, stored.capturedFrom, { capturedFrom: same2 ? stored.gens["2"].capturedFrom : headCommit(), seeds: g2 }, viewVectors(V), atlasVectors(A, W, stored)));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) await main(process.argv.slice(2));
