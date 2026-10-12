@@ -1006,39 +1006,78 @@ test("golden frames at 48: a place with a south face and a stair, a generator 1 
 
 // ---- the edges at 48: coverage fades, the storm step, the place's own tables ----
 const BAYER_ = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
-test("48 px edges: the coverage fade equals its formula for every 8-neighbour mask; a lone diagonal gives a rounded patch, not a square", () => {
-  const p = page48(), NB = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
-  const want = m9 => { const far = (dx, dy) => dx === 0 && dy === 0 ? (m9 >> 8) & 1 : (m9 >> NB.findIndex(([a, b]) => a === dx && b === dy)) & 1, f = new Uint8Array(2304);
-    for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0; for (const oy of [-24, -12, 0, 12, 24]) for (const ox of [-24, -12, 0, 12, 24]) c += far(Math.floor((x + ox) / 48), Math.floor((y + oy) / 48));
-      f[y * 48 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
-  assert.deepEqual(Array.from(p.run("BAYER")), BAYER_);
-  assert.deepEqual(V.BAYER4, BAYER_, "view.mjs's matrix is the page's");
-  for (const m of [0, 2, 3, 6, 7, 14, 28, 56, 129, 256, 257, 280, 340, 420, 510, 511, 85, 170]) assert.deepEqual(Array.from(p.run("coverFar(" + m + ")")), Array.from(want(m)), "mask " + m);
-  for (const m of [0, 2, 129, 256, 511]) assert.deepEqual(Array.from(V.coverFar(m)), Array.from(p.run("coverOf(" + m + ")")), "the page memoises the module's rule, mask " + m);
-  const f = p.run("coverFar(2)");   // only the NE neighbour far
-  const q = []; for (let y = 0; y < 24; y++) for (let x = 24; x < 48; x++) q.push(f[y * 48 + x]);
-  assert.ok(q.some(v => v === 1) && q.some(v => v === 0), "the NE quadrant is part far, part near: a rounded patch");
-  let nearCorner = 0; for (let y = 0; y < 12; y++) for (let x = 36; x < 48; x++) nearCorner += f[y * 48 + x];
-  assert.ok(nearCorner > 0 && nearCorner < 144, "far pixels gather at the corner, thinning out: " + nearCorner); assert.equal(f[47 * 48 + 0], 0, "the opposite corner is near");
-  assert.equal(p.run("coverFar(511).every(v => v === 1)"), true); assert.equal(p.run("coverFar(0).every(v => v === 0)"), true);
+// The quarter rule from its definition, independent of src/view.mjs: whether each pixel of tile (tx, ty) takes the far side, given far(x, y) over tiles (off the place: not far).
+const NB8_ = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+function wantFar(far, tx, ty) {
+  const guard = (x, y) => far(x, y - 1) && far(x + 1, y) && far(x, y + 1) && far(x - 1, y);
+  const farQ = (x, y, qx, qy) => far(x, y) || (!guard(x, y) && far(x, y + (qy ? 1 : -1)) && far(x + (qx ? 1 : -1), y));
+  const q = (qx, qy) => farQ(tx + (qx >> 1), ty + (qy >> 1), qx & 1, qy & 1) ? 1 : 0, out = new Uint8Array(2304);
+  for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0;
+    for (const oy of [-12, -6, 0, 6, 12]) for (const ox of [-12, -6, 0, 6, 12]) c += q(Math.floor((x + ox) / 24), Math.floor((y + oy) / 24));
+    out[y * 48 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; }
+  return out; }
+const noPuffs = p => p.run("puffArt = () => new PB(1, 1)");   // the fog's drifting texture is drawn over the fogged area
+test("48 px edges: a quarter's dither (all 512 masks) equals its definition; a straight boundary, a rounded corner, whole near and far quarters", () => {
+  const want = m => { const far = (dx, dy) => dx === 0 && dy === 0 ? (m >> 8) & 1 : (m >> NB8_.findIndex(([a, b]) => a === dx && b === dy)) & 1, f = new Uint8Array(576);
+    for (let y = 0; y < 24; y++) for (let x = 0; x < 24; x++) { let c = 0; for (const oy of [-12, -6, 0, 6, 12]) for (const ox of [-12, -6, 0, 6, 12]) c += far(Math.floor((x + ox) / 24), Math.floor((y + oy) / 24));
+      f[y * 24 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
+  assert.deepEqual(V.BAYER4, BAYER_);
+  for (let m = 0; m < 512; m++) assert.deepEqual(Array.from(V.coverQ(m)), Array.from(want(m)), "mask " + m);
+  assert.equal(V.coverQ(7), V.coverQ(7), "the table is built once");
+  assert.ok(V.coverQ(0).every(v => v === 0) && V.coverQ(511).every(v => v === 1));
+  const w = V.coverQ(0xe0);   // the west column of quarters far, the quarter itself near: from 12 px in, every pixel is near
+  for (let y = 0; y < 24; y++) for (let x = 12; x < 24; x++) assert.equal(w[y * 24 + x], 0, "inside the near quarter at " + x + "," + y);
+  assert.ok(w.some(v => v === 1) && w.slice(0, 24 * 24).some((v, i) => (i % 24) < 12 && v === 0), "the dither lies across the boundary, one quarter wide");
+  const c = V.coverQ(0x002);   // only the NE quarter far: a rounded patch gathering at the corner
+  let corner = 0; for (let y = 0; y < 6; y++) for (let x = 18; x < 24; x++) corner += c[y * 24 + x]; assert.ok(corner > 0 && corner < 36, "far pixels gather at the corner: " + corner); assert.equal(c[23 * 24], 0);
 });
-test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the coverage formula says", () => {
+test("48 px edges: a quarter of a tile is far where its tile is far, or where both sides meeting at its corner are far unless the tile is boxed in (a lone tile stays whole)", () => {
+  for (let m8 = 0; m8 < 256; m8++) for (const own of [0, 1]) { const q = V.quarterFar(own, m8), bit = b => (m8 >> b) & 1, boxed = bit(0) && bit(2) && bit(4) && bit(6);
+    const want = own ? 15 : boxed ? 0 : (bit(0) & bit(6)) | ((bit(0) & bit(2)) << 1) | ((bit(4) & bit(6)) << 2) | ((bit(4) & bit(2)) << 3);
+    assert.equal(q, want, "own " + own + " m8 " + m8); }
+});
+test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the quarter rule says; a lone unveiled tile draws whole", () => {
   const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).svy = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); unveilRound(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
   const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
-  const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), NB = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+  const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !uv(x, y);
   let checked = 0, edge = 0;
-  for (let ty = 10; ty <= 16; ty++) for (let tx = 11; tx <= 18; tx++) {   // whole tiles in view, above the message box
-    let m = uv(tx, ty) ? 0 : 256; NB.forEach(([dx, dy], b) => { if (!uv(tx + dx, ty + dy)) m |= 1 << b; });
-    if (!m || m === 511) continue;
+  for (let ty = 10; ty <= 16; ty++) for (let tx = 10; tx <= 18; tx++) {   // whole tiles in view, above the message box
+    const f = wantFar(far, tx, ty), mixed = f.some(v => v) && f.some(v => !v);
+    if (Math.max(Math.abs(tx - 14), Math.abs(ty - 14)) <= 1) continue;   // the pawn and what it faces
     if (p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return true; } return false; })()`)) continue;   // a reed or a canopy draws over it
-    edge++;
-    const f = p.run("coverFar(" + m + ")"), pb = p.run(`tile48(layout('${key}'), ${ty * 48 / 48 * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y;
-    if (p.run(`(() => { const l = layout('${key}'); return l.tiles[${ty * 28 + tx}] === T.WATER; })()`)) continue;
+    if (p.run(`layout('${key}').tiles[${ty * 28 + tx}] === T.WATER`)) continue;
+    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y;
+    if (mixed) edge++;
     let ok = true; for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0) continue;
-      const near = c, far = BAYER_[(y & 3) * 4 + (x & 3)] < 4 ? p.run("C.night") : p.run(`DARK[${c}]`), got = px[(sy + y) * W_ + sx + x];
-      if (got !== (f[y * 48 + x] ? far : near)) { ok = false; } }
-    assert.ok(ok, "tile " + tx + "," + ty + " mask " + m); checked++; }
-  assert.ok(edge > 6 && checked === edge, "edge tiles checked: " + checked + " of " + edge);
+      const farC = BAYER_[(y & 3) * 4 + (x & 3)] < 4 ? p.run("C.night") : p.run(`DARK[${c}]`), got = px[(sy + y) * W_ + sx + x];
+      if (got !== (f[y * 48 + x] ? farC : c)) ok = false; }
+    assert.ok(ok, "tile " + tx + "," + ty); checked++; }
+  assert.ok(edge >= 4 && checked >= edge, "edge tiles checked: " + edge + " of " + checked);
+  // a lone unveiled tile among veiled ones stays whole (the guard)
+  const lone = place48(7, 176, 14, 14, "layout(S.exp.patch.key).svy = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); S.veil[S.exp.patch.key][12] = 1 << 16; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const lpx = frame48(lone), lkey = lone.run("S.exp.patch.key"), lcam = lone.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)");
+  assert.equal(lone.run(`unveiled('${lkey}', 16, 12)`), true); assert.equal(lone.run(`unveiled('${lkey}', 15, 12) || unveiled('${lkey}', 17, 12) || unveiled('${lkey}', 16, 11) || unveiled('${lkey}', 16, 13)`), false);
+  const lpb = lone.run(`tile48(layout('${lkey}'), ${12 * 28 + 16}, 0)`), lx = 16 * 48 - lcam.x, ly = vy + 12 * 48 - lcam.y; let whole = 0, n = 0;
+  let centre = 0; for (let i = 0; i < 2304; i++) { const c = lpb.p[i]; if (c < 0) continue; n++; const same = lpx[(ly + ((i / 48) | 0)) * W_ + lx + (i % 48)] === c; if (same) whole++; const x = i % 48, y = (i / 48) | 0; if (x >= 12 && x < 36 && y >= 12 && y < 36 && !same) centre++; }
+  assert.equal(centre, 0, "the lone unveiled tile keeps its centre clear (the guard); only the 12 px of dither at its sides are veiled"); assert.ok(whole > n * 0.6, "and most of it: " + whole + " of " + n);
+});
+test("48 px fog: every pixel of every fog-edge tile in view equals the quarter rule over the sight disc; a tile out of sight has no near quarter, and no clear pixel lies on the far side of the rule", () => {
+  const p = place48(7, 176, 14, 14, "S.exp.fog = { x: 176 % MW + .5, y: Math.floor(176 / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].tf.length = 0; S.exp.live[S.exp.patch.key].fr.length = 0; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  noPuffs(p); frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
+  assert.equal(p.run("RT.ts"), 48); assert.equal(p.run("sightR(layout(S.exp.patch.key))"), 4);
+  const fog = p.run("PLACE_FOG"), inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y);
+  let edge = 0, pixels = 0;
+  for (let ty = 0; ty < 32; ty++) for (let tx = 0; tx < 28; tx++) { const sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y; if (sx < 0 || sx + 48 > W_ || sy < vy || sy + 48 > 480) continue;   // above the message box
+   
+    if (Math.max(Math.abs(tx - 14), Math.abs(ty - 14)) <= 1) continue;   // the pawn and what it faces
+    const f = wantFar(far, tx, ty); if (f.some(v => v) && f.some(v => !v)) edge++;
+    if (p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return true; } return false; })()`)) continue;
+    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`);
+    for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0) continue;
+      assert.equal(px[(sy + y) * W_ + sx + x], f[y * 48 + x] ? fog[c] : c, "tile " + tx + "," + ty + " pixel " + x + "," + y); pixels++; }
+    // clear ground never lies more than 12 px into a tile the rule hides (the dither's reach), and a tile in sight keeps its centre
+    if (!inS(tx, ty)) for (let y = 12; y < 36; y++) for (let x = 12; x < 36; x++) assert.equal(f[y * 48 + x], 1, "a hidden tile's centre is fogged: " + tx + "," + ty); }
+  assert.ok(edge > 12 && pixels > 20000, "fog-edge tiles " + edge + ", pixels " + pixels);
 });
 test("48 px storm: the 6 px of the lit tile beside the band step by the Bayer rule, the pixel beyond them is lit, band tiles are dark", () => {
   const p = place48(7, 176, 14, 14, "S.exp.storm = { x: (176 % MW) - 3 - 1.25, dir: 1, w: 3, v: .25, t: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
@@ -1063,9 +1102,8 @@ test("48 px fog edge: in the storm's band the clear side takes the band's dark (
   const storm = p.run("PLACE_STORM"), darkW = Math.ceil((3 - 1.25) * 1.5) * 48; assert.equal(darkW, 144);
   const inS = (x, y) => Math.hypot(x - 14, y - 14) <= 4.5, far = (x, y) => x >= 0 && y >= 0 && x < 28 && y < 32 && !inS(x, y), seen = { band: 0, lit: 0 };
   for (let ty = 11; ty <= 17; ty++) for (let tx = 8; tx <= 20; tx++) {
-    if (!inS(tx, ty)) continue; let m = 256 * 0; for (const [b, [dx, dy]] of [[0, [0, -1]], [1, [1, -1]], [2, [1, 0]], [3, [1, 1]], [4, [0, 1]], [5, [-1, 1]], [6, [-1, 0]], [7, [-1, -1]]]) if (far(tx + dx, ty + dy)) m |= 1 << b;
-    if (!m) continue;
-    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), f = p.run("coverFar(" + m + ")"), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y, band = tx * 48 + 24 - cam.x < darkW;
+    if (!inS(tx, ty)) continue; const f = wantFar(far, tx, ty); if (!f.some(v => v)) continue;
+    const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y, band = tx * 48 + 24 - cam.x < darkW;
     if (sx < 0 || sx + 48 > W_) continue;
     const lay = p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return false; } return true; })()`);
     if (!lay) continue;
