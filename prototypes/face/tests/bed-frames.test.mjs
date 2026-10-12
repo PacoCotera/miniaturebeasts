@@ -1,10 +1,11 @@
 // The away bed (station-vivarium-polish, option D; the architect's plates, 85c9c0b) on the face, on the Vivarium's whole, Home and Idle: eight stable nodes (three frames, three minis, the glyph's plate, the glyph) at
 // the signed table's rects for 1, 2 and 3 carried and with no size otherwise; the plates on the painted layer (passes 1 and 2 read 0 off the palette, the full pass reads 0 because they are painted); the three frames share one
-// source picture (a carried mibi adds its mini only); the bed's mark is retired; no carried mibi walks while away.
+// source picture (a carried mibi adds its mini only); the bed's mark is retired; no carried mibi walks while away; the dock cut stays within the computed 50,688 px.
 //   node --test prototypes/face/tests/bed-frames.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { movingScene, bootScene, SPEC, BUILT } from "./moving-scene.mjs";
+import { dirty } from "./dirty.mjs";
 
 const skip = BUILT ? false : "the WebAssembly build (prototypes/face/build.sh wasm)";
 const bedOf = (screen) => (screen === "idle" ? SPEC("frame").idle.regions.bed : SPEC(screen === "vivarium" ? "vivarium" : "home").regions.bed);
@@ -45,5 +46,15 @@ for (const screen of ["vivarium", "home", "idle"]) {
       assert.ok(withFrames - none <= 3 && again === withFrames, `${screen}: three frames add their minis at most (${withFrames} with, ${none} without): the plates' sources are shared, one a size`); }
     { const { f } = await away(screen, 2); f.frame((f.t += 16)); const T = table(B, 2), p = logOf(f).regions.find((r) => r.id === "bed.frames" && r.layer === "painted")?.rect, inside = (r) => r[0] >= p[0] && r[1] >= p[1] && r[0] + r[2] <= p[0] + p[2] && r[1] + r[3] <= p[1] + p[3];
       assert.ok(p && [...T.frames, T.plate].every(inside), `${screen}: the frames and the glyph's plate are on the painted layer of the bed's frames region (${p})`); }
+  });
+  test(`${screen}: the dock cut with 1, 2 and 3 carried redraws at most the computed 50,688 px (lvgl-switch §2.9), undocking and docking`, { skip }, async () => {
+    for (const n of [1, 2, 3]) {
+      const carry = [...Array(n).keys()], A = movingScene(screen, { adults: 4, docked: false, carry, motionSets: false }), D = movingScene(screen, { adults: 4, docked: true, carry, motionSets: false }), f = await bootScene(A, { motion: false, node: true });
+      const cut = (props) => { assert.equal(f.props({ ...props, motion: false }), 0, f.errors().join()); f.frame((f.t += 16)); return dirty(f); };
+      cut(D.props); f.frame((f.t += 16)); dirty(f);
+      const undock = cut(A.props), dock = cut(D.props);
+      assert.ok(undock > 0 && undock <= 50688 && dock > 0 && dock <= 50688, `${screen} ${n}: the cut redrew ${undock} px undocking, ${dock} px docking`);
+      console.log(`# ${screen}, ${n} carried: the dock cut ${undock} px undocking, ${dock} px docking`);
+    }
   });
 }
