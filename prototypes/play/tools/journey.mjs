@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The play-page journey (boards/station-w1-x3-ready.md §6.2): the page that holds the Station and the Companion side by side, played headless. It serves prototypes/ as the sandbox does, opens
+// The play-page journey: the page that holds the Station and the Companion side by side, played headless. It serves prototypes/ as the sandbox does, opens
 // /sandbox/play/?test in Chromium. There is no save fixture: each context starts a fresh Companion world, and A, B1–B7, C and the short tier seed their crate with `__st.seedCrate("S01", 2, 4101)`; B8 crosses a real
 // Companion crate. It proves: A, the layout at 1× (every frame's box exact, both screens 1:1 on the page, also at dpr 1.25); B, the dock round trip with the keys, the landing rule and
 // the lift; C, the narrow tier; D, the figures it prints (heaps, the face, main-thread time a frame); E, a change of device pixel ratio with no resize; and the short tier at 1280 × 690, where the
