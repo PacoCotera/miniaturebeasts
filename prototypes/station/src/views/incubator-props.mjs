@@ -4,6 +4,7 @@
 // Runs in Node, tested there (tests/incubator-props.test.mjs); the shape is incubator.props.json.
 //   m: { st, sv, settings, now, ui: { inc: { hatch } }, spec incubator.json, pods pods.json }
 import * as S from "../state.mjs";
+import { warnWords } from "./goal-words.mjs";
 import { frameOf, stampSizing, genomeDigest, codeText } from "../genome.mjs";
 import { slot, maxTraits } from "./pods-props.mjs";
 import { choosePod } from "../intents/incubator.mjs";
@@ -78,6 +79,7 @@ export function incubatorBuild(m, spec, pods) {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
       line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)
       if (key) { line.dim = true; line.short = key.short; line.need = fill(pods.strings.needMore, { icons: key.short }); }
+      else if (!gs && m.frame) line.need = warnWords(st, m.sv, settings, m.frame, c, { key: "growNow" }) ?? line.need;
     } else {
       const noBay = S.bayFull(st, settings);
       line = { ok: Sg.open, back: Sg.back, subject: bud, need: noBay ? Sg.noBay : null }; if (noBay) line.dim = true;   // a dimmed cap when no bay is free: a guard only

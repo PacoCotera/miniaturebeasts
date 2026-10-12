@@ -219,6 +219,8 @@ The Probe's tier is not in the top bar: Home's Probe module shows it by its Shie
 | **The notice** | 624, 570, 272, 24 | What needs you, right-aligned to x 896, 24 px before the way back, 16 px `amber`, with the 12×12 amber lamp 4 px to its left, the same lamp as Home's modules | A sentence of six words or fewer (the longest on Home, "an Untuva pod needs more ◆", is 224 px with its icon, 240 with its lamp); one notice at a time, the most pressing |
 | **The way back** | 920, 570, 88, 24 | The ← key cap, 16×16 in `stone`, 4 px, then where it leads, one word in `fog`, right-aligned to x 1008; 68 px of room for the word | One word ("Home", "Pods"; the longest, "Vivarium", 66 px). A wider name reads "Back". No ← cap when ← does nothing |
 
+**Home's goal in the notice zone.** With the Companion in the room and no first-group need (crates waiting, a bud ready, a meet, new pods, glints, waiting pods, a mibi that could grow and can be paid for), the zone carries the goal: the sentence `goalKey` names, in `mist`, right-aligned to x 896 as the notice is, with no lamp. A new pod is a first-group need until Pods has drawn it (the notice counts only pods not yet seen); once every unidentified pod has been seen it gives way to the goal, the room's ✓ stays "Look at the pods" and the Pods module's lamp is not amber. The goal's ladder reaches held species (the pods in the wells and waiting) after the living ones, and the Probe's upgrade stands in when no rung holds and the Probe is below tier 2. A first-group need keeps the zone amber with its lamp; with neither, the soft need shows as before. A step that is short of materials draws its icons as 16 px icons after the words (gap 4, pitch 20). When the name makes the line wider than the room (272 on Home) with its icons at 20 px each, the face takes the sibling sentence without the name. Away, a step that is going out reads the `aim` sentence. `needKey` and the room's ✓ do not change.
+
 **The marks are art.** Every mark in the frame is a studio master placed 1:1 at its size, never drawn by the build and never scaled:
 
 | Mark | Slice id | Size |
@@ -884,7 +886,7 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | `travel` | 176, 104, 672, 440 | Each pod in a straight line from its place to its well's pod place, whole pixels, eased in and out; nothing scaled |
 | `rack` | as in the bay | A well stays empty until its pod lands |
 
-**The report.** The card at (232, 72, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0), at most 312; its bottom at 384, 16 px above the rack. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
+**The report.** The card at (232, 72, 560, h), h = 104 + 24 × (crates + Probe row) + (world lines ? 40 + 24 × lines : 0) + (goal ? 8 + 24 × (1 + meanwhile) : 0), at most 320; its bottom at 384, 16 px above the rack. 16 px padding; rows 24 px on a 24 px pitch; a lead in a 128 px column (x 248 to 376, `mist`), content from x 384, the land's reach from x 560.
 
 | Row | y (full card) | Lead | Content |
 | --- | --- | --- | --- |
@@ -893,6 +895,8 @@ The device's materials, as on Home: the bay a `panel` recess with an `enamel` ri
 | Gathered | 208 | "Gathered" | Energy, Data and Essence as the frame's counters, "+3" beside each icon; the developer top-up adds "with the top-up" in `mist` |
 | Probe, when it was mended at the dock | 232 | "Probe" | Its plates as 16 px Shield icons on a 20 px pitch, then "mended free" or "mended for ⚡ 2" |
 | The world, when it turned | 272, lines at 296, 320, 344 | "Meanwhile, the world turned" | Up to three of the world lines of the last walk crate opened (a developer crate carries none) behind a 4×4 `bevel` bullet; the rules' own words, six or fewer, no digits |
+
+**The report's goal rows.** After the world block, a goal row (lead "Next") names the step `goalKey` gives, and a meanwhile row (lead "While you wait") the read to spend the wait on, with its ◆ price, when the step is a wait. The card is h + (a goal ? 8 + 24 × (1 + meanwhile) : 0) tall, at most 320: world lines drop from the last until it fits.
 
 **The Probe row's source.** The row comes from the dock's mend, `{ free, paid, broke }`: free plates or a break (a break is mended free) read "mended free"; plates paid for read "mended for" and their price; no mend, no row. Cargo keeps the mend in its UI state from the dock until the report. It is not in the save: after a reload the report has no Probe row.
 
