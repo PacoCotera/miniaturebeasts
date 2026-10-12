@@ -142,7 +142,7 @@ All rewards for going out, never penalties for staying home, and none timed:
 
 ## 4. Economy
 
-**Inputs.** Energy runs the machines (identify, incubate, mend, upgrade). Data reads genomes (reads, shaping, upgrades). Essence grows bodies (founders and crossed children). **Decided:** Essence never turns into Energy.
+**Inputs.** Energy runs the machines (incubate, mend, upgrade). Data reads genomes (identify, reads, shaping, upgrades). Essence grows bodies (founders and crossed children). Essence never turns into Energy.
 
 | At the Station | Price |
 | --- | --- |

@@ -28,12 +28,12 @@ const textRules = RULES.rules.filter((r) => r.applies === "text").map((r) => r.i
 const PL = byId["process-label"];
 const plDate = PL ? rx(PL.datePattern) : null;
 
-// process-label: design/**/*.md, README.md and ROADMAP.md, never docs-standard.md; in tree mode only under PL.tree.
+// process-label: design/**/*.md, README.md, ROADMAP.md and prototypes/**/README.md, never docs-standard.md; in tree mode only under PL.tree.
 export function processDoc(file, tree = false) {
   if (!PL) return false;
   const p = PL.paths, base = path.posix.basename(file);
   if (p.excludeBasenames.includes(base)) return false;
-  const inScope = p.files.includes(file) || p.prefixes.some((x) => file.startsWith(x) && file.endsWith(p.suffix));
+  const inScope = p.files.includes(file) || p.prefixes.some((x) => file.startsWith(x) && file.endsWith(p.suffix)) || (p.readmeUnder || []).some((x) => file.startsWith(x) && base === "README.md");
   if (!inScope) return false;
   return !tree || PL.tree.some((t) => file === t || file.startsWith(t.endsWith("/") ? t : t + "/"));
 }
@@ -266,6 +266,9 @@ export const FIXTURES = [
   { rule: "secret-value", file: "prototypes/caddy/tests/caddy.test.mjs", hit: 'GEMINI_API_KEY: "real-looking-key"', pass: 'GEMINI_API_KEY: "test-key-never-used"' },
   { rule: "secret-value", file: "prototypes/x.mjs", hit: "const k = sk-proj-Xa7mQ2zL9pR4tW8vB1nC6dF3;", pass: "the sk-proj- prefix names a project key" },
   { rule: "secret-value", file: "ops/x.sh", hit: "EXAMPLE_API_KEY=q7Lm2Xv9Rt4Wp8Zn", pass: "EXAMPLE_API_KEY=$EXAMPLE_API_KEY" },
+  { rule: "internal-path", file: "prototypes/x.mjs", hit: "// spec: boards/mibi-motion/tier2-method.md", pass: "// the airplanes/ folder of the sample set" },
+  { rule: "internal-path", file: "design/x.md", hit: "as the plan says (plans/public-cleanup.md)", pass: "the keyboards/ sprites" },
+  { rule: "internal-path", file: "v1/native/README.md", hit: "the method (`boards/mibi-motion/tier2-method.md`)", pass: "[XIAO BLE board](https://docs.zephyrproject.org/latest/boards/seeed/xiao_ble/doc/index.html)" },
 ];
 
 function selfTest() {
@@ -290,10 +293,16 @@ function selfTest() {
   ok(pl("the owner chose"), "process-label should hit: the owner chose");
   ok(pl("a hull"), "process-label should hit: a hull");
   ok(pl("Agreed on 2026-10-09."), "process-label should hit a date");
+  ok(pl("(decisions 10-11 14:17)"), "process-label should hit: (decisions 10-11 14:17)");
+  ok(pl("see decision 10-11"), "process-label should hit: decision 10-11");
+  ok(pl("tuned (owner 14:17)"), "process-label should hit: (owner 14:17)");
+  ok(pl("tuned (owner 10-11 14:17)"), "process-label should hit: (owner 10-11 14:17)");
+  ok(!pl("a decision between 2 options and 14 stones"), "process-label should pass: a decision between 2 options and 14 stones");
   ok(!pl("A child takes one copy from each parent."), "process-label should pass: A child takes one copy from each parent.");
   ok(!pl("![x](img/2026-10-08-a.png)"), "process-label should pass: ![x](img/2026-10-08-a.png)");
   ok(!pl("see `the owner` and [a](notes/2026-10-08.md)"), "process-label should skip inline code and link targets");
   ok(fencedLines("a\n```\nthe owner\n```\nb").has(3) && !fencedLines("a\n```\nx\n```\nb").has(5), "fenced lines");
+  ok(processDoc("prototypes/station/README.md") && !processDoc("prototypes/station/src/x.md") && !processDoc("prototypes/station/NOTES.md"), "process-label covers prototypes/**/README.md only");
   ok(processDoc("design/proposals/x.md") && processDoc("README.md") && processDoc("ROADMAP.md") && !processDoc("design/docs-standard.md") && !processDoc("art/x/README.md") && !processDoc("design/x.txt"), "process-label paths");
   ok(!processDoc("design/proposals/x.md", true), "process-label tree mode only under its path list");
   ok(checkProcess("design/proposals/species-names.md", '| Aulaka | 6 | None. Queries "Aulaka" creature, character, game, brand, genus (2026-10-09): no creature | clear |').length === 0, "process-label honours the allowlist");

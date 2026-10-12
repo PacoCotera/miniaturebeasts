@@ -322,7 +322,7 @@ In a place your partner stands on a teal ring with its name above it. Call bring
 | ← | End expedition (menu; only at the flag or a lit outpost) | Leave (menu) | Close | Mibis |
 | ))) | Pin 1⚡ | Pulse, 11 tiles (1 action) | — | Call Dot: your mibi answers |
 
-**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Energy · study a window 2 Data · grow a mibi 2 Energy + 4 Essence (+2 Data per change) · mend at the Station 1 Energy a plate beyond two free · tier 2 Probe 12 Energy + 4 Data · return a pod +1 Essence.
+**Costs**: light or relight an outpost 1 Energy (lit 3 world turns) · mend at an outpost 1 Energy a bar · pin 1 Energy (removing your own is free) · beacon 1 Energy · Shield patch 3 Energy a bar · identify 1 Data · study a window 2 Data · grow a mibi 2 Energy + 4 Essence (+2 Data per change) · mend at the Station 1 Energy a plate beyond two free · tier 2 Probe 12 Energy + 4 Data · return a pod +1 Essence.
 
 **Stones**: plain grey · warm: an amber ring around it and an amber dot on top · charged: a blue-white crackle with a small bolt above · a yellow tile outline: lightning strikes there next.
 
