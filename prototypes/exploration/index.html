@@ -3113,8 +3113,8 @@ function drawReachView(t) {
   // the band below: plain 2× text on the left, the inset on the right, nothing on top of each other
   const by = q.dy + q.size + 8, u = q.big ? 6 : 4, iw = MW * u, ih = MH * u, ix = SCR_W - iw - 10, iy = by + 3;
   const tw = ix - 22;
-  if (FX.msg) {   // a message takes the band's text space for one action, so nothing covers the reach or the inset
-    const lines = wrapText(FX.msg, tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
+  if (shownMsg()) {   // a message takes the band's text space for one action, so nothing covers the reach or the inset
+    const lines = wrapText(shownMsg(), tw - 16, 2).slice(0, Math.min(q.big ? 5 : 3, Math.floor((VIEW_Y + VIEW_H - by - 16) / 20))), h = lines.length * 20 + 12;
     panel(8, by, tw + 4, h, C.ink, C.amber); lines.forEach((l, i) => text(l, 16, by + 6 + i * 20, C.bone)); RT.msgInBand = true; }
   else { blit(ICON.flag(), 12, by + 2); text(clipText(canSend() ? 'End expedition here' : sendHint(), tw - 20, 2), 30, by + 4, C.bone);
     text(clipText(surveyedLine(), tw, 2), 12, by + 28, C.mist); }
@@ -3695,9 +3695,9 @@ function drawSwap() {
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
-// The place's Call hint is not drawn over the Probe screen: the box there reads as it always has, and the hint comes back on the next screen.
+// The place's Call hint is drawn only in the place view: every other screen's message reads as it always has (the hint is longer than the box's old text, and would cover lines under it).
 const CALL_HINT = 'Call lifts the veil: finds show';
-function shownMsg() { return S.phase === 'probe' ? FX.msg.replace(' · ' + CALL_HINT, '').replace(CALL_HINT + ' · ', '').replace(CALL_HINT, '') : FX.msg; }
+function shownMsg() { return S.phase !== 'patch' ? FX.msg.replace(' · ' + CALL_HINT, '').replace(CALL_HINT + ' · ', '').replace(CALL_HINT, '') : FX.msg; }
 function drawMessage() {
   const msg = shownMsg();
   if (!msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
@@ -3726,8 +3726,8 @@ function drawSetup(t) {
   const strip = 'World · turn ' + wTurn() + ' · Probe tier ' + S.tier + ' · Shield ' + Math.max(0, shN) + '/' + tierOf().shield + (S.bay.length ? ' · ' + S.bay.length + ' sealed' : '');
   text(clipText(strip, 420, 2), SCR_W / 2, 40, hurt ? C.amber : C.mist, 2, 'center');
   // while a message shows, the message box takes the view's foot and neither panel is drawn
-  if (!FX.msg && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 517, C.mint, 2, 'center'); }
-  else if (!FX.msg && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' crate' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
+  if (!shownMsg() && isDocked()) { panel(70, 512, 310, 26, C.ink, C.mint); text('Docked · lift to explore', SCR_W / 2, 517, C.mint, 2, 'center'); }
+  else if (!shownMsg() && S.bay.length) { const n = S.bay.length; panel(70, 494, 310, 48, C.ink, C.amber); text(n + ' crate' + (n === 1 ? '' : 's') + ' sealed', SCR_W / 2, 500, C.amber, 2, 'center'); text('dock to transfer', SCR_W / 2, 520, C.amber, 2, 'center'); }
   const sel = S.ui.sel, dig = digPartner(), deepOk = !!dig;
   // Weather: a storm cloud with a flickering bolt
   card(20, 64, 410, 84, sel === 0, true);
@@ -3814,7 +3814,7 @@ function drawMenu(t) {
   const pl = RT.plScr, left = overField && pl && pl.x > SCR_W / 2;
   const rowH = overField ? 44 : 62, w = overField ? 250 : 330, x = overField ? (left ? 8 : SCR_W - w - 8) : 60, top0 = overField ? VIEW_Y + 8 : 116, sc = overField ? 2 : 3;
   // over a place, when the message box goes to the top (drawMessage's own test), the card starts 8 px under its foot
-  const mLines = S.ui.from === 'patch' && FX.msg && !(S.phase === 'patch' && S.ui.swap) && !RT.msgInBand ? wrapText(FX.msg, 400, 2).slice(0, 3).length : 0,
+  const mLines = S.ui.from === 'patch' && shownMsg() && !(S.phase === 'patch' && S.ui.swap) && !RT.msgInBand ? wrapText(shownMsg(), 400, 2).slice(0, 3).length : 0,
     mLow = SCR_H - LINE_H - (mLines * 20 + 12) - 8, top = overField && mLines && pl && pl.y + 20 > mLow ? VIEW_Y + 8 + (mLines * 20 + 12) + 8 : top0;
   if (!overField) ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 10); else if (S.ui.from === 'map') ditherFill(0, VIEW_Y, SCR_W, VIEW_H, 'void', 5);
   panel(x, top + 4, w, items.length * rowH + 20, C.void);

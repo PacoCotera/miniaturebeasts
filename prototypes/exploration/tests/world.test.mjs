@@ -801,10 +801,11 @@ test("Cargo's bottom line: a crate with room, the finds in the hold with the bay
   assert.match(PAGE, /'shows what it does'/);
 });
 
-test("the Probe screen's message box leaves out the place's Call hint; other screens keep it", () => {
+test("the place's Call hint is drawn only in the place view: every other screen's message leaves it out", () => {
   const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
   p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'probe';`); assert.equal(p.run("shownMsg()"), c);
   p.run(`FX.msg = ${JSON.stringify(h + " · " + c)};`); assert.equal(p.run("shownMsg()"), c);
   p.run(`FX.msg = ${JSON.stringify(h)};`); assert.equal(p.run("shownMsg()"), "");
-  p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'cargo';`); assert.equal(p.run("shownMsg()"), c + " · " + h);
+  for (const ph of ["probe", "cargo", "menu", "sealed", "map", "mibis", "worldmap", "active"]) { p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = ${JSON.stringify(ph)};`); assert.equal(p.run("shownMsg()"), c, ph); }
+  p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'patch';`); assert.equal(p.run("shownMsg()"), c + " · " + h, "the place keeps it");
 });
