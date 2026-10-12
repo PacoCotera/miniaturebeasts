@@ -811,12 +811,12 @@ Counts are spelled, "a" and two to six; above six the count is dropped. A materi
 | Vivarium (Home's glass) | 640×488 |
 | Residents, sleepers | 144×152 adult or elder; a sleeper in its nap pose. A juvenile is not a placeholder: its signed stand-in, mibi-juvenile-<species>-104x112, and asleep -96x88 |
 | Bed | 192×56 |
-| Cargo's bay, open and shut | 176×72, signed (the pass 137 recut) |
+| Cargo's bay, open and shut | 176×72 |
 | Waiting mark | 24×24, `mark-waiting-24` |
-| Well | 32×32, signed (the Home column, 1f7d4a83) |
-| Chamber | 72×72, signed (1f7d4a83) |
-| Probe in its cradle | 96×72, signed (1f7d4a83) |
-| Journal | 104×72, signed (1f7d4a83) |
+| Well | 32×32 |
+| Chamber | 72×72 |
+| Probe in its cradle | 96×72 |
+| Journal | 104×72 |
 | Glint | 12×12 |
 | Rest knob | 32×6 |
 
@@ -1051,14 +1051,14 @@ The studio masters these screens place 1:1, each at its listed size; until a mas
 | Idle's Vivarium | 1024×568 | Day, dusk and night. Its rows 120 to 560 are the Vivarium's whole |
 | The bed | 192×56 | One |
 | The nap poses | ink at most 96×88, centred on the feet in the sleeper's box | — |
-| Cargo module: the bay | 176×72 | Open and shut: signed (the pass 137 recut) |
-| Cargo module: a crate | 48×40 | Walk and sitting: signed (the pass 137 and 138 recuts); the walk crate is drawn, the sitting crate is placed and not drawn |
-| Pods module: a well | 32×32 | One: signed (the Home column, 1f7d4a83) |
-| Incubator module: the chamber | 72×72 | Empty, growing and ready: signed (1f7d4a83) |
-| Probe module: the cradle | 96×72 | Full and empty: signed (1f7d4a83) |
+| Cargo module: the bay | 176×72 | Open and shut; signed, placed |
+| Cargo module: a crate | 48×40 | Walk and sitting; signed, placed; the walk crate is drawn, the sitting crate is not drawn |
+| Pods module: a well | 32×32 | One; signed, placed |
+| Incubator module: the chamber | 72×72 | Empty, growing and ready; signed, placed |
+| Probe module: the cradle | 96×72 | Full and empty; signed, placed |
 | Probe module: a Shield plate | 12×24 | One |
 | Probe module: the sitting frame | 24×32 | One |
-| Library module: the journal | 104×72 | One: signed (1f7d4a83) |
+| Library module: the journal | 104×72 | One; signed, placed |
 | Module lamps | 12×12 | `sprout`, `sky` and `hairline` |
 | Cargo: the bay | 992×320 | Open and shut |
 | Cargo: a crate in the bay | 256×176 | Sealed and sitting |
