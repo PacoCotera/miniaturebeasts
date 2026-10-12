@@ -64,7 +64,7 @@ test("a juvenile mibi takes the art director's juvenile stand-in at its size whe
   const MASTER = "mibi-juvenile-S01-304x312", env = { podById: () => null, frameOf, mibiGenome: () => podGenome(frameOf("S01"), 3) };
   const ask = (id, stage, [w, h] = [304, 312]) => ({ kind: "mibi", id: `mibi:${id}:${stage}:${w}x${h}`, mibi: id, stage, species: "S01", size: [w, h] });
   const ids = ["juvenile", "adult"].flatMap((st) => [1, 2].flatMap((n) => [`mibi:${n}:${st}:304x312`, `mibi:${n}:${st}:144x152`]));   // 144×152: a size with no juvenile master in the real index
-  const clear = () => { for (const id of ids) dropAsset(id); dropAsset(MASTER); };
+  const clear = () => { for (const id of ids) dropAsset(id); dropAsset(MASTER); dropAsset("mibi-adult-S01-304x312"); };   // Pip's real stand (fix 1a) out too: the first half is the hook with no adult stand placed
   clear(); registerPictures([ask(1, "juvenile", [144, 152]), ask(1, "adult", [144, 152])], env);
   assert.equal(assetEntry("mibi:1:juvenile:144x152").file, null, "no stand-in placed at this size: the juvenile builds the rig"); assert.match(assetEntry("mibi:1:juvenile:144x152").until, /juvenile stand-in/);
   placeMaster({ id: MASTER, w: 304, h: 312, file: "mibi-juvenile-S01-304x312.png", hash: "0".repeat(64), signed: "2026-10-11", status: "master" }, { w: 304, h: 312, rgba: () => new Uint8ClampedArray(304 * 312 * 4) });
