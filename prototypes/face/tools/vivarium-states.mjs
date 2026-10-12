@@ -18,6 +18,12 @@ const SCENES = {
   "docked-day":   { f: null, state: "rest", light: "day",   set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-dusk":  { f: null, state: "rest", light: "dusk",  set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
   "docked-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); } },
+  "away-bed-1-day": { f: null, state: "rest", light: "day", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0]); w.away(); } },
+  "away-bed-1-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0]); w.away(); } },
+  "away-bed-2-day": { f: null, state: "rest", light: "day", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); w.away(); } },
+  "away-bed-2-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1]); w.away(); } },
+  "away-bed-3-day": { f: null, state: "rest", light: "day", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1, 2]); w.away(); } },
+  "away-bed-3-night": { f: null, state: "rest", light: "night", set: (w) => { w.bays(8); w.adults(4); w.young(3); w.carry([0, 1, 2]); w.away(); } },
 };
 async function enter(page, sc) {
   await page.evaluate(([setSrc, f, light]) => {

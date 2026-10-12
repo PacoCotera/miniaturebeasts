@@ -49,6 +49,30 @@
    "hash": "499b962a",
    "png": "vivarium-docked-night.png"
   },
+  "vivarium-away-bed-1-day": {
+   "hash": "ab3ea591",
+   "png": "vivarium-away-bed-1-day.png"
+  },
+  "vivarium-away-bed-1-night": {
+   "hash": "9b443099",
+   "png": "vivarium-away-bed-1-night.png"
+  },
+  "vivarium-away-bed-2-day": {
+   "hash": "99679abc",
+   "png": "vivarium-away-bed-2-day.png"
+  },
+  "vivarium-away-bed-2-night": {
+   "hash": "2e8d9ee2",
+   "png": "vivarium-away-bed-2-night.png"
+  },
+  "vivarium-away-bed-3-day": {
+   "hash": "bfdc581c",
+   "png": "vivarium-away-bed-3-day.png"
+  },
+  "vivarium-away-bed-3-night": {
+   "hash": "3a61f7b7",
+   "png": "vivarium-away-bed-3-night.png"
+  },
   "vivarium-walk-8000ms": {
    "hash": "498a3caf",
    "png": "vivarium-walk-8000ms.png"

@@ -28,6 +28,12 @@ const SCENES = {
   "resident-focused": { f: "resident:0", set: (w) => { w.adults(3); w.carry([2]); } },
   "twelve": { f: "room", motionOnly: true, set: (w) => { w.bays(12); w.adults(12); } },
   "sleeper-focused":  { f: "resident:2", set: (w) => { w.adults(3); w.carry([2]); } },
+  "away-bed-1-day": { f: "room", late: true, light: "day", set: (w) => { w.adults(4); w.carry([0]); w.away(); } },
+  "away-bed-1-night": { f: "room", late: true, light: "night", set: (w) => { w.adults(4); w.carry([0]); w.away(); } },
+  "away-bed-2-day": { f: "room", late: true, light: "day", set: (w) => { w.adults(4); w.carry([0, 1]); w.away(); } },
+  "away-bed-2-night": { f: "room", late: true, light: "night", set: (w) => { w.adults(4); w.carry([0, 1]); w.away(); } },
+  "away-bed-3-day": { f: "room", late: true, light: "day", set: (w) => { w.adults(4); w.carry([0, 1, 2]); w.away(); } },
+  "away-bed-3-night": { f: "room", late: true, light: "night", set: (w) => { w.adults(4); w.carry([0, 1, 2]); w.away(); } },
 };
 // the helpers the scenes call, in the page
 export const WORLD = () => ({
@@ -84,13 +90,13 @@ async function staticStates(visit, { motion }) {
   const { page, fails, fail, close } = await openStation({ motion });
   await page.evaluate(`(${WORLD.toString()})`).catch(() => {});
   await page.evaluate((src) => { window.__world = eval(src)(); }, `(${WORLD.toString()})`);
-  const apply = (name, sc) => page.evaluate(([setSrc, f]) => {
-    const w = window.__world; w.reset(); eval(`(${setSrc})`)(w);
+  const apply = (name, sc) => page.evaluate(([setSrc, f, light]) => {
+    const w = window.__world; w.reset(); const S0 = window.__st; if (!("__light0" in S0)) S0.__light0 = S0.settings.light; S0.settings.light = light ?? S0.__light0; eval(`(${setSrc})`)(w);   // a scene that names its light (the away bed's) sets it; the others have the page's own
     const S = window.__st; S.UI.home.f = f.startsWith("resident:") ? "resident." + S.ST.mibis[+f.slice(9)].id : f; S.UI.idle = false; S.goto("home");
-  }, [sc.set.toString(), sc.f]);
+  }, [sc.set.toString(), sc.f, sc.light ?? null]);
   try {
     for (const [name, sc] of Object.entries(SCENES)) {
-      if (sc.motionOnly) continue;   // taken on the virtual clock below
+      if (sc.motionOnly || sc.late) continue;   // taken on the virtual clock below; the late ones after the asleep household
       await apply(name, sc); await page.waitForTimeout(900);
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, focus: window.__st.UI.home.f, idle: window.__st.UI.idle }));
       if (u.screen !== "home" || u.idle) fail(`home-${name}: on ${u.screen}${u.idle ? " (idle)" : ""}`);
@@ -100,6 +106,13 @@ async function staticStates(visit, { motion }) {
       const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, rest: (window.__st.props?.regions?.residents ?? []).map((r) => (r.moving ? r.rest : "still")) }));
       if (u.screen !== "home" || u.rest.some((r) => r !== "asleep")) fail("home-moving-asleep: " + JSON.stringify(u));
       await visit("home-moving-asleep", page, fail); await page.evaluate(() => { window.__st.settings.motionSets = false; window.__st.settings.stationTime = null; }); }
+    for (const [name, sc] of Object.entries(SCENES)) {   // the away bed's scenes, last: their mibis' pictures stay in the page for the scenes after them
+      if (!sc.late) continue;
+      await apply(name, sc); await page.waitForTimeout(900);
+      const u = await page.evaluate(() => ({ screen: window.__st.UI.screen, idle: window.__st.UI.idle }));
+      if (u.screen !== "home" || u.idle) fail(`home-${name}: on ${u.screen}${u.idle ? " (idle)" : ""}`);
+      await visit("home-" + name, page, fail);
+    }
     const errs = await page.evaluate(() => ({ render: window.__st.renderErrors, face: window.__st.faceErrors })); if (errs.render.length || errs.face.length) fail("errors on the page: " + [...errs.render, ...errs.face].slice(0, 3).join(" | "));
   } finally { await close(); }
   return { fails };

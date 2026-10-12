@@ -8,10 +8,16 @@ const SCENES = {
   away:   { line: /^\S+ is out with the Companion$/, set: (w) => { w.adults(4); w.young(2); w.carry([0]); w.away(); } },
   none:   { line: "a bud is growing", set: (w) => { w.adults(3); w.bud(false); } },
   empty:  { line: "", set: (w) => { w.adults(2); } },
+  "away-bed-1-day": { line: /with the Companion$/, bed: "away", light: "day", set: (w) => { w.adults(4); w.carry([0]); w.away(); } },
+  "away-bed-1-night": { line: /with the Companion$/, bed: "away", light: "night", set: (w) => { w.adults(4); w.carry([0]); w.away(); } },
+  "away-bed-2-day": { line: /with the Companion$/, bed: "away", light: "day", set: (w) => { w.adults(4); w.carry([0, 1]); w.away(); } },
+  "away-bed-2-night": { line: /with the Companion$/, bed: "away", light: "night", set: (w) => { w.adults(4); w.carry([0, 1]); w.away(); } },
+  "away-bed-3-day": { line: /with the Companion$/, bed: "away", light: "day", set: (w) => { w.adults(4); w.carry([0, 1, 2]); w.away(); } },
+  "away-bed-3-night": { line: /with the Companion$/, bed: "away", light: "night", set: (w) => { w.adults(4); w.carry([0, 1, 2]); w.away(); } },
   twelve: { line: "", timed: true, set: (w) => { w.bays(12); w.adults(12); } },
 };
 async function enter(page, sc) {
-  await page.evaluate(([setSrc]) => { const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st; S.UI.home.f = "room"; S.goto("home"); S.UI.idle = true; }, [sc.set.toString()]);
+  await page.evaluate(([setSrc, light]) => { const w = window.__world; w.reset(); eval(`(${setSrc})`)(w); const S = window.__st; if (!("__light0" in S)) S.__light0 = S.settings.light; if (light || S.__lightSet) { S.settings.light = light ?? S.__light0; S.__lightSet = !!light; } S.UI.home.f = "room"; S.goto("home"); S.UI.idle = true; }, [sc.set.toString(), sc.light ?? null]);   // a scene that names its light sets it
 }
 export async function idleStates(visit, { motion = false, timed = true } = {}) {
   const r = await still(visit); if (motion || !timed) return r;
@@ -25,7 +31,7 @@ async function still(visit) {
       if (sc.timed) continue;
       await enter(page, sc); await page.waitForTimeout(900);
       const u = await page.evaluate(() => ({ idle: window.__st.UI.idle, props: window.__st.props && { idle: window.__st.props.idle, line: window.__st.props.frame?.idle?.line, bed: window.__st.props.regions?.bed?.state } }));
-      const bed = { docked: "docked", away: "away", none: "none", empty: "none" }[name];
+      const bed = sc.bed ?? { docked: "docked", away: "away", none: "none", empty: "none" }[name];
       if (!u.idle || !u.props?.idle || (sc.line instanceof RegExp ? !sc.line.test(u.props.line) : u.props.line !== sc.line) || (name !== "empty" && name !== "none" ? u.props.bed !== bed : false)) fail(`idle-${name}: ${JSON.stringify(u)}`);
       await visit("idle-" + name, page, fail);
     }

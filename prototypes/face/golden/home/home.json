@@ -89,6 +89,30 @@
    "hash": "f6008b36",
    "png": "home-moving-asleep.png"
   },
+  "home-away-bed-1-day": {
+   "hash": "dba4d4eb",
+   "png": "home-away-bed-1-day.png"
+  },
+  "home-away-bed-1-night": {
+   "hash": "05fb2162",
+   "png": "home-away-bed-1-night.png"
+  },
+  "home-away-bed-2-day": {
+   "hash": "bd37a02d",
+   "png": "home-away-bed-2-day.png"
+  },
+  "home-away-bed-2-night": {
+   "hash": "7d769771",
+   "png": "home-away-bed-2-night.png"
+  },
+  "home-away-bed-3-day": {
+   "hash": "4731033e",
+   "png": "home-away-bed-3-day.png"
+  },
+  "home-away-bed-3-night": {
+   "hash": "e4c4aff7",
+   "png": "home-away-bed-3-night.png"
+  },
   "home-knob-pressed": {
    "hash": "92128dc4",
    "png": "home-knob-pressed.png"

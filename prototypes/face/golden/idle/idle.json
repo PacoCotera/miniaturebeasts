@@ -17,6 +17,30 @@
    "hash": "4ae48aed",
    "png": "idle-empty.png"
   },
+  "idle-away-bed-1-day": {
+   "hash": "55ab3e18",
+   "png": "idle-away-bed-1-day.png"
+  },
+  "idle-away-bed-1-night": {
+   "hash": "ef3e74f6",
+   "png": "idle-away-bed-1-night.png"
+  },
+  "idle-away-bed-2-day": {
+   "hash": "91b043ee",
+   "png": "idle-away-bed-2-day.png"
+  },
+  "idle-away-bed-2-night": {
+   "hash": "136345a8",
+   "png": "idle-away-bed-2-night.png"
+  },
+  "idle-away-bed-3-day": {
+   "hash": "3314fec4",
+   "png": "idle-away-bed-3-day.png"
+  },
+  "idle-away-bed-3-night": {
+   "hash": "74f1693c",
+   "png": "idle-away-bed-3-night.png"
+  },
   "idle-walk-8000ms": {
    "hash": "66922db8",
    "png": "idle-walk-8000ms.png"
