@@ -63,7 +63,7 @@ A genome is not one field to research. It has five kinds of part:
 **The progress ring on the pod list.** Around each pod in the list, the centre fills when the pod is identified (the frame is known), then one arc per chapter, sized by its trait count, fills when that chapter is read. A star on an arc is the glint, one per chapter: this pod holds a look the species has not shown yet in that chapter. A notch marks a sealed arc. Progress = traits read ÷ traits in chapters that are not sealed. It is shown only as the ring, with no digits (`design/style-guide/station-layouts.md`, the frame: numbers only beside an icon).
 
 **Costs and pacing.**
-- **Data reads.** A chapter costs **1 Data per trait in it**, and **half (rounded up) once that chapter has been read on any earlier pod of the species** ("the Station knows where to look"). This answers the owner question about the blue-eyed specimen: what was learned makes later pods cheaper, and the glint says which pods are worth reading. The very first read ever is free.
+- **Data reads.** A chapter costs **1 Data per trait in it**, and **half (rounded up) once that chapter has been read on any earlier pod of the species** ("the Station knows where to look"). This answers an owner question about the blue-eyed specimen: what was learned makes later pods cheaper, and the glint says which pods are worth reading. The very first read ever is free.
 - **Energy runs the machine.** Identify costs 1 Data. **Essence grows bodies** (founder 2 Energy + 4 Essence; the first founder 2 Energy only). Shaping costs **+1 Data per trait changed**.
 - **Worked numbers.** A first Pip pod costs 4 Data to read fully (5 traits, the first read free). A first pod of the worked 24-trait frame costs 24 Data, and a later one 14. Players read where the glints are, not every page.
 - **Pacing.** This assumes about **3 Data per expedition**. The r7 tester earned 1, and Data starvation was its top problem. The field needs more creature moments, or the walk needs to pay more (**Open**, for the exploration tuning).
@@ -121,7 +121,7 @@ This is a brief for the art director: the art director draws the renderer's mast
 | Revealed as research proceeds | no | no | no | breaks decoding | yes | **yes**, hairline sectors |
 | A device can scan it | no | yes | needs a server | yes | yes | **yes**: notch, timing marks, check |
 
-**Recommendation: the ring.** It keeps the decided round fingerprint, makes it true, and answers the owner wish for "something different to a QR" and the owner worry about spoofed codes.
+**Recommendation: the ring.** It keeps the decided round fingerprint, makes it true, and answers an owner wish for "something different to a QR" and an owner worry about spoofed codes.
 - **Centre:** the species glyph.
 - **Grey band:** the locked frame, 62 marks, the same for every member.
 - **Two coloured tracks:** one spoke per heritable part. The inner track holds one copy (from the mother, or the pod's first copy) and the outer track holds the other. A long or short bar marks which look; a part with 3 or more looks takes 2 to 4 spokes.

@@ -42,7 +42,7 @@ The frame's size is how many parts a body has, so it doesn't grow in a straight 
 
 ## 3. The generative taxonomy
 
-Every level is **read off the locked frame**; none of them picks anatomy first. That keeps the owner correction that classes emerge from the genome and are never construction templates, inside the established species.
+Every level is **read off the locked frame**; none of them picks anatomy first. That keeps an owner correction that classes emerge from the genome and are never construction templates, inside the established species.
 
 | Level | What fixes it | In the catalogue (catalogue6) | V1 | Over time |
 | --- | --- | --- | --- | --- |
@@ -58,7 +58,7 @@ Every level is **read off the locked frame**; none of them picks anatomy first. 
 4. **Seal.** A mid or late species may seal one doings chapter behind a find (a direction: "rare findings gate access to more complex genomes").
 5. **Derive** the pod (size, proportion, shell, colours), the glyph (the clan's two top rows and three seeded rows), the species number (clan · member), diet (by size: medium and large eat fruit), habitat (by covering and limbs), field ability (by the defining feature: wedge feet dig, fins swim) and the state machine (by plan).
 6. **Check.** 200 random individuals must build, as in the frame checks. If one doesn't, the trait whose parts failed (big eyes on a small head) is locked for that species, or the seed moves on; a gene is never repaired (`genomic-contract.md`).
-7. **Name and describe.** The LLM receives the **name brief**, locked facts only, and returns five name candidates by §5's pattern (each then goes through clearance), the tome's line and the field guide sentences. Each sentence must map to a frame fact, as the workbench's art brief maps every clause to a witness (`compositional-contract.md`), or it is dropped. It never adds a locus, a look or a power. This is the owner "LLM and algorithmic generation" with the genome as the authority.
+7. **Name and describe.** The LLM receives the **name brief**, locked facts only, and returns five name candidates by §5's pattern (each then goes through clearance), the tome's line and the field guide sentences. Each sentence must map to a frame fact, as the workbench's art brief maps every clause to a witness (`compositional-contract.md`), or it is dropped. It never adds a locus, a look or a power. This is an owner idea, "LLM and algorithmic generation" with the genome as the authority.
 8. **Sign off.** The art director accepts the type specimen assembled from the plan's parts library (engineers do not do art). Then the species ships as data, the same in every kit.
 
 **How the player meets them.**
