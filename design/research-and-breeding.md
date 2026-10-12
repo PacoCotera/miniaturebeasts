@@ -264,7 +264,7 @@ Essence grows bodies. Essence never turns into Energy.
 
 | At the Station | Price |
 | --- | --- |
-| Identify a pod | 1 Energy; the first pod ever is free |
+| Identify a pod | 1 Data, always |
 | Read a chapter | 1 Data per trait; half, rounded up, once the chapter has been read on the species; the first read ever is free |
 | Look again, compare, wish, the Library | free |
 | Grow a founder | 2 Energy and 4 Essence; the first founder ever: 2 Energy |
