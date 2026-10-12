@@ -1,6 +1,6 @@
 # Companion 48 px redraw: brief and plan
 
-Art-directed. Fixed: 48 px tiles, the 32/532/36 frame, Mibi 7×9 and the 48 colours ([ui-kit §6](ui-kit.md)), and Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
+Art-directed, and the owner judges the result. The tiles are 48 px, the frame is 32/532/36, Mibi is 7×9 with the 48 colours ([ui-kit §6](ui-kit.md)), and the look is Miniature Lives ([style guide](../style-guide/README.md), [Companion screens](../style-guide/companion-screens.md)). The [prototype](../../prototypes/exploration/README.md) still draws 32 px tiles in a 26/540/34 frame. Sheets first; the builder then hosts them.
 
 ## 1. The brief
 
@@ -37,7 +37,7 @@ The **pixel artist** is a project role, under the art director's sign-off. Paint
 - **Mibi tokens:** derived on the Station from each mibi's painting: 48 px token (idle 2, walk 3), HUD face, 64 px partner face ([art pipeline](art-pipeline.md) §1.1, §6). Wild creatures and unmet silhouettes take the **generic token per species**, derived from the type specimen; a mibi awaiting its painting carries the placeholder set.
 - **Cleaned in Aseprite (headless)**, where the trial showed generation fails: seamless repeats, the outline rule, the Bayer edges, rain sheet streaks, two-frame idles and stepped cycles (generated frames boil), icons and key caps at 16 px, 9-slices.
 - **Assembled** as indexed sheets with a JSON atlas in `art/companion-48/`; sources, prompts and sidecars kept, generated stages labelled.
-- **Contact sheets** of every asset at 1× and 3× go to the reviewers at each review.
+- **Contact sheets** of every asset at 1× and 3× go to the owner at each review.
 
 ## 4. Palette discipline
 
@@ -65,7 +65,7 @@ Starts after the other builder's work in `index.html` lands.
 ## 6. Order and reviews
 
 1. Palette file and tables signed.
-2. **Review place:** meadow and pond edge in a storm: meadow and shore sets, tree, bushes, three stones and a warned strike, outpost, pod, pawn, rain, HUD, bottom line, message box, with the creatures of §9, 2. The builder hosts it meanwhile (§5, 1–6). **Review 1:** this one place is seen at 48 px, live at 1× on a true-size screen beside companion-storm and the 32 px mock-up, with its contact sheets. Nothing else is made until it is signed.
+2. **Review place:** meadow and pond edge in a storm: meadow and shore sets, tree, bushes, three stones and a warned strike, outpost, pod, pawn, rain, HUD, bottom line, message box, with the creatures of §9, 2. The builder hosts it meanwhile (§5, 1–6). **Review 1:** the owner sees this one place at 48 px, live at 1× on a true-size screen beside companion-storm and the 32 px mock-up, with its contact sheets. Nothing else is made until it is signed.
 3. Reach view: cloud, rim, rain sheet, signs, props, pawn. **Review 2:** the concept test (§7).
 4. Wood, rock field, cave, fog bank, veil, full map. **Review 3:** one place per land, then the map.
 5. HUD, bars, icons, pods, crates, panels. **Review 4:** each screen against its pass list.
@@ -76,7 +76,7 @@ The art director critiques each round at 1× first.
 ## 7. The concept test
 
 The reach view at 450×600, 1×, beside [companion-map-hands](../../art/concept-homepage/companion-map-hands.png) scaled to 450×600, as in [reach-vs-concept](ui-kit/reach-vs-concept.png), judged at arm's length at true size. It passes when:
-- the reviewer still calls it beautiful, and rates it at least level with the accepted mock-up shown unlabelled;
+- the owner still calls it beautiful, and rates it at least level with the accepted mock-up shown unlabelled;
 - the island is a lit clearing in soft, layered cloud with a lit rim, drawn heaps, no circles or slabs;
 - rain is one clean diagonal sheet;
 - the pawn is found within a second; signs read large.
