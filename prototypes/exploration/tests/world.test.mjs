@@ -288,6 +288,30 @@ test("grass decals at 48: a level-2 place draws them LIGHT where grass and raw w
   p.level("34", 0); i = findTile(p, "34", has); const d0 = p.layers("34").tiles[i].layers.find(l => /^t\/decal\/grass\//.test(l.id)), px0 = p.tile("34", i);
   assert.equal(px0[d0.dy * 48 + d0.dx], 49, "level 0: DARK"); assert.equal(px0[(d0.dy + d0.h - 1) * 48 + d0.dx + d0.w - 1], ROCK_, "level 0: rock stays raw");
 });
+test("side wall shadow: the cast piece continues across a SIDE tile's open strip and its east neighbour takes the rest; the strip follows the side piece's width", () => {
+  const sideE = (i, lay) => lay.terr && lay.terr[i] === W.TERR.SIDE && (lay.tmask[i] & 1) && !(lay.tmask[i] & 16), cat = SYN(); let n = 0, recv = 0;
+  for (const p of vecPlaces()) { if (!p.lay.terr) continue; const r = A.placeLayers(p.lay, p.seed, cat, 0, p.level), off = A.placeLayers(p.lay, p.seed, cat, 0, p.level, Object.assign({}, A.PLACE_RULES, { sideShadow: false }));
+    r.tiles.forEach((t, i) => { const x = i % W.PW;
+      if (sideE(i, p.lay)) { n++; const sl = t.layers.filter(l => l.id === "t/shadow/e"); assert.equal(sl.length, 1, p.key + " one slice"); assert.deepEqual([sl[0].sx, sl[0].sy, sl[0].w, sl[0].h, sl[0].dx, sl[0].dy], [0, 0, 12, 48, 36, 0]);
+        assert.ok(t.layers.indexOf(sl[0]) === 1 && /^t\/side\//.test(t.layers[2].id), "after the ground, before the side piece"); assert.equal(sl[0].tone, ["light", "dark"].includes(SYNTH_TONE[p.level]) ? SYNTH_TONE[p.level] : null, "the lawn's tone"); }
+      else assert.deepEqual(t.layers.filter(l => l.id === "t/shadow/e").length, off.tiles[i].layers.filter(l => l.id === "t/shadow/e").length);
+      if (x > 0 && sideE(i - 1, p.lay) && t.layers.some(l => /^t\/shadow\//.test(l.id))) { const sh = t.layers.find(l => /^t\/shadow\//.test(l.id));
+        if (sh.id === "t/shadow/e") { recv++; assert.deepEqual([sh.sx, sh.w, sh.dx], [12, 36, 0], p.key + " the rest of the piece"); } else assert.deepEqual([sh.sx, sh.w], [0, 48], "es and c keep the whole piece"); } }); }
+  assert.ok(n > 5 && recv > 0, "side walls among the vector places: " + n + ", receivers " + recv);
+  const wide = A.catalogue(VECTORS.atlas.catalogue.map(q => (q.kind === "side" && q.side === "e" ? Object.assign({}, q, { w: 40 }) : q)), VECTORS.atlas.levelTone), p = vecPlaces().find(p => p.lay.terr && p.lay.terr.some((k, i) => sideE(i, p.lay)));
+  const t = A.placeLayers(p.lay, p.seed, wide, 0, p.level).tiles.find((t, i) => sideE(i, p.lay)); assert.equal(t.layers.find(l => l.id === "t/shadow/e").w, 8, "a 40 px side leaves 8");
+  const none = A.catalogue(VECTORS.atlas.catalogue.filter(q => q.kind !== "shadow"), VECTORS.atlas.levelTone); assert.ok(!A.placeLayers(p.lay, p.seed, none, 0, p.level).tiles.some(t => t.layers.some(l => /shadow/.test(l.id))), "no shadow piece, no slice");
+});
+test("side wall shadow at 48: the open strip and the receiver's first 36 columns are the cast piece, toned, the lawn showing through its clear pixels", () => {
+  const p = page48(); let found = null;
+  for (const { key } of atlasPlaces(W).filter(q => q.gen === 2 && q.seed === 7)) { const lay = p.run(`(() => { const l = layout('${key}'); return { base: l.base, tiles: Array.from(l.tiles), terr: l.terr ? Array.from(l.terr) : null, tmask: l.tmask ? Array.from(l.tmask) : null }; })()`);
+    const i = lay.terr && lay.base === T_.GRASS ? lay.terr.findIndex((k, i) => k === TERR_.SIDE && (lay.tmask[i] & 1) && !(lay.tmask[i] & 16) && lay.terr[i + 1] === 0 && lay.tiles[i + 1] === T_.GRASS && lay.tiles[i + 1 - PW_] !== T_.FACE) : -1; if (i >= 0) { found = [key, i]; break; } }
+  assert.ok(found, "a side-e tile with a lawn tile east of it"); const [key, i] = found;
+  for (const L of [1, 2]) { p.level(key, L); const lawn = L === 2 ? 51 : G2_, shade = L === 2 ? 49 : 48, a = p.tile(key, i), b = p.tile(key, i + 1), y0 = (i / PW_ | 0);
+    for (let y = 0; y < 48; y++) { for (let x = 36; x < 48; x++) assert.equal(a[y * 48 + x], (x + y) % 2 ? lawn : shade, "side tile " + x + "," + y);
+      for (let x = 0; x < 36; x++) assert.equal(b[y * 48 + x], ((x + 12) + y) % 2 ? lawn : shade, "receiver " + x + "," + y);
+      for (let x = 36; x < 48; x++) assert.equal(b[y * 48 + x], lawn, "receiver beyond the piece " + x + "," + y); } }
+});
 test("atlas: a blocking tile never draws as lawn; without its own pieces it takes the rock stand-in; without the stand-in the place stays at 32", () => {
   const full = SYN(), blockKinds = [W.T.FACE, W.T.LIP, W.T.ROCK, W.T.CLIFF], places = vecPlaces();
   const groundOnly = (lay, r) => r.tiles.some((t, i) => W.T_BLOCK[lay.tiles[i]] && ![W.T.WATER, W.T.DEEP, W.T.ISLE].includes(lay.tiles[i]) && t.layers.length < 2);
@@ -841,10 +865,10 @@ test("cast shadow: a lawn tile takes its state's piece over the ground, toned, t
   L.tiles.forEach((t, i) => { const sl = t.layers.find(l => /^t\/shadow\//.test(l.id)); if (!sl) return; seen.add(sl.id);
     assert.ok(t.layers.indexOf(sl) === 1, "right after the ground"); assert.equal(sl.tone, null, "level 1: tone none");
     const px = p.tile("34", i), ground = t.layers[0];
-    if (/lawn/.test(ground.id) && t.layers.length === 2) for (let k = 0; k < 48 * 48; k++) assert.equal(px[k], ((k % 48) + ((k / 48) | 0)) % 2 ? G2_ : 48, "pixel " + k); });
+    if (/lawn/.test(ground.id) && t.layers.length === 2) for (let k = 0; k < 48 * 48; k++) { if ((k % 48) < sl.w) assert.equal(px[k], ((k % 48) + sl.sx + ((k / 48) | 0)) % 2 ? G2_ : 48, "pixel " + k); else assert.equal(px[k], G2_, "beyond a side wall's slice " + k); } });
   assert.ok(seen.size > 0, "shadow tiles on a place under a face");
-  // receivers are lawn-ground tiles only: never terrain, water or sand
-  L.tiles.forEach((t, i) => { if (t.layers.some(l => /^t\/shadow\//.test(l.id))) assert.ok(!lay.terr[i] && [T_.GRASS, T_.TALL, T_.FLOWERS, T_.ROCK, T_.TRUNK, T_.REEDS].includes(lay.tiles[i]), "a receiver"); });
+  // receivers are lawn-ground tiles only: never terrain (but a side wall's open strip, which takes its slice), water or sand
+  L.tiles.forEach((t, i) => { if (t.layers.some(l => /^t\/shadow\//.test(l.id))) assert.ok(lay.terr[i] === TERR_.SIDE || (!lay.terr[i] && [T_.GRASS, T_.TALL, T_.FLOWERS, T_.ROCK, T_.TRUNK, T_.REEDS].includes(lay.tiles[i])), "a receiver"); });
 });
 test("generator 1's band as runs, reeds staggered, the sand shore", () => {
   const cat = SYN(), g1 = vecPlaces().filter(p => p.gen === 1);

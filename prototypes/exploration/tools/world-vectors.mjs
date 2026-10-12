@@ -209,7 +209,7 @@ export const SYNTH_TONE = ["dark", "none", "light"];
 // The digests captured before the shore macros, the face and water tones, the cast shadow, the reeds' stagger, generator 1's runs
 // and the sand shore, kept checkable under the conditions they were
 // captured with: the catalogue without its macro pieces, the old tone table, and those rules off.
-export const NO_MACRO = { levelTone: ["none", "none", "light"], rules: { macros: false, faceTone: false, waterTone: false, shadow: false, reedStagger: false, g1Runs: false, sandShore: false, waterSand: false, darkShadow: false, grassDecals: false }, without: "shore-macro" };
+export const NO_MACRO = { levelTone: ["none", "none", "light"], rules: { macros: false, faceTone: false, waterTone: false, shadow: false, reedStagger: false, g1Runs: false, sandShore: false, waterSand: false, darkShadow: false, grassDecals: false, sideShadow: false }, without: "shore-macro" };
 export const fnv = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16).padStart(8, "0"); };
 // The literal cases: quarter states by mask, the lawn variants' top-left 4 × 3, the FACE run split for lengths 1–9 with both caps,
 // and the exact decode.

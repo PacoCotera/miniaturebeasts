@@ -223,8 +223,8 @@ const GRASSY = [T.GRASS, T.TALL, T.FLOWERS];
 // level is the place's height level (generator 2, 0–2) or null; the catalogue's levelTone lifts the lawn and its tall-grass decals of
 // a level ('light' or 'dark'), and lip quarters take the tone of the level below. { ok: false } when a blocking tile needs the rock
 // stand-in and face.w1 or material.rock is empty: that place stays at 32.
-// The rules in effect: shore macros, the face and water tones, the grass decals. Only the vectors' check of digests captured before them turns them off.
-export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true, waterSand: true, darkShadow: true, grassDecals: true };
+// The rules in effect: shore macros, the face and water tones, the grass decals and the side wall's shadow strip. Only the vectors' check of digests captured before them turns them off.
+export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true, waterSand: true, darkShadow: true, grassDecals: true, sideShadow: true };
 export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULES) {
   const toneOf = L => { const t = L == null || !cat.levelTone ? null : cat.levelTone[L]; return t === 'light' || t === 'dark' ? t : null; };
   const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1), faceTone = rules.faceTone && level != null ? toneOf(level + 1) : null, waterTone = rules.waterTone ? lawnTone : null;
@@ -277,6 +277,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
       if (l) decalAt.set(i, Object.assign(l, { tone: lawnTone }));
     }
   }
+  const openAt = new Map();   // a SIDE tile looking east → the width of its open strip (set when the tile is placed, read by the tile to its east)
   for (let i = 0; i < N; i++) {
     const x = i % PW, y = (i / PW) | 0, t = lay.tiles[i], kind = terr ? terr[i] : 0, m = tmask ? tmask[i] : 0;
     const L = [], tile = { layers: L, dark: 0 }; tiles[i] = tile;
@@ -293,7 +294,10 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
       if (st.some(v => v !== 'fill') && ps.every(Boolean)) QUADS.forEach((q, k) => L.push(quarterLayer(ps[k], q, 0, 0, waterTone)));
     }
     if (rules.shadow && !kind && (GRASSY.includes(t) || (rules.darkShadow && t === T.DARK) || ((t === T.ROCK || t === T.TRUNK || t === T.REEDS) && lawnBase))) {
-      const sh = shadowState(x, y), p = sh ? pick(cat.shadow[sh], 0) : null; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone }));
+      const sh = shadowState(x, y), p = sh ? pick(cat.shadow[sh], 0) : null;
+      if (p) { const l = Object.assign(cellLayer(p, 0, 0), { tone: lawnTone }), open = sh === 'e' && x > 0 ? openAt.get(i - 1) || 0 : 0;
+        if (open > 0 && l.sx === 0 && l.dx === 0 && l.w > open) { l.sx = open; l.w -= open; }   // the cast piece moved left by the side wall's open strip: this tile takes the rest of it
+        L.push(l); }
     }
     const ground = L.length;
     if (decalAt.has(i)) L.push(decalAt.get(i));
@@ -337,9 +341,15 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
       else {
         let k = SD.mid.length ? hash(seed, 'sv', key, y) % SD.mid.length : -1;
         if (k >= 0 && SD.mid.length > 1 && sideMid[s][y - 1] === k) k = (k + 1) % SD.mid.length;
-        if (k >= 0) { sideMid[s][y] = k; const l = cellLayer(dflt(SD.mid[k]), 0, 0); if (l) L.push(l); }
-        if (m & 2) { const p = pick(SD.top, 0); if (p) { const l = cellLayer(dflt(p), 0, 0); if (l) L.push(l); } }
-        if ((m & 4) && !(m & 8)) { const p = pick(SD.foot, 0); if (p) { const l = cellLayer(p.offset ? p : Object.assign({}, dflt(p), { offset: [dflt(p).offset[0], 24] }), 0, 0); if (l) L.push(l); } }
+        if (k >= 0) sideMid[s][y] = k;
+        const midP = k >= 0 ? SD.mid[k] : null, topP = m & 2 ? pick(SD.top, 0) : null, footP = (m & 4) && !(m & 8) ? pick(SD.foot, 0) : null;
+        const footQ = footP && (footP.offset ? footP : Object.assign({}, dflt(footP), { offset: [dflt(footP).offset[0], 24] }));
+        // a wall looking east leaves its tile's east columns open; the cast shadow starts at the wall's face, so the tile takes the first of the cast piece there
+        const reach = Math.max(0, ...[midP, topP && dflt(topP), footQ].filter(Boolean).map(q => Math.min(TS48, dflt(q).offset[0] + q.w))), open = s === 'e' && reach > 0 ? TS48 - reach : 0, cast = pick(cat.shadow.e, 0);
+        if (rules.sideShadow && rules.shadow && cast && open > 0 && open < cast.w) { openAt.set(i, open); L.push({ id: cast.name, sx: 0, sy: 0, w: open, h: Math.min(TS48, cast.h), dx: TS48 - open, dy: 0, tone: lawnTone }); }
+        if (midP) { const l = cellLayer(dflt(midP), 0, 0); if (l) L.push(l); }
+        if (topP) { const l = cellLayer(dflt(topP), 0, 0); if (l) L.push(l); }
+        if (footQ) { const l = cellLayer(footQ, 0, 0); if (l) L.push(l); }
       }
     }
     else if (kind === TERR.SHADOW) { const p = pick(cat.lip.shadowN, 0); if (p) L.push(cellLayer(p, 0, 0)); }
