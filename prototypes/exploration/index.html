@@ -3695,9 +3695,13 @@ function drawSwap() {
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
+// The place's Call hint is not drawn over the Probe screen: the box there reads as it always has, and the hint comes back on the next screen.
+const CALL_HINT = 'Call lifts the veil: finds show';
+function shownMsg() { return S.phase === 'probe' ? FX.msg.replace(' · ' + CALL_HINT, '').replace(CALL_HINT + ' · ', '').replace(CALL_HINT, '') : FX.msg; }
 function drawMessage() {
-  if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
-  const lines = wrapText(FX.msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
+  const msg = shownMsg();
+  if (!msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
+  const lines = wrapText(msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
   // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
   const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) ? VIEW_Y + 8 : low;
@@ -4223,7 +4227,7 @@ function mapContext() {
 // First sightings in the top bar: what the Call slot means, and the weather group's arrows.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  if (S.phase === 'patch') fxOnce('callplace', 'Call lifts the veil: finds show', 2);
+  if (S.phase === 'patch') fxOnce('callplace', CALL_HINT, 2);
   else fxOnce('callmap', 'CALL here drops a pin for 1 Energy', 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
   const lvl = stormLevel(); if (lvl) fxOnce('hudstorm', 'Bottom line: bolts are the storm · it moves ' + (ex.storm.dir > 0 ? '▶ east' : '◀ west'), 1);

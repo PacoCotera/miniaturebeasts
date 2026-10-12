@@ -676,7 +676,7 @@ function inPlace() {
 
 test("the place's Call help line reads 'Call lifts the veil: finds show' and is 260 px at 2×", () => {
   const p = world(), s = "Call lifts the veil: finds show";
-  assert.match(PAGE, /fxOnce\('callplace', 'Call lifts the veil: finds show', 2\)/);
+  assert.match(PAGE, /const CALL_HINT = 'Call lifts the veil: finds show'/); assert.match(PAGE, /fxOnce\('callplace', CALL_HINT, 2\)/);
   assert.equal(p.run(`textW(${JSON.stringify(s)}, 2)`), 260);
   assert.doesNotMatch(PAGE, /The teal CALL button/);
 });
@@ -799,4 +799,12 @@ test("Cargo's bottom line: a crate with room, the finds in the hold with the bay
   assert.ok(p.run("textWT('finds stay in the hold', 2)") <= 223, "fits whole");
   assert.doesNotMatch(PAGE, /seals the hold · the world turns|shows what it seals/);
   assert.match(PAGE, /'shows what it does'/);
+});
+
+test("the Probe screen's message box leaves out the place's Call hint; other screens keep it", () => {
+  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
+  p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'probe';`); assert.equal(p.run("shownMsg()"), c);
+  p.run(`FX.msg = ${JSON.stringify(h + " · " + c)};`); assert.equal(p.run("shownMsg()"), c);
+  p.run(`FX.msg = ${JSON.stringify(h)};`); assert.equal(p.run("shownMsg()"), "");
+  p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'cargo';`); assert.equal(p.run("shownMsg()"), c + " · " + h);
 });
