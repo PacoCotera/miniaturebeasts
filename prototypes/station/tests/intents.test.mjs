@@ -61,6 +61,26 @@ test("Home: the room's ✓ with crates in the bay goes to Cargo; the Dock key pl
   INTENTS.home.intent(h, "room", "confirm"); assert.equal(h.went.at(-1), "cargo");
   const h2 = host(world(), sv); h2.ui.screen = "pods"; h2.st.dock = { docked: false, at: T0 }; INTENTS.frame.dock(h2); assert.equal(h2.played.filter((e) => e.kind === "arrival").length, 0, "docked on another screen: no arrival, the crates are in the bay when Home next shows");
 });
+// ---- the Dock from the play page (frame.json navigation.dock) ----
+const dockWorld = () => { const st = world(); st.dock = { docked: false, at: T0 }; const sv = { v: 8, seed: 7, wid: "w1", turn: 0, bay: [{ id: "c1", n: 1, turn: 0, at: T0, e: 3, d: 3, s: 4, pods: [], met: [], explored: 0, of: 0, lines: [] }], mibis: [], with: null, tier: 1, shield: 3 }; return { st, sv }; };
+test("the Dock from the play page (keys elsewhere) lands on Home with the ring on the room from Pods, the Incubator, the Vivarium, one mibi up close (namer shut), the Library and the bench; the arrival plays and no plate is said", () => {
+  const ev = homeSpec.events.crateIn.each;
+  for (const screen of ["pods", "incubator", "vivarium", "habitat", "library", "bench"]) {
+    const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = screen; h.ui.home.f = "knob"; if (screen === "habitat") h.ui.hab = { ...(h.ui.hab || {}), namer: null };
+    const r = INTENTS.frame.dock(h, false, true); assert.equal(r.ok, true, screen); assert.equal(h.ui.screen, "home", screen); assert.equal(h.ui.home.f, "room", screen); assert.equal(h.went.at(-1), "home", screen);
+    assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [{ kind: "arrival", target: "cargo", ms: ev.ms }], screen + ": one arrival on cargo, the stagger's length"); assert.deepEqual(h.said, [], screen + ": no plate");
+  }
+});
+test("the Dock from the play page stays put on Create, Cross, the Sitting and an open namer, with the plate; Cargo plays its own arrival; Home as with the keys", () => {
+  for (const screen of ["create", "cross", "sitting"]) { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = screen; const r = INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, screen, screen); assert.equal(h.said.at(-1), r.msg, screen + ": the plate"); }
+  { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "habitat"; h.ui.hab = { ...(h.ui.hab || {}), namer: { id: 1 } }; const r = INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "habitat", "the namer stays"); assert.equal(h.said.at(-1), r.msg); }
+  { const { st, sv } = dockWorld(), h = host(st, sv), ci = h.specs.cargo.events.crateIn.each; h.ui.screen = "cargo"; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "cargo"); assert.deepEqual(h.said, [], "Cargo says nothing"); assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [{ kind: "arrival", target: "crates", ms: ci.ms, hold: 0 }]); }
+  { const { st, sv } = dockWorld(), h = host(st, sv), ev = h.specs.home.events.crateIn.each; INTENTS.frame.dock(h, false, true); assert.equal(h.ui.screen, "home"); assert.deepEqual(h.played.filter((e) => e.kind === "arrival"), [{ kind: "arrival", target: "cargo", ms: ev.ms }]); assert.deepEqual(h.said, []); }
+});
+test("the Dock with the keys (keysElsewhere false) from Pods does not navigate and says the plate; a Lift never navigates, whatever keysElsewhere is", () => {
+  { const { st, sv } = dockWorld(), h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, false); assert.equal(h.went.length, 0, "no goto"); assert.equal(h.ui.screen, "pods"); assert.equal(h.said.at(-1), r.msg); }
+  for (const els of [true, false]) { const { st, sv } = dockWorld(); st.dock = { docked: true, at: T0 }; const h = host(st, sv); h.ui.screen = "pods"; const r = INTENTS.frame.dock(h, false, els); assert.equal(st.dock.docked, false, "lifted"); assert.equal(h.went.length, 0, "no goto"); assert.equal(h.ui.screen, "pods"); assert.ok(r.ok); }
+});
 test("Cargo's opening: ✓ Open the bay opens every crate at once as the rule and plays them one at a time: the arrival (crates × 3000 + 180, hold + 200), the dither, the counters and the turn at each crate's step, the report at the end", () => {
   const st = world(); S.seedCrate(st, "S01", 2, 4101, T0); S.seedCrate(st, "S01", 1, 4102, T0); st.dock = { docked: true, at: T0 };
   const h = host(st); h.ui.screen = "cargo"; h.motion = () => true; const e0 = st.e;
