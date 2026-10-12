@@ -200,13 +200,15 @@ export function syntheticPieces() {
   for (const q of ["nw", "ne", "se", "sw"]) for (const r of [42, 60]) for (const f of [1, 2]) out.push(SP("t/macro/" + q + "-r" + r + "-f" + f, "shore-macro", 96, 96, { cells: [2, 2], quad: q, radius: r, frame: f }));
   for (const st of ["e", "s", "es", "c"]) out.push(SP("t/shadow/" + st, "shadow", 48, 48, { set: "cast", state: st }));
   for (const q of ["nw", "ne", "se", "sw"]) for (const st of ["fill", "edgeh", "edgev", "outer", "inner"]) out.push(SP("t/sandshore/" + q + "-" + st, "shore", 24, 24, { set: "sand", quad: q, state: st }));
+  for (const q of ["nw", "ne", "se", "sw"]) for (const st of ["fill", "edgeh", "edgev", "outer", "inner"]) for (const f of [1, 2]) out.push(SP("t/watersand/" + q + "-" + st + "-f" + f, "shore", 24, 24, { set: "water-sand", quad: q, state: st, frame: f }));
+  for (const q of ["nw", "ne", "se", "sw"]) for (const r of [42, 60]) for (const f of [1, 2]) out.push(SP("t/macrosand/" + q + "-r" + r + "-f" + f, "shore-macro", 96, 96, { cells: [2, 2], quad: q, radius: r, frame: f, set: "sand-margin" }));
   return out;
 }
 export const SYNTH_TONE = ["dark", "none", "light"];
 // The digests captured before the shore macros, the face and water tones, the cast shadow, the reeds' stagger, generator 1's runs
 // and the sand shore, kept checkable under the conditions they were
 // captured with: the catalogue without its macro pieces, the old tone table, and those rules off.
-export const NO_MACRO = { levelTone: ["none", "none", "light"], rules: { macros: false, faceTone: false, waterTone: false, shadow: false, reedStagger: false, g1Runs: false, sandShore: false }, without: "shore-macro" };
+export const NO_MACRO = { levelTone: ["none", "none", "light"], rules: { macros: false, faceTone: false, waterTone: false, shadow: false, reedStagger: false, g1Runs: false, sandShore: false, waterSand: false, darkShadow: false }, without: "shore-macro" };
 export const fnv = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return (h >>> 0).toString(16).padStart(8, "0"); };
 // The literal cases: quarter states by mask, the lawn variants' top-left 4 × 3, the FACE run split for lengths 1–9 with both caps,
 // and the exact decode.
@@ -245,11 +247,11 @@ export function atlasPlaces(W) {
   }
   return out;
 }
-// The art director's proof place (meadow-drop-place.py on art-terrain-grass at ef80488e): its layout ('1' plateau, 'F' face, '.' lawn,
+// The art director's proof place (the drop's meadow-drop-place.py): its layout ('1' plateau, 'F' face, '.' lawn,
 // 'w' water) and, for every '.' cell, the shadow state the script picks (its lines 50–57: raised is '1' or 'F'; s when the north cell
 // is 'F'; c when only the north-west is raised), transcribed here.
 export const PROOF_GRID = ["..................", "...1111111........", "..111111111....11.", "..111111111...111.", "..FF1111111...FFF.", "..FF1111111...FFF.",
-  "....11111FF.......", "....FFFFF.........", "....FFFFF.....www.", "........wwwwwwwww.", "........wwwwwwwww.", "........wwwwwwwww."];
+  "....11111FF.......", "....FFFFF.........", "....FFFFF.....www.", "..........wwwwwww.", ".....ssss.wwwwwww.", ".....ssssswwwwwww."];
 export function proofStates(grid) {
   const at = (r, c) => (r >= 0 && r < grid.length && c >= 0 && c < grid[0].length ? grid[r][c] : null), raised = (r, c) => at(r, c) === "1" || at(r, c) === "F", out = [];
   for (let r = 0; r < grid.length; r++) { let row = ""; for (let c = 0; c < grid[0].length; c++) {

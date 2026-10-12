@@ -59,7 +59,7 @@ function page(store = {}, search, opts = {}) {
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
   ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx);
   run = src => vm.runInContext(src, ctx); run(SCRIPT);
-  return { run, store, els, ctx, KEY: run("SAVE_KEY") };
+  return { run, store, els, ctx, clock, KEY: run("SAVE_KEY") };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
 
@@ -236,8 +236,8 @@ test("atlas: shore macros take their four tiles, drop the water quarters and sit
   const cat = SYN(); let n = 0;
   for (const p of vecPlaces()) { const r = A.placeLayers(p.lay, p.seed, cat, 1, p.level), mac = A.shoreMacros((x, y) => p.lay.tiles[y * W.PW + x], W.PW, W.PH);
     for (const m of mac) { n++; for (let j = 0; j < 4; j++) { const i = (m.y + (j >> 1)) * W.PW + m.x + (j & 1), L = r.tiles[i].layers;
-      assert.ok(!L.some(l => /^t\/water\//.test(l.id)), "no quarters"); const sl = L.find(l => /^t\/macro\//.test(l.id));
-      assert.equal(sl.id, "t/macro/" + m.q + "-r" + m.radius + "-f2", "frame 2 at fr 1"); assert.deepEqual([sl.sx, sl.sy], [(j & 1) * 48, (j >> 1) * 48]);
+      assert.ok(!L.some(l => /^t\/water(sand)?\//.test(l.id)), "no quarters"); const sl = L.find(l => /^t\/macro(sand)?\//.test(l.id));
+      assert.equal(sl.id.replace("macrosand", "macro"), "t/macro/" + m.q + "-r" + m.radius + "-f2", "frame 2 at fr 1"); assert.deepEqual([sl.sx, sl.sy], [(j & 1) * 48, (j >> 1) * 48]);
       assert.ok(/^t\/(lawn|sand)\//.test(L[0].id), "the ground under it"); } } }
   assert.ok(n > 0, "macros among the vector places");
   const r60 = A.catalogue(VECTORS.atlas.catalogue.filter(q => !(q.kind === "shore-macro" && q.radius === 60)), VECTORS.atlas.levelTone);
@@ -255,7 +255,7 @@ test("atlas: level tone: every layer's tone follows the rule on every vector pla
   for (const p of vecPlaces()) { if (p.level == null) continue; seen.add(p.level);
     A.placeLayers(p.lay, p.seed, cat, 0, p.level).tiles.forEach((t, i) => { const face = p.lay.terr && p.lay.terr[i] === W.TERR.FACE;
       for (const l of t.layers) { if (l.stand != null) continue;
-        const want = /^t\/(lawn|decal\/tall|shadow)/.test(l.id) || /^t\/(water|macro|sandshore)\//.test(l.id) || (/^t\/deep\//.test(l.id) && l.w === 24) ? tone(p.level)
+        const want = /^t\/(lawn|decal\/tall|shadow)/.test(l.id) || /^t\/(water|watersand|macro|macrosand|sandshore)\//.test(l.id) || (/^t\/deep\//.test(l.id) && l.w === 24) ? tone(p.level)
           : /^t\/lip\//.test(l.id) ? tone(p.level - 1) : face && /^t\/(face|cap)\//.test(l.id) ? tone(p.level + 1) : null;
         assert.equal(l.tone, want, p.key + " " + l.id); } }); }
   assert.deepEqual([...seen].sort(), [0, 1, 2], "every level among the vectors");
@@ -614,7 +614,7 @@ test("generator 2 play: stairs and aprons take no pods, creatures or slabs; plac
     const pb = p.run(`tilePB(layout(S.exp.patch.key), ${i}, 0)`); assert.ok(pb.w === 32 && pb.h === 32 && pb.p.every(v => v >= 0 && v < 48), `tile ${i}`); }
   assert.ok(kinds.has(TERR.STAIR) && kinds.has(TERR.FOOT));
   // each piece is in the register, under its TERR name, as a 32 px stand-in
-  const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32).map(a => a.id).join()");
+  const reg = p.run("CARE_ASSETS.filter(a => a.status === 'stand-in' && a.w === 32 && a.h === 32 && !a.id.startsWith('c-')).map(a => a.id).join()");
   assert.equal(reg, Object.keys(TERR).filter(k => k !== "NONE").join());
 });
 
@@ -730,9 +730,9 @@ test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never 
 // grass 50; a face or cap is grass 50 over the top half of each cell row and rock below; a water quarter is grass 50 on its west half (the margin)
 // and water east; a macro is transparent above its diagonal, grass 50 then water below; every other piece one core colour.
 const G2_ = 50, ROCK_ = 52, WATER_ = 53;
-function synthPalette(p) {
+function synthPalette(p, over) {
   const names = p.run("PALETTE.map(q => q[0])"), hex = p.run("HEX.slice(0, 48)"), t = p.run("({ dark: DARK.slice(0, 48), light: LIGHT.slice(0, 48), dark2: DARK2.slice(0, 48), fog: FOGLUT.slice(0, 48), fade: FADE.slice(0, 48) })");
-  const entries = names.slice(0, 48).map((name, i) => ({ i, name, hex: hex[i], dark: t.dark[i], light: t.light[i], dark2: t.dark2[i], fog: t.fog[i], fade: t.fade[i] }));
+  const entries = names.slice(0, 48).map((name, i) => Object.assign({ i, name, hex: hex[i], dark: t.dark[i], light: t.light[i], dark2: t.dark2[i], fog: t.fog[i], fade: t.fade[i] }, over && over[i]));
   const add = (hx, mat, dark, light) => entries.push({ i: entries.length, name: mat + "-" + entries.length, hex: hx, mat, dark, light, dark2: 0, fog: 0, fade: 0 });
   add("#203a20", "grass", 48, 49); add("#2c5a2c", "grass", 48, 50); add("#3a7a3a", "grass", 49, 51); add("#4c9c4c", "grass", 50, 51); add("#6a6a70", "rock", 52, 52); add("#1d5a88", "water", 53, 53);
   for (const e of entries) if (e.i >= 48) e.dark2 = entries[e.dark].dark;
@@ -744,18 +744,18 @@ function synthFill(q) {
     if (q.kind === "ground" && q.set !== "lawn") c = q.set === "deep" ? WATER_ : 6;
     else if (q.kind === "ground" || q.kind === "lip" || q.kind === "decal") c = G2_;
     else if (q.kind === "face" || q.kind === "cap") c = y % 48 < 24 ? G2_ : ROCK_;
-    else if (q.kind === "shore") c = x < 12 ? G2_ : q.set === "sand" ? 6 : WATER_;
+    else if (q.kind === "shore") c = x < 12 ? (q.set === "water-sand" ? 6 : G2_) : q.set === "sand" ? 6 : WATER_;
     else if (q.kind === "shadow") c = (x + y) % 2 ? -1 : 48;
-    else if (q.kind === "shore-macro") c = x + y < 72 ? -1 : x + y < 96 ? G2_ : WATER_;
+    else if (q.kind === "shore-macro") c = x + y < 72 ? -1 : x + y < 96 ? (q.set === "sand-margin" ? 6 : G2_) : WATER_;
     else if (q.kind === "material") c = ROCK_;
     else c = 4 + (W.hash(q.name) % 40);
     px[y * q.w + x] = c; }
   return px;
 }
-function page48(seed = 7, levelTone = ["dark", "none", "light"]) {
+function page48(seed = 7, levelTone = ["dark", "none", "light"], over) {
   const p = page({}, undefined, { canvas: true }); p.run("newWorld(" + seed + ")");
   const RGB = p.run("RGB.slice(0, 48)"), core = p.run("({ names: PALETTE.slice(0, 48).map(q => q[0]), dark: DARK.slice(0, 48), light: LIGHT.slice(0, 48), dark2: DARK2.slice(0, 48), fog: FOGLUT.slice(0, 48), fade: FADE.slice(0, 48) })");
-  const table = A.paletteTable(RGB, core, synthPalette(p)); assert.equal(table.errors, undefined, String(table.errors));
+  const table = A.paletteTable(RGB, core, synthPalette(p, over)); assert.equal(table.errors, undefined, String(table.errors));
   p.ctx.__syn = { list: VECTORS.atlas.catalogue.map(q => Object.assign({}, q, { px: synthFill(q) })), table, levelTone };
   p.run("atlasInstall(__syn.list, __syn.table, __syn.levelTone)"); assert.equal(p.run("ART48.ready"), true);
   p.level = (key, L) => p.run(`(() => { const lay = layout('${key}'); G.level[lay.cell] = ${L}; lay.l48 = null; for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); })()`);
@@ -785,18 +785,19 @@ test("48 px compose, level tone: lawn, tall grass, lips, faces and water margins
   // level 2 water: the margin LIGHT, the water raw; a macro's grass LIGHT where it shows, the water raw
   p.level("9", 2); i = findTile(p, "9", (i, lay, t) => lay.tiles[i] === T_.WATER && t.layers.length === 4 && t.layers.every(l => /^t\/water\//.test(l.id)));
   assert.ok(i >= 0); px = p.tile("9", i); assert.ok(px.every((c, k) => c === ((k % 48) % 24 < 12 ? 51 : WATER_)), "level 2: water margin LIGHT, water raw");
-  i = findTile(p, "9", (i, lay, t) => t.layers.some(l => /^t\/macro\//.test(l.id))); assert.ok(i >= 0); px = p.tile("9", i);
+  const p1 = page48(1); p1.level("26", 2);   // a pond with a lawn bank (seed 7's ponds all meet sand)
+  i = findTile(p1, "26", (i, lay, t) => t.layers.some(l => /^t\/macro\//.test(l.id))); assert.ok(i >= 0); px = p1.tile("26", i);
   assert.ok(px.every(c => c === 51 || c === WATER_), "level 2: a macro tile shows toned lawn, toned grass and raw water only");
   // sides, stairs and the rock stand-in are never toned
   for (const L of [0, 1, 2]) { p.level("34", L); const lay = p.layers("34");
     for (const [k, t] of lay.tiles.entries()) for (const l of t.layers) if (/^t\/(side|stair|landing|foot|apron|rock)/.test(l.id)) assert.equal(l.tone, null, "level " + L + " " + l.id); }
 });
 test("48 px compose, shore macros: a macro tile shows the slice where it is opaque and the lawn where it is clear; the frames alternate", () => {
-  const p = page48(); p.level("9", 1);
-  const i = findTile(p, "9", (i, lay, t) => t.layers.some(l => /^t\/macro\//.test(l.id))); const L = p.layers("9", 0).tiles[i].layers, sl = L.find(l => /^t\/macro\//.test(l.id));
-  const piece = VECTORS.atlas.catalogue.find(q => q.name === sl.id), fill = synthFill(piece), px = p.tile("9", i, 0);
+  const p = page48(1); p.level("26", 1);
+  const i = findTile(p, "26", (i, lay, t) => t.layers.some(l => /^t\/macro\//.test(l.id))); const L = p.layers("26", 0).tiles[i].layers, sl = L.find(l => /^t\/macro\//.test(l.id));
+  const piece = VECTORS.atlas.catalogue.find(q => q.name === sl.id), fill = synthFill(piece), px = p.tile("26", i, 0);
   for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const s = fill[(sl.sy + y) * 96 + sl.sx + x]; assert.equal(px[y * 48 + x], s >= 0 ? s : G2_, x + "," + y); }
-  assert.match(sl.id, /-f1$/); assert.match(p.layers("9", 1).tiles[i].layers.find(l => /^t\/macro\//.test(l.id)).id, /-f2$/);
+  assert.match(sl.id, /-f1$/); assert.match(p.layers("26", 1).tiles[i].layers.find(l => /^t\/macro\//.test(l.id)).id, /-f2$/);
 });
 
 test("cast shadow: the rule gives the art director's proof states on the proof's grid", () => {
@@ -838,4 +839,175 @@ test("generator 1's band as runs, reeds staggered, the sand shore", () => {
   r.tiles.forEach((t, i) => { if (sandy.lay.tiles[i] !== T_.SAND) return; const x = i % W.PW, y = (i / W.PW) | 0;
     const other = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].some(([dx, dy]) => { const X = x + dx, Y = y + dy; if (X < 0 || Y < 0 || X >= W.PW || Y >= W.PH) return false; const n = sandy.lay.tiles[Y * W.PW + X]; return ![T_.SAND, T_.WATER, T_.STEP, T_.DEEP].includes(n) && !(n === T_.REEDS && sandy.lay.base === T_.SAND); });
     if (!other) assert.ok(!t.layers.some(l => /sandshore/.test(l.id)), "no other ground near: plain sand"); });
+});
+
+// ---- water beside sand, and the wood place's shadow ----
+const flatLay = (base, edits) => { const tiles = new Array(W.PW * W.PH).fill(base); for (const [x, y, t] of edits) tiles[y * W.PW + x] = t; return { key: "hand", cell: 0, tiles, base }; };
+const POND = [[5, 5], [6, 5], [5, 6], [6, 6]].map(([x, y]) => [x, y, T_.WATER]);
+test("water beside sand: the sand-margin quarters on a water tile with a sand orthogonal neighbour, the sand-margin macro when a side tile is sand, not the corner", () => {
+  const cat = SYN(), ids = (lay, x, y, fr = 0) => A.placeLayers(lay, 7, cat, fr, null).tiles[y * W.PW + x].layers.map(l => l.id);
+  // a single water tile, sand to its east: all four quarters from the water-sand set; with no sand it keeps the lawn-margin set; STEP and DEEP follow
+  for (const wt of [T_.WATER, T_.STEP, T_.DEEP]) {
+    const sandy = ids(flatLay(T_.GRASS, [[5, 5, wt], [6, 5, T_.SAND]]), 5, 5).filter(id => /^t\/water/.test(id)), plain = ids(flatLay(T_.GRASS, [[5, 5, wt]]), 5, 5).filter(id => /^t\/(water|deep)/.test(id));
+    assert.ok(sandy.length === 4 && sandy.every(id => /^t\/watersand\//.test(id)), "tile " + wt + " beside sand: " + sandy);
+    assert.ok(plain.length >= 1 && plain.every(id => !/watersand/.test(id)), "tile " + wt + " beside lawn"); }
+  assert.ok(ids(flatLay(T_.GRASS, [[5, 5, T_.WATER], [6, 6, T_.SAND]]), 5, 5).every(id => !/watersand/.test(id)), "a diagonal sand neighbour does not count");
+  assert.ok(ids(flatLay(T_.SAND, [[5, 5, T_.WATER]]), 5, 5).every(id => /^t\/watersand\//.test(id) || /^t\/(lawn|sand)/.test(id)), "a sand base");
+  assert.ok(ids(flatLay(T_.GRASS, [[5, 5, T_.WATER], [6, 5, T_.REEDS]]), 5, 5).every(id => !/watersand/.test(id)), "reeds on a lawn base are not sand ground");
+  const noWS = A.catalogue(VECTORS.atlas.catalogue.filter(q => q.set !== "water-sand"), VECTORS.atlas.levelTone);
+  assert.ok(A.placeLayers(flatLay(T_.GRASS, [[5, 5, T_.WATER], [6, 5, T_.SAND]]), 7, noWS, 0, null).tiles[5 * W.PW + 5].layers.filter(l => /^t\/water/.test(l.id)).every(l => /^t\/water\//.test(l.id)), "a missing water-sand piece falls back to water");
+  // macros: sand on a side tile of the block, or only on the corner tile
+  const macroId = lay => A.placeLayers(lay, 7, cat, 0, null).tiles[5 * W.PW + 5].layers.map(l => l.id).find(id => /^t\/macro/.test(id));
+  assert.match(macroId(flatLay(T_.GRASS, POND)), /^t\/macro\/nw-/);
+  assert.match(macroId(flatLay(T_.GRASS, POND.concat([[5, 4, T_.SAND]]))), /^t\/macrosand\/nw-/, "sand on a side tile");
+  assert.match(macroId(flatLay(T_.GRASS, POND.concat([[4, 5, T_.SAND]]))), /^t\/macrosand\/nw-/, "sand on the other side");
+  assert.match(macroId(flatLay(T_.GRASS, POND.concat([[4, 4, T_.SAND]]))), /^t\/macro\/nw-/, "sand on the corner tile only");
+  const noMS = A.catalogue(VECTORS.atlas.catalogue.filter(q => q.set !== "sand-margin"), VECTORS.atlas.levelTone);
+  assert.match(A.placeLayers(flatLay(T_.GRASS, POND.concat([[5, 4, T_.SAND]])), 7, noMS, 0, null).tiles[5 * W.PW + 5].layers.map(l => l.id).find(id => /^t\/macro/.test(id)), /^t\/macro\/nw-/, "a missing sand-margin macro falls back to the lawn-margin one");
+});
+test("water beside sand, level 2: a sand-margin pixel stays raw and a lawn-margin pixel is LIGHT", () => {
+  const p = page48(); p.level("9", 2);
+  const i = findTile(p, "9", (i, lay, t) => lay.tiles[i] === T_.WATER && t.layers.length === 4 && t.layers.every(l => /^t\/watersand\//.test(l.id)));
+  assert.ok(i >= 0); const px = p.tile("9", i); assert.ok(px.every((c, k) => c === ((k % 48) % 24 < 12 ? 6 : WATER_)), "sand margin raw, water raw");
+  const j = findTile(p, "9", (i, lay, t) => lay.tiles[i] === T_.WATER && t.layers.length === 4 && t.layers.every(l => /^t\/water\//.test(l.id)));
+  assert.ok(j >= 0); assert.ok(p.tile("9", j).every((c, k) => c === ((k % 48) % 24 < 12 ? 51 : WATER_)), "lawn margin LIGHT");
+});
+test("the wood place's T.DARK lawn receives the cast shadow, darkened after it", () => {
+  const cat = SYN(), lay = flatLay(T_.DARK, [[3, 5, T_.CLIFF]]), r = A.placeLayers(lay, 7, cat, 0, null), t = r.tiles[5 * W.PW + 4];
+  assert.ok(t.layers.some(l => /^t\/shadow\/e$/.test(l.id)) && t.dark === 1, "e shadow on a dark lawn tile, dark applied at compose");
+});
+
+// ---- 48 px places on the page: anchor, camera, palette, edges, overrides ----
+function place48(seed, cell, x, y, setup = "", over) {
+  const p = page48(seed, undefined, over);
+  p.run(`TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y};
+    S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff); ${setup}`);
+  return p;
+}
+const frame48 = (p, n = 3) => { for (let i = 0; i < n; i++) { p.clock && (p.clock.t += 16); p.run(`scr.px().fill(-1); render(${2000 + i * 16})`); } return Int16Array.from(p.run("scr").px()); };
+test("48 px: the camera centres on the pawn and follows it; the pawn stays centred", () => {
+  const p = place48(7, 176, 14, 14); frame48(p);   // seed 7, cell 176: any playable place
+  assert.equal(p.run("RT.ts"), 48);
+  const sp = p.run("RT.plScr"); assert.deepEqual([sp.x, sp.y], [225, 298], "the pawn's tile centre mid-view");
+  const mid = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"); assert.deepEqual(mid, { x: 14 * 48 + 24 - 225, y: 14 * 48 + 24 - 266 });
+  p.run("S.exp.patch.x = 16"); frame48(p, 12);   // two steps right (the tween has run its 110 ms)
+  p.clock.t += 400; frame48(p);
+  const c2 = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"); assert.deepEqual(c2, { x: 16 * 48 + 24 - 225, y: mid.y }, "the camera followed");
+  const sp2 = p.run("RT.plScr"); assert.deepEqual([sp2.x, sp2.y], [225, 298], "the pawn stays centred");
+});
+test("48 px: every pixel of a place frame is an index below N, the HUD and the bottom line stay on the core 48, and no tile canvas is 32 wide", () => {
+  const p = place48(7, 176, 14, 14), N = p.run("RGB.length"); assert.equal(N, 54);
+  const px = frame48(p), W_ = p.run("SCR_W"), H_ = p.run("SCR_H"), vy = p.run("VIEW_Y"), vh = p.run("VIEW_H");
+  assert.equal(p.run("RT.ts"), 48); let high = 0;
+  for (let y = 0; y < H_; y++) for (let x = 0; x < W_; x++) { const v = px[y * W_ + x]; assert.ok(v >= 0 && v < N, "index " + v + " at " + x + "," + y); if (v >= 48) { high++; assert.ok(y >= vy && y < vy + vh, "a biome index outside the view at " + x + "," + y); } }
+  assert.ok(high > 1000, "the place draws biome colours");
+  assert.equal(p.run("tile48(layout(S.exp.patch.key), 0, 0).w"), 48);
+});
+test("48 px anchor: a creature's 32 px sprite sits bottom-aligned and centred in its cell (cell + (8, 16))", () => {
+  const p = place48(7, 176, 14, 14), key = p.run("S.exp.patch.key"), lay = p.run("layout(S.exp.patch.key)");
+  p.run("ensureLive(S.exp.patch.key)");
+  // a creature of species 0 placed in view, idle, on a plain tile
+  const tx = 16, ty = 14; p.run(`(() => { const live = S.exp.live[S.exp.patch.key]; live.cr.length = 0; live.cr.push({ id: 901, sp: 0, x: ${tx}, y: ${ty}, st: 'idle', t: 0, wet: 0, calm: 0, curl: 0, hide: 0, b: 0.5, face: 1, ready: false }); live.pt = null; })()`);
+  frame48(p, 4); const a = frame48(p, 1);
+  p.run("S.exp.live[S.exp.patch.key].cr[0].hide = 1"); const b = frame48(p, 1);
+  const W_ = p.run("SCR_W"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), ox = tx * 48 - cam.x, oy = 32 + ty * 48 - cam.y;
+  let x0 = 1e9, y0 = 1e9, x1 = -1, y1 = -1; for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) { const x = i % W_, y = (i / W_) | 0; x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  assert.ok(x1 >= 0, "the creature draws");
+  // species 0 idle: the opaque box inside the 32 px sprite is columns 2…25 and rows 1…29, so (8, 16) on from the cell's corner
+  assert.deepEqual([x0 - ox, x1 - ox, y0 - oy, y1 - oy], [10, 33, 17, 45], "the changed pixels' box in cell coordinates");
+});
+
+// ---- golden frames: FNV of the 450×600 screen ----
+// The 32 px frames were captured from main's page with this harness (the cave, a place with no atlas, the reach view): the same
+// hashes here prove the 48 px work left 32 px byte-identical. The 48 px frames are on the synthetic set (so they do not move with the art).
+const MAIN_FRAMES = { cave: 1237067964, place32: 3198906207, map: 3385181673 };   // main 5e287081 + the overrides PR
+const GOLDEN48 = { faceStair: 4173935199, gen1: 3556257434, corner: 1246740290 };
+function place48g1(seed, cell, x, y) {
+  const p = page48(seed);
+  p.run(`layoutCache.clear(); RT.reachSet = null; RT.reachKey = null; G = genWorld(${seed}, 1); S = worldFields(${seed}, 1); const life = genLife(${seed}); S.cr = life.cr; S.pods = life.pods; indexCreatures();
+    TEST.calm = true; startExpedition('weather', ${cell}); S.exp.fog = null; S.exp.storm = null; FX.lockUntil = 0; S.exp.pos = ${cell}; enterPatch(); S.exp.patch.x = ${x}; S.exp.patch.y = ${y}; S.veil[S.exp.patch.key] = new Array(PH).fill(0x0fffffff);`);
+  return p;
+}
+test("golden frames: 32 px stays byte-identical to main (the cave, a place with no atlas, the reach view)", () => {
+  const frame = (p, setup) => { p.run(setup); for (let i = 0; i < 3; i++) { p.clock.t += 16; p.run(`scr.px().fill(-1); RT.key = null; render(${p.clock.t})`); } return fnv(p.run("scr").px()); };
+  const p = page({}, undefined, { canvas: true });
+  assert.equal(frame(p, "TEST.calm = true; newWorld(7); startExpedition('weather', G.gate); S.exp.fog = null; S.exp.storm = null; S.exp.pos = G.gate; enterCave();"), MAIN_FRAMES.cave, "the cave"); assert.equal(p.run("RT.ts"), 32);
+  assert.equal(frame(p, "TEST.calm = true; newWorld(7); startExpedition('weather', 176); S.exp.fog = null; S.exp.storm = null; S.exp.pos = 176; enterPatch(); S.exp.patch.x = 14; S.exp.patch.y = 14;"), MAIN_FRAMES.place32, "a place with no atlas"); assert.equal(p.run("RT.ts"), 32);
+  assert.equal(frame(p, "S.exp.patch = null; S.phase = 'map';"), MAIN_FRAMES.map, "the reach view");
+});
+test("golden frames at 48: a place with a south face and a stair, a generator 1 place, the pawn in a place corner", () => {
+  const e = CROSSINGS["S down"], ent = entryFor(e.seed, e);
+  const got = {
+    faceStair: fnv(frame48(place48(e.seed, e.b, ent.x, ent.y))),
+    gen1: fnv(frame48(place48g1(7, 65, 14, 24))),
+    corner: fnv(frame48(place48(7, 176, 1, 1))),
+  };
+  for (const [k, v] of Object.entries(got)) assert.equal(v, GOLDEN48[k], k + " " + v);
+});
+
+// ---- the edges at 48: coverage fades, the storm step, the place's own tables ----
+const BAYER_ = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5];
+test("48 px edges: the coverage fade equals its formula for every 8-neighbour mask; a lone diagonal gives a rounded patch, not a square", () => {
+  const p = page48(), NB = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+  const want = m9 => { const far = (dx, dy) => dx === 0 && dy === 0 ? (m9 >> 8) & 1 : (m9 >> NB.findIndex(([a, b]) => a === dx && b === dy)) & 1, f = new Uint8Array(2304);
+    for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { let c = 0; for (const oy of [-24, -12, 0, 12, 24]) for (const ox of [-24, -12, 0, 12, 24]) c += far(Math.floor((x + ox) / 48), Math.floor((y + oy) / 48));
+      f[y * 48 + x] = 32 * c > (2 * BAYER_[(y & 3) * 4 + (x & 3)] + 1) * 25 ? 1 : 0; } return f; };
+  assert.deepEqual(Array.from(p.run("BAYER")), BAYER_);
+  for (const m of [0, 2, 3, 6, 7, 14, 28, 56, 129, 256, 257, 280, 340, 420, 510, 511, 85, 170]) assert.deepEqual(Array.from(p.run("coverFar(" + m + ")")), Array.from(want(m)), "mask " + m);
+  const f = p.run("coverFar(2)");   // only the NE neighbour far
+  const q = []; for (let y = 0; y < 24; y++) for (let x = 24; x < 48; x++) q.push(f[y * 48 + x]);
+  assert.ok(q.some(v => v === 1) && q.some(v => v === 0), "the NE quadrant is part far, part near: a rounded patch");
+  let nearCorner = 0; for (let y = 0; y < 12; y++) for (let x = 36; x < 48; x++) nearCorner += f[y * 48 + x];
+  assert.ok(nearCorner > 0 && nearCorner < 144, "far pixels gather at the corner, thinning out: " + nearCorner); assert.equal(f[47 * 48 + 0], 0, "the opposite corner is near");
+  assert.equal(p.run("coverFar(511).every(v => v === 1)"), true); assert.equal(p.run("coverFar(0).every(v => v === 0)"), true);
+});
+test("48 px edges: a veiled column beside the lifted view draws each pixel on the far side exactly where the coverage formula says", () => {
+  const p = place48(7, 176, 14, 14, "layout(S.exp.patch.key).svy = new Uint8Array(PW * PH).fill(1); S.veil[S.exp.patch.key] = new Array(PH).fill(0); unveilRound(S.exp.patch.key, 14, 14, 4); layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
+  const uv = (x, y) => p.run(`unveiled('${key}', ${x}, ${y})`), NB = [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]];
+  let checked = 0, edge = 0;
+  for (let ty = 10; ty <= 16; ty++) for (let tx = 11; tx <= 18; tx++) {   // whole tiles in view, above the message box
+    let m = uv(tx, ty) ? 0 : 256; NB.forEach(([dx, dy], b) => { if (!uv(tx + dx, ty + dy)) m |= 1 << b; });
+    if (!m || m === 511) continue;
+    if (p.run(`(() => { const l = layout('${key}'); for (let dy = -1; dy <= 3; dy++) for (let dx = -2; dx <= 2; dx++) { const t = l.tiles[(${ty} + dy) * PW + ${tx} + dx]; if (t === T.REEDS || t === T.TRUNK) return true; } return false; })()`)) continue;   // a reed or a canopy draws over it
+    edge++;
+    const f = p.run("coverFar(" + m + ")"), pb = p.run(`tile48(layout('${key}'), ${ty * 48 / 48 * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y;
+    if (p.run(`(() => { const l = layout('${key}'); return l.tiles[${ty * 28 + tx}] === T.WATER; })()`)) continue;
+    let ok = true; for (let y = 0; y < 48; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0) continue;
+      const near = c, far = BAYER_[(y & 3) * 4 + (x & 3)] < 4 ? p.run("C.night") : p.run(`DARK[${c}]`), got = px[(sy + y) * W_ + sx + x];
+      if (got !== (f[y * 48 + x] ? far : near)) { ok = false; } }
+    assert.ok(ok, "tile " + tx + "," + ty + " mask " + m); checked++; }
+  assert.ok(edge > 6 && checked === edge, "edge tiles checked: " + checked + " of " + edge);
+});
+test("48 px storm: the 6 px of the lit tile beside the band step by the Bayer rule, the pixel beyond them is lit, band tiles are dark", () => {
+  const p = place48(7, 176, 14, 14, "S.exp.storm = { x: (176 % MW) - 3 - 1.25, dir: 1, w: 3, v: .25, t: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;");
+  const px = frame48(p), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y");
+  const darkW = Math.ceil((3 - 1.25) * 1.5) * 48; assert.equal(darkW, 144);
+  const storm = p.run("PLACE_STORM"), dark = p.run("DARK"); let tx = 0; while (tx * 48 + 24 - cam.x < darkW) tx++;   // the first lit tile
+  assert.ok(tx * 48 - cam.x > 0 && tx * 48 - cam.x < 200, "the lit tile beside the band is on screen");
+  let rows = 0, okRows = 0;
+  for (let ty = 11; ty <= 16; ty++) { const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y; rows++; let ok = true;
+    for (let y = 0; y < 48 && ok; y++) for (let x = 0; x < 48; x++) { const c = pb.p[y * 48 + x]; if (c < 0) continue; const step = x < 6 && BAYER_[(y & 3) * 4 + (x & 3)] * 7 < (6 - x) * 16;
+      if (px[(sy + y) * W_ + sx + x] !== (step ? storm[c] : c)) { ok = false; break; } }
+    if (ok) okRows++; }
+  assert.equal(okRows, rows, okRows + " of " + rows + " rows match");
+  const bt = p.run(`tile48(layout('${key}'), ${14 * 28 + tx - 1}, 0)`), bx = (tx - 1) * 48 - cam.x, by = vy + 14 * 48 - cam.y; let dk = 0, n = 0;
+  for (let i = 0; i < 2304; i++) { const c = bt.p[i]; if (c < 0) continue; n++; if (px[(by + ((i / 48) | 0)) * W_ + bx + (i % 48)] === storm[c]) dk++; }
+  assert.ok(dk > n * 0.97, "a band tile is fully dark: " + dk + " of " + n);
+});
+test("place overrides: in a 48 px place in fog a core colour takes the file's fog value; the core's own table is untouched and a core canvas never mixes with a place canvas", () => {
+  const OVER = { 6: { fog: 20 } };   // the synthetic ground piece's core colour (index 6) fogs to 20 in places
+  const p = place48(7, 9, 14, 14, "", OVER), lay0 = p.run("(() => { const l = layout(S.exp.patch.key); return Array.from(l.tiles); })()");
+  const sand = lay0.findIndex((t, i) => t === T_.SAND && i % 28 >= 8 && i % 28 <= 20 && ((i / 28) | 0) >= 8), sx0 = sand % 28, sy0 = (sand / 28) | 0;   // a sand tile; the pawn stands 5 tiles above or below it, so it is fogged and still on screen
+  p.run(`S.exp.patch.x = ${sx0}; S.exp.patch.y = ${sy0 < 16 ? sy0 + 5 : sy0 - 5}; S.exp.fog = { x: 9 % MW + .5, y: Math.floor(9 / MW) + .5, r: 2.4, dx: 0, dy: 0, at: 0 }; layout(S.exp.patch.key).feats.length = 0; S.pods = []; S.exp.live[S.exp.patch.key].cr.length = 0; S.exp.live[S.exp.patch.key].pt = null;`);
+  assert.equal(p.run("PLACE_FOG[6]"), 20); assert.equal(p.run("FOGLUT[6]") === 20, false, "the core's own table is untouched"); assert.equal(p.run("REMAP_PLACE[3] === PLACE_FOG && REMAP[3] === FOGLUT"), true);
+  frame48(p, 2); p.clock.t += 600; const px = frame48(p, 3), key = p.run("S.exp.patch.key"), cam = p.run("camAt(viewOf(48, 0, VIEW_Y, SCR_W, VIEW_H), RT.pl.rx, RT.pl.ry)"), W_ = p.run("SCR_W"), vy = p.run("VIEW_Y"), P_ = p.run("S.exp.patch");
+  assert.equal(p.run("RT.ts"), 48); let seen = 0;
+  for (let ty = 0; ty < 32 && !seen; ty++) for (let tx = 0; tx < 28 && !seen; tx++) { const sx = tx * 48 - cam.x, sy = vy + ty * 48 - cam.y; if (sx < 0 || sy < vy || sx + 48 > W_ || sy + 48 > vy + 532) continue;
+    if (Math.hypot(tx - P_.x, ty - P_.y) < 5) continue; const pb = p.run(`tile48(layout('${key}'), ${ty * 28 + tx}, 0)`), i = pb.p.indexOf(6); if (i < 0) continue;
+    assert.equal(px[(sy + ((i / 48) | 0)) * W_ + sx + (i % 48)], 20, "tile " + tx + "," + ty + ": the place's fog value"); seen++; }
+  assert.ok(seen, "a fogged tile with the overridden colour on screen");
+  // the same buffer through the core set, and through the place set: two different canvases
+  const sample = p.run(`(() => { const pb = tile48(layout('${key}'), 0, 0); RT.remap = REMAP; const a = pb.canvas(3); RT.remap = REMAP_PLACE; const b = pb.canvas(3); RT.remap = REMAP; return [a !== b, pb.cache.size]; })()`);
+  assert.equal(sample[0], true, "a core canvas and a place canvas never mix");
 });

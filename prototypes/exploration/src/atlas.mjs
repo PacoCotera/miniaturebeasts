@@ -30,11 +30,11 @@ const two = () => [[], []];
 // The pieces grouped by their manifest fields; each list sorted by variant, then name (water by frame). A piece no key takes
 // (the wall foot strips, the shore macros, lobes, beaches and bends: catalogued but unused in v1) is listed in `other`.
 export function catalogue(pieces, levelTone = null) {
-  const water = {}, lip = { shadowN: [] }, waterMacro = {}, sandShore = {}, shadow = { e: [], s: [], es: [], c: [] };
-  for (const q of QUADS) { water[q] = {}; for (const s of SHORE_STATES) water[q][s] = []; lip[q] = {}; for (const s of LIP_STATES) lip[q][s] = []; waterMacro[q] = { 42: [], 60: [] }; sandShore[q] = {}; for (const s of SHORE_STATES) sandShore[q][s] = []; }
+  const water = {}, waterSand = {}, lip = { shadowN: [] }, waterMacro = {}, waterMacroSand = {}, sandShore = {}, shadow = { e: [], s: [], es: [], c: [] };
+  for (const q of QUADS) { water[q] = {}; waterSand[q] = {}; for (const s of SHORE_STATES) { water[q][s] = []; waterSand[q][s] = []; } lip[q] = {}; for (const s of LIP_STATES) lip[q][s] = []; waterMacro[q] = { 42: [], 60: [] }; waterMacroSand[q] = { 42: [], 60: [] }; sandShore[q] = {}; for (const s of SHORE_STATES) sandShore[q][s] = []; }
   const sideOf = () => ({ mid: [], top: [], foot: [], tail: [] });
   const cat = {
-    lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [] }, water, waterMacro, lip,
+    lawn: [], sand: [], deep: [], material: { rock: [] }, decal: { tall: [], flowers: [] }, water, waterSand, waterMacro, waterMacroSand, lip,
     face: { w3: [], w2: [], w1: [] }, cap: { w: [], e: [] }, cornerIn: { w: [], e: [] }, side: { e: sideOf(), w: sideOf() },
     stair: { S: [], N: [], E: [], W: [] }, landing: two(), foot2: two(), apronTop: two(),
     prop: { boulder: [], reeds: [], flowers: [] }, sandShore, shadow, other: [],
@@ -50,8 +50,9 @@ export function catalogue(pieces, levelTone = null) {
       case 'material': ok = p.set === 'rock' && put(cat.material.rock, p); break;
       case 'decal': ok = (p.set === 'tall' || p.set === 'flowers') && put(cat.decal[p.set], p); break;
       case 'shadow': ok = p.set === 'cast' && p.state in shadow && put(shadow[p.state], p); break;
-      case 'shore': ok = p.set === 'sand' ? QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && put(sandShore[p.quad][p.state], p) : p.set === 'water' && QUADS.includes(p.quad) && SHORE_STATES.includes(p.state) && (p.frame === 1 || p.frame === 2) && put(water[p.quad][p.state], p); break;
-      case 'shore-macro': ok = QUADS.includes(p.quad) && (p.radius === 42 || p.radius === 60) && (p.frame === 1 || p.frame === 2) && cellsAre(p, 2, 2) && put(waterMacro[p.quad][p.radius], p); break;
+      case 'shore': { const q4 = QUADS.includes(p.quad) && SHORE_STATES.includes(p.state), fr2 = p.frame === 1 || p.frame === 2;   // sets: water (lawn margin), water-sand (sand margin), sand (the sand's own edge)
+        ok = p.set === 'sand' ? q4 && put(sandShore[p.quad][p.state], p) : p.set === 'water' ? q4 && fr2 && put(water[p.quad][p.state], p) : p.set === 'water-sand' && q4 && fr2 && put(waterSand[p.quad][p.state], p); break; }
+      case 'shore-macro': ok = (p.set == null || p.set === 'sand-margin') && QUADS.includes(p.quad) && (p.radius === 42 || p.radius === 60) && (p.frame === 1 || p.frame === 2) && cellsAre(p, 2, 2) && put((p.set == null ? waterMacro : waterMacroSand)[p.quad][p.radius], p); break;
       case 'lip': ok = p.set === 'shadow-n' ? put(lip.shadowN, p) : QUADS.includes(p.quad) && LIP_STATES.includes(p.state) && put(lip[p.quad][p.state], p); break;
       case 'face': ok = cellsAre(p, 3, 2) ? put(cat.face.w3, p) : cellsAre(p, 2, 2) ? put(cat.face.w2, p) : cellsAre(p, 1, 2) ? put(cat.face.w1, p) : false; break;
       case 'cap': ok = (p.side === 'w' || p.side === 'e') && put(cat.cap[p.side], p); break;
@@ -68,7 +69,7 @@ export function catalogue(pieces, levelTone = null) {
   }
   const sortAll = o => { if (Array.isArray(o)) { if (o.length && !Array.isArray(o[0])) o.sort(sortKey); else o.forEach(sortAll); } else for (const k in o) sortAll(o[k]); };
   sortAll(cat);
-  for (const q of QUADS) { for (const s of SHORE_STATES) water[q][s].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); for (const r of [42, 60]) waterMacro[q][r].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); }
+  for (const q of QUADS) { for (const s of SHORE_STATES) { water[q][s].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); waterSand[q][s].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); } for (const r of [42, 60]) { waterMacro[q][r].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); waterMacroSand[q][r].sort((a, b) => a.frame - b.frame || byKey(a.name, b.name)); } }
   Object.defineProperty(cat, 'levelTone', { value: levelToneOut, enumerable: false });   // the manifest's level tones (not a piece list)
   return cat;
 }
@@ -223,13 +224,14 @@ const GRASSY = [T.GRASS, T.TALL, T.FLOWERS];
 // a level ('light' or 'dark'), and lip quarters take the tone of the level below. { ok: false } when a blocking tile needs the rock
 // stand-in and face.w1 or material.rock is empty: that place stays at 32.
 // The rules in effect: shore macros, and the face and water tones. Only the vectors' check of digests captured before them turns them off.
-export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true };
+export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true, waterSand: true, darkShadow: true };
 export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULES) {
   const toneOf = L => { const t = L == null || !cat.levelTone ? null : cat.levelTone[L]; return t === 'light' || t === 'dark' ? t : null; };
   const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1), faceTone = rules.faceTone && level != null ? toneOf(level + 1) : null, waterTone = rules.waterTone ? lawnTone : null;
   const key = lay.key, N = PW * PH, tiles = new Array(N), sprites = [], at = (x, y) => (x < 0 || y < 0 || x >= PW || y >= PH ? -1 : lay.tiles[y * PW + x]);
   const terr = lay.terr || null, tmask = lay.tmask || null, frame = fr ? 1 : 0;
-  const lv = lawnVariants(lay, seed, cat.lawn.length);
+  const sandG = (x, y) => { const t = at(x, y); return t === T.SAND || (t === T.REEDS && lay.base === T.SAND); };   // sand ground: sand, or reeds on a sand base
+  const lv = lawnVariants(lay, seed, cat.lawn.length), lawnIdx = (i) => (rules.lawnPick ? rules.lawnPick(i % PW, (i / PW) | 0, lv[i]) : lv[i]);   // lawnPick: the proof check's own picks
   const faceAt = new Map();   // FACE columns on row 0: x → { piece, j }
   if (terr) for (let x = 0; x < PW;) {
     if (terr[x] !== TERR.FACE) { x++; continue; } let b = x; while (b + 1 < PW && terr[b + 1] === TERR.FACE) b++;
@@ -238,7 +240,10 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
   const sideMid = { e: [], w: [] };   // the side mid chosen per row, per column side
   const macroAt = new Map();   // tile → its macro slice layer (falls back to the other radius, else the quarter rule)
   if (rules.macros) for (const mc of shoreMacros(at, PW, PH)) {
-    const list = cat.waterMacro[mc.q], p = (list[mc.radius] || [])[frame] || (list[mc.radius === 60 ? 42 : 60] || [])[frame];
+    const list = cat.waterMacro[mc.q], [, dy, dx] = MACRO_Q.find(m => m[0] === mc.q), ro = dy < 0 ? mc.y - 1 : mc.y + 2, co = dx < 0 ? mc.x - 1 : mc.x + 2;
+    // a macro whose four side tiles meet sand takes the sand-margin form (the corner tile does not decide); a missing form falls back to the lawn-margin one
+    const sandy = rules.waterSand && [[mc.x, ro], [mc.x + 1, ro], [co, mc.y], [co, mc.y + 1]].some(([a, b]) => sandG(a, b)), sl = cat.waterMacroSand[mc.q];
+    const p = (sandy ? (sl[mc.radius] || [])[frame] : null) || (list[mc.radius] || [])[frame] || (list[mc.radius === 60 ? 42 : 60] || [])[frame];
     if (p) for (let j = 0; j < 4; j++) { const tx = mc.x + (j & 1), ty = mc.y + (j >> 1); macroAt.set(ty * PW + tx, Object.assign(cellLayer(p, tx - mc.x, ty - mc.y), { tone: waterTone })); }
   }
   // generator 1's cliff bands, laid as runs: the top row and the foot row split like the faces, rock between, open sides
@@ -262,7 +267,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     const mac = macroAt.get(i) || null;
     const g = kind === TERR.SHADOW || mac ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces and shore macros sit on the place's base
     if (g === T.SAND) { const p = pick(cat.sand, hash(seed, 'sd', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
-    else if (g !== -1) { const p = cat.lawn[lv[i]]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
+    else if (g !== -1) { const p = cat.lawn[lawnIdx(i)]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
     const sandGround = g === T.SAND && (t === T.SAND || t === T.REEDS);
     if (sandGround && rules.sandShore) {   // the sand shore: quarters toward other ground (water counts as sand; off the place too)
       const sandish = (xx, yy) => { const n = at(xx, yy); return n === -1 || WETT(n) || n === T.SAND || (n === T.REEDS && lay.base === T.SAND); };
@@ -270,7 +275,7 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
       const st = QUADS.map(q => shoreState(sm, q)), ps = QUADS.map((q, k) => pick(cat.sandShore[q][st[k]], 0));
       if (st.some(v => v !== 'fill') && ps.every(Boolean)) QUADS.forEach((q, k) => L.push(quarterLayer(ps[k], q, 0, 0, waterTone)));
     }
-    if (rules.shadow && !kind && (GRASSY.includes(t) || ((t === T.ROCK || t === T.TRUNK || t === T.REEDS) && lawnBase))) {
+    if (rules.shadow && !kind && (GRASSY.includes(t) || (rules.darkShadow && t === T.DARK) || ((t === T.ROCK || t === T.TRUNK || t === T.REEDS) && lawnBase))) {
       const sh = shadowState(x, y), p = sh ? pick(cat.shadow[sh], 0) : null; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone }));
     }
     const ground = L.length;
@@ -285,10 +290,11 @@ export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULE
     else if (mac) L.push(mac);
     else if (WETT(t)) {
       let wm = 0; [[0, -1], [1, -1], [1, 0], [1, 1], [0, 1], [-1, 1], [-1, 0], [-1, -1]].forEach(([dx, dy], b) => { const n = at(x + dx, y + dy); if (n !== -1 && !WETT(n)) wm |= 1 << b; });
+      const sandBank = rules.waterSand && [[0, -1], [1, 0], [0, 1], [-1, 0]].some(([dx, dy]) => sandG(x + dx, y + dy));   // an orthogonal neighbour of sand ground: the quarters with a sand margin
       const deepP = t === T.DEEP ? pick(cat.deep, hash(seed, 'dp', key, x, y)) : null;
       for (const q of QUADS) { const st = shoreState(wm, q);
         if (deepP && st === 'fill') L.push(quarterLayer(deepP, q, QE[q] * Q, QS[q] * Q, waterTone));
-        else { const p = (cat.water[q][st] || [])[frame]; if (p) L.push(quarterLayer(p, q, 0, 0, waterTone)); } }
+        else { const p = (sandBank ? (cat.waterSand[q][st] || [])[frame] : null) || (cat.water[q][st] || [])[frame]; if (p) L.push(quarterLayer(p, q, 0, 0, waterTone)); } }
       if (t === T.STEP) L.push({ stand: 'step', dx: 8, dy: 16 });
     }
     else if (t === T.CLIFF && !terr && rules.g1Runs) {   // generator 1's band: its runs' slices on the top and foot rows, rock between
