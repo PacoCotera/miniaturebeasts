@@ -2,14 +2,14 @@
 
 Hand-drawn placeholder pods for the Station's Pods screen and the pod rack's wells: three size classes (160×192, 136×168, 112×144) and the well size (32×40), each with a sealed and an identified state, the species glyphs, the seal band and a still glow stand-in. Plainly placeholders: simple calm volumes, no face, no decoration, no pattern. Every pixel is on the Station's 62-colour palette ([`station.json`](../../../palettes/station.json)), drawn at 1×, with 1 px ramp outlines (never black), clean bands, no anti-aliasing and no Bayer.
 
-**Status: signed by the art director, 2026-10-08.** Corrected and signed in the art director's pass below (the well-size pod redrawn, two pigment ramps corrected); the builder may place these in front of the owner as placeholders.
+**Status: signed by the art director.** Corrected and signed in the art director's pass below (the well-size pod redrawn, two pigment ramps corrected); the builder may place these on screen as placeholders.
 
 | Image | Caption | Status |
 | --- | --- | --- |
-| <img src="contact-1x.png" width="520" alt="contact-1x.png"> | contact-1x.png: every piece at 1× on the deep ground. Row 1: the sealed and identified bodies of each class in the base ramps. Row 2: the seal bands and glows. Rows 3 to 6: the 16 glyphs per class on the cap's slate. Row 7: one composed pod per class, sealed then identified (S02 large, S01 medium, S03 small, S01 well). Row 8: the 16 species as identified wells. | placeholder; signed by the art director, 2026-10-08 |
-| <img src="contact-2x.png" width="520" alt="contact-2x.png"> | contact-2x.png: the same sheet at 2×, nearest neighbour. | placeholder; signed by the art director, 2026-10-08 |
-| <img src="pod-bodies.png" width="360" alt="pod-bodies.png"> | pod-bodies.png: the sheet, 490×550, one row per class: sealed, identified, band, glow. Base ramps, not yet remapped to a species. | placeholder; signed by the art director, 2026-10-08 |
-| <img src="pod-glyphs.png" width="360" alt="pod-glyphs.png"> | pod-glyphs.png: the sheet, 510×86, one row per class (large, medium, small, well), the 16 glyphs in species order, cream. | placeholder; signed by the art director, 2026-10-08 |
+| <img src="contact-1x.png" width="520" alt="contact-1x.png"> | contact-1x.png: every piece at 1× on the deep ground. Row 1: the sealed and identified bodies of each class in the base ramps. Row 2: the seal bands and glows. Rows 3 to 6: the 16 glyphs per class on the cap's slate. Row 7: one composed pod per class, sealed then identified (S02 large, S01 medium, S03 small, S01 well). Row 8: the 16 species as identified wells. | placeholder; signed by the art director |
+| <img src="contact-2x.png" width="520" alt="contact-2x.png"> | contact-2x.png: the same sheet at 2×, nearest neighbour. | placeholder; signed by the art director |
+| <img src="pod-bodies.png" width="360" alt="pod-bodies.png"> | pod-bodies.png: the sheet, 490×550, one row per class: sealed, identified, band, glow. Base ramps, not yet remapped to a species. | placeholder; signed by the art director |
+| <img src="pod-glyphs.png" width="360" alt="pod-glyphs.png"> | pod-glyphs.png: the sheet, 510×86, one row per class (large, medium, small, well), the 16 glyphs in species order, cream. | placeholder; signed by the art director |
 
 ## Files
 
@@ -44,7 +44,7 @@ Atlas ids: `pod.<class>.sealed|identified|band|glow` and `glyph.<class>.<species
 
 Nothing is scaled. The manifest entries in the atlas (`manifest`) register the two sheets with policy `stationChrome`, status `placeholder`; `assets.mjs` has no sub-rectangle, so a builder crops sprites by the atlas rects.
 
-## Art director's pass, 2026-10-08
+## Art director's pass
 
 Judged at 1× and 2× on the contact sheets. I checked them against the Pods directions (the pod fills its box, the still glow and the cap; [Station layouts](../../../../../design/style-guide/station-layouts.md#pods-collection-pod-overview-chapter-page)) and against [Station screens](../../../../../design/style-guide/station-screens.md) (Pods). The three stage classes held up as drawn. The well-size pod and two pigment ramps did not, and I corrected them in the sources and rebuilt.
 
@@ -83,6 +83,6 @@ Rebuilt with `python3 -I build.py`. `python3 -I check.py`: 0 off-palette pixels,
 | Same individual in four-grey and on paper (§2) | **n/a**: Station art layer only; pods are not printed |
 | Plainly placeholders; pods of one species match; no shell shows an individual's genes (SS Pods) | **yes**: one drawing per class and state, colour by species remap only, registered as `placeholder` |
 
-**A pod of a species not yet known** (placed on Pods; decided by the art director, 2026-10-08): grey. The shell keeps base ramp A and the foot ring takes ramp A, because the colour pair would show what is not yet known. The glow's core is `bone` (in that remap, `frostS` → `bone`), as on the charcoal species, so every pod keeps a warm centre. It differs from a sealed charcoal pod by its grey foot ring and its name.
+**A pod of a species not yet known** (placed on Pods; the art director's rule): grey. The shell keeps base ramp A and the foot ring takes ramp A, because the colour pair would show what is not yet known. The glow's core is `bone` (in that remap, `frostS` → `bone`), as on the charcoal species, so every pod keeps a warm centre. It differs from a sealed charcoal pod by its grey foot ring and its name.
 
-**Failures:** none that hold these back. **Departures, listed:** no shell pattern (question 1); the glow is still, with no breathing and no seal-break motion (the motion departure stays with the screen build); the note on the S01 and S02 glyphs goes to the frames' owner. **Questions for the owner:** none. The builder signs the capabilities column.
+**Failures:** none that hold these back. **Departures, listed:** no shell pattern (question 1); the glow is still, with no breathing and no seal-break motion (the motion departure stays with the screen build); the note on the S01 and S02 glyphs goes to the frames' owner. **Open questions:** none. The builder signs the capabilities column.
