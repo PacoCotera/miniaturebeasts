@@ -60,13 +60,6 @@ LIGHT = [P48.light[i] if i < 48 else gstep(i, 1) if mat[i] == "grass" else rstep
 def mix(target, t, i): tr = PAL[P48.index[target]]; return PAL[i] + (tr - PAL[i]) * t
 FOG = [P48.fog[i] if i < 48 else nearest(mix("bone", .62, i)) for i in range(NC)]
 FADE = [P48.fade[i] if i < 48 else nearest(mix("stone", .5, i)) for i in range(NC)]
-DARK2 = [DARK[d] for d in DARK]
-NAMES = [cols[i].get("name") or f"{cols[i]['material']}-{i}" for i in range(NC)]
-assert len(set(c["hex"] for c in cols)) == NC
-with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
-    fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
-             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i]),
-             "material": str(mat[i])}) for i in range(NC)) + " ] }\n")   # material: "grass" marks the colours the level tone moves (grass only)
 
 def to_idx(path_or_img):
     im = Image.open(path_or_img) if isinstance(path_or_img, str) else path_or_img
@@ -82,6 +75,18 @@ BASE = int(max((c_, v_) for v_, c_ in zip(vals, cnts) if lum[v_] > medl)[1])
 LRAMP = sorted(vals[np.argsort(-cnts)[:7]], key=lambda i: lum[i]); LB = LRAMP.index(BASE); TOPK = len(LRAMP) - 2
 LIX = {t: k for k, t in enumerate(LRAMP)}
 def ls(i, k): return LRAMP[max(0, min(len(LRAMP) - 1, LIX[i] + k))] if i in LIX else gstep(i, k)
+# the lawn ramp's own steps for the level tone: one tone up or down b1's seven, folding back below the pale top as test map 12 does,
+# so a lit plateau keeps its flecks (a generic green step collapsed several lawn tones onto one and yellowed the light ones)
+def fold(k): return 2 * TOPK - k if k > TOPK else max(0, k)
+assert all(i >= 48 for i in LRAMP), "a core green in the lawn ramp: its tables must stay the page's"
+for i in LRAMP: LIGHT[i] = LRAMP[fold(LIX[i] + 1)]; DARK[i] = LRAMP[max(0, LIX[i] - 1)]
+DARK2 = [DARK[d] for d in DARK]
+NAMES = [cols[i].get("name") or f"{cols[i]['material']}-{i}" for i in range(NC)]
+assert len(set(c["hex"] for c in cols)) == NC
+with open(os.path.join(out, "meadow-palette.json"), "w") as fh:      # one entry per index, one per line: i, name, hex and the five tables
+    fh.write('{ "biome": "meadow", "entries": [\n' + ",\n".join("  " + json.dumps({"i": i, "name": NAMES[i], "hex": cols[i]["hex"],
+             "dark": int(DARK[i]), "light": int(LIGHT[i]), "dark2": int(DARK2[i]), "fog": int(FOG[i]), "fade": int(FADE[i]),
+             "mat": str(mat[i])}) for i in range(NC)) + " ] }\n")   # mat: "grass" marks the colours the level tone moves (grass only)
 OUTL = nearest((24, 52, 30)); BODY, SHAL = nearest((29, 104, 136)), nearest((34, 121, 147))
 LAWN0 = LB - 1                                                    # the middle level's tone, one step under b1's lit lawn
 def boxavg(a, k):
@@ -263,12 +268,15 @@ def flatten(a):
     return out
 FEET = [to_idx(os.path.join(TS, "walls", p["file"])) for p in WJ if p["kind"] == "foot"]
 ROCKI = [i for i in range(NC) if mat[i] == "rock" or (i < 48 and P48.names[i] in ("void", "ink", "night", "slate", "stone", "mist", "fog", "rock", "rockL"))]
-def soften(a, k=0.7):
-    """the rock's contrast toward the lawn's: every rock pixel pulled 30 % toward the face's mean rock colour, then the nearest rock or grey"""
+def soften(a, k=0.55):
+    """the rock at the lawn's value: every rock pixel pulled 45 % toward the face's mean rock colour, then the nearest rock or grey; then
+    the darkest quarter of the rock lifted one step on its own ramp, so the cliff is never the darkest, loudest thing in the place"""
     r = np.isin(a, ROCKI)
     if not r.any(): return a
     mu = PAL[a[r]].mean(0); v = mu + k * (PAL[a[r]] - mu)
-    a = a.copy(); a[r] = [nearest(c, ROCKI) for c in v]; return a
+    a = a.copy(); a[r] = [nearest(c, ROCKI) for c in v]
+    L_ = lum[np.minimum(a, NC - 1)]; lo = r & (L_ <= np.percentile(L_[r], 25)); a[lo] = [P48.light[i] if i < 48 else rstep(i, 1) for i in a[lo]]
+    return a
 def base(a, seed):
     """the face stands in the ground: grass grows 4-12 px up its base in smooth lobes with blade tips, in the lower lawn's tone (it
     covers the bottom outline and squares a cap's rounded foot), and the rock above it darkens a step"""
@@ -287,6 +295,7 @@ def base(a, seed):
             for t in range(1, rng.randint(2, 6)):
                 if top - t >= 0: a[top - t, x] = gstep(LRAMP[LAWN0 - 1], 1 if t < 3 else 2)
         a[top, x] = gstep(LRAMP[LAWN0 - 1], 1)
+        for y in range(h - 2 - int(rng.rand() < .5), h): a[y, x] = tone(LAWN0 - 3 + f[y % 48, x % 48])   # the cliff's cast shadow on the lower lawn: two steps down, 2-3 rows
     return a
 def foot(a, seed):
     """a wall's foot baked into the face's bottom rows: a foot strip (grass clumps and pebbles over the rock's base) on every 48 px

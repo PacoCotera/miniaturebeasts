@@ -6,7 +6,7 @@ from PIL import Image
 drop, outp = sys.argv[1:3]
 man = json.load(open(os.path.join(drop, "meadow.json"))); pal = json.load(open(os.path.join(drop, "meadow-palette.json")))
 PAL = np.array([[int(c["hex"][k:k + 2], 16) for k in (1, 3, 5)] for c in pal["entries"]])
-GR = np.array([c.get("material") == "grass" for c in pal["entries"]])
+GR = np.array([c.get("mat") == "grass" for c in pal["entries"]])
 TONE = {"none": np.arange(len(GR)), "light": np.where(GR, [c["light"] for c in pal["entries"]], np.arange(len(GR))),
         "dark": np.where(GR, [c["dark"] for c in pal["entries"]], np.arange(len(GR)))}
 LEVEL_TONE = ["dark", "none", "light"]                                   # meadow.json levelTone, the model agreed for M3 (art director 23:55)
