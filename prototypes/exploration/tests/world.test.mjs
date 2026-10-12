@@ -44,7 +44,7 @@ function fakeCanvas(look) {
   return Object.assign(t, { getContext: () => ctx, px: buf, style: {}, toDataURL: () => "" });
 }
 // `search` is the page's query string; the page's elements record their listeners (els[id].on.click). opts.canvas: canvases are
-// fakeCanvas, so a drawing can be read back (p.run("scr").px()).
+// fakeCanvas, so a drawing can be read back (p.run("scr").px()). opts.script: a variant of the page script.
 function page(store = {}, search, opts = {}) {
   const any = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => "" : k === Symbol.iterator ? function* () {} : k === "then" ? undefined : any,
     apply: () => any, construct: () => any, set: () => true });
@@ -58,7 +58,7 @@ function page(store = {}, search, opts = {}) {
     performance: { now: () => clock.t }, setTimeout: (f, ms) => { clock.timers.push({ f, at: clock.t + (ms || 0) }); return clock.timers.length; }, clearTimeout: () => {},
     localStorage: { getItem: k => store[k] ?? null, setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } } };
   ctx.window = ctx; for (const [mod, from, to] of BINDINGS) ctx[to] = MODS[mod][from]; vm.createContext(ctx);
-  run = src => vm.runInContext(src, ctx); run(SCRIPT);
+  run = src => vm.runInContext(src, ctx); run(opts.script || SCRIPT);
   return { run, store, els, ctx, clock, KEY: run("SAVE_KEY") };
 }
 const withoutMemo = w => { const o = { ...w }; delete o.beacons; delete o.depots; return o; };
@@ -1129,4 +1129,200 @@ test("place overrides: in a 48 px place in fog a core colour takes the file's fo
   // the same buffer through the core set, and through the place set: two different canvases
   const sample = p.run(`(() => { const pb = tile48(layout('${key}'), 0, 0); RT.remap = REMAP; const a = pb.canvas(3); RT.remap = REMAP_PLACE; const b = pb.canvas(3); RT.remap = REMAP; return [a !== b, pb.cache.size]; })()`);
   assert.equal(sample[0], true, "a core canvas and a place canvas never mix");
+});
+
+// ---- the view's edge cues: tabs, the Call's hold on the edge, the name tag's positions, the send hint in a place ----
+// Each runs at ts 32 and at ts 48 through view.mjs (RT.ts), with motion reduced (the harness's matchMedia matches).
+// A place on seed 1's spawn cell, no storm, no fog, the pawn mid-place, nothing else in it unless the test puts it there.
+function cuePlace(ts, opts = {}) {
+  const p = page({}, undefined, { canvas: true, script: opts.script });
+  p.run(`newWorld(1); startExpedition('weather', G.spawns[0]); S.exp.storm = null; S.exp.fog = null; S.exp.pt = ${opts.partner ? "{ id: 1, name: 'Dot', sp: 0, elder: false }" : "null"};
+    enterPatch(); RT.ts = ${ts}; { const P = S.exp.patch; P.x = 14; P.y = 13; P.noise = 'creep'; } RT.pl = null; RT.key = null;
+    S.pods = S.pods.filter(q => q.k !== S.exp.patch.key); curLive().cr = []; curLive().fr = []; curLive().strike = null; FX.msg = ''; FX.notes = []; FX.pulse = null; FX.cue = null; FX.rings = []; NOW = 5000;`);
+  return p;
+}
+const crt = (id, x, y, st, more = "") => `curLive().cr.push(Object.assign({ id: ${id}, sp: 0, x: ${x}, y: ${y}, st: '${st}', hide: 0, calm: 0, face: 1 }, { ${more} }));`;
+const frameOf = p => { p.run("scr.px().fill(-1); render(5)"); return p.run("scr").px(); };
+const js = (p, e) => JSON.parse(p.run(`JSON.stringify(${e})`));   // out of the sandbox's realm
+const tabsOf = p => { frameOf(p); return js(p, "edgeTabs()"); };
+const at = (f, x, y) => f[y * 450 + x];
+
+for (const ts of [32, 48]) {
+  test(`cues at ${ts}: a '?' seeker more than 11 tiles away and off screen gets a tab, drawn as signed (sprout border, the bubble, the pointer)`, () => {
+    const p = cuePlace(ts); p.run(crt(1, 27, 13, "seek"));
+    const tabs = tabsOf(p), f = p.run("scr").px(), C = p.run("C");
+    assert.equal(tabs.length, 1); const t = tabs[0];
+    assert.equal(t.kind, "?"); assert.equal(t.side, "E"); assert.ok(t.d > 11);
+    assert.equal(t.cx, 433, "on the on-screen box's right edge");
+    assert.equal(at(f, t.cx, t.cy - 11), C.sprout, "the border"); assert.equal(at(f, t.cx - 9, t.cy), C.ink, "the ink fill (no flash with motion reduced)");
+    assert.equal(at(f, t.cx - 5 + 5, t.cy - 7 + 2), C.pine, "the '?' bubble's mark");
+    for (const [x, y] of [[t.cx + 11, t.cy - 2], [t.cx + 12, t.cy - 1], [t.cx + 13, t.cy]]) assert.equal(at(f, x, y), C.sprout, `pointer (${x}, ${y})`);
+    assert.notEqual(at(f, t.cx + 14, t.cy), C.sprout, "three rows only");
+  });
+
+  test(`cues at ${ts}: no tab for a hidden creature, a creature beyond fog sight, or anything in a cave; '…' and fruit bubbles get none`, () => {
+    const p = cuePlace(ts);
+    p.run(crt(1, 27, 13, "alert", "hide: 2")); assert.equal(tabsOf(p).length, 0, "hidden");
+    p.run(`curLive().cr = []; ${crt(2, 27, 13, "idle", "calm: 4, sp: 1")}`); assert.equal(tabsOf(p).length, 0, "the '…' bubble");
+    p.run(`curLive().cr = []; ${crt(3, 27, 13, "alert")}`); assert.equal(tabsOf(p).length, 1, "in sight: a tab");
+    p.run("{ const c0 = cxy(S.exp.pos); S.exp.fog = { x: c0.x + .5, y: c0.y + .5, r: 3, dx: 0, dy: 0, at: 0 }; }");
+    assert.equal(p.run("sightR(curLay())"), 4, "in a fog bank");
+    assert.equal(tabsOf(p).length, 0, "beyond fog sight: none");
+    p.run(`curLive().cr = []; ${crt(4, 14, 9, "alert")}`); assert.equal(tabsOf(p).length, 0, "4 tiles away in fog: in sight, but on screen");
+    p.run(`S.exp.fog = null; enterCave(); S.phase = 'patch'; RT.ts = ${ts}; curLive().cr = []; ${crt(5, 27, 1, "alert")} RT.key = null;`);
+    assert.equal(p.run("curLay().cave"), true); assert.equal(tabsOf(p).length, 0, "a cave: none");
+  });
+
+  test(`cues at ${ts}: at most 4 tabs, merged within 24 px along one edge ('!' first), and none over the message box, the HUD or the bottom line`, () => {
+    const p = cuePlace(ts);
+    p.run(crt(1, 27, 13, "approach") + crt(2, 27, 14, "alert") + crt(3, 0, 13, "seek") + crt(4, 14, 0, "alert") + crt(5, 14, 31, "alert") + crt(6, 0, 0, "seek") + crt(7, 27, 31, "seek") + crt(8, 0, 31, "alert"));
+    const tabs = tabsOf(p); assert.equal(tabs.length, 4, "four of seven");
+    assert.ok(!tabs.some(t => t.id === "c1"), "the '?' at (27, 13) merged into the '!' beside it");
+    assert.deepEqual(tabs.map(t => t.kind), ["!", "!", "!", "!"], "'!' before '?'");
+    for (const t of tabs) for (const u of tabs) if (t !== u && t.side === u.side) assert.ok(Math.abs(t.side === "N" || t.side === "S" ? t.cx - u.cx : t.cy - u.cy) > 24);
+    // the message box at the foot: a tab straight south moves up clear of it
+    p.run(`curLive().cr = []; ${crt(9, 14, 31, "alert")} FX.msg = 'A long message that wraps onto a second line in the box at the foot of the view, so it is tall';`);
+    const [t] = tabsOf(p), m = js(p, "msgRect()");
+    assert.ok(m && m.y > 300, "the box at the foot");
+    const g = { x: t.cx - 15, y: t.cy - 15, w: 30, h: 30 };
+    assert.ok(!(g.x < m.x + m.w && m.x < g.x + g.w && g.y < m.y + m.h && m.y < g.y + g.h), "clear of the box, grown by 4");
+    assert.equal(t.side, "S", "the pointer keeps its side");
+    for (const u of tabsOf(p).concat(tabs)) { assert.ok(u.cy - 11 >= 38 && u.cy + 10 <= 557, "rows 38–557: off the HUD and the bottom line"); assert.ok(u.cx - 11 >= 6 && u.cx + 10 <= 443); }
+  });
+
+  test(`cues at ${ts}: a Call sets FX.cue and nothing in S beyond what Call set before; its find shows a cream tab until it is taken or 3 actions pass`, () => {
+    const strip = SCRIPT.replace(/ const cue = \[\];[^\n]*/, "").replace(/ cue\.push\(\{ x: \w+\.x, y: \w+\.y \}\);/g, "").replace(/\n  FX\.cue = \{[^\n]*/, "");
+    assert.ok(!/FX\.cue =|cue\.push/.test(strip.slice(strip.indexOf("function callPlace"), strip.indexOf("function waitSnap"))), "the variant has no cue writes");
+    const pod = "S.pods.push({ k: S.exp.patch.key, x: 22, y: 13, h: 1, g: 0, sp: 0, id: 'tp' });";
+    const a = cuePlace(ts), b = cuePlace(ts, { script: strip });
+    for (const p of [a, b]) p.run(pod + " callPlace();");
+    const sOf = p => p.run("JSON.stringify(Object.assign({}, S, { wid: 0 }))");   // the world id is drawn from the clock
+    assert.equal(sOf(a), sOf(b), "S as without the cue");
+    const cue = js(a, "FX.cue"), mine = t => t.id === "f22,13";
+    assert.deepEqual([cue.key, cue.at, cue.until, cue.r], [a.run("S.exp.patch.key"), 5000, 3, 11]);
+    assert.deepEqual(cue.finds[0], { x: 22, y: 13 }, "the pod first, at its glint's tile");
+    const gb = js(a, "layout(S.exp.patch.key).feats.find(f => f.kind === 'g') || null"), glints = js(a, "FX.rings.filter(r => r.glint).map(r => ({ x: r.x, y: r.y }))");
+    assert.deepEqual(cue.finds, glints.filter(g => !(gb && g.x === gb.x && g.y === gb.y)), "the same tiles it glints (the burrow aside)");
+    assert.equal(b.run("FX.cue"), null);
+    const tabs = tabsOf(a).filter(mine), f = a.run("scr").px(), C = a.run("C");
+    assert.equal(tabs.length, 1); assert.equal(tabs[0].kind, "find");
+    assert.equal(at(f, tabs[0].cx, tabs[0].cy - 11), C.cream, "cream border"); assert.equal(at(f, tabs[0].cx, tabs[0].cy), C.white, "the spark's heart");
+    a.run("S.exp.actions = 2"); assert.equal(tabsOf(a).filter(mine).length, 1, "two actions on");
+    a.run("S.exp.actions = 3"); assert.equal(tabsOf(a).length, 0, "three actions on: gone");
+    a.run("S.exp.actions = 1; S.pods.find(q => q.id === 'tp').x = -1"); assert.equal(tabsOf(a).filter(mine).length, 0, "taken: gone");
+  });
+
+  test(`cues at ${ts}: the Call's hold draws ice dashes on the view's edge inside the reach, each with its dark shadow on the outer side`, () => {
+    const p = cuePlace(ts), C = p.run("C");
+    p.run("var HD = holdDashes;");
+    for (const r of [6, 11]) {
+      p.run(`FX.pulse = { x: 14, y: 13, at: NOW - CALL_MS - 100, r: ${r}, key: S.exp.patch.key, lifted: new Set() }; holdDashes = HD;`);
+      const f = frameOf(p).slice(), maxR = (2 * r + 1) * ts >> 1, pl = js(p, "RT.plScr"), cx = pl.x, cy = pl.y;
+      p.run("holdDashes = () => {};"); const bare = frameOf(p).slice(); p.run("holdDashes = HD;");
+      const near = (x, y, w, h) => (2 * x + w - 2 * cx) ** 2 + (2 * y + h - 2 * cy) ** 2 <= 4 * maxR * maxR;
+      const mine = new Set(); let on = 0, off = 0;
+      const check = (x, y, w, h, sx, sy, sw, sh) => { if (!near(x, y, w, h)) { off++; return; } on++;
+        for (let j = 0; j < h; j++) for (let i = 0; i < w; i++) { assert.equal(at(f, x + i, y + j), C.ice, `dash (${x + i}, ${y + j})`); mine.add((y + j) * 450 + x + i); }
+        for (let j = 0; j < sh; j++) for (let i = 0; i < sw; i++) { assert.equal(at(f, sx + i, sy + j), C.void, `its shadow (${sx + i}, ${sy + j})`); mine.add((sy + j) * 450 + sx + i); } };
+      for (let x = 4; x <= 444; x += 8) { check(x, 34, 4, 2, x, 33, 4, 1); check(x, 560, 4, 2, x, 562, 4, 1); }
+      for (let y = 36; y <= 556; y += 8) { check(2, y, 2, 4, 1, y, 1, 4); check(446, y, 2, 4, 448, y, 1, 4); }
+      for (let k = 0; k < f.length; k++) if (f[k] !== bare[k]) assert.ok(mine.has(k), `nothing else drawn (${k % 450}, ${Math.floor(k / 450)})`);
+      for (const k of mine) { const y = Math.floor(k / 450), x = k % 450; assert.ok(y >= 32 && y <= 563 && x >= 0 && x <= 449, "inside rows 32–563"); }
+      if (ts === 48 && r === 11) assert.equal(off, 0, "r 11 at 48: the whole frame");
+      if (ts === 48 && r === 6) { assert.ok(!near(4, 34, 4, 2) && !near(444, 560, 4, 2), "fog reach at 48: the corners drop out"); assert.ok(near(220, 34, 4, 2) && near(2, 300, 2, 4), "and the middles stay"); }
+      if (r === 11) assert.ok(on > 0);
+    }
+    p.run("FX.pulse.at = NOW - CALL_MS - 401"); const a = frameOf(p).slice(); p.run("holdDashes = () => {};"); assert.deepEqual(a, frameOf(p).slice(), "after the hold: none");
+  });
+
+  test(`cues at ${ts}: the name tag takes position 1 below, then right, then left, refusing creatures, the warned cell and the tabs`, () => {
+    const p = cuePlace(ts, { partner: true });
+    p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; curLive().pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = 9;");
+    const o = js(p, `sprOff(${ts})`), spot = () => { frameOf(p); return js(p, "SPOT"); };
+    const cell = () => { const pl = js(p, "RT.plScr"); return { x: pl.x - (ts >> 1), y: pl.y - (ts >> 1) + 3 * ts }; };   // the partner, 3 below the pawn
+    const zy1 = Math.max(ts - 1, o.y + 33) + 4, zx1 = ts - 1 + 4, h2 = ts >> 1;
+    let s = spot(), c = cell(), w = s.panel.w;
+    assert.deepEqual(s.ptr, { x: c.x + h2 - 1, y: c.y + zy1 + 1, w: 2, h: 5 }, "below: the pointer just outside the margin");
+    assert.equal(s.panel.y - c.y, zy1 + 6, ts === 48 ? "panel top at cell row 59" : "below the ring's foot"); assert.equal(s.panel.h, 20);
+    if (ts === 48) assert.deepEqual([s.ptr.y - c.y, s.ptr.y - c.y + 4], [54, 58]);
+    const f = p.run("scr").px(), C = p.run("C");
+    assert.equal(at(f, s.ptr.x, s.ptr.y), C.aqua); assert.equal(at(f, s.panel.x + 2, s.panel.y), C.aqua); assert.equal(at(f, s.panel.x + 3, s.panel.y + 10), C.ink);
+    // a creature on the cell below: right
+    p.run(crt(1, 14, 17, "idle")); s = spot(); c = cell();
+    assert.equal(s.panel.x - c.x, zx1 + 6, ts === 48 ? "right: panel's left edge at col 57" : "right"); assert.deepEqual(s.ptr, { x: c.x + zx1 + 1, y: c.y + h2 - 1, w: 5, h: 2 });
+    // the warned cell below and a creature to the right: left
+    p.run(`curLive().cr = []; curLive().strike = { x: 14, y: 17 }; ${crt(2, 16, 16, "idle")}`); s = spot(); c = cell();
+    assert.equal(s.panel.x + w - 1 - c.x, -10, "left: panel's right edge at col −10"); assert.deepEqual(s.ptr, { x: c.x - 9, y: c.y + h2 - 1, w: 5, h: 2 });
+    // and creatures left too: above, from the species' highest row
+    p.run(crt(3, 12, 16, "idle")); s = spot(); c = cell(); const H = o.y + p.run("tagTop(0)");
+    assert.deepEqual([s.ptr.y - c.y, s.panel.y - c.y, s.panel.y + 19 - c.y], [H - 9, H - 29, H - 10], "above");
+    // no tag pixel in the 4 px margin around the partner's pixels or on the ring's foot rows, in any of these
+    // edge tabs refuse: a tab over position 1 sends the tag right
+    p.run("curLive().cr = []; curLive().strike = null; const __et = edgeTabs; edgeTabs = () => { const s = RT.plScr; return [{ kind: '!', cx: s.x, cy: s.y + 3 * " + ts + " + " + (zy1 + 12) + " - " + h2 + ", side: 'S', id: 'x' }]; };");
+    s = spot(); c = cell(); assert.equal(s.panel.x - c.x, zx1 + 6, "a tab over position 1: right");
+  });
+
+  test(`cues at ${ts}: the name tag never covers its own margin or ring rows, and slides below when 1–4 are refused, or is not drawn`, () => {
+    const p = cuePlace(ts, { partner: true });
+    p.run("var SPOT = 'none'; const __dt = drawTag; drawTag = s => { SPOT = s; __dt(s); }; curLive().pt = { x: 14, y: 16, st: 'idle', face: 1 }; RT.pt = null; S.exp.ptTagUntil = 9; S.exp.pt.name = 'Bramblewick';");
+    const o = js(p, `sprOff(${ts})`), zy1 = Math.max(ts - 1, o.y + 33) + 4, h2 = ts >> 1;
+    const cell = () => { const pl = js(p, "RT.plScr"); return { x: pl.x - (ts >> 1), y: pl.y - (ts >> 1) + 3 * ts }; };
+    // refuse 1–4 with creatures right, left and above, and the warned cell under position 1's centre only
+    p.run(crt(1, 15, 16, "idle") + crt(2, 13, 16, "idle") + crt(3, 14, 15, "idle"));
+    frameOf(p); let s = js(p, "SPOT"), c = cell();
+    assert.equal(s.panel.y - c.y, zy1 + 6, "below's rows");
+    const w = p.run("textW('Bramblewick', 2) + 10"), px = c.x + h2 - (w >> 1), py = c.y + zy1 + 6;   // a tab over position 1's left end
+    p.run(`edgeTabs = () => [{ kind: '!', cx: ${px - 10 + 4}, cy: ${py + 10}, side: 'S', id: 'l' }];`);
+    frameOf(p); s = js(p, "SPOT"); c = cell();
+    assert.ok(s, "slid clear"); { assert.equal(s.panel.y - c.y, zy1 + 6); const d = s.panel.x - (c.x + h2 - (s.panel.w >> 1)); assert.ok(d !== 0 && d % 4 === 0 && Math.abs(d) <= (s.panel.w >> 1) - 6, "slid by ±4k");
+      assert.ok(s.ptr.x - s.panel.x >= 4 && s.panel.x + s.panel.w - (s.ptr.x + 2) >= 4, "the pointer 4 px inside the ends"); }
+    // a tag in no position: none drawn
+    p.run(`edgeTabs = () => [{ kind: '!', cx: RT.plScr.x, cy: RT.plScr.y + 3 * ${ts} + ${zy1 + 16} - ${h2}, side: 'S', id: 'a' }, { kind: '!', cx: RT.plScr.x - 40, cy: RT.plScr.y + 3 * ${ts} + ${zy1 + 16} - ${h2}, side: 'S', id: 'b' }, { kind: '!', cx: RT.plScr.x + 40, cy: RT.plScr.y + 3 * ${ts} + ${zy1 + 16} - ${h2}, side: 'S', id: 'c' }];`);
+    frameOf(p); assert.equal(js(p, "SPOT"), null, "nothing clear: no tag");
+    // over every placement, no pixel in the margin rows/cols outside the cell, nor on the ring's foot rows
+    p.run("curLive().cr = []; curLive().strike = null; edgeTabs = () => [];");
+    frameOf(p); s = js(p, "SPOT"); c = cell();
+    const zone = { x: c.x - 4, y: c.y - 4, w: ts + 8, h: zy1 + 5 }, meets = r => r.x < zone.x + zone.w && zone.x < r.x + r.w && r.y < zone.y + zone.h && zone.y < r.y + r.h;
+    assert.ok(!meets(s.ptr) && !meets(s.panel), "outside the clear zone");
+  });
+}
+
+test("the send hint in a place names the way, never a count, at all seven sites; over the reach view it keeps the count", () => {
+  const p = cuePlace(48), DIG = /\d/;
+  // a place two cells from the start, no lit outpost: End expedition is far
+  p.run("leavePatch(); const s = cxy(S.exp.start); S.exp.pos = S.exp.reach.find(c => { const q = cxy(c); return Math.abs(q.x - s.x) + Math.abs(q.y - s.y) === 2 && !gatedCell(c); }); enterPatch(); FX.msg = ''; FX.notes = [];");
+  assert.equal(p.run("canSend()"), false);
+  const name = p.run("nearestSend().name"), dir = p.run("(() => { const a = cxy(S.exp.pos), b = cxy(nearestSend().c); return dirWord(b.x - a.x, b.y - a.y, Math.hypot(b.x - a.x, b.y - a.y)); })()");
+  assert.ok(["north", "south", "east", "west", "north-east", "north-west", "south-east", "south-west"].includes(dir));
+  p.run("var TXT = []; const __tx = text; text = function (s) { TXT.push(s); return __tx.apply(this, arguments); };");
+  const sites = () => { const o = {};
+    p.run("S.ui.from = S.exp.patch ? 'patch' : 'map'; S.phase = 'menu'; S.ui.menuSel = menuItems().findIndex(i => i.id === 'send'); FX.lockUntil = 0;");
+    o.menuRow = p.run("lineFor().ctx");
+    p.run("act('confirm')"); o.menuRefusal = p.run("FX.msg"); p.run("FX.msg = ''; FX.notes = [];");
+    p.run("S.phase = 'cargo'; TXT = []; drawCargo(0)"); o.cargoCard = p.run("TXT").find(t => t.startsWith(name + " · ")); o.cargoLine = p.run("lineFor().ctx");
+    p.run("FX.lockUntil = 0; act('confirm')"); o.cargoRefusal = p.run("FX.msg"); p.run("FX.msg = ''; FX.notes = [];");
+    o.headBack = p.run("headBack()");
+    p.run("S.exp.cargo.pods = Array.from({ length: S.exp.hold }, () => ({ g: 0, sp: 0 })); FX.notes = []; delete (S.exp.once || {}).holdfull;");
+    o.headBackHold = p.run("'Hold full · swap, or ' + headBack()");
+    return o; };
+  const inPlace = sites();
+  const want = { menuRow: `${name} · ${dir}`, menuRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, cargoCard: `${name} · ${dir}`, cargoLine: `End expedition: ${name} · ${dir}`,
+    cargoRefusal: `End it only at the start or a lit outpost: ${name} · ${dir}`, headBack: `head back ${dir} to the ${name === "Start" ? "start" : "outpost"}` };
+  for (const k of Object.keys(want)) { assert.equal(inPlace[k], want[k], k); assert.doesNotMatch(inPlace[k], DIG, k + ": no digit"); }
+  assert.doesNotMatch(inPlace.headBackHold, DIG);
+  // the explored message (headBack's other site) and its caves, through checkExplored
+  p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 1 }); FX.notes = []; checkExplored();");
+  assert.equal(p.run("FX.msg"), `Everything in reach is explored · a cave needs a digger · head back ${dir} to the ${name === "Start" ? "start" : "outpost"}`);
+  p.run("S.exp.saidDone = 0; reachCounts = () => ({ total: 9, surveyed: 9, full: 9, gated: 2 }); FX.notes = []; checkExplored();");
+  assert.match(p.run("FX.msg"), /^Everything in reach is explored · caves need a digger · /); assert.doesNotMatch(p.run("FX.msg"), DIG);
+  assert.ok(p.run("wrapText(FX.msg, 400, 2).length") <= 3, "fits the box");
+  // leave with ← then ✓: over the reach view every site counts again, with the same name
+  p.run("S.phase = 'patch'; FX.lockUntil = 0; openMenu(); S.ui.menuSel = 0; act('confirm');"); assert.equal(p.run("S.phase"), "map"); assert.equal(p.run("S.exp.patch"), null);
+  p.run("S.exp.cargo.pods = [];");
+  const n = p.run("nearestSend().n"), cnt = `${name} · about ${n} cell${n === 1 ? "" : "s"}`, onMap = sites();
+  assert.equal(onMap.menuRow, cnt); assert.equal(onMap.cargoCard, cnt); assert.equal(onMap.cargoLine, "End expedition: " + cnt);
+  assert.equal(onMap.menuRefusal, "End it only at the start or a lit outpost: " + cnt); assert.equal(onMap.cargoRefusal, "End it only at the start or a lit outpost: " + cnt);
+  assert.equal(onMap.headBack, `head back to the ${name === "Start" ? "start" : "outpost"} (about ${n} cell${n === 1 ? "" : "s"})`);
+  // and the reach band keeps the count
+  p.run("S.phase = 'map'; TXT = []; render(5)"); assert.ok(p.run("TXT").some(t => t === cnt || t.startsWith(name + " · about")), "the reach band");
 });

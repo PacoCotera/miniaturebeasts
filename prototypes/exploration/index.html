@@ -270,7 +270,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
 <script type="module">
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
-import { viewOf, camAt, visTiles, sprOff, BAYER4, quarterFar, coverQ, stormStep, stormCols48 } from "./src/view.mjs";
+import { viewOf, camAt, visTiles, sprOff, BAYER4, quarterFar, coverQ, stormStep, stormCols48, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
 import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
@@ -464,8 +464,17 @@ function nearestSend() { const ex = S.exp, p = cxy(ex.pos), d = c => { const q =
   let best = { c: ex.start, n: d(ex.start), name: 'Start' };
   for (const c of ex.reach) if (depotLit(c) && d(c) < best.n) best = { c, n: d(c), name: cap(DEPOT_NAME) };
   return best; }
-function sendHint() { const b = nearestSend(); return b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'); }
-function headBack() { if (canSend()) return '← End expedition'; const b = nearestSend(); return 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')'; }
+// In a place (S.exp.patch set, a cave included, whatever screen is open over it) a send-point string names the way, never a count:
+// no flag is drawn there. Over the reach view it keeps the count beside the flag. One helper, so the two forms cannot drift apart.
+const SEND_TXT = {
+  hint: (b, dir) => dir ? b.name + ' · ' + dir : b.name + ' · about ' + b.n + ' cell' + (b.n === 1 ? '' : 's'),
+  back: (b, dir) => dir ? 'head back ' + dir + ' to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME)
+    : 'head back to the ' + (b.name === 'Start' ? 'start' : DEPOT_NAME) + ' (about ' + b.n + ' cell' + (b.n === 1 ? '' : 's') + ')',
+};
+function sendWay() { const ex = S.exp, b = nearestSend(); if (!ex.patch) return { b, dir: null };
+  const p = cxy(ex.pos), q = cxy(b.c), dx = q.x - p.x, dy = q.y - p.y; return { b, dir: dx || dy ? dirWord(dx, dy, Math.hypot(dx, dy)) : null }; }
+function sendHint() { const w = sendWay(); return SEND_TXT.hint(w.b, w.dir); }
+function headBack() { if (canSend()) return '← End expedition'; const w = sendWay(); return SEND_TXT.back(w.b, w.dir); }
 
 
 // ===================== 5. State, persistence, effects hooks =====================
@@ -1015,7 +1024,7 @@ function checkExplored() {
   const ex = S.exp; if (!ex || ex.saidDone) return;
   const rc = reachCounts(); if (rc.surveyed < rc.total) return;
   ex.saidDone = ex.actions || 1; logEv('Everything in reach explored (' + rc.total + ' cells)');
-  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + rc.gated + ' cave needs a digger' : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
+  fxMsg('Everything in reach is explored' + (rc.gated ? ' · ' + (rc.gated === 1 ? 'a cave needs a digger' : 'caves need a digger') : '') + ' · ' + headBack(), 9);   // first in the box, until the next action
 }
 // The place's survey state for the line: "surveyed 2/4 · 3 to take", "surveyed · nothing to take", "not surveyed".
 // A place only counts as finished when a Call was made there (walking never hears what is buried) and no pod lies buried.
@@ -1606,18 +1615,19 @@ function offer(c) {
 function callPlace() {
   const ex = S.exp, P = ex.patch, key = P.key, lay = layout(key), live = curLive();
   const fogged = !lay.cave && inFog(lay.cell), glow = ex.pt && ex.pt.sp === 1, muffled = fogged && !glow, reach = muffled ? CALL_R_FOG : CALL_R;
-  let found = 0;
-  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); found++; }
+  let found = 0; const cue = [];   // the finds this Call lights, for their edge tabs
+  for (const p of S.pods) if (p.k === key && p.h && p.x >= 0 && inCall(P, p.x, p.y, reach)) { p.h = 0; p.out = 1; fxGlint(p.x, p.y, 350); cue.push({ x: p.x, y: p.y }); found++; }
   for (const f of lay.feats) {
     const fp = featPos(key, f); if (!inCall(P, fp.x, fp.y, reach)) continue;
-    if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); found++; }
-    if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); found++; }
+    if (f.kind === 'k' && stoneCharge(key, f) > 0 && !stoneSeen(key, f)) { if (lay.cave) setFS(key, f.id, { sn: 1 }); fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
+    if (f.kind === 'd' && !live.seen.d) { live.seen.d = 1; fxGlint(f.x, f.y, 350); cue.push({ x: f.x, y: f.y }); found++; }
     if (f.kind === 'g' && !S.opened[G.gate]) fxGlint(f.x, f.y, 350);
   }
   const before = lay.cave ? 0 : svyFull(lay.cell);
   let lifted = null;
   if (!lay.cave) { lifted = unveilRound(key, P.x, P.y, reach); updateSurvey(lay.cell); (S.called = S.called || {})[lay.cell] = 1; }
   FX.pulse = { x: P.x, y: P.y, at: NOW, r: reach, key, lifted };   // the ring sweeps out over 300 ms and the veil lifts as it passes
+  FX.cue = { key, at: NOW, until: ex.actions + 3, r: reach, finds: cue };   // the finds' edge tabs, for the 3 actions after the Call
   ex.stats.calls = (ex.stats.calls || 0) + 1; if (!lay.cave) { ex.callsAt = ex.callsAt || {}; ex.callsAt[lay.cell] = (ex.callsAt[lay.cell] || 0) + 1; }
   logEv('Call' + (found ? ' · found ' + found : '') + (lay.cave ? '' : ' · ' + surveyWord(lay.cell)));
   // the partner answers: a digger near the burrow digs it
@@ -1627,7 +1637,7 @@ function callPlace() {
   if (!lay.cave) {
     if (muffled) fxOnce('muffled', 'The fog muffles your call · it reaches ' + CALL_R_FOG + ' tiles', 3, true);
     const m = svyFull(lay.cell), left = leftPhrase(lay.cell, P, 44), lp = S.pods.find(q => q.k === key && !q.h && q.x >= 0 && unveiled(key, q.x, q.y));
-    if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); }   // a pod still lying here glints again, so a beat always leads somewhere
+    if (lp && !found) { lp.out = 1; fxGlint(lp.x, lp.y, 350); cue.push({ x: lp.x, y: lp.y }); }   // a pod still lying here glints again, so a beat always leads somewhere
     // never ahead of the picture: "3/4 surveyed · a corner north-east still veiled"
     const vw = m === 15 ? null : veiledWhere(lay.cell), almost = vw && qCount(S.svy[lay.cell] || 0) > qCount(m);
     const head = m === 15 ? 'Surveyed' : (m ? qCount(m) + '/4 surveyed' : 'Survey begun') + (almost ? ' · a corner ' + vw.dir + ' still veiled' : m === before ? ' · walk or Call further on' : '');
@@ -3599,10 +3609,7 @@ function drawPatch(t) {
     if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
   if (ts === 48) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
-  // the partner's name tag: above it, with a pointer down to it, shifted sideways so it never covers the player
-  if (RT.tag) { const tg = RT.tag, w = textW(tg.name, 2) + 10, pl = RT.plScr; let nx = tg.x - Math.round(w / 2), ny = tg.y - 26;
-    if (pl && nx < pl.x + 18 && nx + w > pl.x - 18 && ny < pl.y + 18 && ny + 20 > pl.y - 20) nx = pl.x > tg.x ? pl.x - 20 - w : pl.x + 20;
-    R(tg.x - 1, ny + 20, 2, 5, C.aqua); panel(nx, ny, w, 20, C.ink, C.aqua); text(tg.name, nx + 5, ny + 3, C.mint); }
+  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
@@ -3632,7 +3639,7 @@ function drawPatch(t) {
     const a = sparkArt(!motion() || Math.floor(age / 120) % 2 === 0); blit(a, W(r.x * ts + (ts >> 1)) - Math.floor(a.w / 2), H(r.y * ts + (ts >> 1) - 4) - Math.floor(a.h / 2)); }
   if (FX.pulse) { const age = NOW - FX.pulse.at, cx = W(FX.pulse.x * ts + (ts >> 1)), cy = H(FX.pulse.y * ts + (ts >> 1)), maxR = (2 * FX.pulse.r + 1) * ts >> 1;   // the range's edge
     if (motion() && age < CALL_MS) circ(cx, cy, 8 + (maxR - 8) * age / CALL_MS, C.ice);            // the leading edge: the veil lifts behind it
-    else if (age < CALL_MS + 400) circ(cx, cy, maxR, C.ice, true); }                                // then the final contour: exactly the Call's range
+    else if (age < CALL_MS + 400) { circ(cx, cy, maxR, C.ice, true); holdDashes(cx, cy, maxR); } }  // then the final contour: exactly the Call's range, and the view's edge inside it
   if (FX.dig) { const age = NOW - FX.dig.at, x = W(FX.dig.x * ts + (ts >> 1)), y = H(FX.dig.y * ts + ts - 6);
     for (let i = 0; i < 6; i++) { const a = ((age / 300) + i / 6) % 1; R(x - 12 + i * 5, y - Math.round(Math.sin(a * Math.PI) * 14), 2, 2, i % 2 ? C.clay : C.bark); } }
   for (const f of FX.floats) { const age = NOW - f.at; if (age > 1200) continue;
@@ -3674,6 +3681,99 @@ function drawPartner(sp, pt, x, y, t) {
   if (pt.st === 'sniff') for (let i = 0; i < 3; i++) R(f > 0 ? x + 30 + i * 3 : x - 2 - i * 3, y + 14 - i * 2 - ((fr + i) % 2), 2, 2, C.bone);
   if (pt.st === 'dig') for (let i = 0; i < 5; i++) { const a = ((t * 6) + i / 5) % 1; R(f > 0 ? x + 4 - a * 12 : x + 26 + a * 12, y + 20 - Math.round(Math.sin(a * Math.PI) * 10), 2, 2, C.clay); }
 }
+
+// ---------- The view's edge cues: tabs for what is off screen, the Call's hold on the edge, the name tag's place ----------
+// Read only: S, FX and RT in, pixels out. The one render state is RT.tabSeen (when each tab first showed, for its flash).
+const TAB = { order: ['!', '?', 'find'], border: { '!': 'yellow', '?': 'sprout', find: 'cream' }, max: 4, merge: 24, clear: 4, flashMs: 160 };
+const rectsMeet = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+// the place view and its drawn camera, as drawPatch has them this frame (the shake after the clamp)
+function cueView() { const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), [sx, sy] = shakeOff(), c0 = camAt(v, RT.pl.rx, RT.pl.ry); return { v, cam: { x: c0.x + sx, y: c0.y + sy } }; }
+// a find the Call lit is still lying there: a pod not taken, a charged stone, the crack
+function findThere(key, lay, q) {
+  return S.pods.some(p => p.k === key && !p.h && p.x === q.x && p.y === q.y)
+    || lay.feats.some(f => f.x === q.x && f.y === q.y && (f.kind === 'd' || (f.kind === 'k' && stoneCharge(key, f) > 0)));
+}
+// At most 4 tabs { kind, cx, cy, side, tx, ty, d, id } for `!` and `?` creatures and this Call's finds whose tile is off screen.
+function edgeTabs() {
+  const ex = S.exp, P = ex && ex.patch; if (!P || !RT.pl || !RT.plScr || RT.key !== P.key) return [];
+  const lay = layout(P.key), live = ex.live[P.key]; if (lay.cave || !live) return [];
+  const { v, cam } = cueView(), ts = v.ts, sight = sightR(lay), ax = Math.round(RT.plScr.x), ay = Math.round(RT.plScr.y), all = [], ids = new Set();
+  const add = (kind, tx, ty, id) => { if (ids.has(id) || tileOnScreen(v, cam, tx, ty, ON_SCREEN)) return; ids.add(id);
+    const bx = v.x + tx * ts - cam.x + (ts >> 1), by = v.y + ty * ts - cam.y + (ts >> 1), e = edgePoint(ON_SCREEN, ax, ay, bx, by); if (!e) return;
+    const B = ON_SCREEN, dx = bx - ax, dy = by - ay, corner = (e.x === B.x0 || e.x === B.x1) && (e.y === B.y0 || e.y === B.y1);
+    const side = corner ? (Math.abs(dx) >= Math.abs(dy) ? (dx > 0 ? 'E' : 'W') : (dy > 0 ? 'S' : 'N')) : e.side;   // at a corner, the larger axis
+    all.push({ kind, cx: e.x, cy: e.y, side, tx, ty, d: Math.hypot(tx - P.x, ty - P.y), id }); };
+  for (const c of live.cr) { if (c.hide || !(sight >= 99 || Math.hypot(c.x - P.x, c.y - P.y) <= sight + .5)) continue;   // never hidden, never beyond fog sight
+    const b = bubbleOf(c, ex.carry); if (b === '!' || b === '?') add(b, c.x, c.y, 'c' + c.id); }
+  const q = FX.cue;
+  if (q && q.key === P.key && ex.actions < q.until) for (const f of q.finds) { if (!findThere(P.key, lay, f)) continue;
+    if (motion() && (NOW - q.at) * (2 * q.r + 1) < CALL_MS * 2 * Math.hypot(f.x - P.x, f.y - P.y)) continue;   // when the ring reaches it
+    add('find', f.x, f.y, 'f' + f.x + ',' + f.y); }
+  all.sort((a, b) => TAB.order.indexOf(a.kind) - TAB.order.indexOf(b.kind) || a.d - b.d);
+  const kept = [];
+  for (const t of all) { if (kept.length >= TAB.max) break;
+    if (kept.some(k => k.side === t.side && Math.abs(t.side === 'N' || t.side === 'S' ? k.cx - t.cx : k.cy - t.cy) <= TAB.merge)) continue; kept.push(t); }
+  const m = msgRect();   // never over the message box: slide along the edge until the tab, grown by 4, clears it
+  if (m) for (const t of kept) { const g4 = 11 + TAB.clear; if (!rectsMeet({ x: t.cx - g4, y: t.cy - g4, w: 2 * g4, h: 2 * g4 }, m)) continue;
+    t.cy = m.y > VIEW_Y + (VIEW_H >> 1) ? m.y - g4 : m.y + m.h + g4; }
+  return kept;
+}
+// a tab's pointer: three rows in its border colour, outside the tab on the side the ray leaves by
+function tabPointer(t) { const { cx, cy } = t;
+  if (t.side === 'E') return [[cx + 11, cy - 2, 1, 5], [cx + 12, cy - 1, 1, 3], [cx + 13, cy, 1, 1]];
+  if (t.side === 'W') return [[cx - 12, cy - 2, 1, 5], [cx - 13, cy - 1, 1, 3], [cx - 14, cy, 1, 1]];
+  if (t.side === 'N') return [[cx - 2, cy - 12, 5, 1], [cx - 1, cy - 13, 3, 1], [cx, cy - 14, 1, 1]];
+  return [[cx - 2, cy + 11, 5, 1], [cx - 1, cy + 12, 3, 1], [cx, cy + 13, 1, 1]]; }
+// the tab and its pointer as one rect (what the name tag refuses)
+function tabRect(t) { const r = { x: t.cx - 11, y: t.cy - 11, w: 22, h: 22 };
+  if (t.side === 'E') r.w += 3; else if (t.side === 'W') { r.x -= 3; r.w += 3; } else if (t.side === 'N') { r.y -= 3; r.h += 3; } else r.h += 3; return r; }
+// After drawPatch, before the message box: the tabs, clipped to the view. A tab's fill flashes cream for 160 ms when it first shows.
+function drawEdgeCues(t) {
+  const tabs = edgeTabs(), seen = RT.tabSeen || (RT.tabSeen = new Map()), keep = new Set();
+  clipView();
+  for (const tb of tabs) { const k = tb.kind + tb.id, col = C[TAB.border[tb.kind]]; keep.add(k); if (!seen.has(k)) seen.set(k, NOW);
+    panel(tb.cx - 11, tb.cy - 11, 22, 22, motion() && NOW - seen.get(k) < TAB.flashMs ? C.cream : C.ink, col);
+    if (tb.kind === 'find') blit(sparkArt(true), tb.cx - 6, tb.cy - 6); else blit(bubbleArt(tb.kind), tb.cx - 5, tb.cy - 7);
+    for (const [x, y, w, h] of tabPointer(tb)) R(x, y, w, h, col); }
+  for (const k of [...seen.keys()]) if (!keep.has(k)) seen.delete(k);   // a tab that goes and comes back flashes again
+  g.restore();
+}
+// The Call's hold, on the view's edge wherever the edge lies inside its reach: ice dashes every 8 px, each with a 1 px dark shadow on its outer side.
+const DASH = { col: 'ice', shadow: 'void' };
+function holdDashes(cx, cy, maxR) {
+  const r2 = 4 * maxR * maxR, near = (x, y, w, h) => (2 * x + w - 2 * cx) ** 2 + (2 * y + h - 2 * cy) ** 2 <= r2, c = C[DASH.col], sh = C[DASH.shadow];   // the dash's centre, doubled
+  for (let x = 4; x <= 444; x += 8) { if (near(x, 34, 4, 2)) { R(x, 33, 4, 1, sh); R(x, 34, 4, 2, c); } if (near(x, 560, 4, 2)) { R(x, 562, 4, 1, sh); R(x, 560, 4, 2, c); } }
+  for (let y = 36; y <= 556; y += 8) { if (near(2, y, 2, 4)) { R(1, y, 1, 4, sh); R(2, y, 2, 4, c); } if (near(446, y, 2, 4)) { R(448, y, 1, 4, sh); R(446, y, 2, 4, c); } }
+}
+// The partner's name tag: a 20 px ink panel with an aqua border and a 2×5 (5×2 sideways) aqua pointer on the side facing the partner.
+// Its clear zone is the cell, the ring's foot rows below it, and a 4 px margin that stays empty; the pointer sits just outside the margin.
+// Positions in order: below, right, left, above (from the species' highest row), below slid by ±4, ±8 …; none clear, no tag.
+const TAG = { h: 20, ptr: 5, margin: 4, view: { x0: 6, y0: 38, x1: 444, y1: 558 }, slide: 4, slideIn: 6 };
+const tagTop = sp => { const top = pb => { for (let y = 0; y < pb.h; y++) for (let x = 0; x < pb.w; x++) if (pb.p[y * pb.w + x] >= 0) return y; return pb.h; };
+  return spOf(sp).other ? 0 : Math.min(top(creatureArt(sp, 'idle', 0)), top(creatureArt(sp, 'idle', 1))); };   // the bob only moves it down
+function tagSpot(tg, k) {
+  const ex = S.exp, P = ex.patch, live = ex.live[P.key], ts = k.ts, o = k.o, h2 = ts >> 1, M = TAG.margin, n = TAG.ptr, w = textW(tg.name, 2) + 10;
+  const X = tg.x - 16 - o.x, Y = tg.y - o.y;   // the partner's cell on screen
+  const zx1 = Math.max(ts - 1, o.x + 29) + M, zy1 = Math.max(ts - 1, o.y + 33) + M;   // the zone's far column and row (the ring is 28×11 at sprite + (2, 23))
+  const at = (px, py, pw, ph, nx, ny) => ({ ptr: { x: X + px, y: Y + py, w: pw, h: ph }, panel: { x: X + nx, y: Y + ny, w, h: TAG.h } });
+  const below = d => at(h2 - 1, zy1 + 1, 2, n, h2 - (w >> 1) + d, zy1 + 1 + n), H0 = o.y + tagTop(ex.pt.sp);
+  const spots = [below(0), at(zx1 + 1, h2 - 1, n, 2, zx1 + 1 + n, h2 - (TAG.h >> 1)), at(-M - n, h2 - 1, n, 2, -M - n - w, h2 - (TAG.h >> 1)),
+    at(h2 - 1, H0 - M - n, 2, n, h2 - (w >> 1), H0 - M - n - TAG.h)];
+  for (let d = TAG.slide; d <= (w >> 1) - TAG.slideIn; d += TAG.slide) spots.push(below(d), below(-d));
+  // what a tag may not cover: other creatures' and the pawn's clear zones, the warned cell, the message box, the edge tabs
+  const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
+  const block = [];
+  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(r.x), k.H(r.y), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
+  block.push(zone(k.W(RT.pl.x), k.H(RT.pl.y), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
+  if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
+  const m = msgRect(); if (m) block.push(m);
+  for (const t of edgeTabs()) block.push(tabRect(t));
+  const V = TAG.view, inView = r => r.x >= V.x0 && r.y >= V.y0 && r.x + r.w - 1 <= V.x1 && r.y + r.h - 1 <= V.y1;
+  const s = spots.find(s => inView(s.ptr) && inView(s.panel) && !block.some(b => rectsMeet(b, s.ptr) || rectsMeet(b, s.panel)));
+  return s ? Object.assign({ name: tg.name }, s) : null;
+}
+function drawTag(s) { if (!s) return; const p = s.ptr, q = s.panel;
+  R(p.x, p.y, p.w, p.h, C.aqua); panel(q.x, q.y, q.w, q.h, C.ink, C.aqua); text(s.name, q.x + 5, q.y + 3, C.mint); }
 
 // ===================== 14. HUD, bottom line, mode screens =====================
 // Call's meaning right now, for the top-right slot. Empty where Call does nothing.
@@ -3827,14 +3927,19 @@ function drawSwap() {
   podSlot(X0, y0 + 58, sw.p); text(clipText(podName(sw.p) + ' · ' + podTagOf(sw.p), SCR_W - X0 - 40, 2), X0 + 20, y0 + 58, C.bone);
   text(clipText('leave ' + podName(sw.held[sw.sel], true) + ' here, take this one', SCR_W - X0 - 40, 2), X0 + 20, y0 + 78, C.amber);
 }
-function drawMessage() {
-  if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return;   // the reach view shows it in its band   // the swap chooser has the space
+// The message box's rect, or null when none is drawn (the edge tabs and the name tag keep clear of it).
+function msgRect() {
+  if (!FX.msg || (S.phase === 'patch' && S.ui.swap) || RT.msgInBand) return null;   // the reach view shows it in its band   // the swap chooser has the space
   const lines = wrapText(FX.msg, 400, 2).slice(0, 3), w = Math.max(...lines.map(l => textW(l, 2))) + 26, h = lines.length * 20 + 12;
-  // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them
+  // the box sits above the bottom line, or at the top of the view when the player stands where it would cover them (the cell's foot: centre + 20 at 32, + 24 at 48)
   // on Mibis, when the focused card's foot passes the low box's top, the box goes to the top the same way
-  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = (pl ? pl.y + 20 > low : RT.focusFoot != null && RT.focusFoot >= low) ? VIEW_Y + 8 : low;
-  panel(x, y, w, h, C.ink, C.amber);
-  lines.forEach((l, i) => text(l, SCR_W / 2, y + 8 + i * 20, C.bone, 2, 'center'));
+  const x = Math.round((SCR_W - w) / 2), low = SCR_H - LINE_H - h - 8, pl = RT.plScr, y = (pl ? pl.y + (RT.ts === 48 ? 24 : 20) > low : RT.focusFoot != null && RT.focusFoot >= low) ? VIEW_Y + 8 : low;
+  return { x, y, w, h, lines };
+}
+function drawMessage() {
+  const m = msgRect(); if (!m) return;
+  panel(m.x, m.y, m.w, m.h, C.ink, C.amber);
+  m.lines.forEach((l, i) => text(l, SCR_W / 2, m.y + 8 + i * 20, C.bone, 2, 'center'));
 }
 function disc(x, y, r, fill, ring) { blit(art('disc' + r + fill + ring, () => { const pb = new PB(r * 2, r * 2); pb.ell(r, r, r - .2, r - .2, C[ring]); pb.ell(r, r, r - 2.2, r - 2.2, C[fill]); return pb; }), x, y); }
 // A chip: 22 high, the 2× label at top + 3 and 8 px in from each side (a descender ends on top + 20, one row of fill under it).
@@ -4438,7 +4543,7 @@ function render(t) {
     case 'setup': drawSetup(t); break;
     case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
     case 'map': drawReachView(t); drawHUD(); break;
-    case 'patch': drawPatch(t); drawHUD(); drawSwap(); break;
+    case 'patch': drawPatch(t); drawEdgeCues(t); drawHUD(); drawSwap(); break;
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
     case 'probe': drawProbe(t); break;
     case 'cargo': drawCargo(t); break;
