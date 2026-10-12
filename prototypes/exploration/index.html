@@ -473,9 +473,10 @@ let NOW = 0;
 // Messages: actions and offscreen results both add notes; the most important ones share the line until the next action.
 function fxMsg(text, pri) { FX.notes.push({ text, pri: pri == null ? 2 : pri }); composeMsg(); }
 function composeMsg() {
-  const n = FX.notes.slice().sort((a, b) => b.pri - a.pri); let out = ''; FX.held = [];
+  const all = FX.notes.slice().sort((a, b) => b.pri - a.pri), n = all.filter(x => x.once !== 'callplace'), hint = all.find(x => x.once === 'callplace'); let out = ''; FX.held = [];
   for (const x of n) { if (out.includes(x.text)) continue; const t = out ? out + ' · ' + x.text : x.text;
     if (out && (typeof wrapText !== 'function' || wrapText(t, 400, 2).length > 2)) { if (!x.once) FX.held.push(x); continue; } out = t; }   // shown on the next action instead
+  if (!out && hint) out = hint.text;   // the place's Call hint takes the box only when nothing else is in it, so it never widens or grows another message's box
   FX.msg = out;
 }
 function firstTime(k) { if (S.found.includes(k)) return false; S.found.push(k); return true; }

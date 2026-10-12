@@ -809,3 +809,13 @@ test("the place's Call hint is drawn only in the place view: every other screen'
   for (const ph of ["probe", "cargo", "menu", "sealed", "map", "mibis", "worldmap", "active"]) { p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = ${JSON.stringify(ph)};`); assert.equal(p.run("shownMsg()"), c, ph); }
   p.run(`FX.msg = ${JSON.stringify(c + " · " + h)}; S.phase = 'patch';`); assert.equal(p.run("shownMsg()"), c + " · " + h, "the place keeps it");
 });
+
+test("the place's Call hint takes the message box only when it is alone: it never joins, widens or grows another message", () => {
+  const p = world(), h = "Call lifts the veil: finds show", c = "? · curious · it will come closer";
+  p.run(`FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace' }, { text: ${JSON.stringify(c)}, pri: 2, once: 'mark?' }]; composeMsg();`);
+  assert.equal(p.run("FX.msg"), c, "the other message alone, the hint waits");
+  p.run(`FX.notes = [{ text: ${JSON.stringify(c)}, pri: 2 }, { text: ${JSON.stringify(h)}, pri: 2, once: 'callplace' }]; composeMsg();`); assert.equal(p.run("FX.msg"), c);
+  p.run(`FX.notes = [{ text: ${JSON.stringify(h)}, pri: 2, once: 'callplace' }]; composeMsg();`);
+  assert.equal(p.run("FX.msg"), h, "alone, the hint shows");
+  assert.equal(p.run(`wrapText(${JSON.stringify(h)}, 400, 2).length`), 1, "on one line");
+});
