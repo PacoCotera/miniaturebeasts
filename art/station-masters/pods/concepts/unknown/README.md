@@ -8,9 +8,12 @@ This replaces the frost checkerboard: Create's founder (`mistyArt`), and the who
 - **B. An unread look** gets a soft veil on that look's region only:
   - colour **VEIL #6b7484** at **60 %**, blended into the picture's own colour (the painting shows through);
   - over the part's box grown 4 px, drawn as an ellipse and feathered 6 px, and clipped to the body's alpha;
+  - a whole-body look (Coat, Shape) has no ellipse: the veil is the full body alpha, weight 0.6 × alpha, no feather beyond the alpha's own edge;
+  - Coat unread: under the veil the picture is replaced by its own luma L (grey, no hue), so the unread coat's colour is never drawn: out = L × 0.4 + VEIL × 0.6. Shape unread keeps the picture's colour under the veil;
+  - where veils overlap, the weight is the largest of them, never the sum;
   - the rest of the body is drawn as read.
 - **C. Nothing read** draws one calm silhouette:
-  - the body (its alpha) mixed **78 % toward GHOST #5f6878**, keeping 22 % of its own light so the form reads;
+  - the body (its alpha) drawn in **GHOST #5f6878** alone, no hue kept, plus 22 % of its own light contrast so the form reads: per channel, out = GHOST + 0.22 × (L − L̄), where L = 0.2126 R + 0.7152 G + 0.0722 B on the sRGB 0–255 values (no linearising), L̄ is the mean L over the body alpha, clipped to 0–255; alpha unchanged;
   - a 2 px rim on the top left at **RIM #8f99a8 50 %**;
   - no dither and no detail.
 - The founder's roll keeps its 16-level Bayer cross-fade *between two pictures* while it plays. That is motion, not this rule.

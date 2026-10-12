@@ -3,7 +3,7 @@
 #   A  an unread doing (Movement, Stamina, and any chapter that draws nothing on the body): no veil at all
 #   B  an unread look: a soft single-tone veil on that look's region only, VEIL #6b7484 at 60 %, over the part's box grown 4 px as an
 #      ellipse, feathered 6 px; the rest of the body as read
-#   C  nothing read: one calm silhouette, the body mixed 78 % toward GHOST #5f6878 (22 % of its own light kept, so the form reads),
+#   C  nothing read: one calm silhouette, GHOST #5f6878 alone, no hue kept, plus 0.22 of the body's luma contrast about its mean,
 #      a 2 px rim on the top left at RIM #8f99a8 50 %; no detail, no dither
 # All three sit below the creature's own light: never brighter than it, never a pattern.
 # The base here is the golden's founder with its Bayer frostD (#cbd5e2) inpainted from its neighbours.
