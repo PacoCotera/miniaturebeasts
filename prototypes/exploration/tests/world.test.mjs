@@ -1073,6 +1073,8 @@ test("48 px fog edge: in the storm's band the clear side takes the band's dark (
       assert.equal(px[(sy + y) * W_ + sx + x], band ? storm[c] : c, "tile " + tx + "," + ty + " pixel " + x + "," + y); }
     seen[band ? "band" : "lit"]++; }
   assert.ok(seen.band >= 2 && seen.lit >= 2, "fog-edge tiles checked: " + JSON.stringify(seen));
+  assert.ok(p.run("EDGE_TILE.size") > 0); p.run("atlasInstall(__syn.list, __syn.table, __syn.levelTone)"); assert.equal(p.run("EDGE_TILE.size"), 0, "a reinstall clears the edge canvases");
+  assert.ok(Object.isFrozen(A.PLACE_RULES), "the runtime default rules cannot be changed");
 });
 test("place overrides: in a 48 px place in fog a core colour takes the file's fog value; the core's own table is untouched and a core canvas never mixes with a place canvas", () => {
   const OVER = { 6: { fog: 20 } };   // the synthetic ground piece's core colour (index 6) fogs to 20 in places

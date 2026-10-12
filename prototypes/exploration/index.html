@@ -2850,6 +2850,7 @@ function atlasInstall(list, table, levelTone) {
   PLACE_STORM.length = PLACE_FOG.length = PLACE_FADE.length = RGB.length;
   ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
   for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
+  EDGE_TILE.clear();   // the edge canvases repeat their keys when a layer signature repeats; the place set (set.id 1) is fixed for the page's life, so a reinstall starts clean
 }
 // A place's layers at 48, per water frame, cached on the layout for the catalogue in effect.
 function layers48(lay, fr) {

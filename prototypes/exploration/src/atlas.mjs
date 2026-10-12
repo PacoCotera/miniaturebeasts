@@ -225,6 +225,7 @@ const GRASSY = [T.GRASS, T.TALL, T.FLOWERS];
 // stand-in and face.w1 or material.rock is empty: that place stays at 32.
 // The rules in effect: shore macros, the face and water tones, the grass decals and the side wall's shadow strip. Only the vectors' check of digests captured before them turns them off.
 export const PLACE_RULES = { macros: true, faceTone: true, waterTone: true, shadow: true, reedStagger: true, g1Runs: true, sandShore: true, waterSand: true, darkShadow: true, grassDecals: true, sideShadow: true };
+Object.freeze(PLACE_RULES);   // the runtime default: a test passes its own `rules`, never changes this one
 export function placeLayers(lay, seed, cat, fr, level = null, rules = PLACE_RULES) {
   const toneOf = L => { const t = L == null || !cat.levelTone ? null : cat.levelTone[L]; return t === 'light' || t === 'dark' ? t : null; };
   const lawnTone = toneOf(level), lipTone = level == null ? null : toneOf(level - 1), faceTone = rules.faceTone && level != null ? toneOf(level + 1) : null, waterTone = rules.waterTone ? lawnTone : null;
