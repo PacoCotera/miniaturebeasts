@@ -636,7 +636,7 @@ function sealed(rep, lines, bay = 1) {
     NUM_WORD: ["no", "one", "two", "three"], C: new Proxy({}, { get: (o, k) => k }), viewBg: noop, drawTop: noop, motion: () => false, clamp: (v, a, b) => Math.min(b, Math.max(a, v)), clipText: (x, w) => x,
     text: (str, x, y, col, s) => said.push({ str: String(str), x, y, s: s || 2 }), ringFace: (x, y, sp, p) => faces.push({ x, y, sp, p }), crateIcon: (x, y) => crates.push({ x, y }), R: (x, y, w, h, c) => dots.push({ x, y, w, h, c }),
     bayLine: () => "1 crate sealed · dock to transfer", isDocked: () => false, turnLine: () => "World turn 5", wrapText: l => l.length > 40 ? [l.slice(0, 40), l.slice(40)] : [l], CARE_TEXT: { notch: n => n + " gains a skill notch" } });
-  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord"];
+  const names = ["drawSealed", "drawTurnLines", "worldLineRows", "WORLD_FOOT", "yieldLine", "numWord", "sealedWords"];
   vm.runInContext(names.map(source).join("\n") + "\n;drawSealed(0);", ctx);
   return { said, faces, crates, at: s2 => said.find(q => q.str === s2), world: dots.filter(d => d.c === "orange" && d.w === 4) };
 }
@@ -676,6 +676,31 @@ test("End expedition: world lines draw only while their foot stays on or above r
 test("End expedition after a break: the pods line in the copywriter's words (19:03)", () => {
   for (const [n, line] of [[1, "One pod lies where it broke."], [2, "Two pods lie where it broke."], [3, "Three pods lie where it broke."], [0, "Nothing was in the hold."]])
     assert.ok(sealed({ reason: "break", dropped: n, lost: [] }, []).at(line), line);
+});
+test("End expedition, Sealed: the trip line is built from what was sealed (pods only, supplies only, both)", () => {
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2] } }, []).at("Expedition 4 · two pods"), "pods only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1] } }, []).at("Expedition 4 · one pod"), "one pod only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [], e: 2 } }, []).at("Expedition 4 · supplies"), "supplies only");
+  assert.ok(sealed({ sealed: { id: "c0", pods: [1, 2], d: 4 } }, []).at("Expedition 4 · two pods and supplies"), "both");
+  assert.ok(!sealed({ sealed: { id: "c0", pods: [1], s: 1 } }, []).said.some(q => /what you carried|no pods/.test(q.str)), "never the old words");
+});
+test("End expedition, empty hold: 'No crate this time.' and the yield line under it; no yield, no line", () => {
+  const y = { data: 6, tier: 3, moments: 2 }, d = sealed({ empty: true, yield: y }, []), line = d.at("No crate this time.");
+  assert.ok(line, "the copy"); assert.equal(d.at("+6 Data · mid place · 2 moments").y, line.y + 24, "the yield right under it");
+  assert.ok(!sealed({ empty: true }, []).said.some(q => /Data ·/.test(q.str)), "no yield: no line");
+  assert.ok(!d.said.some(q => /Nothing to seal/.test(q.str)));
+  assert.equal(sealed({ empty: true, yield: y }, []).crates[0].y, 114 + 24, "the crates move down one line");
+});
+test("End expedition after a break: 'Docking mends the Probe for free.'", () => {
+  assert.ok(sealed({ reason: "break", dropped: 0, lost: [] }, []).at("Docking mends the Probe for free."));
+});
+test("Cargo's preview: an empty hold, and the seal line built from what will be sealed", () => {
+  const run = (cargo, bay = []) => vm.runInContext(["sealPreview", "sealedWords", "numWord", "holdEmpty", "exploredAny"].map(source).join("\n") + "\n;sealPreview()",
+    vm.createContext({ S: { exp: { cargo, stats: { calls: 1 }, shield: 3, smax: 3 }, bay }, BAY: 3, NUM_WORD: ["no", "one", "two", "three"] }));
+  assert.deepEqual(plain(run({ e: 0, d: 0, s: 0, pods: [] })), ["An empty hold · no crate this time", "you still earn the place’s Data"]);
+  assert.equal(run({ e: 0, d: 0, s: 0, pods: [1, 2] })[0], "Seals two pods · crate 1 of 3");
+  assert.equal(run({ e: 1, d: 0, s: 0, pods: [] })[0], "Seals the supplies · crate 1 of 3");
+  assert.equal(run({ e: 1, d: 2, s: 0, pods: [1] }, [{}])[0], "Seals one pod + supplies · crate 2 of 3");
 });
 test("Cargo, no creature met: the moments line moves under 'No creatures met yet', to (24, 208)", () => {
   assert.match(source("drawCargo"), /ex\.met\.length \? 180 : 24, ex\.met\.length \? 196 : 208/);

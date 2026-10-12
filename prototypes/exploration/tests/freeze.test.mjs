@@ -375,7 +375,7 @@ test("bayLine(): the docked variant while docked, today's line undocked", () => 
 
 // ---- the game designer's ruling on hints while docked (QA D1) ----
 test("docked: no one-time hint shows or is spent; after Lift the first press shows the Call hint and spends it", () => {
-  const CALL = "The teal CALL button pulses: it lifts the veil and finds things";
+  const CALL = "Call lifts the veil, lights finds";
   const { p, st } = begin();
   p.key("right"); p.key("down"); p.key("right");
   let inPlace = false;

@@ -87,26 +87,27 @@ body{
 .dpad .hub{position:absolute; left:44px; top:44px; width:44px; height:44px; background:var(--charcoal); }
 .dpad .hub::after{content:""; position:absolute; left:14px; top:14px; width:16px; height:16px; border-radius:50%; background: radial-gradient(circle at 40% 35%, #3d4146, #24272a)}
 .dpad .key{width:44px; height:44px; background: linear-gradient(180deg,#3a3d42,var(--charcoal)); box-shadow: 0 3px 0 #17181a, inset 0 1px 0 rgba(255,255,255,.12)}
-.dpad .key svg{width:16px; height:16px; fill:#9a9ea6}
+.dpad .key svg{width:16px; height:16px; fill:#f4f1ec}
 .dpad .up{left:44px; top:0; border-radius:8px 8px 0 0}
 .dpad .down{left:44px; top:88px; border-radius:0 0 8px 8px}
 .dpad .left{left:0; top:44px; border-radius:8px 0 0 8px}
 .dpad .right{left:88px; top:44px; border-radius:0 8px 8px 0}
 .dpad .key.is-down{transform:translateY(2px); box-shadow: 0 1px 0 #17181a, inset 0 2px 3px rgba(0,0,0,.5)}
 .btn-round{border-radius:50%; display:grid; place-items:center}
-.back{left:322px; top:84px; width:54px; height:54px; background: radial-gradient(circle at 40% 30%, #5d6167, #3a3d42); box-shadow: 0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15)}
+.back{left:322px; top:84px; width:54px; height:54px; background:#33363b; box-shadow: 0 4px 0 #1d1f22, inset 0 1px 0 rgba(255,255,255,.15)}
 /* Call: same size as Back, directly above it; teal with a raised ring texture so the two are told apart by feel. */
 .call{left:322px; top:6px; width:54px; height:54px;
   background: radial-gradient(circle at 40% 30%, rgba(255,255,255,.28), rgba(255,255,255,0) 45%),
     repeating-radial-gradient(circle at 50% 50%, #26b5a4 0 3px, #178a7d 3px 4px, #1fa293 4px 6px);
   box-shadow: 0 4px 0 #0c4f48, inset 0 1px 0 rgba(255,255,255,.25), inset 0 0 0 2px #14786d}
 .confirm{left:398px; top:30px; width:84px; height:84px; background: radial-gradient(circle at 40% 30%, #ff8a45, var(--orange) 55%, var(--orange-2)); box-shadow: 0 5px 0 #8c3608, inset 0 1px 0 rgba(255,255,255,.35)}
-.back svg{width:22px; height:22px; stroke:#e9e6df; fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+/* Back and Confirm carry the signed cap icons (shell/, byte-identical to art/device-buttons/caps), each a 1-bit master drawn as a luminance mask over its ink, in a 36×36 slot. */
+.cap-ico{display:block; width:36px; height:36px; pointer-events:none}
+.back .cap-ico{background:#f4f1ec; mask: url(shell/cap-back-10mm.png) center / 36px 36px no-repeat luminance}
+.confirm .cap-ico{background:#ffffff; mask: url(shell/cap-confirm-10mm.png) center / 36px 36px no-repeat luminance}
 .call svg{width:26px; height:26px; stroke:#eafff9; fill:none; stroke-width:2.6; stroke-linecap:round}
-.confirm svg{width:36px; height:36px; stroke:#fff8ef; fill:none; stroke-width:4.5; stroke-linecap:round; stroke-linejoin:round}
 .back.is-down, .call.is-down{transform:translateY(3px); box-shadow: 0 1px 0 #1d1f22, inset 0 2px 4px rgba(0,0,0,.5)}
 .confirm.is-down{transform:translateY(4px); box-shadow: 0 1px 0 #8c3608, inset 0 2px 5px rgba(0,0,0,.35)}
-.engrave{position:absolute; font: 600 11px/1 var(--font-ui); letter-spacing:.18em; color:#7b705c; text-shadow:0 1px 0 rgba(255,255,255,.45); pointer-events:none}
 
 /* ===== Side panel ===== */
 .panel{flex: 0 1 340px; max-width:340px; padding-top:28px; color:var(--ink)}
@@ -189,10 +190,8 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
           </div>
           <div class="grille" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
           <button class="key btn-round call" data-key="call" aria-label="Call"><svg viewBox="0 0 26 26"><path d="M7 8a7 7 0 0 1 0 10M11.5 5a11 11 0 0 1 0 16M16 2.5a14.5 14.5 0 0 1 0 21"/><circle cx="4" cy="13" r="1.6" fill="#eafff9" stroke="none"/></svg></button>
-          <button class="key btn-round back" data-key="back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M19 12H6M11 6l-6 6 6 6"/></svg></button>
-          <button class="key btn-round confirm" data-key="confirm" aria-label="Confirm"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></button>
-          <span class="engrave" style="left:345px;top:144px">←</span>
-          <span class="engrave" style="left:406px;top:124px">CONFIRM</span>
+          <button class="key btn-round back" data-key="back" aria-label="Back"><span class="cap-ico"></span></button>
+          <button class="key btn-round confirm" data-key="confirm" aria-label="Confirm"><span class="cap-ico"></span></button>
         </div>
       </div>
     </div>
@@ -1016,10 +1015,10 @@ const buriedIn = c => S.pods.filter(p => p.k === String(c) && p.h).length;
 const placeDone = c => surveyed(c) && explored(c) && !buriedIn(c);
 const TAKE_WORD = { pod: 'pod', charge: 'charge', warm: 'warm stone', dew: 'dew', fruit: 'fruit', tuft: 'tuft', beacon: 'beacon' };
 function takeKinds(c) { const n = leftCounts(c); return Object.keys(TAKE_WORD).filter(k => n[k]).map(k => TAKE_WORD[k]); }
-function placeState(c, short) {
+function placeState(c, short, noKinds) {
   const q = qCount(svyFull(c)), n = leftTotal(c), sv = q === 4 ? 'surveyed' : q ? 'surveyed ' + q + '/4' : 'not surveyed';
   if (short) return sv;
-  const what = n ? ' · ' + n + ' to take: ' + takeKinds(c).join(' · ') : '';   // the list may be cut on the line, never the count
+  const what = n ? ' · ' + n + ' to take' + (noKinds ? '' : ': ' + takeKinds(c).join(' · ')) : '';   // the list may be cut on the line, never the count
   if (q === 4 && !explored(c)) return sv + what + ' · Call to hear below';
   return sv + (n ? what : placeDone(c) ? ' · nothing to take' : '');
 }
@@ -2024,13 +2023,16 @@ function tripRecord(ex, carried) { const places = Array.isArray(ex.tripPlaces) ?
   return { v: 1, n: ex.n, partner: ex.pt ? ex.pt.id : null, places, storm: !!ex.tripStorm, carried: Array.isArray(carried) ? carried.slice() : [] }; }
 function tripsWith(trips, rec) { return (Array.isArray(trips) ? trips : []).concat([rec]).slice(-TRIPS_KEPT); }
 function bayLine() { const n = S.bay.length; return !n ? '' : isDocked() ? DOCK_TEXT.bay(n) : n + ' crate' + (n === 1 ? '' : 's') + ' sealed · dock to transfer'; }
+// What a hold seals, in words, from its contents: "two pods" + `join` + "supplies", either alone ("two pods", or `alone` for supplies only).
+function sealedWords(h, join, alone) { const n = h.pods ? h.pods.length : 0, sup = !!(h.e || h.d || h.s), pods = n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') : '';
+  return pods && sup ? pods + join + 'supplies' : pods || alone; }
 // The Cargo screen's preview of what End expedition will do.
 function sealPreview() {
   const ex = S.exp, out = [];
   if (!exploredAny(ex)) { out.push('Nothing explored · the world waits'); out.push('your finds stay in the hold'); return out; }
-  if (holdEmpty(ex.cargo)) out.push('An empty hold · nothing to seal');
+  if (holdEmpty(ex.cargo)) { out.push('An empty hold · no crate this time'); out.push('you still earn the place’s Data'); }
   else if (S.bay.length >= BAY) { out.push('Bay full · your finds stay in the hold'); out.push('dock to free it'); }
-  else { const n = ex.cargo.pods.length; out.push('Seals ' + (n ? numWord(n) + ' pod' + (n === 1 ? '' : 's') + ' + supplies' : 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
+  else { out.push('Seals ' + sealedWords(ex.cargo, ' + ', 'the supplies') + ' · crate ' + (S.bay.length + 1) + ' of ' + BAY);
     out.push('The Station opens it when you dock'); }
   if (ex.shield < ex.smax) out.push('Docking mends the Shield');
   return out;
@@ -3484,7 +3486,7 @@ function drawPatch(t) {
     blit(podArt(POD_SHELL[p.g] || 'bone', 1, p.sp), SX(x) + 8, SY(y) + 8 + (fr && (p.x + p.y) % 2 ? 1 : 0), spriteRm(p.x, p.y)); }
   // what Confirm will act on
   const act = patchAction();
-  if (act.run) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
+  if (act.run && act !== NOTHING) { const f = frontOf(P); brackets(W(f.x * ts + 1), H(f.y * ts + 1), ts - 2, ts - 2, C.amber); }
   // the strike warning: a tile glows one action before lightning hits it
   if (live.strike) { const x = W(live.strike.x * ts), y = H(live.strike.y * ts), col = fr ? C.cream : C.yellow;
     R(x, y, ts, 2, col); R(x, y + ts - 2, ts, 2, col); R(x, y, 2, ts, col); R(x + ts - 2, y, 2, ts, col); }   // strike warned: the tile's outline only
@@ -3647,6 +3649,7 @@ function drawTop(title, right, cs) {
   R(0, 0, SCR_W, HUD_H, C.ink); R(0, HUD_H - 1, SCR_W, 1, C.night);
   text(title, 10, 9, C.bone); const rx = drawCallSlot(cs, drawStatus(SCR_W - 6));
   if (right) text(clipText(right, rx - 30 - textW(title), 2), rx, 9, C.mist, 2, 'right');
+  return rx;
 }
 // The bottom line: [✓ what Confirm does · ← where Back goes] | where you are | conditions.
 // Confirm and Back are never dropped; the middle shrinks, trying shorter forms, then dropping tail words.
@@ -3763,7 +3766,7 @@ function drawWorldInset(x, y, t, u) {
   panel(x - 3, y - 3, W + 6, H + 6, C.ink, C.slate);
   g.drawImage(mapCvFade, 0, 0, MW * CELL, MH * CELL, x, y, W, H);
   for (let c = 0; c < MW * MH; c++) { const cx = x + (c % MW) * u, cy = y + ((c / MW) | 0) * u;
-    if (!S.revealed[c]) R(cx, cy, u, u, C.night); else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
+    if (!S.revealed[c]) g.drawImage(fogCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); else if (S.visited[c]) g.drawImage(mapCv, (c % MW) * CELL, ((c / MW) | 0) * CELL, CELL, CELL, cx, cy, u, u); }
   for (const pin of S.pins) R(x + (pin.c % MW) * u + o, y + ((pin.c / MW) | 0) * u + o, 2, 2, C.orange);
   for (const c of depotCells(S.seed)) { const f = depotOf(c); if (f && S.visited[c] && unveiled(String(c), f.x, f.y)) R(x + (c % MW) * u + o, y + ((c / MW) | 0) * u + o, d, d, outpostLeft(String(c), f) ? C.amber : C.bark); }
   for (const k in (S.skulls || {})) R(x + (k % MW) * u + o, y + ((k / MW) | 0) * u + o, d, d, C.bone);
@@ -3854,7 +3857,7 @@ function drawProbe(t) {
   // stones in a place, at 1×: plain, warm (amber ring), charged (crackle and a bolt), and a warned strike (the tile's outline)
   { const fr = motion() ? Math.floor(NOW / 400) % 2 : 0, y = 442;
     [['plain', () => stoneArt(0, false, 0)], ['warm', () => stoneArt(0, false, fr, 1)], ['charged', () => stoneArt(1, false, fr)], ['strike', null]].forEach(([l, a], i) => { const x = 50 + i * 104;
-      panel(x, y, 34, 34, C.sand); if (a) blit(a(), x + 1, y + 1); else { const col = fr ? C.cream : C.yellow; R(x + 1, y + 1, 32, 2, col); R(x + 1, y + 31, 32, 2, col); R(x + 1, y + 1, 2, 32, col); R(x + 31, y + 1, 2, 32, col); }
+      panel(x, y, 34, 34, C.grass); if (a) blit(a(), x + 1, y + 1); else { const col = fr ? C.cream : C.yellow; blit(stoneArt(0, false, 0), x + 1, y + 1); R(x + 1, y + 1, 32, 2, col); R(x + 1, y + 31, 32, 2, col); R(x + 1, y + 1, 2, 32, col); R(x + 31, y + 1, 2, 32, col); }
       text(l, x + 17, y + 37, C.fog, 2, 'center'); }); }
   head('Field guide', 500);
   if (!S.known.length) text('No species identified yet', 24, 522, C.stone);
@@ -4148,11 +4151,11 @@ function drawSealed(t) {
   if (r.reason === 'break') { text(clipText('The Probe broke', 410, 3), 22, y, C.coral, 3); y += 34;
     L(r.dropped ? numWord(r.dropped).replace(/^./, c => c.toUpperCase()) + ' pod' + (r.dropped === 1 ? ' lies' : 's lie') + ' where it broke.' : 'Nothing was in the hold.', C.bone);
     L('Lost: ' + (r.lost.length ? r.lost.map(l => l.text).join(', ') : 'nothing'), C.peach);
-    L('Docking mends the Probe free.', C.amber); y += 10; }
+    L('Docking mends the Probe for free.', C.amber); y += 10; }
   else if (r.waited) { text(clipText('Nothing explored', 410, 3), 22, y, C.bone, 3); y += 34; L('The world waits · nothing is sealed.', C.fog); L('Your finds stay in the hold.', C.fog); y += 10; }
-  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + numWord(r.sealed.pods.length) + ' pod' + (r.sealed.pods.length === 1 ? '' : 's') + ' and what you carried', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
+  else if (r.sealed) { text(clipText('Sealed', 410, 3), 22, y, C.bone, 3); y += 34; L('Expedition ' + r.n + ' · ' + sealedWords(r.sealed, ' and ', 'supplies'), C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); else y += 2; }
   else if (r.kept) { text(clipText('Bay full', 410, 3), 22, y, C.amber, 3); y += 34; L('Your finds stay in the hold, unsealed.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); L('A break would lose them.', C.fog); y += 10; }
-  else { text(clipText('Hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('Nothing to seal this time.', C.fog); y += 10; }
+  else { text(clipText('Hold empty', 410, 3), 22, y, C.bone, 3); y += 34; L('No crate this time.', C.fog); if (r.yield) L(yieldLine(r.yield), C.fog); y += 10; }
   // the skill notch: a row of the outcome block, directly under its last 2× line, never a world line; it moves the rest down 28 px
   if (r.notch && !r.waited) { const top = last + 24; ringFace(22, top - 3, r.notch.sp, true); text(clipText(CARE_TEXT.notch(r.notch.name), 374, 2), 54, top, C.bone); y += 28; }
   // the bay: three crates, the new one sliding in
@@ -4219,7 +4222,7 @@ function mapContext() {
 // First sightings in the top bar: what the Call slot means, and the weather group's arrows.
 function noteHud() {
   const ex = S.exp; if (!ex || (S.phase !== 'map' && S.phase !== 'patch')) return;
-  if (S.phase === 'patch') fxOnce('callplace', 'The teal CALL button pulses: it lifts the veil and finds things', 2);
+  if (S.phase === 'patch') fxOnce('callplace', 'Call lifts the veil, lights finds', 2);
   else fxOnce('callmap', 'CALL here drops a pin for 1 Energy', 1);
   if (ex.rider) fxOnce('rider', CARE_TEXT.riderSetOut(ex.rider.name), 2, true);
   const lvl = stormLevel(); if (lvl) fxOnce('hudstorm', 'Bottom line: bolts are the storm · it moves ' + (ex.storm.dir > 0 ? '▶ east' : '◀ west'), 1);
@@ -4261,9 +4264,9 @@ function lineFor() {
       const col = lay.cell % MW, wx = stormRain(col) ? '' : cov && stormOff(col) < 1.5 ? ' · lull' : cov ? ' · overcast' : '';   // storm and fog show as the conditions icons
       // facing a creature you can see, the line names it and its diet before you offer anything
       const P = S.exp.patch, f = frontOf(P), o = occupant(P.key, f.x, f.y, 'player');
-      // the survey state in words, drawn one step brighter (after the \x01 mark); the place name drops first
-      const sv = '\x01' + placeState(lay.cell);
-      let ctx = lay.cave ? 'cave' : [LAND_NAME[lay.land] + ' · ' + sv + wx, sv + wx, sv, '\x01' + placeState(lay.cell, true)];
+      // the survey state in words, drawn one step brighter (after the \x01 mark); the kinds drop first, then the place name, then the count
+      const sv = '\x01' + placeState(lay.cell), svN = '\x01' + placeState(lay.cell, false, true), land = LAND_NAME[lay.land] + ' · ';
+      let ctx = lay.cave ? 'cave' : [land + sv + wx, land + svN + wx, svN, '\x01' + placeState(lay.cell, true)];
       if (o && o.type === 'cr' && inSight(f.x, f.y)) ctx = [dietLine(o.c.sp, true), dietLine(o.c.sp, false)];
       if (S.ui.swap) { const sw = swapState(); return L1(sw ? 'Leave ' + podName(sw.held[sw.sel], true) : 'Swap', sw ? 'take ' + podName(sw.p, true) : '', 'keep', fieldFrozen()); }
       if (a.ctx && !(o && o.type === 'cr')) ctx = a.ctx;
@@ -4300,7 +4303,8 @@ function render(t) {
   RT.plScr = null; RT.msgInBand = false; RT.focusFoot = null; RT.frameN = (RT.frameN || 0) + 1;
   switch (S.phase) {
     case 'setup': drawSetup(t); break;
-    case 'place': drawMap('place', t); drawTop('Expedition ' + S.expN + ' · ' + (S.ui.type === 'deep' ? 'Deep ground' : 'Weather'), S.ui.type === 'deep' ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'dotted: storm start'); break;
+    case 'place': { drawMap('place', t); const deep = S.ui.type === 'deep', note = deep ? (firstPlacement() ? 'pick a start' : 'any seen cell') : 'storm start', rx = drawTop('Expedition ' + S.expN, note);
+      if (!deep) blit(ICON.bolt('mist'), rx - textW(note, 2) - 16, 8); break; }   // the type is said by the screen: Weather's storm band (its bolt before the note), Deep ground's cave cells
     case 'map': drawReachView(t); drawHUD(); break;
     case 'patch': drawPatch(t); drawHUD(); drawSwap(); break;
     case 'menu': drawMenu(t); if (S.exp) drawHUD(); else drawTop('Menu'); break;
