@@ -205,7 +205,7 @@ export function placeLayers(lay, seed, cat, fr, level = null) {
     const x = i % PW, y = (i / PW) | 0, t = lay.tiles[i], kind = terr ? terr[i] : 0, m = tmask ? tmask[i] : 0;
     const L = [], tile = { layers: L, dark: 0 }; tiles[i] = tile;
     // ground: lawn (dark lawn on a dark base), sand, or none for water
-    const g = GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;
+    const g = kind === TERR.SHADOW ? lay.base : GRASSY.includes(t) ? T.GRASS : t === T.DARK ? T.DARK : t === T.SAND ? T.SAND : WETT(t) ? -1 : lay.base;   // terrain pieces sit on the place's base
     if (g === T.SAND) { const p = pick(cat.sand, hash(seed, 'sd', key, x, y)); if (p) L.push(cellLayer(p, 0, 0)); }
     else if (g !== -1) { const p = cat.lawn[lv[i]]; if (p) L.push(Object.assign(cellLayer(p, 0, 0), { tone: lawnTone })); if (g === T.DARK) tile.dark = 1; }
     const ground = L.length;
