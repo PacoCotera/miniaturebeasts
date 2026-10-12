@@ -87,8 +87,8 @@ moments.**
 
 1. **Lit period.** 3 world turns per lighting (unchanged within an expedition),
    not 40 actions within the current expedition.
-2. **Going out.** Relight a dark outpost for 1 Energy, not letting it fall to ruin for now,
-   while a new one arrives elsewhere at the world turn.
+2. **Going out.** Relight a dark outpost for 1 Energy. For now it does not fall to ruin, and
+   no new outpost arrives elsewhere at the world turn.
 3. **Banking.** Every send from an outpost ends the expedition (no banking), not banking
    materials once per outpost without ending.
 
