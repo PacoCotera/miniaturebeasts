@@ -212,6 +212,14 @@ test("view: pure and integer only, by source; its only import is ./world.mjs; no
   const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
   for (const k of Object.keys(V)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
+test("the storm's dark band: at a fractional gap, 32 px keeps main's columns and 48 px takes STORM_K[48]", () => {
+  assert.match(MODULE, /darkW = Math\.ceil\(\(3 - gap\) \* STORM_K\[ts\]\) \* ts;/, "drawPatch's band");
+  const p = page(), K = p.run("STORM_K"), gaps = Array.from({ length: 12 }, (_, i) => i / 4), cols = ts => gaps.map(g => Math.ceil((3 - g) * K[ts]));
+  assert.deepEqual(cols(32), gaps.map(g => Math.ceil((3 - g) * 2.4)), "main's formula at 32");
+  assert.deepEqual(cols(32), [8, 7, 6, 6, 5, 5, 4, 3, 3, 2, 2, 1]);
+  assert.deepEqual(cols(48), [5, 5, 4, 4, 3, 3, 3, 2, 2, 2, 1, 1]);
+  for (const g of [0.2, 0.45, 1.65, 2.95]) assert.ok(Number.isInteger(Math.ceil((3 - g) * K[48])) && Math.ceil((3 - g) * K[32]) > 0, "a whole number of columns at gap " + g);
+});
 test("generator 2 is integer only, by source", () => {
   const a = MODULE_SRC.indexOf("// ---- generator 2 (integer only) ----\n"), b = MODULE_SRC.indexOf("// ---- end generator 2 ----\n");
   assert.ok(a > 0 && b > a, "the generator 2 markers");
