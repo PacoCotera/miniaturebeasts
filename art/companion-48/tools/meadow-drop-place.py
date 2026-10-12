@@ -50,12 +50,14 @@ for r in range(R):
 # the cast shadow on the lower lawn (proposed loader rule): e = the west neighbour is raised (plateau or face), s = the north neighbour
 # is a face's foot, es = both, c = only the north-west neighbour is raised; toned by the tile's level like the lawn
 raised = lambda r, c: at(r, c) in ("1", "F")
+GRID = {f"{r},{c}": {"cell": L[r][c], "lawn": lawn[v[(r, c)]], "shadow": None} for r in range(R) for c in range(Cn)}
 for r in range(R):
     for c in range(Cn):
         if L[r][c] not in (".",): continue
         e, s_ = raised(r, c - 1), at(r - 1, c) == "F"
         st = "es" if e and s_ else "e" if e else "s" if s_ else "c" if raised(r - 1, c - 1) else None
         if st: put(toned(PC[f"meadow/shadow/cast-{st}"][1], 0), r * 48, c * 48)
+        GRID[f"{r},{c}"] = {"cell": L[r][c], "lawn": lawn[v[(r, c)]], "shadow": st}
 OFF = {0: (-1, 0), 1: (-1, 1), 2: (0, 1), 3: (1, 1), 4: (1, 0), 5: (1, -1), 6: (0, -1), 7: (-1, -1)}
 def state(m, q):
     a = m >> (0 if q in ("nw", "ne") else 4) & 1; b = m >> (6 if q in ("nw", "sw") else 2) & 1
@@ -111,4 +113,5 @@ for nm, (r, c) in (("meadow/prop/boulder-2", (8, 2)), ("meadow/prop/boulder-1", 
     p, a_ = PC[nm]; put(a_, r * 48 + p["offset"][1], c * 48 + p["offset"][0])
 rgb = PAL[np.clip(img, 0, None)].astype(np.uint8); rgb[img < 0] = (0, 0, 0)
 im = Image.fromarray(rgb, "RGB"); im.save(outp + "-1x.png"); im.resize((im.width * 3, im.height * 3), Image.NEAREST).save(outp + "-3x.png")
+json.dump({"layout": L, "levelTone": LEVEL_TONE, "cells": GRID, "macros": sorted(f"{r},{c}" for r, c in macro_cells)}, open(outp + "-grid.json", "w"), indent=1)
 print("macros", len(macro_cells) // 4)
