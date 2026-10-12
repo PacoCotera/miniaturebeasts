@@ -271,6 +271,7 @@ html.embed #screen{visibility:visible; position:fixed; left:0; top:0; width:450p
 "use strict";
 import { MW, MH, PW, PH, DIRS, L, T, T_BLOCK, hash, rnd, makeRng, noise2, fbm, clamp, cheb, man, cxy, cdist, DECOR, NEW_GEN, GENS, passableIn, canStepIn, edgeKindIn, EDGE, STAIR, TERR, genWorld, genPlace, beaconCells as beaconCellsIn, depotCells as depotCellsIn } from "./src/world.mjs";
 import { viewOf, camAt, visTiles, sprOff, tileOnScreen, edgePoint, ON_SCREEN } from "./src/view.mjs";
+import { catalogue, coreSet, decodeExact, paletteTable, placeLayers } from "./src/atlas.mjs";
 /* =====================================================================
    Miniature Beasts · Companion Field Test (exploration rough playable)
    An honest simulation of the Companion panel: everything is drawn into an
@@ -2802,6 +2803,85 @@ function tilePB(lay, i, fr) {
 }
 function tileCanvas(lay, i, light, fr) { return tilePB(lay, i, fr).canvas(light); }
 
+// ---------- The 48 px places: the art director's meadow set, loaded from art/ by exact colour ----------
+// The manifests, their sheets and the biome palette beside each manifest. Any failure leaves places at 32 px, exactly as before.
+const ATLAS_URLS = ['../../art/companion-48/terrain/meadow/meadow.json'];
+const ART48 = { ready: false, pieces: new Map(), cat: null, refused: [], ver: 0, g48: 0 };
+const CORE_N = 48;
+// The page's core 48 with their names and tables, as the palette file must repeat them.
+const coreTables = () => ({ names: PALETTE.slice(0, CORE_N).map(p => p[0]), dark: DARK.slice(0, CORE_N), light: LIGHT.slice(0, CORE_N), dark2: DARK2.slice(0, CORE_N), fog: FOGLUT.slice(0, CORE_N), fade: FADE.slice(0, CORE_N) });
+async function loadAtlas() {
+  try {
+    const mans = [];
+    for (const url of ATLAS_URLS) { const man = await (await fetch(url)).json(), dir = url.slice(0, url.lastIndexOf('/') + 1);
+      const name = man.palette == null ? 'core48' : man.palette, pal = name === 'core48' ? null : await (await fetch(dir + name + '-palette.json')).json();
+      mans.push({ man, dir, sig: name + '|' + JSON.stringify(pal && pal.entries), pal }); }
+    if (new Set(mans.map(m => m.sig)).size !== 1) throw new Error('the manifests name different palettes');
+    const pal = mans[0].pal, table = pal ? paletteTable(RGB.slice(0, CORE_N), coreTables(), pal) : null;
+    if (table && table.errors) throw new Error('palette: ' + table.errors.join('; '));
+    const rgbTable = table ? table.rgb : RGB.slice(0, CORE_N), images = new Map(), list = [], refused = [];
+    const image = async file => { if (!images.has(file)) images.set(file, (async () => {
+      const bm = await createImageBitmap(await (await fetch(file)).blob(), { colorSpaceConversion: 'none', premultiplyAlpha: 'none' });
+      const cv = document.createElement('canvas'); cv.width = bm.width; cv.height = bm.height; const cg = cv.getContext('2d'); cg.drawImage(bm, 0, 0);
+      return { w: bm.width, h: bm.height, data: cg.getImageData(0, 0, bm.width, bm.height).data }; })()); return images.get(file); };
+    const byName = new Map(); for (const { man, dir } of mans) for (const p of man.pieces || []) byName.set(p.name, { p, dir, sheets: man.sheets || {} });   // the last manifest wins on a name
+    for (const [name, { p, dir, sheets }] of byName) {
+      const img = await image(dir + (p.file != null ? p.file : sheets[p.sheet])), x0 = p.file != null ? 0 : p.x, y0 = p.file != null ? 0 : p.y, w = p.file != null ? img.w : p.w, h = p.file != null ? img.h : p.h;
+      if (x0 + w > img.w || y0 + h > img.h) { refused.push(name); continue; }
+      const rgba = new Uint8Array(w * h * 4); for (let y = 0; y < h; y++) rgba.set(img.data.subarray(((y0 + y) * img.w + x0) * 4, ((y0 + y) * img.w + x0 + w) * 4), y * w * 4);
+      const d = decodeExact(rgba, w, h, rgbTable);
+      if (d.bad) { refused.push(name); console.warn('48 px piece refused (' + d.bad + ' pixels off the palette): ' + name); continue; }
+      list.push(Object.assign({}, p, { w, h, px: d.px }));
+    }
+    atlasInstall(list, table, mans[mans.length - 1].man.levelTone); ART48.refused = refused;
+  } catch (e) { console.warn('the 48 px place art did not load; places draw at 32 px', e); }
+}
+// The last step of the load (and the tests' hook): the pieces [{ ...fields, w, h, px }], the palette table (null: the core 48) and
+// the manifest's levelTone. The page's colour and lookup arrays grow from index 48 by the table; 0–47 never change.
+function atlasInstall(list, table, levelTone) {
+  for (const a of [RGB, HEX, DARK, LIGHT, DARK2, FOGLUT, FADE, TINT, LEVEL_LIGHT]) a.length = CORE_N;
+  if (table) for (let i = CORE_N; i < table.rgb.length; i++) {
+    RGB[i] = table.rgb[i].slice(); HEX[i] = '#' + table.rgb[i].map(v => v.toString(16).padStart(2, '0')).join('');
+    DARK[i] = table.dark[i]; LIGHT[i] = table.light[i]; DARK2[i] = table.dark2[i]; FOGLUT[i] = table.fog[i]; FADE[i] = table.fade[i]; TINT[i] = i; LEVEL_LIGHT[i] = i; }
+  ART48.pieces = new Map(list.map(p => [p.name, p])); ART48.cat = catalogue(list, levelTone); ART48.ready = coreSet(ART48.cat); ART48.ver++;
+  for (const k of [...ART.keys()]) if (k.startsWith('g48|') || k.startsWith('p48|')) ART.delete(k); ART48.g48 = 0;
+}
+// A place's layers at 48, per water frame, cached on the layout for the catalogue in effect.
+function layers48(lay, fr) {
+  if (!lay.l48 || lay.l48.ver !== ART48.ver) lay.l48 = { ver: ART48.ver };
+  return lay.l48[fr] || (lay.l48[fr] = placeLayers(lay, S.seed, ART48.cat, fr, G.level ? G.level[lay.cell] : null));
+}
+// The tile size a place draws at: 48 when the meadow set is in and the place can be built from it; caves stay at 32.
+function placeTs(lay) { return !lay.cave && ART48.ready && layers48(lay, 0).ok ? 48 : 32; }
+const WET48 = t => t === T.WATER || t === T.STEP || t === T.DEEP;
+const layerSig = (layers, base) => layers.map(l => l.stand ? 's' + l.stand + '.' + base + '@' + l.dx + ',' + l.dy : l.id + ':' + l.sx + ',' + l.sy + ',' + l.w + ',' + l.h + '@' + l.dx + ',' + l.dy + (l.tone ? '~' + l.tone : '')).join(';');
+function tile48Key(lay, i, fr) { const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; return 'g48|' + layerSig(t.layers, lay.base) + (t.dark ? '|D' : ''); }
+// A 48 px tile composed as an indexed PB: each layer's opaque pixels through its level tone, the 32 px stand-ins, then the dark of
+// a wood place. Identical tiles share one buffer (and one canvas per light level).
+function tile48(lay, i, fr) {
+  const key = tile48Key(lay, i, fr); let pb = ART.get(key); if (pb) return pb;
+  if (ART48.g48 > 4000) { for (const k of [...ART.keys()]) if (k.startsWith('g48|')) ART.delete(k); ART48.g48 = 0; }
+  const t = layers48(lay, WET48(lay.tiles[i]) ? fr : 0).tiles[i]; pb = new PB(48, 48);
+  for (const l of t.layers) {
+    if (l.stand) { const s32 = stand32(l.stand, lay.base); for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++) { const c = s32.p[y * 32 + x]; if (c >= 0) pb.p[(l.dy + y) * 48 + l.dx + x] = c; } continue; }
+    const pc = ART48.pieces.get(l.id), lut = l.tone === 'light' ? LIGHT : l.tone === 'dark' ? DARK : null; if (!pc) continue;
+    for (let y = 0; y < l.h; y++) for (let x = 0; x < l.w; x++) { let c = pc.px[(l.sy + y) * pc.w + l.sx + x]; if (c < 0) continue; if (lut) c = lut[c]; pb.p[(l.dy + y) * 48 + l.dx + x] = c; }
+  }
+  if (t.dark) for (let k = 0; k < pb.p.length; k++) if (pb.p[k] >= 0) pb.p[k] = DARK[pb.p[k]];
+  ART.set(key, pb); ART48.g48++; return pb;
+}
+// The 32 px code stand-ins a 48 px tile carries (registered in CARE_ASSETS): today's trunk and stepping stone, without their ground.
+function stand32(kind, base) {
+  return art('st32|' + kind + '|' + base, () => { const pb = new PB(32, 32);
+    if (kind === 'trunk') { pb.ell(16, 26, 10, 4, base === T.SAND ? C.clay : C.forest);
+      pb.rect(11, 6, 10, 21, C.bark); pb.rect(11, 6, 3, 21, C.clay); pb.rect(18, 6, 3, 21, C.soil); pb.rect(8, 25, 4, 2, C.bark); pb.rect(20, 25, 4, 2, C.soil); pb.rect(14, 12, 1, 4, C.soil); }
+    else if (kind === 'step') { pb.ell(16, 17, 11, 7.5, C.rock); pb.ell(15.5, 15.5, 10, 6, C.rockL, { sh: [C.white, C.rockL] }); pb.set(20, 13, C.fog); }
+    return pb; });
+}
+// A whole meadow piece as a sprite (the reeds, taller than a cell).
+function blit48(id, x, y, rm) { const pc = ART48.pieces.get(id); if (!pc) return;
+  blit(art('p48|' + id, () => { const pb = new PB(pc.w, pc.h); pb.p.set(pc.px); return pb; }), x, y, rm); }
+
 // ---------- World map terrain (416×520), built once per world as one indexed image ----------
 function buildMapPB() {
   const pb = new PB(MW * CELL, MH * CELL);
@@ -3375,7 +3455,8 @@ function veilEdgeTile(pbKey, pb, L, mask) {
 const POSE = { idle: 'idle', alert: 'alert', approach: 'alert', seek: 'idle', shelter: 'idle', huddle: 'huddle', flee: 'flee', dive: 'flee', shake: 'shake', eat: 'eat', full: 'eat', glow: 'glow', hidden: 'idle' };
 function drawPatch(t) {
   const ex = S.exp, P = ex.patch, lay = layout(P.key), live = ex.live[P.key]; if (!live) return;
-  if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; }
+  if (RT.key !== P.key) { RT.key = P.key; RT.cr.clear(); RT.pt = null; RT.pl = null; RT.ts = placeTs(lay); }
+  else if (RT.ts === 32 && (!RT.pl || NOW - RT.pl.at >= RT.pl.dur) && placeTs(lay) === 48) { RT.ts = 48; RT.cr.clear(); RT.pt = null; RT.pl = null; }   // the art arrived: switch with no slide running
   const fr = motion() ? Math.floor(t * 2) % 2 : 0;
   const v = viewOf(RT.ts, 0, VIEW_Y, SCR_W, VIEW_H), ts = v.ts, o = sprOff(ts);
   RT.pl = tween(RT.pl, P.x * ts, P.y * ts, P.noise === 'walk' ? 150 : 110);
@@ -3383,7 +3464,9 @@ function drawPatch(t) {
   const c0 = camAt(v, RT.pl.rx, RT.pl.ry), cam = { x: c0.x + sx, y: c0.y + sy }, camX = cam.x, camY = cam.y;   // centred, clamped; the shake after
   const W = (x) => x - camX, H = (y) => VIEW_Y + y - camY;   // tile origins and code overlays
   const SX = (x) => W(x) + o.x, SY = (y) => H(y) + o.y;       // 32 px sprites: bottom-aligned and centred in the cell
-  RT.plScr = { x: W(RT.pl.x) + (ts >> 1), y: H(RT.pl.y) + (ts >> 1) };
+  const PX = q => (ts === 48 ? q.rx : q.x), PY = q => (ts === 48 ? q.ry : q.y);   // at 48 every reader takes the whole-pixel position; at 32 main's
+  const tileFor = (i) => ts === 48 ? tile48(lay, i, fr) : tilePB(lay, i, fr), keyFor = (i) => ts === 48 ? tile48Key(lay, i, fr) : tileKey(lay, i, fr);
+  RT.plScr = { x: W(PX(RT.pl)) + (ts >> 1), y: H(PY(RT.pl)) + (ts >> 1) };
   const raining = !lay.cave && stormRain(lay.cell % MW), overcast = !lay.cave && stormCovers(lay.cell % MW), fogged = !lay.cave && inFog(lay.cell);
   let darkW = 0, darkLeft = true;
   if (!lay.cave && ex.storm && !overcast) { const st = ex.storm, col = lay.cell % MW, gap = st.dir > 0 ? col - (st.x + st.w) : st.x - (col + 1);
@@ -3420,12 +3503,12 @@ function drawPatch(t) {
     if (fogged && L0 !== 3) { const fk = (x, y) => x >= 0 && y >= 0 && x < PW && y < PH && !inSG(x, y), u = fk(tx, ty - 1), r = fk(tx + 1, ty), d = fk(tx, ty + 1), l = fk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && fk(tx - 1, ty - 1)) m |= 16; if (!u && !r && fk(tx + 1, ty - 1)) m |= 32; if (!d && !r && fk(tx + 1, ty + 1)) m |= 64; if (!d && !l && fk(tx - 1, ty + 1)) m |= 128;
-      if (m) { g.drawImage(fogEdgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L0, m, !uv), W(tx * ts), H(ty * ts)); continue; } }
+      if (m) { g.drawImage(fogEdgeTile(keyFor(i), tileFor(i), L0, m, !uv), W(tx * ts), H(ty * ts)); continue; } }
     if (L0 !== 3 && uv) { const vk = (x, y) => !uvAt(x, y), u = vk(tx, ty - 1), r = vk(tx + 1, ty), d = vk(tx, ty + 1), l = vk(tx - 1, ty);
       let m = (u ? 1 : 0) | (r ? 2 : 0) | (d ? 4 : 0) | (l ? 8 : 0);
       if (!u && !l && vk(tx - 1, ty - 1)) m |= 16; if (!u && !r && vk(tx + 1, ty - 1)) m |= 32; if (!d && !r && vk(tx + 1, ty + 1)) m |= 64; if (!d && !l && vk(tx - 1, ty + 1)) m |= 128;
-      if (m) { g.drawImage(veilEdgeTile(tileKey(lay, i, fr), tilePB(lay, i, fr), L0, m), W(tx * ts), H(ty * ts)); continue; } }
-    g.drawImage(tilePB(lay, i, fr).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
+      if (m) { g.drawImage(veilEdgeTile(keyFor(i), tileFor(i), L0, m), W(tx * ts), H(ty * ts)); continue; } }
+    g.drawImage(tileFor(i).canvas(L0, false, false, L0 !== 3 && !uv), W(tx * ts), H(ty * ts));
   }
   const vis2 = (x, y) => x > camX - 96 && x < camX + SCR_W + 96 && y > camY - 96 && y < camY + VIEW_H + 96;
   // ground decals
@@ -3461,19 +3544,20 @@ function drawPatch(t) {
       : c.sp === 1 && lay.cave && POSE[c.st] === 'idle' ? 'nest' : POSE[c.st] || 'idle';
     // a calm tilde over a wary creature the partner is keeping calm (it would otherwise be watching you)
     const cue = !!c.cue && ['idle', 'seek'].includes(c.st) && !(c.sp === 1 && c.calm >= 1);
-    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(nr.x), SY(nr.y), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
+    items.push({ y: nr.y + 4, d: () => drawCreature(c, SX(PX(nr)), SY(PY(nr)), pose, t, c.sp === 1 ? 0 : spriteRm(c.x, c.y), cue) });
   }
   if (live.pt && ex.pt) { RT.pt = tween(RT.pt, live.pt.x * ts, live.pt.y * ts, ex.pt.elder ? 220 : 150); const rp = RT.pt;
-    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(rp.x), SY(rp.y), t);
-      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(rp.x) + 16, y: SY(rp.y), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(rp.x) + 11, SY(rp.y) - 9); } }); }
+    items.push({ y: rp.y + 4, d: () => { drawPartner(ex.pt.sp, live.pt, SX(PX(rp)), SY(PY(rp)), t);
+      if (ex.actions < (ex.ptTagUntil || 0)) RT.tag = { x: SX(PX(rp)) + 16, y: SY(PY(rp)), name: ex.pt.name };   /* its name tag, drawn after every sprite */ if (live.pt.flinch === ex.actions + 1) blit(bubbleArt('!'), SX(PX(rp)) + 11, SY(PY(rp)) - 9); } }); }
   let bx = 0; if (NOW - FX.bumpAt < 160 && motion()) bx = Math.floor((NOW - FX.bumpAt) / 40) % 2 ? 1 : -1;
   const stepping = motion() && NOW - RT.pl.at < RT.pl.dur;
   items.push({ y: RT.pl.y + 5, d: () => {
     const pose = P.noise === 'creep' ? 'creep' : 'stand', f2 = stepping ? (Math.floor((NOW - RT.pl.at) / 75) % 2) : 0;
-    blit(playerArt(P.dir, pose, f2), SX(RT.pl.x) + bx, SY(RT.pl.y));
-    if (ex.carry) blit(FRUIT(), SX(RT.pl.x + 10) + bx, SY(RT.pl.y - 6)); } });
+    blit(playerArt(P.dir, pose, f2), SX(PX(RT.pl)) + bx, SY(PY(RT.pl)));
+    if (ex.carry) blit(FRUIT(), SX(PX(RT.pl) + 10) + bx, SY(PY(RT.pl) - 6)); } });
+  if (ts === 48) for (const s2 of layers48(lay, fr).sprites) if (vis2(s2.x, s2.y)) items.push({ y: s2.sortY, d: () => blit48(s2.id, W(s2.x), H(s2.y), spriteRm(s2.tx, s2.ty)) });   // the reeds
   RT.tag = null; items.sort((a, b) => a.y - b.y).forEach(it => it.d());
-  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
+  if (RT.tag) drawTag(tagSpot(RT.tag, { W, H, o, ts, inS, PX, PY }));   // the partner's name tag: the first clear of positions 1–5, edge tabs refused
   // overlays: tree canopies and overhang roofs, thinned to a checkerboard when something is beneath
   const tokens = [{ x: P.x, y: P.y }].concat(live.cr.filter(c => !c.hide && inS(c.x, c.y)), live.pt ? [live.pt] : []);
   for (let i = 0; i < PW * PH; i++) if (lay.tiles[i] === T.TRUNK) {
@@ -3627,8 +3711,8 @@ function tagSpot(tg, k) {
   // what a tag may not cover: other creatures' and the pawn's clear zones, the warned cell, the message box, the edge tabs
   const zone = (cx, cy, x0, y0, x1, y1) => ({ x: cx + Math.min(0, x0) - M, y: cy + Math.min(0, y0) - M, w: Math.max(ts, x1) - Math.min(0, x0) + 2 * M, h: Math.max(ts, y1) - Math.min(0, y0) + 2 * M });
   const block = [];
-  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(r.x), k.H(r.y), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
-  block.push(zone(k.W(RT.pl.x), k.H(RT.pl.y), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
+  for (const c of live.cr) { if (c.hide || !k.inS(c.x, c.y)) continue; const r = RT.cr.get(c.id); if (r) block.push(zone(k.W(k.PX(r)), k.H(k.PY(r)), o.x - 4, o.y - 9, o.x + 36, o.y + 36)); }   // bubble, pips and flee lines
+  block.push(zone(k.W(k.PX(RT.pl)), k.H(k.PY(RT.pl)), o.x, o.y - 6, o.x + 32, o.y + 32));   // the pawn, with the fruit it carries
   if (live.strike) block.push({ x: k.W(live.strike.x * ts), y: k.H(live.strike.y * ts), w: ts, h: ts });
   const m = msgRect(); if (m) block.push(m);
   for (const t of edgeTabs()) block.push(tabRect(t));
@@ -4787,6 +4871,7 @@ function drawNewer() {
   R(0, 564, 450, 36, C.ink); R(0, 564, 450, 1, C.night);
 }
 const ld = load(); if (ld === 'newer') readOnlyNewer(); else if (!ld) newWorld(urlSeed());
+loadAtlas();   // the 48 px place art, in the background: places draw at 32 until it is in
 RT.bootHold = true;   // nothing is written until a loaded save has drawn once (below)
 if (ld === true && S.exp && S.exp.beaconView) setTimeout(() => { if (!RT.readOnly) beaconDone(); }, 0);   // reloaded mid-sweep: back beside the beacon
 if (ld === true && S.exp && S.exp.caveDue) setTimeout(() => { if (!RT.readOnly) digDone(); }, 0);   // reloaded before the dug burrow's entry: into the cave
@@ -4819,12 +4904,12 @@ try { if (new URLSearchParams(location.search).get('dev') === '1') setObserver(t
 fit();
 requestAnimationFrame(frame);
 // Test hooks (read-only views plus a raw capture of the offscreen frame).
-window.__mb = { get S() { return S; }, get G() { return G; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
+window.__mb = { get S() { return S; }, get G() { return G; }, get ART48() { return ART48; }, get RT() { return RT; }, layout, occupant, patchAction, lineFor, PW, PH, MW, MH, T, T_BLOCK, PALETTE,
   act: (k, mode) => { FX.lockUntil = 0; act(k, mode); }, press, release, menuItems, leftCounts, leftPhrase, reachCounts, isCleared, surveyed, quarterFracs, unveiled, surveyable, pipsOf, hiddenIn, signsAt, stormLevel, inFog,
   sealPreview, syncStation, isDocked, canWalk, walk, startBlock, placeTier, walkTier, walkYield, setDataStep, dataLadder, awardMoment, get dataStep() { return dataStep; }, DATA_STEP, PLACE_TIER, CAVE_TIER, TIER_NAME, passable, mapCounts, surveyText, energyText, stoneWarm, stormCharge, stoneCharge, sightR, seenFromPlayer, bubbleOf, explored, get CALL_R() { return CALL_R; }, get CALL_R_FOG() { return CALL_R_FOG; }, get SURVEY_AT() { return SURVEY_AT; }, crossReason, canStep, edgeKind, TEST,
   capture: () => scr.toDataURL('image/png'), get msg() { return FX.msg; }, partnerRow, rosterList, setLead, nextLead, rosterAt, liveMibis, worldLineRows, FX, carriedMibis, partnerMibi, canTend, tend, localDay, callSlot, canSend, depotCells, depotShelter, nearestSend, slabPushable, placeState, veiledWhere, gatedCell, doneEmpty, shownMibi, activeStatus, foundEnergy, energyInReach, mapSigns,
   artStats: () => { const o = { tiles: 0, tileBytes: 0, other: 0, otherBytes: 0, glyphs: 0 }; for (const [k, pb] of ART) { const b = pb.w * pb.h; if (k[0] === 't' && /^t\d/.test(k)) { o.tiles++; o.tileBytes += b; } else if (k.startsWith('gl')) o.glyphs++; else { o.other++; o.otherBytes += b; } } return o; },
-  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();
+  offPalette: () => { const d = g.getImageData(0, 0, SCR_W, SCR_H).data, ok = new Set(RGB.slice(0, S && S.phase === 'patch' && RT.ts === 48 ? RGB.length : CORE_N).map(([r, g2, b]) => (r << 16) | (g2 << 8) | b)), bad = new Map();   // the table in effect: the biome's entries only in a place drawn at 48
     for (let i = 0; i < d.length; i += 4) { const v = (d[i] << 16) | (d[i + 1] << 8) | d[i + 2]; if (!ok.has(v) || d[i + 3] !== 255) bad.set(v, (bad.get(v) || 0) + 1); }
     return { colours: new Set(Array.from({ length: d.length / 4 }, (_, i) => (d[i * 4] << 16) | (d[i * 4 + 1] << 8) | d[i * 4 + 2])).size, bad: [...bad.entries()].slice(0, 8) }; } };
 </script>

@@ -9,11 +9,12 @@ import vm from "node:vm";
 import * as W from "../src/world.mjs";
 import * as A from "../src/atlas.mjs";
 import * as V from "../src/view.mjs";
-import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs } from "../tools/world-vectors.mjs";
+import { seedDigest, worldDigest, placeDigest, placeKeys, placeKeys2, SEEDS, VIEW_CASES, viewArgs, ATLAS_CASES, atlasCaseOut, atlasPlaces, syntheticPieces, SYNTH_TONE, fnv as fnvStr } from "../tools/world-vectors.mjs";
 
 const VECTORS = JSON.parse(readFileSync(new URL("./world-vectors.json", import.meta.url), "utf8"));
 const MODULE_SRC = readFileSync(new URL("../src/world.mjs", import.meta.url), "utf8");
 const VIEW_SRC = readFileSync(new URL("../src/view.mjs", import.meta.url), "utf8");
+const ATLAS_SRC = readFileSync(new URL("../src/atlas.mjs", import.meta.url), "utf8");
 const FIXTURE = () => JSON.parse(readFileSync(new URL("../../station/tests/fixtures/save-v8-care-before.json", import.meta.url), "utf8"));
 const API = { hash: W.hash, L: W.L, genWorld: s => W.genWorld(s, 1), genPlace: W.genPlace, beaconCells: W.beaconCells, depotCells: W.depotCells };
 const vectorOf = seed => VECTORS.gens["1"].seeds.find(s => s.seed === seed);
@@ -195,13 +196,68 @@ test("generator 2: the key list is complete, generator 1's G gains no field, and
   assert.equal(W.depotCells(G, 7), G.depots.set, "the eager outposts are the memo");
 });
 
-// ---- src/view.mjs: the place camera and coordinates (C2a §3, §8.2) ----
+// ---- src/view.mjs: the place camera and coordinates ----
 test("view: src/view.mjs gives every literal case in world-vectors.json, and the file holds every case", () => {
   assert.deepEqual(VECTORS.view.map(c => c.name), VIEW_CASES.map(c => c.name), "the case list");
   for (const c of VECTORS.view) assert.deepEqual(V[c.fn](...viewArgs(V, c.args)), c.out, c.name);
   const at = n => VECTORS.view.find(c => c.name === n).out;
   assert.deepEqual(at("camAt at 32 (today's value)"), { x: 239, y: 492 }, "today's camera on main at 32 px");
   assert.deepEqual(at("visTiles at spawn"), { tx0: 9, ty0: 20, tx1: 19, ty1: 31 }, "11 × 12 tiles");
+});
+// ---- src/atlas.mjs: the per-tile layers of a 48 px place, on the synthetic catalogue in world-vectors.json ----
+const SYN = () => A.catalogue(VECTORS.atlas.catalogue, VECTORS.atlas.levelTone);
+const vecPlaces = () => atlasPlaces(W).map(p => { const lay = W.genPlace(p.G, p.seed, p.key); return { ...p, lay, level: p.G.level ? p.G.level[lay.cell] : null }; });
+test("atlas: the synthetic catalogue and the literal cases in world-vectors.json", () => {
+  assert.deepEqual(VECTORS.atlas.catalogue, syntheticPieces(), "the stored catalogue"); assert.deepEqual(VECTORS.atlas.levelTone, SYNTH_TONE);
+  assert.deepEqual(VECTORS.atlas.cases.map(c => c.name), ATLAS_CASES.map(c => c.name));
+  const cat = SYN(); for (const c of VECTORS.atlas.cases) assert.deepEqual(atlasCaseOut(A, cat, c), c.out, c.name);
+  const at = n => VECTORS.atlas.cases.find(c => c.name === n).out;
+  assert.deepEqual(["nw", "ne", "se", "sw"].map(q => at("lipState 65 " + q)), ["outer", "edgeh", "fill", "edgev"]);
+  assert.deepEqual(["nw", "ne", "se", "sw"].map(q => at("lipState 20 " + q + " zero")), ["fill", "edgev0", "outer0", "edgeh"]);
+  assert.deepEqual(["nw", "ne", "se", "sw"].map(q => at("shoreState 20 " + q)), ["fill", "edgev", "outer", "edgeh"]);
+  assert.deepEqual(at("decodeExact one off-palette pixel").bad, 1); assert.deepEqual(at("decodeExact alpha 128").bad, 1); assert.deepEqual(at("decodeExact all exact"), { px: [0, 1, 1, -1], bad: 0 });
+});
+test("atlas: every vector place's layers match their digests, both water frames", () => {
+  const cat = SYN(), want = new Map(VECTORS.atlas.places.map(p => [p.gen + "/" + p.seed + "/" + p.key, p]));
+  const got = vecPlaces(); assert.equal(got.length, VECTORS.atlas.places.length);
+  for (const p of got) { const w = want.get(p.gen + "/" + p.seed + "/" + p.key); assert.ok(w, p.key);
+    assert.equal(fnvStr(JSON.stringify(A.placeLayers(p.lay, p.seed, cat, 0, p.level))), w.fr0, p.gen + "/" + p.seed + "/" + p.key + " fr 0");
+    assert.equal(fnvStr(JSON.stringify(A.placeLayers(p.lay, p.seed, cat, 1, p.level))), w.fr1, p.gen + "/" + p.seed + "/" + p.key + " fr 1"); }
+});
+test("atlas: on every vector place no tile shares a lawn variant with its four neighbours; every layer lies in the tile", () => {
+  for (const p of vecPlaces()) { const v = A.lawnVariants(p.lay, p.seed, 4);
+    for (let i = 0; i < W.PW * W.PH; i++) { const x = i % W.PW, y = (i / W.PW) | 0;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const X = x + dx, Y = y + dy; if (X >= 0 && Y >= 0 && X < W.PW && Y < W.PH) assert.notEqual(v[i], v[Y * W.PW + X], p.key + " " + x + "," + y); } }
+    for (const t of A.placeLayers(p.lay, p.seed, SYN(), 0, p.level).tiles) for (const l of t.layers) if (l.stand == null) assert.ok(l.dx >= 0 && l.dy >= 0 && l.w > 0 && l.h > 0 && l.dx + l.w <= 48 && l.dy + l.h <= 48, p.key); }
+});
+test("atlas: level tone: on every level-2 vector place the lawn and tall-grass layers are 'light' and every other layer null", () => {
+  const cat = SYN(), lawn = new Set(cat.lawn.concat(cat.decal.tall).map(q => q.name)); let n = 0;
+  for (const p of vecPlaces()) { if (p.level !== 2) continue; n++;
+    for (const t of A.placeLayers(p.lay, p.seed, cat, 0, p.level).tiles) for (const l of t.layers) if (l.stand == null) assert.equal(l.tone, lawn.has(l.id) ? "light" : null, p.key + " " + l.id); }
+  assert.ok(n > 0, "level-2 places among the vectors");
+  for (const p of vecPlaces().filter(p => p.level === null)) for (const t of A.placeLayers(p.lay, p.seed, cat, 0, null).tiles) for (const l of t.layers) if (l.stand == null) assert.equal(l.tone, null, "generator 1: no tone");
+});
+test("atlas: a blocking tile never draws as lawn; without its own pieces it takes the rock stand-in; without the stand-in the place stays at 32", () => {
+  const full = SYN(), blockKinds = [W.T.FACE, W.T.LIP, W.T.ROCK, W.T.CLIFF], places = vecPlaces();
+  const groundOnly = (lay, r) => r.tiles.some((t, i) => W.T_BLOCK[lay.tiles[i]] && ![W.T.WATER, W.T.DEEP, W.T.ISLE].includes(lay.tiles[i]) && t.layers.length < 2);
+  for (const p of places) { const r = A.placeLayers(p.lay, p.seed, full, 0, p.level); assert.ok(r.ok && !groundOnly(p.lay, r), p.key); }
+  const strip = keep => A.catalogue(VECTORS.atlas.catalogue.filter(q => keep(q)), VECTORS.atlas.levelTone);
+  const lean = strip(q => !(["cap", "side", "lip"].includes(q.kind) || (q.kind === "face" && q.cells[0] > 1) || (q.kind === "prop" && q.type === "boulder")));
+  const standIn = new Set(lean.face.w1.concat(lean.material.rock).map(q => q.name));
+  for (const p of places) { const r = A.placeLayers(p.lay, p.seed, lean, 0, p.level); assert.ok(r.ok, p.key);
+    r.tiles.forEach((t, i) => { if (blockKinds.includes(p.lay.tiles[i])) assert.ok(t.layers.some(l => standIn.has(l.id)), p.key + " tile " + i); }); }
+  const none = strip(q => !(["cap", "side", "lip", "face"].includes(q.kind) || q.kind === "material" || (q.kind === "prop" && q.type === "boulder")));
+  const withBlock = places.filter(p => p.lay.tiles.some(t => blockKinds.includes(t)));
+  assert.ok(withBlock.length > 0); for (const p of withBlock) assert.deepEqual(A.placeLayers(p.lay, p.seed, none, 0, p.level), { ok: false }, p.key);
+  const flat = places.find(p => !p.lay.tiles.some(t => blockKinds.includes(t))); if (flat) assert.ok(A.placeLayers(flat.lay, flat.seed, none, 0, flat.level).ok, "a place with no blocking terrain kind");
+});
+test("atlas: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
+  const code = ATLAS_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
+  for (const re of [/\bS\./, /document/, /window/, /localStorage/, /Math\.random/, /Date/, /performance/, /getContext/, /Math\.round/, /Math\.hypot/, /Math\.sqrt/]) assert.doesNotMatch(code, re, String(re));
+  assert.doesNotMatch(code, /(^|[^\w.])\d*\.\d+/, "a float literal");
+  assert.deepEqual([...code.matchAll(/^import .* from '([^']+)';$/gm)].map(m => m[1]), ["./world.mjs"]);
+  const SCRIPT_DECL = new Set([...SCRIPT.matchAll(/^(?:const|let|function) ([A-Za-z_$][\w$]*)/gm)].map(m => m[1]));
+  for (const k of Object.keys(A)) assert.ok(!SCRIPT_DECL.has(k), k + " is also a page identifier");
 });
 test("view: pure and integer only, by source; its only import is ./world.mjs; no export shadows a page identifier", () => {
   const code = VIEW_SRC.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "");
@@ -648,11 +704,16 @@ test("M3: the gen-1 hint shows on a generator 1 save between expeditions, never 
 // ---- the view's edge cues: tabs, the Call's hold on the edge, the name tag's positions, the send hint in a place ----
 // Each runs at ts 32 and at ts 48 through view.mjs (RT.ts), with motion reduced (the harness's matchMedia matches).
 // A place on seed 1's spawn cell, no storm, no fog, the pawn mid-place, nothing else in it unless the test puts it there.
+// At 48 the page draws the synthetic catalogue (each piece a solid fill, hash(name) % 40 + 4, with a 1 px ink border), so the place latches RT.ts = 48 itself.
+const CUE_SYN = syntheticPieces().map(q => ({ ...q, fill: parseInt(fnvStr(q.name), 16) % 40 + 4 }));
 function cuePlace(ts, opts = {}) {
   const p = page({}, undefined, { canvas: true, script: opts.script });
+  if (ts === 48) p.run(`atlasInstall(${JSON.stringify(CUE_SYN)}.map(q => { const px = new Int16Array(q.w * q.h).fill(q.fill);
+    for (let y = 0; y < q.h; y++) for (let x = 0; x < q.w; x++) if (!x || !y || x === q.w - 1 || y === q.h - 1) px[y * q.w + x] = C.ink; return Object.assign(q, { px }); }), null, ${JSON.stringify(SYNTH_TONE)})`);
   p.run(`newWorld(1); startExpedition('weather', G.spawns[0]); S.exp.storm = null; S.exp.fog = null; S.exp.pt = ${opts.partner ? "{ id: 1, name: 'Dot', sp: 0, elder: false }" : "null"};
-    enterPatch(); RT.ts = ${ts}; { const P = S.exp.patch; P.x = 14; P.y = 13; P.noise = 'creep'; } RT.pl = null; RT.key = null;
-    S.pods = S.pods.filter(q => q.k !== S.exp.patch.key); curLive().cr = []; curLive().fr = []; curLive().strike = null; FX.msg = ''; FX.notes = []; FX.pulse = null; FX.cue = null; FX.rings = []; NOW = 5000;`);
+    enterPatch(); { const P = S.exp.patch; P.x = 14; P.y = 13; P.noise = 'creep'; } RT.pl = null; RT.key = null;
+    S.pods = S.pods.filter(q => q.k !== S.exp.patch.key); curLive().cr = []; curLive().fr = []; curLive().strike = null; FX.msg = ''; FX.notes = []; FX.pulse = null; FX.cue = null; FX.rings = []; NOW = 5000; render(5);`);
+  assert.equal(p.run("RT.ts"), ts, `the place draws at ${ts}`);
   return p;
 }
 const crt = (id, x, y, st, more = "") => `curLive().cr.push(Object.assign({ id: ${id}, sp: 0, x: ${x}, y: ${y}, st: '${st}', hide: 0, calm: 0, face: 1 }, { ${more} }));`;
@@ -683,7 +744,7 @@ for (const ts of [32, 48]) {
     assert.equal(p.run("sightR(curLay())"), 4, "in a fog bank");
     assert.equal(tabsOf(p).length, 0, "beyond fog sight: none");
     p.run(`curLive().cr = []; ${crt(4, 14, 9, "alert")}`); assert.equal(tabsOf(p).length, 0, "4 tiles away in fog: in sight, but on screen");
-    p.run(`S.exp.fog = null; enterCave(); S.phase = 'patch'; RT.ts = ${ts}; curLive().cr = []; ${crt(5, 27, 1, "alert")} RT.key = null;`);
+    p.run(`S.exp.fog = null; enterCave(); S.phase = 'patch'; curLive().cr = []; ${crt(5, 27, 1, "alert")} RT.key = null;`);
     assert.equal(p.run("curLay().cave"), true); assert.equal(tabsOf(p).length, 0, "a cave: none");
   });
 

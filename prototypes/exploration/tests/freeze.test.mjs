@@ -397,7 +397,7 @@ test("docked: no one-time hint shows or is spent; after Lift the first press sho
   assert.equal(p.S.found.includes("callplace"), true, "and spends it");
 });
 
-// ---- C2a §8.3: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----
+// ---- C2a: rendering changes nothing (the scenes at 32 px; the 48 px place and the cues join with the atlas and the tabs) ----
 // 600 frames in each scene, 16 ms apart, with no pass(): no input timer runs, so only render() and frame() could write.
 function frozenBy(p, name) {
   p.run("save()"); const snap = p.run("JSON.stringify(S)") + p.store[p.KEY]; let t = p.clock.t;
@@ -405,7 +405,7 @@ function frozenBy(p, name) {
   assert.equal(p.run("JSON.stringify(S)") + p.store[p.KEY], snap, name + ": S and the save as they were");
   assert.equal(p.run("RT.err"), 0, name + ": no render error");
 }
-test("C2a §8.3: rendering changes nothing: 600 frames in the reach view, a place, the beacon sweep and the active screen with a cut due", () => {
+test("C2a: rendering changes nothing: 600 frames in the reach view, a place, the beacon sweep and the active screen with a cut due", () => {
   { const { p } = begin(); frozenBy(p, "the reach view"); }
   { const { p } = begin(); assert.ok(intoPlaceWithCreature(p), "a creature in sight"); assert.ok(p.run("!!(curLive().pt && S.exp.pt)"), "the partner along"); frozenBy(p, "a place with a creature and the partner"); }
   { const { p } = begin();
