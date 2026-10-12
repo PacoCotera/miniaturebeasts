@@ -6,14 +6,14 @@ Options for the genome ring's form: is it future-proof as loci, layers and speci
 
 | # | Requirement | Source |
 | --- | --- | --- |
-| R1 | Encodes the real copies, both of every shown heritable locus, not a hash or an ID | owner 10-07 ("must codify the actual genome"); Identity, **Decided** |
+| R1 | Encodes the real copies, both of every shown heritable locus, not a hash or an ID | "must codify the actual genome"; Identity |
 | R2 | Visible relatedness: one species looks alike; a child visibly holds one of each parent's two copies at every locus | research-loop §5, §7; homepage genealogy tree (10-06) |
 | R3 | Partial reveal: unread chapters show as "not read yet", distinct from a value; the code fills as research does | research-loop §4, §7; "off ≠ absent ≠ zero" (working rule) |
 | R4 | Readable at Station size (300 px) and printable on the Caddy at about 20 mm (58 mm paper, 203 dpi assumed, 48 mm printable) | research-loop §7; `devices.md` (printer **Open**) |
-| R5 | Scannable by a phone camera, under real light, from a real print | owner 10-07 ("be scannable"), 09-24 ("scan a qr in the machine from other machines") |
-| R6 | Grows with the genome (new loci, new chapters and domains, changed layers) without breaking old prints | "genomes grow" (**Decided** as direction); "rule changes never rewrite creatures"; species-frames §7 |
+| R5 | Scannable by a phone camera, under real light, from a real print | "be scannable"; "scan a qr in the machine from other machines" |
+| R6 | Grows with the genome (new loci, new chapters and domains, changed layers) without breaking old prints | "genomes grow" (a direction); "rule changes never rewrite creatures"; species-frames §7 |
 | R7 | One scheme from 5 open loci (Loika) to 38 (Tuikis) to 100+ | species-frames §5; research-loop §2 |
-| R8 | Forgery shows but never grants | research-loop §7 (working rule); owner's spoofing worry (09-24) |
+| R8 | Forgery shows but never grants | research-loop §7 (working rule); the spoofing worry |
 | R9 | Fits the art: the Station's botanical-tome Library, the Caddy's paper, the website | The four vibes; the Playdate-style site |
 | R10 | Monochrome-safe: a thermal printer and an e-paper Caddy | `devices.md` |
 | R11 | Decodes offline: the kit works with no account or internet; frames ship with every reader | The project's standalone rule |
@@ -21,7 +21,7 @@ Options for the genome ring's form: is it future-proof as loci, layers and speci
 | R13 | A code, not a species art motif, and something different from a QR | The project's direction |
 | R14 | The format is public: the project is open source, so obscurity protects nothing | The website: the source is open |
 
-The short code (`G7F · CD0 · 3H2`) stays the mibi's name and a lookup, not the genome (**Decided**), whatever the form.
+The short code (`G7F · CD0 · 3H2`) stays the mibi's name and a lookup, not the genome, whatever the form.
 
 ## 2. The ring's limits, in numbers
 
@@ -73,7 +73,7 @@ Every sheet draws the same individuals from the same payload bits: Loika, Tuikis
   - a **foot strip** holds the header, the CRC-16 and Reed–Solomon parity (~25%), so parity never mixes into the genome cells.
 - **Capacity and growth.** The Loika fits 17 cells (1.18 mm a cell at 20 mm), the Tuikis 21 (0.95 mm) and 150 open loci 29 (0.69 mm). Size 41 holds about 450 open loci at 0.49 mm a cell. Growth moves a species to the next size, never to a thinner mark. Cells could carry 3 or 4 copies per locus as taller blocks (R12).
 - **Relatedness and reveal.** Species: the same border and glyph. Family: compare the dominoes column by column. On the 20 mm print this still works at 150 loci, because a cell is 5.5 dots. Unread chapters stay visibly empty on paper.
-- **Robustness.** `node genome-code/print-test.mjs` sends stamps through the same print and photo pipeline and reads the cells **with the true geometry**: no stamp decoder exists, so finding the stamp is not tested. Plain ink-or-blank cells: **0 raw cell errors** in 90 stamps at 20 mm (both distances) and at 16 mm (6 px/mm), all three species, before any parity; at 12 mm the 150-loci stamp (0.41 mm cells) reaches 2.7%, within its parity. Our first idea, a small dot for 0 as the ring's long/short self-reference, was much worse (12% of cells wrong at 20 mm for 150 loci, 6 px/mm): sub-cell detail is what the camera loses. Square cells with finder corners and standard error correction have the physics of QR behind them. The reader would still be ours, with no real phone evidence yet. **On the owner's test** each cell is 2.3 mm at 40 mm and a misread bit is corrected by Reed–Solomon, not voted, so the cells would very likely have read. Whether our own finder locks under that light is unknown until it is built and tried.
+- **Robustness.** `node genome-code/print-test.mjs` sends stamps through the same print and photo pipeline and reads the cells **with the true geometry**: no stamp decoder exists, so finding the stamp is not tested. Plain ink-or-blank cells: **0 raw cell errors** in 90 stamps at 20 mm (both distances) and at 16 mm (6 px/mm), all three species, before any parity; at 12 mm the 150-loci stamp (0.41 mm cells) reaches 2.7%, within its parity. Our first idea, a small dot for 0 as the ring's long/short self-reference, was much worse (12% of cells wrong at 20 mm for 150 loci, 6 px/mm): sub-cell detail is what the camera loses. Square cells with finder corners and standard error correction have the physics of QR behind them. The reader would still be ours, with no real phone evidence yet. **On that test** each cell is 2.3 mm at 40 mm and a misread bit is corrected by Reed–Solomon, not voted, so the cells would very likely have read. Whether our own finder locks under that light is unknown until it is built and tried.
 - **Forgery.** As (a). Spare capacity can hold a **postmark**: a 64–128-bit tag the cloud signs and checks (certified lineage, **Open**). Offline, a stamp without a valid postmark shows as unverified.
 - **Art and cost.** A stamp suits the botanical tome (pressed specimens, place stamps, the "New species" stamp, the shell the ring "stamps" at Grow). It frees the circle for the pod list's progress ring, where two rings now compete. On thermal paper it looks like a QR's cousin, which the owner may dislike (R13). Cost: a new encoder (small, reusing the codec), a new reader (finders, grid sampling, RS decoding: weeks, not days), and a real phone test campaign.
 
@@ -92,7 +92,7 @@ Every sheet draws the same individuals from the same payload bits: Loika, Tuikis
 
   The QR also has a decade of phone-camera evidence behind it. **On the owner's test**, a 40 mm version-1 QR on office paper is the easiest case any phone camera meets. It would have decoded, its error correction would have repaired the bit, and a standard library never returns an unchecked read.
 - **Forgery.** As (a). Plus: anyone's QR app can read the payload, and anyone can generate one.
-- **Art and cost.** It is the look the owner said they would rather not have (09-24). The sidecar carries the charm. The cost is lowest: an encoder of about 150 lines (written for this memo and checked against zxing-cpp), and on the reading side the browser's BarcodeDetector or a bundled library, with zbar or quirc on the Station.
+- **Art and cost.** It is the look that was to be avoided. The sidecar carries the charm. The cost is lowest: an encoder of about 150 lines (written for this memo and checked against zxing-cpp), and on the reading side the browser's BarcodeDetector or a bundled library, with zbar or quirc on the Station.
 
 ### (d) Randomart or a hash picture: identity only
 

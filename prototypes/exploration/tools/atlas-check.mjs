@@ -7,9 +7,11 @@
 //   Any other PNG form is refused and named; each sheet's form is printed. A gAMA, iCCP, cHRM or sRGB chunk refuses the sheet.
 // - Palette: each manifest's `palette`; absent or "core48" is the page's 48 colours, any other name loads <name>-palette.json
 //   from that manifest's own folder (a missing file refuses that manifest) and checks it with paletteTable (the core 48 with their
-//   names, colours and tables as on the page, no gap in i, no repeated hex, every table index in range, dark2 the dark of its dark
-//   (dark[dark[i]]), at most 256 entries). Every palette found must be the same (name and entries), whatever the order of the
-//   manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its tRNS-0 slot included.
+//   names, colours and dark, light and dark2 tables as on the page, no gap in i, no repeated hex, every table index in range, dark2 the
+//   dark of its dark (dark[dark[i]]), at most 256 entries). A core entry's fog, fade and storm may differ from the page's: the place
+//   overrides (storm, optional, defaults to dark), counted per field in the summary. Every palette found must be the same (name and
+//   entries), whatever the order of the manifests. With --drop, a sheet's PLTE may hold only colours in that palette, used or not, its
+//   tRNS-0 slot included.
 // - Pieces: decodeExact, catalogue and coreSet from src/atlas.mjs, as the page runs them, against the palette's colours.
 //   Each piece needs name, status (candidate or signed), kind, offset [x, y] and either sheet, x, y, w, h or file.
 // - Prints each piece ok or its refusal, the catalogue keys with their counts, the missing core keys, the blocking kinds with no
@@ -19,7 +21,7 @@ import path from "node:path";
 import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 import { inflateSync } from "node:zlib";
-import { decodeExact, catalogue, coreMissing, paletteTable, QUADS, LIP_STATES } from "../src/atlas.mjs";
+import { decodeExact, catalogue, coreMissing, paletteTable, overrideCounts, PLACE_OVERRIDES, QUADS, LIP_STATES } from "../src/atlas.mjs";
 
 // The page's palette, read from index.html as the tests read it (the page's own PALETTE, HEX and RGB declarations).
 export function pageRGB() {
@@ -162,7 +164,8 @@ export function check(files, log = console.log, { drop = false } = {}) {
   let pal = loadPalette(kinds.length === 1 ? used[0].pal : null);
   if (kinds.length > 1) { log("REFUSED palette: the manifests' palettes differ (" + used.map(m => m.pal.name + (m.pal.file ? " in " + path.relative(process.cwd(), path.dirname(m.pal.file)) : "")).join(", ") + ")"); refused++; }
   else if (pal.errors) { log("REFUSED palette " + pal.name + " (" + path.basename(pal.file) + "): " + pal.errors.join("; ")); refused++; pal = loadPalette(null); }
-  else log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
+  else { log("palette " + pal.name + (pal.file ? " (" + path.basename(pal.file) + ")" : "") + ": " + pal.n + " entries, " + pal.biome + " biome entries" + (pal.file ? ", the core 48 and every table ok" : ", the page's 48"));
+    if (pal.table) { const oc = overrideCounts(pal.table, pageTables()); log("place overrides of the core 48: " + PLACE_OVERRIDES.map(f => f + " " + oc[f]).join(", ")); } }
   const RGB = pal.rgb, of = new Set(RGB.map(c => c[0] << 16 | c[1] << 8 | c[2]));
   const image = file => {
     if (!images.has(file)) {
