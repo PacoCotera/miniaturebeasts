@@ -165,7 +165,7 @@
   "leaves": { "full": "sage", "vein": "sageD", "empty": "metal" },
   "stampLabel": { "fill": "bone", "edge": "slate" },
   "code": "bone",
-  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" }
+  "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" }
  },
  "strings": {
   "title": "Incubator",
@@ -181,7 +181,7 @@
   "noBay": "no bay free",
   "noBayPlate": "No bay free. Return a mibi to the wild first.",
   "painting": "its painting is on its way",
-  "offline": "waiting for the cloud",
+  "offline": "waiting for a signal",
   "hatchRibbon": "{Name}, a young {Species}",
   "hatchRibbonExamples": ["Fig, a young Loika"],
   "by": "copywriter, 2026-10-09 13:27"

@@ -46,6 +46,6 @@ export function namerBuild(m, spec) {
   else if (cur === "mod.space") line = { ok: Sg.typeSpace, ...(isFull ? { dim: true } : {}), subject: ctx, back, need: null };
   else if (cur === "mod.page") line = { ok: ui.page === "letters" ? Sg.accents : Sg.letters, subject: ctx, back, need: null };
   else if (cur === "act.suggest") line = names.length ? { ok: ui.sugg >= 0 ? Sg.suggestAgain : Sg.suggest, subject: ctx, back, need: null } : { ok: null, subject: Sg.noSuggest, back, need: null };
-  else if (cur === "act.done") line = { ok: ui.text === mibi.name ? fill(Sg.keep, { name: ui.text }) : fill(Sg.name, { name: ui.text }), ...(problem ? { dim: true } : {}), subject: ctx, back, need: null };
+  else if (cur === "act.done") line = { ok: problem ? null : ui.text === mibi.name ? fill(Sg.keep, { name: ui.text }) : fill(Sg.name, { name: ui.text }), subject: ctx, back, need: null };
   return { overlay: { id: "namer", state: "open", regions, focus: { cur, targets } }, line };
 }

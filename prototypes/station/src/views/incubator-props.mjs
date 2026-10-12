@@ -55,8 +55,8 @@ export function incubatorBuild(m, spec, pods) {
   }
   regions.base = { picture: slot(req, "base-336x96", R.base.rect, signed) };
   regions.plaque = state === "hatch" ? "" : spec.strings.plaque[state];
-  const waiting = (state === "hatch" || state === "ready") && (m.lamp === spec.strings.painting || m.lamp === spec.strings.offline);   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
-  regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp === spec.strings.offline ? "offline" : "waiting" };   // the lamp's node is there in every state
+  const waiting = (state === "hatch" || state === "ready") && (m.lamp === "waiting" || m.lamp === "offline");   // the base's waiting lamp, home-lamp-sky-12x12 1:1, steady, while the painting has not landed (no code-drawn fill)
+  regions.lamp = { picture: slot(req, R.base.lamp.slice, R.base.lamp.rect, "the Home hand masters (home-lamp-sky-12x12)"), on: waiting, why: !waiting ? "" : m.lamp };   // the lamp's node is there in every state
   // the stamp of the chapters the bud knows, its code, and in the hatch the juvenile and its ribbon
   if (state !== "empty") {
     const known = hatch ? mb.read : gs ? gs.known : knownChapters(st, B, settings, now), g = hatch ? mb.genome : B.genome, sz = stampSizing(fr, g);
@@ -75,7 +75,7 @@ export function incubatorBuild(m, spec, pods) {
   if (state === "empty") { line = { ok: choosePod({ st, settings }) !== null ? Sg.choose : null, back: Sg.back, subject: Sg.empty, need: S.bayFull(st, settings) ? Sg.noBay : null }; }
   else if (state === "growing" || state === "ready") {
     const subject = kind === "cross" ? fill(Sg.crossBud, { A: S.cap(B.parents?.[0]?.name ?? ""), B: S.cap(B.parents?.[1]?.name ?? "") }) : fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) });
-    const bud = kind === "cross" && B.parents?.length === 2 ? subject : S.cap(S.aAn(S.spName(B))) + " bud";
+    const bud = kind === "cross" && B.parents?.length !== 2 ? fill(Sg.bud, { "a/an": S.aAn(S.spName(B)).split(" ")[0], Species: S.cap(S.spName(B)) }) : subject;
     if (state === "growing") {
       const c = gs ? gs.cost : S.instantGrowCost(st, settings, now), key = S.canPay(st, c.e, c.d, c.s) || gs ? null : { short: S.shortIcons(st, c.e, c.d, c.s) };
       line = { ok: Sg.grow, price: S.priceText(c.e, c.d, c.s), back: Sg.back, subject: bud, need: gs ? gs.need : null };   // while growNow plays the notice is the one the bud had (the snapshot)

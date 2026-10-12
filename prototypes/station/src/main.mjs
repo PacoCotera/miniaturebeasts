@@ -14,7 +14,7 @@ import { startScene, endScene, sceneTick, sceneTime, sceneBeat, SCENE_MS } from 
 import { setFrames, frameOf, frameIds, stampGenome, podGenome } from "./genome.mjs";
 import { buildDevPanel, genomesText } from "./dev.mjs";
 import * as caddy from "./caddy.mjs";
-import { watch as watchHabitat } from "./intents/habitat.mjs";
+import { watch as watchHabitat, openCross as openCrossAt } from "./intents/habitat.mjs";
 import { stampArt } from "./art.mjs";
 import { loadPodSprites } from "./podsprites.mjs";
 import { loadMasters } from "./masters.mjs";
@@ -28,6 +28,7 @@ import { manifest as manifestOf, registerAsset, assetEntry, NOT_FINAL } from "..
 const $ = (id) => document.getElementById(id);
 const vis = $("screen"); let vctx = null;   // the page's screen: the face copies what it redrew onto it (face.display)
 const stampEl = $("stamp"), bootEl = $("boot");
+if (new URLSearchParams(location.search).has("dev")) { stampEl.hidden = false; $("devBtn").hidden = false; }   // the build stamp and the Developer tools button are for ?dev only (the Shift+T key stays on the play page)
 
 // --- the frames, fetched beside the page (the sandbox publishes prototypes/* side by side) ---
 async function loadFrames() {
@@ -232,6 +233,7 @@ window.__st = { ready, renderErrors, faceErrors, said: () => said.splice(0), pen
   forecastOf: (aId, bId) => S.forecastOf(G.st, mibiById(aId), mibiById(bId), G.settings), kinshipOf: (aId, bId) => S.kinshipOf(G.st, mibiById(aId), mibiById(bId)),
   isAdult: (m) => S.isAdult(G.st, m, G.settings), budKnown: (c) => S.budChapterKnown(G.st, c, G.settings, Date.now()), benchToday: () => S.benchToday(G.st, Date.now(), G.settings), podGlints: (p) => S.podGlints(G.st, p), compareDiff: (a, b) => S.compareDiff(G.st, podById(a), podById(b)) || [],
   doCross: (aId, bId) => { const r = S.doCross(G.st, G.sv, mibiById(aId), mibiById(bId), G.settings, Date.now()); if (r.ok) { UI.cross = null; save(); H.goto("incubator"); if (G.st.outbox?.length) caddy.flush().catch(() => {}); } return r; },
+  openCross: (aId) => openCrossAt(H, mibiById(aId)),   // the test hook: the Cross screen is not reachable by a press while its door is shut (doorOpen(cross))
   podsGo, intent: (m) => { onFaceMessage(H, { t: "intent", seq: 0, ...m }); },
   motionProof: () => startScene(sceneHost(), clock.now), endMotionProof: () => endScene(sceneHost()), scene: () => ({ t: sceneTime(clock.now), beat: sceneBeat(clock.now), ms: SCENE_MS }),
   redraw: () => { const M = FACE.M, n = M._face_dirty_count(), a = M.HEAP32.subarray(M._face_dirty_rects() >> 2, (M._face_dirty_rects() >> 2) + n * 4); let px = 0; for (let i = 0; i < n; i++) px += a[i * 4 + 2] * a[i * 4 + 3]; let trav = 0, air = 0; for (let i = 0; i < 12; i++) { const s = M._face_test_state(i); if (s >= 0) { if (s & 16) trav++; if (s & 32) air++; } } return { px, areas: n, tick: M._face_test_tick_area(), deferred: M._face_test_deferred(), travelling: trav, airborne: air, steps: M._face_test_steps() }; },   // the motion proof's CSV: the last frame's redraw

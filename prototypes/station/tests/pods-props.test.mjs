@@ -85,12 +85,12 @@ test("the schema checks: an unknown prop, a wrong type, a missing field and an u
   const rect = JSON.parse(JSON.stringify(bodyOf(SCENES[3][1]).props)); rect.regions.specimen.pod.rect = [0, 0, 1, 1]; assert.ok(validate(rect, schema).length);
 });
 
-test("an identified pod with no chapter read shows 'Shape a founder', dimmed by what stops it (no Open-a-chapter branch)", () => {
+test("an identified pod with no chapter read shows 'Create from this pod', dimmed by what stops it (no Open-a-chapter branch)", () => {
   const st = rich(["S01"]), p = st.tray[0]; assert.equal(p.read.length, 0);
   const line = podsProps(model(st), spec, frameSpec).line;
-  assert.equal(line.ok, "Shape a founder"); assert.equal(line.price, "");
+  assert.equal(line.ok, "Create from this pod"); assert.equal(line.price, "");
   assert.equal(line.dim, !!S.growBlock(st, p, {}, settings, []), "dim is growBlock's");
-  st.e = 0; st.s = 0; const poor = podsProps(model(st), spec, frameSpec).line; assert.equal(poor.dim, true); assert.equal(poor.ok, "Shape a founder");
+  st.e = 0; st.s = 0; const poor = podsProps(model(st), spec, frameSpec).line; assert.equal(poor.dim, true); assert.equal(poor.ok, "Create from this pod");
 });
 
 test("Compare's focus: the targets are the rail's tabs, the ring opens on the open chapter's tab, rail.open resolves to ui.cmp.ci, and closing it lands on the kin that opened it", () => {

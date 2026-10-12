@@ -29,7 +29,7 @@ function reportOf(spec, plays, settings, mend, st, sv, frameSpec) {
     return { lead: leadOf(spec, p.c, walk[k]), pods: n && n <= podMax ? n : 0, text: n === 0 ? T.noPods : n > podMax ? T.manyPods : "", reach: reachWord(spec, p.c) };
   });
   const sum = (key) => plays.reduce((a, p) => a + p.gained[key], 0);
-  const gathered = { lead: T.gathered, e: "+" + sum("e"), d: "+" + sum("d"), s: "+" + sum("s"), top: plays.some((p) => p.top.e || p.top.d || p.top.s) ? T.topUp : "" };
+  const gathered = { lead: T.gathered, e: "+" + sum("e"), d: "+" + sum("d"), s: "+" + sum("s") };
   let probe = null;
   if (mend && (mend.free || mend.paid || mend.broke)) {
     const plates = (mend.free | 0) + (mend.paid | 0);

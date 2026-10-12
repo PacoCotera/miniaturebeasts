@@ -23,14 +23,11 @@ import { enter as enterHabitat, endMeet } from "./intents/habitat.mjs";
 import { cuttingHatch, landHatch } from "./intents/incubator.mjs";
 import { registerPictures, iconRequests } from "./pictures.mjs";
 import { dispatch, INTENTS } from "./intents/index.mjs";
-import { SCREEN_PLACE, backWord, parentOf } from "./nav.mjs";
+import { SCREEN_PLACE, backWord, parentOf, isBuilt } from "./nav.mjs";
 import { assetEntry, asset as assetOf } from "../../ui/assets.mjs";
 import { policyOf } from "../../ui/asset-policy.mjs";
 import { pinnedPictures } from "../../ui/specs/derive.mjs";
 
-// The screens the face draws with words. Every other screen is drawn by the face's notBuilt composition.
-export const BUILT = ["home", "cargo", "pods", "create", "incubator", "vivarium", "habitat", "library", "bench"];
-export const isBuilt = (screen) => BUILT.includes(screen);
 
 // ---- the pictures ----
 // A picture's pixels for the face: RGBA, straight alpha, with its slice and tile when it is a nine-slice, and its status. `env` reaches the builders (palette lookup).

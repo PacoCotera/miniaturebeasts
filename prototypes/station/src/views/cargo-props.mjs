@@ -14,9 +14,9 @@ const fill = (t, o) => t.replace(/\{(\w+)\}/g, (_, k) => (k in o ? o[k] : "{" + 
 // The reach of a crate's walk in the words of the spec (strings.report.reach): thirds of the land, "all" when the whole of it; a crate with no map says nothing.
 export const reachWord = (spec, c) => { const band = S.reachBand(c); return band ? spec.strings.report.reach[band] : ""; };
 // A crate's ribbon: every dev crate reads dev; the ordinal counts walk crates only (first, second, third; a walk crate past the third, never from play, reads later). `walk`: the crate's place among the walk crates opened, from 0.
-export const ribbonOf = (spec, c, walk) => (c.dev ? spec.strings.ribbon.dev : [spec.strings.ribbon.first, spec.strings.ribbon.second, spec.strings.ribbon.third][walk] ?? spec.strings.ribbon.later);
-// A report row's lead, by the same ordinal: Developer crate, First, Second, Third crate, Another crate.
-export const leadOf = (spec, c, walk) => (c.dev ? spec.strings.report.devCrate : spec.strings.report.crate[walk] ?? spec.strings.report.laterCrate);
+export const ribbonOf = (spec, c, walk) => (c.dev ? spec.strings.ribbon.later : [spec.strings.ribbon.first, spec.strings.ribbon.second, spec.strings.ribbon.third][walk] ?? spec.strings.ribbon.later);
+// A report row's lead, by the same ordinal: First, Second, Third crate, Another crate (a developer crate is uncounted: Another crate).
+export const leadOf = (spec, c, walk) => (c.dev ? spec.strings.report.laterCrate : spec.strings.report.crate[walk] ?? spec.strings.report.laterCrate);
 // The crates ready to open in the bay: the walk crates while docked, at most the bay's three shown.
 export const walkCrates = (st, sv, docked) => (docked ? S.bayCrates(st, sv) : []);
 

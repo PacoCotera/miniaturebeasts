@@ -90,7 +90,7 @@
     "rect": [436, 80, 12, 12],
     "slice": "home-lamp-sky-12x12",
     "at": "the box's top right",
-    "when": "while the placeholder is drawn: the painting on its way, or waiting for the cloud",
+    "when": "while the placeholder is drawn: the painting on its way, or waiting for a signal",
     "rides": "the 4 px lift"
    },
    "lift": 4,
@@ -459,7 +459,7 @@
     "present": "rest and out (in the meet the ribbon stands there and is not a target)",
     "enabled": "always: any housed mibi may be renamed, at home, bonded or out with the Companion; never a released one"
    },
-   "species": {"group": "species", "ring": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "always"},
+   "species": {"group": "species", "ring": "round", "box": "regions.speciesLine.rect", "lift": 0, "enabled": "doorOpen(book); until slot 8 read-only (no ✓ cap, bottomLine.species.shut)"},
    "plate": {
     "group": "plate",
     "id": "plate.<i>, i from 0 in ring order",
@@ -480,14 +480,14 @@
     "ring": "round",
     "box": "regions.portrait.rect",
     "lift": 2,
-    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting"
+    "enabled": "always: read-only (no ✓ cap, the context says why) unless a sitting is held and sitting.portraitBlock is empty; then ✓ Portray opens the sitting; and doorOpen(sitting) (until slot 9 read-only, bottomLine.portrait.shut)"
    },
    "cross": {
     "group": "low",
     "ring": "round",
     "box": "regions.cross.rect",
     "lift": 2,
-    "enabled": "an adult or an elder, at home or docked, with at least one partner it can pick (state.crossPartners less the partners out with the Companion while it is away; elders counted as adults)"
+    "enabled": "an adult or an elder, at home or docked, with at least one partner it can pick (state.crossPartners less the partners out with the Companion while it is away; elders counted as adults); and doorOpen(cross) (until slot 7 read-only, bottomLine.cross.shut)"
    },
    "wild": {"group": "low", "ring": "round", "box": "regions.wild.rect", "lift": 2, "enabled": "state.returnMibiBlock is empty"},
    "tile": {
@@ -550,7 +550,8 @@
   },
   "name": {"action": "strings.rename", "context": "strings.residentContext (strings.residentContextBonded for a bonded mibi); out, strings.out"},
   "tile": "as resident, for the tile's mibi",
-  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library"},
+  "species": {"action": "strings.guide", "context": "strings.every", "jump": "frame.json navigation.jumps: habitat → book, spread guide; ← there reads Library",
+   "shut": {"action": null, "context": "strings.shut.guide", "when": "doorOpen(book) false (until slot 8)"}},
   "plate": {
    "read": {"action": null, "context": "strings.plateRead"},
    "unread": {
@@ -578,14 +579,16 @@
    },
    "blocked": {"action": null, "context": "sitting.portraitBlock's words: strings.noPose, strings.noPlace, strings.portrayed; out, strings.portraitOut"},
    "painting": {"action": null, "context": "strings.portraitOnWay"},
-   "portrayed": {"action": null, "context": "strings.portrayed"}
+   "portrayed": {"action": null, "context": "strings.portrayed"},
+   "shut": {"action": null, "context": "strings.shut.portrait", "when": "state held with sitting.portraitBlock empty and doorOpen(sitting) false (until slot 9)"}
   },
   "cross": {
    "adult": {"action": "strings.cross", "context": "strings.partners"},
    "out": {"action": null, "context": "strings.crossOut", "when": "state out: the shown mibi is out with the Companion"},
    "away": {"action": null, "context": "strings.crossAway", "when": "an adult at home whose partners are all out with the Companion, away"},
    "alone": {"action": null, "context": "strings.noPartner"},
-   "young": {"action": null, "context": "strings.crossLater"}
+   "young": {"action": null, "context": "strings.crossLater"},
+   "shut": {"action": null, "context": "strings.shut.cross", "when": "state adult and doorOpen(cross) false (until slot 7); the partner faces drawn as for adult"}
   },
   "wild": {
    "may": {"action": "strings.wild", "price": "❀ +2 (state.PRICE.wildMibi), icon before figure", "context": "strings.wildContext"},
@@ -606,7 +609,7 @@
   "glass": {"edge": "frostD", "back": "forest", "ground": "clay", "groundTop": "sand", "foot": "soil"},
   "waitingLamp": {"fill": "sky", "rim": "void"},
   "nameTag": {"fill": "panel", "edge": "hairline", "text": "bone"},
-  "ribbon": {"fill": "tealD", "edge": "aqua", "text": "bone"},
+  "ribbon": {"fill": "bark", "edge": "gold", "text": "bone"},
   "card": {"fill": "panel", "edge": "hairline", "top": "bevel", "species": "bone", "story": "mist", "code": "bone", "mark": "bone"},
   "stampLabel": {"fill": "bone", "edge": "slate"},
   "module": {"fill": "panel", "top": "bevel", "edge": "hairline", "word": "metal"},
@@ -678,7 +681,13 @@
   "residentContextBonded": "a bonded {stage} {species}",
   "residentContextExamples": ["an adult Loika", "a young Loika", "an elder Loika"],
   "painting": "its painting is on its way",
-  "offline": "waiting for the cloud",
+  "offline": "waiting for a signal",
+  "shut": {
+   "cross": "crossing is not open yet",
+   "portrait": "portraits are not open yet",
+   "guide": "the guide is not open yet",
+   "note": "context slot 208 px at 16, six words or fewer, no digits: 177, 182, 188 px; until slots 7, 8, 9 (doorOpen)"
+  },
   "guide": "Open the guide",
   "every": "every {Species}",
   "plateRead": "{Chapter}, read",

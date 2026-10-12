@@ -48,7 +48,7 @@ test("an empty Incubator offers Choose a pod only when the rack holds a pod and 
 test("a growing bud: the leaves count the minutes, the filling one its rows; Grow now and its price; ready: Open", () => {
   const { st, p } = world(); const r = S.grow(st, p, {}, settings, T0); assert.ok(r.ok);
   const g = build(st, { inc: {} }, T0 + 1000);
-  assert.equal(g.props.state, "growing"); assert.equal(g.line.ok, spec.strings.grow); assert.ok(g.line.price);
+  assert.equal(g.props.state, "growing"); assert.equal(g.line.ok, spec.strings.grow); assert.match(g.line.subject, /^an? \w+ bud$/, "a founder's bud reads in the spec's lower case"); assert.ok(g.line.price);
   const L = g.props.regions.leaves; assert.ok(L.total >= 1 && L.full === 0 && L.rows >= 0 && L.rows <= 19);
   const mid = S.budLeaves(st, settings, T0 + st.bud.minutes * 30_000, 40); assert.ok(mid.full >= 0 && mid.rows <= 19);
   const rd = build(st, { inc: {} }, T0 + st.bud.minutes * 60_000 + 10_000);

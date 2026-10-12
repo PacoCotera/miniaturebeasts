@@ -96,7 +96,7 @@
   "bay": { "fill": "panel", "top": "bevel", "edge": "hairline", "inside": "ground", "rim": "enamel", "lid": "enamel", "seal": "deepTeal" },
   "crate": { "body": "metal", "corner": "deepTeal", "edge": "hairline", "tag": "orange", "inside": "ground" },
   "rack": { "fill": "panel", "top": "bevel", "edge": "hairline", "well": "ground", "wellShade": "void", "wellLip": "bevel" },
-  "ribbon": { "fill": "tealD", "edge": "aqua", "text": "bone" },
+  "ribbon": { "fill": "bark", "edge": "gold", "text": "bone" },
   "report": { "fill": "panel", "edge": "hairline", "top": "bevel", "shadow": "void", "heading": "bone", "lead": "mist", "line": "bone", "figure": "bone", "bullet": "bevel" }
  },
  "strings": {
@@ -105,11 +105,11 @@
   "newPods": { "one": "See the new pod", "few": "See the new pods" },
   "done": "Done",
   "subjects": { "crates": "{count} sealed crates", "cratesOne": "a sealed crate", "empty": "the bay is empty", "away": "the bay is shut", "waiting": "{count} pods wait for a well", "waitingOne": "a pod waits for a well", "opening": "the bay is opening", "report": "what came home" },
-  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "dev": "Developer crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); every dev crate reads dev; the land's reach is on the report card" },
+  "ribbon": { "first": "First crate home", "second": "Second crate home", "third": "Third crate home", "later": "Another crate home", "sitting": "{name}'s portrait", "rule": "the crate only, no digits; the ordinal counts walk crates only (first, second, third; past the third, later, never from play); every dev crate reads dev; the land's reach is on the report card" },
   "report": {
-   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "devCrate": "Developer crate", "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
-   "reach": { "underThird": "a first look around", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
-   "gathered": "Gathered", "topUp": "with the top-up", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned", "goal": { "lead": "Next", "meanwhileLead": "While you wait", "meanwhile": "read {chapter} on the {species} pod", "meanwhileGlint": "{chapter} glints on the {species} pod", "content": "frame.json strings.goal.step.*, the same words and icons as Home's" }
+   "heading": "Home from the field", "crate": ["First crate", "Second crate", "Third crate"], "laterCrate": "Another crate", "noPods": "no pods", "manyPods": "many pods",
+   "reach": { "underThird": "some of the land explored", "underTwoThirds": "half the land explored", "underAll": "most of the land explored", "all": "all the land explored" },
+   "gathered": "Gathered", "probe": "Probe", "mendedFree": "mended free", "mendedPaid": "mended for {price}", "world": "Meanwhile, the world turned", "goal": { "lead": "Next", "meanwhileLead": "While you wait", "meanwhile": "read {chapter} on the {species} pod", "meanwhileGlint": "{chapter} glints on the {species} pod", "content": "frame.json strings.goal.step.*, the same words and icons as Home's" }
   }
  },
  "placeholders": {

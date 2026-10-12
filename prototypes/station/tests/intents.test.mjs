@@ -138,11 +138,11 @@ test("the Library's spread: the ring's frame is kept; ✓ on a found frame opens
   INTENTS.library.intent(h, "frame.S02", "confirm"); assert.equal(h.said.at(-1), Sg.unmet); assert.equal(h.ui.lib.f, "spread", "an unmet frame opens nothing"); assert.equal(h.ui.lib.i, 1);
   INTENTS.library.intent(h, "frame.S03", "confirm"); assert.equal(h.said.at(-1), Sg.met); assert.equal(h.ui.lib.f, "spread", "a met frame opens nothing");
   INTENTS.library.intent(h, "sp:S01", "confirm"); assert.equal(h.ui.lib.f, "spread", "only frame.<SNN> is a target"); h.said.length = 0;
-  INTENTS.library.intent(h, "frame.S01", "confirm"); assert.deepEqual([h.ui.lib.f, h.ui.lib.sp, h.ui.lib.i, h.said.length], ["book", "S01", 0, 0]);
-  INTENTS.library.intent(h, "screen", "back"); assert.deepEqual([h.ui.lib.f, h.ui.lib.i], ["spread", 0], "the Book's ← is the spread, the ring on that species (a cut)");
+  INTENTS.library.intent(h, "frame.S01", "confirm"); assert.deepEqual([h.ui.lib.f, h.ui.lib.i, h.said.at(-1)], ["spread", 0, Sg.bookShut], "a found frame: the Book is shut until slot 8, the plate says so");
+  INTENTS.library.openBook(h, "S01"); INTENTS.library.intent(h, "screen", "back"); assert.deepEqual([h.ui.lib.f, h.ui.lib.i], ["spread", 0], "the Book's ← is the spread, the ring on that species (a cut)");
   INTENTS.library.intent(h, "frame.S01", "back"); assert.deepEqual([h.went.at(-1), h.ui.home.f], ["home", "library"]);
   S.seedAdults(st, "S01", 5, 2, settings); INTENTS.library.openBook(h, "S01"); INTENTS.library.intent(h, "screen", "confirm"); assert.equal(h.went.at(-1), "habitat"); assert.ok(h.ui.hab.id != null);
-  INTENTS.habitat.intent(h, "species", "confirm"); assert.deepEqual([h.ui.lib.f, h.ui.lib.sp, h.went.at(-1)], ["guide", "S01", "library"], "the card's species word reaches the species' guide (not built yet), ← reads Library");
+  INTENTS.habitat.intent(h, "species", "confirm"); const lf = h.ui.lib.f; h.went.length = 0; INTENTS.habitat.intent(h, "species", "confirm"); assert.deepEqual([h.ui.lib.f === lf, h.went], [true, []], "the card's species word is shut until slot 8: ✓ goes nowhere");
 });
 
 test("one mibi up close: ✓ on the resident greets (the spec's moment: 1800 ms, held 300, a cut), on the name opens the namer, the gate arms on the first ✓ and acts on the second, any other key disarms, ← goes to the whole with the ring on this mibi", () => {
@@ -181,10 +181,10 @@ test("one mibi up close, a chapter plate: ✓ reads an unread chapter (the read 
 
 test("one mibi up close, Cross: only a partner at home can be picked (the first not away); a mibi out with the Companion, or with only away partners, does not open it", () => {
   const st = world(); S.seedAdults(st, "S01", 5, 3, settings); const [a, b, c] = st.mibis, sv = { v: 8, seed: 7, wid: "w1", turn: 3, bay: [], mibis: [], carried: [b.id], tier: 1, shield: 3 }, h = host(st, sv); h.specs.habitat = habitatSpec; st.dock = { docked: false, at: T0 };
-  h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.equal(h.went.at(-1), "cross"); assert.equal(h.ui.cross.bId, c.id, "b is out: the first partner not away");
+  h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "the door is shut until slot 7: ✓ stays up close"); INTENTS.habitat.openCross(h, a); assert.equal(h.went.at(-1), "cross"); assert.equal(h.ui.cross.bId, c.id, "b is out: the first partner not away");
   h.went.length = 0; h.ui.hab.id = b.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "the shown mibi is out: it cannot cross until it docks");
   sv.carried = [b.id, c.id]; h.ui.hab.id = a.id; INTENTS.habitat.intent(h, "cross", "confirm"); assert.deepEqual(h.went, [], "only away partners: refused");
-  st.dock = { docked: true, at: T0 }; INTENTS.habitat.intent(h, "cross", "confirm"); assert.equal(h.went.at(-1), "cross", "docked, the carried mibi crosses as any adult");
+  st.dock = { docked: true, at: T0 }; INTENTS.habitat.openCross(h, a); assert.equal(h.went.at(-1), "cross", "docked, the carried mibi crosses as any adult");
 });
 
 test("Create: ◀ ▶ walk the read traits, ← returns to the pod's overview with nothing spent", () => {

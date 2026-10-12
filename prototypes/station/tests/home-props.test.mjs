@@ -190,7 +190,7 @@ test("the goal: a soft need gives its notice to the goal, the room's ✓ keeps t
   assert.equal(S.needKey(st, sv0(), settings, {}).key, "couldGrow", "needKey is unchanged");
   // a new pod (first group): the notice as now, no goal
   const st2 = world(); dock(st2); S.seedAdults(st2, "S01", 5, 1, settings); pod(st2, "S01", 5, false);
-  const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod waits"); assert.equal(c.line.goal, undefined);
+  const c = build(st2, sv0()); assert.equal(c.line.need, "a new pod in the rack"); assert.equal(c.line.goal, undefined);
   // no goal: the soft need as now (two adults, the guide complete, a bud growing)
   const st3 = world(); dock(st3); S.seedAdults(st3, "S01", 5, 2, settings); { const fr = frameOf("S01"); st3.readOnce.S01 = fr.chapters.map((c) => c.id); for (const ch of fr.chapters) for (const t of ch.traits) S.guideAdd(st3, "S01", t.id, traitLooks(fr, t)); } st3.bud = { kind: "founder", species: "S03", start: Date.now(), minutes: 5 };
   st3.probe = { tier: 2, shield: 3, smax: 3 }; const d = build(st3, sv0()); assert.equal(S.goalKey(st3, sv0()), null); assert.equal(d.line.need, "a bud is growing"); assert.equal(d.line.goal, undefined);
@@ -228,11 +228,11 @@ test("a new pod is firm until Pods has drawn it: firm, the goal is absent; seen,
   const st = world(); dock(st); const [dot] = S.seedAdults(st, "S01", 5, 1, settings).mibis; dot.name = "Dot";
   const p1 = pod(st, "S01", 5, false);
   let b = build(st, sv0());
-  assert.equal(b.line.need, "a new pod waits"); assert.equal(b.line.goal, undefined, "firm: no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  assert.equal(b.line.need, "a new pod in the rack"); assert.equal(b.line.goal, undefined, "firm: no goal"); assert.equal(b.props.regions.pods.lamp, "needsYou");
   p1.seen = 1; b = build(st, sv0());
   assert.equal(b.line.need, ""); assert.ok(b.line.goal, "soft: the goal takes the notice"); assert.equal(b.line.ok, "Look at the pods"); assert.equal(b.props.regions.pods.lamp, "well");
   const p2 = pod(st, "S01", 6, false); assert.ok(!p2.seen); b = build(st, sv0());
-  assert.equal(b.line.need, "a new pod waits", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
+  assert.equal(b.line.need, "a new pod in the rack", "one unseen pod: one"); assert.equal(b.line.goal, undefined); assert.equal(b.props.regions.pods.lamp, "needsYou");
 });
 
 test("a waiting pod in the bay is a first-group need ahead of a seen unidentified pod's soft notice: amber, the Pods lamp amber, no goal; with it gone the goal takes the zone and the lamp is well", () => {

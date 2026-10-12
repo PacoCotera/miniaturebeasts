@@ -53,7 +53,7 @@ footer{color:var(--muted); font-size:12px; margin-top:24px}
   </div>
 </section>
 
-<footer id="stamp">build …</footer>
+<footer id="stamp" hidden>build …</footer>
 <script>
 (function(){
   const imgs = Array.from(document.querySelectorAll('figure img'));
@@ -72,6 +72,7 @@ footer{color:var(--muted); font-size:12px; margin-top:24px}
   m1.onclick = () => { mode = 1; apply(); }; m2.onclick = () => { mode = 2; apply(); }; ppiEl.oninput = apply;
   window.addEventListener('resize', apply); apply();
   imgs.forEach(img => img.addEventListener('error', () => { const f = img.closest('figure'); f.innerHTML = '<div class="missing">Not available yet: ' + img.getAttribute('src') + '</div>'; }));
+  if (new URLSearchParams(location.search).has('dev')) document.getElementById('stamp').hidden = false;   // the build stamp is for ?dev only
   fetch('../../build.json', {cache:'no-store'}).then(r => r.ok ? r.json() : null).then(b => { if (b) document.getElementById('stamp').textContent = 'build ' + (b.short || '') + ' · ' + (b.built || ''); }).catch(() => {});
 })();
 </script>

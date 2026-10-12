@@ -1245,8 +1245,8 @@
   "ground": "deep",
   "name": "bone",
   "origin": "bone",
-  "ribbonFill": "tealD",
-  "ribbonEdge": "aqua",
+  "ribbonFill": "bark",
+  "ribbonEdge": "gold",
   "ribbonText": "bone",
   "rail": {
    "edge": "bevel",
@@ -1305,6 +1305,7 @@
   }
  },
  "strings": {
+  "toCreate": "Create from this pod",
   "unknownPod": "Unknown",
   "newSpecies": "New species",
   "empty": "the rack is empty",

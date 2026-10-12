@@ -1,4 +1,4 @@
-/* The ribbon word (lvgl-switch.md §2.2, common/): one panel with an edge and one line of text centred in it, the one ribbon look (tealD fill, aqua edge, bone words). The caller names the region (v_region) before it; the word puts the panel on the chrome layer and the line on the type layer. The rectangle, the size and the three colours are the screen's;
+/* The ribbon word (lvgl-switch.md §2.2, common/): one panel with an edge and one line of text centred in it, the one ribbon look (bark fill, gold edge, bone words). The caller names the region (v_region) before it; the word puts the panel on the chrome layer and the line on the type layer. The rectangle, the size and the three colours are the screen's;
    the string is the props'. A string wider than the panel less its pads is cut to fit with an ellipsis. An empty string draws the same nodes with no size (a ribbon not yet shown). */
 #include "../vocab.h"
 #include "../words.h"
